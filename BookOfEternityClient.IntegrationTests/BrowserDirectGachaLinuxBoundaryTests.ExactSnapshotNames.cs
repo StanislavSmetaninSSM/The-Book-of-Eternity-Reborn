@@ -31,11 +31,19 @@ public sealed partial class BrowserDirectGachaLinuxBoundaryTests
         output.WriteLine(JsonSerializer.Serialize(new { root = fixture.Root, mode, names, failure = failure?.ToString(),
             before, after, mutations, generationBefore = generation, generationAfter = File.ReadAllBytes(fixture.Files.SessionGenerationPath), result }));
         Assert.Equal(generation, File.ReadAllBytes(fixture.Files.SessionGenerationPath));
-        if (mode == "unicode")
+        if (mode is "unicode" or "native_noncandidate")
         {
             Assert.Null(failure); Assert.True(result!.Success, result.Message); Assert.Equal(11, fixture.Feathers());
-            var snapshotPath = fixture.Manifest()["files"]![names[0]]!.GetValue<string>();
-            Assert.Equal(before[names[0]], File.ReadAllBytes(fixture.Files.ResolvePath(snapshotPath)));
+            var files = fixture.Manifest()["files"]!.AsObject();
+            if (mode == "unicode")
+            {
+                var snapshotPath = files[names[0]]!.GetValue<string>();
+                Assert.Equal(before[names[0]], File.ReadAllBytes(fixture.Files.ResolvePath(snapshotPath)));
+            }
+            else foreach (var path in names)
+            {
+                Assert.False(files.ContainsKey(path)); Assert.Equal(before[path], after[path]);
+            }
             Assert.Equal(fixture.BeforeSoul, File.ReadAllBytes(fixture.BackupPath()));
         }
         else
@@ -81,11 +89,19 @@ public sealed partial class BrowserDirectGachaLinuxBoundaryTests
             failure = failure?.ToString(), before, after, mutations, generationBefore = generation,
             generationAfter = File.ReadAllBytes(fixture.Files.SessionGenerationPath), resultReturned = result != null }));
         Assert.Equal(generation, File.ReadAllBytes(fixture.Files.SessionGenerationPath));
-        if (mode == "unicode")
+        if (mode is "unicode" or "native_noncandidate")
         {
             Assert.Null(failure); Assert.NotNull(result);
-            var snapshotPath = fixture.Manifest()["files"]![names[0]]!.GetValue<string>();
-            Assert.Equal(before[names[0]], File.ReadAllBytes(fixture.Files.ResolvePath(snapshotPath)));
+            var files = fixture.Manifest()["files"]!.AsObject();
+            if (mode == "unicode")
+            {
+                var snapshotPath = files[names[0]]!.GetValue<string>();
+                Assert.Equal(before[names[0]], File.ReadAllBytes(fixture.Files.ResolvePath(snapshotPath)));
+            }
+            else foreach (var path in names)
+            {
+                Assert.False(files.ContainsKey(path)); Assert.Equal(before[path], after[path]);
+            }
             Assert.Equal(fixture.BeforeSoul, await fixture.Files.ReadFileBytesAsync(lease, actualBackup));
         }
         else
@@ -94,6 +110,14 @@ public sealed partial class BrowserDirectGachaLinuxBoundaryTests
             AssertBrowserExactFilesUnchanged(before, after);
         }
     }
+
+    [Theory]
+    [InlineData("gacha")]
+    [InlineData("queue")]
+    public Task OriginalBrowserSnapshotGuardPreservesNoncandidateNativePayloadNames(string route) =>
+        route == "gacha"
+            ? OriginalBrowserGachaAdmitsRawSnapshotNamesBeforeStageOrSpend("native_noncandidate")
+            : OriginalBrowserQueueAdmitsRawInventoryAndRollbackBeforeCopiesOrFailureCleanup("native_noncandidate");
 
     private static string[] PutBrowserExactNames(BrowserDirectGachaLinuxFixture fixture, string mode)
     {
@@ -106,6 +130,7 @@ public sealed partial class BrowserDirectGachaLinuxBoundaryTests
             "story_alias" => new[] { "stories/Chapter.jsonl", "stories/chapter.jsonl" },
             "cleanup_alias" => new[] { "input/Turn_Request.json" },
             "rollback_value" => Array.Empty<string>(),
+            "native_noncandidate" => new[] { "game_state/world/native\\payload.bin", "game_state/world/A.bin", "game_state/world/a.bin" },
             _ => new[] { "lore/ История.json" }
         };
         foreach (var path in names) PutBrowserExactFile(fixture, path,

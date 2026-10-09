@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-browser-snapshot-native-noncandidates-linux",
+      "responsibility": "Two original browser gacha/borrowed queue positive controls preserve raw noncandidate game_state binary payload names/bytes (literal backslash and case-distinct siblings) while original JSON snapshot cohort excludes them.",
+      "excludes": "No native general payload qualification, browser HTTP, other signed producers or game rule change.",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+        "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.ExactSnapshotNames.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserSnapshotGuardPreservesNoncandidateNativePayloadNames"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-browser-snapshot-exact-names-linux",
       "responsibility": "Original public browser direct gacha7 before stage/spend and borrowed queue8 before snapshot copying or cleanup catch, raw rollback-value negative and Unicode positives; original public gacha2 neighbors.",
       "excludes": "No incarnation/Explorer/spiritual producers, other owners, HTTP, native Windows or B2 gameplay.",

@@ -1,3 +1,12 @@
+## Browser eligibility positive supplement — WIP, 2026-10-09
+
+Add isolated originalgacha/borrowedqueue2 for noncandidate game_state binary names:
+A.bin/a.bin andliteralbackslash exactnativepayloadbytes remain untouched/outsidemanifest.
+This proves browserguardpreserves its original JSONcandidate policy ratherthanengine
+broadergame_stateallfiles. InstalledUNBUILT/UNRUN, browserruntimeunchanged; fresh
+isolatedPlan2/actual2 next, no original17RED replay. Finalaffected19/2 afterruntimefix.
+IndependentRED/rawcarrierPASS812b3142:24artifacts13pins,17originalfixture roots absent.
+
 ## Browser original exact-name causal RED17 — WIP, 2026-10-09
 
 Fixture/design/exact17 independent AstraXHigh PASS59b83d0c. Fresh integration

@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-browser-snapshot-native-noncandidates-linux",
+      "reason": "T063/F16 browser original eligibility scope: two real gacha/queue positive controls for raw case-distinct/literalbackslash game_state bin payloads outside JSON candidate cohort. Fresh isolated2 baseline before guard; final19/2 includes original17 after browserruntimechange. InstalledUNBUILT/UNRUN, original17baseline not replayed.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-browser-snapshot-exact-names-linux",
       "reason": "T063/F16 original browser pre-spend/queue raw spelling test-first17: publicgacha7+originalborrowedqueue8+originalpublicgacha2, rawnames and originalrollback value, retained oldpending evidence and fullbyte/generation maps, Unicode exactcopy/actualauthority positive. InstalledUNBUILT/UNRUN, browserruntimeunchanged. Engine25 and earlier42 not replayed without changedboundary.",
       "contracts": [
