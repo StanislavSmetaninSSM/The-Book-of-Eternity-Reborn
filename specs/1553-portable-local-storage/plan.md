@@ -1,3 +1,29 @@
+## Ready/worker causal RED — 2026-10-09
+
+Clean source8d2689753166d174b95878c13506602ad6e727a7; independent fixture correction
+PASS. Fresh Plan062402: integration build42.4455231s, exact12/1 descriptor,0 tests,
+wall46.2235367s. Actual062459: **12/12 executed,3PASS/9FAIL**,7.3292339s,
+no skipped/duplicate/timeout, both cleanup flags complete. All nine Unknown rows
+reach actual original common-publication MemberPublished/index0 and actual CSP;
+no fixture misses. Root verified exact retained journals/hashes/foreign target bytes,
+prior committed images unchanged and12 explicit independent roots removed.
+[Raw source-pinned Plan/TRX/rows/journals/root receipt](recovery/storage-migration-worker-ready-20261009/manifest.json).
+
+Known audit suppression, genuine accepted apply+Ready, and known Ready refusal pass.
+Actual failures: router/engine return skipped after swallowed audit CSP; accepted
+ApplyReserved returns real Accepted after audit CSP; committed Ready returns true
+after audit CSP; known build/Ready failure diagnostic CSP is swallowed and loses
+original cause. Latest-task, initial-generation and primary Ready CSP each provoke
+one later ordinary lease attempt before returning ordinary failure (hard guard stops
+it). All worker slot/workspace/attach/release guards remain untouched; validation
+callback runs once in accepted seeds, explicitly storage-only qualification.
+
+Next minimum runtime correction: preserve direct CSP through audit/delegator/engine,
+retain actual task/proposal/decision/known original failure and Ready-created only
+after successful publication; capture body CSP before affected owned lease close.
+Full accepted TryRun retention is source-only; C2/pool/store/trajectory/harness and
+all other existing queues remain open. No actual simultaneous-close-fault claim.
+
 ## Ready fixture build correction — WIP, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT12 gate passed9d24. Fresh Plan062208 failed during

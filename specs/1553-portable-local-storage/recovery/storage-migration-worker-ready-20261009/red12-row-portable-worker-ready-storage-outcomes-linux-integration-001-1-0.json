@@ -1,0 +1,66 @@
+{
+  "mode": "ready_success",
+  "uncertain": false,
+  "Failure": null,
+  "knownHits": 0,
+  "poolAttempts": [],
+  "validationCalls": 1,
+  "acceptedBefore": {
+    "SchemaVersion": 1,
+    "DecisionId": "apply_decision_20261009062506048",
+    "ProposalId": "worker_proposal_20260620_0001",
+    "Result": 0,
+    "ScopeCheck": {
+      "Passed": true,
+      "CheckedPaths": [
+        "game_state/world/weather.json"
+      ],
+      "Violations": []
+    },
+    "ValidationCheck": {
+      "Required": true,
+      "Passed": true,
+      "Command": "ValidateGameStateAsync",
+      "IssueCount": 0
+    },
+    "AppliedFiles": [
+      "game_state/world/weather.json"
+    ],
+    "RejectionReasons": [],
+    "DecidedAtUtc": "2026-10-09T06:25:06.0486820+00:00"
+  },
+  "returnedDecision": null,
+  "retainedDecision": null,
+  "dispatchResult": null,
+  "ReadyResult": {
+    "Created": true,
+    "Diagnostic": "",
+    "SessionReplaced": false
+  },
+  "weatherBefore": "77u/eyJhZnRlciI6dHJ1ZX0=",
+  "weatherAfter": "77u/eyJhZnRlciI6dHJ1ZX0=",
+  "readyCommitted": "77u/ewogICJzZXNzaW9uSWQiOiAidGVzdC1zZXNzaW9uIiwKICAicmVxdWVzdElkIjogInRlc3QtcmVxdWVzdCIsCiAgInR1cm5OdW1iZXIiOiAxMiwKICAidXBkYXRlZEF0VXRjIjogIjIwMjYtMTAtMDlUMDY6MjU6MDYuMDUyMzk1NyswMDowMCIsCiAgIm5vdGUiOiAiR00gd29ya2VyIHByb3Bvc2FsIHdvcmtlcl9wcm9wb3NhbF8yMDI2MDYyMF8wMDAxIGFjY2VwdGVkIGJ5IGFwcGx5IGdhdGUuIgp9",
+  "readyAfter": "77u/ewogICJzZXNzaW9uSWQiOiAidGVzdC1zZXNzaW9uIiwKICAicmVxdWVzdElkIjogInRlc3QtcmVxdWVzdCIsCiAgInR1cm5OdW1iZXIiOiAxMiwKICAidXBkYXRlZEF0VXRjIjogIjIwMjYtMTAtMDlUMDY6MjU6MDYuMDUyMzk1NyswMDowMCIsCiAgIm5vdGUiOiAiR00gd29ya2VyIHByb3Bvc2FsIHdvcmtlcl9wcm9wb3NhbF8yMDI2MDYyMF8wMDAxIGFjY2VwdGVkIGJ5IGFwcGx5IGdhdGUuIgp9",
+  "ReadyFactRetained": false,
+  "KnownCauseRetained": false,
+  "PriorAtCut": null,
+  "afterImages": null,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}
