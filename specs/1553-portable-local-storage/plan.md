@@ -1,10 +1,21 @@
+## Browser final evidence/catalog gate — 2026-10-09
+
+Independent AstraXHigh GREEN/raw/carrierPASSd40351c2: actual19/19,13negatives
+0mutations/fullsamebytes/generation,19strictrootsabsent, positiveactualbackups.
+Freshboth catalog184725 atd40351c2 validates586categories/11358methods-files,
+0execution71.3582645s,bothcleanup,0timeout/duplicate. Browserpacket67artifacts/52pins
+verified originals; priorRED24/13 andpositive11/13 andGREEN27/13 immutable. Final
+catalog/carrier gate pending; nextavailable incarnation/Explorer originalinputs.
+Ownership159unique IDs isnot aggregateexecutionauthorization. T061–T065unchecked,
+B2–B5paused; noHTTP/nativeWindows/allF16/allconsumer acceptance.
+
 ## Browser exact-name bounded GREEN19 — 2026-10-09
 
 Runtime4bff0b4f source/design/exact19 independent AstraXHigh PASS; freshintegration
 Plan18441619/2,0execution50.4527004s; actual18452019/19PASS14.4416863s,
 complete2/2,0skip/duplicate/timeout,bothcleanup. All13negatives emit zeromutations
 andexactfullfile/pathbyte maps+generation, oldqueueevidence unchanged; Unicode2,
-nonnativecandidatebin2 andoriginalpublicgacha2 PASS withgenuine originalbackups.
+native-noncandidate2 andoriginalpublicgacha2 PASS withgenuine originalbackups.
 All19fixture rootsabsent (17newJSON+2originalstrictCleanup log roots).
 [Packet](recovery/storage-migration-browser-snapshot-20261009/manifest.json)62artifacts/39pins
 verified originals, previousRED24/13 andseparatepositive11/13 immutable. Freshcatalog

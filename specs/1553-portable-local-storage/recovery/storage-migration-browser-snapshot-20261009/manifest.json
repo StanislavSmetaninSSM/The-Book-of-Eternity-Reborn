@@ -1,5 +1,5 @@
 {
-  "scope": "Original public browser gacha7 before stage/spend and original borrowed queue8 before copy/failure cleanup, actual supplied rollback value, plus original public gacha2. Preparation-only failures remain separate. No HTTP/incarnation/Explorer/spiritual producer/native/gameplay qualification.",
+  "scope": "Original public browser gacha7 before stage/spend and original borrowed queue8 before copy/failure cleanup, actual supplied rollback value, plus original publicgacha2 and native-noncandidate2. Final19/2 is one execution. Earlier17causalRED andisolated2positive are separate. No HTTP/incarnation/Explorer/spiritual producer/nativeWindows/gameplay qualification.",
   "causal-red": {
     "source": "59b83d0c58ed90d6632cfa9ba9092871d2f8380b",
     "artifacts": [
@@ -546,6 +546,95 @@
       {
         "path": "tests/selection.json",
         "sha256": "d2fde90d6dce8dca58014604e750c0b497d78175986875eb1a7af66499d08fc5"
+      }
+    ]
+  },
+  "catalog": {
+    "source": "d40351c24eda9d4aae1a81e9ffe037c1ca84dc63",
+    "artifacts": [
+      {
+        "path": "catalog-20261009-184725-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-184725-546-412347-310c110792704865a3734224bbbaf416-categories/catalog-audit.json",
+        "sha256": "1ba5044a229fd59e98aa5573ad1f88f48567ad8eaaa38899ade13814a9eeafa0",
+        "originalSha256": "1ba5044a229fd59e98aa5573ad1f88f48567ad8eaaa38899ade13814a9eeafa0"
+      },
+      {
+        "path": "catalog-20261009-184725-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-184725-546-412347-310c110792704865a3734224bbbaf416-categories/summary.json",
+        "sha256": "9233638822db778f6c7488f892661c2fa8c87efacbe2b87a441eef9ead313eb2",
+        "originalSha256": "9233638822db778f6c7488f892661c2fa8c87efacbe2b87a441eef9ead313eb2"
+      },
+      {
+        "path": "catalog-20261009-184725-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-184725-546-412347-310c110792704865a3734224bbbaf416-categories/Build-integration.log",
+        "sha256": "bfab3820739ee09bd110d36041603c6749f3beb12919dca899d037e7201313e9",
+        "originalSha256": "bf93646e580cc473dcecfd0bf095a9d3b7cfe3182a5aef00a1c6e75369799676"
+      },
+      {
+        "path": "catalog-20261009-184725-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-184725-546-412347-310c110792704865a3734224bbbaf416-categories/Build-unit.log",
+        "sha256": "bb2b1fedc88e4fce81f6efcc919960cee576bdfacd0c62935e2d523cea91e099",
+        "originalSha256": "ecd92ec61f024e00e26452e4de1d1de3187f82c6a1b6b7fbade691971fcc588c"
+      },
+      {
+        "path": "catalog-20261009-184725-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-184725-546-412347-310c110792704865a3734224bbbaf416-categories/dotnet-test.log",
+        "sha256": "c18ec1a8aeac4a4c922838b71cfb622e67ca06f6bc93f92be796144625c62a9a",
+        "originalSha256": "951b98339a5cf87e3f73033de387518d6bc0efe6203561e05c55f439b4cd5473"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.ExactSnapshotNames.cs",
+        "sha256": "2eee3146499b7d835c04b5705d332c3a7917e4fcfa19cdf130a77adc1e62db0b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxFixture.cs",
+        "sha256": "1e034530f7a29d048cab26eb1201af7ed9e916e427318e99804c3db5a4f79dad"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxTests.cs",
+        "sha256": "8a7bfbf6e80b8503c1552564514ecef065123be0fb71061b07d6a29a0587d594"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+        "sha256": "b65be6da62f49f4afecb9a92d5e8a8645e3d04de24256693f4d15b48deca7696"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+        "sha256": "f3ed3ac34ec28d201c1da63b1316496734d23e3b6d9befd075b1dbe771d9fb1f"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "sha256": "14c0ffc1db6755fd73920b808092f18eccfa30669e35e2ca5ad8ab2f3b660b7e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+        "sha256": "fe8da16e44de41740550260583bfb9ae1bb170bed98bd70c903bcd9f5b8ab556"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "sha256": "6b924fe31e3f31a610496594cee3e916dc282657061f8a8a0d10590fc91ac80a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+        "sha256": "ae7afcfddf00b69e4a6dc77fedf456f20213ed9b4436e6391c8a74ee03b584d5"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "2e4a05bb320392f510324e4cacca32e4cbde96f6dbe6fc1cab15cece26c220d6"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "0b35406326d10ba49ca21d871bc87c0f0df7b5a68b7cdd1722acbbb4d3f154f6"
       }
     ]
   }

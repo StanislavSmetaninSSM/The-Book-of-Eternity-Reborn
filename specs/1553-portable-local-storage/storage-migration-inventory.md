@@ -1,3 +1,17 @@
+## Latest bounded browser producer result — 2026-10-09
+
+Runtime4bff0b4f, actual184520GREEN19/19,14.4416863s,complete2/2,bothcleanup.
+Originalpublicgacha7/borrowedqueue8 admitrawinventorybeforestage/spend/copy/catch;
+13negatives preserveoldfullbyte/pathmaps/generation with0mutations. Unicode2,
+native-noncandidate2 andoriginalgacha2 preserveactual exactbytes/backups;19rootsabsent.
+Independent source/design/selection andGREEN/raw/carrierPASSd40351c2;
+[packet](recovery/storage-migration-browser-snapshot-20261009/manifest.json)
+includes separate17causalRED and2positivebaseline. Freshbothcatalog586/11358,
+discovery0; finalcatalogcarrier pending. Engine finalcatalog/raw/carrierPASS7274da21.
+Priority1 browser rowbelow isnow historicalfor thisfiniteunit; incarnation/Explorer,
+spiritual andotherowners remain open. Sourcecensus stays965pinned, T061–T065unchecked,
+B2–B5paused; continueavailablework, noHTTP/nativeWindows/allconsumer qualification.
+
 ## Latest bounded engine producer result — 2026-10-09
 
 Runtime5279dbd4 and source/design/exact25 independentPASS; actual182703GREEN25/25,
