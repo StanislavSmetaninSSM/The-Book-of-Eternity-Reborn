@@ -1,0 +1,77 @@
+{
+  "family": "mods",
+  "mode": "literal",
+  "root": "/tmp/boe-listing-admission-fd8c6b2809d949139edc42302210de57",
+  "directory": "/tmp/boe-listing-admission-fd8c6b2809d949139edc42302210de57/game_session/mods",
+  "directoryBefore": true,
+  "directoryAfter": true,
+  "canonicalRootExists": true,
+  "relative": "mods/ancient\\world.json",
+  "sourcePath": "/tmp/boe-listing-admission-fd8c6b2809d949139edc42302210de57/game_session/mods/ancient\\world.json",
+  "sourceBytes": "//57ACIAbQBvAGQASQBkACIAOgAiAGUAdABlAHIAbgBpAHQAeQAiACwAIgBwAHIAbwBmAGkAbABlAEkAZAAiADoAIgBlAHQAZQByAG4AaQB0AHkAIgAsACIAbgBhAG0AZQAiADoAIgASBDUERwQ9BD4EQQRCBEwEIgAsACIAZABlAHMAYwByAGkAcAB0AGkAbwBuACIAOgAiACIEPgRHBD0ESwQ5BCAAPAQ4BEAEIgAsACIAdwBvAHIAbABkAEQAaQByAGUAYwB0AGkAdgBlAHMAIgA6AHsAIgB3AG8AcgBsAGQAVABpAHQAbABlACIAOgAiABwEOARABCAAMQQwBEgENQQ9BCIALAAiAGQAZQB0AGEAaQBsAGUAZABXAG8AcgBsAGQARABlAHMAYwByAGkAcAB0AGkAbwBuACIAOgAiAB8EPgQ7BD0EPgQ1BCAAPgQ/BDgEQQQwBD0EOAQ1BCIAfQB9AA==",
+  "sourceAfter": "//57ACIAbQBvAGQASQBkACIAOgAiAGUAdABlAHIAbgBpAHQAeQAiACwAIgBwAHIAbwBmAGkAbABlAEkAZAAiADoAIgBlAHQAZQByAG4AaQB0AHkAIgAsACIAbgBhAG0AZQAiADoAIgASBDUERwQ9BD4EQQRCBEwEIgAsACIAZABlAHMAYwByAGkAcAB0AGkAbwBuACIAOgAiACIEPgRHBD0ESwQ5BCAAPAQ4BEAEIgAsACIAdwBvAHIAbABkAEQAaQByAGUAYwB0AGkAdgBlAHMAIgA6AHsAIgB3AG8AcgBsAGQAVABpAHQAbABlACIAOgAiABwEOARABCAAMQQwBEgENQQ9BCIALAAiAGQAZQB0AGEAaQBsAGUAZABXAG8AcgBsAGQARABlAHMAYwByAGkAcAB0AGkAbwBuACIAOgAiAB8EPgQ7BD0EPgQ1BCAAPgQ/BDgEQQQwBD0EOAQ1BCIAfQB9AA==",
+  "reportedRelative": "mods/ancient\\world.json",
+  "roundTrip": "//57ACIAbQBvAGQASQBkACIAOgAiAGUAdABlAHIAbgBpAHQAeQAiACwAIgBwAHIAbwBmAGkAbABlAEkAZAAiADoAIgBlAHQAZQByAG4AaQB0AHkAIgAsACIAbgBhAG0AZQAiADoAIgASBDUERwQ9BD4EQQRCBEwEIgAsACIAZABlAHMAYwByAGkAcAB0AGkAbwBuACIAOgAiACIEPgRHBD0ESwQ5BCAAPAQ4BEAEIgAsACIAdwBvAHIAbABkAEQAaQByAGUAYwB0AGkAdgBlAHMAIgA6AHsAIgB3AG8AcgBsAGQAVABpAHQAbABlACIAOgAiABwEOARABCAAMQQwBEgENQQ9BCIALAAiAGQAZQB0AGEAaQBsAGUAZABXAG8AcgBsAGQARABlAHMAYwByAGkAcAB0AGkAbwBuACIAOgAiAB8EPgQ7BD0EPgQ1BCAAPgQ/BDgEQQQwBD0EOAQ1BCIAfQB9AA==",
+  "mods": [
+    {
+      "FileName": "ancient\\world.json",
+      "RelativePath": "mods/ancient\\world.json",
+      "ModId": "eternity",
+      "Name": "Вечность",
+      "Description": "Точный мир",
+      "Extension": ".json",
+      "IsJson": true,
+      "Enabled": true,
+      "Content": "{\"modId\":\"eternity\",\"profileId\":\"eternity\",\"name\":\"Вечность\",\"description\":\"Точный мир\",\"worldDirectives\":{\"worldTitle\":\"Мир башен\",\"detailedWorldDescription\":\"Полное описание\"}}",
+      "LastModifiedUtc": "2026-01-02T03:04:05.0000000Z"
+    }
+  ],
+  "withoutContent": [
+    {
+      "FileName": "ancient\\world.json",
+      "RelativePath": "mods/ancient\\world.json",
+      "ModId": "eternity",
+      "Name": "Вечность",
+      "Description": "Точный мир",
+      "Extension": ".json",
+      "IsJson": true,
+      "Enabled": true,
+      "Content": null,
+      "LastModifiedUtc": "2026-01-02T03:04:05.0000000Z"
+    }
+  ],
+  "profiles": null,
+  "failure": null,
+  "seedFailure": null,
+  "admissions": 2,
+  "reads": [
+    "mods/ancient\\world.json",
+    "mods/ancient\\world.json"
+  ],
+  "recovery": [],
+  "journalBefore": null,
+  "journalAfter": null,
+  "weatherBefore": null,
+  "weatherAfter": null,
+  "outsidePath": "/tmp/boe-listing-admission-fd8c6b2809d949139edc42302210de57/outside/ancient\\world.json",
+  "outsideAfter": null,
+  "linkTarget": null,
+  "SeedCut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

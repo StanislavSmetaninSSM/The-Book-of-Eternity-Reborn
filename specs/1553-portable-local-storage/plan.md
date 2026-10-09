@@ -1,3 +1,33 @@
+## F16 original canonical listings bounded15 GREEN — 2026-10-09
+
+Independent SOURCE/RED-RAW/EXACT15 PASS92382b4a. Tested runtime/source
+92382b4a9728897deffb3c19c20e9d3b60f23e83: fresh both-project Plan103904
+succeeds15/3,0executed,54.6916518s. Actual104013 completes **15/15 PASS**,
+3/3descriptors,15.7857796s,bothcleanup,no timeout/skip/duplicate. New8 plus
+original manifest2/textprofile1/borrowedsettings1/desktopmods2/worldcancel1.
+Root verifies actual two retained nonCommitted journals and member hashes, exact
+foreign/source bytes, refusal before any list read/result; both linked leaves
+refuse without read-through and preserve outside/link bytes. Missing directories
+remain absent; UTF16 BOM metadata and Linux literal names roundtrip exactly;
+mod content choice and live enabled selection remain unchanged. All8 new distinct
+owned roots are removed. Existing7 retain their original cleanup implementations;
+no additional explicit root-receipt claim is attached to them.
+
+Discovery104047 uses `-ValidateCatalog -NoBuild` with the unchanged freshly built
+two projects:541categories/11335methods-files valid,0tests,7.7949507s,bothcleanup.
+[Listing packet](recovery/storage-migration-canonical-listings-20261009/manifest.json)
+retains causal8, exact15 GREEN and discovery; stored/expanded/original bytes and
+frozen pins are root-verified. Final independent RAW/CATALOG/CARRIER gate follows.
+No full engine/repair, settings/manifest atomicity, native Windows, actual rotation,
+secondary-close or fullF16 claim. T061–T065 remain open; B2–B5 stay paused.
+
+Next source-consulted F16 unit is Story listing/read/export. Public list and reader
+still bypass admitted byte reads; canonical exports still mkdir/write directly.
+Use one explicit-lease reader for export-all and public reads, preserve physical
+line count/lastN-before-parse/BOM/missing/broken-line policy, and release before UI
+waits. Chapter export retains already displayed entries. Concrete fixture/selection
+gate is still pending; no Story code has changed in this listing block.
+
 ## F16 canonical-listing causal8 and runtime WIP — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT8 PASSaacd0045. Fresh integration Plan103541

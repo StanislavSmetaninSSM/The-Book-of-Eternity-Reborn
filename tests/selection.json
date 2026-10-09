@@ -1049,7 +1049,7 @@
     },
     {
       "category": "portable-canonical-listings-linux",
-      "reason": "F16 listing fixture-only WIP, unbuilt/unrun. Eight original mod/world-profile listings: existing canonical root with absent list directory stays read-only; literal Linux filename and BOM metadata roundtrip; supported leaf links refused without read-through; authentic retained Unknown admitted/refused before results.",
+      "reason": "Original mod/world-profile8 passed within exact15 at92382b4a/104013: retained Unknown admission refusal before result/read, supported leaf-link protection, missing directory stays absent, literal Linux UTF16 BOM bytes/metadata/path roundtrip and mod content choice. No full engine/manifest atomicity/native qualification.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -1062,7 +1062,7 @@
     },
     {
       "category": "portable-canonical-listings-known",
-      "reason": "F16 listing fixture-only WIP, unbuilt/unrun. Seven affected original neighbors: manifest unchanged/invalid semantics, text world-profile metadata, borrowed-lease settings mod read, actual mods menu association/next frame and world-setup cancel preservation.",
+      "reason": "Seven original neighbors passed within exact15 at92382b4a/104013: manifest unchanged/invalid2, text profile1, borrowed settings1, original mods next-frame2 and world setup cancel1. Existing scope and cleanup retained; no full settings/manifest atomicity or turn/repair claim.",
       "contracts": [
         "#1553",
         "FR-002",
