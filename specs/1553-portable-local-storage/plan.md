@@ -1,3 +1,14 @@
+## F10 final Prepared guard / exact6 frozen candidate — 2026-10-09
+
+Independent raw/carrier gate PASS3dff:95 stored/expanded/original artifacts and72 historical pins.
+Prepared's original finally now skips UI-lock release only for its established Uncertain result.
+The already-recorded publicationOutcome/follow-up is retained; Committed/RolledBack/Blocked
+paths and both release helpers remain unchanged. No other production delta. Exact6 comprises
+actual Prepared stop1 plus five existing outcome/ordinary-commit controls moved from the wildcard
+owner to one narrow category without duplicates. Prior original18@ef597 and release2@2755
+remain accepted source-era evidence. Candidate unbuilt; source/selection gate and matching
+integration+unit Plan6 precede actual. No full settings/save/UI/native/whole-operation claim.
+
 ## F10 isolated release GREEN / prepared causal RED — 2026-10-09
 
 Clean2755 matching Plan005050 fresh integration39.5200121s/wall43.4709098s,3/2planned0executed.

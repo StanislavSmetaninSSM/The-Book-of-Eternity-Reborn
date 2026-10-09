@@ -25,7 +25,7 @@
     },
     {
       "category": "portable-cleanup-release-causal-linux",
-      "reason": "Two genuine actual UIlock-deletion CSP defects at ef59782 now qualify the minimal original caller result/first-cause correction. Exact2 fresh selection; preserve already-established Committed or RolledBack plus blocked follow-up.",
+      "reason": "Two actual original UIlock-delete uncertainty controls PASS at2755 in separate005235; established disposition/first cause/follow-up/blocked and no measured continuation all passed. Retain for Prepared-only correction.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -36,7 +36,18 @@
     },
     {
       "category": "portable-cleanup-prepared-causal-linux",
-      "reason": "New connected original prepared outcome causal row. Original runtime still releases after explicit Uncertain; actual cut/evidence/no-later-work required. Mixed3 adds this causal control to corrected release2, not an assumed allGREEN run.",
+      "reason": "Actual explicit Uncertain Prepared consumer causally continued UIlock reads/mutation at2755. Final no-later-work control for skipping original cleanup after that established outcome; no fabricated CSP.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES"
+      ]
+    },
+    {
+      "category": "portable-cleanup-prepared-neighbors",
+      "reason": "Five exact existing prepared controls for the changed finally branch: confirmed commit applies runtime/removes lock; rollback, committed debt, Unknown and revoked Unknown preserve outcome. No repeat unrelated browser18/release2.",
       "contracts": [
         "#1553",
         "FR-003",

@@ -131,6 +131,36 @@
       ]
     },
     {
+      "id": "portable-cleanup-prepared-neighbors",
+      "responsibility": "Exact existing prepared settings known commit/runtime apply/lock release and rollback/committed debt/Unknown/revoked Unknown outcomes for cleanup stop correction.",
+      "excludes": "No unrelated admission/endpoints/audio/save/browser UI or native qualification.",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-cleanup-outcome-causal-linux",
+          "when": "Typed uncertainty stop and original browser result classification change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence",
+            "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-treatment-terminal-causal-linux",
       "responsibility": "Original pre-canonical terminal consumer typed publication Uncertain plus known safe HeldBlocked and failed restoration Aggregate. Actual command member/receipt and known failure distinctions; exact affected method neighbors.",
       "excludes": "No broad treatment/gameplay category or native Windows qualification.",
@@ -13110,7 +13140,9 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.PortablePreparedSettingsTests.*",
+            "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner",
+            "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles",
+            "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings",
             "BookOfEternityClient.Tests.PortableBrowserSettingsTests.*"
           ]
         }

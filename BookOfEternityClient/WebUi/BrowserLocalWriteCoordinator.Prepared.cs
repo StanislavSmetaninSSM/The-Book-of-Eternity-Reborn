@@ -70,7 +70,8 @@ public sealed partial class BrowserLocalWriteCoordinator
                 }
                 finally
                 {
-                    if (!await TryReleaseAsync(writeLease, admission.Lease))
+                    if (result.Disposition != BrowserPreparedWriteDisposition.Uncertain &&
+                        !await TryReleaseAsync(writeLease, admission.Lease))
                         result = WithPreparedFollowUp(result);
                     if (result.Disposition != BrowserPreparedWriteDisposition.Blocked)
                         publicationOutcome = result;
