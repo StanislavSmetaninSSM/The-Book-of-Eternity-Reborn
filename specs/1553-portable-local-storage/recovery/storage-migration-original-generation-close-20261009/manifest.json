@@ -183,5 +183,130 @@
         "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
       }
     ]
+  },
+  "green": {
+    "source": "a19d4078b6d7adbe81c1a789b01daf8ebb75eb6b",
+    "artifacts": [
+      {
+        "path": "green-20261009-203202-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-203202-714-428426-bc9d3de9dd65461b872f7ed50b318f2f-categories/plan.json",
+        "sha256": "3522ebadf518fbc26dabe94cb42f6396cd56f20ef9f2d2472918d2b994810f64",
+        "originalSha256": "3522ebadf518fbc26dabe94cb42f6396cd56f20ef9f2d2472918d2b994810f64"
+      },
+      {
+        "path": "green-20261009-203202-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-203202-714-428426-bc9d3de9dd65461b872f7ed50b318f2f-categories/summary.json",
+        "sha256": "088bb097ab67615ca4413a55af5861458dc2e4729b3b3cb1b100df90a18b8420",
+        "originalSha256": "088bb097ab67615ca4413a55af5861458dc2e4729b3b3cb1b100df90a18b8420"
+      },
+      {
+        "path": "green-20261009-203202-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-203202-714-428426-bc9d3de9dd65461b872f7ed50b318f2f-categories/Build-integration.log",
+        "sha256": "ab72476976454b15c277eb52724f7ba38891f24b7dae1818c8cf903a987f794a",
+        "originalSha256": "8adc6fd3556327e3e3ba7e969b4d1189eebf0e664f52f9ee982b8545abb3a773"
+      },
+      {
+        "path": "green-20261009-203202-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-203202-714-428426-bc9d3de9dd65461b872f7ed50b318f2f-categories/dotnet-test.log",
+        "sha256": "5f613ac393a46c7716aff0576fdac5f86eba99a0c0245138fad45f5905f65eff",
+        "originalSha256": "182c15bca33f6b1d6459e70390017d189143459660878f6a554155feaccca6dd"
+      },
+      {
+        "path": "green-20261009-203302-portable-original-participating-generation-close-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-203302-018-428709-04db8bb8d08e492fa27489f40b25ae3d-categories/portable-original-participating-generation-close-linux-integration-001.trx",
+        "sha256": "4ce96d04fc338022a9d92e817259f69d9519ecc96b54b138e79611857644fa1f",
+        "originalSha256": "744ec24457ce279dbc9429120c5f25791423d2dfe18c5916cd11b871c0e264b8"
+      },
+      {
+        "path": "green-20261009-203302-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-203302-018-428709-04db8bb8d08e492fa27489f40b25ae3d-categories/plan.json",
+        "sha256": "67d05416afde2bf06a4ef0e6351b7beb24b4dfe31e8dfa213bb600753e7722d0",
+        "originalSha256": "67d05416afde2bf06a4ef0e6351b7beb24b4dfe31e8dfa213bb600753e7722d0"
+      },
+      {
+        "path": "green-20261009-203302-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-203302-018-428709-04db8bb8d08e492fa27489f40b25ae3d-categories/summary.json",
+        "sha256": "020b7ce9a5e9adf3e63e80f3fb6b9917b14fc8c53cf251db619efbb20b3f935a",
+        "originalSha256": "020b7ce9a5e9adf3e63e80f3fb6b9917b14fc8c53cf251db619efbb20b3f935a"
+      },
+      {
+        "path": "green-20261009-203302-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-203302-018-428709-04db8bb8d08e492fa27489f40b25ae3d-categories/dotnet-test.log",
+        "sha256": "74536e8752b57375a1f54c469faa44b5ada5091eb62f510213bda519ebfbbdb0",
+        "originalSha256": "337d658a65f4cec0066f1ec989b785ea86bb1f1499480fa59236e606d0ccce92"
+      },
+      {
+        "path": "green-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-original-generation-close-green-rows/emitted-roots-after-run.json",
+        "sha256": "c991c940e7a207c58c007f63b49047774027c57dfb6d1fbbd3b05cd728a023a5",
+        "originalSha256": "c991c940e7a207c58c007f63b49047774027c57dfb6d1fbbd3b05cd728a023a5"
+      },
+      {
+        "path": "green-row-portable-original-participating-generation-close-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-original-generation-close-green-rows/portable-original-participating-generation-close-linux-integration-001-1-1.json",
+        "sha256": "8ee95c6dbcd6bcf74c6c0f204c960dd40b78ebef52f210484069bbc16d6a3cf6",
+        "originalSha256": "8ee95c6dbcd6bcf74c6c0f204c960dd40b78ebef52f210484069bbc16d6a3cf6"
+      },
+      {
+        "path": "green-row-portable-original-participating-generation-close-linux-integration-001-1-0.json",
+        "source": "/tmp/boe-original-generation-close-green-rows/portable-original-participating-generation-close-linux-integration-001-1-0.json",
+        "sha256": "06514c85efe69cdd0ccece616fc579e1354c50ad6a835f2656f234b7bb271552",
+        "originalSha256": "06514c85efe69cdd0ccece616fc579e1354c50ad6a835f2656f234b7bb271552"
+      },
+      {
+        "path": "green-row-portable-original-participating-generation-close-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-original-generation-close-green-rows/portable-original-participating-generation-close-linux-integration-001-0-1.json",
+        "sha256": "435014b148a9b402d67a72e6d9ef84895312d7d30a9ce43710154541af581d6b",
+        "originalSha256": "435014b148a9b402d67a72e6d9ef84895312d7d30a9ce43710154541af581d6b"
+      },
+      {
+        "path": "green-row-portable-original-participating-generation-close-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-original-generation-close-green-rows/portable-original-participating-generation-close-linux-integration-001-0-0.json",
+        "sha256": "aaf47df3d10df789d29e7c11e74fc5b2a845ad44afadd3933af61254c6f90cd1",
+        "originalSha256": "c3486e72cf4c6f3e84554705d2d8455b1188a151e3bb5076e070703fbb04afa7"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.InitialGeneration.cs",
+        "sha256": "759e96b03513e6a2e18647f6e31dba7ca6c33dbf7fcea2a4c6c754b789e0d88d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+        "sha256": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs",
+        "sha256": "9e84db305654a9d3fcad97c3adebf202bb3fe91d34995ddcba28c179254f6012"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "0e7a76eed25606599c9e1de8e98edb86c002e3fe6c446830a7296e52c709c559"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "a1298961acdabe9a63d373fa334e216835800db1736d1298c97c21480c195867"
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+      }
+    ]
   }
 }

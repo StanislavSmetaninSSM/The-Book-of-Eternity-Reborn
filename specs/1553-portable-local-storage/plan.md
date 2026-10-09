@@ -1,3 +1,16 @@
+## Shared initial-generation bounded GREEN2 — 2026-10-09
+
+Runtime a19d4078b6d7adbe81c1a789b01daf8ebb75eb6b correction/source/exact2
+independent PASS. Fresh Plan2032022/1,0execution52.8824998s; actual2033022/2PASS
+8.0827172s,1/1complete,0skip/duplicate/timeout,bothcleanup/two strict roots absent.
+Unknown retains same real generation CSP and same secondary close, no callback;
+ordinary callback sees actual bound generation and already settled initial owner.
+Full original lease/main/ambient/context/lock settlement PASS. Packet28artifacts/
+30pins verified originals; immutable RED13/10 and preparation2/10 preserved.
+Independent GREEN/raw/carrier gate next; catalog remains combined with next
+ownership fixtures. Typed browser established-result exact12 draft under review,
+remaining original publishers/mod/UI open; T061–T065 unchecked/B2–B5 paused.
+
 ## Shared initial-generation preparation correction — WIP, 2026-10-09
 
 Combined RED/source/exact2 independent PASSe662efbc. Fresh Plan203004 build
