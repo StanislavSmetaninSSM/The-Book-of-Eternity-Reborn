@@ -1,3 +1,13 @@
+## Original Inventory correction installed — WIP, 2026-10-09
+
+Three original public Drop/Split/Merge owning wrappers explicitly capture and
+rethrow genuine CSP and call existingRelease(false, samefailure) in finally.
+Core transitions/returns/order, borrowed APIs, fixture and helper unchanged.
+Original causal3knownPASS/3FAIL retained ata9f01bce, raw23 verified.
+Runtime installation UNBUILT/UNRUN; independent RED/source/exact6 gate then
+fresh integration Plan6/actual6. Known late-close outcome remains unqualified.
+Storage-only lifetime preservation adds no GM-authored contract or example.
+
 ## Original Inventory causal baseline — WIP, 2026-10-09
 
 Fixture source320ff5d8 fresh Plan2136096/1,0execution49.6248751s;
