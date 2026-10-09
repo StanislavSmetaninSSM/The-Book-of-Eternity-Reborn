@@ -1,3 +1,17 @@
+## Spiritual exceptional-reader control — test-first WIP, 2026-10-09
+
+Fixture/refined design/exact16 independent PASS057916a9 with two source
+invariants: preserve old revocation on thrown reader errors as well as non-success,
+and keep cold PathInventory replacing warm current draft names while current
+physical witnesses still apply. Add one direct actual synchronous manifest-read
+IOException through existing AfterCanonicalReadInitialValidationAsync hook, armed
+only after genuine retained capture and before original recapture. Requires exact
+same IOException, one actual read cut, revoked old owner/no new capture, zero
+mutations/full unchanged bytes/generation. Original runtime should PASS this row.
+Total17/1 = direct12/intake2 plus old3; UNBUILT/UNRUN, production unchanged.
+Delta fixture/exact17 gate then fresh original Plan17/actual17. No reader authority,
+B2, cold gameplay, generation or signing format changes.
+
 ## Spiritual reader-failure control added — test-first WIP, 2026-10-09
 
 Independent fixture review identifies one concrete risk: moving pure signed

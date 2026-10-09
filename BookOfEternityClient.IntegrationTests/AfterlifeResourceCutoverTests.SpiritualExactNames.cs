@@ -22,12 +22,22 @@ public sealed partial class AfterlifeResourceCutoverTests
     [InlineData("intake", "unicode")]
     [InlineData("direct", "native_noncandidate")]
     [InlineData("direct", "stale_request")]
+    [InlineData("direct", "reader_io")]
     public async Task OriginalSpiritualRawInventoryIsAdmittedBeforeRevokingActualCapture(string route, string mode)
     {
         Assert.True(OperatingSystem.IsLinux());
         var mutations = new List<string>();
+        var readerFaultArmed = false; var readerCuts = 0;
+        var readerFailure = new IOException("Actual original synchronous manifest read failure.");
         var hooks = new FileSystemManagerHooks { BeforeCanonicalMutationAsync = path =>
-            { mutations.Add(path); return Task.CompletedTask; } };
+            { mutations.Add(path); return Task.CompletedTask; },
+            AfterCanonicalReadInitialValidationAsync = path =>
+            {
+                if (readerFaultArmed && path == LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
+                { readerCuts++; throw readerFailure; }
+                return Task.CompletedTask;
+            }
+        };
         Func<ResourceMaterializationTestContext, Task>? seed = route == "intake" ? SeedOriginalIntakeBaselinesAsync : null;
         var context = await CreateCompleteConflictFrameContextAsync(hooks, seedOriginalInputs: seed);
         using var owned = new OriginalFixtureCompletion(context.RootPath,
@@ -42,7 +52,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(old.IsCurrentOwner);
         var names = mode switch
         {
-            "stale_request" => Array.Empty<string>(),
+            "stale_request" or "reader_io" => Array.Empty<string>(),
             "case_alias" => new[] { "lore/Entry.bin", "lore/entry.bin" },
             "literal_backslash" => new[] { "lore/odd\\leaf.bin" },
             "outer_trim" => new[] { "lore/trailing.bin " },
@@ -75,22 +85,30 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(old.IsCurrentOwner);
         var before = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
         var generation = File.ReadAllBytes(context.FileSystem.SessionGenerationPath);
-        mutations.Clear();
+        mutations.Clear(); readerFaultArmed = mode == "reader_io";
         ValidationService.SpiritualOriginalTurnCaptureResult? result = null;
         var failure = await Record.ExceptionAsync(async () =>
             result = route == "intake"
                 ? await context.Validator.CaptureSpiritualOriginalTurnWithIntakeAsync(lease)
                 : await context.Validator.CaptureSpiritualOriginalTurnAsync(lease));
+        readerFaultArmed = false;
         var after = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
         var current = OriginalCaptureField(context.Validator, "_spiritualOriginalTurnCapture");
         _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, route, mode, names,
-            failure = failure?.ToString(), issues = result?.Issues, before, after, mutations,
+            failure = failure?.ToString(), readerCuts, sameReaderFailure = ReferenceEquals(failure, readerFailure),
+            issues = result?.Issues, before, after, mutations,
             sameOwner = ReferenceEquals(old, current), oldIsCurrent = old.IsCurrentOwner,
             generationBefore = generation, generationAfter = File.ReadAllBytes(context.FileSystem.SessionGenerationPath) }));
         Assert.Empty(mutations); Assert.Equal(generation, File.ReadAllBytes(context.FileSystem.SessionGenerationPath));
         Assert.Equal(before.Keys.OrderBy(x => x, StringComparer.Ordinal), after.Keys.OrderBy(x => x, StringComparer.Ordinal));
         foreach (var (path, bytes) in before) Assert.Equal(bytes, after[path]);
-        Assert.Null(failure); Assert.NotNull(result);
+        if (mode == "reader_io")
+        {
+            Assert.Equal(1, readerCuts); Assert.Same(readerFailure, failure); Assert.Null(result);
+            Assert.Null(current); Assert.False(old.IsCurrentOwner);
+            return;
+        }
+        Assert.Equal(0, readerCuts); Assert.Null(failure); Assert.NotNull(result);
         if (mode is "unicode" or "native_noncandidate")
         {
             AssertNoConflictFrameErrors(result.Issues);
