@@ -1,3 +1,23 @@
+## Image two reached review regressions and narrow correction — WIP, 2026-10-09
+
+Independent AstraXHigh fixture/design PASSdbe7c96f. Fresh Plan162704 selects16/2,
+0execution48.2658291s; actual162829 **16executed14PASS/2causalFAIL**, complete2/2,
+10.2723674s,0skip/duplicate/timeout,bothcleanup,13new owned roots removed.
+All previous14 cases now pass on runtimec13; two exact failures are hook-owned source
+IOException (same exception, source-read count1) escaping instead of CopyFailed and
+real PathTooLongException from non-file .png text alias inspection. No fixture error.
+[Packet](recovery/storage-migration-image-source-20261009/manifest.json) retains both
+immutable baselines (prior14 5P9F and current16 14P2F), raw witnesses and source pins.
+
+Only ImageService changes now: map ordinary IO/Unauthorized failures inside selected
+source byte-read back to CopyFailed, excluding InvalidData/CSP/replacement; admission,
+lookup and lease release remain outside mapping. Resolve actual external aliases only
+after File.Exists; ordinary non-file path interpretation stays text while lexical
+canonical candidates still require admission and namespace validation. No provider,
+generation/write/gallery/default recursive behavior change. Unbuilt/unrun correction;
+next frozen independent RED/raw/source gate then fresh Plan16, actual16 and fresh-unit/
+integration discovery-only catalog. Full F16/native/owned-close/registry remain open.
+
 ## Image review regression controls — test-first WIP, 2026-10-09
 
 Independent actual AstraXHigh RED/raw PASSc13ef915:33artifacts/15pins and prior

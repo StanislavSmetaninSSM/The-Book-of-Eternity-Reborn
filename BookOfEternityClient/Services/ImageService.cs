@@ -162,9 +162,22 @@ public class ImageService
         string? canonicalPrompt = null;
         if (IsImageFile(prompt))
         {
-            var fullPrompt = Path.GetFullPath(prompt);
-            if (IsCanonicalExportTarget(fullPrompt)) canonicalPrompt = fullPrompt;
-            else if (File.Exists(prompt)) return prompt; // An external prompt is not canonical storage.
+            var windows = OperatingSystem.IsWindows();
+            string? fullPrompt = null;
+            try { fullPrompt = Path.GetFullPath(prompt); }
+            catch (Exception failure) when (failure is ArgumentException or NotSupportedException or PathTooLongException &&
+                !IsCanonicalExportPathSpelling(prompt, _fs.GameSessionPath, windows))
+            { /* Non-file external text remains an ordinary image prompt. */ }
+            if (fullPrompt != null)
+            {
+                if (IsCanonicalExportPathSpelling(fullPrompt, _fs.GameSessionPath, windows)) canonicalPrompt = fullPrompt;
+                else if (File.Exists(prompt))
+                {
+                    // Inspect aliases only for an actual external file, never prompt text.
+                    if (IsCanonicalExportTarget(fullPrompt)) canonicalPrompt = fullPrompt;
+                    else return prompt;
+                }
+            }
         }
 
         var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
@@ -376,7 +389,15 @@ public class ImageService
             {
                 sourcePath = GetEntityImagePath(lease, entityType, entityKeyOrName);
                 if (sourcePath != null)
-                    sourceBytes = _fs.ReadLocalFileBytesAsync(lease, GetCanonicalImagePath(sourcePath)).GetAwaiter().GetResult();
+                {
+                    try { sourceBytes = _fs.ReadLocalFileBytesAsync(lease, GetCanonicalImagePath(sourcePath)).GetAwaiter().GetResult(); }
+                    catch (Exception failure) when (failure is IOException or UnauthorizedAccessException &&
+                        failure is not InvalidDataException and not CoordinatedStatePublicationUncertainException and not SessionReplacedException)
+                    {
+                        return ImageExportResult.Failure(ImageExportFailureReason.CopyFailed,
+                            $"Не удалось сохранить изображение: {failure.Message}", sourcePath);
+                    }
+                }
             }
             catch (CoordinatedStatePublicationUncertainException failure)
             { operationFailure = failure; throw; }

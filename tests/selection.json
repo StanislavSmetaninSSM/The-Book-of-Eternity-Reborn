@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-image-source-admission-linux",
-      "reason": "T063/R25/F16 bounded original sources: prior14causal baseline preserved; two review regressions now get test-first guarded export IO and long .png text controls. Current source c13 unqualified, newexact16/2 unbuilt/unrun; no provider/desktop/native/full-media claim.",
+      "reason": "T063/R25/F16 source14passes+2reachedreviewregressions atdbe/162829, original14causal history immutable. Narrow ordinary-source-IO CopyFailed and non-file png-text fixes now WIP unbuilt/unrun; freshexact16/2 and catalog required. No provider/desktop/native/full-media claim.",
       "contracts": [
         "#1553",
         "FR-006",
