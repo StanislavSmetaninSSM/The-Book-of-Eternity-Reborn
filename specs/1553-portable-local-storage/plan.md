@@ -1,3 +1,12 @@
+## F16 spelling catalog preparation correction — 2026-10-09
+
+The first Plan8 invocation at66dc fails before build/discovery/test: new related
+metadata used a string where this catalog requires id/when objects. Independent
+review identified the same blocker. Replace with empty optional related list and
+correct selection task identifier to T063-REMAINING-CONSUMERS. Runtime/fixture8
+unchanged. Raw catalog-refusal log is retained in the image packet; it is not RED.
+Next corrected fresh unit Plan8 and actual8, then normalization fix/combined GREEN23.
+
 ## F16 export Windows spelling refinement — fixture WIP, 2026-10-09
 
 Independent review confirms source gap in3e56: extended Windows drive/UNC spellings

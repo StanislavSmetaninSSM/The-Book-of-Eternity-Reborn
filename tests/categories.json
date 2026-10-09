@@ -19982,9 +19982,7 @@
       "changeHints": [
         "BookOfEternityClient/Services/ImageService.cs"
       ],
-      "related": [
-        "portable-image-storage-operations-linux"
-      ],
+      "related": [],
       "requirements": {
         "frontendBuild": false,
         "exclusive": false,

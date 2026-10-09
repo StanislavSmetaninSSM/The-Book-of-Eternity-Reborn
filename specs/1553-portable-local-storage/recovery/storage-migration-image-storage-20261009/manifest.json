@@ -341,5 +341,18 @@
         "sha256": "7c59afb0eeec219d0df75fb6a9a671bfb7215fae94d0a1bed07bad97fa6edc5d"
       }
     ]
+  },
+  "spelling_catalog_refusal": {
+    "source": "66dc5ceab2390d087ad4fc36dca07fccd713be62",
+    "qualification": "Category parse refusal before any build/discovery/test, related must be objects, not strings.",
+    "artifacts": [
+      {
+        "path": "spelling-catalog-refusal.log",
+        "source": "/tmp/boe-image-spelling-red-plan.log",
+        "sha256": "00c00b2a89a2cf966ad29aeb64ee83184795b1e4b3e0572d2f14cd280550fb0c",
+        "originalSha256": "00c00b2a89a2cf966ad29aeb64ee83184795b1e4b3e0572d2f14cd280550fb0c"
+      }
+    ],
+    "sourcePins": []
   }
 }

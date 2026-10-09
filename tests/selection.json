@@ -1018,7 +1018,7 @@
       "contracts": [
         "#1553",
         "FR-005",
-        "T063-STORAGE-CONSUMERS",
+        "T063-REMAINING-CONSUMERS",
         "T064-STORAGE-CUTS",
         "T065-STORAGE-CLOSURE"
       ]
