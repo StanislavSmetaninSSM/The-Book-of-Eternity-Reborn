@@ -1,3 +1,29 @@
+## F18 generation checkpoints — fixture WIP, 2026-10-09
+
+Independent gacha GREEN/carrier/catalog PASS92a5a49b verifies41 artifacts/originals32
+pins; no replay unchanged9. Next finite source map identifies six fixture migrations,
+not six demonstrated runtime defects. Same original admission owns lifecycle/replacement
+lease, sentinel writes while original generation is current, then actual rotation.
+Per-test helper captures actual Committed journal/gen bytes, specific checkpoint reach,
+exact replacement sentinels and later read/mutation/input counters. Original task is
+awaited directly before owned-root cleanup; no proxy/background replacement survives.
+
+Original browser distribution, Wait-before-inspection, Wait-after-snapshot, Late/Idle,
+Process accepted-finalizer and Life raw-accepted-finalizer retain their real consumers.
+Wait-before-inspection uses existing TerminalWaitStarted (original inspection checkpoint
+already holds physical lease and cannot nest replacement). Process synthetic response
+moves from independent blocked writer to original TerminalWaitStarted, retaining actual
+request correlation and genuine accepted validation checkpoint. Life original dispatched
+request/accepted response path remains. Disable only live bridge/audio startup in these
+fixtures. Names explicitly say generation checkpoint instead of claiming concurrent
+Load wins. Shared helper is new test-only; accepted incarnation body unchanged.
+
+Exact category selects6 behavioral Facts+connected life source guard=7 integration
+cases, predicted only until Plan. Existing semantic owners retained with renamed exact
+selectors. No production/GM/schema change; no prompt/example update needed. Source/
+selection review and fresh integration Plan/actual pending. Native3 and other physical
+cuts, F16, owning closes and whole registry remain; B2–B5 paused.
+
 ## F18 current-gacha Clear — measured GREEN9, 2026-10-09
 
 Source850dde2352590fdf9fc7caafac1d975e3bc93faa has independent SOURCE/BASELINE RAW/

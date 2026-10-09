@@ -4,6 +4,7 @@ using BookOfEternityClient.Services;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests.WebUi;
 
@@ -12,6 +13,9 @@ public sealed class BrowserMortalWorldGenerationFencingTests : IDisposable
 {
     private readonly string _rootPath =
         Path.Combine(Path.GetTempPath(), "boe-browser-mortal-generation-" + Guid.NewGuid().ToString("N"));
+
+    private readonly ITestOutputHelper _output;
+    public BrowserMortalWorldGenerationFencingTests(ITestOutputHelper output) => _output = output;
 
     [Fact]
     public async Task CompanionDirective_WaitsForCanonicalLeaseBeforeReadingAndPreservesConcurrentNpcFields()
@@ -171,37 +175,14 @@ public sealed class BrowserMortalWorldGenerationFencingTests : IDisposable
     }
 
     [Fact]
-    public async Task StatDistribution_NewGameWinsBeforeMortalLease_DoesNotWriteIntoReplacementSession()
+    public async Task StatDistribution_GenerationChangesBeforeMortalLease_DoesNotWriteIntoReplacementSession()
     {
-        var fs = CreateFileSystem(
-            new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously));
-        await fs.WriteFileAtomicAsync(
-            "game_state/player/stat_points.json",
-            """{ "unspentStatPoints": 1, "session": "A" }""");
-        await fs.WriteFileAtomicAsync(
-            "game_state/misc/characteristics.json",
-            """{ "strength": 1, "session": "A" }""");
-        var service = CreateService(fs);
-        var generation = await GetGenerationAsync(fs);
-        var operationBound = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var allowOldOperation = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var oldOperation = SessionOperationContext.RunBoundAsync(
-            fs,
-            generation,
-            async () =>
-            {
-                operationBound.TrySetResult();
-                await allowOldOperation.Task;
-                return await service.TryApplyAsync(
-                    "/distribute",
-                    Answers(("stat_strength", "1")),
-                    Owner("replacement-first"));
-            });
-
-        await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        await fs.ClearGameStateAsync();
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _output.WriteLine(line));
+        var seed = CreateFileSystem(new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously));
+        await seed.WriteFileAtomicAsync("game_state/player/stat_points.json", """{ "unspentStatPoints": 1, "session": "A" }""");
+        await seed.WriteFileAtomicAsync("game_state/misc/characteristics.json", """{ "strength": 1, "session": "A" }""");
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _output.WriteLine(line));
+        var service = CreateService(probe.Files);
         byte[] replacementCharacteristics =
         [
             0xEF, 0xBB, 0xBF,
@@ -211,24 +192,17 @@ public sealed class BrowserMortalWorldGenerationFencingTests : IDisposable
             (byte)'s', (byte)'i', (byte)'o', (byte)'n', (byte)'"', (byte)':',
             (byte)'"', (byte)'B', (byte)'"', (byte)'}'
         ];
-        await fs.WriteFileAtomicBytesAsync(
-            "game_state/misc/characteristics.json",
-            replacementCharacteristics);
-        await fs.WriteFileAtomicAsync(
-            "game_state/player/stat_points.json",
-            """{ "unspentStatPoints": 7, "session": "B" }""");
-
-        allowOldOperation.TrySetResult();
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => oldOperation.WaitAsync(TimeSpan.FromSeconds(5)));
-
-        Assert.Equal(
-            replacementCharacteristics,
-            await fs.ReadFileBytesAsync("game_state/misc/characteristics.json"));
-        Assert.Contains(
-            "\"session\": \"B\"",
-            await fs.ReadFileAsync("game_state/player/stat_points.json"),
-            StringComparison.Ordinal);
+        var failure = await Record.ExceptionAsync(() => SessionOperationContext.RunBoundAsync(
+            probe.Files, probe.OriginalGeneration, async () =>
+            {
+                await probe.RotateAsync("BeforeMortalLease", new Dictionary<string, byte[]>
+                {
+                    ["game_state/misc/characteristics.json"] = replacementCharacteristics,
+                    ["game_state/player/stat_points.json"] = System.Text.Encoding.UTF8.GetBytes("""{ "unspentStatPoints": 7, "session": "B" }""")
+                });
+                return await service.TryApplyAsync("/distribute", Answers(("stat_strength", "1")), Owner("replacement-first"));
+            }));
+        probe.Verify(failure);
     }
 
     [Fact]

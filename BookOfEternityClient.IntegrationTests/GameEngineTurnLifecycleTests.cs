@@ -728,7 +728,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task WaitForGmResponse_LoadBetweenGenerationCheckAndTerminalRead_DoesNotConsumeReplacementSignal()
+    public async Task WaitForGmResponse_GenerationChangesBeforeTerminalInspection_DoesNotConsumeReplacementSignal()
     {
         const string sessionId = "session-terminal-inspection-race";
         const string requestId = "request-terminal-inspection-race";
@@ -747,65 +747,25 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             turnNumber
         });
 
-        var inspectionLeaseAcquired = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseInspection = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var firstInspection = 0;
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var engine = CreateGameEngine(
-            new QueuedConsoleInputSource([]),
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: DisableLoreRuntime,
+            fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (checkpoint != SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired ||
-                        Interlocked.Exchange(ref firstInspection, 1) != 0)
-                    {
-                        return;
-                    }
-
-                    inspectionLeaseAcquired.TrySetResult();
-                    await releaseInspection.Task;
+                    if (checkpoint == SessionFinalizationCheckpoint.TerminalWaitStarted)
+                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels());
                 }
             });
-
-        var waitTask = InvokePrivateAsync<bool>(engine, "WaitForGmResponse");
-        await inspectionLeaseAcquired.Task.WaitAsync(TimeSpan.FromSeconds(5));
-
-        var replaceTask = Task.Run(async () =>
-        {
-            await _fs.ClearGameStateAsync();
-            await WriteJsonAsync("input/turn_request.json", new
-            {
-                sessionId = "replacement-session",
-                requestId = "replacement-request",
-                turnNumber = 1
-            });
-            await WriteJsonAsync("ready/turn_complete.json", new
-            {
-                sessionId = "replacement-session",
-                requestId = "replacement-request",
-                turnNumber = 1,
-                status = "success"
-            });
-        });
-
-        await Task.Yield();
-        releaseInspection.TrySetResult();
-        await replaceTask.WaitAsync(TimeSpan.FromSeconds(5));
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => waitTask.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.True(_fs.FileExists("input/turn_request.json"));
-        Assert.True(_fs.FileExists("ready/turn_complete.json"));
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("ready/turn_complete.json"),
-            StringComparison.Ordinal);
+        var failure = await Record.ExceptionAsync(() => InvokePrivateAsync<bool>(engine, "WaitForGmResponse"));
+        probe.Verify(failure);
     }
 
     [Fact]
-    public async Task WaitForGmResponse_LoadAfterTerminalSnapshotBeforeResolution_DoesNotReadReplacementSignal()
+    public async Task WaitForGmResponse_GenerationChangesAfterTerminalSnapshot_DoesNotReadReplacementSignal()
     {
         const string sessionId = "session-terminal-snapshot-race";
         const string requestId = "request-terminal-snapshot-race";
@@ -831,94 +791,46 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             status = "success"
         });
 
-        var snapshotCaptured = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseResolution = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var engine = CreateGameEngine(
-            new QueuedConsoleInputSource([]),
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: DisableLoreRuntime,
+            fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (checkpoint != SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution)
-                        return;
-
-                    snapshotCaptured.TrySetResult();
-                    await releaseResolution.Task;
+                    if (checkpoint == SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution)
+                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels());
                 }
             });
-
-        var waitTask = InvokePrivateAsync<bool>(engine, "WaitForGmResponse");
-        await snapshotCaptured.Task.WaitAsync(TimeSpan.FromSeconds(5));
-
-        await _fs.ClearGameStateAsync();
-        await WriteJsonAsync("input/turn_request.json", new
-        {
-            sessionId = "replacement-session",
-            requestId = "replacement-request",
-            turnNumber = 1
-        });
-        await WriteJsonAsync("ready/turn_complete.json", new
-        {
-            sessionId = "replacement-session",
-            requestId = "replacement-request",
-            turnNumber = 1,
-            status = "success"
-        });
-
-        releaseResolution.TrySetResult();
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => waitTask.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("ready/turn_complete.json"),
-            StringComparison.Ordinal);
+        var failure = await Record.ExceptionAsync(() => InvokePrivateAsync<bool>(engine, "WaitForGmResponse"));
+        probe.Verify(failure);
     }
 
     [Fact]
     public async Task LateTerminalAndIdleFlow_SessionReplacementAfterBinding_DoesNotTouchReplacement()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string replacementPath = "game_state/world/late-idle-replacement.json";
-        var operationBound = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseOldOperation = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
         var engine = CreateGameEngine(
-            new QueuedConsoleInputSource([]),
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: DisableLoreRuntime,
+            fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (!string.Equals(
-                            checkpoint.ToString(),
-                            "LateTerminalAndIdleOperationBound",
-                            StringComparison.Ordinal))
-                    {
-                        return;
-                    }
-
-                    operationBound.TrySetResult();
-                    await releaseOldOperation.Task;
+                    if (checkpoint == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound)
+                        await probe.RotateAsync(checkpoint.ToString(), new Dictionary<string, byte[]>
+                        {
+                            [replacementPath] = Encoding.UTF8.GetBytes("""{"owner":"replacement"}""")
+                        });
                 }
             });
-        var method = typeof(GameEngine).GetMethod(
-            "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(method);
-        var oldOperation = Assert.IsAssignableFrom<Task<bool>>(method!.Invoke(engine, null));
-
-        await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        await _fs.ClearGameStateAsync();
-        await _fs.WriteFileAtomicAsync(replacementPath, "{\"owner\":\"replacement\"}");
-        releaseOldOperation.TrySetResult();
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => oldOperation.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.Equal(
-            "{\"owner\":\"replacement\"}",
-            await _fs.ReadFileAsync(replacementPath));
+        var failure = await Record.ExceptionAsync(() => InvokePrivateAsync<bool>(
+            engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
+        probe.Verify(failure);
     }
 
     [Fact]
@@ -6577,120 +6489,84 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task ProcessPlayerTurn_LoadAfterAcceptedValidation_AbortsBeforeMutatingReplacement()
+    public async Task ProcessPlayerTurn_GenerationChangesAfterAcceptedValidation_AbortsBeforeMutatingReplacement()
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
-        var acceptedValidationReached = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseOldFinalizer = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var terminalStarts = 0;
         var engine = CreateGameEngine(
-            new QueuedConsoleInputSource([]),
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: DisableLoreRuntime,
+            fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (checkpoint != SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
-                        return;
-
-                    acceptedValidationReached.TrySetResult();
-                    await releaseOldFinalizer.Task;
-                }
-            });
-        var gmOutputTask = Task.Run(async () =>
-        {
-            var request = await WaitForTurnRequestAsync();
-            var outputTimestamp = DateTime.UtcNow.ToString("o");
-            await WriteJsonAsync("output/narrative_response.json", new
-            {
-                response = "Старый ход успешно прошёл проверку, но не должен затронуть загруженную сессию.",
-                timestamp = outputTimestamp
-            });
-            await WriteJsonAsync("output/interface_updates.json", new
-            {
-                dialogueOptions = new[]
-                {
-                    new
+                    if (checkpoint == SessionFinalizationCheckpoint.TerminalWaitStarted)
                     {
-                        text = "Продолжить.",
-                        category = "neutral"
+                        terminalStarts++;
+                        Assert.Equal(1, terminalStarts);
+                        var requestJson = await probe.Files.ReadFileAsync("input/turn_request.json");
+                        var request = JsonSerializer.Deserialize<TurnRequest>(requestJson!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+                        Assert.NotNull(request);
+                        var outputTimestamp = DateTime.UtcNow.ToString("o");
+                        await WriteJsonAsync("output/narrative_response.json", new
+                        {
+                            response = "Старый ход успешно прошёл проверку, но не должен затронуть загруженную сессию.",
+                            timestamp = outputTimestamp
+                        });
+                        await WriteJsonAsync("output/interface_updates.json", new
+                        {
+                            dialogueOptions = new[]
+                            {
+                                new
+                                {
+                                    text = "Продолжить.",
+                                    category = "neutral"
+                                }
+                            },
+                            timestamp = outputTimestamp
+                        });
+                        await WriteJsonAsync("output/debug_logs.json", new
+                        {
+                            timestamp = outputTimestamp,
+                            gm_thoughts_markdown = string.Join(
+                                "\n",
+                                "## NPC Scope",
+                                "- Mode: Scene-local",
+                                "- Relevant actors: нет",
+                                "- Why relevant: Синтетический ход без акторов проверяет session fence.",
+                                "- Actors outside scope: нет",
+                                "- Why outside scope: Структурные акторы не меняются.",
+                                "",
+                                "## Reasoning",
+                                "- Accepted result is paused before materialization.")
+                        });
+                        await WriteJsonAsync("ready/turn_complete.json", new
+                        {
+                            sessionId = request.SessionId,
+                            requestId = request.RequestId,
+                            turnNumber = request.TurnNumber,
+                            timestamp = outputTimestamp,
+                            status = "success",
+                            filesModified = new[]
+                            {
+                                "output/narrative_response.json",
+                                "output/interface_updates.json",
+                                "output/debug_logs.json"
+                            }
+                        });
+                        return;
                     }
-                },
-                timestamp = outputTimestamp
-            });
-            await WriteJsonAsync("output/debug_logs.json", new
-            {
-                timestamp = outputTimestamp,
-                gm_thoughts_markdown = string.Join(
-                    "\n",
-                    "## NPC Scope",
-                    "- Mode: Scene-local",
-                    "- Relevant actors: нет",
-                    "- Why relevant: Синтетический ход без акторов проверяет session fence.",
-                    "- Actors outside scope: нет",
-                    "- Why outside scope: Структурные акторы не меняются.",
-                    "",
-                    "## Reasoning",
-                    "- Accepted result is paused before materialization.")
-            });
-            await WriteJsonAsync("ready/turn_complete.json", new
-            {
-                sessionId = request.SessionId,
-                requestId = request.RequestId,
-                turnNumber = request.TurnNumber,
-                timestamp = outputTimestamp,
-                status = "success",
-                filesModified = new[]
-                {
-                    "output/narrative_response.json",
-                    "output/interface_updates.json",
-                    "output/debug_logs.json"
+                    if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
+                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels());
                 }
             });
-        });
-
-        var oldTurn = InvokePrivateTaskAsync(
-            engine,
-            "ProcessPlayerTurn",
-            "Проверить финализацию старого хода.",
-            null);
-        try
-        {
-            await acceptedValidationReached.Task.WaitAsync(
-                TimeSpan.FromSeconds(30));
-
-            await _fs.ClearGameStateAsync();
-            await WriteJsonAsync("input/turn_request.json", new
-            {
-                sessionId = "replacement-session",
-                requestId = "replacement-request",
-                turnNumber = 1
-            });
-            await WriteJsonAsync("ready/turn_complete.json", new
-            {
-                sessionId = "replacement-session",
-                requestId = "replacement-request",
-                turnNumber = 1,
-                status = "success"
-            });
-        }
-        finally
-        {
-            releaseOldFinalizer.TrySetResult();
-        }
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => oldTurn.WaitAsync(TimeSpan.FromSeconds(30)));
-        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(30));
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("input/turn_request.json"),
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("ready/turn_complete.json"),
-            StringComparison.Ordinal);
-        Assert.False(_fs.FileExists("stories/story.md"));
+        var failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(
+            engine, "ProcessPlayerTurn", "Проверить финализацию старого хода.", null));
+        probe.Verify(failure, new { terminalStarts });
+        Assert.Equal(1, terminalStarts);
+        Assert.False(File.Exists(probe.Files.ResolvePath("stories/story.md")));
     }
 
     [Fact]
@@ -9213,7 +9089,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task CheckLifeTransitions_LoadAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement()
+    public async Task CheckLifeTransitions_GenerationChangesAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement()
     {
         const string acceptedSessionId = "session_life_eval_rotation";
         const string acceptedRequestId = "request_life_eval_rotation";
@@ -9260,18 +9136,19 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             summary = "Добровольное завершение тестовой смертной жизни."
         });
 
-        var rawValidationReached = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseOldFinalizer = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var lifeRequests = 0;
         var engine = CreateGameEngine(
-            new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4)),
+            probe.ObserveInput(new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4))),
+            configureSettings: DisableLoreRuntime, fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
                     if (checkpoint == SessionFinalizationCheckpoint.LifeEvaluationRequestDispatchedBeforeWait)
                     {
+                        lifeRequests++;
                         var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
                         Assert.False(string.IsNullOrWhiteSpace(requestJson));
                         using var requestDoc = JsonDocument.Parse(requestJson);
@@ -9287,14 +9164,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                         return;
                     }
 
-                    if (checkpoint !=
-                        SessionFinalizationCheckpoint.RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites)
-                    {
-                        return;
-                    }
-
-                    rawValidationReached.TrySetResult();
-                    await releaseOldFinalizer.Task;
+                    if (checkpoint == SessionFinalizationCheckpoint.RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites)
+                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels());
                 }
             });
         var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
@@ -9304,39 +9175,11 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             manifest,
             true);
 
-        var oldTransition = InvokePrivateTaskAsync(
-            engine,
-            "CheckLifeTransitions",
-            acceptedSnapshotContext);
-        await rawValidationReached.Task.WaitAsync(TimeSpan.FromSeconds(12));
-
-        await _fs.ClearGameStateAsync();
-        await WriteJsonAsync("input/turn_request.json", new
-        {
-            sessionId = "replacement-session",
-            requestId = "replacement-request",
-            turnNumber = 1
-        });
-        await WriteJsonAsync("ready/turn_complete.json", new
-        {
-            sessionId = "replacement-session",
-            requestId = "replacement-request",
-            turnNumber = 1,
-            status = "success"
-        });
-        releaseOldFinalizer.TrySetResult();
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => oldTransition.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("input/turn_request.json"),
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("ready/turn_complete.json"),
-            StringComparison.Ordinal);
-        Assert.False(File.Exists(Path.Combine(_fs.GameSessionPath, "error_log.txt")));
+        var failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(
+            engine, "CheckLifeTransitions", acceptedSnapshotContext));
+        probe.Verify(failure, new { lifeRequests });
+        Assert.Equal(1, lifeRequests);
+        Assert.False(File.Exists(Path.Combine(probe.Files.GameSessionPath, "error_log.txt")));
     }
 
     [Fact]

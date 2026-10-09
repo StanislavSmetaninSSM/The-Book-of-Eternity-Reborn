@@ -1735,7 +1735,7 @@ public sealed partial class IntegrationTestBoundaryTests
                 .OfType<MethodDeclarationSyntax>(),
             candidate =>
                 candidate.Identifier.ValueText ==
-                "CheckLifeTransitions_LoadAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement");
+                "CheckLifeTransitions_GenerationChangesAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement");
         var methodBody = Assert.IsType<BlockSyntax>(method.Body);
         var methodBodySource = methodBody.ToFullString();
 

@@ -2,8 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-session-generation-checkpoint-fixtures-linux",
+      "reason": "T064 source-qualified six obsolete independent-replacement interleavings plus connected guard: port to same original admission/checkpoint, actual generation publication and exact untouched replacement sentinels. Source/build/run pending; no runtime RED claimed.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-gacha-clear-authority-linux",
-      "reason": "T064 authentic baseline1212357PASS/2genuineFAIL; runtime850dde actual1215299/9PASS Linux, current Clear/newgeneration/fresh bootstrap plus exact authority/no-clear/unknownstructure refusal. Raw carrier review pending; no wholeF18/native claim.",
+      "reason": "T064 authentic baseline1212357PASS/2genuineFAIL; runtime850dde actual1215299/9PASS Linux, current Clear/newgeneration/fresh bootstrap plus exact authority/no-clear/unknownstructure refusal. Independent GREEN/raw/carrier92a5 accepted; no wholeF18/native claim.",
       "contracts": [
         "#1553",
         "FR-005",
