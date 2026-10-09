@@ -1,3 +1,23 @@
+## Explorer corrected4 causal reach — 2026-10-09
+
+Frozen25916862 passes independent SOURCE/FIXTURE/EXACT4. Matching Plan051138 freshly builds integration
+49.4201409s/wall53.3963100s,exact4/1planned0executed. Actual051254 completes4/4 genuine causal FAIL,
+7.7677304s,exit1,no skips/duplicates/timeouts,bothcleanup. All four now select actual current offered
+choices and reach MemberPublished/index0, actual original CSP, authentic uncommitted journal/hash/exact
+retained bytes and foreign target. Companion and both political rows have zero later canonical counters
+but two guarded input attempts and outward fixture input error; attraction attempts one ordinary admission
+then one guarded input. No later reached read/mutation/publication/recovery callbacks; no claim that
+admission/recovery was never attempted. All8 explicit owned roots removed. Same/final retention assertions
+after the first failure remain unexecuted, even where raw images are exact.
+
+Combined genuine Unknown coverage is20=16@5dc+4@259, with two known compensation PASS@5dc. Initial22's
+four fixture failures remain historical, not relabelled causal. [Packet](recovery/storage-migration-explorer-archive-20261009/manifest.json)
+now112 artifacts/64 source pins verifies saved/expanded/present originals; independent corrected raw/carrier
+gate pending. Production still unchanged. Minimal original consumer catch/compensation first-cause fixes,
+three original console rollback owner captures and existing browser outcome projection preservation are
+next; source/final finite-selection review required before build. No global latch/new transaction, schema,
+provider/native/fullplay or simultaneous secondary-close claim. Latest actual full restore remains e5.
+
 ## Explorer isolated recipe correction4 WIP — 2026-10-09
 
 Initial raw050655 saved remotely at c234159d:88 artifacts/32 source pins,16 reached causal cuts,
