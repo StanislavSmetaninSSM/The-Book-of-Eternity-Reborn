@@ -81,7 +81,7 @@ internal static partial class NativePoolScenarioDriver
                 var active = state.Entries.SingleOrDefault(record => record.Identity.RunId == identity.RunId);
                 if (active != null)
                 {
-                    Require(active.Identity == identity && !state.Retired.Any(reference => reference.RunId == identity.RunId), "active record lost original identity or has duplicate retirement");
+                    Require(active.Identity == identity && !state.Retired.Any(item => item.RunId == identity.RunId), "active record lost original identity or has duplicate retirement");
                     return (active, "active", stateBytes, null, null);
                 }
                 var reference = state.Retired.Single(item => item.RunId == identity.RunId);
@@ -221,7 +221,7 @@ internal static partial class NativePoolScenarioDriver
             evidence["WorkerStorage"] = new
             {
                 mode, Failure = failure?.ToString(), ResultReturned = result != null, Status = result?.Status.State.ToString(),
-                result?.TimedOut, result?.ExitCode, DispatchSettled = originalRun.IsCompleted,
+                TimedOut = result?.TimedOut, ExitCode = result?.ExitCode, DispatchSettled = originalRun.IsCompleted,
                 SameOriginalUncertainty = probe.OriginalUncertainty != null && ReferenceEquals(probe.OriginalUncertainty, failure),
                 SameRetainedUncertainty = probe.OriginalUncertainty != null && ReferenceEquals(probe.OriginalUncertainty, CanonicalFailure()),
                 OriginalCauseRetained = ReferenceEquals(probe.OriginalUncertainty?.Data["GmWorkerOriginalFailure"], known),
