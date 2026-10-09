@@ -1,3 +1,17 @@
+## Progression runtime correction WIP — 2026-10-09
+
+After independent causal4 acceptance and saved e1731df2 packet22/14, production delta is exactly
+three catch filters excluding actual CoordinatedStatePublicationUncertainException in original
+ProcessStatsIncreasedAsync, CheckLevelUpAsync and CharacteristicsService.ComputeAndWriteAsync.
+No parser/math/payload/known-error policy or new lease is introduced. Same actual decision escapes
+before later canonical work; earlier confirmed publications remain, with no whole-turn rollback claim.
+
+Final exact5 = unchanged causal4 plus existing CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart
+moved from turn-lifecycle-core into one finite neighbor category. Fixture business bodies unchanged.
+Frozen source/selection gate, matching fresh integration Plan5 and actual5 remain pending. Then
+catalog-only current source refresh may build both test projects without running their accepted suites;
+old unit output is not described as newly built by an integration-only run. No native/provider claim.
+
 ## Progression causal4 accepted / runtime design — 2026-10-09
 
 Clean a9e4 matching Plan014036 integration38.6793978s/wall42.8068183,4/1planned0executed.

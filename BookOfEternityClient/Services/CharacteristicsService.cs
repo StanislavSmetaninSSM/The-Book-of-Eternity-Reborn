@@ -135,7 +135,7 @@ public class CharacteristicsService
             await WriteComputedFile(result);
             _logger.LogDebug("Характеристики пересчитаны и записаны");
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Ошибка при пересчёте характеристик");
         }

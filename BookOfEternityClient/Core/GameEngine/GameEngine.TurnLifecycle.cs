@@ -2046,7 +2046,7 @@ public partial class GameEngine
             await _fs.WriteFileAtomicAsync("game_state/player/status_changes.json",
                 JsonSerializer.Serialize(dict, JsonOpts));
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Ошибка обработки statsIncreased");
         }
@@ -2124,7 +2124,7 @@ public partial class GameEngine
                 _lastKnownLevel = Math.Max(_lastKnownLevel, currentLevel);
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Ошибка проверки уровня");
         }

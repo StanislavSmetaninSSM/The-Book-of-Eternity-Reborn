@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-progression-outcome-neighbor",
+      "responsibility": "Original persisted level-award restart guard protecting known progression behavior beside typed publication-Unknown propagation.",
+      "excludes": "No broad turn lifecycle, stat math suite, live GM or interactive distribution expansion.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient/Services/CharacteristicsService.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-progression-outcome-causal-linux",
+          "when": "Actual progression publication uncertainty propagation changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-prepared-remote-outcome-linux",
       "responsibility": "Three original Prepared publication outcomes through real Running neutral main remote admission and exact terminal close/ACK: committed, rolled back and genuine Unknown.",
       "excludes": "No live GM/provider, worker, native Windows, UI or global main-outcome inference; local cleanup26 remains separate evidence.",
@@ -34,7 +63,7 @@
     {
       "id": "portable-progression-outcome-causal-linux",
       "responsibility": "Four original progression publication-Unknown contours: base stats, status clearing after confirmed base, mark-only level receipt and AddStatPoints computed output after confirmed points. Actual cut, same decision and no later measured work.",
-      "excludes": "No XP/stat math change, full accepted turn, interactive stat distribution, provider/native execution. Test-only draft remains unexecuted pending focused fixture gate.",
+      "excludes": "No XP/stat math change, full accepted turn, interactive stat distribution, provider/native execution. Four actual causal failures preserved; final typed-outcome behavior is qualified by exact scoped runs.",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
         "BookOfEternityClient/Services/CharacteristicsService.cs"
@@ -5986,7 +6015,6 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_FileSystemExampleState_DispatchesAutomaticLifeEvaluation",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_LifeEvaluationDispatchFailure_WritesErrorLog",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CollectAcceptedTurnRawStateIssuesAsync_DirectNpcCoreMutation_IsRejectedBeforeNormalization",

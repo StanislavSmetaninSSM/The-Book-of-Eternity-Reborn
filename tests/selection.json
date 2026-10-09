@@ -2,8 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-progression-outcome-neighbor",
+      "reason": "Original persisted level-award restart guard joins causal4 for final5, protecting unchanged known progression behavior; moved from turn-lifecycle-core without duplicate selected ownership.",
+      "contracts": ["#1553", "FR-003", "FR-004", "T062-STORAGE-OUTCOMES"]
+    },
+    {
       "category": "portable-progression-outcome-causal-linux",
-      "reason": "Independent fixture/selection PASS: four actual original base/status-clear/mark-only/computed publication Unknown cuts with prior committed bytes and no continuation; causal execution before any three-catch runtime correction.",
+      "reason": "Four actual original progression Unknown failures at a9e4 support three direct typed-CSP catch exclusions. Final control retains same actual decision, prior committed images, no later measured work and owned cleanup.",
       "contracts": ["#1553", "FR-003", "FR-004", "T062-STORAGE-OUTCOMES"]
     },
     {
