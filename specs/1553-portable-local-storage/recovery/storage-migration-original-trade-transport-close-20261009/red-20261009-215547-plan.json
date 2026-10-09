@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-original-npc-trade-owning-close-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "007df4f73b37826fa7f9621f5377916b852b0a6e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 51.3951193,
+  "Descriptors": [
+    {
+      "Name": "portable-original-npc-trade-owning-close-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-npc-trade-owning-close-linux",
+      "Categories": [
+        "portable-original-npc-trade-owning-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalNpcTradeOwnersRetainGenuinePublicationUncertaintyOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalNpcTradeOwnersRetainGenuinePublicationUncertaintyOnClose",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}

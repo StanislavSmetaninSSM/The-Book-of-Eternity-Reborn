@@ -1,3 +1,21 @@
+## Corrected NPC actual causal baseline6 — WIP, 2026-10-09
+
+Canonicalactor fixture007df4f7 freshNPCPlan2155476/1,0execution51.7163095s;
+actual215656complete6=3knownPASS/3causalFAIL9.8953892s,1/1bothcleanup
+0skipduplicateTimeout/strict6roots. ActualNPCowners/Intent/firstsourcecarrier
+cutindex0 reached; samegenuineCSP masked bysame lateoriginalowner IOException,
+fullsettlement/noLater/Closing0. KnownrealDTO/money/slot/derivedbuyback/
+physicalcarrier/immutablehistory/currentcanonicalvalidation PASS.
+[Packet](recovery/storage-migration-original-trade-transport-close-20261009/manifest.json)
+52artifacts43pins verifiedoriginals: initial31/21 + correctedNPCRED21/22.
+Initial14 remains4knownP/4causalF/6preparationF at0e20d0db; currentNPC6 is
+3knownP/3causalF at007df4f7. Seven causal operation obligations now reached
+across source-pinnedStorage8+NPC6, not anew14baseline. Nextminimal5same
+owningnulllease branches CSPcapture/rethrowexistingRelease(false); preserve
+borrowed/core/validation/settlement/fixture. Source/exact14 combinedgate then
+one fresh selectedGREEN14/2 across2coherentcategories. No B2/native/business
+orknownlateclose acceptance; catalogpendingstablebatch/T061–T065unchecked.
+
 ## NPC current-actor preparation correction installed — WIP, 2026-10-09
 
 Independent correctedfixture/selection gate PASS126f76a9, installedbyteidentically.
