@@ -1,0 +1,183 @@
+using System.Runtime.ExceptionServices;
+using System.Text;
+using System.Text.Json;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.WebUi;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class OriginalOwnedLeaseCloseTests
+{
+    [Theory]
+    [InlineData("admission", false)] [InlineData("admission", true)]
+    [InlineData("release", false)] [InlineData("release", true)]
+    public async Task OriginalBrowserReplacementOwnersRetainGenuineUncertaintyAndRefusal(string boundary, bool uncertain)
+    {
+        Assert.True(OperatingSystem.IsLinux());
+        var root = Path.Combine(Path.GetTempPath(), "boe-browser-replacement-owner-" + Guid.NewGuid().ToString("N"));
+        using var owned = new CleanupOwnedFixture(root, output.WriteLine);
+        using var cut = new CleanupPublicationCut();
+        var acquireEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var allowAcquire = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var intentEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var allowIntent = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var selectedAcquisition = boundary == "admission" ? 1 : 2;
+        var armed = false; var acquisitions = 0; var pauses = 0; var callbacks = 0;
+        string? target = null; byte[]? actualTokenBytes = null;
+        Dictionary<string, byte[]>? atIntentFiles = null;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalWriteLockOpenAsync = async () =>
+            {
+                await cut.Hooks.BeforeCanonicalWriteLockOpenAsync!();
+                if (armed && ++acquisitions == selectedAcquisition)
+                { acquireEntered.TrySetResult(); await allowAcquire.Task; }
+            },
+            LocalPublicationObserver = (phase, index) =>
+            {
+                if (armed && acquisitions == selectedAcquisition && pauses == 0 && phase == TrustedLocalPublicationPhase.IntentPublished)
+                {
+                    using var actual = CleanupPublicationCut.Metadata(File.ReadAllBytes(cut.JournalPath));
+                    var members = actual.RootElement.GetProperty("Members");
+                    Assert.Equal(1, members.GetArrayLength());
+                    target = members[0].GetProperty("Path").GetString();
+                    pauses++; intentEntered.TrySetResult(); allowIntent.Task.GetAwaiter().GetResult();
+                }
+                cut.Hooks.LocalPublicationObserver!(phase, index);
+            },
+            BeforeCanonicalMutationBoundaryAsync = cut.Hooks.BeforeCanonicalMutationBoundaryAsync,
+            AfterCanonicalReadInitialValidationAsync = cut.Hooks.AfterCanonicalReadInitialValidationAsync,
+            LocalPublicationRecoveryObserver = cut.Hooks.LocalPublicationRecoveryObserver,
+            SessionOperationClosingAsync = cut.Hooks.SessionOperationClosingAsync
+        };
+        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, hooks);
+        cut.Attach(files);
+        var state = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);
+        var generation = await state.BootstrapLocalStorageAsync();
+        var lockPath = files.ResolvePath(LocalUiSessionLockService.LockPath);
+        Assert.False(File.Exists(lockPath));
+        Assert.False(BrowserPendingTurnInspector.Build(files).HasActiveGmTurn);
+        Dictionary<string, byte[]> ReadCanonicalFiles() => Directory.EnumerateFiles(files.GameSessionPath, "*", SearchOption.AllDirectories)
+            .ToDictionary(path => path, File.ReadAllBytes, StringComparer.Ordinal);
+        var beforeFiles = ReadCanonicalFiles();
+        var generationBefore = File.ReadAllBytes(files.SessionGenerationPath);
+        var coordinator = new BrowserLocalWriteCoordinator(files, new LocalUiSessionLockService(files));
+        var request = new BrowserLocalWriteRequest("original-replacement", "Fixture", "original replacement admission");
+        var refusalFailure = new InvalidOperationException("Controlled ordinary replacement delegate refusal; no Load or archive admission was attempted.");
+        var refusal = new LoadReplacementResult(LoadReplacementDisposition.NotLoaded, null, null, true, refusalFailure);
+        var closeFailure = new IOException("Actual original browser replacement owner late close.");
+        var closer = new BrowserReplacementThrowingClose(closeFailure);
+        FileSystemManager.CanonicalWriteLease? original = null; string? actualOwnerState = null;
+        var attachments = 0;
+        EventHandler<FirstChanceExceptionEventArgs> observe = (_, args) =>
+        {
+            if (ReferenceEquals(args.Exception, cut.OriginalUncertainty) && original != null &&
+                Interlocked.CompareExchange(ref attachments, 1, 0) == 0)
+                original.ExternalPublicationContext = closer;
+        };
+        cut.Select = (path, _) => acquisitions == selectedAcquisition && path == target;
+        Task<LoadReplacementResult>? operation = null; LoadReplacementResult? result = null; Exception? failure = null;
+        try
+        {
+            armed = true;
+            // This is the original supported callback seam, returning an ordinary refusal.
+            // Neither the callback nor the coordinator fixture invokes any Load/native process.
+            operation = coordinator.ExecuteSessionReplacementAsync(request, _ =>
+            {
+                callbacks++; actualTokenBytes = File.ReadAllBytes(lockPath);
+                using var token = JsonDocument.Parse(Encoding.UTF8.GetString(actualTokenBytes).TrimStart('\uFEFF'));
+                Assert.Equal(generation, token.RootElement.GetProperty("sessionGeneration").GetString());
+                Assert.Equal(request.OwnerId, token.RootElement.GetProperty("ownerId").GetString());
+                Assert.False(string.IsNullOrWhiteSpace(token.RootElement.GetProperty("leaseToken").GetString()));
+                return Task.FromResult(refusal);
+            });
+            Assert.Same(acquireEntered.Task, await Task.WhenAny(acquireEntered.Task, operation).WaitAsync(TimeSpan.FromSeconds(12)));
+            allowAcquire.TrySetResult();
+            Assert.Same(intentEntered.Task, await Task.WhenAny(intentEntered.Task, operation).WaitAsync(TimeSpan.FromSeconds(12)));
+            (original, actualOwnerState) = InspectOriginalNestedOwningLease(operation, "BrowserLocalWriteCoordinator+<ExecuteSessionReplacementAsync>");
+            Assert.Same(files, original.Owner); Assert.True(original.IsActive); Assert.Null(original.ExternalPublicationContext);
+            Assert.Equal(lockPath, target); Assert.Equal(selectedAcquisition, acquisitions);
+            atIntentFiles = ReadCanonicalFiles();
+            using (var actual = CleanupPublicationCut.Metadata(File.ReadAllBytes(cut.JournalPath)))
+            {
+                var member = actual.RootElement.GetProperty("Members")[0];
+                var before = member.GetProperty("Before"); var after = member.GetProperty("After");
+                if (boundary == "release")
+                {
+                    Assert.Equal(1, callbacks); Assert.NotNull(actualTokenBytes);
+                    Assert.True(before.GetProperty("Exists").GetBoolean());
+                    Assert.Equal(actualTokenBytes, before.GetProperty("Bytes").GetBytesFromBase64());
+                    Assert.False(after.GetProperty("Exists").GetBoolean()); Assert.Equal(JsonValueKind.Null, after.GetProperty("Bytes").ValueKind);
+                }
+                else
+                { Assert.Equal(0, callbacks); Assert.False(before.GetProperty("Exists").GetBoolean()); Assert.True(after.GetProperty("Exists").GetBoolean()); }
+            }
+            cut.Armed = uncertain;
+            if (uncertain) AppDomain.CurrentDomain.FirstChanceException += observe;
+            allowIntent.TrySetResult();
+            failure = await Record.ExceptionAsync(async () => result = await operation);
+        }
+        finally
+        {
+            allowAcquire.TrySetResult(); allowIntent.TrySetResult();
+            if (operation != null && !operation.IsCompleted) await Record.ExceptionAsync(async () => await operation);
+            AppDomain.CurrentDomain.FirstChanceException -= observe;
+        }
+        var afterFiles = ReadCanonicalFiles();
+        bool lockAvailable;
+        using (var probe = new FileStream(files.CanonicalWriteLockPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None)) lockAvailable = true;
+        output.WriteLine(JsonSerializer.Serialize(new { boundary, uncertain, root, target, selectedAcquisition, acquisitions, pauses, callbacks,
+            actualOwnerState, attachments, closer.Calls,
+            result = result == null ? null : new { result.Disposition, result.SelectedSourcePath, result.EstablishedGeneration,
+                result.NeedsFollowUp, result.ContinuationBlocked, Failure = result.Failure?.ToString() },
+            failure = failure?.ToString(), actualTokenBytes,
+            samePrimary = ReferenceEquals(result?.Failure, cut.OriginalUncertainty),
+            sameSecondary = ReferenceEquals(cut.OriginalUncertainty?.Data["CoordinatedLeaseReleaseFailure"], closeFailure),
+            lockAvailable, activeAfter = original?.IsActive, mainClosed = original?.MainAdmission == null,
+            ambientClosed = original?.AmbientRegistration == null, contextClosed = original?.ExternalPublicationContext == null,
+            generationBefore, generationAfter = File.ReadAllBytes(files.SessionGenerationPath), beforeFiles, atIntentFiles, afterFiles, Cut = cut.Evidence() }));
+        Assert.Null(failure); Assert.NotNull(result); Assert.NotNull(original); Assert.NotNull(atIntentFiles);
+        Assert.Equal(1, pauses); Assert.Equal(uncertain ? 1 : 0, attachments); Assert.Equal(uncertain ? 1 : 0, closer.Calls);
+        Assert.False(original.IsActive); Assert.Null(original.MainAdmission); Assert.Null(original.AmbientRegistration); Assert.Null(original.ExternalPublicationContext);
+        Assert.True(lockAvailable); Assert.False(SessionOperationContext.TryGetExpectedGeneration(files.BasePath, out _));
+        Assert.Equal(generationBefore, File.ReadAllBytes(files.SessionGenerationPath));
+        var comparison = uncertain ? atIntentFiles : beforeFiles;
+        Assert.Equal(comparison.Keys.Where(p => p != lockPath).Order(StringComparer.Ordinal), afterFiles.Keys.Where(p => p != lockPath).Order(StringComparer.Ordinal));
+        foreach (var (path, bytes) in comparison.Where(p => p.Key != lockPath)) Assert.Equal(bytes, afterFiles[path]);
+        if (uncertain)
+        {
+            cut.AssertReachedAndStopped(); Assert.Equal(0, cut.ClosingLeases);
+            Assert.Equal(selectedAcquisition, acquisitions); Assert.Equal(boundary == "admission" ? 0 : 1, callbacks);
+            Assert.True(result.ContinuationBlocked); Assert.True(result.NeedsFollowUp);
+            Assert.Same(closeFailure, cut.OriginalUncertainty!.Data["CoordinatedLeaseReleaseFailure"]);
+            if (boundary == "admission")
+            { Assert.Equal(LoadReplacementDisposition.Uncertain, result.Disposition); Assert.Same(cut.OriginalUncertainty, result.Failure); }
+            else
+            {
+                Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
+                Assert.Equal(refusal.SelectedSourcePath, result.SelectedSourcePath); Assert.Equal(refusal.EstablishedGeneration, result.EstablishedGeneration);
+                var both = Assert.IsType<AggregateException>(result.Failure); Assert.Equal(2, both.InnerExceptions.Count);
+                Assert.Same(refusalFailure, both.InnerExceptions[0]); Assert.Same(cut.OriginalUncertainty, both.InnerExceptions[1]);
+                Assert.Null(cut.PublishedBytes);
+            }
+            Assert.Equal(CleanupPublicationCut.Foreign, afterFiles[lockPath]);
+        }
+        else
+        {
+            Assert.Equal(2, acquisitions); Assert.Equal(1, callbacks); Assert.Same(refusal, result);
+            Assert.Same(refusalFailure, result.Failure); Assert.False(result.ContinuationBlocked);
+            Assert.NotNull(actualTokenBytes); Assert.False(afterFiles.ContainsKey(lockPath));
+            Assert.Equal(0, cut.Cuts); Assert.False(File.Exists(cut.JournalPath));
+        }
+    }
+
+    private sealed class BrowserReplacementThrowingClose(Exception failure) : IDisposable
+    {
+        public int Calls { get; private set; }
+        public void Dispose() { Calls++; throw failure; }
+    }
+}

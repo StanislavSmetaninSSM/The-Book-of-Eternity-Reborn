@@ -1,3 +1,21 @@
+## Browser replacement original-owner exact4 draft — WIP, 2026-10-09
+
+Independent design/safe-seamPASS: source-grounded census161/162 canloseactualCSP
+on sameleaseclose. Rootdraft usesactual warmbootstrap/currentgeneration, original
+ExecuteSessionReplacement andcontrolledordinaryNotLoaded callback (noLoad/archive/
+native). Admissionknown/uncertain and releaseknown/uncertain, real UI-locktoken,
+actual selectedowning lease/firstIntent/member0; releaseBefore=actualtokenbytes,
+Afterabsent/deletePublishedBytesnull. SamegenuineCSP+secondary/noLater/Closing0,
+fullsettlement/currentgeneration/non-targetfullbytemaps/strictroots. Ordinary
+refusal Failure mustremainfirst and SAME CSP second inreleaseWithFollowUp.
+[Uninstalledfixture](recovery/storage-migration-original-browser-replacement-close-20261009/uninstalled-fixture.txt)
+DraftSHA760e7ca42351198a73d97b7f487bdad1d7375db94fd9e457b44a936cb3061d4e; independentfixture/exact4 gate BEFOREinstall/freshbuild/
+originalbaseline, productionunchanged UNBUILT/UNRUN for these newcases. Final
+replay/ProposalGREEN/catalog/carrier independentPASS49e6122 (183artifacts265pins/
+8strictroots/ONEcatalogcopiesidentical/refraw58). Correctedcensus83source-only/
+82finite/3legacy/2native accepted for its namedstaticbounds, notwholemigration.
+T061–T065/B2–B5/native/otherordinaryknownclose/read-only/legacy stayopen.
+
 ## ReplayGREEN2 and ProposalGREEN4, corrected census — WIP, 2026-10-09
 
 Independentcombinedcausal/source/exactgatePASSb023 and AscensionGREEN2/SaveGREEN2
