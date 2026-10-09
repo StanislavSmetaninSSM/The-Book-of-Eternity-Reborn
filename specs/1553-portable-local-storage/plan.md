@@ -1,3 +1,24 @@
+## Original mod RED8 and safe folder source RED1 — WIP, 2026-10-09
+
+Mod fixture/design/exact10 and folder source-only1/finalUI3 independent PASS,
+installed208d6a2c/ref/raw5. Fresh both-project Plan20484111/3,0execution68.9151770s.
+Actual205000 stops after firstdescriptor8complete=2PASS/6causalFAIL10.8029480s;
+planned11/3 but completed8/1, incomplete. Existing semanticunit2 and folder-source1
+UNRUN in that attempt. Eight actualmod routes reached: dirty/clean semantic no-op2
+PASS; read/mutation/unknown4 lose originalcache; committed-close1 loses actualbool
+to late originalFSMIOException; normalize1 reaches correct result/cache but uses
+2 acquisitions rather than required single manifest owner. Existing FSM already
+preserves genuine CSP+secondary close in uncertainty_close; its cache still wrong.
+All8 strict modroots absent/bothcleanup/0duplicateTimeout. Separate actual safe
+folder-source2050591causalFAIL6.5119510s,1/1complete/bothcleanup/0dupTimeout;
+reads source only, detects directProcess.Start; original actualUI remains UNRUN.
+[Packet](recovery/storage-migration-original-mod-folder-20261009/manifest.json)
+30artifacts/36pins verified originals; no shared11 complete/doubleexecutionclaim.
+Next modoneowner+latecache+completedflag and existingmanagedfolderhelper/UI2,
+source/exact13 gate then fresh Plan/actual13. Knownclosepreservation intentional
+behaviorchange; no full atomicity with callerSaveSettings. No GM authored contract
+change. Otheroriginalpublishers/finalinventory open; T061–T065/B2–B5 unchanged.
+
 ## Mod manifest/cache and safe folder baseline installed — test-first WIP, 2026-10-09
 
 Browser GREEN12 packet/ref/raw2a75780a saved66artifacts/30pins; finalreview next.

@@ -1,0 +1,67 @@
+{
+  "Categories": [
+    "portable-original-mod-manifest-cache-linux",
+    "portable-original-world-profile-folder-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "208d6a2cfde38207c19bb5d174bdede93ccf04c2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-original-mod-manifest-cache-linux",
+      "Seconds": 3.4493378,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0534439,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0379953,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0820817,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:10.8029480",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 11,
+    "CompletedCases": 8,
+    "UnderfilledDescriptors": [
+      "portable-original-mod-manifest-cache-linux-unit-002",
+      "portable-original-world-profile-folder-linux-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 8,
+    "Executed": 8,
+    "Passed": 2,
+    "Failed": 6
+  },
+  "DuplicateTests": []
+}
