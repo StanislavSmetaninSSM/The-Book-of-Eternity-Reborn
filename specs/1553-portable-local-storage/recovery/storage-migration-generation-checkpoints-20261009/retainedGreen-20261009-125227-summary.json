@@ -1,0 +1,75 @@
+{
+  "Categories": [
+    "portable-session-generation-life-finalization-linux",
+    "portable-session-generation-finalizer-retention-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "1fbf7885907c37ccc95bfedf693e769ae7a3aad8",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-session-generation-finalizer-retention-linux",
+      "Seconds": 8.0713133,
+      "BudgetMinutes": 1,
+      "Completed": true
+    },
+    {
+      "Category": "portable-session-generation-life-finalization-linux",
+      "Seconds": 9.4493105,
+      "BudgetMinutes": 1,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0596411,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0383713,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1021112,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0032438,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 7,
+  "WallTime": "00:00:22.4422785",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 3,
+    "CompletedCases": 3,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 3,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

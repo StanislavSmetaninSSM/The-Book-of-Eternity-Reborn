@@ -1,3 +1,15 @@
+## F18 generation fixture obligations — composed evidence, 2026-10-09
+
+Six original consumer fixtures plus connected sourceguard now have composed7 Linux
+passing obligations:4@4409840e +3@1fbf7885, not one7run. Real same-admission checkpoint/
+Committed rotation; originalSessionReplaced/exactsentinels/0mutations+input/taskjoin/
+rootcleanup. Life/Process/Late allow only their explicitly unchanged byte/absence read
+cohort; two caller finalizer states unchanged. No runtime change/arbitrary stale-read/
+complete-turn qualification. Initial build, timeout and new-oracle failures preserved.
+Catalog125306552/11339valid0; packet70/80, final raw/carrier review pending. Gacha final
+independent92a5 accepted41/32; no replay. Native3, physicalcuts,F16,ownedclose,whole
+registry remain; B2–B5 paused. Source and run details in current plan.
+
 ## F18 current gacha replacement — bounded result, 2026-10-09
 
 Authentic diagnostic115443 exposed legitimate pending-gacha Clear refusal. Runtime

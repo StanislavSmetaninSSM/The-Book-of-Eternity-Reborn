@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-session-generation-finalizer-retention-linux",
-      "reason": "T064 isolated Process/Late2 after complete1246023PASS/2 overbroad-new-oracle failures. Preserve original no-consumption contract and unchanged byte/absence cohort; strict zero-read remains default for other consumers. No runtime change; review/build/actual pending.",
+      "reason": "T064 original Process/Late corrected unchanged-cohort/caller-state oracle at1fbf7885, actual1252272PASS in combined3/2 selection. Historical overbroad-oracle failures preserved; no runtime change or arbitrary stale-read claim.",
       "contracts": [
         "#1553",
         "FR-005",
@@ -14,7 +14,7 @@
     },
     {
       "category": "portable-session-generation-life-finalization-linux",
-      "reason": "T064 current prerequisite run124515 reaches real accepted Life checkpoint/rotation; failed new zero-all-read assertion. Correct to original no-consumption contract with exact unchanged read cohort and immutable caller-state checks; source/actual pending.",
+      "reason": "T064 current-schema genuine accepted Life checkpoint at1fbf7885, actual1252271PASS in combined3/2 selection; request1/repairwrite0/cleanupintent1, caller state and exact readcohort retained. No runtime change; prior fixture failures preserved.",
       "contracts": [
         "#1553",
         "FR-005",
@@ -25,7 +25,7 @@
     },
     {
       "category": "portable-session-generation-terminal-snapshot-linux",
-      "reason": "T064 isolated prerequisite correction after interrupted122606; Original contract-valid terminal snapshot, actual same-admission generation rotation and joined SessionReplaced outcome; exact replacement bytes and zero subsequent canonical reads/mutations/input. Isolated after malformed old Ready caused a protocol-error branch. Fresh source review/build/actual pending.",
+      "reason": "T064 contract-valid Ready fixture4409840e actual1245001/1PASS; real committed rotation, exactsentinels and0laterread/mutation/input. Malformed original Ready diagnosis retained; not rerun unchanged.",
       "contracts": [
         "#1553",
         "FR-005",
@@ -36,7 +36,7 @@
     },
     {
       "category": "portable-session-generation-checkpoint-fixtures-linux",
-      "reason": "T064 remaining4 original behavioral fixtures plus source guard. Interrupted122606 supplies no completed selection; run these5 only after isolated snapshot/Life prerequisite diagnosis.",
+      "reason": "T064 composed5: browser/beforeinspection/sourceguard3PASS@4409840e actual124602 plus Process/Late2PASS@1fbf7885 actual125227. Not a fresh5run; narrower finalizer category documents corrected original preservation oracle.",
       "contracts": [
         "#1553",
         "FR-005",

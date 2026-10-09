@@ -1,3 +1,25 @@
+## F18 generation consumers — composed seven obligations GREEN, 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT3 PASS1fbf7885. Fresh integration Plan125132 selects
+3/2,0executed45.6946276s. Actual125227 completes3/3PASS22.4422785s,complete2/2,
+bothcleanup,0skip/duplicate/timeout. Each original checkpoint1/Committed1, exact new
+generation/sentinels, genuine SessionReplaced,0mutation/input, joined originals and
+removed roots. Explicit unchanged read cohorts retain exact bytes/absence; Life and
+Process actual caller turn/lastresponse identity+serializedvalue/image remain identical.
+Life real accepted validation follows diagnosticerrors=[]; request1/repairwrite0/
+cleanupintent1. No arbitrary stale-reader/complete output-response-route claim.
+
+Composed7=4passing obligations@4409840e (snapshot124500 plus3@124602) + corrected
+Life/Process/Late3@1fb125227. Not a new7run; historical3 overbroad-oracle failures,
+malformedReady/seed timeout and initial compile failure remain preserved. No runtime
+change was needed. Matching discovery125306:552categories/11339methods-files valid0,
+8.7895080s,bothcleanup; integration fresh1fb and unchangedunit850dde. [Packet](recovery/storage-migration-generation-checkpoints-20261009/manifest.json)
+70artifacts/originals80pins verified by parent; final independent raw/carrier gate pending.
+
+Next native3 observer/settlement ports (Windows actual unverified), finite physical
+publication cuts, F16 exact names/signed producer admission, concrete owned closes and
+whole registry. B2–B5 and T061–T065 remain open; no main/CI/GM/native change.
+
 ## F18 original finalizer contract — fixture WIP, 2026-10-09
 
 Independent raw/source classification of4409840e: Life/Process read unchanged outputs
