@@ -1,3 +1,27 @@
+## GameLoop diagnostic causal4 — 2026-10-09
+
+Frozen4c834790 passes independent SOURCE/FIXTURE/EXACT4. Fresh integration Plan041925 completes
+4planned/1descriptor/0executed, wall82.0986871s. Actual042107 completes4/4,1PASS+3 genuine causal FAIL,
+7.6918336s,exit1,no skip/duplicate/timeout,bothcleanup. Known original helper succeeds. All three cuts
+reach actual publisher CSP/member0 with authentic uncommitted journal/hash/exact retained bytes and
+foreign target. Both original loops join normally: Text1/Error1, Spectre reads1(primary)/0(diagnostic),
+no unexpected input/request. Primary loop already presents typed storage notice but attempts one
+canonical logging admission; the disclosed fixture guard refuses it before later work. Secondary
+controlled input error→actual logUnknown is swallowed and presents generic retry notice, known cause
+not retained; its later measured counters are zero. Original invalid-life-end helper attempts one
+FileExists admission after logUnknown (the reused guard's generic text says logging), signal bytes
+remain exact. Zero reached reads/mutations/publications/recovery callbacks does not prove no attempted
+admission. All three explicit roots removed. Downstream assertions after first failing oracle remain
+unexecuted; raw notices/signal equality/cause flags are evidence, not passed final assertions.
+
+[Packet](recovery/storage-migration-game-loop-diagnostic-20261009/manifest.json) preserves exact Plan,
+summary/TRX/raw/journals and historical source pins. Runtime remains unchanged. Proposed narrow fix:
+skip canonical diagnostic for original CSP; retain an effective actual diagnostic CSP for original-loop
+presentation/observation without recursive logging; AppendErrorLogEntry rethrows same actual CSP and
+attaches the original known exception, stopping other original callers before later canonical work.
+Known non-CSP diagnostic failures stay best effort. Exact4 final selection is proposed pending frozen
+source gate; no accepted12 replay, full gameplay/provider/native/secondary-close claim.
+
 ## GameLoop diagnostic4 test-only WIP — 2026-10-09
 
 Continuation final carrier122b3a04 passes independent/parent71/36 gate, actual12 accepted at020ac.

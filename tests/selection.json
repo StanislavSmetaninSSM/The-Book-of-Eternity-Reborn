@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-game-loop-diagnostic-outcome-linux",
-      "reason": "Test-only exact4 original GameLoop/diagnostic consumer fixture WIP, unbuilt/unexecuted pending frozen source/fixture gate. Prior continuation12 retained without replay.",
+      "reason": "Exact4 causal4c834790/042107 complete1PASS+3 real publisher failures; primary logging admission, secondary diagnostic outcome presentation and helper continuation. Final same4 proposed after narrow runtime source gate; earlier accepted12 not replayed.",
       "contracts": [
         "#1553",
         "FR-003",

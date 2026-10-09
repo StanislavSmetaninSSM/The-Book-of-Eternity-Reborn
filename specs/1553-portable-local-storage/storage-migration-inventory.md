@@ -1,3 +1,4 @@
+<!-- GameLoop causal4c/042107: complete4=1 known PASS+3 genuine failures; actual cut/journal/owned cleanup; runtime correction pending. -->
 ## Current accepted / open map — 2026-10-09
 
 Latest tested source020ac5e8 accepts bounded continuation12 (17.7182074s), with seven authentic Unknown

@@ -1,0 +1,165 @@
+{
+  "scope": "Original GameLoop and canonical error diagnostic evidence. Per-run causal versus fixture qualification in plan; no native/full-turn/secondary-close claim.",
+  "causal": {
+    "source": "4c834790ac7bc7cfc47746f3c3d197576aef88d1",
+    "qualification": "Raw exact selected source/summary/TRX and owned evidence; causal versus fixture and assertion reach classified in plan.",
+    "artifacts": [
+      {
+        "path": "causal-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-041925-850-250308-f84054b259b34c4391a799ef2a6ef6fa-categories/Build-integration.log",
+        "sha256": "139fcedc8c4b99a669433e9842b5880eaa4bcfba120294986d0fad50344f4a81",
+        "originalSha256": "3b7edd1f9e89a8e51438849af89dba1660265dd465dc4e703c49acb32fe45721"
+      },
+      {
+        "path": "causal-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-041925-850-250308-f84054b259b34c4391a799ef2a6ef6fa-categories/dotnet-test.log",
+        "sha256": "659c15cee8bf8702a84630e5cc6d58a9ec45655b57d9d0d333ec35a38c835169",
+        "originalSha256": "237388ed5a4d22644aafec90d81a94a30e49f42bdef683133977fca3e39ef147"
+      },
+      {
+        "path": "causal-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-041925-850-250308-f84054b259b34c4391a799ef2a6ef6fa-categories/plan.json",
+        "sha256": "d71ba5a55049fb4f7ed124eb560cd241143f7951015df5be66b7e5ba7ceffa57",
+        "originalSha256": "d71ba5a55049fb4f7ed124eb560cd241143f7951015df5be66b7e5ba7ceffa57"
+      },
+      {
+        "path": "causal-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-041925-850-250308-f84054b259b34c4391a799ef2a6ef6fa-categories/summary.json",
+        "sha256": "edc825754cecfa136b582b93dd94974865fe5104c775ac4374b7845958f30ba7",
+        "originalSha256": "edc825754cecfa136b582b93dd94974865fe5104c775ac4374b7845958f30ba7"
+      },
+      {
+        "path": "causal-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-042107-217-250605-d4fdb7eb54f349479a6599a1bb654438-categories/dotnet-test.log",
+        "sha256": "416019ad831ce669e0e0ead0e9f6d722c8aa2d2889bfe0acc803aa93e02d1fa5",
+        "originalSha256": "9180cb9a14b0dd788cfbdc60ed32c47f705c351a3d6520be599b453367868d29"
+      },
+      {
+        "path": "causal-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-042107-217-250605-d4fdb7eb54f349479a6599a1bb654438-categories/plan.json",
+        "sha256": "2984d0985c0bca07aa0a4e4f77e560d0498c10ccfec885750f5b3b78a4748b75",
+        "originalSha256": "2984d0985c0bca07aa0a4e4f77e560d0498c10ccfec885750f5b3b78a4748b75"
+      },
+      {
+        "path": "causal-actual-portable-game-loop-diagnostic-outcome-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-042107-217-250605-d4fdb7eb54f349479a6599a1bb654438-categories/portable-game-loop-diagnostic-outcome-linux-integration-001.trx",
+        "sha256": "b2433494082012eef961dca40c2d44e44437701c9d314d7a2439d1554f049a68",
+        "originalSha256": "ed3729e91515265139eed2cd97721511955a9bcd24a3c052eb8a43398865d960"
+      },
+      {
+        "path": "causal-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-042107-217-250605-d4fdb7eb54f349479a6599a1bb654438-categories/summary.json",
+        "sha256": "cb002f980a6de509668c93eccf4066a21574e2689df8a61e6b97314c518d19de",
+        "originalSha256": "cb002f980a6de509668c93eccf4066a21574e2689df8a61e6b97314c518d19de"
+      },
+      {
+        "path": "causal-row-portable-game-loop-diagnostic-outcome-linux-integration-001-0-0-journal.bin.gz",
+        "source": "/tmp/boe-game-loop-diagnostic-causal/portable-game-loop-diagnostic-outcome-linux-integration-001-0-0-journal.bin",
+        "sha256": "8b7123bd43ca0a272b1888528cd4777442000df29465c5ec47e978412c4317dd",
+        "originalSha256": "b2313370f8532096b88993973e87077cc3a999cf80cb810dee3d8b9b4092e333"
+      },
+      {
+        "path": "causal-row-portable-game-loop-diagnostic-outcome-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-game-loop-diagnostic-causal/portable-game-loop-diagnostic-outcome-linux-integration-001-0-0.json",
+        "sha256": "49db11b04ef97d7bac54af232b2c640301f951c178920a78a40430c1a0c9ce5b",
+        "originalSha256": "0c0aa65b0c996b9ed2824283d4c201dfea8e78e8248d26104ef7918a7609502e"
+      },
+      {
+        "path": "causal-row-portable-game-loop-diagnostic-outcome-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-game-loop-diagnostic-causal/portable-game-loop-diagnostic-outcome-linux-integration-001-0-1.json",
+        "sha256": "c4ee48cc8aa2a95fba93202423b9c1c5dcd6981c67bafaa4867feafee4a005ba",
+        "originalSha256": "c4ee48cc8aa2a95fba93202423b9c1c5dcd6981c67bafaa4867feafee4a005ba"
+      },
+      {
+        "path": "causal-row-portable-game-loop-diagnostic-outcome-linux-integration-001-1-0-journal.bin.gz",
+        "source": "/tmp/boe-game-loop-diagnostic-causal/portable-game-loop-diagnostic-outcome-linux-integration-001-1-0-journal.bin",
+        "sha256": "c7e25e2b5fd7c0fd624033018e5369bac8ffb607a70648359677e6c10b3dffdc",
+        "originalSha256": "a160037a04d39e2c07946484bc0e67ea96216fcf83bcb94d3227231ee8d9db62"
+      },
+      {
+        "path": "causal-row-portable-game-loop-diagnostic-outcome-linux-integration-001-1-0.json",
+        "source": "/tmp/boe-game-loop-diagnostic-causal/portable-game-loop-diagnostic-outcome-linux-integration-001-1-0.json",
+        "sha256": "26dd6737a891109974f8fb7698ab6e3171b6c8cfc1e211e79fbcc1e6d62fd8ec",
+        "originalSha256": "26dd6737a891109974f8fb7698ab6e3171b6c8cfc1e211e79fbcc1e6d62fd8ec"
+      },
+      {
+        "path": "causal-row-portable-game-loop-diagnostic-outcome-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-game-loop-diagnostic-causal/portable-game-loop-diagnostic-outcome-linux-integration-001-1-1.json",
+        "sha256": "cc5b26a9d696559a1bf5c642194a5cf2991cef88f1da044d25e007bafbef5ac1",
+        "originalSha256": "cc5b26a9d696559a1bf5c642194a5cf2991cef88f1da044d25e007bafbef5ac1"
+      },
+      {
+        "path": "causal-row-portable-game-loop-diagnostic-outcome-linux-integration-001-3-0-journal.bin.gz",
+        "source": "/tmp/boe-game-loop-diagnostic-causal/portable-game-loop-diagnostic-outcome-linux-integration-001-3-0-journal.bin",
+        "sha256": "9c66b9a0af6d96ac4b4c864332a5c1af9a1fddad79e661b8cb5feb04376d7067",
+        "originalSha256": "eb641aade37faf43270f08923b12b5042c01a9463d7f55b4222a2b7cec873de1"
+      },
+      {
+        "path": "causal-row-portable-game-loop-diagnostic-outcome-linux-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-game-loop-diagnostic-causal/portable-game-loop-diagnostic-outcome-linux-integration-001-3-0.json",
+        "sha256": "396865e80991a518b9d5555fed6d786bedaa3c487471f84431c8792789d8e6de",
+        "originalSha256": "eff568eda3d216dc1978102ce25a6e241d1dead988268e19a2deb62670dba6f7"
+      },
+      {
+        "path": "causal-row-portable-game-loop-diagnostic-outcome-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-game-loop-diagnostic-causal/portable-game-loop-diagnostic-outcome-linux-integration-001-3-1.json",
+        "sha256": "6c82bdeca2b5a9e01e0a6751a3ee158919fbb3c5e56b28e926417133e67dbe77",
+        "originalSha256": "6c82bdeca2b5a9e01e0a6751a3ee158919fbb3c5e56b28e926417133e67dbe77"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.GameLoopDiagnosticOutcome.cs",
+        "sha256": "2a3c76e0d7d3718ae58f5a8fec3aace8bc303328c0a9aea5d755e9f38fe7bcde"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.LoreRealmOutcome.cs",
+        "sha256": "5f4784534abbe3c0fdce981a93207eb30ddedb6347be815de665498bf8be691f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "165354067b7a85355b1b33cbf07f8cf9677344007043ea7098e09bc70e0286cb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "48b042933a8c6be09fd7b33646a60ae40b9613aa30feacf74d7447218c9fccb1"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "sha256": "188f388cf6c5e05250c4afb877b2e9e4edf93754cadd0369f6659ccba468bfec"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+        "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70"
+      },
+      {
+        "path": "BookOfEternityClient/AgentConsole/AgentConsoleLiveInputSource.cs",
+        "sha256": "3a1f932bc800a229357bf307fb8e01f0f110f340c6f308f350c4bcf5eb3eca9f"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "fea86112a179358626077a0957bd421794ee2f822e4f24e72584803619c6fd5d"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "86944c4fcf1de65b83960c1613bbdb9ffa1c0f1ae71349dfb4f315a68bae97fe"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "bd0b4a532e9fa61e46d813efa16b76be32634e5e0af35a248a31f2c5325047f3"
+      }
+    ]
+  }
+}
