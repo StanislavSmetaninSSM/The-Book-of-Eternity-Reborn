@@ -1,3 +1,33 @@
+## Accepted-continuation causal7 complete — 2026-10-09
+
+Frozen e80004ce passed independent SOURCE/FIXTURE/EXACT7. Matching Plan040103 freshly built integration
+85.3372564s, wall89.2881847s,7/1planned0executed. Actual040245 completes7/7 genuine causal FAIL,
+1/1descriptor,13.0930792s,exit1,no skips/duplicates/timeouts,bothcleanup. All seven positive actual
+MemberPublished/index0 cuts retain authentic uncommitted journals/hash and exact foreign target; all
+owned roots explicitly removed. This is causal evidence, not product GREEN or a fixture miss.
+
+Original incarnation application/audit consume exactly1/10 keys, no extra input/request; prior strength
+3/11 and real Committed image prerequisites pass. Each then attempts two ordinary leases plus one
+separately identified readonly closing lease; outward error is a later recovery InvalidDataException.
+Original rollback restoration returnsfalse after one later ordinary admission; diagnostic-only transient
+delete hides the CSP and attempts the next control-cleanup admission. No reached later validated reads,
+mutation hooks, publications or recovery-phase callbacks; zero callbacks does not mean no recovery attempt.
+Finalize helper, Shining wrapper and known-rollback→diagnostic row pass stop counters then fail Same(null).
+The latter returnsfalse and loses exact known outer missing-backup failure as CSP diagnostic.
+
+Raw prior image dictionaries and diagnostic bytes compare exactly independently; downstream Same/final
+assertions after a lease-counter failure were not executed. Helper-only Finalize and null-context Shining
+scope remain explicit, with genuine produced/materialized states, not full accepted-loop/GM proof.
+[Packet](recovery/storage-migration-accepted-continuation-20261009/manifest.json) preserves original Plan,
+summary/TRX and raw JSON/journals at exact e800. Production remains unchanged pending independent raw gate.
+
+Proposed bounded correction: six direct-CSP stop boundaries (memory3, Shining wrapper, rejected rollback,
+shared reviewed bookkeeping), preserve known original rollback cause on a diagnostic's actual CSP, and
+capture actual CSP before original generation-bound report-write/transient-delete owned lease disposal.
+Known best-effort/false/local flag semantics otherwise stay. Proposed final12 = causal7 + original known
+rollback authority/missing-backup2, diagnostic rollback ownership/write-refusal2, genuine Shining effects1.
+Frozen source/selection gate and fresh matching Plan required; no unrelated accepted selection replay.
+
 ## Accepted-continuation causal7 test-only WIP — 2026-10-09
 
 Lore final carrier f40ebd66 passes independent/parent integrity/docs gates72/50; composed14 remains

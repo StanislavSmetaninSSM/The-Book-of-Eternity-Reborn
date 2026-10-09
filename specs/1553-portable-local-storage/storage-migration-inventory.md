@@ -42,7 +42,7 @@ not runtime replay. No full-turn/native/secondary-close guarantee or full migrat
 Lore raw deletion, realm update/MainMenu incarnation/reentry/ordinary return catches and their owned
 closes are now accepted in composed14 above; their initial source findings remain in historical receipts.
 Current memory-legacy apply/canonical application audit/finalize, engine Shining-blessing wrapper,
-rejected rollback and canonical best-effort bookkeeping have test-only finite7 drafted, unbuilt/unexecuted.
+rejected rollback and canonical best-effort bookkeeping have actual causal7 complete at e800/040245 (7 genuine Unknown failures), runtime correction pending.
 Shared bookkeeping callers include diagnostic report writes plus subsequent transient/control deletions;
 known failure→actual reportUnknown is distinct. Preserve local flags/accepted facts and known policy.
 Ready accepted/cleared trajectory append catches3438/3592 remain open, with connected generation-bound
