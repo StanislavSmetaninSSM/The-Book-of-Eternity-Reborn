@@ -109,7 +109,6 @@ public class ImageService
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _desktopPathOpener = desktopPathOpener ?? new();
         _imageBaseDir = _fs.ResolvePath("images");
-        Directory.CreateDirectory(_imageBaseDir);
     }
 
     /// <summary>
@@ -713,11 +712,47 @@ public class ImageService
     /// <summary>Request the existing desktop association for a gallery directory, without display claims.</summary>
     public DesktopOpenResult OpenImagesFolder(string? entityType = null)
     {
-        var result = entityType != null && !IsSupportedEntityType(entityType)
-            ? new DesktopOpenResult(DesktopOpenStatus.Unsupported, _imageBaseDir)
-            : _desktopPathOpener.OpenFolder(entityType != null ? GetEntityDir(entityType) : _imageBaseDir);
+        DesktopOpenResult result;
+        if (entityType != null && !IsSupportedEntityType(entityType))
+            result = new DesktopOpenResult(DesktopOpenStatus.Unsupported, _imageBaseDir);
+        else
+        {
+            var path = entityType == null ? _imageBaseDir : Path.Combine(_imageBaseDir, EntityDirs[entityType.Trim()]);
+            try
+            {
+                PrepareGalleryDirectory(path);
+                result = _desktopPathOpener.OpenFolder(path, createIfMissing: false);
+            }
+            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException and not SessionReplacedException)
+            {
+                result = new DesktopOpenResult(DesktopOpenStatus.Failed, path, ex);
+            }
+        }
         ReportDesktopOpen(result);
         return result;
+    }
+
+    private void PrepareGalleryDirectory(string path)
+    {
+        var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        Exception? operationFailure = null;
+        try
+        {
+            _fs.EnsureWorkerGeneralMutationAllowed(lease);
+            lease.EnsureNoPendingLocalDecision();
+            _fs.VerifyCurrentSessionOperation(lease);
+            new TrustedLocalFileScope([_fs.GameSessionPath]).EnsureDirectory(path);
+        }
+        catch (CoordinatedStatePublicationUncertainException ex)
+        {
+            operationFailure = ex;
+            throw;
+        }
+        finally
+        {
+            CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, lease, completed: false, operationFailure).AsTask().GetAwaiter().GetResult();
+        }
     }
 
     private void ReportDesktopOpen(DesktopOpenResult result)

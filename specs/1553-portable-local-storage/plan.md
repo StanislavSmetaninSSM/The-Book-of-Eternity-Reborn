@@ -1,3 +1,33 @@
+## F16 original gallery causal4 and runtime WIP — 2026-10-09
+
+Independent corrected fixture/EXACT4 PASS8d0f064d. Fresh Plan101808 succeeds:
+4/1 selected,0executed,42.2576329s. Actual101928 completes **4/4 FAIL**,
+7.0335919s,bothcleanup,notimeout/skip/duplicate. Root parses all four raw rows:
+constructor creates previously absent canonical root/images; gallery with authentic
+nonCommitted Unknown and real Committed cleanup debt each creates NPC directory and
+requests association with0admission/0recovery and journal still present; symlink
+already refuses before association but throws ordinary InvalidData instead of the
+Failed/manual-path projection. No callback fixture error occurred in this baseline.
+Exact original journals/foreign or committed weather bytes and four root removals
+verify. [Gallery packet](recovery/storage-migration-image-directory-20261009/manifest.json)
+now20artifacts/originals32pins including the separate compile0.
+
+Runtime WIP is ImageService only: remove constructor mkdir; supported gallery paths
+are derived from the existing closed EntityDirs map, prepared through a private helper
+with one original lease and existing worker/pending/generation checks plus common
+TrustedLocalFileScope.EnsureDirectory. No new filesystem API, generation creation or
+file publication. Physical lease is closed before OpenFolder(createIfMissing:false).
+Ordinary preparation failure becomes Failed/manual; actual CSP/replacement escape.
+DesktopHelpersFixture explicitly prepares its independent canonical directory tree;
+RequiredDirs includes images but not npcs. Other folder fixtures either already do
+real StateManager bootstrap or operate on external fixture paths; viewer behavior and
+image23 setup already use explicit/irrelevant roots, so no unchanged replay is needed.
+
+Next independent SOURCE/RED-RAW/EXACT8 gate, fresh both-project Plan8 and actual8
+(new4 plus original root/NPC/invalid/file-blocker4). New fixture logic is unchanged
+from8d0f. Native, actual session rotation, secondary close, original settings/GameLoop
+and fullF16 remain open. Structural mkdir has no atomic-file decision claim.
+
 ## F16 constructor/gallery admission — bounded fixture WIP, 2026-10-09
 
 Source #1553,T062/T063/T064/T065,R25/F16. Prior image23 final independent RAW/
