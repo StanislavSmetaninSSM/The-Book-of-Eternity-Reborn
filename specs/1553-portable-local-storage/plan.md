@@ -1,3 +1,20 @@
+## Original browser established-result close installed — WIP, 2026-10-09
+
+Original causal RED12 preserved/ref/rawf52f3125:33artifacts/15pins verified
+originals;4PASS/8causalFAIL. Same actual transaction owner now captures original
+body failure, successful actual T and frozen outcome only after inner bound
+operation/generation check completes. Existing ReleaseOwnedLeaseAsync(false,
+operationFailure) retains incomplete original failure plus secondary close.
+A later close failure after established result blocks active binding readmission
+and throws existing MainOperationContinuationException<T> with same actual T,
+frozen outcome, close diagnostic and SessionFinalizationFailure signal for main
+closingFailed. Original Browser catches now CaptureBrowserResult(WithFollowUp);
+Prepared outcome catch remains unchanged. No helper API/generation/replacement/
+GM-authored contract change. Installed UNBUILT/UNRUN. Combined RED/source/exact12
+independent gate then fresh Plan/actual12; previous accepted selections unchanged
+and not replayed. Further original publishers/mod/UI/final inventory open.
+T061–T065 unchecked/B2–B5 paused/native transport/systemd unqualified.
+
 ## Original browser established-result causal RED12 — WIP, 2026-10-09
 
 Fixture/design/exact12 independently reviewed and installed byte-identical at

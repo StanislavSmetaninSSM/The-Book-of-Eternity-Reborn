@@ -242,19 +242,42 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
             {
-                await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                var generation = _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Original transaction generation is missing.");
-                return await SessionOperationContext.RunBoundAsync(_fs, generation, writeLease,
-                    () => operation(writeLease), () => captured.Outcome);
+                var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                Exception? operationFailure = null;
+                T? establishedResult = default;
+                var establishedOutcome = MainOperationOutcome.Completed;
+                var established = false;
+                try
+                {
+                    var generation = _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Original transaction generation is missing.");
+                    establishedResult = await SessionOperationContext.RunBoundAsync(_fs, generation, writeLease,
+                        () => operation(writeLease), () => captured.Outcome);
+                    establishedOutcome = captured.Outcome;
+                    established = true;
+                    return establishedResult;
+                }
+                catch (Exception bodyFailure) { operationFailure = bodyFailure; throw; }
+                finally
+                {
+                    try { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, operationFailure); }
+                    catch (Exception closeFailure) when (established)
+                    {
+                        SessionOperationContext.BlockPostOperationReadmission(_fs);
+                        var retained = new MainOperationContinuationException<T>(establishedResult!, establishedOutcome,
+                            _fs.DescribeMainOperationClose(establishedOutcome, true), closeFailure);
+                        retained.Data["SessionFinalizationFailure"] = closeFailure;
+                        throw retained;
+                    }
+                }
             }, () => captured.Outcome);
         }
         catch (MainOperationContinuationException<T> failure) when (failure.EstablishedResult is BrowserLocalWriteResult)
         {
-            return (T)(object)((BrowserLocalWriteResult)(object)failure.EstablishedResult!).WithFollowUp();
+            return (T)(object)CaptureBrowserResult(((BrowserLocalWriteResult)(object)failure.EstablishedResult!).WithFollowUp());
         }
         catch (SessionReplacedException) when (captured.Result != null && typeof(T) == typeof(BrowserLocalWriteResult))
         {
-            return (T)(object)captured.Result.WithFollowUp();
+            return (T)(object)CaptureBrowserResult(captured.Result.WithFollowUp());
         }
         finally { _browserDecision.Value = previous; }
     }
