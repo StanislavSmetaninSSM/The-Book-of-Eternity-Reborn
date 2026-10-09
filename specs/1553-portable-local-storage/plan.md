@@ -1,3 +1,23 @@
+## F18 native runtime contention — fixture WIP, 2026-10-09
+
+Read-only source map identifies three actual descriptor-bound runtime publications:
+proposal inbox directory, FileExists save and directory. Native Windows capability is
+checked before their existing mutation pause; Linux cannot execute these positives.
+Keep original primitives and existing semantic owners, add exact native3 category
+(unit1/integration2) with Windows requirement. No override/ordinary substitution/skip
+is used to manufacture platform PASS. Source/selection review and fresh both-project
+Plan pending; native actual stays explicitly unverified.
+
+Fixtures now observe positive main-owner contention and separate canonical-lock0 before
+release. Await either actual publisher or boundary so an earlier capability exception
+surfaces immediately. Every exit releases original gate, joins original publication
+while its lease is held, closes that lease, then joins original suppressed-flow reader.
+Save staging outlives publication. Emit original-task settlement and strict owned-root
+cleanup evidence; original final proposal/save/directory-type assertions unchanged.
+No production change. Generation composed7 has parent raw proof and final independent
+carrier review in progress at40d994ff. Remaining physicalcuts/F16/ownedclose/registry
+continue; B2–B5 paused.
+
 ## F18 generation consumers — composed seven obligations GREEN, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT3 PASS1fbf7885. Fresh integration Plan125132 selects

@@ -20421,6 +20421,38 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-native-runtime-contention-windows",
+      "responsibility": "Original descriptor-bound create-only proposal directory/save file publication and absent-reader classification. Positive main-admission contention before writer release, separate canonical-lock zero, original publication joins before lease close and original reader joins afterward.",
+      "excludes": "Requires actual Windows native primitives; Linux build/Plan is not execution qualification. No ordinary publisher substitution, platform override, external owner, live GM or global worker category.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmWorkerProposalInboxTests.cs",
+        "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "windows-latest"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerProposalInboxTests.ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -4143,16 +4143,26 @@ public sealed class FileSystemManagerTests : IDisposable
     [Fact]
     public async Task FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _output.WriteLine(line));
         const string destinationRelativePath =
             "saves/manual_saves/pre-journal-save.zip";
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var writerAtBoundary = NewBarrier();
         var allowPublication = NewBarrier();
         var readerContended = NewBarrier();
         var hooks = new FileSystemManagerHooks
         {
+            MainOwnerLockContendedAsync = () =>
+            {
+                Interlocked.Increment(ref mainContentions);
+                readerContended.TrySetResult();
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
-                readerContended.TrySetResult();
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             },
             AfterCanonicalMutationBoundaryValidatedAsync = async path =>
@@ -4164,6 +4174,7 @@ public sealed class FileSystemManagerTests : IDisposable
                     return;
                 }
 
+                Interlocked.Increment(ref paused);
                 writerAtBoundary.TrySetResult();
                 await allowPublication.Task.WaitAsync(
                     TimeSpan.FromSeconds(10));
@@ -4179,51 +4190,92 @@ public sealed class FileSystemManagerTests : IDisposable
             Path.Combine(stagingRoot, "pre-journal-save.zip"));
         await staged.Stream.WriteAsync(
             new byte[] { 0x50, 0x4B, 0x05, 0x06 });
-        Task<bool> readerTask;
-        Task first;
-        await using (var writeLease =
-                     await raceFs.AcquireCanonicalWriteLeaseAsync())
+        Task<bool>? readerTask = null;
+        Task? publicationTask = null;
+        try
         {
-            var publicationTask =
-                raceFs.MoveRuntimeFileIntoCanonicalSessionAsync(
-                    writeLease,
-                    staged,
-                    destinationRelativePath);
-            await writerAtBoundary.Task.WaitAsync(
-                TimeSpan.FromSeconds(10));
-
-            using (ExecutionContext.SuppressFlow())
+            await using (var writeLease =
+                         await raceFs.AcquireCanonicalWriteLeaseAsync())
             {
-                readerTask = Task.Run(
-                    () => raceFs.FileExists(
-                        destinationRelativePath));
+                try
+                {
+                    publicationTask =
+                        raceFs.MoveRuntimeFileIntoCanonicalSessionAsync(
+                            writeLease,
+                            staged,
+                            destinationRelativePath);
+                    var reached = await Task.WhenAny(writerAtBoundary.Task, publicationTask)
+                        .WaitAsync(TimeSpan.FromSeconds(10));
+                    if (ReferenceEquals(reached, publicationTask)) await publicationTask;
+                    Assert.Same(writerAtBoundary.Task, reached);
+
+                    using (ExecutionContext.SuppressFlow())
+                    {
+                        readerTask = Task.Run(
+                            () => raceFs.FileExists(
+                                destinationRelativePath));
+                    }
+
+                    var first = await Task.WhenAny(
+                            readerTask,
+                            readerContended.Task)
+                        .WaitAsync(TimeSpan.FromSeconds(10));
+                    Assert.Same(readerContended.Task, first);
+                    Assert.Equal(1, paused);
+                    Assert.True(mainContentions > 0);
+                    Assert.Equal(0, canonicalContentions);
+                    Assert.False(readerTask.IsCompleted);
+                    allowPublication.TrySetResult();
+                    await publicationTask;
+                }
+                finally
+                {
+                    allowPublication.TrySetResult();
+                    if (publicationTask is not null)
+                        await Record.ExceptionAsync(() => publicationTask);
+                }
             }
 
-            first = await Task.WhenAny(
-                    readerTask,
-                    readerContended.Task)
-                .WaitAsync(TimeSpan.FromSeconds(10));
-            allowPublication.TrySetResult();
-            await publicationTask;
+            Assert.True(await readerTask!);
         }
-
-        Assert.Same(readerContended.Task, first);
-        Assert.True(await readerTask);
+        finally
+        {
+            allowPublication.TrySetResult();
+            if (readerTask is not null)
+                await Record.ExceptionAsync(() => readerTask);
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-native-runtime-contention", method = nameof(FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence), root = _rootPath,
+                paused, mainContentions, canonicalContentions,
+                publicationStarted = publicationTask is not null, publicationSettled = publicationTask?.IsCompleted,
+                readerStarted = readerTask is not null, readerSettled = readerTask?.IsCompleted
+            }));
+        }
     }
 
     [Fact]
     public async Task FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _output.WriteLine(line));
         const string destinationRelativePath =
             "game_state/control/pre-journal-proposal";
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var writerAtBoundary = NewBarrier();
         var allowPublication = NewBarrier();
         var readerContended = NewBarrier();
         var hooks = new FileSystemManagerHooks
         {
+            MainOwnerLockContendedAsync = () =>
+            {
+                Interlocked.Increment(ref mainContentions);
+                readerContended.TrySetResult();
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
-                readerContended.TrySetResult();
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             },
             AfterCanonicalMutationBoundaryValidatedAsync = async path =>
@@ -4235,6 +4287,7 @@ public sealed class FileSystemManagerTests : IDisposable
                     return;
                 }
 
+                Interlocked.Increment(ref paused);
                 writerAtBoundary.TrySetResult();
                 await allowPublication.Task.WaitAsync(
                     TimeSpan.FromSeconds(10));
@@ -4253,37 +4306,68 @@ public sealed class FileSystemManagerTests : IDisposable
         await File.WriteAllTextAsync(
             Path.Combine(sourceDirectory, "proposal.json"),
             "{}");
-        Task<Exception?> readerTask;
-        Task first;
-        await using (var writeLease =
-                     await raceFs.AcquireCanonicalWriteLeaseAsync())
+        Task<Exception?>? readerTask = null;
+        Task? publicationTask = null;
+        try
         {
-            var publicationTask =
-                raceFs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
-                    writeLease,
-                    sourceDirectory,
-                    destinationRelativePath);
-            await writerAtBoundary.Task.WaitAsync(
-                TimeSpan.FromSeconds(10));
-
-            using (ExecutionContext.SuppressFlow())
+            await using (var writeLease =
+                         await raceFs.AcquireCanonicalWriteLeaseAsync())
             {
-                readerTask = Task.Run<Exception?>(
-                    () => Record.Exception(
-                        () => raceFs.FileExists(
-                            destinationRelativePath)));
+                try
+                {
+                    publicationTask =
+                        raceFs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                            writeLease,
+                            sourceDirectory,
+                            destinationRelativePath);
+                    var reached = await Task.WhenAny(writerAtBoundary.Task, publicationTask)
+                        .WaitAsync(TimeSpan.FromSeconds(10));
+                    if (ReferenceEquals(reached, publicationTask)) await publicationTask;
+                    Assert.Same(writerAtBoundary.Task, reached);
+
+                    using (ExecutionContext.SuppressFlow())
+                    {
+                        readerTask = Task.Run<Exception?>(
+                            () => Record.Exception(
+                                () => raceFs.FileExists(
+                                    destinationRelativePath)));
+                    }
+
+                    var first = await Task.WhenAny(
+                            readerTask,
+                            readerContended.Task)
+                        .WaitAsync(TimeSpan.FromSeconds(10));
+                    Assert.Same(readerContended.Task, first);
+                    Assert.Equal(1, paused);
+                    Assert.True(mainContentions > 0);
+                    Assert.Equal(0, canonicalContentions);
+                    Assert.False(readerTask.IsCompleted);
+                    allowPublication.TrySetResult();
+                    await publicationTask;
+                }
+                finally
+                {
+                    allowPublication.TrySetResult();
+                    if (publicationTask is not null)
+                        await Record.ExceptionAsync(() => publicationTask);
+                }
             }
 
-            first = await Task.WhenAny(
-                    readerTask,
-                    readerContended.Task)
-                .WaitAsync(TimeSpan.FromSeconds(10));
-            allowPublication.TrySetResult();
-            await publicationTask;
+            Assert.IsType<InvalidDataException>(await readerTask!);
         }
-
-        Assert.Same(readerContended.Task, first);
-        Assert.IsType<InvalidDataException>(await readerTask);
+        finally
+        {
+            allowPublication.TrySetResult();
+            if (readerTask is not null)
+                await Record.ExceptionAsync(() => readerTask);
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-native-runtime-contention", method = nameof(FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination), root = _rootPath,
+                paused, mainContentions, canonicalContentions,
+                publicationStarted = publicationTask is not null, publicationSettled = publicationTask?.IsCompleted,
+                readerStarted = readerTask is not null, readerSettled = readerTask?.IsCompleted
+            }));
+        }
     }
 
     [Fact]

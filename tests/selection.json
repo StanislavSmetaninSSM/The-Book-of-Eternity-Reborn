@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-native-runtime-contention-windows",
+      "reason": "T064 original native3 use MainOwnerLockContended before physical lock. Fix positive reach and original-task settlement; current cloud Linux only compiles/discovers, actual Windows remains unverified. Existing semantic owners retained.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-session-generation-finalizer-retention-linux",
       "reason": "T064 original Process/Late corrected unchanged-cohort/caller-state oracle at1fbf7885, actual1252272PASS in combined3/2 selection. Historical overbroad-oracle failures preserved; no runtime change or arbitrary stale-read claim.",
       "contracts": [
