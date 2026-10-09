@@ -1,0 +1,10 @@
+{
+  "kind": "f18-admission-contention",
+  "method": "AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+  "root": "/tmp/boe-browser-qte-fencing-22bb0dd8ee5c4b708cbbdaf20b37e738",
+  "paused": 1,
+  "mainContentions": 5,
+  "canonicalContentions": 0,
+  "firstSettled": true,
+  "secondSettled": true
+}

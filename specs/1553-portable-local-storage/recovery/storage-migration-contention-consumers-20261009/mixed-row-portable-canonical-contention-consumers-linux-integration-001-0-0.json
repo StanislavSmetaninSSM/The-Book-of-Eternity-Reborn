@@ -1,0 +1,10 @@
+{
+  "kind": "f18-admission-contention",
+  "method": "SubmitAsync_ConcurrentNewGameWaitsAndCannotKeepOldPendingAction",
+  "root": "/tmp/boe-browser-player-action-generation-12cc0d6d15274b57be2302a2ffb15f59",
+  "paused": 1,
+  "mainContentions": 3,
+  "canonicalContentions": 0,
+  "firstSettled": true,
+  "secondSettled": true
+}

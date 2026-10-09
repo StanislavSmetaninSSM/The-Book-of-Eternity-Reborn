@@ -1,0 +1,10 @@
+{
+  "kind": "f18-admission-contention",
+  "method": "FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication",
+  "root": "/tmp/boe-filesystem-manager-0759b48eca0c4dc7a66c62282caf03f8",
+  "paused": 1,
+  "mainContentions": 1,
+  "canonicalContentions": 0,
+  "firstSettled": true,
+  "secondSettled": true
+}

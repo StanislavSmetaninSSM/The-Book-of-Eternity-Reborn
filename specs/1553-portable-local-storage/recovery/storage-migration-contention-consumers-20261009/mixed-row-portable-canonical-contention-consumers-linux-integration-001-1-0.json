@@ -1,0 +1,10 @@
+{
+  "kind": "f18-admission-contention",
+  "method": "PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+  "root": "/tmp/boe-browser-qte-fencing-d74768c4d59346438c37d1ec63d45244",
+  "paused": 1,
+  "mainContentions": 1,
+  "canonicalContentions": 0,
+  "firstSettled": true,
+  "secondSettled": true
+}

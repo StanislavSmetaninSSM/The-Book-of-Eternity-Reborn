@@ -1,3 +1,26 @@
+## F18 contention8 — measured7PASS/1FAIL, 2026-10-09
+
+Frozen88130d5bd210eb34f28b9f697db541f00d2f5c74 passes independent SOURCE/FIXTURE/
+EXACT8. Fresh both-project Plan114038 builds/selects8/2,0execution,106.7457408s.
+Actual114248 executes all8:7PASS/1FAIL,16.9027081s,complete2/2,bothcleanup,
+no skips/duplicates/timeouts. Every original pause reaches1, MainOwner>0,
+canonical0, original actors settled; all8 distinct emitted roots observed absent.
+[Raw mixed packet](recovery/storage-migration-contention-consumers-20261009/manifest.json)
+contains19 artifacts/originals20 pins. No unchanged replay of the passing7.
+
+Remaining failure is original gacha concurrent-Clear expectation: both original
+actors reach/settle, then Clear throws InvalidDataException in
+EnsureNoLegacyStorageEvidence→PublishSessionReplacementAsync because completed
+direct gacha retains pending rollback under explorer_local_turn_rollback. This is
+not an admission timeout, synthetic Unknown or a measured runtime regression.
+FR007/008 explicitly require supported recovery before replacing unresolved evidence;
+Clear's known manifestless-evidence refusal and NewGame initialization warning remain.
+Classify this old unconditional-Clear assertion against current pending/rollback policy
+before changing any runtime or fixture. Proposed narrow next step: verify refusal is
+intentional, then exact original positive contention plus unchanged generation/pending/
+backup-byte retention at attempted replacement; no silent evidence deletion or bypass.
+Independent raw/contract review pending. Other F18/F16/owner queues continue; B2–B5 paused.
+
 ## F18 remaining ordinary contention8 — fixture WIP, 2026-10-09
 
 Source #1553/T064; continue the reviewed27-assignment classification. Exact8:
