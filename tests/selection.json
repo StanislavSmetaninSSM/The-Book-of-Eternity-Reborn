@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-item-trade-transport-owning-close-linux",
-      "reason": "T063/T065 original item trade/transport5owningbranches7operations14 test-first WIP. Fixture/design/exact14 independentPASSa9e175cb; real sealed/current/carrier/authority/actual priorSell buyback. Runtime unchanged UNBUILT/UNRUN. Fresh shared integration Plan22/2 with required engineGREEN8; separately execute original14 causalbaseline and engine8, never claim aggregateGREEN22. No resource-bearing stack/fullgame/B2/native.",
+      "reason": "T063/T065 originalfixture0e20d0db sharedfreshPlan21484822/2; actualtrade21501514complete=4knownstoragePASS/4storagecausalFAIL/6NPCpreparationFAIL9.4425487s,1/1bothcleanup0skipdupTimeoutstrict14roots. NPC current actor authority seed incomplete before actualowner operation, not causalRED6. Packet31/21 immutable, runtime unchanged. Correct fixture to real current MortalActorTestFixtures actor/root, preserve oracles/storagerows; fresh focused NPC6 before correction of5owners. Engine8 actual separateGREEN notaggregate22. No broadgame/B2/native.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -16,7 +16,7 @@
     },
     {
       "category": "portable-original-engine-repair-owning-close-linux",
-      "reason": "T063/T065 original engine repair/command4owning scopes8 test-first WIP, fixture/design/exact8 independentPASS5051180b. Actual expectedgeneration+supported cleanup surfaces; genuine actualCSP/secondary/fullsettlement/currentgen/allothergame_statebytes/strict8roots. Runtime unchanged, UNBUILT/UNRUN; originalPlan8/actual8 before demonstrated correction. No accepted GM semantics/game/process/native/B2.",
+      "reason": "T063/T065 runtime71548e5d testedsource0e20d0db freshsharedPlan21484822/2(8+14),0exec47.6385336s; actualengine2149538/8PASS7.7739400s,1/1bothcleanupstrict8roots0skipdupTimeout. Four samegenuineCSP+secondary/fullsettlement/noLater/Closing0; knownexactdeletion/retainedGuardianpayloadPASS. Packet50/28 originalRED25/14 immutable, source/exact8 independentPASS, finalGREEN/raw/carrierpending; no aggregate22execution. Catalogpending; knownlateclose/GMsemantics/game/native/B2unqualified.",
       "contracts": [
         "#1553",
         "FR-002",

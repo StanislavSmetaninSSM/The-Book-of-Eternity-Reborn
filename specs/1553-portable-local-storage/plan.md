@@ -1,3 +1,25 @@
+## Engine actual GREEN8 and item-trade preparation split — WIP, 2026-10-09
+
+Fresh shared integration Plan214848 at0e20d0db builds22/2 (engine8 + trade14),
+0execution47.6385336s. Actualengine2149538/8PASS7.7739400s,1/1complete,
+bothcleanup/0skipduplicateTimeout/strict8roots; runtime71548e5d sourcegatePASS.
+Four samegenuineCSP+secondary/fullsettlement/noLater/Closing0 andknownexact
+deletions/Guardianretainedpayload PASS. [Enginepacket](recovery/storage-migration-original-engine-repair-close-20261009/manifest.json)50artifacts28pins,
+originalRED25/14 immutable; finalGREEN/raw/carriergate pending.
+
+Separately actualtrade21501514complete=4knownstoragePASS/4storagecausalFAIL/
+6NPCpreparationFAIL9.4425487s,1/1bothcleanup/strict14roots/0skipdupTimeout.
+NPC seed fails realresourceowner composition exactactor authority (NPCId/profile)
+before originaltestedoperation, not causalRED6. Root acknowledges fixture
+preparation error; original7-operation draft review didnot establish runtimevalidity.
+[Initialpacket](recovery/storage-migration-original-trade-transport-close-20261009/manifest.json)31artifacts21pins immutable, not wholecausalRED14.
+Nextseed current complete MortalActorTestFixtures actor/currentNPCsInScene root;
+preserve typed/history/currentvalidation oracles and4storagepairs. Focused fresh
+NPC6 (failedpreparation only) before demonstratedruntime5owningbranchcorrection.
+Do notreplay unchanged4storageknownPASS; combinedcausal obligations remain
+source-pinned8+6, not anew14baseline. No aggregateGREEN22 orNPCsemanticclaim.
+Catalogpending until stablebatch; B2–B5paused/T061–T065unchecked/native open.
+
 ## Original item trade/transport owners — test-first WIP, 2026-10-09
 
 Installed independently reviewed14-case fixturea9e175cb byteidentically. Five

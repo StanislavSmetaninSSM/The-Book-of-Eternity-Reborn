@@ -1,0 +1,51 @@
+{
+  "mode": "repair_ready_session",
+  "uncertain": false,
+  "root": "/tmp/boe-original-engine-repair-close-1aeb06f42e044ae6b400dd81435fe566",
+  "boundary": "GameEngine+<DeleteValidationRepairReadyForSessionAsync>",
+  "actualOwnerState": "BookOfEternityClient.Core.GameEngine+<DeleteValidationRepairReadyForSessionAsync>d__686/<writeLease>5__1",
+  "acquisitionPauses": 1,
+  "publicationPauses": 1,
+  "attachments": 0,
+  "Calls": 0,
+  "failure": null,
+  "samePrimary": false,
+  "sameSecondary": false,
+  "lockAvailable": true,
+  "activeAfter": false,
+  "ambientClosed": true,
+  "mainClosed": true,
+  "contextClosed": true,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2ZmNmZTc2NTBmZTc0Mzk3OTdlNDI1NTNlYzg2NWU3NCJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2ZmNmZTc2NTBmZTc0Mzk3OTdlNDI1NTNlYzg2NWU3NCJ9",
+  "targetAfter": null,
+  "beforeFiles": {
+    "/tmp/boe-original-engine-repair-close-1aeb06f42e044ae6b400dd81435fe566/game_session/game_state/control/gm_validation_repair_artifact_stall_report.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC9nbV92YWxpZGF0aW9uX3JlcGFpcl9hcnRpZmFjdF9zdGFsbF9yZXBvcnQuanNvbiJ9",
+    "/tmp/boe-original-engine-repair-close-1aeb06f42e044ae6b400dd81435fe566/game_session/game_state/control/validation_repair_request.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC92YWxpZGF0aW9uX3JlcGFpcl9yZXF1ZXN0Lmpzb24ifQ==",
+    "/tmp/boe-original-engine-repair-close-1aeb06f42e044ae6b400dd81435fe566/game_session/game_state/control/validation_repair_ready.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC92YWxpZGF0aW9uX3JlcGFpcl9yZWFkeS5qc29uIn0=",
+    "/tmp/boe-original-engine-repair-close-1aeb06f42e044ae6b400dd81435fe566/game_session/game_state/meta/guardians.json": "77u/eyJndWFyZGlhbnMiOltdLCJndWFyZGlhblF1ZXN0UHJvZ3Jlc3NVcGRhdGVzIjpbXSwicmV0YWluZWQiOiJvcmlnaW5hbCJ9"
+  },
+  "afterFiles": {
+    "/tmp/boe-original-engine-repair-close-1aeb06f42e044ae6b400dd81435fe566/game_session/game_state/control/gm_validation_repair_artifact_stall_report.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC9nbV92YWxpZGF0aW9uX3JlcGFpcl9hcnRpZmFjdF9zdGFsbF9yZXBvcnQuanNvbiJ9",
+    "/tmp/boe-original-engine-repair-close-1aeb06f42e044ae6b400dd81435fe566/game_session/game_state/control/validation_repair_request.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC92YWxpZGF0aW9uX3JlcGFpcl9yZXF1ZXN0Lmpzb24ifQ==",
+    "/tmp/boe-original-engine-repair-close-1aeb06f42e044ae6b400dd81435fe566/game_session/game_state/meta/guardians.json": "77u/eyJndWFyZGlhbnMiOltdLCJndWFyZGlhblF1ZXN0UHJvZ3Jlc3NVcGRhdGVzIjpbXSwicmV0YWluZWQiOiJvcmlnaW5hbCJ9"
+  },
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

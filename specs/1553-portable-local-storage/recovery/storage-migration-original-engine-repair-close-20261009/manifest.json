@@ -212,5 +212,218 @@
         "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
       }
     ]
+  },
+  "green": {
+    "source": "0e20d0dbc3f5b6470c32be26d6e167c3c6db2e6c",
+    "artifacts": [
+      {
+        "path": "green-20261009-214848-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-214848-779-448791-1e912476b08546e292aa8be3bcf3cd81-categories/plan.json",
+        "sha256": "565ff7e7416cac8edc9431d1037d3133dd4520eb811f1317b5bc16e2e59f2964",
+        "originalSha256": "565ff7e7416cac8edc9431d1037d3133dd4520eb811f1317b5bc16e2e59f2964"
+      },
+      {
+        "path": "green-20261009-214848-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-214848-779-448791-1e912476b08546e292aa8be3bcf3cd81-categories/summary.json",
+        "sha256": "daecb8915de006225475933491c7a3c022542468e032663241aec75dd1f86b10",
+        "originalSha256": "daecb8915de006225475933491c7a3c022542468e032663241aec75dd1f86b10"
+      },
+      {
+        "path": "green-20261009-214848-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-214848-779-448791-1e912476b08546e292aa8be3bcf3cd81-categories/Build-integration.log",
+        "sha256": "bff38bb26788503c92a60f54fee1309e627c7c50ac9feeb66725e801b9bb6bc0",
+        "originalSha256": "7402504b7148d5f987cf6d0c6b7e1f3ffa66c396ada59ebe4c260ac46ed473e0"
+      },
+      {
+        "path": "green-20261009-214848-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-214848-779-448791-1e912476b08546e292aa8be3bcf3cd81-categories/dotnet-test.log",
+        "sha256": "1f8032216e2b6b82df02658853bc5d298a27c807e3494e0eedf4b864390ada92",
+        "originalSha256": "10dd21e6dc255f33a9c7d6086a7ff87ec03cfd3d067c021cf52da3b85a109a01"
+      },
+      {
+        "path": "green-20261009-214953-portable-original-engine-repair-owning-close-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-214953-750-449106-001be01003e34971894947cd3aa0fe24-categories/portable-original-engine-repair-owning-close-linux-integration-001.trx",
+        "sha256": "ec9609aaf21d738e6290eee703dc56f497637f866c3529d473aebdf9f9d61c62",
+        "originalSha256": "edba3ddca68a1a3e65188216647ba1b5888562af6323a983aa9cf11ab0d49429"
+      },
+      {
+        "path": "green-20261009-214953-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-214953-750-449106-001be01003e34971894947cd3aa0fe24-categories/plan.json",
+        "sha256": "bee5e4bae35a16f53c7be57f77ac273ff4e91dcc8009d8535abe41cf0aa56d8f",
+        "originalSha256": "bee5e4bae35a16f53c7be57f77ac273ff4e91dcc8009d8535abe41cf0aa56d8f"
+      },
+      {
+        "path": "green-20261009-214953-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-214953-750-449106-001be01003e34971894947cd3aa0fe24-categories/summary.json",
+        "sha256": "a1b51e9994f169770124fa2ad30ee35fd6eba98a63d9aadef6450de6a4a87a3f",
+        "originalSha256": "a1b51e9994f169770124fa2ad30ee35fd6eba98a63d9aadef6450de6a4a87a3f"
+      },
+      {
+        "path": "green-20261009-214953-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-214953-750-449106-001be01003e34971894947cd3aa0fe24-categories/dotnet-test.log",
+        "sha256": "4bcdeb58603838577c2c587e178c6405ee901e9040415b87882efc2370cf366c",
+        "originalSha256": "a41f24c0d6580bb6754941b8770a49145d713121d7fcc2b3aae1c3a8254c1b1b"
+      },
+      {
+        "path": "green-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/emitted-roots-after-run.json",
+        "sha256": "785bbc45d25c500b3c4ef39759afdbe3e3f74cef834a4c620102cd5bf7048ae3",
+        "originalSha256": "785bbc45d25c500b3c4ef39759afdbe3e3f74cef834a4c620102cd5bf7048ae3"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-7-1.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-7-1.json",
+        "sha256": "33aef1371269cb814c7b138de51649b6cf6bd1f9098e60b2bc4f7e844221ceda",
+        "originalSha256": "33aef1371269cb814c7b138de51649b6cf6bd1f9098e60b2bc4f7e844221ceda"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-7-0.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-7-0.json",
+        "sha256": "f75392145ef5049180375e88dcfb29f4b391454a48e5803e65063856b651eaf1",
+        "originalSha256": "f75392145ef5049180375e88dcfb29f4b391454a48e5803e65063856b651eaf1"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-6-1.json",
+        "sha256": "2b75a76ded268852f92c5078bf03162ffbef70aa8f38d281b33f4cc6dfbaa68f",
+        "originalSha256": "2b75a76ded268852f92c5078bf03162ffbef70aa8f38d281b33f4cc6dfbaa68f"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-6-0.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-6-0.json",
+        "sha256": "728478b90d33d6d88849983364697e0270d567aa5961e3d790c91cb5e924ed4f",
+        "originalSha256": "728478b90d33d6d88849983364697e0270d567aa5961e3d790c91cb5e924ed4f"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-5-1.json",
+        "sha256": "6123853a438e7fae171fa4fb2a2426af9aae6f7fcec4b111e16a3ad9905fb486",
+        "originalSha256": "6123853a438e7fae171fa4fb2a2426af9aae6f7fcec4b111e16a3ad9905fb486"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-5-0.json",
+        "sha256": "2ed0dc7ccd32a6c4552d78d17b2eb73d0e3681bec2599c1d3438b575ceaa916b",
+        "originalSha256": "72ffb684c63d3b2136f78e309a81f565c37ca6f83fc4f83433126eba89374dca"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-4-1.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-4-1.json",
+        "sha256": "c2dcf6a296aaa651ed68d74dac7c23caaec8521b0a28d73ed223fe54981f1177",
+        "originalSha256": "c2dcf6a296aaa651ed68d74dac7c23caaec8521b0a28d73ed223fe54981f1177"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-4-0.json",
+        "sha256": "dd5f3788bb62ef75245af050f2bdb0e69c46044f9e4da7f730ace6fd606d569e",
+        "originalSha256": "b440b4bc1fb06c2c8d03c144c69363d765d0d0585cbf35a49634f73f03f4d5f0"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-3-1.json",
+        "sha256": "afcc2e19c62e25d86050a5e1dc661cb536511eb546d638e39792170d311b5711",
+        "originalSha256": "afcc2e19c62e25d86050a5e1dc661cb536511eb546d638e39792170d311b5711"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-3-0.json",
+        "sha256": "84764a29f416ffefff3fe99542c210b016da6f8b542bb115aaebe0e460c93691",
+        "originalSha256": "cf53fcd2e623a74b818bb5870008d2a1bdab7f223f9589336fc44d8f9ab29e51"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-2-1.json",
+        "sha256": "6362e017d0c8c9de6ca12c5a98d7924ff3d9f5bec55a84e3b29f964c8be3d38d",
+        "originalSha256": "6362e017d0c8c9de6ca12c5a98d7924ff3d9f5bec55a84e3b29f964c8be3d38d"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-2-0.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-2-0.json",
+        "sha256": "ec30b95ac933c85e7f0df3200bd6d9bb2b2b74706f6514b2b39fb25425be5ff7",
+        "originalSha256": "ec30b95ac933c85e7f0df3200bd6d9bb2b2b74706f6514b2b39fb25425be5ff7"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-1-1.json",
+        "sha256": "a38f760ff1fe629752955d92397417a7998183392fbdf4e8a0148338d441f55a",
+        "originalSha256": "a38f760ff1fe629752955d92397417a7998183392fbdf4e8a0148338d441f55a"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-1-0.json",
+        "sha256": "c4ca2341850993a2f130eee97360b3f6e4ba1bf1910f83ab71d3941dc994e4b2",
+        "originalSha256": "1d7a2af9dade940e7f8e25e8f9b7fb7c5437170d09eeb9abefa67bb0209a623a"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-0-1.json",
+        "sha256": "7d37510e9fedce777ce076bdccde18a6e5004e39f7843e128f0dffe52a24f48c",
+        "originalSha256": "7d37510e9fedce777ce076bdccde18a6e5004e39f7843e128f0dffe52a24f48c"
+      },
+      {
+        "path": "green-row-portable-original-engine-repair-owning-close-linux-integration-001-0-0.json",
+        "source": "/tmp/boe-original-engine-repair-close-green-rows/portable-original-engine-repair-owning-close-linux-integration-001-0-0.json",
+        "sha256": "fa9e3bd8752b290ee29cee28a2b8c0c7eaad1446e2cee383b92b643564833902",
+        "originalSha256": "fa9e3bd8752b290ee29cee28a2b8c0c7eaad1446e2cee383b92b643564833902"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineRepair.cs",
+        "sha256": "5051180bb9786045303244022291d0f09e2003d4818b4e80f7a475cfc13d5ca8"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineMedia.cs",
+        "sha256": "c52a119149c2aa908819e787842d015083ca3dcb5f9311f769238119c4c89c5f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+        "sha256": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs",
+        "sha256": "9e84db305654a9d3fcad97c3adebf202bb3fe91d34995ddcba28c179254f6012"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "6211a8767cdb31b746a7e174a692cb80d015f4179af93e1ce06003a7ea5bc4ba"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine.cs",
+        "sha256": "068b82d978b059dea898b23b44cb6a46b1d830bf29528c9aa9d8a60610d63f85"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianProjectState.cs",
+        "sha256": "b7b776abc6535f8a78e041638a87864d655f8c72238c57b0b3f0e26679d5c75b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "b5fc3354e036438d04021e27d7738f083ee5f66efcdce2814314432b039150be"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "c07db27b4efce4d2610e8a72a855b8d11fd520bf4aef67ea517e40c52cde0592"
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+      }
+    ]
   }
 }

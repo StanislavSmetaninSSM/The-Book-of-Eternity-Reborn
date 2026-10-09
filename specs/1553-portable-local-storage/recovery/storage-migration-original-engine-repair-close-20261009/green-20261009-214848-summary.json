@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "portable-original-engine-repair-owning-close-linux",
+    "portable-original-item-trade-transport-owning-close-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "0e20d0dbc3f5b6470c32be26d6e167c3c6db2e6c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0479456,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0378713,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1072287,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 43.7487944,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0042242,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:47.6385336",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 22,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-original-engine-repair-owning-close-linux-integration-001",
+      "portable-original-item-trade-transport-owning-close-linux-integration-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
