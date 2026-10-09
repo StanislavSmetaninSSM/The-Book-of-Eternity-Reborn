@@ -1,3 +1,19 @@
+## Current F18 Guardian and selection reconciliation — 2026-10-09
+
+Guardian8 exact current-publication rollback PASS764818a9/132026,8.7818633s with cut1
+per row,9raw tracked images/generation restored and8owned roots removed; packet25/14,
+final raw/carrier/catalog pending. F16 native payload names final independentPASS5f12,
+22/22source533,packet44/52. Remaining physicalcuts/F16/ownedclose stay open.
+
+Eight omitted owners are restored to intended selection, covering64 historical cases
+across F13 carrier38940493, F14 carrier946419 and F17 carrier2fcd. Current helper17 plus
+separate nested1 preserves historical18; no selectors changed or fresh execution implied.
+[Audit at1fb](recovery/selection-reconciliation-1fbf7885.json) and [delta533](recovery/selection-delta-533078a9.json)
+retain exact method dispositions and six wildcard exclusions. Twenty moved-method gaps
+are reconciled; four F18 old names have selected renamed owners. This is source coverage,
+not whole migration acceptance. Baseline d024 F01–F19 map below remains historical.
+Current intended selection124IDs; no aggregate run. T061–T065 unchecked; B2–B5 paused.
+
 ## F16 exact native payload names — bounded evidence, 2026-10-09
 
 Runtime a3c59545 / source533078a9: exact22/22 Linux PASS13145419.4931150s, complete4/4,

@@ -1,0 +1,1442 @@
+{
+  "source": "1fbf7885907c37ccc95bfedf693e769ae7a3aad8",
+  "base": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "qualification": "Read-only frozen source and archived-TRX reconciliation; no new discovery/build/execution or whole-migration acceptance.",
+  "newUnselected": [
+    "portable-gm-daemon-helper-close-neighbor",
+    "portable-gm-daemon-qte-storage-causal-linux",
+    "portable-gm-daemon-storage-current-linux",
+    "portable-gm-daemon-storage-delivery-neighbors",
+    "portable-gm-helper-current-linux",
+    "portable-gm-helper-original-contracts-linux",
+    "portable-gm-helper-stale-read-diagnostic-linux",
+    "portable-storage-dead-helper-current-route"
+  ],
+  "decisions": {
+    "portable-gm-daemon-helper-close-neighbor": "Include in intended whole-change selection; retain source-era receipts, no aggregate rerun implied.",
+    "portable-gm-daemon-qte-storage-causal-linux": "Include in intended whole-change selection; retain source-era receipts, no aggregate rerun implied.",
+    "portable-gm-daemon-storage-current-linux": "Include in intended whole-change selection; retain source-era receipts, no aggregate rerun implied.",
+    "portable-gm-daemon-storage-delivery-neighbors": "Include in intended whole-change selection; retain source-era receipts, no aggregate rerun implied.",
+    "portable-gm-helper-current-linux": "Include in intended whole-change selection; retain source-era receipts, no aggregate rerun implied.",
+    "portable-gm-helper-original-contracts-linux": "Include in intended whole-change selection; retain source-era receipts, no aggregate rerun implied.",
+    "portable-gm-helper-stale-read-diagnostic-linux": "Include in intended whole-change selection; retain source-era receipts, no aggregate rerun implied.",
+    "portable-storage-dead-helper-current-route": "Include in intended whole-change selection; retain source-era receipts, no aggregate rerun implied."
+  },
+  "currentHelperRows": 17,
+  "currentSeparateNestedRows": 1,
+  "exactMoved": [
+    {
+      "oldOwner": "browser-direct-gacha-linux",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry",
+      "owners": [
+        "portable-browser-rollback-outcomes"
+      ],
+      "selectedOwners": [
+        "portable-browser-rollback-outcomes"
+      ]
+    },
+    {
+      "oldOwner": "browser-direct-gacha-linux",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
+      "owners": [
+        "portable-browser-rollback-outcomes",
+        "portable-preparation-outcome-known-controls"
+      ],
+      "selectedOwners": [
+        "portable-browser-rollback-outcomes",
+        "portable-preparation-outcome-known-controls"
+      ]
+    },
+    {
+      "oldOwner": "browser-direct-gacha-linux-regression",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan",
+      "owners": [
+        "browser-rollback-linux-boundaries",
+        "portable-cleanup-outcome-neighbors-linux"
+      ],
+      "selectedOwners": [
+        "portable-cleanup-outcome-neighbors-linux"
+      ]
+    },
+    {
+      "oldOwner": "browser-direct-gacha-linux-regression",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
+      "owners": [
+        "browser-rollback-linux-boundaries",
+        "portable-browser-protocol-consumers-linux",
+        "portable-ordinary-outcome-recovery-neighbors"
+      ],
+      "selectedOwners": [
+        "portable-browser-protocol-consumers-linux",
+        "portable-ordinary-outcome-recovery-neighbors"
+      ]
+    },
+    {
+      "oldOwner": "console-explorer",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDirective_UpdatesFactionCoreWithoutException",
+      "owners": [
+        "portable-explorer-archive-known-controls"
+      ],
+      "selectedOwners": [
+        "portable-explorer-archive-known-controls"
+      ]
+    },
+    {
+      "oldOwner": "console-explorer-afterlife",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningPolitics_RealignmentPreviewCanCancelWithoutWritingPendingRequest",
+      "owners": [
+        "portable-explorer-archive-known-controls"
+      ],
+      "selectedOwners": [
+        "portable-explorer-archive-known-controls"
+      ]
+    },
+    {
+      "oldOwner": "console-explorer-afterlife",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement",
+      "owners": [
+        "portable-explorer-reroll-current-fixture"
+      ],
+      "selectedOwners": [
+        "portable-explorer-reroll-current-fixture"
+      ]
+    },
+    {
+      "oldOwner": "console-explorer-mortal",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CompanionDirective_UpdatesNpcCoreWithoutException",
+      "owners": [
+        "portable-explorer-archive-known-controls"
+      ],
+      "selectedOwners": [
+        "portable-explorer-archive-known-controls"
+      ]
+    },
+    {
+      "oldOwner": "gm-console-player-cancel-authority",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPlayerCancel_RealStagingRetiresOnlyConsumedSnapshot",
+      "owners": [
+        "portable-cleanup-outcome-neighbors-linux"
+      ],
+      "selectedOwners": [
+        "portable-cleanup-outcome-neighbors-linux"
+      ]
+    },
+    {
+      "oldOwner": "gm-main-run-owner-linux",
+      "project": "unit",
+      "method": "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck",
+      "owners": [
+        "gm-main-metadata-ordering-linux"
+      ],
+      "selectedOwners": [
+        "gm-main-metadata-ordering-linux"
+      ]
+    },
+    {
+      "oldOwner": "gm-main-run-owner-linux",
+      "project": "unit",
+      "method": "BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard",
+      "owners": [
+        "gm-main-metadata-ordering-linux"
+      ],
+      "selectedOwners": [
+        "gm-main-metadata-ordering-linux"
+      ]
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeNpcTradeInventoryRequestFindsSameTurnInitialIdAndWritesReceipt",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionRejectsStringAmountBeforeAnyWrite",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionWritesClosedReceiptsThenReadyWithoutOrdinaryTurnAuthority",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesAfterlifeMentorShowcaseAndLeavesPendingForClientCleanup",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesMortalShowcaseAndLeavesPendingForClientCleanup",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnAllowsSemanticallySameMortalWorldSnapshotJsonInAfterlifeRealm",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsFirstChaosSeaSystemGuardianBootstrapMirrorMutation",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsMissingPendingSnapshotContext",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsRawDeletedMortalWorldProfileFileInAfterlifeRealm",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnWritesCorrelatedTerminalSignal",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeValidationRepairAllowsRepairReadyAfterAcceptedTurnCompletion",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_FailBoeTurnWritesCorrelatedTerminalSignalAndFailsShellCommand",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_ReadBoeJsonReturnsObjectsThatAllowMissingPropertyDotAssignment",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationCopiesExplicitNoneMaterializeAndDependentResponses",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationDoesNotAdoptCompetingReadyAsOverwriteBaseline",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonClampsDepthAbovePowerShellLimit",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonNormalizesPlayerFacingPowerShellLineBreakArtifacts",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite",
+      "owners": [
+        "portable-gm-helper-stale-read-diagnostic-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "portable-coordinated-phase-consumers",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult",
+      "owners": [
+        "portable-cleanup-outcome-neighbors-linux",
+        "qte-rules"
+      ],
+      "selectedOwners": [
+        "portable-cleanup-outcome-neighbors-linux"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-afterlife",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnCanonicalWriteFailure_ReturnsToCallerForOneFullRollback",
+      "owners": [
+        "portable-accepted-normalization-outcomes"
+      ],
+      "selectedOwners": [
+        "portable-accepted-normalization-outcomes"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-afterlife",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles",
+      "owners": [
+        "portable-console-rollback-preparation"
+      ],
+      "selectedOwners": [
+        "portable-console-rollback-preparation"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-afterlife",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted",
+      "owners": [
+        "portable-console-rollback-preparation"
+      ],
+      "selectedOwners": [
+        "portable-console-rollback-preparation"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-afterlife",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear",
+      "owners": [
+        "portable-console-rollback-preparation",
+        "portable-lore-realm-outcome-known-controls"
+      ],
+      "selectedOwners": [
+        "portable-console-rollback-preparation",
+        "portable-lore-realm-outcome-known-controls"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-afterlife",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics",
+      "owners": [
+        "portable-restoration-publication-outcomes"
+      ],
+      "selectedOwners": [
+        "portable-restoration-publication-outcomes"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-afterlife",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom",
+      "owners": [
+        "portable-restoration-publication-outcomes"
+      ],
+      "selectedOwners": [
+        "portable-restoration-publication-outcomes"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-core",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart",
+      "owners": [
+        "portable-progression-outcome-neighbor"
+      ],
+      "selectedOwners": [
+        "portable-progression-outcome-neighbor"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-core",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_LifeEvaluationDispatchFailure_WritesErrorLog",
+      "owners": [
+        "portable-story-outcome-neighbors"
+      ],
+      "selectedOwners": [
+        "portable-story-outcome-neighbors"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-core",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition",
+      "owners": [
+        "portable-treatment-storage-neighbors-remaining-linux"
+      ],
+      "selectedOwners": [
+        "portable-treatment-storage-neighbors-remaining-linux"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-core",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof",
+      "owners": [
+        "portable-treatment-terminal-causal-linux"
+      ],
+      "selectedOwners": [
+        "portable-treatment-terminal-causal-linux"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-core",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition",
+      "owners": [
+        "portable-treatment-terminal-causal-linux"
+      ],
+      "selectedOwners": [
+        "portable-treatment-terminal-causal-linux"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-core",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan",
+      "owners": [
+        "portable-treatment-storage-neighbors-linux"
+      ],
+      "selectedOwners": [
+        "portable-treatment-storage-neighbors-linux"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-core",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleInvalidTriggerLifeEndRuntimeFailure_DeletesSignalAndWritesErrorLog",
+      "owners": [
+        "portable-game-loop-diagnostic-outcome-linux"
+      ],
+      "selectedOwners": [
+        "portable-game-loop-diagnostic-outcome-linux"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-core",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_LoadBetweenGenerationCheckAndTerminalRead_DoesNotConsumeReplacementSignal",
+      "owners": [],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "turn-lifecycle-repair",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_LoadAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement",
+      "owners": [],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "turn-lifecycle-repair",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DiagnosticOnlyFailure_LeavesOneUsableRollbackForCallerAndPreservesReport",
+      "owners": [
+        "portable-accepted-continuation-known-controls"
+      ],
+      "selectedOwners": [
+        "portable-accepted-continuation-known-controls"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-repair",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DiagnosticOnlyReportWriteFailure_StillLeavesRollbackToCaller",
+      "owners": [
+        "portable-accepted-continuation-known-controls"
+      ],
+      "selectedOwners": [
+        "portable-accepted-continuation-known-controls"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-repair",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_WaitLifecyclePreservesRearmedPublicationForSameTurnRetry",
+      "owners": [
+        "portable-treatment-storage-neighbors-linux"
+      ],
+      "selectedOwners": [
+        "portable-treatment-storage-neighbors-linux"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-repair",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_ArchivesExactCohortWithoutTouchingWorldOrRollbackFiles",
+      "owners": [
+        "portable-inactive-snapshot-evidence"
+      ],
+      "selectedOwners": [
+        "portable-inactive-snapshot-evidence"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-repair",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_LoadAfterAcceptedValidation_AbortsBeforeMutatingReplacement",
+      "owners": [],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "turn-lifecycle-repair",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RejectedRollbackResult_FailurePreservesOriginalEvidence",
+      "owners": [
+        "portable-accepted-continuation-known-controls"
+      ],
+      "selectedOwners": [
+        "portable-accepted-continuation-known-controls"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-snapshots",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_RefusesActiveForeignAndAmbiguousCohorts",
+      "owners": [
+        "portable-inactive-snapshot-evidence"
+      ],
+      "selectedOwners": [
+        "portable-inactive-snapshot-evidence"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-snapshots",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_RetainsEvidenceWhenArchivalCannotFinish",
+      "owners": [
+        "portable-inactive-snapshot-evidence"
+      ],
+      "selectedOwners": [
+        "portable-inactive-snapshot-evidence"
+      ]
+    },
+    {
+      "oldOwner": "turn-lifecycle-snapshots",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_LoadAfterTerminalSnapshotBeforeResolution_DoesNotReadReplacementSignal",
+      "owners": [],
+      "selectedOwners": []
+    }
+  ],
+  "exactMovedWithoutSelectedOwner": [
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeNpcTradeInventoryRequestFindsSameTurnInitialIdAndWritesReceipt",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionRejectsStringAmountBeforeAnyWrite",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionWritesClosedReceiptsThenReadyWithoutOrdinaryTurnAuthority",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesAfterlifeMentorShowcaseAndLeavesPendingForClientCleanup",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesMortalShowcaseAndLeavesPendingForClientCleanup",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnAllowsSemanticallySameMortalWorldSnapshotJsonInAfterlifeRealm",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsFirstChaosSeaSystemGuardianBootstrapMirrorMutation",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsMissingPendingSnapshotContext",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsRawDeletedMortalWorldProfileFileInAfterlifeRealm",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnWritesCorrelatedTerminalSignal",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeValidationRepairAllowsRepairReadyAfterAcceptedTurnCompletion",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_FailBoeTurnWritesCorrelatedTerminalSignalAndFailsShellCommand",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_ReadBoeJsonReturnsObjectsThatAllowMissingPropertyDotAssignment",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationCopiesExplicitNoneMaterializeAndDependentResponses",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationDoesNotAdoptCompetingReadyAsOverwriteBaseline",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonClampsDepthAbovePowerShellLimit",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonNormalizesPlayerFacingPowerShellLineBreakArtifacts",
+      "owners": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "gm-turn-helper-process",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite",
+      "owners": [
+        "portable-gm-helper-stale-read-diagnostic-linux"
+      ],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "turn-lifecycle-core",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_LoadBetweenGenerationCheckAndTerminalRead_DoesNotConsumeReplacementSignal",
+      "owners": [],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "turn-lifecycle-repair",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_LoadAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement",
+      "owners": [],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "turn-lifecycle-repair",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_LoadAfterAcceptedValidation_AbortsBeforeMutatingReplacement",
+      "owners": [],
+      "selectedOwners": []
+    },
+    {
+      "oldOwner": "turn-lifecycle-snapshots",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_LoadAfterTerminalSnapshotBeforeResolution_DoesNotReadReplacementSignal",
+      "owners": [],
+      "selectedOwners": []
+    }
+  ],
+  "wildcards": [
+    {
+      "oldOwner": "narrative-world",
+      "pattern": "BookOfEternityClient.Tests.StoryServiceTests.*",
+      "savedDiscoveryMethods": [
+        {
+          "method": "BookOfEternityClient.Tests.StoryServiceTests.StoryAppend_EscapedClosedSession_PropagatesSessionReplaced",
+          "owners": [
+            "portable-story-outcome-neighbors"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.StoryServiceTests.StoryAppend_WaitsForCanonicalWriteLease",
+          "owners": [
+            "portable-story-outcome-neighbors"
+          ]
+        }
+      ],
+      "qualification": "Saved discovery c92f243 /110425 only; current frozen selector ownership checked. Not current discovery or old-binary reconstruction."
+    },
+    {
+      "oldOwner": "browser-direct-gacha-linux",
+      "pattern": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_*",
+      "savedDiscoveryMethods": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence",
+          "owners": [
+            "portable-browser-direct-gacha-adoption-linux",
+            "portable-pending-beforeimage-admission"
+          ]
+        }
+      ],
+      "qualification": "Saved discovery c92f243 /110425 only; current frozen selector ownership checked. Not current discovery or old-binary reconstruction."
+    },
+    {
+      "oldOwner": "browser-direct-gacha-linux",
+      "pattern": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_*",
+      "savedDiscoveryMethods": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity",
+          "owners": [
+            "portable-pending-beforeimage-admission"
+          ]
+        }
+      ],
+      "qualification": "Saved discovery c92f243 /110425 only; current frozen selector ownership checked. Not current discovery or old-binary reconstruction."
+    },
+    {
+      "oldOwner": "browser-direct-gacha-linux",
+      "pattern": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_*",
+      "savedDiscoveryMethods": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup",
+          "owners": [
+            "portable-browser-direct-gacha-adoption-linux",
+            "portable-pending-beforeimage-admission"
+          ]
+        }
+      ],
+      "qualification": "Saved discovery c92f243 /110425 only; current frozen selector ownership checked. Not current discovery or old-binary reconstruction."
+    },
+    {
+      "oldOwner": "gm-daemon-prompt-delivery",
+      "pattern": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.*",
+      "savedDiscoveryMethods": [
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage",
+          "owners": [
+            "portable-gm-daemon-storage-delivery-neighbors"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation",
+          "owners": [
+            "gm-daemon-prompt-delivery",
+            "gm-main-affected-managed"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent",
+          "owners": [
+            "portable-gm-daemon-storage-delivery-neighbors"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation",
+          "owners": [
+            "portable-gm-daemon-storage-delivery-neighbors"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.QteIdle_QueriesOriginalWithoutRepaste",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal",
+          "owners": [
+            "gm-daemon-prompt-delivery",
+            "gm-main-affected-managed"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+          "owners": [
+            "gm-daemon-prompt-delivery",
+            "gm-main-affected-input-fixture",
+            "gm-main-affected-managed"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay",
+          "owners": [
+            "gm-daemon-prompt-delivery",
+            "gm-main-affected-input-fixture",
+            "gm-main-affected-managed"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealRepairConsumers_DistinctRevisionsKeepDistinctIdentities",
+          "owners": [
+            "gm-daemon-prompt-delivery",
+            "gm-main-affected-managed"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_OriginalTerminalRetainsCompletionAndTimeoutBehavior",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying",
+          "owners": [
+            "portable-gm-daemon-storage-delivery-neighbors"
+          ]
+        }
+      ],
+      "qualification": "Saved discovery c92f243 /110425 only; current frozen selector ownership checked. Not current discovery or old-binary reconstruction."
+    },
+    {
+      "oldOwner": "portable-prepared-settings",
+      "pattern": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.*",
+      "savedDiscoveryMethods": [
+        {
+          "method": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles",
+          "owners": [
+            "portable-prepared-settings"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner",
+          "owners": [
+            "portable-prepared-settings"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings",
+          "owners": [
+            "portable-prepared-settings"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence",
+          "owners": [
+            "portable-cleanup-prepared-neighbors"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup",
+          "owners": [
+            "portable-cleanup-prepared-neighbors"
+          ]
+        }
+      ],
+      "qualification": "Saved discovery c92f243 /110425 only; current frozen selector ownership checked. Not current discovery or old-binary reconstruction."
+    }
+  ],
+  "evidence": [
+    {
+      "packet": "specs/1553-portable-local-storage/recovery/storage-migration-gm-helper-20261008/manifest.json",
+      "section": "runtimeFocused23",
+      "source": "6edfdceeab1172c18f4b6333063f213d7b2183e3",
+      "verifiedSourcePins": 26,
+      "trxs": [
+        {
+          "artifact": "focused-actual-portable-gm-helper-original-contracts-linux-integration-001.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-201932-083-124958-6625e9aa302a449aa76b0860817f68bd-categories/portable-gm-helper-original-contracts-linux-integration-001.trx",
+          "passed": 21,
+          "failed": 1,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationCopiesExplicitNoneMaterializeAndDependentResponses",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeValidationRepairAllowsRepairReadyAfterAcceptedTurnCompletion",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnWritesCorrelatedTerminalSignal",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionWritesClosedReceiptsThenReadyWithoutOrdinaryTurnAuthority",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonNormalizesPlayerFacingPowerShellLineBreakArtifacts",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonClampsDepthAbovePowerShellLimit",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_FailBoeTurnWritesCorrelatedTerminalSignalAndFailsShellCommand",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationDoesNotAdoptCompetingReadyAsOverwriteBaseline",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeNpcTradeInventoryRequestFindsSameTurnInitialIdAndWritesReceipt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady(replaceRequest: True, publishNewerReady: True)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnAllowsSemanticallySameMortalWorldSnapshotJsonInAfterlifeRealm",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsRawDeletedMortalWorldProfileFileInAfterlifeRealm",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsMissingPendingSnapshotContext",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_ReadBoeJsonReturnsObjectsThatAllowMissingPropertyDotAssignment",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesAfterlifeMentorShowcaseAndLeavesPendingForClientCleanup",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesMortalShowcaseAndLeavesPendingForClientCleanup",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsFirstChaosSeaSystemGuardianBootstrapMirrorMutation",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite",
+              "outcome": "Failed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady(replaceRequest: False, publishNewerReady: True)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady(replaceRequest: True, publishNewerReady: False)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionRejectsStringAmountBeforeAnyWrite",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "packet": "specs/1553-portable-local-storage/recovery/storage-migration-gm-helper-20261008/manifest.json",
+      "section": "runtimeDiagnostic20",
+      "source": "45a165ef06a866eb8f0c4060f145d4cf18b0e46b",
+      "verifiedSourcePins": 26,
+      "trxs": [
+        {
+          "artifact": "diagnostic-actual-portable-gm-helper-current-linux-unit-001.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-202629-788-129297-221d6d2ff51c4122bfef744c604ece87-categories/portable-gm-helper-current-linux-unit-001.trx",
+          "passed": 18,
+          "failed": 0,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"publication-unknown\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"chunk-trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"case-baselines\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"chunk-hash\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"committed-debt\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"large-read\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"large-write\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"admission-cancel\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"directory-leaf\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"running-owner\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"nested-default\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"ancestor-file\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"parse-fallback\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"chunk-incomplete\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"chunk-offset\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"known-rollback\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"chunk-duplicate\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes(mode: \"partial-close\")",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "artifact": "diagnostic-actual-portable-gm-helper-realm-link-causal-linux-unit-002.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-202629-788-129297-221d6d2ff51c4122bfef744c604ece87-categories/portable-gm-helper-realm-link-causal-linux-unit-002.trx",
+          "passed": 1,
+          "failed": 0,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperRejectsRealmLinkBeforePolicyWrite",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "artifact": "diagnostic-actual-portable-gm-helper-stale-read-diagnostic-linux-integration-003.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-202629-788-129297-221d6d2ff51c4122bfef744c604ece87-categories/portable-gm-helper-stale-read-diagnostic-linux-integration-003.trx",
+          "passed": 1,
+          "failed": 0,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "packet": "specs/1553-portable-local-storage/recovery/storage-migration-daemon-20261008/manifest.json",
+      "section": "runtimeGreen",
+      "source": "8ddf1325f2c08ffc3ed29c4cf6381922ee6e0ad3",
+      "verifiedSourcePins": 21,
+      "trxs": [
+        {
+          "artifact": "green-run-gm-main-helper-bounds-linux-unit-001.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-214244-564-149166-2548637a070d453aa559e359e921dd61-categories/gm-main-helper-bounds-linux-unit-001.trx",
+          "passed": 1,
+          "failed": 0,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "artifact": "green-run-gm-main-helper-outcome-loss-neighbors-unit-002.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-214244-564-149166-2548637a070d453aa559e359e921dd61-categories/gm-main-helper-outcome-loss-neighbors-unit-002.trx",
+          "passed": 2,
+          "failed": 0,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_OriginalConnectionLossBoundary(mode: \"terminal-main-operation-helper-timeout-reply-loss\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_OriginalConnectionLossBoundary(mode: \"terminal-main-operation-helper-caught-loss\")",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "artifact": "green-run-portable-gm-daemon-helper-close-neighbor-unit-003.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-214244-564-149166-2548637a070d453aa559e359e921dd61-categories/portable-gm-daemon-helper-close-neighbor-unit-003.trx",
+          "passed": 1,
+          "failed": 0,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperNestedDefaultRoleRemainsSeparate",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "artifact": "green-run-portable-gm-daemon-qte-storage-causal-linux-unit-004.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-214244-564-149166-2548637a070d453aa559e359e921dd61-categories/portable-gm-daemon-qte-storage-causal-linux-unit-004.trx",
+          "passed": 5,
+          "failed": 0,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalAdmittedQteConsumerUsesRecoveredRequestAndReady(mode: \"request-rollback\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalAdmittedQteConsumerUsesRecoveredRequestAndReady(mode: \"request-commit\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalAdmittedQteConsumerUsesRecoveredRequestAndReady(mode: \"ready-commit\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalAdmittedQteConsumerUsesRecoveredRequestAndReady(mode: \"ready-rollback\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalAdmittedQteConsumerUsesRecoveredRequestAndReady(mode: \"request-unknown\")",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "artifact": "green-run-portable-gm-daemon-storage-current-linux-unit-005.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-214244-564-149166-2548637a070d453aa559e359e921dd61-categories/portable-gm-daemon-storage-current-linux-unit-005.trx",
+          "passed": 14,
+          "failed": 0,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"request-end-loss\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"repair-refusal\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"post-send-refusal\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"cache-refusal\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"ready-race\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"terminal-refusal\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"cohort-read-refusal\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"cohort-change\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"malformed-request\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"malformed-response\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"config-refusal\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"notes-race\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"cohort-positive\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions(mode: \"large-batch\")",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "artifact": "green-run-portable-gm-daemon-storage-delivery-neighbors-unit-006.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-214244-564-149166-2548637a070d453aa559e359e921dd61-categories/portable-gm-daemon-storage-delivery-neighbors-unit-006.trx",
+          "passed": 4,
+          "failed": 0,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "packet": "specs/1553-portable-local-storage/recovery/storage-migration-dead-helpers-20261008/manifest.json",
+      "section": null,
+      "source": "50e0678d265cb2c20f99df4e4078946ab81d378a",
+      "verifiedSourcePins": 7,
+      "trxs": [
+        {
+          "artifact": "green-portable-storage-dead-helper-current-route-integration-001.trx.gz",
+          "original": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-215250-963-155662-0d343a3fb457437182a046fa09d3da18-categories/portable-storage-dead-helper-current-route-integration-001.trx",
+          "passed": 1,
+          "failed": 0,
+          "rows": [
+            {
+              "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_OriginalRuntimeNormalizationReachesCurrentRetirement",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "explicitF18Renames": [
+    {
+      "old": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_LoadBetweenGenerationCheckAndTerminalRead_DoesNotConsumeReplacementSignal",
+      "current": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_GenerationChangesBeforeTerminalInspection_DoesNotConsumeReplacementSignal",
+      "decision": "Closed as intentional renamed generation fixture; replacement is selected in portable-session-generation categories. Not a missing selector."
+    },
+    {
+      "old": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_LoadAfterTerminalSnapshotBeforeResolution_DoesNotReadReplacementSignal",
+      "current": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_GenerationChangesAfterTerminalSnapshot_DoesNotReadReplacementSignal",
+      "decision": "Closed as intentional renamed generation fixture; replacement is selected in portable-session-generation categories. Not a missing selector."
+    },
+    {
+      "old": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_LoadAfterAcceptedValidation_AbortsBeforeMutatingReplacement",
+      "current": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_GenerationChangesAfterAcceptedValidation_AbortsBeforeMutatingReplacement",
+      "decision": "Closed as intentional renamed generation fixture; replacement is selected in portable-session-generation categories. Not a missing selector."
+    },
+    {
+      "old": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_LoadAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement",
+      "current": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_GenerationChangesAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement",
+      "decision": "Closed as intentional renamed generation fixture; replacement is selected in portable-session-generation categories. Not a missing selector."
+    }
+  ],
+  "unselectedExactAfterRenameResolution": 20,
+  "wildcardClosure": {
+    "Story2": "Both exact methods selected by portable-story-outcome-neighbors.",
+    "DirectGacha3": "All three exact names selected by portable-pending-beforeimage-admission; two also owned by portable-browser-direct-gacha-adoption-linux. Overlap must not be counted twice.",
+    "DaemonDelivery15": "Four affected exact neighbors should be selected by adding omitted category; remaining eleven stay in original owner and their test file is byte-unchanged d024 to 1fb. Intentional finite selection, not lost tests.",
+    "Prepared5": "Two moved exact methods are selected by portable-cleanup-prepared-neighbors; remaining three retain original owner and test file is byte-unchanged d024 to 1fb. This closes ownership only, not future Prepared/binding adequacy."
+  }
+}

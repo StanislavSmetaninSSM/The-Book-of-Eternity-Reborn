@@ -19528,7 +19528,7 @@
     },
     {
       "id": "portable-gm-helper-current-linux",
-      "responsibility": "F13 exact18 current-role controls: bounded chunks/large UTF8, actual wait cancellation and original closing fence, partial transfer close, publication outcomes, role/path/baseline/parse semantics; owned processes and original-main retirement.",
+      "responsibility": "F13 exact17 current-role controls (nested-default separately owned): bounded chunks/large UTF8, actual wait cancellation and original closing fence, partial transfer close, publication outcomes, role/path/baseline/parse semantics; owned processes and original-main retirement.",
       "excludes": "No full helper/daemon cohort, provider, live GM or native Windows/PowerShell5.1. SIGINT proves the owned Linux helper role, not PowerShell keyboard interruption.",
       "changeHints": [
         "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",

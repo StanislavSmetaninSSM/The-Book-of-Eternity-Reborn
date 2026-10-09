@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-guardian-known-rollback-publication",
-      "reason": "T064 migrate eight stale physical-observer fixtures to real current MemberPublished cuts, retain exact before images/absence/generation and original Guardian IOException policy. Source/fixture and actual execution pending; no runtime change or native claim.",
+      "reason": "T064 original Guardian8 ported to actual MemberPublished at764818a9: actual1320268/8PASS with real cut1 per row, current journal/after-image proof,9exact tracked before-images/generation restored and owned roots removed. Original IOException policy retained; no runtime/native/whole-lifecycle claim.",
       "contracts": [
         "#1553",
         "FR-006",
@@ -1264,6 +1264,115 @@
         "FR-005",
         "FR-006",
         "T063-REMAINING-CONSUMERS",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-gm-daemon-helper-close-neighbor",
+      "reason": "F13 nested-default role/close case split unchanged from historical helper-current18; also passed in F14 runtime8ddf1325 actual214244 final27. Select its current separate owner once; no additional unique historical obligation or new execution.",
+      "contracts": [
+        "#1553",
+        "F13",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-gm-daemon-qte-storage-causal-linux",
+      "reason": "F14 five original admitted QTE request/Ready storage cases passed within runtime8ddf1325 actual214244 final27. Include affected whole-change boundary while retaining original owner/receipt and source-era limits; no new execution.",
+      "contracts": [
+        "#1553",
+        "F14",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-gm-daemon-storage-current-linux",
+      "reason": "F14 fourteen original-connection whole-cohort/CAS/transport cases passed at8ddf1325 actual214244 final27; twelve Running scopes and two local stopped-main losses retain distinct receipt/retirement limits. Historical acceptance only, no new execution/native claim.",
+      "contracts": [
+        "#1553",
+        "F14",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-gm-daemon-storage-delivery-neighbors",
+      "reason": "F14 four immutable-delivery/source-replacement neighbors passed within runtime8ddf1325 actual214244 final27. Delivery-only evidence does not establish storage admission; include existing affected controls without replay.",
+      "contracts": [
+        "#1553",
+        "F14",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-gm-helper-current-linux",
+      "reason": "F13 current dedicated-helper transport, role, path, baseline and publication outcomes: current selector owns 17 rows; historical 18-row GREEN at45a165ef is preserved, with nested-default now separately owned. Reconciles omitted intended-diff coverage; no new execution or native qualification.",
+      "contracts": [
+        "#1553",
+        "F13",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-gm-helper-original-contracts-linux",
+      "reason": "F13 original public helper contracts: 19 methods/21 rows passed at6edfdcee (original actual201932); retain source-era business/assertion and Linux-owned helper qualification. Reconciles the 19 moved methods without a selected owner; no replay or current-source PASS inferred.",
+      "contracts": [
+        "#1553",
+        "F13",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-gm-helper-stale-read-diagnostic-linux",
+      "reason": "F13 original stale read-modify-write refusal/diagnostic: one row passed at45a165ef actual202629. Reconciles the remaining moved method without a selected owner; retain source-era evidence, no new run/native claim.",
+      "contracts": [
+        "#1553",
+        "F13",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-storage-dead-helper-current-route",
+      "reason": "F17 exact unchanged original runtime-normalization route passed at50e0678d actual215250 after closed-helper deletion/census. Include current route control and retain source-only dead-code qualification; no fabricated dead-code RED or new execution.",
+      "contracts": [
+        "#1553",
+        "F17",
+        "FR-006",
         "T064-STORAGE-CUTS",
         "T065-STORAGE-CLOSURE"
       ]

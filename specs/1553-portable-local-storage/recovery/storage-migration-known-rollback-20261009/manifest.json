@@ -1,0 +1,216 @@
+{
+  "scope": "Original known-rollback current-publication consumer fixtures. Phase-specific source and complete original outcomes; historical hooks are not fresh evidence and native Windows remains unexecuted.",
+  "guardian8": {
+    "source": "764818a9abb60c6e3915e453ad26309040a94a41",
+    "artifacts": [
+      {
+        "path": "guardian8-20261009-131858-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-131858-875-354117-cb18f6238e2d4fcea3aa8784f96b1106-categories/plan.json",
+        "sha256": "44e509e054847b4a2e2b4849cf258914d83e2c430f62bb5c0b672febcb7c3176",
+        "originalSha256": "44e509e054847b4a2e2b4849cf258914d83e2c430f62bb5c0b672febcb7c3176"
+      },
+      {
+        "path": "guardian8-20261009-131858-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-131858-875-354117-cb18f6238e2d4fcea3aa8784f96b1106-categories/summary.json",
+        "sha256": "b5252454ce40d5afa97e604fecd9aa0a3565813285c03a88b59e2dad7e8a2001",
+        "originalSha256": "b5252454ce40d5afa97e604fecd9aa0a3565813285c03a88b59e2dad7e8a2001"
+      },
+      {
+        "path": "guardian8-20261009-131858-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-131858-875-354117-cb18f6238e2d4fcea3aa8784f96b1106-categories/Build-integration.log",
+        "sha256": "2bf85fdd0629fe1b8cdcdd29c2208e5558cd38c52bc7dd3cb5cb70eff796a666",
+        "originalSha256": "c87cf0e59ee27833822004eb0660ef8dad3052aa57a03667bfc853770bb11b43"
+      },
+      {
+        "path": "guardian8-20261009-131858-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-131858-875-354117-cb18f6238e2d4fcea3aa8784f96b1106-categories/dotnet-test.log",
+        "sha256": "74823f67ce89c3ec4454a3c44792748a9853fc86062ff0a4bc1f91030f28511d",
+        "originalSha256": "36162da1093665e5217b5a6f374f1848e7efeadbacdee2d6bdb5891bf71d9e0b"
+      },
+      {
+        "path": "guardian8-20261009-132026-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132026-970-354638-22275ff9bf1d4766a7c43ad6fc2f2aaa-categories/plan.json",
+        "sha256": "5bf73daeea24343915c730ff1bf16b20b2f9e6854cadc24fff202c33983aef8f",
+        "originalSha256": "5bf73daeea24343915c730ff1bf16b20b2f9e6854cadc24fff202c33983aef8f"
+      },
+      {
+        "path": "guardian8-20261009-132026-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132026-970-354638-22275ff9bf1d4766a7c43ad6fc2f2aaa-categories/summary.json",
+        "sha256": "a5146dd89caf0ffcb25a47019beba6a5c6acb7e50f24594c81e6bac35b4f59f6",
+        "originalSha256": "a5146dd89caf0ffcb25a47019beba6a5c6acb7e50f24594c81e6bac35b4f59f6"
+      },
+      {
+        "path": "guardian8-20261009-132026-portable-guardian-known-rollback-publication-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132026-970-354638-22275ff9bf1d4766a7c43ad6fc2f2aaa-categories/portable-guardian-known-rollback-publication-integration-001.trx",
+        "sha256": "d80ab41e9811ac8df29a4949b0a8279e460a319c3929bb28f8e2132eb1c424ec",
+        "originalSha256": "ffd6bdb07e3d1a989dbf4db26f3adbb16eec24fcaaec497120f4b6441e65d6f5"
+      },
+      {
+        "path": "guardian8-20261009-132026-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132026-970-354638-22275ff9bf1d4766a7c43ad6fc2f2aaa-categories/dotnet-test.log",
+        "sha256": "a712673c1a56e65adfd14450f960ab84cf91cbec5a31b1a13c139ebaeb82b196",
+        "originalSha256": "363abb8ffb592e76aefa6a181f5354096f1a51c06b99e086c82eaa2fdc35f72a"
+      },
+      {
+        "path": "guardian8-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-known-rollback-guardian8/emitted-roots-after-run.json",
+        "sha256": "787a07e7558b7fa7c97de8d439422bdc3ee8de9724d74d23a770d396569c9012",
+        "originalSha256": "787a07e7558b7fa7c97de8d439422bdc3ee8de9724d74d23a770d396569c9012"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-7-1.json",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-7-1.json",
+        "sha256": "754db2539167a93eaa6da4b2dd37a3f11193fe2467c2bc2dfc416c340c9e1cc1",
+        "originalSha256": "754db2539167a93eaa6da4b2dd37a3f11193fe2467c2bc2dfc416c340c9e1cc1"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-7-0.json.gz",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-7-0.json",
+        "sha256": "0e358655ba12b153cfbb2fbea2e92e686c98a69d75fff8f698dae492dd074d02",
+        "originalSha256": "7175c3fb682e972f7b8cd5f98edfe628e01a88cd2ef8f059833d997985b0d73c"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-6-1.json",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-6-1.json",
+        "sha256": "0715596f069d81d02ceba367c9bed0e6350767a9418f22178f02c7ed6e9184c8",
+        "originalSha256": "0715596f069d81d02ceba367c9bed0e6350767a9418f22178f02c7ed6e9184c8"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-6-0.json",
+        "sha256": "04b8811b36c59ccc1ecb061e50626a1ae9a9e92e357379ca5f86b0b61d82d402",
+        "originalSha256": "31503c46981f239ecebe93ae4fcf3b28edb4c96bc99be6c0d0309a916479138f"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-5-1.json",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-5-1.json",
+        "sha256": "e41687d4ad100b223507c8a49ab502268a19cc5a14cae4eefde272286a81f0d8",
+        "originalSha256": "e41687d4ad100b223507c8a49ab502268a19cc5a14cae4eefde272286a81f0d8"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-5-0.json",
+        "sha256": "100ce0c06f3fbc3ef6b1693d4f01016ddf09f5ce2c0ed9e2cac61ef55d631f59",
+        "originalSha256": "a8700aab02acf8b89f05f5bb3924db77a01bc0af7a7d3dfa880e04d5d09a0030"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-4-1.json",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-4-1.json",
+        "sha256": "16fb1347075fbf9e8b34ba5a8601c69763ceabef13d9a2e20b6943fc45ee07c3",
+        "originalSha256": "16fb1347075fbf9e8b34ba5a8601c69763ceabef13d9a2e20b6943fc45ee07c3"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-4-0.json",
+        "sha256": "a93281e12f36cbe4e1a8f76f11d160bf3048d8e4ad637913ef860abf46e745ba",
+        "originalSha256": "7aaa90324e8ccc7e3994a63486af3e1b9e02691ef75cecbbc4d041899d737986"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-3-1.json",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-3-1.json",
+        "sha256": "0fe6bd15811970acbe52c562187ba80594f54a350b2c45cb9d38458089bcb01b",
+        "originalSha256": "0fe6bd15811970acbe52c562187ba80594f54a350b2c45cb9d38458089bcb01b"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-3-0.json",
+        "sha256": "283cf12af3dcd738f212e0bfc655387628707da307733e3a6001996c315cdfea",
+        "originalSha256": "f0b4237e0857c0898917069f9ac562539c89c28303b7aa2210d54d191d2d0650"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-2-1.json",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-2-1.json",
+        "sha256": "a58d9497f2365a9c6ed5c189d67a0f662325b76a746845193ebc953382be2215",
+        "originalSha256": "a58d9497f2365a9c6ed5c189d67a0f662325b76a746845193ebc953382be2215"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-2-0.json",
+        "sha256": "b6cfb558f8ac4c96a64c12e3d925d2dff555b1e315c56a37ac51f38863051b74",
+        "originalSha256": "3adb0b734daee633f17f0f044b96ddc470a3abf1707593332aa9e9d0e9c4b869"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-1-1.json",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-1-1.json",
+        "sha256": "b669852af6413978971af15013456775f6134261c05ce6d54062a007a50fc3b7",
+        "originalSha256": "b669852af6413978971af15013456775f6134261c05ce6d54062a007a50fc3b7"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-1-0.json",
+        "sha256": "7d64071b76151034abf2ce8f0c78dd349811745530206b703f0987f9fe9812e4",
+        "originalSha256": "2b3aae6c71b0893e62ac46fbbfa066eb446b093665a3e9ab69c6cd6754555e83"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-0-1.json",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-0-1.json",
+        "sha256": "c4bd8cd6a2ff8c912e2372538f0d319e8e8187441f1d26d93cbee9823ed659a4",
+        "originalSha256": "c4bd8cd6a2ff8c912e2372538f0d319e8e8187441f1d26d93cbee9823ed659a4"
+      },
+      {
+        "path": "guardian8-row-portable-guardian-known-rollback-publication-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-known-rollback-guardian8/portable-guardian-known-rollback-publication-integration-001-0-0.json",
+        "sha256": "ef6f40bd2d4ec66639dfc5c28b51d674cf60dfc2ec4df83ab59874a9519c0eab",
+        "originalSha256": "a092183ee4fc5b36456c2aeef170a115b2d09f0b6096a8994c828cf8eb6cecfe"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs",
+        "sha256": "61f9416150ccff954902eb878fe1975ebdec6da9eaecd30393a35bd28aa05f02"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GuardianCorrectionServiceTests.cs",
+        "sha256": "f36a47f4e68a21455992a328e3c121118e649eed22ae4b2fec67feb1a5c54434"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/AfterlifeActorMaterializationTestFixture.cs",
+        "sha256": "5e8f4acef14095e6674c77dd7391080ed576582e9e9551a9059ae38568255d14"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+        "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+        "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+        "sha256": "cdb09fddfbcd8b1b0140a22e4baa23095be0ed2bdc6defb6b5cb676b5b2e564e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+        "sha256": "f1f8b1cfbc1a1e972506848cb3f7f7bf5f8f496fc28a8de2d2da7f72f2759b69"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "ea5ace036fed4080ac92221b679e099b6d150ae03043452e40f97e29f4bfa861"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "1169e4e2f993f77491749294516fbf7ff9d8dab697dc0e1b5daa13b593412664"
+      }
+    ]
+  }
+}

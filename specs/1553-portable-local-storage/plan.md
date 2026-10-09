@@ -1,3 +1,27 @@
+## F18 Guardian8 GREEN and intended-selection reconciliation — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT8 PASS764818a9. Fresh integration Plan1318588/1,
+0execution45.2373943s; actual1320268/8PASS8.7818633s,complete1/1,bothcleanup,
+0skip/duplicate/timeout. Command `./scripts/test-csharp.ps1 -Category portable-guardian-known-rollback-publication -NoBuild`; preceding same-category PlanOnly built integration.
+Every actual MemberPublished cut1 has uncommitted journal and verified changed after
+bytes;9tracked raw before-images/absence plus real generation restored before facade
+reads; active journal absent. Original outward IOException retained. All8roots removed.
+[Source-pinned packet](recovery/storage-migration-known-rollback-20261009/manifest.json)
+25artifacts/originals14pins verified. Final raw/carrier gate and matching catalog pending.
+No production edit; original unchanged accepted domain fixtures are not replayed broadly.
+
+Selection audit8 omissions are now included: F13 current17/original21/stale1,
+F14 QTE5/delivery4/current14/nested1, F17 current-route1. This is64 historical cases,
+not a new aggregate execution. Catalog responsibility corrects current17 from historical18
+(nested-default now separately owned); selectors unchanged. Exact source-era evidence,
+56removed exact selectors/24unselected same-name dispositions and six wildcard rationale
+are preserved in [original reconciliation](recovery/selection-reconciliation-1fbf7885.json)
+and [delta533](recovery/selection-delta-533078a9.json). Selection now124IDs including new
+Guardian owner (115+1+8). This closes20 moved-method omissions, not native or remaining
+consumer qualification. Discovery-only current catalog follows; no aggregate replay.
+F16 literal22 final independent RAW/CATALOG/CARRIER PASS5f12 with44/52. Remaining
+physicalcuts/F16signed producers/ownedclose/whole registry continue; B2–B5 paused.
+
 ## F18 Guardian physical cuts — fixture WIP, 2026-10-09
 
 Two original methods/eight cases retain their domain seed and service. Replace obsolete
