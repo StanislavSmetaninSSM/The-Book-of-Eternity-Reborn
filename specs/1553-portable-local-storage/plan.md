@@ -1,4 +1,4 @@
-## C2 private transport bounded GREEN26 — 2026-10-09
+## C2 private transport accepted bounded26 — 2026-10-09
 
 Independent SOURCE/RED-RAW/EXACT26 PASS47b1e259. Runtime/source
 47b1e2595c82dc8d868baaa1d636643adaaca6b7 passes fresh Plan090512:
@@ -16,15 +16,18 @@ capture revocation, caller-owned lease close and all11 fixture-root settlements
 hold. Four ordinary success controls pass, including real dependent progression;
 all15 existing ordinary IOException old/new/third-image controls also pass.
 [Raw packet](recovery/storage-migration-c2-outcome-20261009/manifest.json)
-retains81 artifacts/originals102 historical pins, including separate compile0,
+retains86 artifacts/originals136 historical pins, including separate compile0,
 causal4PASS/7FAIL and selector-refusal evidence. No fixture miss counts as RED.
 
 Runtime changes exactly seven demonstrated writer catches and three enclosing
 publisher catches (submission,repair,dependent). Read-only catches, ordinary
 IOException readback, generation/owner admission and mandatory revocation/disposal
-remain. Borrowing APIs acquire no new lease. Next: independent actual/raw review
-and fresh both-project discovery, then connected original GameEngine publishers
-and catches. Service26 is not full C2/B2–B5 acceptance. Native Windows and actual
+remain. Borrowing APIs acquire no new lease. Independent actual Astra XHigh GREEN/raw/carrier PASS5bed3f9c; all81 then-saved
+artifacts/originals102pins independently verified. Fresh both-project discovery
+091410 at5bed succeeds533 categories/11330methods-files,0 tests,60.4784702s;
+integration build40.2099778s and unit12.2513369s, both cleanup flags true. Catalog
+metadata review follows. Next connected original GameEngine publishers/catches;
+Service26 is not full C2/B2–B5 acceptance. Native Windows and actual
 secondary canonical lease-close failure remain unqualified. Other accepted cohorts
 are not replayed; T061–T065 stay open and B2–B5 remain paused.
 
