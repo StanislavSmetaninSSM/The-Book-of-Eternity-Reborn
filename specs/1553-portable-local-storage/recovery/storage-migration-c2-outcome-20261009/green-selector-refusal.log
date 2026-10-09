@@ -1,0 +1,6 @@
+Exception: /workspace/boe-1553-storage-migration/scripts/test-csharp.ps1:79
+Line |
+  79 |  … nt -ne 1) { throw "Unknown category '$id'. Use -ListCategories; no wo …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Unknown category
+     | 'portable-spiritual-c2-storage-outcome-linux,portable-spiritual-c2-known-readback'. Use -ListCategories; no workload started.

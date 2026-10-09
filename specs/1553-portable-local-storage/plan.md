@@ -1,21 +1,32 @@
-## C2 private transport causal7 and runtime WIP — 2026-10-09
+## C2 private transport bounded GREEN26 — 2026-10-09
 
-Independent SOURCE/FIXTURE/EXACT11 PASS3e88690a. Fresh Plan090014 succeeds
-43.2620023s,11 cases/1 descriptor,0 executed. Matching actual090122 completes
-**11/11:4 PASS,7 genuine FAIL**,34.2058768s; both cleanup flags, no timeout/skip/
-duplicate. Every selected unknown reaches one authentic nonCommitted member0
-journal and original CSP, then wrongly returns blocked/repair_required with1–3
-post-cut canonical reads. Exact journals/foreign/prior images and all11 original
-lease/root settlements remain. Four ordinary controls pass. No fixture miss or
-synthetic CSP is counted as RED. [Raw packet](recovery/storage-migration-c2-outcome-20261009/manifest.json)
-retains41 artifacts/originals68 pins including separate compile0 evidence.
+Independent SOURCE/RED-RAW/EXACT26 PASS47b1e259. Runtime/source
+47b1e2595c82dc8d868baaa1d636643adaaca6b7 passes fresh Plan090512:
+26 cases/2 descriptors,0 executed,43.2558359s. Matching actual090832 completes
+**26/26 PASS**,2/2 descriptors,76.4374693s; both cleanup flags, no timeout/skip/
+duplicate. Exact categories are portable-spiritual-c2-storage-outcome-linux and
+portable-spiritual-c2-known-readback. Invoke multiple IDs as a PowerShell array
+with -Command; the earlier comma-string -File invocation was rejected before
+workload and is retained separately, not counted as a build/test result.
 
-Runtime WIP excludes CSP at exactly seven demonstrated writer catches and three
-enclosing publisher catches (submission, repair, dependent). Read-only catches,
-ordinary IOException readback, generation/owner admission, capture revocation and
-disposal remain. No owned lease is added to borrowing APIs. Next independent source/
-raw/exact26 gate, fresh Plan26 then new11 plus existing known15. Engine callers and
-full C2 remain separately open; no GM/gameplay schema change or repeated other cohort.
+Root parses all new11 raw rows: seven authentic nonCommitted member0 journals,
+unchanged foreign/prior committed images, the same original CSP rethrown and
+zero subsequent canonical reads/mutations/leases/recovery/publications. Original
+capture revocation, caller-owned lease close and all11 fixture-root settlements
+hold. Four ordinary success controls pass, including real dependent progression;
+all15 existing ordinary IOException old/new/third-image controls also pass.
+[Raw packet](recovery/storage-migration-c2-outcome-20261009/manifest.json)
+retains81 artifacts/originals102 historical pins, including separate compile0,
+causal4PASS/7FAIL and selector-refusal evidence. No fixture miss counts as RED.
+
+Runtime changes exactly seven demonstrated writer catches and three enclosing
+publisher catches (submission,repair,dependent). Read-only catches, ordinary
+IOException readback, generation/owner admission and mandatory revocation/disposal
+remain. Borrowing APIs acquire no new lease. Next: independent actual/raw review
+and fresh both-project discovery, then connected original GameEngine publishers
+and catches. Service26 is not full C2/B2–B5 acceptance. Native Windows and actual
+secondary canonical lease-close failure remain unqualified. Other accepted cohorts
+are not replayed; T061–T065 stay open and B2–B5 remain paused.
 
 ## C2 private transport storage outcome — bounded T062 design, 2026-10-09
 

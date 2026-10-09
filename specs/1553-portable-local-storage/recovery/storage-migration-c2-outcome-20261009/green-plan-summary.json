@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "portable-spiritual-c2-storage-outcome-linux",
+    "portable-spiritual-c2-known-readback"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "47b1e2595c82dc8d868baaa1d636643adaaca6b7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0589221,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0445699,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0892742,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 39.4998223,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0038395,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:43.2558359",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 26,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-spiritual-c2-known-readback-integration-001",
+      "portable-spiritual-c2-storage-outcome-linux-integration-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

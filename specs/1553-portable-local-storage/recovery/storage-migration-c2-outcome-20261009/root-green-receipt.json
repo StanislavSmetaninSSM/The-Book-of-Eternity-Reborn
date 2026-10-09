@@ -1,0 +1,136 @@
+{
+  "source": "47b1e2595c82dc8d868baaa1d636643adaaca6b7",
+  "actual": "20261009-090832-959-306546-694c535ed75f4bebb4d333725bfe3a3f-categories",
+  "tests": {
+    "Total": 26,
+    "Executed": 26,
+    "Passed": 26,
+    "Failed": 0
+  },
+  "rows": [
+    {
+      "mode": "repair_success",
+      "outcome": "Passed",
+      "cut": 0,
+      "sameCSP": false,
+      "disposition": "repaired",
+      "laterReads": 0,
+      "retainedPriorImages": 0,
+      "closeFailure": null
+    },
+    {
+      "mode": "repair_unknown",
+      "outcome": "Passed",
+      "cut": 1,
+      "sameCSP": true,
+      "disposition": null,
+      "laterReads": 0,
+      "retainedPriorImages": 39,
+      "closeFailure": null
+    },
+    {
+      "mode": "initial_pending_unknown",
+      "outcome": "Passed",
+      "cut": 1,
+      "sameCSP": true,
+      "disposition": null,
+      "laterReads": 0,
+      "retainedPriorImages": 39,
+      "closeFailure": null
+    },
+    {
+      "mode": "saved_pending_unknown",
+      "outcome": "Passed",
+      "cut": 1,
+      "sameCSP": true,
+      "disposition": null,
+      "laterReads": 0,
+      "retainedPriorImages": 40,
+      "closeFailure": null
+    },
+    {
+      "mode": "dependent_success",
+      "outcome": "Passed",
+      "cut": 0,
+      "sameCSP": false,
+      "disposition": "committed",
+      "laterReads": 0,
+      "retainedPriorImages": 0,
+      "closeFailure": null
+    },
+    {
+      "mode": "dependent_unknown",
+      "outcome": "Passed",
+      "cut": 1,
+      "sameCSP": true,
+      "disposition": null,
+      "laterReads": 0,
+      "retainedPriorImages": 40,
+      "closeFailure": null
+    },
+    {
+      "mode": "submission_unknown",
+      "outcome": "Passed",
+      "cut": 1,
+      "sameCSP": true,
+      "disposition": null,
+      "laterReads": 0,
+      "retainedPriorImages": 40,
+      "closeFailure": null
+    },
+    {
+      "mode": "saved_checkpoint_unknown",
+      "outcome": "Passed",
+      "cut": 1,
+      "sameCSP": true,
+      "disposition": null,
+      "laterReads": 0,
+      "retainedPriorImages": 40,
+      "closeFailure": null
+    },
+    {
+      "mode": "saved_success",
+      "outcome": "Passed",
+      "cut": 0,
+      "sameCSP": false,
+      "disposition": "committed",
+      "laterReads": 0,
+      "retainedPriorImages": 0,
+      "closeFailure": null
+    },
+    {
+      "mode": "initial_checkpoint_unknown",
+      "outcome": "Passed",
+      "cut": 1,
+      "sameCSP": true,
+      "disposition": null,
+      "laterReads": 0,
+      "retainedPriorImages": 38,
+      "closeFailure": null
+    },
+    {
+      "mode": "initial_success",
+      "outcome": "Passed",
+      "cut": 0,
+      "sameCSP": false,
+      "disposition": "committed",
+      "laterReads": 0,
+      "retainedPriorImages": 0,
+      "closeFailure": null
+    }
+  ],
+  "removedRoots": [
+    "/tmp/boe-resource-materialization-27a9b1ecb52c417aac56ec64c647d512",
+    "/tmp/boe-resource-materialization-5035790089984c6a9cda914d05f72350",
+    "/tmp/boe-resource-materialization-bfb7f3ec43824236986de118b7b1268a",
+    "/tmp/boe-resource-materialization-932152bbfbda432eb410c0cf733bd627",
+    "/tmp/boe-resource-materialization-eca2b8cff01047b58028306dcf33bab8",
+    "/tmp/boe-resource-materialization-e5580a75e6814191a08aaef8b492c58c",
+    "/tmp/boe-resource-materialization-b7c3a679a0ea40faa024871d15a6621c",
+    "/tmp/boe-resource-materialization-a4d46000e317488e96f6aa0956b77ffd",
+    "/tmp/boe-resource-materialization-9514dfbc26584f688c00dbd5d7b0f741",
+    "/tmp/boe-resource-materialization-4aa6391c6f374962931642a7fb40b643",
+    "/tmp/boe-resource-materialization-87eb9023e4904d118f329d38465e2b32"
+  ],
+  "scope": "Original services only; seven authentic retained journal/foreign cuts and exact previous committed images;4success, original capture/borrowedlease/root settlement. Known15 GREEN if included; no full engine/native/secondaryclose."
+}

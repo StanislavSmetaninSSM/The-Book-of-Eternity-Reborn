@@ -1,0 +1,67 @@
+{
+  "Categories": [
+    "portable-spiritual-c2-storage-outcome-linux",
+    "portable-spiritual-c2-known-readback"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "47b1e2595c82dc8d868baaa1d636643adaaca6b7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 42.960512,
+  "Descriptors": [
+    {
+      "Name": "portable-spiritual-c2-known-readback-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-c2-known-readback",
+      "Categories": [
+        "portable-spiritual-c2-known-readback"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2InitialTransport_ResolvesInjectedFailures|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2PendingRepair_ClassifiesAtomicWriteOutcome|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2SavedTransport_ClassifiesCheckpointWriteOutcome|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ProgressCommitClassifiesWriteFailure",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2InitialTransport_ResolvesInjectedFailures",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2PendingRepair_ClassifiesAtomicWriteOutcome",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2SavedTransport_ClassifiesCheckpointWriteOutcome",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ProgressCommitClassifiesWriteFailure",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "portable-spiritual-c2-storage-outcome-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-c2-storage-outcome-linux",
+      "Categories": [
+        "portable-spiritual-c2-storage-outcome-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualPrivateTransportPreservesCanonicalPublicationOutcome",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 11,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualPrivateTransportPreservesCanonicalPublicationOutcome",
+          "Cases": 11
+        }
+      ]
+    }
+  ]
+}
