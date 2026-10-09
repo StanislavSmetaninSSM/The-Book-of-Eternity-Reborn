@@ -29,6 +29,11 @@ mkdir and will explicitly EnsureDirectoryStructure when behavior migrates; that
 bootstrap creates images but not npcs. No fixture setup change before causal4.
 Next independent SOURCE/FIXTURE/EXACT4 gate, fresh integration Plan4 and baseline4;
 then minimal original runtime/fixture migration and fresh both-project GREEN8.
+Independent fixture gate PASSd225fc7a. First Plan101605 failed before discovery:
+CS0246 missing UI namespace import for LocalizationManager,35.9336164s,0tests,
+owned cleanup complete. Add only the missing using; this is fixture compilation,
+not behavioral RED. [Gallery packet](recovery/storage-migration-image-directory-20261009/manifest.json)
+preserves both raw artifacts and16 source pins. Corrected fixture remains unrun.
 Actual session rotation, native Windows, secondary lease-close and wholeF16 remain
 unqualified; no new GM-authored/gameplay contract or example is required.
 

@@ -1,0 +1,87 @@
+{
+  "scope": "Original image constructor/gallery structural directory admission, existing managed association controls. No actual desktop/provider/sessionrotation/nativeWindows/settingsGameLoop/fullF16 qualification.",
+  "compile": {
+    "source": "d225fc7ac206c9f7c2f9dbb39d7cd966d1f01cd5",
+    "qualification": "Raw exact selected source/summary/TRX; build-only/causal/fixture/outcome classification in plan.",
+    "artifacts": [
+      {
+        "path": "compile-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-101605-812-318644-c5cbb40b6b734833ab28b0727efd71d8-categories/summary.json",
+        "sha256": "aa751b83cecdee254cbcef817e36ba07d5dfed864a53a4433dd33e118b80d93e",
+        "originalSha256": "aa751b83cecdee254cbcef817e36ba07d5dfed864a53a4433dd33e118b80d93e"
+      },
+      {
+        "path": "compile-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-101605-812-318644-c5cbb40b6b734833ab28b0727efd71d8-categories/dotnet-test.log",
+        "sha256": "a22befa6b3a88a6db44a6b0342f3d2a52796885ca382933714f600ca6079aa14",
+        "originalSha256": "8247bc018ff66b5796e2241a0130e6ac4adb686ad21f2392d6a86da8a2a90501"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Services/ImageService.cs",
+        "sha256": "4623263dbe9cb66476525a61d416d8d11d5b752a372e7d644526318c9f4a9ce0"
+      },
+      {
+        "path": "BookOfEternityClient/Services/DesktopPathOpener.cs",
+        "sha256": "00e7f0cfcbd04af74fc327b4a5f0d41a97694641d79c3d83278299dbd0052d1d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+        "sha256": "d372ecf78ecde37d351272d0e0c9b2476bb4a54f494d48762c1579e13885ab8b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+        "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ImageDirectoryAdmissionTests.cs",
+        "sha256": "e112e3a0c9bdebf54811e509d7a4f35941460be84083bf731a3bf0edcd238177"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/DesktopHelpersFixture.cs",
+        "sha256": "3a4f2d224218e55ced6a70c6cb537fd804d0d00aab26699597758bad81b94ddd"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/DesktopLaunchContractTests.cs",
+        "sha256": "2d394f27e9d4f28d01181eabcd0e565f6abbfe9977d5aa3f471cf5d3815a76f4"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/DesktopImageConsumerTests.cs",
+        "sha256": "d0512d6eaa93d176ecd3e690f3a080d8a534890d78496a96d073f85632c57763"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "6b0247d6a82de10ad4d0382aca41fab8909e187d23453e88573653a450b981b6"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "0392370306ecd439277489232afb60c043a4a2bbcedcfaff4285af9f4c8f9eea"
+      }
+    ]
+  }
+}
