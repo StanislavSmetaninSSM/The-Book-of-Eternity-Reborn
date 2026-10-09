@@ -561,5 +561,94 @@
         "sha256": "9df03b6713f05ce6dbb5be575b593392c8f59780bcb61e72e22da556b97e9efc"
       }
     ]
+  },
+  "catalog": {
+    "source": "d4b8f75e1be5473288dd1b0dadc32afe1a7d62e6",
+    "artifacts": [
+      {
+        "path": "catalog-20261009-193559-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193559-986-419334-a59dd9ab9451447197d62593a16492af-categories/catalog-audit.json",
+        "sha256": "b8b770972074bdf2d8e6996b26507d287a5f2b203788af4e99662f08e591d67e",
+        "originalSha256": "b8b770972074bdf2d8e6996b26507d287a5f2b203788af4e99662f08e591d67e"
+      },
+      {
+        "path": "catalog-20261009-193559-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193559-986-419334-a59dd9ab9451447197d62593a16492af-categories/summary.json",
+        "sha256": "60ef9d12077c302baa6deca10efc365eac111d449bb318c6850f417113220230",
+        "originalSha256": "60ef9d12077c302baa6deca10efc365eac111d449bb318c6850f417113220230"
+      },
+      {
+        "path": "catalog-20261009-193559-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193559-986-419334-a59dd9ab9451447197d62593a16492af-categories/Build-integration.log",
+        "sha256": "bced869ee20543b6ec022216215e723225974396e6b0e0cf91b3241377334e27",
+        "originalSha256": "fc3f1498da07b8aa436194bb8521cbf3c31b38ac57e8b8e33364f575e790b773"
+      },
+      {
+        "path": "catalog-20261009-193559-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193559-986-419334-a59dd9ab9451447197d62593a16492af-categories/Build-unit.log",
+        "sha256": "4ac129b991c48abae7de52e01c6361a0f2256dda2a589d90f8f3c8b90967ee5a",
+        "originalSha256": "0e4c84bce97fd439573478528936273d8348ec021065020bfde0c76944a0e191"
+      },
+      {
+        "path": "catalog-20261009-193559-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193559-986-419334-a59dd9ab9451447197d62593a16492af-categories/dotnet-test.log",
+        "sha256": "000f403bf5945dfedb6874e5b1a6fbf0ed53e3b824ffd79f59f64475f2bd263e",
+        "originalSha256": "5225730397a64c16751cd142db60ad153fc4eacd787de91e4164db4b97ab8146"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualExactNames.cs",
+        "sha256": "600accd62e9d82f3a9f5dea7f3f77445bbe4708619a24990bdd68d33fd457184"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualOriginalDraftInputs.cs",
+        "sha256": "01cf817271ccfa9feabd1915c303162a714e8e740a33ae2e06a873d6304901ce"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrame.cs",
+        "sha256": "0b8d6a57e013566e6ae4782821d161a6f101dd7c53916af88d472a662f1904fa"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CurrentCommittedPublicationWitness.cs",
+        "sha256": "49f94d09e5e2fc8d6bde1c981365fa52ae7e0098516d53c03aa8fc9b9ec1e624"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs",
+        "sha256": "4e469421db8c3c201e58bfc218f1bdf1c6ba12a701483eb18f8c68ae731f45bd"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs",
+        "sha256": "23ab7ee1c59825d38232c99d1bc5082f874b9a7cc46547345e4d8e628569e972"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SpiritualWoundCaptureCheckpointState.cs",
+        "sha256": "cd0fb7b5eb34c2f6d60973ce2ee2c56c1c50aca2797438b9613b6c576a2b7eee"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "sha256": "6b924fe31e3f31a610496594cee3e916dc282657061f8a8a0d10590fc91ac80a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "8b20548e4b8029cfede783446e6004f359e60a50f45d284bedbfbdaa48ce7087"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "1824a0805bc97fd99e1b0a8b33f862143f9a35aecbbd0d5c12e9fb06776b1bf3"
+      }
+    ]
   }
 }

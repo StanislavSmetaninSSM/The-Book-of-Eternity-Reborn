@@ -1,3 +1,20 @@
+## Original producer combined catalog/evidence gate — 2026-10-09
+
+Independent AstraXHigh Explorer GREEN/raw/carrier PASS787a01e8 and spiritual
+GREEN/raw/carrier PASSd4b8f75e. Fresh both-project ValidateCatalog193559 at
+d4b8f75e validates588categories/11361methods-files,0execution69.5765528s,
+both cleanup,0timeout/duplicate. This one discovery is preserved in both named
+packets; it is not two runs. Explorer87artifacts/39pins and spiritual79artifacts/
+39pins verified stored/original/source hashes; RED and GREEN groups unchanged.
+Source selection161unique category IDs is ownership, not aggregate permission.
+Final combined catalog/carrier review next. Remaining named original owning
+publishers are bootstrap, UI lock, prompt generation/prompt lock, Daren profile
+and standalone QTE terminal. Exact rollback refresh is read-only (no ordinary
+profile-mirror repair); do not invent a publisher double-fault for that owner.
+Then original mod manifest/cache and folder UI, remaining method inventory and
+final GitHub restore. Source census965 stays immutable. T061–T065 unchecked,
+B2–B5 paused; no native Windows/systemd/whole migration acceptance.
+
 ## Spiritual bounded GREEN17 — 2026-10-09
 
 Runtime2522c340ad6cd7c53b21b0cc67cbfb7aa2d46ef4 source/refined-design/exact17

@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-spiritual-capture-exact-names-linux",
-      "reason": "T063/F16 actual193427 runtime2522c340 GREEN17/17 afterfreshPlan17/1,14.1431223s,complete1/1/bothcleanup0duplicates/timeouts/skips,14strictrootsabsent. Nine raw negatives existingaliasissue/0mutation/fullsamebytes+generation/realoldownerretained; Unicode2/nativeexcluded1 and realstale1/readIOException1 preserve original semantics,old3controlsPASS. Earlier8PASS9causalRED preserved. Source/design/exact17 independentPASS; raw/carrier and combinedcatalog next. No B2/coldgameplay/native/allconsumers acceptance; unchanged engine/browser/Explorer selections not replayed.",
+      "reason": "T063/F16 actual193427 runtime2522c340 GREEN17/17 afterfreshPlan17/1,14.1431223s,complete1/1/bothcleanup0duplicates/timeouts/skips,14strictrootsabsent. Nine raw negatives existingaliasissue/0mutation/fullsamebytes+generation/realoldownerretained; Unicode2/nativeexcluded1 and realstale1/readIOException1 preserve original semantics,old3controlsPASS. Earlier8PASS9causalRED preserved. Source/design/exact17 independentPASS; raw/carrier independentPASSd4b8f75e; combinedcatalog193559588/11361discovery0, finalcatalogcarrier next. No B2/coldgameplay/native/allconsumers acceptance; unchanged engine/browser/Explorer selections not replayed.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -14,7 +14,7 @@
     },
     {
       "category": "portable-explorer-snapshot-exact-names-linux",
-      "reason": "T063/F16 original incarnation/Explorer raw admission: fresh integration Plan19132820/1 then actual19150120/20PASS9.7923003s, complete1/1/bothcleanup,16strictrootsabsent. Twelve negatives0mutations/exact full bytes/generation/real retained owner unchanged; Unicode3/exact-repeat1+originalcontrols4PASS. Original8PASS12causalRED preserved. Runtime source/design/exact20 independentPASS; raw/carrier pending. Full ownership discovery combined with next spiritual block; no engine/browser replay absent changed boundary, no other producer/native/B2 acceptance.",
+      "reason": "T063/F16 original incarnation/Explorer raw admission: fresh integration Plan19132820/1 then actual19150120/20PASS9.7923003s, complete1/1/bothcleanup,16strictrootsabsent. Twelve negatives0mutations/exact full bytes/generation/real retained owner unchanged; Unicode3/exact-repeat1+originalcontrols4PASS. Original8PASS12causalRED preserved. Runtime source/design/exact20 independentPASS; raw/carrier independentPASS787a01e8. Combinedcatalog193559588/11361discovery0, finalcatalogcarrier next; no engine/browser replay absent changed boundary, no other producer/native/B2 acceptance.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -25,7 +25,7 @@
     },
     {
       "category": "portable-browser-snapshot-native-noncandidates-linux",
-      "reason": "T063/F16 browser actual184520 source4bff0b4f GREEN19/19 afterfreshintegrationPlan19/2,14.4416863s,complete2/2,bothcleanup,19ownedrootsabsent. Publicgacha7+borrowedqueue8+originalpublicgacha2+native-noncandidate2. Thirteen rawnegatives have0mutations/exactoldbytes/generation; Unicode/nativeexcludedpayload positives preservebytes/genuinebackups. Previous4PASS13causalRED andisolated2positive baseline immutable. Source/design/exact19 independentPASS; independent raw/carrier PASSd40351c2; freshbothcatalog184725586/11358 discovery0, finalcatalogcarrier pending. Otherproducers/owners/native/HTTP unqualified; engine25/firstLive42 not replayed.",
+      "reason": "T063/F16 browser actual184520 source4bff0b4f GREEN19/19 afterfreshintegrationPlan19/2,14.4416863s,complete2/2,bothcleanup,19ownedrootsabsent. Publicgacha7+borrowedqueue8+originalpublicgacha2+native-noncandidate2. Thirteen rawnegatives have0mutations/exactoldbytes/generation; Unicode/nativeexcludedpayload positives preservebytes/genuinebackups. Previous4PASS13causalRED andisolated2positive baseline immutable. Source/design/exact19 independentPASS; independent raw/carrier PASSd40351c2; freshbothcatalog184725586/11358 discovery0, finalcatalog/raw/carrier independentPASS4e22c30f. Otherproducers/owners/native/HTTP unqualified; engine25/firstLive42 not replayed.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -36,7 +36,7 @@
     },
     {
       "category": "portable-browser-snapshot-exact-names-linux",
-      "reason": "T063/F16 browser actual184520 source4bff0b4f GREEN19/19 afterfreshintegrationPlan19/2,14.4416863s,complete2/2,bothcleanup,19ownedrootsabsent. Publicgacha7+borrowedqueue8+originalpublicgacha2+native-noncandidate2. Thirteen rawnegatives have0mutations/exactoldbytes/generation; Unicode/nativeexcludedpayload positives preservebytes/genuinebackups. Previous4PASS13causalRED andisolated2positive baseline immutable. Source/design/exact19 independentPASS; independent raw/carrier PASSd40351c2; freshbothcatalog184725586/11358 discovery0, finalcatalogcarrier pending. Otherproducers/owners/native/HTTP unqualified; engine25/firstLive42 not replayed.",
+      "reason": "T063/F16 browser actual184520 source4bff0b4f GREEN19/19 afterfreshintegrationPlan19/2,14.4416863s,complete2/2,bothcleanup,19ownedrootsabsent. Publicgacha7+borrowedqueue8+originalpublicgacha2+native-noncandidate2. Thirteen rawnegatives have0mutations/exactoldbytes/generation; Unicode/nativeexcludedpayload positives preservebytes/genuinebackups. Previous4PASS13causalRED andisolated2positive baseline immutable. Source/design/exact19 independentPASS; independent raw/carrier PASSd40351c2; freshbothcatalog184725586/11358 discovery0, finalcatalog/raw/carrier independentPASS4e22c30f. Otherproducers/owners/native/HTTP unqualified; engine25/firstLive42 not replayed.",
       "contracts": [
         "#1553",
         "FR-006",
@@ -46,7 +46,7 @@
     },
     {
       "category": "portable-engine-snapshot-exact-names-linux",
-      "reason": "T063/F16 original engine raw path admission: actual182703 source5279dbd4 GREEN25/25 after freshintegrationPlan25/1,8.1499631s,complete1/1,bothcleanup. Baseline/backup16,cleanup4,suppliedrollback2 and originalbyte/exclusion/staging3. Strict22newrootsabsent; prior6PASS19causalRED and compile0 preserved. Source/design/exact25 independentPASS; independent raw/carrier PASS791089b3; freshbothcatalog182804584/11355 discovery0, finalcatalogcarrier pending. Other producers/owners/native unqualified; accepted firstLive/signer/ZIP42 not replayed.",
+      "reason": "T063/F16 original engine raw path admission: actual182703 source5279dbd4 GREEN25/25 after freshintegrationPlan25/1,8.1499631s,complete1/1,bothcleanup. Baseline/backup16,cleanup4,suppliedrollback2 and originalbyte/exclusion/staging3. Strict22newrootsabsent; prior6PASS19causalRED and compile0 preserved. Source/design/exact25 independentPASS; independent raw/carrier PASS791089b3; freshbothcatalog182804584/11355 discovery0, finalcatalog/raw/carrier independentPASS7274da21. Other producers/owners/native unqualified; accepted firstLive/signer/ZIP42 not replayed.",
       "contracts": [
         "#1553",
         "FR-006",
