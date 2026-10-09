@@ -3455,7 +3455,10 @@ public sealed partial class MortalWoundTreatmentResolverTests(ITestOutputHelper 
             AssertTreatmentHoldBlocksCompetingReservation(
                 fixture,
                 scenario,
-                "terminal_release_failure_hold_proof");
+                "terminal_release_failure_hold_proof",
+                requiresRestart: true,
+                writeEvidence: output.WriteLine);
+            AssertConfirmedHeldResourceAgreement(fixture, flow.Request);
             AssertPublicationBlocked(fixture, flow);
         }
 
@@ -6857,8 +6860,16 @@ public sealed partial class MortalWoundTreatmentResolverTests(ITestOutputHelper 
     private static void AssertTreatmentHoldBlocksCompetingReservation(
         AcceptedStateFixture fixture,
         ResolverScenario scenario,
-        string suffix)
+        string suffix,
+        bool requiresRestart = false,
+        Action<string>? writeEvidence = null)
     {
+        // Copy scalar values: the registry helper exposes the live dictionary.
+        var beforeAgreements = requiresRestart
+            ? ReadTreatmentResourceAgreements(fixture).ToDictionary(pair => pair.Key,
+                pair => (pair.Value.State, pair.Value.PersistedRequestFingerprint,
+                    pair.Value.AuthorityFingerprint), StringComparer.Ordinal)
+            : null;
         var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
             fixture.GetAcceptedState());
         var competing = MortalWoundTreatmentPlanner.PrepareGuaranteedRequest(
@@ -6870,9 +6881,29 @@ public sealed partial class MortalWoundTreatmentResolverTests(ITestOutputHelper 
             fixture.AcceptedEventRef(acceptedState));
         Assert.False(competing.IsValid);
         Assert.Null(competing.Request);
-        Assert.Equal(
-            "mortal_wound_treatment_resource_reservation_overbooked",
-            Assert.Single(competing.Issues).Code);
+        var issue = Assert.Single(competing.Issues);
+        if (!requiresRestart)
+        {
+            Assert.Equal("mortal_wound_treatment_resource_reservation_overbooked", issue.Code);
+            return;
+        }
+
+        var afterAgreements = ReadTreatmentResourceAgreements(fixture).ToDictionary(pair => pair.Key,
+            pair => (pair.Value.State, pair.Value.PersistedRequestFingerprint,
+                pair.Value.AuthorityFingerprint), StringComparer.Ordinal);
+        writeEvidence?.Invoke(JsonSerializer.Serialize(new
+        {
+            kind = "treatment-terminal-competing-restart-refusal", issue.Code, issue.Expected, issue.Actual,
+            before = beforeAgreements!.Select(pair => new { operation = pair.Key,
+                state = pair.Value.State.ToString(), pair.Value.PersistedRequestFingerprint, pair.Value.AuthorityFingerprint }),
+            after = afterAgreements.Select(pair => new { operation = pair.Key,
+                state = pair.Value.State.ToString(), pair.Value.PersistedRequestFingerprint, pair.Value.AuthorityFingerprint })
+        }));
+        Assert.Equal("mortal_wound_treatment_resource_reservation_authority_invalid", issue.Code);
+        Assert.Equal("no unresolved terminal publication blocker", issue.Expected);
+        Assert.Equal("treatment publication compensation requires a session restart", issue.Actual);
+        Assert.Equal(beforeAgreements!.Keys.Order(StringComparer.Ordinal), afterAgreements.Keys.Order(StringComparer.Ordinal));
+        foreach (var pair in beforeAgreements) Assert.Equal(pair.Value, afterAgreements[pair.Key]);
     }
 
     private static void AssertTreatmentHoldReleasedAllowsCompetingReservation(

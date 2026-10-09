@@ -1,3 +1,20 @@
+## F18 terminal refusal oracle — source-backed narrow correction WIP, 2026-10-09
+
+Basee70622b1 preserves initial Arm and later original-oracle failures separately.
+Independent diagnosis/RAW PASS agrees: registry restart refusal predates migration at
+2e3defc0 (no registry delta d024→b136), matches FR-063 and original RequiresRestart
+scenario. Only this row opts into requiresRestart=true; unchanged other helper callers
+still require resource_reservation_overbooked. Require exact authority_invalid code AND
+Expected/Actual restart strings, invalid result/null request, copied reservation keys and
+state/persisted-request/authority fingerprints unchanged, then original ConfirmedHeld
+agreement and inside/after-scope publication-blocked assertions. Do not compare two live
+registry references or relax to arbitrary refusal. Emit exact reason/scalar witnesses.
+
+Observer and production unchanged. Exact isolated Fact1 remains selected; first command-
+proof PASS8c49 is not replayed. Frozen source/fixture review then freshPlan1/actual1/catalog;
+not yet accepted. Both previous failed outcomes retained with precise reached/unreached
+boundaries. B2–B5paused, native and remaining whole1553 queues unchanged.
+
 ## F18 terminal treatment — actual cut reached, older refusal oracle exposed, 2026-10-09
 
 SOURCE/FIXTURE/EXACT1 PASSb136a70e. Fresh Plan1404471/1,0execution44.5943319s;
