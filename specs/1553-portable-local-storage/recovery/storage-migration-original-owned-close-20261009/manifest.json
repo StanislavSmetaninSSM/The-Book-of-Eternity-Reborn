@@ -1,0 +1,136 @@
+{
+  "scope": "Two actual original hoisted owned lease-close paths: StateManager public refresh and FSM public atomic byte write. Genuine publisher uncertainty plus late secondary external-context disposal, exact primary/secondary and original resource/evidence retention. Reflection is a runtime prerequisite, never causal if it fails. Linux bounded originals only, no complete owner/gameplay/native qualification.",
+  "red": {
+    "source": "33732611ddc04538b4263f60dd6320a4ac838a98",
+    "artifacts": [
+      {
+        "path": "red-20261009-165207-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-165207-868-393342-56f86fc8cd0847c7aa037b8b384d3bb7-categories/plan.json",
+        "sha256": "31df708b4d034c326a9c05f27fdb22a281b5d6721b68449f65b29d133a4e2e15",
+        "originalSha256": "31df708b4d034c326a9c05f27fdb22a281b5d6721b68449f65b29d133a4e2e15"
+      },
+      {
+        "path": "red-20261009-165207-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-165207-868-393342-56f86fc8cd0847c7aa037b8b384d3bb7-categories/summary.json",
+        "sha256": "94428a69abe260d2e85234cd05f9a47ec49c4ba4bf7293d457ccf953f4093327",
+        "originalSha256": "94428a69abe260d2e85234cd05f9a47ec49c4ba4bf7293d457ccf953f4093327"
+      },
+      {
+        "path": "red-20261009-165207-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-165207-868-393342-56f86fc8cd0847c7aa037b8b384d3bb7-categories/Build-integration.log",
+        "sha256": "310ba383f40fe1e7b9f820dfa84fdf3555beef6dc95e1606ad820349be34ec16",
+        "originalSha256": "274cf4813b7ca0bd9722dbbaf8436518a679953a3d10c137396d951641c3db15"
+      },
+      {
+        "path": "red-20261009-165207-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-165207-868-393342-56f86fc8cd0847c7aa037b8b384d3bb7-categories/dotnet-test.log",
+        "sha256": "a3382d3aefc109ac7003b3f46a4882d7f48fd24f31ba0d7e75c3e6ea33ac10dc",
+        "originalSha256": "f9a3bf66493d0e33ad804d871fd77c2dca0491b31c9daddb27a594fc41cb5b5c"
+      },
+      {
+        "path": "red-20261009-165346-portable-original-owned-lease-close-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-165346-533-393734-574a4c3411ef4307b372d65e8d5f09fc-categories/portable-original-owned-lease-close-linux-integration-001.trx",
+        "sha256": "68d174b96f087ccc87159d72b837e218fff3d70f73b04454d5312ea99baf6343",
+        "originalSha256": "d29ceabf115bfb58ea795fb1f72a78526bc1b2a7477f5c252ff003c00a0829a1"
+      },
+      {
+        "path": "red-20261009-165346-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-165346-533-393734-574a4c3411ef4307b372d65e8d5f09fc-categories/plan.json",
+        "sha256": "ee4c191ee20ba798fa5f9ae665b0c2b1a919d2a67d483256b8741e4c0c0af85e",
+        "originalSha256": "ee4c191ee20ba798fa5f9ae665b0c2b1a919d2a67d483256b8741e4c0c0af85e"
+      },
+      {
+        "path": "red-20261009-165346-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-165346-533-393734-574a4c3411ef4307b372d65e8d5f09fc-categories/summary.json",
+        "sha256": "f6b78ce6c2304e6b1ccc70965b110ae32cc8ddc75b6dc39e421cf2cb13c08618",
+        "originalSha256": "f6b78ce6c2304e6b1ccc70965b110ae32cc8ddc75b6dc39e421cf2cb13c08618"
+      },
+      {
+        "path": "red-20261009-165346-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-165346-533-393734-574a4c3411ef4307b372d65e8d5f09fc-categories/dotnet-test.log",
+        "sha256": "11f852efeaec173250403d215ec4d511f1bc7a5129dbff08c24dcf577c2e07f1",
+        "originalSha256": "fef18a7e6806cabdce5f2b6a8b62c3627eae9eb4e906f3d02cacc7664ba659ae"
+      },
+      {
+        "path": "red-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-original-owned-close-red-rows/emitted-roots-after-run.json",
+        "sha256": "f62af73e26d59f2c25bbdabb1f30ec53bbb688479c4056d9dc5a1aa3d325727f",
+        "originalSha256": "f62af73e26d59f2c25bbdabb1f30ec53bbb688479c4056d9dc5a1aa3d325727f"
+      },
+      {
+        "path": "red-row-portable-original-owned-lease-close-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-original-owned-close-red-rows/portable-original-owned-lease-close-linux-integration-001-1-1.json",
+        "sha256": "38ea9a4d80886264c7c174825014e181495e4c588809ef5ed3b3e4eae2f68d35",
+        "originalSha256": "38ea9a4d80886264c7c174825014e181495e4c588809ef5ed3b3e4eae2f68d35"
+      },
+      {
+        "path": "red-row-portable-original-owned-lease-close-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-original-owned-close-red-rows/portable-original-owned-lease-close-linux-integration-001-1-0.json",
+        "sha256": "3da63dd3a65dfdfb7fa7ed726fa7be759381a7a286bf50762c77c84cd230efdc",
+        "originalSha256": "c76323b30f596fe256bcde7f6ab31fb82517a5fc3d3f88d0cd62da99a9255998"
+      },
+      {
+        "path": "red-row-portable-original-owned-lease-close-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-original-owned-close-red-rows/portable-original-owned-lease-close-linux-integration-001-0-1.json",
+        "sha256": "6716ae5dbfe339653b6405f9ab06ea9a6ab26c77fd0a23c91d83bb5a4119c9d0",
+        "originalSha256": "6716ae5dbfe339653b6405f9ab06ea9a6ab26c77fd0a23c91d83bb5a4119c9d0"
+      },
+      {
+        "path": "red-row-portable-original-owned-lease-close-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-original-owned-close-red-rows/portable-original-owned-lease-close-linux-integration-001-0-0.json",
+        "sha256": "dd6125f51aef108f93ac146961f3c34c96c5b5d7b62a9646f8d5918ce098fc1c",
+        "originalSha256": "df1c64dae54ff65bd190957a5abe133555de56a92275d291f35871b878b59b3f"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs",
+        "sha256": "621626345a258d19890a7ec76aaa97d7eff85982e56c9b55befaee4a5d3ccbea"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/StateManager.cs",
+        "sha256": "fdf7fa9d071c750a18a27eab0d0ac25dd2d036a3eec06544fe639fd699c4d997"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "a97a457256a092745d1a60d45f50972eb70d953fd4b106f7d01d2179ead83870"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "5c549aac5127ada3b2dd1e3ad3f332754ba8a626484b2dfdcbd372dc792798a6"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+        "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "4a98387f9e4dbbb4baaf058d74c5b130a1d2a2f21c00975fc4c5f3a5f2ff2627"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "eb6628557d85ffa601327ec50115cfbb118e002849ce28512ff51fead514722b"
+      }
+    ]
+  }
+}

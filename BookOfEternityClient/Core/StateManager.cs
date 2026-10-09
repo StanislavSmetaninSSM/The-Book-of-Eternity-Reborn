@@ -120,16 +120,29 @@ public partial class StateManager
     /// </returns>
     public async Task RefreshGameStateAsync()
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
         try
         {
-            await RepairClientOwnedProfileMirrorsAsync(writeLease);
+            try
+            {
+                await RepairClientOwnedProfileMirrorsAsync(writeLease);
+            }
+            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException && ex is not SessionReplacedException)
+            {
+                _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
+            }
+            await RefreshGameStateCoreAsync(writeLease);
         }
-        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException && ex is not SessionReplacedException)
+        catch (CoordinatedStatePublicationUncertainException failure)
         {
-            _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
+            uncertainty = failure;
+            throw;
         }
-        await RefreshGameStateCoreAsync(writeLease);
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
     }
 
     /// <summary>

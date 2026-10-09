@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-owned-lease-close-linux",
-      "reason": "T062/T065 original two-owner test-first WIP, actual paused public-refresh/public-write leases inspected before genuine publisher cut; late secondary dispose, same primary/secondary and resource/raw evidence. Inert design AstraXHigh PASS; installedfixture unbuilt/unrun.",
+      "reason": "T062/T065 installedfixture/exact2 AstraXHigh PASS337; actual2 complete1PASS/1causalFAIL165346: original refresh masks genuine publisher CSP on original lease close; FSM original positive preserves primary+secondary. Actual hoisted leases found, raw lockfree/inactive/strictcleanup/evidence retained. Minimal publicRefresh outer capture via existing release helper unbuilt/unrun; no wholeowners claim.",
       "contracts": [
         "#1553",
         "FR-006",

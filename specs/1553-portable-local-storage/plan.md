@@ -1,3 +1,22 @@
+## Original owned lease-close causal2 and minimal refresh correction — WIP, 2026-10-09
+
+Source #1553,T062/T065; installedfixture/exact2 independent AstraXHigh PASS33732611.
+Fresh integration Plan165207 selects2/1,0execution92.2406672s; actual165346
+**2executed1PASS/1causalFAIL**,complete1/1,7.3892822s,0skip/dup/timeout,bothcleanup.
+Both unique actual hoisted leases found before arming, attachments1/disposals1,
+original locks free after taskjoin, inactive lease/ambient/main/context, unchanged
+runtime/generation/journal/foreign and no later work; both strictroots removed.
+Original FSM publicwrite positive preserves same CSP+Data secondary; original public
+Refresh outwardIOException masks actual publisher CSP. [Packet](recovery/storage-migration-original-owned-close-20261009/manifest.json)
+preserves original result/box types/raw cut/cleanup and source pins, no synthetic lease.
+
+Minimal publicRefresh outer CSP capture now uses existing ReleaseOwnedLeaseAsync
+completed:false; inner ordinary mirror catch and core aggregation unchanged, borrowed
+refresh and FSM positive untouched. Runtime correction unbuilt/unrun. Next independent
+RED/raw/source/exact2 gate, fresh integration Plan2/actual2, matching fresh both-project
+catalog and final packet review. No wholeowner/native/gameplay/36mirror qualification;
+Bootstrap/other owning boundaries and F16signed/ZIP remain open; T061–T065 unchecked.
+
 ## Original owned lease-close representatives — test-first WIP, 2026-10-09
 
 Source #1553,T062/T065; base5991452f. Independent actual AstraXHigh Image final
