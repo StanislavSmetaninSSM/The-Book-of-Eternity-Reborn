@@ -1,0 +1,63 @@
+{
+  "Categories": [
+    "portable-image-directory-admission-linux",
+    "portable-image-gallery-known"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4020035be5f058f6821b1cc71fdf6bff7c1457e8",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 56.781238,
+  "Descriptors": [
+    {
+      "Name": "portable-image-directory-admission-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-image-directory-admission-linux",
+      "Categories": [
+        "portable-image-directory-admission-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ImageDirectoryAdmissionTests.OriginalGalleryAdmitsStorageBeforeDirectoryOrAssociation",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ImageDirectoryAdmissionTests.OriginalGalleryAdmitsStorageBeforeDirectoryOrAssociation",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-image-gallery-known-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-image-gallery-known",
+      "Categories": [
+        "portable-image-gallery-known"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DesktopImageConsumerTests.RealGalleryCreationFailureIsHandledWithManualPath|FullyQualifiedName=BookOfEternityClient.Tests.DesktopLaunchContractTests.InvalidGalleryKindDoesNotCreateOrOpenUnknownFolder|FullyQualifiedName=BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopImageConsumerTests.RealGalleryCreationFailureIsHandledWithManualPath",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopLaunchContractTests.InvalidGalleryKindDoesNotCreateOrOpenUnknownFolder",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

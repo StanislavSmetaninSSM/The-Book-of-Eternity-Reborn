@@ -1,3 +1,29 @@
+## F16 original gallery bounded8 GREEN — 2026-10-09
+
+Independent RAW/WIDTH/EXACT8 PASS4020035b. Tested source/fixture
+4020035be5f058f6821b1cc71fdf6bff7c1457e8 (runtime unchanged aae3660b): fresh
+both-project Plan103008 selects8/2,0executed,57.0637834s. Actual103112 completes
+**8/8 PASS**,2/2descriptors,12.6767574s,bothcleanup,no timeout/skip/duplicate.
+Root parses raw original journals, member hashes, retained foreign/committed bytes,
+admission/recovery/association order and four distinct explicit root removals.
+Known gallery4 retains exact root/NPC requests, invalid kind and file-blocker handling.
+
+Discovery-only catalog103142 on those same freshly built unchanged projects uses
+`-ValidateCatalog -NoBuild`:539categories/11334methods-files valid,0executed,
+7.8427228s,bothcleanup. No redundant rebuild or accepted image23 replay.
+[Gallery packet](recovery/storage-migration-image-directory-20261009/manifest.json)
+retains compile0, causal4FAIL, partial2PASS/2fixtureFAIL with4unrun, exact8 GREEN
+and discovery separately. Final independent RAW/CATALOG/CARRIER gate follows.
+Native Windows, actual session rotation, secondary lease-close, original settings/
+GameLoop and wholeF16 remain unqualified; T061–T065 stay open, B2–B5 paused.
+
+Next bounded F16 source-consult accepted: public mods/world-profile lists stop
+creating directories, use one original admitted read scope and retain exact Linux
+leaf names/type/link checks. Existing borrowed-lease prepared/settings readers
+stay borrowed; no manifest/settings atomicity claim. New8 +existing7 =15 targeted
+cases (9integration/6unit), with actual desktop-mods next-frame controls instead
+of the unrelated stale no-game_session assertion. No listing implementation yet.
+
 ## F16 gallery partial verification and fixture correction — 2026-10-09
 
 Independent SOURCE/RED-RAW/EXACT8 PASSaae3660b. Fresh both-project Plan102616
