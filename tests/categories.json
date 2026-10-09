@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-engine-snapshot-exact-names-linux",
+      "responsibility": "Original engine baseline and pre-turn backup14 plus cleanup preservedpaths3 before cleanup/init/copy/fold, Unicode positives and three original byte/exclusion/staging neighbors.",
+      "excludes": "No browser/incarnation/Explorer/spiritual producer, other owners, native Windows or B2 gameplay.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ExactSnapshotNames.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineSnapshotProducerRefusesRawNamesBeforeChangingEvidence",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineCleanupValidatesRawPreservedPathsBeforeDeletingEvidence",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_OrdinaryTurnStagingFiles_AreValidationSnapshottedWithoutRollbackBaseline"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-signed-preparation-cleanup-alias-linux",
       "responsibility": "One original Liveprepare fixed input cleanup-path alias refuses before deleting retained canonical turn/manifest/authority/snapshot/dice file bytes, generation unchanged and strict root removal.",
       "excludes": "Other first-producer22 rows have a separate owner; no other signed producers/native/whole turn.",

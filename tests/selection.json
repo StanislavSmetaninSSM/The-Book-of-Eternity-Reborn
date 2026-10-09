@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-engine-snapshot-exact-names-linux",
+      "reason": "T063/F16 original engine raw-name preflight test-first: baseline/backup14 and original cleanup3 before evidence changes, Unicode positive and exactbytes/exclusion/staging3 affected neighbors. Runtime unchanged5d; installed UNBUILT/UNRUN. Accepted firstLive/signer/ZIP42 not selected without changed boundary.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-signed-preparation-cleanup-alias-linux",
       "reason": "T063/F16 actualGREEN42 at15555367/173053 after freshbothPlan42/4: signed22+isolatedcleanup1+originalunitneighbors15+ZIP4, complete42/42,21.4568928s,11strictrootsabsent. Matchingcatalog583/11352 discovery0; final independent AstraXHigh raw/source/catalog/carrier PASS96553e1e (signed107artifacts39pins, ZIP74/36, sharedone42execution). Earlier causal/preparation baselines retained unchanged. Only firstLiveproducer/signer and original ZIP listing/retention qualified; other producers/owners/native/wholeF16 remain open.",
       "contracts": [

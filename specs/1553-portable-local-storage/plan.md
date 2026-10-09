@@ -1,3 +1,21 @@
+## Engine original producer continuation — test-first WIP, 2026-10-09
+
+Owner authorizes all remaining available #1553 consumers from verified5d605fea;
+not stop at a partial checkpoint. B2–B5 paused; cold force_binding is preexisting
+implementation/fixture mismatch with approved spec, no new product choice.
+Installed original baseline/backup14+cleanup3 tests and three exact original
+byte/exclusion/staging neighbors (finite20/one category), runtime unchanged.
+Negatives capture full path/byte map and generation before actual original methods;
+Unicode controls read actual produced mapping/backups, strict roots after AudioDispose.
+Preflight must precede baseline terminal deletion/old snapshot cleanup/init,
+backup HashSet/copy and preserved-path normalization/deletion. No build/run yet.
+Initial metadata authoring SyntaxError had zero build/discovery/execution; test file
+alone was preserved805e123b, current metadata now completed before any runner.
+Next independent fixture/design/exact20 gate, fresh integration Plan20/actual20
+before minimal demonstrated runtime correction. Existing signed42 not replayed.
+Then browser/incarnation/Explorer/spiritual producers and other original owners,
+authoritative inventory and final remote restore; T061–T065 remain unchecked.
+
 ## Current preserved bounded result and remaining implementation — 2026-10-09
 
 Current metadata carrier e631b9b7 has independent inventory/source/hash/selection
