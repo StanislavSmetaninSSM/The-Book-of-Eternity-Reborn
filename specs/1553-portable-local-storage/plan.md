@@ -1,3 +1,39 @@
+## Current cloud handoff — Story12 qualified, final carrier review pending, 2026-10-09
+
+Source #1553; sole-writer branch `1553-storage-migration-cloud-20261008`, base/main
+`d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. Runtime/tested source remains
+`a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132`. Independent SOURCE/RED-RAW/EXACT12
+PASS; fresh integration Plan11022112/0 and actual110318 **12/12 PASS** in11.1803219s,
+complete2/2, bothcleanup,0skip/duplicate/timeout. Exact reached evidence is below.
+
+Fresh both-project `-ValidateCatalog` at clean `c92f24327e1fd399c9afab444205c28987d6e24b`
+(110425) succeeds: **543categories/11336methods-files valid,0executed**,63.2492407s,
+integration build42.9449717s/unit12.2583623s,bothcleanup. This is discovery only,
+not additional runtime PASS. [Story packet](recovery/storage-migration-story-read-export-20261009/manifest.json)
+has70 artifacts/originals60 frozen source pins, root-verified. Next finish independent
+RAW/CATALOG/CARRIER gate and exact remote/selected-file recovery; do not replay passed12.
+All runtime/fixture/catalog bytes are unchanged since the tested source.
+
+Continuation after this bounded handoff: source-review F16 snapshot producers and
+host path identity before changing consumers. Require exact literal path roundtrip
+or explicit early refusal of unsupported/confusable cohorts, never silent renaming,
+omission or case-fold collapse. Then F18 stale admission/publication-cut migration
+with positive reachability, original lifecycle/resource/wound owners, and exact
+selected checks; preserve true physical/legacy negative controls. Remaining concrete
+owned-close consumers, nested prepared cases and whole intended selection reconciliation
+remain open in the existing inventory. No wholeF16/T061–T065 completion or main merge.
+#1536 B2–B5 stay paused until their storage/fixture prerequisites are reconciled.
+No new gameplay/GM-authored contract; no prompt/example update required here.
+
+Environment remains saved Linux cloud, SDK10.0.401/runtime8.0.31+10.0.12/pwsh7.5.4;
+source `/workspace/.boe-1553-migration-session/env.sh` for tools. Full-suite/Fast/PreMerge,
+live GM/provider, HOME-PC/desktop, CI/settings/main/merge remain out of scope.
+Disk currently has about444MiB free; a prior comparable full clean checkout needed
+about905MiB. Current recovery will therefore explicitly cover selected exact GitHub
+files in a new empty directory, not claim a new full branch checkout. Last full
+clean branch restoration remains the older durable-worker e12aa3a4 checkpoint.
+No native Windows/full engine/actual rotation/secondary-close/timestamp collision claim.
+
 ## F16 Story exact12 GREEN — catalog/final gate pending, 2026-10-09
 
 Independent SOURCE/RED-RAW/EXACT12 PASS at tested clean source

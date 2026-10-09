@@ -4,12 +4,13 @@ Source #1553, cloud branch1553-storage-migration-cloud-20261008. Bounded F16 ima
 (runtime c02b3ed5, final16db2f7a), gallery8 (source4020035b, final9dbeea70) and
 canonical-listings15 (runtime92382b4a, final8ab39b83) have independent final evidence
 PASS. These are separate source-era runs, not an aggregate selection. Latest catalog
-541categories/11335methods-files is discovery-only at92382b4a,0tests. Gallery packet
+543categories/11336methods-files is discovery-only atc92f2432,0tests. Gallery packet
 62artifacts/80pins and listings58/66 are verified; source/counters/cleanup/limits and
 older accepted C2/worker/Explorer blocks are in [plan](plan.md).
 
 Story runtimea5d9684e: exact12/12 Linux PASS, baseline2PASS/8FAIL preserved;
-65artifacts/40pins. Fresh catalog and final evidence gate pending; details at plan top.
+70artifacts/60pins and fresh both-project catalog valid0. Final carrier review/recovery
+pending; exact scope, remaining queues and disk limitation at plan top.
 Other F16 snapshot/path consumers, F18 observer/admission migration, concrete owning
 closes, nested prepared consumers and whole-selection reconciliation remain open.
 T061–T065 stay unchecked; #1536 B2–B5 paused. No whole-game/native Windows/full-turn

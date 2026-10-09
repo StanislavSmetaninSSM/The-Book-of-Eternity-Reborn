@@ -565,5 +565,123 @@
         "sha256": "42514e00621c7444ca996715023e348c54efa055ca04f8085ad213b19d1a65d1"
       }
     ]
+  },
+  "catalog": {
+    "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+    "qualification": "Raw exact selected source/summary/TRX; build-only/causal/fixture/outcome classification in plan.",
+    "artifacts": [
+      {
+        "path": "catalog-plan-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-110425-027-327927-399209d7a1274dffaec5c7c9495edc7c-categories/catalog-audit.json",
+        "sha256": "933a91572b160cb7721ce1caae0954cd4d25245aa61a921bda5d0cf7239f3f27",
+        "originalSha256": "933a91572b160cb7721ce1caae0954cd4d25245aa61a921bda5d0cf7239f3f27"
+      },
+      {
+        "path": "catalog-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-110425-027-327927-399209d7a1274dffaec5c7c9495edc7c-categories/summary.json",
+        "sha256": "3966a6f0040a919f5e5f3944f04938f35540868a7a665ba7d4871bce1f0f8c2e",
+        "originalSha256": "3966a6f0040a919f5e5f3944f04938f35540868a7a665ba7d4871bce1f0f8c2e"
+      },
+      {
+        "path": "catalog-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-110425-027-327927-399209d7a1274dffaec5c7c9495edc7c-categories/Build-integration.log",
+        "sha256": "68b6582f97e2c83d0767151f3320788e1c2cad95f6354e573bc5ff329724c611",
+        "originalSha256": "33c3c8dbb2effba2aea8d6293471bfa433f57b93c8d54cfbcbf33865740d8919"
+      },
+      {
+        "path": "catalog-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-110425-027-327927-399209d7a1274dffaec5c7c9495edc7c-categories/Build-unit.log",
+        "sha256": "e2d6ec9e6080f11872cc6364133cbc4931fdae0bbce8125d03092317b8123003",
+        "originalSha256": "afc929d035023be1dd466f0a73acebf15efc8da3eb158ed71678dee816360368"
+      },
+      {
+        "path": "catalog-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-110425-027-327927-399209d7a1274dffaec5c7c9495edc7c-categories/dotnet-test.log",
+        "sha256": "70b20ccd4bdb8bd4acd74ce68368d0c488a674b0874e2fd01ada1eb2c91b0993",
+        "originalSha256": "738a70efa33717931c12cabeb9fe8d58073d8c249e79181097c2a97a89b2393b"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Services/StoryService.cs",
+        "sha256": "9f2980aa35b6306198e5ef87056005a3734927204924b8d96d24abf3728b419f"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
+        "sha256": "ac0e110db4b6c8ed1186687fdca6b90fa979f58951066ffd777cb7d7b6a90b94"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+        "sha256": "6346c115661ec1537ee830fcc093e795d9349740f95d4d60416a50a0ca20a76a"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode.cs",
+        "sha256": "29e0fadf7f25d7399a09d6cde5eb8d4faba0063f3a990c045ab9114b52edba0b"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+        "sha256": "e2f0ab5e1eb53718e5870d1b7c7d4e0d9cb921955e1d6a9f8d274f2711a03a68"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+        "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+      },
+      {
+        "path": "BookOfEternityClient/Core/LocalSettingsPreparation.cs",
+        "sha256": "16be91c521661274b2d7f06883f59c678f831d66b96bba663c71adaeca5a306e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/StoryReadExportAdmissionTests.cs",
+        "sha256": "39a3e6e500256c5420e6677c6f3253f82c29add6afbdc5252cecdcb8ac614d40"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/TestExplorerConsole.cs",
+        "sha256": "0b0c41d8bb1d3f4f337f231af3d2143dff8d72867dc73447a1937f7b59bc1516"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs",
+        "sha256": "7cc018b4ce253d7473be08a5bba89660dded5d587709fe61c7f287f802ec37c0"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.cs",
+        "sha256": "688fb706869eccc721aa787af781452f49cd7407d108a5d54ab551db97f12172"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs",
+        "sha256": "19edb1f605a0878de4f4351f5eea32425d8ae357dd37a296c1320b7e3ada1a1b"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "5b2cbcec13a4148723be4a0aebbce6aa4d3a612d92ed25eb046513d2912fc46c"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "42514e00621c7444ca996715023e348c54efa055ca04f8085ad213b19d1a65d1"
+      }
+    ]
   }
 }
