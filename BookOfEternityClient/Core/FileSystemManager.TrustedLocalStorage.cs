@@ -39,7 +39,8 @@ public partial class FileSystemManager
         return Directory.EnumerateFileSystemEntries(root).Any();
     }
 
-    private void EnsureNoLegacyStorageEvidence(CanonicalWriteLease? ownedBrowser = null, bool allowPortableBrowser = false)
+    private void EnsureNoLegacyStorageEvidence(CanonicalWriteLease? ownedBrowser = null,
+        bool allowPortableBrowser = false, CanonicalWriteLease? currentPendingClear = null)
     {
         foreach (var root in LegacyStorageRoots)
         {
@@ -47,6 +48,35 @@ public partial class FileSystemManager
             if (root == ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root))
             {
                 if (allowPortableBrowser) continue; // The original handler preflights schema7 before any recovery.
+                if (ownedBrowser == null)
+                {
+                    var directories = new List<string>();
+                    var files = EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]), root,
+                        inspectedDirectories: directories);
+                    var directGachaStructure = directories.All(directory =>
+                    {
+                        var relative = GetLocalRelativePath(GameSessionPath, directory, OperatingSystem.IsWindows());
+                        return relative == ExplorerLocalTurnRollbackArtifacts.Root ||
+                            (ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaPath(relative) &&
+                             !ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaBackup(relative));
+                    });
+                    // File deletion can leave these ordinary directories even after
+                    // crash recovery. Structure alone is not retained byte evidence.
+                    if (directGachaStructure && files.Count == 0) continue;
+                    if (currentPendingClear != null && directGachaStructure)
+                    {
+                        var backups = ListBrowserStorageEvidence(currentPendingClear);
+                        if (backups.Count > 0 && backups.All(ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaBackup))
+                        {
+                            var authority = ExplorerLocalTurnRollbackArtifacts.RequireCurrentPendingRollbackAuthority(
+                                this, currentPendingClear);
+                            var mapped = authority.RollbackBackups.Values
+                                .Where(ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaBackup)
+                                .ToHashSet(StringComparer.Ordinal);
+                            if (mapped.SetEquals(backups)) continue;
+                        }
+                    }
+                }
                 if (ownedBrowser != null)
                 {
                     ownedBrowser.BrowserLocalAccess?.Validate();

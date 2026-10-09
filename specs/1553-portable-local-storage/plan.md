@@ -1,3 +1,25 @@
+## F18 current-gacha Clear — baseline measured, runtime WIP, 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT9 PASSdd35c289. Corrected fresh unit Plan121133
+selects1/1,0executed in37.3025444s; full exact9 selection from Plan120904 unchanged.
+Actual121235 executes9/9:7PASS/2genuineFAIL in14.9918802s,complete2/2,bothcleanup,
+no skips/duplicates/timeouts. Both failures are original InvalidData legacy guard:
+actual current adopted gacha Clear and recognized empty direct-gacha bootstrap.
+All four gacha negatives pass with1replacement lock,0mutation/publication and exact
+all-file/generation retention. Five emitted gacha roots absent. Unit outputdd35 and
+unchanged integrationc363 freshly built; no stale NoBuild binary. [Baseline packet](recovery/storage-migration-gacha-clear-20261009/manifest.json)
+has21 artifacts/originals16pins, verified locally. No GREEN claim.
+
+Runtime fix is limited to two existing guards: Clear validates the existing full
+pending authority plus ordinal exact backup-set equality; no-clear retains nonempty
+backup refusal. Strict tree validation recognizes only file-free direct-gacha directory
+chains as structure, including after crash recovery; arbitrary empty children, links,
+wrong types and files stay evidence. Ordinary owned-browser recovery behavior stays
+unchanged. Common replacement publication and generation mutation remain the original
+single transaction; no raw file deletion, pruning, new journal or authority source.
+Next frozen source/exact9 review then fresh both-project Plan9/actual9 and discovery.
+Other F18/F16/owned-close/whole-registry queues continue; B2–B5 paused.
+
 ## F18 current-gacha Clear — test-first source WIP, 2026-10-09
 
 Independent RAW3/causal1/carrier PASScdc35c7a verifies38 artifacts/originals76pins.

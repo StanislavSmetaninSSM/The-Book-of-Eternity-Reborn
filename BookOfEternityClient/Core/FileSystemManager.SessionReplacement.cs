@@ -27,7 +27,9 @@ public partial class FileSystemManager
         VerifyCurrentSessionOperation(lease);
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery)
             throw new InvalidOperationException("Common session replacement cannot run inside a legacy transaction.");
-        EnsureNoLegacyStorageEvidence();
+        // Clear consumes a current pending turn only after its original signed
+        // authority validates every retained before-image. Rotation alone cannot.
+        EnsureNoLegacyStorageEvidence(currentPendingClear: clearGameState ? lease : null);
 
         var scope = new TrustedLocalFileScope([BasePath]);
         var generation = ReadLocalGenerationSnapshot(lease);
