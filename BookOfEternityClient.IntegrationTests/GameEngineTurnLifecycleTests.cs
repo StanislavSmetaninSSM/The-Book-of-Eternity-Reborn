@@ -924,51 +924,81 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     [Fact]
     public async Task HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement()
     {
-        await _fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        const string soulPath = "game_state/meta/soul_state.json";
+        await _fs.WriteFileAtomicAsync(soulPath,
             """{ "soulName": "Старая душа", "currentRealm": "Chaos Sea" }""");
-        await GetOrCreateSessionGenerationAsync();
-
-        var operationBound = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseOperation = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var engine = CreateGameEngine(
-            new QueuedConsoleInputSource([]),
+        var originalGeneration = await GetOrCreateSessionGenerationAsync();
+        var rotated = false;
+        var checkpoints = 0;
+        var committedRotations = 0;
+        var laterReads = new List<string>();
+        var laterMutations = new List<string>();
+        byte[]? rotationJournal = null;
+        byte[]? committedGenerationImage = null;
+        string? replacementGeneration = null;
+        Dictionary<string, byte[]>? sentinels = null;
+        var journalPath = Path.Combine(_fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+        var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                AfterCanonicalReadInitialValidationAsync = path =>
+                { if (rotated) laterReads.Add(path); return Task.CompletedTask; },
+                BeforeCanonicalMutationBoundaryAsync = path =>
+                { if (rotated) laterMutations.Add(path); return Task.CompletedTask; },
+                LocalPublicationObserver = (phase, _) =>
+                {
+                    if (phase != TrustedLocalPublicationPhase.Committed) return;
+                    var bytes = File.ReadAllBytes(journalPath);
+                    using var metadata = CleanupPublicationCut.Metadata(bytes);
+                    var before = metadata.RootElement.GetProperty("GenerationBefore").GetProperty("Id").GetString();
+                    var after = metadata.RootElement.GetProperty("GenerationAfter").GetProperty("Id").GetString();
+                    if (before == after) return;
+                    Assert.Equal(originalGeneration, before);
+                    Assert.False(string.IsNullOrWhiteSpace(after));
+                    committedRotations++;
+                    rotationJournal = bytes;
+                    committedGenerationImage = File.ReadAllBytes(_fs.SessionGenerationPath);
+                }
+            });
+        var input = new LoreRealmInput([], 0);
+        var engine = CreateGameEngine(input, fileSystem: files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (checkpoint != SessionFinalizationCheckpoint.IncarnationOperationBound)
-                        return;
-
-                    operationBound.TrySetResult();
-                    await releaseOperation.Task;
+                    if (checkpoint != SessionFinalizationCheckpoint.IncarnationOperationBound) return;
+                    checkpoints++;
+                    // Original local admission is borrowed; no concurrent Clear or new binding is invented.
+                    await using var lifecycle = await files.AcquireSessionLifecycleLeaseAsync();
+                    await using var lease = await files.AcquireSessionReplacementWriteLeaseAsync(lifecycle);
+                    await files.WriteFileAtomicAsync(lease, soulPath,
+                        """{ "soulName": "Новая душа", "currentRealm": "Chaos Sea" }""");
+                    await files.WriteFileAtomicAsync(lease, WorldDirectiveService.PendingSetupPath,
+                        """{ "worldDescription": "replacement sentinel" }""");
+                    sentinels = new[] { soulPath, WorldDirectiveService.PendingSetupPath }
+                        .ToDictionary(path => path, path => File.ReadAllBytes(files.ResolvePath(path)));
+                    replacementGeneration = files.RotateSessionGeneration(lease);
+                    rotated = true;
                 }
             });
-
-        var incarnationTask = InvokePrivateTaskAsync(engine, "HandleIncarnation");
-        await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));
-
-        await _fs.ClearGameStateAsync();
-        await _fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            """{ "soulName": "Новая душа", "currentRealm": "Chaos Sea" }""");
-        await _fs.WriteFileAtomicAsync(
-            WorldDirectiveService.PendingSetupPath,
-            """{ "worldDescription": "replacement sentinel" }""");
-        releaseOperation.TrySetResult();
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => incarnationTask.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.Contains(
-            "replacement sentinel",
-            await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath),
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "Новая душа",
-            await _fs.ReadFileAsync("game_state/meta/soul_state.json"),
-            StringComparison.Ordinal);
+        // Directly await the original operation: no blocked background actor or timeout proxy survives cleanup.
+        var failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(engine, "HandleIncarnation"));
+        var afterSentinels = new[] { soulPath, WorldDirectiveService.PendingSetupPath }
+            .ToDictionary(path => path, path => CleanupPublicationCut.ReadOptional(files.ResolvePath(path)));
+        var generationAfter = File.ReadAllBytes(files.SessionGenerationPath);
+        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new { originalGeneration, replacementGeneration,
+            checkpoints, committedRotations, rotationJournal, committedGenerationImage, generationAfter,
+            sentinels, afterSentinels, laterReads, laterMutations, input.KeyReads, input.LineReads,
+            OriginalTaskJoined = true, Failure = failure?.ToString() }));
+        Assert.Equal(1, checkpoints); Assert.Equal(1, committedRotations); Assert.NotNull(rotationJournal);
+        Assert.True(rotated); Assert.NotEqual(originalGeneration, replacementGeneration);
+        Assert.Equal(committedGenerationImage, generationAfter);
+        var replaced = Assert.IsType<SessionReplacedException>(failure);
+        Assert.Equal(originalGeneration, replaced.ExpectedGeneration);
+        Assert.Equal(replacementGeneration, replaced.ActualGeneration);
+        Assert.Empty(laterReads); Assert.Empty(laterMutations); input.AssertCompleted();
+        foreach (var path in sentinels!.Keys) Assert.Equal(sentinels[path], afterSentinels[path]);
     }
 
     [Fact]

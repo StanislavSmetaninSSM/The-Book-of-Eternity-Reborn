@@ -1,3 +1,24 @@
+## Lore remaining2 current-generation fixture correction — 2026-10-09
+
+Partial carrier e9cea306 preserves56 artifacts/31 pins; independent raw accepts twelve completed
+passing obligations. The old blocked incarnation fixture is corrected without runtime changes or new
+admission APIs: its real IncarnationOperationBound callback borrows the existing local main admission,
+acquires the existing lifecycle/replacement lease, writes replacement sentinels while old generation
+is still valid, then calls original RotateSessionGeneration on that same lease. Actual Committed
+journal must bind old→different new generation. The callback returns without further canonical work;
+the original HandleIncarnation Verify must throw real SessionReplaced before input/reads/mutations.
+
+This is a same-admission checkpoint generation-fence test, not concurrent external ClearGameState,
+new-session binding adoption or raw generation editing. Nested new-generation binding is explicitly
+refused by production and is not bypassed. Exact committed generation/sentinel bytes, zero postrotation
+opened reads/mutations/input and directly awaited original task are recorded before assertions.
+There is no paused sibling/gate/task to survive a timeout; owned root is explicitly cleaned after the
+original task settles. Original lifecycle and canonical leases are disposed normally.
+
+Next exact2 = this corrected original control + the unexecuted documentation source guard. Earlier12
+remain pinned atc767; current runtime unchanged. Source/fixture/selection gate then matching both-project
+Plan/build required before actual2. New fixture/source-review correction is unbuilt/unexecuted now.
+
 ## Lore/realm partial14 receipt — 2026-10-09
 
 Runtime c7672208 passed independent SOURCE/EXACT14 and closed-census27/15 gate. Matching Plan033513

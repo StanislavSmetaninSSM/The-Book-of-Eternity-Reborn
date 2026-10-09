@@ -2,8 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-lore-realm-current-generation-controls",
+      "reason": "Remaining2 only: corrected original same-admission checkpoint rotation control and unexecuted source guard after c767 partial13/14. Preserve accepted12 and old blocked replacement recipe; no runtime delta.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
       "category": "portable-lore-realm-outcome-known-controls",
-      "reason": "Final bounded14 = original7 plus these seven affected policy/lease/current-generation/source controls. No broad lifecycle, sparse sharing-refusal proof, accepted preparation replay or simultaneous double-fault claim.",
+      "reason": "Five known integration controls PASS at c767/033623; retained without replay. Corrected generation control/sourceguard isolated in remaining2.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -15,7 +26,7 @@
     },
     {
       "category": "portable-lore-realm-outcome-causal-linux",
-      "reason": "Final lore/realm7 after genuine realmCSP4 plus physical-routing1/unreached-common1 and known restoration1 at7b. Actual runtime now routes original Clear and propagates same typed decision; source review and fresh matching execution remain required.",
+      "reason": "All seven original lore/realm cases PASS at c767/033623 with five actual Unknown cuts, exact known restoration and ordinary routing3. Retain this source-era evidence without replay to correct an independent legacy fixture.",
       "contracts": [
         "#1553",
         "FR-003",

@@ -2,8 +2,41 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-lore-realm-current-generation-controls",
+      "responsibility": "Two remaining lore controls: actual same-admission checkpoint generation rotation fences the old original incarnation body, and the previously unexecuted source guard.",
+      "excludes": "No external concurrent Clear or nested new-generation adoption claim; no replay of accepted12, no native or secondary-close injection.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-lore-realm-outcome-known-controls",
-      "responsibility": "Seven finite affected controls: original lore lease serialization, incarnation replacement and F03 restoration, realm success, genuine ordinary-return quartet success, known pending refusal and updated same-lease source guard.",
+      "responsibility": "Five retained passing lore/realm known controls: serialization, F03 restoration, realm success, genuine ordinary-return quartet success and pending blocker.",
       "excludes": "Historical broader owners remain unselected; no overlap with lore7. No sparse sharing-refusal row advertised as actual rollback and no native/full-turn/secondary-close injection.",
       "changeHints": [
         "BookOfEternityClient/Core/FileSystemManager.cs",
@@ -24,17 +57,10 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.FileSystemManagerTests.ClearCurrentWorldLore_WaitsForCanonicalWriteLease",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.UpdateSoulStateRealm_MortalLifeEnd_WithPendingScenarioCoreAndCurrentWorldLoreMovesSoulToChaosSea",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_PublishesProfileAndResourceLifecycleAtomically",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_BlocksWhenPendingShiningRequestsExist"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions"
           ]
         }
       ]
