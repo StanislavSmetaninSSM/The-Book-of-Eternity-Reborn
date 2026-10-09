@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-interaction-owning-close-linux",
+      "responsibility": "Four actual original owning Interaction APIs8 known/genuine uncertainty plus secondary lateclose: Guardian correction real power spend/receipt, Spirit Focus training actual purchase receipt and900 Ink spend, actual Explorer spiritual upgrade save with caller projection and resource history, QTE actual accepted runtime/deferred continuation. Original owner/Intent/member0/fullsettlement/noLater/Closing0/generation/current validators/strict8 roots. Unknown raw oracle atIntent excludes actual first target.",
+      "excludes": "Storage/lifetime only. No full Guardian/training/Explorer UI/game/B2-B5/native Windows/live GM/provider/process qualification. Known controls have no injected late closer. Caller projected upgrade is not full price eligibility. No whole-flow atomicity.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+        "BookOfEternityClient/Services/TrainingService.cs",
+        "BookOfEternityClient/UI/ExplorerMode.SpiritualArtUpgrades.cs",
+        "BookOfEternityClient/Services/QteSceneService.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Interaction.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalInteractionOwnersRetainGenuinePublicationUncertaintyOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-afterlife-state-owning-close-linux",
       "responsibility": "Four actual original owning state APIs8 known/genuine publication uncertainty plus secondary lateclose: AfterlifeOwnerResource TryCommit with real Build plan, ShiningBlessing bootstrap memory-only actual allocation, consume actual chosen memory and reroll spend1to0, and preinitialized progression accepted outcome. Actual original owners/first publication/fullsettlement/generation/noLater/currentresourcevalidation/strict roots. Unknown bytes pinned at actual Intent.",
       "excludes": "Storage/lifetime boundaries only, no new gameplay/B2-B5/full blessing/resource grant/Guardian/training/console-browser or native Windows/live GM/provider/process qualification. Known controls have no injected late closer; prior legitimate publications do not imply whole-flow atomicity.",

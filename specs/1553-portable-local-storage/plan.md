@@ -1,3 +1,18 @@
+## Original Interaction four owners — test-first WIP, 2026-10-09
+
+Independent fixture/design/exact8 PASS4c8aeed0 installed byte-identically.
+Guardian actual correction/power spend/receipt, Training actual SpiritFocusTier2
+receipt/900Ink spend, Explorer actual private projected upgrade save/history,
+QTE public accepted runtime/deferred continuation. Same originalowner/Intent/
+member0/genuineCSP+secondary/fullsettlement/noLater/Closing0/generation/strict8
+roots/currentvalidators; unknown othergame_state bytes atIntent excluding target.
+Production unchanged UNBUILT/UNRUN. Afterlife combinedRED/source/exact8PASS940;
+Normalizer finalGREEN/raw/carrierPASSb2; Trade finalGREEN/raw/carrierPASS1aa.
+Next one shared fresh integrationPlan16/2 and separate Afterlife GREEN8 +
+Interaction originalbaseline8. No aggregateGREEN16 or unchanged accepted replay.
+Fullcatalog after stable acceptedbatch. B2–B5/native/fullgame/knownlateclose remain
+open; T061–T065 unchecked. No new GM mechanics/schema/prompt/example change.
+
 ## Original Afterlife state uncertainty correction installed — WIP, 2026-10-09
 
 Exactly4 actual original owning scopes retain/rethrow same genuine CSP and
