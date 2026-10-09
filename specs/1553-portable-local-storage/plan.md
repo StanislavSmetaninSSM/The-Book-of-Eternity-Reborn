@@ -1,3 +1,29 @@
+## F16 Story admitted read/export correction — WIP/unbuilt/unrun, 2026-10-09
+
+Source #1553,R25/F16,T063/T064/T065. Baseline packet preserved at60fe9707;
+all31 artifacts/originals20pins root-verified, exact remote35 changed files.
+Two runtime files now route original public Story listing/read through owned short
+canonical admission. Trusted root/leaf validation and recovery occur outside ordinary
+I/O fallback; same explicit borrowed reader lets export-all recover before reading
+without nested admission. BOM-aware physical lines retain blank/malformed counting,
+lastN before parse, missing empty and per-line malformed JSON behavior. Only ordinary
+IOException/UnauthorizedAccess fallback remains; CSP/replacement/InvalidData escape.
+GetAvailableStories keeps its synchronous API through ConfigureAwait(false) reads.
+
+Both console exports use original common publication with current UTF8 BOM/name
+semantics, no raw mkdir/write, and capture the primary exception through owned close.
+Confirmed publication remains completed across close diagnostics per existing helper.
+Chapter uses already displayed entries; all reads the selected sources in the same
+lease as publication. Release precedes either result UI or key. Original CSP bypasses
+both export catches and the existing outer SafeExecute stop; no outer replacement
+policy change. No timestamp collision or simultaneous secondary-close execution claim.
+
+Next independent SOURCE/RED-RAW/EXACT12 gate; then fresh both-project Plan12,
+actual12 (new10 plus existing console reader/browser readable story), and matching
+both-project discovery-only catalog. Fixture/category bytes unchanged since baseline.
+No gameplay/GM-authored schema or prompt/example change. WholeF16/native/rotation,
+remaining owners/F18/global selection remain open; B2–B5 paused, T061–T065 unchecked.
+
 ## F16 Story baseline10 — observed routing gaps, 2026-10-09
 
 Frozen SOURCE/FIXTURE/EXACT10 independent PASS68f267b6. Fresh integration Plan105246
