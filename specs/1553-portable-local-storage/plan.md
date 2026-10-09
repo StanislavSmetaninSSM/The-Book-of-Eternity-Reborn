@@ -1,3 +1,34 @@
+## Story append / original transition test-only WIP — 2026-10-09
+
+Base accepted progression carrier7f706089, runtime2a372; source/raw/final integrity gates PASS,
+48 artifacts/25 pins and fresh-both-project catalog503/11293 discovery0. Prepared final carrier
+c7c56722 also has independent PASS59/26. Latest parent actual GitHub-only restore remains e5;
+subsequent pushed carriers are not described as freshly restored. Same #1553 branch, sole writer.
+
+Finite proposed7 in portable-story-outcome-causal-linux: actual AppendTurn/AppendMarker Unknown2;
+corresponding nontransient MemberPublished failure with real member restoration/cleanup and exact
+before bytes2 (known best-effort policy); original CheckLifeTransitions/CheckGmIncarnationTrigger/
+CheckAscensionTrigger marker Unknown3. No production changes. New fixtures are unbuilt/unexecuted;
+frozen source/fixture/selection review must precede matching integration Plan7 and causal execution.
+Unreached prerequisites/cuts remain fixture evidence, not runtime RED.
+
+Transition seeds use existing genuine CanonicalResourceQuartetTestFixture bootstrap through the
+same lifecycle helper, never invented bindings. Life/incarnation use actual detached snapshot
+validation; incarnation positively validates its accepted authority. Ascension seeds genuine ready
+soul authority and invokes the original return-cycle commit. Marker cuts occur respectively before
+realm transition, after confirmed Mortal transition/reset, and after confirmed Shining handoff.
+Capture prior real Committed transaction IDs/paths and exact soul/Shining/resource/player images
+at the actual story MemberPublished, retain them afterward rather than require rollback to the old
+realm. Exact authentic journal/foreign image and first actual CSP are captured before assertions;
+zero later reached read/mutation/ordinary-lease/publication/recovery phases is the bounded stop
+oracle, not a universal absence-of-attempt claim. Original readonly finalization remains separate.
+
+Only finite expected continuation keys are supplied; an original request mutation safety refusal
+prevents a missed cut from dispatching a GM request. It is not causal proof. No background responder,
+provider, new gameplay schema/math/prompt or full accepted-turn/UI/native qualification. Known
+Story lease/replaced four and existing life dispatch-failure control remain potential final neighbors,
+selected from the actual runtime delta after causal classification. No unrelated accepted replay.
+
 ## Progression final5 / current catalog checkpoint — 2026-10-09
 
 Runtime2a372661 source/exact5 and independent raw PASS. Matching Plan014802 integration
@@ -13,7 +44,7 @@ Catalog014913 rebuilt current integration1.4360629s and unit11.0574839s before d
 historical102d500/11291 for current source; it does not rerun Prepared8 or acceptedcleanup26.
 [Progression packet](recovery/storage-migration-progression-20261009/manifest.json) has48 artifacts/
 25 historical source pins; original compile failure and four causal REDs retained separately. Final
-saved artifact/docs gate pending. Latest parent full GitHub-only restore remains e5; no fresh restore
+saved artifact/docs gate PASS7f706089. Latest parent full GitHub-only restore remains e5; no fresh restore
 claimed for this carrier. No native, liveGM, fullUI, secondary-close fault or fullmigration acceptance.
 
 Next bounded unit: Story append/marker and actual original transition consumers, retaining known

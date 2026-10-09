@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-story-outcome-causal-linux",
+      "reason": "Test-only finite7 WIP: genuine publisher cuts through original append APIs and three transition consumers; source/fixture gate and matching build precede causal execution. Prior progression5/Prepared8 are retained separately.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES"
+      ]
+    },
+    {
       "category": "portable-progression-outcome-neighbor",
       "reason": "Original persisted level-award restart guard passed with causal4 at2a372 in014853; moved from turn-lifecycle-core without duplicate selected ownership, preserving known progression behavior.",
       "contracts": ["#1553", "FR-003", "FR-004", "T062-STORAGE-OUTCOMES"]

@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-story-outcome-causal-linux",
+      "responsibility": "Seven original Story append/marker and life/incarnation/ascension publication-outcome controls: real Unknown stop versus confirmed known rollback best effort, retaining earlier transition commits.",
+      "excludes": "No live GM/provider, full accepted turn, interactive incarnation allocation, native Windows or secondary owned-close fault qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/StoryService.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryAppendUnknown_OriginalApiPreservesDecision",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryAppendKnownRollback_PreservesBestEffortPolicy",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryMarkerUnknown_OriginalTransitionStopsWithPriorCommits"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-progression-outcome-neighbor",
       "responsibility": "Original persisted level-award restart guard protecting known progression behavior beside typed publication-Unknown propagation.",
       "excludes": "No broad turn lifecycle, stat math suite, live GM or interactive distribution expansion.",

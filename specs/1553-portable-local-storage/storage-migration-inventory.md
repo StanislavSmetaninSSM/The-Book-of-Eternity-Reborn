@@ -5,10 +5,32 @@ marking and computed publication. Causal4 genuine failures become final4 PASS; o
 restart-level-award control also passes. Final5 complete10.5218797s; same original decision, retained
 journal/foreign bytes/prior committed images, zero later measured work and owned cleanup verified
 independently. Packet48 artifacts/25 pins retains build-only failure and RED separately; final saved
-carrier review pending. Current catalog503/11293 valid0 at2a372 after fresh integration+unit builds,
+carrier review PASS7f706089. Current catalog503/11293 valid0 at2a372 after fresh integration+unit builds,
 not runtime replay. No full-turn/native/secondary-close guarantee or full migration closure.
 
 ## Current remaining source-only classification — 2026-10-09
+
+Current Story finite7 is test-only WIP in the existing plan; no causal/runtime claim yet. Remaining
+source follow-ups are not blocked on this fixture and are not seven-case acceptance:
+- C2 actual writer/readback catches span InitialTransport87/110, SavedTransport91/130,
+  PendingSubmission179, PendingRepair126, DependentProgress266. Their InvalidOperation outer
+  catches and engine SpiritualContinuation233/266/637 also catch CSP; response637 may then delete
+  Ready646. Preserve known postcommit-I/O readback policy, but never infer journal settlement from
+  After bytes. PrivateAdapter IO/Unauthorized-only catch already excludes CSP.
+- Worker predispatch audit can continue to launch; simple default audit filter alone still reaches
+  Pool early-failure audits. ProposalStore has durable bundle/ACK before derived inbox/audit;
+  actual derived Unknown must stop next audit while retaining published facts. Pool cleanup/reaper
+  must retain original process-stop/output obligations separately from forbidden new canonical
+  audits. Known warning controls are Windows-dependent by default; Linux needs the existing explicit
+  synthetic Store backend, preserving default Linux refusal. Post-apply immutable decision remains
+  diagnostic on same CSP. Full caller tracing/meaningful cuts remain pending.
+- Archive EnsureHealthy consultation then project-fuel reconciliation and Candidate.Refresh callers
+  are connected canonical continuations; existing finite request/receipt/codex seeds are available.
+- Host-exact enumeration must be followed by early producer refusal for unrepresentable snapshot
+  cohorts before IgnoreCase maps/copies/publication in LivePrepare, Engine snapshots and browser
+  queue. Spiritual draft capture already uses Ordinal and rejects confusable keys, but must not
+  silently filter an actual backslash/trim-rejected relevant filename. Preserve reader alias safety;
+  no generic listing rejection or blanket comparer change.
 
 Parent/reviewer inspected a44-row lexical catch/write aid at54d. These are source findings and
 bounded fixture proposals, not44 executed failures or required mirror-implementation tests. Existing
