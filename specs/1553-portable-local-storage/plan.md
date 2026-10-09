@@ -1,3 +1,30 @@
+## F18 terminal treatment — actual cut reached, older refusal oracle exposed, 2026-10-09
+
+SOURCE/FIXTURE/EXACT1 PASSb136a70e. Fresh Plan1404471/1,0execution44.5943319s;
+actual1405421/1FAIL15.5056941s complete1/1,bothcleanup,0skip/duplicate/timeout.
+Same exact terminal category -Parallelism1 -PlanOnly then -NoBuild. The observer timing
+correction works: original Committed command events are presence43795bytes → absence-of-
+request209bytes → exact original43795bytes restored; pending baseline has no request.
+Generation unchanged/no journal; original ReleaseFailed/specific-code, exact full tree and
+ConfirmedHeld agreement assertions pass. Actual held lease closes and root is removed.
+
+Failure is later original competing-request oracle: expected resource_reservation_overbooked,
+actual resource_reservation_authority_invalid. This row has not passed; assertions after that
+helper remain unexecuted. Source shows AcceptedTurnAuthorityRegistry2355–2363 checks the
+existing _treatmentPublicationRestartBlockerFingerprint BEFORE resource overbooking, returning
+exact Expected="no unresolved terminal publication blocker", Actual="treatment publication
+compensation requires a session restart". That rule originates in2e3defc0, preceding this
+migration. FR-063 retains restored bytes/confirmed hold and fail-closed restart semantics.
+Do not alter runtime or broadly accept any invalid authority. Independent diagnosis before
+next change: specialize only this terminal row to exact restart-refusal code/Expected/Actual,
+prove original hold remains and no new reservation, retain ordinary overbooking helper
+expectations for unaffected rows. Then rerun only this already isolated Fact.
+
+Both distinct failures retained: initial Arm prerequisite vs reached-cut older refusal oracle.
+[Packet](recovery/storage-migration-treatment-observers-20261009/manifest.json) now23artifacts/
+originals26pins verified; initial12/13 unchanged. First command-proof PASS8c49 remains.
+No native/B2/gameplay implementation or aggregate replay; whole1553 continues.
+
 ## F18 terminal treatment observer — isolated timing correction WIP, 2026-10-09
 
 Base076269a3 preserves initial1401081PASS/1pre-operation fixtureFAIL unchanged.
