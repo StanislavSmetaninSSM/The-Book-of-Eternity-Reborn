@@ -2402,7 +2402,7 @@ public partial class ExplorerMode
                 MarkupLine("[yellow]НПС не найден в файле. Директива будет передана ГМ с вашим действием.[/]");
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
         }
@@ -2538,7 +2538,7 @@ public partial class ExplorerMode
                 MarkupLine("[yellow]Фракция не найдена в файле.[/]");
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
         }

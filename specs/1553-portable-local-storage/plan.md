@@ -1,3 +1,27 @@
+## Explorer/Archive runtime WIP — 2026-10-09
+
+Causal carrier010a0831 independently accepted112 artifacts/64 source pins; genuine20=16@5dc+4@259,
+known2PASS@5dc, historical initial4 recipe failures retained. This checkpoint is UNBUILT/UNEXECUTED.
+Direct typed uncertainty now escapes reviewed original console/helper/idle boundaries before input,
+compensation or evidence discard. Known offering/Treasury failures retain their ordinary restoration;
+actual restoration uncertainty retains that exact known cause and stops. Three original console rollback
+owners retain direct CSP before releasing their same lease (no simultaneous secondary-close test claim).
+
+Existing browser projection carries coordinator disposition/follow-up/continuation-blocked metadata on
+all five original success/failure producer sites, with private factual follow-up messages. Original Submit
+retires the form but skips canonical lock release when continuation is blocked. No string-inferred decision,
+new observer, global latch or transaction API. Mortal/Saref siblings are source-qualified, not whole-entry
+executed by the forge case. Known unblocked failure behavior remains.
+
+Proposed exact31=existing22 + original forge Submit committed-lock-delete Unknown1 + unchanged known8
+(directives2, console reroll cancellation1, browser normal forge/foreign pending2, archive cleanup/retention2,
+malformed candidate1). The extension records actual domain Committed images and actual browser committed
+marker before normal cleanup removes it; then genuine lock-delete Unknown must return established Completed
+with warning/no-repeat, retained evidence/no later work and retired form. No fabricated coordinator outcome.
+Frozen independent SOURCE/FIXTURE/SELECTION gate must precede fresh integration+unit Plan31/actual31.
+No GM schema/mechanic/prompt change: this is client-owned storage-stop propagation. Latest actual full
+GitHub-only restore remains e5; no native/fullplay/double-close acceptance or fresh global catalog claim.
+
 ## Explorer corrected4 causal reach — 2026-10-09
 
 Frozen25916862 passes independent SOURCE/FIXTURE/EXACT4. Matching Plan051138 freshly builds integration

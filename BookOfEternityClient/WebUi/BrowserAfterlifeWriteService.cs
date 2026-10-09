@@ -1481,7 +1481,7 @@ public sealed class BrowserAfterlifeWriteService
                         Math.Max(1, _stateManager.CurrentState.TurnNumber),
                         relicRerollsToCommit);
                 }
-                catch (InvalidOperationException ex)
+                catch (InvalidOperationException ex) when (ex is not CoordinatedStatePublicationUncertainException)
                 {
                     throw new InvalidOperationException(SanitizeShiningForgeValidationMessage(ex.Message), ex);
                 }
@@ -2678,14 +2678,14 @@ public sealed class BrowserAfterlifeWriteService
             });
 
         if (result.Success)
-            return BrowserPromptWriteResult.Completed(title, message, payload);
+            return BrowserPromptWriteResult.Completed(title, message, payload).RetainPublication(result);
 
         var failureMessage = SanitizeLocalWriteMessage(result);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
             result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
-            failureMessage);
+            failureMessage).RetainPublication(result);
     }
 
     private async Task<BrowserPromptWriteResult> ExecuteAtomicAsync(
@@ -2716,14 +2716,14 @@ public sealed class BrowserAfterlifeWriteService
             rollbackCleanupDirectories: rollbackCleanupDirectories);
 
         if (result.Success)
-            return BrowserPromptWriteResult.Completed(title, message, payload);
+            return BrowserPromptWriteResult.Completed(title, message, payload).RetainPublication(result);
 
         var failureMessage = SanitizeLocalWriteMessage(result);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
             result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
-            failureMessage);
+            failureMessage).RetainPublication(result);
     }
 
     private async Task<BrowserPromptWriteResult> ExecuteAtomicAsync(
@@ -2752,14 +2752,14 @@ public sealed class BrowserAfterlifeWriteService
             });
 
         if (result.Success)
-            return BrowserPromptWriteResult.Completed(title, messageFactory(), payload);
+            return BrowserPromptWriteResult.Completed(title, messageFactory(), payload).RetainPublication(result);
 
         var failureMessage = SanitizeLocalWriteMessage(result);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
             result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
-            failureMessage);
+            failureMessage).RetainPublication(result);
     }
 
     private static IReadOnlyCollection<string> IncludePlayerSoulProfileRollback(

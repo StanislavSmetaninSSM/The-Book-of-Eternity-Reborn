@@ -2,6 +2,51 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "responsibility": "Original Explorer/archive known policies and actual whole browser Submit committed-release uncertainty. Eight unchanged controls plus one real committed-domain/lock-delete Unknown extension.",
+      "excludes": "No replay of earlier accepted generic coordinators, no whole gameplay/native/secondary-close claim. Mortal/Saref projection siblings source-reviewed only; historical wildcard owners unselected.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode",
+        "BookOfEternityClient/WebUi",
+        "BookOfEternityClient/Services/AfterlifeArchiveActionState.cs",
+        "BookOfEternityClient/Services/AfterlifeArchiveCandidateService.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-explorer-archive-outcome-causal-linux",
+          "when": "Together with corrected-inputs4 qualifies the bounded runtime stop and result projection."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CompanionDirective_UpdatesNpcCoreWithoutException",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDirective_UpdatesFactionCoreWithoutException",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgeReshape_WritesExistingForgeRequestAndCommitsRelicReroll",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgePromptAfterAnotherPendingCoreActionAppears_ReturnsPlayerFacingBlocker",
+            "BookOfEternityClient.Tests.AfterlifeArchiveActionStateTests.EnsureHealthyAsync_OutsideAfterlife_MatchingReceiptWithoutReservation_ClearsStaleRequestFile",
+            "BookOfEternityClient.Tests.AfterlifeArchiveActionStateTests.EnsureHealthyAsync_OutsideAfterlife_UnresolvedRequestRetainsReservationAndPendingFile",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitRetainsCommittedFollowUp"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeArchiveCandidateServiceTests.RefreshFromCurrentStateAsync_MalformedCurrentSoulState_RetainsExistingManifest"
+          ]
+        }
+      ],
+      "id": "portable-explorer-archive-known-controls"
+    },
+    {
       "id": "portable-explorer-archive-corrected-inputs-linux",
       "responsibility": "Isolated original Explorer command recipes for companion directive, system attraction, faction realignment and leadership; genuine positive publication Unknown and same-carrier/no-later-work oracles.",
       "excludes": "No fabricated CSP, helper-only command claim, full gameplay/provider/native or simultaneous owned-close failure. Browser forge proves actual Afterlife/shared Submit only; Mortal/Saref projection siblings remain source-qualified. Zero observed recovery phases is not proof of no attempted recovery.",
@@ -7258,7 +7303,6 @@
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_EffectsMalformedAuthorityFailsClosedWithoutStatusFallback",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_EffectsUsesAcceptedProjectionAndHidesInternalOrGmOnlyState",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Effects_RendersWithoutHiddenErrors",
-            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDirective_UpdatesFactionCoreWithoutException",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_RichFactionShowsKnowledgeSectionMenu",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_SectionDetailsHideHiddenChroniclesAndRawStrategicState",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDrilldown_SparseFactionSectionsRenderUsefulEmptyStates",
@@ -7358,7 +7402,6 @@
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.StandardWoundArt_InvalidPlayerAuthority_ConsoleRejectsBeforeQuoteAndPreservesState",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_AutoDiscardFailedTransitionDoesNotClaimDeletionOrRetry",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_BracketBearingMortalText_RendersStatusQuestsSkillsAndBooksSafely",
-            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CompanionDirective_UpdatesNpcCoreWithoutException",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CurrentLocationSuppressesNestedLocationRepairPackets",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CurrentLocation_FailsClosedWhenCurrentProjectionDiffersFromMap",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CurrentLocation_HidesCanonicalTurnAnchorInLastEvents",
@@ -7601,7 +7644,6 @@
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_MissingRelicPropertiesUsesPlayerFacingRussianWording",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_NoSoulRelicsUsesPlayerFacingRussianWording",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_OverviewMarksWrongCycleInventoryAsStale",
-            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_ReshapeFallbackHumanizesPromptAndNormalizesCanonicalFormTag",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RetuneFallbackOffersTemplateBeforeManualJson",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_TradeLifecycleInspectionDoesNotTruncateGachaHistory",

@@ -2916,7 +2916,7 @@ public partial class ExplorerMode
             await _fs.WriteFileAtomicAsync(path, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
             return true;
         }
-        catch
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             return false;
         }
@@ -3022,7 +3022,7 @@ public partial class ExplorerMode
             MarkupLine("[dim]Нажмите любую клавишу...[/]");
             ReadKey();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
@@ -3076,7 +3076,7 @@ public partial class ExplorerMode
             MarkupLine("[dim]Нажмите любую клавишу...[/]");
             ReadKey();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
@@ -3588,7 +3588,7 @@ public partial class ExplorerMode
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
             return true;
         }
-        catch
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             return false;
         }

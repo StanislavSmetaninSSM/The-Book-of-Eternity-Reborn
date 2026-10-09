@@ -335,7 +335,7 @@ internal static class AfterlifeArchiveActionState
                 ? PendingArchiveRequestCleanupOutcome.RequestRetainedPendingUnreconciledReservation
                 : PendingArchiveRequestCleanupOutcome.RequestRetainedMalformedInsufficientIdentity;
         }
-        catch
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             return PendingArchiveRequestCleanupOutcome.RequestRetainedPendingUnreadableSoulState;
         }

@@ -100,13 +100,13 @@ public sealed class BrowserSarefStoryWriteService
                 result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
                 result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
                 result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
-                result.Message);
+                result.Message).RetainPublication(result);
         }
 
         return BrowserPromptWriteResult.Completed(
             "Поиск Крыльев начат",
             "Браузер создал ожидающий запрос поиска Крыльев Ангелов и подготовил действие для ГМа.",
-            payload ?? new JsonObject());
+            payload ?? new JsonObject()).RetainPublication(result);
     }
 
     private static BrowserPromptWriteResult BuildAdvantageUsePayload(IReadOnlyDictionary<string, JsonNode?> answers)

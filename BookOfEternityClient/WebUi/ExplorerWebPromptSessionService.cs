@@ -371,7 +371,7 @@ public sealed class ExplorerWebPromptSessionService
         }
 
         _sessions.TryRemove(sessionId, out _);
-        if (!writeResult.Success && snapshot.RequiresLocalUiLock)
+        if (!writeResult.Success && !writeResult.ContinuationBlocked && snapshot.RequiresLocalUiLock)
             await ReleaseSnapshotLockAsync(snapshot);
 
         var blocks = snapshot.Result.Blocks.ToList();

@@ -269,7 +269,7 @@ public partial class ExplorerMode
                 WaitForKey();
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[red]❌ Ошибка при выполнении команды {Markup.Escape(commandName)}:[/]");
             MarkupLine($"[red]{Markup.Escape(ex.Message)}[/]");
@@ -498,7 +498,7 @@ public partial class ExplorerMode
         {
             await _systemGuardianLibraryService.WriteAttractionRequestAsync(preset);
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[red]{Markup.Escape(ex.Message)}[/]");
             return;
@@ -728,51 +728,65 @@ public partial class ExplorerMode
         if (normalizedTrackedFiles.Count == 0)
             return;
 
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (_pendingLocalTurnRollbackSnapshot is { RestoreCompleted: true } completed)
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
         {
-            // This owner can only finish cleanup. A new command must capture a
-            // fresh baseline, including when it tracks exactly the same paths.
-            DiscardPendingLocalTurnRollbackSnapshot(writeLease, completed);
-            ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
+            if (_pendingLocalTurnRollbackSnapshot is { RestoreCompleted: true } completed)
+            {
+                // This owner can only finish cleanup. A new command must capture a
+                // fresh baseline, including when it tracks exactly the same paths.
+                DiscardPendingLocalTurnRollbackSnapshot(writeLease, completed);
+                ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
+            }
+            var snapshot = _pendingLocalTurnRollbackSnapshot ?? new PendingLocalTurnRollbackSnapshot();
+            var added = normalizedTrackedFiles.Where(path => !snapshot.TrackedFiles.Contains(path)).ToArray();
+            if (added.Length == 0) return;
+            var root = snapshot.EvidenceRoot ?? ConsoleLocalTurnRollbackArtifacts.CreateRoot();
+            var evidence = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+            var backups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var marker = root + "/" + ConsoleLocalTurnRollbackArtifacts.MarkerName;
+            if (snapshot.EvidenceRoot == null)
+                evidence.Add(marker, ConsoleLocalTurnRollbackArtifacts.CreateMarker(root,
+                    _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Console generation is missing.")));
+            foreach (var trackedFile in added)
+            {
+                var content = await _fs.ReadFileBytesAsync(writeLease, trackedFile);
+                if (content == null) continue;
+                var backup = CreateExplorerRollbackBackupPath(root, trackedFile);
+                evidence.Add(backup, content);
+                backups.Add(trackedFile, backup);
+            }
+            if (evidence.Count > 0)
+            {
+                _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(writeLease,
+                    evidence.Select(pair => new CanonicalLocalFileChange(pair.Key, null, pair.Value)).ToArray()));
+                _fs.RegisterConsoleRollbackEvidence(writeLease, evidence);
+            }
+            // Publish first. A failed capture must never turn an existing file into
+            // an apparently captured absence on retry.
+            snapshot.EvidenceRoot = root;
+            snapshot.TechnicalArtifacts.Add(marker);
+            snapshot.ValidationSnapshotFiles.Add(marker);
+            snapshot.TrackedFiles.UnionWith(added);
+            foreach (var (trackedFile, backup) in backups)
+            {
+                snapshot.BaselineFiles.Add(trackedFile);
+                snapshot.BackupFiles.Add(trackedFile, backup);
+                snapshot.BackupHashes.Add(trackedFile, ComputeExplorerRollbackHash(evidence[backup]));
+            }
+            _pendingLocalTurnRollbackSnapshot = snapshot;
         }
-        var snapshot = _pendingLocalTurnRollbackSnapshot ?? new PendingLocalTurnRollbackSnapshot();
-        var added = normalizedTrackedFiles.Where(path => !snapshot.TrackedFiles.Contains(path)).ToArray();
-        if (added.Length == 0) return;
-        var root = snapshot.EvidenceRoot ?? ConsoleLocalTurnRollbackArtifacts.CreateRoot();
-        var evidence = new Dictionary<string, byte[]>(StringComparer.Ordinal);
-        var backups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var marker = root + "/" + ConsoleLocalTurnRollbackArtifacts.MarkerName;
-        if (snapshot.EvidenceRoot == null)
-            evidence.Add(marker, ConsoleLocalTurnRollbackArtifacts.CreateMarker(root,
-                _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Console generation is missing.")));
-        foreach (var trackedFile in added)
+        catch (CoordinatedStatePublicationUncertainException failure)
         {
-            var content = await _fs.ReadFileBytesAsync(writeLease, trackedFile);
-            if (content == null) continue;
-            var backup = CreateExplorerRollbackBackupPath(root, trackedFile);
-            evidence.Add(backup, content);
-            backups.Add(trackedFile, backup);
+            publicationUncertainty = failure;
+            throw;
         }
-        if (evidence.Count > 0)
+        finally
         {
-            _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(writeLease,
-                evidence.Select(pair => new CanonicalLocalFileChange(pair.Key, null, pair.Value)).ToArray()));
-            _fs.RegisterConsoleRollbackEvidence(writeLease, evidence);
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
-        // Publish first. A failed capture must never turn an existing file into
-        // an apparently captured absence on retry.
-        snapshot.EvidenceRoot = root;
-        snapshot.TechnicalArtifacts.Add(marker);
-        snapshot.ValidationSnapshotFiles.Add(marker);
-        snapshot.TrackedFiles.UnionWith(added);
-        foreach (var (trackedFile, backup) in backups)
-        {
-            snapshot.BaselineFiles.Add(trackedFile);
-            snapshot.BackupFiles.Add(trackedFile, backup);
-            snapshot.BackupHashes.Add(trackedFile, ComputeExplorerRollbackHash(evidence[backup]));
-        }
-        _pendingLocalTurnRollbackSnapshot = snapshot;
     }
 
     private static string CreateExplorerRollbackBackupPath(string root, string trackedFile)
@@ -793,7 +807,9 @@ public partial class ExplorerMode
         if (snapshot == null)
             return;
 
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
         {
             if (!snapshot.RestoreCompleted)
             {
@@ -835,6 +851,16 @@ public partial class ExplorerMode
             DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
             ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
         }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
 
         await _stateManager.RefreshGameStateAsync();
     }
@@ -845,10 +871,22 @@ public partial class ExplorerMode
         if (snapshot == null)
             return;
 
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
         {
             DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
             ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
     }
 
