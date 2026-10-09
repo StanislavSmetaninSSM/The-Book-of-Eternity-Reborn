@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-image-scene-prompt-spelling",
+      "responsibility": "Twelve pure production-used scene text/path classifiers: Windows punctuation/device text remains external; drive/extended UNC canonical boundaries route to admission even for invalid canonical leaf spelling; Linux exact case/separator controls.",
+      "excludes": "Native Windows I/O or grant/validation acceptance; actual canonical namespace remains validated under admission. Existing export exclusion predicate is unchanged.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ImageService.cs",
+        "BookOfEternityClient.Tests/ImageScenePromptPathSpellingTests.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-image-source-admission-linux",
+          "when": "Together with source13 and original external export3 verifies actual Linux consumers after lexical-classification correction."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ImageScenePromptPathSpellingTests.ScenePromptClassificationDoesNotValidateUnrelatedText"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-image-source-admission-linux",
       "responsibility": "Thirteen finite original image source consumers: lookup/external-export/scene stop genuine retained Unknown, recover real Committed cleanup debt before canonical selection/read, refuse source links, preserve external prompt path behavior and original browser held-lease existing-image success. Ordinary guarded export read IO retains CopyFailed; a long text prompt ending .png stays ordinary text.",
       "excludes": "No HTTP/network/provider, desktop process, native Windows or all-media qualification. Existing write/gallery cohort remains separate; detached source bytes and release before external work are source-reviewed.",

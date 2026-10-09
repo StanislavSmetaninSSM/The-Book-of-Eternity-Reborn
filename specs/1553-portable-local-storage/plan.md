@@ -1,3 +1,21 @@
+## Image Windows text classification — test-first extraction, 2026-10-09
+
+Independent AstraXHigh RED/raw PASS33e3735b (69artifacts/30pins), source changes
+required: IsCanonicalExportPathSpelling validates Windows filename components, so
+both ordinary scene classification and catch filter can throw for colon/quote/device
+text before File.Exists. Export ordinary read mapping is source-accepted. Extract
+scene classifier as a production-used wrapper delegating the exact old predicate;
+no classification behavior fixed yet. Add12pure rows for Windows text3, canonical
+invalid leaf requiring admission1, drive/extended UNC5, sibling1 and Linux case/
+literal separator2. These are string semantics on Linux, not native Windows I/O.
+
+Next independent extraction/fixture gate and fresh unit Plan12/causal actual12;
+then replace only the scene classifier with nonvalidating lexical containment.
+Actual canonical reader and existing export exclusion/alias validation remain strong.
+Final finite selection will be source13 + originalexport3 + pure12 =28/3, fresh both
+projects, actual28, catalog discovery only and final evidence review. Prior14 and16
+baselines retained; no aggregate/Windows/provider/desktop/gameplay execution.
+
 ## Image two reached review regressions and narrow correction — WIP, 2026-10-09
 
 Independent AstraXHigh fixture/design PASSdbe7c96f. Fresh Plan162704 selects16/2,

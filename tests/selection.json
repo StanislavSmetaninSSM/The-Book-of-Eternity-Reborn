@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-image-scene-prompt-spelling",
+      "reason": "T063/R25/F16 source review found Windows scene text classification still performs file validation. Twelve production-used pure controls, test-first extraction delegates exact previous predicate; unbuilt/unrun. Final bounded consumer selection becomes28/3; no native Windows claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T063-STORAGE-BOUNDARIES",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-image-source-admission-linux",
       "reason": "T063/R25/F16 source14passes+2reachedreviewregressions atdbe/162829, original14causal history immutable. Narrow ordinary-source-IO CopyFailed and non-file png-text fixes now WIP unbuilt/unrun; freshexact16/2 and catalog required. No provider/desktop/native/full-media claim.",
       "contracts": [
