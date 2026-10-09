@@ -16,7 +16,7 @@ public sealed class GmWorkerStorageOutcomeTests(ITestOutputHelper output)
     internal const string WeatherPath = "game_state/world/weather.json";
     private const string ContentPath = "worker_proposals/worker_proposal_20260620_0001/game_state/world/weather.json";
     private const string ReadyPath = GmWorkerValidationRepairDelegator.ValidationRepairReadyPath;
-    private static readonly byte[] AcceptedWeather = Encoding.UTF8.GetBytes("{\"after\":true}");
+    private static readonly byte[] AcceptedWeather = FileSystemManager.EncodeUtf8WithPreamble("{\"after\":true}");
 
     [Theory]
     [InlineData("router_audit")]
@@ -182,7 +182,7 @@ public sealed class GmWorkerStorageOutcomeTests(ITestOutputHelper output)
             if (mode == "latest_task")
             {
                 var retainedTask = Assert.IsType<WorkerTaskPacket>(failure!.Data["GmWorkerTask"]);
-                var published = GmWorkerJson.Deserialize<WorkerTaskPacket>(Encoding.UTF8.GetString(probe.Cut.PublishedBytes!));
+                var published = GmWorkerJson.Deserialize<WorkerTaskPacket>(Encoding.UTF8.GetString(probe.Cut.PublishedBytes!).TrimStart('\uFEFF'));
                 Assert.Equal(GmWorkerJson.Serialize(published), GmWorkerJson.Serialize(retainedTask));
             }
         }
@@ -203,7 +203,7 @@ public sealed class GmWorkerStorageOutcomeTests(ITestOutputHelper output)
                 if (mode == "ready_success")
                 {
                     Assert.NotNull(readyCommitted); Assert.Equal(readyCommitted, readyAfter);
-                    var ready = GmWorkerJson.Deserialize<ValidationRepairReadySignal>(Encoding.UTF8.GetString(readyAfter!));
+                    var ready = GmWorkerJson.Deserialize<ValidationRepairReadySignal>(Encoding.UTF8.GetString(readyAfter!).TrimStart('\uFEFF'));
                     Assert.Equal(task!.SourceTurn.RequestId, ready!.RequestId);
                 }
                 else
