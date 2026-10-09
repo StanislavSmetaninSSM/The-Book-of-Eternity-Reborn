@@ -1,3 +1,27 @@
+## C2 private transport storage outcome — next bounded T062 slice, 2026-10-09
+
+Prerequisite durable15 final catalog/carrier PASS e12aa3a4. Root freshly cloned
+that exact SHA from GitHub into a new empty directory: tree6679665c,29657 tracked
+files, clean checkout/no alternates/full fsck0; all389 artifacts312 pins validate.
+This establishes source/evidence recovery, not a new build/test run.
+
+C2 service slice will exercise actual original first checkpoint/pending, selected
+submission, saved successor checkpoint/pending, projection repair and dependent
+progress publication. Seven authentic MemberPublished/foreign-image cuts must
+propagate the same real CSP, preserve prior committed bytes and stop canonical
+readback/reopen; original captures/gates and caller-owned leases still settle.
+Four ordinary success controls and existing old/new/third-image IOException
+transport controls preserve the intentional readback policy. These known ordinary
+errors are not renamed actual Unknown. Exact bounded catalog ownership and fixture
+review precede RED; only demonstrated publisher/outer catches change afterward.
+
+Use independently owned resource contexts with original signed snapshot/generation
+and existing immutable prepared dependent corpus, never a fabricated checkpoint or
+shared mutable owner. Preserve disposal/revocation and sequential checkpoint-then-
+pending recovery boundary; do not invent multi-file atomicity. Client-owned storage
+propagation changes no GM-authored field/example. Connected original engine catches,
+owned-close boundaries and full C2 acceptance remain the next dependent slice.
+
 ## Durable worker accepted bounded15 — 2026-10-09
 
 Independent actual Astra XHigh final source/raw gate **PASS09cb4b5b**, tested

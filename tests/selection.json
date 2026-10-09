@@ -2,8 +2,32 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-spiritual-c2-storage-outcome-linux",
+      "reason": "New C2 bounded fixture/selection WIP, unbuilt/unrun; original service phase before connected engine caller qualification. No full-game/GM or accepted cohort replay.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-005",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-spiritual-c2-known-readback",
+      "reason": "New C2 bounded fixture/selection WIP, unbuilt/unrun; original service phase before connected engine caller qualification. No full-game/GM or accepted cohort replay.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-005",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-worker-terminal-cleanup-pending-linux",
-      "reason": "One new real original-reaper pass during pending terminal decision after actual owner DisposeOnce; causal fixture WIP, unbuilt/unrun. Same selected case belongs to durable15 union; no accepted cohort replay.",
+      "reason": "Real pending-terminal/reaper causal1 at257 becomes PASS within durable15 at670e42ac. Same obligation de-duplicates; original physical settlement remains separate from final canonical cleanup.",
       "contracts": [
         "#1553",
         "FR-005",
@@ -15,7 +39,7 @@
     },
     {
       "category": "portable-worker-cleanup-admission-linux",
-      "reason": "Focused three-row required-cleanup admission correction after actual 081224 exposed two retirement failures and one blocked required-audit cut. Source/unbuilt WIP; contained in later durable14 union. No repeat of the other eleven unchanged rows in the reachability run.",
+      "reason": "Historical focused3 reached2PASS/1 causal required-audit failure atd4; all three obligations then pass within exact durable15 at670e42ac. Same tests de-duplicate; no separate rerun required.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -28,7 +52,7 @@
     },
     {
       "category": "portable-worker-durable-storage-linux",
-      "reason": "Fifteen original durable-pool storage outcome fixtures. Historical14 at876:6PASS/8FAIL; focused3 atd4:2PASS/1 reached required-audit failure. New pending-terminal reaper control is unbuilt/unrun. Full current15 union is not accepted; no prior accepted cohort replay or full Bridge/native Windows claim.",
+      "reason": "Original durable15 complete PASS at670e42ac/084648 with independent source/raw gate09cb and final catalog/carrier gatee12aa3a4. Six real canonical cuts, retained original cleanup phase/acceptance facts. No broad worker/native qualification or unchanged cohort replay.",
       "contracts": [
         "#1553",
         "FR-003",

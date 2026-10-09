@@ -19841,6 +19841,65 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-spiritual-c2-storage-outcome-linux",
+      "responsibility": "Eleven finite original C2 service rows: seven authentic common-publisher Unknown cuts at first checkpoint/pending, selected submission, saved checkpoint/pending, repair and dependent progress; four real successful controls. Exact original signed context/generation, same CSP, no later canonical work, prior committed bytes and owned capture/lease/root cleanup.",
+      "excludes": "No full GameEngine turn/Ready loop, GM/provider, B2-B5 materialization acceptance, native Windows or actual secondary close failure. Known IOException readback controls are separately selected.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2InitialTransport.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedTransport.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingSubmission.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingRepair.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualPrivateTransportPreservesCanonicalPublicationOutcome"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-spiritual-c2-known-readback",
+      "responsibility": "Fifteen existing finite C2 initial/saved/repair/dependent old/new/third-image ordinary IOException transport outcomes, including original revocation and pending outcomes; preserve exact known readback/replay policy when true common publisher uncertainty is propagated.",
+      "excludes": "Injected ordinary IOException after completed/no write is not an authentic journal Unknown; no full turn, GM/provider, long continuation loops or native Windows acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2InitialTransport.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedTransport.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingSubmission.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingRepair.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2InitialTransport_ResolvesInjectedFailures",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2SavedTransport_ClassifiesCheckpointWriteOutcome",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2PendingRepair_ClassifiesAtomicWriteOutcome",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ProgressCommitClassifiesWriteFailure"
+          ]
+        }
+      ]
     }
   ]
 }

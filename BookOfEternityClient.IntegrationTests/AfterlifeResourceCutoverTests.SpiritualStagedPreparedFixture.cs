@@ -72,13 +72,17 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="acceptedA">
     /// True selects accepted A awaiting B; false selects lawful physical A before its Ready or journal append.
     /// </param>
+    /// <param name="hooks">
+    /// Optional observations on this caller's independent filesystem; template preparation is unchanged.
+    /// </param>
     /// <returns>
     /// Detached comparisons and an independently disposable physical context.
     /// </returns>
-    private static async Task<SpiritualStagedPreparedFixture> CreatePreparedSpiritualStagedContextAsync(bool acceptedA)
+    private static async Task<SpiritualStagedPreparedFixture> CreatePreparedSpiritualStagedContextAsync(
+        bool acceptedA, FileSystemManagerHooks? hooks = null)
     {
         var templates = await SpiritualStagedTemplates.Value;
-        var context = await ResourceMaterializationTestContext.CreateAsync();
+        var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
         try
         {
             (acceptedA ? templates.Accepted : templates.BeforeReady).Materialize(context.FileSystem.GameSessionPath);
