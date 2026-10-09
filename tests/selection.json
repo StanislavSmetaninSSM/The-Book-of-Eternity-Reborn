@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-worker-prelaunch-storage-linux",
-      "reason": "Five original Bridge-to-prelaunch-pool rows, genuine common-publisher reservation/audit/diagnostic cuts and known/default-backend controls. Per-case original main pin, no worker launch, capacity and guardian cleanup proof. Fixture WIP unbuilt/unrun. Accepted terminal8 and priorReady12/diagnostic15 are not replayed.",
+      "reason": "Five original Bridge-to-prelaunch-pool rows, genuine common-publisher reservation/audit/diagnostic cuts and known/default-backend controls. Actual 5/5 PASS at b9fdea55 after causal 2PASS/3FAIL at033a05c5; original main pin, slot/capacity, guardian and exact bytes verified. No worker launch or durable Store/ACK qualification. Accepted earlier cohorts are not replayed.",
       "contracts": [
         "#1553",
         "FR-003",

@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-worker-prelaunch-storage-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b9fdea55b140d19522b2dabb29dc077c89c754ef",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 74.5731027,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-prelaunch-storage-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-prelaunch-storage-linux",
+      "Categories": [
+        "portable-worker-prelaunch-storage-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPrelaunchStorageTests.OriginalBridgePrelaunchStorageRetainsUncertaintyAndReleasesOwnedCapacity",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPrelaunchStorageTests.OriginalBridgePrelaunchStorageRetainsUncertaintyAndReleasesOwnedCapacity",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

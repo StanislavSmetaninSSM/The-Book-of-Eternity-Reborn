@@ -1,3 +1,20 @@
+## Original Bridge/prelaunch pool — bounded GREEN, 2026-10-09
+
+Independent SOURCE/RAW-RED/EXACT5 PASS b9fdea55b140d19522b2dabb29dc077c89c754ef;
+remote ref and exact runtime/checkpoint/manifest bytes independently read back.
+Fresh unit Plan073951:5/1 planned,0 executed,74.8638275s. Actual074112 at clean b9:
+**5/5 PASS**,1/1 descriptors,14.6022291s, both cleanup flags; no skip/duplicate/timeout.
+Root verifies same actual CSP identity for3 cuts, zero later canonical work, exact
+known cause for diagnostic Unknown, actual task/current generation/earlier commit
+and journal/foreign bytes. Original pins/slots/capacity settle in5, all5 owned roots
+removed after guardian ECHILD/no emergency/failure/deadline. Controls retain known
+failure and public Linux refusal policies. [Packet](recovery/storage-migration-worker-prelaunch-20261009/manifest.json)
+preserves RED and GREEN separately; no native Windows or secondary-close fault claim.
+Fresh both-project catalog074151:528 categories/11326 methods-files valid,0 tests
+executed,30.1642606s; integration build20.9294664s and unit1.5512462s. No previously accepted test group replay.
+Next independent final evidence/metadata gate, then full durable Store/cleanup unit.
+B2–B5, C2, F16/F18, remaining owned closes and final selection reconciliation stay open.
+
 ## Original Bridge/prelaunch pool — causal RED and runtime WIP, 2026-10-09
 
 Independent fixture/exact5 PASS at033a05c53be93a6ff3170ec1dd2ea211013d6547.
