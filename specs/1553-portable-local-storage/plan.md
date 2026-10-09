@@ -1,3 +1,13 @@
+## Explorer22 source-review fixture correction — 2026-10-09
+
+Frozen e37 is unbuilt/unexecuted. Independent review found two genuine recipe defects: obsolete attraction
+preset label and a scripted console forge reroll that was not actually offered with only two relic forms.
+The new owned forwarding console now resolves exact or uniquely matching fragments to actual offered
+choices, asserting membership and recording real selections; generic TestExplorerConsole stays unchanged.
+Attraction uses the current name fragment. Forge seeds a third legitimate distinct stored-relic form
+before genuine quartet bootstrap/materialization, so the original UI has two alternatives and offers reroll.
+No production or selected-row count changes; same exact22 awaits corrected frozen source gate before build.
+
 ## Explorer/Archive frozen test-only22 — 2026-10-09
 
 Extends remotely preserved e9859df5 draft17 with three distinct compensation Unknown rows and two known

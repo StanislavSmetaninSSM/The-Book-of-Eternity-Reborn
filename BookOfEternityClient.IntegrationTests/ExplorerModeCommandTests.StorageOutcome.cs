@@ -74,7 +74,7 @@ public sealed partial class ExplorerModeCommandTests
         var afterImages = priorAtCut?.ToDictionary(x => x.Key, x => CleanupPublicationCut.ReadOptional(x.Key), StringComparer.Ordinal);
         WriteStorageOutcome(JsonSerializer.Serialize(new { mode, command, target, result, Failure = failure?.ToString(),
             probe.Inputs, probe.LaterInputs, probe.RequestAttempts, pendingAtCut, priorAtCut, afterImages,
-            ConsoleSelections = fixture._console.SelectionChoicesHistory, Cut = probe.Cut.Evidence() }));
+            ConsoleSelections = fixture._console.SelectionChoicesHistory, ActualSelections = probe.ActualSelections, Cut = probe.Cut.Evidence() }));
         probe.Cut.AssertReachedAndStopped();
         Assert.Same(probe.Cut.OriginalUncertainty, failure);
         Assert.Equal(0, probe.LaterInputs); Assert.Equal(0, probe.RequestAttempts);
@@ -268,7 +268,7 @@ public sealed partial class ExplorerModeCommandTests
             await SeedAfterlifeStateAsync();
             await SeedSystemGuardianPresetAsync("azalia", "Азалия", "Social", "Обитель Неутолимого Пламени");
             await WriteJsonAsync("game_state/meta/guardians.json", new { guardians = Array.Empty<object>(), chaosSeaNavigation = new { discoveredAbodes = Array.Empty<string>() } });
-            _console.QueueAnySelection("🔍 Искать новую обитель (силой мысли)", "🧲 Притяжение к извечному хранителю", "Азалия (Social)", "✅ Выбрать");
+            _console.QueueAnySelection("🔍 Искать новую обитель (силой мысли)", "🧲 Притяжение к извечному хранителю", "Азалия", "✅ Выбрать");
             return ("/хранители", SystemGuardianLibraryService.AttractionRequestPath);
         }
         Assert.Equal("candidate", mode);
@@ -296,6 +296,15 @@ public sealed partial class ExplorerModeCommandTests
             return ("/shining_faction_leadership", ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath);
         }
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var forgeSoul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var forgeRelics = forgeSoul["soulRelics"]!["stored"]!.AsArray();
+        var thirdRelic = forgeRelics[0]!.DeepClone().AsObject();
+        thirdRelic["relicId"] = "storage_third_form";
+        thirdRelic["name"] = "Storage third form";
+        thirdRelic["formTag"] = "lance";
+        forgeRelics.Add(thirdRelic);
+        Assert.Equal(3, forgeRelics.Select(x => x!["formTag"]!.GetValue<string>()).Distinct(StringComparer.Ordinal).Count());
+        await WriteJsonAsync("game_state/meta/soul_state.json", forgeSoul);
         await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
             _fs,
             new AfterlifeOwnerResourceAcceptedState(
@@ -366,6 +375,7 @@ internal sealed class ExplorerStorageProbe : IDisposable
     internal CleanupPublicationCut Cut { get; } = new();
     internal Dictionary<string, byte[]?> Committed { get; } = new(StringComparer.Ordinal);
     internal FileSystemManagerHooks Hooks { get; }
+    internal List<string> ActualSelections { get; } = [];
     internal int Inputs { get; private set; }
     internal int LaterInputs { get; private set; }
     internal int RequestAttempts { get; private set; }
@@ -456,7 +466,18 @@ internal sealed class ExplorerStorageProbe : IDisposable
         public T Prompt<T>(IPrompt<T> prompt)
         {
             probe.Input();
-            return prompt is TextPrompt<int> ? (T)(object)probe.IntegerResponse : inner.Prompt(prompt);
+            if (prompt is TextPrompt<int>) return (T)(object)probe.IntegerResponse;
+            var requested = inner.Prompt(prompt);
+            if (prompt is not SelectionPrompt<string> selection) return requested;
+            var choices = (List<string>)typeof(TestExplorerConsole)
+                .GetMethod("ReadChoices", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!
+                .Invoke(null, [selection])!;
+            var fragment = Assert.IsType<string>(requested);
+            var exact = choices.Where(x => string.Equals(x, fragment, StringComparison.Ordinal)).ToArray();
+            var matches = exact.Length != 0 ? exact : choices.Where(x => x.Contains(fragment, StringComparison.OrdinalIgnoreCase)).ToArray();
+            var actual = Assert.Single(matches);
+            probe.ActualSelections.Add(actual);
+            return (T)(object)actual;
         }
         public string? ReadLine() { probe.Input(); return inner.ReadLine(); }
         public bool KeyAvailable => inner.KeyAvailable;
