@@ -1,3 +1,29 @@
+## F18 Treatment2 — original committed observations WIP, 2026-10-09
+
+Source #1553, current branch, basebd496ce6. Two original Facts retain genuine scenario,
+persisted/rehydrated request, plan, held lease and open publication. First observes actual
+Committed command journal/exact After bytes, then corrupts those exact bytes once at the
+next original BeforeCanonicalMutation; retains CommandQuarantined, energy/full-tree
+restoration, no rearm, durable quarantine, hold release and successful competing request.
+Second observes actual committed exact-request row removal, then restoration after the
+original terminal-lifecycle release refusal; retains ReleaseFailed/specific code, exact
+durable/full-tree restoration, held-resource agreement, competing refusal and publication
+blocked inside/after original scope. Neither observer invents publication failure/Unknown.
+
+The shared test-only observer reads actual committed metadata/After hash and raw bytes;
+removal recognition checks original request coordinates/fingerprint in the published rows,
+not path publication alone. Raw event order/generation/no-journal are emitted even if the
+original outcome assertion fails. Cleanup calls original fixture Dispose (actual lease
+then root), emits strict receipt and never deletes under a failed active lease. Output
+constructor has no direct callers/conflicting partial constructor. Production unchanged;
+no GM/schema/prompt/example update needed and no B2–B5/native acceptance follows.
+
+Exact2 owner portable-treatment-committed-observers plus original semantic owner; frozen
+source/fixture review, fresh integration Plan2 then actual2, catalog/evidence gate pending.
+Wound24/offscreen1 final RAW/CATALOG/CARRIER PASSbd496ce6, unchanged prior evidence.
+Next whole queues: residual F18 current/retained-native classifications, F16producers and
+full-media consumers, Prepared follow-up admission, owned-close and final registry.
+
 ## F18 wound24 / offscreen1 — bounded Linux25 GREEN, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT25 PASS0d16af64926ded3a1492aff1a3648a2d895ff764.
@@ -12,8 +38,8 @@ emitted roots removed. No gameplay/B2 or runtime change/qualification inferred.
 
 Matching discovery135440562categories/11344methods-files valid0,8.4490962s,bothcleanup;
 NoBuild integrationfresh0d16/unitfresh533 with unchanged production/projects. [Packet](recovery/storage-migration-known-rollback-20261009/manifest.json)
-now256artifacts/originals186pins verified. Final independent RAW/CATALOG/CARRIER review
-pending. Prior effects14 finalPASSa2db retained without replay. Next Treatment2 exact
+now256artifacts/originals186pins verified. Final independent RAW/CATALOG/CARRIER
+PASSbd496ce6. Prior effects14 finalPASSa2db retained without replay. Next Treatment2 exact
 Committed observations, then remaining F16producers/ownedclose/whole registry; B2–B5paused.
 
 ## F18 wound24 / offscreen1 — original rollback fixtures WIP, 2026-10-09

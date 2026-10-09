@@ -1442,6 +1442,19 @@
         "T064-STORAGE-CUTS",
         "T065-STORAGE-CLOSURE"
       ]
+    },
+    {
+      "category": "portable-treatment-committed-observers",
+      "reason": "F18 two original treatment callbacks observed old physical writes. Port to genuine committed journal/After images, retain later original corruption/removal/restoration and exact business outcomes; source/fixture gate and exact2 fresh Plan precede actual execution, currently unverified.",
+      "contracts": [
+        "#1553",
+        "F18",
+        "FR-002",
+        "FR-004",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
     }
   ]
 }

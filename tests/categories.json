@@ -20703,6 +20703,32 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-treatment-committed-observers",
+      "responsibility": "F18 two original guaranteed-resource treatment publication obligations: observe genuine Committed command bytes before later raw proof corruption/quarantine, and exact request-row removal before original terminal-release refusal/restoration. Preserve typed outcomes, holds/reservations, full original tree assertions and actual lease-before-root cleanup.",
+      "excludes": "No new wound gameplay/B2-B5 scope, injected publication uncertainty, broad treatment suite, legacy physical identity, live GM or native Windows qualification. Original mortal-wounds-treatment-resources owner retained.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ResourcePublication.cs",
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PublicationObservers.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuaranteedResourceQuantity_DurableCommandProofFailureQuarantinesCommandAndNeverRearms",
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuaranteedResourceQuantity_TerminalLifecycleReleaseRefusalRestoresDurableRequestRetainsHoldAndRequiresRestart"
+          ]
+        }
+      ]
     }
   ]
 }

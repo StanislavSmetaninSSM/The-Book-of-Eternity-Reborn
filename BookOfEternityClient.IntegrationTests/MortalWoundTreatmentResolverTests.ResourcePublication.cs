@@ -10,10 +10,11 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed partial class MortalWoundTreatmentResolverTests
+public sealed partial class MortalWoundTreatmentResolverTests(ITestOutputHelper output)
 {
     private const string DeferredItemConsumptionCode =
         "mortal_wound_treatment_publication_item_consumption_unsupported";
@@ -3217,13 +3218,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var scenario = CreateGuaranteedResourcePublicationScenario(
             resourceQuantities: new[] { 2 },
             selectedResourceOrder: new[] { 0 });
-        using var fixture = AcceptedStateFixture.Create(
+        var fixture = AcceptedStateFixture.Create(
             scenario,
             new FileSystemManagerHooks
             {
                 BeforeCanonicalMutationAsync = fault.BeforeCanonicalMutationAsync,
-                AfterPhysicalFilePublishedAsync = fault.AfterPhysicalFilePublishedAsync
+                LocalPublicationObserver = fault.Observe
             });
+        using var cleanup = new TreatmentFixtureCleanup(fixture, output.WriteLine);
         fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(2);
         var flow = PersistAndRehydrateResourcePublication(
             fixture,
@@ -3237,9 +3239,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         using var publication = PublishCachedResourcePlanOpen(fixture, flow, plan);
         fault.Arm(fixture.FileSystem);
-        publication.CompensateWithOutcome("CommandQuarantined");
+        try { publication.CompensateWithOutcome("CommandQuarantined"); }
+        finally { fault.WriteEvidence(output.WriteLine); }
 
-        Assert.True(fault.Fired);
+        fault.AssertReached();
         Assert.Equal(2, ReadPlayerEnergy(fixture));
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
             fixture.FileSystem,
@@ -3413,12 +3416,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var scenario = CreateGuaranteedResourcePublicationScenario(
             resourceQuantities: new[] { 2 },
             selectedResourceOrder: new[] { 0 });
-        using var fixture = AcceptedStateFixture.Create(
+        var fixture = AcceptedStateFixture.Create(
             scenario,
             new FileSystemManagerHooks
             {
-                AfterPhysicalFilePublishedAsync = observer.AfterPhysicalFilePublishedAsync
+                LocalPublicationObserver = observer.Observe
             });
+        using var cleanup = new TreatmentFixtureCleanup(fixture, output.WriteLine);
         fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(2);
         var flow = PersistAndRehydrateResourcePublication(
             fixture,
@@ -3435,7 +3439,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
         {
             observer.Arm(fixture.FileSystem, request);
-            publication.ExpectTerminalReleaseFailure("rolled_back");
+            try { publication.ExpectTerminalReleaseFailure("rolled_back"); }
+            finally { observer.WriteEvidence(output.WriteLine); }
+            observer.AssertReached();
             Assert.True(observer.ObservedCommandRemoval);
             Assert.Equal(
                 observer.PendingContainedRequest,
@@ -7386,85 +7392,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
             var preamble = Encoding.UTF8.GetPreamble();
             var offset = bytes.AsSpan().StartsWith(preamble) ? preamble.Length : 0;
             return JsonNode.Parse(bytes.AsSpan(offset))!;
-        }
-    }
-
-    private sealed class TerminalDurableSurfaceRemovalObserver
-    {
-        private string? _commandPath;
-        private string? _pendingPath;
-        private string? _requestFingerprint;
-
-        internal bool ObservedCommandRemoval { get; private set; }
-        internal bool ObservedPendingRemoval { get; private set; }
-        internal bool PendingContainedRequest { get; private set; }
-
-        internal void Arm(
-            FileSystemManager fileSystem,
-            MortalWoundTreatmentAttemptRequest request)
-        {
-            _commandPath = fileSystem.ResolvePath(
-                AcceptedMechanicsPlan.WoundCommandPath);
-            _pendingPath = fileSystem.ResolvePath(
-                WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
-            _requestFingerprint = request.RequestFingerprint;
-            PendingContainedRequest = File.Exists(_pendingPath) &&
-                File.ReadAllText(_pendingPath).Contains(
-                    request.RequestFingerprint,
-                    StringComparison.Ordinal);
-        }
-
-        internal Task AfterPhysicalFilePublishedAsync(string path)
-        {
-            if (_requestFingerprint is null)
-                return Task.CompletedTask;
-
-            if (string.Equals(path, _commandPath, StringComparison.OrdinalIgnoreCase))
-            {
-                ObservedCommandRemoval = true;
-            }
-            if (string.Equals(path, _pendingPath, StringComparison.OrdinalIgnoreCase))
-            {
-                ObservedPendingRemoval = true;
-            }
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class DurableCommandProofFailureInjection
-    {
-        private string? _commandPath;
-        private bool _commandPublicationObserved;
-
-        internal bool Fired { get; private set; }
-
-        internal void Arm(FileSystemManager fileSystem)
-        {
-            _commandPath = fileSystem.ResolvePath(
-                AcceptedMechanicsPlan.WoundCommandPath);
-        }
-
-        internal Task AfterPhysicalFilePublishedAsync(string path)
-        {
-            if (Fired ||
-                _commandPath is null ||
-                !string.Equals(path, _commandPath, StringComparison.OrdinalIgnoreCase))
-            {
-                return Task.CompletedTask;
-            }
-
-            _commandPublicationObserved = true;
-            return Task.CompletedTask;
-        }
-
-        internal Task BeforeCanonicalMutationAsync(string path)
-        {
-            if (Fired || !_commandPublicationObserved || _commandPath is null)
-                return Task.CompletedTask;
-
-            Fired = true;
-            File.AppendAllText(_commandPath, " ");
-            return Task.CompletedTask;
         }
     }
 
