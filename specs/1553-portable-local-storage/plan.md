@@ -4,7 +4,9 @@ Test-only first implementation of the bounded design below; runtime unchanged.
 Two new original-consumer fixture files own nine actual-Unknown rows and three
 known-policy controls through portable-worker-ready-storage-outcomes-linux.
 Pre-run source check corrected fixture expected UTF8 BOM and raw JSON decode to
-the existing FSM encoding contract. No build or execution yet. Independent fixture/exact-selection gate precedes
+the existing FSM encoding contract. Independent pre-build review also corrected
+the known Ready control to inspect actual JSON rather than reference a private
+production nested record. No production visibility/API change. No build or execution yet. Independent fixture/exact-selection gate precedes
 fresh integration Plan12 and actual12. Preserve reached faults and any fixture
 misses separately before runtime changes. The helper cannot claim retention of
 an ApplyGateDecision it never receives; it proves genuine prior accepted bytes,
