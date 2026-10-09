@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-prepared-shining-outcome-linux",
+      "responsibility": "Four prepared-Shining cleanup outcome controls: original idle normalization and explicitly helper-only Clear, each real publication Unknown versus known rollback best effort.",
+      "excludes": "No fabricated successful bootstrap, live GM/provider, full Shining gameplay, generation-replacement or secondary close-fault qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparedShiningCleanup_OriginalBoundaryPreservesPublicationDecision"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-story-outcome-neighbors",
       "responsibility": "Existing Story append lease-wait and closed-session refusal four plus original known life-transition dispatch-failure diagnostic, protecting unchanged admission and best-effort behavior.",
       "excludes": "No narrative-world aggregate, live GM/provider, full transition success or secondary close-fault injection.",

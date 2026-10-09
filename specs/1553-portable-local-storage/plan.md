@@ -1,3 +1,38 @@
+## Prepared-Shining test-only finite4 WIP — 2026-10-09
+
+Base Story carrier6ee00c8b now has independent and parent final integrity/docs PASS64 artifacts/
+21 pins, runtimeb79 final12 PASS and catalog505/11296 discovery0. No later full GitHub-only restore;
+latest actual restore remains e5 and parent plans one combined restoration after remaining blocks.
+
+Next existing T062 unit is two cleanup methods in IncarnationAndAfterlife: actual original
+NormalizeRuntimeUiArtifactsAsync→RepairStalePreparedShiningPackageAfterMortalBootstrapAsync and
+explicitly helper-only ClearPreparedShiningPackageAfterBootstrapAsync. Four test-only rows cover
+real MemberPublished Unknown and known nontransient exact rollback for each. No production edits,
+no build or execution yet. Frozen source/fixture/selection gate precedes matching Plan4/actual4.
+
+Generate the frozen package through real TryOpenGates→TrySelectBlessingCard→TryPrepare APIs using
+existing unit seed; validate it, then place the exact produced package in complete default Shining
+state. Commit genuine resource quartet authority with Mortal soul/profile/default conflict/guardians
+before arming. Do not persist the unit-only incomplete faction root or fabricate a previous accepted
+bootstrap. Assert actual package equality/validity after refresh, then select exact Shining publication
+with package removed. Capture valid immediate before-image and explicit Ready/request/incarnation/
+manifest absence at cut. Unknown requires same actual CSP/authentic retained journal/foreign member
+and no later reached reads/mutations/ordinary leases/publications/recovery phases; readonly original
+finalization is distinct. Known failure requires changed published bytes, exact before-image restored,
+absent journal and same logged original failure, without unreachable recovery callbacks.
+
+Clear is the real helper only; its higher original caller follows validated GM bootstrap and is not
+claimed executed here. Existing incarnation typed stop source was reviewed in Story; that does not
+invent successful bootstrap evidence. Generation-replacement catches remain separately classified,
+not lumped into known ordinary failure or qualified by these actual-CSP cases. No new schema/math/
+GM prompt contract; no provider/native/full gameplay/secondary-close fault claim.
+
+Parent's current tracked-code/script census confirms exactly five textual references confined to
+CoordinatedGameStateWrite + TryCommitCoordinatedGameStateWritesAsync + TryRestoreJsonFileAsync
+(private record and two private methods). Bounded deletion may accompany later same-file runtime
+checkpoint after independent source review; this is unreachable-source proof, not a runtime RED.
+No deletion or new outcome fix is included in this test-only checkpoint.
+
 ## Story final12 / current catalog checkpoint — 2026-10-09
 
 Runtimeb79f3771 independent SOURCE/EXACT12 and RAW12 PASS. Matching Plan021100 rebuilt current
@@ -15,7 +50,7 @@ Current catalog021248 uses those fresh matching both-project outputs, discovery5
 11296methods-files valid,0executed,8.1414832s,exit0/bothcleanup. It is not a broad test run.
 [Story packet](recovery/storage-migration-story-20261009/manifest.json) stores64 artifacts/21
 historical Git pins, locally checked stored/expanded/original equality and source hashes; final
-independent integrity/docs gate pending. Causal2P5F remains preserved separately, including its
+independent integrity/docs gate PASS6ee00c8b. Causal2P5F remains preserved separately, including its
 unexecuted downstream assertions. No native/full-transition/gameplay or injected secondary-close
 claim. Latest parent fresh GitHub-only restore remains e5; no intervening restoration is invented.
 

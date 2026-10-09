@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-prepared-shining-outcome-linux",
+      "reason": "Test-only finite4 for two existing cleanup consumers using genuinely produced frozen package and canonical quartet authority; frozen fixture/source gate and matching build required before causal execution.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
       "category": "portable-story-outcome-neighbors",
       "reason": "Final Story12 atb79/021219 passes unchanged unit lease-wait/replaced4 and original life dispatch-error1 beside causal7; no broad narrative/turn lifecycle replay.",
       "contracts": [

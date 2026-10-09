@@ -5,7 +5,7 @@ Append retains it before its original lease closes. Bounded final12 PASS atb79 (
 actual Unknown5 same-carrier/no measured later continuation, known rollback2, original lease/
 replaced4 and known life failure1. Prior eight-image sets and authentic journals remain exact;
 readonly finalization distinct, no whole-transition rollback. Packet64/21 verified locally, final
-independent artifact/docs gate pending. Catalog505/11296 valid0 uses both matching fresh outputs.
+independent artifact/docs gate PASS6ee00c8b. Catalog505/11296 valid0 uses both matching fresh outputs.
 Prepared-Shining helpers, other preparation owners/Explorer/Ready-worker/C2 and F16/F18 remain open.
 
 ## Current progression outcome checkpoint — 2026-10-09
@@ -19,6 +19,16 @@ carrier review PASS7f706089. Current catalog503/11293 valid0 at2a372 after fresh
 not runtime replay. No full-turn/native/secondary-close guarantee or full migration closure.
 
 ## Current remaining source-only classification — 2026-10-09
+
+Owned-close consistency remains a separate source-only T062/T065 item: public Write→Bytes,
+public CAS (current live CAS callers pass explicit leases), DeleteWithLock and internal owned
+AppendIfCurrentSession can lose a body CSP to a secondary lease disposal fault. Canonical lease
+Dispose retains release faults only. Apply the established direct-CSP-before-owned-disposal pattern
+with proportionate review; existing explicit-lease ExternalPublicationContext controls do not prove
+these self-owned double-fault paths. No global Dispose suppression or fabricated runtime RED.
+Prepared-Shining finite4 is test-only; its helpers' caught generation-replacement policy remains an
+explicit separate qualification, not inferred from CSP cuts. Closed private three-declaration cluster
+has parent-confirmed five internal references/no live callers; deletion is pending source review.
 
 Current Story unit passes final12 atb79, with causal2P5F preserved and independent source/raw gates. Remaining
 source follow-ups are not blocked on this fixture and are not seven-case acceptance:
