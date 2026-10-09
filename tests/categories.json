@@ -27,6 +27,34 @@
       ]
     },
     {
+      "id": "portable-prepared-shining-outcome-neighbor",
+      "responsibility": "Existing pure production gate control creates and validates the frozen incarnation package used by the storage cleanup fixtures.",
+      "excludes": "No full Shining aggregate, GM bootstrap, native or secondary-close qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-prepared-shining-outcome-linux",
+          "when": "Prepared package cleanup outcome propagation changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ShiningAbodeStateTests.OpenGates_ThenPreparePackage_BuildsFrozenSnapshot"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-story-outcome-neighbors",
       "responsibility": "Existing Story append lease-wait and closed-session refusal four plus original known life-transition dispatch-failure diagnostic, protecting unchanged admission and best-effort behavior.",
       "excludes": "No narrative-world aggregate, live GM/provider, full transition success or secondary close-fault injection.",

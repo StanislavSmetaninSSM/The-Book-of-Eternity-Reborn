@@ -1,3 +1,21 @@
+## Prepared-Shining runtime / exact5 WIP — 2026-10-09
+
+Independent and parent raw gates accept causal4 atc185: known rollback2 PASS, actual Unknown2
+swallowed with idle next archival lease attempt. Saved carrier84b9 contains20 artifacts/11 pins.
+Runtime changes only two helper catch filters to let the same actual CSP escape; known best-effort
+rollback and other existing policies remain. Generation-replacement and self-owned API secondary
+close consistency are separately open, not silently qualified by this correction.
+
+Separately retire the closed private record/two-method compensation cluster (51 lines). Saved
+tracked code/script/config census has exactly five internal references before and zero after,
+with exact old Git blob and current source hashes. This extends source-only dead-code retirement,
+not a fabricated runtime failure. The causal four fixtures are unchanged. Final selection adds only
+existing OpenGates_ThenPreparePackage_BuildsFrozenSnapshot: exact5 across integration and unit.
+Broad historical Shining owner is unselected; selected five do not overlap. Frozen independent
+source/selection gate and matching fresh both-project Plan5 precede actual5; neither has run yet.
+No GM-authored schema/math/prompt contract changed. Clear remains helper-only; idle uses original
+normalization. Native, successful GM bootstrap, secondary-close fault and full migration stay open.
+
 ## Prepared-Shining causal4 checkpoint — 2026-10-09
 
 Frozen c1858fda SOURCE/FIXTURE/EXACT4 PASS; matching Plan022043 freshintegration41.6426463s,
@@ -14,7 +32,7 @@ all four owned roots explicitly removed. Idle Same assertion after lease check d
 raw outwardnull/actual CSP are separate evidence. Direct Clear Same(null) fails after stop assertions.
 
 [Packet](recovery/storage-migration-prepared-shining-20261009/manifest.json) preserves20 artifacts/
-11 Git source pins, locally verified stored/expanded/original bytes. Independent raw gate pending.
+11 Git source pins, locally verified stored/expanded/original bytes. Independent and parent raw gates PASS.
 Minimal supported runtime correction is direct-CSP exclusion in these two helper generic catches;
 ordinary known rollback and other policies unchanged. Separate generation-replacement/owned-close
 consistency remains source-only and is not automatically fixed or qualified. Parent source census

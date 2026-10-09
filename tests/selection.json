@@ -3,13 +3,24 @@
   "selections": [
     {
       "category": "portable-prepared-shining-outcome-linux",
-      "reason": "Test-only finite4 for two existing cleanup consumers using genuinely produced frozen package and canonical quartet authority; frozen fixture/source gate and matching build required before causal execution.",
+      "reason": "Final affected five: unchanged causal/known four plus original pure gate one; two CSP exclusions preserve the actual storage decision. Dead private cluster is separately source-censused, not a runtime RED.",
       "contracts": [
         "#1553",
         "FR-003",
         "FR-004",
         "T062-STORAGE-OUTCOMES",
         "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
+      "category": "portable-prepared-shining-outcome-neighbor",
+      "reason": "Exact existing gate producer/validation control beside the four actual cleanup cases; broad historical Shining wildcard remains unselected, no overlap in this five-case selection.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
       ]
     },
     {
@@ -35,17 +46,33 @@
     {
       "category": "portable-progression-outcome-neighbor",
       "reason": "Original persisted level-award restart guard passed with causal4 at2a372 in014853; moved from turn-lifecycle-core without duplicate selected ownership, preserving known progression behavior.",
-      "contracts": ["#1553", "FR-003", "FR-004", "T062-STORAGE-OUTCOMES"]
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES"
+      ]
     },
     {
       "category": "portable-progression-outcome-causal-linux",
       "reason": "Four actual original progression Unknown failures at a9e4 corrected at2a372; final014853 passes same actual decision, prior committed images, no later measured work and owned cleanup.",
-      "contracts": ["#1553", "FR-003", "FR-004", "T062-STORAGE-OUTCOMES"]
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES"
+      ]
     },
     {
       "category": "portable-prepared-remote-outcome-linux",
       "reason": "Original remote receipt causal3 at54d corrected at7cf; final013211 remote3 PASS with actual Committed/RolledBack/Uncertain, exact original ACK/fullidentity, known bytes/runtime Apply and Unknown no continuation.",
-      "contracts": ["#1553", "FR-003", "FR-004", "T062-STORAGE-OUTCOMES", "T063-REMAINING-CONSUMERS"]
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T063-REMAINING-CONSUMERS"
+      ]
     },
     {
       "category": "portable-cleanup-outcome-causal-linux",

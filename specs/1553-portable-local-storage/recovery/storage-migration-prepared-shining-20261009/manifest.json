@@ -171,5 +171,29 @@
         "sha256": "dfc511681349d454d90f89adb144fd569e6ca6efd2ea14915aa13bbc83dbe588"
       }
     ]
+  },
+  "deadClusterCensus": {
+    "source": "c1858fda073765e20ec8704e546881cc1d2e81d7",
+    "qualification": "Separate source-only deletion proof: five closed internal references before, zero after; 51 source lines retired. No runtime failure or native qualification.",
+    "artifacts": [
+      {
+        "path": "dead-census-before.json",
+        "source": "/tmp/boe-prepared-shining-dead-before.json",
+        "sha256": "c9a8ed84c6cae56ec2bdb16598bbb5c599ed7d0dcfb06681975f2fb8a4c2a9ec",
+        "originalSha256": "c9a8ed84c6cae56ec2bdb16598bbb5c599ed7d0dcfb06681975f2fb8a4c2a9ec"
+      },
+      {
+        "path": "dead-census-after.json",
+        "source": "/tmp/boe-prepared-shining-dead-after.json",
+        "sha256": "2cdc6603eba4aed3fd215561e436f9396a3e43778906a35947969e9ca6957b3b",
+        "originalSha256": "2cdc6603eba4aed3fd215561e436f9396a3e43778906a35947969e9ca6957b3b"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+        "sha256": "077bcbe372cc6f2d40a8f00bf12e7dcc373e627749e63af9cb42de3243e44e24"
+      }
+    ]
   }
 }

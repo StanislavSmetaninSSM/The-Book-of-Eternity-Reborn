@@ -15,8 +15,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-    private sealed record CoordinatedGameStateWrite(string RelativePath, string? PreviousJson, string NextJson);
-
     private sealed record SoulRealmTransitionResult(
         bool IsCommitted,
         IReadOnlyList<string> PublishedCanonicalPaths)
@@ -324,55 +322,6 @@ public partial class GameEngine
         return AfterlifeEntityProfileState.ProjectPlayerSoulRealm(
             profilesRoot,
             newRealm);
-    }
-
-    private async Task<bool> TryCommitCoordinatedGameStateWritesAsync(params CoordinatedGameStateWrite[] writes)
-    {
-        var completedWrites = new List<CoordinatedGameStateWrite>();
-        try
-        {
-            foreach (var write in writes)
-            {
-                await _fs.WriteFileAtomicAsync(write.RelativePath, write.NextJson);
-                completedWrites.Add(write);
-            }
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            for (var index = completedWrites.Count - 1; index >= 0; index--)
-            {
-                if (await TryRestoreJsonFileAsync(completedWrites[index].RelativePath, completedWrites[index].PreviousJson))
-                    continue;
-
-                throw new InvalidOperationException(
-                    $"Не удалось безопасно откатить coordinated state write для {completedWrites[index].RelativePath}.",
-                    ex);
-            }
-
-            _logger.LogWarning(ex, "Coordinated state write прерван до завершения всех write-paths. Уже записанные файлы откатились к предыдущим snapshot-версиям.");
-            return false;
-        }
-    }
-
-    private async Task<bool> TryRestoreJsonFileAsync(string relativePath, string? previousJson)
-    {
-        if (previousJson == null)
-        {
-            _fs.DeleteFile(relativePath);
-            return true;
-        }
-
-        try
-        {
-            await _fs.WriteFileAtomicAsync(relativePath, previousJson);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
     }
 
     private async Task<string?> ApplyPendingMemoryLegacyForIncarnationAsync()
@@ -985,7 +934,7 @@ public partial class GameEngine
             await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString(JsonOpts));
             await RefreshRuntimeStateAsync();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Не удалось очистить preparedIncarnationPackage после успешного mortal bootstrap");
         }
@@ -1026,7 +975,7 @@ public partial class GameEngine
             _logger.LogInformation("Cleared stale Shining preparedIncarnationPackage after confirmed Mortal World bootstrap.");
             await RefreshRuntimeStateAsync();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Не удалось проверить stale preparedIncarnationPackage after Mortal World bootstrap");
         }

@@ -26,9 +26,9 @@ AppendIfCurrentSession can lose a body CSP to a secondary lease disposal fault. 
 Dispose retains release faults only. Apply the established direct-CSP-before-owned-disposal pattern
 with proportionate review; existing explicit-lease ExternalPublicationContext controls do not prove
 these self-owned double-fault paths. No global Dispose suppression or fabricated runtime RED.
-Prepared-Shining finite4 is test-only; its helpers' caught generation-replacement policy remains an
+Prepared-Shining causal4 reaches2P2 genuine failures; its two-filter runtime correction is WIP; its helpers' caught generation-replacement policy remains an
 explicit separate qualification, not inferred from CSP cuts. Closed private three-declaration cluster
-has parent-confirmed five internal references/no live callers; deletion is pending source review.
+has parent-confirmed five internal references/no live callers; 51-line deletion has before5/after0 saved census and awaits source review.
 
 Current Story unit passes final12 atb79, with causal2P5F preserved and independent source/raw gates. Remaining
 source follow-ups are not blocked on this fixture and are not seven-case acceptance:
