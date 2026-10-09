@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-explorer-archive-corrected-inputs-linux",
+      "reason": "Test-only correction4: exact UpdateNPCs seed casing, existing valid guardian to reach attraction menu, actual political confirmation labels; shared original consumer/cut oracles unchanged. Unbuilt/unexecuted pending frozen gate+matchingPlan4; retained initial18 not rerun.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
       "category": "portable-explorer-archive-outcome-causal-linux",
       "reason": "Initial22 actual050655 clean5dc complete2P20F:16 genuine publisher Unknown failures,4 fixture misses,2 known compensation PASS. Preserve all raw; correct only companion/attraction/political4 and isolate new exact4 after source gate. No productGREEN/fullplay/native claim.",
       "contracts": [

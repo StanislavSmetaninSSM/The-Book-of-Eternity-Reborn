@@ -19,14 +19,21 @@ public sealed partial class ExplorerModeCommandTests
     [InlineData("offering_archive")]
     [InlineData("offering_feathers")]
     [InlineData("treasury")]
-    [InlineData("companion")]
     [InlineData("faction")]
     [InlineData("candidate")]
+    [InlineData("forge")]
+    public Task StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(string mode) =>
+        RunOriginalExplorerStorageOutcomeAsync(mode);
+
+    [Theory]
+    [InlineData("companion")]
     [InlineData("realignment")]
     [InlineData("leadership")]
     [InlineData("attraction")]
-    [InlineData("forge")]
-    public async Task StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(string mode)
+    public Task StorageUnknown_OriginalExplorerCorrectedInputsReachPublication(string mode) =>
+        RunOriginalExplorerStorageOutcomeAsync(mode);
+
+    private async Task RunOriginalExplorerStorageOutcomeAsync(string mode)
     {
         using var outerRoot = new CleanupOwnedFixture(_rootPath, WriteStorageOutcome);
         Assert.True(OperatingSystem.IsLinux());
@@ -74,7 +81,8 @@ public sealed partial class ExplorerModeCommandTests
         var afterImages = priorAtCut?.ToDictionary(x => x.Key, x => CleanupPublicationCut.ReadOptional(x.Key), StringComparer.Ordinal);
         WriteStorageOutcome(JsonSerializer.Serialize(new { mode, command, target, result, Failure = failure?.ToString(),
             probe.Inputs, probe.LaterInputs, probe.RequestAttempts, pendingAtCut, priorAtCut, afterImages,
-            ConsoleSelections = fixture._console.SelectionChoicesHistory, ActualSelections = probe.ActualSelections, Cut = probe.Cut.Evidence() }));
+            ConsoleSelections = fixture._console.SelectionChoicesHistory.Select(x => new { x.Title, x.Choices }),
+            ActualSelections = probe.ActualSelections, probe.SelectionAttempts, ConsoleMessages = fixture._console.MarkupLines, Cut = probe.Cut.Evidence() }));
         probe.Cut.AssertReachedAndStopped();
         Assert.Same(probe.Cut.OriginalUncertainty, failure);
         Assert.Equal(0, probe.LaterInputs); Assert.Equal(0, probe.RequestAttempts);
@@ -256,7 +264,7 @@ public sealed partial class ExplorerModeCommandTests
         {
             await SeedMortalStateAsync();
             var path = mode == "companion" ? "game_state/npcs/npc_core.json" : "game_state/factions/faction_core.json";
-            if (mode == "companion") await WriteJsonAsync(path, new { UpdateNPCs = new[] { new { npcId = "storage_companion", name = "Лира", progressionType = "Companion", playerCompanionDirective = "" } } });
+            if (mode == "companion") await WriteJsonAsync(path, new JsonObject { ["UpdateNPCs"] = JsonSerializer.SerializeToNode(new[] { new { npcId = "storage_companion", name = "Лира", progressionType = "Companion", playerCompanionDirective = "" } }) });
             else await WriteJsonAsync(path, new[] { new { factionId = "storage_faction", name = "Дом Пепла", isPlayerFaction = true, playerStrategyDirective = "" } });
             _console.QueueAnyAskResponse("Storage outcome directive");
             return (mode == "companion" ? "/директива_компаньону" : "/директива_фракции", path);
@@ -265,9 +273,8 @@ public sealed partial class ExplorerModeCommandTests
             return await SeedExplorerShiningStorageOutcomeAsync(mode);
         if (mode == "attraction")
         {
-            await SeedAfterlifeStateAsync();
+            await SeedAbodeOfferingRelicAliasStateAsync("quality", "Rare");
             await SeedSystemGuardianPresetAsync("azalia", "Азалия", "Social", "Обитель Неутолимого Пламени");
-            await WriteJsonAsync("game_state/meta/guardians.json", new { guardians = Array.Empty<object>(), chaosSeaNavigation = new { discoveredAbodes = Array.Empty<string>() } });
             _console.QueueAnySelection("🔍 Искать новую обитель (силой мысли)", "🧲 Притяжение к извечному хранителю", "Азалия", "✅ Выбрать");
             return ("/хранители", SystemGuardianLibraryService.AttractionRequestPath);
         }
@@ -287,12 +294,12 @@ public sealed partial class ExplorerModeCommandTests
             if (mode == "realignment")
             {
                 _console.QueueSelection("Режим перестройки", "Перейти в другую фракцию");
-                _console.QueueSelection("Подтвердить перестройку резидента", "✅ Создать запрос");
+                _console.QueueSelection("Подтвердить перестройку резидента", "✅ Создать pending request");
                 return ("/shining_faction_realignment", ShiningFactionRequestState.PendingRealignmentsRequestPath);
             }
             _console.QueueSelection("Режим смены главы", "отречение");
             _console.QueueAnyConfirmResponse(false);
-            _console.QueueSelection("Подтвердить смену главы", "✅ Создать запрос");
+            _console.QueueSelection("Подтвердить смену главы", "✅ Создать pending request");
             return ("/shining_faction_leadership", ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath);
         }
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
@@ -376,6 +383,7 @@ internal sealed class ExplorerStorageProbe : IDisposable
     internal Dictionary<string, byte[]?> Committed { get; } = new(StringComparer.Ordinal);
     internal FileSystemManagerHooks Hooks { get; }
     internal List<string> ActualSelections { get; } = [];
+    internal List<object> SelectionAttempts { get; } = [];
     internal int Inputs { get; private set; }
     internal int LaterInputs { get; private set; }
     internal int RequestAttempts { get; private set; }
@@ -475,6 +483,7 @@ internal sealed class ExplorerStorageProbe : IDisposable
             var fragment = Assert.IsType<string>(requested);
             var exact = choices.Where(x => string.Equals(x, fragment, StringComparison.Ordinal)).ToArray();
             var matches = exact.Length != 0 ? exact : choices.Where(x => x.Contains(fragment, StringComparison.OrdinalIgnoreCase)).ToArray();
+            probe.SelectionAttempts.Add(new { Requested = fragment, Offered = choices, Matches = matches });
             var actual = Assert.Single(matches);
             probe.ActualSelections.Add(actual);
             return (T)(object)actual;

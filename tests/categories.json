@@ -2,8 +2,40 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-explorer-archive-corrected-inputs-linux",
+      "responsibility": "Isolated original Explorer command recipes for companion directive, system attraction, faction realignment and leadership; genuine positive publication Unknown and same-carrier/no-later-work oracles.",
+      "excludes": "No fabricated CSP, helper-only command claim, full gameplay/provider/native or simultaneous owned-close failure. Browser forge proves actual Afterlife/shared Submit only; Mortal/Saref projection siblings remain source-qualified. Zero observed recovery phases is not proof of no attempted recovery.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+        "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
+        "BookOfEternityClient/Services/AfterlifeArchiveActionState.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-explorer-archive-outcome-causal-linux",
+          "when": "Retained16 actual causal cuts and2known controls at5dc are not replayed for these four fixture corrections."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCorrectedInputsReachPublication"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-explorer-archive-outcome-causal-linux",
-      "responsibility": "Original Explorer command and archive storage-outcome boundaries:14 primary command Unknown,3 ordered compensation Unknown,2 known compensation controls,2 original idle archive reconciliation and1 original browser forge Submit. Exact22.",
+      "responsibility": "Retained original Explorer/archive initial18:10 primary command Unknown,3 ordered compensation Unknown,2 known compensation controls,2 original idle archive reconciliation and1 browser forge Submit. Four corrected recipe rows isolated separately.",
       "excludes": "No fabricated CSP, helper-only command claim, full gameplay/provider/native or simultaneous owned-close failure. Browser forge proves actual Afterlife/shared Submit only; Mortal/Saref projection siblings remain source-qualified. Zero observed recovery phases is not proof of no attempted recovery.",
       "changeHints": [
         "BookOfEternityClient/UI/ExplorerMode",

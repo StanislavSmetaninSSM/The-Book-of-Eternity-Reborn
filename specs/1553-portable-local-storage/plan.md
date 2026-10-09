@@ -1,3 +1,17 @@
+## Explorer isolated recipe correction4 WIP — 2026-10-09
+
+Initial raw050655 saved remotely at c234159d:88 artifacts/32 source pins,16 reached causal cuts,
+2 known compensation PASS and4 prepublication fixture misses. No product change or repeated18.
+Corrected4 now have their own theory/category and delegate to the same original-consumer body: preserve
+literal UpdateNPCs using JsonObject (anonymous camelCase was wrong); reuse genuine existing guardian
+seed so original attraction overview reaches menu; use actual political confirmation labels. Strict
+choice validation remains and now records attempted/offered choices before asserting; raw console choice
+tuples are projected to named fields, with existing captured console messages for honest setup diagnosis.
+
+No runtime change. Frozen independent SOURCE/FIXTURE/EXACT4 gate then fresh integration Plan4/actual4
+required; no prediction of actual reach. Historical initial22 failure and earlier recipe review corrections
+remain preserved. Retained16 actual causal+known2 source-era evidence stays separate from corrected4.
+
 ## Explorer/Archive initial causal22 — 2026-10-09
 
 Frozen5dc0a2a0 passes independent SOURCE/FIXTURE/EXACT22. Plan050502 freshly builds integration
