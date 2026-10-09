@@ -1,3 +1,20 @@
+## Original NPC/transport actual GREEN14 — WIP final gate, 2026-10-09
+
+Runtime cf7d1b70, tested source0dd57d32ee51fc77cc32622d0707ce1e6be28c64.
+Fresh integration Plan22035114/2,0execution51.6539458s; actual22044814/14PASS,
+13.3951162s,2/2complete,bothcleanup,0skipduplicateTimeout/strict14roots.
+All seven operation pairs retain same genuine CSP+secondary original close,
+full settlement/noLater/Closing0/currentgeneration; known real DTO/settlement/
+slot/buyback/physicalcarrier/immutablehistory/currentvalidation PASS.
+[Packet](recovery/storage-migration-original-trade-transport-close-20261009/manifest.json)
+90artifacts65pins verified originals: immutable initial31/21 + correctedNPCRED21/22
++ GREEN38/22. Original six NPC preparation failures remain distinct from causal
+Storage4 and correctedNPC3 failures. Independent combined causal/source/exact14
+PASS cf7; final GREEN/raw/carrier gate next. Combined new-owner catalog remains
+pending stable accepted batch; no unchanged accepted selections replayed.
+Next original Normalizer4 owners/8 fixture gate and causal baseline; not full
+trade/game/B2/resource-bearing/knownlateclose/native qualification. T061–T065 open.
+
 ## Trade/transport source gate accepted — WIP verification, 2026-10-09
 
 Independent combinedcausal/source/exact14 PASScf7d1b70. Five literalowning
