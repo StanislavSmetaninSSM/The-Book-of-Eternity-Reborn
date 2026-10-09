@@ -2,8 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-explorer-forge-unknown-current",
+      "reason": "Correct only the stale pre-Submit UI-lock byte oracle to the real committed lock at the fault after complete21P1fixtureF at18475; one actual original browser case.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-005",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
       "category": "portable-explorer-reroll-current-fixture",
-      "reason": "Expose stale two-form reroll-cancel fixture with positive offered-choice and changed-suggestion assertions before correcting only seed; no runtime change. One exact case.",
+      "reason": "Positive menu oracle failed atd968/055451 because two-form seed cannot offer reroll; add third valid distinct form before genuine bootstrap and retain cancellation/entitlement assertions. One case, no runtime change.",
       "contracts": [
         "#1553",
         "T064-STORAGE-CUTS",
@@ -12,7 +23,7 @@
     },
     {
       "category": "portable-explorer-archive-binding-controls",
-      "reason": "Frozen correction proposal22=unrun18+failed actual committed-release1+unrun candidate1+affected healthy nested Submit1+actual closing replacement1. Repeat only healthy Submit from prior11 because it reaches changed nested postcheck; other10 retained. Independent source/selection then fresh Plan required.",
+      "reason": "All4 PASS18475/055028 after fresh both-project Plan22: real committed-release Unknown, affected healthy original Submit, malformed-candidate and actual closing generation replacement. Retained; no replay for fixture-only correction.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -45,7 +56,7 @@
     },
     {
       "category": "portable-explorer-archive-outcome-causal-linux",
-      "reason": "Original18 remained unexecuted after554 partial31 stop. Select with binding-controls4 for fresh exact22 after scoped post-operation correction; preserve original16 causal+known2 source-era raw.",
+      "reason": "Remaining17 original cases all PASS18475/055028; retain source-era evidence. Primary browser Unknown moved to exact current fixture owner after stale pre-Submit baseline failure; no replay of17.",
       "contracts": [
         "#1553",
         "FR-003",

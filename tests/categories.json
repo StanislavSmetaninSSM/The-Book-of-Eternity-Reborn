@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-explorer-forge-unknown-current",
+      "responsibility": "Original primary-Unknown browser forge Submit retains its actual independently committed UI-lock image at the fault; result/form/no-later-work oracles.",
+      "excludes": "No replay of other21 passing binding-correction cases; no whole browser/native/secondary-close claim.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/WebUi/BrowserShiningRelicForgeParityTests.StorageOutcome.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-explorer-reroll-current-fixture",
       "responsibility": "Original forge reroll cancellation with genuinely offered reroll, changed suggestion and preserved entitlement; qualifies stale two-form fixture under #1553.",
       "excludes": "No live GM/native/full gameplay or fabricated menu choice. No replay of accepted Explorer uncertainty cohort.",
@@ -27,7 +51,7 @@
     },
     {
       "id": "portable-explorer-archive-binding-controls",
-      "responsibility": "Remaining committed-release original Submit/candidate plus affected healthy nested Submit and actual readonly-closing generation replacement. Select with causal18 for exact22 after scoped binding correction.",
+      "responsibility": "Four original browser/binding controls accepted at18475/055028: committed-release Submit, healthy Submit, malformed candidate and actual readonly-closing generation replacement. Retain without replay for fixture-only corrections.",
       "excludes": "No replay of retained corrected4/known6. No global continuation latch, outcome relabel, native or secondary-close injection; sibling browser presenters remain source-qualified.",
       "changeHints": [
         "BookOfEternityClient/Core/SessionOperationContext.cs",
@@ -36,7 +60,7 @@
       "related": [
         {
           "id": "portable-explorer-archive-outcome-causal-linux",
-          "when": "Unexecuted18 from partial31 plus these4 complete the affected correction22."
+          "when": "Retained passing evidence with original17; primary-Unknown browser fixture has a separate current owner."
         }
       ],
       "requirements": {
@@ -134,7 +158,7 @@
     },
     {
       "id": "portable-explorer-archive-outcome-causal-linux",
-      "responsibility": "Retained original Explorer/archive initial18:10 primary command Unknown,3 ordered compensation Unknown,2 known compensation controls,2 original idle archive reconciliation and1 browser forge Submit. Four corrected recipe rows isolated separately.",
+      "responsibility": "Retained original Explorer/archive17:10 primary command Unknown,3 ordered compensation Unknown,2 known compensation controls and2 original idle archive reconciliation; all pass at18475/055028. Browser primary Unknown moved to its corrected lock-baseline owner.",
       "excludes": "No fabricated CSP, helper-only command claim, full gameplay/provider/native or simultaneous owned-close failure. Browser forge proves actual Afterlife/shared Submit only; Mortal/Saref projection siblings remain source-qualified. Zero observed recovery phases is not proof of no attempted recovery.",
       "changeHints": [
         "BookOfEternityClient/UI/ExplorerMode",
@@ -156,8 +180,7 @@
           "tests": [
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication",
-            "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication"
           ]
         }
       ]

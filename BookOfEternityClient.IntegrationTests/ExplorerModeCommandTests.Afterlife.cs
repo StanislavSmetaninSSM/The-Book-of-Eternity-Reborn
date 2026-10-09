@@ -5661,6 +5661,16 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var storedRelics = soul["soulRelics"]!["stored"]!.AsArray();
+        var thirdRelic = storedRelics[0]!.DeepClone().AsObject();
+        thirdRelic["relicId"] = "reroll_cancel_third_form";
+        thirdRelic["name"] = "Копьё Памяти";
+        thirdRelic["formTag"] = "lance";
+        storedRelics.Add(thirdRelic);
+        Assert.Equal(3, storedRelics.Select(relic => relic!["formTag"]!.GetValue<string>())
+            .Distinct(StringComparer.Ordinal).Count());
+        await WriteJsonAsync("game_state/meta/soul_state.json", soul);
         var soulPath = _fs.ResolvePath("game_state/meta/soul_state.json");
         await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
             _fs,

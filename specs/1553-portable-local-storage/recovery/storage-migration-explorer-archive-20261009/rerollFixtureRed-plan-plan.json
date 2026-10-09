@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-explorer-reroll-current-fixture"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d968a2e76b4bbe0cbe73b8834c4525699011f675",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 41.6244223,
+  "Descriptors": [
+    {
+      "Name": "portable-explorer-reroll-current-fixture-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-explorer-reroll-current-fixture",
+      "Categories": [
+        "portable-explorer-reroll-current-fixture"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

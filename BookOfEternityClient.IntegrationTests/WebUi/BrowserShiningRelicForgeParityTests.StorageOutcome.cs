@@ -31,6 +31,7 @@ public sealed partial class BrowserShiningRelicForgeParityTests
         var prompt = await fixture.ExecuteCommandAsync("/shining_relic_forge");
         Assert.Equal(CommandExecutionState.RequiresInput, prompt.State);
         var lockBefore = File.ReadAllBytes(fixture._fs.ResolvePath(LocalUiSessionLockService.LockPath));
+        byte[]? lockAtCut = null;
         Dictionary<string, byte[]?>? priorAtCut = null;
         byte[]? committedMarker = null;
         Dictionary<string, byte[]?>? domainCommitted = null;
@@ -69,6 +70,14 @@ public sealed partial class BrowserShiningRelicForgeParityTests
             priorAtCut = probe.Committed.Where(x => x.Key != target)
                 .ToDictionary(x => x.Key, x => CleanupPublicationCut.ReadOptional(x.Key), StringComparer.Ordinal);
             foreach (var pair in priorAtCut) Assert.Equal(probe.Committed[pair.Key], pair.Value);
+            if (!committedRelease)
+            {
+                // Submit refreshes its existing UI lease before the forge publication.
+                // Preserve that independently committed image, not the earlier form heartbeat.
+                Assert.True(priorAtCut.TryGetValue(
+                    fixture._fs.ResolvePath(LocalUiSessionLockService.LockPath), out lockAtCut));
+                Assert.NotNull(lockAtCut);
+            }
         };
         probe.Cut.Armed = true;
         ExplorerCommandResult? result = null;
@@ -84,7 +93,7 @@ public sealed partial class BrowserShiningRelicForgeParityTests
             .GetValue(fixture._promptSessions)!;
         var formRetired = !sessions.Contains(prompt.InteractiveSession!.SessionId);
         var notificationText = result == null ? null : string.Join("\n", result.Notifications.Select(x => x.Title + "\n" + x.Message));
-        Output(JsonSerializer.Serialize(new { committedRelease, committedMarker, domainCommitted, domainAfter, result, formRetired, notificationText, Failure = failure?.ToString(), lockBefore, lockAfter,
+        Output(JsonSerializer.Serialize(new { committedRelease, committedMarker, domainCommitted, domainAfter, result, formRetired, notificationText, Failure = failure?.ToString(), lockBefore, lockAtCut, lockAfter,
             priorAtCut, afterImages, probe.RequestAttempts, Cut = probe.Cut.Evidence() }));
         probe.Cut.AssertReachedAndStopped();
         Assert.Null(failure); Assert.NotNull(result); Assert.Equal(committedRelease ? CommandExecutionState.Completed : CommandExecutionState.Failed, result!.State);
@@ -103,7 +112,7 @@ public sealed partial class BrowserShiningRelicForgeParityTests
             foreach (var pair in domainCommitted!) Assert.Equal(pair.Value, domainAfter![pair.Key]);
             Assert.NotEqual(lockBefore, lockAfter);
         }
-        else Assert.Equal(lockBefore, lockAfter);
+        else Assert.Equal(lockAtCut, lockAfter);
         Assert.Equal(0, probe.RequestAttempts);
         Assert.NotNull(priorAtCut);
         foreach (var pair in priorAtCut!) Assert.Equal(pair.Value, afterImages![pair.Key]);

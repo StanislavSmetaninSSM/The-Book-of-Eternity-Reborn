@@ -1,3 +1,25 @@
+## Explorer final fixture corrections — unbuilt/unrun, 2026-10-09
+
+Independent raw review accepts055028 as21PASS/1 stale lock-baseline fixture failure,
+not a remaining measured production continuation defect. The browser fixture now
+captures nonnull lockAtCut from the original probe's actual independently Committed
+prior-image dictionary and compares it byte-exactly after the fault. Original pre-Submit
+lockBefore remains in raw evidence; all result/form/no-later-work/whole-prior-image
+assertions remain. Shared committed-release scenario semantics are unchanged.
+
+Independent SOURCE/EXACT1 gate accepted reroll-oracle sourced968. Matching Plan055400
+builds the integration project; actual055451 executes1/1FAIL,7.3507487s, bothcleanup.
+The real menu contains only suggested-form/manual/cancel; asserted reroll is absent.
+This is genuine stale-fixture evidence, not a game-runtime RED. Add a third valid
+stored relic with unique id/form before genuine resource bootstrap; retain positive
+offered/exhausted/different-suggestion and original pending/entitlement/cancel checks.
+
+Next exact2: portable-explorer-forge-unknown-current + portable-explorer-reroll-current-fixture,
+fresh integration Plan2 then actual2 after source/selection review. No production edits.
+Retain21 accepted-at-source18475 and10 unique earlier PASS at554. Potential final
+composition is33 unique obligations including the newly qualified reroll fixture,
+not one33 run. Matching global discovery and independent final carrier remain required.
+
 ## Reroll fixture positive oracle — unbuilt/unrun, 2026-10-09
 
 One original reroll-cancel test now requires the real first menu to offer reroll, the
