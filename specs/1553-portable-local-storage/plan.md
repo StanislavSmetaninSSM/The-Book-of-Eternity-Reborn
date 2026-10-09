@@ -1,3 +1,16 @@
+## Original cold GM Launch owning generation — test-first WIP, 2026-10-09
+
+Independent fixture/design/exact2 PASSf213d400 installedbyte-identical.
+Real OpenNeutral coordinator invokes originalprivate LaunchAsync, coldgeneration
+publication and inspected originalowning lease. Known actualbeforePrepared
+callback captures generation then ordinarysentinel before Prepared/nativeprepare.
+Unknown genuineCSP+secondarysameowner close; bothassert0prepareCalls/recordnull/
+retiredoriginalguard/fullsettlement/strictroots. Not successfulfullLaunch/backend.
+Productionunchanged UNBUILT/UNRUN. CorrectedQTE2 fixture/sourcePASSac2b installed;
+next one freshintegrationPlan4/2 and separate QTEoriginal2/Coldoriginal2 runs.
+UnchangedacceptedAfterlife8 and originalInteraction6 not replayed. Catalogafter
+stableacceptedbatch; B2–B5/native/T061–T065/knownlateclose remain open.
+
 ## QTE original preparation correction — test-first WIP, 2026-10-09
 
 Afterlife finalGREEN/raw/carrier independentPASS98f7def1/52artifacts38pins.

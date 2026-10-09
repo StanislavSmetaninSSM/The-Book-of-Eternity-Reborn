@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-cold-main-launch-close-linux",
+      "responsibility": "Actual original neutral GM coordinator private cold Launch2 with absent generation: known real generation and original beforePrepared callback sentinel, and genuine CSP plus secondary lateclose of same original owner. Both stop before Prepared/nativeprepare,0prepareCalls/recordnull/retirement/originalguard+locksettlement/generation/strictroots.",
+      "excludes": "No successful fullLaunch/production start/backend/process/native Windows/systemd/bridge/liveGM/provider qualification; known sentinel control has no injected closer. Cold generation owning boundary only; B2-B5 paused.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityClient/Core/GmMainOwnerGuard.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.ColdMainLaunch.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalColdMainLaunchPreservesActualGenerationUncertaintyBeforePreparation"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-qte-acceptance-owning-close-linux",
       "responsibility": "Original QTE public acceptance2 known/genuine publication uncertainty plus original secondary lateclose. Current real resource quartet, three valid BranchChoice routes and actual reachable narrative-only terminal, real continuation capture/preallocation, persisted runtime and deferred authority. Original owner/first Intent/member0/fullsettlement/noLater/Closing0/generation/current validator/strict roots.",
       "excludes": "Storage/lifetime only. No full Guardian/training/Explorer UI/game/B2-B5/native Windows/live GM/provider/process qualification. Known controls have no injected late closer. Caller projected upgrade is not full price eligibility. No whole-flow atomicity.",

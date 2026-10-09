@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-cold-main-launch-close-linux",
+      "reason": "T063/T065 independentfixture/design/exact2 PASSf213d400 real original coordinator coldLaunch beforePrepared/native. Productionunchanged UNBUILT/UNRUN. One freshsharedPlanQTE2+Cold2 then separateactualoriginalbaselines. No successfulfullLaunch/native/process/B2claim.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
       "category": "portable-original-qte-acceptance-owning-close-linux",
       "reason": "T063/T065 correctedactualQTEterminalgraph independent fixture/design/exact6+2 PASSac2b6dbb. Original initial2 failedPREPARATION beforeIntent; cause source-inferred, taskstackunrecorded. FreshQTE-onlyPlan2/actual2 next; unchangedInteraction6 notrerun. All production4ownersunchanged, no syntheticauthority/native/B2/wholeflow qualification.",
       "contracts": [
