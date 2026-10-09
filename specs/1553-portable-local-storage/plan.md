@@ -1,3 +1,11 @@
+## Explorer known-selector source correction — 2026-10-09
+
+Unbuilt3ee03054 proposed the historical reroll-cancel recipe as a known neighbor. Static recheck found
+that it scripts an unavailable reroll with only two stored forms, so it cannot establish offered-menu
+cancellation. Replace only that selector with unchanged real political-preview cancellation; preserve the
+old owner/body for separately classified fixture debt. Final31 count/runtime/new committed-release row
+unchanged. No test/build failure claimed. Reviewer source/selection gate still required.
+
 ## Explorer/Archive runtime WIP — 2026-10-09
 
 Causal carrier010a0831 independently accepted112 artifacts/64 source pins; genuine20=16@5dc+4@259,
@@ -14,7 +22,7 @@ new observer, global latch or transaction API. Mortal/Saref siblings are source-
 executed by the forge case. Known unblocked failure behavior remains.
 
 Proposed exact31=existing22 + original forge Submit committed-lock-delete Unknown1 + unchanged known8
-(directives2, console reroll cancellation1, browser normal forge/foreign pending2, archive cleanup/retention2,
+(directives2, console political-preview cancellation1, browser normal forge/foreign pending2, archive cleanup/retention2,
 malformed candidate1). The extension records actual domain Committed images and actual browser committed
 marker before normal cleanup removes it; then genuine lock-delete Unknown must return established Completed
 with warning/no-repeat, retained evidence/no later work and retired form. No fabricated coordinator outcome.
