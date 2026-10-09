@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-worker-repair-diagnostics-linux",
+      "reason": "WIP exact15 original repair/proposal diagnostics:7 intended genuine common-publication cuts and8 known-policy controls; current accepted12 retained without replay. Unbuilt/unrun. Direct helper/constructed caller DTO qualifications explicit; original bridge/wait loops remain queued.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-worker-ready-storage-outcomes-linux",
       "reason": "Actual12/12 Linux PASS11b97493/063038 after fresh matching Plan12;9 authentic journal/CSP cuts stop later canonical work and retain actual accepted/Ready/known-cause facts,3 known controls unchanged. Controlled-validator/helper scope only; broader worker/C2/native/double-close remain open.",
       "contracts": [

@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-repair-diagnostics-linux",
+      "responsibility": "Original proposal-only build/diagnostic, accepted worker and cleared repair trajectory, canonical-refresh report/cleanup and terminal helper preserve actual storage uncertainty, prior facts and known policy: seven causal and eight known rows.",
+      "excludes": "No live worker/provider, original bridge-host dispatch execution, full accepted TryRun, full cleared-game validation, actual terminal wait/key lifetime, pool/store/ACK/C2/native or simultaneous close-fault claim. Accepted trajectory DTO is populated from a genuine storage apply with controlled validator.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerProposalDiagnosticStorageTests.OriginalProposalDispatchPreservesPublicationUncertaintyAndKnownPolicy",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-ready-storage-outcomes-linux",
       "responsibility": "Original worker router/build/latest-task/initial-generation, accepted ApplyReserved, Ready publication/audit/diagnostic and engine dispatch preserve actual publication uncertainty and prior accepted facts; nine causal rows plus three known controls.",
       "excludes": "No live worker/process/provider, full gameplay, native Windows, C2 continuation CAS, pool reservation/store/ACK/trajectory/harness closure or simultaneous body-and-close double fault. Controlled validator qualifies storage acceptance only; Ready helper does not own the apply decision.",

@@ -216,7 +216,7 @@ public sealed class GmWorkerStorageOutcomeTests(ITestOutputHelper output)
         }
     }
 
-    private static async Task<(WorkerTaskPacket Task, WorkerProposal Proposal)> PrepareReservedRepairAsync(FileSystemManager fs)
+    internal static async Task<(WorkerTaskPacket Task, WorkerProposal Proposal)> PrepareReservedRepairAsync(FileSystemManager fs)
     {
         await fs.WriteFileAtomicAsync(WeatherPath, "{\"before\":true}");
         await fs.WriteFileAtomicAsync(ContentPath, "{\"after\":true}");

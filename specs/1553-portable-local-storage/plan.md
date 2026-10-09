@@ -1,3 +1,38 @@
+## Connected repair/proposal diagnostics — exact15 fixture WIP, 2026-10-09
+
+Previous Ready bounded unit final independent RAW/CATALOG/INTEGRITY/DOCS **PASS**
+at3513225c5c89960e4fa9e175b09bd6084c4ae775:12/12 actualPASS11b,91 artifacts/64 pins.
+Do not replay unchanged12. This next T062/T064/T065 unit follows the same original
+consumer/storage contract; no new product or GM-authored schema is proposed.
+
+New fixture category portable-worker-repair-diagnostics-linux contains15 rows:
+- Proposal-only original Dispatch: actual absent-generation creation Unknown; known
+  context-read failure followed by actual audit Unknown; known context failure with
+  successful diagnostic, no-worker and invalid-request controls (5).
+- Engine original accepted-worker and cleared trajectory helpers: each actual ledger
+  Unknown plus known ordinary ledger refusal (4). Accepted-worker wrapper receives
+  its original private DTO populated from a genuine ApplyReserved decision/task;
+  controlled validator and reconstructed caller input are explicit. This is not a
+  full worker/accepted TryRun or full cleared-state validation execution.
+- Canonical-refresh failure owner: report Unknown, later cleanup-delete Unknown after
+  independently Committed report, and known report refusal (3). Retain exact original
+  exception and prior bytes, no new cleanup after Unknown, no all-files atomicity claim.
+- Original terminal-error writer: actual write Unknown, known refusal, successful
+  correlated terminal publication (3). Direct helper only: real timeout/runtime-health
+  wait and key-task settlement remain connected follow-up obligations, not qualified here.
+
+Seven intended real common-publisher cuts use authentic journals/foreign bytes and
+first-chance original CSP; eight known controls preserve ordinary policy. Per-case roots,
+current real generations, prior Committed images and hard no-later-admission guards.
+Proposal pool slot/reservation/workspace/attach/release are forbidden; no process starts.
+Tests only; existing accepted seed helper visibility widened within test assembly for
+reuse, implementation unchanged. Fresh Plan15 and actual15 pending frozen fixture review.
+
+After reached evidence: minimum typed exclusions/cause and accepted-decision retention,
+plus affected publisher-owned closes. Original bridge wrapper will be qualified together
+with connected pool/store work; full wait-loop/key ownership requires its own real bounded
+consumer evidence. C2/F16/F18/remaining owners/selection reconciliation remain open.
+
 ## Ready/worker bounded GREEN — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT12 PASS at11b97493066e6b6c0f43f5419ce0272a46a9a01e.
