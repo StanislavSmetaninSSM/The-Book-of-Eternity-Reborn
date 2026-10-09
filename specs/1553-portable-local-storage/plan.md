@@ -1,3 +1,17 @@
+## Engine exact-name bounded GREEN25 — 2026-10-09
+
+Runtime5279dbd4 independently source/design/exact25 PASS. Fresh integration
+Plan18254425/1,0execution51.9941765s; actual18270325/25PASS8.1499631s,
+complete1/1,0skip/duplicate/timeout,bothcleanup. All22new strictrootsabsent;
+negative retained full file/path bytes andgeneration unchanged; original Unicode
+baseline/backup/cleanup plus original exactbytes/exclusion/staging3 PASS.
+[Packet](recovery/storage-migration-engine-snapshot-20261009/manifest.json)107artifacts/33pins
+verified originalbytes; prior compile0 and6PASS19causalRED immutable. Fresh catalog
+and independent raw/catalog/carrier gate remain. Only original engine baseline/
+backup/cleanup rawinput boundaries qualified; other browser/incarnation/Explorer/
+spiritual producers, otherowners, nativeWindows and wholeF16 stayopen. T061–T065
+unchecked; continue availablework, B2–B5 paused. Accepted signed42 not replayed.
+
 ## Engine producer correction installed — WIP, 2026-10-09
 
 Producer-only RequireExactEngineSnapshotInventory admits raw game_state/lore plus

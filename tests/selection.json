@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-engine-snapshot-exact-names-linux",
-      "reason": "T063/F16 original engine raw-name preflight test-first: baseline/backup16 and original cleanup4/supplied-rollback2 before evidence changes, Unicode positive and exactbytes/exclusion/staging3 affected neighbors. Runtime unchanged5d; installed UNBUILT/UNRUN. Accepted firstLive/signer/ZIP42 not selected without changed boundary.",
+      "reason": "T063/F16 original engine raw path admission: actual182703 source5279dbd4 GREEN25/25 after freshintegrationPlan25/1,8.1499631s,complete1/1,bothcleanup. Baseline/backup16,cleanup4,suppliedrollback2 and originalbyte/exclusion/staging3. Strict22newrootsabsent; prior6PASS19causalRED and compile0 preserved. Source/design/exact25 independentPASS; raw/catalog/carrier pending. Other producers/owners/native unqualified; accepted firstLive/signer/ZIP42 not replayed.",
       "contracts": [
         "#1553",
         "FR-006",

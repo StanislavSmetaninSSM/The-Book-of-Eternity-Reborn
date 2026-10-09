@@ -431,5 +431,374 @@
         "sha256": "4dd9590fabd2ebe1dc111fc1a6e8b5828a0395b8247858a4c5dd7dda243ca70c"
       }
     ]
+  },
+  "green": {
+    "source": "5279dbd487dff586a7d614fea11f7bfed81beb99",
+    "artifacts": [
+      {
+        "path": "green-20261009-182544-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-182544-067-407532-58271217fc2a45b5a002ddb89bcaae19-categories/plan.json",
+        "sha256": "3ca225ca6e70e86b85e5391169ce1bf3491e0863f8886182a711c7ad533cfcab",
+        "originalSha256": "3ca225ca6e70e86b85e5391169ce1bf3491e0863f8886182a711c7ad533cfcab"
+      },
+      {
+        "path": "green-20261009-182544-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-182544-067-407532-58271217fc2a45b5a002ddb89bcaae19-categories/summary.json",
+        "sha256": "663fa238fa167ced11a6c8a84b1a15c47e13c9a4e7cd43fef9b794951b7037b6",
+        "originalSha256": "663fa238fa167ced11a6c8a84b1a15c47e13c9a4e7cd43fef9b794951b7037b6"
+      },
+      {
+        "path": "green-20261009-182544-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-182544-067-407532-58271217fc2a45b5a002ddb89bcaae19-categories/Build-integration.log",
+        "sha256": "bd2b0d9153c833a56fa0427f95f5abe3b4ee8f6845c252e24b6e444c49c3fbbd",
+        "originalSha256": "c2b2f95b217a402ca3df0b195d36c6258eb75c8a7e0adc4fb46bc4f5fdf988b0"
+      },
+      {
+        "path": "green-20261009-182544-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-182544-067-407532-58271217fc2a45b5a002ddb89bcaae19-categories/dotnet-test.log",
+        "sha256": "24a8f8678b13023056c3bca04f6750a7d8418c12ad5abbb77cc2c19bafd8f275",
+        "originalSha256": "1110b7a19791b8476d35343c5d84d7d8a334bc34314004b0472f20bb6d8d58b7"
+      },
+      {
+        "path": "green-20261009-182703-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-182703-924-407772-9bb1d58f9d2344fa9734e8f25dfc3dcf-categories/plan.json",
+        "sha256": "ecaf00dadd187952ac61750976baab9cad860f0513a53183fac0e3c3ae4ce67b",
+        "originalSha256": "ecaf00dadd187952ac61750976baab9cad860f0513a53183fac0e3c3ae4ce67b"
+      },
+      {
+        "path": "green-20261009-182703-portable-engine-snapshot-exact-names-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-182703-924-407772-9bb1d58f9d2344fa9734e8f25dfc3dcf-categories/portable-engine-snapshot-exact-names-linux-integration-001.trx",
+        "sha256": "a9c204217119f5d0e2d72547124c5e8647d7402ed1de8228845f29903a500bc7",
+        "originalSha256": "6d515184e9dfc620f64a99d5996f26d170cc476930e7449d26a52b8035f9a058"
+      },
+      {
+        "path": "green-20261009-182703-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-182703-924-407772-9bb1d58f9d2344fa9734e8f25dfc3dcf-categories/summary.json",
+        "sha256": "99681a009d2c93525f66c7eb5e5ee9bbcfde876c5071f27081990792aa4bdd73",
+        "originalSha256": "99681a009d2c93525f66c7eb5e5ee9bbcfde876c5071f27081990792aa4bdd73"
+      },
+      {
+        "path": "green-20261009-182703-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-182703-924-407772-9bb1d58f9d2344fa9734e8f25dfc3dcf-categories/dotnet-test.log",
+        "sha256": "00e19254ba10e8cf860d37defee2aa45895fbda5752fbbc2c1f930f84759b103",
+        "originalSha256": "d16a329d3bb3d045d97a65be129a7dba935a75606f1937204c1a7102b1af75aa"
+      },
+      {
+        "path": "green-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/emitted-roots-after-run.json",
+        "sha256": "b4fe27400853fa5e32f2435f600faad11905050fbc5f5bcce5c19a4fe19dba7a",
+        "originalSha256": "b4fe27400853fa5e32f2435f600faad11905050fbc5f5bcce5c19a4fe19dba7a"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-24-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-24-1.json",
+        "sha256": "3a040803b2db18c5ac5ed2096e71e012e5d8c31d2028e4600d85020827743aaa",
+        "originalSha256": "3a040803b2db18c5ac5ed2096e71e012e5d8c31d2028e4600d85020827743aaa"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-24-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-24-0.json",
+        "sha256": "f40329a690861fe72f701a384de15c0752f3ed86a5eed592216e7296804e0c46",
+        "originalSha256": "f40329a690861fe72f701a384de15c0752f3ed86a5eed592216e7296804e0c46"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-23-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-23-1.json",
+        "sha256": "0fd4c08aa2c23de1dcd2c15173cc0361907dc392c8ac21caf74537f0eec99c86",
+        "originalSha256": "0fd4c08aa2c23de1dcd2c15173cc0361907dc392c8ac21caf74537f0eec99c86"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-23-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-23-0.json",
+        "sha256": "fa8d5a9769ab88dd00a9c851a5639710d4319701c59d8562423f2facc1cb0bbd",
+        "originalSha256": "fa8d5a9769ab88dd00a9c851a5639710d4319701c59d8562423f2facc1cb0bbd"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-22-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-22-1.json",
+        "sha256": "dac1d9288ae46ceaf8cd22b64fc6519ff9898a94c8df0d1fada5e4371c3e30ed",
+        "originalSha256": "dac1d9288ae46ceaf8cd22b64fc6519ff9898a94c8df0d1fada5e4371c3e30ed"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-22-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-22-0.json",
+        "sha256": "bdc550bf6d62038e374639cffda7afc30f389cadad6d9877592b57254ae69f64",
+        "originalSha256": "bdc550bf6d62038e374639cffda7afc30f389cadad6d9877592b57254ae69f64"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-21-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-21-1.json",
+        "sha256": "dabd258ee7f2c3e04038375186a28e9832c76958c219a2e30197884ebe6e0f05",
+        "originalSha256": "dabd258ee7f2c3e04038375186a28e9832c76958c219a2e30197884ebe6e0f05"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-21-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-21-0.json",
+        "sha256": "0a0abe73513cc6d82d48399a45d6abe9b08f4d573d530c2777d042930d8f64ef",
+        "originalSha256": "0a0abe73513cc6d82d48399a45d6abe9b08f4d573d530c2777d042930d8f64ef"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-20-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-20-1.json",
+        "sha256": "ab9dffa9132e07e2319ccd95443a2ff6edcdf5a56d99b210153aeaf7aad24410",
+        "originalSha256": "ab9dffa9132e07e2319ccd95443a2ff6edcdf5a56d99b210153aeaf7aad24410"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-20-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-20-0.json",
+        "sha256": "0eec4c87e0fa5da0941ca92d16da3a6479d033763a4897dcf8f658da2ceac10a",
+        "originalSha256": "0eec4c87e0fa5da0941ca92d16da3a6479d033763a4897dcf8f658da2ceac10a"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-19-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-19-1.json",
+        "sha256": "93b837ef72fa3c441de0ff5d76a7a95cdf303becc7db3a8f7ab5e66eaed68359",
+        "originalSha256": "93b837ef72fa3c441de0ff5d76a7a95cdf303becc7db3a8f7ab5e66eaed68359"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-19-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-19-0.json",
+        "sha256": "26773c01cd2b48098dd6491b592116fee82e2fcde5c8106253b307f6fe9cd6f1",
+        "originalSha256": "26773c01cd2b48098dd6491b592116fee82e2fcde5c8106253b307f6fe9cd6f1"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-18-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-18-1.json",
+        "sha256": "e66a7439d794fbe258a085f5115e7e1adfd2133c1e7ab518978bacd4bfcb119c",
+        "originalSha256": "e66a7439d794fbe258a085f5115e7e1adfd2133c1e7ab518978bacd4bfcb119c"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-18-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-18-0.json",
+        "sha256": "cfeb2ebe79aeb326d8d876fa185fce2f9b5fef982ac06b13c4182563d3f02e5c",
+        "originalSha256": "cfeb2ebe79aeb326d8d876fa185fce2f9b5fef982ac06b13c4182563d3f02e5c"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-17-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-17-1.json",
+        "sha256": "09f38696c5d7175169ca4c9d27c03c2f2f501a752f1240b35b8bd7d94a6b5d3f",
+        "originalSha256": "09f38696c5d7175169ca4c9d27c03c2f2f501a752f1240b35b8bd7d94a6b5d3f"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-17-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-17-0.json",
+        "sha256": "2134f6b9ae16672eb4d65150016143a626c5012f8e3578dff2515d187e15f5c2",
+        "originalSha256": "2134f6b9ae16672eb4d65150016143a626c5012f8e3578dff2515d187e15f5c2"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-16-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-16-1.json",
+        "sha256": "de416b6fe40af9ac0cc985886871d55d0887180d96f4bd73d5441a68ae02a584",
+        "originalSha256": "de416b6fe40af9ac0cc985886871d55d0887180d96f4bd73d5441a68ae02a584"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-16-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-16-0.json",
+        "sha256": "a5eb8169009fe3ff16830d0516467fe72b2d0adca9f36211593cf90476da2cda",
+        "originalSha256": "a5eb8169009fe3ff16830d0516467fe72b2d0adca9f36211593cf90476da2cda"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-13-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-13-1.json",
+        "sha256": "06fb25927934cfde490b1bded6b48f7af61da249f4098fd2918ee200cc880af8",
+        "originalSha256": "06fb25927934cfde490b1bded6b48f7af61da249f4098fd2918ee200cc880af8"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-13-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-13-0.json",
+        "sha256": "daf4b435bcaa2a7e0f607525a256ae27f7e6951948724fcd2bc36e4b6d70a2fb",
+        "originalSha256": "daf4b435bcaa2a7e0f607525a256ae27f7e6951948724fcd2bc36e4b6d70a2fb"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-12-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-12-1.json",
+        "sha256": "21cff2e188ff8abe214103a214323f983ee98f0e6d43dfa7656dc1dcb8dae59f",
+        "originalSha256": "21cff2e188ff8abe214103a214323f983ee98f0e6d43dfa7656dc1dcb8dae59f"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-12-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-12-0.json",
+        "sha256": "940a12339049c512df4e00644e5b2cc34b988ef023b82321541ec7bf50cec2cf",
+        "originalSha256": "940a12339049c512df4e00644e5b2cc34b988ef023b82321541ec7bf50cec2cf"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-11-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-11-1.json",
+        "sha256": "0c4a8fb942e3888f951205c5600a4863edb0e7f3eee3cd4ea0d3315703f5777e",
+        "originalSha256": "0c4a8fb942e3888f951205c5600a4863edb0e7f3eee3cd4ea0d3315703f5777e"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-11-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-11-0.json",
+        "sha256": "198d25e8ee0332bf0e294757f327bc296926d21b531cf6e1c4dfe7f95505e70d",
+        "originalSha256": "198d25e8ee0332bf0e294757f327bc296926d21b531cf6e1c4dfe7f95505e70d"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-10-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-10-1.json",
+        "sha256": "f70fc0279a5299d15cd92e30fc0c3f95cfc87308522f6bcc07484f7eff0316cd",
+        "originalSha256": "f70fc0279a5299d15cd92e30fc0c3f95cfc87308522f6bcc07484f7eff0316cd"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-10-0.json.gz",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-10-0.json",
+        "sha256": "775767985a9e3c72b53c5b280e53805827dd44c0fd49387ad55f073b1d66f2a2",
+        "originalSha256": "30103afa6c8cb48f50227ef16ff17764c3648100322e2f0c319763887dcba645"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-9-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-9-1.json",
+        "sha256": "4cf5a4ed843b518cbb532823aa7ff7b22fcf678915a00aba41e518a2dc2da250",
+        "originalSha256": "4cf5a4ed843b518cbb532823aa7ff7b22fcf678915a00aba41e518a2dc2da250"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-9-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-9-0.json",
+        "sha256": "fb92a0fe51c11ddecf5b0f882074a2ed689bfed64bdd904d3c2e8b50238d46a2",
+        "originalSha256": "fb92a0fe51c11ddecf5b0f882074a2ed689bfed64bdd904d3c2e8b50238d46a2"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-8-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-8-1.json",
+        "sha256": "2bb876b0d5b0fa6f0538c0d66939a5982e4e222325b1980deec6a3c8f3b731f6",
+        "originalSha256": "2bb876b0d5b0fa6f0538c0d66939a5982e4e222325b1980deec6a3c8f3b731f6"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-8-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-8-0.json",
+        "sha256": "d6110ccba0260fb7d63bf96d970efbda57a69d94d288fefb285238365442f0b2",
+        "originalSha256": "d6110ccba0260fb7d63bf96d970efbda57a69d94d288fefb285238365442f0b2"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-7-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-7-1.json",
+        "sha256": "17b4d82d093667f7b89cc1c7f4872d0b30d9db13c3cd2e8875350c2e3bcb8ac7",
+        "originalSha256": "17b4d82d093667f7b89cc1c7f4872d0b30d9db13c3cd2e8875350c2e3bcb8ac7"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-7-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-7-0.json",
+        "sha256": "832cc0513433123b4c0ec8dd843ef952eb6352c7140fa1a3abf97276e799edc8",
+        "originalSha256": "832cc0513433123b4c0ec8dd843ef952eb6352c7140fa1a3abf97276e799edc8"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-6-1.json",
+        "sha256": "bb9fe0c29f4d6866f221fc270b5a67c58d1616390aed6b7e0ee2001cd6ed4016",
+        "originalSha256": "bb9fe0c29f4d6866f221fc270b5a67c58d1616390aed6b7e0ee2001cd6ed4016"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-6-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-6-0.json",
+        "sha256": "a5179de93d4affe2cb6fa662b003eed37057325a6b88cfcca101d78037f07597",
+        "originalSha256": "a5179de93d4affe2cb6fa662b003eed37057325a6b88cfcca101d78037f07597"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-5-1.json",
+        "sha256": "aed6baa428b567b9d7e5415c2994a20edb87cf783cd6d8989c90fe208a2f0dbd",
+        "originalSha256": "aed6baa428b567b9d7e5415c2994a20edb87cf783cd6d8989c90fe208a2f0dbd"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-5-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-5-0.json",
+        "sha256": "e3629c73fc42df5d19ea43494d505238598d516acf7596e83f37a3bbb4f14ba8",
+        "originalSha256": "e3629c73fc42df5d19ea43494d505238598d516acf7596e83f37a3bbb4f14ba8"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-3-1.json",
+        "sha256": "b6abd9a379f7997ce98bc562274dbfc651a088caa4ed371ac57b6ada81246ed5",
+        "originalSha256": "b6abd9a379f7997ce98bc562274dbfc651a088caa4ed371ac57b6ada81246ed5"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-3-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-3-0.json",
+        "sha256": "4d14941c08232f26f96d313c570088964c773b4de433df1c31bd4cc72272e597",
+        "originalSha256": "4d14941c08232f26f96d313c570088964c773b4de433df1c31bd4cc72272e597"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-2-1.json",
+        "sha256": "97b79aa02c0bb60e9984770c9b040a1206daba010eb0bec9a4d233b72d0c56bc",
+        "originalSha256": "97b79aa02c0bb60e9984770c9b040a1206daba010eb0bec9a4d233b72d0c56bc"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-2-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-2-0.json",
+        "sha256": "cd8293f467f56243210f16d18222d62d286f47db5cadb98a5bb990c6de23d775",
+        "originalSha256": "cd8293f467f56243210f16d18222d62d286f47db5cadb98a5bb990c6de23d775"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-1-1.json",
+        "sha256": "a237da2ad702de88aa08ef0ede43b34d02c5889a508e1cda2c587ce3c955052c",
+        "originalSha256": "a237da2ad702de88aa08ef0ede43b34d02c5889a508e1cda2c587ce3c955052c"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-1-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-1-0.json",
+        "sha256": "b4133f737a79061305e4dc2e35c01010b5feb741421bf8bd31d08dcd0c9b4895",
+        "originalSha256": "b4133f737a79061305e4dc2e35c01010b5feb741421bf8bd31d08dcd0c9b4895"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-0-1.json",
+        "sha256": "6a5094c683127885cdf130475660f41d390730619927ed7bc16d128b06cea9d0",
+        "originalSha256": "6a5094c683127885cdf130475660f41d390730619927ed7bc16d128b06cea9d0"
+      },
+      {
+        "path": "green-row-portable-engine-snapshot-exact-names-linux-integration-001-0-0.json",
+        "source": "/tmp/boe-engine-snapshot-green-rows/portable-engine-snapshot-exact-names-linux-integration-001-0-0.json",
+        "sha256": "b5e5082d9b103835faedf86a44118baa462e0590bab5dc82f63eca57f4f51bcc",
+        "originalSha256": "b5e5082d9b103835faedf86a44118baa462e0590bab5dc82f63eca57f4f51bcc"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ExactSnapshotNames.cs",
+        "sha256": "948455ec815d575e484f5836eef07c10c5f11e105ede75c311d3d223172c4682"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AudioService.cs",
+        "sha256": "2236f56e7f3c6b626d249a480eb6065abe8fe4dbb311386606dbe40949d3f67c"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "d2c61230072f76e3eaee41e3c44e38cd9ffa6d124796a1d37e10e8e676d96653"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+        "sha256": "6b67a56b86ae216a423335a1639f9bebc4a727f3783a51cbdf110a734829458e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "sha256": "6b924fe31e3f31a610496594cee3e916dc282657061f8a8a0d10590fc91ac80a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "sha256": "528027b576914c12337385bb50176524feb5286a38ac697b74538333add57509"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "4b860be5b2a37b3e261a7e481ebf16089493168276aab7ee2d06ca97ad84a04a"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "4dd9590fabd2ebe1dc111fc1a6e8b5828a0395b8247858a4c5dd7dda243ca70c"
+      }
+    ]
   }
 }
