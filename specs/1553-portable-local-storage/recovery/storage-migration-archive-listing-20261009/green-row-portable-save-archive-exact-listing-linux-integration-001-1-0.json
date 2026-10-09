@@ -1,0 +1,70 @@
+{
+  "consumer": "listing",
+  "mode": "literal",
+  "root": "/tmp/boe-archive-exact-list-0191dc5e305c4a05b50271daeb057193",
+  "relative": "saves/manual_saves/old\\archive.zip",
+  "sourceBytes": "UEsDBBQAAAAIAOKLSV03StsMYgAAAIoAAAASAAAAc2F2ZV9tZXRhZGF0YS5qc29uq1YqTixL9UvMTVWyUoopNTAxMgKRxq4g0sQczHYBkwZgETcFMMccIWTsBiYtwNKGYNJZSUepJDM3tbgkMbcAaK6RgZGZroGhroFRiIGBFRhFgZSUFuX5leYmpRYpWZnXAgBQSwECFAMUAAAACADii0ldN0rbDGIAAACKAAAAEgAAAAAAAAAAAAAApIEAAAAAc2F2ZV9tZXRhZGF0YS5qc29uUEsFBgAAAAABAAEAQAAAAJIAAAAAAA==",
+  "selectedExists": true,
+  "selectedAfter": "UEsDBBQAAAAIAOKLSV03StsMYgAAAIoAAAASAAAAc2F2ZV9tZXRhZGF0YS5qc29uq1YqTixL9UvMTVWyUoopNTAxMgKRxq4g0sQczHYBkwZgETcFMMccIWTsBiYtwNKGYNJZSUepJDM3tbgkMbcAaK6RgZGZroGhroFRiIGBFRhFgZSUFuX5leYmpRYpWZnXAgBQSwECFAMUAAAACADii0ldN0rbDGIAAACKAAAAEgAAAAAAAAAAAAAApIEAAAAAc2F2ZV9tZXRhZGF0YS5qc29uUEsFBgAAAAABAAEAQAAAAJIAAAAAAA==",
+  "failure": null,
+  "saves": [
+    {
+      "FileName": "/tmp/boe-archive-exact-list-0191dc5e305c4a05b50271daeb057193/game_session/saves/manual_saves/newer.zip",
+      "Metadata": {
+        "saveName": "Новая запись",
+        "description": "",
+        "timestamp": "2026-01-03T00:00:00Z",
+        "gameVersion": "0.5.0-prealpha",
+        "turnNumber": 7,
+        "playerLevel": 0,
+        "currentLocation": "",
+        "worldName": "",
+        "incarnation": 0,
+        "inkFeathers": 0,
+        "sessionDuration": "",
+        "characterName": ""
+      },
+      "FileSize": 229
+    },
+    {
+      "FileName": "/tmp/boe-archive-exact-list-0191dc5e305c4a05b50271daeb057193/game_session/saves/manual_saves/old\\archive.zip",
+      "Metadata": {
+        "saveName": "Точная запись",
+        "description": "",
+        "timestamp": "2026-01-02T00:00:00Z",
+        "gameVersion": "0.5.0-prealpha",
+        "turnNumber": 7,
+        "playerLevel": 0,
+        "currentLocation": "",
+        "worldName": "",
+        "incarnation": 0,
+        "inkFeathers": 0,
+        "sessionDuration": "",
+        "characterName": ""
+      },
+      "FileSize": 232
+    }
+  ],
+  "disposition": null,
+  "destination": null,
+  "followUp": null,
+  "blocked": null,
+  "resultFailure": null,
+  "committedNewBytes": null,
+  "reads": [
+    "saves/manual_saves/newer.zip",
+    "saves/manual_saves/old\\archive.zip"
+  ],
+  "publications": [],
+  "topLevel": [
+    "/tmp/boe-archive-exact-list-0191dc5e305c4a05b50271daeb057193/game_session/saves/manual_saves/newer.zip",
+    "/tmp/boe-archive-exact-list-0191dc5e305c4a05b50271daeb057193/game_session/saves/manual_saves/ignored-nested",
+    "/tmp/boe-archive-exact-list-0191dc5e305c4a05b50271daeb057193/game_session/saves/manual_saves/ignored.txt",
+    "/tmp/boe-archive-exact-list-0191dc5e305c4a05b50271daeb057193/game_session/saves/manual_saves/ignored.ZIP",
+    "/tmp/boe-archive-exact-list-0191dc5e305c4a05b50271daeb057193/game_session/saves/manual_saves/old\\archive.zip"
+  ],
+  "generationBefore": "eyJzY2hlbWFWZXJzaW9uIjoxLCJnZW5lcmF0aW9uSWQiOiIwOThjYTJhZmUxNDQ0ODM1YTM3ZmI5MGZkMzQ3MjE0OCJ9",
+  "generationAfter": "eyJzY2hlbWFWZXJzaW9uIjoxLCJnZW5lcmF0aW9uSWQiOiIwOThjYTJhZmUxNDQ0ODM1YTM3ZmI5MGZkMzQ3MjE0OCJ9",
+  "outsideZip": "/tmp/boe-archive-exact-list-0191dc5e305c4a05b50271daeb057193/outside/external.zip",
+  "outsideAfter": null
+}

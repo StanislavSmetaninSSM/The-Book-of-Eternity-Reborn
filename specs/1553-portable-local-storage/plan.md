@@ -1,3 +1,32 @@
+## F16 first signer/preparation + ZIP units — actual GREEN42, 2026-10-09
+
+Runtime `15555367fed888ec4ac82bfe520188decc2d5547`; independent installed-source/
+isolated-causal-RED/exact-selection Astra XHigh PASS. Fresh both-project Plan172930
+**42 cases / 4 descriptors**, 0 execution,66.7071354s,both cleanup; actual173053
+**42/42 PASS**,4/4 complete,21.4568928s,0skip/duplicate/timeout,both cleanup.
+Breakdown: original signer/Live preparation22, isolated cleanup-alias1, original
+unit authority/reader/preparation neighbors15, original ZIP listing/retention4.
+Actual per-case output and TRXs are retained. Strict emitted roots are absent;
+no old-evidence cleanup/source-byte read before negative signer/preparation refusal,
+exact repeats/Unicode retained, actual ZIP selected-cohort refusal and real autosave
+Committed/new archive preserved with original follow-up semantics.
+
+Fresh matching both-project discovery-only catalog173447 **583 categories / 11352
+methods-files**,0tests,9.1329227s,both cleanup; current explicit selection156 unique
+categories. [Signed packet](recovery/storage-migration-signed-snapshot-20261009/manifest.json)
+and [ZIP packet](recovery/storage-migration-archive-listing-20261009/manifest.json)
+retain original Plan/RED/GREEN/catalog bytes and source hashes. Shared GREEN group
+contains all four original TRXs; signed qualification is38 and ZIP qualification4,
+not two additional executions. Previous signed53/26 and ZIP20/24 entries remain
+immutable; final carrier/review pending at this checkpoint.
+
+Other actual engine/browser/incarnation/spiritual producers can still lose names
+before the signer, other cleanup/owner routes remain open; this is not full F16,
+T061–T065, native Windows, gameplay, GM or migration acceptance. B2–B5 remain paused.
+Next: final independent raw GREEN/catalog/carrier review; then source-backed remaining
+producer/owner work and authoritative current consumer/old-mechanism inventory plus
+fresh exact-tip GitHub-only restore. Earlier WIP sections below are historical.
+
 ## F16 isolated original cleanup causal1 and minimal runtime — WIP, 2026-10-09
 
 Sourcebeac97e8 installedexact1 gatePASS; previoussigned/ZIP raw PASS (42/13 and20/24).

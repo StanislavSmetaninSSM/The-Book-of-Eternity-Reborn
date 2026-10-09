@@ -1,0 +1,153 @@
+{
+  "Categories": [
+    "portable-signed-preparation-cleanup-alias-linux",
+    "portable-signed-snapshot-authority-neighbors",
+    "portable-signed-snapshot-spelling-linux",
+    "portable-save-archive-exact-listing-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "15555367fed888ec4ac82bfe520188decc2d5547",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 7.4169901,
+  "Descriptors": [
+    {
+      "Name": "portable-save-archive-exact-listing-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-archive-exact-listing-linux",
+      "Categories": [
+        "portable-save-archive-exact-listing-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SaveArchiveExactListingTests.OriginalArchiveConsumersPreserveExactSelectedNamesAndIgnoreUnselectedLinks",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SaveArchiveExactListingTests.OriginalArchiveConsumersPreserveExactSelectedNamesAndIgnoreUnselectedLinks",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-signed-preparation-cleanup-alias-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-signed-preparation-cleanup-alias-linux",
+      "Categories": [
+        "portable-signed-preparation-cleanup-alias-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalLivePreparationRefusesCleanupPathAliasBeforeOldEvidenceCleanup",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalLivePreparationRefusesCleanupPathAliasBeforeOldEvidenceCleanup",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-signed-snapshot-authority-neighbors-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-signed-snapshot-authority-neighbors",
+      "Categories": [
+        "portable-signed-snapshot-authority-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.CreateDetachedAuthorityJson_WritesPortableIntegrityEnvelopeWithoutLegacySignature|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_PortableIntegrityEnvelope_ValidatesWithoutLegacySignature|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_RollbackBackupBomChanged_FailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedPortablePayloadJson_FailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedRollbackBackup_FailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedSnapshotHash_FailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_UnsafeSnapshotPath_FailsStructure|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedCaseVariantOptionalCoverageInsteadOfTreatingItAsAbsent|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedExactAndCaseVariantOptionalCoverage|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedOptionalCoverageWhoseFileAndHashKeyCasingDisagree|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedAsymmetricGlobalCoverage|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedCrossMapCaseMismatch|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedSignedCaseConfusableCoverage",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.CreateDetachedAuthorityJson_WritesPortableIntegrityEnvelopeWithoutLegacySignature",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_PortableIntegrityEnvelope_ValidatesWithoutLegacySignature",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_RollbackBackupBomChanged_FailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedPortablePayloadJson_FailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedRollbackBackup_FailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedSnapshotHash_FailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_UnsafeSnapshotPath_FailsStructure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedCaseVariantOptionalCoverageInsteadOfTreatingItAsAbsent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedExactAndCaseVariantOptionalCoverage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedOptionalCoverageWhoseFileAndHashKeyCasingDisagree",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedAsymmetricGlobalCoverage",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedCrossMapCaseMismatch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedSignedCaseConfusableCoverage",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-signed-snapshot-spelling-linux-integration-004",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-signed-snapshot-spelling-linux",
+      "Categories": [
+        "portable-signed-snapshot-spelling-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalDetachedSignerRequiresExactRepresentablePathsBeforeByteReads|FullyQualifiedName=BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalLivePreparationRefusesUnrepresentableInventoryBeforeOldEvidenceCleanup",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 22,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalDetachedSignerRequiresExactRepresentablePathsBeforeByteReads",
+          "Cases": 16
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalLivePreparationRefusesUnrepresentableInventoryBeforeOldEvidenceCleanup",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}

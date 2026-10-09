@@ -435,5 +435,388 @@
         "sha256": "618aac6bf2d970a4e28d9317369518bafb03c37563a6afc28c614ee351343cd7"
       }
     ]
+  },
+  "green": {
+    "source": "15555367fed888ec4ac82bfe520188decc2d5547",
+    "artifacts": [
+      {
+        "path": "green-20261009-172930-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172930-383-399717-dbbe3cdaa3c244b1b67ec92daa7a5872-categories/plan.json",
+        "sha256": "792725354ef5ab80d60cd54e1f15db18a96914ed9fe9e98b6011c7ce91a89ea7",
+        "originalSha256": "792725354ef5ab80d60cd54e1f15db18a96914ed9fe9e98b6011c7ce91a89ea7"
+      },
+      {
+        "path": "green-20261009-172930-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172930-383-399717-dbbe3cdaa3c244b1b67ec92daa7a5872-categories/summary.json",
+        "sha256": "469e2247d8df92442b8bce513837d516cda519ee152331b2ddf5ba461a079fc9",
+        "originalSha256": "469e2247d8df92442b8bce513837d516cda519ee152331b2ddf5ba461a079fc9"
+      },
+      {
+        "path": "green-20261009-172930-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172930-383-399717-dbbe3cdaa3c244b1b67ec92daa7a5872-categories/Build-integration.log",
+        "sha256": "0b5d1f69b7de1a3896e38b961f049ddda3a386610b828e63473ddc48b12a932e",
+        "originalSha256": "369bb9ebd10dce269c35ed8135c6519da2aa041acc8475551f1acd4961e70639"
+      },
+      {
+        "path": "green-20261009-172930-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172930-383-399717-dbbe3cdaa3c244b1b67ec92daa7a5872-categories/Build-unit.log",
+        "sha256": "278f40cc29eb9d87e29b9c317ca9bdffe0236bd027bb04fb4952ff35bbe74bb7",
+        "originalSha256": "74a60a9085015f69c9ab684d97424de8dee683eaddd20276c64e95452674c445"
+      },
+      {
+        "path": "green-20261009-172930-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172930-383-399717-dbbe3cdaa3c244b1b67ec92daa7a5872-categories/dotnet-test.log",
+        "sha256": "8b739428846f6f7f2bb8beb54c2ae85c333a26e7c990bf46cf3609fe59960cc2",
+        "originalSha256": "c64a8db554e0ad571b8ed05d025a418169028680fd5926aaf7b82c1a970e4dff"
+      },
+      {
+        "path": "green-20261009-173053-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-173053-332-400056-04f957c030c542eaba7607bba9f991ed-categories/plan.json",
+        "sha256": "589ca8d8f27e1694eb18f3e13a289363478685480d2646e198a8d556a9db0d60",
+        "originalSha256": "589ca8d8f27e1694eb18f3e13a289363478685480d2646e198a8d556a9db0d60"
+      },
+      {
+        "path": "green-20261009-173053-portable-signed-preparation-cleanup-alias-linux-integration-002.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-173053-332-400056-04f957c030c542eaba7607bba9f991ed-categories/portable-signed-preparation-cleanup-alias-linux-integration-002.trx",
+        "sha256": "28e66e6002dde73e721183b7c2353ef81cc94c1527c78d0bdf7b9b571ad0b7fa",
+        "originalSha256": "4251a44c34104b9b24d7e38eb6f166fd2e5b7e721cefc869c3b3d950fdab8afb"
+      },
+      {
+        "path": "green-20261009-173053-portable-save-archive-exact-listing-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-173053-332-400056-04f957c030c542eaba7607bba9f991ed-categories/portable-save-archive-exact-listing-linux-integration-001.trx",
+        "sha256": "f5dd42f33eb007525727bf028e0cbfa7d895fe344b20e0d019222edea6a22d9c",
+        "originalSha256": "52a2e6197ba4bf362c1e4bbffc334e548064408e1ee547be46614b882ecd6459"
+      },
+      {
+        "path": "green-20261009-173053-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-173053-332-400056-04f957c030c542eaba7607bba9f991ed-categories/summary.json",
+        "sha256": "4554a014adb57f46a2e61196b3893d0c2ef5425389246568da004b2b7357554f",
+        "originalSha256": "4554a014adb57f46a2e61196b3893d0c2ef5425389246568da004b2b7357554f"
+      },
+      {
+        "path": "green-20261009-173053-portable-signed-snapshot-authority-neighbors-unit-003.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-173053-332-400056-04f957c030c542eaba7607bba9f991ed-categories/portable-signed-snapshot-authority-neighbors-unit-003.trx",
+        "sha256": "f056e09c4a71da1a82161a1d3ef49a52e6c8724937bd54137cdb4ac718ef09e7",
+        "originalSha256": "ecfc8749a60d677b617757d9f52fcd0f922848454dbd8408da5a99813394fc16"
+      },
+      {
+        "path": "green-20261009-173053-portable-signed-snapshot-spelling-linux-integration-004.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-173053-332-400056-04f957c030c542eaba7607bba9f991ed-categories/portable-signed-snapshot-spelling-linux-integration-004.trx",
+        "sha256": "59532ead0891c6be94b81969d2ba5dd844d447ae4d9d3ad0c1028eb362ad1454",
+        "originalSha256": "53c8710bc66c8d3f45ab22dd7d4ef80be19c1d29cfd9cfa30ed148c26437a229"
+      },
+      {
+        "path": "green-20261009-173053-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-173053-332-400056-04f957c030c542eaba7607bba9f991ed-categories/dotnet-test.log",
+        "sha256": "96e0edcc5ea5b0714ca737a58b3f09decb889ee96391c505b4462ca053f97660",
+        "originalSha256": "cbb356448c76963bbb13f993cbe9a5df985a4434b383f77386c5c41357c3d81b"
+      },
+      {
+        "path": "green-20261009-173447-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-173447-532-400782-04789d5afb4a45ecb42cbcb5cf04770d-categories/catalog-audit.json",
+        "sha256": "dd2bc14d9333a7ef91269c10476d90ef4e65c58646551b6151eca1ae16cf05ad",
+        "originalSha256": "dd2bc14d9333a7ef91269c10476d90ef4e65c58646551b6151eca1ae16cf05ad"
+      },
+      {
+        "path": "green-20261009-173447-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-173447-532-400782-04789d5afb4a45ecb42cbcb5cf04770d-categories/summary.json",
+        "sha256": "73b53aa318e5dcf1b5eb462786ea3efd14c0c3950aa67653467315e68ef7063b",
+        "originalSha256": "73b53aa318e5dcf1b5eb462786ea3efd14c0c3950aa67653467315e68ef7063b"
+      },
+      {
+        "path": "green-20261009-173447-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-173447-532-400782-04789d5afb4a45ecb42cbcb5cf04770d-categories/dotnet-test.log",
+        "sha256": "e7f42723fee8e7bea585fbb0f2f108b0168f75cbcc53542bf2923a2d9a8e6f63",
+        "originalSha256": "01c664930b8515640d698964cc61ac8c560a4ae620e328023f329ea692e884f0"
+      },
+      {
+        "path": "green-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/emitted-roots-after-run.json",
+        "sha256": "7a20b061225fa4722c667a2702cc31ac2c1a8a9acd6092aee0801f42360c57cf",
+        "originalSha256": "7a20b061225fa4722c667a2702cc31ac2c1a8a9acd6092aee0801f42360c57cf"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-21-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-21-1.json",
+        "sha256": "2c902f9cea381ce2887d9e7465041edf4be99d02523b0fea55fa1f2bac597bfc",
+        "originalSha256": "2c902f9cea381ce2887d9e7465041edf4be99d02523b0fea55fa1f2bac597bfc"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-21-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-21-0.json",
+        "sha256": "56a5568043f011ed7e70a059b11ff7f1313c591c7a158a239f9b14d0ea456fad",
+        "originalSha256": "56a5568043f011ed7e70a059b11ff7f1313c591c7a158a239f9b14d0ea456fad"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-20-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-20-0.json",
+        "sha256": "a84614812a777e865b6ebf77aa1568519e4fda0f3e4d5d41ad437fa30dc8543c",
+        "originalSha256": "a84614812a777e865b6ebf77aa1568519e4fda0f3e4d5d41ad437fa30dc8543c"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-19-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-19-0.json",
+        "sha256": "c4719d970f1281e605ec26aff4e10c454f97b015905188c04e093dc9d62a4872",
+        "originalSha256": "c4719d970f1281e605ec26aff4e10c454f97b015905188c04e093dc9d62a4872"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-18-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-18-0.json",
+        "sha256": "5c91b6eb853a31af2c8c8185621a8b7b3e00dbd9efa7ef5ce5401078c14c8b72",
+        "originalSha256": "5c91b6eb853a31af2c8c8185621a8b7b3e00dbd9efa7ef5ce5401078c14c8b72"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-17-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-17-0.json",
+        "sha256": "07d50452052f8f68f63884b2a1640d38c0a826d0d2cb04a101d1b8fe4b1f2af0",
+        "originalSha256": "07d50452052f8f68f63884b2a1640d38c0a826d0d2cb04a101d1b8fe4b1f2af0"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-16-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-16-0.json",
+        "sha256": "c710efc4cd1313f44f3bff014b8171b42243129aad5b43a22b00e8352a9f6191",
+        "originalSha256": "c710efc4cd1313f44f3bff014b8171b42243129aad5b43a22b00e8352a9f6191"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-15-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-15-0.json",
+        "sha256": "cc88bb34deda83ecd1705d6b0a8bf3459a61d89da3a8bd5dd8b04ea6e817ddcc",
+        "originalSha256": "cc88bb34deda83ecd1705d6b0a8bf3459a61d89da3a8bd5dd8b04ea6e817ddcc"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-14-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-14-0.json",
+        "sha256": "00eddc55f134a7096a7e47681fb8d6238731a8ca1fd19001f812250090411d23",
+        "originalSha256": "00eddc55f134a7096a7e47681fb8d6238731a8ca1fd19001f812250090411d23"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-13-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-13-0.json",
+        "sha256": "57853984016d322b4dbf3030df6451b30cc25fd1e13bc600460f0473be30f5c4",
+        "originalSha256": "57853984016d322b4dbf3030df6451b30cc25fd1e13bc600460f0473be30f5c4"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-12-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-12-0.json",
+        "sha256": "ff2d90a2a75c6bbfc44bbb36db088f7f0454b68ee839beb3185fd07f04179360",
+        "originalSha256": "ff2d90a2a75c6bbfc44bbb36db088f7f0454b68ee839beb3185fd07f04179360"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-11-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-11-0.json",
+        "sha256": "47027a5304b8cd00879d4d06941e11a5a2a555fce37bed3fa6364739f0206f98",
+        "originalSha256": "47027a5304b8cd00879d4d06941e11a5a2a555fce37bed3fa6364739f0206f98"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-10-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-10-1.json",
+        "sha256": "f03b0f73eb7c5cbe8416487d0f10c26ce58cdfd8da1d693f2be70395800a8780",
+        "originalSha256": "f03b0f73eb7c5cbe8416487d0f10c26ce58cdfd8da1d693f2be70395800a8780"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-10-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-10-0.json",
+        "sha256": "e991b14714eb662ee83147f87b5280a59893e7c2cf73383b87df6d77a193aa02",
+        "originalSha256": "e991b14714eb662ee83147f87b5280a59893e7c2cf73383b87df6d77a193aa02"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-9-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-9-0.json",
+        "sha256": "cbe97041b7c0a85fe13a4f9d669f722ca0044b1368938b64aeca4c083f2c22ec",
+        "originalSha256": "cbe97041b7c0a85fe13a4f9d669f722ca0044b1368938b64aeca4c083f2c22ec"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-8-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-8-1.json",
+        "sha256": "16b1d3a7a9a3414c0997bf16b56dbef9f90264104bf3eb44227e09bcdcf71e76",
+        "originalSha256": "16b1d3a7a9a3414c0997bf16b56dbef9f90264104bf3eb44227e09bcdcf71e76"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-8-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-8-0.json",
+        "sha256": "0269e0fa98efbfb65ac4421f561686d35bb0b8123a5ca4b4c14d67dde0730112",
+        "originalSha256": "0269e0fa98efbfb65ac4421f561686d35bb0b8123a5ca4b4c14d67dde0730112"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-7-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-7-0.json",
+        "sha256": "8c9b191c397935acbda3a9d1b4546c095a060053ebc4ca16b72cef2b1dff268c",
+        "originalSha256": "8c9b191c397935acbda3a9d1b4546c095a060053ebc4ca16b72cef2b1dff268c"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-6-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-6-1.json",
+        "sha256": "93af1115b7cbf02209f53407f5fb1a737261e7db581b62433bee3aecd3fcb0d6",
+        "originalSha256": "93af1115b7cbf02209f53407f5fb1a737261e7db581b62433bee3aecd3fcb0d6"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-6-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-6-0.json",
+        "sha256": "536bb0639250ed370b7634514d36942905b9c40645ffe6c84ff30fb73fbd92d5",
+        "originalSha256": "536bb0639250ed370b7634514d36942905b9c40645ffe6c84ff30fb73fbd92d5"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-5-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-5-1.json",
+        "sha256": "dd7606cc66f0ade76e7fe16de58c00c53d9b8cf4beaed944b6644967746a47d8",
+        "originalSha256": "dd7606cc66f0ade76e7fe16de58c00c53d9b8cf4beaed944b6644967746a47d8"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-5-0.json.gz",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-5-0.json",
+        "sha256": "40533b18a8332923e33462da8c9a70e2e1748f53650ba9abe1a426cbea2746c6",
+        "originalSha256": "efa33f92adaa5392b3180d1f14b193984871ac9710840f9b93729ec720c37d5e"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-4-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-4-0.json",
+        "sha256": "00273ea5fd6449dd6d88ef932b4296b78c772a62a7579ed25880705ac5fe99d1",
+        "originalSha256": "00273ea5fd6449dd6d88ef932b4296b78c772a62a7579ed25880705ac5fe99d1"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-3-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-3-0.json",
+        "sha256": "8abd3eb586e1b659855bfdf992ae387ab0b5017e78d59070eb53560825317e70",
+        "originalSha256": "8abd3eb586e1b659855bfdf992ae387ab0b5017e78d59070eb53560825317e70"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-2-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-2-1.json",
+        "sha256": "9fbf0a8f0c73025aa849ff140e2f00be9fc98d246bac7c0c13c09a349e0b7979",
+        "originalSha256": "9fbf0a8f0c73025aa849ff140e2f00be9fc98d246bac7c0c13c09a349e0b7979"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-2-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-2-0.json",
+        "sha256": "6a74281c32945297e7a9ea90ffe9f0cee40e9169124359479e91a85f537d9493",
+        "originalSha256": "6a74281c32945297e7a9ea90ffe9f0cee40e9169124359479e91a85f537d9493"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-1-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-1-0.json",
+        "sha256": "d68919e57fa5a5105fb696bf008d740e01174918a9b8322a82d449f26cdb773c",
+        "originalSha256": "d68919e57fa5a5105fb696bf008d740e01174918a9b8322a82d449f26cdb773c"
+      },
+      {
+        "path": "green-row-portable-signed-snapshot-spelling-linux-integration-004-0-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-snapshot-spelling-linux-integration-004-0-0.json",
+        "sha256": "dfa0fb675ac130f1936623a48f15256e2040d7a1501af5fc2abb60b8916ccd32",
+        "originalSha256": "dfa0fb675ac130f1936623a48f15256e2040d7a1501af5fc2abb60b8916ccd32"
+      },
+      {
+        "path": "green-row-portable-save-archive-exact-listing-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-save-archive-exact-listing-linux-integration-001-3-1.json",
+        "sha256": "9c2a66c2ee4912be99f949eece1fb05db786961cfec1e2e11b56720adcc377f6",
+        "originalSha256": "9c2a66c2ee4912be99f949eece1fb05db786961cfec1e2e11b56720adcc377f6"
+      },
+      {
+        "path": "green-row-portable-save-archive-exact-listing-linux-integration-001-3-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-save-archive-exact-listing-linux-integration-001-3-0.json",
+        "sha256": "9d71f62d798d2eb3964c9f0394e445e693154a3c50a0e4f02c202841f36d174d",
+        "originalSha256": "9d71f62d798d2eb3964c9f0394e445e693154a3c50a0e4f02c202841f36d174d"
+      },
+      {
+        "path": "green-row-portable-save-archive-exact-listing-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-save-archive-exact-listing-linux-integration-001-2-1.json",
+        "sha256": "86732e31af83672f5c5c2d5fe1cddef42f86173fc6d69451621481fc26a24356",
+        "originalSha256": "86732e31af83672f5c5c2d5fe1cddef42f86173fc6d69451621481fc26a24356"
+      },
+      {
+        "path": "green-row-portable-save-archive-exact-listing-linux-integration-001-2-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-save-archive-exact-listing-linux-integration-001-2-0.json",
+        "sha256": "f4d1355dc6952e39477b3450d380fdda5bba154d5544dbdb45d430117b80612b",
+        "originalSha256": "f4d1355dc6952e39477b3450d380fdda5bba154d5544dbdb45d430117b80612b"
+      },
+      {
+        "path": "green-row-portable-save-archive-exact-listing-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-save-archive-exact-listing-linux-integration-001-1-1.json",
+        "sha256": "01ce4d9c7389b1aaad97a6fc4e6440602a80685880081f54614b3ae82389b051",
+        "originalSha256": "01ce4d9c7389b1aaad97a6fc4e6440602a80685880081f54614b3ae82389b051"
+      },
+      {
+        "path": "green-row-portable-save-archive-exact-listing-linux-integration-001-1-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-save-archive-exact-listing-linux-integration-001-1-0.json",
+        "sha256": "8d094610d3dffa4aaf2147d639e5fa0fbfd61d6d27e664623da87d57e97dbc8f",
+        "originalSha256": "8d094610d3dffa4aaf2147d639e5fa0fbfd61d6d27e664623da87d57e97dbc8f"
+      },
+      {
+        "path": "green-row-portable-save-archive-exact-listing-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-save-archive-exact-listing-linux-integration-001-0-1.json",
+        "sha256": "a4549190ce9a6e80f41cf2bafbf6ae8afb6f6c2b33a0203b7887b6a59c02d570",
+        "originalSha256": "a4549190ce9a6e80f41cf2bafbf6ae8afb6f6c2b33a0203b7887b6a59c02d570"
+      },
+      {
+        "path": "green-row-portable-save-archive-exact-listing-linux-integration-001-0-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-save-archive-exact-listing-linux-integration-001-0-0.json",
+        "sha256": "e36fd12e9e6ff1356fca5a6633f6b74339d6859e46a90d738a56e6a2c75b79e1",
+        "originalSha256": "e36fd12e9e6ff1356fca5a6633f6b74339d6859e46a90d738a56e6a2c75b79e1"
+      },
+      {
+        "path": "green-row-portable-signed-preparation-cleanup-alias-linux-integration-002-0-1.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-preparation-cleanup-alias-linux-integration-002-0-1.json",
+        "sha256": "e1bc0eb9e522f236bc5bfdfba4be9dcb92cb972988250f53a6db81e68a642501",
+        "originalSha256": "e1bc0eb9e522f236bc5bfdfba4be9dcb92cb972988250f53a6db81e68a642501"
+      },
+      {
+        "path": "green-row-portable-signed-preparation-cleanup-alias-linux-integration-002-0-0.json",
+        "source": "/tmp/boe-signed-snapshot-green-rows/portable-signed-preparation-cleanup-alias-linux-integration-002-0-0.json",
+        "sha256": "74892a0ee8383aa41394fe86fcd7b7a88cdf6f623ea8ff7d6c5b36813eb7c2d2",
+        "originalSha256": "74892a0ee8383aa41394fe86fcd7b7a88cdf6f623ea8ff7d6c5b36813eb7c2d2"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/SignedSnapshotExactPathTests.cs",
+        "sha256": "ed5f3aaf30a71db917dd9dc0ec95716c1628c683312b314f8c6fabd50a81ab9a"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PendingTurnSnapshotAuthorityTests.cs",
+        "sha256": "d9eb48aadf347bd4417990470d80004572bea8eff213f538076a882adb7b5832"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs",
+        "sha256": "cf7b7699ffea2ce73e04b7e6b8c864139222502b90c9fcb4a7b6980ffd6e97eb"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs",
+        "sha256": "b4f3535b7443ecdb1b7fee4a62f51eaff05a27ff275b2380fef11e019d619d3d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "sha256": "6b924fe31e3f31a610496594cee3e916dc282657061f8a8a0d10590fc91ac80a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "sha256": "528027b576914c12337385bb50176524feb5286a38ac697b74538333add57509"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "a97a457256a092745d1a60d45f50972eb70d953fd4b106f7d01d2179ead83870"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "beac7a4733bc8de2816c3acedc365b69be19a048efff513cb47ee60c82ef1d21"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "7313138d88b9202d918ca2d986e2dbd8796f186ef129daaee549abafdba4f5ad"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "cc24bbbd3932a266a0fc160121b73d6e18c7315e735e1c3bc0364412e404acf8"
+      }
+    ]
   }
 }
