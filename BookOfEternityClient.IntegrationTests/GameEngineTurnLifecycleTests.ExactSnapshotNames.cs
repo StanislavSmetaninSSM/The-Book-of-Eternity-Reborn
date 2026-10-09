@@ -83,7 +83,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AssertExactEngineTreeUnchanged(before, after);
             }
         }
-        finally { GetPrivateField<AudioService>(engine, "_audioService").Dispose(); }
+        finally { await GetPrivateField<AudioService>(engine, "_audioService").DisposeAsync(); }
     }
 
     [Theory]
@@ -125,7 +125,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             else { Assert.IsType<InvalidDataException>(failure); AssertExactEngineTreeUnchanged(before, after); }
         }
-        finally { GetPrivateField<AudioService>(engine, "_audioService").Dispose(); }
+        finally { await GetPrivateField<AudioService>(engine, "_audioService").DisposeAsync(); }
     }
 
     [Theory]
@@ -164,7 +164,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(generation, File.ReadAllBytes(_fs.SessionGenerationPath));
             Assert.IsType<InvalidDataException>(failure); Assert.Null(result); AssertExactEngineTreeUnchanged(before, after);
         }
-        finally { GetPrivateField<AudioService>(engine, "_audioService").Dispose(); }
+        finally { await GetPrivateField<AudioService>(engine, "_audioService").DisposeAsync(); }
     }
 
     private static readonly string[] ExactEngineRetainedPaths =

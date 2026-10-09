@@ -1,0 +1,66 @@
+{
+  "scope": "Original engine baseline/backup and cleanup raw path admission before cleanup/copy, actual supplied rollback path values. Twenty-five selected cases: sixteen producer, four cleanup, two supplied rollback, three original neighbors. Preparation-only failures are not causal evidence. No remaining browser/incarnation/spiritual producer/native/gameplay qualification.",
+  "compile-failure": {
+    "source": "21d15221576702c49b85358b6893b5e8360744d6",
+    "artifacts": [
+      {
+        "path": "compile-failure-20261009-181449-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-181449-557-405264-009ff8783dfe4e8daa2bdc88b69ab173-categories/summary.json",
+        "sha256": "0c7f305fbd1e5abdc24e0fc8c2fb248a3c1bca236b4dbbf3be72d27453741734",
+        "originalSha256": "0c7f305fbd1e5abdc24e0fc8c2fb248a3c1bca236b4dbbf3be72d27453741734"
+      },
+      {
+        "path": "compile-failure-20261009-181449-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-181449-557-405264-009ff8783dfe4e8daa2bdc88b69ab173-categories/dotnet-test.log",
+        "sha256": "fb1fe9f3485f6a553f5657a2c38f9fa874c288391fb30c00222eb38f627d8913",
+        "originalSha256": "34da4076da2cece67430769f31ed3b8ffeeea05f79c6941b7b55653f15d5a802"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ExactSnapshotNames.cs",
+        "sha256": "e92d57ee718d6c2e88ccaf67d2d4d823dd0f117acdd1e71ba95c338d0780ec80"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AudioService.cs",
+        "sha256": "2236f56e7f3c6b626d249a480eb6065abe8fe4dbb311386606dbe40949d3f67c"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+        "sha256": "6b67a56b86ae216a423335a1639f9bebc4a727f3783a51cbdf110a734829458e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "sha256": "6b924fe31e3f31a610496594cee3e916dc282657061f8a8a0d10590fc91ac80a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "sha256": "528027b576914c12337385bb50176524feb5286a38ac697b74538333add57509"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "4b860be5b2a37b3e261a7e481ebf16089493168276aab7ee2d06ca97ad84a04a"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "4dd9590fabd2ebe1dc111fc1a6e8b5828a0395b8247858a4c5dd7dda243ca70c"
+      }
+    ]
+  }
+}

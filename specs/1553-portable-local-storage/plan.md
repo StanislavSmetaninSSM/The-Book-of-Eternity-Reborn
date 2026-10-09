@@ -1,3 +1,12 @@
+## Engine fixture build correction — WIP, 2026-10-09
+
+Fresh Plan181449 at21d15221 failed integration compilation at three AudioService.Dispose
+calls (CS1061), before discovery/execution: 0 planned/0 completed,97.1838718s,
+no timeout, both runner cleanup complete. Actual class is IAsyncDisposable; fixture
+now awaits original DisposeAsync before strict root cleanup. Runtime unchanged.
+Retained runner log/summary remain preparation-only evidence; not causal RED.
+Next fresh selected Plan25 then actual25; no NoBuild against failed build.
+
 ## Engine original producer continuation — test-first WIP, 2026-10-09
 
 Owner authorizes all remaining available #1553 consumers from verified5d605fea;
