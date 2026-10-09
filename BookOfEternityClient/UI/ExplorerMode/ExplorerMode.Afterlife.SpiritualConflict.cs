@@ -801,108 +801,114 @@ public partial class ExplorerMode
         ArgumentNullException.ThrowIfNull(expectedSoulRoot);
         ArgumentNullException.ThrowIfNull(projectedSoulRoot);
 
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        var blocker = await TryDescribeSpiritualArtUpgradeBlockerAsync();
-        if (blocker != null)
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? owningPublicationUncertainty = null;
+        try
         {
-            ShowEmptyPanel("Прокачка духовных искусств", blocker);
-            return false;
-        }
-
-        var previousSoulJson = await _fs.ReadFileAsync(writeLease, SoulStatePath);
-        var previousShiningJson = currency == SpiritualArtCurrency.LightSparks
-            ? await _fs.ReadFileAsync(writeLease, ShiningAbodeState.StatePath)
-            : null;
-        var previousEntityProfilesJson = projectedEntityProfilesRoot == null
-            ? null
-            : await _fs.ReadFileAsync(writeLease, AfterlifeEntityProfileState.StatePath);
-        if (!JsonMatchesExpectedRoot(previousSoulJson, expectedSoulRoot) ||
-            (currency == SpiritualArtCurrency.LightSparks &&
-             !JsonMatchesExpectedRoot(previousShiningJson, expectedShiningRoot)) ||
-            (projectedEntityProfilesRoot != null &&
-             !JsonMatchesExpectedRoot(
-                 previousEntityProfilesJson,
-                 expectedEntityProfilesRoot)))
-        {
-            MarkupLine(
-                "[red]Прокачка духовных искусств не сохранена: исходное состояние изменилось параллельно. Обновите экран и повторите выбор.[/]");
-            return false;
-        }
-
-        var previousSpiritFocusTier = AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(
-            expectedSoulRoot);
-        var acceptedSpiritFocusTier = AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(
-            projectedSoulRoot);
-        if (previousSpiritFocusTier != acceptedSpiritFocusTier)
-        {
-            var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
-                _fs,
-                writeLease,
-                new AfterlifeOwnerResourceAcceptedState(
-                    SoulState: projectedSoulRoot,
-                    ShiningAbode: currency == SpiritualArtCurrency.LightSparks
-                        ? projectedShiningRoot
-                        : null,
-                    Profiles: projectedEntityProfilesRoot),
-                await TryReadCurrentTurnNumberAsync());
-            if (!resourcePlan.IsValid)
+            var blocker = await TryDescribeSpiritualArtUpgradeBlockerAsync();
+            if (blocker != null)
             {
-                MarkupLine(
-                    "[red]Прокачка Средоточия Души отклонена: единый ресурсный план не прошёл проверку.[/]");
+                ShowEmptyPanel("Прокачка духовных искусств", blocker);
                 return false;
             }
-            if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
-                    _fs,
-                    writeLease,
-                    resourcePlan))
+
+            var previousSoulJson = await _fs.ReadFileAsync(writeLease, SoulStatePath);
+            var previousShiningJson = currency == SpiritualArtCurrency.LightSparks
+                ? await _fs.ReadFileAsync(writeLease, ShiningAbodeState.StatePath)
+                : null;
+            var previousEntityProfilesJson = projectedEntityProfilesRoot == null
+                ? null
+                : await _fs.ReadFileAsync(writeLease, AfterlifeEntityProfileState.StatePath);
+            if (!JsonMatchesExpectedRoot(previousSoulJson, expectedSoulRoot) ||
+                (currency == SpiritualArtCurrency.LightSparks &&
+                 !JsonMatchesExpectedRoot(previousShiningJson, expectedShiningRoot)) ||
+                (projectedEntityProfilesRoot != null &&
+                 !JsonMatchesExpectedRoot(
+                     previousEntityProfilesJson,
+                     expectedEntityProfilesRoot)))
             {
                 MarkupLine(
-                    "[red]Прокачка Средоточия Души не сохранена: owner-state и ресурсный ledger изменились параллельно.[/]");
+                    "[red]Прокачка духовных искусств не сохранена: исходное состояние изменилось параллельно. Обновите экран и повторите выбор.[/]");
+                return false;
+            }
+
+            var previousSpiritFocusTier = AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(
+                expectedSoulRoot);
+            var acceptedSpiritFocusTier = AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(
+                projectedSoulRoot);
+            if (previousSpiritFocusTier != acceptedSpiritFocusTier)
+            {
+                var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+                    _fs,
+                    writeLease,
+                    new AfterlifeOwnerResourceAcceptedState(
+                        SoulState: projectedSoulRoot,
+                        ShiningAbode: currency == SpiritualArtCurrency.LightSparks
+                            ? projectedShiningRoot
+                            : null,
+                        Profiles: projectedEntityProfilesRoot),
+                    await TryReadCurrentTurnNumberAsync());
+                if (!resourcePlan.IsValid)
+                {
+                    MarkupLine(
+                        "[red]Прокачка Средоточия Души отклонена: единый ресурсный план не прошёл проверку.[/]");
+                    return false;
+                }
+                if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                        _fs,
+                        writeLease,
+                        resourcePlan))
+                {
+                    MarkupLine(
+                        "[red]Прокачка Средоточия Души не сохранена: owner-state и ресурсный ledger изменились параллельно.[/]");
+                    return false;
+                }
+
+                return true;
+            }
+
+            var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
+            {
+                new(
+                    SoulStatePath,
+                    previousSoulJson,
+                    GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(projectedSoulRoot)
+                        .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                    RequireCurrentBaseline: true)
+            };
+            if (currency == SpiritualArtCurrency.LightSparks && projectedShiningRoot != null)
+            {
+                writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                    ShiningAbodeState.StatePath,
+                    previousShiningJson,
+                    projectedShiningRoot.ToJsonString(
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                    RequireCurrentBaseline: true));
+            }
+            if (projectedEntityProfilesRoot != null)
+            {
+                writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                    AfterlifeEntityProfileState.StatePath,
+                    previousEntityProfilesJson,
+                    projectedEntityProfilesRoot.ToJsonString(
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                    RequireCurrentBaseline: true));
+            }
+
+            if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                    _fs,
+                    writeLease,
+                    writes.ToArray()))
+            {
+                MarkupLine(
+                    "[red]Прокачка духовного искусства не сохранена: состояние изменилось параллельно или операция была безопасно отменена.[/]");
                 return false;
             }
 
             return true;
         }
-
-        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
-        {
-            new(
-                SoulStatePath,
-                previousSoulJson,
-                GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(projectedSoulRoot)
-                    .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
-                RequireCurrentBaseline: true)
-        };
-        if (currency == SpiritualArtCurrency.LightSparks && projectedShiningRoot != null)
-        {
-            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
-                ShiningAbodeState.StatePath,
-                previousShiningJson,
-                projectedShiningRoot.ToJsonString(
-                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
-                RequireCurrentBaseline: true));
-        }
-        if (projectedEntityProfilesRoot != null)
-        {
-            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
-                AfterlifeEntityProfileState.StatePath,
-                previousEntityProfilesJson,
-                projectedEntityProfilesRoot.ToJsonString(
-                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
-                RequireCurrentBaseline: true));
-        }
-
-        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
-                _fs,
-                writeLease,
-                writes.ToArray()))
-        {
-            MarkupLine(
-                "[red]Прокачка духовного искусства не сохранена: состояние изменилось параллельно или операция была безопасно отменена.[/]");
-            return false;
-        }
-
-        return true;
+        catch (CoordinatedStatePublicationUncertainException failure) { owningPublicationUncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, owningPublicationUncertainty); }
     }
 
     private static bool JsonMatchesExpectedRoot(

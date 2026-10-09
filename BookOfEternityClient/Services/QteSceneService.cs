@@ -665,12 +665,17 @@ public sealed partial class QteSceneService
     {
         if (writeLease == null)
         {
-            await using var ownedLease =
-                await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await BeginAcceptedSceneCoreAsync(
-                ownedLease,
-                offer,
-                currentTurnNumber);
+            var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? owningPublicationUncertainty = null;
+            try
+            {
+                return await BeginAcceptedSceneCoreAsync(
+                    ownedLease,
+                    offer,
+                    currentTurnNumber);
+            }
+            catch (CoordinatedStatePublicationUncertainException failure) { owningPublicationUncertainty = failure; throw; }
+            finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, ownedLease, false, owningPublicationUncertainty); }
         }
 
         EnsureCanonicalWriteLease(writeLease);

@@ -1,3 +1,18 @@
+## Original Interaction4 + cold Launch1 uncertainty scopes installed — WIP, 2026-10-09
+
+Exactly5 actual originalowning scopes retain/rethrow samegenuine CSP and invoke
+existingRelease(fs,samelease,false,sameexception). Guardianpublic wrapper,
+TrainingSpiritFocus, ExplorerprojectedSave, QTEunboundwrapper and ColdLaunch
+firstcanonical scope only. Original cores/return/order/authority/fixture/native
+barrier unchanged. Initial3 Interaction causal + correctedQTE1 + Cold1 causal
+source-pinned; knownactual receipts/power/900spend/runtime/generation PASS.
+Runtime UNBUILT/UNRUN before combinedcausal/source/exact10 independentgate.
+ColdRED packet count corrected to actual13artifacts13pins. Next one freshPlan10/3
+and separateactualInteractionGREEN8/2 andColdGREEN2. Catalog stableacceptedbatch;
+no unchangedaccepted replay/B2–B5/native/fullgame/knownlateclose qualification.
+No GM-facing capability/schema/authoring contract changed; prompts/examples
+unchanged for storage lifetime only. T061–T065 remain unchecked.
+
 ## Original QTE2 / cold Launch2 actual causal baselines — WIP, 2026-10-09
 
 One freshintegrationPlan2242034/2 at998cfc99,0execution50.6730648s;
@@ -12,7 +27,7 @@ not qualified. OriginalInteraction3 causal preserved immutableinitial25/24;
 [correctedQTEphase](recovery/storage-migration-original-interaction-close-20261009/manifest.json)
 adds13artifacts24pins (total38/48), not replayed oldsix.
 [Coldpacket](recovery/storage-migration-original-cold-main-launch-close-20261009/manifest.json)
-13artifacts15pins verifiedoriginals. Next exactly4Interaction+1Coldowningscope
+13artifacts13pins verifiedoriginals. Next exactly4Interaction+1Coldowningscope
 CSPcapture/rethrowexistingRelease(false,sameexception), preserve cores/order/
 returns/helpers/nativebarrier. Combinedcausal/source/exact10gate beforefreshGREEN.
 Catalogafterstablebatch; B2–B5/native/T061–T065/knownlateclose remainopen.

@@ -604,68 +604,74 @@ public sealed class TrainingService
             return null;
 
         await _beforeSpiritFocusLease();
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (!await MatchesSemanticBaselineAsync(
-                writeLease,
-                SoulStatePath,
-                soulRootBaseline) ||
-            (acceptedShiningRoot != null &&
-             !await MatchesSemanticBaselineAsync(
-                 writeLease,
-                 ShiningAbodeStatePath,
-                 shiningRootBaseline)))
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? owningPublicationUncertainty = null;
+        try
         {
-            return new TrainingOperationResult(false, false, concurrentChangeMessage);
-        }
-
-        var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
-            _fs,
-            writeLease,
-            new AfterlifeOwnerResourceAcceptedState(
-                SoulState: soulRoot,
-                ShiningAbode: acceptedShiningRoot),
-            Math.Max(1, currentTurn));
-        if (!resourcePlan.IsValid)
-            return new TrainingOperationResult(false, false, invalidPlanMessage);
-
-        var canonicalPathComparer = OperatingSystem.IsWindows()
-            ? StringComparer.OrdinalIgnoreCase
-            : StringComparer.Ordinal;
-        var resourcePlanOwnedPaths = resourcePlan.BeforeImages.Keys
-            .Select(_fs.ResolvePath)
-            .ToHashSet(canonicalPathComparer);
-        var retainedAdditionalGuardWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>(
-            additionalGuardWrites.Length);
-        foreach (var additionalGuardWrite in additionalGuardWrites)
-        {
-            var isRedundantPlanGuard = additionalGuardWrite.GuardOnly &&
-                                       additionalGuardWrite.RequireCurrentBaseline &&
-                                       resourcePlanOwnedPaths.Contains(_fs.ResolvePath(additionalGuardWrite.Path));
-            if (!isRedundantPlanGuard)
-            {
-                retainedAdditionalGuardWrites.Add(additionalGuardWrite);
-                continue;
-            }
-
             if (!await MatchesSemanticBaselineAsync(
                     writeLease,
-                    additionalGuardWrite.Path,
-                    additionalGuardWrite.PreviousJson))
+                    SoulStatePath,
+                    soulRootBaseline) ||
+                (acceptedShiningRoot != null &&
+                 !await MatchesSemanticBaselineAsync(
+                     writeLease,
+                     ShiningAbodeStatePath,
+                     shiningRootBaseline)))
             {
                 return new TrainingOperationResult(false, false, concurrentChangeMessage);
             }
-        }
 
-        if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+            var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
                 _fs,
                 writeLease,
-                resourcePlan,
-                retainedAdditionalGuardWrites.ToArray()))
-        {
-            return new TrainingOperationResult(false, false, concurrentChangeMessage);
-        }
+                new AfterlifeOwnerResourceAcceptedState(
+                    SoulState: soulRoot,
+                    ShiningAbode: acceptedShiningRoot),
+                Math.Max(1, currentTurn));
+            if (!resourcePlan.IsValid)
+                return new TrainingOperationResult(false, false, invalidPlanMessage);
 
-        return new TrainingOperationResult(true, true, successMessage);
+            var canonicalPathComparer = OperatingSystem.IsWindows()
+                ? StringComparer.OrdinalIgnoreCase
+                : StringComparer.Ordinal;
+            var resourcePlanOwnedPaths = resourcePlan.BeforeImages.Keys
+                .Select(_fs.ResolvePath)
+                .ToHashSet(canonicalPathComparer);
+            var retainedAdditionalGuardWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>(
+                additionalGuardWrites.Length);
+            foreach (var additionalGuardWrite in additionalGuardWrites)
+            {
+                var isRedundantPlanGuard = additionalGuardWrite.GuardOnly &&
+                                           additionalGuardWrite.RequireCurrentBaseline &&
+                                           resourcePlanOwnedPaths.Contains(_fs.ResolvePath(additionalGuardWrite.Path));
+                if (!isRedundantPlanGuard)
+                {
+                    retainedAdditionalGuardWrites.Add(additionalGuardWrite);
+                    continue;
+                }
+
+                if (!await MatchesSemanticBaselineAsync(
+                        writeLease,
+                        additionalGuardWrite.Path,
+                        additionalGuardWrite.PreviousJson))
+                {
+                    return new TrainingOperationResult(false, false, concurrentChangeMessage);
+                }
+            }
+
+            if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                    _fs,
+                    writeLease,
+                    resourcePlan,
+                    retainedAdditionalGuardWrites.ToArray()))
+            {
+                return new TrainingOperationResult(false, false, concurrentChangeMessage);
+            }
+
+            return new TrainingOperationResult(true, true, successMessage);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure) { owningPublicationUncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, owningPublicationUncertainty); }
     }
 
     private async Task<bool> MatchesSemanticBaselineAsync(
