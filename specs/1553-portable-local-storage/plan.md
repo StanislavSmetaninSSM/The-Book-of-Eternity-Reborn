@@ -1,3 +1,39 @@
+## F16 image causal baseline and bounded runtime WIP — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT12 PASS44dccf82. Fresh Plan095325 builds the
+integration project,12/1 selected,0executed,47.3324036s. Matching actual095437
+completes12/12: **4 PASS,8 FAIL**,7.6587969s, both cleanup flags, no timeout/
+skip/duplicate. Source44dccf82166f5198d003b09b5c30330e3c23f0cc is clean.
+[Preserved raw image packet](recovery/storage-migration-image-storage-20261009/manifest.json)
+contains the earlier Plan0 separately and the corrected baseline/Plan/TRX/raw rows.
+
+Root verifies one authentic nonCommitted scene member0 journal, exact retained
+journal/foreign bytes, no later measured canonical work; original scene catch
+swallows its CSP. Two cleanup failures instead prove raw File.Delete bypass:
+zero publisher callbacks/mutation attempts, all three scene files actually gone.
+These are not authentic Unknown cuts or successful fault injection. Two normalized
+canonical exports (direct/alias) create parent and file without publication. Two
+literal filename cases turn Linux backslash into a new path component. The known
+save logger throws exactly once after actual Committed image and loses the public
+success result. Four ordinary controls pass, including latest-entity/sentinel
+retention. All12 distinct owned roots are removed.
+
+WIP changes original ImageService only: one admitted cleanup lease across original
+enumeration/per-file deletes, stop on CSP/replacement, same host pathname; scene
+catch preserves CSP, original generation/write owning scopes retain primary CSP
+through close, confirmed save logging cannot revoke result. Export refuses lexical
+or resolved existing-ancestor aliases into game_session BEFORE mkdir/copy, keeping
+true external copy and overwrite semantics. Alias traversal is read-only and bounded;
+no concurrent hostile-owner or external-hardlink guarantee is claimed. Source-only
+owning-close consistency is not an injected secondary-close test.
+
+Next independent SOURCE/RED-RAW/EXACT15 gate, then fresh integration Plan15 and actual15
+(new12 plus three existing export latest/overwrite/missing-source controls). Test fixture
+is unchanged since44dccf82. Gallery/constructor, original settings/GameLoop, listings,
+story export and snapshot path producers remain separate; no fullF16/native/B2–B5 claim.
+GM gameplay/output contract is unchanged; no new GM example is required for this
+client-owned storage boundary. T061–T065 remain open.
+
 ## F16 image publication/cleanup/export — bounded fixture WIP, 2026-10-09
 
 Source #1553,T062/T063/T064/T065 and R25/F16 inventory. Prerequisite C2 engine12
