@@ -76,6 +76,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         };
         probe.Arm();
         var request = CreateSnapshotByteContractRequest(mode);
+        request.ProgressionControl!.CurrentRealm = "Chaos Sea";
         var failure = await Record.ExceptionAsync(async () =>
         {
             if (isBackup) await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", backupId);

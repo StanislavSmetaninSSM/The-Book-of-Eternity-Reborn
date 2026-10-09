@@ -41,8 +41,10 @@ internal sealed class PreparationPublicationProbe : IDisposable
         Cut.BeforeCut = () =>
         {
             BeforeCut?.Invoke();
-            ImagesAtCut = CommittedImages.Keys.Where(path => path != SelectedPath)
-                .ToDictionary(path => path, CleanupPublicationCut.ReadOptional, StringComparer.Ordinal);
+            foreach (var (path, bytes) in CommittedImages.Where(pair => pair.Key != SelectedPath))
+                Assert.Equal(bytes, CleanupPublicationCut.ReadOptional(path));
+            ImagesAtCut = CommittedImages.Where(pair => pair.Key != SelectedPath)
+                .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
         };
         Hooks = new FileSystemManagerHooks
         {

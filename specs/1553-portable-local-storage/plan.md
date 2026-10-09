@@ -1,3 +1,11 @@
+## Preparation fixture source correction — 2026-10-09
+
+Independent review of frozen724 found no additional blockers beyond the writer's three pre-build
+corrections: import the existing CommandProtocol enum namespace; match engine request realm to its
+Chaos Sea snapshot source; require each nonselected current image equals its actually observed last
+Committed bytes before freezing the prior-image oracle. Production and exact11 unchanged. No build
+or test ran at724; this is source-review correction, not a causal failure. Final focused gate pending.
+
 ## Preparation original consumers / test-only11 WIP — 2026-10-09
 
 Owned-close final15 raw/carrier PASS f9f7d8a1 (25 artifacts/11 pins); runtimea88d, catalog508/11298
