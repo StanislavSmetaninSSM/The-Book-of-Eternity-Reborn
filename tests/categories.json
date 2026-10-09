@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-spiritual-capture-exact-names-linux",
+      "responsibility": "Original direct capture10 and actual intake2 admit raw draft/physical-witness inventory before revoking an actual retained capture; three original distributed-draft/root/freshness controls. Fifteen cases. Native excluded snapshot payload remains separate.",
+      "excludes": "No B2 business continuation, force_binding change, cold checkpoint gameplay, other lease owners or native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs",
+        "BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualExactNames.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualRawInventoryIsAdmittedBeforeRevokingActualCapture",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_RetainsUntouchedDistributedDraftWithoutWritingFiles",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_RejectsCaseAliasedDraftRootWithoutWritingFiles",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_ExcludedPhysicalManifestStillGuardsFreshness"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-explorer-snapshot-exact-names-linux",
       "responsibility": "Original incarnation raw inventory5 and Explorer stage6/mark5 preserve real retained rollback owner/evidence before normalization, fold or completed-owner cleanup. Four original incarnation/fresh-capture neighbors.",
       "excludes": "No spiritual capture, other lease owners, full lifecycle, native Windows or B2 gameplay.",
@@ -14384,14 +14413,11 @@
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_PublicationFailureRestoresSignedOriginal",
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_RejectsUncommittedPublicationInput",
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_RetainsOriginalChronicleDraft",
-            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_ExcludedPhysicalManifestStillGuardsFreshness",
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_ExcludesExplorerRollbackTransactionFiles",
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_FaultRevokesConsumedCompletion",
-            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_RejectsCaseAliasedDraftRootWithoutWritingFiles",
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_RejectsStaleOriginalRequestBeforeDraftBinding",
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_ReplaysInsertedWoundAndCompletion",
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_ReplaysOwnedAllocationsThroughExchange",
-            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_RetainsUntouchedDistributedDraftWithoutWritingFiles",
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCompletion_CompletesInsertedRootThroughOwnedRouting",
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCompletion_CompletesLegacyUnboundedSourceCapture",
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCompletion_ReductionUsesFinalSourceConflictImage",

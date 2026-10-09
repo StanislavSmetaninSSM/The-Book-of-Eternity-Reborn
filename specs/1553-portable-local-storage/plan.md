@@ -1,3 +1,23 @@
+## Spiritual original raw inventory — test-first WIP, 2026-10-09
+
+Installed original direct10/intake2 and three original distributed-draft/root/
+physical-manifest-freshness controls, finite15/1. Each new row first obtains a
+real current capture on an owned original context; direct physical test names
+then preserve that owner's real currentness before the second original call.
+No fake captures, result objects, owner flags or signed authority. Witnesses:
+exact full physical names/bytes, generation, mutation attempts, actual retained
+owner reference and IsCurrentOwner. Strict original-context disposal/root oracle.
+Unicode direct/intake and excluded native snapshot payload positives.
+Runtime unchanged UNBUILT/UNRUN. Early common preflight must admit the original
+raw draft and physical-witness candidate cohort before old capture/source/plan
+revocation or byte reads; retain existing exclusions and return the existing
+spiritual_original_input_path_alias issue. Malformed paths must not disappear
+through IsDraftPath before admission. No B2 gameplay/spec change. Design gate,
+fresh Plan15 and actual original baseline next. Then minimal demonstrated fix.
+Explorer runtime20GREEN packet82/26, independent raw/carrier gate pending.
+Ownership discovery will cover both latest fixture changes together, execution0.
+Remaining original owning lease closes afterward; T061–T065 unchecked/B2–B5 paused.
+
 ## Incarnation/Explorer bounded GREEN20 — 2026-10-09
 
 Runtime cc401fab0adadb88d90f8c5f12850578d2fefca2 independent source/design/exact20
