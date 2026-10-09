@@ -1,3 +1,21 @@
+## F18 Guardian physical cuts — fixture WIP, 2026-10-09
+
+Two original methods/eight cases retain their domain seed and service. Replace obsolete
+AfterPhysicalFilePublishedAsync with synchronous current MemberPublished matching the
+actual journal member. Capture uncommitted transaction metadata/actual after bytes;
+throw one nontransient InvalidOperationException without foreign bytes. Read every
+tracked before-image/absence, generation and removed active journal directly after the
+original operation, before any facade read could perform recovery. Preserve Guardian's
+existing outward IOException policy (ordinary helper returnsfalse after known rollback;
+it does not promise injected exception identity). Strict owned roots removed on all exits.
+
+New exact8 owner supplements guardian-lifecycle. Independent source/fixture gate and
+fresh integration Plan8 precede bounded actual8; no expensive old-hook baseline needed
+for this source-proven fixture migration. No production/GM/schema edit. Actual current
+publisher reach, seed validity and cleanup remain unverified until execution. Literal22
+source533 is GREEN with packet44/52; independent final raw/catalog/carrier PASS5f12.
+Whole F16/remaining physicalcuts/ownedclose/registry continue; B2–B5 paused.
+
 ## F16 exact native payload names — bounded Linux GREEN, 2026-10-09
 
 Source/fixture/exact22 independent Astra XHigh gate PASS at533078a9; runtime a3c59545.

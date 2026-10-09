@@ -729,44 +729,25 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
     [Fact]
     public async Task ApplyForNewLifeAsync_LateFailureRestoresInitiallyAbsentReceiptAndJournal()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
         await SeedCorrectionInputAsync();
         Assert.Null(await _fs.ReadFileBytesAsync(GuardianCorrectionService.StatePath));
         Assert.Null(await _fs.ReadFileBytesAsync(GuardianPowerEventState.JournalPath));
         var before = await CaptureCorrectionTransactionBytesAsync();
-        var resolvedFailurePath = _fs.ResolvePath(
-            CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
-        var injected = 0;
-        var hookedFileSystem = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance,
-            new FileSystemManagerHooks
-            {
-                AfterPhysicalFilePublishedAsync = path =>
-                {
-                    if (!string.Equals(
-                            path,
-                            resolvedFailurePath,
-                            StringComparison.OrdinalIgnoreCase) ||
-                        Interlocked.Exchange(ref injected, 1) != 0)
-                    {
-                        return Task.CompletedTask;
-                    }
-
-                    return Task.FromException(new IOException(
-                        "Injected late Guardian authority publication failure."));
-                }
-            });
+        var generationBefore = CleanupPublicationCut.ReadOptional(_fs.SessionGenerationPath);
+        var cut = new KnownRollbackPublicationCut(_fs.ResolvePath(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath));
+        var hookedFileSystem = new FileSystemManager(_rootPath,
+            NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, cut.Hooks);
+        cut.Attach(hookedFileSystem);
         var service = CreateCorrectionService(hookedFileSystem);
 
-        await Assert.ThrowsAsync<IOException>(() =>
-            service.ApplyForNewLifeAsync(2, turnNumber: 42));
+        var failure = await Record.ExceptionAsync(() => service.ApplyForNewLifeAsync(2, turnNumber: 42));
 
-        Assert.Equal(1, Volatile.Read(ref injected));
-        foreach (var (path, expectedBytes) in before)
-            Assert.Equal(expectedBytes, await _fs.ReadFileBytesAsync(path));
-        Assert.Null(await _fs.ReadFileBytesAsync(GuardianCorrectionService.StatePath));
-        Assert.Null(await _fs.ReadFileBytesAsync(GuardianPowerEventState.JournalPath));
+        cut.AssertRestored(before, generationBefore, failure, _output.WriteLine);
+        Assert.IsType<IOException>(failure);
+        Assert.Null(CleanupPublicationCut.ReadOptional(_fs.ResolvePath(GuardianCorrectionService.StatePath)));
+        Assert.Null(CleanupPublicationCut.ReadOptional(_fs.ResolvePath(GuardianPowerEventState.JournalPath)));
     }
 
     [Fact]
@@ -841,39 +822,20 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
     public async Task ApplyForNewLifeAsync_FailureAfterEachChangedPublicationRestoresExactTransaction(
         string failurePath)
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
         await SeedFailureInjectionFixtureAsync();
         var before = await CaptureCorrectionTransactionBytesAsync();
-        var resolvedFailurePath = _fs.ResolvePath(failurePath);
-        var injected = 0;
-        var hookedFileSystem = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance,
-            new FileSystemManagerHooks
-            {
-                AfterPhysicalFilePublishedAsync = path =>
-                {
-                    if (!string.Equals(
-                            path,
-                            resolvedFailurePath,
-                            StringComparison.OrdinalIgnoreCase) ||
-                        Interlocked.Exchange(ref injected, 1) != 0)
-                    {
-                        return Task.CompletedTask;
-                    }
-
-                    return Task.FromException(new IOException(
-                        $"Injected Guardian correction publication failure at '{failurePath}'."));
-                }
-            });
+        var generationBefore = CleanupPublicationCut.ReadOptional(_fs.SessionGenerationPath);
+        var cut = new KnownRollbackPublicationCut(_fs.ResolvePath(failurePath));
+        var hookedFileSystem = new FileSystemManager(_rootPath,
+            NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, cut.Hooks);
+        cut.Attach(hookedFileSystem);
         var service = CreateCorrectionService(hookedFileSystem);
 
-        await Assert.ThrowsAsync<IOException>(() =>
-            service.ApplyForNewLifeAsync(3, turnNumber: 43));
+        var failure = await Record.ExceptionAsync(() => service.ApplyForNewLifeAsync(3, turnNumber: 43));
 
-        Assert.Equal(1, Volatile.Read(ref injected));
-        foreach (var (path, expectedBytes) in before)
-            Assert.Equal(expectedBytes, await _fs.ReadFileBytesAsync(path));
+        cut.AssertRestored(before, generationBefore, failure, _output.WriteLine);
+        Assert.IsType<IOException>(failure);
     }
 
     [Fact]

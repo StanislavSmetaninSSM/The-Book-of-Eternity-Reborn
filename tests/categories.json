@@ -20521,6 +20521,33 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-guardian-known-rollback-publication",
+      "responsibility": "F18 eight original Guardian correction rollback obligations: seven changed real MemberPublished cuts and initially absent receipt/journal. Positive current journal/cut/after-image proof, exact tracked bytes/absence and generation restored before facade reads, original IOException policy and strict owned cleanup.",
+      "excludes": "No foreign-byte uncertainty, physical file identity, new gameplay, broad Guardian lifecycle, live GM or native Windows qualification. Original guardian-lifecycle owner remains.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GuardianCorrectionServiceTests.cs",
+        "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs",
+        "BookOfEternityClient/Services/GuardianCorrectionService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GuardianCorrectionServiceTests.ApplyForNewLifeAsync_LateFailureRestoresInitiallyAbsentReceiptAndJournal",
+            "BookOfEternityClient.Tests.GuardianCorrectionServiceTests.ApplyForNewLifeAsync_FailureAfterEachChangedPublicationRestoresExactTransaction"
+          ]
+        }
+      ]
     }
   ]
 }

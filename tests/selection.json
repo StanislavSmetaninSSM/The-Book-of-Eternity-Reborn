@@ -2,8 +2,18 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-guardian-known-rollback-publication",
+      "reason": "T064 migrate eight stale physical-observer fixtures to real current MemberPublished cuts, retain exact before images/absence/generation and original Guardian IOException policy. Source/fixture and actual execution pending; no runtime change or native claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-load-native-names",
-      "reason": "T063 F16 affected exact native case/manifest/fixed-authority/hash neighbors after host-specific normalization change: actual131454 at533078a9 passes all22 selected cases, including these12; native Windows remains unexecuted.",
+      "reason": "T063 F16 affected exact native case/manifest/fixed-authority/hash neighbors after host-specific normalization change: actual131454 at533078a9 passes all22 selected cases, including the combined12 Save/Load neighbor cases; native Windows remains unexecuted.",
       "contracts": [
         "#1553",
         "FR-005",
@@ -14,7 +24,7 @@
     },
     {
       "category": "portable-save-native-names",
-      "reason": "T063 F16 affected exact native case/manifest/fixed-authority/hash neighbors after host-specific normalization change: actual131454 at533078a9 passes all22 selected cases, including these12; native Windows remains unexecuted.",
+      "reason": "T063 F16 affected exact native case/manifest/fixed-authority/hash neighbors after host-specific normalization change: actual131454 at533078a9 passes all22 selected cases, including the combined12 Save/Load neighbor cases; native Windows remains unexecuted.",
       "contracts": [
         "#1553",
         "FR-005",
