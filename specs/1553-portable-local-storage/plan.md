@@ -1,10 +1,23 @@
+## Browser early exact-name correction installed — WIP, 2026-10-09
+
+Queue-owned rawpreflight uses original game_stateJSON eligibility/skip andlore
+nonrollback candidates, originalstoryjsonl plusphysicalfixed logical/output/cleanup
+matches andrawsuppliedrollback keys/values. Publicgacha calls BEFOREExecuteAtomic/
+UIguard/stage/spend; queue calls BEFOREtry/catch/rollbackReplace, thenbeforecopy.
+Validated rollbackstrings stayexact for map/read/authority lookup; originaloutput
+fourfiles centralized, original exclusions/copy/borrowedlease/queuecontract unchanged.
+InstalledUNBUILT/UNRUN, fresh19/2 follows independentSOURCE/selection gate.
+Client-owned storageadmission addsnoGMauthoredrule/schema/mechanic; no gameplay
+prompt/example change. Native2 actualbaselinePASS09231e59,35artifacts26pins corrected
+count; original17RED retained. Otherproducers/owners open, noB2/T061–T065completion.
+
 ## Browser noncandidate positive baseline — WIP, 2026-10-09
 
 Source6d7de837 independentfixture/design/exact2 PASS. Fresh integrationPlan1838452/1,
 0execution48.7020534s; actual1839532/2PASS8.2355160s,complete1/1,bothcleanup,
 0skip/duplicate/timeout. Originalpublicgacha andborrowedqueue preserve3rawnativebin
 names/bytes, omitallfromactualmanifest, publishgenuinepre-spendbackup. Twoemitted
-rootsabsent. Packet37artifacts26pins verified originals; prior17 RED immutable.
+rootsabsent. Packet35artifacts26pins verified originals; prior17 RED immutable.
 No browserruntimechange. Next minimal2filepreflight thenfresh19/2, notbaseline19
 replay. Otherproducers/owners open; T061–T065unchecked/B2–B5paused.
 

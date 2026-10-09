@@ -2163,6 +2163,7 @@ public sealed class BrowserAfterlifeWriteService
         if (validation.InkFeathers < cost)
             return BrowserPromptWriteResult.ValidationError($"Недостаточно Чернильных Перьев: доступно {validation.InkFeathers}, нужно {cost}.");
 
+        _turnRequestQueue.RequireExactSnapshotInventory(boundLease);
         var payload = new JsonObject
         {
             ["sourceSurface"] = "gacha_browser_write",

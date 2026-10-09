@@ -14,6 +14,18 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
     private const string ValidationRepairReadyPath = "game_state/control/validation_repair_ready.json";
     private const string TerminalProtocolFailureRequestPath = "game_state/control/terminal_protocol_failure_request.json";
 
+    private static readonly string[] SnapshotOutputFiles =
+    [
+        "output/narrative_response.json", "output/interface_updates.json",
+        "output/debug_logs.json", QteSceneService.QteOfferPath
+    ];
+    private static readonly string[] SnapshotExcludedFixedFiles =
+    [
+        ValidationRepairReadyPath, ValidationRepairRequestPath, TerminalProtocolFailureRequestPath,
+        "game_state/history/chat_log.json", LocalUiSessionLockService.LockPath,
+        BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath
+    ];
+
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
     private static readonly JsonSerializerOptions SnapshotHashJsonOpts = new()
     {
@@ -42,6 +54,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
         if (string.IsNullOrWhiteSpace(soulRollbackPath))
             throw new InvalidOperationException("Direct /gacha requires pre-spend soul rollback evidence before queueing a GM turn.");
 
+        RequireExactSnapshotInventory(writeLease, [soulRollbackPath]);
         var request = new TurnRequest
         {
             SessionId = string.IsNullOrWhiteSpace(owner.OwnerId) ? $"browser:{Environment.MachineName}:{Environment.ProcessId}" : owner.OwnerId,
@@ -65,7 +78,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
 
         var rollbackBackups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["game_state/meta/soul_state.json"] = soulRollbackPath.Replace('\\', '/')
+            ["game_state/meta/soul_state.json"] = soulRollbackPath
         };
 
         try
@@ -95,6 +108,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
         TurnRequest request,
         IReadOnlyDictionary<string, string> rollbackBackups)
     {
+        RequireExactSnapshotInventory(writeLease, rollbackBackups.Keys.Concat(rollbackBackups.Values));
         var baselineFiles = EnumerateRollbackBaselineFiles(writeLease)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
         baselineFiles.Add("game_state/meta/soul_state.json");
@@ -137,9 +151,8 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
         var rollbackContents = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
         foreach (var rollbackPath in rollbackBackups.Values)
         {
-            var normalized = rollbackPath.Replace('\\', '/');
-            rollbackContents[normalized] = await _fs.ReadFileBytesAsync(writeLease, normalized)
-                ?? throw new InvalidOperationException($"Rollback evidence is missing: {normalized}");
+            rollbackContents[rollbackPath] = await _fs.ReadFileBytesAsync(writeLease, rollbackPath)
+                ?? throw new InvalidOperationException($"Rollback evidence is missing: {rollbackPath}");
         }
 
         var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
@@ -156,13 +169,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
             static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
             static snapshotManifest => snapshotManifest.SourceLabel,
             static snapshotManifest => snapshotManifest.RollbackBackups,
-            relativePath =>
-            {
-                var normalized = relativePath.Replace('\\', '/');
-                return rollbackContents.TryGetValue(normalized, out var bytes)
-                    ? bytes
-                    : null;
-            });
+            relativePath => rollbackContents.TryGetValue(relativePath, out var bytes) ? bytes : null);
 
         await _fs.WriteFileAtomicAsync(
             writeLease,
@@ -172,6 +179,30 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
             writeLease,
             PendingTurnSnapshotAuthority.AuthorityPath,
             authorityJson);
+    }
+
+    // This browser producer selects JSON game_state plus ordinary lore, not the
+    // engine's broader native-payload cohort. Inspect raw fixed-path aliases before
+    // optional existence checks and keep admission outside compensation catches.
+    internal void RequireExactSnapshotInventory(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IEnumerable<string>? suppliedRollbackPaths = null)
+    {
+        var fixedPaths = PendingTurnSnapshotPathPresenceV1.LogicalPaths
+            .Concat(SnapshotOutputFiles).Concat(SnapshotExcludedFixedFiles)
+            .Append(BrowserPendingTurnInspector.TurnRequestPath)
+            .Append("game_state/meta/soul_state.json")
+            .Append(PendingTurnStateService.PendingDiceStatePath).ToArray();
+        var rawPaths = _fs.EnumerateFiles(writeLease, "*").Where(relative =>
+            (relative.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(Path.GetExtension(relative), ".json", StringComparison.OrdinalIgnoreCase) &&
+                !ShouldSkipRollbackBaselineFile(relative)) ||
+            (relative.StartsWith("lore/", StringComparison.OrdinalIgnoreCase) &&
+                !relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase)) ||
+            fixedPaths.Contains(relative, StringComparer.OrdinalIgnoreCase));
+        PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPaths
+            .Concat(EnumerateStoryContinuityFiles(writeLease)).Concat(fixedPaths)
+            .Concat(suppliedRollbackPaths ?? []));
     }
 
     private IEnumerable<string> EnumerateRollbackBaselineFiles(
@@ -196,13 +227,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
             }
         }
 
-        foreach (var outputFile in new[]
-                 {
-                     "output/narrative_response.json",
-                     "output/interface_updates.json",
-                     "output/debug_logs.json",
-                     QteSceneService.QteOfferPath
-                 })
+        foreach (var outputFile in SnapshotOutputFiles)
         {
             if (_fs.FileExists(writeLease, outputFile))
                 files.Add(outputFile);
