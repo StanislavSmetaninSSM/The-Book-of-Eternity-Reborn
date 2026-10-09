@@ -7,7 +7,9 @@ A scoped fixture observer reads the real current publication journal at MemberPu
 retains exact bytes, writes foreign fixture bytes and throws a known nontransient fault;
 the actual CSP is captured by identity. Post-cut counters describe reached hook boundaries.
 Only the next lock acquisition following actual SessionOperationClosing is classified as
-read-only finalization. Evidence is emitted before desired GREEN assertions and fixture removal.
+read-only finalization. Evidence is emitted before desired GREEN assertions and fixture removal. Each new case owns
+an explicit final root-removal scope that emits and asserts cleanup even on a failed oracle;
+this does not rely on the older test-class best-effort Dispose.
 Two existing logger boundaries deliberately throw after the cut to test first-decision retention.
 
 Original staging uses actual local bootstrap/Chaos Sea initialization and original cancellation

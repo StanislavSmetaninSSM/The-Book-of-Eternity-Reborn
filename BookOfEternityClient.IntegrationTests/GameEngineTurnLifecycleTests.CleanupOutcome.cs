@@ -13,6 +13,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData(true)]
     public async Task CleanupUnknown_OriginalRollbackAndUndispatchedPrepStopNextConsumer(bool undispatched)
     {
+        using var ownedFixture = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         Assert.True(OperatingSystem.IsLinux());
         using var cut = new CleanupPublicationCut();
         var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
@@ -58,6 +59,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Fact]
     public async Task CleanupUnknown_OriginalTurnStagingDoesNotCompensateUncertainRequest()
     {
+        using var ownedFixture = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         Assert.True(OperatingSystem.IsLinux());
         using var cut = new CleanupPublicationCut();
         var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,

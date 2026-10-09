@@ -13,6 +13,7 @@ public sealed partial class QteSceneServiceTests
     [InlineData(true)]
     public async Task CleanupUnknown_OriginalQteActionStopsNestedAndFinalContinuation(bool finalCleanup)
     {
+        using var ownedFixture = new CleanupOwnedFixture(_rootPath, line => _cleanupOutput?.WriteLine(line));
         Assert.True(OperatingSystem.IsLinux());
         await SeedMortalPlayerResourceQuartetAsync();
         using var cut = new CleanupPublicationCut();

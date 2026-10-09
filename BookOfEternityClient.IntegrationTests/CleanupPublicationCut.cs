@@ -110,3 +110,16 @@ internal sealed class CleanupThrowingLogger<T>(CleanupPublicationCut cut) : Micr
         throw DiagnosticFailure;
     }
 }
+
+internal sealed class CleanupOwnedFixture(string root, Action<string> output) : IDisposable
+{
+    public void Dispose()
+    {
+        Exception? failure = null;
+        try { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }
+        catch (Exception error) { failure = error; }
+        output(JsonSerializer.Serialize(new { CleanupOwnedRoot = root, OwnedFixtureRemoved = !Directory.Exists(root), CleanupFailure = failure?.ToString() }));
+        Assert.Null(failure);
+        Assert.False(Directory.Exists(root));
+    }
+}

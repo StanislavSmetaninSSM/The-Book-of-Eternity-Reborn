@@ -16,6 +16,7 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
     [InlineData("committed_cleanup")]
     public async Task CleanupUnknown_OriginalBrowserBoundaryStopsContinuation(string mode)
     {
+        using var ownedFixture = new CleanupOwnedFixture(_root, line => output.WriteLine(line));
         Assert.True(OperatingSystem.IsLinux());
         using var cut = new CleanupPublicationCut();
         var files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
