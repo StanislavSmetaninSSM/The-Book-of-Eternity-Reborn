@@ -1011,6 +1011,17 @@
         "T062-STORAGE-OUTCOMES",
         "T064-STORAGE-CUTS"
       ]
+    },
+    {
+      "category": "portable-image-export-path-spelling",
+      "reason": "Source review found mixed ordinary/extended Windows canonical target spelling bypass. Pure production-used predicate eight rows demonstrate exact policy without native I/O; separate from actual Linux image15.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "T063-STORAGE-CONSUMERS",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
     }
   ]
 }

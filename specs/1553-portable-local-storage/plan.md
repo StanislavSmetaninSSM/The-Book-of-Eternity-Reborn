@@ -1,3 +1,17 @@
+## F16 export Windows spelling refinement — fixture WIP, 2026-10-09
+
+Independent review confirms source gap in3e56: extended Windows drive/UNC spellings
+can bypass comparison against ordinary GameSessionPath. Native execution is unrun.
+Extract only the current production-used comparison into a pure internal predicate,
+preserving its pre-fix semantics, and add exact8 policy cases: mixed extended root/
+candidate drive/UNC plus ordinary/sibling/Linux case/literal-backslash controls.
+No path normalization fix yet. New unit category portable-image-export-path-spelling
+owns8; next fresh Plan8 and actual8 before using the existing Windows spelling policy
+for both comparison operands and each resolved alias restart. This proves pure spelling
+only; Linux alias/publication15 remains unexecuted on runtime3e56 and native stays open.
+Independent raw gate accepted original baseline packet37artifacts26pins and its causal
+classification. No new scenario or gameplay requirement, no replay of accepted cohorts.
+
 ## F16 image causal baseline and bounded runtime WIP — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT12 PASS44dccf82. Fresh Plan095325 builds the

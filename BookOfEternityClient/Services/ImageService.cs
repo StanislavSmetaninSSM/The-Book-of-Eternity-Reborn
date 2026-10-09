@@ -770,11 +770,17 @@ public class ImageService
 
     private bool IsCanonicalExportTarget(string destinationPath)
     {
-        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-        var root = Path.TrimEndingDirectorySeparator(_fs.GameSessionPath);
-        bool IsWithinSession(string path) => path.Equals(root, comparison) ||
-            path.StartsWith(root + Path.DirectorySeparatorChar, comparison);
-        return IsWithinSession(destinationPath) || IsWithinSession(ResolveExportAliases(destinationPath));
+        var windows = OperatingSystem.IsWindows();
+        return IsCanonicalExportPathSpelling(destinationPath, _fs.GameSessionPath, windows) ||
+            IsCanonicalExportPathSpelling(ResolveExportAliases(destinationPath), _fs.GameSessionPath, windows);
+    }
+
+    internal static bool IsCanonicalExportPathSpelling(string path, string root, bool windows)
+    {
+        var comparison = windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        var separator = windows ? '\\' : '/';
+        root = root.TrimEnd(separator);
+        return path.Equals(root, comparison) || path.StartsWith(root + separator, comparison);
     }
 
     // Inspect existing ancestors without creating the destination. Restart after each

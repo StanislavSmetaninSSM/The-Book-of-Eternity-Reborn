@@ -19974,6 +19974,32 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-image-export-path-spelling",
+      "responsibility": "Eight pure production-used image export exclusion path predicates: ordinary and extended drive/UNC canonical root or candidate, sibling boundary and Linux case/literal-backslash controls.",
+      "excludes": "No native Windows filesystem, alias traversal, image publication, desktop or provider qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ImageService.cs"
+      ],
+      "related": [
+        "portable-image-storage-operations-linux"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ImageExportPathSpellingTests.CanonicalExportExclusionUsesHostPathSpelling"
+          ]
+        }
+      ]
     }
   ]
 }
