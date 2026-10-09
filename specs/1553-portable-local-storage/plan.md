@@ -1,3 +1,28 @@
+## Original terminal wait causal RED — 2026-10-09
+
+Independent fixture/exact8 PASS2cd44cd4b081b2bc774ce85947da55412c289761.
+Fresh both-project Plan070317 succeeds113.5780369s,8/2 planned,0 executed.
+Actual070528 executes **7/8:1PASS/6FAIL**,1/2 descriptors; unit source guard is
+unrun because the runner stops after the failed integration descriptor. No timeout,
+skip or duplicate; both runner cleanup flags true. All seven roots removed.
+[Exact original artifacts and source pins](recovery/storage-migration-terminal-wait-20261009/manifest.json).
+
+Six genuine task-lifetime failures, no fixture misses: five methods return while the
+positively entered key callback is still held (Ready, known timeout refusal/success,
+actual timeout/runtime publication Unknown); early Status failure returns while the
+original signal-inspection task is still held. Both Unknown branches already propagate
+CSP and have authentic MemberPublished/index0 nonCommitted journals, matching After
+hashes, exact foreign/journal/prior bytes and no measured later canonical work. These
+are lifetime failures, not new swallowed-CSP evidence. The later same-object/key-cause
+assertions were not reached. Escape passes. RED finally drains the observed original
+wait task and releases the key callback; it does not claim the discarded key task joined.
+
+Root verifies all raw rows/journals/cleanup. Next minimum runtime correction retains
+both task handles, independently settles them before CTS disposal, preserves actual
+Completed versus actual Escape, and retains ordinary secondary failure on exact CSP.
+Known policies remain; original8 fixtures stay unchanged. Runtime/source and raw evidence
+receive independent review before fresh matching Plan8 and actual8.
+
 ## Original terminal wait ownership — fixture WIP, 2026-10-09
 
 After independent diagnostic15 final PASSbeeced, continue the authorized migration.

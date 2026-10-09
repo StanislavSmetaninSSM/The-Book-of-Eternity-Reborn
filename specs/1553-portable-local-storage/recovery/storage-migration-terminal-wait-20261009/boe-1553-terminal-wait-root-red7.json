@@ -1,0 +1,146 @@
+{
+  "source": "2cd44cd4b081b2bc774ce85947da55412c289761",
+  "actual": "20261009-070528-143-279524-06954c85088b406e98dfc38b20991bd9-categories",
+  "tests": {
+    "Total": 7,
+    "Executed": 7,
+    "Passed": 1,
+    "Failed": 6
+  },
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 8,
+    "CompletedCases": 7,
+    "UnderfilledDescriptors": [
+      "portable-terminal-wait-storage-linux-unit-002"
+    ],
+    "Complete": false
+  },
+  "scope": "Original terminal wait7 plus source guard when executed; historical RED callback exit is not discarded-key-task join. No outer response cleanup/native/fullbridge qualification.",
+  "rows": [
+    {
+      "mode": "escape",
+      "outcome": "Cancelled",
+      "completedBeforeRelease": false,
+      "activeInputAtReturn": 0,
+      "activeInspectionAtReturn": 0,
+      "waitTaskCompletedAtReturn": true,
+      "OriginalWaitTaskJoined": true,
+      "harnessSource": null,
+      "KeyFailureRetained": false,
+      "ElapsedSeconds": 0.0032726
+    },
+    {
+      "mode": "ready_key_failure",
+      "outcome": "Completed",
+      "completedBeforeRelease": true,
+      "activeInputAtReturn": 1,
+      "activeInspectionAtReturn": 0,
+      "waitTaskCompletedAtReturn": true,
+      "OriginalWaitTaskJoined": true,
+      "harnessSource": null,
+      "KeyFailureRetained": false,
+      "ElapsedSeconds": 1.0050274
+    },
+    {
+      "mode": "timeout_success",
+      "outcome": "Completed",
+      "completedBeforeRelease": true,
+      "activeInputAtReturn": 1,
+      "activeInspectionAtReturn": 0,
+      "waitTaskCompletedAtReturn": true,
+      "OriginalWaitTaskJoined": true,
+      "harnessSource": "gm_terminal_wait_timeout",
+      "KeyFailureRetained": false,
+      "ElapsedSeconds": 16.0437468
+    },
+    {
+      "mode": "runtime_unknown",
+      "outcome": null,
+      "completedBeforeRelease": true,
+      "activeInputAtReturn": 1,
+      "activeInspectionAtReturn": 0,
+      "waitTaskCompletedAtReturn": true,
+      "OriginalWaitTaskJoined": true,
+      "harnessSource": "gm_runtime_unavailable",
+      "KeyFailureRetained": false,
+      "ElapsedSeconds": 16.0299059
+    },
+    {
+      "mode": "timeout_known",
+      "outcome": "Cancelled",
+      "completedBeforeRelease": true,
+      "activeInputAtReturn": 1,
+      "activeInspectionAtReturn": 0,
+      "waitTaskCompletedAtReturn": true,
+      "OriginalWaitTaskJoined": true,
+      "harnessSource": null,
+      "KeyFailureRetained": false,
+      "ElapsedSeconds": 16.0174792
+    },
+    {
+      "mode": "timeout_unknown",
+      "outcome": null,
+      "completedBeforeRelease": true,
+      "activeInputAtReturn": 1,
+      "activeInspectionAtReturn": 0,
+      "waitTaskCompletedAtReturn": true,
+      "OriginalWaitTaskJoined": true,
+      "harnessSource": "gm_terminal_wait_timeout",
+      "KeyFailureRetained": false,
+      "ElapsedSeconds": 16.020147
+    },
+    {
+      "mode": "ui_failure",
+      "outcome": null,
+      "completedBeforeRelease": true,
+      "activeInputAtReturn": 0,
+      "activeInspectionAtReturn": 1,
+      "waitTaskCompletedAtReturn": false,
+      "OriginalWaitTaskJoined": true,
+      "harnessSource": null,
+      "KeyFailureRetained": false,
+      "ElapsedSeconds": 0.0104827
+    }
+  ],
+  "removedRoots": [
+    "/tmp/boe-gameengine-turnlifecycle-ce34f320172747bf9511bbfb3ab4ab13",
+    "/tmp/boe-gameengine-turnlifecycle-6628d0f65fd144059bf49802aa6d2c72",
+    "/tmp/boe-gameengine-turnlifecycle-a62e7939368146579b87374fe724f5e6",
+    "/tmp/boe-gameengine-turnlifecycle-8d6ef32212794d66b3967013f2d76e1b",
+    "/tmp/boe-gameengine-turnlifecycle-9c0763295c474c2a89a1a58abd4be146",
+    "/tmp/boe-gameengine-turnlifecycle-44754492e77541b9ba1f5b4abdfa592b",
+    "/tmp/boe-gameengine-turnlifecycle-9221aad92dcf4550a59367bcf102aa24"
+  ],
+  "results": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTerminalWaitOwnsTasksAndPreservesStorageOutcome(mode: \"escape\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTerminalWaitOwnsTasksAndPreservesStorageOutcome(mode: \"ready_key_failure\")",
+      "outcome": "Failed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTerminalWaitOwnsTasksAndPreservesStorageOutcome(mode: \"timeout_success\")",
+      "outcome": "Failed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTerminalWaitOwnsTasksAndPreservesStorageOutcome(mode: \"runtime_unknown\")",
+      "outcome": "Failed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTerminalWaitOwnsTasksAndPreservesStorageOutcome(mode: \"timeout_known\")",
+      "outcome": "Failed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTerminalWaitOwnsTasksAndPreservesStorageOutcome(mode: \"timeout_unknown\")",
+      "outcome": "Failed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTerminalWaitOwnsTasksAndPreservesStorageOutcome(mode: \"ui_failure\")",
+      "outcome": "Failed"
+    }
+  ]
+}

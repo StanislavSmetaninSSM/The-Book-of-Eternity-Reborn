@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "portable-terminal-wait-storage-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "2cd44cd4b081b2bc774ce85947da55412c289761",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0767641,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0355272,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0972491,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 92.1714894,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 14.2516699,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0037126,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:01:53.5780369",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 8,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-terminal-wait-storage-linux-integration-001",
+      "portable-terminal-wait-storage-linux-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

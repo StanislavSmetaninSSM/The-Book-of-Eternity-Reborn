@@ -1,0 +1,48 @@
+{
+  "mode": "timeout_success",
+  "outcome": "Completed",
+  "Failure": null,
+  "originalOperationJoined": true,
+  "completedBeforeRelease": true,
+  "activeInputAtReturn": 1,
+  "activeInspectionAtReturn": 0,
+  "inspections": 31,
+  "Calls": 1,
+  "Reads": 0,
+  "waitTaskCompletedAtReturn": true,
+  "OriginalWaitTaskJoined": true,
+  "WaitFailure": null,
+  "InputCallbackSettled": true,
+  "Invocations": 1,
+  "UiFailureObserved": false,
+  "knownHits": 0,
+  "harnessSource": "gm_terminal_wait_timeout",
+  "KeyFailureRetained": false,
+  "ElapsedSeconds": 16.0437468,
+  "prior": {
+    "/tmp/boe-gameengine-turnlifecycle-a62e7939368146579b87374fe724f5e6/game_session/input/turn_request.json": "77u/eyJzZXNzaW9uSWQiOiJ0ZXJtaW5hbC1zdG9yYWdlIiwicmVxdWVzdElkIjoib3JpZ2luYWwtdGVybWluYWwtcmVxdWVzdCIsInR1cm5OdW1iZXIiOjl9"
+  },
+  "afterImages": {
+    "/tmp/boe-gameengine-turnlifecycle-a62e7939368146579b87374fe724f5e6/game_session/input/turn_request.json": "77u/eyJzZXNzaW9uSWQiOiJ0ZXJtaW5hbC1zdG9yYWdlIiwicmVxdWVzdElkIjoib3JpZ2luYWwtdGVybWluYWwtcmVxdWVzdCIsInR1cm5OdW1iZXIiOjl9"
+  },
+  "terminalAfter": "77u/ewogICJzZXNzaW9uSWQiOiAidGVybWluYWwtc3RvcmFnZSIsCiAgInJlcXVlc3RJZCI6ICJvcmlnaW5hbC10ZXJtaW5hbC1yZXF1ZXN0IiwKICAidHVybk51bWJlciI6IDksCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTA5VDA3OjA1OjUzLjU0ODA3MDMrMDA6MDAiLAogICJzdGF0dXMiOiAiZXJyb3IiLAogICJoYXJuZXNzU291cmNlIjogImdtX3Rlcm1pbmFsX3dhaXRfdGltZW91dCIsCiAgImVycm9yIjogItCc0LDRgdGC0LXRgCDQvdC1INC+0YLQstC10YLQuNC7INC30LAgMTUg0YHQtdC60YPQvdC0LiDQlNC10LnRgdGC0LLQuNC1INCx0YPQtNC10YIg0L7RgtC80LXQvdC10L3Qvjsg0L/RgNC+0LLQtdGA0YzRgtC1IEdNIGRhZW1vbi9icmlkZ2Ug0Lgg0L/QvtCy0YLQvtGA0LjRgtC1INGF0L7QtC4iCn0=",
+  "terminalCommitted": "77u/ewogICJzZXNzaW9uSWQiOiAidGVybWluYWwtc3RvcmFnZSIsCiAgInJlcXVlc3RJZCI6ICJvcmlnaW5hbC10ZXJtaW5hbC1yZXF1ZXN0IiwKICAidHVybk51bWJlciI6IDksCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTA5VDA3OjA1OjUzLjU0ODA3MDMrMDA6MDAiLAogICJzdGF0dXMiOiAiZXJyb3IiLAogICJoYXJuZXNzU291cmNlIjogImdtX3Rlcm1pbmFsX3dhaXRfdGltZW91dCIsCiAgImVycm9yIjogItCc0LDRgdGC0LXRgCDQvdC1INC+0YLQstC10YLQuNC7INC30LAgMTUg0YHQtdC60YPQvdC0LiDQlNC10LnRgdGC0LLQuNC1INCx0YPQtNC10YIg0L7RgtC80LXQvdC10L3Qvjsg0L/RgNC+0LLQtdGA0YzRgtC1IEdNIGRhZW1vbi9icmlkZ2Ug0Lgg0L/QvtCy0YLQvtGA0LjRgtC1INGF0L7QtC4iCn0=",
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}
