@@ -1,3 +1,29 @@
+## Ready/worker bounded GREEN — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT12 PASS at11b97493066e6b6c0f43f5419ce0272a46a9a01e.
+Fresh Plan062943 builds integration39.6512464s, exact12/1,0 execution,43.6683680s.
+Matching actual063038 completes **12/12 PASS**,7.7000605s, both cleanup flags,
+no skips/duplicates/timeouts. Root independently verifies all9 original nonCommitted
+MemberPublished/index0 journals, matching published After hashes, retained exact
+journal/foreign targets, unchanged prior committed images, no measured later canonical
+read/mutation/ordinary admission/publication/recovery and12 removed owned roots.
+Same-CSP and real decision/task/proposal/cause/Ready-fact assertions all execute now.
+Three known controls still pass. Historical nine RED and fixture build failure remain.
+
+Fresh both-project catalog063053 at11b97493: **525 categories/11322 methods-files
+valid,0 tests**,21.6127197s, both cleanup flags; integration1.607829s/unit12.1240601s.
+[Full raw source-pinned packet](recovery/storage-migration-worker-ready-20261009/manifest.json)
+contains91 artifacts/64 pins. Final independent raw/carrier acceptance is pending.
+No whole accepted TryRun, C2 CAS, native Windows, live worker/gameplay, or simultaneous
+body+close fault claim. Other connected audit consumers and existing queues remain open.
+
+Next connected consumers: proposal-only task build/diagnostic with original bridge
+caller qualification, canonical-refresh diagnostic cause, accepted/cleared repair
+trajectory, then pool reservation/dispatch/store+ACK/cleanup/terminal and harness.
+Use original consumers and finite causal/known controls; helper execution never proves
+whole wait-loop/worker execution. C2, F16, F18, remaining publisher owners and global
+selection reconciliation remain authorized/open; B2–B5 remain paused.
+
 ## Ready/worker runtime correction — WIP/unbuilt/unrun, 2026-10-09
 
 Independent RED/carrier review accepted852c6f9b:9 genuine reached failures,3 known

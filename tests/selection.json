@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-worker-ready-storage-outcomes-linux",
-      "reason": "Runtime WIP after actual9 causal RED +3 known PASS at8d268975/062459: typed audit/build/Ready/engine propagation, real decision/task/proposal/Ready and known-cause retention plus affected owned closes. Repeat exact12 for changed runtime; no full worker/C2/native claim.",
+      "reason": "Actual12/12 Linux PASS11b97493/063038 after fresh matching Plan12;9 authentic journal/CSP cuts stop later canonical work and retain actual accepted/Ready/known-cause facts,3 known controls unchanged. Controlled-validator/helper scope only; broader worker/C2/native/double-close remain open.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -11,7 +11,7 @@
         "FR-005",
         "T062-STORAGE-OUTCOMES",
         "T064-STORAGE-CUTS",
-        "T065-PUBLISHER-OWNED-CLOSE"
+        "T065-STORAGE-CLOSURE"
       ]
     },
     {

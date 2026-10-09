@@ -1,3 +1,8 @@
+Ready/worker bounded12 Linux PASS at11b97493/063038 (9 original publication Unknown
++3 known controls), source/fixture gate PASS; final evidence/carrier gate pending.
+Catalog525/11322 valid0. Scope and remaining connected consumers are in plan.md;
+T061–T065 stay open, B2–B5 paused. No whole worker/C2/native/double-close acceptance.
+
 ## Accepted Explorer, continuing Ready — 2026-10-09
 
 Final independent Explorer gate PASS6f61302b (composed33;257 artifacts/239 pins).
