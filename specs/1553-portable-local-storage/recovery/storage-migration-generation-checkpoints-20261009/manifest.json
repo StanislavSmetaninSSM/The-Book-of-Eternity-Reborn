@@ -1,0 +1,86 @@
+{
+  "scope": "Six original generation consumer checkpoint fixtures and connected source guard. Phase-specific source/build/actual qualification only; no fullF18/native/GM claim.",
+  "buildFailure": {
+    "source": "358b00f1e69418753ede81b2f1980c27827f510c",
+    "artifacts": [
+      {
+        "path": "buildFailure-20261009-122211-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-122211-511-342095-d2e8c14739424094b434f773449fa327-categories/summary.json",
+        "sha256": "5351ac6f6def76a665163911f09fec354cf116fc7f395b3579831879c34f07b0",
+        "originalSha256": "5351ac6f6def76a665163911f09fec354cf116fc7f395b3579831879c34f07b0"
+      },
+      {
+        "path": "buildFailure-20261009-122211-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-122211-511-342095-d2e8c14739424094b434f773449fa327-categories/dotnet-test.log",
+        "sha256": "a83de599bea4d5d874a4dc6c62a3819ab67034b5dd003e9ed6f081f5a0b99b60",
+        "originalSha256": "9c5cced3a6783c45d6185411a68b7b00e4de2998c4a7cd1fcafb99c0977263dc"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/SessionGenerationCheckpointFixture.cs",
+        "sha256": "7f8d9e011deb30b8cf887e88983242d61c2d4af608767c9159df0968e023e2be"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "ac2afe074662444a6f646dbea026acb00bf9af4dd2ffef2209c68b759d4be0f1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/WebUi/BrowserMortalWorldGenerationFencingTests.cs",
+        "sha256": "41b9a5256d02c1e3d6377915a3bc90fa65d509b3634f72ce49580e795af35087"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs",
+        "sha256": "87b67f297db504ff79f461238ca9ae4dafd6017886acedb7ad3652af26bfc752"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine.cs",
+        "sha256": "068b82d978b059dea898b23b44cb6a46b1d830bf29528c9aa9d8a60610d63f85"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "362aa877388e1fd61e13f21d4dbb74455433236b94903094b3e2a41980982244"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "0415737086fc444af7a98200f96010e1df1c7ef9338283f14745ebbed5c1e368"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "sha256": "6339edc304920d693ec54717210e445c90451131936bbf8b2f09462e0b3c219a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "04a6e8aeb0e6138cd1e4b87744e9a40b03e98e8885a05140a503c02d49f213f9"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs",
+        "sha256": "909ec7e65238bcc24d1857bce8b9e0f8c7aa93030a2990a6f141dd1b3bba4ee0"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "6f0b96baaf7b1cbb5fa39729ac166e5b193534f4517d7bf425f2a01a762bb0b0"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "7a3dac68db76df150843895f53e3effa2151ab9978f870f0d86b839f7446a5c7"
+      }
+    ]
+  }
+}

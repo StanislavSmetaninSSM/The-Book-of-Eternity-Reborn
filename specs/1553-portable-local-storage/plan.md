@@ -1,3 +1,14 @@
+## F18 generation fixture compile corrections — 2026-10-09
+
+Plan122211 at frozen358b00f1 fails integration buildCS0535 in24.2915405s, before
+selection/discovery/execution (0cases),bothcleanup. New ObservedInput omitted mandatory
+IConsoleInputSource.AssertCompleted; forward it to the original input implementation.
+Source review also catches a mistyped existing settings-helper name before next build:
+use actual InertRealmSettings (bridge/music/sound off), not nonexistentDisableLoreRuntime.
+These are fixture build defects, not runtime RED. [Build packet](recovery/storage-migration-generation-checkpoints-20261009/manifest.json)
+retains2artifacts/originals16pins at the failed source. No discarded failure/relabelled PASS.
+Source/exact7 review remains pending; fresh integration build required after corrections.
+
 ## F18 generation checkpoints — fixture WIP, 2026-10-09
 
 Independent gacha GREEN/carrier/catalog PASS92a5a49b verifies41 artifacts/originals32

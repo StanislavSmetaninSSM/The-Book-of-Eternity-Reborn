@@ -116,6 +116,7 @@ internal sealed class SessionGenerationCheckpointFixture
         { if (probe.Rotated) probe.LaterInputReads++; return source.ReadKey(intercept); }
         public string? ReadLine()
         { if (probe.Rotated) probe.LaterInputReads++; return source.ReadLine(); }
+        public void AssertCompleted() => source.AssertCompleted();
     }
 
     internal static Dictionary<string, byte[]> ReplacementTerminalSentinels() => new(StringComparer.Ordinal)

@@ -750,7 +750,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var engine = CreateGameEngine(
-            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: DisableLoreRuntime,
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: InertRealmSettings,
             fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
@@ -794,7 +794,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var engine = CreateGameEngine(
-            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: DisableLoreRuntime,
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: InertRealmSettings,
             fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
@@ -815,7 +815,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string replacementPath = "game_state/world/late-idle-replacement.json";
         var engine = CreateGameEngine(
-            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: DisableLoreRuntime,
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: InertRealmSettings,
             fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
@@ -6496,7 +6496,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var terminalStarts = 0;
         var engine = CreateGameEngine(
-            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: DisableLoreRuntime,
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: InertRealmSettings,
             fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
@@ -9141,7 +9141,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         var lifeRequests = 0;
         var engine = CreateGameEngine(
             probe.ObserveInput(new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4))),
-            configureSettings: DisableLoreRuntime, fileSystem: probe.Files,
+            configureSettings: InertRealmSettings, fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
