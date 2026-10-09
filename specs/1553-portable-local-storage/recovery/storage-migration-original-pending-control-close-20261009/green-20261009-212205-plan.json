@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-original-pending-control-close-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "fa63f9216f5b7131945056d0e9a1d3a1aba2a7eb",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 50.0149433,
+  "Descriptors": [
+    {
+      "Name": "portable-original-pending-control-close-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-pending-control-close-linux",
+      "Categories": [
+        "portable-original-pending-control-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalPendingControlAndJournalOwnersRetainGenuineUncertaintyOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 22,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalPendingControlAndJournalOwnersRetainGenuineUncertaintyOnClose",
+          "Cases": 22
+        }
+      ]
+    }
+  ]
+}

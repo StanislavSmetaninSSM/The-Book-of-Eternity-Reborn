@@ -1,0 +1,50 @@
+{
+  "mode": "guardian_scoped",
+  "uncertain": false,
+  "root": "/tmp/boe-original-pending-close-4c92792a60344bb0b16cbe935ee6c5c0",
+  "boundary": "GuardianTradeRequestState+<TryWriteScopedAsync>",
+  "actualOwnerState": "BookOfEternityClient.Services.GuardianTradeRequestState+<TryWriteScopedAsync>d__12/<writeLease>5__1",
+  "acquisitionPauses": 1,
+  "publicationPauses": 1,
+  "attachments": 0,
+  "Calls": 0,
+  "failure": null,
+  "samePrimary": false,
+  "sameSecondary": false,
+  "lockAvailable": true,
+  "gateAvailable": true,
+  "activeAfter": false,
+  "ambientClosed": true,
+  "mainClosed": true,
+  "contextClosed": true,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJkOGMzYTcwZDU5NzM0NTNlYTFmNjRlNjkzZWM3NWU0MCJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJkOGMzYTcwZDU5NzM0NTNlYTFmNjRlNjkzZWM3NWU0MCJ9",
+  "targetAfter": "77u/ewogICJyZXF1ZXN0SWQiOiAiZ3VhcmRpYW4tcmVxdWVzdC1yZWFsIiwKICAiZ3VhcmRpYW5JZCI6ICJndWFyZGlhbi1yZWFsIiwKICAiZ3VhcmRpYW5OYW1lIjogIkd1YXJkaWFuIiwKICAiYWJvZGVJZCI6ICJhYm9kZS1yZWFsIiwKICAicmV0dXJuQ3ljbGVJZCI6ICJjeWNsZS1yZWFsIiwKICAiY3VycmVudFJlcHV0YXRpb24iOiAwLAogICJkZXJpdmVkVHJhZGVTbG90Q291bnQiOiAxLAogICJlZmZlY3RpdmVSYXJpdHlDZWlsaW5nQm9udXNTdGVwcyI6IDAsCiAgInByb2plY3RCb251c1NpZ25hdHVyZSI6ICIwfDB8MCIsCiAgImNyZWF0ZWRBdFV0YyI6ICIyMDI2LTEwLTA5VDAwOjAwOjAwWiIsCiAgImNyZWF0ZWRBdFR1cm4iOiAxCn0=",
+  "beforeFiles": {
+    "/tmp/boe-original-pending-close-4c92792a60344bb0b16cbe935ee6c5c0/game_session/game_state/meta/guardians.json": "77u/eyJjaGFvc1NlYU5hdmlnYXRpb24iOnsiY3VycmVudEFib2RlSWQiOiJhYm9kZS1yZWFsIiwiY3VycmVudEd1YXJkaWFuSWQiOiJndWFyZGlhbi1yZWFsIn0sCiAiYWN0aXZlR3VhcmRpYW5JZCI6Imd1YXJkaWFuLXJlYWwiLCJndWFyZGlhbnMiOlt7Imd1YXJkaWFuSWQiOiJndWFyZGlhbi1yZWFsIiwiZ3VhcmRpYW5OYW1lIjoiR3VhcmRpYW4iLAogImFib2RlIjp7ImFib2RlSWQiOiJhYm9kZS1yZWFsIiwibmFtZSI6IkFib2RlIn19XX0=",
+    "/tmp/boe-original-pending-close-4c92792a60344bb0b16cbe935ee6c5c0/game_session/game_state/meta/soul_state.json": "77u/eyJjdXJyZW50UmVhbG0iOiJDaGFvcyBTZWEifQ=="
+  },
+  "afterFiles": {
+    "/tmp/boe-original-pending-close-4c92792a60344bb0b16cbe935ee6c5c0/game_session/game_state/control/pending_guardian_trade_request.json": "77u/ewogICJyZXF1ZXN0SWQiOiAiZ3VhcmRpYW4tcmVxdWVzdC1yZWFsIiwKICAiZ3VhcmRpYW5JZCI6ICJndWFyZGlhbi1yZWFsIiwKICAiZ3VhcmRpYW5OYW1lIjogIkd1YXJkaWFuIiwKICAiYWJvZGVJZCI6ICJhYm9kZS1yZWFsIiwKICAicmV0dXJuQ3ljbGVJZCI6ICJjeWNsZS1yZWFsIiwKICAiY3VycmVudFJlcHV0YXRpb24iOiAwLAogICJkZXJpdmVkVHJhZGVTbG90Q291bnQiOiAxLAogICJlZmZlY3RpdmVSYXJpdHlDZWlsaW5nQm9udXNTdGVwcyI6IDAsCiAgInByb2plY3RCb251c1NpZ25hdHVyZSI6ICIwfDB8MCIsCiAgImNyZWF0ZWRBdFV0YyI6ICIyMDI2LTEwLTA5VDAwOjAwOjAwWiIsCiAgImNyZWF0ZWRBdFR1cm4iOiAxCn0=",
+    "/tmp/boe-original-pending-close-4c92792a60344bb0b16cbe935ee6c5c0/game_session/game_state/meta/guardians.json": "77u/eyJjaGFvc1NlYU5hdmlnYXRpb24iOnsiY3VycmVudEFib2RlSWQiOiJhYm9kZS1yZWFsIiwiY3VycmVudEd1YXJkaWFuSWQiOiJndWFyZGlhbi1yZWFsIn0sCiAiYWN0aXZlR3VhcmRpYW5JZCI6Imd1YXJkaWFuLXJlYWwiLCJndWFyZGlhbnMiOlt7Imd1YXJkaWFuSWQiOiJndWFyZGlhbi1yZWFsIiwiZ3VhcmRpYW5OYW1lIjoiR3VhcmRpYW4iLAogImFib2RlIjp7ImFib2RlSWQiOiJhYm9kZS1yZWFsIiwibmFtZSI6IkFib2RlIn19XX0=",
+    "/tmp/boe-original-pending-close-4c92792a60344bb0b16cbe935ee6c5c0/game_session/game_state/meta/soul_state.json": "77u/eyJjdXJyZW50UmVhbG0iOiJDaGFvcyBTZWEifQ=="
+  },
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}
