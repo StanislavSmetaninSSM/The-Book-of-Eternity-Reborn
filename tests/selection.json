@@ -2,8 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-explorer-archive-binding-controls",
+      "reason": "Frozen correction proposal22=unrun18+failed actual committed-release1+unrun candidate1+affected healthy nested Submit1+actual closing replacement1. Repeat only healthy Submit from prior11 because it reaches changed nested postcheck; other10 retained. Independent source/selection then fresh Plan required.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
       "category": "portable-explorer-archive-known-controls",
-      "reason": "Unbuilt runtime WIP: proposed final31=22 original obligations+one genuine original Submit committed-release Unknown+eight unchanged known controls. Independent frozen source/selection gate and fresh both-project Plan required.",
+      "reason": "Six unchanged original known controls passed at554 partial31; retained, not selected again for binding correction. Healthy Submit moved and repeated only for changed nested postcheck; pending candidate/newcommitted row moved separately.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -14,7 +25,7 @@
     },
     {
       "category": "portable-explorer-archive-corrected-inputs-linux",
-      "reason": "Final bounded runtime WIP after preserved20 genuine causal obligations=16@5dc+4@259 and known2PASS. Proposed exact31 with known-controls9; no runtime execution/acceptance yet.",
+      "reason": "Four real corrected command Unknown cases pass at554 partial31 with same CSP/no later work; retained, not selected again for browser binding correction.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -25,7 +36,7 @@
     },
     {
       "category": "portable-explorer-archive-outcome-causal-linux",
-      "reason": "Final bounded runtime WIP after preserved20 genuine causal obligations=16@5dc+4@259 and known2PASS. Proposed exact31 with known-controls9; no runtime execution/acceptance yet.",
+      "reason": "Original18 remained unexecuted after554 partial31 stop. Select with binding-controls4 for fresh exact22 after scoped post-operation correction; preserve original16 causal+known2 source-era raw.",
       "contracts": [
         "#1553",
         "FR-003",

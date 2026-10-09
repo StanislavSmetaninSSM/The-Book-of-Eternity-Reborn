@@ -356,6 +356,12 @@ internal static class SessionOperationContext
         return state.MarkReplaced(actualGeneration, message);
     }
 
+    // An original consumer has already established that canonical continuation is blocked.
+    // Retain this only on its existing binding: the same-lease generation check and
+    // mandatory read-only finalization still run; no ordinary admission is added after return.
+    internal static void BlockPostOperationReadmission(FileSystemManager fileSystem) =>
+        FindBinding(NormalizeRoot(fileSystem.BasePath))?.BlockPostOperationReadmission();
+
     private static async Task<T> RunWithinBindingAsync<T>(
         BindingState state,
         FileSystemManager fileSystem,
@@ -369,7 +375,7 @@ internal static class SessionOperationContext
             var result = await operation();
             if (verifyAfterOperation && writeLease != null)
                 fileSystem.VerifyCurrentSessionOperation(writeLease);
-            else if (verifyAfterOperation)
+            else if (verifyAfterOperation && !state.PostOperationReadmissionBlocked)
                 await fileSystem.VerifyCurrentSessionOperationAsync();
             state.ThrowIfInvalid();
             return result;
@@ -421,6 +427,7 @@ internal static class SessionOperationContext
         private bool _closing;
         private bool _closed;
         private bool _replaced;
+        private bool _postOperationReadmissionBlocked;
         private string? _actualGeneration;
         private string? _replacementMessage;
 
@@ -432,6 +439,16 @@ internal static class SessionOperationContext
 
         internal string NormalizedRoot { get; }
         internal string ExpectedGeneration { get; }
+
+        internal bool PostOperationReadmissionBlocked
+        {
+            get { lock (_sync) return _postOperationReadmissionBlocked; }
+        }
+
+        internal void BlockPostOperationReadmission()
+        {
+            lock (_sync) _postOperationReadmissionBlocked = true;
+        }
 
         internal SessionReplacedException MarkReplaced(
             string? actualGeneration,

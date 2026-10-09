@@ -216,6 +216,8 @@ public sealed partial class BrowserLocalWriteCoordinator
     private readonly AsyncLocal<BrowserDecisionCapture?> _browserDecision = new();
     private BrowserLocalWriteResult CaptureBrowserResult(BrowserLocalWriteResult result)
     {
+        if (result.ContinuationBlocked)
+            SessionOperationContext.BlockPostOperationReadmission(_fs);
         if (_browserDecision.Value is { } captured)
         {
             captured.Result = result;

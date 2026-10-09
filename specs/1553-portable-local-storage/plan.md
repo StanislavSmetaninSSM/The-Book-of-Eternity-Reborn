@@ -1,3 +1,20 @@
+## Scoped browser post-operation correction WIP — 2026-10-09
+
+After preserved eb49a053 partial31, original BindingState can record that its actual browser result has
+ContinuationBlocked. CaptureBrowserResult marks only that existing matching binding from this explicit
+boolean; no inference from message, NeedsFollowUp or a fabricated outcome. Only the no-lease ordinary
+post-operation readmission is skipped. Explicit-lease synchronous generation verification, ThrowIfInvalid,
+mandatory readonly finalization/generation replacement and factual main outcome all remain unchanged.
+This is operation-local state retired with the original frame, not a global filesystem latch.
+
+Independent raw/design gate accepted the genuine failure and this narrow mechanism. Proposed exact22=
+unexecuted original18 + failed committed-release1 + unexecuted candidate1 + existing healthy whole Submit1
++ existing actual tree-CSP/closing-generation replacement1. Healthy Submit is intentionally repeated from
+prior11 because it reaches the changed nested no-lease postcheck; generic single-root writer would not.
+Other10 prior PASS (corrected4+known6) remain retained. Eventual unique composed scope would be32, not a
+single32 run; no acceptance before fresh frozen source/selection gate, matching both-project Plan22/actual22.
+No runtime execution yet for this correction, no relabelled Committed/no skipped readonly closing claim.
+
 ## Explorer final31 partial execution — 2026-10-09
 
 Frozen554dfe11 passes independent SOURCE/FIXTURE/EXACT31. Matching Plan053040 builds integration

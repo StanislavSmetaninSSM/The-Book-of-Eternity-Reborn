@@ -2,8 +2,46 @@
   "schemaVersion": 1,
   "categories": [
     {
-      "responsibility": "Original Explorer/archive known policies and actual whole browser Submit committed-release uncertainty. Eight unchanged controls plus one real committed-domain/lock-delete Unknown extension.",
-      "excludes": "No replay of earlier accepted generic coordinators, no whole gameplay/native/secondary-close claim. Mortal/Saref projection siblings source-reviewed only; historical wildcard owners unselected.",
+      "id": "portable-explorer-archive-binding-controls",
+      "responsibility": "Remaining committed-release original Submit/candidate plus affected healthy nested Submit and actual readonly-closing generation replacement. Select with causal18 for exact22 after scoped binding correction.",
+      "excludes": "No replay of retained corrected4/known6. No global continuation latch, outcome relabel, native or secondary-close injection; sibling browser presenters remain source-qualified.",
+      "changeHints": [
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-explorer-archive-outcome-causal-linux",
+          "when": "Unexecuted18 from partial31 plus these4 complete the affected correction22."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitRetainsCommittedFollowUp",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgeReshape_WritesExistingForgeRequestAndCommitsRelicReroll"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeArchiveCandidateServiceTests.RefreshFromCurrentStateAsync_MalformedCurrentSoulState_RetainsExistingManifest",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement"
+          ]
+        }
+      ]
+    },
+    {
+      "responsibility": "Six unchanged original Explorer/archive known controls retained after actual554 partial31. New committed-release, candidate and healthy Submit move to the scoped binding correction category.",
+      "excludes": "Not selected for binding correction: actual six already pass at554. Historical wildcard owners remain unselected; no fullplay/native/secondary-close claim.",
       "changeHints": [
         "BookOfEternityClient/UI/ExplorerMode",
         "BookOfEternityClient/WebUi",
@@ -30,17 +68,9 @@
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CompanionDirective_UpdatesNpcCoreWithoutException",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDirective_UpdatesFactionCoreWithoutException",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningPolitics_RealignmentPreviewCanCancelWithoutWritingPendingRequest",
-            "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgeReshape_WritesExistingForgeRequestAndCommitsRelicReroll",
             "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgePromptAfterAnotherPendingCoreActionAppears_ReturnsPlayerFacingBlocker",
             "BookOfEternityClient.Tests.AfterlifeArchiveActionStateTests.EnsureHealthyAsync_OutsideAfterlife_MatchingReceiptWithoutReservation_ClearsStaleRequestFile",
-            "BookOfEternityClient.Tests.AfterlifeArchiveActionStateTests.EnsureHealthyAsync_OutsideAfterlife_UnresolvedRequestRetainsReservationAndPendingFile",
-            "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitRetainsCommittedFollowUp"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.AfterlifeArchiveCandidateServiceTests.RefreshFromCurrentStateAsync_MalformedCurrentSoulState_RetainsExistingManifest"
+            "BookOfEternityClient.Tests.AfterlifeArchiveActionStateTests.EnsureHealthyAsync_OutsideAfterlife_UnresolvedRequestRetainsReservationAndPendingFile"
           ]
         }
       ],
@@ -5527,8 +5557,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
-            "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement"
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup"
           ]
         }
       ]
@@ -18612,8 +18641,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter",
-            "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement"
+            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
           ]
         }
       ]
