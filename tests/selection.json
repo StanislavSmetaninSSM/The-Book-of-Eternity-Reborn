@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-prepared-remote-outcome-linux",
+      "reason": "Original remote receipt causal3 at54d: each actual Prepared disposition incorrectly closed Completed. Prepared-only capture correction must preserve actual Committed/RolledBack/Uncertain through exact original ACK, with known bytes/runtime application and Unknown no continuation.",
+      "contracts": ["#1553", "FR-003", "FR-004", "T062-STORAGE-OUTCOMES", "T063-REMAINING-CONSUMERS"]
+    },
+    {
       "category": "portable-cleanup-outcome-causal-linux",
       "reason": "Eight original cleanup/staging causal controls PASS at ef59782 in actual004402; retained source-era evidence, unchanged branches excluded from isolated release-CSP rerun.",
       "contracts": [
@@ -47,7 +52,7 @@
     },
     {
       "category": "portable-cleanup-prepared-neighbors",
-      "reason": "Five exact known prepared controls passed at102d in010913 with causal1; preserve commit/runtime Apply/lock release and rollback/debt/Unknown/revoked outcomes for the changed finally guard.",
+      "reason": "Five exact known prepared controls join remote3 for the Prepared-only outcome capture delta: ordinary commit/runtime Apply/lock release, known rollback, committed debt, Unknown and revoked-generation outcomes. Earlier102d evidence remains preserved.",
       "contracts": [
         "#1553",
         "FR-003",

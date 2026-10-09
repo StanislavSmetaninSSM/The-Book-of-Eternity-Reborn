@@ -65,7 +65,7 @@ internal static class PreparedRemoteOutcomeScenario
                 Target=File.ReadAllBytes(target),LockAtPrepare=lockAtPrepare,
                 LockAfter=File.Exists(lockPath)?File.ReadAllBytes(lockPath):null,JournalAtCut=journalAtCut,
                 JournalAfter=File.Exists(journal)?File.ReadAllBytes(journal):null,
-                LaterValidatedOpenedReads=readsAfter,LaterMutationAttempts=mutationsAfter};
+                LaterPreOpenReadHookAttempts=readsAfter,LaterMutationAttempts=mutationsAfter};
             Require(cuts==1&&original is {WasRemote:true,CloseObserved:true}&&close!=null&&admitted!=null,"Original publication/remote ACK not reached.");
             Require(receipts.Count==1&&receipts[0]==close&&close.PinId==admitted.PinId&&close.CloseId==admitted.CloseId&&
                 close.OperationId==admitted.OperationId&&GmSessionRunValidation.IdentityMatches(close.Identity,admitted.Identity)&&

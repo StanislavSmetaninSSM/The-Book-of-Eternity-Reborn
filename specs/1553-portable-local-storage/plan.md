@@ -1,3 +1,20 @@
+## Prepared original remote capture correction WIP — 2026-10-09
+
+Independent raw causal3 PASS at54d; preserved carrier5033d7ec has29 artifacts/12 historical
+source pins (corrected prior prose count). Minimal production change is confined to Prepared.cs:
+CapturePreparedResult updates existing BrowserDecisionCapture.Outcome immediately after real
+publication mapping, before Apply and finally; final/preparation-blocked returns record their actual
+Failed outcome. It does not populate the unrelated BrowserLocalWriteResult cache, alter AtomicCore,
+change original admission/ACK/closing logic, or infer uncertainty from generic exceptions.
+Known publicationOutcome retention and release guard remain unchanged. Fixture counter label now
+states pre-open-hook attempts accurately; historical raw labels retain their source qualification.
+
+Final exact8 proposal remains remote3 + portable-cleanup-prepared-neighbors5, independently
+accepted as sufficient for this isolated delta. No current GREEN yet: frozen source/selection review
+and matching fresh unit build precede actual8. No GM-facing authored field changed; no prompt/example
+migration is required for this client-owned outcome projection. Progression/F16/F18 and connected
+source audit tails remain open; no full migration/native/secondary-close fault claim.
+
 ## Prepared original remote receipt causal3 — 2026-10-09
 
 Frozen54d640f9 independent source/fixture/exact3 PASS. Plan012431 fresh unit/support/bridge build
@@ -11,7 +28,7 @@ ClosingFailed=false pass BEFORE final desired-outcome assertion. Every actual cl
 contains Completed0. Three original owners stop/retire; guardians are independently retained.
 Unknown known-Before fixture repair occurs only after raw decision/close/ACK capture.
 
-Saved packet recovery/storage-migration-prepared-remote-20261009/manifest.json retains32
+Saved packet recovery/storage-migration-prepared-remote-20261009/manifest.json retains29
 artifacts/12 historical source pins. Minimal next change captures Prepared disposition into existing
 BrowserDecisionCapture before Apply/cleanup/close; no fake BrowserLocalWriteResult or global
 exception/outcome inference. Final proposed8 = remote3 plus exact existing Prepared known5,
