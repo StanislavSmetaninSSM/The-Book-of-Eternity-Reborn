@@ -3607,7 +3607,7 @@ public partial class FileSystemManager
     {
         try
         {
-            await mainAdmission.AcquireAsync(cancellationToken,purpose==CanonicalWritePurpose.SessionFinalization);
+            await mainAdmission.AcquireAsync(cancellationToken,purpose==CanonicalWritePurpose.SessionFinalization,workerPurpose:workerPurpose);
             var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(
                 purpose,
                 cancellationToken, workerPurpose);

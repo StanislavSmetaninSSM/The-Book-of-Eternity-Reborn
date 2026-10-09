@@ -37,6 +37,7 @@ public partial class FileSystemManager
         private GmMainOperationClient? _retainedRemote;
         private GmSessionRunCoordinator.Access? _retainedOriginal;
         private readonly bool _participating;
+        private GmWorkerCanonicalPurpose? _workerPurpose;
         internal bool WasRemote {get;private set;}
         internal bool OwnsRemote=>_ownsRemote;
         internal MainOperationClose? TerminalClose=>_retainedRemote?.TerminalClose;
@@ -48,8 +49,9 @@ public partial class FileSystemManager
         internal MainAdmission? Parent=>_parent;
         internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested,bool participating)
         {_files=files;_parent=parent;_requested=requested;_participating=participating;}
-        internal async Task AcquireAsync(CancellationToken token=default,bool closing=false,bool quiescentOnly=false)
+        internal async Task AcquireAsync(CancellationToken token=default,bool closing=false,bool quiescentOnly=false, GmWorkerCanonicalPurpose? workerPurpose=null)
         {
+            _workerPurpose=workerPurpose;
             // Finalization borrows an actual original closing frame. The purpose
             // value alone cannot bypass admission or acquire recovery authority.
             if(closing && !BoundClosing)throw GmSessionRunPersistence.Invalid();
@@ -82,7 +84,7 @@ public partial class FileSystemManager
                 if(OperatingSystem.IsWindows())_files.RequireAbsentMainWorkerInventory();
                 else if(_files.HasKnownMainWorkerInventory()) {
                     var workers=GmWorkerRootContext.Attach(_files,true,null);
-                    _access.Workers=workers;workers.RequireOpen();
+                    _access.Workers=workers;workers.ValidateMainAdmission(_files,_workerPurpose);
                 }
                 Validate(null);
             }catch{Dispose();throw;}
@@ -106,6 +108,7 @@ public partial class FileSystemManager
         internal void Validate(CanonicalWriteLease? lease)
         {
             if(_closed || _access==null)throw GmSessionRunPersistence.Invalid();
+            if(lease!=null && !ReferenceEquals(lease.WorkerPurpose,_workerPurpose))throw GmSessionRunPersistence.Invalid();
             if(lease?.Purpose==CanonicalWritePurpose.SessionFinalization && !BoundClosing)
                 throw GmSessionRunPersistence.Invalid();
             if(_access.Remote is { } remote) {
@@ -133,7 +136,7 @@ public partial class FileSystemManager
             }
             _access.Guard!.Validate();
             if(OperatingSystem.IsWindows())_files.RequireAbsentMainWorkerInventory();
-            _access.Workers?.RequireOpen();
+            _access.Workers?.ValidateMainAdmission(_files,_workerPurpose);
             var bytes=GmSessionRunPersistence.Read(_files.BasePath);
             if(bytes==null)return;
             var r=GmSessionRunRecordCodec.Decode(bytes);

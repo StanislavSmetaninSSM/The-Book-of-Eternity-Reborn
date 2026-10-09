@@ -1,3 +1,32 @@
+## Durable worker causal RED and required-audit admission — WIP, 2026-10-09
+
+Independent corrected fixture14 PASS87603e12. Fresh Plan081127 selects14/1,
+0 executed,41.0037904s. Actual081224 at clean876 completes14/14,1/1,
+**6PASS/8FAIL**,39.0107106s,both cleanup flags,no timeout/skip/duplicate.
+[Raw packet](recovery/storage-migration-worker-durable-20261009/manifest.json)
+retains original summaries/TRX/native binaries/logs/decoded rows and52 source pins.
+Root verifies14 original physical settlements/guardians/removed owned roots and
+28 native source/binary pairs. Five authentic member0 nonCommitted journals retain
+exact foreign/prior bytes: inbox, inbox+DisposeOnce, derived audit, terminal and
+timeout diagnostics. Store cuts incorrectly reach recorded publication/cleanup;
+early terminal cuts propagate but only after retirement/workspace removal. No
+retained canonical authority fault exists. Six ordinary controls actually pass.
+
+The other three are a separate discovered upper-admission defect, not three CSP
+cuts: required_audit_unknown reaches0; both deferred refusal controls fail eventual
+retirement. Actual stacks show the original exact CleanupPurpose passed to required
+audit being rejected by MainAdmission.AcquireAsync -> RequireOpen, before lower
+ValidateCanonical can honor it. Independent reviewer confirms classification.
+
+Narrow correction carries the exact worker purpose on its own MainAdmission frame,
+never shared MainAccess. Guard-backed acquisition/validation reuses original worker
+root/context/coordinator/closed/pending and frozen execution/audit checks. Actual
+lease purpose must match that frame. Ordinary purpose still RequireOpen; Windows,
+main guard/Stopped state, active remote/pin and lower recovery/publisher checks stay.
+No clearing cleanup debt or new capability. Production correction is unbuilt/unrun.
+Next source/raw gate then fresh exact3 admission/required-audit check. Required audit
+may then reach its genuine RED; canonical-fault cleanup runtime remains unimplemented.
+
 ## Durable diagnostic admission correction — WIP, 2026-10-09
 
 Fresh Plan080227 at ad7e587b completed79.0330753s,14/1 selected,0 executed.
