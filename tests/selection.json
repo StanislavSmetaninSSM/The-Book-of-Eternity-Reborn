@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-effect-original-rollback-publication",
+      "reason": "T064 port originalEffect13+focusedSkill1 with genuine current cut/committed witnesses. Immediate selected-member rollback differs from later explicit original-engine whole tracked rollback; source/fixture/actual gates pending, no runtime/native claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-resource-known-rollback-publication",
       "reason": "T064 original normalizer physical-cut fixture port at66f655ee: actual132735 combinedLocation8/Resource4=12/12PASS, realcut1/row,80raw paths/generation restored and original wrapped path/cause retained. Allownedrootsremoved. No whole-operation single-journal/native claim; no replay of Guardian8.",
       "contracts": [

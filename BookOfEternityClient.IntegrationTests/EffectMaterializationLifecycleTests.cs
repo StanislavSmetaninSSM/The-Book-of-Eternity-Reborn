@@ -17,7 +17,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         ResourceMaterializationContract.StatePath,
         EffectAcceptedTurnPlan.IdentityIndexPath,
         EffectCarrierCatalog.PlayerPath,
-        "outputs_published_before_first_mechanical_write",
+        "outputs_present_at_resource_definitions_publication",
         "post_check_after_command_consumption"
     };
 
@@ -134,13 +134,14 @@ public sealed partial class GameEngineTurnLifecycleTests
     public async Task EffectMaterializationLifecycleTests_PlayerPublicationFailureRestoresEntireTrackedSet(
         string failureStage)
     {
+        using var ownedClass = new CleanupOwnedFixture(_rootPath, WriteEffectCutEvidence);
         var probe = new EffectPublicationFailureProbe();
         await using var context = await EffectMaterializationTestContext.CreateAsync(
             new FileSystemManagerHooks
             {
-                AfterPhysicalFilePublishedAsync = probe.AfterPhysicalFilePublishedAsync,
-                AfterCanonicalReadAttemptAsync = probe.AfterCanonicalReadAttemptAsync
+                LocalPublicationObserver = probe.Observe
             });
+        using var ownedContext = new CleanupOwnedFixture(context.RootPath, WriteEffectCutEvidence);
         await context.SeedPlayerSkillSourceAsync();
         await context.WriteJsonAsync(
             EffectCarrierCatalog.PlayerPath,
@@ -208,16 +209,15 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             var publicationPath = string.Equals(
                     failureStage,
-                    "outputs_published_before_first_mechanical_write",
+                    "outputs_present_at_resource_definitions_publication",
                     StringComparison.Ordinal)
                 ? ResourceMaterializationContract.DefinitionsPath
                 : failureStage;
-            probe.ArmAfterPhysicalPublication(context.FileSystem, publicationPath);
+            probe.ArmAfterPublication(context.FileSystem, publicationPath);
         }
 
-        await Assert.ThrowsAnyAsync<Exception>(() =>
-            context.NormalizeAcceptedEffectsAsync(backups));
-        Assert.True(probe.Triggered);
+        var failure = await Record.ExceptionAsync(() => context.NormalizeAcceptedEffectsAsync(backups));
+        probe.AssertNormalizationFailure(failure, WriteEffectCutEvidence);
         if (string.Equals(
                 failureStage,
                 "post_check_after_command_consumption",
@@ -230,12 +230,17 @@ public sealed partial class GameEngineTurnLifecycleTests
             "game_state/control/validation_diagnostic_failure_report.json",
             $"{{\"failureStage\":\"{failureStage}\"}}");
 
+        var diagnosticBeforeRollback = File.ReadAllBytes(context.FileSystem.ResolvePath(
+            "game_state/control/validation_diagnostic_failure_report.json"));
+
         await InvokePrivateTaskAsync(
             engine,
             "RollbackRejectedAcceptedTurnAsync",
             rollbackSnapshot,
             string.Empty);
 
+        AssertEffectRollbackRaw(context.FileSystem, baseline, probe.GenerationBefore,
+            diagnosticBeforeRollback, WriteEffectCutEvidence);
         Assert.Equal(
             baseline,
             await CaptureRollbackTrackedSetAsync(engine, context.FileSystem));
@@ -250,12 +255,14 @@ public sealed partial class GameEngineTurnLifecycleTests
     public async Task EffectMaterializationLifecycleTests_OwnerCarrierPublicationFailureRestoresEntireTrackedSet(
         string carrierPath)
     {
+        using var ownedClass = new CleanupOwnedFixture(_rootPath, WriteEffectCutEvidence);
         var probe = new EffectPublicationFailureProbe();
         await using var context = await EffectMaterializationTestContext.CreateAsync(
             new FileSystemManagerHooks
             {
-                AfterPhysicalFilePublishedAsync = probe.AfterPhysicalFilePublishedAsync
+                LocalPublicationObserver = probe.Observe
             });
+        using var ownedContext = new CleanupOwnedFixture(context.RootPath, WriteEffectCutEvidence);
         var command = await SeedEffectOwnerCarrierScenarioAsync(context, carrierPath);
         var engine = CreateGameEngine(fileSystem: context.FileSystem);
         var rollbackSnapshot = await InvokePrivateTaskResultAsync(
@@ -292,14 +299,16 @@ public sealed partial class GameEngineTurnLifecycleTests
             issues.All(static issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, issues.Select(static issue =>
                 $"{issue.Code}: {issue.FilePath}; expected={issue.Expected}; actual={issue.Actual}")));
-        probe.ArmAfterPhysicalPublication(context.FileSystem, carrierPath);
+        probe.ArmAfterPublication(context.FileSystem, carrierPath);
 
-        await Assert.ThrowsAnyAsync<Exception>(() =>
-            context.NormalizeAcceptedEffectsAsync(backups));
-        Assert.True(probe.Triggered);
+        var failure = await Record.ExceptionAsync(() => context.NormalizeAcceptedEffectsAsync(backups));
+        probe.AssertNormalizationFailure(failure, WriteEffectCutEvidence);
         await context.FileSystem.WriteFileAtomicAsync(
             "game_state/control/validation_diagnostic_failure_report.json",
             $"{{\"carrierPath\":\"{carrierPath}\"}}");
+
+        var diagnosticBeforeRollback = File.ReadAllBytes(context.FileSystem.ResolvePath(
+            "game_state/control/validation_diagnostic_failure_report.json"));
 
         await InvokePrivateTaskAsync(
             engine,
@@ -307,6 +316,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             rollbackSnapshot,
             string.Empty);
 
+        AssertEffectRollbackRaw(context.FileSystem, baseline, probe.GenerationBefore,
+            diagnosticBeforeRollback, WriteEffectCutEvidence);
         Assert.Equal(
             baseline,
             await CaptureRollbackTrackedSetAsync(engine, context.FileSystem));
@@ -319,12 +330,14 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Fact]
     public async Task EffectMaterializationLifecycleTests_PendingResolutionPublicationFailureRestoresEntireTrackedSet()
     {
+        using var ownedClass = new CleanupOwnedFixture(_rootPath, WriteEffectCutEvidence);
         var probe = new EffectPublicationFailureProbe();
         await using var context = await EffectMaterializationTestContext.CreateAsync(
             new FileSystemManagerHooks
             {
-                AfterPhysicalFilePublishedAsync = probe.AfterPhysicalFilePublishedAsync
+                LocalPublicationObserver = probe.Observe
             });
+        using var ownedContext = new CleanupOwnedFixture(context.RootPath, WriteEffectCutEvidence);
         await SeedBoundedEffectResolutionAsync(context);
         var engine = CreateGameEngine(fileSystem: context.FileSystem);
         var rollbackSnapshot = await InvokePrivateTaskResultAsync(
@@ -354,16 +367,18 @@ public sealed partial class GameEngineTurnLifecycleTests
             issues.All(static issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, issues.Select(static issue =>
                 $"{issue.Code}: {issue.FilePath}; expected={issue.Expected}; actual={issue.Actual}")));
-        probe.ArmAfterPhysicalPublication(
+        probe.ArmAfterPublication(
             context.FileSystem,
             ResourcePendingResolutionState.PendingPath);
 
-        await Assert.ThrowsAnyAsync<Exception>(() =>
-            context.NormalizeAcceptedEffectsAsync(backups));
-        Assert.True(probe.Triggered);
+        var failure = await Record.ExceptionAsync(() => context.NormalizeAcceptedEffectsAsync(backups));
+        probe.AssertNormalizationFailure(failure, WriteEffectCutEvidence);
         await context.FileSystem.WriteFileAtomicAsync(
             "game_state/control/validation_diagnostic_failure_report.json",
             "{\"failure\":\"pending effect publication\"}");
+
+        var diagnosticBeforeRollback = File.ReadAllBytes(context.FileSystem.ResolvePath(
+            "game_state/control/validation_diagnostic_failure_report.json"));
 
         await InvokePrivateTaskAsync(
             engine,
@@ -371,6 +386,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             rollbackSnapshot,
             string.Empty);
 
+        AssertEffectRollbackRaw(context.FileSystem, baseline, probe.GenerationBefore,
+            diagnosticBeforeRollback, WriteEffectCutEvidence);
         Assert.Equal(
             baseline,
             await CaptureRollbackTrackedSetAsync(engine, context.FileSystem));
@@ -685,69 +702,4 @@ public sealed partial class GameEngineTurnLifecycleTests
         return result;
     }
 
-    private sealed class EffectPublicationFailureProbe
-    {
-        private string? _afterPhysicalPath;
-        private string? _corruptAfterPhysicalPath;
-        private string? _corruptPath;
-
-        internal bool Triggered { get; private set; }
-
-        internal void ArmAfterPhysicalPublication(
-            FileSystemManager fileSystem,
-            string path)
-        {
-            _afterPhysicalPath = fileSystem.ResolvePath(path);
-            _corruptAfterPhysicalPath = null;
-            _corruptPath = null;
-            Triggered = false;
-        }
-
-        internal void ArmPostCheckCorruption(
-            FileSystemManager fileSystem,
-            string afterPublishedPath,
-            string corruptPath)
-        {
-            _afterPhysicalPath = null;
-            _corruptAfterPhysicalPath = fileSystem.ResolvePath(afterPublishedPath);
-            _corruptPath = fileSystem.ResolvePath(corruptPath);
-            Triggered = false;
-        }
-
-        internal Task AfterPhysicalFilePublishedAsync(string path)
-        {
-            if (_corruptAfterPhysicalPath != null &&
-                string.Equals(
-                    path,
-                    _corruptAfterPhysicalPath,
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                var corruptPath = _corruptPath ?? throw new InvalidOperationException(
-                    "Post-check corruption path is missing.");
-                _corruptAfterPhysicalPath = null;
-                _corruptPath = null;
-                File.WriteAllText(
-                    corruptPath,
-                    "{\"injected\":\"post-check mismatch\"}",
-                    Encoding.UTF8);
-                Triggered = true;
-                return Task.CompletedTask;
-            }
-            if (_afterPhysicalPath == null ||
-                !string.Equals(
-                    path,
-                    _afterPhysicalPath,
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                return Task.CompletedTask;
-            }
-            _afterPhysicalPath = null;
-            Triggered = true;
-            return Task.FromException(new IOException(
-                $"Injected failure after effect publication '{path}'."));
-        }
-
-        internal Task AfterCanonicalReadAttemptAsync(string path) =>
-            Task.CompletedTask;
-    }
 }

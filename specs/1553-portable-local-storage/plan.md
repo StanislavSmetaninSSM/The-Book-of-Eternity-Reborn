@@ -1,3 +1,25 @@
+## F18 Effects14 — fixture WIP, 2026-10-09
+
+Four original methods: Player7/Owner5/Pending1/FocusedSkill1. Thirteen known-rollback
+MemberPublished cuts retain real selected Before/After evidence and wrapped cause;
+immediate raw check covers only that selected member. Direct bound normalizer is NOT
+AcceptedTurnCanonicalStateRefresh, so earlier commits are restored by the existing
+explicit original engine RollbackRejectedAcceptedTurnAsync. After it, raw baseline/
+command/output/pending absence, diagnostic bytes and generation precede facade inventory
+checks. Both context and enclosing class roots have strict cleanup evidence.
+
+One post-check row observes actual Committed state publication with exact After bytes/
+hash and journal, then corrupts definitions once. A separate actual command-deletion
+Committed witness proves consumption; require specific InvalidDataException after-image
+mismatch, no active journal and unchanged generation, then original engine rollback.
+This is committed corruption, not uncertainty. Old outputs-before-first-write stage name
+becomes outputs-present-at-resource-definitions-publication: sorted current writes can
+precede definitions, so the old name overstated ordering. Original output obligation stays.
+No production/GM/schema change. Exact14 owner and fresh integration Plan/source gate
+precede bounded actual; original snapshots/core semantic owners retained. Current
+Location/Resource final independent RAW/CATALOG/CARRIER PASSc0f7, packet65/72. Remaining
+wound24/treatment2/offscreen1/F16signed producers/ownedclose/whole registry open; B2–B5paused.
+
 ## F18 Location8 / Resource4 — bounded Linux GREEN, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT12 PASS66f655ee. Fresh integration Plan13240112/2,

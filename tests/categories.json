@@ -20598,6 +20598,35 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-effect-original-rollback-publication",
+      "responsibility": "F18 original effect/focused-wound rollback14:13 authentic changed MemberPublished known-rollback cuts plus1 genuine Committed post-check corruption with committed command consumption. Preserve direct normalizer versus explicit engine rollback distinction, exact tracked before-images/absence, diagnostic/generation and strict two-root cleanup.",
+      "excludes": "No automatic whole-normalizer compensation, one-journal whole turn, uncertainty injection, first-mechanical-write ordering, broad effect/skill scenarios, live GM or native Windows. Original snapshot/core category owners retained.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/EffectMaterializationLifecycleTests.cs",
+        "BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs",
+        "BookOfEternityClient.IntegrationTests/EffectPublicationFailureProbe.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_PlayerPublicationFailureRestoresEntireTrackedSet",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_OwnerCarrierPublicationFailureRestoresEntireTrackedSet",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_PendingResolutionPublicationFailureRestoresEntireTrackedSet",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectSkillScopeLifecycleTests_FocusedPublicationFailureRollsBackEveryTrackedSurface"
+          ]
+        }
+      ]
     }
   ]
 }

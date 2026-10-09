@@ -944,16 +944,17 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Fact]
     public async Task EffectSkillScopeLifecycleTests_FocusedPublicationFailureRollsBackEveryTrackedSurface()
     {
+        using var ownedClass = new CleanupOwnedFixture(_rootPath, WriteEffectCutEvidence);
         var probe = new EffectPublicationFailureProbe();
         var prepared = await WoundMaterializationLifecycleTests
             .PrepareFocusedSkillScopedWoundAsync(
                 "skill_lockpicking",
                 new FileSystemManagerHooks
                 {
-                    AfterPhysicalFilePublishedAsync = probe.AfterPhysicalFilePublishedAsync,
-                    AfterCanonicalReadAttemptAsync = probe.AfterCanonicalReadAttemptAsync
+                    LocalPublicationObserver = probe.Observe
                 });
         await using var context = prepared.Context;
+        using var ownedContext = new CleanupOwnedFixture(context.RootPath, WriteEffectCutEvidence);
         var engine = CreateGameEngine(fileSystem: context.FileSystem);
         var rollbackSnapshot = await InvokePrivateTaskResultAsync(
             engine,
@@ -992,20 +993,24 @@ public sealed partial class GameEngineTurnLifecycleTests
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(issues, static issue =>
             issue.Severity == IssueSeverity.Error);
-        probe.ArmAfterPhysicalPublication(
+        probe.ArmAfterPublication(
             context.FileSystem,
             WoundHistoryState.HistoryPath);
 
+        Exception? failure;
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
         {
-            await Assert.ThrowsAnyAsync<Exception>(() => context.Normalizer
+            failure = await Record.ExceptionAsync(() => context.Normalizer
                 .BindTo(lease)
                 .NormalizeAcceptedMechanicsAsync(backups: null));
         }
-        Assert.True(probe.Triggered);
+        probe.AssertNormalizationFailure(failure, WriteEffectCutEvidence);
         await context.FileSystem.WriteFileAtomicAsync(
             "game_state/control/validation_diagnostic_failure_report.json",
             "{\"scope\":\"skill_lockpicking\"}");
+
+        var diagnosticBeforeRollback = File.ReadAllBytes(context.FileSystem.ResolvePath(
+            "game_state/control/validation_diagnostic_failure_report.json"));
 
         await InvokePrivateTaskAsync(
             engine,
@@ -1013,6 +1018,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             rollbackSnapshot,
             string.Empty);
 
+        AssertEffectRollbackRaw(context.FileSystem, baseline, probe.GenerationBefore,
+            diagnosticBeforeRollback, WriteEffectCutEvidence);
         Assert.Equal(
             baseline,
             await CaptureRollbackTrackedSetAsync(engine, context.FileSystem));
