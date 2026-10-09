@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-terminal-wait-storage-linux",
-      "reason": "T062 original terminal wait and owned-task settlement;7 finite real-consumer cases plus1 exact existing fail-fast source guard. Actual15-second timeout/health floors retained; no fake clock or process. Fixture WIP unbuilt/unrun. Earlier accepted helper15 and Ready12 untouched.",
+      "reason": "Actual8/8 Linux PASS59f455a4/071130 after matching fresh both-project Plan8. Seven original terminal wait rows preserve outcome/secondary cause and settle owned tasks; exact existing fail-fast guard passes. Historical2cd RED7/8=1PASS6 lifetimeFAIL/unitguardunrun retained. No earlier Ready12/diagnostic15 replay; no native blocking-input or outer response cleanup claim.",
       "contracts": [
         "#1553",
         "FR-003",

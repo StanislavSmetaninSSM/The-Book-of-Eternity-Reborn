@@ -1,3 +1,55 @@
+## Original terminal wait bounded GREEN — 2026-10-09
+
+Independent SOURCE/RED-CARRIER/EXACT8 PASS59f455a4fc9066113000ddc72c883dbd3f57a43d.
+Matching fresh both-project Plan071005 completes59.9351453s,8/2 planned,0 execution.
+Actual071130: **8/8 PASS**,2/2 descriptors,81.4481068s, both cleanup flags,
+no skips/duplicates/timeouts. All seven original wait scenarios now complete without
+live input/inspection callbacks; actual wait task is settled at method return. Both
+original CSP identities, exact key failure retention, genuine branch harnessSource,
+exact nonCommitted journals/After hashes/foreign targets/prior images and zero measured
+later canonical work are verified. Ready/timeout Completed, Escape and known refusal
+Cancelled, and exact early UI error remain factual. Seven owned roots removed.
+
+Fresh both-project catalog071309 at59f455: **527 categories/11325 methods-files
+valid,0 tests**,11.0118066s,both cleanup flags, no unmapped/stale selectors.
+[Source-pinned original evidence](recovery/storage-migration-terminal-wait-20261009/manifest.json)
+contains58 artifacts/45 pins; all58 originals root-verified. Final independent
+GREEN/raw/catalog/carrier gate pending. Historical070528 remains7/8=1PASS6FAIL,
+unitguardunrun,75.9822979s. No reclassification of those lifetime failures as swallowed CSP.
+The selection prose now records actual evidence rather than its prior unbuilt WIP label.
+No native blocking-input interruption, outer response cleanup, full worker or migration claim.
+
+### Next connected pool/publication work
+
+Independent targeted source/design consultation approves two bounded qualifications.
+First use original MainWorkerDispatchScenario/Program.DispatchWorkerTaskAsync -> original
+main operation pin -> ProposalOnlyDispatch -> Pool with explicit fixture native admission,
+durable:false, private nonbackground reaper and hard no-workspace/attach/release guards.
+Actual task reservation and dispatch-audit Unknown must propagate through this entire
+original chain, preserve prior reservation bytes and avoid second audit/ordinary admission.
+Include known reservation refusal with successful diagnostic and its later diagnostic
+Unknown (exact original cause), plus default public Linux refusal. No worker launch or
+durable ACK is implied by these prelaunch cases. TryReserveTask owns its publisher lease.
+
+Then reuse the real stopped durable-owner sequence from RestartFencePublication,
+adapting its crash exit into observed settlement. The existing BootstrapRestartRoot
+handwrites a fixed generation; do not copy that shortcut into the new fixture. Obtain
+current generation through original FSM creation and bind exact task/context bytes.
+The controlled fixture worker (no provider/live GM) must genuinely complete, stop, settle
+outputs, reach StopValidated/PublicationIntent and acknowledge the bundle before actual
+inbox/audit cuts. Published-on-disk before ACK, actual ACK, and later Authority.RecordPublication
+are separate facts. Preserve exact bundle/ACK but do not manufacture acceptance capability.
+Retain known derived-warning and default-public-Linux refusal controls.
+
+Pool outer catch/finally cleanup is connected: retain original physical stop/output/task
+settlement and transfer quarantine/capacity ownership before exposing CSP; no new canonical
+telemetry/recovery after it. Required terminal-audit debt stays factual. Filtering Store
+catches alone is insufficient. Scope remaining required-audit owned close with the changed
+consumer; actual secondary lease-close fault remains separately unqualified. Full restart
+matrix, live provider, native Windows and full Bridge-to-durable-Store combination are not
+implied. No implementation of this next unit has begun. C2/F16/F18/other owners and final
+whole-selection reconciliation remain open; #1536 B2–B5 remain paused.
+
 ## Original terminal wait runtime — WIP/unbuilt/unrun, 2026-10-09
 
 After six reached ownership failures, the original method retains keyTask and always

@@ -1,0 +1,48 @@
+{
+  "mode": "ui_failure",
+  "outcome": null,
+  "Failure": "System.InvalidOperationException: controlled terminal Status startup failure\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TerminalWaitConsole.RunAsync[T](Func`1 func) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.TerminalWaitStorageOutcome.cs:line 266\n   at Spectre.Console.Progress.StartAsync[T](Func`2 action) in /_/src/Spectre.Console/Live/Progress/Progress.cs:line 121\n   at Spectre.Console.Status.StartAsync[T](String status, Func`2 func) in /_/src/Spectre.Console/Live/Status/Status.cs:line 117\n   at BookOfEternityClient.Core.GameEngine.WaitForTerminalSignalAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 509\n   at BookOfEternityClient.Core.GameEngine.WaitForTerminalSignalAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 598\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass501_1.<<OriginalTerminalWaitOwnsTasksAndPreservesStorageOutcome>g__ObserveOriginalOperationAsync|7>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.TerminalWaitStorageOutcome.cs:line 187",
+  "originalOperationJoined": true,
+  "completedBeforeRelease": false,
+  "activeInputAtReturn": 0,
+  "activeInspectionAtReturn": 0,
+  "inspections": 1,
+  "Calls": 0,
+  "Reads": 0,
+  "waitTaskCompletedAtReturn": true,
+  "OriginalWaitTaskJoined": true,
+  "WaitFailure": "System.Threading.Tasks.TaskCanceledException: A task was canceled.\n   at BookOfEternityClient.Core.GameEngine.<>c__DisplayClass383_0.<<WaitForTerminalSignalAsync>b__0>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 495\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "InputCallbackSettled": false,
+  "Invocations": 1,
+  "UiFailureObserved": true,
+  "knownHits": 0,
+  "harnessSource": null,
+  "KeyFailureRetained": false,
+  "ElapsedSeconds": 0.3037429,
+  "prior": {
+    "/tmp/boe-gameengine-turnlifecycle-7359226473df49ddbac143054636afd7/game_session/input/turn_request.json": "77u/eyJzZXNzaW9uSWQiOiJ0ZXJtaW5hbC1zdG9yYWdlIiwicmVxdWVzdElkIjoib3JpZ2luYWwtdGVybWluYWwtcmVxdWVzdCIsInR1cm5OdW1iZXIiOjl9"
+  },
+  "afterImages": {
+    "/tmp/boe-gameengine-turnlifecycle-7359226473df49ddbac143054636afd7/game_session/input/turn_request.json": "77u/eyJzZXNzaW9uSWQiOiJ0ZXJtaW5hbC1zdG9yYWdlIiwicmVxdWVzdElkIjoib3JpZ2luYWwtdGVybWluYWwtcmVxdWVzdCIsInR1cm5OdW1iZXIiOjl9"
+  },
+  "terminalAfter": null,
+  "terminalCommitted": null,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

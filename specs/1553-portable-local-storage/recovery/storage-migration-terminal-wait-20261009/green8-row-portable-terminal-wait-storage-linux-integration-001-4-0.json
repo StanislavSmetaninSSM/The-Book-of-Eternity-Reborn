@@ -1,0 +1,50 @@
+{
+  "mode": "ready_key_failure",
+  "outcome": "Completed",
+  "Failure": null,
+  "originalOperationJoined": true,
+  "completedBeforeRelease": false,
+  "activeInputAtReturn": 0,
+  "activeInspectionAtReturn": 0,
+  "inspections": 1,
+  "Calls": 1,
+  "Reads": 0,
+  "waitTaskCompletedAtReturn": true,
+  "OriginalWaitTaskJoined": true,
+  "WaitFailure": null,
+  "InputCallbackSettled": true,
+  "Invocations": 1,
+  "UiFailureObserved": false,
+  "knownHits": 0,
+  "harnessSource": null,
+  "KeyFailureRetained": false,
+  "ElapsedSeconds": 1.3059782,
+  "prior": {
+    "/tmp/boe-gameengine-turnlifecycle-820b6310b9c7432cad747022c4533d5b/game_session/input/turn_request.json": "77u/eyJzZXNzaW9uSWQiOiJ0ZXJtaW5hbC1zdG9yYWdlIiwicmVxdWVzdElkIjoib3JpZ2luYWwtdGVybWluYWwtcmVxdWVzdCIsInR1cm5OdW1iZXIiOjl9",
+    "/tmp/boe-gameengine-turnlifecycle-820b6310b9c7432cad747022c4533d5b/game_session/ready/turn_complete.json": "77u/eyJzdGF0dXMiOiJzdWNjZXNzIn0="
+  },
+  "afterImages": {
+    "/tmp/boe-gameengine-turnlifecycle-820b6310b9c7432cad747022c4533d5b/game_session/input/turn_request.json": "77u/eyJzZXNzaW9uSWQiOiJ0ZXJtaW5hbC1zdG9yYWdlIiwicmVxdWVzdElkIjoib3JpZ2luYWwtdGVybWluYWwtcmVxdWVzdCIsInR1cm5OdW1iZXIiOjl9",
+    "/tmp/boe-gameengine-turnlifecycle-820b6310b9c7432cad747022c4533d5b/game_session/ready/turn_complete.json": "77u/eyJzdGF0dXMiOiJzdWNjZXNzIn0="
+  },
+  "terminalAfter": null,
+  "terminalCommitted": null,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}
