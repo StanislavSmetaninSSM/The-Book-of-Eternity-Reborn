@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-pending-control-close-linux",
-      "reason": "T063/T065 actual21180322complete11knownPASS/11causalFAIL7.7860133s,bothcleanup/strict22roots; samegenuineCSP losttolateoriginalcloseIOException in11actualAPIowners. Initial22preparationFAILseparateimmutable. Packet84/30 verified. NextminimalactualCSPcapture/releasefalseaftercausalbaseline, exact22sourcegate thenfreshPlan/actual22. Known typedJSON/absence/audit,currentgeneration/allothergame_statebytes/fullgates/lease settlement. Directwrite/journal dormant scopeexplicit.",
+      "reason": "T063/T065 actual21180322complete11knownPASS/11causalFAIL7.7860133s,bothcleanup/strict22roots; samegenuineCSP losttolateoriginalcloseIOException in11actualAPIowners. Initial22preparationFAILseparateimmutable. Packet84/30 verified. Exactly11actualCSPcapture/releasefalseinstalledUNBUILT/UNRUN, preservinggate-finally/acq/order/borrowedAPI. OriginalRED/source/exact22gate thenfreshPlan/actual22. Known typedJSON/absence/audit,currentgeneration/allothergame_statebytes/fullgates/lease settlement. Directwrite/journal dormant scopeexplicit.",
       "contracts": [
         "#1553",
         "FR-002",

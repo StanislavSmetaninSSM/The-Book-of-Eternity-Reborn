@@ -115,12 +115,26 @@ internal static class GuardianPowerEventState
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(entries);
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        await AppendJournalEntriesAsync(
-            fs,
-            writeLease,
-            entries,
-            GuardianPowerJournalMutationMode.RepairAndAppend);
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
+        try
+        {
+            await AppendJournalEntriesAsync(
+                fs,
+                writeLease,
+                entries,
+                GuardianPowerJournalMutationMode.RepairAndAppend);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
+        }
     }
 
     internal static async Task AppendJournalEntriesAsync(
@@ -141,10 +155,24 @@ internal static class GuardianPowerEventState
     public static async Task RepairJournalAsync(FileSystemManager fs)
     {
         ArgumentNullException.ThrowIfNull(fs);
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        var content = await BuildRepairedJournalAsync(fs, writeLease);
-        if (content != null)
-            await fs.WriteFileAtomicAsync(writeLease, JournalPath, content);
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
+        try
+        {
+            var content = await BuildRepairedJournalAsync(fs, writeLease);
+            if (content != null)
+                await fs.WriteFileAtomicAsync(writeLease, JournalPath, content);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
+        }
     }
 
     internal static async Task<string?> BuildRepairedJournalAsync(

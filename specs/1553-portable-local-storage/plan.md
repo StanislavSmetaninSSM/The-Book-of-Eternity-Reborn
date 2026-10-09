@@ -1,3 +1,17 @@
+## Pending/control actual owner close installed — WIP, 2026-10-09
+
+Original causal RED22 preserved/ref/raw3c2bb9f6:84artifacts/30pins,11knownPASS/
+11genuineCSP losttolatecloseFAIL; alloriginalroutes/prereqs/fullsettlement reached.
+Exactly11 same owning scopes now explicitlease andCSP capture/rethrow followed by
+existing ReleaseOwnedLeaseAsync(false,publicationFailure). Original requestgate
+finally insidebody, acquisition/order/borrowed APIs/JSON/health semantics untouched.
+Known result behavior unchanged; no new close-success promise. Fixture rawprimary
+field now requires actualnonnullCSP (knownnull comparison never evidence).
+Installed UNBUILT/UNRUN; combined originalRED/source/exact22 gate thenfresh
+Plan22/actual22. Engine/media next exact6 draft independently PASS27ade1ae but
+not installed/run. No GM authored gameplay/schema/prompt/example change.
+Other owners/finalinventory/restore open; T061–T065unchecked/B2–B5paused.
+
 ## Original pending/control causal RED22 — WIP, 2026-10-09
 
 Corrected runtime unchanged source91bbbef7 fresh Plan21163122/1,0execution

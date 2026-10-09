@@ -100,19 +100,33 @@ internal static class GuardianTradeRequestState
 
     public static async Task WriteAsync(FileSystemManager fs, PendingGuardianTradeRequest request)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        await RequestWriteGate.WaitAsync();
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
         try
         {
-            ValidateReplacement(await ReadStateAsync(fs, writeLease), request);
-            await fs.WriteFileAtomicAsync(
-                writeLease,
-                PendingRequestPath,
-                JsonSerializer.Serialize(request, JsonOpts));
+            await RequestWriteGate.WaitAsync();
+            try
+            {
+                ValidateReplacement(await ReadStateAsync(fs, writeLease), request);
+                await fs.WriteFileAtomicAsync(
+                    writeLease,
+                    PendingRequestPath,
+                    JsonSerializer.Serialize(request, JsonOpts));
+            }
+            finally
+            {
+                RequestWriteGate.Release();
+            }
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
         }
         finally
         {
-            RequestWriteGate.Release();
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
         }
     }
 
@@ -122,8 +136,22 @@ internal static class GuardianTradeRequestState
         LocalInteractionScope scope,
         string expectedGuardiansRootJson)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        return await TryWriteScopedCoreAsync(fs, writeLease, request, scope, expectedGuardiansRootJson);
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
+        try
+        {
+            return await TryWriteScopedCoreAsync(fs, writeLease, request, scope, expectedGuardiansRootJson);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
+        }
     }
 
     internal static async Task<bool> TryWriteScopedAsync(
@@ -234,8 +262,22 @@ internal static class GuardianTradeRequestState
         FileSystemManager fs,
         PendingGuardianTradeRequest expectedRequest)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        return await ClearIfMatchesCoreAsync(fs, writeLease, expectedRequest);
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
+        try
+        {
+            return await ClearIfMatchesCoreAsync(fs, writeLease, expectedRequest);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
+        }
     }
 
     internal static async Task<bool> ClearIfMatchesAsync(
@@ -459,16 +501,84 @@ internal static class GuardianTradeRequestState
         if (!RealmSemantics.HasResolvedRealm(currentRealm))
             return;
 
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        await RequestWriteGate.WaitAsync();
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
         try
         {
-            if (!fs.FileExists(writeLease, PendingRequestPath))
-                return;
-
-            var json = await fs.ReadFileAsync(writeLease, PendingRequestPath);
-            if (!IsAfterlifeRealm(currentRealm))
+            await RequestWriteGate.WaitAsync();
+            try
             {
+                if (!fs.FileExists(writeLease, PendingRequestPath))
+                    return;
+    
+                var json = await fs.ReadFileAsync(writeLease, PendingRequestPath);
+                if (!IsAfterlifeRealm(currentRealm))
+                {
+                    await CoordinatedStateWriteHelper.TryCommitAsync(
+                        fs,
+                        writeLease,
+                        new CoordinatedStateWriteHelper.PlannedWrite(
+                            PendingRequestPath,
+                            json,
+                            NextJson: null,
+                            RequireCurrentBaseline: true));
+                    return;
+                }
+    
+                if (string.IsNullOrWhiteSpace(json))
+                    return;
+    
+                PendingGuardianTradeRequest? request;
+                try
+                {
+                    request = JsonSerializer.Deserialize<PendingGuardianTradeRequest>(json, JsonOpts);
+                }
+                catch
+                {
+                    return;
+                }
+    
+                if (request == null ||
+                    string.IsNullOrWhiteSpace(request.RequestId) ||
+                    string.IsNullOrWhiteSpace(request.GuardianId) ||
+                    string.IsNullOrWhiteSpace(request.GuardianName) ||
+                    string.IsNullOrWhiteSpace(request.AbodeId) ||
+                    string.IsNullOrWhiteSpace(request.ReturnCycleId) ||
+                    request.DerivedTradeSlotCount <= 0)
+                {
+                    return;
+                }
+    
+                var guardiansJson = await fs.ReadFileAsync(writeLease, "game_state/meta/guardians.json");
+                if (string.IsNullOrWhiteSpace(guardiansJson))
+                    return;
+    
+                try
+                {
+                    if (JsonNode.Parse(guardiansJson) is not JsonObject guardiansRoot ||
+                        guardiansRoot["guardians"] is not JsonArray guardians)
+                    {
+                        return;
+                    }
+    
+                    var guardian = guardians.OfType<JsonObject>()
+                        .FirstOrDefault(item =>
+                            string.Equals(GetNodeString(item["guardianId"]), request.GuardianId, StringComparison.OrdinalIgnoreCase));
+                    if (guardian?["tradeInventory"] is not JsonObject tradeInventory)
+                        return;
+    
+                    if (!InventoryMatchesRequestContract(tradeInventory, request))
+                        return;
+    
+                    if (!ReceiptMatchesRequestContract(FindMatchingReceipt(guardian, request), request, tradeInventory))
+                        return;
+    
+                }
+                catch
+                {
+                    // keep pending request until canonical state is readable again
+                    return;
+                }
                 await CoordinatedStateWriteHelper.TryCommitAsync(
                     fs,
                     writeLease,
@@ -477,75 +587,21 @@ internal static class GuardianTradeRequestState
                         json,
                         NextJson: null,
                         RequireCurrentBaseline: true));
-                return;
             }
-
-            if (string.IsNullOrWhiteSpace(json))
-                return;
-
-            PendingGuardianTradeRequest? request;
-            try
+            finally
             {
-                request = JsonSerializer.Deserialize<PendingGuardianTradeRequest>(json, JsonOpts);
+                RequestWriteGate.Release();
             }
-            catch
-            {
-                return;
-            }
-
-            if (request == null ||
-                string.IsNullOrWhiteSpace(request.RequestId) ||
-                string.IsNullOrWhiteSpace(request.GuardianId) ||
-                string.IsNullOrWhiteSpace(request.GuardianName) ||
-                string.IsNullOrWhiteSpace(request.AbodeId) ||
-                string.IsNullOrWhiteSpace(request.ReturnCycleId) ||
-                request.DerivedTradeSlotCount <= 0)
-            {
-                return;
-            }
-
-            var guardiansJson = await fs.ReadFileAsync(writeLease, "game_state/meta/guardians.json");
-            if (string.IsNullOrWhiteSpace(guardiansJson))
-                return;
-
-            try
-            {
-                if (JsonNode.Parse(guardiansJson) is not JsonObject guardiansRoot ||
-                    guardiansRoot["guardians"] is not JsonArray guardians)
-                {
-                    return;
-                }
-
-                var guardian = guardians.OfType<JsonObject>()
-                    .FirstOrDefault(item =>
-                        string.Equals(GetNodeString(item["guardianId"]), request.GuardianId, StringComparison.OrdinalIgnoreCase));
-                if (guardian?["tradeInventory"] is not JsonObject tradeInventory)
-                    return;
-
-                if (!InventoryMatchesRequestContract(tradeInventory, request))
-                    return;
-
-                if (!ReceiptMatchesRequestContract(FindMatchingReceipt(guardian, request), request, tradeInventory))
-                    return;
-
-            }
-            catch
-            {
-                // keep pending request until canonical state is readable again
-                return;
-            }
-            await CoordinatedStateWriteHelper.TryCommitAsync(
-                fs,
-                writeLease,
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    PendingRequestPath,
-                    json,
-                    NextJson: null,
-                    RequireCurrentBaseline: true));
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
         }
         finally
         {
-            RequestWriteGate.Release();
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
         }
     }
 

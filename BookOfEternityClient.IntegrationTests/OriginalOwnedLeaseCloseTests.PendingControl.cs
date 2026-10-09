@@ -199,7 +199,7 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         var generationAfter = CleanupPublicationCut.ReadOptional(files.SessionGenerationPath);
         var afterFiles = ReadCanonicalFiles();
         output.WriteLine(JsonSerializer.Serialize(new { mode, uncertain, root, boundary, actualOwnerState, acquisitionPauses, publicationPauses,
-            attachments, closer.Calls, failure = failure?.ToString(), samePrimary = ReferenceEquals(failure, cut.OriginalUncertainty),
+            attachments, closer.Calls, failure = failure?.ToString(), samePrimary = cut.OriginalUncertainty != null && ReferenceEquals(failure, cut.OriginalUncertainty),
             sameSecondary = ReferenceEquals(failure?.Data["CoordinatedLeaseReleaseFailure"], closeFailure), lockAvailable, gateAvailable,
             activeAfter = original!.IsActive, ambientClosed = original.AmbientRegistration == null,
             mainClosed = original.MainAdmission == null, contextClosed = original.ExternalPublicationContext == null,
