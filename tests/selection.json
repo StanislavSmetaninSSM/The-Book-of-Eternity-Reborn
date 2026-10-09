@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-engine-snapshot-owning-close-linux",
-      "reason": "T063/T065 independentfixture/design/exact8PASS3d988edd +optionalhookhelpers9116/4094 installedbyte-identical; productionfourunchanged UNBUILT/UNRUN. One sharedfreshintegrationPlan18/4 builds required InteractionGREEN8/2+ColdGREEN2 and separateEngineoriginalbaseline8. Genuine signedsnapshot/backup/nullcheckpoint/archive/stall/input, actualoriginalcut/fullsettlement/allotherGameSession atIntent/strict16roots8cases, AudioDispose includesposthelperpreparationfailure. NoGM/game/B2/native/knownlateclose/fullflow claim.",
+      "reason": "T063/T065 runtime1fab649c; freshboth discovery230021605/11379,0exec64.5713977s; Plan2301318/1 NoBuild0exec3.9777799s; actual2301468/8PASS15.4275406s1/1bothcleanup/strict16roots0skipdupTimeout. Four actualsameCSP+secondary/fullsettlement/noLater/Closing0 andknownsignedarchive/stall/input/realbackup-nullcheckpoint/currentvalidator. Independentcausal/source/exact8PASS; finalGREEN/catalog/carriergatepending. Storageonly noB2/native/wholeflow/knownlateclose.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -16,7 +16,7 @@
     },
     {
       "category": "portable-original-cold-main-launch-close-linux",
-      "reason": "T063/T065 independentfixture/design/exact2 PASSf213d400 real original coordinator coldLaunch beforePrepared/native. Productionunchanged UNBUILT/UNRUN. One freshsharedPlanQTE2+Cold2 then separateactualoriginalbaselines. No successfulfullLaunch/native/process/B2claim.",
+      "reason": "T063/T065 runtime03752412; actual2251592/2PASS7.3376559s1/1bothcleanupstrict2roots; finalGREEN/raw/carrier1ac0af6fPASS. OriginalgenerationbeforePrepared/native, callbacksentinel0prepare/recordnull/retiredguard. Sharedcatalog230021605/11379,0execution. No fullLaunch/native/process/B2claim.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -29,7 +29,7 @@
     },
     {
       "category": "portable-original-qte-acceptance-owning-close-linux",
-      "reason": "T063/T065 correctedactualQTEterminalgraph independent fixture/design/exact6+2 PASSac2b6dbb. Original initial2 failedPREPARATION beforeIntent; cause source-inferred, taskstackunrecorded. FreshQTE-onlyPlan2/actual2 next; unchangedInteraction6 notrerun. All production4ownersunchanged, no syntheticauthority/native/B2/wholeflow qualification.",
+      "reason": "T063/T065 runtimeda38ec7b; same ONE actual2251278/8PASS combinedwithInteraction6, finalGREEN/raw/carrier1ac0af6fPASS. OriginalQTE2 prepFAIL retained; corrected2243021P1causalF genuine. ActualBranchChoice3terminalroutes/runtime/deferredcapture. Sharedcatalog230021605/11379,0execution; no replay/fullgame/B2/native/knownlateclose.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -42,7 +42,7 @@
     },
     {
       "category": "portable-original-interaction-owning-close-linux",
-      "reason": "T063/T065 actualoriginalInteraction223557 at161c0e36:3knownPASS/3genuinecausalFAIL, sameCSPmaskedsamesecondaryclose/fullsettlement/noLater/Closing0/currentgeneration. Immutableinitial includesQTE2preparation failures. PermanentlysplitInteraction6/QTE2; unchangedsix notreplayed. Originalproductionunchanged. CorrectedQTEbaseline before4scopefix combinedgate.",
+      "reason": "T063/T065 runtimeda38ec7b; actual2251278/8PASS12.4908305s2/2bothcleanupstrict8roots combinedwithQTE2; finalGREEN/raw/carrier1ac0af6fPASS. Guardianpower/receipt/Training900spend/Explorerprojectedsave/currentvalidators. Initial3P3causalF preserved. Sharedcatalog230021605/11379,0execution; noB2/native/fullflow/knownlateclose.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -55,7 +55,7 @@
     },
     {
       "category": "portable-original-afterlife-state-owning-close-linux",
-      "reason": "T063/T065 originalsource3b195aa4 freshsharedPlan22231416/2 0exec106.4841160s; separateactual222617complete8=4knownPASS/4causalFAIL9.1862446s,1/1bothcleanup/strict8roots0skipdupTimeout. Actual4originalowners/Intent/member0/samegenuineCSPmaskedlateclose/fullsettlement/noLater/Closing0. KnownrealBuildplan/afterimages/memoryallocation1to0/progression/currentvalidationPASS. Packet26/19 verifiedoriginals. Nextminimal4originalscopefix combinedsource/exact8gate thenfreshGREEN8; noaggregateGREEN16/fullgame/B2/native/knownlateclose qualification.",
+      "reason": "T063/T065 runtime940bcf9e; actual2235318/8PASS9.6252663s1/1bothcleanupstrict8roots0skipdupTimeout; final98f7def1PASS; realplan/bootstrap/allocationconsume1to0/acceptedprogression/currentvalidator. Immutable4P4causalF retained. Sharedcatalog230021605/11379,0execution; noB2/native/fullgame/knownlateclose.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -68,7 +68,7 @@
     },
     {
       "category": "portable-original-normalizer-owning-close-linux",
-      "reason": "T063/T065 runtime92a6f54d freshsharedPlan22231416/2 at3b195aa4 0exec106.4841160s; separateactual2225118/8PASS9.6393409s1/1complete/bothcleanup/strict8roots0skipdupTimeout. Same4genuineCSP+secondary/fullsettlement/noLater/Closing0 andactualknownplans/journal/item/history/currentvalidatorsPASS. Packet50/44 verified, immutableRED25/22; independentRED/source/exact8PASS, finalGREEN/raw/carrierpending. NoaggregateGREEN16/fullflow/game/B2/native/knownlateclosequalification. Catalogpendingstablebatch.",
+      "reason": "T063/T065 runtime92a6f54d; actual2225118/8PASS9.6393409s1/1bothcleanupstrict8roots0skipdupTimeout; finalb2e9d2aPASS. Actual4sameCSP+secondary/currentplans/journal/itemhandoff/history/validators. Immutable4P4causalF retained. Sharedcatalog230021605/11379,0execution; noB2/native/fullgame/knownlateclose.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -496,7 +496,7 @@
     },
     {
       "category": "portable-mods-original-ui",
-      "reason": "F16 original /моды composed2: choices1@135881/142939 plus corrected detail1@5e0a/143241. Original2 baseline1PASS1old-path-oracleFAIL retained. Exact intentional manual line once, remaining technical/hidden-error checks and strict root cleanup; runtime unchanged, no desktop/native/whole-UI claim.",
+      "reason": "F16 original /\u043c\u043e\u0434\u044b composed2: choices1@135881/142939 plus corrected detail1@5e0a/143241. Original2 baseline1PASS1old-path-oracleFAIL retained. Exact intentional manual line once, remaining technical/hidden-error checks and strict root cleanup; runtime unchanged, no desktop/native/whole-UI claim.",
       "contracts": [
         "#1553",
         "T064-STORAGE-CUTS",
@@ -597,7 +597,7 @@
     },
     {
       "category": "portable-save-load-literal-names-linux",
-      "reason": "T063 F16 causal baseline1302114/4FAIL preserved; runtimea3c59545/source533078a9 actual1314544/4PASS within22. Exact held enumeration, Save→typedLoad→Save, manifested commit and positively reached literal MemberPublished rollback; no signed-producer or save-destination claim.",
+      "reason": "T063 F16 causal baseline1302114/4FAIL preserved; runtimea3c59545/source533078a9 actual1314544/4PASS within22. Exact held enumeration, Save\u2192typedLoad\u2192Save, manifested commit and positively reached literal MemberPublished rollback; no signed-producer or save-destination claim.",
       "contracts": [
         "#1553",
         "FR-005",
@@ -1023,7 +1023,7 @@
     },
     {
       "category": "portable-prepared-shining-outcome-linux",
-      "reason": "Final5 atbbf/023023 passes unchanged causal/known4 plus original pure gate1; same actual CSP/no later measured work. Dead private cluster is separately source-censused5→0, not a runtime RED.",
+      "reason": "Final5 atbbf/023023 passes unchanged causal/known4 plus original pure gate1; same actual CSP/no later measured work. Dead private cluster is separately source-censused5\u21920, not a runtime RED.",
       "contracts": [
         "#1553",
         "FR-003",

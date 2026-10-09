@@ -1,3 +1,27 @@
+## EngineSnapshot actual GREEN8 and shared ownership catalog — WIP, 2026-10-09
+
+Runtime/source1fab649c, independent causal/source/exact8 PASS. Fresh both-project
+ValidateCatalog230021:605categories/11379methods-files,0testexecution64.5713977s,
+exit0/noTimeout/bothcleanup. Same ONE catalog appended to10 latest owner packets;
+this is inventory discovery, not10 executions or consumer qualification.
+Engine NoBuildPlan230131 selects8/1,0exec3.9777799s afterthatfreshbuild;
+actual2301468/8PASS15.4275406s1/1complete,bothcleanup/0skipduplicateTimeout/
+strict16rootsabsent. Four sameCSP+secondary/fullsettlement/noLater/Closing0,
+actualknownarchive/index/hash/retirement, stallerror, correlatedinput and real
+repairrestore-nullcheckpoint/backups/currentvalidator PASS.
+[Enginepacket](recovery/storage-migration-original-engine-snapshot-close-20261009/manifest.json)
+retains immutable33/21 RED, adds GREEN32/21 andcatalog5/21:total70artifacts63pins.
+InteractionGREEN8 andColdGREEN2 final independent carrier1ac0af6f PASS; packets
+125artifacts119pins atthatcarrier, unchanged oldgroups. Final EngineGREEN/catalog/
+raw/carrier gate next, then approved TreatmentAdvance3 originalbaseline. Fixture
+uninstalled61df2636 registers actualreturnedtransaction for disposal before
+prerequisiteassertions, independentfixture/design/exact3PASS. Originalproduction
+Advance unchanged; known_close source-only gap, uncertainty alreadyprotected.
+Do not add PublishedAgreementAdvanced toClosesReceipt; Probe->Complete remains
+active. Continue remaining EngineAscension/finalizedreplay/Saveimagesroot and
+170candidate semanticcensus/freshGitHub-onlyclone. T061–T065/B2–B5/native/known
+lateclose forotherowners remainopen. Storage lifetime only; no GM contractchange.
+
 ## Original Engine snapshot four uncertainty scopes installed — WIP, 2026-10-09
 
 Exactly4 originalowning scopes retain/rethrow samegenuineCSP andexisting
