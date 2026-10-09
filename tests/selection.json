@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-remaining-owning-close-linux",
-      "reason": "T063/T065 test-first WIP12/1 UNBUILT/UNRUN: six original owning publishers each actual known positive and unknown primary plus late actual-owner secondary close; no production changes yet. Independent fixture/design/exact12 gate before fresh original Plan/actual causal baseline. Actual root/route acquisition or introspection preparation failure is UNRUN, never causal runtime RED.",
+      "reason": "T063/T065 actual original six-route RED atf5856ff5/200030:6knownPASS/6causalFAIL,12complete,all12strictroots absent. Same actual CSP lost to actual late secondary close for bootstrap/UI/profile/prompt generation/prompt lock/QTE; preparation history separately preserved. Minimal original close fix next, no current-source GREEN claim.",
       "contracts": [
         "#1553",
         "FR-002",

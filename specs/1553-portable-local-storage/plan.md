@@ -1,3 +1,23 @@
+## Remaining six original owners causal RED12 — WIP, 2026-10-09
+
+Refined captured-owner fixture and partial evidence independent PASSf5856ff5.
+Fresh integration Plan19582912/1,0execution53.6245835s. Actual20003012complete:
+6knownPASS/6causalFAIL8.3392484s,1/1complete,0duplicates/timeout,both cleanup.
+All six actual original public routes reach publication with unique inspected
+original active lease; captured UI/profile/prompt-lock now reached. Actual same
+CSP is lost to same secondary IOException in each negative, with one actual
+late attachment/close. All lease/ambient/main/context/lock settlement and12strict
+root cleanup occur; ordinary known DTO/config/lock/profile/QTE/session controls
+PASS. Earlier3PASS/3causalFAIL/6prepFAIL and compile prep remain separate immutable
+groups; no prior partial counts combined into this12. [Packet](recovery/storage-migration-original-remaining-close-20261009/manifest.json)
+verified stored/original/source hashes. Next minimal CSP catch + existing
+ReleaseOwnedLeaseAsync(completed:false) at six actual owners, preserving exact
+original body/normal scope/QTE state/session update order; read-only rollback
+refresh unchanged. Combined original RED/source/exact12 independent gate then
+fresh Plan12/actual12. Final new-category catalog will be combined with remaining
+mod/UI ownership changes, discovery only. No GM mechanic/schema/prompt/example
+changes; T061–T065 unchecked/B2–B5 paused/native/systemd/whole migration open.
+
 ## Actual captured owner reachability refined — test-first WIP, 2026-10-09
 
 Source establishes the missing-owner cause without an extra diagnostic run:
