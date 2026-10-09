@@ -1,3 +1,12 @@
+## Trade/transport source gate accepted — WIP verification, 2026-10-09
+
+Independent combinedcausal/source/exact14 PASScf7d1b70. Five literalowning
+branches only; original recursiveborrowed/core semantics andfixture preserved.
+Reviewer clarified stale copied excludes: NPC3 versus Storage/Vehicle2, applied
+metadataonly. FreshintegrationPlanNPC6+Storage8=14/2 thenactual14; no unchanged
+engine/Inventory/pending/mod/browser replay. Fullcatalog deferredstablebatch;
+knownlateclose/resource-bearing/fulltrade/game/B2/native remain unqualified.
+
 ## Original trade/transport uncertainty correction installed — WIP, 2026-10-09
 
 Exactlyfive original owningnulllease branches (NPC3/StorageVehicle2) explicitly

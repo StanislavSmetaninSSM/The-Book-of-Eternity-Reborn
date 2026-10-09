@@ -4,7 +4,7 @@
     {
       "id": "portable-original-npc-trade-owning-close-linux",
       "responsibility": "Three actual original NPC Buy/Sell/BuyBack owning branches6 known/genuine publication uncertainty plus secondary lateclose. Complete current canonical actor/NPCsInScene identity/location/profile/characteristics, sealed resource-free stock/player items, real slots/receipts/current resources; buyback derives actual prior Sell. Actual DTO/money/slot/buyback/physicalcarrier/history/currentvalidation, original owner/fullsettlement/generation/other game_state bytes/strict roots.",
-      "excludes": "No resource-bearing stacks, full trade/console-browser gameplay or business B2-B5, native Windows/live GM/provider/process. Known controls have no injected late closer. Five owning branches only, borrowed/core APIs unchanged.",
+      "excludes": "No resource-bearing stacks, full trade/console-browser gameplay or business B2-B5, native Windows/live GM/provider/process. Known controls have no injected late closer. Three NPC owning branches only, borrowed/core APIs unchanged.",
       "changeHints": [
         "BookOfEternityClient/Services/NpcTradeService.cs",
         "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.TradeTransport.cs"
@@ -29,7 +29,7 @@
     {
       "id": "portable-original-storage-transport-owning-close-linux",
       "responsibility": "Two actual original Storage/Vehicle owning branches, deposit/retrieve4operations8 known/genuine publication uncertainty plus secondary lateclose. Current sealed resource-free items, accepted location/world/index/carrier/pristine resources. Typed outcomes/actual physicalcarrier/immutablehistory/currentvalidation, same originalowner/Intent/fullsettlement/generation/other game_state bytes/strict roots.",
-      "excludes": "No resource-bearing stacks, full trade/console-browser gameplay or business B2-B5, native Windows/live GM/provider/process. Known controls have no injected late closer. Five owning branches only, borrowed/core APIs unchanged.",
+      "excludes": "No resource-bearing stacks, full trade/console-browser gameplay or business B2-B5, native Windows/live GM/provider/process. Known controls have no injected late closer. Two Storage/Vehicle owning branches only, borrowed/core APIs unchanged.",
       "changeHints": [
         "BookOfEternityClient/Services/StorageTransportMoveService.cs",
         "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.TradeTransport.cs"
