@@ -190,10 +190,55 @@ public sealed partial class OriginalOwnedLeaseCloseTests
             Assert.Null(failure); Assert.Equal(0, attachments); Assert.Equal(0, closer.Calls);
             Assert.NotNull(targetAfter); Assert.False(targetAfter.SequenceEqual(CleanupPublicationCut.Foreign));
             Assert.False(File.Exists(cut.JournalPath));
+            var returned = operation!.GetType().GetProperty("Result")!.GetValue(operation);
+            using var generationDocument = JsonDocument.Parse(generationAfter!);
+            var actualGeneration = generationDocument.RootElement.GetProperty("GenerationId").GetString();
             if (mode != "prompt_generation") Assert.Equal(generationBefore, generationAfter);
-            else Assert.False(string.IsNullOrWhiteSpace(JsonDocument.Parse(generationAfter!).RootElement.GetProperty("GenerationId").GetString()));
-            if (attempt != null) { Assert.Equal("Completed", attempt.State); Assert.NotNull(attempt.LastCompletion); Assert.NotNull(attempt.Ending); }
-            if (mode == "prompt_lock") Assert.NotNull(Assert.IsType<ExplorerCommandResult>(operation!.GetType().GetProperty("Result")!.GetValue(operation)).InteractiveSession);
+            else Assert.False(string.IsNullOrWhiteSpace(actualGeneration));
+            if (mode == "bootstrap")
+            {
+                Assert.Equal(actualGeneration, Assert.IsType<string>(returned));
+                var decoded = JsonSerializer.Deserialize<GameSettings>(targetAfter, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+                Assert.NotNull(decoded);
+                Assert.Equal(JsonSerializer.Serialize(manager.Settings), JsonSerializer.Serialize(decoded));
+            }
+            if (mode == "ui_lock")
+            {
+                var acquired = Assert.IsType<LocalUiSessionLockResult>(returned);
+                Assert.True(acquired.Acquired); Assert.NotNull(acquired.Lease); Assert.NotNull(acquired.ActiveLock);
+                Assert.Equal("owned-close", acquired.Lease.OwnerId); Assert.Equal(actualGeneration, acquired.Lease.SessionGeneration);
+                using var persisted = JsonDocument.Parse(targetAfter);
+                Assert.Equal(acquired.Lease.LeaseToken, persisted.RootElement.GetProperty("leaseToken").GetString());
+                Assert.Equal(acquired.ActiveLock.OwnerId, persisted.RootElement.GetProperty("ownerId").GetString());
+            }
+            if (mode == "profile")
+            {
+                var recorded = Assert.IsType<DarenRewardProfileWriteResult>(returned);
+                Assert.True(recorded.Updated); Assert.NotNull(recorded.Profile.DarenShowcase);
+                Assert.Equal("perfect_shadow", recorded.Profile.DarenShowcase.BestTierId);
+                Assert.Equal(90, recorded.Profile.DarenShowcase.BestScore);
+                var persisted = JsonSerializer.Deserialize<DarenRewardProfileState>(targetAfter)!;
+                Assert.Equal(recorded.Profile.DarenShowcase.BestTierId, persisted.DarenShowcase!.BestTierId);
+                Assert.Equal(recorded.Profile.DarenShowcase.BestScore, persisted.DarenShowcase.BestScore);
+            }
+            if (mode == "prompt_generation")
+            {
+                Assert.Same(noPrompt, returned); Assert.Equal(CommandExecutionState.Completed, noPrompt.State);
+                Assert.Null(noPrompt.InteractiveSession);
+                var sessions = promptService.GetType().GetField("_sessions", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(promptService)!;
+                Assert.Equal(0, sessions.GetType().GetProperty("Count")!.GetValue(sessions));
+            }
+            if (attempt != null)
+            {
+                var completed = Assert.IsType<QteActionResolution>(returned);
+                Assert.Equal("Completed", completed.State); Assert.Equal("Completed", attempt.State);
+                Assert.Same(completed.Completion, attempt.LastCompletion); Assert.NotNull(attempt.Ending);
+            }
+            if (mode == "prompt_lock")
+            {
+                var attached = Assert.IsType<ExplorerCommandResult>(returned);
+                Assert.Equal(CommandExecutionState.RequiresInput, attached.State); Assert.NotNull(attached.InteractiveSession);
+            }
         }
     }
 
