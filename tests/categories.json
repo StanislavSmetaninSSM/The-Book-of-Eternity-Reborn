@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-mods-original-ui-detail",
+      "responsibility": "Isolated original /моды detail-panel manual-opening-path oracle; exact current path label and single line are required, all other technical/error checks preserved.",
+      "excludes": "Unchanged choices Fact already passed baseline; actual desktop launch, entire Explorer UI, runtime/settings mutation and native qualification.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
+        "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-mods-original-ui",
       "responsibility": "Two original /моды Explorer panels: detail loop and player-facing choices after canonical listing admission, preserving hidden-error checks and exact manual-opening path contract.",
       "excludes": "Actual desktop launch, complete Explorer UI, settings mutation, manifest atomicity and native qualification.",

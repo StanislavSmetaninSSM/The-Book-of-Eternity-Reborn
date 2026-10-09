@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-mods-original-ui-detail",
+      "reason": "F16 isolated original detail-panel fixture oracle correction after baseline135881/1429391PASS1old-oracleFAIL. Exact one intentional manual-path line allowed; all other technical/error assertions retained. First choices PASS retained without replay; fresh Plan1/actual1 pending.",
+      "contracts": [
+        "#1553",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-mods-original-ui",
       "reason": "F16 outstanding original /моды UI oracle omitted from accepted listings15: exact two original panels, no whole console-explorer. First record unchanged old no-game_session assertion, then permit only the exact intentional manual-opening path while retaining technical-leak/hidden-error checks. Runtime unchanged; current execution pending.",
       "contracts": [

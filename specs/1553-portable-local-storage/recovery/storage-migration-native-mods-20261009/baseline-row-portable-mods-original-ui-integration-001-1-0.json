@@ -1,0 +1,12 @@
+{
+  "kind": "mods-original-ui",
+  "scenario": "TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices",
+  "root": "/tmp/boe-explorer-tests-a5fb6b40b81a4db2b8f3ef720199cacd",
+  "expectedManualPath": "/tmp/boe-explorer-tests-a5fb6b40b81a4db2b8f3ef720199cacd/game_session/mods",
+  "renderedText": " 🧩 Системные моды \n🧩 Глобальные системные моды\n\nЭто глобальные надстройки над всей игрой.\nАктивные моды учитываются при подготовке ходов и правил мира.\nВключение и выключение выполняется через /опции.\nПеред включением проверьте описание: мод может менять баланс, тон и доступные правила.\nПуть для ручного открытия: /tmp/boe-explorer-tests-a5fb6b40b81a4db2b8f3ef720199cacd/game_session/mods\n\nНайдено модов: 1  Активно: 1\n\n● Активен Тонкая настройка мира",
+  "choices": [
+    "📄 Тонкая настройка мира",
+    "📂 Открыть папку модов",
+    "← Назад"
+  ]
+}

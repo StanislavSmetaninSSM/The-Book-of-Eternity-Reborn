@@ -1,0 +1,79 @@
+{
+  "Categories": [
+    "legacy-physical-publication-windows",
+    "portable-mods-original-ui"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "135881b0563b0123e3917e778faf2004c12b4449",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 91.9868326,
+  "Descriptors": [
+    {
+      "Name": "legacy-physical-publication-windows-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "legacy-physical-publication-windows",
+      "Categories": [
+        "legacy-physical-publication-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-mods-original-ui-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-mods-original-ui",
+      "Categories": [
+        "portable-mods-original-ui"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices|FullyQualifiedName=BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

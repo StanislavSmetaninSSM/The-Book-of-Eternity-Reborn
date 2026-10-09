@@ -1320,7 +1320,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Глобальные системные моды", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("System Mods", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("game_session", renderedText, StringComparison.OrdinalIgnoreCase);
+        var manualPath = _systemModService.GetModsDirectoryPath();
+        var manualLine = "Путь для ручного открытия: " + manualPath;
+        Assert.Contains(manualLine, renderedText, StringComparison.Ordinal);
+        Assert.Equal(1, renderedText.Split(manualLine, StringSplitOptions.None).Length - 1);
+        var playerText = renderedText.Replace(manualLine, string.Empty, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_session", playerText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Папка модов", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 

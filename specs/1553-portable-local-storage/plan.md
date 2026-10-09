@@ -1,3 +1,19 @@
+## Original mods oracle — causal old assertion failure, narrow fixture correction WIP
+
+Frozen135881 source/exact8 independentPASS. Fresh Plan1427598/2,0execution92.2573195s
+(build87.61s); actual ONLYmods1429392/2,1PASS/1FAIL7.7996347s,complete1/1,bothcleanup,
+0skip/duplicate/timeout. The detail row fails exactly the old no-game_session assertion:
+raw rendering contains the current exact intentional manual-opening path. No hidden-error,
+listing or runtime failure. Original choices Fact passes; both strict roots removed.
+Native6 were built/discovered only, never executed. Baseline packet12artifacts/13pins
+preserves original logs/TRX/raw and source; no native/whole migration acceptance.
+
+Only failed detail oracle now requires exact manual label+path once and excludes only
+that complete literal line from the old game_session-negative check. All other original
+technical/error/title assertions unchanged. New exact detail1 owner avoids replaying
+unchanged choicesPASS1. No runtime/player-copy change. Frozen source review then fresh
+Plan1/actual1 and matching catalog; all historical baseline evidence retained.
+
 ## F18 native legacy6 and original mods UI2 — bounded source WIP, 2026-10-09
 
 Source #1553, based3b249330. Six original Windows physical-publication tests now use
