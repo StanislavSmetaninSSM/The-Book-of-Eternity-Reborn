@@ -1,3 +1,20 @@
+## Ascension original owning guard and optional images root guard — WIP, 2026-10-09
+
+Exactly CheckAscensionTrigger originallexicalowning scope captures/rethrows SAME
+CSP andexistingRelease(false,sameexception) beforeoriginalfollow-up/ordinaryouter
+catch. Originalbody/order/returns/read/commit/outercatch unchanged. Originalcausal
+unknownmaskedcloser then2laterleases andoutwardInvalidDataException retained
+Engineinitial17/19 at6f537a21; replay2 are prepFAIL, notcausal. Saveexactoptional
+images root nowDirectory.Exists && !IsReparsePoint beforehostchildenumeration,
+matchingexistingAddDirectory skip policy. OriginalnormalPASS/linkedNotCreated
+causalFAIL retained13/10 (plusbuildrefusal2/10);0imagesread inlinkedoriginal,
+noexternalread claim. RuntimebothUNBUILT/UNRUN beforecombinedcausal/sourcegate.
+TreatmentGREEN3 packet41artifacts54pins, actualProbe->Completeknown_close plus
+alreadyuncertainty PASS; finalGREEN/raw/carriergate next. Counts correctedactual
+GREEN20/18, previousRED19/18/buildrefusal2/18 immutable. Replaycorrectionuninstalled
+2e1ec5c3 andProposalStorefixture4eacfec9 nextreview. T061–T065/B2–B5/nativeopen;
+noGM-facing capability/schema/authoring change forstorageguards.
+
 ## TreatmentGREEN3 / Engine initial4 / Savecausal2 — WIP, 2026-10-09
 
 One freshintegrationPlan2313589/3 at90b160c2,0exec47.6407767s; separateactual
@@ -7,7 +24,7 @@ Engine2316024complete=ascensionknownPASS/ascensioncausalFAIL/replay2PREPARATIONF
 linkedrootcausalFAIL7.9796097s1/1bothcleanup/strict2roots0skipdupTimeout.
 NoaggregateGREEN9. Treatmentknown_close actualPublishedAgreementAdvanced with
 sameactiveProbe->CompleteFinalized PASS; unknownsameCSP+secondary/noLater/Closing0.
-Packet immutableRED19/18+build_refusal2/18+GREEN19/18 verifiedoriginals.
+Packet immutableRED19/18+build_refusal2/18+GREEN20/18 verifiedoriginals.
 EngineascensiongenuineCSPmaskedsamecloser thenordinarycatch logs/deletes andtwo
 laterleases, outwardInvalidDataException; allgenuinefirstcut evidence retained.
 Replay beforearm ArgumentNullException atcommandread afteractualComplete already

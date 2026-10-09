@@ -3849,7 +3849,10 @@ public partial class GameEngine
 
             var localResourceTurn = Math.Max(1, _gameLoop.TurnNumber + 1);
             {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? publicationUncertainty = null;
+            try
+            {
             JsonObject? existingShiningRoot = null;
             var existingShiningJson = await _fs.ReadFileAsync(
                 writeLease,
@@ -3939,6 +3942,17 @@ public partial class GameEngine
                     returnCyclePlan))
             {
                 throw new InvalidOperationException("Не удалось безопасно зафиксировать единый ascension handoff для Shining, soul и common resource ledger/history.");
+            }
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                publicationUncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
             }
             }
 
