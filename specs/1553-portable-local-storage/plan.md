@@ -1,3 +1,22 @@
+## Original browser established-result causal RED12 — WIP, 2026-10-09
+
+Fixture/design/exact12 independently reviewed and installed byte-identical at
+1dd970686c0ef039902895aa64367c21d03d2fd3/ref/raw4. Fresh integration Plan203536
+12/1,0execution49.5348108s; actual20364712complete=4PASS/8causalFAIL10.5567835s,
+1/1complete,0skip/duplicate/timeout,bothcleanup/all12 strict roots absent. Three
+no-close actual dispositions and real Prepared/settings committed close PASS;
+eight other original late closes replace typed Browser/generic decisions or
+incomplete original callback error with same close IOException. Actual original
+unique owners/decisions/context-null prerequisites, raw byte/generation/evidence
+and full settlement reached in every row; no preparation failures. [Packet](recovery/storage-migration-original-browser-result-close-20261009/manifest.json)
+33artifacts/15pins verified stored/original/Git source hashes. Runtime unchanged.
+Next minimal actual established T/frozen outcome + original failure preservation
+inside same owner scope; existing carrier/close signal/active-binding readmission
+block and Browser CaptureBrowserResult catches, preserving Prepared contract.
+Combined original RED/source/exact12 gate before fresh Plan/actual12. No GM
+mechanic/schema/prompt/example update; other original owners/mod/UI remain.
+T061–T065 unchecked/B2–B5 paused; native transport/systemd unqualified.
+
 ## Original browser established result owning close — test-first WIP, 2026-10-09
 
 Shared initial-generation GREEN2/raw/carrier independent PASS13f40584;28/30
