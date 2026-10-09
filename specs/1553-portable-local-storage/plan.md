@@ -1,3 +1,20 @@
+## Engine snapshot four original owners — test-first WIP, 2026-10-09
+
+Independentfixture/design/exact8 PASS3d988edd +911690b7/4094a6ce installedbyte-identical.
+Existingreal signedcontext/backup helpers accept optionalFS hooks, defaultnull
+unchanged; only hookednewengine disablesmedia/GMsettings. Actualinactive archive,
+matchedstall terminal promotion, correlated rejected input deletion and repair
+restore realbackup/nullpendingcheckpoint. FirstIntent genuinepublisher/owner/
+member0, sameCSP+secondary/fullsettlement/noLater/Closing0/currentgeneration/allother
+GameSession bytes atIntent; Audio asyncdisposal includesposthelper prep failures
+and precedes strict context+classroots (16roots8cases). Fourproductionowners
+unchanged UNBUILT/UNRUN. Combined Interaction4+Cold1 causal/source/exact10PASS0375;
+next one freshintegrationPlan18/4 then separate InteractionGREEN8/2, ColdGREEN2,
+Engineoriginalbaseline8. NoaggregateGREEN18 or replayacceptedAfterlife/Normalizer.
+Fullcatalog afterthisstableacceptedbatch, then remaining treatment/ascension/
+finalizedreplay/save root and authoritativecensus. B2–B5/native/fullgame/knownlateclose
+remainopen/T061–T065 unchecked. Cold metadata hint correctedactualpersistencefile.
+
 ## Cold Launch original lexical scope retained — WIP, 2026-10-09
 
 Independent source review caught canonical lease local colliding with later

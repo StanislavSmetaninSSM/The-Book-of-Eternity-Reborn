@@ -2,12 +2,40 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-engine-snapshot-owning-close-linux",
+      "responsibility": "Four actual original Engine snapshot/repair owning methods8 known/genuine CSP plus secondary lateclose: inactive signed evidence archive actual blobs/index/hash/retirement; matched stall promotion real signed context; rejected signed correlated input deletion; repair baseline restore actual backups and null pending checkpoint. Actual owner/firstIntent/member0/fullsettlement/noLater/Closing0/generation, allotherGameSession bytes atIntent, Audio settlement before strict context+class roots.",
+      "excludes": "Storage owning boundaries only; no pending-checkpoint branch/fullgame/GM/provider/native/Windows/B2-B5/ascension/finalized treatment quarantine qualification. Known controls have no injected closer; no whole-flow atomicity, prior publications remain permitted. Restore runtime refresh is read-only and excluded for unknown.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.OriginalSnapshotOwnedClose.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualEntryGuards.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.InactiveSnapshotEvidence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineSnapshotOwnersRetainGenuinePublicationUncertaintyOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-cold-main-launch-close-linux",
       "responsibility": "Actual original neutral GM coordinator private cold Launch2 with absent generation: known real generation and original beforePrepared callback sentinel, and genuine CSP plus secondary lateclose of same original owner. Both stop before Prepared/nativeprepare,0prepareCalls/recordnull/retirement/originalguard+locksettlement/generation/strictroots.",
       "excludes": "No successful fullLaunch/production start/backend/process/native Windows/systemd/bridge/liveGM/provider qualification; known sentinel control has no injected closer. Cold generation owning boundary only; B2-B5 paused.",
       "changeHints": [
         "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
-        "BookOfEternityClient/Core/GmMainOwnerGuard.cs",
+        "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
         "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.ColdMainLaunch.cs"
       ],
       "related": [],

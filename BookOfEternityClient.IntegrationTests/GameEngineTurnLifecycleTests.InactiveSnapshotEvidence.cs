@@ -234,9 +234,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <returns>
     /// The owned disposable fixture and engine with no active input and an explicitly seeded same-session turn boundary of 42.
     /// </returns>
-    private async Task<(ResourceMaterializationTestContext Context, GameEngine Engine)> CreateInactiveSnapshotEvidenceFixtureAsync()
+    private async Task<(ResourceMaterializationTestContext Context, GameEngine Engine)> CreateInactiveSnapshotEvidenceFixtureAsync(FileSystemManagerHooks? hooks = null)
     {
-        var fixture = await CreateSpiritualEntryGuardOriginalAsync(absentConflict: false);
+        var fixture = await CreateSpiritualEntryGuardOriginalAsync(absentConflict: false, hooks: hooks);
         GetPrivateField<GameLoop>(fixture.Engine, "_gameLoop").SetSession("session_entry_guard", 42);
         await InvokePrivateTaskResultAsync(fixture.Engine, "CaptureCurrentSessionGenerationAsync");
         var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(
