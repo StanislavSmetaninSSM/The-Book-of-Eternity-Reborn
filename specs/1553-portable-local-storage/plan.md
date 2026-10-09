@@ -1,3 +1,28 @@
+## Incarnation/Explorer actual original RED20 — WIP, 2026-10-09
+
+Fixture/refined design/exact20 independent AstraXHigh PASS at e001203d4bd809ac762f8b8213bdb4d922ff0ad4.
+Fresh integration Plan190657:20/1,0 execution,122.2149574s. Actual190908:
+20 completed=8PASS/12 causalFAIL,8.6501901s,1/1 complete,0 duplicates/timeout,
+both cleanup complete. Sixteen new strict fixture roots absent. Inventory four
+negatives silently fold/omit/rewrite raw names; stage four negatives perform3–4
+mutations, replace actual completed owner and delete two retained evidence files.
+Mark four negatives silently accept/omit: three alter validation collection,
+outer_trim leaves it unchanged but fails required refusal. Unicode4/exact-repeat
+positives and four original controls PASS. Genuine restore/first-delete failure
+prerequisites passed, no fabricated RestoreCompleted/owner/result.
+[Original packet](recovery/storage-migration-explorer-snapshot-20261009/manifest.json):
+41 artifacts/13 source pins, stored/original/hash verification PASS.
+
+Refined design: fixed-path ancestor casing needs admitted full raw session names
+scan filtered ONLY by OrdinalIgnoreCase fixed-path matches; logical-parent-only
+scan cannot see GAME_STATE/CONTROL on Linux. Full inventory is not a candidate
+cohort. Original current_world subtree uses existing canonical local tree helper.
+Names admitted before IgnoreCase/Replace/Trim, bytes untouched before guard.
+Explorer union caller paths with all retained owner path collections before
+completed cleanup, and revalidate under actual owned lease; mark admitted FileExists.
+Next minimal runtime correction, independent source/exact20 gate then fresh20.
+Other spiritual producers/owners open; T061–T065 unchecked/B2–B5 paused.
+
 ## Incarnation/Explorer raw-input continuation — test-first WIP, 2026-10-09
 
 Installed 16 new original cases (incarnation inventory5, stage6, mark5) plus four

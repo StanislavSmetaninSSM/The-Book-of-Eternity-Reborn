@@ -1,0 +1,308 @@
+{
+  "scope": "Original incarnation exact raw current_world/fixed inventory5 and original Explorer stage6/mark5 with genuine completed-restore cleanup failure; four original controls. Twenty cases, no forged owner/RestoreCompleted, no other spiritual/owner/native/gameplay qualification.",
+  "red": {
+    "source": "e001203d4bd809ac762f8b8213bdb4d922ff0ad4",
+    "artifacts": [
+      {
+        "path": "red-20261009-190657-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-190657-403-413711-92bc97864eb04f42b7769da78022994d-categories/plan.json",
+        "sha256": "f67ddb1f8dd0b86e174e86fdfd985c68fce0c3a4a213d11c85ac2ded5318cd00",
+        "originalSha256": "f67ddb1f8dd0b86e174e86fdfd985c68fce0c3a4a213d11c85ac2ded5318cd00"
+      },
+      {
+        "path": "red-20261009-190657-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-190657-403-413711-92bc97864eb04f42b7769da78022994d-categories/summary.json",
+        "sha256": "b260a0a75fdc82e248dc314fe23fa7c1b1d821daefce2d1c1e37faff799d7d3c",
+        "originalSha256": "b260a0a75fdc82e248dc314fe23fa7c1b1d821daefce2d1c1e37faff799d7d3c"
+      },
+      {
+        "path": "red-20261009-190657-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-190657-403-413711-92bc97864eb04f42b7769da78022994d-categories/Build-integration.log",
+        "sha256": "c951acd122ae126295bbd187610f9fe72c95884b2f38267820efd01ca745fdd4",
+        "originalSha256": "9331f451710cd370328a651f3a8c867156d7e5a16dca973b376814cd9f832467"
+      },
+      {
+        "path": "red-20261009-190657-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-190657-403-413711-92bc97864eb04f42b7769da78022994d-categories/dotnet-test.log",
+        "sha256": "5e05cd886fc432f7e1abd993b58300e8952910c5c13078050f1e5bf9c1de83e2",
+        "originalSha256": "fc09aa9a65d1823b916b722222525eebdc594279aabd82df4fe06dce9e1e2ccf"
+      },
+      {
+        "path": "red-20261009-190908-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-190908-269-414174-ad8cbe0375ab4843a56e44164d823bdf-categories/plan.json",
+        "sha256": "0d197f16b7dbb2b2a0ae4c13b9da090715ae3b0db8314d79c63cfd74f783d42a",
+        "originalSha256": "0d197f16b7dbb2b2a0ae4c13b9da090715ae3b0db8314d79c63cfd74f783d42a"
+      },
+      {
+        "path": "red-20261009-190908-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-190908-269-414174-ad8cbe0375ab4843a56e44164d823bdf-categories/summary.json",
+        "sha256": "14af4f2b3dea3b82447fb42ef663be48d3a4806b1d13740d09688df55dad9d90",
+        "originalSha256": "14af4f2b3dea3b82447fb42ef663be48d3a4806b1d13740d09688df55dad9d90"
+      },
+      {
+        "path": "red-20261009-190908-portable-explorer-snapshot-exact-names-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-190908-269-414174-ad8cbe0375ab4843a56e44164d823bdf-categories/portable-explorer-snapshot-exact-names-linux-integration-001.trx",
+        "sha256": "659702ed168c64e49bcaa8221328648eb885b4312ada553101ed8dad90a42b31",
+        "originalSha256": "ded75cb3d8f33cefd8d279174b0a35d1d38fb2ba12d06636fa16cfa3e8f33729"
+      },
+      {
+        "path": "red-20261009-190908-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-190908-269-414174-ad8cbe0375ab4843a56e44164d823bdf-categories/dotnet-test.log",
+        "sha256": "ad8d2276ff7989ab4931dd16006422836b0f79e8e31ab98882f80dcc5162b54f",
+        "originalSha256": "6f1efe955ec1ffad78776ff484692075b9583d03d6d32423e4fd365d1ac3194a"
+      },
+      {
+        "path": "red-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/emitted-roots-after-run.json",
+        "sha256": "06763ff8ae35e67e7a4c371b144b9214e31e53bf589bb3276117c4cee81d5627",
+        "originalSha256": "06763ff8ae35e67e7a4c371b144b9214e31e53bf589bb3276117c4cee81d5627"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-19-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-19-1.json",
+        "sha256": "0fbf25532e387081d6a9158780edfe2f8868644a907fb0057bfcb24d52aa1041",
+        "originalSha256": "0fbf25532e387081d6a9158780edfe2f8868644a907fb0057bfcb24d52aa1041"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-19-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-19-0.json",
+        "sha256": "ef15cc7fc81ed91a3a9050f312accf07cd28f973c8c3ce5e4bde3641665d0f93",
+        "originalSha256": "ef15cc7fc81ed91a3a9050f312accf07cd28f973c8c3ce5e4bde3641665d0f93"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-18-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-18-1.json",
+        "sha256": "3e1050832865dd4aaa093af4507b33fd4cc1c1ac69bd0d7dabda33dbda5e79aa",
+        "originalSha256": "3e1050832865dd4aaa093af4507b33fd4cc1c1ac69bd0d7dabda33dbda5e79aa"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-18-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-18-0.json",
+        "sha256": "98956f9e9120785aaef09820077df7599079fde477874220926142c43188d6b2",
+        "originalSha256": "98956f9e9120785aaef09820077df7599079fde477874220926142c43188d6b2"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-17-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-17-1.json",
+        "sha256": "0348e39071b5ed3e92cbfd02144e4013200129405b624d14252436a8f5222d07",
+        "originalSha256": "0348e39071b5ed3e92cbfd02144e4013200129405b624d14252436a8f5222d07"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-17-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-17-0.json",
+        "sha256": "7b26bf7f739b563454f31ba66fde8d5b2aff852cf5b17cd9180eaa131ee3b012",
+        "originalSha256": "7b26bf7f739b563454f31ba66fde8d5b2aff852cf5b17cd9180eaa131ee3b012"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-16-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-16-1.json",
+        "sha256": "bf6327235b3d203c14872d6417e9094954f65b092cb3acae10d6ddb9d9b145ba",
+        "originalSha256": "bf6327235b3d203c14872d6417e9094954f65b092cb3acae10d6ddb9d9b145ba"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-16-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-16-0.json",
+        "sha256": "d4efd6a980e24533c2d69314e0e74ec9ae47efa6356c9e1701a60a3dce3da4d3",
+        "originalSha256": "d4efd6a980e24533c2d69314e0e74ec9ae47efa6356c9e1701a60a3dce3da4d3"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-14-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-14-1.json",
+        "sha256": "b8cef9394eda16ceef48c5576864870a073fbfc00aa9216580b696c38aafd99a",
+        "originalSha256": "b8cef9394eda16ceef48c5576864870a073fbfc00aa9216580b696c38aafd99a"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-14-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-14-0.json",
+        "sha256": "d8752f4f98d915a0de15c0986755bcec3de1e15253ede617222e005cbb26dd8c",
+        "originalSha256": "d8752f4f98d915a0de15c0986755bcec3de1e15253ede617222e005cbb26dd8c"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-13-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-13-1.json",
+        "sha256": "1c7360a09a006c2221bc95c3fd44e8367bf002ed1ca80da98cea49ad28256deb",
+        "originalSha256": "1c7360a09a006c2221bc95c3fd44e8367bf002ed1ca80da98cea49ad28256deb"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-13-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-13-0.json",
+        "sha256": "8e2de60eab859a6e20c475eb7a4e87dee0ad5139f8f37c89bfc0653ceb42e34d",
+        "originalSha256": "8e2de60eab859a6e20c475eb7a4e87dee0ad5139f8f37c89bfc0653ceb42e34d"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-12-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-12-1.json",
+        "sha256": "244103f466ffc47d0e6d782ef57bb0c13b3c9eaa68c027fe09f734a80fe4f6ee",
+        "originalSha256": "244103f466ffc47d0e6d782ef57bb0c13b3c9eaa68c027fe09f734a80fe4f6ee"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-12-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-12-0.json",
+        "sha256": "f20ab3d3b99db04a16abc0810031c0734385a59b654c1609b072fb6a8bf28ca8",
+        "originalSha256": "f20ab3d3b99db04a16abc0810031c0734385a59b654c1609b072fb6a8bf28ca8"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-11-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-11-1.json",
+        "sha256": "da2228fb069cb3295a6558b62867f79f7232cecc11ef122d3aa7513afc37803b",
+        "originalSha256": "da2228fb069cb3295a6558b62867f79f7232cecc11ef122d3aa7513afc37803b"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-11-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-11-0.json",
+        "sha256": "be8ac44a998aa3332766bb7e107c40c8c944e9dab13a8f3643fd3856e5f86252",
+        "originalSha256": "be8ac44a998aa3332766bb7e107c40c8c944e9dab13a8f3643fd3856e5f86252"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-10-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-10-1.json",
+        "sha256": "dd5dd1308a5450ab4cef44c7b74d18557d9c1e0fec812ef574ec589aae896fd8",
+        "originalSha256": "dd5dd1308a5450ab4cef44c7b74d18557d9c1e0fec812ef574ec589aae896fd8"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-10-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-10-0.json",
+        "sha256": "79691b4e7e9473026ccbeabd4d9ad82c01ff89eb2c933edc5b013b8b8a15bd5f",
+        "originalSha256": "79691b4e7e9473026ccbeabd4d9ad82c01ff89eb2c933edc5b013b8b8a15bd5f"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-9-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-9-1.json",
+        "sha256": "23c7384fc9640fe3306401abc2e85897d8acfe1d3adaee9d3b463d9b840e15a8",
+        "originalSha256": "23c7384fc9640fe3306401abc2e85897d8acfe1d3adaee9d3b463d9b840e15a8"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-9-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-9-0.json",
+        "sha256": "fab687d6c6a7a1035e554fd8273fcba0c0f958152d81c59b678576ed6fdf6dcf",
+        "originalSha256": "fab687d6c6a7a1035e554fd8273fcba0c0f958152d81c59b678576ed6fdf6dcf"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-8-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-8-1.json",
+        "sha256": "ebc5d9115d89abc4a2aa2b0df0889be04f822bfc370e39494ae19608aead1c3d",
+        "originalSha256": "ebc5d9115d89abc4a2aa2b0df0889be04f822bfc370e39494ae19608aead1c3d"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-8-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-8-0.json",
+        "sha256": "e11169c05e01a808925d2147b1841610c9ff5a265073124aa026cfa11821a540",
+        "originalSha256": "e11169c05e01a808925d2147b1841610c9ff5a265073124aa026cfa11821a540"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-7-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-7-1.json",
+        "sha256": "22236538f696e46698e8103103acb3579e5f899083977fbc9a3d57a18b43fdd4",
+        "originalSha256": "22236538f696e46698e8103103acb3579e5f899083977fbc9a3d57a18b43fdd4"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-7-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-7-0.json",
+        "sha256": "7ed1122c4bf7a6e88d13bf463f7ecae44a3222fb1ac86c196ebb6f3bad258b9a",
+        "originalSha256": "7ed1122c4bf7a6e88d13bf463f7ecae44a3222fb1ac86c196ebb6f3bad258b9a"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-6-1.json",
+        "sha256": "edde2517060470d9ac7ba37fa885dadaab58984fe06838952e4fb7cbe7560fc9",
+        "originalSha256": "edde2517060470d9ac7ba37fa885dadaab58984fe06838952e4fb7cbe7560fc9"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-6-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-6-0.json",
+        "sha256": "5443126d9c4025eb9673182c76aaec0b7641521bb91609a945b1d2900a3b3ef6",
+        "originalSha256": "5443126d9c4025eb9673182c76aaec0b7641521bb91609a945b1d2900a3b3ef6"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-3-1.json",
+        "sha256": "ec6dd38ceee5ec67b704917575964b0e787637e0f2139814030704da238abc07",
+        "originalSha256": "ec6dd38ceee5ec67b704917575964b0e787637e0f2139814030704da238abc07"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-3-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-3-0.json",
+        "sha256": "265f5daad7482f7eb5de7687b4e0247d9a40258aedc70594588319c21c441dcb",
+        "originalSha256": "265f5daad7482f7eb5de7687b4e0247d9a40258aedc70594588319c21c441dcb"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-2-1.json",
+        "sha256": "adf2babdffe298ab9b1529f247bd2d9fd5fb35607d465376eda351eb02f75132",
+        "originalSha256": "adf2babdffe298ab9b1529f247bd2d9fd5fb35607d465376eda351eb02f75132"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-2-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-2-0.json",
+        "sha256": "499b4686ac7500fdfa420c16b1b5763478c184765e2826466a983b293d0a2613",
+        "originalSha256": "499b4686ac7500fdfa420c16b1b5763478c184765e2826466a983b293d0a2613"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-0-1.json",
+        "sha256": "f13a068d7b6b2adac197d6f4ca82efccf6c7d2413005ed8101bc6a8dd7a26673",
+        "originalSha256": "f13a068d7b6b2adac197d6f4ca82efccf6c7d2413005ed8101bc6a8dd7a26673"
+      },
+      {
+        "path": "red-row-portable-explorer-snapshot-exact-names-linux-integration-001-0-0.json",
+        "source": "/tmp/boe-explorer-snapshot-red-rows/portable-explorer-snapshot-exact-names-linux-integration-001-0-0.json",
+        "sha256": "d5278f472eff6eb8a1678917e8c68ea87f0bb099f4cbc73399415c081e45b17b",
+        "originalSha256": "d5278f472eff6eb8a1678917e8c68ea87f0bb099f4cbc73399415c081e45b17b"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ExactExplorerNames.cs",
+        "sha256": "83629b7e2aa76d169c58e17fc78cdd61a94fa77159ccd43f20a793b581ea6378"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ExactSnapshotNames.cs",
+        "sha256": "948455ec815d575e484f5836eef07c10c5f11e105ede75c311d3d223172c4682"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs",
+        "sha256": "94dfd34a1db29e1a1cf21859445563ebcd77d03e68fe5352661c6801eda6fd5c"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "sha256": "188f388cf6c5e05250c4afb877b2e9e4edf93754cadd0369f6659ccba468bfec"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+        "sha256": "6346c115661ec1537ee830fcc093e795d9349740f95d4d60416a50a0ca20a76a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "sha256": "6b924fe31e3f31a610496594cee3e916dc282657061f8a8a0d10590fc91ac80a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ConsoleLocalTurnRollbackArtifacts.cs",
+        "sha256": "340d10cc5194b510cd95fcf2c8503b2a74038e359932cb481f54d853d2371713"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "beac7a4733bc8de2816c3acedc365b69be19a048efff513cb47ee60c82ef1d21"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "063033906c6be39434b3d6a1fefa4ac40d1e5f45c56e77e751aab5bae46e015d"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "955bdb9d2de1a0d1a21ecbca9188caa1d7c16826e15c2425caf0e897b351187c"
+      }
+    ]
+  }
+}

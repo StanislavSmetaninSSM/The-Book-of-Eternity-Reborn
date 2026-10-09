@@ -1,0 +1,31 @@
+{
+  "root": "/tmp/boe-gameengine-turnlifecycle-90173aa6fc1e4378bc91be5cde82dd68",
+  "route": "mark",
+  "mode": "retained_alias",
+  "names": [
+    "LORE/CURRENT_WORLD/RETAINED.JSON"
+  ],
+  "restorationFailure": "System.IO.IOException: Injected accepted-turn canonical write failure for 'game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/lore_current_world_retained.json.rollback.8fe3b69d96824604b2cba22a57ff78c1'.\n   at BookOfEternityClient.Core.FileSystemManager.InvokeBeforeCanonicalMutationBoundaryAsync(String relativePath) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 5535\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 224\n   at BookOfEternityClient.Core.FileSystemManager.PublishOrdinaryFileWithOutcomeAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 328\n   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 315\n   at BookOfEternityClient.Core.FileSystemManager.DeleteFile(CanonicalWriteLease writeLease, String relativePath) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 2170\n   at BookOfEternityClient.UI.ExplorerMode.DiscardPendingLocalTurnRollbackSnapshot(CanonicalWriteLease writeLease, PendingLocalTurnRollbackSnapshot snapshot) in /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:line 901\n   at BookOfEternityClient.UI.ExplorerMode.RestorePendingLocalTurnRollbackSnapshotAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:line 851\n   at BookOfEternityClient.UI.ExplorerMode.RestorePendingLocalTurnRollbackSnapshotAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:line 863\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "actualRestorationCompleted": true,
+  "failure": null,
+  "before": {
+    "LORE/CURRENT_WORLD/RETAINED.JSON": "AP8q",
+    "lore/current_world/retained.json": "KQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/lore_current_world_retained.json.rollback.8fe3b69d96824604b2cba22a57ff78c1": "KQ==",
+    "game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/preparation.rollback.marker": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uIjoiNmQwZTBiYjZmYzY3NGFmNmExMTY5ZDcyMDIwYmVmZjMiLCJTbmFwc2hvdElkIjoiY2NlZDU3ZTAwMWJjNDA0YzljZjFkYTM0N2IwNGE1YmIifQ=="
+  },
+  "after": {
+    "LORE/CURRENT_WORLD/RETAINED.JSON": "AP8q",
+    "lore/current_world/retained.json": "KQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/lore_current_world_retained.json.rollback.8fe3b69d96824604b2cba22a57ff78c1": "KQ==",
+    "game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/preparation.rollback.marker": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uIjoiNmQwZTBiYjZmYzY3NGFmNmExMTY5ZDcyMDIwYmVmZjMiLCJTbmFwc2hvdElkIjoiY2NlZDU3ZTAwMWJjNDA0YzljZjFkYTM0N2IwNGE1YmIifQ=="
+  },
+  "mutations": [],
+  "ownerBefore": "{\"EvidenceRoot\":\"game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb\",\"RestoreCompleted\":true,\"Tracked\":[\"lore/current_world/retained.json\"],\"Baseline\":[\"lore/current_world/retained.json\"],\"Validation\":[\"game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/preparation.rollback.marker\"],\"Technical\":[\"game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/preparation.rollback.marker\"],\"Backups\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/lore_current_world_retained.json.rollback.8fe3b69d96824604b2cba22a57ff78c1\"}],\"Hashes\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"BA5EC51D07A4AC0E951608704431D59A02B21A4E951ACC10505A8DC407C501EE\"}]}",
+  "ownerAfter": "{\"EvidenceRoot\":\"game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb\",\"RestoreCompleted\":true,\"Tracked\":[\"lore/current_world/retained.json\"],\"Baseline\":[\"lore/current_world/retained.json\"],\"Validation\":[\"LORE/CURRENT_WORLD/RETAINED.JSON\",\"game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/preparation.rollback.marker\"],\"Technical\":[\"game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/preparation.rollback.marker\"],\"Backups\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"game_state/control/console_local_turn_before_images_v1/cced57e001bc404c9cf1da347b04a5bb/lore_current_world_retained.json.rollback.8fe3b69d96824604b2cba22a57ff78c1\"}],\"Hashes\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"BA5EC51D07A4AC0E951608704431D59A02B21A4E951ACC10505A8DC407C501EE\"}]}",
+  "sameOwner": true,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2ZDBlMGJiNmZjNjc0YWY2YTExNjlkNzIwMjBiZWZmMyJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2ZDBlMGJiNmZjNjc0YWY2YTExNjlkNzIwMjBiZWZmMyJ9"
+}
