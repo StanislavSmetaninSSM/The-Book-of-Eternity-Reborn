@@ -680,9 +680,9 @@ public sealed class GmWorkerBridgePool
                             "Detached worker workspace and slot remain retained pending original execution authority cleanup.",
                             [retainedWorkspacePath], originalFailure: failure);
                 }
-                catch (CoordinatedStatePublicationUncertainException uncertainty)
+                catch (CoordinatedStatePublicationUncertainException auditUncertainty)
                 {
-                    executionAuthority.RetainCanonicalPublicationFailure(uncertainty);
+                    executionAuthority.RetainCanonicalPublicationFailure(auditUncertainty);
                     throw;
                 }
             }

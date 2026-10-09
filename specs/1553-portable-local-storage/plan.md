@@ -1,3 +1,12 @@
+## Durable worker build-only correction — WIP, 2026-10-09
+
+Independent SOURCE/RAW-pending1/EXACT15 PASS at beca4100. Fresh Plan084020
+failed before discovery/execution: CS0136 at BridgePool683, nested catch variable
+uncertainty conflicts with the preceding pattern variable. Zero tests executed;
+this is not behavioral RED. Original summary/build log and52 source pins are
+retained in the durable packet. Rename only that catch variable to auditUncertainty.
+Fresh successful Plan15/build remains required before the first actual GREEN15.
+
 ## Durable worker canonical outcome and cleanup phases — runtime WIP, 2026-10-09
 
 Independent admission3/new fixture1 PASS257075de;196 artifacts/originals104pins.
