@@ -2,8 +2,18 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-owned-lease-close-linux",
+      "reason": "T062/T065 original two-owner test-first WIP, actual paused public-refresh/public-write leases inspected before genuine publisher cut; late secondary dispose, same primary/secondary and resource/raw evidence. Inert design AstraXHigh PASS; installedfixture unbuilt/unrun.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-image-scene-prompt-spelling",
-      "reason": "T063/R25/F16 finalbounded28/28 Linux GREEN at570ce89e/164111, complete3/3 after freshboth-projectPlan28. Source13+unchangedexport3+pure12 preserve Unknown/debt/namespace/byte/export/browser/text/IO contracts; catalog578/11347 discovery0. Finalcarrierreviewpending; no native Windows/provider/desktop-process/full-media qualification.",
+      "reason": "T063/R25/F16 finalbounded28/28 Linux GREEN at570ce89e/164111, complete3/3 after freshboth-projectPlan28. Source13+unchangedexport3+pure12 preserve Unknown/debt/namespace/byte/export/browser/text/IO contracts; catalog578/11347 discovery0. Independent actual AstraXHigh final GREEN/CATALOG/CARRIER PASS5991452f118artifacts/62pins; no native Windows/provider/desktop-process/full-media qualification.",
       "contracts": [
         "#1553",
         "FR-006",
@@ -13,7 +23,7 @@
     },
     {
       "category": "portable-image-source-admission-linux",
-      "reason": "T063/R25/F16 finalbounded28/28 Linux GREEN at570ce89e/164111, complete3/3 after freshboth-projectPlan28. Source13+unchangedexport3+pure12 preserve Unknown/debt/namespace/byte/export/browser/text/IO contracts; catalog578/11347 discovery0. Finalcarrierreviewpending; no native Windows/provider/desktop-process/full-media qualification.",
+      "reason": "T063/R25/F16 finalbounded28/28 Linux GREEN at570ce89e/164111, complete3/3 after freshboth-projectPlan28. Source13+unchangedexport3+pure12 preserve Unknown/debt/namespace/byte/export/browser/text/IO contracts; catalog578/11347 discovery0. Independent actual AstraXHigh final GREEN/CATALOG/CARRIER PASS5991452f118artifacts/62pins; no native Windows/provider/desktop-process/full-media qualification.",
       "contracts": [
         "#1553",
         "FR-006",
@@ -1394,7 +1404,7 @@
     },
     {
       "category": "portable-image-export-known",
-      "reason": "T063/R25/F16 finalbounded28/28 Linux GREEN at570ce89e/164111, complete3/3 after freshboth-projectPlan28. Source13+unchangedexport3+pure12 preserve Unknown/debt/namespace/byte/export/browser/text/IO contracts; catalog578/11347 discovery0. Finalcarrierreviewpending; no native Windows/provider/desktop-process/full-media qualification.",
+      "reason": "T063/R25/F16 finalbounded28/28 Linux GREEN at570ce89e/164111, complete3/3 after freshboth-projectPlan28. Source13+unchangedexport3+pure12 preserve Unknown/debt/namespace/byte/export/browser/text/IO contracts; catalog578/11347 discovery0. Independent actual AstraXHigh final GREEN/CATALOG/CARRIER PASS5991452f118artifacts/62pins; no native Windows/provider/desktop-process/full-media qualification.",
       "contracts": [
         "#1553",
         "F16",

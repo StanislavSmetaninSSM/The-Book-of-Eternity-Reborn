@@ -1,3 +1,24 @@
+## Original owned lease-close representatives — test-first WIP, 2026-10-09
+
+Source #1553,T062/T065; base5991452f. Independent actual AstraXHigh Image final
+GREEN/CATALOG/CARRIER PASS5991452f:28/28,118artifacts/62pins, raw45/ref. No image
+rerun; current runtime remains570ce89e. Inert owned-close design/draft received
+independent actual AstraXHigh PASS; installed source now exact2 theory rows invokes
+original StateManager.RefreshGameStateAsync and already-fixed original FSM public
+WriteFileAtomicBytesAsync positive control. No production change/build/run yet.
+
+Pause originals at existing mirror-input/mutation hooks; inspect unique actual hoisted
+lease in Task.StateMachine before arming. Failure to locate original lease is preparation
+failure, never causal RED. Attach secondary throwing context only during FirstChance of
+same actual publisher CSP after MemberPublished/foreign cut. Assert same primary and
+Data secondary, one original context disposal, inactive lease/ambient/main/context,
+raw original lock available after taskjoin, journal/foreign/generation unchanged and no
+subsequent work/runtime refresh. Strict per-case root cleanup; no injected replacement
+lease/CSP/production hook/native/gameplay/36mirror replay. Next independent installed
+fixture/exact2 gate, fresh integration Plan2/causal actual2; only demonstrated owner
+capture/release changes, original FSM positive stays unchanged. Remaining concrete
+owners, F16signed/ZIP, current inventory/fresh restore and T061–T065 remain open.
+
 ## Image original source admission — bounded28 GREEN, final evidence gate pending
 
 Source570ce89e independent final source/RED PASS. Fresh both-projectPlan163834

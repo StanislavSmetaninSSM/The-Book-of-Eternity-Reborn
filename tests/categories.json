@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-owned-lease-close-linux",
+      "responsibility": "Two original owner consumers preserve actual publication uncertainty through a secondary close of their inspected real hoisted lease: public StateManager refresh and original public byte write positive control. Journal/generation/runtime/ambient/main/lock settlement and strict owned cleanup.",
+      "excludes": "Other owner consumers, bootstrap, native Windows and full mirror suite. Late disposer attachment after genuine publisher CSP, no synthetic lease/exception or production hook.",
+      "changeHints": [
+        "BookOfEternityClient/Core/StateManager.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalOwnedLeaseCloseRetainsGenuinePublicationUncertainty"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-image-scene-prompt-spelling",
       "responsibility": "Twelve pure production-used scene text/path classifiers: Windows punctuation/device text remains external; drive/extended UNC canonical boundaries route to admission even for invalid canonical leaf spelling; Linux exact case/separator controls.",
       "excludes": "Native Windows I/O or grant/validation acceptance; actual canonical namespace remains validated under admission. Existing export exclusion predicate is unchanged.",
