@@ -401,6 +401,7 @@ public partial class GameEngine
         RollbackSnapshot? rollbackSnapshot = null,
         string? sourceLabel = null)
     {
+        RequireExactEngineSnapshotInventory(writeLease, rollbackSnapshot);
         await DeleteTerminalProtocolFailureRequestAsync(writeLease);
         CleanupPendingTurnSnapshot(writeLease, rollbackSnapshot?.BackupFiles.Values);
         var conflictStateExistedBeforeInitialization = _fs.FileExists(
@@ -440,6 +441,7 @@ public partial class GameEngine
             rollbackSnapshot,
             globalFlagStateExistedBeforeInitialization);
 
+        RequireExactEngineSnapshotInventory(writeLease, rollbackSnapshot);
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var clientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(writeLease);
@@ -1036,10 +1038,10 @@ public partial class GameEngine
         FileSystemManager.CanonicalWriteLease writeLease,
         IEnumerable<string>? preservedRollbackPaths = null)
     {
-        var preservedRollbackSet = preservedRollbackPaths == null
-            ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            : new HashSet<string>(
-                preservedRollbackPaths
+        var rawPreservedPaths = preservedRollbackPaths?.ToArray() ?? [];
+        PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPreservedPaths);
+        var preservedRollbackSet = new HashSet<string>(
+                rawPreservedPaths
                     .Where(path => !string.IsNullOrWhiteSpace(path))
                     .Select(NormalizeArtifactRelativePath),
                 StringComparer.OrdinalIgnoreCase);
@@ -1807,6 +1809,48 @@ public partial class GameEngine
     }
 
 
+    // Producer admission must see raw physical spellings before the shared repair/
+    // restoration enumerator folds keys or filters optional fixed paths by FileExists.
+    private void RequireExactEngineSnapshotInventory(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        RollbackSnapshot? rollbackSnapshot = null)
+    {
+        var fixedPaths = PendingTurnSnapshotPathPresenceV1.LogicalPaths
+            .Concat(GuardianPolicySnapshotRequestFiles)
+            .Concat(WoundAcceptedTurnSnapshotContract.OutputPaths)
+            .Append(QteSceneService.QteOfferPath)
+            .Concat(new[]
+            {
+                ValidationRepairReadyPath, ValidationRepairRequestPath,
+                ValidationDiagnosticFailureReportPath, ValidationRepairArtifactStallReportPath,
+                RealmSegregationAutoRollbackService.ReportPath, GmWorkerAuditLog.AuditLogPath,
+                "game_state/control/gm_trajectory_ledger.jsonl",
+                "game_state/control/gm_artifact_write_stall_report.json",
+                "game_state/control/gm_output_without_terminal_report.json",
+                "game_state/control/gm_daemon_fatal_error.json",
+                "game_state/control/gm_timeout_bridge_cleanup.json",
+                "game_state/control/gm_live_test_notes.jsonl",
+                "game_state/control/terminal_protocol_failure_request.json",
+                "game_state/control/gm_bridge_status.json", "game_state/history/chat_log.json",
+                PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,
+                AfterlifeSpiritualConflictState.StatePath, AfterlifeEntityProfileState.StatePath,
+                AfterlifeChronicleState.StatePath, AfterlifeGlobalFlagState.StatePath,
+                SourceOfLightCapstoneState.PendingRequestPath,
+                SarefMainStoryState.PendingWingsInfiltrationPath, SarefMainStoryState.StatePath
+            }).ToArray();
+        var rawPaths = _fs.EnumerateFiles(writeLease, "*")
+            .Where(path => path.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("lore/", StringComparison.OrdinalIgnoreCase) ||
+                fixedPaths.Contains(path, StringComparer.OrdinalIgnoreCase));
+        PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPaths
+            .Concat(EnumerateStoryContinuityFiles(writeLease)).Concat(fixedPaths)
+            .Concat(rollbackSnapshot?.BaselineFiles ?? [])
+            .Concat(rollbackSnapshot?.ValidationSnapshotFiles ?? [])
+            .Concat(rollbackSnapshot?.BackupFiles.Keys.AsEnumerable() ?? [])
+            .Concat(rollbackSnapshot?.BackupFiles.Values.AsEnumerable() ?? [])
+            .Concat(rollbackSnapshot?.BackupHashes.Keys.AsEnumerable() ?? []));
+    }
+
     private IEnumerable<string> EnumerateRollbackTrackedFiles(
         FileSystemManager.CanonicalWriteLease writeLease)
     {
@@ -1876,6 +1920,7 @@ public partial class GameEngine
         FileSystemManager.CanonicalWriteLease writeLease,
         string backupId)
     {
+        RequireExactEngineSnapshotInventory(writeLease);
         var snapshot = new RollbackSnapshot();
         var createdBackupPaths = new List<string>();
         var trackedFiles = EnumerateRollbackTrackedFiles(writeLease).ToArray();

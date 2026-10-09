@@ -1,3 +1,16 @@
+## Engine producer correction installed — WIP, 2026-10-09
+
+Producer-only RequireExactEngineSnapshotInventory admits raw game_state/lore plus
+original story-jsonl cohort, physical fixedoutput/cleanup matches, fixed logical/
+request/clienthash/state paths and all supplied rollback collections before fold/read.
+Baseline calls before terminaldelete/oldsnapshotcleanup/init, then before hash/copy;
+backup calls before sharedtrackedfiles enumeration/copy. Cleanup materializes supplied
+preservedpaths once and admits exact raw spelling before normalization/deletion.
+Shared EnumerateRollbackTrackedFiles repair/restore and original exclusion/copy predicates
+unchanged. Runtime installation UNBUILT/UNRUN, fresh selected25 follows independent
+source/selection gate. No GM schema/mechanic/authoredoutput change; storage-only
+admission under #1553 needs no gameplay prompt/example change. Otherproducers stayopen.
+
 ## Engine exact-name causal baseline — WIP, 2026-10-09
 
 Source1a4dcbc2 (fixture teardown independently PASS): fresh integration Plan182128
