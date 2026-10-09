@@ -1,3 +1,18 @@
+## Spiritual reader-failure control added — test-first WIP, 2026-10-09
+
+Independent fixture review identifies one concrete risk: moving pure signed
+ReadCurrent before revocation could accidentally retain an owner on an ordinary
+stale-request failure. Added one real retained direct-capture control: raw fixture
+requestId mutation, old owner currentness before recapture, existing reader issue,
+no new capture, old owner revoked, full post-fixture bytes/generation and zero
+mutations. This control must PASS on original runtime. Total16/1 = direct11/intake2
+and three original neighbors. Runtime unchanged UNBUILT/UNRUN. Proposed preflight
+checks raw current/fixed/cold names before byte reads, signed declared names after
+pure ReadCurrent; normal reader non-success runs original revocation before return.
+Raw-name refusals retain the old owner; subsequent original validation faults
+keep their existing revocation semantics. No cold/B2 expansion. Independent
+fixture/refined-design/exact16 gate next, then fresh original Plan16/actual16.
+
 ## Spiritual original raw inventory — test-first WIP, 2026-10-09
 
 Installed original direct10/intake2 and three original distributed-draft/root/

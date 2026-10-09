@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -20,6 +21,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     [InlineData("intake", "case_alias")]
     [InlineData("intake", "unicode")]
     [InlineData("direct", "native_noncandidate")]
+    [InlineData("direct", "stale_request")]
     public async Task OriginalSpiritualRawInventoryIsAdmittedBeforeRevokingActualCapture(string route, string mode)
     {
         Assert.True(OperatingSystem.IsLinux());
@@ -40,6 +42,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(old.IsCurrentOwner);
         var names = mode switch
         {
+            "stale_request" => Array.Empty<string>(),
             "case_alias" => new[] { "lore/Entry.bin", "lore/entry.bin" },
             "literal_backslash" => new[] { "lore/odd\\leaf.bin" },
             "outer_trim" => new[] { "lore/trailing.bin " },
@@ -59,6 +62,15 @@ public sealed partial class AfterlifeResourceCutoverTests
             var absolute = Path.Combine(context.FileSystem.GameSessionPath, path);
             Directory.CreateDirectory(Path.GetDirectoryName(absolute)!);
             await File.WriteAllBytesAsync(absolute, [0, 255, 42]);
+        }
+        if (mode == "stale_request")
+        {
+            // Preserve the existing ordinary reader-failure revocation contract.
+            // Alter actual request bytes only after obtaining the real old capture.
+            var requestPath = context.FileSystem.ResolvePath(LiveTurnPreparationService.TurnRequestPath);
+            var request = JsonNode.Parse(await File.ReadAllTextAsync(requestPath))!.AsObject();
+            request["requestId"] = "stale-retained-original-request";
+            await File.WriteAllTextAsync(requestPath, request.ToJsonString());
         }
         Assert.True(old.IsCurrentOwner);
         var before = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
@@ -87,6 +99,12 @@ public sealed partial class AfterlifeResourceCutoverTests
             var draft = Assert.IsType<SpiritualOriginalDraftInputs>(OriginalCaptureField(capture, "_draftInputs"));
             if (mode == "unicode") Assert.Equal(before[names[0]], draft.ReadImage(names[0]).Bytes);
             else foreach (var path in names) Assert.DoesNotContain(path, draft.PathInventory);
+        }
+        else if (mode == "stale_request")
+        {
+            Assert.Null(result.Capture);
+            Assert.Contains(result.Issues, issue => issue.Code == "pending_turn_snapshot_reader_context_stale");
+            Assert.Null(current); Assert.False(old.IsCurrentOwner);
         }
         else
         {
