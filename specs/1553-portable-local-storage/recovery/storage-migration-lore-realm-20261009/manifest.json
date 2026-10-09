@@ -1,0 +1,223 @@
+{
+  "scope": "Original lore routing and realm outcome evidence; raw physical routing absence is not publisher uncertainty. Per-run causal/fixture qualifications in plan; no native/full-turn/secondary-close claim.",
+  "causal": {
+    "source": "7b4450ea66c2adce4861df47b2dcdad32d2d8a53",
+    "qualification": "Raw exact selected source/summary/TRX and owned evidence; causal versus fixture and assertion reach classified in plan.",
+    "artifacts": [
+      {
+        "path": "causal-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-032616-008-233027-8c611820a9274cf58d448febbb57bea1-categories/Build-integration.log",
+        "sha256": "cb094b81437d69018fd3e1f0fa235025368f2c18f3188ccf9b47e421eb5ba675",
+        "originalSha256": "d12dcb89d563bece57b8bb9d64e7347cb629d3ae8618c5f24ead48184345016e"
+      },
+      {
+        "path": "causal-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-032616-008-233027-8c611820a9274cf58d448febbb57bea1-categories/dotnet-test.log",
+        "sha256": "a9be6e0fea10eff3dc59a601c78d63502b08a1088ab07f6de491c736cdb47107",
+        "originalSha256": "658092d93816bd94754c21ae48b5aae583a6927197e8d52ff50c91bf51e065af"
+      },
+      {
+        "path": "causal-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-032616-008-233027-8c611820a9274cf58d448febbb57bea1-categories/plan.json",
+        "sha256": "08791d7a2c42dd728b0d43a88d11e069e8123caf4950fa9d0489eb5dd5ad8a74",
+        "originalSha256": "08791d7a2c42dd728b0d43a88d11e069e8123caf4950fa9d0489eb5dd5ad8a74"
+      },
+      {
+        "path": "causal-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-032616-008-233027-8c611820a9274cf58d448febbb57bea1-categories/summary.json",
+        "sha256": "13063ad33871c1cd3bda61342397a9897cef6019eb354d3a91ad96200e32ea88",
+        "originalSha256": "13063ad33871c1cd3bda61342397a9897cef6019eb354d3a91ad96200e32ea88"
+      },
+      {
+        "path": "causal-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-032804-236-233319-0b95641ec04b42ecae961b5f25e9a2e2-categories/dotnet-test.log",
+        "sha256": "b217e2cad92801c575f75721e6c981d773cfafa6ae372b3b98ffae49321d5401",
+        "originalSha256": "4c26c35eba1b02fb5cf05bfdf02c9404ba291f72319672f4d4473e98db0b985a"
+      },
+      {
+        "path": "causal-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-032804-236-233319-0b95641ec04b42ecae961b5f25e9a2e2-categories/plan.json",
+        "sha256": "1ff386e7125c7d67521b93dff32f782ad1cee7eaaafd5b9e13d5e82d6293f0bc",
+        "originalSha256": "1ff386e7125c7d67521b93dff32f782ad1cee7eaaafd5b9e13d5e82d6293f0bc"
+      },
+      {
+        "path": "causal-actual-portable-lore-realm-outcome-causal-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-032804-236-233319-0b95641ec04b42ecae961b5f25e9a2e2-categories/portable-lore-realm-outcome-causal-linux-integration-001.trx",
+        "sha256": "106ff472dc25631f629cb77d2ea5293cacedcb31aee0e0d351730e789a6a8f00",
+        "originalSha256": "4cea4866c285eb081cf4d4088a527f63eeccfda8e47fd3dd983e346de7deb29b"
+      },
+      {
+        "path": "causal-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-032804-236-233319-0b95641ec04b42ecae961b5f25e9a2e2-categories/summary.json",
+        "sha256": "c02c23f9883efd818f96b26349ca40d8a439145322d42ca6cbed5ae615072216",
+        "originalSha256": "c02c23f9883efd818f96b26349ca40d8a439145322d42ca6cbed5ae615072216"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-0-0-journal.bin.gz",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-0-0-journal.bin",
+        "sha256": "125bda0b2a06f37ecb283875474e7b5fad7a7c3f26ff4c4a8a6c42e7c6544b30",
+        "originalSha256": "ffd245fbab43419ede496582be41417b699fc6bcb317f0c2d22a525f5e5bbc21"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-0-0.json",
+        "sha256": "1fd2672ca038960788742d070185d6a38a7990ed6dcf820428bea99413011db7",
+        "originalSha256": "991c372dc711550c518254242567a68591c141feafa47cd15e8a7e07cb7cfac8"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-0-1.json",
+        "sha256": "cb005951ff129abeaa90585ca081b6901b0b02d9f27f602e72455e44c143e028",
+        "originalSha256": "cb005951ff129abeaa90585ca081b6901b0b02d9f27f602e72455e44c143e028"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-1-0.json",
+        "sha256": "282fa34fb4acb28a98c654e489b710e27273de56e1a4a0b3b0841d8ab1214127",
+        "originalSha256": "588b149f09898b8fb65500db1acedf7bccfdbc6f5f41a046c42aa20ffe8620bb"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-1-1.json",
+        "sha256": "d395e9bce7abfed1f1ce331acf6ade8d1cb117232176bd08c8779c2ca516dcb9",
+        "originalSha256": "d395e9bce7abfed1f1ce331acf6ade8d1cb117232176bd08c8779c2ca516dcb9"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-2-0-journal.bin.gz",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-2-0-journal.bin",
+        "sha256": "919c2c04ead26d586b8e73a310655aceb748188b4f87a129a9f5beab31f05e16",
+        "originalSha256": "5ca6625c088e18081f9eefc3e6cf5e34ebda86766df471e609e43e70884ef939"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-2-0.json",
+        "sha256": "30f6eb8fd8517abff0896fa0b007b6a76d086a8401adf6205496fb0ff74c6811",
+        "originalSha256": "c656ab97df31d0410f64762e25538a4d4ae1c51d4c7c51f7d8603ec040d4ab18"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-2-1.json",
+        "sha256": "08f461d8ef91a3839fc3e47925c8b89468adc2e566abe946626d8b13dd498a16",
+        "originalSha256": "08f461d8ef91a3839fc3e47925c8b89468adc2e566abe946626d8b13dd498a16"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-3-0-journal.bin.gz",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-3-0-journal.bin",
+        "sha256": "3269f452adb5ac95aaf339f32076bbf77264c347d79d28231dd26b289638996a",
+        "originalSha256": "499be1323e98fd40b09f7ec8a6303e804285e4db83f1aad44e11164d21979629"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-3-0.json",
+        "sha256": "3c3948b2086b86a9bd0a280153a22d3411225c8e96e3cc1254ffc50299d206ee",
+        "originalSha256": "9a125deb9f27d5510fdbdddbff7c990b14a41609dd95e056b7f058b1d2d72d15"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-3-1.json",
+        "sha256": "c5960ff9cb98eabfd43cb63f0f073a7c879715f36c2a97d707bd177893dc4532",
+        "originalSha256": "c5960ff9cb98eabfd43cb63f0f073a7c879715f36c2a97d707bd177893dc4532"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-4-0-journal.bin.gz",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-4-0-journal.bin",
+        "sha256": "0c6301e9b3e8266623b0c8084dc2398940997718f552123485a95ff902edce91",
+        "originalSha256": "32c0bc663962459d2ced77e4eec0bb54013e39a7955711143f3bf325880bda97"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-4-0.json",
+        "sha256": "232a1ea8a4856312814e2dd13298ef83425ac63f1c76d7290f9a45a995fd29e8",
+        "originalSha256": "12b33727fc5413469ecdbb9213760a22a834f9d7216adf6dd4b4945a926805d5"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-4-1.json",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-4-1.json",
+        "sha256": "c51d36f04296f1629a8aab69b3e08e2788a5079997f55c92a41d87584d1edcbc",
+        "originalSha256": "c51d36f04296f1629a8aab69b3e08e2788a5079997f55c92a41d87584d1edcbc"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-5-0.json",
+        "sha256": "a8c3a12a332cae5222f00ef5214f58e6c7502138ea7bee02d24d3793dea8719e",
+        "originalSha256": "7747dee81aa802cac87c3a08ed428446cf0005e670cbfa4dd43b8b4157236c94"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-5-1.json",
+        "sha256": "d047ccdbc65acf5fe4494195fee996a5c550336618f69f1ca58781d042f8d5dd",
+        "originalSha256": "d047ccdbc65acf5fe4494195fee996a5c550336618f69f1ca58781d042f8d5dd"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-6-0.json",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-6-0.json",
+        "sha256": "b33bb18bf0ae012f51ab4daa70c36510c861422c1be9e21c73e0f593280303b0",
+        "originalSha256": "b33bb18bf0ae012f51ab4daa70c36510c861422c1be9e21c73e0f593280303b0"
+      },
+      {
+        "path": "causal-row-portable-lore-realm-outcome-causal-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-lore-realm-causal/portable-lore-realm-outcome-causal-linux-integration-001-6-1.json",
+        "sha256": "363ecc2b9a9a0064bd21b96a20ee979531b8aee671ed0ab4aa385de1994a30f1",
+        "originalSha256": "363ecc2b9a9a0064bd21b96a20ee979531b8aee671ed0ab4aa385de1994a30f1"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.LoreRealmOutcome.cs",
+        "sha256": "5f4784534abbe3c0fdce981a93207eb30ddedb6347be815de665498bf8be691f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "26f7dca7f4f1c58da0d75073740bda82098fee4f3bab36c91303d22f50d4ca3f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs",
+        "sha256": "7332d7a7f8888a373d01cb4821283ad7b3e10ad97fafed1a004fefc758ba6e80"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "d2aec89979dfcf5471565271a50229c4288c0a3a40166f24d4755f62622a34de"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "af53c69efb7f63e28560285fd597412f1fe386a8f66ee92437237dd10460e6e3"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+        "sha256": "b44cb0fbd7c5f49169ccdb22148999240bd7d864d849b3828ec73a04ebf5fa6f"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "sha256": "494fb1a2280c32c4ade3149e9062961716909eccd73c3c729a20107c7fc95893"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "65a5b9259e9274e01751359f20bd6a29d260ed0746a471f0d9b961ff66c3d514"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs",
+        "sha256": "3466e160e5ef517071a0d5f73c5d61c00099f30248edcfe05ae8567a1a300647"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "f76aee081ef0fbf20041beb788a9626bb454ebb061a7f5839169d1d44b5a54af"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "dacc258dfeee913d0b29ffeb2d58d9c3e6ed7daf6f8dba9933e149e17175936d"
+      }
+    ]
+  }
+}

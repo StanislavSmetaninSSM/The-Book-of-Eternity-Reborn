@@ -1,3 +1,35 @@
+## Lore/realm causal and routing receipt — 2026-10-09
+
+Frozen7b4450ea source/fixture/exact7 passed independent review. Matching Plan032616 built integration
+84.8761983s (wall89.3851009), exact7/1/0. Actual032804 completes7/7,1descriptor,1PASS6FAIL,
+9.6781709s,exit1,no skipped/duplicates/timeouts,both cleanup flags. All seven owned roots explicitly removed.
+[Packet](recovery/storage-migration-lore-realm-20261009/manifest.json):26 saved/expanded/original artifacts
+and14 historical source pins verify. This is not seven causal Unknown failures.
+
+Four actual realm cases reach genuine MemberPublished/index0, generation-bound authentic uncommitted
+journal, actual first CSP and exact retained journal/foreign target. Each then attempts one ordinary
+lease, counted and refused by the fixture safety hook. Shining reentry/ordinary return swallow the
+original decision and return without an exception; life commit/reset proceed into compensation, which
+exposes that later safety refusal. No later validated-read/mutation/publication/recovery observer
+callbacks occur; zero callbacks do not prove no attempted admission/recovery. Life readonly finalization1
+each is separate. All fail the lease-count oracle before Same/final assertions; raw reset data confirms
+all seven prior realm/quartet images unchanged. Initial batch profile is the selected foreign target,
+so its partial after-images are not called independent committed facts. Input/request bounds reached.
+
+Direct Clear actually deletes all three exact host names and retains the rollback sentinel, but records
+zero ordinary commits: routing failure. Original incarnation Unknown row therefore has Cuts0, reaches
+the finite known pending-setup refusal, restores exact lore, and never dispatches GM; this is explicitly
+unreached common routing, not CSP evidence. The corresponding known-failure row passes exact original
+exception/restoration/no journal, with three line reads and one confirmation. Reentry confirmation1,
+ordinary return0 and life continuation1 each are recorded; no speculative successful full transition.
+
+Next bounded repair: same original owned lease for trusted subtree selection and each ordinary lore
+delete, retaining rollback-name exclusions/host spelling/sequential outcomes; direct CSP exclusions at
+realm update and the three MainMenu catches; capture before original Clear/realm/ordinary-return/
+Shining-service lease closes. No additional compensation/admission/global latch. Source-census-only
+retirement of three now-unused physical wrappers will distinguish two already-dead helpers from the
+newly unreachable Clear wrapper. Freeze complete delta and affected finite neighbors before building.
+
 ## Lore/realm test-only WIP — 2026-10-09
 
 Preparation composed21 and final carrier41c8e4f are independently accepted (108 artifacts/70 pins);
