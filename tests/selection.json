@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-canonical-contention-rmw-linux",
-      "reason": "F18 fixture-only current-admission port4, unbuilt/unrun. Original normalizer/validation/cache and guardian journal races preserve every final state oracle while observing main-owner admission and settling actual actors/lease before cleanup. Original category ownership retained.",
+      "reason": "T064 F18 four original ordinary contention fixtures now observe independent sibling MainOwner admission, retaining separate zero canonical counter, original final-state oracles and task/lease settlement. Source 9fcbbec: actual112704 4/4 Linux PASS; no runtime fix or native/fullF18 claim.",
       "contracts": [
         "#1553",
         "FR-002",

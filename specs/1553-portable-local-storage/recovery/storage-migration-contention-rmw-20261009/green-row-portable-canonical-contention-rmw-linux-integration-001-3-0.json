@@ -1,0 +1,10 @@
+{
+  "kind": "f18-admission-contention",
+  "method": "AppendJournalEntriesAsync_ConcurrentManagersPreserveBothEvents",
+  "root": "/tmp/boe-guardian-corrections-tests-c75ec746a5074c558051865ff55afec1",
+  "paused": 1,
+  "mainContentions": 1,
+  "canonicalContentions": 0,
+  "firstSettled": true,
+  "secondSettled": true
+}

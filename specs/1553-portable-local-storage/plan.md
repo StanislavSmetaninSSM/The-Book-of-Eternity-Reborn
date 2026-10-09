@@ -1,3 +1,26 @@
+## F18 ordinary contention4 — measured bounded result, 2026-10-09
+
+Source9fcbbec71ead4ae46b71674ed45b241a39f43def; independent SOURCE/FIXTURE/EXACT4
+and RAW/EXACT4 PASS. Fresh integration Plan112508 selects exact4/1 descriptor,0tests;
+build85.392872s, wall89.3689348s. Actual112704 completes4/4PASS in8.6052322s,
+bothcleanup,no skips/duplicates/timeouts. All4 original pauses reach1, main contention
+counters7/1/2/1, canonical0, both original tasks settled; actual effect-publication
+lease released. Root and reviewer independently observed all4 distinct emitted paths
+absent after run. Failure-path assertion injection was not executed; cleanup structure
+is source-reviewed. No production change, manufactured runtime RED, native/fullF18 claim.
+
+Discovery113356 at clean9fc:544categories/11336methods-files valid,0executed,
+8.3060060s,bothcleanup. NoBuild uses matching fresh integration Plan112508 and
+unit build atc92f24327e1fd399c9afab444205c28987d6e24b/catalog110425;
+only2 integration C#files plus docs/catalog/selection changed sincec92. Unit/project
+runtime/support/Bridge/crash-host inputs unchanged; no integration compile link into
+unit. Reviewer independently accepts provenance; not a new both-project build.
+[Source-pinned raw packet](recovery/storage-migration-contention-rmw-20261009/manifest.json):
+16 artifacts/originals,26 source pins. Final carrier/catalog review pending.
+Continue remaining F18 contention, physical cuts/generation controls, F16 and concrete
+owning consumers, then whole-registry classification; T061–T065 stay open and B2–B5
+paused. Do not replay accepted4 unchanged.
+
 ## F18 first ordinary contention4 — reviewed fixture-only plan, 2026-10-09
 
 Source #1553,T064. Independent read-only completeness/design PASS56059ab8 confirms
