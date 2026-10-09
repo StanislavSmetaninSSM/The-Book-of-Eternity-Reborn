@@ -1,3 +1,23 @@
+## Prepared original remote receipt causal3 — 2026-10-09
+
+Frozen54d640f9 independent source/fixture/exact3 PASS. Plan012431 fresh unit/support/bridge build
+73.4930184s, wall77.4118637,3/1planned0executed. Actual012601 complete3/3,0PASS/3 genuine
+causal failures,11.3908131s,exit1,no skips/duplicates/timeouts,both runner cleanup flags true.
+All reached exactly one actual member/index0. Committed publishes After/Apply1; RolledBack
+restores exact Before/noApply; Unknown retains exact uncommitted journal/foreign target/UI-lock,
+noApply and zero later pre-open-hook/mutation attempts. All actual owning remote admissions,
+full identity/three IDs, original server receipt/client CloseObserved/query ClosedObserved and
+ClosingFailed=false pass BEFORE final desired-outcome assertion. Every actual close instead
+contains Completed0. Three original owners stop/retire; guardians are independently retained.
+Unknown known-Before fixture repair occurs only after raw decision/close/ACK capture.
+
+Saved packet recovery/storage-migration-prepared-remote-20261009/manifest.json retains32
+artifacts/12 historical source pins. Minimal next change captures Prepared disposition into existing
+BrowserDecisionCapture before Apply/cleanup/close; no fake BrowserLocalWriteResult or global
+exception/outcome inference. Final proposed8 = remote3 plus exact existing Prepared known5,
+covering commit/runtime Apply/rollback/debt/Unknown/revocation. No repeat accepted cleanup26.
+Runtime source/selection gate, matching build and GREEN remain pending.
+
 ## Prepared original remote receipt fixture WIP — 2026-10-09
 
 Tracked T062/T063; test-only three-row packet after690fb8. Actual Running neutral original

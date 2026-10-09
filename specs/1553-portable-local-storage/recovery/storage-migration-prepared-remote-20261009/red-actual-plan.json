@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-prepared-remote-outcome-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "54d640f9168b7f49d16d031672abf15f26bf9185",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.6364105,
+  "Descriptors": [
+    {
+      "Name": "portable-prepared-remote-outcome-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-prepared-remote-outcome-linux",
+      "Categories": [
+        "portable-prepared-remote-outcome-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PreparedRemoteOutcomeTests.OriginalRemoteCloseRetainsPreparedPublicationDecision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PreparedRemoteOutcomeTests.OriginalRemoteCloseRetainsPreparedPublicationDecision",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}
