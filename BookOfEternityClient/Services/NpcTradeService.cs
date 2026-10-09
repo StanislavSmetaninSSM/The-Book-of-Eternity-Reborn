@@ -287,8 +287,21 @@ public sealed partial class NpcTradeService
             return new NpcTradeOperationResult(false, false, "Локальная покупка товара требует актуальный номер хода.");
         if (writeLease == null)
         {
-            await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await BuyCoreAsync(ownedLease, npcId, slotId, currentTurn);
+            var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? uncertainty = null;
+            try
+            {
+                return await BuyCoreAsync(ownedLease, npcId, slotId, currentTurn);
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                uncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, ownedLease, false, uncertainty);
+            }
         }
 
         var localScope = await ResolveMortalTradeScopeAsync(writeLease);
@@ -471,8 +484,21 @@ public sealed partial class NpcTradeService
             return new NpcTradeOperationResult(false, false, "Локальная продажа товара требует актуальный номер хода.");
         if (writeLease == null)
         {
-            await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await SellCoreAsync(ownedLease, npcId, itemId, currentTurn);
+            var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? uncertainty = null;
+            try
+            {
+                return await SellCoreAsync(ownedLease, npcId, itemId, currentTurn);
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                uncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, ownedLease, false, uncertainty);
+            }
         }
 
         var localScope = await ResolveMortalTradeScopeAsync(writeLease);
@@ -627,8 +653,21 @@ public sealed partial class NpcTradeService
             return new NpcTradeOperationResult(false, false, "Локальный выкуп товара требует актуальный номер хода.");
         if (writeLease == null)
         {
-            await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await BuyBackCoreAsync(ownedLease, npcId, buybackEntryId, currentTurn);
+            var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? uncertainty = null;
+            try
+            {
+                return await BuyBackCoreAsync(ownedLease, npcId, buybackEntryId, currentTurn);
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                uncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, ownedLease, false, uncertainty);
+            }
         }
 
         var localScope = await ResolveMortalTradeScopeAsync(writeLease);

@@ -1,3 +1,15 @@
+## Original trade/transport uncertainty correction installed — WIP, 2026-10-09
+
+Exactlyfive original owningnulllease branches (NPC3/StorageVehicle2) explicitly
+capture/rethrowgenuineCSP andexistingRelease(false,samefailure). Recursiveborrowed
+call/returns/order/corevalidation/economy/history unchanged; fixture/helper unchanged.
+CausalStorage8 at0e + correctedNPC6 at007df are separately sourcepinned in
+52artifact43pinpacket at6d6e7c92/raw23. SixearlierNPCpreparation failures remain
+immutable. RuntimeUNBUILT/UNRUN before independentcombinedRED/source/exact14
+gate, fresh sharedintegrationPlan14/2 thenactualGREEN14/2. Knownlateclose and
+resource-bearingstacks unqualified. Storage-only lifetimefix addsno GM capability/
+schema/response/example; no B2–B5businessresumption/T061–T065completion.
+
 ## Corrected NPC actual causal baseline6 — WIP, 2026-10-09
 
 Canonicalactor fixture007df4f7 freshNPCPlan2155476/1,0execution51.7163095s;
