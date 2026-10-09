@@ -3,8 +3,8 @@
   "categories": [
     {
       "id": "portable-worker-durable-storage-linux",
-      "responsibility": "Fourteen original durable synthetic worker pool rows: real Store inbox/derived-audit and terminal/cleanup/reaper audit publication Unknown, delayed acceptance revocation, original physical settlement and retained workspace/slot/root capacity, known warning/cancellation/failure/fallback controls. Actual FSM generation and correlated original native worker/ledger/publication ACK.",
-      "excludes": "No provider/live GM or public production Linux worker activation, native Windows, full original Bridge-to-Store, new crash/restart/published-disk ACK-false matrix, or actual secondary canonical lease-close fault. Prior prelaunch public Linux refusal remains separately evidenced, not replayed.",
+      "responsibility": "Fourteen original durable synthetic worker pool rows: real Store inbox/derived-audit and terminal/required-cleanup audit publication Unknown, durable deferred cleanup/reaper diagnostic admission refusals, delayed acceptance revocation, original physical settlement and retained workspace/slot/root capacity, known warning/cancellation/failure/fallback controls. Actual FSM generation and correlated original native worker/ledger/publication ACK.",
+      "excludes": "No provider/live GM or public production Linux worker activation, native Windows, full original Bridge-to-Store, new crash/restart/published-disk ACK-false matrix, nondurable cleanup/reaper diagnostic Unknown, or actual secondary canonical lease-close fault. Prior prelaunch public Linux refusal remains separately evidenced, not replayed.",
       "changeHints": [
         "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs",
         "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",

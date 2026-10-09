@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -16,6 +17,19 @@ internal static partial class NativePoolScenarioDriver
         var root = Path.Combine(output, "state-copy");
         var evidence = new Dictionary<string, object?> { ["Mode"] = mode, ["WorkerFixtureRoot"] = root };
         using var probe = new WorkerStorageOutcomeProbe();
+        var refusedDiagnostic = mode is "cleanup_audit_refused" or "reaper_audit_refused";
+        var refusalStage = "run";
+        var refusalWitnesses = new List<(string Stage, Exception Failure)>();
+        EventHandler<FirstChanceExceptionEventArgs> observeRefusal = (_, args) =>
+        {
+            if (refusedDiagnostic && args.Exception is InvalidOperationException
+                && args.Exception.TargetSite?.DeclaringType == typeof(GmWorkerRootContext)
+                && args.Exception.TargetSite.Name == "RequireOpen"
+                && args.Exception.Message == "This worker root is closed while original authority or metadata is unresolved."
+                && !refusalWitnesses.Any(item => ReferenceEquals(item.Failure, args.Exception)))
+                refusalWitnesses.Add((refusalStage, args.Exception));
+        };
+        AppDomain.CurrentDomain.FirstChanceException += observeRefusal;
         GmWorkerNativePoolAdmission? admission = null;
         GmWorkerNativeLineageLaunch? owner = null;
         GmWorkerProcessHostLaunch? host = null;
@@ -35,8 +49,8 @@ internal static partial class NativePoolScenarioDriver
             var known = new IOException("known original durable worker failure");
             var knownHits = 0; var workspaceCalls = 0; var reaperPasses = 0; var releases = 0;
             var early = mode is "terminal_audit_unknown" or "timeout_audit_unknown" or "cancelled" or "known_failure";
-            var deferred = mode is "required_audit_unknown" or "cleanup_audit_unknown" or "reaper_audit_unknown" or "required_audit_unavailable";
-            var delayed = mode is "required_audit_unknown" or "reaper_audit_unknown";
+            var deferred = mode is "required_audit_unknown" or "cleanup_audit_refused" or "reaper_audit_refused" or "required_audit_unavailable";
+            var delayed = mode == "required_audit_unknown";
             var uncertain = mode.Contains("unknown", StringComparison.Ordinal);
             var fileHooks = probe.Hooks;
             FileSystemManager fs = null!;
@@ -103,8 +117,6 @@ internal static partial class NativePoolScenarioDriver
                 "derived_audit_unknown" => "proposal-received",
                 "required_audit_unknown" => "process-tree-cleanup-confirmed",
                 "terminal_audit_unknown" => "task-failed",
-                "cleanup_audit_unknown" => "process-tree-cleanup-unconfirmed",
-                "reaper_audit_unknown" => "process-tree-cleanup-retry-failed",
                 "timeout_audit_unknown" => "task-timed-out",
                 _ => null
             };
@@ -134,7 +146,7 @@ internal static partial class NativePoolScenarioDriver
                 {
                     var audit = LastAudit();
                     Require(audit.EventType == expectedEvent && audit.TaskId == task.TaskId && audit.WorkerId == task.WorkerId, "cut missed exact original audit event");
-                    if (mode is "terminal_audit_unknown" or "cleanup_audit_unknown" or "reaper_audit_unknown")
+                    if (mode is "terminal_audit_unknown" or "cleanup_audit_refused" or "reaper_audit_refused")
                         Require(audit.Summary.Contains(known.Message, StringComparison.Ordinal), "audit cut lost known original cause");
                 }
                 if (!early) Require(Ack() && record.Progress?.Publication?.Committed == true, "derived cut lacks actual durable publication ACK");
@@ -182,7 +194,7 @@ internal static partial class NativePoolScenarioDriver
                 BeforeWorkspaceCleanupAsync = path =>
                 {
                     workspacePath = path; workspaceCalls++;
-                    if (deferred && workspaceCalls <= (mode == "reaper_audit_unknown" ? 2 : 1)) { knownHits++; throw known; }
+                    if (deferred && workspaceCalls <= (mode == "reaper_audit_refused" ? 2 : 1)) { knownHits++; throw known; }
                     return Task.CompletedTask;
                 },
                 AfterQuarantineAuditPublishedAsync = path => { receiptPath = path; receiptBytes = File.ReadAllBytes(path); return Task.CompletedTask; },
@@ -201,12 +213,12 @@ internal static partial class NativePoolScenarioDriver
                 workspaceExists = workspacePath != null && Directory.Exists(workspacePath), disposeAttempts = disposal?.DisposeAttempts ?? 0 };
             if (deferred || disposal != null)
             {
-                reaperPasses++; await reaper.RunPassAsync();
+                reaperPasses++; refusalStage = "reaper" + reaperPasses; await reaper.RunPassAsync();
             }
             var firstReaperAccepted = result?.HasValidatedExecutionFor(task) == true;
-            if (uncertain)
+            if (uncertain || mode == "reaper_audit_refused")
             {
-                reaperPasses++; await reaper.RunPassAsync();
+                reaperPasses++; refusalStage = "reaper" + reaperPasses; await reaper.RunPassAsync();
             }
             var recordObservationAfter = ReadRecord();
             var recordAfter = recordObservationAfter.Record;
@@ -220,7 +232,8 @@ internal static partial class NativePoolScenarioDriver
             var workspaceAfter = Snapshot(workspacePath);
             evidence["WorkerStorage"] = new
             {
-                mode, Failure = failure?.ToString(), ResultReturned = result != null, Status = result?.Status.State.ToString(),
+                mode, RefusalWitnesses = refusalWitnesses.Select(item => new { item.Stage, Failure = item.Failure.ToString() }).ToArray(),
+                Failure = failure?.ToString(), ResultReturned = result != null, Status = result?.Status.State.ToString(),
                 TimedOut = result?.TimedOut, ExitCode = result?.ExitCode, DispatchSettled = originalRun.IsCompleted,
                 SameOriginalUncertainty = probe.OriginalUncertainty != null && ReferenceEquals(probe.OriginalUncertainty, failure),
                 SameRetainedUncertainty = probe.OriginalUncertainty != null && ReferenceEquals(probe.OriginalUncertainty, CanonicalFailure()),
@@ -282,7 +295,7 @@ internal static partial class NativePoolScenarioDriver
                 if (mode.StartsWith("inbox_unknown", StringComparison.Ordinal) || mode == "derived_audit_unknown")
                     Require(Ack() && !Recorded() && workspaceCalls == 0 && Directory.Exists(workspacePath), "Store uncertainty forged acceptance or removed its original workspace");
                 if (early) Require(workspaceCalls == 0 && Directory.Exists(workspacePath), "terminal diagnostic uncertainty removed the original workspace before settlement");
-                if (mode is "terminal_audit_unknown" or "cleanup_audit_unknown" or "reaper_audit_unknown")
+                if (mode is "terminal_audit_unknown" or "cleanup_audit_refused" or "reaper_audit_refused")
                     Require(ReferenceEquals(probe.OriginalUncertainty!.Data["GmWorkerOriginalFailure"], known), "original diagnostic cause was lost");
                 if (mode == "timeout_audit_unknown") Require(failure!.Data["GmWorkerTerminalOutcome"]?.ToString() == "TimedOut", "actual decided timeout was lost");
                 if (disposal != null) Require(disposal.DisposeAttempts >= 2 && probe.OriginalUncertainty!.Data["GmWorkerCleanupFailure"] is Exception,
@@ -296,6 +309,17 @@ internal static partial class NativePoolScenarioDriver
                 if (mode == "cancelled") Require(failure is OperationCanceledException && result == null, "actual cancellation changed outcome");
                 else if (mode == "known_failure") Require(failure == null && result?.Status.State == WorkerBridgeState.Failed && knownHits == 1, "known worker failure policy changed");
                 else Require(failure == null && result?.HasValidatedExecutionFor(task) == true && Ack() && Recorded(), "known warning/success lost actual published authority");
+                if (refusedDiagnostic)
+                {
+                    Require(knownHits == (mode == "reaper_audit_refused" ? 2 : 1)
+                        && refusalWitnesses.Any(item => item.Stage == "run")
+                        && (mode != "reaper_audit_refused" || refusalWitnesses.Any(item => item.Stage == "reaper1")),
+                        "original deferred diagnostic did not reach the real admission refusal");
+                    var events = File.ReadLines(auditPath).Select(line => GmWorkerJson.Deserialize<WorkerAuditEvent>(line.TrimStart('\uFEFF'))!).ToArray();
+                    Require(events.All(item => item.EventType is not ("process-tree-cleanup-unconfirmed" or "process-tree-cleanup-retry-failed" or "workspace-cleanup-deferred"))
+                        && events.Count(item => item.EventType == "process-tree-cleanup-confirmed") == 1,
+                        "refused ordinary diagnostic reached publication or required cleanup audit was lost");
+                }
                 if (mode is "inbox_known" or "audit_known") Require(knownHits > 0, "known derived failure was not reached");
                 if (mode == "required_audit_unavailable") Require(receiptBytes != null && receiptPath != null && knownHits == 1,
                     "ordinary absent-audit fallback was not actually published");
@@ -306,6 +330,7 @@ internal static partial class NativePoolScenarioDriver
         catch (Exception failure) { evidence["Failure"] = failure.ToString(); return 1; }
         finally
         {
+            AppDomain.CurrentDomain.FirstChanceException -= observeRefusal;
             // Separate fixture teardown never manufactures publication, retirement,
             // slot release or a successful assertion; retained logical debt is recorded above.
             var cleanupFailures = new List<string>();

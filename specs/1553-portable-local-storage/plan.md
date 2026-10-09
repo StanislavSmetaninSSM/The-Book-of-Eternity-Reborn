@@ -1,3 +1,22 @@
+## Durable diagnostic admission correction — WIP, 2026-10-09
+
+Fresh Plan080227 at ad7e587b completed79.0330753s,14/1 selected,0 executed.
+Before actual14, root found and independent reviewer confirmed a missed route:
+RetainForRetry marks durable cleanup deferred before ordinary cleanup/reaper
+telemetry. Its no-purpose canonical lease is rejected by RequireOpen, so those
+two rows cannot reach their claimed publication Unknown. Prior source14 PASS
+missed this ordering and is superseded; no actual test run was attempted.
+
+Keep the genuine production admission. Rename two rows to cleanup_audit_refused
+and reaper_audit_refused, observe actual RequireOpen exceptions at run/reaper1,
+require no corresponding audit events and eventual one required cleanup audit.
+Known failure counts and actual retired/root/slot/acceptance facts remain checked.
+Required-audit Unknown still uses the original exact CleanupPurpose and remains
+in scope. Nondurable original cleanup/reaper diagnostic Unknown stays separately
+open; this durable selection cannot qualify it. No production edit. Corrected
+fixture/selection review and fresh Plan14 precede actual14. All other queues and
+owner constraints remain unchanged; B2–B5 paused, no main/CI/live/desktop action.
+
 ## Durable worker fixture review corrections — WIP, 2026-10-09
 
 Independent frozen7933 review blocked execution on two fixture defects: successful
