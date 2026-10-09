@@ -1,3 +1,27 @@
+## Image source causal14 baseline and admitted runtime — WIP, 2026-10-09
+
+Corrected fixture/design AstraXHigh PASSebc62065; metadata correction0be16735
+published/ref/raw2 verified. Fresh integration Plan161615 selects14/2,0execution,
+95.0140197s (build91.0838907s); actual161812 **14/14 executed,5PASS/9causalFAIL**,
+complete2/2,10.6574985s,0skip/duplicate/timeout,bothcleanup. Three original export
+Facts plus external-prompt/browserexisting controls pass. Nine source-admission rows
+reach original raw selection with0admissions and retained Unknown or Committed debt,
+or missing namespace refusal. All11new owned roots removed. Statements after the first
+failed oracle remain unexecuted. [Packet](recovery/storage-migration-image-source-20261009/manifest.json)
+retains raw Plan/build/TRX/outcomes/counters/root absence and prior zero-execution
+catalog preparation failure; exact original/source hashes verified before publication.
+
+Minimal source now admits canonical lookup/export/scene through existing leases and
+fixed-root enumeration with explicit recursive:false (default recursive consumers
+unchanged). Export detaches guarded exact bytes and releases before external CreateNew/
+Create write; original target/refusal/results retained. Canonical prompt/output selection
+precedes provider/display fallback; short lease releases before association/provider.
+Original browser existing-image uses its held lease once; no new nested acquisition.
+No generation/write/gallery/provider backend, game/GM-authored field or prompt/example
+change. Runtime unbuilt/unrun; next independent RED/raw/source gate then fresh Plan14,
+actual14 and fresh-project discovery-only catalog, final evidence review. Whole F16,
+original-owned-close/current registry/fresh restore remain open; T061–T065 unchecked.
+
 ## Image catalog preparation correction — zero execution, 2026-10-09
 
 Corrected fixture/design AstraXHigh PASSebc62065; remoteSHA/raw2 verified. First

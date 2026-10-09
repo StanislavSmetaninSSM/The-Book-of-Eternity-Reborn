@@ -121,35 +121,16 @@ public class ImageService
 
         _logger.LogDebug("Scene image prompt: {Prompt}", prompt);
 
+        // Canonical source admission cannot be turned into provider fallback.
+        // The short source lease is released before display or external work.
+        var existingImage = await SelectExistingSceneImageAsync(prompt);
         try
         {
-            // Check if prompt is actually a file path
-            if (File.Exists(prompt) && IsImageFile(prompt))
+            if (existingImage != null)
             {
                 if (!_settings.GenerateImagesWithoutDisplay)
-                    DisplayImageFile(prompt);
+                    DisplayImageFile(existingImage);
                 return;
-            }
-
-            // Check for recent image files in output directory
-            var outputDir = _fs.ResolvePath("output");
-            if (Directory.Exists(outputDir))
-            {
-                var imageFiles = Directory.GetFiles(outputDir, "*.*")
-                    .Where(IsImageFile)
-                    .OrderByDescending(File.GetLastWriteTimeUtc)
-                    .ToArray();
-
-                if (imageFiles.Length > 0)
-                {
-                    var newest = imageFiles[0];
-                    if ((DateTime.UtcNow - File.GetLastWriteTimeUtc(newest)).TotalSeconds < 30)
-                    {
-                        if (!_settings.GenerateImagesWithoutDisplay)
-                            DisplayImageFile(newest);
-                        return;
-                    }
-                }
             }
 
             // Generate scene image
@@ -174,6 +155,35 @@ public class ImageService
             if (!_settings.GenerateImagesWithoutDisplay)
                 DisplayPromptPanel(prompt);
         }
+    }
+
+    private async Task<string?> SelectExistingSceneImageAsync(string prompt)
+    {
+        string? canonicalPrompt = null;
+        if (IsImageFile(prompt))
+        {
+            var fullPrompt = Path.GetFullPath(prompt);
+            if (IsCanonicalExportTarget(fullPrompt)) canonicalPrompt = fullPrompt;
+            else if (File.Exists(prompt)) return prompt; // An external prompt is not canonical storage.
+        }
+
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? operationFailure = null;
+        try
+        {
+            if (canonicalPrompt != null &&
+                await _fs.ReadLocalFileBytesAsync(lease, GetCanonicalImagePath(canonicalPrompt)) != null)
+                return canonicalPrompt;
+
+            var newest = _fs.EnumerateCanonicalLocalTreeFiles(lease, "output", recursive: false)
+                .Where(IsImageFile).Select(_fs.ResolvePath)
+                .OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault();
+            return newest != null && (DateTime.UtcNow - File.GetLastWriteTimeUtc(newest)).TotalSeconds < 30
+                ? newest : null;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        { operationFailure = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed: false, operationFailure); }
     }
 
     /// <summary>
@@ -316,18 +326,34 @@ public class ImageService
     /// </summary>
     public string? GetEntityImagePath(string entityType, string entityKeyOrName)
     {
-        if (!IsSupportedEntityType(entityType))
-            return null;
+        if (!IsSupportedEntityType(entityType)) return null;
+        var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        Exception? operationFailure = null;
+        try { return GetEntityImagePath(lease, entityType, entityKeyOrName); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        { operationFailure = failure; throw; }
+        finally
+        {
+            CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed: false, operationFailure)
+                .AsTask().GetAwaiter().GetResult();
+        }
+    }
 
-        var dir = GetEntityDir(entityType);
-        if (!Directory.Exists(dir)) return null;
-
+    internal string? GetEntityImagePath(FileSystemManager.CanonicalWriteLease lease, string entityType, string entityKeyOrName)
+    {
+        if (!IsSupportedEntityType(entityType)) return null;
         var safeKey = SanitizeFileName(entityKeyOrName);
         if (string.IsNullOrWhiteSpace(safeKey)) return null;
-
-        return EnumerateEntityImageCandidates(dir, safeKey)
-            .OrderByDescending(File.GetLastWriteTimeUtc)
-            .FirstOrDefault();
+        var versionedPrefix = safeKey + VersionSeparator;
+        return _fs.EnumerateCanonicalLocalTreeFiles(lease, "images/" + EntityDirs[entityType.Trim()], recursive: false)
+            .Where(IsImageFile)
+            .Where(path =>
+            {
+                var stem = Path.GetFileNameWithoutExtension(path);
+                return stem.Equals(safeKey, StringComparison.OrdinalIgnoreCase) ||
+                       stem.StartsWith(versionedPrefix, StringComparison.OrdinalIgnoreCase);
+            })
+            .Select(_fs.ResolvePath).OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault();
     }
 
     /// <summary>
@@ -340,8 +366,27 @@ public class ImageService
         string targetDirectoryOrFilePath,
         bool overwrite = false)
     {
-        var sourcePath = GetEntityImagePath(entityType, entityKeyOrName);
-        if (sourcePath == null || !File.Exists(sourcePath))
+        string? sourcePath = null;
+        byte[]? sourceBytes = null;
+        if (IsSupportedEntityType(entityType))
+        {
+            var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            Exception? operationFailure = null;
+            try
+            {
+                sourcePath = GetEntityImagePath(lease, entityType, entityKeyOrName);
+                if (sourcePath != null)
+                    sourceBytes = _fs.ReadLocalFileBytesAsync(lease, GetCanonicalImagePath(sourcePath)).GetAwaiter().GetResult();
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            { operationFailure = failure; throw; }
+            finally
+            {
+                CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed: false, operationFailure)
+                    .AsTask().GetAwaiter().GetResult();
+            }
+        }
+        if (sourcePath == null || sourceBytes == null)
         {
             return ImageExportResult.Failure(
                 ImageExportFailureReason.SourceMissing,
@@ -388,7 +433,10 @@ public class ImageService
                     destinationPath);
             }
 
-            File.Copy(sourcePath, destinationPath, overwrite);
+            // The source is detached under admission; external export holds no game lease.
+            using (var stream = new FileStream(destinationPath, overwrite ? FileMode.Create : FileMode.CreateNew,
+                       FileAccess.Write, FileShare.Read))
+                stream.Write(sourceBytes);
             return ImageExportResult.SuccessResult(sourcePath, destinationPath);
         }
         catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or UnauthorizedAccessException)
@@ -759,20 +807,6 @@ public class ImageService
     {
         if (result.Error is not null) _logger.LogWarning(result.Error, "Desktop open request failed: {Path}", result.Path);
         AnsiConsole.MarkupLine(result.ToMarkup());
-    }
-
-    private IEnumerable<string> EnumerateEntityImageCandidates(string dir, string safeKey)
-    {
-        var versionedPrefix = safeKey + VersionSeparator;
-
-        return Directory.GetFiles(dir, "*.*")
-            .Where(IsImageFile)
-            .Where(path =>
-            {
-                var stem = Path.GetFileNameWithoutExtension(path);
-                return stem.Equals(safeKey, StringComparison.OrdinalIgnoreCase) ||
-                       stem.StartsWith(versionedPrefix, StringComparison.OrdinalIgnoreCase);
-            });
     }
 
     private static string ResolveExportDestinationPath(string sourcePath, string targetDirectoryOrFilePath)

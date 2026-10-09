@@ -133,10 +133,7 @@ public sealed class BrowserMediaGenerationService
         BrowserMediaGenerateRequest request)
     {
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (!_imageService.EntityImageExists(request.EntityType, request.EntityKey))
-            return null;
-
-        var existingPath = _imageService.GetEntityImagePath(request.EntityType, request.EntityKey);
+        var existingPath = _imageService.GetEntityImagePath(writeLease, request.EntityType, request.EntityKey);
         return existingPath == null ? null : _mediaService.TryCreateReference(existingPath);
     }
 

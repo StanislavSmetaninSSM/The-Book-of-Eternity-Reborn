@@ -118,19 +118,21 @@ public partial class FileSystemManager
     }
 
     // Fixed caller-selected subtree only: no path is discovered from diagnostic metadata.
-    internal IReadOnlyList<string> EnumerateCanonicalLocalTreeFiles(CanonicalWriteLease lease, string relativeRoot)
+    internal IReadOnlyList<string> EnumerateCanonicalLocalTreeFiles(CanonicalWriteLease lease, string relativeRoot,
+        bool recursive = true)
     {
         EnsureCanonicalWriteLeaseActive(lease);
         VerifyCurrentSessionOperation(lease);
         EnsureSafeCanonicalRelativePath(relativeRoot);
-        var paths = EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]), ResolvePath(relativeRoot))
+        var paths = EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]), ResolvePath(relativeRoot), recursive: recursive)
             .Select(path => GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows())).ToArray();
         VerifyCurrentSessionOperation(lease);
         return paths;
     }
 
     private static IReadOnlyList<string> EnumerateLocalTreeFiles(TrustedLocalFileScope scope, string root,
-        Func<string, bool>? exclude = null, bool jsonOnly = false, List<string>? inspectedDirectories = null)
+        Func<string, bool>? exclude = null, bool jsonOnly = false, List<string>? inspectedDirectories = null,
+        bool recursive = true)
     {
         root = scope.ValidateDirectory(root);
         if (!Directory.Exists(root)) return [];
@@ -145,7 +147,9 @@ public partial class FileSystemManager
                 if (exclude?.Invoke(entry) == true) continue;
                 var attributes = File.GetAttributes(entry);
                 if ((attributes & FileAttributes.Directory) != 0)
-                    directories.Add(scope.ValidateDirectory(entry, allowMissing: false));
+                {
+                    if (recursive) directories.Add(scope.ValidateDirectory(entry, allowMissing: false));
+                }
                 else
                 {
                     if ((attributes & FileAttributes.ReparsePoint) != 0)
