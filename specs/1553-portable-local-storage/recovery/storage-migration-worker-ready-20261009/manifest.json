@@ -1,0 +1,87 @@
+{
+  "scope": "Original worker audit/build/apply/Ready and engine dispatcher. Actual publication cuts versus fixture misses classified per phase in plan. Controlled validator; no live worker, C2 CAS, native Windows or simultaneous double-fault qualification.",
+  "build-blocker": {
+    "source": "9d24ed45244f1db89889a69ca92ee4e86b801972",
+    "qualification": "Raw exact selected source/summary/TRX and owned evidence; causal versus fixture and assertion reach classified in plan.",
+    "artifacts": [
+      {
+        "path": "build-blocker-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-062208-085-271605-62818b1e8f5044a9a3305f87eb539428-categories/dotnet-test.log",
+        "sha256": "aa800ce4f48a460f9c73c53ca2a1c1f06ed9d1f4458a2134d07ae9bf6530e4e1",
+        "originalSha256": "a82816a98d922186f4b635629d036ace3beaa1fd4403367409f4678a5338c1a9"
+      },
+      {
+        "path": "build-blocker-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-062208-085-271605-62818b1e8f5044a9a3305f87eb539428-categories/summary.json",
+        "sha256": "7cff7302010c3a14f0e2eae0d0bdaf6f9e40b7f4fe63a48cf095da929ab83733",
+        "originalSha256": "7cff7302010c3a14f0e2eae0d0bdaf6f9e40b7f4fe63a48cf095da929ab83733"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GmWorkerStorageOutcomeTests.cs",
+        "sha256": "894a9d042ceb550b22d2a8f8eee901f000d2eac0d14aae48c389e1bde984e7cb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorkerStorageOutcome.cs",
+        "sha256": "7adc78f10deac8fc15ae367d09d9f03dc55e61e74cf1a5c857f205e6f85fe119"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "165354067b7a85355b1b33cbf07f8cf9677344007043ea7098e09bc70e0286cb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmWorkerBridgeTestFixtures.cs",
+        "sha256": "a16c1e4b87250c27db9db8dba21e73ad95ad987eec7f4dd17188418945e92474"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "fea86112a179358626077a0957bd421794ee2f822e4f24e72584803619c6fd5d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+        "sha256": "401100aa4874634d50d1528d9c12808d7db6c92d8ce7d2d75c27f72e410eff5a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+        "sha256": "f6982c4340a6cdc2942b56763f3738df2b0c91f158318c21dbb8e14d470cae50"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs",
+        "sha256": "64aeba548d807aed0142f5af62dc37dbd11acc27b5e593fe84f9a8331b589d62"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "sha256": "6629d0db336c38327f02bc2d0d884bf635b71a51ba166fd3497607b6a8ff979a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "f799eb5631a3eda6465da3f1e0e8caa05898e7f629425ebc89e6748dd657e770"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "c06ec22ebe3b5a005d67c414f424efa60fef17bf6be1b5297821cbe4b3d4b960"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "bc0b9c97e76e05a3508145025766816c29a560bf95c581a2c4fc32d78cae7c0f"
+      }
+    ]
+  }
+}

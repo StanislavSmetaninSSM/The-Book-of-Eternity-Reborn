@@ -1,3 +1,12 @@
+## Ready fixture build correction — WIP, 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT12 gate passed9d24. Fresh Plan062208 failed during
+integration build with CS0136: the new JSON local `ready` collided with the earlier
+pattern variable in the raw output expression. Zero descriptors/cases executed;
+wall84.0231653s, both cleanup flags complete. Rename only that fixture local to
+readyDocument. [Original build evidence](recovery/storage-migration-worker-ready-20261009/manifest.json)
+retained at source9d24. Runtime unchanged; fresh matching Plan12 and actual12 pending.
+
 ## Ready/worker exact12 fixture freeze — WIP, 2026-10-09
 
 Test-only first implementation of the bounded design below; runtime unchanged.

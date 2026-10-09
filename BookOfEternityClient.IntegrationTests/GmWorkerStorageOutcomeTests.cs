@@ -203,8 +203,8 @@ public sealed class GmWorkerStorageOutcomeTests(ITestOutputHelper output)
                 if (mode == "ready_success")
                 {
                     Assert.NotNull(readyCommitted); Assert.Equal(readyCommitted, readyAfter);
-                    using var ready = JsonDocument.Parse(Encoding.UTF8.GetString(readyAfter!).TrimStart('\uFEFF'));
-                    Assert.Equal(task!.SourceTurn.RequestId, ready.RootElement.GetProperty("requestId").GetString());
+                    using var readyDocument = JsonDocument.Parse(Encoding.UTF8.GetString(readyAfter!).TrimStart('\uFEFF'));
+                    Assert.Equal(task!.SourceTurn.RequestId, readyDocument.RootElement.GetProperty("requestId").GetString());
                 }
                 else
                 {
