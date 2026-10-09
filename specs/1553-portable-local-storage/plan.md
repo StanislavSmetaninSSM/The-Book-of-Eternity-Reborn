@@ -1,3 +1,20 @@
+## Accepted-continuation runtime WIP / final12 — 2026-10-09
+
+Independent raw and causal carrier gates PASS76f6c6a0 (29/15), parent independently corroborates actual
+published effects/report and retained images. Runtime now changes exactly six direct-CSP boundaries:
+memory apply/audit/finalize, original Shining wrapper, rejected rollback (local _inGame=false retained),
+and reviewed shared fail-closed bookkeeping. Actual CSP bypasses canonical continuation/logging; ordinary
+known catch behavior remains. If reporting a known rollback failure itself becomes Unknown, the exact
+original failure is attached to that same CSP. Generation-bound report write and transient report delete
+capture direct CSP before their original owned lease reaches unchanged ReleaseOwnedLease(completed:false).
+No new admission/latch, result type, effect/gameplay math, ordinary false/rollback policy or flag redesign.
+
+Final exact12 = unchanged causal7 + unchanged known rollback authority/missing evidence2, diagnostic-only
+caller-owned rollback/known report refusal2, and genuine Shining runtime effects1. Three exact known
+selectors move from old lifecycle owner; broad historical Shining wildcard stays unselected. Source/
+selection review then matching fresh integration Plan/build required before actual12. Current source
+unbuilt/unexecuted; no GREEN or simultaneous secondary-close claim. Latest full restore remains e5.
+
 ## Accepted-continuation causal7 complete — 2026-10-09
 
 Frozen e80004ce passed independent SOURCE/FIXTURE/EXACT7. Matching Plan040103 freshly built integration

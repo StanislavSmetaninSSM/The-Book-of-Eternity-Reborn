@@ -2345,7 +2345,7 @@ public partial class GameEngine
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogError(
                 ex,
@@ -8006,9 +8006,15 @@ public partial class GameEngine
         string content,
         string expectedSessionGeneration)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
-        await _fs.WriteFileAtomicAsync(writeLease, relativePath, content);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+            await _fs.WriteFileAtomicAsync(writeLease, relativePath, content);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
     }
 
     private async Task<string?> ReadValidationRepairFileForSessionAsync(

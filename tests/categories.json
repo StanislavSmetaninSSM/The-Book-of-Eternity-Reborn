@@ -6490,8 +6490,6 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_OrdinaryTurnStagingFiles_AreValidationSnapshottedWithoutRollbackBaseline",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PresentSourceOfLightPending_IsRollbackBaseline",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_RecordsClosedOriginalPathPresenceWithoutChangingRollbackMembership",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DiagnosticOnlyFailure_LeavesOneUsableRollbackForCallerAndPreservesReport",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DiagnosticOnlyReportWriteFailure_StillLeavesRollbackToCaller",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_RollbackTracksEveryEffectSurfaceAndPreservesOperatorDiagnostic",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationRepairLifecycleTests_ActionableEffectRestoresBaselineBeforeDispatch",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationRepairLifecycleTests_ActionableEffectWithoutRollbackFailsClosedBeforeDispatch",
@@ -6531,7 +6529,6 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_LoadAfterAcceptedValidation_AbortsBeforeMutatingReplacement",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProtectedMortalLocationDiagnosticWriteFailure_StillLeavesRollbackToCaller",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProtectedMortalLocationDiagnostic_SurvivesCallerOwnedAcceptedTurnRollback",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RejectedRollbackResult_FailurePreservesOriginalEvidence",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RepairResubmission_FormattingOnlyJsonDoesNotSatisfyChangedPathObligation",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ResolveCanonicalRepairOutputFreshnessBoundaryUtc_UnobservableTargetFailsOutputFreshnessClosed",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ResolveCanonicalRepairOutputFreshnessBoundaryUtc_UsesLatestActualTargetWrite",
@@ -19409,6 +19406,38 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ShiningEffectUnknown_OriginalEngineWrapperPreservesExpiredDecision",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RejectedRollbackUnknown_OriginalCallerStopsBeforeFurtherBookkeeping",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BookkeepingDeleteUnknown_OriginalDiagnosticCallerStopsBeforeNextControls"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-accepted-continuation-known-controls",
+      "responsibility": "Five unchanged known-policy controls: genuine rollback authority/missing evidence2, diagnostic-only caller-owned rollback and known report refusal2, real Shining runtime effect success1.",
+      "excludes": "No actual uncertainty claim from the known prepublication IOException. Shining broader historical wildcard remains documented but unselected; no full lifecycle/native/secondary-close fault coverage.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient/Services/ProgressionScheduleService.cs"
+      ],
+      "related": [
+        "portable-accepted-continuation-outcome-causal-linux"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RejectedRollbackResult_FailurePreservesOriginalEvidence",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DiagnosticOnlyFailure_LeavesOneUsableRollbackForCallerAndPreservesReport",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DiagnosticOnlyReportWriteFailure_StillLeavesRollbackToCaller",
+            "BookOfEternityClient.Tests.ShiningBlessingEffectStateTests.ApplyAcceptedTurnRuntimeEffectsAsync_ConsumesSocialAndLoreAndExpiresRoute"
           ]
         }
       ]

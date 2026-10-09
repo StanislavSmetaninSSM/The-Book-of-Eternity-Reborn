@@ -2,8 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-accepted-continuation-known-controls",
+      "reason": "Five original unchanged known controls protect rollback authority/missing evidence, caller-owned diagnostic rollback and ordinary report-refusal policy, plus real Shining effects success. Combined exact12 pending source/build/actual gates.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
       "category": "portable-accepted-continuation-outcome-causal-linux",
-      "reason": "Test-only WIP exact7; source-derived genuine producers and original consumers, real MemberPublished/journal/CSP, finite input and no-request safety. Unbuilt/unexecuted pending frozen source/fixture gate. Prior lore composed14 retained without replay.",
+      "reason": "Actual causal7 at e800/040245 proves all seven original losses. Current six stop boundaries, known cause attachment and two same-lease captures require final matching7, preserving original fixtures/positive cuts. No whole accepted-loop claim.",
       "contracts": [
         "#1553",
         "FR-003",

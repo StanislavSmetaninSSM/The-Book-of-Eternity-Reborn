@@ -898,12 +898,18 @@ public class ProgressionScheduleService
     internal async Task<bool> DeleteTransientReportIfCurrentSessionAsync(
         string expectedSessionGeneration)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
-            return false;
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+                return false;
 
-        _fs.DeleteFile(writeLease, ReportPath);
-        return true;
+            _fs.DeleteFile(writeLease, ReportPath);
+            return true;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
     }
 
     private void ValidateMortalOutcome(

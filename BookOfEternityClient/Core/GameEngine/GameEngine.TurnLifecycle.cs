@@ -347,30 +347,43 @@ public partial class GameEngine
         {
             throw;
         }
+        catch (CoordinatedStatePublicationUncertainException)
+        {
+            _inGame = false;
+            throw;
+        }
         catch (Exception exception)
         {
             _inGame = false;
             _logger.LogError(
                 exception,
                 "Rejected accepted-turn rollback failed; evidence is retained and the session remains stopped.");
-            await RunBestEffortFailClosedBookkeepingAsync(
-                "write the rejected accepted-turn rollback failure diagnostic",
-                async () =>
-                {
-                    var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-                    var report = new
+            try
+            {
+                await RunBestEffortFailClosedBookkeepingAsync(
+                    "write the rejected accepted-turn rollback failure diagnostic",
+                    async () =>
                     {
-                        detectedAtUtc = DateTime.UtcNow.ToString("o"),
-                        reason = "Rejected accepted-turn rollback failed; evidence was retained.",
-                        exceptionType = exception.GetType().FullName,
-                        message = exception.Message,
-                        details = exception.ToString()
-                    };
-                    await WriteValidationRepairFileForSessionAsync(
-                        ValidationDiagnosticFailureReportPath,
-                        JsonSerializer.Serialize(report, JsonOpts),
-                        sessionGeneration);
-                });
+                        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                        var report = new
+                        {
+                            detectedAtUtc = DateTime.UtcNow.ToString("o"),
+                            reason = "Rejected accepted-turn rollback failed; evidence was retained.",
+                            exceptionType = exception.GetType().FullName,
+                            message = exception.Message,
+                            details = exception.ToString()
+                        };
+                        await WriteValidationRepairFileForSessionAsync(
+                            ValidationDiagnosticFailureReportPath,
+                            JsonSerializer.Serialize(report, JsonOpts),
+                            sessionGeneration);
+                    });
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["RejectedAcceptedTurnRollbackFailure"] = exception;
+                throw;
+            }
             AnsiConsole.MarkupLine(
                 "[yellow]⚠ Изменения мира не были приняты. Мир не удалось вернуть к устойчивой точке; продолжение остановлено.[/]");
             return false;
@@ -410,7 +423,7 @@ public partial class GameEngine
                 AnsiConsole.WriteLine();
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Не удалось применить mortal-life consumers для pendingShiningBlessingEffects");
         }

@@ -402,7 +402,7 @@ public partial class GameEngine
             _pendingMemoryLegacyAwaitingConsumption = !string.IsNullOrWhiteSpace(summary);
             return summary;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Не удалось применить pendingMemoryLegacy при начале новой инкарнации");
             _pendingMemoryLegacyAwaitingConsumption = false;
@@ -539,7 +539,7 @@ public partial class GameEngine
                 await WriteCanonicalSoulStateAsync(root!);
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Не удалось записать applicationAudit для pendingMemoryLegacy");
         }
@@ -717,7 +717,7 @@ public partial class GameEngine
             await WriteCanonicalSoulStateAsync(root);
             await RefreshRuntimeStateAsync();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Не удалось очистить pendingMemoryLegacy после успешного воплощения");
         }
