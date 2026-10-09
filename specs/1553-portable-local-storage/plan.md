@@ -1,3 +1,21 @@
+## Preparation runtime / affected21 WIP — 2026-10-09
+
+Causal carrierccead01e stores51 artifacts/30 pins; independent raw gates accept nine5c +two c9
+reached failures, preserving the original two fixture misses. Runtime follows the bounded design:
+four initializer direct-CSP exclusions; baseline/Live/prebackup capture before original owned close;
+primary uncertainty skips canonical cleanup. Actual cleanup CSP retains the preceding known cause
+before immediate propagation. StageLocal always releases field-only access. DirectGacha skips backup
+cleanup after actual cleanup CSP while preserving ordinary known finally behavior. Earlier committed
+artifacts and independent browser disposition remain intact; no new lease or universal stop state.
+
+Exact final21 is selected by three categories: causal9 + manifest2 + unchanged known10 (integration8,
+unit2). Historical broader owners remain unselected; selected methods do not overlap. No test body
+changes after causal source beyond the already-gated authority split. Source/selection gate required
+before fresh both-project Plan21 and actual21; no build/GREEN claimed at this runtime WIP checkpoint.
+Known cleanup-to-CSP attachment at adjacent same catches is source-qualified unless its actual cut is
+in the eleven; secondary lease-close failure remains source/component-qualified, not newly injected.
+No new GM-authored surface, fields, examples or gameplay policy: prompt/example updates are not needed.
+
 ## Preparation isolated2 causal result and bounded runtime design — 2026-10-09
 
 Focused SOURCE/EXACT2 PASS c9a57df8. Matching Plan025816 freshly built integration38.4124261s,

@@ -2,8 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-preparation-outcome-known-controls",
+      "reason": "Final preparation affected known10 alongside causal9+2: unchanged exact/serialized snapshot3, Live linked/replacement2, direct-gacha rollback3/debt1, Atomic preparation lock release1. Broader historical owners remain unselected; frozen source gate and matching both-project Plan21 required.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
       "category": "portable-preparation-manifest-outcome-causal-linux",
-      "reason": "Isolated corrected authority1 + LivePrepare1 after initial11 had two fixture selector failures. Require present After image and actual prior manifest evidence; do not replay the nine reached causal rows. Production unchanged; fresh matching Plan2 then causal2 after source gate.",
+      "reason": "Final preparation authority1/Live1: actual causal2 reached atc9/025917 after initial selector fixture failures retained. Exact same cut/prior-image assertions protect typed stop; paired with reached9 and known10.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -14,7 +25,7 @@
     },
     {
       "category": "portable-preparation-outcome-causal-linux",
-      "reason": "Retained nine reached causal failures at5c/025236; semantic bodies unchanged by authority Fact split. Do not rerun unchanged9 for isolated fixture correction. Final runtime selection remains pending.",
+      "reason": "Final preparation original initializer4/backup2/Stage1/DirectGacha2: nine actual causal cuts retained at5c/025236. Unchanged semantic bodies and exact first-CSP/no-later-work oracles protect corrected consumers; known10 selected separately.",
       "contracts": [
         "#1553",
         "FR-003",

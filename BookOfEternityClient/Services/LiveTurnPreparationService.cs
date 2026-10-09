@@ -65,7 +65,16 @@ internal sealed class LiveTurnPreparationService
 
     private async Task<LiveTurnPreparationResult> PrepareBoundAsync(LiveTurnPreparationOptions options)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try { return await PrepareUnderLeaseAsync(writeLease, options); }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
+    }
+
+    private async Task<LiveTurnPreparationResult> PrepareUnderLeaseAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, LiveTurnPreparationOptions options)
+    {
         CleanupPreparedTurnArtifacts(writeLease);
         ClearStalePendingDiceState(writeLease);
 
@@ -186,9 +195,14 @@ internal sealed class LiveTurnPreparationService
                 TurnRequestPath,
                 SerializeTurnRequestWithCurrentRealm(request, currentRealm));
         }
-        catch
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
-            CleanupPreparedTurnArtifacts(writeLease);
+            try { CleanupPreparedTurnArtifacts(writeLease); }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["PreparationPublicationFailure"] = failure;
+                throw;
+            }
             throw;
         }
 

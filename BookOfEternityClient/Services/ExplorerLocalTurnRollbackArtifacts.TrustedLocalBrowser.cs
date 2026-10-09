@@ -103,12 +103,22 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             };
             return transaction;
         }
-        catch
+        catch (CoordinatedStatePublicationUncertainException)
+        {
+            access.Dispose();
+            throw;
+        }
+        catch (Exception failure)
         {
             try
             {
                 foreach (var path in created.AsEnumerable().Reverse()) fs.DeleteFile(lease, path);
                 RemoveLocalBrowserEmptyParents(fs, lease, root);
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["BrowserStagingFailure"] = failure;
+                throw;
             }
             finally { access.Dispose(); }
             throw;

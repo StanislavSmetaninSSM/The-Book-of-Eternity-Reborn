@@ -76,9 +76,14 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
                 BrowserPendingTurnInspector.TurnRequestPath,
                 JsonSerializer.Serialize(request, JsonOpts));
         }
-        catch
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
-            CleanupQueuedTurnArtifacts(writeLease);
+            try { CleanupQueuedTurnArtifacts(writeLease); }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["BrowserQueueFailure"] = failure;
+                throw;
+            }
             throw;
         }
 

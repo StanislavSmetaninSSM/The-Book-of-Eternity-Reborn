@@ -293,7 +293,7 @@ public partial class GameEngine
                 AfterlifeSpiritualConflictState.StatePath,
                 AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString(JsonOpts));
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogDebug(ex, "Не удалось инициализировать afterlife spiritual conflict state перед snapshot.");
         }
@@ -321,7 +321,7 @@ public partial class GameEngine
                 AfterlifeEntityProfileState.StatePath,
                 AfterlifeEntityProfileState.CreateDefaultRoot().ToJsonString(JsonOpts));
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogDebug(ex, "Не удалось инициализировать afterlife entity profile state перед snapshot.");
         }
@@ -349,7 +349,7 @@ public partial class GameEngine
                 AfterlifeChronicleState.StatePath,
                 AfterlifeChronicleState.CreateDefaultRoot().ToJsonString(JsonOpts));
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogDebug(ex, "Не удалось инициализировать afterlife chronicle state перед snapshot.");
         }
@@ -377,7 +377,7 @@ public partial class GameEngine
                 AfterlifeGlobalFlagState.StatePath,
                 AfterlifeGlobalFlagState.CreateDefaultRoot().ToJsonString(JsonOpts));
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogDebug(ex, "Не удалось инициализировать afterlife global flag state перед snapshot.");
         }
@@ -388,8 +388,11 @@ public partial class GameEngine
         RollbackSnapshot? rollbackSnapshot = null,
         string? sourceLabel = null)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        return await CreateCanonicalBaselineSnapshotAsync(writeLease, request, rollbackSnapshot, sourceLabel);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try { return await CreateCanonicalBaselineSnapshotAsync(writeLease, request, rollbackSnapshot, sourceLabel); }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
     }
 
     private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(
@@ -545,12 +548,20 @@ public partial class GameEngine
                 PendingTurnSnapshotAuthority.AuthorityPath,
                 authorityJson);
         }
-        catch
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
-            if (_fs.FileExists(writeLease, PendingTurnSnapshotManifestPath))
-                _fs.DeleteFile(writeLease, PendingTurnSnapshotManifestPath);
-            if (_fs.FileExists(writeLease, PendingTurnSnapshotAuthority.AuthorityPath))
-                _fs.DeleteFile(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);
+            try
+            {
+                if (_fs.FileExists(writeLease, PendingTurnSnapshotManifestPath))
+                    _fs.DeleteFile(writeLease, PendingTurnSnapshotManifestPath);
+                if (_fs.FileExists(writeLease, PendingTurnSnapshotAuthority.AuthorityPath))
+                    _fs.DeleteFile(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["PreparationPublicationFailure"] = failure;
+                throw;
+            }
             throw;
         }
 
@@ -1854,8 +1865,11 @@ public partial class GameEngine
 
     private async Task<RollbackSnapshot> CreatePreTurnBackup(string backupId)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        return await CreatePreTurnBackup(writeLease, backupId);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try { return await CreatePreTurnBackup(writeLease, backupId); }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
     }
 
     private async Task<RollbackSnapshot> CreatePreTurnBackup(
@@ -1883,7 +1897,7 @@ public partial class GameEngine
             await OverlayPersistentExplorerLocalTurnRollbackArtifactsAsync(writeLease, snapshot);
             return snapshot;
         }
-        catch (Exception captureException)
+        catch (Exception captureException) when (captureException is not CoordinatedStatePublicationUncertainException)
         {
             var cleanupErrors = new List<Exception>();
             foreach (var backupPath in createdBackupPaths)
@@ -1892,6 +1906,11 @@ public partial class GameEngine
                 {
                     if (_fs.FileExists(writeLease, backupPath))
                         _fs.DeleteFile(writeLease, backupPath);
+                }
+                catch (CoordinatedStatePublicationUncertainException uncertainty)
+                {
+                    uncertainty.Data["PreparationCaptureFailure"] = captureException;
+                    throw;
                 }
                 catch (Exception cleanupException)
                 {

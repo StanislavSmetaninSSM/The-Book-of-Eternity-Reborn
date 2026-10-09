@@ -2241,18 +2241,36 @@ public sealed class BrowserAfterlifeWriteService
                         BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath,
                         PendingTurnSnapshotAuthority.AuthorityPath);
                 }
-                catch
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
                 {
+                    CoordinatedStatePublicationUncertainException? uncertainty = null;
                     try
                     {
                         CleanupDirectGachaTurnArtifacts(writeLease);
                     }
+                    catch (CoordinatedStatePublicationUncertainException cleanupFailure)
+                    {
+                        uncertainty = cleanupFailure;
+                        cleanupFailure.Data["BrowserDirectGachaFailure"] = failure;
+                        throw;
+                    }
                     finally
                     {
-                        ExplorerLocalTurnRollbackArtifacts.DeleteBackup(
-                            _fs,
-                            writeLease,
-                            stagedRollbackPath);
+                        if (uncertainty == null)
+                        {
+                            try
+                            {
+                                ExplorerLocalTurnRollbackArtifacts.DeleteBackup(
+                                    _fs,
+                                    writeLease,
+                                    stagedRollbackPath);
+                            }
+                            catch (CoordinatedStatePublicationUncertainException backupFailure)
+                            {
+                                backupFailure.Data["BrowserDirectGachaFailure"] = failure;
+                                throw;
+                            }
+                        }
                     }
                     throw;
                 }
