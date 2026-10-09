@@ -1,0 +1,72 @@
+{
+  "Categories": [
+    "portable-session-generation-terminal-snapshot-linux",
+    "portable-session-generation-life-finalization-linux",
+    "portable-session-generation-checkpoint-fixtures-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "b73dd80273ef8c530b5ff3bad999aebcca525638",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0590034,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0396369,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.09504,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 94.8708127,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0053831,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:01:39.2285971",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 7,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-session-generation-checkpoint-fixtures-linux-integration-001",
+      "portable-session-generation-life-finalization-linux-integration-002",
+      "portable-session-generation-terminal-snapshot-linux-integration-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

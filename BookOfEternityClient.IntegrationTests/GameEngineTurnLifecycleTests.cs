@@ -9152,11 +9152,24 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         var lifeRequests = 0;
         var responseWritten = false;
         var repairDispatchAttempts = 0;
-        probe.BeforeMutation = path =>
+        var repairCleanupIntents = 0;
+        var repairPath = probe.Files.ResolvePath("game_state/control/validation_repair_request.json");
+        probe.PublicationObserved = (phase, _) =>
         {
-            if (!responseWritten || path != "game_state/control/validation_repair_request.json") return;
-            repairDispatchAttempts++;
-            Assert.Fail("The current Life response must validate without dispatching provider repair.");
+            if (!responseWritten || phase != TrustedLocalPublicationPhase.IntentPublished) return;
+            using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(Path.Combine(
+                probe.Files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+            foreach (var member in journal.RootElement.GetProperty("Members").EnumerateArray())
+            {
+                if (member.GetProperty("Path").GetString() != repairPath) continue;
+                if (!member.GetProperty("After").GetProperty("Exists").GetBoolean())
+                {
+                    repairCleanupIntents++;
+                    continue;
+                }
+                repairDispatchAttempts++;
+                Assert.Fail("The current Life response must validate without dispatching provider repair.");
+            }
         };
         var engine = CreateGameEngine(
             probe.ObserveInput(new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4))),
@@ -9207,7 +9220,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
 
         var failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(
             engine, "CheckLifeTransitions", acceptedSnapshotContext));
-        probe.Verify(failure, new { lifeRequests, repairDispatchAttempts });
+        probe.Verify(failure, new { lifeRequests, repairDispatchAttempts, repairCleanupIntents });
         Assert.Equal(0, repairDispatchAttempts);
         Assert.Equal(1, lifeRequests);
         Assert.False(File.Exists(Path.Combine(probe.Files.GameSessionPath, "error_log.txt")));

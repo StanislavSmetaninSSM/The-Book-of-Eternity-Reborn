@@ -1,3 +1,13 @@
+## F18 Life guard source correction — WIP, 2026-10-09
+
+Independent review atb73dd802 catches path-only guard also rejecting successful cleanup
+(null-to-null delete invokes the mutation hook). Before execution replace it with an
+existing IntentPublished observer of actual active-journal members: exact repair path
+and After.Exists=true refuses before member publication; deletions allowed and counted.
+No runtime seam. Fresh integration Plan124117 atb73 selects7/3,0executed,99.2285971s,
+complete cleanup. It proves compilation/selection only; corrected helper needs rebuild.
+Snapshot prerequisite/selection gate PASS; final Life source/actual gates pending.
+
 ## F18 generation fixture prerequisites — WIP, 2026-10-09
 
 Independent read-only diagnosis at10317774: snapshot original Ready lacks mandatory
@@ -11,8 +21,8 @@ Life seed lacks current soul artTiers; actual mirror overwrites the otherwise co
 player profile, explaining both missing spiritual arts. Fixture-local default combat
 profile and production-shaped empty wound authorities now precede signed snapshot.
 Actual parsers check both roots. Diagnostic real validation after synthetic response
-emits every error and fails before any provider wait; a fixture-local mutation hook
-also refuses unexpected repair dispatch. Genuine accepted-validation checkpoint remains
+emits every error and fails before any provider wait; a fixture-local publication hook
+also refuses unexpected repair creation (successful deletion is permitted). Genuine accepted-validation checkpoint remains
 required. No shared legacy helper or runtime/schema/GM contract change.
 
 Split selection into snapshot1, Life1 and remaining4behavior+guard5; source review and

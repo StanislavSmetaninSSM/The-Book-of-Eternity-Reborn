@@ -24,7 +24,7 @@ internal sealed class SessionGenerationCheckpointFixture
     internal string OriginalGeneration { get; private set; } = "";
     internal bool Rotated { get; private set; }
     internal int LaterInputReads { get; private set; }
-    internal Action<string>? BeforeMutation { get; set; }
+    internal Action<TrustedLocalPublicationPhase, int>? PublicationObserved { get; set; }
 
     private SessionGenerationCheckpointFixture(string root, Action<string> output)
     {
@@ -37,9 +37,10 @@ internal sealed class SessionGenerationCheckpointFixture
                 AfterCanonicalReadAttemptAsync = path =>
                 { if (Rotated) _laterReads.Add("attempt:" + path); return Task.CompletedTask; },
                 BeforeCanonicalMutationBoundaryAsync = path =>
-                { BeforeMutation?.Invoke(path); if (Rotated) _laterMutations.Add(path); return Task.CompletedTask; },
-                LocalPublicationObserver = (phase, _) =>
+                { if (Rotated) _laterMutations.Add(path); return Task.CompletedTask; },
+                LocalPublicationObserver = (phase, index) =>
                 {
+                    PublicationObserved?.Invoke(phase, index);
                     if (phase != TrustedLocalPublicationPhase.Committed) return;
                     var bytes = File.ReadAllBytes(Path.Combine(Files.RuntimeRootPath, "trusted-local-publication-v1", "active.json"));
                     using var metadata = CleanupPublicationCut.Metadata(bytes);
