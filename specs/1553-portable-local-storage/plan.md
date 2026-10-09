@@ -1,3 +1,17 @@
+## QTE original preparation correction — test-first WIP, 2026-10-09
+
+Afterlife finalGREEN/raw/carrier independentPASS98f7def1/52artifacts38pins.
+QTE corrected fixture/design/exact6+2 independentPASSac2b6dbb installedbyte-identical:
+actual BranchChoice three terminal routes→done, narrative-only outcome, real
+quartet and Capture/Preallocation/Rehydrate/BuildCommonPlan. No syntheticauthority.
+Permanent coherent categories Interaction6 + QTEAcceptance2 avoid repeating
+unchanged six original causalcontrols. New earlyfailurediagnostic records task
+error if Intent not reached. Initial QTE cause source-inferred, not recorded
+actual exceptionstack. Production4ownersunchanged UNBUILT/UNRUN correction.
+Next freshQTE-onlyPlan2/actual2, retain original3 causal+newQTEcausal before minimal
+4owning-scope source correction/gate/freshGREEN8. No successfulfullgame/native/
+knownlateclose/B2qualification; T061–T065 open/fullcatalog pendingstablebatch.
+
 ## Afterlife actual GREEN8 / Interaction partial causal baseline — WIP, 2026-10-09
 
 One fresh integration Plan22343116/2 at161c0e36,0execution54.1216850s,
@@ -10,8 +24,9 @@ and known actualstate/receipt/allocation/history/currentvalidators PASS.
 52artifacts38pins verified originals; finalGREEN/raw/carrier gate next.
 [Interactioninitial](recovery/storage-migration-original-interaction-close-20261009/manifest.json)
 25artifacts24pins verified originals. Three actual owners/Intent/member0 reached
-same genuine CSP maskedsame lateclose; QTE offer has no reachable terminal route,
-so its two failures establish preparation only, no QTE causal claim. Correct
+same genuine CSP maskedsame lateclose; QTE raw records Faulted Task beforeIntent; missing reachable terminal route
+is source-inferred, actual exceptionstack was not recorded. Two failures
+establish preparation only, no QTE causal claim. Correct
 actual offer before QTE-only original2; do not repeat unchanged six. No production
 changes yet. Metadata filepath hint corrected to actual Explorer partial.
 Fullcatalog after accepted stablebatch; B2–B5/T061–T065/native/knownlateclose open.

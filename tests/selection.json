@@ -2,8 +2,21 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-qte-acceptance-owning-close-linux",
+      "reason": "T063/T065 correctedactualQTEterminalgraph independent fixture/design/exact6+2 PASSac2b6dbb. Original initial2 failedPREPARATION beforeIntent; cause source-inferred, taskstackunrecorded. FreshQTE-onlyPlan2/actual2 next; unchangedInteraction6 notrerun. All production4ownersunchanged, no syntheticauthority/native/B2/wholeflow qualification.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
       "category": "portable-original-interaction-owning-close-linux",
-      "reason": "T063/T065 independent fixture/design/exact8 PASS4c8aeed0 installed byte-identically, production unchanged UNBUILT/UNRUN. One shared fresh Plan16/2 builds required Afterlife GREEN8 and separate Interaction originalbaseline8; separate actualruns, no aggregateGREEN16. Real Guardian power/receipt, Training receipt/900spend, Explorer projected save/history, QTE runtime/deferredcontinuation and genuine original CSP+secondary/fullsettlement strict roots. Catalog after stable acceptedbatch; no gameplay/B2/native/knownlateclose qualification.",
+      "reason": "T063/T065 actualoriginalInteraction223557 at161c0e36:3knownPASS/3genuinecausalFAIL, sameCSPmaskedsamesecondaryclose/fullsettlement/noLater/Closing0/currentgeneration. Immutableinitial includesQTE2preparation failures. PermanentlysplitInteraction6/QTE2; unchangedsix notreplayed. Originalproductionunchanged. CorrectedQTEbaseline before4scopefix combinedgate.",
       "contracts": [
         "#1553",
         "FR-002",

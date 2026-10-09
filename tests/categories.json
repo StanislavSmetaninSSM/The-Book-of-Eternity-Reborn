@@ -2,14 +2,40 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-qte-acceptance-owning-close-linux",
+      "responsibility": "Original QTE public acceptance2 known/genuine publication uncertainty plus original secondary lateclose. Current real resource quartet, three valid BranchChoice routes and actual reachable narrative-only terminal, real continuation capture/preallocation, persisted runtime and deferred authority. Original owner/first Intent/member0/fullsettlement/noLater/Closing0/generation/current validator/strict roots.",
+      "excludes": "Storage/lifetime only. No full Guardian/training/Explorer UI/game/B2-B5/native Windows/live GM/provider/process qualification. Known controls have no injected late closer. Caller projected upgrade is not full price eligibility. No whole-flow atomicity.",
+      "changeHints": [
+        "BookOfEternityClient/Services/QteSceneService.cs",
+        "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+        "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Interaction.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalQteAcceptanceOwnerRetainsGenuinePublicationUncertaintyOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-interaction-owning-close-linux",
-      "responsibility": "Four actual original owning Interaction APIs8 known/genuine uncertainty plus secondary lateclose: Guardian correction real power spend/receipt, Spirit Focus training actual purchase receipt and900 Ink spend, actual Explorer spiritual upgrade save with caller projection and resource history, QTE actual accepted runtime/deferred continuation. Original owner/Intent/member0/fullsettlement/noLater/Closing0/generation/current validators/strict8 roots. Unknown raw oracle atIntent excludes actual first target.",
+      "responsibility": "Three actual original Interaction APIs6 known/genuine uncertainty plus original secondarylateclose: Guardian correction real power spend/receipt, SpiritFocusTraining actual purchase receipt900Inkspend, Explorer actual caller projected upgrade save/resourcehistory. Originalowner/firstIntent/member0/fullsettlement/noLater/Closing0/generation/currentvalidators/strictroots. Unknown bytes atIntent.",
       "excludes": "Storage/lifetime only. No full Guardian/training/Explorer UI/game/B2-B5/native Windows/live GM/provider/process qualification. Known controls have no injected late closer. Caller projected upgrade is not full price eligibility. No whole-flow atomicity.",
       "changeHints": [
         "BookOfEternityClient/Services/GuardianCorrectionService.cs",
         "BookOfEternityClient/Services/TrainingService.cs",
         "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs",
-        "BookOfEternityClient/Services/QteSceneService.cs",
         "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Interaction.cs"
       ],
       "related": [],

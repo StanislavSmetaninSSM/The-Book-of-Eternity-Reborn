@@ -15,10 +15,14 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class OriginalOwnedLeaseCloseTests
 {
     [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public Task OriginalQteAcceptanceOwnerRetainsGenuinePublicationUncertaintyOnClose(bool uncertain) =>
+        OriginalInteractionOwnersRetainGenuinePublicationUncertaintyOnClose("qte_accept", uncertain);
+
+    [Theory]
     [InlineData("guardian_correction", false)] [InlineData("guardian_correction", true)]
     [InlineData("spirit_focus_training", false)] [InlineData("spirit_focus_training", true)]
     [InlineData("spiritual_upgrade", false)] [InlineData("spiritual_upgrade", true)]
-    [InlineData("qte_accept", false)] [InlineData("qte_accept", true)]
     public async Task OriginalInteractionOwnersRetainGenuinePublicationUncertaintyOnClose(string mode, bool uncertain)
     {
         Assert.True(OperatingSystem.IsLinux());
@@ -101,7 +105,30 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         {
             await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(files);
             qte = new QteSceneService(files, settings, null!, null!, null!, null!, null!, null!, manager, NullLogger<QteSceneService>.Instance);
-            offer = new QteSceneService.QteOffer { QteId = "qte_original_owner", SourceTurnNumber = 12, StartChapterId = "first", Chapters = [new QteSceneService.QteChapter { ChapterId = "first", Narrative = "Current deterministic chapter." }] };
+            offer = new QteSceneService.QteOffer
+            {
+                QteId = "qte_original_owner", SourceTurnNumber = 12, StartChapterId = "first",
+                Chapters = [new QteSceneService.QteChapter
+                {
+                    ChapterId = "first", Narrative = "Current deterministic chapter.",
+                    Actions = [new QteSceneService.QteAction
+                    {
+                        ActionId = "finish", Label = "Finish",
+                        Check = new QteSceneService.QteCheck { Type = "BranchChoice", BaseDifficulty = 1, Config = new JsonObject { ["choiceGrade"] = "success" } },
+                        Routing = new QteSceneService.QteRouting
+                        {
+                            Success = new QteSceneService.QteBranchTarget { TerminalOutcomeId = "done" },
+                            Partial = new QteSceneService.QteBranchTarget { TerminalOutcomeId = "done" },
+                            Fail = new QteSceneService.QteBranchTarget { TerminalOutcomeId = "done" }
+                        }
+                    }]
+                }],
+                TerminalOutcomes = [new QteSceneService.QteTerminalOutcome
+                {
+                    OutcomeId = "done", Title = "Done", FinalNarrative = "Current deterministic ending.",
+                    ResponseFragment = new JsonObject { ["response"] = "Current deterministic ending." }
+                }]
+            };
         }
         Assert.Empty(await context.Validator.ValidateAcceptedTurnCanonicalResourceMaterializationAsync());
         cut.Select = (path, _) => path == target;
@@ -138,7 +165,10 @@ public sealed partial class OriginalOwnedLeaseCloseTests
             };
             Assert.Same(acquireEntered.Task, await Task.WhenAny(acquireEntered.Task, operation).WaitAsync(TimeSpan.FromSeconds(12)));
             allowAcquire.TrySetResult();
-            Assert.Same(entered.Task, await Task.WhenAny(entered.Task, operation).WaitAsync(TimeSpan.FromSeconds(12)));
+            var firstPublication = await Task.WhenAny(entered.Task, operation).WaitAsync(TimeSpan.FromSeconds(12));
+            if (ReferenceEquals(firstPublication, operation))
+                output.WriteLine(JsonSerializer.Serialize(new { mode, PreparationFailure = (await Record.ExceptionAsync(() => operation))?.ToString() }));
+            Assert.Same(entered.Task, firstPublication);
             atIntentFiles = ReadCanonicalFiles();
             (original, actualOwnerState) = InspectOriginalNestedOwningLease(operation, boundary);
             Assert.Same(files, original.Owner); Assert.True(original.IsActive); Assert.Null(original.ExternalPublicationContext);
