@@ -1,5 +1,5 @@
 {
-  "scope": "Progression original consumer work; initial fixture compilation failure, no causal execution yet.",
+  "scope": "Bounded progression original-consumer outcome propagation; initial fixture compile failure and authentic causal4 preserved; runtime acceptance separately qualified.",
   "initialCompile": {
     "source": "1868fb91f19b8874b1aa3b119741d746c3badb14",
     "qualification": "Plan013705 failed compilation CS0535: fixture missing IConsoleInputSource.AssertCompleted.24.4031882s,0executed,bothcleanup. Not causal RED.",
@@ -41,6 +41,166 @@
       {
         "path": "tests/categories.json",
         "sha256": "2e991fce380e9265ddbcd5141bea0433469617b1a17eab0aea2f233399ee6147"
+      }
+    ]
+  },
+  "causal": {
+    "source": "a9e4a65f3da7ab8951e8fe20d01d57a9f91f7f55",
+    "qualification": "Causal4 complete0P4 genuine failures: swallowed actual CSP in all; base/status2 later ordinary lease attempts, no successful later publication/recovery. Prior base/points Committed exact; ownedrootremoved/input0. Desired assertions after first failure unexecuted.",
+    "artifacts": [
+      {
+        "path": "causal-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-014036-764-205133-5cb9ee8e66db4889a8bb3516859aca60-categories/Build-integration.log",
+        "sha256": "b5ed1d5231b6f9656dd7bfbf9c99efe5ff6bea90c99b894444bf9fb6e887f8fa",
+        "originalSha256": "a033393f07ac0a3055176bce84f1b77b6ad8258b00ff00d0dcf21c739192f183"
+      },
+      {
+        "path": "causal-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-014036-764-205133-5cb9ee8e66db4889a8bb3516859aca60-categories/dotnet-test.log",
+        "sha256": "c260b5a20bec4d6edf7885165a719d72c5bfc18a11ee2d8a3c255fff5798dff3",
+        "originalSha256": "11d977c6e84ee9a77d9e56dc5f2a814ee04edd167a8d1b067090fff92ebcf4ba"
+      },
+      {
+        "path": "causal-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-014036-764-205133-5cb9ee8e66db4889a8bb3516859aca60-categories/plan.json",
+        "sha256": "b0b77e3500eca910e9b095c0a984e60d740cb146acb9ba4e8a241c1ad769b72a",
+        "originalSha256": "b0b77e3500eca910e9b095c0a984e60d740cb146acb9ba4e8a241c1ad769b72a"
+      },
+      {
+        "path": "causal-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-014036-764-205133-5cb9ee8e66db4889a8bb3516859aca60-categories/summary.json",
+        "sha256": "4db217c39fcf7956579d778d3c7fd31c1499ff40f14123f7c420f20632e820b7",
+        "originalSha256": "4db217c39fcf7956579d778d3c7fd31c1499ff40f14123f7c420f20632e820b7"
+      },
+      {
+        "path": "causal-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-014134-159-205429-d7b03c2fb23a4e909f3002c83de0cd29-categories/dotnet-test.log",
+        "sha256": "f9ffdd0b3c5a5b7a0f961c2bafebcb9b8a4f664e59dd786dde309849c56caf04",
+        "originalSha256": "66455a8721605371e89414e7a5e892281aafc81c9b27316fc96d07eadce9dee3"
+      },
+      {
+        "path": "causal-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-014134-159-205429-d7b03c2fb23a4e909f3002c83de0cd29-categories/plan.json",
+        "sha256": "6b3346b7f5f58fb7345f009a2cc38a3b8d4aa972c6b2402beef6583945e52161",
+        "originalSha256": "6b3346b7f5f58fb7345f009a2cc38a3b8d4aa972c6b2402beef6583945e52161"
+      },
+      {
+        "path": "causal-actual-portable-progression-outcome-causal-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-014134-159-205429-d7b03c2fb23a4e909f3002c83de0cd29-categories/portable-progression-outcome-causal-linux-integration-001.trx",
+        "sha256": "16b95edaf34ce087f5ad65b1506063c08890f7e27481b3aaa81e23ddca0e4ae9",
+        "originalSha256": "28f2a6fbe5000c441d8ce8ddf572202e5767cb2207c30c73a7f5ec04a5aa7e36"
+      },
+      {
+        "path": "causal-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-014134-159-205429-d7b03c2fb23a4e909f3002c83de0cd29-categories/summary.json",
+        "sha256": "22afe750ca66c37a594c25efee54912037b31fe14f939863c3a4cd492ffa32e3",
+        "originalSha256": "22afe750ca66c37a594c25efee54912037b31fe14f939863c3a4cd492ffa32e3"
+      },
+      {
+        "path": "causal-row-0-0.json",
+        "source": "/tmp/boe-progression-causal/0-0.json",
+        "sha256": "978b368c37053b9f31f57c04f322c2aad6ee8a1c8cdee37ca2167ab094591024",
+        "originalSha256": "978b368c37053b9f31f57c04f322c2aad6ee8a1c8cdee37ca2167ab094591024"
+      },
+      {
+        "path": "causal-row-0-1.json",
+        "source": "/tmp/boe-progression-causal/0-1.json",
+        "sha256": "20d3a76e227aaa1b612ef43265033e42b797de9ce3e12cd4ffd510dbba673247",
+        "originalSha256": "20d3a76e227aaa1b612ef43265033e42b797de9ce3e12cd4ffd510dbba673247"
+      },
+      {
+        "path": "causal-row-0-journal.bin.gz",
+        "source": "/tmp/boe-progression-causal/0-journal.bin",
+        "sha256": "616884b6f5aa6ebee2ce638ebb0c5d70a728e3bafff85171966434680eca0a59",
+        "originalSha256": "d337568b9fc497fd7eefb41e260689a3e1b5580b47bd3f139cf3140b77accaf4"
+      },
+      {
+        "path": "causal-row-1-0.json",
+        "source": "/tmp/boe-progression-causal/1-0.json",
+        "sha256": "a73a457481b9ed99c78f4f3ef068c240e76acf5344cd3d676dda79d3222cdadf",
+        "originalSha256": "a73a457481b9ed99c78f4f3ef068c240e76acf5344cd3d676dda79d3222cdadf"
+      },
+      {
+        "path": "causal-row-1-1.json",
+        "source": "/tmp/boe-progression-causal/1-1.json",
+        "sha256": "721f27311fa6b8b1f4ff04cdcde9e1ea2d72634edb6b1b9d7ab8482ed9f9dd39",
+        "originalSha256": "721f27311fa6b8b1f4ff04cdcde9e1ea2d72634edb6b1b9d7ab8482ed9f9dd39"
+      },
+      {
+        "path": "causal-row-1-journal.bin.gz",
+        "source": "/tmp/boe-progression-causal/1-journal.bin",
+        "sha256": "ae65b72054b09d43440b6c3eacd69794d2ddec0ef35476f3084c5809a8f0a04a",
+        "originalSha256": "4ccee514041e8d27745b5cd19598ab355af42881c2f140740e7a6be26082d830"
+      },
+      {
+        "path": "causal-row-2-0.json",
+        "source": "/tmp/boe-progression-causal/2-0.json",
+        "sha256": "b5b41d64097783ffca30bbcd4d224086d650bf70eed81ecfe5c862b2db018594",
+        "originalSha256": "b5b41d64097783ffca30bbcd4d224086d650bf70eed81ecfe5c862b2db018594"
+      },
+      {
+        "path": "causal-row-2-1.json",
+        "source": "/tmp/boe-progression-causal/2-1.json",
+        "sha256": "cdbbf37153fd34528d5e713a8cee31896ed32b512b87e39a2fa9a91da8935ad2",
+        "originalSha256": "cdbbf37153fd34528d5e713a8cee31896ed32b512b87e39a2fa9a91da8935ad2"
+      },
+      {
+        "path": "causal-row-2-journal.bin.gz",
+        "source": "/tmp/boe-progression-causal/2-journal.bin",
+        "sha256": "494e3bccca1a915e344e05271c8a6c9d2468466c528ae1da59f78209fa08bfc9",
+        "originalSha256": "ef7208794adfc94c737070a93706cf4ce14c6793efb4c5c1ce523a5fa78fc0e1"
+      },
+      {
+        "path": "causal-row-3-0.json.gz",
+        "source": "/tmp/boe-progression-causal/3-0.json",
+        "sha256": "8eee1e14fb0236070c4833d14ef622c31ad2eb8e6f1f0a96f204bea267c8faba",
+        "originalSha256": "9545504e4980c34cbb89dd07dd257ad1a5f384fbe29f4f9a0ae12681cc066e89"
+      },
+      {
+        "path": "causal-row-3-1.json",
+        "source": "/tmp/boe-progression-causal/3-1.json",
+        "sha256": "59694a2389f8d919ad7e8f21f0680924e722e5c725c5fdb4a3d250677fd58890",
+        "originalSha256": "59694a2389f8d919ad7e8f21f0680924e722e5c725c5fdb4a3d250677fd58890"
+      },
+      {
+        "path": "causal-row-3-journal.bin.gz",
+        "source": "/tmp/boe-progression-causal/3-journal.bin",
+        "sha256": "dff259ba3d0c7243c4a3542c0ae83e65dd4997a97a66ca69728ab8c787dda967",
+        "originalSha256": "5be29a60b35e6ceb42b37a884692c97e645f63d8a1d8aff4e4b522a88501bd8a"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ProgressionOutcome.cs",
+        "sha256": "e136469e678d82b5dc097aff37a4131d7c2ca199ffce2bd7cbc1fdb08d0bbb03"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/IConsoleInputSource.cs",
+        "sha256": "eeb8876078e8612e4c26c5eb03bd4ff2ed9790617334bae29db6f82c916b2969"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "cda92216a68cc4ce843e5e8fd92a373a74bd5a8d39135c4b179d7d9a592f41f9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "sha256": "c48aa0d940119b8690d058214bf96e21ce0ba9ed4ea5a518d69905ce2bf87eb8"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "2e991fce380e9265ddbcd5141bea0433469617b1a17eab0aea2f233399ee6147"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "d54cde2330e6b549b6c65ece9d8c30a10d95c91244da1bea4623a593a0ffd8cb"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "20e2d9c98fa08c5f6dd1a5417549f7867e305da75d882550f68913a8af7dc08b"
       }
     ]
   }

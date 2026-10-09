@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-progression-outcome-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a9e4a65f3da7ab8951e8fe20d01d57a9f91f7f55",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 42.5552735,
+  "Descriptors": [
+    {
+      "Name": "portable-progression-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-progression-outcome-causal-linux",
+      "Categories": [
+        "portable-progression-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProgressionUnknown_OriginalConsumerPreservesDecisionAndStops",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProgressionUnknown_OriginalConsumerPreservesDecisionAndStops",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

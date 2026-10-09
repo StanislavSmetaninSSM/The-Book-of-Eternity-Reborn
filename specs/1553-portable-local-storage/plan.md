@@ -1,3 +1,24 @@
+## Progression causal4 accepted / runtime design — 2026-10-09
+
+Clean a9e4 matching Plan014036 integration38.6793978s/wall42.8068183,4/1planned0executed.
+Actual014134 complete4/4,0PASS/4 genuine causal failures,7.4840046s,exit1,no skips/duplicates/
+timeouts,both cleanup flags; independent reviewer and parent raw classification PASS. All actual
+MemberPublished/index0 cuts1 retain genuine first CSP, exact uncommitted journal/foreign target,
+input0 and owned-root removal. Every original consumer returns normally (Failure null). Base/status
+then attempt two new ordinary leases; no later validated-read/mutation/publication/recovery observer
+phases. Zero observer phases does not imply no attempted recovery. Mark/computed pass stop checks
+then fail same-CSP assertion. Status/computed retain prior real Committed1 and exact bytes; base/status
+desired Same and final prior-image assertions after first lease assertion were unexecuted, with raw
+values independently inspected. No whole accepted turn or successful later write claim.
+
+Saved progression packet22 artifacts/14 source pins preserves build failure and causal4. Minimal
+runtime design now supported: direct CSP exclusions at ProcessStatsIncreasedAsync/CheckLevelUpAsync/
+CharacteristicsService.ComputeAndWriteAsync; known parse and ordinary failure behavior, math and
+partial earlier commits remain unchanged. Final exact5 adds original restart level-award guard.
+Frozen runtime/selection review then fresh Plan5 precedes GREEN. No native/UI distribution/secondary
+close claim. Packaging pins use actual containing CleanupPublicationCut.cs (owned cleanup class is
+in that file), not an assumed standalone source filename; stored/expanded/original/Git verification PASS.
+
 ## Progression build-only correction — 2026-10-09
 
 Plan013705 atclean1868 failed Build-integration CS0535: ProgressionNoInput omitted required
