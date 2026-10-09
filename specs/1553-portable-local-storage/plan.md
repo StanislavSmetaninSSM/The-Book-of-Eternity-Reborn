@@ -1,3 +1,16 @@
+## Original Engine snapshot four uncertainty scopes installed — WIP, 2026-10-09
+
+Exactly4 originalowning scopes retain/rethrow samegenuineCSP andexisting
+Release(fs,samelease,false,sameexception): inactivearchive insideoriginalouter
+try/catches; stallpromotion; correlatedinput; repairrestore originallexicalblock
+withruntime refresh still after originalrelease. Originalcore/order/return/
+backup/snapshot/fixture/helpers unchanged. Actual4knownPASS/4genuinecausalFAIL
+source-d4 packet33artifacts21pins retained1ac0af6f/ref/raw78. Runtime UNBUILT/UNRUN
+beforecombinedcausal/source/exact8gate. InteractionGREEN8/ColdGREEN2 preserved
+66/72 and26/26 packets; finalGREEN/raw/carrier gate next. Fullcatalog immediately
+following acceptedstableEngineGREENbatch. No B2–B5/game/native/knownlateclose or
+pendingcheckpoint qualification; T061–T065 open. No GM-facing contract change.
+
 ## Interaction actualGREEN8 / Cold actualGREEN2 / Engine causal8 — WIP, 2026-10-09
 
 One freshintegrationPlan22502518/4 atd4d09a57,0execution49.6657619s;

@@ -1296,92 +1296,98 @@ public partial class GameEngine
         ValidatedPendingTurnSnapshotContext snapshotContext,
         string? expectedSessionGeneration = null)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (!string.IsNullOrWhiteSpace(expectedSessionGeneration))
-            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
-
-        if (!_fs.FileExists(writeLease, ValidationRepairArtifactStallReportPath) ||
-            _fs.FileExists(writeLease, "ready/turn_error.json") ||
-            !_fs.FileExists(writeLease, ValidationRepairRequestPath))
-        {
-            return false;
-        }
-
-        var requestJson = await _fs.ReadFileAsync(writeLease, ValidationRepairRequestPath);
-        if (string.IsNullOrWhiteSpace(requestJson))
-            return false;
-
-        ValidationRepairRequest? repairRequest;
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? owningPublicationUncertainty = null;
         try
         {
-            repairRequest = JsonSerializer.Deserialize<ValidationRepairRequest>(requestJson, JsonOpts);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Найден validation repair artifact stall report, но validation_repair_request.json не читается.");
-            return false;
-        }
+            if (!string.IsNullOrWhiteSpace(expectedSessionGeneration))
+                ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
 
-        if (repairRequest == null ||
-            !string.Equals(repairRequest.SessionId, snapshotContext.SessionId, StringComparison.Ordinal) ||
-            !string.Equals(repairRequest.RequestId, snapshotContext.RequestId, StringComparison.Ordinal) ||
-            repairRequest.TurnNumber != snapshotContext.TurnNumber)
-        {
-            return false;
-        }
-
-        if (_fs.FileExists(writeLease, "ready/turn_complete.json"))
-        {
-            var completeMetadata = ParseReadySignalMetadata(
-                await _fs.ReadFileAsync(writeLease, "ready/turn_complete.json"),
-                "ready/turn_complete.json");
-            if (completeMetadata == null ||
-                !string.Equals(completeMetadata.SessionId, snapshotContext.SessionId, StringComparison.Ordinal) ||
-                !string.Equals(completeMetadata.RequestId, snapshotContext.RequestId, StringComparison.Ordinal) ||
-                completeMetadata.TurnNumber != snapshotContext.TurnNumber)
+            if (!_fs.FileExists(writeLease, ValidationRepairArtifactStallReportPath) ||
+                _fs.FileExists(writeLease, "ready/turn_error.json") ||
+                !_fs.FileExists(writeLease, ValidationRepairRequestPath))
             {
                 return false;
             }
-        }
 
-        JsonNode? stallReportNode = null;
-        var stallReportJson = await _fs.ReadFileAsync(writeLease, ValidationRepairArtifactStallReportPath);
-        if (!string.IsNullOrWhiteSpace(stallReportJson))
-        {
+            var requestJson = await _fs.ReadFileAsync(writeLease, ValidationRepairRequestPath);
+            if (string.IsNullOrWhiteSpace(requestJson))
+                return false;
+
+            ValidationRepairRequest? repairRequest;
             try
             {
-                stallReportNode = JsonNode.Parse(stallReportJson);
+                repairRequest = JsonSerializer.Deserialize<ValidationRepairRequest>(requestJson, JsonOpts);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Найден validation repair artifact stall report, но report JSON не читается.");
+                _logger.LogWarning(ex, "Найден validation repair artifact stall report, но validation_repair_request.json не читается.");
+                return false;
             }
+
+            if (repairRequest == null ||
+                !string.Equals(repairRequest.SessionId, snapshotContext.SessionId, StringComparison.Ordinal) ||
+                !string.Equals(repairRequest.RequestId, snapshotContext.RequestId, StringComparison.Ordinal) ||
+                repairRequest.TurnNumber != snapshotContext.TurnNumber)
+            {
+                return false;
+            }
+
+            if (_fs.FileExists(writeLease, "ready/turn_complete.json"))
+            {
+                var completeMetadata = ParseReadySignalMetadata(
+                    await _fs.ReadFileAsync(writeLease, "ready/turn_complete.json"),
+                    "ready/turn_complete.json");
+                if (completeMetadata == null ||
+                    !string.Equals(completeMetadata.SessionId, snapshotContext.SessionId, StringComparison.Ordinal) ||
+                    !string.Equals(completeMetadata.RequestId, snapshotContext.RequestId, StringComparison.Ordinal) ||
+                    completeMetadata.TurnNumber != snapshotContext.TurnNumber)
+                {
+                    return false;
+                }
+            }
+
+            JsonNode? stallReportNode = null;
+            var stallReportJson = await _fs.ReadFileAsync(writeLease, ValidationRepairArtifactStallReportPath);
+            if (!string.IsNullOrWhiteSpace(stallReportJson))
+            {
+                try
+                {
+                    stallReportNode = JsonNode.Parse(stallReportJson);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Найден validation repair artifact stall report, но report JSON не читается.");
+                }
+            }
+
+            var signal = new JsonObject
+            {
+                ["sessionId"] = repairRequest.SessionId,
+                ["requestId"] = repairRequest.RequestId,
+                ["turnNumber"] = repairRequest.TurnNumber,
+                ["timestamp"] = DateTimeOffset.UtcNow.ToString("O"),
+                ["status"] = "error",
+                ["harnessSource"] = "gm_validation_repair_artifact_stall",
+                ["error"] = "Validation repair stalled without target artifact progress; GM bridge was stopped by harness cleanup."
+            };
+
+            if (stallReportNode != null)
+                signal["validationRepairArtifactStall"] = stallReportNode;
+
+            await _fs.WriteFileAtomicAsync(writeLease, "ready/turn_error.json", signal.ToJsonString(JsonOpts));
+            _fs.DeleteFile(writeLease, "ready/turn_complete.json");
+            _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+
+            _logger.LogWarning(
+                "Validation repair artifact stall promoted to terminal error for pending turn(session={Session}, request={Request}, turn={Turn}).",
+                repairRequest.SessionId,
+                repairRequest.RequestId,
+                repairRequest.TurnNumber);
+            return true;
         }
-
-        var signal = new JsonObject
-        {
-            ["sessionId"] = repairRequest.SessionId,
-            ["requestId"] = repairRequest.RequestId,
-            ["turnNumber"] = repairRequest.TurnNumber,
-            ["timestamp"] = DateTimeOffset.UtcNow.ToString("O"),
-            ["status"] = "error",
-            ["harnessSource"] = "gm_validation_repair_artifact_stall",
-            ["error"] = "Validation repair stalled without target artifact progress; GM bridge was stopped by harness cleanup."
-        };
-
-        if (stallReportNode != null)
-            signal["validationRepairArtifactStall"] = stallReportNode;
-
-        await _fs.WriteFileAtomicAsync(writeLease, "ready/turn_error.json", signal.ToJsonString(JsonOpts));
-        _fs.DeleteFile(writeLease, "ready/turn_complete.json");
-        _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
-
-        _logger.LogWarning(
-            "Validation repair artifact stall promoted to terminal error for pending turn(session={Session}, request={Request}, turn={Turn}).",
-            repairRequest.SessionId,
-            repairRequest.RequestId,
-            repairRequest.TurnNumber);
-        return true;
+        catch (CoordinatedStatePublicationUncertainException failure) { owningPublicationUncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, owningPublicationUncertainty); }
     }
 
     private async Task NormalizePendingTerminalProtocolFailureArtifactsAsync()
@@ -1755,32 +1761,38 @@ public partial class GameEngine
             string.IsNullOrWhiteSpace(snapshotContext.RequestId) || snapshotContext.TurnNumber <= 0)
             return;
 
-        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        const string path = "input/turn_request.json";
-        var json = await _fs.ReadFileAsync(lease, path);
-        if (string.IsNullOrWhiteSpace(json))
-            return;
-
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? owningPublicationUncertainty = null;
         try
         {
-            using var document = JsonDocument.Parse(json);
-            var root = document.RootElement;
-            if (root.ValueKind != JsonValueKind.Object ||
-                root.EnumerateObject().GroupBy(property => property.Name, StringComparer.OrdinalIgnoreCase).Any(group => group.Count() > 1) ||
-                !root.TryGetProperty("sessionId", out var session) || session.ValueKind != JsonValueKind.String ||
-                !string.Equals(session.GetString(), snapshotContext.SessionId, StringComparison.Ordinal) ||
-                !root.TryGetProperty("requestId", out var request) || request.ValueKind != JsonValueKind.String ||
-                !string.Equals(request.GetString(), snapshotContext.RequestId, StringComparison.Ordinal) ||
-                !root.TryGetProperty("turnNumber", out var turn) || turn.ValueKind != JsonValueKind.Number ||
-                !turn.TryGetInt32(out var number) || number != snapshotContext.TurnNumber)
+            const string path = "input/turn_request.json";
+            var json = await _fs.ReadFileAsync(lease, path);
+            if (string.IsNullOrWhiteSpace(json))
                 return;
 
-            _fs.DeleteFile(lease, path);
+            try
+            {
+                using var document = JsonDocument.Parse(json);
+                var root = document.RootElement;
+                if (root.ValueKind != JsonValueKind.Object ||
+                    root.EnumerateObject().GroupBy(property => property.Name, StringComparer.OrdinalIgnoreCase).Any(group => group.Count() > 1) ||
+                    !root.TryGetProperty("sessionId", out var session) || session.ValueKind != JsonValueKind.String ||
+                    !string.Equals(session.GetString(), snapshotContext.SessionId, StringComparison.Ordinal) ||
+                    !root.TryGetProperty("requestId", out var request) || request.ValueKind != JsonValueKind.String ||
+                    !string.Equals(request.GetString(), snapshotContext.RequestId, StringComparison.Ordinal) ||
+                    !root.TryGetProperty("turnNumber", out var turn) || turn.ValueKind != JsonValueKind.Number ||
+                    !turn.TryGetInt32(out var number) || number != snapshotContext.TurnNumber)
+                    return;
+
+                _fs.DeleteFile(lease, path);
+            }
+            catch (JsonException)
+            {
+                // An unreadable request cannot prove it belongs to the rejected turn.
+            }
         }
-        catch (JsonException)
-        {
-            // An unreadable request cannot prove it belongs to the rejected turn.
-        }
+        catch (CoordinatedStatePublicationUncertainException failure) { owningPublicationUncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, owningPublicationUncertainty); }
     }
 
     private void ClearReadySignals()
@@ -2045,17 +2057,23 @@ public partial class GameEngine
         string expectedSessionGeneration,
         byte[]? pendingResolutionRepairCheckpoint = null)
     {
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
-            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
-            await RestorePreTurnBackupAsync(writeLease, snapshot);
-            if (pendingResolutionRepairCheckpoint != null)
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? owningPublicationUncertainty = null;
+            try
             {
-                await _fs.WriteFileAtomicBytesAsync(
-                    writeLease,
-                    ResourcePendingResolutionState.PendingPath,
-                    pendingResolutionRepairCheckpoint);
+                ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+                await RestorePreTurnBackupAsync(writeLease, snapshot);
+                if (pendingResolutionRepairCheckpoint != null)
+                {
+                    await _fs.WriteFileAtomicBytesAsync(
+                        writeLease,
+                        ResourcePendingResolutionState.PendingPath,
+                        pendingResolutionRepairCheckpoint);
+                }
             }
+            catch (CoordinatedStatePublicationUncertainException failure) { owningPublicationUncertainty = failure; throw; }
+            finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, owningPublicationUncertainty); }
         }
 
         await RefreshRuntimeStateAfterExactRollbackAsync();

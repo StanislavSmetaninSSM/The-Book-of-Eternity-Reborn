@@ -19,133 +19,139 @@ public partial class GameEngine
     {
         try
         {
-            await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            var generation = _fs.ReadExistingSessionGeneration(lease);
-            if (generation is null)
-                return false;
-            return await SessionOperationContext.RunBoundAsync(_fs, generation, lease, async () =>
+            var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? owningPublicationUncertainty = null;
+            try
             {
-                if (!_fs.FileExists(lease, PendingTurnSnapshotManifestPath) || HasInactiveSnapshotEvidenceBlocker(lease))
+                var generation = _fs.ReadExistingSessionGeneration(lease);
+                if (generation is null)
                     return false;
-                var originals = await ReadInactiveSnapshotEvidenceCohortAsync(lease);
-                if (!originals.TryGetValue(PendingTurnSnapshotManifestPath, out var manifestBytes) ||
-                    !originals.TryGetValue(PendingTurnSnapshotAuthority.AuthorityPath, out var authorityBytes))
-                    return false;
+                return await SessionOperationContext.RunBoundAsync(_fs, generation, lease, async () =>
+                {
+                    if (!_fs.FileExists(lease, PendingTurnSnapshotManifestPath) || HasInactiveSnapshotEvidenceBlocker(lease))
+                        return false;
+                    var originals = await ReadInactiveSnapshotEvidenceCohortAsync(lease);
+                    if (!originals.TryGetValue(PendingTurnSnapshotManifestPath, out var manifestBytes) ||
+                        !originals.TryGetValue(PendingTurnSnapshotAuthority.AuthorityPath, out var authorityBytes))
+                        return false;
 
-                var manifestJson = ReadUnambiguousSnapshotEvidenceJson(manifestBytes);
-                var authorityJson = ReadUnambiguousSnapshotEvidenceJson(authorityBytes);
-                using var envelope = JsonDocument.Parse(authorityJson);
-                if (!envelope.RootElement.TryGetProperty("payloadJsonBase64", out var encodedPayload) ||
-                    encodedPayload.ValueKind != JsonValueKind.String)
-                    return false;
-                _ = ReadUnambiguousSnapshotEvidenceJson(Convert.FromBase64String(encodedPayload.GetString()!));
-                if (!PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(authorityJson, out var detached) ||
-                    detached is null || detached.Files is null || detached.SnapshotFileHashes is null ||
-                    detached.ClientOwnedValidationHashes is null || detached.RollbackBackups is null ||
-                    detached.RollbackBackupHashes is null || detached.RollbackBaselineFiles is null)
-                    return false;
-                var manifest = JsonSerializer.Deserialize<PendingTurnSnapshotManifest>(manifestJson, JsonOpts);
-                if (manifest is null || string.IsNullOrWhiteSpace(manifest.RequestId) ||
-                    string.IsNullOrWhiteSpace(manifest.SessionId) || string.IsNullOrWhiteSpace(_gameLoop.SessionId) ||
-                    !string.Equals(manifest.SessionId, _gameLoop.SessionId, StringComparison.Ordinal) ||
-                    manifest.TurnNumber <= 0 || manifest.TurnNumber > _gameLoop.TurnNumber ||
-                    !PendingTurnSnapshotAuthority.HasUsableManifestStructure(manifest,
-                        static value => value.Files, static value => value.SnapshotFileHashes,
-                        static value => value.ClientOwnedValidationHashes, static value => value.RollbackBackups,
-                        static value => value.SourceLabel, static value => value.RollbackBaselineFiles) ||
-                    !PendingTurnSnapshotAuthority.TryValidateManifestAgainstAuthority(
-                        manifest, authorityJson, SnapshotHashJsonOpts,
-                        static value => value.ManifestPayloadHash,
-                        static (value, hash) => value.ManifestPayloadHash = hash,
-                        static value => value.SessionId, static value => value.RequestId,
-                        static value => value.TurnNumber, static value => value.Files,
-                        static value => value.SnapshotFileHashes, static value => value.ClientOwnedValidationHashes,
-                        static value => value.RollbackBaselineFiles, static value => value.SourceLabel,
-                        out var payload, out _) || payload is null ||
-                    manifest.RollbackBackups.Count != payload.RollbackBackups.Count ||
-                    manifest.RollbackBackups.Any(pair => !payload.RollbackBackups.TryGetValue(pair.Key, out var backup) ||
-                        !string.Equals(pair.Value, backup, StringComparison.Ordinal)))
-                    return false;
+                    var manifestJson = ReadUnambiguousSnapshotEvidenceJson(manifestBytes);
+                    var authorityJson = ReadUnambiguousSnapshotEvidenceJson(authorityBytes);
+                    using var envelope = JsonDocument.Parse(authorityJson);
+                    if (!envelope.RootElement.TryGetProperty("payloadJsonBase64", out var encodedPayload) ||
+                        encodedPayload.ValueKind != JsonValueKind.String)
+                        return false;
+                    _ = ReadUnambiguousSnapshotEvidenceJson(Convert.FromBase64String(encodedPayload.GetString()!));
+                    if (!PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(authorityJson, out var detached) ||
+                        detached is null || detached.Files is null || detached.SnapshotFileHashes is null ||
+                        detached.ClientOwnedValidationHashes is null || detached.RollbackBackups is null ||
+                        detached.RollbackBackupHashes is null || detached.RollbackBaselineFiles is null)
+                        return false;
+                    var manifest = JsonSerializer.Deserialize<PendingTurnSnapshotManifest>(manifestJson, JsonOpts);
+                    if (manifest is null || string.IsNullOrWhiteSpace(manifest.RequestId) ||
+                        string.IsNullOrWhiteSpace(manifest.SessionId) || string.IsNullOrWhiteSpace(_gameLoop.SessionId) ||
+                        !string.Equals(manifest.SessionId, _gameLoop.SessionId, StringComparison.Ordinal) ||
+                        manifest.TurnNumber <= 0 || manifest.TurnNumber > _gameLoop.TurnNumber ||
+                        !PendingTurnSnapshotAuthority.HasUsableManifestStructure(manifest,
+                            static value => value.Files, static value => value.SnapshotFileHashes,
+                            static value => value.ClientOwnedValidationHashes, static value => value.RollbackBackups,
+                            static value => value.SourceLabel, static value => value.RollbackBaselineFiles) ||
+                        !PendingTurnSnapshotAuthority.TryValidateManifestAgainstAuthority(
+                            manifest, authorityJson, SnapshotHashJsonOpts,
+                            static value => value.ManifestPayloadHash,
+                            static (value, hash) => value.ManifestPayloadHash = hash,
+                            static value => value.SessionId, static value => value.RequestId,
+                            static value => value.TurnNumber, static value => value.Files,
+                            static value => value.SnapshotFileHashes, static value => value.ClientOwnedValidationHashes,
+                            static value => value.RollbackBaselineFiles, static value => value.SourceLabel,
+                            out var payload, out _) || payload is null ||
+                        manifest.RollbackBackups.Count != payload.RollbackBackups.Count ||
+                        manifest.RollbackBackups.Any(pair => !payload.RollbackBackups.TryGetValue(pair.Key, out var backup) ||
+                            !string.Equals(pair.Value, backup, StringComparison.Ordinal)))
+                        return false;
 
-                // No path from the manifest is opened. The physical fixed cohort is the entire evidence source.
-                var entries = originals.Select((pair, ordinal) => new
-                {
-                    sourcePath = pair.Key, blob = $"{ordinal:D6}.bin",
-                    sha256 = ComputeSha256(pair.Value), length = pair.Value.LongLength
-                }).ToArray();
-                var index = JsonSerializer.SerializeToUtf8Bytes(new
-                {
-                    formatVersion = 1, purpose = "inactive-snapshot-diagnostic-only",
-                    sessionId = manifest.SessionId, requestId = manifest.RequestId, turnNumber = manifest.TurnNumber,
-                    entries
-                });
-                var archiveRoot = $"diagnostics/inactive-pending-turn-snapshots/{ComputeSha256(index)}";
-                var copies = new Dictionary<string, byte[]>(StringComparer.Ordinal)
-                {
-                    [$"{archiveRoot}/index.json"] = index
-                };
-                foreach (var entry in entries)
-                    copies.Add($"{archiveRoot}/{entry.blob}", originals[entry.sourcePath]);
-                foreach (var copy in copies)
-                {
-                    var existing = await _fs.ReadFileBytesAsync(lease, copy.Key);
-                    if (existing is null)
+                    // No path from the manifest is opened. The physical fixed cohort is the entire evidence source.
+                    var entries = originals.Select((pair, ordinal) => new
                     {
-                        async Task ValidateArchiveCreationAsync()
-                        {
-                            _fs.VerifyCurrentSessionOperation(lease);
-                            if (await _fs.ReadFileBytesAsync(lease, copy.Key) is not null)
-                                throw new InvalidDataException("A diagnostic archive name appeared before creation.");
-                            _fs.VerifyCurrentSessionOperation(lease);
-                        }
-                        if (await _fs.CompareExchangeFileBytesAsync(lease, copy.Key, null, copy.Value,
-                                ValidateArchiveCreationAsync) != CanonicalFileMutationResult.Applied)
-                            return false;
-                    }
-                    else if (!existing.AsSpan().SequenceEqual(copy.Value))
-                        return false;
-                    var readback = await _fs.ReadFileBytesAsync(lease, copy.Key);
-                    if (readback is null || !readback.AsSpan().SequenceEqual(copy.Value))
-                        return false;
-                }
-
-                var remaining = new SortedDictionary<string, byte[]>(originals, StringComparer.Ordinal);
-                async Task ValidateRemainingEvidenceAsync()
-                {
-                    _fs.VerifyCurrentSessionOperation(lease);
-                    if (HasInactiveSnapshotEvidenceBlocker(lease))
-                        throw new InvalidDataException("An active control now requires the snapshot evidence.");
-                    // Include the archive of already removed sources: partial progress
-                    // never weakens the complete diagnostic evidence requirement.
+                        sourcePath = pair.Key, blob = $"{ordinal:D6}.bin",
+                        sha256 = ComputeSha256(pair.Value), length = pair.Value.LongLength
+                    }).ToArray();
+                    var index = JsonSerializer.SerializeToUtf8Bytes(new
+                    {
+                        formatVersion = 1, purpose = "inactive-snapshot-diagnostic-only",
+                        sessionId = manifest.SessionId, requestId = manifest.RequestId, turnNumber = manifest.TurnNumber,
+                        entries
+                    });
+                    var archiveRoot = $"diagnostics/inactive-pending-turn-snapshots/{ComputeSha256(index)}";
+                    var copies = new Dictionary<string, byte[]>(StringComparer.Ordinal)
+                    {
+                        [$"{archiveRoot}/index.json"] = index
+                    };
+                    foreach (var entry in entries)
+                        copies.Add($"{archiveRoot}/{entry.blob}", originals[entry.sourcePath]);
                     foreach (var copy in copies)
                     {
-                        var bytes = await _fs.ReadFileBytesAsync(lease, copy.Key);
-                        if (bytes is null || !bytes.AsSpan().SequenceEqual(copy.Value))
-                            throw new InvalidDataException("The complete diagnostic archive changed before retirement.");
+                        var existing = await _fs.ReadFileBytesAsync(lease, copy.Key);
+                        if (existing is null)
+                        {
+                            async Task ValidateArchiveCreationAsync()
+                            {
+                                _fs.VerifyCurrentSessionOperation(lease);
+                                if (await _fs.ReadFileBytesAsync(lease, copy.Key) is not null)
+                                    throw new InvalidDataException("A diagnostic archive name appeared before creation.");
+                                _fs.VerifyCurrentSessionOperation(lease);
+                            }
+                            if (await _fs.CompareExchangeFileBytesAsync(lease, copy.Key, null, copy.Value,
+                                    ValidateArchiveCreationAsync) != CanonicalFileMutationResult.Applied)
+                                return false;
+                        }
+                        else if (!existing.AsSpan().SequenceEqual(copy.Value))
+                            return false;
+                        var readback = await _fs.ReadFileBytesAsync(lease, copy.Key);
+                        if (readback is null || !readback.AsSpan().SequenceEqual(copy.Value))
+                            return false;
                     }
-                    var current = await ReadInactiveSnapshotEvidenceCohortAsync(lease);
-                    if (HasInactiveSnapshotEvidenceBlocker(lease) || current.Count != remaining.Count ||
-                        remaining.Any(pair => !current.TryGetValue(pair.Key, out var bytes) ||
-                            !bytes.AsSpan().SequenceEqual(pair.Value)))
-                        throw new InvalidDataException("The remaining fixed snapshot evidence changed before retirement.");
-                    _fs.VerifyCurrentSessionOperation(lease);
-                }
 
-                await ValidateRemainingEvidenceAsync();
-                // Each removal is its own byte decision. Keep the manifest until last;
-                // a later refusal never rolls back earlier confirmed removals.
-                foreach (var pair in originals.OrderBy(pair => pair.Key == PendingTurnSnapshotManifestPath ? 2 :
-                             pair.Key == PendingTurnSnapshotAuthority.AuthorityPath ? 1 : 0))
-                {
-                    if (await _fs.CompareExchangeFileBytesAsync(lease, pair.Key, pair.Value, null,
-                            ValidateRemainingEvidenceAsync) != CanonicalFileMutationResult.Applied)
-                        return false;
-                    if (_fs.FileExists(lease, pair.Key))
-                        return false;
-                    remaining.Remove(pair.Key);
-                }
-                return true;
-            });
+                    var remaining = new SortedDictionary<string, byte[]>(originals, StringComparer.Ordinal);
+                    async Task ValidateRemainingEvidenceAsync()
+                    {
+                        _fs.VerifyCurrentSessionOperation(lease);
+                        if (HasInactiveSnapshotEvidenceBlocker(lease))
+                            throw new InvalidDataException("An active control now requires the snapshot evidence.");
+                        // Include the archive of already removed sources: partial progress
+                        // never weakens the complete diagnostic evidence requirement.
+                        foreach (var copy in copies)
+                        {
+                            var bytes = await _fs.ReadFileBytesAsync(lease, copy.Key);
+                            if (bytes is null || !bytes.AsSpan().SequenceEqual(copy.Value))
+                                throw new InvalidDataException("The complete diagnostic archive changed before retirement.");
+                        }
+                        var current = await ReadInactiveSnapshotEvidenceCohortAsync(lease);
+                        if (HasInactiveSnapshotEvidenceBlocker(lease) || current.Count != remaining.Count ||
+                            remaining.Any(pair => !current.TryGetValue(pair.Key, out var bytes) ||
+                                !bytes.AsSpan().SequenceEqual(pair.Value)))
+                            throw new InvalidDataException("The remaining fixed snapshot evidence changed before retirement.");
+                        _fs.VerifyCurrentSessionOperation(lease);
+                    }
+
+                    await ValidateRemainingEvidenceAsync();
+                    // Each removal is its own byte decision. Keep the manifest until last;
+                    // a later refusal never rolls back earlier confirmed removals.
+                    foreach (var pair in originals.OrderBy(pair => pair.Key == PendingTurnSnapshotManifestPath ? 2 :
+                                 pair.Key == PendingTurnSnapshotAuthority.AuthorityPath ? 1 : 0))
+                    {
+                        if (await _fs.CompareExchangeFileBytesAsync(lease, pair.Key, pair.Value, null,
+                                ValidateRemainingEvidenceAsync) != CanonicalFileMutationResult.Applied)
+                            return false;
+                        if (_fs.FileExists(lease, pair.Key))
+                            return false;
+                        remaining.Remove(pair.Key);
+                    }
+                    return true;
+                });
+            }
+            catch (CoordinatedStatePublicationUncertainException failure) { owningPublicationUncertainty = failure; throw; }
+            finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, owningPublicationUncertainty); }
         }
         catch (CoordinatedStatePublicationUncertainException) { throw; }
         catch (SessionReplacedException) { throw; }
