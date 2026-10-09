@@ -1,0 +1,84 @@
+{
+  "Categories": [
+    "portable-image-storage-operations-linux",
+    "portable-image-export-known",
+    "portable-image-export-path-spelling"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "c02b3ed5b914db6999a7250001f7df74870f10ff",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 59.4836376,
+  "Descriptors": [
+    {
+      "Name": "portable-image-export-known-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-image-export-known",
+      "Categories": [
+        "portable-image-export-known"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_CopiesLatestVersionToTargetDirectory|FullyQualifiedName=BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_DoesNotOverwriteExistingFileUnlessAllowed|FullyQualifiedName=BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_MissingSource_ReturnsClearFailure",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_CopiesLatestVersionToTargetDirectory",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_DoesNotOverwriteExistingFileUnlessAllowed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_MissingSource_ReturnsClearFailure",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-image-export-path-spelling-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-image-export-path-spelling",
+      "Categories": [
+        "portable-image-export-path-spelling"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ImageExportPathSpellingTests.CanonicalExportExclusionUsesHostPathSpelling",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ImageExportPathSpellingTests.CanonicalExportExclusionUsesHostPathSpelling",
+          "Cases": 8
+        }
+      ]
+    },
+    {
+      "Name": "portable-image-storage-operations-linux-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-image-storage-operations-linux",
+      "Categories": [
+        "portable-image-storage-operations-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ImageStorageOutcomeTests.OriginalImageOperationsPreserveStorageOutcomeAndExactTargets",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ImageStorageOutcomeTests.OriginalImageOperationsPreserveStorageOutcomeAndExactTargets",
+          "Cases": 12
+        }
+      ]
+    }
+  ]
+}

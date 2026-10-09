@@ -1,3 +1,32 @@
+## F16 original image bounded23 GREEN — 2026-10-09
+
+Independent SOURCE/RED-RAW/EXACT23 PASSc02b3ed5. Tested runtime/source
+c02b3ed5b914db6999a7250001f7df74870f10ff fresh both-project Plan100443 succeeds:
+23cases/3descriptors,0executed,59.8150402s. Matching actual100612 completes
+**23/23 PASS**,3/3descriptors,17.5830266s; both cleanup flags, no timeout/skip/
+duplicate. Exact image12 +existing externalexport3 +purepath8. Fixtures unchanged
+from44dcc/66dc respectively. Windows eight are pathname policy, not native I/O.
+
+Root independently verifies two authentic nonCommitted member0 journals: scene
+write and second cleanup delete. Original CSP identity propagates; exact journal/
+foreign bytes and prior confirmed deletion remain, with zero measured later canonical
+read/mutation/admission/recovery/publication. Known per-file refusal reaches exactly
+three attempts and counts only two actual scene removals. Ordinary cleanup preserves
+latest entity bytes and nonimage sentinel. Canonical direct/alias exports refuse
+before mkdir/copy; true external copies, latest/overwrite/missing-source semantics,
+literal Linux generated/staged names and known after-commit logger success all pass.
+All12 new distinct owned roots are removed; existing3 fixtures retain their original
+cleanup implementation. No exact root-receipt claim is added for those three.
+
+[Image packet](recovery/storage-migration-image-storage-20261009/manifest.json)
+retains83artifacts/originals54pins: initial Plan0, original4P8F with one authenticCSP
+and two raw-bypass failures, catalog refusal before build/tests, pure spelling4P4F,
+and exact23 GREEN. Root verifies stored/expanded/original hashes and frozen source.
+Next independent GREEN/raw carrier review, matching discovery-only catalog and final
+metadata gate. Next F16 unit is original constructor/gallery directory admission;
+listings/story exports/path producers and F18/other owning closes remain open.
+No wholeF16/settings/GameLoop/native/actualsecondaryclose/B2–B5 completion.
+
 ## F16 image runtime and spelling correction — WIP, 2026-10-09
 
 Independent exact8 fixture/metadata PASS8d280681. Fresh Plan100128 builds unit,
