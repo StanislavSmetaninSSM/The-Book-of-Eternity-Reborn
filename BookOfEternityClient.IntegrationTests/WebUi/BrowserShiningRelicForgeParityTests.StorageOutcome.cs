@@ -1,5 +1,6 @@
 using System.Text.Json;
 using BookOfEternityClient.CommandProtocol;
+using BookOfEternityClient.WebUi;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -26,6 +27,7 @@ public sealed partial class BrowserShiningRelicForgeParityTests
         probe.Cut.Select = (path, _) => probe.IsForgeMember(path, fixture._fs);
         probe.Cut.BeforeCut = () =>
         {
+            probe.AssertForgeJournal(fixture._fs);
             using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(probe.Cut.JournalPath));
             var target = journal.RootElement.GetProperty("Members")[0].GetProperty("Path").GetString();
             priorAtCut = probe.Committed.Where(x => x.Key != target)
@@ -40,10 +42,23 @@ public sealed partial class BrowserShiningRelicForgeParityTests
                 ("confirm_shining_relic_forge_write", true))));
         var lockAfter = CleanupPublicationCut.ReadOptional(fixture._fs.ResolvePath(LocalUiSessionLockService.LockPath));
         var afterImages = priorAtCut?.ToDictionary(x => x.Key, x => CleanupPublicationCut.ReadOptional(x.Key), StringComparer.Ordinal);
-        Output(JsonSerializer.Serialize(new { result, Failure = failure?.ToString(), lockBefore, lockAfter,
+        var sessions = (System.Collections.IDictionary)typeof(ExplorerWebPromptSessionService)
+            .GetField("_sessions", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+            .GetValue(fixture._promptSessions)!;
+        var formRetired = !sessions.Contains(prompt.InteractiveSession!.SessionId);
+        var notificationText = result == null ? null : string.Join("\n", result.Notifications.Select(x => x.Title + "\n" + x.Message));
+        Output(JsonSerializer.Serialize(new { result, formRetired, notificationText, Failure = failure?.ToString(), lockBefore, lockAfter,
             priorAtCut, afterImages, probe.RequestAttempts, Cut = probe.Cut.Evidence() }));
         probe.Cut.AssertReachedAndStopped();
         Assert.Null(failure); Assert.NotNull(result); Assert.Equal(CommandExecutionState.Failed, result!.State);
+        Assert.True(formRetired); Assert.Null(result.InteractiveSession); Assert.Empty(result.Prompts);
+        Assert.NotNull(notificationText);
+        Assert.Contains("Результат локальной записи не подтверждён", notificationText, StringComparison.Ordinal);
+        Assert.Contains("не повторяйте", notificationText, StringComparison.OrdinalIgnoreCase);
+        AssertNoRawShiningDiagnosticText(notificationText!);
+        Assert.DoesNotContain(fixture._rootPath, notificationText, StringComparison.Ordinal);
+        Assert.DoesNotContain(nameof(CoordinatedStatePublicationUncertainException), notificationText, StringComparison.Ordinal);
+        Assert.DoesNotContain("actual cleanup MemberPublished cut", notificationText, StringComparison.Ordinal);
         Assert.Equal(lockBefore, lockAfter); Assert.Equal(0, probe.RequestAttempts);
         Assert.NotNull(priorAtCut);
         foreach (var pair in priorAtCut!) Assert.Equal(pair.Value, afterImages![pair.Key]);

@@ -20,6 +20,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             PhysicalLoadTransactionOperations.Instance, probe.Hooks);
         probe.Attach(files);
         var soul = CreateLifecycleSoulState("Archive outcome", "Mortal World");
+        soul["currentIncarnation"] = 2;
         var entry = new JsonObject
         {
             ["archiveId"] = "storage_archive", ["entryType"] = "lore_fragment", ["title"] = "Archive outcome",
@@ -61,7 +62,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(probe.Cut.JournalPath));
             var target = journal.RootElement.GetProperty("Members")[0].GetProperty("Path").GetString();
-            Assert.True(journal.RootElement.GetProperty("Members")[0].GetProperty("Before").GetProperty("Exists").GetBoolean());
+            var member = journal.RootElement.GetProperty("Members")[0];
+            Assert.True(member.GetProperty("Before").GetProperty("Exists").GetBoolean());
+            if (reservation)
+            {
+                var before = JsonNode.Parse(System.Text.Encoding.UTF8.GetString(member.GetProperty("Before").GetProperty("Bytes").GetBytesFromBase64()).TrimStart('\uFEFF'));
+                Assert.Equal("storage_consultation", before!["afterlifeArchive"]!["stored"]![0]!["reservation"]!["requestId"]!.GetValue<string>());
+            }
             priorAtCut = probe.Committed.Where(x => x.Key != target)
                 .ToDictionary(x => x.Key, x => CleanupPublicationCut.ReadOptional(x.Key), StringComparer.Ordinal);
             foreach (var pair in priorAtCut) Assert.Equal(probe.Committed[pair.Key], pair.Value);

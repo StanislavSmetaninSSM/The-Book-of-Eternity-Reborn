@@ -3,8 +3,8 @@
   "categories": [
     {
       "id": "portable-explorer-archive-outcome-causal-linux",
-      "responsibility": "Original Explorer command storage-outcome boundaries: normalization, relics, offering, treasury, directives, archive candidates, politics, attraction and forge; original idle archive repair and original browser forge Submit. Test-only WIP17 of proposed22.",
-      "excludes": "No full gameplay/provider/native execution. Compensation5 still pending; no build or causal acceptance. Browser projection siblings remain source-qualified only.",
+      "responsibility": "Original Explorer command and archive storage-outcome boundaries:14 primary command Unknown,3 ordered compensation Unknown,2 known compensation controls,2 original idle archive reconciliation and1 original browser forge Submit. Exact22.",
+      "excludes": "No fabricated CSP, helper-only command claim, full gameplay/provider/native or simultaneous owned-close failure. Browser forge proves actual Afterlife/shared Submit only; Mortal/Saref projection siblings remain source-qualified. Zero observed recovery phases is not proof of no attempted recovery.",
       "changeHints": [
         "BookOfEternityClient/UI/ExplorerMode",
         "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
@@ -24,6 +24,7 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication",
             "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure"
           ]

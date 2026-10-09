@@ -51,6 +51,7 @@ public sealed partial class ExplorerModeCommandTests
         {
             var published = File.ReadAllText(selectedPath!);
             if (mode != "forge") fixture.AssertExplorerStoragePublishedImage(mode, JsonNode.Parse(published)!);
+            else probe.AssertForgeJournal(fixture._fs);
             using var current = CleanupPublicationCut.Metadata(File.ReadAllBytes(probe.Cut.JournalPath));
             var member = current.RootElement.GetProperty("Members")[0];
             var before = member.GetProperty("Before").GetProperty("Exists").GetBoolean()
@@ -79,6 +80,132 @@ public sealed partial class ExplorerModeCommandTests
         Assert.Equal(0, probe.LaterInputs); Assert.Equal(0, probe.RequestAttempts);
         Assert.NotNull(priorAtCut);
         foreach (var pair in priorAtCut!) Assert.Equal(pair.Value, afterImages![pair.Key]);
+    }
+
+    [Theory]
+    [InlineData("offering_throw", true)]
+    [InlineData("offering_false", true)]
+    [InlineData("treasury", true)]
+    [InlineData("offering_throw", false)]
+    [InlineData("treasury", false)]
+    public async Task StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(string mode, bool uncertain)
+    {
+        using var outerRoot = new CleanupOwnedFixture(_rootPath, WriteStorageOutcome);
+        Assert.True(OperatingSystem.IsLinux());
+        var probe = new ExplorerStorageProbe();
+        using var fixture = new ExplorerModeCommandTests(probe.Hooks, probe.Wrap);
+        using var owned = new CleanupOwnedFixture(fixture._rootPath, WriteStorageOutcome);
+        using var observer = probe;
+        probe.Attach(fixture._fs);
+        var treasury = mode == "treasury";
+        var (command, _) = await fixture.SeedExplorerStorageOutcomeAsync(treasury ? "treasury" : "offering_relic", probe);
+        await fixture._stateManager.RefreshGameStateAsync();
+        const string soul = "game_state/meta/soul_state.json";
+        var pending = GuardianAbodeOfferingState.PendingRequestPath;
+        var soulFull = fixture._fs.ResolvePath(soul);
+        var shiningFull = fixture._fs.ResolvePath(ShiningAbodeState.StatePath);
+        var pendingFull = fixture._fs.ResolvePath(pending);
+        var soulBefore = File.ReadAllBytes(soulFull);
+        var shiningBefore = CleanupPublicationCut.ReadOptional(shiningFull);
+        var known = new InvalidOperationException("known original command prepublication refusal");
+        var knownHits = 0;
+        var events = new List<string>();
+        Dictionary<string, byte[]?>? evidenceBefore = null;
+        Dictionary<string, byte[]?>? atCut = null;
+        byte[]? committedShining = null;
+        var selected = treasury ? shiningFull : mode == "offering_false" ? pendingFull : soulFull;
+        probe.BeforeMutationBoundary = path =>
+        {
+            if (!probe.Cut.Armed || probe.Cut.Cuts != 0 || knownHits != 0) return Task.CompletedTask;
+            if (path != (mode == "offering_throw" ? pending : soul)) return Task.CompletedTask;
+            if (treasury)
+            {
+                Assert.True(probe.Committed.TryGetValue(shiningFull, out committedShining));
+                Assert.NotEqual(shiningBefore, committedShining);
+                Assert.Equal(committedShining, File.ReadAllBytes(shiningFull));
+            }
+            else
+            {
+                var snapshot = (ExplorerMode.PendingLocalTurnRollbackSnapshot?)typeof(ExplorerMode)
+                    .GetField("_pendingLocalTurnRollbackSnapshot", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+                    .GetValue(fixture._explorer);
+                Assert.NotNull(snapshot);
+                Assert.False(snapshot!.RestoreCompleted);
+                Assert.Equal(soulBefore, File.ReadAllBytes(fixture._fs.ResolvePath(snapshot.BackupFiles[soul])));
+                evidenceBefore = snapshot.TechnicalArtifacts.Concat(snapshot.BackupFiles.Values).Distinct(StringComparer.Ordinal)
+                    .ToDictionary(x => fixture._fs.ResolvePath(x), x => CleanupPublicationCut.ReadOptional(fixture._fs.ResolvePath(x)), StringComparer.Ordinal);
+                Assert.All(evidenceBefore.Values, value => Assert.NotNull(value));
+                if (mode == "offering_false")
+                    Assert.Equal(probe.Committed[pendingFull], File.ReadAllBytes(pendingFull));
+                else Assert.False(File.Exists(pendingFull));
+            }
+            events.Add("known prepublication refusal: " + path);
+            knownHits++;
+            throw known;
+        };
+        probe.AfterCommitted = path =>
+        {
+            if (knownHits != 0) events.Add("committed after known refusal: " + path);
+        };
+        probe.Cut.Select = (path, member) => uncertain && knownHits == 1 && path == selected &&
+            member.GetProperty("After").GetProperty("Exists").GetBoolean() == (mode != "offering_false");
+        probe.Cut.BeforeCut = () =>
+        {
+            Assert.Equal(1, knownHits);
+            using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(probe.Cut.JournalPath));
+            var member = journal.RootElement.GetProperty("Members")[0];
+            if (treasury)
+            {
+                Assert.Equal(committedShining, member.GetProperty("Before").GetProperty("Bytes").GetBytesFromBase64());
+                Assert.Equal(shiningBefore, File.ReadAllBytes(shiningFull));
+            }
+            else if (mode == "offering_throw")
+            {
+                // The real restoration publishes unchanged baseline bytes; equality is intentional.
+                Assert.Equal(soulBefore, member.GetProperty("Before").GetProperty("Bytes").GetBytesFromBase64());
+                Assert.Equal(soulBefore, File.ReadAllBytes(soulFull));
+            }
+            else
+            {
+                Assert.True(member.GetProperty("Before").GetProperty("Exists").GetBoolean());
+                Assert.Equal(probe.Committed[pendingFull], member.GetProperty("Before").GetProperty("Bytes").GetBytesFromBase64());
+                Assert.False(File.Exists(pendingFull));
+            }
+            if (evidenceBefore != null)
+                foreach (var pair in evidenceBefore) Assert.Equal(pair.Value, CleanupPublicationCut.ReadOptional(pair.Key));
+            atCut = (evidenceBefore ?? new Dictionary<string, byte[]?>()).ToDictionary(x => x.Key, x => x.Value, StringComparer.Ordinal);
+            if (selected != soulFull) atCut[soulFull] = File.ReadAllBytes(soulFull);
+            events.Add("actual restoration MemberPublished: " + selected);
+        };
+        probe.Cut.Armed = true;
+        string? result = null;
+        var failure = await Record.ExceptionAsync(async () => result = await fixture._explorer.TryProcessCommand(command));
+        var afterImages = atCut?.ToDictionary(x => x.Key, x => CleanupPublicationCut.ReadOptional(x.Key), StringComparer.Ordinal);
+        var soulAfter = CleanupPublicationCut.ReadOptional(soulFull);
+        var shiningAfter = CleanupPublicationCut.ReadOptional(shiningFull);
+        var evidenceAfter = evidenceBefore?.ToDictionary(x => x.Key, x => CleanupPublicationCut.ReadOptional(x.Key), StringComparer.Ordinal);
+        WriteStorageOutcome(JsonSerializer.Serialize(new { mode, uncertain, command, result, knownHits, events,
+            KnownCauseRetained = probe.Cut.RetainsDiagnostic(known), Failure = failure?.ToString(),
+            soulBefore, soulAfter, shiningBefore, shiningAfter, committedShining, evidenceBefore, evidenceAfter,
+            atCut, afterImages, probe.Inputs, probe.LaterInputs, probe.RequestAttempts, Cut = probe.Cut.Evidence() }));
+        Assert.Equal(1, knownHits); Assert.Equal(0, probe.RequestAttempts);
+        if (uncertain)
+        {
+            probe.Cut.AssertReachedAndStopped(); Assert.Same(probe.Cut.OriginalUncertainty, failure);
+            Assert.Equal(0, probe.LaterInputs);
+            // The bool-failure route deliberately has no exception-retention contract.
+            if (mode != "offering_false") Assert.True(probe.Cut.RetainsDiagnostic(known));
+            Assert.NotNull(atCut);
+            foreach (var pair in atCut!) Assert.Equal(pair.Value, afterImages![pair.Key]);
+        }
+        else
+        {
+            Assert.Null(failure); Assert.Equal(0, probe.Cut.Cuts); Assert.False(File.Exists(probe.Cut.JournalPath));
+            Assert.Equal(soulBefore, soulAfter);
+            if (treasury) Assert.Equal(shiningBefore, shiningAfter);
+            else { Assert.False(File.Exists(pendingFull)); Assert.All(evidenceAfter!.Values, value => Assert.Null(value)); }
+            Assert.Contains(events, x => x == "committed after known refusal: " + (treasury ? shiningFull : soulFull));
+        }
     }
 
     private void WriteStorageOutcome(string line) => _storageOutcomeOutput?.WriteLine(line);
@@ -121,7 +248,7 @@ public sealed partial class ExplorerModeCommandTests
         if (mode == "treasury")
         {
             await SeedShiningInspectionStateAsync(includePreparedPackage: false);
-            _console.QueueSelection("Казначейство Сияющей Обители", "⬇ Внести Чернильные Перья");
+            _console.QueueSelection("Казначейство Сияющей Обители", "⬇ Внести Чернильные Перья", "← Назад");
             _console.QueueAnyAskResponse("1"); _console.QueueAnyConfirmResponse(true);
             return ("/shining_treasury", soulPath);
         }
@@ -243,13 +370,19 @@ internal sealed class ExplorerStorageProbe : IDisposable
     internal int LaterInputs { get; private set; }
     internal int RequestAttempts { get; private set; }
     internal int IntegerResponse { get; set; } = 1;
+    internal Func<string, Task>? BeforeMutationBoundary { get; set; }
+    internal Action<string>? AfterCommitted { get; set; }
     internal ExplorerStorageProbe()
     {
         Hooks = new FileSystemManagerHooks
         {
             LocalPublicationObserver = Cut.Hooks.LocalPublicationObserver,
             LocalPublicationRecoveryObserver = Cut.Hooks.LocalPublicationRecoveryObserver,
-            BeforeCanonicalMutationBoundaryAsync = Cut.Hooks.BeforeCanonicalMutationBoundaryAsync,
+            BeforeCanonicalMutationBoundaryAsync = async path =>
+            {
+                await Cut.Hooks.BeforeCanonicalMutationBoundaryAsync!(path);
+                if (BeforeMutationBoundary != null) await BeforeMutationBoundary(path);
+            },
             AfterCanonicalReadInitialValidationAsync = Cut.Hooks.AfterCanonicalReadInitialValidationAsync,
             SessionOperationClosingAsync = Cut.Hooks.SessionOperationClosingAsync,
             BeforeCanonicalWriteLockOpenAsync = async () =>
@@ -273,6 +406,7 @@ internal sealed class ExplorerStorageProbe : IDisposable
             {
                 var path = member.GetProperty("Path").GetString()!;
                 Committed[path] = CleanupPublicationCut.ReadOptional(path);
+                AfterCommitted?.Invoke(path);
             }
         };
     }
@@ -283,6 +417,22 @@ internal sealed class ExplorerStorageProbe : IDisposable
         return members[0].GetProperty("Path").GetString() == path &&
             members.Any(x => x.GetProperty("Path").GetString() == files.ResolvePath(ShiningCoreActionRequestState.PendingActionsRequestPath)) &&
             members.Any(x => x.GetProperty("Path").GetString() == files.ResolvePath(ResourceMaterializationContract.StatePath));
+    }
+    internal void AssertForgeJournal(FileSystemManager files)
+    {
+        using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(Cut.JournalPath));
+        Assert.Equal(1, journal.RootElement.GetProperty("Format").GetInt32());
+        var members = journal.RootElement.GetProperty("Members").EnumerateArray().ToArray();
+        var request = members.Single(x => x.GetProperty("Path").GetString() == files.ResolvePath(ShiningCoreActionRequestState.PendingActionsRequestPath));
+        var planned = JsonNode.Parse(System.Text.Encoding.UTF8.GetString(request.GetProperty("After").GetProperty("Bytes").GetBytesFromBase64()).TrimStart('\uFEFF'))!;
+        var item = Assert.Single(planned["requests"]!.AsArray());
+        Assert.Equal(ShiningCoreActionRequestState.ActionTypeForgeRelicReshape, item!["actionType"]!.GetValue<string>());
+        Assert.False(string.IsNullOrWhiteSpace(item["requestId"]!.GetValue<string>()));
+        var resource = members.Single(x => x.GetProperty("Path").GetString() == files.ResolvePath(ResourceMaterializationContract.StatePath));
+        Assert.True(resource.GetProperty("Before").GetProperty("Exists").GetBoolean());
+        Assert.NotEqual(resource.GetProperty("Before").GetProperty("Bytes").GetBytesFromBase64(),
+            resource.GetProperty("After").GetProperty("Bytes").GetBytesFromBase64());
+        // These are planned images in the same uncommitted journal, not independent committed effects.
     }
     internal void Attach(FileSystemManager files) => Cut.Attach(files);
     internal IExplorerConsole Wrap(TestExplorerConsole console) => new GuardedConsole(this, console);

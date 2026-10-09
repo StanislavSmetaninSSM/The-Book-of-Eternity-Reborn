@@ -1,3 +1,30 @@
+## Explorer/Archive frozen test-only22 — 2026-10-09
+
+Extends remotely preserved e9859df5 draft17 with three distinct compensation Unknown rows and two known
+compensation controls. Actual original TryProcessCommand paths:14 primary Unknown + offering known
+request refusal→outer restore Unknown, offering consumed-resource bool failure→inner restore Unknown,
+Treasury known Soul refusal after Shining commit→first Shining restore Unknown. Known exception identity
+is required for thrown offering/Treasury only; bool policy deliberately has no manufactured exception.
+Two known controls require actual compensation Committed, exact baseline restoration, no journal and
+retired backup evidence. Known refusal uses the original prepublication mutation boundary (outside retry).
+Unchanged baseline publication during offering restoration is intentional and has no NotEqual oracle.
+
+Original idle archive reservation/request2 and actual browser forge Submit1 complete exact22. Archive
+reservation requires actual Before reservation ID and After removal. Forge requires authentic same-
+journal request/changed resource after-images; these are planned, not independently committed effects.
+Browser output must retain real uncertainty, private no-retry notification, exact UI lock and retire form
+in memory; no second Submit/admission is attempted just to check retirement. Explicit hard root cleanup
+follows observer disposal; forwarder refuses/counts actual postcut input and admission as fixture safety.
+
+Production unchanged, all22 unbuilt/unexecuted. Independent frozen SOURCE/FIXTURE/EXACT22 gate precedes
+fresh matching integration Plan/build and causal run. Actual setup/cut failures will remain fixture failures.
+Connected Afterlife(all3 wrappers)/Mortal/Saref BrowserPromptWriteResult projections lose existing outcome
+metadata; reviewed proposed fix carries actual Disposition/NeedsFollowUp/ContinuationBlocked, never
+KeepSessionOpen as retry permission. Shared BuildDomain should retire form but skip canonical release for
+actual continuation-blocked outcome and retain known committed/rolled-back follow-up facts. Only forge
+Afterlife/shared consumer is executed by this proposed row; sibling source qualification remains explicit.
+No client/GM schema, transaction, gameplay, provider/native or simultaneous secondary-close claim.
+
 ## Explorer/Archive test-only WIP17 of proposed22 — 2026-10-09
 
 GameLoop final carrier e77dcf1a accepted:41 artifacts/29 pins, final4 and matching catalog518/11313.
