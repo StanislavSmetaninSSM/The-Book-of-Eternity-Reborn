@@ -690,19 +690,46 @@ public partial class ExplorerMode
     internal Task StagePendingLocalTurnRollbackSnapshotAsync(params string[] trackedFiles) =>
         EnsurePendingLocalTurnRollbackSnapshotAsync(trackedFiles);
 
+    private static void RequireExactLocalRollbackPaths(IEnumerable<string> trackedFiles,
+        PendingLocalTurnRollbackSnapshot? snapshot)
+    {
+        var paths = trackedFiles;
+        if (snapshot != null)
+            paths = paths.Concat(snapshot.TrackedFiles).Concat(snapshot.BaselineFiles)
+                .Concat(snapshot.ValidationSnapshotFiles).Concat(snapshot.TechnicalArtifacts)
+                .Concat(snapshot.BackupFiles.Keys).Concat(snapshot.BackupFiles.Values)
+                .Concat(snapshot.BackupHashes.Keys);
+        PendingTurnSnapshotAuthority.RequireExactSignedPaths(paths);
+    }
+
     internal void MarkExistingPendingLocalTurnValidationSnapshotFiles(params string[] trackedFiles)
     {
         var snapshot = _pendingLocalTurnRollbackSnapshot;
         if (snapshot == null)
             return;
 
-        foreach (var trackedFile in trackedFiles
-                     .Where(path => !string.IsNullOrWhiteSpace(path))
-                     .Select(path => path.Trim())
-                     .Distinct(StringComparer.OrdinalIgnoreCase))
+        RequireExactLocalRollbackPaths(trackedFiles, snapshot);
+        var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        Exception? publicationUncertainty = null;
+        try
         {
-            if (_fs.FileExists(trackedFile))
-                snapshot.ValidationSnapshotFiles.Add(trackedFile);
+            RequireExactLocalRollbackPaths(trackedFiles, snapshot);
+            foreach (var trackedFile in trackedFiles.Distinct(StringComparer.OrdinalIgnoreCase))
+            {
+                if (_fs.FileExists(lease, trackedFile))
+                    snapshot.ValidationSnapshotFiles.Add(trackedFile);
+            }
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, lease, completed: false, operationFailure: publicationUncertainty)
+                .GetAwaiter().GetResult();
         }
     }
 
@@ -720,6 +747,7 @@ public partial class ExplorerMode
 
     private async Task EnsurePendingLocalTurnRollbackSnapshotAsync(params string[] trackedFiles)
     {
+        RequireExactLocalRollbackPaths(trackedFiles, _pendingLocalTurnRollbackSnapshot);
         var normalizedTrackedFiles = trackedFiles
             .Where(path => !string.IsNullOrWhiteSpace(path))
             .Select(path => path.Trim())
@@ -732,6 +760,7 @@ public partial class ExplorerMode
         Exception? publicationUncertainty = null;
         try
         {
+            RequireExactLocalRollbackPaths(trackedFiles, _pendingLocalTurnRollbackSnapshot);
             if (_pendingLocalTurnRollbackSnapshot is { RestoreCompleted: true } completed)
             {
                 // This owner can only finish cleanup. A new command must capture a

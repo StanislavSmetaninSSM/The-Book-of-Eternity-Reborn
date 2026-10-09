@@ -1,3 +1,19 @@
+## Incarnation/Explorer raw admission installed — WIP, 2026-10-09
+
+Two production files now validate original current_world exact raw names and
+full fixed-path physical aliases before deduplication. Enumeration keeps its
+original synchronous signature and closes a short admitted canonical lease.
+Stage validates the caller plus all retained owner path collections before
+normalization and again before completed-owner cleanup. Mark does the same,
+reads existence through its owned lease and keeps no-owner behavior unchanged.
+Existing rollback copying, publication, original predicates and fresh-owner
+semantics remain. Close uses the existing primary-publication-preserving helper.
+Installed UNBUILT/UNRUN. No GM authored contract/schema/mechanic changes; prompts
+and worked gameplay examples require no change for this client storage gate.
+Original RED20 is preserved separately. Independent source/design/exact20 gate,
+then a fresh selected build/Plan20 and actual20. Spiritual capture and remaining
+owners follow; T061–T065 unchecked, B2–B5 paused.
+
 ## Incarnation/Explorer actual original RED20 — WIP, 2026-10-09
 
 Fixture/refined design/exact20 independent AstraXHigh PASS at e001203d4bd809ac762f8b8213bdb4d922ff0ad4.

@@ -1900,21 +1900,34 @@ public partial class GameEngine
 
     private string[] EnumerateIncarnationLocalPrepRollbackFiles()
     {
-        var files = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
+        string[] fixedPaths = [
             WorldDirectiveService.PendingSetupPath,
             ScenarioCoreService.ManifestPath
-        };
-
-        var gameSessionRoot = _fs.ResolvePath("");
-        var currentWorldDir = _fs.ResolvePath("lore/current_world");
-        if (Directory.Exists(currentWorldDir))
+        ];
+        var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        Exception? publicationUncertainty = null;
+        try
         {
-            foreach (var absoluteFile in Directory.GetFiles(currentWorldDir, "*", SearchOption.AllDirectories))
-                files.Add(Path.GetRelativePath(gameSessionRoot, absoluteFile).Replace('\\', '/'));
+            // Scan raw names for full fixed-path aliases, including ancestor casing.
+            // The rest of the session inventory is not part of this capture cohort.
+            var rawFiles = _fs.EnumerateCanonicalLocalTreeFiles(lease, "lore/current_world")
+                .Concat(_fs.EnumerateFiles(lease, "*").Where(path =>
+                    fixedPaths.Contains(path, StringComparer.OrdinalIgnoreCase)))
+                .Concat(fixedPaths).ToArray();
+            PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawFiles);
+            return rawFiles.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
         }
-
-        return files.ToArray();
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, lease, completed: false, operationFailure: publicationUncertainty)
+                .GetAwaiter().GetResult();
+        }
     }
 
     private static void AddPendingSetupSummaryPart(List<string> parts, string label, JsonNode? node)
