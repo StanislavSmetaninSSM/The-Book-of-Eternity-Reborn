@@ -1,3 +1,23 @@
+## Shared original initial-generation owner — test-first WIP, 2026-10-09
+
+Six original owners GREEN12 packet/ref/raw f8b14bb1 saved; independent final
+raw/carrier review in progress at pinned source. New next category2/1 exercises
+actual RunParticipatingCurrentSessionAsync with genuinely absent generation,
+before its actual bound operation callback. Same actual acquisition/publication
+barriers and inspected original owning lease, same original generation CSP then
+late secondary disposer; no fabricated generation/lease/result/authority.
+Known callback requires initial-generation owner already inactive, current bound
+expected ID and original actual returned value; negative must never invoke it.
+Both full lease/main/ambient/context/lock settlement and strict owned cleanup.
+Original SessionOperationContext runtime unchanged; fixture UNBUILT/UNRUN.
+Independent fixture/refined minimal CSP-preserving close design/exact2 gate,
+then fresh Plan2/actual original baseline before code. Browser command's inner
+warm-generation lease does not create original generation in the supported
+entrypoint; this actual outer owner does. Typed browser result boundary next.
+These client storage scopes add no GM authored mechanic/schema/prompt/example.
+Remaining method-specific original publishers and mod/UI stay open; catalog
+combined after new bounded ownership fixtures. T061–T065 unchecked/B2–B5 paused.
+
 ## Six original owners bounded GREEN12 — 2026-10-09
 
 Runtime7aa6be72f5b381d37fb81774356b6881c5776990 original RED/source/exact12

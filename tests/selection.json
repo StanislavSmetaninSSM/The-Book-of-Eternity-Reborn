@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-participating-generation-close-linux",
+      "reason": "T063/T065 test-first WIP2/1 UNBUILT/UNRUN original shared participating initial-generation owner before actual bound callback. Known control and actual unknown primary plus actual owner secondary release; fixture/design/exact2 gate then original causal baseline before code. Other browser command warm generation is already initialized by this outer owner.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-original-remaining-owning-close-linux",
       "reason": "T063/T065 runtime7aa6be72 actual20072212/12PASS7.6135260s,all12strictrootsabsent. Six actualoriginal owners retain samegenuineCSP+same secondaryclose andfullsettlement; sixknownDTO/result controlsPASS. Earlier causal6PASS/6FAIL and preparation groups separatelyretained. Runner/TRXExit0; externalwrapper1 separatelyreproduced by no-testBashprobes andretained, no runnerchange/replay. IndependentGREEN/raw/carrier andcombinedcatalog next. Otherownersopen.",
       "contracts": [

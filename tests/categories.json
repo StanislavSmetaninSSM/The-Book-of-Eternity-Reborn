@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-participating-generation-close-linux",
+      "responsibility": "Original shared RunParticipatingCurrentSessionAsync fresh initial-generation owner, known actual bound callback and genuine generation-publication uncertainty plus late secondary close on inspected actual hoisted lease. Two independent Linux roots; generation owner must settle before callback and no callback on uncertainty.",
+      "excludes": "No browser typed-result close, other owners, live GM/provider, B2 gameplay, native Windows or whole migration qualification. No fabricated generation/lease/exception/result.",
+      "changeHints": [
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.InitialGeneration.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalParticipatingInitialGenerationPreservesItsActualDecisionOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-remaining-owning-close-linux",
       "responsibility": "Six actual original public publishing routes (bootstrap, UI lock, Daren profile, prompt generation, prompt lock, standalone QTE terminal), each known positive and actual publication-uncertainty plus secondary close. Twelve independent roots. Inspect actual hoisted owner through awaited task states; attach closer only after same genuine CSP. Preserve original result/attempt/session publication and full lease settlement.",
       "excludes": "No synthetic lease or forged publication result, read-only exact-rollback refresh, other owners, native Windows, B2 gameplay or whole migration qualification.",
