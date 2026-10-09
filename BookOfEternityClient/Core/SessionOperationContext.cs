@@ -130,7 +130,7 @@ internal static class SessionOperationContext
                 var lease=await files.AcquireCanonicalWriteLeaseAsync();
                 CoordinatedStatePublicationUncertainException? uncertainty=null;
                 try {generation=files.GetOrCreateSessionGeneration(lease);}
-                catch(CoordinatedStatePublicationUncertainException failure){uncertainty=failure;throw;}
+                catch(CoordinatedStatePublicationUncertainException publicationFailure){uncertainty=publicationFailure;throw;}
                 finally {await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(files,lease,false,uncertainty);}
             }
             result=await RunBoundCoreAsync(files,generation,async()=> {

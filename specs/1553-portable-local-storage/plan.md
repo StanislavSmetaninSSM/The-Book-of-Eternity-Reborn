@@ -1,3 +1,13 @@
+## Shared initial-generation preparation correction — WIP, 2026-10-09
+
+Combined RED/source/exact2 independent PASSe662efbc. Fresh Plan203004 build
+fails21.8901904s with CS0136: inner catch failure shadows the existing outer
+operation failure local. 0planned/discovery/execution, bothcleanup/0timeout.
+Rename only the catch variable to publicationFailure; behavior/fixture/exact2
+unchanged. Preserve raw preparation2artifacts/10pins separately from causal
+RED13/10;15artifacts/20pins verified originals. Delta source gate then fresh
+Plan/actual2. This is preparationFAILED/UNRUN, not runtime GREEN or RED.
+
 ## Shared initial-generation close installed — WIP, 2026-10-09
 
 Original causal RED2 packet13artifacts/10pins preserved/ref/raw60d786d9.
