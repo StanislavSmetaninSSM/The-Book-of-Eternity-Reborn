@@ -1,3 +1,19 @@
+## F18 Location8 / Resource4 — bounded Linux GREEN, 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT12 PASS66f655ee. Fresh integration Plan13240112/2,
+0execution47.3438846s; actual13273512/12PASS20.1031176s,complete2/2,bothcleanup,
+0skip/duplicate/timeout. Command `./scripts/test-csharp.ps1 -Category @("portable-location-known-rollback-publication", "portable-resource-known-rollback-publication") -NoBuild`; preceding same-category PlanOnly builds integration.
+Every row reaches one genuine selected MemberPublished and preserves original wrapped
+cause/path; original operation restores80raw tracked paths including absence and real
+generation, active journal absent before facade reads. All12owned roots removed.
+Current discovery132807558/11343valid0,8.7151447s,bothcleanup (NoBuild:integration66f,
+unit533/runtimeunchanged). [Packet](recovery/storage-migration-known-rollback-20261009/manifest.json)
+now65artifacts/originals72pins, parent verified; final independent raw/carrier pending.
+Guardian8 plus selection reconciliation final independent PASSb190 with66f catalog;
+original28/28 verified, historical64 correctly scoped, no aggregate replay. F01–F19
+historical map retained. Remaining effects14/wound24/treatment2/offscreen1 cuts,
+F16signed producers/ownedclose/whole registry continue; B2–B5 paused.
+
 ## F18 Location8 / Resource4 — fixture WIP, 2026-10-09
 
 Port two original exact methods to the unchanged KnownRollbackPublicationCut helper.

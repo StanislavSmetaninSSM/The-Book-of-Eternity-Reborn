@@ -293,5 +293,417 @@
         "sha256": "b2e820d5ea4de7b2e157d644ea7074727a9bb0de03e87e2ce38585d1765fcf19"
       }
     ]
+  },
+  "locationResource12": {
+    "source": "66f655ee46183fe155fb1e19473528f3522d15a8",
+    "artifacts": [
+      {
+        "path": "locationResource12-20261009-132401-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132401-338-355741-925b21f70d2c4247915d3851230f9d0a-categories/plan.json",
+        "sha256": "ac881650e4de3c2c41ef2cfa7e3b6f27d1570634272f66f0254aed7a13a1a5af",
+        "originalSha256": "ac881650e4de3c2c41ef2cfa7e3b6f27d1570634272f66f0254aed7a13a1a5af"
+      },
+      {
+        "path": "locationResource12-20261009-132401-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132401-338-355741-925b21f70d2c4247915d3851230f9d0a-categories/summary.json",
+        "sha256": "dd0648b5a820feb0083d27ea1ecb2584b1c5828d1ff5a0cd12a65e1dc8e0270f",
+        "originalSha256": "dd0648b5a820feb0083d27ea1ecb2584b1c5828d1ff5a0cd12a65e1dc8e0270f"
+      },
+      {
+        "path": "locationResource12-20261009-132401-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132401-338-355741-925b21f70d2c4247915d3851230f9d0a-categories/Build-integration.log",
+        "sha256": "6d3b93c43996483eb48388b038a140cf139d27b67c569862859ccb8bc42f11cd",
+        "originalSha256": "498e30c778332d1fab84ea33def912c1f01dd25086abf513dc7b3a595eec32b2"
+      },
+      {
+        "path": "locationResource12-20261009-132401-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132401-338-355741-925b21f70d2c4247915d3851230f9d0a-categories/dotnet-test.log",
+        "sha256": "42f3a9cfb1d576d54a35c83fbdd1301619c917d7644f9b858426401ec9e1d070",
+        "originalSha256": "7003ab623f3386ec7818ad92a9ee5e5456e7b11d9b82bc43f0bcf89bf4f3f257"
+      },
+      {
+        "path": "locationResource12-20261009-132735-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132735-760-356509-3b948f1d6fdf4087b328fa5bdeb9b5e9-categories/plan.json",
+        "sha256": "492971ba1a7bcea6ca93949cab63bf28f10f691c277313a0b2ce18dfa03f7ef3",
+        "originalSha256": "492971ba1a7bcea6ca93949cab63bf28f10f691c277313a0b2ce18dfa03f7ef3"
+      },
+      {
+        "path": "locationResource12-20261009-132735-portable-resource-known-rollback-publication-integration-002.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132735-760-356509-3b948f1d6fdf4087b328fa5bdeb9b5e9-categories/portable-resource-known-rollback-publication-integration-002.trx",
+        "sha256": "9ba65f0150a55d212af4b6079f11f6a2ff68ed56d3afa120f741a3e77260ea4f",
+        "originalSha256": "70698b17a881a0644e2a89ddd41e3e22df34b8b7a992a2bfe8d368631704a7a5"
+      },
+      {
+        "path": "locationResource12-20261009-132735-portable-location-known-rollback-publication-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132735-760-356509-3b948f1d6fdf4087b328fa5bdeb9b5e9-categories/portable-location-known-rollback-publication-integration-001.trx",
+        "sha256": "ebd77099417f2e01f8ad440c833f56bbe8c85c615c35a352fbc78a294bf893b6",
+        "originalSha256": "6798ea9e93932b2a5905eac9ea4aae7ed57d1b574456e0882d10277c535d379b"
+      },
+      {
+        "path": "locationResource12-20261009-132735-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132735-760-356509-3b948f1d6fdf4087b328fa5bdeb9b5e9-categories/summary.json",
+        "sha256": "d8fafa6638b2b5cf3ff1ea5c2a1357c3f17aa11289fd09ebd2dbf2d3dd59ab01",
+        "originalSha256": "d8fafa6638b2b5cf3ff1ea5c2a1357c3f17aa11289fd09ebd2dbf2d3dd59ab01"
+      },
+      {
+        "path": "locationResource12-20261009-132735-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132735-760-356509-3b948f1d6fdf4087b328fa5bdeb9b5e9-categories/dotnet-test.log",
+        "sha256": "4200f365ae72212a9773976371fa8a5789b9e8048aa415f1e3d4b6c594cc27b1",
+        "originalSha256": "73ef84342fde12e2acc379a2a940ede8880bf4ee8f7d4ab5bc8effececd1282b"
+      },
+      {
+        "path": "locationResource12-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/emitted-roots-after-run.json",
+        "sha256": "2e41d6b69778dde7ca6d0a04850aa2bd03c39599c0b3213814d6fff2f38c6545",
+        "originalSha256": "2e41d6b69778dde7ca6d0a04850aa2bd03c39599c0b3213814d6fff2f38c6545"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-7-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-7-1.json",
+        "sha256": "f64b4040667b073e316bcec94d154111922c4c4efa6e3992f481193953984385",
+        "originalSha256": "f64b4040667b073e316bcec94d154111922c4c4efa6e3992f481193953984385"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-7-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-7-0.json",
+        "sha256": "7bd24f017c0b1ae3e153c4e2263e1d55c765642f864df4f0a314a7e58cf8f695",
+        "originalSha256": "33e336dfddc18fd939688119fdff29cffd0537d065cde455e967897da899ac1d"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-6-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-6-1.json",
+        "sha256": "608302231998e5f73075f329b7926892a3e7a86a37b374b5373f85c07e69937e",
+        "originalSha256": "608302231998e5f73075f329b7926892a3e7a86a37b374b5373f85c07e69937e"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-6-0.json",
+        "sha256": "b7364bcfcae56e54a8e42c6e7ddd48c5da990ab0e9f79fd4f7f31ef6ef194d10",
+        "originalSha256": "33fdaa2497cc84b777ef1a2e5a6be3e13fd6740204e2bf5bd6617b38f2024fc8"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-5-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-5-1.json",
+        "sha256": "2dfacc71ee95a3dcd7405849d0483ea6f8c36ab5d53c39180deef624b3086d34",
+        "originalSha256": "2dfacc71ee95a3dcd7405849d0483ea6f8c36ab5d53c39180deef624b3086d34"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-5-0.json",
+        "sha256": "55dacd5ea375574b891d8668e1266ff43175227f8da9c87bf23cd5af58247a11",
+        "originalSha256": "56d62ee8443046add45a90b37936826d5ac75148982277bdcd497e2db26760bf"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-4-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-4-1.json",
+        "sha256": "b87a4ca83c2502695eda59a4117ba41e51e9760d4aedd432045e29c202a43341",
+        "originalSha256": "b87a4ca83c2502695eda59a4117ba41e51e9760d4aedd432045e29c202a43341"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-4-0.json",
+        "sha256": "47fb268c90d77533fbf45bccc03d6854804bc55b9367ba9ac23f818d6392e5df",
+        "originalSha256": "f4bdf2d19dbf44ecdaaad29acecd23bdbf3ee6b8fe1e96a1319bc41fa6104b53"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-3-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-3-1.json",
+        "sha256": "8b1e748343e44f0fc233af1e80a0a0a6a137f8d69a88ee60a5539e690a0d3d21",
+        "originalSha256": "8b1e748343e44f0fc233af1e80a0a0a6a137f8d69a88ee60a5539e690a0d3d21"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-3-0.json",
+        "sha256": "c3f27e9dcd7cc1e6be41ab0eee510e417f12cd1e529e36019e1675f20516da00",
+        "originalSha256": "95633c7fb520e335bd6dd1059943ae4aca96ebc82494c9b2c94d9c74022d4052"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-2-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-2-1.json",
+        "sha256": "d0439469ddf6986bdfdddba78c57844ea79108eeae4c8846c31aa71dc73060bc",
+        "originalSha256": "d0439469ddf6986bdfdddba78c57844ea79108eeae4c8846c31aa71dc73060bc"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-2-0.json",
+        "sha256": "bac411aa25a6f49643a97f789d11a6b4e3fa31fcb3fc03d73f8f1275155dce05",
+        "originalSha256": "951ee26d5bf7aeff5708655fd7710857814af9c68e708182285907ecef645372"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-1-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-1-1.json",
+        "sha256": "bf9aa041da155d94a5f808a1ac7e40cb22ed411b8f26cedc2a848c6aef3f8964",
+        "originalSha256": "bf9aa041da155d94a5f808a1ac7e40cb22ed411b8f26cedc2a848c6aef3f8964"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-1-0.json",
+        "sha256": "b6b1d65cec1e145fca220deaa6b85307f131b845fd16a12380fcefe175f08808",
+        "originalSha256": "6132c4a6da3ce3f3f379e55ebf4ef7b3f61d1342e855eaee1077a03aaf5b6a65"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-0-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-0-1.json",
+        "sha256": "e22e0b12f8abb0421f4ae3571dd57f98c3fa0afc97a1ac7fb59e275ed8bdedd7",
+        "originalSha256": "e22e0b12f8abb0421f4ae3571dd57f98c3fa0afc97a1ac7fb59e275ed8bdedd7"
+      },
+      {
+        "path": "locationResource12-row-portable-location-known-rollback-publication-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-location-known-rollback-publication-integration-001-0-0.json",
+        "sha256": "a9311091a3259f2245bc41aa2e382b7d968653c5f9c10dfd478d37e7c4068631",
+        "originalSha256": "450063e5defdf6321ca690d5c027a802336ac244c284bdb2c60a6e57d70ce164"
+      },
+      {
+        "path": "locationResource12-row-portable-resource-known-rollback-publication-integration-002-3-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-resource-known-rollback-publication-integration-002-3-1.json",
+        "sha256": "bed490055c677f5bc39e403dc1931a0f03a99afb10eee7709aed647f61ce4faa",
+        "originalSha256": "bed490055c677f5bc39e403dc1931a0f03a99afb10eee7709aed647f61ce4faa"
+      },
+      {
+        "path": "locationResource12-row-portable-resource-known-rollback-publication-integration-002-3-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-resource-known-rollback-publication-integration-002-3-0.json",
+        "sha256": "aacea3a0317005bacdad507697f73e8eeeb21716553344ee20c40b36828c4c0f",
+        "originalSha256": "7d3bbefdf118dc36ef25a10334f678a7653a1762176e1d491f742efaf4a3f59f"
+      },
+      {
+        "path": "locationResource12-row-portable-resource-known-rollback-publication-integration-002-2-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-resource-known-rollback-publication-integration-002-2-1.json",
+        "sha256": "68d67429471b559785dce42b73b082d4ff0d70b04cb167d0b8a1d32719ee6429",
+        "originalSha256": "68d67429471b559785dce42b73b082d4ff0d70b04cb167d0b8a1d32719ee6429"
+      },
+      {
+        "path": "locationResource12-row-portable-resource-known-rollback-publication-integration-002-2-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-resource-known-rollback-publication-integration-002-2-0.json",
+        "sha256": "ae8c8a346a7b3d8cdcfcf24a205bf860b86a89107afb48a018ed85bcbc0c6edc",
+        "originalSha256": "aca12b5a83dab218e0898b0eb745b19f3685e0ca71a2508ae5a95176fab7fbaa"
+      },
+      {
+        "path": "locationResource12-row-portable-resource-known-rollback-publication-integration-002-1-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-resource-known-rollback-publication-integration-002-1-1.json",
+        "sha256": "a018c18fd7ece0f8d805cdf002f71b23e5353463199e0e6d6bb8e185e611f831",
+        "originalSha256": "a018c18fd7ece0f8d805cdf002f71b23e5353463199e0e6d6bb8e185e611f831"
+      },
+      {
+        "path": "locationResource12-row-portable-resource-known-rollback-publication-integration-002-1-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-resource-known-rollback-publication-integration-002-1-0.json",
+        "sha256": "53331f3adb59762526fb56d38a8bd16fdebbfd829fad2193571918d4a1b428ff",
+        "originalSha256": "a3315befd90c2071026eb10f3aafbc65ce6bdffc77ef50e881012adc5f943e1a"
+      },
+      {
+        "path": "locationResource12-row-portable-resource-known-rollback-publication-integration-002-0-1.json",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-resource-known-rollback-publication-integration-002-0-1.json",
+        "sha256": "f0d0ec789d091d5489b1d9da41304655f4ec4b0d74a36c11e2d4e511e8f66c39",
+        "originalSha256": "f0d0ec789d091d5489b1d9da41304655f4ec4b0d74a36c11e2d4e511e8f66c39"
+      },
+      {
+        "path": "locationResource12-row-portable-resource-known-rollback-publication-integration-002-0-0.json.gz",
+        "source": "/tmp/boe-known-rollback-locationResource12/portable-resource-known-rollback-publication-integration-002-0-0.json",
+        "sha256": "d029ab66dcd53fc85b1a14364d709ab8a8028981e0205aa1e5ea50a577a263e9",
+        "originalSha256": "5b66fc6c41b88b4ec409fee0f75f63915cbf766001ac57ca4321b79fe30ea968"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs",
+        "sha256": "61f9416150ccff954902eb878fe1975ebdec6da9eaecd30393a35bd28aa05f02"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GuardianCorrectionServiceTests.cs",
+        "sha256": "f36a47f4e68a21455992a328e3c121118e649eed22ae4b2fec67feb1a5c54434"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/AfterlifeActorMaterializationTestFixture.cs",
+        "sha256": "5e8f4acef14095e6674c77dd7391080ed576582e9e9551a9059ae38568255d14"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+        "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+        "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+        "sha256": "cdb09fddfbcd8b1b0140a22e4baa23095be0ed2bdc6defb6b5cb676b5b2e564e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+        "sha256": "f1f8b1cfbc1a1e972506848cb3f7f7bf5f8f496fc28a8de2d2da7f72f2759b69"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "de1f059757f0e4d887676dc659ac952fbde2443aaec153992d024fb7c0cc01eb"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "425b2a1cf7cc59c5a494671ad76f8c6dc1cff0718acb231f4405d3057295ec3b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationLifecycleTests.cs",
+        "sha256": "e7321b94182f5012d7edd38b266450cb7492623b6ddce480deb9fc48f0b7382c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationTestContext.cs",
+        "sha256": "c97fe8f961c2981aebf10af0feb652879a8561f37e77990e68848a5c914ff052"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationLifecycleTests.cs",
+        "sha256": "06308b3b87103d716b87e26a40b891252afb7171808a7c8404bbfa17c7081d78"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.Publication.cs",
+        "sha256": "2d8ac256cf563a4f605cd0a314ed800b0f9c8256ae8fd421cef388c18738e192"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs",
+        "sha256": "de89853995e04e557530ceafb0d49badb78d0df1a16823092a2aa14a72acd37f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "sha256": "65dbab31e85f55a090d80e0a6937b0ef287d39121a95b68c810c9c06351cbee8"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+        "sha256": "936d23bce661782bd2d50dc0658313255628c935a62d4245ff07e5bb9a3a0259"
+      }
+    ]
+  },
+  "locationResourceCatalog": {
+    "source": "66f655ee46183fe155fb1e19473528f3522d15a8",
+    "artifacts": [
+      {
+        "path": "locationResourceCatalog-20261009-132807-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132807-013-356907-af354baddd2a40f8a66079b66baf52d7-categories/catalog-audit.json",
+        "sha256": "cc6841ccb494e95848d52998d1e9adb177cb6ce61d756e65bcb7a1276550b509",
+        "originalSha256": "cc6841ccb494e95848d52998d1e9adb177cb6ce61d756e65bcb7a1276550b509"
+      },
+      {
+        "path": "locationResourceCatalog-20261009-132807-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132807-013-356907-af354baddd2a40f8a66079b66baf52d7-categories/summary.json",
+        "sha256": "c46c94234f28531cdbd7792f0b411177745a3908626c47ee4654208b15a76ff5",
+        "originalSha256": "c46c94234f28531cdbd7792f0b411177745a3908626c47ee4654208b15a76ff5"
+      },
+      {
+        "path": "locationResourceCatalog-20261009-132807-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132807-013-356907-af354baddd2a40f8a66079b66baf52d7-categories/dotnet-test.log",
+        "sha256": "41bc1394d4267389f38599e518443d2014d0a0205c89b03dfe1e57e134203abc",
+        "originalSha256": "c01d7519d0d17e2ba86ae146f1aa883e0aa73515344a9aecc283e53ceed06cd3"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs",
+        "sha256": "61f9416150ccff954902eb878fe1975ebdec6da9eaecd30393a35bd28aa05f02"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GuardianCorrectionServiceTests.cs",
+        "sha256": "f36a47f4e68a21455992a328e3c121118e649eed22ae4b2fec67feb1a5c54434"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/AfterlifeActorMaterializationTestFixture.cs",
+        "sha256": "5e8f4acef14095e6674c77dd7391080ed576582e9e9551a9059ae38568255d14"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+        "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+        "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+        "sha256": "cdb09fddfbcd8b1b0140a22e4baa23095be0ed2bdc6defb6b5cb676b5b2e564e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+        "sha256": "f1f8b1cfbc1a1e972506848cb3f7f7bf5f8f496fc28a8de2d2da7f72f2759b69"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "de1f059757f0e4d887676dc659ac952fbde2443aaec153992d024fb7c0cc01eb"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "425b2a1cf7cc59c5a494671ad76f8c6dc1cff0718acb231f4405d3057295ec3b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationLifecycleTests.cs",
+        "sha256": "e7321b94182f5012d7edd38b266450cb7492623b6ddce480deb9fc48f0b7382c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationTestContext.cs",
+        "sha256": "c97fe8f961c2981aebf10af0feb652879a8561f37e77990e68848a5c914ff052"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationLifecycleTests.cs",
+        "sha256": "06308b3b87103d716b87e26a40b891252afb7171808a7c8404bbfa17c7081d78"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.Publication.cs",
+        "sha256": "2d8ac256cf563a4f605cd0a314ed800b0f9c8256ae8fd421cef388c18738e192"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs",
+        "sha256": "de89853995e04e557530ceafb0d49badb78d0df1a16823092a2aa14a72acd37f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "sha256": "65dbab31e85f55a090d80e0a6937b0ef287d39121a95b68c810c9c06351cbee8"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+        "sha256": "936d23bce661782bd2d50dc0658313255628c935a62d4245ff07e5bb9a3a0259"
+      }
+    ]
   }
 }

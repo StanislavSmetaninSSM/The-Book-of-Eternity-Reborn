@@ -1,3 +1,12 @@
+## Current known-rollback consumer evidence — 2026-10-09
+
+Guardian8 at764818a9 and Location8/Resource4 at66f655ee pass as separate original runs.
+The latter actual13273512/12PASS20.1031176s restores80raw paths/generation after realcut1
+per row;12roots removed. Matching catalog558/11343valid0. Combined evidence packet65/72;
+Location/Resource final independent raw gate pending. Guardian/reconciliation accepted
+b190/66f (28/28); historical64 selection inclusion is not fresh execution. Effects/wounds/
+treatment/offscreen cuts and F16/ownedclose/whole closure remain open; B2–B5 paused.
+
 ## Current F18 Guardian and selection reconciliation — 2026-10-09
 
 Guardian8 exact current-publication rollback PASS764818a9/132026,8.7818633s with cut1
