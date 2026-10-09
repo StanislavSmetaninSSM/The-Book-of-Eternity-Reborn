@@ -1,3 +1,19 @@
+## Actual captured owner reachability refined — test-first WIP, 2026-10-09
+
+Source establishes the missing-owner cause without an extra diagnostic run:
+original generic UI/profile RunCanonical and prompt-lock Attach pass lambdas
+capturing writeLease. Compiler hoists it into an original DisplayClass under
+that exact owning method state, whereas the three reached methods own direct
+state fields. Inspector now follows only CompilerGenerated DisplayClass fields
+beneath matching original method states, never arbitrary service/FS graphs.
+It still requires one distinct active actual lease and logs its capture path;
+secondary attachment remains after the genuine publisher CSP. Diagnostic on
+missing owner retained. Production unchanged. Partial baseline c606d0da retains
+3PASS/3causalFAIL/6preparationFAIL,29artifacts/26pins with originals verified.
+Independent source/fixture/exact12 + partial evidence gate then fresh Plan12/
+actual12, warranted by changed actual-owner inspection boundary. No six-route
+claim until remaining original routes actually run. T061–T065 unchecked.
+
 ## Remaining owner partial original baseline — WIP, 2026-10-09
 
 Nested alias delta independent PASS16431adf. Fresh integration Plan195243:

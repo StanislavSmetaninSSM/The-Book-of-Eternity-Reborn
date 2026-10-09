@@ -251,6 +251,21 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         var visited = new HashSet<Task>(ReferenceEqualityComparer.Instance);
         var owners = new List<(FileSystemManager.CanonicalWriteLease, string)>();
         var actualStates = new List<object>();
+        var capturedObjects = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        void InspectOriginalCapturedOwner(object? value, string location)
+        {
+            if (value is FileSystemManager.CanonicalWriteLease { IsActive: true } lease)
+            { owners.Add((lease, location)); return; }
+            if (value == null || !capturedObjects.Add(value)) return;
+            var type = value.GetType();
+            // The original RunCanonical/prompt lambdas capture their owning lease
+            // in a compiler-generated DisplayClass, rather than a direct state field.
+            // Follow only that actual hoisted capture, never service/FS object graphs.
+            if (!type.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false) ||
+                !type.Name.Contains("DisplayClass", StringComparison.Ordinal)) return;
+            foreach (var captured in type.GetFields(flags))
+                InspectOriginalCapturedOwner(captured.GetValue(value), location + "/" + captured.Name);
+        }
         while (tasks.TryDequeue(out var task))
         {
             if (!visited.Add(task)) continue;
@@ -263,8 +278,8 @@ public sealed partial class OriginalOwnedLeaseCloseTests
             foreach (var field in state.GetType().GetFields(flags))
             {
                 var value = field.GetValue(state);
-                if (stateType.Contains(boundary, StringComparison.Ordinal) && value is FileSystemManager.CanonicalWriteLease { IsActive: true } lease)
-                    owners.Add((lease, stateType));
+                if (stateType.Contains(boundary, StringComparison.Ordinal))
+                    InspectOriginalCapturedOwner(value, stateType + "/" + field.Name);
                 if (value is Task child) tasks.Enqueue(child);
                 else if (value != null && field.Name.StartsWith("<>u__", StringComparison.Ordinal))
                     foreach (var awaiterField in value.GetType().GetFields(flags))
