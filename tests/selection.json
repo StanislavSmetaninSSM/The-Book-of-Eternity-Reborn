@@ -2,8 +2,21 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-browser-owning-result-close-linux",
+      "reason": "T063/T065 original owning browser typed-result close, fixture/design/exact12 independently reviewed before installation. Actual original atomic3dispositions Browser6/projection3/nested1/Preparedsettings1/incompletecallback1. Runtime unchanged; UNBUILT/UNRUN, fresh Plan12 then causal original baseline required. No replay of unchanged accepted groups; catalog combined with new owning boundaries.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-original-participating-generation-close-linux",
-      "reason": "T063/T065 test-first WIP2/1 UNBUILT/UNRUN original shared participating initial-generation owner before actual bound callback. Known control and actual unknown primary plus actual owner secondary release; fixture/design/exact2 gate then original causal baseline before code. Other browser command warm generation is already initialized by this outer owner.",
+      "reason": "T063/T065 runtimea19d4078 fresh Plan2032022/1 and actual2033022/2PASS8.0827172s, bothcleanup/strict2roots/0skipduplicateTimeout. Same genuine generation CSP+secondary close, no unknown callback; known actualgeneration/closed owner callback. Packet28artifacts/30pins, independent finalGREEN/raw/carrierPASS13f40584. Original1knownPASS/1causalFAIL and preparationFAILED separatelyretained. Catalogpending; no unchanged test replay.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -16,7 +29,7 @@
     },
     {
       "category": "portable-original-remaining-owning-close-linux",
-      "reason": "T063/T065 runtime7aa6be72 actual20072212/12PASS7.6135260s,all12strictrootsabsent. Six actualoriginal owners retain samegenuineCSP+same secondaryclose andfullsettlement; sixknownDTO/result controlsPASS. Earlier causal6PASS/6FAIL and preparation groups separatelyretained. Runner/TRXExit0; externalwrapper1 separatelyreproduced by no-testBashprobes andretained, no runnerchange/replay. IndependentGREEN/raw/carrier andcombinedcatalog next. Otherownersopen.",
+      "reason": "T063/T065 runtime7aa6be72 actual20072212/12PASS7.6135260s,all12strictrootsabsent. Six actualoriginal owners retain samegenuineCSP+same secondaryclose andfullsettlement; sixknownDTO/result controlsPASS. Earlier causal6PASS/6FAIL and preparation groups separatelyretained. Runner/TRXExit0; externalwrapper1 separatelyreproduced by no-testBashprobes andretained, no runnerchange/replay. Independent finalGREEN/raw/carrierPASSf8b14bb1; combinedcatalogpending. Otherownersopen.",
       "contracts": [
         "#1553",
         "FR-002",

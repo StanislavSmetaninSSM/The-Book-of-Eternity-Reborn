@@ -1,3 +1,27 @@
+## Original browser established result owning close — test-first WIP, 2026-10-09
+
+Shared initial-generation GREEN2/raw/carrier independent PASS13f40584;28/30
+packet verified/ref/raw15. Updated stale selection UNRUN reason; no runtime replay.
+Browser fixture/design/exact12 independent PASS before installation. Original
+atomic committed/rollback/uncertain actual decisions each close/no-close6,
+generic projections3, nested1, genuine Prepared/settings1, incomplete callback1.
+Pause actual callback after genuine typed decision/browser-context cleanup; inspect
+unique original active owner, attach secondary only after original decision. Real
+settings pause actual UI-lock deletion after config+projection committed cohort
+and live runtime apply, async first acquisition guarantees original Task return.
+Full settlement/raw bytes/dispositions/same generic result+inner diagnostics/
+original callback error/nested ordinary-readmission refusal and strict roots;
+disabled real AudioService await disposal precedes cleanup. Runtime unchanged;
+UNBUILT/UNRUN, fresh Plan12/actual original baseline next. Prepared control may
+already PASS through existing publicationOutcome catch, not causal failure.
+Minimal design preserves actual T/frozen outcome only after successful inner
+RunBoundAsync, retains original incomplete body failure+secondary close, blocks
+active-binding post-operation readmission, existing continuation carrier marks
+SessionFinalizationFailure for actual main closingFailed path; Browser catches
+pass through CaptureBrowserResult, Prepared retains original outcome. No GM
+mechanic/schema/prompt/example change; T061–T065 unchecked/B2–B5 paused.
+Remaining named actual publishers/mod/UI/final inventory continue after this.
+
 ## Shared initial-generation bounded GREEN2 — 2026-10-09
 
 Runtime a19d4078b6d7adbe81c1a789b01daf8ebb75eb6b correction/source/exact2

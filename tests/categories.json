@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-browser-owning-result-close-linux",
+      "responsibility": "Original browser RunBoundTransactionAsync owning close after actual atomic committed/rollback/uncertain decisions: six Browser result controls, three actual generic projections, nested readmission, real Prepared/settings committed cohort and incomplete callback. Twelve independent Linux roots; attach only after genuine decision and inspected unique active owner/context-null. Preserve actual result/frozen outcome, secondary diagnostics, config/projection/runtime and strict cleanup.",
+      "excludes": "No fabricated result/lease/exception, session-finalization-hook substitution, native main transport, other owners, desktop/provider/live GM, B2 gameplay or whole migration qualification.",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.BrowserDecision.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalBrowserOwnedClosePreservesEstablishedDecision"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-participating-generation-close-linux",
       "responsibility": "Original shared RunParticipatingCurrentSessionAsync fresh initial-generation owner, known actual bound callback and genuine generation-publication uncertainty plus late secondary close on inspected actual hoisted lease. Two independent Linux roots; generation owner must settle before callback and no callback on uncertainty.",
       "excludes": "No browser typed-result close, other owners, live GM/provider, B2 gameplay, native Windows or whole migration qualification. No fabricated generation/lease/exception/result.",
