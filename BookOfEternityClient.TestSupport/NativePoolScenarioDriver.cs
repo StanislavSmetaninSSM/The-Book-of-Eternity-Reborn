@@ -17,6 +17,8 @@ internal static partial class NativePoolScenarioDriver
 
     internal static async Task<int> Run(string mode, string package, string output)
     {
+        if (mode.StartsWith("pool-storage-", StringComparison.Ordinal))
+            return await RunStorageOutcome(mode[13..], package, output);
         if (mode == "pool-worker") return await Worker(package, output, null);
         if (mode.StartsWith("pool-worker-", StringComparison.Ordinal)) return await Worker(package, output, mode[12..]);
         var descendantMode = mode.StartsWith("pool-descendant-", StringComparison.Ordinal) ? mode[16..] : null;

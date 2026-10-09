@@ -76,12 +76,14 @@ public sealed partial class GmWorkerNativePoolTests
             execution.GetProperty("StopEvidence").GetProperty("RunId").GetString());
     }
 
-    private static async Task<JsonElement> RunScenario(string mode, bool allowGuardianEmergency = false)
+    internal static async Task<JsonElement> RunScenario(string mode, bool allowGuardianEmergency = false,
+        Action<string>? observeOutputDirectory = null)
     {
         Assert.True(OperatingSystem.IsLinux(), "Actual native pool qualification requires Linux.");
         var evidence = Environment.GetEnvironmentVariable("BOE_NATIVE_EVIDENCE_ROOT") ?? Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "native-pool");
         var output = Path.Combine(evidence, Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(output);
+        observeOutputDirectory?.Invoke(output);
         var build = new ProcessStartInfo("pwsh") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var arg in new[] { "-NoProfile", "-File", Path.Combine(TestRepoPaths.RepoRoot, "scripts", "build-linux-supervisor.ps1"), "-OutputDirectory", output, "-IncludeHostGuardian" }) build.ArgumentList.Add(arg);
         if (mode.StartsWith("pool-descendant-", StringComparison.Ordinal)) build.ArgumentList.Add("-IncludeFixture");

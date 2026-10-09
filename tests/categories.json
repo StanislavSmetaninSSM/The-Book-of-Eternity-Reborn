@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-durable-storage-linux",
+      "responsibility": "Fourteen original durable synthetic worker pool rows: real Store inbox/derived-audit and terminal/cleanup/reaper audit publication Unknown, delayed acceptance revocation, original physical settlement and retained workspace/slot/root capacity, known warning/cancellation/failure/fallback controls. Actual FSM generation and correlated original native worker/ledger/publication ACK.",
+      "excludes": "No provider/live GM or public production Linux worker activation, native Windows, full original Bridge-to-Store, new crash/restart/published-disk ACK-false matrix, or actual secondary canonical lease-close fault. Prior prelaunch public Linux refusal remains separately evidenced, not replayed.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableWorkerPreservesPublicationFactsAndStopsCanonicalContinuation"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-prelaunch-storage-linux",
       "responsibility": "Original private Bridge dispatch, original main pin, proposal-only dispatcher and real pool before launch: actual reservation/dispatch-audit Unknown, known reservation refusal then diagnostic Unknown, known refusal and public Linux backend refusal. Actual slot/quarantine ownership and original main stop are observed.",
       "excludes": "No worker launch or provider/live GM, durable StopValidated/bundle/ACK, full Bridge-to-Store or native Windows qualification; only existing bounded neutral terminal main fixture is started. No fabricated CSP or replacement dispatcher.",

@@ -1,3 +1,54 @@
+## Durable worker Store/pool/quarantine — design and fixture WIP, 2026-10-09
+
+Previous bounded prelaunch final independent PASS at ebec26688cddefc451facff85911442b917ceceb:
+150 artifacts/originals,58 Git source pins; exact remote/checkpoint/selection/manifest bytes
+read back. Runtime b9fdea55 and fixture033 unchanged by its evidence carrier.
+
+Independent read-only architecture consultation confirms this next slice under existing
+FR-003/004/005/014 and T062–T065. Ruling: retain first actual canonical CSP separately
+on the original execution authority, not native CurrentUncertainty/CloseForUncertainty;
+native stop/output/disposal remain possible, and Allows refuses subsequent acceptance.
+Previously recorded publication, actual ACK and already Accepted facts are not erased.
+Cleanup uses the same retained fault and never substitutes canonical audit with a local
+success receipt after Unknown. A later required-audit fault preserves already-deleted
+workspace as a fact; an earlier Store fault stops BEFORE workspace hooks/deletion.
+
+Use the original cleanup owner in two phases: physical stop/output/owner/waiter/host
+settlement, then workspace/required audit/retirement/slot-root release. Original failure
+terminal diagnostics stay pending on that same owner until their actual writes and
+outcome decision settle; establish the phase before any quarantine transfer. Reaper
+may settle physical work while pending but cannot finalize or write diagnostics around
+that phase. Shared CSP latches from Store, pool diagnostics, required audit or reaper
+diagnostics; preserve its identity and attach secondary physical failures. This closes
+the known race where cleanup could retire before terminal diagnostics became Unknown.
+Store derived catches exclude CSP and owned lease close preserves it. No publication
+permit is minted unless original Store returns and RecordPublication actually runs.
+
+New exact14 fixture rows: inbox Unknown; derived audit Unknown; inbox Unknown plus
+existing native DisposeOnce; delayed required-audit Unknown; known worker failure then
+terminal audit Unknown; known cleanup failure then cleanup diagnostic Unknown; reaper
+diagnostic Unknown; known inbox failure; known audit failure; normal durable success;
+known unavailable required audit/local receipt; decided timeout diagnostic Unknown;
+ordinary cancellation; ordinary known worker failure. The already accepted public Linux
+refusal is retained from prelaunch, not replayed. The extra timeout/cancellation/known
+failure controls cover outcomes affected by the new cleanup ordering. No aggregate run.
+
+All new rows use original pool/Store/durable ledger/actual owned native fixture worker,
+real FSM generation and context bytes, scoped stop/output and original completion task.
+Probe checks exact task/ledger/generation and semantic audit event before fault; records
+actual ACK versus later authority publication, authentic common journal/foreign/prior
+bytes, original ownership/capacity and prospective result validation. Test teardown is
+separate from measured product cleanup; guardian ECHILD with no emergency/deadline/failure
+precedes deletion of only the case's direct state-copy root. No handwritten generation,
+fabricated CSP/ACK/stop, provider/live GM or new published-disk/ACK-false crash execution.
+
+Fixture WIP only, unbuilt/unrun; production unchanged from accepted prelaunch. Next
+independent fixture/exact14 review, fresh Plan14 then actual14; classify actual REDs
+before minimal runtime edits. Existing crash/ACK-false evidence remains source-era only;
+no full Bridge-to-durable-Store, native Windows or secondary lease-close fault acceptance.
+This changes internal client-owned storage control only; GM schemas/prompts/examples
+remain unchanged. Other C2/F16/F18/owned-close/final selection obligations stay open.
+
 ## Original Bridge/prelaunch pool — bounded GREEN, 2026-10-09
 
 Independent SOURCE/RAW-RED/EXACT5 PASS b9fdea55b140d19522b2dabb29dc077c89c754ef;
