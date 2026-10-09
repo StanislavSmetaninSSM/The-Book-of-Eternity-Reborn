@@ -1,3 +1,39 @@
+## F16 signed/ZIP original test-first units — WIP, 2026-10-09
+
+Source #1553,T063/T065; basecd22bdf0. Original owned-close final independent
+AstraXHigh GREEN/CATALOG/CARRIER PASScd22:31artifacts/24pins,2/2,579/11348,ref/raw21.
+Installed independently approved signed22 draft (16original detachedsigner+6original
+Liveprepare) and original ZIP4 (2listing+2autosave-retention), runtime unchanged.
+Original reader-negative preparation corrected: unsafe path uses existing malformed
+portable fixture; shared six-caller RewriteSignedManifest reuses actual prepared
+identity/format/exact-byte modes/rollbackhashes, updates rawmaps and manifesthash,
+hashes SAME UTF8 payload bytes put in Base64. Existing seven consumer oracles intact.
+Fifteen affected original unitneighbors selected, not broad pending-turn-authority.
+Independent corrected draft/design/exact41 PASS; installedfixture gate/build/run pending.
+
+First signed producer preflight: raw exact eligible inventory plus fixed logical/output/
+chat/cleanup/dice names and story candidates before filtering/casefold/copy/old artifact
+cleanup, AFTER ordinary admission/recovery. Signing guard before normalization/byte
+reads: all rawmapkeys/pathvalues/baselines, reject unsafe/backslash/outertrim/distinct
+IgnoreCase aliases, retain exact repeats/Unicode including inner segment whitespace.
+Do not tighten native payload names or change historical reader/value equality. Other
+engine/browser/incarnation/spiritual producers/cleanup remain open and need actual
+original consumer units; a signer cannot recover already-folded aliases.
+
+ZIP first applies original host '*.zip' and top-level selection, materializes/validates
+only selected full cohort before metadata read/deletion, retains timestamp order,
+per-archive ordinary IO handling and external/native physical fallback. Ignore .ZIP
+on Linux, nonZIP links and nested directory links. Genuine ordinary autosave commit
+precedes retention; follow-up never reverses Committed. Baseline link-retention might
+already pass depending actual ordering; classify actual raw results, not expected count.
+
+Next frozen installedfixture/source/exact41 gate, fresh both-project Plan37signed+ZIP4,
+actualsigned37 and separateZIP4; only reached causal corrections, fresh final41 and
+catalog/packets/independent review. All newfixtures UNBUILT/UNRUN, no productionchange.
+Filepath/byte set preservation does not claim empty-directory identity. No native,
+provider/desktop/liveGM/aggregate/B2–B5; T061–T065 unchecked. Current inventory/fresh
+GitHub-only restore still required; main/CI/issues/access untouched.
+
 ## Original owned-close representatives — bounded Linux2 GREEN, evidence gate pending
 
 Source5a08258a independent installedfixture/RED/raw/minimal-source/exact2 AstraXHigh PASS.

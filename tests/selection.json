@@ -2,8 +2,38 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-signed-snapshot-spelling-linux",
+      "reason": "T063/R25/F16 test-first WIP: independent AstraXHigh design/draft/selection PASS; installed source unbuilt/unrun. Signed22+affected15=37 and separate ZIP4. Runtime unchanged; preservation is after clean original admission, before producer cleanup/copy. No whole F16/native/gameplay claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-signed-snapshot-authority-neighbors",
+      "reason": "T063/R25/F16 test-first WIP: independent AstraXHigh design/draft/selection PASS; installed source unbuilt/unrun. Signed22+affected15=37 and separate ZIP4. Runtime unchanged; preservation is after clean original admission, before producer cleanup/copy. No whole F16/native/gameplay claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-save-archive-exact-listing-linux",
+      "reason": "T063/R25/F16 test-first WIP: independent AstraXHigh design/draft/selection PASS; installed source unbuilt/unrun. Signed22+affected15=37 and separate ZIP4. Runtime unchanged; preservation is after clean original admission, before producer cleanup/copy. No whole F16/native/gameplay claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-original-owned-lease-close-linux",
-      "reason": "T062/T065 original publicRefresh + FSMpublicwrite actual2/2 Linux GREEN165821 at5a08258a after1PASS/1genuinecausalFAIL baseline and freshPlan2. Same actual publisher CSP+sameData secondary; actual unique hoisted leases/attachment1/dispose1/lockfree/inactive/runtime-gen-journal retained/strict2rootsabsent. Freshboth-projectcatalog579/11348 discovery0. Independent source/exact2 PASS; final evidence gate pending. Otherowners/native/gameplay unqualified.",
+      "reason": "T062/T065 original publicRefresh + FSMpublicwrite actual2/2 Linux GREEN165821 at5a08258a after1PASS/1genuinecausalFAIL baseline and freshPlan2. Same actual publisher CSP+sameData secondary; actual unique hoisted leases/attachment1/dispose1/lockfree/inactive/runtime-gen-journal retained/strict2rootsabsent. Freshboth-projectcatalog579/11348 discovery0. Independent source/exact2 PASS; independent final GREEN/CATALOG/CARRIER PASScd22 (31artifacts/24pins, exactref/raw21). Otherowners/native/gameplay unqualified.",
       "contracts": [
         "#1553",
         "FR-006",

@@ -850,22 +850,23 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
             LiveTurnPreparationService.ManifestHashJsonOptions,
             static value => value.ManifestPayloadHash,
             static (value, hash) => value.ManifestPayloadHash = hash);
-        var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
-            manifest,
-            LiveTurnPreparationService.ManifestHashJsonOptions,
-            static value => value.ManifestPayloadHash,
-            static (value, hash) => value.ManifestPayloadHash = hash,
-            static value => value.SessionId,
-            static value => value.RequestId,
-            static value => value.TurnNumber,
-            static value => value.Files,
-            static value => value.SnapshotFileHashes,
-            static value => value.ClientOwnedValidationHashes,
-            static value => value.RollbackBaselineFiles,
-            static value => value.SourceLabel,
-            static value => value.RollbackBackups,
-            _fs.ReadFileBytesSync,
-            hashSnapshotBytesExactly: true);
+        // These callers deliberately corrupt coverage to exercise the original reader.
+        // Keep the actual prepared byte modes and identity; malformed fixtures do not
+        // request production signing admission.
+        var envelope = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(
+            PendingTurnSnapshotAuthority.AuthorityPath)))!.AsObject();
+        var payload = JsonNode.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(
+            envelope["payloadJsonBase64"]!.GetValue<string>())))!.AsObject();
+        payload["manifestPayloadHash"] = manifest.ManifestPayloadHash;
+        payload["files"] = JsonSerializer.SerializeToNode(manifest.Files);
+        payload["snapshotFileHashes"] = JsonSerializer.SerializeToNode(manifest.SnapshotFileHashes);
+        payload["clientOwnedValidationHashes"] = JsonSerializer.SerializeToNode(manifest.ClientOwnedValidationHashes);
+        payload["rollbackBackups"] = JsonSerializer.SerializeToNode(manifest.RollbackBackups);
+        payload["rollbackBaselineFiles"] = JsonSerializer.SerializeToNode(manifest.RollbackBaselineFiles);
+        var payloadBytes = Encoding.UTF8.GetBytes(payload.ToJsonString(LiveTurnPreparationService.ManifestHashJsonOptions));
+        envelope["payloadJsonBase64"] = Convert.ToBase64String(payloadBytes);
+        envelope["payloadSha256"] = PendingTurnSnapshotAuthority.ComputeSha256(payloadBytes);
+        var authorityJson = envelope.ToJsonString(LiveTurnPreparationService.ManifestHashJsonOptions);
         await _fs.WriteFileAtomicAsync(
             LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
             JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions));

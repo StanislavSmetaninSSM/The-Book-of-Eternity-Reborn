@@ -256,7 +256,7 @@ public sealed partial class PendingTurnSnapshotAuthorityTests : IDisposable
         };
         manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
 
-        var authorityJson = CreateDetachedAuthorityJson(manifest);
+        var authorityJson = CreatePortableAuthorityJson(manifest);
 
         var valid = TryValidateReaderAuthority(manifest, authorityJson, out _, out var failureCode);
 

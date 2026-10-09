@@ -2,6 +2,98 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-signed-snapshot-spelling-linux",
+      "responsibility": "Original detached signer16 and original liveprepare6: exact raw keys/path-values/baselines, unsafe spelling and case aliases refused before reads/old evidence cleanup; exact repeated paths and Unicode positives.",
+      "excludes": "Only first live producer plus signing admission, not remaining engine/browser/incarnation/spiritual producers, historical reader change, native Windows, GM or whole turn.",
+      "changeHints": [
+        "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient.IntegrationTests/SignedSnapshotExactPathTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalDetachedSignerRequiresExactRepresentablePathsBeforeByteReads",
+            "BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalLivePreparationRefusesUnrepresentableInventoryBeforeOldEvidenceCleanup"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-signed-snapshot-authority-neighbors",
+      "responsibility": "Fifteen exact original valid signer/reader/preparation, tamper/byte rollback and affected malformed-reader consumer neighbors. Preserve reader-negative purpose using test-owned malformed envelopes.",
+      "excludes": "No broad pending-turn-authority cohort, legacy Windows signing or new gameplay.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/PendingTurnSnapshotAuthorityTests.cs",
+        "BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs",
+        "BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.CreateDetachedAuthorityJson_WritesPortableIntegrityEnvelopeWithoutLegacySignature",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_PortableIntegrityEnvelope_ValidatesWithoutLegacySignature",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedPortablePayloadJson_FailsClosed",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedSnapshotHash_FailsClosed",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedRollbackBackup_FailsClosed",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_RollbackBackupBomChanged_FailsClosed",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_UnsafeSnapshotPath_FailsStructure",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedCaseVariantOptionalCoverageInsteadOfTreatingItAsAbsent",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedExactAndCaseVariantOptionalCoverage",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedOptionalCoverageWhoseFileAndHashKeyCasingDisagree",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedSignedCaseConfusableCoverage",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedCrossMapCaseMismatch",
+            "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedAsymmetricGlobalCoverage"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-save-archive-exact-listing-linux",
+      "responsibility": "Original list2 and autosave-retention2 exact Linux ZIP names, selected-link refusal before reads/deletions and unchanged host pattern/top-level exclusions, metadata timestamp ordering, real committed archive follow-up and strict cleanup.",
+      "excludes": "No full Load, native Windows, live GM or native physical legacy fallback qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SaveLoadService.cs",
+        "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "BookOfEternityClient.IntegrationTests/SaveArchiveExactListingTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SaveArchiveExactListingTests.OriginalArchiveConsumersPreserveExactSelectedNamesAndIgnoreUnselectedLinks"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-owned-lease-close-linux",
       "responsibility": "Two original owner consumers preserve actual publication uncertainty through a secondary close of their inspected real hoisted lease: public StateManager refresh and original public byte write positive control. Journal/generation/runtime/ambient/main/lock settlement and strict owned cleanup.",
       "excludes": "Other owner consumers, bootstrap, native Windows and full mirror suite. Late disposer attachment after genuine publisher CSP, no synthetic lease/exception or production hook.",
