@@ -1,0 +1,36 @@
+{
+  "root": "/tmp/boe-gameengine-turnlifecycle-23c77995f74c4bcaa00d8f45f2f947e1",
+  "route": "stage",
+  "mode": "unicode",
+  "names": [
+    "lore/current_world/ История.json"
+  ],
+  "restorationFailure": "System.IO.IOException: Injected accepted-turn canonical write failure for 'game_state/control/console_local_turn_before_images_v1/2028df4eab9f4016ae5b85cdc13369f2/lore_current_world_retained.json.rollback.434b67c8cbc747979c41449342106a60'.\n   at BookOfEternityClient.Core.FileSystemManager.InvokeBeforeCanonicalMutationBoundaryAsync(String relativePath) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 5535\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 224\n   at BookOfEternityClient.Core.FileSystemManager.PublishOrdinaryFileWithOutcomeAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 328\n   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 315\n   at BookOfEternityClient.Core.FileSystemManager.DeleteFile(CanonicalWriteLease writeLease, String relativePath) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 2170\n   at BookOfEternityClient.UI.ExplorerMode.DiscardPendingLocalTurnRollbackSnapshot(CanonicalWriteLease writeLease, PendingLocalTurnRollbackSnapshot snapshot) in /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:line 930\n   at BookOfEternityClient.UI.ExplorerMode.RestorePendingLocalTurnRollbackSnapshotAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:line 880\n   at BookOfEternityClient.UI.ExplorerMode.RestorePendingLocalTurnRollbackSnapshotAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:line 892\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "actualRestorationCompleted": true,
+  "failure": null,
+  "before": {
+    "lore/current_world/ История.json": "AP8q",
+    "lore/current_world/retained.json": "KQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/console_local_turn_before_images_v1/2028df4eab9f4016ae5b85cdc13369f2/lore_current_world_retained.json.rollback.434b67c8cbc747979c41449342106a60": "KQ==",
+    "game_state/control/console_local_turn_before_images_v1/2028df4eab9f4016ae5b85cdc13369f2/preparation.rollback.marker": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uIjoiNmVlZGM2ZmVhNDcyNDJlNzhiNTQ0M2ZkZDU4OTM2ODAiLCJTbmFwc2hvdElkIjoiMjAyOGRmNGVhYjlmNDAxNmFlNWI4NWNkYzEzMzY5ZjIifQ=="
+  },
+  "after": {
+    "lore/current_world/ История.json": "AP8q",
+    "lore/current_world/retained.json": "KQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/console_local_turn_before_images_v1/5cdf32c1397f4611854280deabd5f9a1/lore_current_world__История.json.rollback.45765b34624e4d2b86448c080283df87": "AP8q",
+    "game_state/control/console_local_turn_before_images_v1/5cdf32c1397f4611854280deabd5f9a1/preparation.rollback.marker": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uIjoiNmVlZGM2ZmVhNDcyNDJlNzhiNTQ0M2ZkZDU4OTM2ODAiLCJTbmFwc2hvdElkIjoiNWNkZjMyYzEzOTdmNDYxMTg1NDI4MGRlYWJkNWY5YTEifQ=="
+  },
+  "mutations": [
+    "game_state/control/console_local_turn_before_images_v1/2028df4eab9f4016ae5b85cdc13369f2/lore_current_world_retained.json.rollback.434b67c8cbc747979c41449342106a60",
+    "game_state/control/console_local_turn_before_images_v1/2028df4eab9f4016ae5b85cdc13369f2/preparation.rollback.marker",
+    "game_state/control/console_local_turn_before_images_v1/5cdf32c1397f4611854280deabd5f9a1/preparation.rollback.marker",
+    "game_state/control/console_local_turn_before_images_v1/5cdf32c1397f4611854280deabd5f9a1/lore_current_world__История.json.rollback.45765b34624e4d2b86448c080283df87"
+  ],
+  "ownerBefore": "{\"EvidenceRoot\":\"game_state/control/console_local_turn_before_images_v1/2028df4eab9f4016ae5b85cdc13369f2\",\"RestoreCompleted\":true,\"Tracked\":[\"lore/current_world/retained.json\"],\"Baseline\":[\"lore/current_world/retained.json\"],\"Validation\":[\"game_state/control/console_local_turn_before_images_v1/2028df4eab9f4016ae5b85cdc13369f2/preparation.rollback.marker\"],\"Technical\":[\"game_state/control/console_local_turn_before_images_v1/2028df4eab9f4016ae5b85cdc13369f2/preparation.rollback.marker\"],\"Backups\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"game_state/control/console_local_turn_before_images_v1/2028df4eab9f4016ae5b85cdc13369f2/lore_current_world_retained.json.rollback.434b67c8cbc747979c41449342106a60\"}],\"Hashes\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"BA5EC51D07A4AC0E951608704431D59A02B21A4E951ACC10505A8DC407C501EE\"}]}",
+  "ownerAfter": "{\"EvidenceRoot\":\"game_state/control/console_local_turn_before_images_v1/5cdf32c1397f4611854280deabd5f9a1\",\"RestoreCompleted\":false,\"Tracked\":[\"lore/current_world/ \\u0418\\u0441\\u0442\\u043E\\u0440\\u0438\\u044F.json\"],\"Baseline\":[\"lore/current_world/ \\u0418\\u0441\\u0442\\u043E\\u0440\\u0438\\u044F.json\"],\"Validation\":[\"game_state/control/console_local_turn_before_images_v1/5cdf32c1397f4611854280deabd5f9a1/preparation.rollback.marker\"],\"Technical\":[\"game_state/control/console_local_turn_before_images_v1/5cdf32c1397f4611854280deabd5f9a1/preparation.rollback.marker\"],\"Backups\":[{\"Key\":\"lore/current_world/ \\u0418\\u0441\\u0442\\u043E\\u0440\\u0438\\u044F.json\",\"Value\":\"game_state/control/console_local_turn_before_images_v1/5cdf32c1397f4611854280deabd5f9a1/lore_current_world__\\u0418\\u0441\\u0442\\u043E\\u0440\\u0438\\u044F.json.rollback.45765b34624e4d2b86448c080283df87\"}],\"Hashes\":[{\"Key\":\"lore/current_world/ \\u0418\\u0441\\u0442\\u043E\\u0440\\u0438\\u044F.json\",\"Value\":\"C3E2D6CE9638C39FDF3C92460F115D9E428E217022AB2B5EB8852ADA85526A51\"}]}",
+  "sameOwner": false,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2ZWVkYzZmZWE0NzI0MmU3OGI1NDQzZmRkNTg5MzY4MCJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2ZWVkYzZmZWE0NzI0MmU3OGI1NDQzZmRkNTg5MzY4MCJ9"
+}

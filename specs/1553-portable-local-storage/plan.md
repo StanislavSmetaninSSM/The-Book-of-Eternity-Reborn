@@ -1,3 +1,18 @@
+## Incarnation/Explorer bounded GREEN20 — 2026-10-09
+
+Runtime cc401fab0adadb88d90f8c5f12850578d2fefca2 independent source/design/exact20
+PASS. Fresh integration Plan191328:20/1,0 execution,53.9091135s; actual191501:
+20/20PASS,9.7923003s,1/1 complete,0 skips/duplicates/timeout, both cleanup.
+Twelve raw negatives now refuse with InvalidDataException before mutation,
+retain exact full physical bytes/paths/generation and real owner collections.
+Unicode3/exact-repeat1 and four original controls pass with genuine backups.
+All16 new strict roots absent. Packet82artifacts/26pins verified originals;
+prior actual8PASS/12causalFAIL remains immutable. Independent raw/carrier gate
+next. Catalog ownership discovery will be combined with the next spiritual
+fixture block; no unchanged20 rerun without an affected boundary.
+Spiritual raw capture and original lease owners remain next, T061–T065 unchecked,
+B2–B5 paused; no native Windows or whole-client qualification.
+
 ## Incarnation/Explorer raw admission installed — WIP, 2026-10-09
 
 Two production files now validate original current_world exact raw names and
@@ -23,7 +38,7 @@ both cleanup complete. Sixteen new strict fixture roots absent. Inventory four
 negatives silently fold/omit/rewrite raw names; stage four negatives perform3–4
 mutations, replace actual completed owner and delete two retained evidence files.
 Mark four negatives silently accept/omit: three alter validation collection,
-outer_trim leaves it unchanged but fails required refusal. Unicode4/exact-repeat
+outer_trim leaves it unchanged but fails required refusal. Unicode3/exact-repeat1
 positives and four original controls PASS. Genuine restore/first-delete failure
 prerequisites passed, no fabricated RestoreCompleted/owner/result.
 [Original packet](recovery/storage-migration-explorer-snapshot-20261009/manifest.json):
