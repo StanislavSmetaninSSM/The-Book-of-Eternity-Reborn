@@ -1,3 +1,27 @@
+## F16 Story baseline10 — observed routing gaps, 2026-10-09
+
+Frozen SOURCE/FIXTURE/EXACT10 independent PASS68f267b6. Fresh integration Plan105246
+succeeded10/1,0executed,86.6859598s. Actual105724 at clean source
+68f267b6213bbc7c2fd542aa2591f04a981be4ac: **10 executed,2PASS/8FAIL**,
+7.2495351s,1/1descriptor,bothcleanup,no timeout/skip/duplicate. Read-link refusal
+and physical-line/BOM/lastN/missing controls PASS. Remaining eight are precisely:
+list/read bypass genuine retained Unknown2; listing follows linked leaf1; pre-read
+I/O injection is UNREACHED because raw reading bypasses the admitted reader1;
+chapter/all actual offered exports bypass publisher entirely2 (Cuts0, NOT actual
+publication Unknown); original all-debt/chapter-displayed raw exports2 reach their
+writes/key but establish no common Committed decision. All10 have zero admissions.
+Committed source debt is retained after raw all-export. Root verified genuine two
+seed journals/member hashes/foreign bytes, source/link bytes, all10 independent
+root removals and complete raw summaries/TRX. No test failure is hidden as fixture
+success, and no unpublished Unknown is inferred from an unreached hook.
+
+[Source-pinned baseline packet](recovery/storage-migration-story-read-export-20261009/manifest.json):
+31 artifacts/originals,20 frozen source pins verified. Next minimal StoryService
+admitted reader/list and two original console exports; independent source/RAW/exact12
+review before fresh both-project Plan12 and actual12. Existing format/link controls
+remain in selection because the reader changes. No whole-game/native/rotation/
+secondary-close/timestamp-overwrite claim. T061–T065 open; B2–B5 paused.
+
 ## F16 Story listing/read/export — bounded fixture WIP, 2026-10-09
 
 Source #1553,R25/F16,T063/T064/T065. Prior listing15 final independent RAW/CATALOG/

@@ -8,7 +8,8 @@ PASS. These are separate source-era runs, not an aggregate selection. Latest cat
 62artifacts/80pins and listings58/66 are verified; source/counters/cleanup/limits and
 older accepted C2/worker/Explorer blocks are in [plan](plan.md).
 
-Current Story listing/read/export fixtures are unbuilt/unrun; runtime unchanged.
+Story baseline10 at68f267b6:2PASS/8 routing failures, both cleanup complete; runtime
+unchanged. Exact classification and source-pinned raw evidence are at plan top.
 Other F16 snapshot/path consumers, F18 observer/admission migration, concrete owning
 closes, nested prepared consumers and whole-selection reconciliation remain open.
 T061–T065 stay unchecked; #1536 B2–B5 paused. No whole-game/native Windows/full-turn
