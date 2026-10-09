@@ -9681,6 +9681,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     [Fact]
     public async Task CreateCanonicalBaselineSnapshotAsync_ConcurrentWriterCannotMixSnapshotFiles()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string firstPath = "game_state/core/a_atomic_snapshot.json";
         const string laterPath = "game_state/world/z_atomic_snapshot.json";
         const string firstBaseline = """{"version":"first-baseline"}""";
@@ -9690,14 +9691,16 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         await _fs.WriteFileAtomicAsync(laterPath, laterBaseline);
 
         var writerContended = NewSignal();
+        var mainAdmissionContentions = 0;
         var writerFs = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
-                CanonicalWriteLockContendedAsync = () =>
+                MainOwnerLockContendedAsync = () =>
                 {
+                    Interlocked.Increment(ref mainAdmissionContentions);
                     writerContended.TrySetResult(true);
                     return Task.CompletedTask;
                 }
@@ -9733,14 +9736,26 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             request,
             null,
             "atomic snapshot test");
-        await firstCaptured.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        var writerTask = writerFs.WriteFileAtomicAsync(laterPath, laterConcurrent);
-        await writerContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.False(writerTask.IsCompleted);
-
-        releaseSnapshot.TrySetResult(true);
-        await snapshotTask;
-        await writerTask;
+        Task? writerTask = null;
+        try
+        {
+            await firstCaptured.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            writerTask = writerFs.WriteFileAtomicAsync(laterPath, laterConcurrent);
+            await writerContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.False(writerTask.IsCompleted);
+        }
+        finally
+        {
+            releaseSnapshot.TrySetResult(true);
+            await Task.WhenAll(snapshotTask, writerTask ?? Task.CompletedTask).WaitAsync(TimeSpan.FromSeconds(15));
+        }
+        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new
+        {
+            mainAdmissionContentions,
+            SnapshotJoined = snapshotTask.IsCompletedSuccessfully,
+            WriterJoined = writerTask?.IsCompletedSuccessfully == true
+        }));
+        Assert.True(mainAdmissionContentions > 0);
 
         Assert.Equal(
             firstBaseline,

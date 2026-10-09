@@ -1,3 +1,14 @@
+## Preparation remaining3 fixture correction WIP — 2026-10-09
+
+Partial carrier1302c7d3 preserves93 artifacts/45 pins. The unchanged concurrency test's writer now
+signals from existing MainOwnerLockContendedAsync, the original admission preceding the canonical
+file lock. Positive first snapshot capture and incomplete competing writer remain required; exact
+snapshot-before/current-after bytes remain unchanged. A finally always releases the capture barrier
+and joins every started task within15s, with joined/contention evidence and explicit owned-root cleanup.
+No runtime change or new hook. The corrected control1 and unexecuted Live unit2 have one exact category;
+passed18 retain their source-specific receipts and are not repeated. Frozen source gate before fresh
+Plan3/actual3; no GREEN claim yet for this correction.
+
 ## Preparation partial GREEN19/21 / original contention control — 2026-10-09
 
 Independent SOURCE/EXACT21 PASS85baf7a4. Plan030300 freshly built integration37.4076715s and

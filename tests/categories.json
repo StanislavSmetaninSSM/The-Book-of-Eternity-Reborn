@@ -2,8 +2,43 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-preparation-current-admission-controls",
+      "responsibility": "Three remaining preparation controls: actual earlier main-owner serialization with unconditional task drain, and unchanged linked/replacement LivePrepare unit controls unexecuted in the partial21 run.",
+      "excludes": "No replay of unrelated browser or accepted-turn aggregates; no actual secondary-close fault, native or full-turn qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_ConcurrentWriterCannotMixSnapshotFiles"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-preparation-outcome-known-controls",
-      "responsibility": "Ten unchanged affected known controls for preparation outcome stops: original serialized/exact snapshot and known capture refusal, linked/current-session LivePrepare, direct-gacha known rollback/debt, and AtomicCore preparation lock release.",
+      "responsibility": "Seven retained passing preparation known controls: exact snapshot, known capture refusal, direct-gacha rollback/debt and AtomicCore preparation lock release.",
       "excludes": "No replay of unrelated browser or accepted-turn aggregates; no actual secondary-close fault, native or full-turn qualification.",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
@@ -25,18 +60,10 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_ConcurrentWriterCannotMixSnapshotFiles",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreatePreTurnBackup_WhenAnyTrackedFileCannotBeCaptured_FailsInsteadOfReturningPartialAuthority",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_ConsumedDeletionDebtRetainsKnownCleanupPolicy",
             "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_RollbackPreparationFailureReleasesUiLock"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
-            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts"
           ]
         }
       ]
