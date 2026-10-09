@@ -1,3 +1,25 @@
+## F18 file-GM correction actual — five PASS, binding contract failure, 2026-10-09
+
+Source3fe28a9d independent RAW/INTEGRITY/SOURCE/EXACT11 PASS. Fresh integrationPlan150051
+11/9,0execution48.5592074s. Actual150152 intended10/8 completes6/4:5PASS,1FAIL,4UNRUN,
+200.5563053s,no timeout/duplicates,both runner cleanup. Passing original obligations:
+mid copiedcut1, staged A-commit cold1, file A/B1, stale A Ready1, orphan Ready1. No replay
+of these unchanged cases. Packet now42artifacts/originals39pins including initial11/17
+unchanged; partial actual is not10GREEN or a completed selection.
+
+Binding cold has actual committed B/warm interruption and3correlated requests/responses,
+then ordinary late validation emits afterlife_combat_profile_unknown_art for the seeded
+soul_state.afterlifeCombatProfile.artTiers.force_binding. Subsequent responder parser
+reports missing continuation envelope; that is secondary to the concrete ordinary issue.
+Cut/actor cleanup is reached, reported resource root removed. This is no longer the prior
+main-admission fixture failure. Causal source/history review must decide whether a faithful
+fixture-only correction exists; never weaken the force-binding scenario or implement B2.
+Next execute unchanged four unrun owners: binding-live1 and staged before-ready/ready/
+issued-successor3, using the fresh3fe integration build. Native worker1 remains UNRUN.
+Five additional helper callers are a separate exact pending slice: two still need external
+file-response transport; interruption2 already corrected; automatic-cold1 is raw observer.
+Remaining Prepared/Image/F16/owned-close/legacy closure remain open; T061–T065 unchecked.
+
 ## F18 original file-GM transport — isolated fixture correction WIP, 2026-10-09
 
 Base46bd8866 preserves initial mid1 admission failure and9unrun. Only binding/staged/

@@ -140,5 +140,286 @@
         "sha256": "87b41bb7a7fbae5ff8eab15f41975959ddf1c3d5394ae51d56ef6c712f616d46"
       }
     ]
+  },
+  "transport": {
+    "source": "3fe28a9df69cd943d0f920260ff3882274a0841e",
+    "artifacts": [
+      {
+        "path": "transport-20261009-150051-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150051-769-376652-c300a4b25af24a899272fd5c4f668559-categories/plan.json",
+        "sha256": "0dab916c7cff022f6ec1a08ea9e8fbdc31ad41008fc5adcd7e00a2afc2564ad1",
+        "originalSha256": "0dab916c7cff022f6ec1a08ea9e8fbdc31ad41008fc5adcd7e00a2afc2564ad1"
+      },
+      {
+        "path": "transport-20261009-150051-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150051-769-376652-c300a4b25af24a899272fd5c4f668559-categories/summary.json",
+        "sha256": "372f6837a0a16d6caa80d1abdc7eb52073ee2b31534f5551998f0913e0738164",
+        "originalSha256": "372f6837a0a16d6caa80d1abdc7eb52073ee2b31534f5551998f0913e0738164"
+      },
+      {
+        "path": "transport-20261009-150051-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150051-769-376652-c300a4b25af24a899272fd5c4f668559-categories/Build-integration.log",
+        "sha256": "c846c987687fe9e4a28a6456515342f1567fed8342f4a2ee175cc24638dfa4e3",
+        "originalSha256": "6604288661b4f3c68216a81bbc0d48d5b6366f8745dd66bc9da965345674b42e"
+      },
+      {
+        "path": "transport-20261009-150051-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150051-769-376652-c300a4b25af24a899272fd5c4f668559-categories/dotnet-test.log",
+        "sha256": "a88ba115e2d8cf0aacbd1ddfdbfe4a29f3c0e83440c7c788f20e9c6ee724f79b",
+        "originalSha256": "77a3ce8e1aa6adeb7db1950a1d4ecfc3707822a5259ee771757e18c7562410d8"
+      },
+      {
+        "path": "transport-20261009-150152-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150152-683-376907-8110859540b24ba48f49a78c1508b94a-categories/plan.json",
+        "sha256": "595e6553d6c6cbe83d25d13d3976ee6049c7cabc4da8a9fee10defb68bf69665",
+        "originalSha256": "595e6553d6c6cbe83d25d13d3976ee6049c7cabc4da8a9fee10defb68bf69665"
+      },
+      {
+        "path": "transport-20261009-150152-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150152-683-376907-8110859540b24ba48f49a78c1508b94a-categories/summary.json",
+        "sha256": "de317f0444561b516c711a22d6bd58f2d0a06c2db32f941198bb7c86d2d22c81",
+        "originalSha256": "de317f0444561b516c711a22d6bd58f2d0a06c2db32f941198bb7c86d2d22c81"
+      },
+      {
+        "path": "transport-20261009-150152-spiritual-binding-cold-publication-integration-004.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150152-683-376907-8110859540b24ba48f49a78c1508b94a-categories/spiritual-binding-cold-publication-integration-004.trx",
+        "sha256": "4b6bc3d7085f4c4b8a47c1fb0799657bc3167100b37cf650949ceecd9790ba77",
+        "originalSha256": "135ffdca785399fb211ad4e9ee52dacd3d8109d790206ffaefa7c5c31f6a20ea"
+      },
+      {
+        "path": "transport-20261009-150152-portable-spiritual-staged-committed-recovery-integration-002.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150152-683-376907-8110859540b24ba48f49a78c1508b94a-categories/portable-spiritual-staged-committed-recovery-integration-002.trx",
+        "sha256": "eed4570ee41ee3076cf2484434b6d2203904642f1bec3c0173df10442541a215",
+        "originalSha256": "d1d61f90226f285cb676d85117dcba7706b3eb48fe0fa7b0339698894ba8448c"
+      },
+      {
+        "path": "transport-20261009-150152-portable-spiritual-staged-file-publication-integration-003.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150152-683-376907-8110859540b24ba48f49a78c1508b94a-categories/portable-spiritual-staged-file-publication-integration-003.trx",
+        "sha256": "a08ba1ecd55774ec4f052c1ab74bb32f71fbc835fe7aeff3fc936a8b48b85cf4",
+        "originalSha256": "040a7a67431ee549e810383179cca039c357a8357f3f45f383461353f09a1645"
+      },
+      {
+        "path": "transport-20261009-150152-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150152-683-376907-8110859540b24ba48f49a78c1508b94a-categories/dotnet-test.log",
+        "sha256": "d20503422413338a69172324919eea5e00adcc4170d4b25a0b4c72704a669e8c",
+        "originalSha256": "7b8cbf817de3ef18cada6b94f0ab44ce0a99730fb49ee09fbdd2059631f1b00a"
+      },
+      {
+        "path": "transport-20261009-150152-portable-spiritual-midpublication-recovery-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-150152-683-376907-8110859540b24ba48f49a78c1508b94a-categories/portable-spiritual-midpublication-recovery-integration-001.trx",
+        "sha256": "d4d867c2b705b7e6ee184d8004315e527dffe46bd5dfe7ac892a36211735a638",
+        "originalSha256": "530bca5f34bcee059bb95eb01ecb03c068f841faa80c51d92adb877945ebddff"
+      },
+      {
+        "path": "transport-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/emitted-roots-after-run.json",
+        "sha256": "dc6fbf66570d934a504a59e7e88fed9c58fec784c9314e603e9b8b72757a6c1b",
+        "originalSha256": "dc6fbf66570d934a504a59e7e88fed9c58fec784c9314e603e9b8b72757a6c1b"
+      },
+      {
+        "path": "transport-row-portable-spiritual-midpublication-recovery-integration-001-0-4.json",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-midpublication-recovery-integration-001-0-4.json",
+        "sha256": "45aed2e92d95fb1deb81dcdd84b99fb0b58bd25371788478f051b5275a0bfb1b",
+        "originalSha256": "45aed2e92d95fb1deb81dcdd84b99fb0b58bd25371788478f051b5275a0bfb1b"
+      },
+      {
+        "path": "transport-row-portable-spiritual-midpublication-recovery-integration-001-0-3.json",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-midpublication-recovery-integration-001-0-3.json",
+        "sha256": "fc6b4b8e628a18e280fe9a5fef648ae9ee826297a56be3e1fa2792b836310c6a",
+        "originalSha256": "fc6b4b8e628a18e280fe9a5fef648ae9ee826297a56be3e1fa2792b836310c6a"
+      },
+      {
+        "path": "transport-row-portable-spiritual-midpublication-recovery-integration-001-0-2.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-midpublication-recovery-integration-001-0-2.json",
+        "sha256": "1199a54fe7e010a521c6bf5620a0496adccd3259646c18b58a8ce69257622a63",
+        "originalSha256": "53d080225b0fc891b9b50baa74218601f727d28c5add4d7142ead91efc69f165"
+      },
+      {
+        "path": "transport-row-portable-spiritual-midpublication-recovery-integration-001-0-1.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-midpublication-recovery-integration-001-0-1.json",
+        "sha256": "33065661f051fcf2c843967f5cebbe9561bf9f6d132c9d6e20281fc314c43f58",
+        "originalSha256": "3f0d6d5d87d57af2abb4c90acfb27ebd672022079ca6410ee7fbf326e4ae8c4b"
+      },
+      {
+        "path": "transport-row-portable-spiritual-midpublication-recovery-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-midpublication-recovery-integration-001-0-0.json",
+        "sha256": "b71ba6fd87262f9cc78cb62cde3a8060e538290aced259c8671ce3d0d7907685",
+        "originalSha256": "eef8870d01513617c60991ae4c125b8a67a34ea072b4db96e7bf1d6413f50dfe"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-file-publication-integration-003-2-2.json",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-file-publication-integration-003-2-2.json",
+        "sha256": "309a2ff68c8261f4acd8fb054642ecab50d0cb2963adf3221ea149db9dbf709f",
+        "originalSha256": "309a2ff68c8261f4acd8fb054642ecab50d0cb2963adf3221ea149db9dbf709f"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-file-publication-integration-003-2-1.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-file-publication-integration-003-2-1.json",
+        "sha256": "f64c56af52a1eeff803f158578598bce4002783360f6c653df02a0673ba5dcf2",
+        "originalSha256": "bc7dcb8fa918337eabf85e088edf80e4ece4267cc7e356838b6c8de879172968"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-file-publication-integration-003-2-0.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-file-publication-integration-003-2-0.json",
+        "sha256": "10b5fabb3d8b5e545d4b837f58e7b12878c13e093752124a27547b8423eedbf1",
+        "originalSha256": "ca3ed65b8ce490e20a0ddc25d35179e4e7f55a0d2129166a220e1e33c4d2b97d"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-file-publication-integration-003-1-1.json",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-file-publication-integration-003-1-1.json",
+        "sha256": "54414d6a5cf7ed6740ad701467ce5421d20a4db4631069217f96ab00599f1aff",
+        "originalSha256": "54414d6a5cf7ed6740ad701467ce5421d20a4db4631069217f96ab00599f1aff"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-file-publication-integration-003-1-0.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-file-publication-integration-003-1-0.json",
+        "sha256": "eff1173dc6d897f7d314eb2fffa0d1c21fc2dbe7a85bf06e821bc4727722fc41",
+        "originalSha256": "542182fb18b6075c55eaa198ae4c0d23545303718f47d1d0fb41df8b10d43749"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-file-publication-integration-003-0-2.json",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-file-publication-integration-003-0-2.json",
+        "sha256": "43637096c53120970df61cb68813170112e91c2f3a8c9128d64213c9e9836bbd",
+        "originalSha256": "43637096c53120970df61cb68813170112e91c2f3a8c9128d64213c9e9836bbd"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-file-publication-integration-003-0-1.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-file-publication-integration-003-0-1.json",
+        "sha256": "96674405af07323f88953279e2949d9c188ba7148174f35d67e8d0c5dbfed587",
+        "originalSha256": "4e2b3bfbd0f45f58e9649fef48cb39be63fb729e039b00e6c60e4a4e92588950"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-file-publication-integration-003-0-0.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-file-publication-integration-003-0-0.json",
+        "sha256": "b3635c218b41c2a392a1ca37ca494bf4d81b29c41791c10a2720baec5d32f4ec",
+        "originalSha256": "07fb68b1350b1ac2d6cb604f8beb4df7be086b922255a050840ee6229d75105d"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-committed-recovery-integration-002-0-3.json",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-committed-recovery-integration-002-0-3.json",
+        "sha256": "d79e3b4fd38d2dd48294a2f5abc1d5ced3acf268bdb990c7bf81a8692581b28c",
+        "originalSha256": "d79e3b4fd38d2dd48294a2f5abc1d5ced3acf268bdb990c7bf81a8692581b28c"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-committed-recovery-integration-002-0-2.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-committed-recovery-integration-002-0-2.json",
+        "sha256": "e77351ad275418d6f1a4db8b3d5198d53f3a011e71c873f0bb1e54b81aa5a7c1",
+        "originalSha256": "02ff4c46f8569eaca26339a7b4b386f55d58edd69172365a61165129f836714f"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-committed-recovery-integration-002-0-1.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-committed-recovery-integration-002-0-1.json",
+        "sha256": "003762a933d0dafa293f9f7ad59be730d1894b5c6c03e4847475e96c193ddc45",
+        "originalSha256": "953b10b0fdfa05a703e55c9f23af472ae57a4a93cd85453d8f1844ff2eb267cd"
+      },
+      {
+        "path": "transport-row-portable-spiritual-staged-committed-recovery-integration-002-0-0.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/portable-spiritual-staged-committed-recovery-integration-002-0-0.json",
+        "sha256": "7b1453dc52f5b8f90604ce53ec4ec0f894e9c1dfd77f763b7067fef0b104f84e",
+        "originalSha256": "c1af522d63fff5c41ea7b2bde5923922e3f4e45b800e38fa0a070597f7635087"
+      },
+      {
+        "path": "transport-row-spiritual-binding-cold-publication-integration-004-0-1.json",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/spiritual-binding-cold-publication-integration-004-0-1.json",
+        "sha256": "047822082fdbc1e9c271ba491ace51ecf19aa78e2ea7ff0a0b40b316d5077c6b",
+        "originalSha256": "047822082fdbc1e9c271ba491ace51ecf19aa78e2ea7ff0a0b40b316d5077c6b"
+      },
+      {
+        "path": "transport-row-spiritual-binding-cold-publication-integration-004-0-0.json.gz",
+        "source": "/tmp/boe-spiritual-lifecycle-transport/spiritual-binding-cold-publication-integration-004-0-0.json",
+        "sha256": "8f881bc30421804d4cbad5161869f741b139a3edb7317f62318a7128b6da4138",
+        "originalSha256": "2fd1e6af2babcddb444fb5ed4a3617768de651765e2c5e54746ca49f6e943458"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualBindingContinuation.cs",
+        "sha256": "a01662eaa9a225ca0a6a7e33c102a6c154b6c41834360be8556903d9ac1dc9e5"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualDependentColdContinuation.cs",
+        "sha256": "cfcec4532905368b9e920ea168a5979c565327fa94cf1a0bc3b50c501e4b6acc"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualInterruptionProbeAssertions.cs",
+        "sha256": "9162cd49e2d76f8231a340842b6f7a5decbb79d5e71963fbc5b2bbfb328b2c9c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualMidPublication.cs",
+        "sha256": "130c011aec48eba07def41e67b4487b66b34750902d6cadbf8c29c3ae2209dd9"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualStagedContinuation.cs",
+        "sha256": "7e034718c3784720b9a5b9e64c9587c9c92bb81b29396d3ce1dd20f2f4342623"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualStagedWorker.cs",
+        "sha256": "6a8128c0057af3890fbb34255916bedcdf507fe66e9a1b83d02fc75ff4a242bc"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs",
+        "sha256": "445c677d01e9fd8631005ddf4779308243747480b838d903a4b781a30a83540e"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CurrentCommittedPublicationWitness.cs",
+        "sha256": "49f94d09e5e2fc8d6bde1c981365fa52ae7e0098516d53c03aa8fc9b9ec1e624"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "362aa877388e1fd61e13f21d4dbb74455433236b94903094b3e2a41980982244"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "da199c5b9a4e3cb9bbc2066d6fe88f78e10f7f6c9682da5fdb885b997f62dbf6"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "c1b0ee28708b7acdb1e3cfaec027513c0bd9c0cf86171e1492c7a761fa2021d2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualBindingResponder.cs",
+        "sha256": "98132d0e2151b66254e2dcf63a0a955f6a369a3cc8d18a55bcf31591a08b792f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualStagedResponder.cs",
+        "sha256": "057d9c6142783bd47474a88c49eeab1636edc06cb2253b46890ea3f1583a6042"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualFileGmTransport.cs",
+        "sha256": "5de54666ebf21230adf17a2be86efd13834cef7da5b6f0f289292df2e7b13a80"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs",
+        "sha256": "5eb7c6b3e08dd6e3c8893ff848703be497dc976aafb1251328b3646694b7a0c1"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs",
+        "sha256": "5d6b770bdf7a4bde1429addbb89cd8354fee99303716dc4ef8106e128eec5ebc"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+        "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+        "sha256": "5eb03db7c9b75486404bb4219d79b62d8c6981d63f06af31a8e4dd07529e1e6f"
+      }
+    ]
   }
 }
