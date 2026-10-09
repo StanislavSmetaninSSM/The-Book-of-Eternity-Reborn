@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-cleanup-outcome-causal-linux",
-      "reason": "Final affected eight original consumer causal controls, now require same uncertainty/no later work and retained established QTE/browser decisions; initial52ec actual8RED preserved separately.",
+      "reason": "Eight original cleanup/staging causal controls PASS at ef59782 in actual004402; retained source-era evidence, unchanged branches excluded from isolated release-CSP rerun.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -14,7 +14,7 @@
     },
     {
       "category": "portable-cleanup-outcome-neighbors-linux",
-      "reason": "Ten exact known controls for changed cleanup/owned leases/browser classification and original staging: preserve known refusal versus actual uncertainty, confirmed partial results, empty/sibling cleanup and cancellation. No aggregate rerun.",
+      "reason": "Ten exact known cleanup/lease/browser/staging controls PASS at ef59782 in actual004402. Known release success/ordinary-false behavior remains unchanged by later CSP-only correction; retain these actual results.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -25,7 +25,7 @@
     },
     {
       "category": "portable-cleanup-release-causal-linux",
-      "reason": "Two additional source-identified actual UIlock-delete cleanup boundaries after confirmed commit or restore. TryRelease runtime remains unchanged for causal reproduction; first exact20 is mixed verification/causal, not assumed allGREEN.",
+      "reason": "Two genuine actual UIlock-deletion CSP defects at ef59782 now qualify the minimal original caller result/first-cause correction. Exact2 fresh selection; preserve already-established Committed or RolledBack plus blocked follow-up.",
       "contracts": [
         "#1553",
         "FR-003",

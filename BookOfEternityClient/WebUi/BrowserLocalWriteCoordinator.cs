@@ -379,7 +379,14 @@ public sealed partial class BrowserLocalWriteCoordinator
             {
                 ReleaseBrowserAccess(writeLease, backups, rollbackUncertainty);
                 if (rollbackUncertainty == null)
-                    await TryReleaseAsync(writeLease, lockLease);
+                {
+                    try { await TryReleaseAsync(writeLease, lockLease); }
+                    catch (CoordinatedStatePublicationUncertainException uncertainty)
+                    {
+                        rollbackUncertainty = uncertainty;
+                        uncertainty.Data["BrowserOriginalOperationFailure"] = ex;
+                    }
+                }
             }
 
             if (rollbackUncertainty != null)
@@ -414,7 +421,13 @@ public sealed partial class BrowserLocalWriteCoordinator
         if (committedCleanupFailure is CoordinatedStatePublicationUncertainException committedUncertainty)
             return CaptureBrowserResult(BrowserLocalWriteResult.Completed(
                 "Browser-write завершён. " + committedUncertainty.Message).WithFollowUp());
-        var released = await TryReleaseAsync(writeLease, lockLease);
+        bool released;
+        try { released = await TryReleaseAsync(writeLease, lockLease); }
+        catch (CoordinatedStatePublicationUncertainException uncertainty)
+        {
+            return CaptureBrowserResult(BrowserLocalWriteResult.Completed(
+                "Browser-write завершён. " + uncertainty.Message).WithFollowUp());
+        }
         return BrowserLocalWriteResult.Completed(
             released && rollbackEvidenceCleaned
                 ? "Browser-write завершён."
@@ -447,7 +460,7 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             return await _lockService.ReleaseAsync(writeLease, lease);
         }
-        catch
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
             return false;
         }

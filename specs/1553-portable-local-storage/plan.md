@@ -1,3 +1,14 @@
+## F10 isolated release correction candidate — 2026-10-09
+
+Mixed carrier bdd10e39 is published with74 stored/expanded/original artifacts and47 historical
+pins verified. The owned-lease release helper now excludes actual CSP from its ordinary false
+fallback. Original restoration finally records that exact CSP with its original callback cause;
+existing captured result preserves confirmed RolledBack with blocked follow-up. Original committed
+caller similarly preserves Committed with blocked follow-up. SessionReplaced cannot swallow an
+actual release CSP. No-lease helper, ordinary success/false behavior, publication and registry remain
+unchanged. Proposed fresh exact2 release category is sufficient for these CSP-only branches;
+prior18 remain ef59782 evidence, subject independent final source/selection review. UNBUILT.
+
 ## F10 mixed20 actual result / release correction design — 2026-10-09
 
 Clean ef59782 matching Plan004226 succeeded: integration46.9205505s, wall50.7479652s,
