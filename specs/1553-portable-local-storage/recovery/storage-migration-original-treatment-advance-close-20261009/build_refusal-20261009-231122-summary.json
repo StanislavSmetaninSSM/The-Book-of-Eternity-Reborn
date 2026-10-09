@@ -1,0 +1,63 @@
+{
+  "Categories": [
+    "portable-original-treatment-progression-advance-close-linux",
+    "portable-original-engine-ascension-replay-close-linux",
+    "portable-save-optional-images-root-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "54bf4bd253970a660c3991bfa339f39d6c253e7b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0542756,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0552015,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0966428,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 42.9828598,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 14,
+  "WallTime": "00:00:43.2885888",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -192,5 +192,96 @@
         "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
       }
     ]
+  },
+  "build_refusal": {
+    "source": "54bf4bd253970a660c3991bfa339f39d6c253e7b",
+    "artifacts": [
+      {
+        "path": "build_refusal-20261009-231122-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-231122-359-472892-89411552ff6943f9bc603d941dd6367e-categories/summary.json",
+        "sha256": "e7f77345149068b861878c6c81126f7e149dccc63ea190a644521bddf0e458c8",
+        "originalSha256": "e7f77345149068b861878c6c81126f7e149dccc63ea190a644521bddf0e458c8"
+      },
+      {
+        "path": "build_refusal-20261009-231122-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-231122-359-472892-89411552ff6943f9bc603d941dd6367e-categories/dotnet-test.log",
+        "sha256": "1403b899dbc4eee8822efbcef72becfd6c2175185453c67149f3d1058d5ac7b2",
+        "originalSha256": "af5f5850c84fab2e09872be8e0c40c6c21e43847d3ed227695af0c63e0b8607c"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.OriginalTreatmentAdvanceOwnedClose.cs",
+        "sha256": "61df263665db98d1a0b13fe5a2f99b77a0dad75e921543330a339b97bad61509"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs",
+        "sha256": "75c7a9946f3dfeeb62b1d8828d46e6960a82c52ff01e3cfd73a2900552ee244d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+        "sha256": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "sha256": "9b00a0b24a46b10f9f3d1501a34a3245725f196e40342353930da7c0e2a1ff19"
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalWoundTreatmentPublicationTakeReceipt.cs",
+        "sha256": "cd4a90670295cf55b7ef128ee47fd6c38891e6ae2a5b1dbb5768d46d73ec3143"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+        "sha256": "cae67d35831c5cd67df85fc049657fb51ed400ba1749b984f0e4c6331afbeaf9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+        "sha256": "3bacf2c2294c88b10acd0d137c153ba2e219acc93903e74cad155081474d4705"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "6211a8767cdb31b746a7e174a692cb80d015f4179af93e1ce06003a7ea5bc4ba"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AudioService.cs",
+        "sha256": "2236f56e7f3c6b626d249a480eb6065abe8fe4dbb311386606dbe40949d3f67c"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "3b6458ede9a6639f19214ac27baddab71e54ee3c35b72b8b62bc726923bc0836"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "5201147807846bd1c327b1ba91db9bc51c6b6702c7a2aaa8a331c4e27372c889"
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+      }
+    ]
   }
 }

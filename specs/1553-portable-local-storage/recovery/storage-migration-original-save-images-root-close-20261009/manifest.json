@@ -1,0 +1,62 @@
+{
+  "scope": "Original typed defaultSave2 optionalimagesroot link vsnormal exactnames. Real coldgeneration/currentdefaultvalidation/actualmanifestedcommit. Normalnpcs/uppercaseScenes observedrelative reads preserved, lowerscenes excluded; linkedoptionalroot0imagesreads/fulloutsidebytes+link unchanged/strictroots/staging+locksettled. Noexternalread originallydemonstrated, originalrejection couldbreakSaveavailability. No fullSaveLoad/native/provider/process/game/B2-B5/legacySave qualification.",
+  "build_refusal": {
+    "source": "54bf4bd253970a660c3991bfa339f39d6c253e7b",
+    "artifacts": [
+      {
+        "path": "build_refusal-20261009-231122-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-231122-359-472892-89411552ff6943f9bc603d941dd6367e-categories/summary.json",
+        "sha256": "e7f77345149068b861878c6c81126f7e149dccc63ea190a644521bddf0e458c8",
+        "originalSha256": "e7f77345149068b861878c6c81126f7e149dccc63ea190a644521bddf0e458c8"
+      },
+      {
+        "path": "build_refusal-20261009-231122-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-231122-359-472892-89411552ff6943f9bc603d941dd6367e-categories/dotnet-test.log",
+        "sha256": "1403b899dbc4eee8822efbcef72becfd6c2175185453c67149f3d1058d5ac7b2",
+        "originalSha256": "af5f5850c84fab2e09872be8e0c40c6c21e43847d3ed227695af0c63e0b8607c"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/SaveOptionalImagesRootTests.cs",
+        "sha256": "fcbd3064c34f48c21f19c0378a5084296757092f672730aa4665d173d7046a4b"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/PortableSaveFixture.cs",
+        "sha256": "7c05b769b4342ccad9692599eab0f37d35e4dea4077631ab213a62680a81e2b6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+        "sha256": "4dc4ba830b49d561a5e0dd5b7d80215e12ff4800c7c550b265e4cf17193f231b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+        "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "3b6458ede9a6639f19214ac27baddab71e54ee3c35b72b8b62bc726923bc0836"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "5201147807846bd1c327b1ba91db9bc51c6b6702c7a2aaa8a331c4e27372c889"
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+      }
+    ]
+  }
+}

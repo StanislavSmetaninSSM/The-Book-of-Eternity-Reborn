@@ -182,7 +182,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.True(files.FileExists("lore/shining_abode/realm_lore.json"));
                 Assert.True(GetPrivateField<StateManager>(engine, "_stateManager").CurrentState.IsInShiningAbode);
                 Assert.NotEqual(beforeFiles[files.ResolvePath(ShiningAbodeState.StatePath)], afterFiles[files.ResolvePath(ShiningAbodeState.StatePath)]);
-                var validator = new BookOfEternityClient.Services.Validation.ValidationService(files, NullLogger<BookOfEternityClient.Services.Validation.ValidationService>.Instance);
+                var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
                 Assert.Empty(await validator.ValidateAcceptedTurnCanonicalResourceMaterializationAsync());
             }
             else
@@ -194,7 +194,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var pendingAfter = JsonNode.Parse(LocalSettingsPreparation.DecodeText((await files.ReadFileBytesAsync(WoundAcceptedTurnSnapshotContract.PendingResolutionPath))!))!.AsObject();
                 Assert.False(MortalWoundTreatmentDurableSurfaceQuarantine.ContainsExactRequestRows(new JsonObject(), pendingAfter,
                     context!.Request.Coordinates.OperationKey, context.Request.Coordinates.AttemptId, context.Request.RequestFingerprint));
-                Assert.Empty(await new BookOfEternityClient.Services.Validation.ValidationService(files, NullLogger<BookOfEternityClient.Services.Validation.ValidationService>.Instance).ValidateAcceptedTurnCanonicalResourceMaterializationAsync());
+                Assert.Empty(await new ValidationService(files, NullLogger<ValidationService>.Instance).ValidateAcceptedTurnCanonicalResourceMaterializationAsync());
             }
         }
     }

@@ -1,3 +1,16 @@
+## New Engine fixture namespace correction / zero execution preserved — WIP, 2026-10-09
+
+SharedfreshPlan attempt231122 at54bf4bd2 failed integrationbuild43.2885888s,
+0planned/0executed/exit1/noTimeout/bothcleanup. CompilerCS0234 fourreferences in
+EngineFinalfixture used nonexistent Services.Validation namespace; actualtype
+Services.ValidationService. Fourreferences now use existingusing ValidationService.
+No runtime/testscenario/helper change. Same ONE failedbuild archived build_refusal
+phase inEngineFinal/SaveImagesRoot/Treatment packets, never causalRED orGREEN.
+ProductionEngine2/Save unchanged; Treatment02eca5d7 sourcegatePASS remainsUNRUN.
+Next precisefixturecompilecorrectiongate thenfreshPlan9/3 again before separate
+actualTreatmentGREEN3/Engineoriginal4/Saveoriginal2. NoNoBuild onfailedbuild.
+T061–T065/B2–B5/native/wholemigration stayopen.
+
 ## Save optional images root — test-first WIP, 2026-10-09
 
 Independentfixture/design/exact2PASSfcbd3064 installedbyte-identical. Actualdefault
