@@ -1,3 +1,15 @@
+## F18 current gacha replacement — bounded result, 2026-10-09
+
+Authentic diagnostic115443 exposed legitimate pending-gacha Clear refusal. Runtime
+850dde reuses full current authority/request/hash validation and exact retained backup
+membership; only Clear gets this exception. Strict ordinary file-free direct-gacha
+structure survives crash/restart without evidence deletion. Baseline1212357P/2genuineF;
+freshPlan1214259/2;actual1215299/9PASS14.2892674s,bothcleanup;catalog121603548/11339
+valid0. Packet storage-migration-gacha-clear-20261009 has41artifacts32pins. Green raw/
+carrier review pending. Earlier mixed8 now has7PASS88130 plus gacha850dde, no rerun7.
+Dual3d2 raw accepted atcdc. Six generation fixtures source-qualified next; native3,
+physical cuts/F16/concrete owned close and whole registry remain open. B2–B5 paused.
+
 ## F18 current bounded evidence — 2026-10-09
 
 Original ordinary contention4 at9fcbbec completes4/4 Linux PASS112704,8.6052322s,

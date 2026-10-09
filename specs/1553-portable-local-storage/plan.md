@@ -1,3 +1,25 @@
+## F18 current-gacha Clear — measured GREEN9, 2026-10-09
+
+Source850dde2352590fdf9fc7caafac1d975e3bc93faa has independent SOURCE/BASELINE RAW/
+EXACT9 PASS. Fresh both-project Plan121425 selects9/2,0executed,57.9948993s.
+Actual121529 completes9/9PASS in14.2892674s,complete2/2,bothcleanup,no skips/duplicates/
+timeouts. Original gacha pause1/main5/canonical0 and both actual actors settled; Clear
+publishes1Committed with10member mutation boundaries and a different generation.
+Fresh StateManager bootstrap returns that exact new generation; old session artifacts
+are absent. Four refused real-gacha scenarios each enter1replacement lock with0mutation/
+publication and retain all9/9/10/9 exact images respectively (backup drift/request
+mismatch/unmapped backup/no-clear rotation). Five emitted roots absent. Empty known
+structure passes two bootstraps; unknown-empty/link and existing orphan refuse.
+
+Discovery121603 at same clean source:548categories/11339methods-files valid,0executed,
+8.3694040s,bothcleanup, matching fresh both-project output. [Packet](recovery/storage-migration-gacha-clear-20261009/manifest.json)
+has41artifacts/originals32pins, verified locally; independent GREEN raw/carrier gate
+pending. No nativeWindows/fullF18/whole accepted-turn or injected close-failure claim.
+The old mixed8 is now composed evidence:7PASS88130 + corrected gacha at850dde,
+not a newly rerun8. Dual3d2 source accepted independently atcdc. Next six generation
+fixture ports, native capability classification/physical cuts, F16, owning closes and
+whole registry; B2–B5 remain paused and T061–T065 remain unchecked.
+
 ## F18 current-gacha Clear — baseline measured, runtime WIP, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT9 PASSdd35c289. Corrected fresh unit Plan121133

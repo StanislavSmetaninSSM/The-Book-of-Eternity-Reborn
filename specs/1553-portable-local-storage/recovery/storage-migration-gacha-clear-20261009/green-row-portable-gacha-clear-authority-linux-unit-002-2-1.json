@@ -1,0 +1,10 @@
+{
+  "kind": "f18-admission-contention",
+  "method": "TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts",
+  "root": "/tmp/boe-afterlife-write-89c876c5c91f4ca8a0e2d8e789958e0e",
+  "paused": 1,
+  "mainContentions": 5,
+  "canonicalContentions": 0,
+  "firstSettled": true,
+  "secondSettled": true
+}

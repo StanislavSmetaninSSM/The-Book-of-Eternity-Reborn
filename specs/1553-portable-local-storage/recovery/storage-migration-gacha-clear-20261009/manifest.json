@@ -196,5 +196,196 @@
         "sha256": "12ea8554be6816a376da6f7f6e6844c2247525c1ba91c516ff412089fa240821"
       }
     ]
+  },
+  "green": {
+    "source": "850dde2352590fdf9fc7caafac1d975e3bc93faa",
+    "artifacts": [
+      {
+        "path": "green-20261009-121425-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121425-506-340534-f4c668ad7f0445438413f840b797e325-categories/plan.json",
+        "sha256": "48b121f13463c9b2b0a2d91cd5176349c40cb57a913961a6d1131a4c4f483b33",
+        "originalSha256": "48b121f13463c9b2b0a2d91cd5176349c40cb57a913961a6d1131a4c4f483b33"
+      },
+      {
+        "path": "green-20261009-121425-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121425-506-340534-f4c668ad7f0445438413f840b797e325-categories/summary.json",
+        "sha256": "3800b3a1b5da5982d47365e53214f7f977c339df008796276ff7ede99b86d2cd",
+        "originalSha256": "3800b3a1b5da5982d47365e53214f7f977c339df008796276ff7ede99b86d2cd"
+      },
+      {
+        "path": "green-20261009-121425-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121425-506-340534-f4c668ad7f0445438413f840b797e325-categories/Build-integration.log",
+        "sha256": "27eefabc8b53dfa035edbda34f1e22a2699d49aacc13bc11ae6e8fd067b7bbc6",
+        "originalSha256": "e3a792f7677e6b5e3cd56d9f68cc3965f577e90fdccff5f61c8bd75935baf6aa"
+      },
+      {
+        "path": "green-20261009-121425-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121425-506-340534-f4c668ad7f0445438413f840b797e325-categories/Build-unit.log",
+        "sha256": "5a05f914779a796e8bb09cb50cccf11638858f129142cf959597cfc5c578781d",
+        "originalSha256": "cdca7849ea67cddaa2b5fef60bcef03b686fd007a7a54e932c0f98ef36675024"
+      },
+      {
+        "path": "green-20261009-121425-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121425-506-340534-f4c668ad7f0445438413f840b797e325-categories/dotnet-test.log",
+        "sha256": "bd2c0b19599f34f29b241494de3246d86167f371d1e2da61b7af19ecca833e99",
+        "originalSha256": "918fa710efc80e99f5ac8161e8fc1113bd4ff21079436f26da64091e39c5f586"
+      },
+      {
+        "path": "green-20261009-121529-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121529-021-340952-331c00f9d77f400e835a51e149a92b43-categories/plan.json",
+        "sha256": "304aad089ecf28e427a4796a5bd22c353cd887c413ffe1e3cd5aa489ab592664",
+        "originalSha256": "304aad089ecf28e427a4796a5bd22c353cd887c413ffe1e3cd5aa489ab592664"
+      },
+      {
+        "path": "green-20261009-121529-portable-gacha-clear-authority-linux-unit-002.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121529-021-340952-331c00f9d77f400e835a51e149a92b43-categories/portable-gacha-clear-authority-linux-unit-002.trx",
+        "sha256": "d396c3ccfb1afe02375e89773b6a19296fee2a21f6d51e57e1dbc11620130882",
+        "originalSha256": "fed4f0db9624555b6f08de4befb9eb3ca2bcf45aabc7c27ed6ad61e643afc9dc"
+      },
+      {
+        "path": "green-20261009-121529-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121529-021-340952-331c00f9d77f400e835a51e149a92b43-categories/summary.json",
+        "sha256": "80d45240290caf8a63b46e393fd90a55d0e5d6e3a1d37aa7db73e363bfa12721",
+        "originalSha256": "80d45240290caf8a63b46e393fd90a55d0e5d6e3a1d37aa7db73e363bfa12721"
+      },
+      {
+        "path": "green-20261009-121529-portable-gacha-clear-authority-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121529-021-340952-331c00f9d77f400e835a51e149a92b43-categories/portable-gacha-clear-authority-linux-integration-001.trx",
+        "sha256": "cd9dfa3471813b450a84c65e59a1273f1ddf296c154abe3085e0f8dd741f46c5",
+        "originalSha256": "a7905a2118dd3402949af2f82a2434b516e4416041986ff1b3f03356896976cd"
+      },
+      {
+        "path": "green-20261009-121529-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121529-021-340952-331c00f9d77f400e835a51e149a92b43-categories/dotnet-test.log",
+        "sha256": "52a447e9ea92c3c69a8cea064500e840764a91a03623405e9179789e046494e1",
+        "originalSha256": "16d278f536f35f9bc232eed35ae86eac5f100217641d8e092087ee16fb1e1406"
+      },
+      {
+        "path": "green-20261009-121603-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121603-073-341293-ad0f02013c3f4e90971c310b3f5e9014-categories/catalog-audit.json",
+        "sha256": "4689fcfe8aece711a2464d16a2204070e7f43edaa0f93176903af86b19f928eb",
+        "originalSha256": "4689fcfe8aece711a2464d16a2204070e7f43edaa0f93176903af86b19f928eb"
+      },
+      {
+        "path": "green-20261009-121603-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121603-073-341293-ad0f02013c3f4e90971c310b3f5e9014-categories/summary.json",
+        "sha256": "75d62c9d6656fea65c5d03cb3522fa1b6f4c6efde6d7eeb113191ba1729e1a04",
+        "originalSha256": "75d62c9d6656fea65c5d03cb3522fa1b6f4c6efde6d7eeb113191ba1729e1a04"
+      },
+      {
+        "path": "green-20261009-121603-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-121603-073-341293-ad0f02013c3f4e90971c310b3f5e9014-categories/dotnet-test.log",
+        "sha256": "fe26d7d18acf99457c33dc4d82b7e4410a7d8b45f53b27a817eca6f419c258d8",
+        "originalSha256": "34786e0908d596388336638cb990d63250645b36f81f869f6ae5ed0ae6aee050"
+      },
+      {
+        "path": "green-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-gacha-clear-green/emitted-roots-after-run.json",
+        "sha256": "f75d02e20dea8d07acf6fe3c922e8e5ee811efccf5fbd5614f84964b5ffd8342",
+        "originalSha256": "f75d02e20dea8d07acf6fe3c922e8e5ee811efccf5fbd5614f84964b5ffd8342"
+      },
+      {
+        "path": "green-row-portable-gacha-clear-authority-linux-unit-002-7-0.json.gz",
+        "source": "/tmp/boe-gacha-clear-green/portable-gacha-clear-authority-linux-unit-002-7-0.json",
+        "sha256": "76549ea2078ff3159b60a99137bba1b2ff2c1d50a843c32813151550b8397638",
+        "originalSha256": "95cc769459abae659e713cd54969c61db18f33c8a82e58ba96f01e863874f5e4"
+      },
+      {
+        "path": "green-row-portable-gacha-clear-authority-linux-unit-002-6-0.json.gz",
+        "source": "/tmp/boe-gacha-clear-green/portable-gacha-clear-authority-linux-unit-002-6-0.json",
+        "sha256": "c902fa5dd3960b4b73c0f308c5abc05e4d9e449a5f8f65227e9750da9302b852",
+        "originalSha256": "fab8595b419e396ae86e070b9e7032f0176225432a50316487d9f3833d6d0bf1"
+      },
+      {
+        "path": "green-row-portable-gacha-clear-authority-linux-unit-002-4-0.json.gz",
+        "source": "/tmp/boe-gacha-clear-green/portable-gacha-clear-authority-linux-unit-002-4-0.json",
+        "sha256": "bd7146e36b92b5a071cbcd593d09fda67a4e716f15a37447bdcf4df86e422073",
+        "originalSha256": "2bed2b2d5817852ff9559fa97926409ff192e39546635f7de362cfbfadc6ca84"
+      },
+      {
+        "path": "green-row-portable-gacha-clear-authority-linux-unit-002-2-1.json",
+        "source": "/tmp/boe-gacha-clear-green/portable-gacha-clear-authority-linux-unit-002-2-1.json",
+        "sha256": "330208486c6b318ee697ead661a17f4693d38fdf841a2c243e55330e042bc9a0",
+        "originalSha256": "330208486c6b318ee697ead661a17f4693d38fdf841a2c243e55330e042bc9a0"
+      },
+      {
+        "path": "green-row-portable-gacha-clear-authority-linux-unit-002-2-0.json",
+        "source": "/tmp/boe-gacha-clear-green/portable-gacha-clear-authority-linux-unit-002-2-0.json",
+        "sha256": "3a9c507945941710a11d6406f923a177a83496f58e565a142722abf6e4ddc313",
+        "originalSha256": "3a9c507945941710a11d6406f923a177a83496f58e565a142722abf6e4ddc313"
+      },
+      {
+        "path": "green-row-portable-gacha-clear-authority-linux-unit-002-0-0.json.gz",
+        "source": "/tmp/boe-gacha-clear-green/portable-gacha-clear-authority-linux-unit-002-0-0.json",
+        "sha256": "64de86b0c7ea639205cdfc6a8630d1e31819f6b510e74c91f35d5f9506612c86",
+        "originalSha256": "74c81bdd94615ff92bc6ab63ede3ec96edaa7391fbfefecc12d94f911385bc08"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.Tests/WebUi/BrowserAfterlifeWriteServiceTests.cs",
+        "sha256": "aa3a87f3ee9d4b557fbcb4453606a00842af6da92c3f18e8fa067062f064d1d7"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PortableClientStorageTests.cs",
+        "sha256": "9a74c2777efb69472f612e739a53ca7704eb181ae65720986d7501e02f68fe06"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+        "sha256": "91c161c677bd75aba6694cf6e138f1e9b978a6a4661bc1915fb7b99244639c67"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "04a6e8aeb0e6138cd1e4b87744e9a40b03e98e8885a05140a503c02d49f213f9"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "a97a457256a092745d1a60d45f50972eb70d953fd4b106f7d01d2179ead83870"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+        "sha256": "1e1bca8520a3e65d2177a9819af87f10adbcef65a7fb77fb2628a0bcb322abb7"
+      },
+      {
+        "path": "BookOfEternityClient/Core/StateManager.cs",
+        "sha256": "fdf7fa9d071c750a18a27eab0d0ac25dd2d036a3eec06544fe639fd699c4d997"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs",
+        "sha256": "4416fa9a8002ed65fba07505edbdf17065652c254072846e526f8317a2359ed4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.BrowserProtocol.cs",
+        "sha256": "2c94c73cffaf46b11440dbd62b7ef680934ea56a33fdb16096511aa7eb45eb1d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs",
+        "sha256": "385e5b7d62360681e89ef506dddf5de67137295fc093cd3bf158131cf1c04b3f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "sha256": "02cd444581a0bd93fc671cc1b9a6dd29005e485321adf403365f034db3461f14"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+        "sha256": "4ca72db8015ef37822f9dcce8ef40529c8bd624f8ad0f4cdc5c0f74a6d374d6a"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+        "sha256": "d260f9d8309dfb39611715a7b1417dc259840c824026c87976279ae9e12f8525"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "6b2f18c467019e594644d22e618570c94b98854267c920197d5b25727c06566f"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "12ea8554be6816a376da6f7f6e6844c2247525c1ba91c516ff412089fa240821"
+      }
+    ]
   }
 }
