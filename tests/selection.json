@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-mods-original-ui-detail",
-      "reason": "F16 isolated original detail-panel fixture oracle correction after baseline135881/1429391PASS1old-oracleFAIL. Exact one intentional manual-path line allowed; all other technical/error assertions retained. First choices PASS retained without replay; fresh Plan1/actual1 pending.",
+      "reason": "F16 isolated failed original detail oracle corrected at5e0a: Plan1431431/0; actual1432411PASS with exact single current manual-path line, other technical/error checks retained and root removed. ChoicesPASS135881 retained without replay; original baseline failure preserved.",
       "contracts": [
         "#1553",
         "T064-STORAGE-CUTS",
@@ -12,7 +12,7 @@
     },
     {
       "category": "portable-mods-original-ui",
-      "reason": "F16 outstanding original /моды UI oracle omitted from accepted listings15: exact two original panels, no whole console-explorer. First record unchanged old no-game_session assertion, then permit only the exact intentional manual-opening path while retaining technical-leak/hidden-error checks. Runtime unchanged; current execution pending.",
+      "reason": "F16 original /моды composed2: choices1@135881/142939 plus corrected detail1@5e0a/143241. Original2 baseline1PASS1old-path-oracleFAIL retained. Exact intentional manual line once, remaining technical/hidden-error checks and strict root cleanup; runtime unchanged, no desktop/native/whole-UI claim.",
       "contracts": [
         "#1553",
         "T064-STORAGE-CUTS",
@@ -21,7 +21,7 @@
     },
     {
       "category": "legacy-physical-publication-windows",
-      "reason": "T064 six retained native physical recorder/recovery controls now use their explicit original legacy handler and require positive native hook reachability. Cloud build/discovery only; Windows execution remains unrun and cannot be inferred from Linux. No ordinary-publication or B2 claim.",
+      "reason": "T064 retained native physical recorder/recovery6 source-qualified135881 and Plan1427596/0 alongside mods2: same explicit legacy lease, positive original native hook requirements, strict cleanup. All compile/discover; Windows execution UNRUN. No Linux/native PASS inference, ordinary writer or B2 claim.",
       "contracts": [
         "#1553",
         "T064-STORAGE-CUTS",

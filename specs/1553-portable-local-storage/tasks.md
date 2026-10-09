@@ -1,3 +1,28 @@
+## F18 native6 source qualification and mods composed2 GREEN — 2026-10-09
+
+Independent source/exact8 PASS135881 and baseline/classification/source-exact1 PASS5e0a.
+Native6 fresh Plan1427598/2 with mods2,0execution92.2573195s (build87.7971458s):
+all six renamed original physical handler controls compile/discover; Windows execution
+UNRUN. Positive native hooks/identity/absence/recovery remain future native obligations.
+Dead Location callback/Arm/property/fields removed after zero-callsite census; current
+LocalPublicationObserver forwarding and accepted Location8/offscreen1 unchanged.
+
+Mods detail isolated freshPlan1431431/0,53.3858270s; actual1432411/1PASS8.2175791s,
+complete1/1,bothcleanup,0skip/duplicate/timeout. Exact manual label+path occurs once;
+after removing only that literal line, no game_session remains. Original hidden-error/
+technical/title assertions pass; owned root removed. Composed2=choices1@135881/142939
++ corrected detail1@5e0a/143241, not one2GREENrun. Historical1PASS/1old-oracleFAIL
+retained; no runtime change, desktop launch, live GM or B2 development.
+
+Discovery143302567categories/11344methods-files valid0,10.1234952s,bothcleanup.
+NoBuild integrationfresh5e0a/unit533; production/projects unchanged. Packet
+[manifest](recovery/storage-migration-native-mods-20261009/manifest.json)27artifacts/
+originals39pins verified, baseline13/13 unchanged. Final independent RAW/CATALOG/CARRIER
+review pending. Treatment reason correction3b249330 independently closed without replay.
+Remaining F18: C4/wound rollback witnesses3; binding/staged/midpublication11 (worker1
+native, other10 file responders), faithful cleanup/cold boundaries. Remaining consumer/
+F16/owned-close registry queues unchanged; T061–T065 open and B2–B5 paused.
+
 ## F18 Treatment2 — composed Linux evidence complete, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT1 PASS06092c412c44b3b2d2fbcc63945480fe2f554fd4.

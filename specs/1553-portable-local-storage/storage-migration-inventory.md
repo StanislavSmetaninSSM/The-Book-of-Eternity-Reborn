@@ -1,3 +1,28 @@
+## F18 native6 source qualification and mods composed2 GREEN — 2026-10-09
+
+Independent source/exact8 PASS135881 and baseline/classification/source-exact1 PASS5e0a.
+Native6 fresh Plan1427598/2 with mods2,0execution92.2573195s (build87.7971458s):
+all six renamed original physical handler controls compile/discover; Windows execution
+UNRUN. Positive native hooks/identity/absence/recovery remain future native obligations.
+Dead Location callback/Arm/property/fields removed after zero-callsite census; current
+LocalPublicationObserver forwarding and accepted Location8/offscreen1 unchanged.
+
+Mods detail isolated freshPlan1431431/0,53.3858270s; actual1432411/1PASS8.2175791s,
+complete1/1,bothcleanup,0skip/duplicate/timeout. Exact manual label+path occurs once;
+after removing only that literal line, no game_session remains. Original hidden-error/
+technical/title assertions pass; owned root removed. Composed2=choices1@135881/142939
++ corrected detail1@5e0a/143241, not one2GREENrun. Historical1PASS/1old-oracleFAIL
+retained; no runtime change, desktop launch, live GM or B2 development.
+
+Discovery143302567categories/11344methods-files valid0,10.1234952s,bothcleanup.
+NoBuild integrationfresh5e0a/unit533; production/projects unchanged. Packet
+[manifest](recovery/storage-migration-native-mods-20261009/manifest.json)27artifacts/
+originals39pins verified, baseline13/13 unchanged. Final independent RAW/CATALOG/CARRIER
+review pending. Treatment reason correction3b249330 independently closed without replay.
+Remaining F18: C4/wound rollback witnesses3; binding/staged/midpublication11 (worker1
+native, other10 file responders), faithful cleanup/cold boundaries. Remaining consumer/
+F16/owned-close registry queues unchanged; T061–T065 open and B2–B5 paused.
+
 ## F18 Treatment2 — composed Linux evidence complete, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT1 PASS06092c412c44b3b2d2fbcc63945480fe2f554fd4.
@@ -526,7 +551,7 @@ counts, not defect counts. Existing F/T owners below are the single executable b
 | R12/R26 | F11/F12/F19, T062/T065 | Actual failed browser rollback/runtime/notice accepted83f. HTTP/DTO/stale response ownership stays separate; retain current source-reviewed admission/Running ACK contracts. UI/cache/player notifications are not storage observers. No blanket callback-to-endpoint acceptance. |
 | R20 | F13/F14, T063 | F13 concrete design is current: dedicated helper role, generation before recovery, full policy/read/witness unit under one short lease, bounded chunk transport without a new document ceiling; design accepted; causal10 has ten semantic failures reached across original nine plus corrected realm-link one; old fixture failure remains preserved. Final bounded source/selection PASS45a; composed53 Linux passing obligations across6d26/6ed/45a, including exact stale-byte and realm refusal. Earlier fixture/diagnostic failures preserved; final raw/carrier and parent fresh restoration PASS38940493, native unexecuted. Old helper lock is distinct from the facade lock. F14 runtime8dd now has independent source/selection and actual27/27 Linux evidence PASS: original-connection snapshots, actual held publication QTE reads, complete dynamic cohort witnesses, exact notes/Ready conditional publication and marked refusal/real close projection. Initial causal failures are preserved; packet414/132 and parent fresh GitHub-only restore946419 are accepted. Native and full client continuation remain unqualified; watcher hints/poll fallback, source identity and no replay are preserved. |
 | R25 | F16, T063 | Bounded image23 (runtimec02b3ed5), gallery8 (source4020035b) and canonical listings15 (runtime92382b4a) independently accepted; Story12 (runtimea5d9684e) GREEN with final evidence gate pending. Original canonical media/list/read/export authority is qualified only within those scopes. Remaining host separator/case identity extends into original snapshot producers/authority; full settings/GameLoop image contour, WorldSetup folder opener, manifest cache coherence, native/rotation/secondary-close remain open. BasePath guardian library initialization stays technical. |
-| R02/R13/R28 | F18, T064 | Reach-test ordinary vs physical/read/load callbacks, five named old ordinary FSM physical-hook tests, staged/spiritual/wound batching cuts and positive controls for zero-event assertions. MemberPublished is precommit; no async-void observer or nested canonical lease. Keep legacy/primitive/current-state-machine cuts with their real contract. |
+| R02/R13/R28 | F18, T064 | Reach-test ordinary vs physical/read/load callbacks, six named original FSM physical-hook tests (now explicit native legacy route), staged/spiritual/wound batching cuts and positive controls for zero-event assertions. MemberPublished is precommit; no async-void observer or nested canonical lease. Keep legacy/primitive/current-state-machine cuts with their real contract. |
 | R17/R18/R19 | F15, T063/T065 | Worker frame/peer/ApplyGate/synthetic bundle are independently typed ownership protocols. Audit found no new concrete stale consumer; preserve explicit platform capability refusal and original recovery handlers. Constructed paths/JSON/delegate edges remain checked at affected consumer boundaries, not converted wholesale to game journal. |
 | R22/R23/R24 | F15/F16/F19, T065 | Relay Unicode, single clipboard read and audio lifecycle callers source-reconciled; no additional concrete disconnect found. Preserve owner/debt/result/preview contracts and historical evidence limits. Do not run native desktop/provider work or claim Linux fixtures qualify Windows services. |
 | R27 | All, T064/T065 | Each bounded slice uses exact category PlanOnly/build → actual reached tests → discovery-only catalog → independent review → remote hashes/restore. No aggregate/CI changes and no acceptance from source strings, skip/early-return or counts alone. |
@@ -566,7 +591,7 @@ Classes: **M** migrated to current intended contract; **R** remaining migration 
 | Binding lifecycle `SpiritualBindingContinuation` | Old hook sets terminal-B flag; next lease interrupts cold path and later assertion requires it. Warm milestones are diagnostic. Migrate fixture phase observation under this storage task only; keep #1536 gameplay acceptance paused. |
 | `SpiritualStagedContinuation` | B-publication cold cut depends on old callback. Orphan-B `==0` counter alone is vacuous when the callback is bypassed; retained exact-byte assertions still help. Add positive reachability before relying on absence. |
 | `SpiritualMidPublication`, `MortalWoundRecovery.PublicationRollback`, `SpiritualCommonPublication` | Before-mutation assumptions about earlier published members are stale candidates. `wroteResources=true` before write is not a postpublication witness. Copied cold fixture must preserve the actual current journal/runtime/generation evidence, not only old per-file journal. Need causal reached-cut tests. |
-| FileSystemManager Windows-guarded atomic tests | `AtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination`, `...PriorAbsence`, `AtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence`, `AtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal`, `AtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes` call the ordinary facade yet expect old physical hooks/identity/quarantine. Route primitive-only tests explicitly to that primitive or migrate to current bytes/absence semantics. Removing platform guards is not a fix. |
+| FileSystemManager six native physical-publication controls | Source-qualified135881: renamed LegacyAtomicWrite source-link present/absent, rollback final-absence race, destination-link authority fence, prior-identity rollback and committed cleanup debt. All use existing RunLegacyStorageRecoveryAsync with same explicit lease; positive original native hooks, original identities/bytes/journal and strict cleanup. Exact Windows owner Plan6 compiled/discovered; native execution UNRUN. These deliberately retain the original physical handler and do not qualify ordinary writes. |
 | Effects/resources/wounds/GuardianCorrection/treatment observers and OriginalSaveProfileRefresh | Exact assignment/fixture occurrences are indexed. Decide phase, expected member and observer reachability per test, including callbacks supplied through probe helpers. Do not call an entire cohort broken from one stale assertion. |
 | PortableCoordinatedPublication and ordinary/backup routing controls | Existing patterns count the actual `MemberPublished` cut, verify full before-set/absence, committed cleanup debt and callback-route exclusion. Use these as controls; preserve dedicated legacy-route tests. |
 
