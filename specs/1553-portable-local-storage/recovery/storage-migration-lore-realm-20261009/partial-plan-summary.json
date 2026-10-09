@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "portable-lore-realm-outcome-causal-linux",
+    "portable-lore-realm-outcome-known-controls"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "c7672208a66319c5801196ffeea110e43ed0be2b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0419653,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0317272,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0784234,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 40.7174446,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 12.8738459,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0042996,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:01:00.5884803",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 14,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-lore-realm-outcome-causal-linux-integration-001",
+      "portable-lore-realm-outcome-known-controls-integration-002",
+      "portable-lore-realm-outcome-known-controls-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

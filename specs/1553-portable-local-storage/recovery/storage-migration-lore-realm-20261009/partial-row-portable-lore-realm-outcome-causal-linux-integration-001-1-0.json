@@ -1,0 +1,14 @@
+{
+  "Failure": null,
+  "remaining": {
+    "lore/current_world/a.json": null,
+    "lore/current_world/nested/b.json": null,
+    "lore/current_world/literal\\name.json": null
+  },
+  "Committed": {
+    "/tmp/boe-gameengine-turnlifecycle-37a208dee18b491eb0dcaaa978630bd2/game_session/lore/current_world/literal\\name.json": null,
+    "/tmp/boe-gameengine-turnlifecycle-37a208dee18b491eb0dcaaa978630bd2/game_session/lore/current_world/a.json": null,
+    "/tmp/boe-gameengine-turnlifecycle-37a208dee18b491eb0dcaaa978630bd2/game_session/lore/current_world/nested/b.json": null
+  },
+  "Sentinel": "retained rollback"
+}

@@ -1,3 +1,27 @@
+## Lore/realm partial14 receipt — 2026-10-09
+
+Runtime c7672208 passed independent SOURCE/EXACT14 and closed-census27/15 gate. Matching Plan033513
+fresh integration40.7174446s/unit12.8738459s,wall60.5884803s,14planned/3descriptors/0executed.
+Actual033623 completes13/14 cases in2/3descriptors,12PASS1fixtureFAIL,26.9628180s,exit1,no skipped/
+duplicates/runner timeout,both cleanup flags. The unit source guard is unexecuted after runner failfast.
+This is not final14GREEN. Packet now56 artifacts/31 source pins, all originals/expansions verified.
+
+All seven new cases PASS, including first ordinary lore deletion committed then genuine second-delete
+Unknown at the original HandleIncarnation boundary. Direct Clear commits exact three host-spelled
+members and preserves rollback sentinel; known pending-setup refusal still restores exact F03 before
+bytes. All five actual Unknown cuts now retain same original CSP, exact authentic journal/foreign bytes
+and zero later measured canonical work. Reset prior committed realm/quartet retention and all finite
+input/request bounds pass. Five original known integration neighbors also pass; no replay needed.
+
+Unchanged HandleIncarnation_SessionReplacementAfterBinding fails its fixture at line953: it awaits
+ClearGameState while the original bound operation holds the current main-owner admission and waits
+for releaseOperation. Actual stack is GmMainOwnerGuard→MainAdmission→AcquireMainLifecycle; its ten-second
+lock retry refuses before replacement. This is not evidence of lore regression or failed generation
+fencing. The old fixture lacks a finally barrier release/direct original-task drain; runner cleanup
+cannot substitute that missing logical settlement. Determine a source-correct current-admission control,
+retain this failed recipe, isolate corrected1 plus unrun sourceguard1 after frozen review/fresh matching
+build; do not replay the accepted12. No new product/runtime change inferred from this fixture failure.
+
 ## Lore/realm runtime WIP and finite14 — 2026-10-09
 
 Independent raw and carrier1f6e73cb gates PASS (26/14); parent separately verified original7 raw and

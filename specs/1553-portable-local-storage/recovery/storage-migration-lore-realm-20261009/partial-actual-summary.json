@@ -1,0 +1,72 @@
+{
+  "Categories": [
+    "portable-lore-realm-outcome-causal-linux",
+    "portable-lore-realm-outcome-known-controls"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "c7672208a66319c5801196ffeea110e43ed0be2b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-lore-realm-outcome-causal-linux",
+      "Seconds": 5.0578471,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-lore-realm-outcome-known-controls",
+      "Seconds": 14.6769173,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0414506,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0331088,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0844626,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:00:26.9628180",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 14,
+    "CompletedCases": 13,
+    "UnderfilledDescriptors": [
+      "portable-lore-realm-outcome-known-controls-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 13,
+    "Executed": 13,
+    "Passed": 12,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}
