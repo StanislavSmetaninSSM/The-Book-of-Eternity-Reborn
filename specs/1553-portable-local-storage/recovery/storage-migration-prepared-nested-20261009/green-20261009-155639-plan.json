@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "portable-prepared-nested-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "cb670be5863b1d05fc17dad1bd42ff539e9789e1",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 59.8183027,
+  "Descriptors": [
+    {
+      "Name": "portable-prepared-nested-outcomes-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-prepared-nested-outcomes",
+      "Categories": [
+        "portable-prepared-nested-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PreparedNestedSettingsOutcomeTests.OriginalServicesInNestedBindingPreservePreparedDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PreparedNestedSettingsOutcomeTests.OriginalServicesInNestedBindingPreservePreparedDecision",
+          "Cases": 10
+        }
+      ]
+    },
+    {
+      "Name": "portable-prepared-nested-outcomes-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-prepared-nested-outcomes",
+      "Categories": [
+        "portable-prepared-nested-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

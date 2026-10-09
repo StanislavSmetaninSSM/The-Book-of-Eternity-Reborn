@@ -1,3 +1,35 @@
+## Prepared nested original services — Linux11/11 GREEN, final evidence gate pending
+
+Sourcecb670be5 independent RED/raw/minimal-source PASS. Fresh both-projectPlan155639
+11/2,0execution60.0954678s (integration40.811141s,unit11.633035s); actual155753
+**11/11PASS**, complete2/2,13.3672497s,0skip/duplicate/timeout,bothcleanup.
+Commands: `./scripts/test-csharp.ps1 -Category portable-prepared-nested-outcomes -PlanOnly -Parallelism 1`,
+then same category `-NoBuild -Parallelism 1`. All10 original settings/audio rows and
+original generation-revocation Fact pass. Each of six genuine Unknown cuts retains
+exact actual journal/foreign/generation and has0laterordinaryleases/admissions,
+reads/mutations/publications/recovery plus exactly1read-only closing. Four config
+Committed witnesses (healthy2 and releaseUnknown2) have real Committed=true and
+AfterSHA matching actual config; original DTO/warning/cause/runtime/known rollback
+oracles pass. All10 original roots removed after real AudioService disposal.
+Three production ExecutePrepared consumers: settings, audio and ConsoleSettingsSession;
+this minimal shared capture preserves outcome mapping/ordinary success. Existing
+console caller ownership/semantics remain unchanged; no HTTP/native/audio-playback claim.
+
+Discovery155910 validates576categories/11345methods-files,0tests,8.4213175s,bothcleanup;
+both projects freshly built atcb670be5. [Packet](recovery/storage-migration-prepared-nested-20261009/manifest.json)
+now64artifacts/originals32pins, prior RED30/16 immutable; hashes/source/originals
+verify before publication. Independent final GREEN/CATALOG/CARRIER review pending.
+Historical RED is4P6reachedcausalF+unit1UNRUN, not an eleven-case run. No aggregate,
+B2–B5, live GM or native Windows execution; T061–T065 remain unchecked.
+
+Next Image residual source admission: admitted lookup/export/scene canonical source,
+exact bytes detached before external export, canonical prompt/output lookup under
+short original lease released before desktop/provider; preserve external prompt handling
+and original browser existing-image caller's held lease with explicit overload. Select
+11 offline original-consumer controls plus3 unchanged original export Facts, not the
+accepted image23 write/gallery cohort. F16signed/ZIP, original owned closes, current
+registry and fresh GitHub-only restore remain open.
+
 ## F18 shared-helper five — Linux5/5 PASS, evidence review pending, 2026-10-09
 
 Continuation from published d8799cfde6c8401d4ab93e8399f6aa428387bdc0; both local
