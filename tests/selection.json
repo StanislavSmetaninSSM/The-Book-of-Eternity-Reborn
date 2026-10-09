@@ -1455,6 +1455,19 @@
         "T064-STORAGE-CUTS",
         "T065-STORAGE-CLOSURE"
       ]
+    },
+    {
+      "category": "portable-treatment-terminal-committed-observer",
+      "reason": "Isolate the one pre-operation observer prerequisite failure from initial1401081PASS/1FAIL: baseline must be original durableBefore, late arm occurs after accepted publication consumed command. Require genuine committed presence/removal/restoration and unchanged original release contract; freshPlan1 and actual1 pending.",
+      "contracts": [
+        "#1553",
+        "F18",
+        "FR-002",
+        "FR-004",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
     }
   ]
 }

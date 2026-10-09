@@ -61,20 +61,29 @@ public sealed partial class MortalWoundTreatmentResolverTests
         private MortalWoundTreatmentAttemptRequest? _request;
         private byte[]? _generation;
         private readonly List<object> _events = [];
+        private readonly HashSet<string> _present = new(StringComparer.Ordinal);
         private readonly HashSet<string> _removed = new(StringComparer.Ordinal);
+        private Dictionary<string, byte[]?>? _baseline;
+        private Dictionary<string, byte[]?>? _atArm;
         private readonly HashSet<string> _restored = new(StringComparer.Ordinal);
         internal bool ObservedCommandRemoval => _removed.Contains(AcceptedMechanicsPlan.WoundCommandPath);
         internal bool ObservedPendingRemoval => _removed.Contains(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
         internal bool PendingContainedRequest { get; private set; }
 
-        internal void Arm(FileSystemManager files, MortalWoundTreatmentAttemptRequest request)
+        internal void Arm(FileSystemManager files, MortalWoundTreatmentAttemptRequest request,
+            IReadOnlyDictionary<string, CanonicalBeforeImage> before)
         {
             _files = files; _request = request;
             _generation = CleanupPublicationCut.ReadOptional(files.SessionGenerationPath);
-            Assert.True(ContainsTreatmentRequest(CleanupPublicationCut.ReadOptional(
-                files.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)), true, request));
-            PendingContainedRequest = ContainsTreatmentRequest(CleanupPublicationCut.ReadOptional(
-                files.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath)), false, request);
+            _baseline = before.ToDictionary(pair => pair.Key, pair => pair.Value.Bytes, StringComparer.Ordinal);
+            _atArm = before.ToDictionary(pair => pair.Key,
+                pair => CleanupPublicationCut.ReadOptional(files.ResolvePath(pair.Key)), StringComparer.Ordinal);
+            // The open accepted publication has already consumed the live command.
+            // The transaction owns the captured original before-images and restores
+            // them before attempting terminal quarantine; observe that real sequence.
+            Assert.True(ContainsTreatmentRequest(_baseline[AcceptedMechanicsPlan.WoundCommandPath], true, request));
+            PendingContainedRequest = ContainsTreatmentRequest(
+                _baseline[WoundAcceptedTurnSnapshotContract.PendingResolutionPath], false, request);
         }
 
         internal void Observe(TrustedLocalPublicationPhase phase, int index)
@@ -85,14 +94,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 var contains = ContainsTreatmentRequest(image.Bytes,
                     image.Path == AcceptedMechanicsPlan.WoundCommandPath, _request!);
                 _events.Add(new { sequence = _events.Count + 1, image, contains });
-                if (!contains) _removed.Add(image.Path);
-                else if (_removed.Contains(image.Path)) _restored.Add(image.Path);
+                if (image.Path != AcceptedMechanicsPlan.WoundCommandPath && !PendingContainedRequest) continue;
+                if (contains)
+                {
+                    Assert.Equal(_baseline![image.Path], image.Bytes);
+                    if (_removed.Contains(image.Path)) _restored.Add(image.Path);
+                    _present.Add(image.Path);
+                }
+                else
+                {
+                    Assert.Contains(image.Path, _present);
+                    _removed.Add(image.Path);
+                }
             }
         }
 
         internal void WriteEvidence(Action<string> output) => output(JsonSerializer.Serialize(new
         {
-            kind = "treatment-terminal-committed-removal", _events, _removed, _restored,
+            kind = "treatment-terminal-committed-removal", _baseline, _atArm, _events, _present, _removed, _restored,
             PendingContainedRequest, _generation,
             generationAfter = CleanupPublicationCut.ReadOptional(_files!.SessionGenerationPath),
             journalAfter = CleanupPublicationCut.ReadOptional(TreatmentJournalPath(_files))

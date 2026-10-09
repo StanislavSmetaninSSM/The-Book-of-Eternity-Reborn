@@ -3438,7 +3438,7 @@ public sealed partial class MortalWoundTreatmentResolverTests(ITestOutputHelper 
 
         using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
         {
-            observer.Arm(fixture.FileSystem, request);
+            observer.Arm(fixture.FileSystem, request, durableBefore);
             try { publication.ExpectTerminalReleaseFailure("rolled_back"); }
             finally { observer.WriteEvidence(output.WriteLine); }
             observer.AssertReached();

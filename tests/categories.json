@@ -20729,6 +20729,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-treatment-terminal-committed-observer",
+      "responsibility": "F18 isolated original terminal-release refusal observer after correcting baseline timing: original accepted publication consumes live command, then terminal release actually commits original request restoration, exact quarantine and restoration on refusal. Preserve original ReleaseFailed/tree/held-blocker assertions and strict actual-lease cleanup.",
+      "excludes": "No replay of passing command-proof row, new wound/B2-B5 gameplay, invented uncertainty, broad treatment or native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ResourcePublication.cs",
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PublicationObservers.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuaranteedResourceQuantity_TerminalLifecycleReleaseRefusalRestoresDurableRequestRetainsHoldAndRequiresRestart"
+          ]
+        }
+      ]
     }
   ]
 }

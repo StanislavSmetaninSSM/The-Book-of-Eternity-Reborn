@@ -1,3 +1,20 @@
+## F18 terminal treatment observer — isolated timing correction WIP, 2026-10-09
+
+Base076269a3 preserves initial1401081PASS/1pre-operation fixtureFAIL unchanged.
+Actual first-row committed command43780bytes confirms exact original request row shape;
+root traced original release sequence to RestoreExactBeforeImages→quarantine→refused
+lifecycle release→RestoreExactBeforeImages. New observer now accepts original durableBefore,
+validates request presence there, records raw baseline/current-at-arm and keeps late arm
+AFTER genuine accepted publication. Require actual committed presence before removal and
+subsequent restoration, including pending only when original baseline held the request.
+No manually restored bytes, altered request, bypassed validation or production fix.
+
+Only terminal observer/call changes; successful command-proof observer/body unchanged.
+Exact failed Fact owner portable-treatment-terminal-committed-observer1 avoids replayPASS1;
+original2 and semantic owners retain membership. Frozen source/fixture gate and fresh
+integration Plan1 precede actual1; catalog/final evidence pending. Whole queues/B2pause/native
+limits unchanged. Initial RAW/classification/carrier PASS076269a3; restore witnesses must equal exact original baseline bytes.
+
 ## F18 Treatment2 — one PASS / one observer prerequisite failure, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT2 PASS8c49f44f. Fresh integration Plan1400132/1,
