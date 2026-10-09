@@ -1075,7 +1075,7 @@
     },
     {
       "category": "portable-story-read-export-linux",
-      "reason": "F16 Story fixture-only WIP, unbuilt/unrun. Ten original story boundaries: admitted public list/read retain unknown evidence and reject linked leaves, physical-line lastN/BOM/malformed/missing semantics, positive known IO read interruption, original offered console chapter/all export uncertainty stop, real Committed recovery before export-all reads and displayed chapter preservation with actual publication/release-before-key.",
+      "reason": "Ten original Story cases passed within exact12 at a5d9684e/110318; baseline2PASS/8FAIL and source-pinned evidence retained. Boundaries: admitted public list/read retain unknown evidence and reject linked leaves, physical-line lastN/BOM/malformed/missing semantics, positive known IO read interruption, original offered console chapter/all export uncertainty stop, real Committed recovery before export-all reads and displayed chapter preservation with actual publication/release-before-key.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -1089,7 +1089,7 @@
     },
     {
       "category": "portable-story-read-export-known",
-      "reason": "F16 Story fixture-only WIP, unbuilt/unrun. Original console story reader and browser story dossier remain readable through the migrated shared story source; exact two existing entrypoints.",
+      "reason": "Two unchanged original neighbors passed within exact12 at a5d9684e/110318. Original console story reader and browser story dossier remain readable through the migrated shared story source; exact two existing entrypoints.",
       "contracts": [
         "#1553",
         "FR-002",

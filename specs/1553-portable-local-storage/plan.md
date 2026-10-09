@@ -1,4 +1,4 @@
-## Current cloud handoff — Story12 qualified, final carrier review pending, 2026-10-09
+## Current cloud handoff — Story12 evidence accepted, metadata follow-up, 2026-10-09
 
 Source #1553; sole-writer branch `1553-storage-migration-cloud-20261008`, base/main
 `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. Runtime/tested source remains
@@ -10,8 +10,9 @@ Fresh both-project `-ValidateCatalog` at clean `c92f24327e1fd399c9afab444205c289
 (110425) succeeds: **543categories/11336methods-files valid,0executed**,63.2492407s,
 integration build42.9449717s/unit12.2583623s,bothcleanup. This is discovery only,
 not additional runtime PASS. [Story packet](recovery/storage-migration-story-read-export-20261009/manifest.json)
-has70 artifacts/originals60 frozen source pins, root-verified. Exact remote/selected-file recovery is verified below; final independent
-RAW/CATALOG/CARRIER gate is pending. Do not replay passed12.
+has70 artifacts/originals60 frozen source pins, root-verified. Exact remote/selected-file recovery is verified below. Independent RAW/CATALOG/
+CARRIER integrity PASS at5cabbfec; two stale selection reasons are corrected below.
+Do not replay passed12.
 All runtime/fixture/catalog bytes are unchanged since the tested source.
 
 Continuation after this bounded handoff: source-review F16 snapshot producers and
@@ -34,6 +35,18 @@ directory, not a new full branch checkout. Last full
 clean branch restoration remains the older durable-worker e12aa3a4 checkpoint.
 No native Windows/full engine/actual rotation/secondary-close/timestamp collision claim.
 
+## Final Story review and metadata correction — 2026-10-09
+
+Independent actual Astra XHigh RAW/CATALOG/CARRIER review at5cabbfec verifies all70
+artifacts/originals60pins, original12/12, exact reached cuts/outputs/cleanup and fresh
+catalog. It also independently checks100 restored current files against exact5c
+blobs. One P3 finding: both Story reasons in tests/selection.json still described
+fixture-only unbuilt/unrun WIP. Corrected only those two reason strings to actual
+a5d9684e/110318 status; parsed selection excluding reasons is exactly unchanged.
+No runtime, fixture, catalog membership or contracts changed; no test replay needed.
+The restoration receipt supplement ef7c62b9 preserves all60 independently downloaded
+historical source files as well. Final focused metadata confirmation follows.
+
 ## Story selected-file recovery — verified 2026-10-09
 
 Exact remote `5cabbfeca0871288734bda73ad1b31362948cd40` was read again before
@@ -51,7 +64,7 @@ it is NOT a full Git checkout, build/test from the restored directory, or recove
 of every migration family. Original audit #1536 remains independently preserved at
 `13c820294df2bf7e824b06eb41ddc73bd18b87c0`; main remainsd0241e71 and old wound branch
 1fc5e59b. Ref/ancestry were rechecked:0old-only/28main-new, matching old/PR1554 merge
-tree24de5ac. Current runtime/tests unchangeda5d9684e; final raw/carrier review pending.
+tree24de5ac. Current runtime/tests unchangeda5d9684e; raw/carrier integrity accepted5cabbfec.
 Disk after selected recovery425MiB free. No unrelated files or evidence were deleted.
 
 ## F16 Story exact12 GREEN — catalog/final gate pending, 2026-10-09

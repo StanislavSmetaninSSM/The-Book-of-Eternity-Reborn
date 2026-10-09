@@ -9,8 +9,9 @@ PASS. These are separate source-era runs, not an aggregate selection. Latest cat
 older accepted C2/worker/Explorer blocks are in [plan](plan.md).
 
 Story runtimea5d9684e: exact12/12 Linux PASS, baseline2PASS/8FAIL preserved;
-70artifacts/60pins and fresh both-project catalog valid0. Final carrier review/recovery
-pending; exact scope, remaining queues and disk limitation at plan top.
+70artifacts/60pins and fresh both-project catalog valid0. Final raw/carrier integrity
+PASS5cabbfec and selected-file recovery verified; two reason-only metadata corrections
+await focused confirmation. Scope, remaining queues and disk limitation at plan top.
 Other F16 snapshot/path consumers, F18 observer/admission migration, concrete owning
 closes, nested prepared consumers and whole-selection reconciliation remain open.
 T061–T065 stay unchecked; #1536 B2–B5 paused. No whole-game/native Windows/full-turn
