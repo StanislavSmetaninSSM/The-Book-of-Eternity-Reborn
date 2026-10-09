@@ -1,3 +1,30 @@
+## Image residual original source admission — test-first WIP, 2026-10-09
+
+Source #1553, R25/F16 and T063/T065; base4d0be367 preserved remotely. Eleven
+new offline original consumer rows: lookup/export/scene × actual retained Unknown
+or real Committed cleanup debt6, canonical-prompt Unknown1, unchanged external-prompt
+handling despite unrelated Unknown1, image leaf/output-directory link refusal2 and
+original browser existing-image held-lease success1. Three unchanged original export
+Facts retain latest choice, overwrite and missing-source behavior. No runtime edit,
+build or test execution yet. Exact selection is portable-image-source-admission-linux
+plus portable-image-export-known, planned14/2. Independent fixture/design/selection
+review precedes fresh integration Plan and causal RED.
+
+Proposed correction uses existing admitted fixed-subtree enumeration for canonical
+lookup/output and local byte authority to detach export source under the original
+lease. Release before external destination write or desktop/provider. Public lookup
+owns a short lease; browser already owns its lease and calls an explicit-lease overload
+once. Canonical prompt validation occurs before the ordinary provider/display fallback
+catch; external file prompts remain external. Same generation, original return values,
+export destination policy and filename semantics remain. No new GM-authored field,
+rule, gameplay or prompt/example contract. Accepted image23 cohort is not replayed;
+source review checks untouched generation/write/gallery paths. F16signed/ZIP, original
+owned-close, current inventory/fresh restore and T061–T065 remain open; B2–B5 paused.
+
+Independent actual AstraXHigh final Prepared GREEN/CATALOG/CARRIER PASS4d0be367,
+no findings:11/11,2/2,64artifacts/originals32pins, unchanged RED30/16 and raw38/ref.
+The prior five RAW/CATALOG/CARRIER PASS23d1 also supersedes historical pending text.
+
 ## Prepared nested original services — Linux11/11 GREEN, final evidence gate pending
 
 Sourcecb670be5 independent RED/raw/minimal-source PASS. Fresh both-projectPlan155639

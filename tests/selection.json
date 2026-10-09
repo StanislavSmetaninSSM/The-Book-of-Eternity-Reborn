@@ -2,8 +2,18 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-image-source-admission-linux",
+      "reason": "T063/R25/F16 test-first WIP: eleven original lookup/export/scene and browser existing-image cases, genuine Unknown/Committed-debt and namespace controls. Unbuilt/unrun; select with three unchanged original external export Facts for source-admission correction.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T063-STORAGE-BOUNDARIES",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-prepared-nested-outcomes",
-      "reason": "T062 original supported nested settings/audio: actual11/11 Linux GREEN at cb670be5/155753 after causal6 genuine Unknown admissions and healthy/known4 controls. Six retained journals/foreign/generation with no later ordinary admission and separate readonly close; unit generation guard passes. Final evidence gate pending; no HTTP/native audio/gameplay claim.",
+      "reason": "T062 original supported nested settings/audio: actual11/11 Linux GREEN at cb670be5/155753 after causal6 genuine Unknown admissions and healthy/known4 controls. Independent Astra XHigh GREEN/CATALOG/CARRIER PASS4d0 with64artifacts/32pins. Six retained journals/foreign/generation and no later ordinary admission; readonly close and unit generation guard pass. No HTTP/native audio/gameplay claim.",
       "contracts": [
         "#1553",
         "FR-006",

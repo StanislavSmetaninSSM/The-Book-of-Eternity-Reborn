@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-image-source-admission-linux",
+      "responsibility": "Eleven finite original image source consumers: lookup/external-export/scene stop genuine retained Unknown, recover real Committed cleanup debt before canonical selection/read, refuse source links, preserve external prompt path behavior and original browser held-lease existing-image success.",
+      "excludes": "No HTTP/network/provider, desktop process, native Windows or all-media qualification. Existing write/gallery cohort remains separate; detached source bytes and release before external work are source-reviewed.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ImageService.cs",
+        "BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs",
+        "BookOfEternityClient.IntegrationTests/ImageSourceAdmissionTests.cs"
+      ],
+      "related": [
+        "portable-image-export-known"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ImageSourceAdmissionTests.OriginalImageSourcesAdmitBeforeLookupExportOrScene"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-prepared-nested-outcomes",
       "responsibility": "Original browser settings/audio services in supported nested session/coordinator binding preserve actual config/lock decisions, runtime/generation and stop post-result readmission after uncertainty or cleanup follow-up.",
       "excludes": "Actual HTTP routes, UI delivery, native audio playback, other prepared consumers, gameplay and B2-B5.",
