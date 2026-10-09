@@ -1,3 +1,22 @@
+## Spiritual early raw admission installed — WIP, 2026-10-09
+
+Original draft eligibility/exclusions are factored separately from exact path
+representability, allowing raw invalid names to be refused before IsDraftPath
+omits them. Common capture scans original current/fixed/cold candidates before
+any signed byte reads, then authenticates ReadCurrent and admits its declared
+names before revoking the prior capture/source/plan. Returns the existing
+spiritual_original_input_path_alias issue on raw failure. Ordinary unsuccessful
+and thrown signed-reader exits explicitly run unchanged original revocation;
+all later validation/revocation logic stays original. Physical-witness selector
+is shared unchanged between preflight and actual capture. Cold draft inventory
+replaces warm current draft names; physical live fixed-alias matches in cold
+mode are limited to original physical witnesses, excluding warm draft aliases.
+Installed UNBUILT/UNRUN. No GM authored mechanic/schema/signing format or B2
+change; this is the tracked client storage representability boundary. Original
+RED17 packet37/13 independently PASSb17ce067. Source/refined-design/exact17 gate,
+then fresh Plan17/actual17; combined ownership discovery follows. Other owning
+closes and inventory continue; T061–T065 unchecked/B2–B5 paused.
+
 ## Spiritual original causal RED17 — WIP, 2026-10-09
 
 Fixture/refined design/exact17 independent PASS e281e4150e000fc903a1b169419c23510f1ca0c7.

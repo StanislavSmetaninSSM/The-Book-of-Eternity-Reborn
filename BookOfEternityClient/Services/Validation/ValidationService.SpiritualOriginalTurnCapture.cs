@@ -143,6 +143,74 @@ public partial class ValidationService
             SpiritualWoundCaptureCheckpointState.StatePath
         ];
 
+        private static IEnumerable<string> EnumeratePhysicalWitnessPaths(IEnumerable<string> currentPaths) =>
+            FixedPhysicalWitnessPaths
+                .Concat(WoundAcceptedTurnSnapshotContract.RequiredPaths
+                    .Where(path => !SpiritualOriginalDraftInputs.IsDraftPath(path)))
+                .Concat(currentPaths.Where(path =>
+                    !SpiritualOriginalDraftInputs.IsDraftPath(path) &&
+                    (path.StartsWith("game_state/control/", StringComparison.Ordinal) ||
+                     path.StartsWith("input/", StringComparison.Ordinal) ||
+                     path.StartsWith("ready/", StringComparison.Ordinal) ||
+                     path.StartsWith("stories/", StringComparison.Ordinal)) &&
+                    !path.StartsWith(ExplorerLocalTurnRollbackArtifacts.Root + "/",
+                        StringComparison.OrdinalIgnoreCase) &&
+                    !path.StartsWith(LiveTurnPreparationService.PendingTurnSnapshotDirectory + "/",
+                        StringComparison.OrdinalIgnoreCase)))
+                .Distinct(StringComparer.Ordinal);
+
+        private static ValidationIssue? ReadRawOriginalInputPathIssue(
+            IReadOnlyList<string> currentPaths, IEnumerable<string> declaredPaths,
+            bool includeUpstreamIntake, SpiritualOriginalDraftInputs? coldOriginalInputs)
+        {
+            var declared = declaredPaths.ToArray();
+            var aliasedRoot = (coldOriginalInputs?.PathInventory ?? currentPaths)
+                .Concat(declared).FirstOrDefault(SpiritualOriginalDraftInputs.HasCaseAliasedDraftRoot);
+            if (aliasedRoot != null)
+                return SourceIssue(aliasedRoot, "spiritual_original_input_path_alias",
+                    "canonical exact draft-root spelling before original input binding");
+            var fixedDraftPaths = FixedDraftCapturePaths
+                .Concat(includeUpstreamIntake ? FixedOriginalItemLocationCurrentPaths : [])
+                .Concat(includeUpstreamIntake ? FixedOriginalOutputPaths : [])
+                .Concat(WoundAcceptedTurnSnapshotContract.RequiredPaths)
+                .Concat(EffectAcceptedTurnInputComposer.SourceAuthorityPaths).ToArray();
+            var physicalFixedPaths = FixedPhysicalWitnessPaths
+                .Concat(WoundAcceptedTurnSnapshotContract.RequiredPaths
+                    .Where(path => !SpiritualOriginalDraftInputs.IsDraftPath(path))).ToArray();
+            var fixedPaths = fixedDraftPaths.Concat(physicalFixedPaths).ToArray();
+            var rawDraftPaths = (coldOriginalInputs?.PathInventory ?? declared)
+                .Concat(coldOriginalInputs == null ? currentPaths : [])
+                .Concat(fixedDraftPaths).Where(SpiritualOriginalDraftInputs.IsDraftPathCandidate);
+            // Cold draft images replace current draft names; physical witnesses remain live.
+            // The full raw scan contributes only full fixed-path matches, not extra payload.
+            var physicalAliasTargets = coldOriginalInputs == null ? fixedPaths : physicalFixedPaths;
+            var rawPaths = rawDraftPaths.Concat(EnumeratePhysicalWitnessPaths(currentPaths))
+                .Concat(currentPaths.Where(path => physicalAliasTargets.Contains(path, StringComparer.OrdinalIgnoreCase)))
+                .Concat(fixedPaths);
+            try
+            {
+                PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPaths);
+                return null;
+            }
+            catch (InvalidDataException failure)
+            {
+                return SourceIssue(LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                    "spiritual_original_input_path_alias", failure.Message);
+            }
+        }
+
+        private static void RevokePreviousOriginalInputs(
+            ValidationService validator, FileSystemManager.CanonicalWriteLease lease, bool includeUpstreamIntake)
+        {
+            validator._mortalOriginalTurnCapture?.Dispose();
+            validator._spiritualOriginalTurnCapture?.RevokeUnderLease(lease);
+            validator.InvalidateSpiritualWoundSourceSession();
+            AcceptedMechanicsPlanAuthority.InvalidateValidated(validator._fs, lease);
+            EffectAcceptedTurnPlanAuthority.InvalidateValidated(validator._fs, lease);
+            if (includeUpstreamIntake)
+                MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(validator._fs, lease);
+        }
+
         /// <summary>
         /// Replaces any retained capture with signed original inputs and their resource/effect owners.
         /// </summary>
@@ -296,13 +364,10 @@ public partial class ValidationService
                 return new(null, new[] { SourceIssue(SpiritualWoundSourceSession.SoulPath,
                     "spiritual_original_intake_claim_conflict",
                     "a current physical generation without outstanding treatment publication claims") });
-            validator._mortalOriginalTurnCapture?.Dispose();
-            validator._spiritualOriginalTurnCapture?.RevokeUnderLease(lease);
-            validator.InvalidateSpiritualWoundSourceSession();
-            AcceptedMechanicsPlanAuthority.InvalidateValidated(validator._fs, lease);
-            EffectAcceptedTurnPlanAuthority.InvalidateValidated(validator._fs, lease);
-            if (includeUpstreamIntake)
-                MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(validator._fs, lease);
+            var currentPaths = validator._fs.EnumerateFiles(lease, "*");
+            var rawPathIssue = ReadRawOriginalInputPathIssue(currentPaths, [], includeUpstreamIntake, coldOriginalInputs);
+            if (rawPathIssue != null)
+                return new(null, [rawPathIssue]);
             IReadOnlyCollection<string> originalSelection = includeUpstreamIntake
                 ? PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
                     [SpiritualWoundSourceSession.SoulPath],
@@ -311,18 +376,28 @@ public partial class ValidationService
                      SpiritualWoundOpportunityReceiptState.StatePath,
                      AfterlifeSpiritualConflictState.StatePath])
                 : [SpiritualWoundSourceSession.SoulPath];
-            var originalRead = PendingTurnSnapshotReader.ReadCurrent(validator._fs, lease,
-                originalSelection);
+            PendingTurnSnapshotReadResult originalRead;
+            try
+            {
+                originalRead = PendingTurnSnapshotReader.ReadCurrent(validator._fs, lease, originalSelection);
+            }
+            catch
+            {
+                // Moving this pure read before handoff must retain ordinary reader
+                // failure revocation, including exceptional rather than issue exits.
+                RevokePreviousOriginalInputs(validator, lease, includeUpstreamIntake);
+                throw;
+            }
             if (!originalRead.Success || originalRead.Snapshot is not { } originalSnapshot)
+            {
+                RevokePreviousOriginalInputs(validator, lease, includeUpstreamIntake);
                 return new(null, originalRead.Issues);
-            var currentPaths = validator._fs.EnumerateFiles(lease, "*");
-            var aliasedRootPath = (coldOriginalInputs is null ? currentPaths : coldOriginalInputs.PathInventory)
-                .Concat(originalSnapshot.DeclaredOriginalLogicalPaths)
-                .FirstOrDefault(SpiritualOriginalDraftInputs.HasCaseAliasedDraftRoot);
-            if (aliasedRootPath != null)
-                return new(null, new[] { SourceIssue(aliasedRootPath,
-                    "spiritual_original_input_path_alias",
-                    "canonical exact draft-root spelling before original input binding") });
+            }
+            rawPathIssue = ReadRawOriginalInputPathIssue(currentPaths,
+                originalSnapshot.DeclaredOriginalLogicalPaths, includeUpstreamIntake, coldOriginalInputs);
+            if (rawPathIssue != null)
+                return new(null, [rawPathIssue]);
+            RevokePreviousOriginalInputs(validator, lease, includeUpstreamIntake);
             var draftPaths = (coldOriginalInputs?.PathInventory ?? originalSnapshot.DeclaredOriginalLogicalPaths)
                 .Concat(coldOriginalInputs == null
                     ? currentPaths.Where(SpiritualOriginalDraftInputs.IsDraftPath)
@@ -350,20 +425,7 @@ public partial class ValidationService
                 originalSnapshot.RequestId, originalSnapshot.SnapshotToken,
                 originalSnapshot.TurnNumber, draftPaths, initialDraftImages);
             var initialPhysicalImages = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
-            var physicalPaths = FixedPhysicalWitnessPaths
-                .Concat(WoundAcceptedTurnSnapshotContract.RequiredPaths
-                    .Where(path => !SpiritualOriginalDraftInputs.IsDraftPath(path)))
-                .Concat(currentPaths.Where(path =>
-                    !SpiritualOriginalDraftInputs.IsDraftPath(path) &&
-                    (path.StartsWith("game_state/control/", StringComparison.Ordinal) ||
-                     path.StartsWith("input/", StringComparison.Ordinal) ||
-                     path.StartsWith("ready/", StringComparison.Ordinal) ||
-                     path.StartsWith("stories/", StringComparison.Ordinal)) &&
-                    !path.StartsWith(ExplorerLocalTurnRollbackArtifacts.Root + "/",
-                        StringComparison.OrdinalIgnoreCase) &&
-                    !path.StartsWith(LiveTurnPreparationService.PendingTurnSnapshotDirectory + "/",
-                        StringComparison.OrdinalIgnoreCase)))
-                .Distinct(StringComparer.Ordinal);
+            var physicalPaths = EnumeratePhysicalWitnessPaths(currentPaths);
             foreach (var path in physicalPaths)
             {
                 var bytes = await validator._fs.ReadFileBytesAsync(lease, path);

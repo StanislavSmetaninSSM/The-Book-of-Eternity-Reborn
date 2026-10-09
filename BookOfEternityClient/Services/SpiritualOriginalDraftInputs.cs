@@ -112,6 +112,13 @@ internal sealed class SpiritualOriginalDraftInputs
             path.Contains('\\') || path.Contains(':') || path.Contains("//", StringComparison.Ordinal) ||
             !PendingTurnSnapshotAuthority.IsSafeRelativePath(path))
             return false;
+        return IsDraftPathCandidate(path);
+    }
+
+    // Select the original payload cohort without discarding malformed raw spelling.
+    // Exact-path admission must happen before IsDraftPath filters those names.
+    internal static bool IsDraftPathCandidate(string path)
+    {
         var inRoot = path.StartsWith("game_state/", StringComparison.Ordinal) ||
                      path.StartsWith("lore/", StringComparison.Ordinal) ||
                      path.StartsWith("world_profiles/", StringComparison.Ordinal) ||
