@@ -1,0 +1,89 @@
+{
+  "Categories": [
+    "spiritual-binding-live-publication",
+    "spiritual-staged-recovery-before-ready",
+    "spiritual-staged-recovery-ready",
+    "spiritual-staged-recovery-issued-successor"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "7d91ebbc6b34b342d42b51af582e2dcd0209b7dc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "spiritual-binding-live-publication",
+      "Seconds": 36.9838184,
+      "BudgetMinutes": 12,
+      "Completed": true
+    },
+    {
+      "Category": "spiritual-staged-recovery-before-ready",
+      "Seconds": 41.3533003,
+      "BudgetMinutes": 15,
+      "Completed": true
+    },
+    {
+      "Category": "spiritual-staged-recovery-issued-successor",
+      "Seconds": 47.1589845,
+      "BudgetMinutes": 15,
+      "Completed": true
+    },
+    {
+      "Category": "spiritual-staged-recovery-ready",
+      "Seconds": 43.3910908,
+      "BudgetMinutes": 15,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0577954,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0392354,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.090493,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0042612,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:02:54.8371257",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 4,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

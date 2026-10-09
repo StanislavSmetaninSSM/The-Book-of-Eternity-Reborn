@@ -1,3 +1,31 @@
+## F18 original lifecycle11 — composed nine PASS, one old B2 failure, one native unrun
+
+Source3fe28a9d file-GM correction is independently accepted; carrier7d91ebbc partialRAW
+PASS verifies5PASS in150152, bindingcold1FAIL and then4unrun. Isolated unchanged remaining4
+at7d91/150911 now4/4PASS174.8371257s,complete4/4,0skip/duplicates/timeout,bothcleanup.
+NoBuild uses matching fresh3fe integrationPlan150051; only evidence/docs changed. Composed
+nine passing obligations =5@3fe/150152 +4@7d91/150911, never a ten-case GREEN run.
+Raw actual current journals/After images, original A/B and Ready boundaries, unchanged
+emitted generation/no-journal and reported resource-root removal are retained. Final raw4
+review pending; matching full catalog discovery follows the next affected-helper5 slice.
+Packet66artifacts/originals57pins verified; initial11/17 and partial42/39 remain immutable.
+
+**Binding cold remains FAILED:** actual durable B/warm cut and three responses precede
+ordinary afterlife_combat_profile_unknown_art. [History proof](recovery/storage-migration-spiritual-lifecycle-20261009/binding-cold-contract-history.json)
+shows seed/validator/art list/profile authority exact byte equality at main d024 and3fe.
+Seed1fc5e59b introduces force_binding tier3 in soul+profile; ordinary SpiritualArts excludes
+it, while player profile is rebuilt from soul and cost lookup uses exact operation key.
+Deleting/renaming this art or substituting ordinary binding changes original authority and
+AP3→1 cost. No faithful fixture-only correction established. Gameplay-contract resolution
+belongs to paused #1536/B2; do not edit runtime/registry or mark this case PASS. Only emitted
+warm storage boundary is verified, not final cold acceptance/generation. Native pwsh.exe
+worker1 compiled/discovered11/0, actualUNRUN. Native and B2 are separate limitations.
+
+Next exact affected-helper5: saved-choice normal/position2 still require external file-GM
+transport; corrected interruption2 and automatic raw-observer1 need qualification of original
+actor drain/strict cleanup. Existing broad40-selector owner must not run. Remaining Prepared,
+Image, F16signed/ZIP, owned-close and authoritative legacy closure continue; T061–T065 unchecked.
+
 ## F18 file-GM correction actual — five PASS, binding contract failure, 2026-10-09
 
 Source3fe28a9d independent RAW/INTEGRITY/SOURCE/EXACT11 PASS. Fresh integrationPlan150051
