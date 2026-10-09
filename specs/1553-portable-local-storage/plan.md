@@ -1,3 +1,21 @@
+## Afterlife actual GREEN8 / Interaction partial causal baseline — WIP, 2026-10-09
+
+One fresh integration Plan22343116/2 at161c0e36,0execution54.1216850s,
+then separate Afterlife2235318/8PASS9.6252663s and Interaction223557complete8:
+3knownPASS/3genuinecausalFAIL +2QTE preparationFAIL8.6371905s. Both1/1complete,
+bothcleanup,0skipduplicateTimeout; strict8roots each. No aggregateGREEN16.
+Afterlife same4CSP+secondary/fullsettlement/noLater/Closing0/currentgeneration
+and known actualstate/receipt/allocation/history/currentvalidators PASS.
+[Afterlifepacket](recovery/storage-migration-original-afterlife-state-close-20261009/manifest.json)
+52artifacts38pins verified originals; finalGREEN/raw/carrier gate next.
+[Interactioninitial](recovery/storage-migration-original-interaction-close-20261009/manifest.json)
+25artifacts24pins verified originals. Three actual owners/Intent/member0 reached
+same genuine CSP maskedsame lateclose; QTE offer has no reachable terminal route,
+so its two failures establish preparation only, no QTE causal claim. Correct
+actual offer before QTE-only original2; do not repeat unchanged six. No production
+changes yet. Metadata filepath hint corrected to actual Explorer partial.
+Fullcatalog after accepted stablebatch; B2–B5/T061–T065/native/knownlateclose open.
+
 ## Original Interaction four owners — test-first WIP, 2026-10-09
 
 Independent fixture/design/exact8 PASS4c8aeed0 installed byte-identically.

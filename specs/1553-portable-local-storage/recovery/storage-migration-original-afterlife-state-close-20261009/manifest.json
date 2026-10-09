@@ -238,5 +238,244 @@
         "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
       }
     ]
+  },
+  "green": {
+    "source": "161c0e367c755e2bb02992537dd1d7e9656a9409",
+    "artifacts": [
+      {
+        "path": "green-20261009-223431-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-223431-661-460454-797aeb866fb1426c99920f39bafc06e9-categories/plan.json",
+        "sha256": "9e38a2e1bd788cf5550150a6dad66a406509ac5158fa98822b771198826f96f6",
+        "originalSha256": "9e38a2e1bd788cf5550150a6dad66a406509ac5158fa98822b771198826f96f6"
+      },
+      {
+        "path": "green-20261009-223431-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-223431-661-460454-797aeb866fb1426c99920f39bafc06e9-categories/summary.json",
+        "sha256": "f4f082ad4f8142865ba4ee8da39e40b663a3d2311b2ce46d270cd9a1beee4f96",
+        "originalSha256": "f4f082ad4f8142865ba4ee8da39e40b663a3d2311b2ce46d270cd9a1beee4f96"
+      },
+      {
+        "path": "green-20261009-223431-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-223431-661-460454-797aeb866fb1426c99920f39bafc06e9-categories/Build-integration.log",
+        "sha256": "27a35c69b8bbf6bf384e93f8565977e168e0d36dfe49d137b5e1eb620bf776b6",
+        "originalSha256": "b844f2b1e079456389c1295dacd0de40d2f224f086065dc2474fb5ed438f0c01"
+      },
+      {
+        "path": "green-20261009-223431-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-223431-661-460454-797aeb866fb1426c99920f39bafc06e9-categories/dotnet-test.log",
+        "sha256": "d2aecb2d94abd878f1886533180532fa0c36f405d35ff76ead1a03973597ed18",
+        "originalSha256": "53f808f2d1375dd98e0be271cbfd26e21930a627b78d2416d1638de847d509e6"
+      },
+      {
+        "path": "green-20261009-223531-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-223531-078-460946-0b6377d12c614f40a728a32c4c8ac264-categories/plan.json",
+        "sha256": "c37aeb6970eeef140264d4019be84a2c230931d717457364a428beb3f1b76e61",
+        "originalSha256": "c37aeb6970eeef140264d4019be84a2c230931d717457364a428beb3f1b76e61"
+      },
+      {
+        "path": "green-20261009-223531-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-223531-078-460946-0b6377d12c614f40a728a32c4c8ac264-categories/summary.json",
+        "sha256": "0dc69b59eb07db460fb2b96132449ef416ad0930499ed587e7f58cc55c2d1879",
+        "originalSha256": "0dc69b59eb07db460fb2b96132449ef416ad0930499ed587e7f58cc55c2d1879"
+      },
+      {
+        "path": "green-20261009-223531-portable-original-afterlife-state-owning-close-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-223531-078-460946-0b6377d12c614f40a728a32c4c8ac264-categories/portable-original-afterlife-state-owning-close-linux-integration-001.trx",
+        "sha256": "db5bdb40f825f595181e629a41a8b73d74504b5f93e86e378309c6a61f299dcc",
+        "originalSha256": "7d55b0141c3e0ad33d97343f49323a05b618385e1432f5230b9b0fda3e215c47"
+      },
+      {
+        "path": "green-20261009-223531-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-223531-078-460946-0b6377d12c614f40a728a32c4c8ac264-categories/dotnet-test.log",
+        "sha256": "3fb668c3a0ab3f8fb71d33b032d2e4cbb0b9c3dde138aa0d3d236fafd6b65d76",
+        "originalSha256": "4d680ee409e7df7b0cbe69d14b411de9e258672ede8bf9b2fb3d5eb64716bef9"
+      },
+      {
+        "path": "green-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/emitted-roots-after-run.json",
+        "sha256": "bc5ca0c76510789b67dab3f8fb1d99bedd42ad4b3db9f5e489f4b806bddc3522",
+        "originalSha256": "bc5ca0c76510789b67dab3f8fb1d99bedd42ad4b3db9f5e489f4b806bddc3522"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-7-1.json",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-7-1.json",
+        "sha256": "f1595b67fe9bfbc9ed774321e68e4a3eb04f71d0ad3138dbd8f8b21508f6ce5c",
+        "originalSha256": "f1595b67fe9bfbc9ed774321e68e4a3eb04f71d0ad3138dbd8f8b21508f6ce5c"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-7-0.json.gz",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-7-0.json",
+        "sha256": "6f5214b76f6e2bfae6ffcdeba2c54227267498ff5b93e48f1cdbd9f940dcf0cf",
+        "originalSha256": "d73c2d558d101400118fe450d480405b26bc762467361baeb8e76c508649eb5d"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-6-1.json",
+        "sha256": "73c041d19f7665966c9be24029adcbd890c9ea5ad974542253b3a6c1ec2dc985",
+        "originalSha256": "73c041d19f7665966c9be24029adcbd890c9ea5ad974542253b3a6c1ec2dc985"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-6-0.json",
+        "sha256": "861a87745439a9fb31c5e67fa70b18a29d97fb003767a37db3c9a3ac9205d8e8",
+        "originalSha256": "480daa806f88565cb367242ac6333d6924f50091b8019fae8d1fe2de1d97759e"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-5-1.json",
+        "sha256": "08da6a70aaf86f924d936b7ba6d85e062a9b5ff7284085d304ad374b1916718b",
+        "originalSha256": "08da6a70aaf86f924d936b7ba6d85e062a9b5ff7284085d304ad374b1916718b"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-5-0.json",
+        "sha256": "2e958e274df68babaaa2d8902dedc50ca5b1cf6a72d50d79f4b20954a9d8a1e7",
+        "originalSha256": "4baaeac69b48df80162856655119438397152f238109a209b4f3ab2fb2e38ebd"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-4-2.json",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-4-2.json",
+        "sha256": "909a4b3005b7c8723c1cf7368895f41e50075f74b4e72c56fadfde391070d4b4",
+        "originalSha256": "909a4b3005b7c8723c1cf7368895f41e50075f74b4e72c56fadfde391070d4b4"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-4-1.json",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-4-1.json",
+        "sha256": "ea5c31b31f9765642711a617001870c371da3a8db9a80dd79c46f8c1c60304c6",
+        "originalSha256": "ea5c31b31f9765642711a617001870c371da3a8db9a80dd79c46f8c1c60304c6"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-4-0.json",
+        "sha256": "5115a78f0343349b627b1dc99f717708b1fb3ad6ee9e347ad957066ce9a81487",
+        "originalSha256": "e530d5409069c98c0a0e62ff903fd306275184e9a0db28a61e0749947fda0831"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-3-1.json",
+        "sha256": "c1a919385507cac89a785b7ef01909e0e630712a3b011d813dcae847532f3084",
+        "originalSha256": "c1a919385507cac89a785b7ef01909e0e630712a3b011d813dcae847532f3084"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-3-0.json",
+        "sha256": "ec639247d3933b2d0fcbcce7c1da9ef704836257c56c201b13dc12af08a1483e",
+        "originalSha256": "457486f79c16e70a6747d4d88b8dd4a07f3bd0a65db5682b6528f773e669a21b"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-2-1.json",
+        "sha256": "efc1c7d019da645bbde2e64c858bf340a007df99cf32b1fb43677569c5e911de",
+        "originalSha256": "efc1c7d019da645bbde2e64c858bf340a007df99cf32b1fb43677569c5e911de"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-2-0.json",
+        "sha256": "e2feafdc1cf416ee1d7fedcef8c223f8061b97d612d3e6150a07b5225a1c5f2c",
+        "originalSha256": "db3e89bafd5974f28f8d2c08d735e037f2fb274cebd858977ecde6e6f2251fad"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-1-1.json",
+        "sha256": "172c6fee2865219f284e697ab9704da4938082481800bd25ac3c6500ca622bee",
+        "originalSha256": "172c6fee2865219f284e697ab9704da4938082481800bd25ac3c6500ca622bee"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-1-0.json",
+        "sha256": "c0e1687ce74c2fe1554fe51bdf917c66c0d7bc8a40150cbcc5a9e7575ebfb40b",
+        "originalSha256": "5343c42a589232e28c1f5a0de5c14a62255f364790e35051cfae27fa92a2450b"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-0-1.json",
+        "sha256": "a7da0982205d06d9affa1812258ec9bf3afcc11fe04b43ae5993cbe8e9c1e5f7",
+        "originalSha256": "a7da0982205d06d9affa1812258ec9bf3afcc11fe04b43ae5993cbe8e9c1e5f7"
+      },
+      {
+        "path": "green-row-portable-original-afterlife-state-owning-close-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-original-afterlife-state-close-green-rows/portable-original-afterlife-state-owning-close-linux-integration-001-0-0.json",
+        "sha256": "e2522af4d01e684586f4dca70bd812684a421345f149ef2ea75aa923356f6ab5",
+        "originalSha256": "0c9284ed37cb8ac481469fe86694c4db6e5c1fce48bb4294f2505f354bf74313"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.AfterlifeState.cs",
+        "sha256": "2a2b03af634ad9ff02fd970d1f60b582cfd5e94b95c254152c1d073736b5c97e"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+        "sha256": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs",
+        "sha256": "9e84db305654a9d3fcad97c3adebf202bb3fe91d34995ddcba28c179254f6012"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+        "sha256": "81dd85490ee4793b448d5b23eaabb5273ed3c1a6a5d9228e445f3ce310b6d40b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ShiningBlessingEffectState.cs",
+        "sha256": "c800dd307fab1a953e0bb3c26f9eee68a40c688afbebecab02b0a81f43c753d5"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ShiningBlessingRerollResourceService.cs",
+        "sha256": "dee415706cf7084f8acbf6f5555aaa2ddfc603590ca217f45e1302e4d8150173"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+        "sha256": "cae67d35831c5cd67df85fc049657fb51ed400ba1749b984f0e4c6331afbeaf9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ResourceBootstrapStateBuilder.cs",
+        "sha256": "67e824df0d6f0e0ec890d52a969e9291d433bab7c01ab51c2afd3c6c207eb433"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalResourceOwnerAuthorityComposer.cs",
+        "sha256": "0ebf495c393c9dc7108b0a1c03071336dafcf4f0c4d3cda5006184f84be38900"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalResourceQuartetTransaction.cs",
+        "sha256": "4d9460fefdd82276f37bb30b5c38416f67f6b3bb2ea12176a868380fb59d84db"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "2f6505b08ea73fc048208809af2ccb3d7150663fd1aa6c52db0c2b0e5a20264a"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "b0a103602e14db4146e56959619e5be84dcc935ebb694d9920f066db81a1cce6"
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+      }
+    ]
   }
 }

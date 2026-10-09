@@ -8,7 +8,7 @@
       "changeHints": [
         "BookOfEternityClient/Services/GuardianCorrectionService.cs",
         "BookOfEternityClient/Services/TrainingService.cs",
-        "BookOfEternityClient/UI/ExplorerMode.SpiritualArtUpgrades.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs",
         "BookOfEternityClient/Services/QteSceneService.cs",
         "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Interaction.cs"
       ],
