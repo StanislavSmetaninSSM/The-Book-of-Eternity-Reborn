@@ -575,13 +575,15 @@ public sealed partial class GameEngineTurnLifecycleTests
         string boundary,
         string failurePath)
     {
+        using var ownedClass = new CleanupOwnedFixture(_rootPath, WriteEffectCutEvidence);
         var probe = new WoundRollbackFailureProbe();
         await using var context = await ResourceMaterializationTestContext.CreateAsync(
             new FileSystemManagerHooks
             {
                 BeforeCanonicalMutationAsync = probe.BeforeCanonicalMutationAsync,
-                AfterPhysicalFilePublishedAsync = probe.AfterPhysicalFilePublishedAsync
+                LocalPublicationObserver = probe.Observe
             });
+        using var ownedContext = new CleanupOwnedFixture(context.RootPath, WriteEffectCutEvidence);
         var expected = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
         for (var index = 0; index < WoundRollbackPublicationPaths.Length; index++)
         {
@@ -618,24 +620,28 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
         });
 
-        Assert.NotNull(exception);
-        Assert.True(
-            probe.Triggered,
-            $"The '{boundary}' failure hook was not reached for '{failurePath}'.");
+        probe.AssertInitialOutcome(exception, WriteEffectCutEvidence);
         probe.Disarm();
-        await InvokePrivateTaskAsync(
+        var rollback = await InvokePrivateTaskResultAsync(
             engine,
             "RollbackRejectedAcceptedTurnAsync",
             rollbackSnapshot,
             string.Empty);
 
-        foreach (var path in WoundRollbackPublicationPaths)
+        var actual = expected.ToDictionary(pair => pair.Key,
+            pair => CleanupPublicationCut.ReadOptional(context.FileSystem.ResolvePath(pair.Key)),
+            StringComparer.Ordinal);
+        var generationAfter = CleanupPublicationCut.ReadOptional(context.FileSystem.SessionGenerationPath);
+        var journalAfter = CleanupPublicationCut.ReadOptional(probe.JournalPath);
+        WriteEffectCutEvidence(JsonSerializer.Serialize(new
         {
-            var actual = await context.FileSystem.ReadFileBytesAsync(path);
-            Assert.Equal(expected[path] is not null, actual is not null);
-            if (expected[path] is not null)
-                Assert.Equal(expected[path], actual);
-        }
+            kind = "wound-original-engine-rollback", boundary, failurePath, rollback,
+            expected, actual, probe.GenerationBefore, generationAfter, journalAfter
+        }));
+        Assert.True(Assert.IsType<bool>(rollback));
+        Assert.Null(journalAfter);
+        Assert.Equal(probe.GenerationBefore, generationAfter);
+        foreach (var (path, bytes) in expected) Assert.Equal(bytes, actual[path]);
     }
 
     private static string SanitizeWoundFailurePath(string path) =>
@@ -790,56 +796,77 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private sealed class WoundRollbackFailureProbe
     {
+        private FileSystemManager? _files;
+        private bool _armed;
         private string? _boundary;
         private string? _relativePath;
-        private string? _resolvedPath;
+        private byte[]? _selectedBefore;
+        private KnownRollbackPublicationCut? _cut;
+        private InvalidDataException? _beforeFailure;
+        private int _beforeCuts;
+        internal byte[]? GenerationBefore { get; private set; }
+        internal string JournalPath => Path.Combine(_files!.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
 
-        internal bool Triggered { get; private set; }
-
-        internal void Arm(
-            FileSystemManager fileSystem,
-            string boundary,
-            string relativePath)
+        internal void Arm(FileSystemManager fileSystem, string boundary, string relativePath)
         {
+            _files = fileSystem;
             _boundary = boundary;
             _relativePath = relativePath;
-            _resolvedPath = fileSystem.ResolvePath(relativePath);
-            Triggered = false;
+            _selectedBefore = CleanupPublicationCut.ReadOptional(fileSystem.ResolvePath(relativePath));
+            GenerationBefore = CleanupPublicationCut.ReadOptional(fileSystem.SessionGenerationPath);
+            _armed = true;
+            if (boundary == "after")
+            {
+                _cut = new KnownRollbackPublicationCut(fileSystem.ResolvePath(relativePath));
+                _cut.Attach(fileSystem);
+            }
+            else
+            {
+                Assert.Equal("before", boundary);
+                _beforeFailure = new InvalidDataException($"Injected failure before wound publication '{relativePath}'.");
+            }
         }
 
-        internal void Disarm()
-        {
-            _boundary = null;
-            _relativePath = null;
-            _resolvedPath = null;
-        }
+        internal void Disarm() => _armed = false;
 
         internal Task BeforeCanonicalMutationAsync(string path)
         {
-            if (!string.Equals(_boundary, "before", StringComparison.Ordinal) ||
-                !string.Equals(path, _relativePath, StringComparison.OrdinalIgnoreCase))
-            {
-                return Task.CompletedTask;
-            }
-
-            Triggered = true;
+            if (!_armed || _boundary != "before" || path != _relativePath) return Task.CompletedTask;
+            _beforeCuts++;
             Disarm();
-            return Task.FromException(new InvalidDataException(
-                $"Injected failure before wound publication '{path}'."));
+            return Task.FromException(_beforeFailure!);
         }
 
-        internal Task AfterPhysicalFilePublishedAsync(string path)
+        internal void Observe(TrustedLocalPublicationPhase phase, int index)
         {
-            if (!string.Equals(_boundary, "after", StringComparison.Ordinal) ||
-                !string.Equals(path, _resolvedPath, StringComparison.OrdinalIgnoreCase))
-            {
-                return Task.CompletedTask;
-            }
+            if (_armed && _cut != null) _cut.Hooks.LocalPublicationObserver!(phase, index);
+        }
 
-            Triggered = true;
-            Disarm();
-            return Task.FromException(new InvalidDataException(
-                $"Injected failure after wound publication '{path}'."));
+        internal void AssertInitialOutcome(Exception? failure, Action<string> output)
+        {
+            if (_cut != null)
+            {
+                _cut.AssertRestored(new Dictionary<string, byte[]?>(StringComparer.Ordinal)
+                {
+                    [_relativePath!] = _selectedBefore
+                }, GenerationBefore, failure, output);
+                Assert.Same(_cut.Failure, failure);
+                return;
+            }
+            var actual = CleanupPublicationCut.ReadOptional(_files!.ResolvePath(_relativePath!));
+            var generationAfter = CleanupPublicationCut.ReadOptional(_files.SessionGenerationPath);
+            var journalAfter = CleanupPublicationCut.ReadOptional(JournalPath);
+            output(JsonSerializer.Serialize(new
+            {
+                kind = "wound-prepublication-refusal", _relativePath, _beforeCuts,
+                _selectedBefore, actual, GenerationBefore, generationAfter, journalAfter,
+                failure = failure?.ToString()
+            }));
+            Assert.Equal(1, _beforeCuts);
+            Assert.Same(_beforeFailure, failure);
+            Assert.Equal(_selectedBefore, actual);
+            Assert.Equal(GenerationBefore, generationAfter);
+            Assert.Null(journalAfter);
         }
     }
 }

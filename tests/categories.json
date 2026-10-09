@@ -20653,6 +20653,56 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-wound-original-rollback-publication",
+      "responsibility": "F18 original wound opaque-byte rollback24: twelve exact before-mutation refusals and twelve changed real MemberPublished known rollbacks. Preserve earlier sequential commits until original engine rollback, twelve raw before-images/absence, original failure identity, generation/journal and strict two-root cleanup.",
+      "excludes": "No wound gameplay or B2-B5 qualification, automatic whole-sequence transaction, physical identity, live GM, broad spiritual lifecycle or native Windows. Original turn-lifecycle-spiritual owner retained.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs",
+        "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WoundMaterializationRollbackTests_FailureBeforeOrAfterEveryPublicationSurfaceRestoresExactSnapshot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-location-offscreen-rollback-publication",
+      "responsibility": "F18 original offscreen location storage accepted refresh: genuine signed movement/storage fixture, changed MemberPublished cut, original compensation restores every tracked raw byte/absence and generation before facade reads, exact wrapped cause/path and strict owned cleanup.",
+      "excludes": "No broad location suite, one-journal whole normalization, physical identity, live GM or native Windows. Original mortal-locations owner retained.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Lifecycle.cs",
+        "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_OffscreenPublicationFailureRestoresEveryTrackedPathByteExact"
+          ]
+        }
+      ]
     }
   ]
 }

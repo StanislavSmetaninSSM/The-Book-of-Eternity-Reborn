@@ -1,3 +1,28 @@
+## F18 wound24 / offscreen1 — original rollback fixtures WIP, 2026-10-09
+
+Source #1553; existing branch1553-storage-migration-cloud-20261008, basea2db0770.
+Wound retains original opaque-byte12-path setup (6present/6absent), actual pre-turn
+backup and engine rejected-turn rollback. Twelve before cuts preserve exact injected
+failure and selected raw image; twelve after cuts use the existing genuine changed
+MemberPublished observer and assert only selected-member rollback immediately.
+Earlier sequential writes remain committed until the original engine rollback; then
+all12raw paths/absence, generation and no journal are checked before any facade read.
+Both owned roots receive strict cleanup. This storage-only fixture does not validate
+wound gameplay and does not resume B2–B5.
+
+Offscreen location Fact retains original signed movement/storage arrangement and
+AcceptedTurnCanonicalStateRefresh. Arm existing current publication forwarding only
+after setup; assert actual selected cut, full tracked raw restoration, exact wrapped
+cause/path, generation and no journal, with strict owned cleanup. No runtime/helper
+change or new GM/schema contract; prompts/examples need no update.
+
+Two exact categories portable-wound-original-rollback-publication24 and
+portable-location-offscreen-rollback-publication1; existing semantic owners retained.
+Source/fixture/exact25 review then fresh integration PlanOnly and bounded actual25;
+no prior accepted effects/guardian/location/resource rows repeated. Actual execution,
+current catalog and final evidence review pending. Treatment2, F16signed producers,
+owning-close consumers and whole registry remain open; native qualification separate.
+
 ## F18 Effects — composed14 bounded Linux obligations GREEN, 2026-10-09
 
 Independent initial RAW/carrier70906a8b accepts13PASS and classifies remaining row as
@@ -12,7 +37,7 @@ Composed14=13@efd66468/133612 + corrected1@4182f737/134249, not one14GREEN rerun
 Historical initial13PASS/1fixtureFAIL is retained unchanged. Matching discovery134324:
 560categories/11344methods-files valid0,9.1257760s,bothcleanup; NoBuild justified by
 integrationfresh4182/unit533 and unchanged runtime. [Packet](recovery/storage-migration-known-rollback-20261009/manifest.json)
-now145artifacts/originals138pins verified. Final isolated raw/catalog/carrier review pending;
+now145artifacts/originals138pins verified. Final isolated RAW/CATALOG/CARRIER PASSa2db0770;
 Guardian8 and Location8/Resource4 earlier accepted independently. Whole remaining
 wound24/treatment2/offscreen1 cuts,F16signed producers,ownedclose and registry stay open.
 No native/B2–B5/gameplay acceptance; prior accepted13 are not replayed.
