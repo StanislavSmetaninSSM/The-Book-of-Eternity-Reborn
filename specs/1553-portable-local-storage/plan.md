@@ -1,3 +1,22 @@
+## Current preserved bounded result and remaining implementation — 2026-10-09
+
+Current metadata carrier e631b9b7 has independent inventory/source/hash/selection
+PASS except the acknowledged17-route-group paragraph correction, now applied.
+Source census2239files/32633lexical rows, supplemental19named candidates/102
+single-line owning lease acquisitions/12physical-hook references is reproducible
+byte-for-byte and does not close all consumers. [Authoritative current map and
+ordered next acceptance gates](storage-migration-inventory.md) supersede stale
+status labels only for named accepted packets. Priority next implementation:
+original engine raw inventory/rollback/snapshot preflight, then browser pre-spend
+and incarnation/Explorer before normalization; spiritual capture and remaining
+actual original-owned-close owners separately open. No business B2–B5 resumption.
+Fresh ordinary GitHub-only full-history clone e631b9b7 is verified:31233files,
+clean/noalternates/full strict fsck actual0; nine packets602artifacts/416pins and
+2239census sources match. [Restore receipt](recovery/storage-migration-current-20261009/restore.json).
+Four generated census files reproduced byte-identically in separate directory.
+No fresh runtime execution; final metadata ref/raw and exact-tip clone update
+remain. T061–T065 remain unchecked.
+
 ## F16 first signer/preparation + ZIP units — actual GREEN42, 2026-10-09
 
 Runtime `15555367fed888ec4ac82bfe520188decc2d5547`; independent installed-source/

@@ -32,7 +32,9 @@ selection reasons now reflect that execution; archived source pins are unchanged
 
 [Current pinned census](recovery/storage-migration-current-20261009/manifest.json)
 at96553e1e includes2239tracked source files/32633lexical occurrences, no decoding
-omissions, using the immutable d024 baseline rules and F01–F19 symbol groups.
+omissions, using the immutable d024 baseline rules and17named symbol groups
+(F01–F15,F17,F18). F16/F19 remain human family decisions; broad raw/stream/
+frontend rules and supplemental candidates aid their inspection.
 [Generator](recovery/storage-migration-current-20261009/scan.py),
 [corpus hashes](recovery/storage-migration-current-20261009/corpus.json) and
 [route occurrences](recovery/storage-migration-current-20261009/routes.json) are
@@ -118,9 +120,28 @@ by the current storage block. GM gameplay prompt/example changes are therefore
 not required; protocol-specific F13/F14 guidance remains separately preserved.
 Full/Fast/PreMerge/all-category, live GM/provider/game/desktop, CI/protection,
 main/merge/issues and authentication changes remain outside this checkpoint.
-Fresh exact-tip GitHub-only clone/source/evidence restoration is still required
-before claiming this final carrier recoverable; it will not qualify runtime from
-the fresh clone unless actual tests are separately run there.
+Fresh ordinary GitHub-only full-history clone at e631b9b7 is now restored into
+a new empty directory:31233tracked files, exact tree d3ad48c7, clean worktree,
+no alternates, full strict fsck actual exit0. Nine current accepted packets verify
+602stored/decompressed artifacts and416historical source pins;2239census source
+files and current supporting hashes match. [Restore receipt](recovery/storage-migration-current-20261009/restore.json).
+[Reproduction receipt](recovery/storage-migration-current-20261009/reproduction.json)
+records four byte-identical generated files. No runtime/build/test execution in
+the restore clone. Final metadata carrier requires normal ref/raw readback and
+exact-tip update of this fresh clone; source/evidence restoration is not new PASS.
+
+To continue in another cloud session, read the branch SHA from GitHub, clone
+`1553-storage-migration-cloud-20261008` normally into a new empty directory,
+verify exact SHA/tree, clean status, no `.git/objects/info/alternates` and
+`git fsck --full --strict`. Read AGENTS.md, development-workflow, testing,
+constitution, spec/plan/tasks and this current map before changes. Preserve the
+named immutable packet files and their historical Git-source hashes. The census
+scanner requires source96553e1e bytes (its embedded SOURCE), not a silently
+retargeted snapshot; use a clean checkout at that SHA and `--out` a separate
+empty directory for reproduction. Current metadata/scanner receipts do not
+replace the target project fresh-build → bounded original tests → independent
+review gates for the next implementation. No desktop task or tool reinitialization
+is required.
 
 ## Latest image source scope — historical checkpoint, 2026-10-09
 
