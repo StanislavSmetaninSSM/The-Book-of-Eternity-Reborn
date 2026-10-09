@@ -36,7 +36,7 @@
     },
     {
       "category": "portable-cleanup-prepared-causal-linux",
-      "reason": "Actual explicit Uncertain Prepared consumer causally continued UIlock reads/mutation at2755. Final no-later-work control for skipping original cleanup after that established outcome; no fabricated CSP.",
+      "reason": "Actual Prepared cleanup causal1 at2755 corrected at102d; final010913 passes exact explicit-Uncertain/noApply/retained journal-lock/no later reached work. Part of composed26, not fullUI/native proof.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -47,7 +47,7 @@
     },
     {
       "category": "portable-cleanup-prepared-neighbors",
-      "reason": "Five exact existing prepared controls for the changed finally branch: confirmed commit applies runtime/removes lock; rollback, committed debt, Unknown and revoked Unknown preserve outcome. No repeat unrelated browser18/release2.",
+      "reason": "Five exact known prepared controls passed at102d in010913 with causal1; preserve commit/runtime Apply/lock release and rollback/debt/Unknown/revoked outcomes for the changed finally guard.",
       "contracts": [
         "#1553",
         "FR-003",

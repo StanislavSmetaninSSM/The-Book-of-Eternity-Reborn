@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "portable-cleanup-prepared-causal-linux",
+    "portable-cleanup-prepared-neighbors"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "102d610b9517f65647e5adafce226175d6b0d6bb",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 7.7574127,
+  "Descriptors": [
+    {
+      "Name": "portable-cleanup-prepared-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-cleanup-prepared-causal-linux",
+      "Categories": [
+        "portable-cleanup-prepared-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalPreparedOutcomeStopsLockRelease",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalPreparedOutcomeStopsLockRelease",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-cleanup-prepared-neighbors-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-cleanup-prepared-neighbors",
+      "Categories": [
+        "portable-cleanup-prepared-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,15 @@
+## Current F10 bounded cleanup checkpoint — 2026-10-09
+
+Original engine cleanup/staging, nested/final QTE cleanup, browser atomic cleanup/release and
+Prepared explicit-Uncertain continuation are corrected through runtime102d. Passing evidence is
+composed26 unique Linux obligations:18@ef59782 +2@2755 +6@102d. Actual journals/foreign bytes,
+original outcomes/causes, zero reached later work and separate readonly finalization are retained;
+known cleanup refusal/committed debt/rollback policies and exact-directory sibling scope remain.
+Catalog500/11291 valid0. [Packet](recovery/storage-migration-cleanup-20261009/manifest.json)
+has111 artifacts/98 historical pins verified; final independent carrier/parent fresh restore pending.
+No remote main ACK, injected secondary close, full browser-QTE UI, native or whole-turn guarantee.
+Progression's three source-identified swallowing catches remain a separate T062 tail; F16/F18 open.
+
 ## Current treatment outcome checkpoint — 2026-10-08
 
 Bounded source and independent raw gates PASS through runtime522293: original normalizer
@@ -8,7 +20,7 @@ passing evidence is composed16 unique obligations from9@e311+1@ef0e+3@8fcbb+3@52
 not one fresh run. Genuine causal journals, original receipts and historical fixture/build
 failures are retained in the [treatment packet](recovery/storage-migration-treatment-20261008/manifest.json).
 Final saved-carrier and parent GitHub-only restore PASScf58; native Windows, injected secondary-close
-failure and whole-turn atomicity remain unqualified. F10 cleanup/progression, F16 and
+failure and whole-turn atomicity remain unqualified. F10 progression, F16 and
 F18 remain open; F13/F14/F17 bounded acceptance below is not full migration closure.
 
 ## Current F14 bounded runtime checkpoint — 2026-10-08
@@ -124,7 +136,7 @@ ConPty/Job lifecycle execution remains unqualified. Conservative provider-labell
 restart observation never authorizes cold adoption or reboot recovery. Native Windows
 qualification remains external and unexecuted. Bounded Bridge/shared consumers and A03 gates above are accepted within their
 stated platforms. F06 has34-case Linux GREEN; F04/F05 has corrected57-case shared Linux GREEN with independent raw review PASS,
-final be3d carrier and parent fresh remote restore accepted. F13/F14 bounded Linux delivery is recorded above; F17 exact-five removal is accepted/restored2fcd; native gaps, F16/F18, cleanup and treatment-storage tails stay open.
+final be3d carrier and parent fresh remote restore accepted. F13/F14 bounded Linux delivery is recorded above; F17 exact-five removal is accepted/restored2fcd; native gaps, F16/F18 and progression tails stay open; treatment and bounded cleanup are recorded above.
 
 T062 restoration delta:9e30 source has10/10 Linux PASS including actual second
 mirror publication after baseline restoration; earlier7 affected recovery neighbors
@@ -144,20 +156,19 @@ original cancellation removes request/manifest. Pre-handoff/incomplete-cleanup
 cold refusal remains explicit; native Windows and whole-game qualification remain
 open. Lexical baseline rows are not regenerated or silently relabeled current.
 
-Further independently traced, still-unexecuted migration candidates: F16
-`ImageService.CleanupExtraImages` → raw game_session image deletes via
-`TryDeleteFile`, original caller `GameEngine.OptionsAndSettings`; explicit external
-`ExportEntityImage` remains technical export. Image constructor, mod listing and
-world-profile listing create game_session directories; classify those individually,
-not blanket technical initialization. Guardian library directory is BasePath/
-system_guardians; canonical attraction request is separate. F10 QTE empty backup
-directory deletion occurs under a caller lease but needs the existing guarded
-empty-directory helper/generation boundary. Connected cleanup and progression catches
-still need original typed-decision/caller-continuation assessment. These F10/F16 items
-are source traces, not fabricated executed failures. F13 helper and F14 daemon connected
-units are accepted separately above; watcher events remain hints with preserved polling,
-and native/full-client qualification remains open.
-
+Further independently traced, still-unexecuted F16 candidates: actual image cleanup, console
+image publication catch/logger, guarded gallery creation and exact mod/world-profile listing reads.
+ExportEntityImage is technical only for truly external targets; current code does not exclude a
+canonical target. Explorer chapter/all-story exports resolve stories/export INSIDE game_session,
+so the historical d024 T label below is superseded for those original callers. Export-all must read
+its selected sources after ordinary admission/recovery under the same short lease as publication;
+chapter export preserves its already displayed entries. Preserve filenames/UTF8 BOM/overwrite and
+release before user prompts. BasePath/system_guardians library remains a separate technical root.
+Host pathname identity also crosses FSM.EnumerateFiles and PendingTurnSnapshotAuthority path
+normalization into actual Prepare Files/Hashes/Baselines; Linux literal backslash siblings require
+exact source-backed producer/validator proof. These are source findings, not executed failures.
+F10 bounded cleanup is recorded above; progression typed-decision catches remain open. F13/F14
+are separately accepted, watcher events remain hints, and native/full-client qualification is open.
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), approved spec FR-001–011/015 and the owner's explicit request to find and migrate all remaining old write, recovery and notification mechanisms. Branch `1553-storage-migration-cloud-20261008`; source `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`; comparison `1fc5e59` (full resolved SHA in manifest). #1536 B2–B5 stays paused on its separate branch. This is an inventory/design milestone, not runtime acceptance.
 
@@ -189,12 +200,12 @@ counts, not defect counts. Existing F/T owners below are the single executable b
 | R05 | F03/F04, T061/T063 | Console lifecycle accepted bounded Linux; corrected platform spellingd8b remains separate fromebd30 proof. Fresh both-platform browser schema7 cutoverc8d has independent corrected source/selection/raw evidence PASS and shared Linux57 GREEN; final be3d carrier and parent fresh remote restore accepted, native30 unexecuted. Original schema6 handler/refusal and signed direct-gacha adoption remain preserved. |
 | R06 | F05, T063 | Registered Daren fresh standalone/declared routes now use the current publisher on both platforms atc8d. Context-first original external evidence stays original-owned. Shared Linux public QTE/profile/exact bytes/absence/recovery included in57 GREEN; native existing/absent/extended recipes remain unexecuted. |
 | R07 | F06, T063 | Original Linux24 baseline21PASS/3 physical-deletion failures preserved. Runtime47ce exact-byte CAS/fixed-tree/full-archive-and-remaining-cohort guards has independent source/selection PASS and actual34/34 Linux GREEN (24 original +10 current cuts/caller). Independent final evidence/carrier PASS2f373. Partial removals remain committed, authority-missing retry refuses, unknown retains journal/archive; no diagnostic adoption or whole-cohort atomicity. Native Windows unexecuted. |
-| R03/R13 | F02/F09/F10, T062/T064 | Backup/distribution migrated individually; accepted restoration evidence above. Final QTE baseline cleanup remains: original ResolveActiveAction terminal result → actual backup deletion unknown/logger cut, sibling-directory/root pruning controls. Pre-turn cleanup similarly retains established outcome/evidence. |
-| R04/R12 | F08/F09/F12, T062 | Treatment helper/Dispose, original engine mirror and pre-canonical terminal propagation are bounded accepted through522293, carrier/fresh restorecf58: composed16 unique passing obligations with exact journals/receipts, source-era qualifications and known settlement policies retained. Post-seal binding reads authority; no invented third forward-write defect or B2–B5 business resumption. Remaining cleanup/progression consumers are a separate open F10/T062 slice. |
+| R03/R13 | F02/F09/F10, T062/T064 | Backup/distribution migrated individually; accepted restoration evidence above. Bounded original engine/QTE/browser cleanup and staging now pass composed26 through102d, including actual unknown cuts, retained established decisions, guarded exact-directory sibling pruning and Prepared stop. Native/full UI and progression remain separate. |
+| R04/R12 | F08/F09/F12, T062 | Treatment helper/Dispose, original engine mirror and pre-canonical terminal propagation are bounded accepted through522293, carrier/fresh restorecf58: composed16 unique passing obligations with exact journals/receipts, source-era qualifications and known settlement policies retained. Post-seal binding reads authority; no invented third forward-write defect or B2–B5 business resumption. Bounded cleanup is recorded above; progression consumers remain a separate open T062 slice. |
 | R08/R09/R11 | F07/F08/F17, T063/T064 | Source-reviewed save/settings/load outcome contracts preserved. Autosave3 production callers propagate typed decisions; no additional bool defect found, so no speculative aggregate run. Exact-five unreachable helper removal is accepted/restored2fcd after reflection/script/name census and actual original normalization guard. Native durability/close qualification remains scoped. |
 | R12/R26 | F11/F12/F19, T062/T065 | Actual failed browser rollback/runtime/notice accepted83f. HTTP/DTO/stale response ownership stays separate; retain current source-reviewed admission/Running ACK contracts. UI/cache/player notifications are not storage observers. No blanket callback-to-endpoint acceptance. |
 | R20 | F13/F14, T063 | F13 concrete design is current: dedicated helper role, generation before recovery, full policy/read/witness unit under one short lease, bounded chunk transport without a new document ceiling; design accepted; causal10 has ten semantic failures reached across original nine plus corrected realm-link one; old fixture failure remains preserved. Final bounded source/selection PASS45a; composed53 Linux passing obligations across6d26/6ed/45a, including exact stale-byte and realm refusal. Earlier fixture/diagnostic failures preserved; final raw/carrier and parent fresh restoration PASS38940493, native unexecuted. Old helper lock is distinct from the facade lock. F14 runtime8dd now has independent source/selection and actual27/27 Linux evidence PASS: original-connection snapshots, actual held publication QTE reads, complete dynamic cohort witnesses, exact notes/Ready conditional publication and marked refusal/real close projection. Initial causal failures are preserved; packet414/132 and parent fresh GitHub-only restore946419 are accepted. Native and full client continuation remain unqualified; watcher hints/poll fallback, source identity and no replay are preserved. |
-| R25 | F16, T063 | Actual image cleanup consumer/counts and console image publication catch still open. Stop on storage uncertainty/replacement, preserve confirmed per-file counts. Canonical image/mod/world-profile directory recreation needs bounded generation/type guard, including gallery OpenImagesFolder→DesktopPathOpener default creation; preserve injected gallery creation/one-open/failure controls. Explicit external export and BasePath guardian library initialization stay distinct technical roots. |
+| R25 | F16, T063 | Actual image cleanup consumer/counts and console image publication catch still open. Stop on storage uncertainty/replacement, preserve confirmed per-file counts. Canonical image/mod/world-profile directory recreation needs bounded generation/type guard, including gallery OpenImagesFolder→DesktopPathOpener default creation; preserve injected gallery creation/one-open/failure controls. Only genuinely external image targets are technical; canonical-target exclusion is still open. Story exports actually target game_session/stories/export and require admitted source/publication scope; host separator identity extends into original snapshot authority. BasePath guardian library initialization stays technical. |
 | R02/R13/R28 | F18, T064 | Reach-test ordinary vs physical/read/load callbacks, five named old ordinary FSM physical-hook tests, staged/spiritual/wound batching cuts and positive controls for zero-event assertions. MemberPublished is precommit; no async-void observer or nested canonical lease. Keep legacy/primitive/current-state-machine cuts with their real contract. |
 | R17/R18/R19 | F15, T063/T065 | Worker frame/peer/ApplyGate/synthetic bundle are independently typed ownership protocols. Audit found no new concrete stale consumer; preserve explicit platform capability refusal and original recovery handlers. Constructed paths/JSON/delegate edges remain checked at affected consumer boundaries, not converted wholesale to game journal. |
 | R22/R23/R24 | F15/F16/F19, T065 | Relay Unicode, single clipboard read and audio lifecycle callers source-reconciled; no additional concrete disconnect found. Preserve owner/debt/result/preview contracts and historical evidence limits. Do not run native desktop/provider work or claim Linux fixtures qualify Windows services. |

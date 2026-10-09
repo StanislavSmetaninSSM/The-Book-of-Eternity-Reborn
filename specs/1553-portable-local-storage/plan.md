@@ -1,3 +1,30 @@
+## F10 bounded cleanup result / composed26 checkpoint — 2026-10-09
+
+Final runtime102d610b has independent source/selection PASS. Matching Plan005652 built integration
+39.1603498s and unit11.4567321s, wall57.3221413s,6/2planned0executed. Actual010913 completed
+6/6PASS in2/2descriptors,14.7592230s,exit0,no skips/duplicates/timeouts,both runner cleanup flags.
+Prepared's real MemberPublished0 returns explicit Uncertain/follow-up/noApply while retaining exact
+journal/foreign target/UI-lock; all reached later reads/mutations/ordinary leases/publications/recovery
+phases0, separately readonly closing1, explicit owned-root removal true. Five unchanged known unit
+controls pass. Discovery011027 is valid500categories/11291methods-files,0execution7.7890376s.
+
+The bounded passing set is **26 unique obligations composed across sources**, not a single26run:
+18 (original8 +known10) at ef59782/004402; release2 at2755/005235; Prepared6 at102d/010913.
+The first mixed20 and later incomplete1/3 are retained exactly, including causal failures and unexecuted
+assertions. Same typed uncertainty survives original engine/QTE/staging consumers; established browser
+Committed/RolledBack decisions retain blocked follow-up after cleanup uncertainty. Prepared explicit
+Uncertain stops before lock release. QTE pruning retains empty and nonempty sibling runs.
+No global latch/new transaction/gameplay rule was introduced. SaveCreation's existing bool cleanup
+contract is unchanged. Generic browser tests are not full QteWeb/UI follow-up delivery proof.
+
+All111 stored/expanded/original artifacts and98 historical Git source pins verify locally in the
+[cleanup packet](recovery/storage-migration-cleanup-20261009/manifest.json). Independent final raw/
+carrier review and parent fresh GitHub-only restoration close this bounded delivery separately.
+Local original finalization counters are not remote main ACK qualification; native Windows, injected
+secondary-close fault, deferred own-close fault and actual GREEN logger throw remain unexecuted.
+Logger0 proves avoidance. Progression outcome tails, F16 media/listings/exports and F18 hook migration
+remain open; T062–T065 are not checked. No B2–B5, provider/live GM, native desktop or merge work.
+
 ## F10 final Prepared guard / exact6 frozen candidate — 2026-10-09
 
 Independent raw/carrier gate PASS3dff:95 stored/expanded/original artifacts and72 historical pins.
