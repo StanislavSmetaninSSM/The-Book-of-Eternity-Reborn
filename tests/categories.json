@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "portable-preparation-current-admission-controls",
-      "responsibility": "Three remaining preparation controls: actual earlier main-owner serialization with unconditional task drain, and unchanged linked/replacement LivePrepare unit controls unexecuted in the partial21 run.",
+      "responsibility": "Three remaining preparation controls: actual earlier main-owner serialization with unconditional task drain, and unchanged linked LivePrepare and corrected current-admission replacement controls unexecuted in the partial21 run.",
       "excludes": "No replay of unrelated browser or accepted-turn aggregates; no actual secondary-close fault, native or full-turn qualification.",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",

@@ -9747,7 +9747,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         finally
         {
             releaseSnapshot.TrySetResult(true);
-            await Task.WhenAll(snapshotTask, writerTask ?? Task.CompletedTask).WaitAsync(TimeSpan.FromSeconds(15));
+            await Task.WhenAll(snapshotTask, writerTask ?? Task.CompletedTask);
         }
         _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new
         {

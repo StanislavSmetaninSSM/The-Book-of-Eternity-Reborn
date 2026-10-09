@@ -263,10 +263,8 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
         finally
         {
             releasePreparation.TrySetResult();
-            var preparationSettlement = Record.ExceptionAsync(
-                () => preparationTask.WaitAsync(TimeSpan.FromSeconds(10)));
-            await Task.WhenAll(preparationSettlement, replacementTask ?? Task.CompletedTask)
-                .WaitAsync(TimeSpan.FromSeconds(15));
+            var preparationSettlement = Record.ExceptionAsync(() => preparationTask);
+            await Task.WhenAll(preparationSettlement, replacementTask ?? Task.CompletedTask);
             preparationFailure = await preparationSettlement;
         }
         Assert.True(mainAdmissionContentions > 0);

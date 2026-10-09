@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-preparation-current-admission-controls",
-      "reason": "Only final remaining3 after partial19/21: repair obsolete canonical-contention observation using original MainOwnerLockContended and always drain both tasks; unchanged Live unit2 were not executed. Preserve passed18; fresh matching Plan3/source gate required.",
+      "reason": "Only final remaining3 after partial19/21: repair obsolete canonical-contention observation using original MainOwnerLockContended and always drain both tasks; Live linked1 is unchanged and replacement1 has the same admission/join correction; both were previously unexecuted. Preserve passed18; fresh matching Plan3/source gate required.",
       "contracts": [
         "#1553",
         "FR-003",

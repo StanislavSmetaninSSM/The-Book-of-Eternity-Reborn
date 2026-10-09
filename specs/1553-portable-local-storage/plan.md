@@ -1,3 +1,13 @@
+## Remaining3 join correction before build — 2026-10-09
+
+Independent review found protective WaitAsync around cleanup could finish before the actual original
+task did. Both finally blocks now release their barriers then await the actual original tasks via
+Task.WhenAll, without a timeout proxy. Live captures its permitted SessionReplaced from the actual
+preparation task. The existing category/runner deadline remains the pathological-hang bound; no root
+cleanup is claimed before normal task settlement. Positive observation wait budgets remain unchanged.
+Exact3 = corrected snapshot1, corrected replacement1, unchanged linked1; runtime unchanged and no
+execution occurred at the intermediate c5/bef fixture checkpoints. Focused frozen source gate pending.
+
 ## Remaining3 pre-build admission correction completion — 2026-10-09
 
 Parent source review found the same old canonical-only wait in the selected, previously unexecuted
@@ -6,7 +16,7 @@ replacement, retains exact current/replaced artifact assertions, and always rele
 settles both started tasks together (expected preparation SessionReplaced retained). No artificial
 timeout run is needed for this source-identified fixture error. The linked Live control is unchanged.
 Task.WhenAll drains both actors even when one fails; original fixture wait budgets remain5/10s and
-bounded join15s is ownership cleanup, not a larger product/category timeout. Runtime unchanged.
+the subsequently corrected join awaits original tasks under the unchanged runner deadline. Runtime unchanged.
 
 Future F18 admission-observer census: parent found27 canonical-contention assignment candidates,
 including intentional dual hooks and negative-zero audit controls; this is not27 proven defects and
@@ -19,7 +29,7 @@ Partial carrier1302c7d3 preserves93 artifacts/45 pins. The unchanged concurrency
 signals from existing MainOwnerLockContendedAsync, the original admission preceding the canonical
 file lock. Positive first snapshot capture and incomplete competing writer remain required; exact
 snapshot-before/current-after bytes remain unchanged. A finally always releases the capture barrier
-and joins every started task within15s, with joined/contention evidence and explicit owned-root cleanup.
+and joins every started original task (later reviewed correction removes the timeout proxy), with joined/contention evidence and explicit owned-root cleanup.
 No runtime change or new hook. The corrected control1 and unexecuted Live unit2 have one exact category;
 passed18 retain their source-specific receipts and are not repeated. Frozen source gate before fresh
 Plan3/actual3; no GREEN claim yet for this correction.
