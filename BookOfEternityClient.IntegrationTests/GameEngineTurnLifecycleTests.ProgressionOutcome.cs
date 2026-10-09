@@ -83,6 +83,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     private sealed class ProgressionNoInput : IConsoleInputSource
     {
         public int Reads { get; private set; }
+        public void AssertCompleted() => Assert.Equal(0, Reads);
         public bool IsScripted => true;
         public bool KeyAvailable => false;
         public ConsoleKeyInfo ReadKey(bool intercept = true) { Reads++; throw new InvalidOperationException("This bounded progression case must not enter interactive distribution."); }
