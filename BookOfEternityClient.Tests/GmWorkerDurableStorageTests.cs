@@ -10,10 +10,7 @@ public sealed class GmWorkerDurableStorageTests(ITestOutputHelper output)
     [InlineData("inbox_unknown")]
     [InlineData("derived_audit_unknown")]
     [InlineData("inbox_unknown_dispose")]
-    [InlineData("required_audit_unknown")]
     [InlineData("terminal_audit_unknown")]
-    [InlineData("cleanup_audit_refused")]
-    [InlineData("reaper_audit_refused")]
     [InlineData("inbox_known")]
     [InlineData("audit_known")]
     [InlineData("success")]
@@ -21,7 +18,15 @@ public sealed class GmWorkerDurableStorageTests(ITestOutputHelper output)
     [InlineData("timeout_audit_unknown")]
     [InlineData("cancelled")]
     [InlineData("known_failure")]
-    public async Task OriginalDurableWorkerPreservesPublicationFactsAndStopsCanonicalContinuation(string mode)
+    public Task OriginalDurableWorkerPreservesPublicationFactsAndStopsCanonicalContinuation(string mode) => Run(mode);
+
+    [Theory]
+    [InlineData("required_audit_unknown")]
+    [InlineData("cleanup_audit_refused")]
+    [InlineData("reaper_audit_refused")]
+    public Task OriginalDurableCleanupAuditUsesRetainedPurpose(string mode) => Run(mode);
+
+    private async Task Run(string mode)
     {
         string? folder = null;
         try

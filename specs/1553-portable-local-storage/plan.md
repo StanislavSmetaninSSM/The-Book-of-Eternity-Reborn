@@ -1,3 +1,8 @@
+Exact3 is represented by a dedicated category/method using the same unchanged
+scenario helper. The enclosing durable category still owns the same14 unique rows
+across2 methods. This avoids replaying eleven unchanged cases just to qualify the
+new admission fix; no fixture behavior changed in the selector split.
+
 ## Durable worker causal RED and required-audit admission — WIP, 2026-10-09
 
 Independent corrected fixture14 PASS87603e12. Fresh Plan081127 selects14/1,

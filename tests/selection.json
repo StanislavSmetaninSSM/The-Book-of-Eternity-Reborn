@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-worker-cleanup-admission-linux",
+      "reason": "Focused three-row required-cleanup admission correction after actual 081224 exposed two retirement failures and one blocked required-audit cut. Source/unbuilt WIP; contained in later durable14 union. No repeat of the other eleven unchanged rows in the reachability run.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-005",
+        "FR-014",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-worker-durable-storage-linux",
       "reason": "Fourteen new original durable-pool storage outcome fixtures, including actual canonical journal cuts, real owner settlement, later acceptance fencing, durable diagnostic admission refusal and known policies. Corrected fixture WIP unbuilt/unrun; no prior accepted cohort replay or full Bridge/native Windows claim.",
       "contracts": [

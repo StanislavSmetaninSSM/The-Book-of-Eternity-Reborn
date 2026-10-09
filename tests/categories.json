@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-cleanup-admission-linux",
+      "responsibility": "Three original durable-pool deferred-cleanup rows: actual ordinary diagnostic refusal, exact required audit through main/worker admission and original retirement; required-audit Unknown must reach its genuine publisher cut. Separate finite subset of durable storage qualification.",
+      "excludes": "No provider/live GM or public production Linux worker activation, native Windows, full original Bridge-to-Store, new crash/restart/published-disk ACK-false matrix, nondurable cleanup/reaper diagnostic Unknown, or actual secondary canonical lease-close fault. Prior prelaunch public Linux refusal remains separately evidenced, not replayed.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableCleanupAuditUsesRetainedPurpose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-durable-storage-linux",
       "responsibility": "Fourteen original durable synthetic worker pool rows: real Store inbox/derived-audit and terminal/required-cleanup audit publication Unknown, durable deferred cleanup/reaper diagnostic admission refusals, delayed acceptance revocation, original physical settlement and retained workspace/slot/root capacity, known warning/cancellation/failure/fallback controls. Actual FSM generation and correlated original native worker/ledger/publication ACK.",
       "excludes": "No provider/live GM or public production Linux worker activation, native Windows, full original Bridge-to-Store, new crash/restart/published-disk ACK-false matrix, nondurable cleanup/reaper diagnostic Unknown, or actual secondary canonical lease-close fault. Prior prelaunch public Linux refusal remains separately evidenced, not replayed.",
@@ -24,7 +50,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableWorkerPreservesPublicationFactsAndStopsCanonicalContinuation"
+            "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableWorkerPreservesPublicationFactsAndStopsCanonicalContinuation",
+            "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableCleanupAuditUsesRetainedPurpose"
           ]
         }
       ]
