@@ -18,14 +18,16 @@ and [ZIP packet](recovery/storage-migration-archive-listing-20261009/manifest.js
 retain original Plan/RED/GREEN/catalog bytes and source hashes. Shared GREEN group
 contains all four original TRXs; signed qualification is38 and ZIP qualification4,
 not two additional executions. Previous signed53/26 and ZIP20/24 entries remain
-immutable; final carrier/review pending at this checkpoint.
+immutable; independent final Astra XHigh GREEN/CATALOG/CARRIER PASS at
+`96553e1e32990d1026844baa49eed69c3e60b0a1`, exact remote111-file readback.
 
 Other actual engine/browser/incarnation/spiritual producers can still lose names
 before the signer, other cleanup/owner routes remain open; this is not full F16,
 T061–T065, native Windows, gameplay, GM or migration acceptance. B2–B5 remain paused.
-Next: final independent raw GREEN/catalog/carrier review; then source-backed remaining
-producer/owner work and authoritative current consumer/old-mechanism inventory plus
-fresh exact-tip GitHub-only restore. Earlier WIP sections below are historical.
+Current first four selection reasons updated to actual results; archived selection
+pins remain immutable. Next: authoritative current consumer/old-mechanism inventory
+and fresh exact-tip GitHub-only restore; remaining producer/owner work is separately
+open. Earlier WIP sections below are historical.
 
 ## F16 isolated original cleanup causal1 and minimal runtime — WIP, 2026-10-09
 

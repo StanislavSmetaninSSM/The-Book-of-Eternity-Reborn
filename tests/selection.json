@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-signed-preparation-cleanup-alias-linux",
-      "reason": "T063/F16 independent installed/raw/design PASSbeac; fresh41Plan, separateoriginalneighbors15PASS7.722s, signed22=3PASS19causalFAIL7.614s, isolatedactualcleanupalias1causalFAIL8.088s with fiveartifactfileschanged and strictrootcleanup. Only firstLiveproducer/signing preflight minimal runtime installed UNBUILT/UNRUN; finalsigned38 plusZIP4=42 finite, no other producer/native/wholeF16 claim.",
+      "reason": "T063/F16 actualGREEN42 at15555367/173053 after freshbothPlan42/4: signed22+isolatedcleanup1+originalunitneighbors15+ZIP4, complete42/42,21.4568928s,11strictrootsabsent. Matchingcatalog583/11352 discovery0; final independent AstraXHigh raw/source/catalog/carrier PASS96553e1e (signed107artifacts39pins, ZIP74/36, sharedone42execution). Earlier causal/preparation baselines retained unchanged. Only firstLiveproducer/signer and original ZIP listing/retention qualified; other producers/owners/native/wholeF16 remain open.",
       "contracts": [
         "#1553",
         "FR-006",
@@ -13,7 +13,7 @@
     },
     {
       "category": "portable-signed-snapshot-spelling-linux",
-      "reason": "T063/F16 independent installed/raw/design PASSbeac; fresh41Plan, separateoriginalneighbors15PASS7.722s, signed22=3PASS19causalFAIL7.614s, isolatedactualcleanupalias1causalFAIL8.088s with fiveartifactfileschanged and strictrootcleanup. Only firstLiveproducer/signing preflight minimal runtime installed UNBUILT/UNRUN; finalsigned38 plusZIP4=42 finite, no other producer/native/wholeF16 claim.",
+      "reason": "T063/F16 actualGREEN42 at15555367/173053 after freshbothPlan42/4: signed22+isolatedcleanup1+originalunitneighbors15+ZIP4, complete42/42,21.4568928s,11strictrootsabsent. Matchingcatalog583/11352 discovery0; final independent AstraXHigh raw/source/catalog/carrier PASS96553e1e (signed107artifacts39pins, ZIP74/36, sharedone42execution). Earlier causal/preparation baselines retained unchanged. Only firstLiveproducer/signer and original ZIP listing/retention qualified; other producers/owners/native/wholeF16 remain open.",
       "contracts": [
         "#1553",
         "FR-006",
@@ -23,7 +23,7 @@
     },
     {
       "category": "portable-signed-snapshot-authority-neighbors",
-      "reason": "T063/F16 independent installed/raw/design PASSbeac; fresh41Plan, separateoriginalneighbors15PASS7.722s, signed22=3PASS19causalFAIL7.614s, isolatedactualcleanupalias1causalFAIL8.088s with fiveartifactfileschanged and strictrootcleanup. Only firstLiveproducer/signing preflight minimal runtime installed UNBUILT/UNRUN; finalsigned38 plusZIP4=42 finite, no other producer/native/wholeF16 claim.",
+      "reason": "T063/F16 actualGREEN42 at15555367/173053 after freshbothPlan42/4: signed22+isolatedcleanup1+originalunitneighbors15+ZIP4, complete42/42,21.4568928s,11strictrootsabsent. Matchingcatalog583/11352 discovery0; final independent AstraXHigh raw/source/catalog/carrier PASS96553e1e (signed107artifacts39pins, ZIP74/36, sharedone42execution). Earlier causal/preparation baselines retained unchanged. Only firstLiveproducer/signer and original ZIP listing/retention qualified; other producers/owners/native/wholeF16 remain open.",
       "contracts": [
         "#1553",
         "FR-006",
@@ -33,7 +33,7 @@
     },
     {
       "category": "portable-save-archive-exact-listing-linux",
-      "reason": "T063/F16 independent fixture/design/rawPASSbeac; actualZIP4 complete0PASS4causalFAIL7.135s: lostliteralname, silentlyskippedlink, realCommittedarchive deleted before later retentionrefusal. Initialcompilefailure0testsretained. Four strictrootsabsent. Minimal hostpattern/top-level selectedcohort exact/missing-tolerant preflight installed UNBUILT/UNRUN; perfileIO/order/nativefallback unchanged, nofullLoad/nativeWindows.",
+      "reason": "T063/F16 actualGREEN42 at15555367/173053 after freshbothPlan42/4: signed22+isolatedcleanup1+originalunitneighbors15+ZIP4, complete42/42,21.4568928s,11strictrootsabsent. Matchingcatalog583/11352 discovery0; final independent AstraXHigh raw/source/catalog/carrier PASS96553e1e (signed107artifacts39pins, ZIP74/36, sharedone42execution). Earlier causal/preparation baselines retained unchanged. Only firstLiveproducer/signer and original ZIP listing/retention qualified; other producers/owners/native/wholeF16 remain open.",
       "contracts": [
         "#1553",
         "FR-006",

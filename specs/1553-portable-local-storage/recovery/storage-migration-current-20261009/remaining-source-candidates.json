@@ -1,0 +1,221 @@
+{
+  "source": "96553e1e32990d1026844baa49eed69c3e60b0a1",
+  "scope": "Remaining concrete signed producer/owned-close/manifest/folder candidates; references include calls as well as declarations, not an exhaustive automatic classification.",
+  "rows": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "symbol": "CreateCanonicalBaselineSnapshotAsync",
+      "lines": [
+        387,
+        393,
+        398
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L387",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "symbol": "EnumerateRollbackTrackedFiles",
+      "lines": [
+        448,
+        1810,
+        1881,
+        2028,
+        2122,
+        2252
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L448",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "symbol": "CreatePreTurnBackup",
+      "lines": [
+        1866,
+        1870,
+        1875
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L1866",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "symbol": "CleanupPendingTurnSnapshot",
+      "lines": [
+        405,
+        1026,
+        1030,
+        1035,
+        1504,
+        1695,
+        1713,
+        1735
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L405",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "symbol": "ApplyGachaPullAsync",
+      "lines": [
+        86,
+        2138
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs#L86",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "4ca72db8015ef37822f9dcce8ef40529c8bd624f8ad0f4cdc5c0f74a6d374d6a"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+      "symbol": "QueueDirectChaosSeaGachaAsync",
+      "lines": [
+        34
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs#L34",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "d260f9d8309dfb39611715a7b1417dc259840c824026c87976279ae9e12f8525"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+      "symbol": "EnumerateRollbackBaselineFiles",
+      "lines": [
+        98,
+        177
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs#L98",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "d260f9d8309dfb39611715a7b1417dc259840c824026c87976279ae9e12f8525"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "symbol": "EnumerateIncarnationLocalPrepRollbackFiles",
+      "lines": [
+        1452,
+        1901
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L1452",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "188f388cf6c5e05250c4afb877b2e9e4edf93754cadd0369f6659ccba468bfec"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "symbol": "EnsurePendingLocalTurnRollbackSnapshotAsync",
+      "lines": [
+        691,
+        721
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L691",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "6346c115661ec1537ee830fcc093e795d9349740f95d4d60416a50a0ca20a76a"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "symbol": "MarkExistingPendingLocalTurnValidationSnapshotFiles",
+      "lines": [
+        693
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L693",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "6346c115661ec1537ee830fcc093e795d9349740f95d4d60416a50a0ca20a76a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs",
+      "symbol": "CaptureCoreAsync",
+      "lines": [
+        171,
+        195,
+        255,
+        287
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs#L171",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "28d9b30d4a1d873b1acb057f42a59b45cbd2186aa9439328d912faca5a7663a2"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "symbol": "BootstrapLocalStorageCoreAsync",
+      "lines": [
+        51,
+        52
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/StateManager.cs#L51",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "e5910e9e1452f81515b0b34c925120e3374096c6f06cc939c400909ed9a04661"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "symbol": "RefreshGameStateAfterExactRollbackAsync",
+      "lines": [
+        164
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/StateManager.cs#L164",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "e5910e9e1452f81515b0b34c925120e3374096c6f06cc939c400909ed9a04661"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LocalUiSessionLockService.cs",
+      "symbol": "AcquireCanonicalWriteLeaseAsync",
+      "lines": [
+        295
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/LocalUiSessionLockService.cs#L295",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "d4468dda11a11917bd11441e9bdf06fe7402605db34679db77fe0ab39ab9bc4e"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
+      "symbol": "AcquireCanonicalWriteLeaseAsync",
+      "lines": [
+        69,
+        90
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs#L69",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "1c5657de82c7a1c9dfd39dd2109cda7888e0854bd0c69ce5a9b06142a8b70d69"
+    },
+    {
+      "path": "BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
+      "symbol": "AcquireCanonicalWriteLeaseAsync",
+      "lines": [
+        299
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/DarenQteRewardProfileService.cs#L299",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "959c79ff2e05fd492632b7708f9b8331d3771c033f1df8aca1109d475e7282ab"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.Daren.cs",
+      "symbol": "AcquireCanonicalWriteLeaseAsync",
+      "lines": [
+        89
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/QteSceneService.Daren.cs#L89",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "3a800f8a707fbdd1d670d4d26d6dc7a245fe337dafcad591ae12f5c77f2c48a3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SystemModService.cs",
+      "symbol": "WriteManifestForGmAsync",
+      "lines": [
+        69
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/SystemModService.cs#L69",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "d06a32d3c3be2a4921db81d7b015966ac98b1f79e61856ee20771101cb6de97e"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaWorldSetupAndDebug.cs",
+      "symbol": "Process.Start",
+      "lines": [
+        680
+      ],
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaWorldSetupAndDebug.cs#L680",
+      "qualification": "Source candidate only; no new runtime qualification.",
+      "sha256": "a71101b703b3b8dce838bb6058a773ec578b7e25d887f19d94deec228b2046e3"
+    }
+  ]
+}

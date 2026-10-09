@@ -1,4 +1,128 @@
-## Latest image source scope — 2026-10-09
+## Authoritative current checkpoint — 2026-10-09
+
+Source/evidence carrier `96553e1e32990d1026844baa49eed69c3e60b0a1` on
+`1553-storage-migration-cloud-20261008`; tested runtime
+`15555367fed888ec4ac82bfe520188decc2d5547`. Main remains
+`d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. This section supersedes older
+pending/next labels below **only for the named bounded results**. T061–T065 and
+the whole migration remain open; B2–B5 gameplay remains paused. Source-only
+inventory is not runtime qualification, and no historical PASS is presented as a
+new execution at the current tip.
+
+| Newly reconciled boundary | Actual execution and independently accepted evidence | Remaining scope |
+|---|---|---|
+| Original shared-helper lifecycle | Composed nine original obligations plus separate five, final carrier23d1beca; [packet](recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json). The separate five actually pass5/5 at154140; never a single14/16 run. | Original binding cold remains FAILED; native worker1 remains UNRUN. |
+| Prepared nested settings/audio/ConsoleSettingsSession | Runtimecb670be5, actual11/11 at155753, final independent carrier4d0be367; [packet64artifacts/32pins](recovery/storage-migration-prepared-nested-20261009/manifest.json). | HTTP, native playback and arbitrary Prepared consumers are not qualified. |
+| Original Image lookup/export/scene and borrowed browser lookup | Runtime570ce89e, actual28/28 at164111 after fresh both-project build, final independent carrier5991452f; [packet118/62](recovery/storage-migration-image-source-20261009/manifest.json). Source13 + unchanged export3 + pure spelling12. | No native Windows I/O, provider, desktop process or whole-media qualification. Previously accepted image23/gallery8/listing15 scopes remain distinct. |
+| Original owned close | Runtime5a08258a, actual2/2 at165821, final independent carriercd22bdf0; [packet31/24](recovery/storage-migration-original-owned-close-20261009/manifest.json). Public Refresh owns its actual hoisted lease; public FSM write is the positive control. | Bootstrap, local UI lock, prompt, Daren and other original owners remain candidates; no blanket double-fault claim. |
+| First signed producer and detached signer | Runtime15555367; shared actual GREEN42 at173053 contains signed38 and ZIP4, complete4/4,21.4568928s. Signed22 + isolated cleanup1 + original unit neighbors15. Final independent carrier96553e1e; [signed107/39](recovery/storage-migration-signed-snapshot-20261009/manifest.json). | Other engine/browser/incarnation/spiritual producers can lose raw names before signer. |
+| Original ZIP list and autosave retention | Same single GREEN42 execution; ZIP4 pass. [ZIP74/36](recovery/storage-migration-archive-listing-20261009/manifest.json), final independent carrier96553e1e. Exact host-selected top-level cohort, metadata order, real Committed archive and follow-up preserved. | Full Save/Load, other folders, rotation, native Windows remain separate. |
+| Original Story list/read/export | Runtimea5d9684e, actual12/12 at110318; final raw/carrier5cabbfec and metadata/recovery59d091e0 accepted; [packet70/60](recovery/storage-migration-story-read-export-20261009/manifest.json). | Earlier "final review pending" labels are historical. Timestamp collisions, rotation and secondary close are not qualified. |
+
+Fresh both-project Plan172930 selects42/4, executes0,66.7071354s; matching
+discovery-only catalog173447 validates583categories/11352methods-files, executes0,
+9.1329227s. Current explicit selection156 unique categories is an ownership list,
+**not permission to run them as an aggregate**. Independent final F16 review
+checks42 unique PASS TRX rows, exact source/artifact hashes, immutable previous
+signed53/26 and ZIP20/24 groups,11strict roots absent, remote111-file byte readback.
+Shared GREEN artifacts in two packets record one execution, not84 tests. Current
+selection reasons now reflect that execution; archived source pins are unchanged.
+
+## Current source corpus and family decisions
+
+[Current pinned census](recovery/storage-migration-current-20261009/manifest.json)
+at96553e1e includes2239tracked source files/32633lexical occurrences, no decoding
+omissions, using the immutable d024 baseline rules and F01–F19 symbol groups.
+[Generator](recovery/storage-migration-current-20261009/scan.py),
+[corpus hashes](recovery/storage-migration-current-20261009/corpus.json) and
+[route occurrences](recovery/storage-migration-current-20261009/routes.json) are
+separate from the old inventory. No stale automatic M/R/I/T heuristics are copied.
+Every occurrence remains lexical-only: definitions/strings/read-only calls and
+multiple category aliases are included. These counts are neither defect counts
+nor evidence that all dynamic consumers have been reviewed.
+
+[Supplemental source census](recovery/storage-migration-current-20261009/supporting-census.json)
+pins19named remaining candidates and102single-line production owning
+`await using ... AcquireCanonicalWriteLeaseAsync` occurrences. Multiline acquisition,
+wrappers and dynamic ownership require the full route index;102 is not a count of
+confirmed masking defects. Exact body review establishes the candidates below.
+
+| Family | Current decision; old mechanism treatment |
+|---|---|
+| F01 | Common current publication on both OSes is implemented and bounded qualified. Typed uncertainty/debt and all enclosing consumer outcomes are separate. Recorder/legacy/excluded paths do not inherit ordinary-route acceptance. |
+| F02 | Current backup member-set publication/recovery is bounded accepted. Keep exact bytes/absence, generation, actual journal and old handler/refusal. |
+| F03 | Generic console stage/adopt/restore/cleanup bounded Linux30 accepted. Literal/case identity in caller-provided incarnation/Explorer inventories remains open below. |
+| F04 | Fresh browser schema7 is used on both OSes; Linux57 bounded accepted throughc8d/be3d. Original schema6 recovery remains intentionally separate. The d024 table's "new Windows schema6" description is historical. |
+| F05 | Fresh registered Daren standalone/declared routes use current publisher on both OSes; shared Linux evidence accepted. Original external evidence stays with its original transaction owner. |
+| F06 | Fresh inactive-snapshot retirement bounded Linux34 accepted at47ce/2f373. Physical authority receipt helpers are retained for named old evidence, never treated as new ordinary authority. |
+| F07 | Save/Load/session replacement/namespace consumers have bounded evidence. ZIP4 adds only list/retention; it does not qualify all archive creation, load, staging or runtime replacement. |
+| F08 | Typed outward uncertainty/debt propagation is bounded accepted across facade, engine, browser and Prepared. Representative original Refresh double-fault is now fixed/qualified; other owning closes are open. |
+| F09 | Common member-set accepted mechanics, normalizer and original continuation cuts have bounded evidence. No new gameplay rule, operation-wide atomicity or #1536 completion follows. |
+| F10 | Original QTE/engine/browser cleanup/staging composed26 and progression boundaries are accepted in their packets. Sequential distribution retains its approved partial/compensation contract. |
+| F11 | Failed browser rollback/runtime/notice, admitted refresh and Load ACK contracts have bounded acceptance. HTTP and cached-state visibility do not inherit storage-only qualification. |
+| F12 | Progression, Story, Explorer and treatment notification scopes are independently bounded. No early success after Unknown; UI/cache is not a storage observer. |
+| F13 | Dedicated short-lease GM helper generation/read-witness/transport unit composed53 accepted38940493. Retain original protocol and old-helper lock distinction; native/full client remains separate. |
+| F14 | Original daemon connection/witness/refusal/close unit27 accepted946419. Watcher events remain hints; no replay or universal whole-client acceptance. |
+| F15 | Worker/process/IPC/relay have their own typed authority. Preserve adapters and original recovery, not blanket replacement by game journal. Systemd S2/S3 unavailable/deferred/backend OFF; native Windows is parent-coordinated postmerge, not a new premerge requirement. |
+| F16 | Exact native payload names22, Image/Story/listings and current signed38/ZIP4 are bounded accepted. Other signed producers, manifest/cache, folder opener and untraced raw media paths remain open. External exports, fixture/report output and library initialization require method/root/purpose classification; no service-wide exemption. |
+| F17 | Closed five-method unreachable cluster removed with source/reflection census and original normalization guard; carrier2fcd accepted. Live owned-write/authority-delete and old handlers remain. |
+| F18 | Original phase/cold/settlement obligations accepted only per packet. Old native physical hooks intentionally remain; ordinary zero-hook guards are separate. Binding cold FAILED/native worker UNRUN remain visible. |
+| F19 | Prepared nested settings/audio11 is current acceptance. Browser preference storage is technical; HTTP/result/cache/notification consumers require their own actual boundary evidence. |
+
+## Confirmed remaining source boundaries and next acceptance gates
+
+Links below pin exact current source. These are source-proven ordering/identity
+risks, **not claimed new causal RED executions**. Do not edit a producer before
+preserving original baseline/authority and proving the real route's negative case.
+
+| Priority / dependency | Actual source boundary | Acceptance and minimal targeted checks |
+|---|---|---|
+| 1 — raw producer identity | [Engine baseline](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L398) deletes protocol request/old snapshot before capture; tracked inventory starts IgnoreCase HashSet at1810; backup copies at1875. Cleanup preserved paths normalize/fold at1035. | Before cleanup/init/copy/fold, validate exact raw eligible inventory, fixed/logical/output/story names and rollback keys/values/baselines. Negative case aliases/backslash/outer trim preserve all old files and zero side effects; exact duplicates/Unicode remain valid. Choose original baseline/backup/cleanup consumers plus directly affected neighbors, not broad lifecycle. |
+| 1 — browser pre-spend, depends on same spelling contract | [ApplyGachaPullAsync](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs#L2138) reaches ExecuteAtomic/staging/spend before queue inventory; [queue](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs#L34) replaces backslashes at68/140 and folds baseline at99/180. | Reject before stage/spend/private evidence; direct queue rejects before its cleanup catch can remove old pending evidence. Original gacha positive plus negative exact-name controls prove no currency/dice/old-authority changes; preserve genuine outcome mapping and borrowed lease. |
+| 1 — incarnation/Explorer input before caller folding | [Incarnation inventory](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L1901) uses raw Directory.GetFiles/Replace/IgnoreCase. [Explorer capture/mark](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L693) uses Trim/Distinct before lease and completed evidence cleanup. | Validate admitted exact host names and raw caller arrays against retained snapshot entries before folds or cleanup. Original stage/mark/enumeration cases with old evidence plus Unicode positive; do not rewrite Linux filename identity or weaken native payload rules. |
+| 2 — spiritual original capture, keep B2 business paused | [CaptureCoreAsync](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs#L285) revokes old capture/handoffs before current/declared inventory; IsDraftPath rejects spelling and can filter it out. | Validate raw current/cold/declared/fixed draft and physical witness inventory before revoke/read binding. Actual original capture and retained authority must survive invalid spelling; no forged capture, gameplay registry correction or claim that failed binding cold passed. |
+| 2 — remaining original owned closes | [Bootstrap and rollback refresh](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/StateManager.cs#L54), [UI lock](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/LocalUiSessionLockService.cs#L295), [prompt](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs#L69), [Daren profile](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/DarenQteRewardProfileService.cs#L299), [QTE completion](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/QteSceneService.Daren.cs#L89). | Trace publishing vs read-only owner first. For each changed owner, locate its actual hoisted lease before arming, produce genuine publisher uncertainty, attach secondary close only after actual route selection, retain primary+secondary and prove settlement/lock release/strict cleanup. Missing prerequisites are preparation failure/UNRUN, not causal RED. |
+| 3 — canonical manifest/cache and native folder UI | [SystemMod manifest](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/SystemModService.cs#L69) mutates EnabledSystemMods before later admitted manifest read/write; [world profile opener](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaWorldSetupAndDebug.cs#L680) still directly Process.Start. | Original mod read/write/Unknown/cache controls first; known metadata failures retain intended behavior. Folder adapter can be checked offline without starting desktop. No live provider, desktop execution or blanket technical exemption. |
+
+Full raw Image/Save folder/load/rotation and multiline/dynamic owning routes remain
+unreviewed where the index has no accepted method-specific evidence. Do not turn
+the lexical census into "zero remaining consumers". Next implementation starts
+with priority1 engine original producer, then browser and incarnation/Explorer;
+storage capture fixes must not resume B2–B5 game-rule work.
+
+## Retained hooks, history and recovery limits
+
+Current tracked C# census has12literal `AfterPhysicalFilePublishedAsync`
+references: production definition+two invocations and9test references. Six belong
+to explicitly renamed `LegacyAtomicWrite_*` native primitive controls; two are
+ordinary zero-physical-event guards (OrdinarySaveReadAndRefresh and
+PortableBackupLifecycle.Routing), one is the original native profile control.
+They are not nine ordinary current cuts and cannot all be deleted. Positive
+native physical publication remains UNRUN here; current MemberPublished is
+precommit and Committed is the durable decision. This is a named hook census,
+not completeness of all callbacks. [Exact references](recovery/storage-migration-current-20261009/owner-and-hook-census.json).
+
+Remote branch `1536-complete-wound-materialization` is still
+`1fc5e59b253c358a8622df66a4e9459f5f3fe78b`; old..main left/right is0/28:
+the old checkpoint already belongs to main. Returning to it loses later
+Windows/Linux relay/HTTP changes and does not recover missing feature completion.
+Actual old binding failure has unchanged seed/validator/profile/cost source at
+main and migration checkpoints; [immutable history proof](recovery/storage-migration-spiritual-lifecycle-20261009/binding-cold-contract-history.json).
+Resolving whether force_binding belongs to the game art registry is a paused
+#1536 product-contract decision, not a storage fixture rename/removal. Native
+Windows and systemd handling were already owner-directed; no repeated decision
+or HOME-PC task is needed.
+
+No game rule, GM response/schema, accepted-turn mechanics or command was added
+by the current storage block. GM gameplay prompt/example changes are therefore
+not required; protocol-specific F13/F14 guidance remains separately preserved.
+Full/Fast/PreMerge/all-category, live GM/provider/game/desktop, CI/protection,
+main/merge/issues and authentication changes remain outside this checkpoint.
+Fresh exact-tip GitHub-only clone/source/evidence restoration is still required
+before claiming this final carrier recoverable; it will not qualify runtime from
+the fresh clone unless actual tests are separately run there.
+
+## Latest image source scope — historical checkpoint, 2026-10-09
 
 Runtime570ce89e has independently source-reviewed admitted lookup/export/scene and
 borrowed browser existing-image lookup, preserving original top-level selection,
