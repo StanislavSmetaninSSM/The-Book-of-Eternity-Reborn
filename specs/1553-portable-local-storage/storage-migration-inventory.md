@@ -1,3 +1,11 @@
+## Current resumed Explorer result — 2026-10-09
+
+Clean18475 fresh Plan22 succeeded; actual055028 completes21PASS/1 stale-lock-baseline
+fixture FAIL, all22 executed. Genuine committed-release continuation now passes. Primary
+Unknown retains the actual pre-fault refreshed lock and no later canonical work; correcting
+the pre-Submit byte oracle and the separate unoffered reroll recipe remains next. Existing
+older maps below retain their source-era qualifications. No new whole-family closure.
+
 ## Current accepted / open map — 2026-10-09
 
 Latest tested sourcefdc219f0 accepts original GameLoop/diagnostic4 (8.2415967s), genuine three Unknown

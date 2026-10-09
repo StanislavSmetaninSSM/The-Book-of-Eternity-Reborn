@@ -1,3 +1,32 @@
+## Resumed Explorer verification — 2026-10-09
+
+Owner confirmed the manual model switch and authorized continuation of the existing migration;
+the safe-stop instruction below is now historical. Root is the sole writer/runner. B2–B5 stay
+paused; main/merge/CI/access settings remain unchanged. Stop checkpoint18475 was freshly restored
+from GitHub by the parent: clean detached tree8db29a4d2009c48155b72d4d1f18eeb63a4e862e,
+28747 tracked files, no alternates, full fsck exit0; source/evidence recovery only.
+
+Fresh Plan054835 at clean18475 builds integration80.5653998s and unit13.4897446s,
+exact22/3 planned,0 executed, wall101.2294675s. Actual055028 completes22/22 across3/3:
+**21PASS/1FAIL**,20.5572684s, no timeout/skip/duplicate, both cleanup flags complete.
+[Preserved raw packet](recovery/storage-migration-explorer-archive-20261009/manifest.json).
+The committed-release Submit, healthy Submit and real tree-CSP/closing replacement all pass.
+Root verifies17 genuine Explorer publication cuts, retained authentic journals/foreign bytes,
+zero measured later read/mutation/ordinary admission/publication/recovery and36 removed roots.
+
+The one remaining primary-Unknown browser failure is a stale fixture baseline: it compares
+lock bytes captured after Execute but before Submit with post-fault bytes. Original Submit
+legitimately refreshes heartbeatAtUtc/lastOperation before forge publication; the refreshed
+lock is an independently Committed prior image and remains exact after the actual Unknown.
+The actual result is Failed with a safe warning/no-repeat, retired form and readonly closing1;
+the failed assertion at fixture106 prevents later assertions from qualifying that test.
+Next: independently review the raw classification, correct only that baseline to the actual
+committed image at the cut, and qualify the separately tracked stale reroll-cancel recipe.
+Its old two-form seed does not offer reroll, while the scripted console permits unoffered
+values; require actual offered choices and changed suggestion before accepting its cancel
+semantics. Preserve21 current passing cases, then execute only corrected affected fixtures.
+No final22/composed32 or whole Explorer/native claim yet. Other queues remain open below.
+
 ## Authoritative safe-stop handoff — 2026-10-09, Explorer/Forge boundary
 
 Owner requested a safe stop for a manual model switch to Sol 6.1. **Do not start a build,

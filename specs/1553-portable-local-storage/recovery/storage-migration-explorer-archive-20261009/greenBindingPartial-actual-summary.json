@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "portable-explorer-archive-outcome-causal-linux",
+    "portable-explorer-archive-binding-controls"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "18475a51455b53c102e3919f24a42374df5e425a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-explorer-archive-binding-controls",
+      "Seconds": 7.6660691,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-explorer-archive-outcome-causal-linux",
+      "Seconds": 5.2312696,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.043436,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0315415,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0899716,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:00:20.5572684",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 22,
+    "CompletedCases": 22,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 22,
+    "Executed": 22,
+    "Passed": 21,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

@@ -1,3 +1,9 @@
+## Current resumed checkpoint — 2026-10-09
+
+Owner resumed work after model switch. Explorer actual22 at18475 is21PASS/1 stale fixture
+baseline FAIL; full counts/cleanup and next exact fixture corrections are in the plan.
+T061–T065 remain open; B2–B5 stay paused. Historical stop instructions below are superseded.
+
 ## Owner-requested safe stop — 2026-10-09
 
 #1553 remains open; T062–T065 are unfinished and B2–B5 remain paused. Resume from the
