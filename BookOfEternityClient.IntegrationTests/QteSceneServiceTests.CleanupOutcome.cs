@@ -43,10 +43,11 @@ public sealed partial class QteSceneServiceTests
         var failure = await Record.ExceptionAsync(async () => returnedState = (await service.ResolveActiveActionAsync(
             "brace", "fail", currentTurnNumber: 12, allowPreexistingStateIssues: true)).State);
         _cleanupOutput?.WriteLine(JsonSerializer.Serialize(new { finalCleanup, returnedState, Failure = failure?.ToString(),
-            historyWrites, terminalRuntimeWrites, DiagnosticThrows = logger.Throws, historyAtCut, runtimeAtCut,
+            EstablishedQteCompletion = failure?.Data["EstablishedQteCompletion"], historyWrites, terminalRuntimeWrites, DiagnosticThrows = logger.Throws, historyAtCut, runtimeAtCut,
             HistoryAfter = CleanupPublicationCut.ReadOptional(history), RuntimeAfter = CleanupPublicationCut.ReadOptional(runtime), Cut = cut.Evidence() }));
         cut.AssertReachedAndStopped();
         Assert.Same(cut.OriginalUncertainty, failure); Assert.Null(returnedState);
+        if (finalCleanup) Assert.IsType<QteSceneService.QteSceneCompletion>(failure!.Data["EstablishedQteCompletion"]);
         Assert.Equal(finalCleanup ? 1 : 0, historyWrites); Assert.Equal(finalCleanup ? 1 : 0, terminalRuntimeWrites);
         Assert.Equal(historyAtCut, CleanupPublicationCut.ReadOptional(history)); Assert.Equal(runtimeAtCut, File.ReadAllBytes(runtime));
     }

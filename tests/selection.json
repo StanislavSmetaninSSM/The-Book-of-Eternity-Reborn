@@ -3,7 +3,18 @@
   "selections": [
     {
       "category": "portable-cleanup-outcome-causal-linux",
-      "reason": "Proposed original cleanup/staging8 causal packet only; runtime unchanged. Test-only source/fixture gate and matching build required before actual. Known refusal neighbors join final runtime selection.",
+      "reason": "Final affected eight original consumer causal controls, now require same uncertainty/no later work and retained established QTE/browser decisions; initial52ec actual8RED preserved separately.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES"
+      ]
+    },
+    {
+      "category": "portable-cleanup-outcome-neighbors-linux",
+      "reason": "Ten exact known controls for changed cleanup/owned leases/browser classification and original staging: preserve known refusal versus actual uncertainty, confirmed partial results, empty/sibling cleanup and cancellation. No aggregate rerun.",
       "contracts": [
         "#1553",
         "FR-003",

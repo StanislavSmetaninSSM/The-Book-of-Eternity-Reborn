@@ -1348,12 +1348,17 @@ public partial class GameEngine
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogDebug(ex, "Не удалось безопасно поставить ход в очередь; выполняется rollback локальной подготовки.");
             try
             {
                 _fs.DeleteFile("input/turn_request.json");
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["TurnStagingOriginalFailure"] = ex;
+                throw;
             }
             catch (Exception cleanupEx)
             {
@@ -1373,6 +1378,11 @@ public partial class GameEngine
                     await _explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(stagedExplorerRollback);
                 }
             }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["TurnStagingOriginalFailure"] = ex;
+                throw;
+            }
             catch (Exception rollbackEx)
             {
                 _logger.LogError(rollbackEx, "Не удалось восстановить локальную подготовку после ошибки постановки хода.");
@@ -1381,6 +1391,11 @@ public partial class GameEngine
             try
             {
                 await CleanupPendingTurnSnapshotAsync();
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["TurnStagingOriginalFailure"] = ex;
+                throw;
             }
             catch (Exception cleanupEx)
             {

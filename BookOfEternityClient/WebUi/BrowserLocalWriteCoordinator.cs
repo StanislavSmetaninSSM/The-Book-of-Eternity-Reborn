@@ -302,6 +302,12 @@ public sealed partial class BrowserLocalWriteCoordinator
                 writeLease,
                 backups);
         }
+        catch (CoordinatedStatePublicationUncertainException uncertainty)
+        {
+            ReleaseBrowserAccess(writeLease, backups, uncertainty);
+            return CaptureBrowserResult(BrowserLocalWriteResult.Failed(
+                uncertainty.Message, BrowserPreparedWriteDisposition.Uncertain));
+        }
         catch (SessionReplacedException)
         {
             writeLease.ExternalPublicationContext = null;
@@ -319,6 +325,7 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             writeLease.MutationIntentRecorder = null;
             Exception? rollbackFailure = null;
+            CoordinatedStatePublicationUncertainException? rollbackUncertainty = null;
             var rollbackConfirmed = false;
             try
             {
@@ -336,6 +343,8 @@ public sealed partial class BrowserLocalWriteCoordinator
                                     .BrowserWriteCleanupOutcome.Restored,
                                 out var cleanupFailure))
                         {
+                            if (cleanupFailure is CoordinatedStatePublicationUncertainException uncertainty)
+                                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(uncertainty).Throw();
                             throw new IOException(
                                 "Canonical files were restored, but durable browser rollback evidence could not be cleaned.",
                                 cleanupFailure);
@@ -344,13 +353,18 @@ public sealed partial class BrowserLocalWriteCoordinator
                     catch (Exception restoreEx)
                     {
                         rollbackFailure = restoreEx;
+                        if (restoreEx is CoordinatedStatePublicationUncertainException uncertainty)
+                        {
+                            rollbackUncertainty = uncertainty;
+                            uncertainty.Data["BrowserOriginalOperationFailure"] = ex;
+                        }
                     }
 
                     // Runtime before-images describe restored canonical files only. A failed
                     // restore must retain the last confirmed runtime observation as well.
                     try
                     {
-                        if (rollbackConfirmed)
+                        if (rollbackConfirmed && rollbackUncertainty == null)
                             afterRollback?.Invoke();
                     }
                     catch (Exception runtimeRestoreEx)
@@ -363,12 +377,16 @@ public sealed partial class BrowserLocalWriteCoordinator
             }
             finally
             {
-                writeLease.ExternalPublicationContext = null;
-                writeLease.MutationIntentRecorder = null;
-                backups?.DarenTransaction?.Dispose();
-                backups?.LocalTransaction?.Access.Dispose();
-                await TryReleaseAsync(writeLease, lockLease);
+                ReleaseBrowserAccess(writeLease, backups, rollbackUncertainty);
+                if (rollbackUncertainty == null)
+                    await TryReleaseAsync(writeLease, lockLease);
             }
+
+            if (rollbackUncertainty != null)
+                return CaptureBrowserResult(BrowserLocalWriteResult.Failed(
+                    rollbackUncertainty.Message, rollbackConfirmed
+                        ? BrowserPreparedWriteDisposition.RolledBack
+                        : BrowserPreparedWriteDisposition.Uncertain).WithFollowUp());
 
             return backups == null
                 ? BrowserLocalWriteResult.Failed(
@@ -383,6 +401,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                     $"Browser-write отменён; rollback завершён не полностью: {ex.Message}; {rollbackFailure.Message}", BrowserPreparedWriteDisposition.Uncertain);
         }
 
+        Exception? committedCleanupFailure = null;
         var rollbackEvidenceCleaned = backups == null ||
                                       ExplorerLocalTurnRollbackArtifacts.TryDeleteBrowserWriteTransaction(
                                           _fs,
@@ -390,16 +409,34 @@ public sealed partial class BrowserLocalWriteCoordinator
                                           backups,
                                           ExplorerLocalTurnRollbackArtifacts
                                               .BrowserWriteCleanupOutcome.Committed,
-                                          out _);
-        writeLease.ExternalPublicationContext = null;
-        writeLease.MutationIntentRecorder = null;
-        backups?.DarenTransaction?.Dispose();
-        backups?.LocalTransaction?.Access.Dispose();
+                                          out committedCleanupFailure);
+        ReleaseBrowserAccess(writeLease, backups, committedCleanupFailure);
+        if (committedCleanupFailure is CoordinatedStatePublicationUncertainException committedUncertainty)
+            return CaptureBrowserResult(BrowserLocalWriteResult.Completed(
+                "Browser-write завершён. " + committedUncertainty.Message).WithFollowUp());
         var released = await TryReleaseAsync(writeLease, lockLease);
         return BrowserLocalWriteResult.Completed(
             released && rollbackEvidenceCleaned
                 ? "Browser-write завершён."
                 : "Browser-write завершён; служебная очистка будет повторена после устранения блокирующего файлового доступа.") with { NeedsFollowUp = !released || !rollbackEvidenceCleaned };
+    }
+
+    private static void ReleaseBrowserAccess(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction? backups,
+        Exception? originalFailure)
+    {
+        writeLease.ExternalPublicationContext = null;
+        writeLease.MutationIntentRecorder = null;
+        try
+        {
+            try { backups?.DarenTransaction?.Dispose(); }
+            finally { backups?.LocalTransaction?.Access.Dispose(); }
+        }
+        catch (Exception secondary) when (originalFailure != null)
+        {
+            originalFailure.Data["BrowserInMemoryReleaseFailure"] = secondary;
+        }
     }
 
     private async Task<bool> TryReleaseAsync(

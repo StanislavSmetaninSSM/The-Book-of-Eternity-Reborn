@@ -759,13 +759,12 @@ public sealed partial class QteSceneService
         int currentTurnNumber,
         bool allowPreexistingStateIssues = false)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        return await ResolveActiveActionCoreAsync(
+        return await WithOwnedQteLeaseAsync(writeLease => ResolveActiveActionCoreAsync(
             writeLease,
             actionId,
             submittedGrade,
             currentTurnNumber,
-            allowPreexistingStateIssues);
+            allowPreexistingStateIssues));
     }
 
     internal Task<QteActionResolution> ResolveActiveActionAsync(
@@ -1693,10 +1692,7 @@ public sealed partial class QteSceneService
     {
         if (writeLease == null)
         {
-            QteSceneCompletion completion;
-            await using (var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-            {
-                completion = await CompleteTerminalSceneAsync(
+            var completion = await WithOwnedQteLeaseAsync(ownedLease => CompleteTerminalSceneAsync(
                     ownedLease,
                     state,
                     active,
@@ -1708,8 +1704,7 @@ public sealed partial class QteSceneService
                     currentTurnNumber,
                     allowPreexistingStateIssues,
                     appendScoreToResponse,
-                    showTerminalScreen: false);
-            }
+                    showTerminalScreen: false));
             if (showTerminalScreen && !completion.AwaitingEffectResolution)
                 await ShowTerminalOutcomeScreenAsync(outcome, completion.ScoreSummary);
             return completion;
@@ -1847,6 +1842,7 @@ public sealed partial class QteSceneService
             writeLease,
             response,
             terminalPaths);
+        QteSceneCompletion? establishedCompletion = null;
         try
         {
             response = await ApplyTerminalOutcomeValidatedStateChangesAsync(
@@ -1910,7 +1906,7 @@ public sealed partial class QteSceneService
             }
             baseline.AllowCleanup();
 
-            return new QteSceneCompletion
+            establishedCompletion = new QteSceneCompletion
             {
                 QteId = offer.QteId,
                 OutcomeId = outcome.OutcomeId,
@@ -1918,6 +1914,7 @@ public sealed partial class QteSceneService
                 Response = response,
                 ScoreSummary = scoreSummary
             };
+            return establishedCompletion;
         }
         catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
         {
@@ -1930,7 +1927,13 @@ public sealed partial class QteSceneService
         }
         finally
         {
-            CleanupQteNormalizationBaseline(writeLease, baseline);
+            try { CleanupQteNormalizationBaseline(writeLease, baseline); }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                if (establishedCompletion != null)
+                    uncertainty.Data["EstablishedQteCompletion"] = establishedCompletion;
+                throw;
+            }
         }
     }
 
@@ -1939,11 +1942,10 @@ public sealed partial class QteSceneService
         bool allowPreexistingStateIssues = false)
     {
         var response = BuildTerminalOutcomeResponse(outcome);
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        return await ApplyTerminalOutcomeValidatedStateChangesAsync(
+        return await WithOwnedQteLeaseAsync(writeLease => ApplyTerminalOutcomeValidatedStateChangesAsync(
             writeLease,
             response,
-            allowPreexistingStateIssues);
+            allowPreexistingStateIssues));
     }
 
     private async Task<GameResponse> ApplyTerminalOutcomeValidatedStateChangesAsync(
@@ -2027,30 +2029,32 @@ public sealed partial class QteSceneService
     {
         var response = BuildTerminalOutcomeResponse(outcome);
         RejectUnboundResourceSurfaces(response);
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        var baseline = await CaptureQteNormalizationBaselineAsync(writeLease, response);
-        try
+        return await WithOwnedQteLeaseAsync(async writeLease =>
         {
-            await ApplyTerminalOutcomeStateChangesCoreAsync(
-                writeLease,
-                response,
-                baseline.NormalizerBackupsByPath);
-            baseline.AllowCleanup();
-            return response;
-        }
-        catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
-        {
-            await RestoreQteNormalizationBaselineAfterFailureAsync(
-                writeLease,
-                baseline,
-                originalFailure,
-                refreshRequired: false);
-            throw;
-        }
-        finally
-        {
-            CleanupQteNormalizationBaseline(writeLease, baseline);
-        }
+            var baseline = await CaptureQteNormalizationBaselineAsync(writeLease, response);
+            try
+            {
+                await ApplyTerminalOutcomeStateChangesCoreAsync(
+                    writeLease,
+                    response,
+                    baseline.NormalizerBackupsByPath);
+                baseline.AllowCleanup();
+                return response;
+            }
+            catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
+            {
+                await RestoreQteNormalizationBaselineAfterFailureAsync(
+                    writeLease,
+                    baseline,
+                    originalFailure,
+                    refreshRequired: false);
+                throw;
+            }
+            finally
+            {
+                CleanupQteNormalizationBaseline(writeLease, baseline);
+            }
+        });
     }
 
     private GameResponse BuildTerminalOutcomeResponse(QteTerminalOutcome outcome)
@@ -2429,41 +2433,46 @@ public sealed partial class QteSceneService
             {
                 DeleteCanonicalFile(writeLease, backupPath);
             }
-            catch (Exception exception)
+            catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException and not SessionReplacedException)
             {
-                _logger.LogWarning(
-                    exception,
-                    "QTE backup cleanup failed; retained recovery evidence at {BackupPath} under {BackupDirectory}.",
-                    backupPath,
-                    QteNormalizerBackupDirectory);
+                try
+                {
+                    _logger.LogWarning(exception,
+                        "QTE backup cleanup failed; retained recovery evidence at {BackupPath} under {BackupDirectory}.",
+                        backupPath, QteNormalizerBackupDirectory);
+                }
+                catch { /* Diagnostics cannot change a known cleanup refusal. */ }
             }
         }
 
         foreach (var runDirectory in runDirectories.OrderByDescending(path => path.Length))
-            TryDeleteDirectoryIfEmpty(runDirectory);
+            TryDeleteDirectoryIfEmpty(writeLease, runDirectory);
 
-        TryDeleteDirectoryIfEmpty(_fs.ResolvePath(QteNormalizerBackupDirectory));
+        TryDeleteDirectoryIfEmpty(writeLease, _fs.ResolvePath(QteNormalizerBackupDirectory));
     }
 
-    private void TryDeleteDirectoryIfEmpty(string? absolutePath)
+    private void TryDeleteDirectoryIfEmpty(FileSystemManager.CanonicalWriteLease writeLease, string absolutePath)
     {
-        if (string.IsNullOrWhiteSpace(absolutePath) || !Directory.Exists(absolutePath))
-            return;
-
         try
         {
-            if (Directory.EnumerateFileSystemEntries(absolutePath).Any())
-                return;
-
-            Directory.Delete(absolutePath, recursive: false);
+            var relative = TrustedLocalFilePublication.GetLocalRelativePath(
+                _fs.GameSessionPath, absolutePath, OperatingSystem.IsWindows());
+            _fs.TryRemoveEmptyCanonicalDirectory(writeLease, relative, includeEmptyDescendants: false);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException and not SessionReplacedException)
         {
-            _logger.LogWarning(
-                ex,
-                "QTE backup directory cleanup failed; retained recovery evidence under {Path}.",
-                absolutePath);
+            try { _logger.LogWarning(ex, "QTE backup directory cleanup failed; retained recovery evidence under {Path}.", absolutePath); }
+            catch { /* Diagnostics cannot change a known cleanup refusal. */ }
         }
+    }
+
+    private async Task<T> WithOwnedQteLeaseAsync<T>(Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)
+    {
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try { return await operation(writeLease); }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
     }
 
     private async Task ShowTerminalOutcomeScreenAsync(QteTerminalOutcome outcome, QteScoreSummary? scoreSummary)

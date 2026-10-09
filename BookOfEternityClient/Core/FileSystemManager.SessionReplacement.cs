@@ -88,7 +88,7 @@ public partial class FileSystemManager
         return replacement;
     }
 
-    internal bool TryRemoveEmptyCanonicalDirectory(CanonicalWriteLease lease, string relativePath)
+    internal bool TryRemoveEmptyCanonicalDirectory(CanonicalWriteLease lease, string relativePath, bool includeEmptyDescendants = true)
     {
         EnsureWorkerGeneralMutationAllowed(lease);
         ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
@@ -98,6 +98,13 @@ public partial class FileSystemManager
             throw new InvalidOperationException("Empty structure normalization cannot alter a legacy transaction namespace.");
         var scope = new TrustedLocalFileScope([GameSessionPath]);
         var path = scope.ValidateDirectory(ResolvePath(relativePath));
+        if (!includeEmptyDescendants)
+        {
+            if (!Directory.Exists(path)) return true;
+            if (Directory.EnumerateFileSystemEntries(path).Any()) return false;
+            Directory.Delete(scope.ValidateDirectory(path, allowMissing: false), recursive: false);
+            return true;
+        }
         var directories = new List<string>();
         if (EnumerateLocalTreeFiles(scope, path, inspectedDirectories: directories).Count != 0)
             return false;

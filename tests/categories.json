@@ -4,7 +4,7 @@
     {
       "id": "portable-cleanup-outcome-causal-linux",
       "responsibility": "Eight original consumer publication-Unknown boundaries: engine backup and undispatched cleanup, actual player request staging, nested/final QTE normalization cleanup, browser operation/restore/postcommit cleanup. Actual current MemberPublished journal/bytes and reached post-cut continuation observations.",
-      "excludes": "No provider or GM process, native Windows, full QTE web/UI qualification, progression math or whole-operation atomicity. Test-only causal candidate, not runtime acceptance.",
+      "excludes": "No provider or GM process, native Windows, full QTE web/UI qualification, progression math or whole-operation atomicity.",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
         "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
@@ -27,6 +27,46 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalTurnStagingDoesNotCompensateUncertainRequest",
             "BookOfEternityClient.Tests.QteSceneServiceTests.CleanupUnknown_OriginalQteActionStopsNestedAndFinalContinuation",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserBoundaryStopsContinuation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-cleanup-outcome-neighbors-linux",
+      "responsibility": "Ten exact existing affected known controls: QTE known cleanup refusal/empty cleanup/sibling preservation/known rollback, browser ordinary rollback and known cleanup debt, direct-gacha consumed deletion debt, original player cancellation.",
+      "excludes": "No broad lifecycle or browser category, native Windows, interactive QTE display, progression or UI outcome claim.",
+      "changeHints": [
+        "BookOfEternityClient/Services/QteSceneService.cs",
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-cleanup-outcome-causal-linux",
+          "when": "Publication uncertainty cleanup stop or original caller classification changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeStateChangesAsync_RemovesQteBackupRootAfterSuccessfulRun",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_PreservesSiblingBackupRunDirectory",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SharedWriteAppendCompareExchangeDelete_RecordAndRestoreFirstBaseline",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_ConsumedDeletionDebtRetainsKnownCleanupPolicy",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPlayerCancel_RealStagingRetiresOnlyConsumedSnapshot"
           ]
         }
       ]
@@ -1182,8 +1222,7 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes",
-            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation",
-            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan"
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation"
           ]
         },
         {
@@ -13987,7 +14026,6 @@
             "BookOfEternityClient.Tests.ResourceMaterializationTestContextTests.CoordinatedQuartetFailure_RestoresExactBytesAndPriorAbsence",
             "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_NextWaveFailureAtEveryMutationRestoresExactCurrentWave",
             "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_FinalFailureAtEveryMutationRestoresExactAwaitingBoundary",
-            "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult",
             "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_SecondSettlementWriteFailureRestoresExactBeforeImages"
           ]
         }
@@ -17072,7 +17110,6 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPlayerCancel_RealStagingRetiresOnlyConsumedSnapshot",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualCancellation_RestoreFailurePreservesPendingAuthorityAndEvidence"
           ]
         }
@@ -17604,7 +17641,6 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics",
             "BookOfEternityClient.Tests.QteSceneServiceTests.ActualRestorationUncertaintyRetainsQteDecisionWithoutRefresh",
@@ -17634,7 +17670,6 @@
           "tests": [
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
-            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans",
             "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery",
             "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward"
           ]
@@ -18346,16 +18381,13 @@
             "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CommitsExistingAndAbsentMembers",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority",
-            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SharedWriteAppendCompareExchangeDelete_RecordAndRestoreFirstBaseline",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SuccessfulFirstWriteThenFailedLaterWrite_PreservesCumulativeAuthority",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InterruptedRealTransaction_FreshManagerRestoresBeforeReturningLease",
-            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DirectoryMemberDeletion_RestoresDeclaredBytesOnCallbackFailure",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
-            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualQteWebRewardResolution_UsesDeclaredPortableParticipant"
           ]

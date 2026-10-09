@@ -1,3 +1,32 @@
+## F10 cleanup runtime candidate / exact18 proposal — 2026-10-09
+
+Causal4aa packet independently accepted:32 stored/expanded/original artifacts and20 historical
+pins; all8 actual failures were reached consumer defects. Candidate runtime now lets actual CSP
+escape engine/QTE cleanup before diagnostic logging and subsequent canonical work, preserves it
+through original owned lease disposal, and excludes it from original staging compensation catches.
+Final QTE retains its already-established completion object as diagnostic on the same CSP; nested
+cleanup cannot authorize later history/runtime. Known prepublication refusal remains best effort.
+
+Browser direct/rollback uncertainty disposes only in-memory access, skips canonical UI-lock
+release/rollback continuation, and retains the exact original callback cause on the actual CSP.
+Confirmed postcommit cleanup uncertainty retains Committed with follow-up/ContinuationBlocked.
+The original outer closing infrastructure is unchanged. No new public result or global latch.
+QteWeb UI follow-up projection is not claimed: its prebuilt success state remains a separate
+consumer qualification; ordinary original callback uncertainty now prevents BuildState/commit.
+
+QTE empty-directory cleanup uses the existing generation/pending-decision/trusted-path guard
+with a narrow exact-directory nonrecursive branch. Existing recursive callers/body remain unchanged.
+The selected existing sibling control now preserves both nonempty and empty sibling run directories.
+This avoids broadening QTE cleanup into removal of other empty runs.
+
+Proposed final selection is18: original causal8 plus10 exact known neighbors for QTE refusal,
+positive empty cleanup/sibling preservation/validation rollback; browser ordinary rollback and
+known committed/restored cleanup debt; isolated existing consumed direct-gacha deletion debt;
+and original player cancellation. The consumed-debt row is moved into its own Fact, its private
+body unchanged; unrelated four adoption rows remain in their category. Existing methods move,
+not duplicate. No broad lifecycle, helper-role or native execution. Runtime and selection are
+UNBUILT/unexecuted, pending independent whole source/selection gate before matching Plan18.
+
 ## F10 original cleanup/staging causal packet — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT-SELECTION PASS52ec; fresh Plan001538 built integration

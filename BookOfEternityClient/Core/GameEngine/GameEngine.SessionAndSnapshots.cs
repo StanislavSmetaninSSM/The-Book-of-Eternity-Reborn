@@ -1949,12 +1949,23 @@ public partial class GameEngine
         RollbackSnapshot snapshot,
         string expectedSessionGeneration)
     {
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        var restored = false;
+        try
         {
             ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
             await RestorePreTurnBackupAsync(writeLease, snapshot);
+            restored = true;
             CleanupBackup(writeLease, snapshot);
         }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            failure.Data["PreTurnRollbackRestoredBeforeCleanup"] = restored;
+            throw;
+        }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
 
         await RefreshRuntimeStateAfterExactRollbackAsync();
     }
@@ -2269,8 +2280,10 @@ public partial class GameEngine
     private void CleanupBackup(RollbackSnapshot snapshot)
     {
         var writeLease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
         try { CleanupBackup(writeLease, snapshot); }
-        finally { writeLease.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty).AsTask().GetAwaiter().GetResult(); }
     }
 
     private void CleanupBackup(
@@ -2281,10 +2294,11 @@ public partial class GameEngine
         foreach (var backup in snapshot.BackupFiles.Values)
         {
             try { _fs.DeleteFile(writeLease, backup); }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException and not SessionReplacedException)
             {
                 cleanupFailed = true;
-                _logger.LogDebug(ex, "Не удалось удалить rollback backup {BackupPath}.", backup);
+                try { _logger.LogDebug(ex, "Не удалось удалить rollback backup {BackupPath}.", backup); }
+                catch { /* Best-effort diagnostics cannot change established cleanup refusal. */ }
             }
         }
         if (!cleanupFailed)

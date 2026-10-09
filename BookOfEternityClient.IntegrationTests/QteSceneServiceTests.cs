@@ -1752,6 +1752,8 @@ public sealed partial class QteSceneServiceTests : IDisposable
 
         var siblingDirectory = _fs.ResolvePath($"{QteNormalizerBackupDirectory}/sibling_run");
         Directory.CreateDirectory(siblingDirectory);
+        var emptySiblingDirectory = _fs.ResolvePath($"{QteNormalizerBackupDirectory}/empty_sibling_run");
+        Directory.CreateDirectory(emptySiblingDirectory);
         var siblingFile = Path.Combine(siblingDirectory, "stale_backup.json");
         await File.WriteAllTextAsync(siblingFile, "{ \"temporary\": true }");
 
@@ -1782,8 +1784,10 @@ public sealed partial class QteSceneServiceTests : IDisposable
         Assert.Equal("stale_backup.json", Path.GetFileName(backupFiles[0]));
         Assert.Equal("{ \"temporary\": true }", await File.ReadAllTextAsync(backupFiles[0]));
         var runDirectories = Directory.GetDirectories(backupRoot, "*", SearchOption.TopDirectoryOnly);
-        Assert.Single(runDirectories);
-        Assert.Equal("sibling_run", Path.GetFileName(runDirectories[0]));
+        Assert.Equal(2, runDirectories.Length);
+        Assert.Contains(siblingDirectory, runDirectories);
+        Assert.Contains(emptySiblingDirectory, runDirectories);
+        Assert.Empty(Directory.EnumerateFileSystemEntries(emptySiblingDirectory));
     }
 
     private QteSceneService CreateRuntimeCapableService(
