@@ -1,3 +1,29 @@
+## F18 generation7 — interrupted actual, diagnosis pending, 2026-10-09
+
+Corrected3b5722db source/fixture/exact7 independently reviewed. Fresh integration
+Plan122454 selects7/1,0executed in44.1536273s. Actual122606 is NOT acceptance:
+category reaches its3minute budget, wall184.4290404s,exit124; runner's generic message
+mentions overall8minutes, but actual category budget is3. Owned process/runtime cleanup
+succeeded. No final TRX/complete descriptor, summary reports0case counts; stdout does
+prove one actual snapshot-case assertion failure. Do not label this0execution or7FAIL.
+
+Snapshot case reaches the actual checkpoint,1Committed rotation, exact changedgeneration/
+sentinels, original SessionReplaced,0latermutation/input and owned root removal. New
+broad no-canonical-read assertion records6later reads (pending manifest/authority/repair,
+not replacementReady). Independently classify stale-public-read gap versus overbroad
+new oracle before production changes or relaxing assertions. Partial output retained.
+
+Life case then waits in repair before raw-accepted checkpoint. Actual original repair
+request reports5 fixture errors: absent woundidentity/history,2missing profile art tiers,
+and absent soul-combat artTiers. Copied its actual request/Ready/generation/repair and
+56synthetic game_session files147471bytes. After runner cleanup and confirming no
+cwd/exe/fd references, removed ONLY exact owned current Life root; earlier roots untouched.
+This explicit cleanup is separate from successful fixturefinally. [Packet](recovery/storage-migration-generation-checkpoints-20261009/manifest.json)
+now16artifacts/originals32pins, verified. No other case inferred passed/unrun count from
+missing TRX. Next correct only this fixture's current required seed, independently
+classify snapshot reads, split narrowdiagnosis from remaining original cases. No broad7
+replay before these causes are resolved. Runtime/native/fullturn acceptance not claimed.
+
 ## F18 generation fixture compile corrections — 2026-10-09
 
 Plan122211 at frozen358b00f1 fails integration buildCS0535 in24.2915405s, before
