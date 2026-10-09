@@ -20048,6 +20048,68 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-canonical-listings-linux",
+      "responsibility": "Eight original mod/world-profile listings: existing canonical root with absent list directory stays read-only; literal Linux filename and BOM metadata roundtrip; supported leaf links refused without read-through; authentic retained Unknown admitted/refused before results.",
+      "excludes": "No live desktop/provider/GM, native Windows, full turn/repair or settings/manifest atomicity. Existing explicit-lease prepared readers retain their authority. No case-fold cohort policy or structural mkdir publication.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SystemModService.cs",
+        "BookOfEternityClient/Services/SystemModService.Prepared.cs",
+        "BookOfEternityClient/Services/WorldDirectiveService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.CanonicalListingAdmissionTests.OriginalListsAdmitRecoveryAndPreserveExactInputs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-canonical-listings-known",
+      "responsibility": "Seven affected original neighbors: manifest unchanged/invalid semantics, text world-profile metadata, borrowed-lease settings mod read, actual mods menu association/next frame and world-setup cancel preservation.",
+      "excludes": "No live desktop/provider/GM, native Windows, full turn/repair or settings/manifest atomicity. Existing explicit-lease prepared readers retain their authority. No case-fold cohort policy or structural mkdir publication.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SystemModService.cs",
+        "BookOfEternityClient/Services/SystemModService.Prepared.cs",
+        "BookOfEternityClient/Services/WorldDirectiveService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_DoesNotRewrite_WhenSemanticsUnchanged",
+            "BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_RebuildsInvalidManifest",
+            "BookOfEternityClient.Tests.WorldDirectiveServiceTests.GetAvailableProfilesAsync_TextProfile_MapsFullBodyToDetailedWorldDescription",
+            "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.ModListingUsesDraftSelectionAndPortableInputValidationWithoutPublication",
+            "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_ClearFlow_CancelPreviewPreservesPendingSetup"
+          ]
+        }
+      ]
     }
   ]
 }

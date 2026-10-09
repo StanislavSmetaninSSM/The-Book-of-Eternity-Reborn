@@ -1,3 +1,38 @@
+## F16 canonical lists — bounded fixture WIP, 2026-10-09
+
+Source #1553,R25/F16,T063/T064/T065. Gallery final independent RAW/CATALOG/CARRIER
+PASS9dbeea70998a7a084ff779bbff1f4fada0c65bfd:62artifacts/originals80pins verified,
+exact8 GREEN and539/11334discovery0. No unchanged gallery/image replay.
+
+Public SystemMod.GetAvailableMods and WorldDirective.GetAvailableProfiles currently
+mkdir on read, read supported leaves directly and rewrite literal Linux backslashes
+in descriptor relative paths. Existing SystemMod.ReadAvailableModsAsync(lease,...)
+is already an admitted explicit-lease reader used by console prepared settings.
+Independent source consult accepts reuse by a short public owning wrapper (strip
+Content when false); world listing needs analogous root/leaf validation and BOM-aware
+exact-byte read outside parser catches. Keep existing sorting/enabled-file semantics,
+metadata/timestamps and prepared/settings borrowed route. Immediate original menus,
+reminder/manifest and engine preparation/health callers do not hold an active canonical
+lease at listing entry; participating bindings are preserved, not replaced. Listing
+lease ends before any later manifest/settings publication or UI prompt.
+
+New8 fixture tests each original public list: missing directory under valid existing
+canonical root without creation; literal Linux JSON leaf with UTF16 BOM, exact bytes,
+relative path, metadata and content choice; supported-leaf symlink with outside bytes;
+authentic seeded nonCommitted Unknown before fresh admission. Ordinary retained
+Unknown recovery can throw InvalidData, not seed CSP identity. Raw rows record journal,
+bytes, admission/read hooks, descriptors and eight independently owned root cleanups.
+No runtime change yet; next independent SOURCE/FIXTURE/EXACT8, fresh Plan8/baseline8.
+Then minimal runtime and reviewed combined15 (9integration/6unit): new8, original
+manifest2/textprofile1/borrowedsettings1/desktopmods2/worldcancel1. Old mods UI test's
+no-game_session oracle conflicts with the current manual-path contract and is not
+silently repaired or used here. Existing original category ownership is retained.
+
+No full GameEngine turn/repair, settings/manifest atomicity, native Windows, concurrent
+owner race, rotation or secondary-close claim. Gameplay/GM-authored schemas and
+examples remain unchanged; no new prompt/example is required. T061–T065 open,
+B2–B5 paused. Source-only case-fold consumers and story/snapshot paths remain open.
+
 ## F16 original gallery bounded8 GREEN — 2026-10-09
 
 Independent RAW/WIDTH/EXACT8 PASS4020035b. Tested source/fixture

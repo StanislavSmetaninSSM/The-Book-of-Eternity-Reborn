@@ -1046,6 +1046,32 @@
         "T064-STORAGE-CUTS",
         "T065-STORAGE-CLOSURE"
       ]
+    },
+    {
+      "category": "portable-canonical-listings-linux",
+      "reason": "F16 listing fixture-only WIP, unbuilt/unrun. Eight original mod/world-profile listings: existing canonical root with absent list directory stays read-only; literal Linux filename and BOM metadata roundtrip; supported leaf links refused without read-through; authentic retained Unknown admitted/refused before results.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-canonical-listings-known",
+      "reason": "F16 listing fixture-only WIP, unbuilt/unrun. Seven affected original neighbors: manifest unchanged/invalid semantics, text world-profile metadata, borrowed-lease settings mod read, actual mods menu association/next frame and world-setup cancel preservation.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
     }
   ]
 }
