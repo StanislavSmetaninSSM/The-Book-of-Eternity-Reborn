@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
@@ -15,10 +16,12 @@ namespace BookOfEternityClient.Tests;
 public sealed class FileSystemManagerTests : IDisposable
 {
     private readonly string _rootPath;
+    private readonly ITestOutputHelper _output;
     private readonly FileSystemManager _fs;
 
-    public FileSystemManagerTests()
+    public FileSystemManagerTests(ITestOutputHelper output)
     {
+        _output = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-filesystem-manager-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
@@ -4422,6 +4425,9 @@ public sealed class FileSystemManagerTests : IDisposable
     [Fact]
     public async Task FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         const string relativePath =
             "game_state/control/exact-registration-race.json";
         var readerAtGap = NewBarrier();
@@ -4445,13 +4451,20 @@ public sealed class FileSystemManagerTests : IDisposable
                 if (!path.Equals(relativePath, StringComparison.OrdinalIgnoreCase))
                     return;
 
+                Interlocked.Increment(ref paused);
                 writerRegistered.TrySetResult();
                 await allowPublication.Task.WaitAsync(
                     TimeSpan.FromSeconds(10));
             },
+            MainOwnerLockContendedAsync = () =>
+            {
+                Interlocked.Increment(ref mainContentions);
+                readerContended.TrySetResult();
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
-                readerContended.TrySetResult();
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             }
         };
@@ -4466,22 +4479,45 @@ public sealed class FileSystemManagerTests : IDisposable
             readerTask = Task.Run(() => raceFs.FileExists(relativePath));
         }
 
-        await readerAtGap.Task.WaitAsync(TimeSpan.FromSeconds(10));
-        var writerTask = raceFs.WriteFileAtomicBytesAsync(
-            relativePath,
-            [0x71, 0x82]);
-        await writerRegistered.Task.WaitAsync(TimeSpan.FromSeconds(10));
-        allowFollowUpProbe.TrySetResult();
+        Task? writerTask = null;
+        try
+        {
+            await readerAtGap.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            writerTask = raceFs.WriteFileAtomicBytesAsync(
+                relativePath,
+                [0x71, 0x82]);
+            await writerRegistered.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            allowFollowUpProbe.TrySetResult();
 
-        var first = await Task.WhenAny(
-                readerTask,
-                readerContended.Task)
-            .WaitAsync(TimeSpan.FromSeconds(10));
-        allowPublication.TrySetResult();
-        await writerTask;
+            var first = await Task.WhenAny(
+                    readerTask,
+                    readerContended.Task)
+                .WaitAsync(TimeSpan.FromSeconds(10));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
+            Assert.False(readerTask.IsCompleted);
+            allowPublication.TrySetResult();
+            await writerTask;
 
-        Assert.Same(readerContended.Task, first);
-        Assert.True(await readerTask);
+            Assert.Same(readerContended.Task, first);
+            Assert.True(await readerTask);
+        }
+        finally
+        {
+            allowFollowUpProbe.TrySetResult();
+            allowPublication.TrySetResult();
+            await Record.ExceptionAsync(() => Task.WhenAll(readerTask, writerTask ?? Task.CompletedTask));
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention",
+                method = nameof(FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication), root = _rootPath, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = writerTask?.IsCompleted ?? false,
+                secondSettled = readerTask?.IsCompleted ?? false
+            }));
+        }
+
     }
 
     [Fact]

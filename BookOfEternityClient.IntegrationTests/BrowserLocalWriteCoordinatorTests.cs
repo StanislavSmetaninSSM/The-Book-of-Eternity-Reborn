@@ -5,6 +5,7 @@ using BookOfEternityClient.Services;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
@@ -12,11 +13,13 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class BrowserLocalWriteCoordinatorTests : IDisposable
 {
     private readonly string _rootPath;
+    private readonly ITestOutputHelper _output;
     private readonly FileSystemManager _fs;
     private readonly ManualTimeProvider _timeProvider = new(new DateTimeOffset(2026, 5, 21, 10, 0, 0, TimeSpan.Zero));
 
-    public BrowserLocalWriteCoordinatorTests()
+    public BrowserLocalWriteCoordinatorTests(ITestOutputHelper output)
     {
+        _output = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-browser-write-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
@@ -2053,6 +2056,9 @@ public sealed partial class BrowserLocalWriteCoordinatorTests : IDisposable
     [Fact]
     public async Task ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var transactionRoot = Path.Combine(_rootPath, "atomic-transaction");
         Directory.CreateDirectory(transactionRoot);
         var transactionStarted = new TaskCompletionSource(
@@ -2071,9 +2077,15 @@ public sealed partial class BrowserLocalWriteCoordinatorTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
+                MainOwnerLockContendedAsync = () =>
+                {
+                    Interlocked.Increment(ref mainContentions);
+                    replacementContended.TrySetResult();
+                    return Task.CompletedTask;
+                },
                 CanonicalWriteLockContendedAsync = () =>
                 {
-                    replacementContended.TrySetResult();
+                    Interlocked.Increment(ref canonicalContentions);
                     return Task.CompletedTask;
                 }
             });
@@ -2092,36 +2104,60 @@ public sealed partial class BrowserLocalWriteCoordinatorTests : IDisposable
                     writeLease,
                     "game_state/meta/spend.json",
                     "{\"spent\":true}");
+                Interlocked.Increment(ref paused);
                 transactionStarted.SetResult();
                 await allowTransactionCommit.Task;
                 await fs.WriteFileAtomicAsync(
                     writeLease,
                     "input/turn_request.json",
                     "{\"queued\":true}");
+                Assert.Equal(
+                    "{\"spent\":true}",
+                    await fs.ReadFileAsync(writeLease, "game_state/meta/spend.json"));
+                Assert.Equal(
+                    "{\"queued\":true}",
+                    await fs.ReadFileAsync(writeLease, "input/turn_request.json"));
                 transactionFullyWritten.SetResult();
                 await allowTransactionFinish.Task;
             });
 
-        await transactionStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        var replacement = fs.ClearGameStateAsync();
-        await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.False(replacement.IsCompleted);
+        Task? replacement = null;
+        try
+        {
+            Assert.Same(transactionStarted.Task, await Task.WhenAny(transaction, transactionStarted.Task).WaitAsync(TimeSpan.FromSeconds(5)));
+            replacement = fs.ClearGameStateAsync();
+            await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
+            Assert.False(replacement.IsCompleted);
 
-        allowTransactionCommit.SetResult();
-        await transactionFullyWritten.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.Equal(
-            "{\"spent\":true}",
-            await fs.ReadFileAsync("game_state/meta/spend.json"));
-        Assert.Equal(
-            "{\"queued\":true}",
-            await fs.ReadFileAsync("input/turn_request.json"));
-        Assert.False(replacement.IsCompleted);
-        allowTransactionFinish.SetResult();
-        var transactionResult = await transaction.WaitAsync(TimeSpan.FromSeconds(5));
-        await replacement.WaitAsync(TimeSpan.FromSeconds(5));
+            allowTransactionCommit.SetResult();
+            await transactionFullyWritten.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.False(replacement.IsCompleted);
+            allowTransactionFinish.SetResult();
+            var transactionResult = await transaction.WaitAsync(TimeSpan.FromSeconds(5));
+            await replacement.WaitAsync(TimeSpan.FromSeconds(5));
 
-        Assert.True(transactionResult.Success, transactionResult.Message);
-        Assert.False(fs.FileExists("game_state/meta/spend.json"));
+            Assert.True(transactionResult.Success, transactionResult.Message);
+            Assert.False(fs.FileExists("game_state/meta/spend.json"));
+        }
+        finally
+        {
+            allowTransactionCommit.TrySetResult();
+            allowTransactionFinish.TrySetResult();
+            await Record.ExceptionAsync(() => Task.WhenAll(
+                (Task?)transaction ?? Task.CompletedTask, replacement ?? Task.CompletedTask));
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention",
+                method = nameof(ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction), root = _rootPath, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = transaction?.IsCompleted ?? false,
+                secondSettled = replacement?.IsCompleted ?? false
+            }));
+        }
+
     }
 
     [Fact]

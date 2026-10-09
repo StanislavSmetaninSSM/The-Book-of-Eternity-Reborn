@@ -2,6 +2,18 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-canonical-contention-consumers-linux",
+      "reason": "T064 fixture-only current-admission/settlement port of original8 consumer cases; source review/build/execution pending. Preserve every original product oracle; no runtime RED/fix claim.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-005",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-canonical-contention-rmw-linux",
       "reason": "T064 F18 four original ordinary contention fixtures now observe independent sibling MainOwner admission, retaining separate zero canonical counter, original final-state oracles and task/lease settlement. Source 9fcbbec: actual112704 4/4 Linux PASS; no runtime fix or native/fullF18 claim.",
       "contracts": [

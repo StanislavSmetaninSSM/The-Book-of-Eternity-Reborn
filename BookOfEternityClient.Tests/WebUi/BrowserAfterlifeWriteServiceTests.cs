@@ -7,18 +7,21 @@ using BookOfEternityClient.Services;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests.WebUi;
 
 public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 {
     private readonly string _rootPath;
+    private readonly ITestOutputHelper _output;
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly BrowserAfterlifeWriteService _service;
 
-    public BrowserAfterlifeWriteServiceTests()
+    public BrowserAfterlifeWriteServiceTests(ITestOutputHelper output)
     {
+        _output = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-afterlife-write-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
@@ -271,6 +274,9 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
     [Fact]
     public async Task TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var concurrentRoot = Path.Combine(_rootPath, "concurrent-new-game");
         Directory.CreateDirectory(concurrentRoot);
         var profileInputsRead = new TaskCompletionSource(
@@ -285,9 +291,15 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
+                MainOwnerLockContendedAsync = () =>
+                {
+                    Interlocked.Increment(ref mainContentions);
+                    replacementContended.TrySetResult();
+                    return Task.CompletedTask;
+                },
                 CanonicalWriteLockContendedAsync = () =>
                 {
-                    replacementContended.TrySetResult();
+                    Interlocked.Increment(ref canonicalContentions);
                     return Task.CompletedTask;
                 }
             });
@@ -300,6 +312,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
             {
                 AfterPlayerSoulProfileInputsReadAsync = async () =>
                 {
+                    Interlocked.Increment(ref paused);
                     profileInputsRead.TrySetResult();
                     await allowProfileRefresh.Task;
                 }
@@ -378,26 +391,48 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
                 ("confirm_gacha_pull", true)),
             Owner("browser-concurrent-gacha"));
 
-        await profileInputsRead.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        var replacement = fs.ClearGameStateAsync();
-        await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.False(replacement.IsCompleted);
+        Task? replacement = null;
+        try
+        {
+            Assert.Same(profileInputsRead.Task, await Task.WhenAny(gacha, profileInputsRead.Task).WaitAsync(TimeSpan.FromSeconds(5)));
+            replacement = fs.ClearGameStateAsync();
+            await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
+            Assert.False(replacement.IsCompleted);
 
-        allowProfileRefresh.TrySetResult();
-        var result = await gacha.WaitAsync(TimeSpan.FromSeconds(15));
-        await replacement.WaitAsync(TimeSpan.FromSeconds(15));
+            allowProfileRefresh.TrySetResult();
+            var result = await gacha.WaitAsync(TimeSpan.FromSeconds(15));
+            await replacement.WaitAsync(TimeSpan.FromSeconds(15));
 
-        Assert.True(result.Success, result.Message);
-        Assert.False(fs.FileExists("game_state/meta/soul_state.json"));
-        Assert.False(fs.FileExists(AfterlifeEntityProfileState.StatePath));
-        Assert.False(fs.FileExists(BrowserPendingTurnInspector.TurnRequestPath));
-        Assert.False(fs.FileExists(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath));
-        Assert.False(fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
-        var rollbackRoot = fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);
-        Assert.Empty(
-            Directory.Exists(rollbackRoot)
-                ? Directory.GetFiles(rollbackRoot, "*", SearchOption.AllDirectories)
-                : Array.Empty<string>());
+            Assert.True(result.Success, result.Message);
+            Assert.False(fs.FileExists("game_state/meta/soul_state.json"));
+            Assert.False(fs.FileExists(AfterlifeEntityProfileState.StatePath));
+            Assert.False(fs.FileExists(BrowserPendingTurnInspector.TurnRequestPath));
+            Assert.False(fs.FileExists(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath));
+            Assert.False(fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+            var rollbackRoot = fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);
+            Assert.Empty(
+                Directory.Exists(rollbackRoot)
+                    ? Directory.GetFiles(rollbackRoot, "*", SearchOption.AllDirectories)
+                    : Array.Empty<string>());
+        }
+        finally
+        {
+            allowProfileRefresh.TrySetResult();
+            await Record.ExceptionAsync(() => Task.WhenAll(
+                (Task?)gacha ?? Task.CompletedTask, replacement ?? Task.CompletedTask));
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention",
+                method = nameof(TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts), root = _rootPath, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = gacha?.IsCompleted ?? false,
+                secondSettled = replacement?.IsCompleted ?? false
+            }));
+        }
+
     }
 
     [Fact]

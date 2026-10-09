@@ -20189,6 +20189,47 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-canonical-contention-consumers-linux",
+      "responsibility": "Eight original sibling contention consumers: worker Apply versus Load, gacha and browser submission/QTE/transaction versus replacement, and FileExists follow-up registration race. Positive current MainOwner admission, distinct canonical counter, preserved pauses/final oracles and finally settlement of original tasks.",
+      "excludes": "No live GM/provider, native create-only save/directory/proposal publication, inherited physical contention, whole F18, or production behavior change. Original category ownership retained.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs",
+        "BookOfEternityClient.Tests/WebUi/BrowserAfterlifeWriteServiceTests.cs",
+        "BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.cs",
+        "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+        "BookOfEternityClient.IntegrationTests/WebUi/BrowserPlayerActionGenerationTests.cs",
+        "BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+            "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication",
+            "BookOfEternityClient.Tests.WebUi.BrowserPlayerActionGenerationTests.SubmitAsync_ConcurrentNewGameWaitsAndCannotKeepOldPendingAction",
+            "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+            "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+            "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -8,6 +8,7 @@ using BookOfEternityClient.Services;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests.WebUi;
 
@@ -15,9 +16,11 @@ namespace BookOfEternityClient.Tests.WebUi;
 public sealed class BrowserQteGenerationFencingTests : IDisposable
 {
     private readonly string _rootPath;
+    private readonly ITestOutputHelper _output;
 
-    public BrowserQteGenerationFencingTests()
+    public BrowserQteGenerationFencingTests(ITestOutputHelper output)
     {
+        _output = output;
         _rootPath = Path.Combine(
             Path.GetTempPath(),
             "boe-browser-qte-fencing-" + Guid.NewGuid().ToString("N"));
@@ -27,6 +30,9 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
     [Fact]
     public async Task AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var runtimeWriteStarted = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously);
         var allowRuntimeWrite = new TaskCompletionSource(
@@ -36,7 +42,13 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         var fs = CreateFileSystem(
             () =>
             {
+                Interlocked.Increment(ref mainContentions);
                 replacementContended.TrySetResult();
+                return Task.CompletedTask;
+            },
+            () =>
+            {
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             });
         await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(fs);
@@ -44,6 +56,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         {
             BeforeRuntimeWriteAsync = async () =>
             {
+                Interlocked.Increment(ref paused);
                 runtimeWriteStarted.TrySetResult();
                 await allowRuntimeWrite.Task;
             }
@@ -55,19 +68,41 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
 
         var accept = web.ResolveOfferDecisionAsync(
             new QteWebOfferDecisionRequest("accept", interactionToken));
-        await runtimeWriteStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        Task? replacement = null;
+        try
+        {
+            Assert.Same(runtimeWriteStarted.Task, await Task.WhenAny(accept, runtimeWriteStarted.Task).WaitAsync(TimeSpan.FromSeconds(5)));
 
-        var replacement = fs.ClearGameStateAsync();
-        await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.False(replacement.IsCompleted);
+            replacement = fs.ClearGameStateAsync();
+            await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
+            Assert.False(replacement.IsCompleted);
 
-        allowRuntimeWrite.TrySetResult();
-        var result = await accept.WaitAsync(TimeSpan.FromSeconds(5));
-        await replacement.WaitAsync(TimeSpan.FromSeconds(5));
+            allowRuntimeWrite.TrySetResult();
+            var result = await accept.WaitAsync(TimeSpan.FromSeconds(5));
+            await replacement.WaitAsync(TimeSpan.FromSeconds(5));
 
-        Assert.Equal("Active", result.State);
-        Assert.False(fs.FileExists(QteSceneService.QteOfferPath));
-        Assert.False(fs.FileExists(QteSceneService.QteRuntimePath));
+            Assert.Equal("Active", result.State);
+            Assert.False(fs.FileExists(QteSceneService.QteOfferPath));
+            Assert.False(fs.FileExists(QteSceneService.QteRuntimePath));
+        }
+        finally
+        {
+            allowRuntimeWrite.TrySetResult();
+            await Record.ExceptionAsync(() => Task.WhenAll(
+                (Task?)accept ?? Task.CompletedTask, replacement ?? Task.CompletedTask));
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention",
+                method = nameof(AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction), root = _rootPath, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = accept?.IsCompleted ?? false,
+                secondSettled = replacement?.IsCompleted ?? false
+            }));
+        }
+
     }
 
     [Theory]
@@ -240,6 +275,9 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
     [Fact]
     public async Task PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var characteristicReadStarted = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously);
         var allowCharacteristicRead = new TaskCompletionSource(
@@ -249,7 +287,13 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         var fs = CreateFileSystem(
             () =>
             {
+                Interlocked.Increment(ref mainContentions);
                 replacementContended.TrySetResult();
+                return Task.CompletedTask;
+            },
+            () =>
+            {
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             });
         var web = CreateWebService(
@@ -258,6 +302,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             {
                 BeforeQteCharacteristicReadAsync = async () =>
                 {
+                    Interlocked.Increment(ref paused);
                     characteristicReadStarted.TrySetResult();
                     await allowCharacteristicRead.Task;
                 }
@@ -269,17 +314,39 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
                 "MashInput",
                 "normal",
                 RequiredInteractionToken(catalog)));
-        await characteristicReadStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        Task? replacement = null;
+        try
+        {
+            Assert.Same(characteristicReadStarted.Task, await Task.WhenAny(start, characteristicReadStarted.Task).WaitAsync(TimeSpan.FromSeconds(5)));
 
-        var replacement = fs.ClearGameStateAsync();
-        await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.False(replacement.IsCompleted);
+            replacement = fs.ClearGameStateAsync();
+            await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
+            Assert.False(replacement.IsCompleted);
 
-        allowCharacteristicRead.TrySetResult();
-        var result = await start.WaitAsync(TimeSpan.FromSeconds(5));
-        await replacement.WaitAsync(TimeSpan.FromSeconds(5));
+            allowCharacteristicRead.TrySetResult();
+            var result = await start.WaitAsync(TimeSpan.FromSeconds(5));
+            await replacement.WaitAsync(TimeSpan.FromSeconds(5));
 
-        Assert.Equal("Active", result.State);
+            Assert.Equal("Active", result.State);
+        }
+        finally
+        {
+            allowCharacteristicRead.TrySetResult();
+            await Record.ExceptionAsync(() => Task.WhenAll(
+                (Task?)start ?? Task.CompletedTask, replacement ?? Task.CompletedTask));
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention",
+                method = nameof(PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection), root = _rootPath, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = start?.IsCompleted ?? false,
+                secondSettled = replacement?.IsCompleted ?? false
+            }));
+        }
+
     }
 
     [Fact]
@@ -944,6 +1011,9 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
     [Fact]
     public async Task DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var profileWriteStarted = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously);
         var allowProfileWrite = new TaskCompletionSource(
@@ -953,7 +1023,13 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         var fs = CreateFileSystem(
             () =>
             {
+                Interlocked.Increment(ref mainContentions);
                 replacementContended.TrySetResult();
+                return Task.CompletedTask;
+            },
+            () =>
+            {
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             });
         var web = CreateWebService(
@@ -962,53 +1038,77 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             {
                 BeforeDarenProfileWriteAsync = async () =>
                 {
+                    Interlocked.Increment(ref paused);
                     profileWriteStarted.TrySetResult();
                     await allowProfileWrite.Task;
                 }
             });
         var state = await StartDarenAsync(web);
         Task<DarenShowcaseWebStateDto>? terminalAction = null;
+        Task<DarenShowcaseWebStateDto>? currentAction = null;
 
-        while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
+        Task? replacement = null;
+        try
         {
-            var action = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
-            var actionTask = web.ResolveDarenShowcaseActionAsync(
-                new DarenShowcaseActionRequest(
-                    action.ActionId,
-                    "success",
-                    RequiredInteractionToken(state)));
-            var completed = await Task.WhenAny(
-                actionTask,
-                profileWriteStarted.Task).WaitAsync(TimeSpan.FromSeconds(5));
-            if (ReferenceEquals(completed, profileWriteStarted.Task))
+            while (string.Equals(state.State, "Active", StringComparison.OrdinalIgnoreCase))
             {
-                terminalAction = actionTask;
-                break;
+                var action = Assert.Single(state.ActiveScene!.CurrentChapter!.Actions);
+                var actionTask = currentAction = web.ResolveDarenShowcaseActionAsync(
+                    new DarenShowcaseActionRequest(
+                        action.ActionId,
+                        "success",
+                        RequiredInteractionToken(state)));
+                var completed = await Task.WhenAny(
+                    actionTask,
+                    profileWriteStarted.Task).WaitAsync(TimeSpan.FromSeconds(5));
+                if (ReferenceEquals(completed, profileWriteStarted.Task))
+                {
+                    terminalAction = actionTask;
+                    break;
+                }
+
+                state = await actionTask;
             }
 
-            state = await actionTask;
+            Assert.NotNull(terminalAction);
+            replacement = fs.ClearGameStateAsync();
+            await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
+            Assert.False(replacement.IsCompleted);
+
+            allowProfileWrite.TrySetResult();
+            var completedState = await terminalAction!.WaitAsync(TimeSpan.FromSeconds(10));
+            await replacement.WaitAsync(TimeSpan.FromSeconds(5));
+
+            Assert.Equal("Completed", completedState.State);
+            var profilePath = Path.Combine(
+                _rootPath,
+                DarenQteRewardProfileService.ProfileRelativePath.Replace(
+                    '/',
+                    Path.DirectorySeparatorChar));
+            Assert.True(File.Exists(profilePath));
+            Assert.Contains(
+                "darenShowcase",
+                await File.ReadAllTextAsync(profilePath),
+                StringComparison.Ordinal);
+        }
+        finally
+        {
+            allowProfileWrite.TrySetResult();
+            await Record.ExceptionAsync(() => Task.WhenAll(
+                (Task?)currentAction ?? Task.CompletedTask, replacement ?? Task.CompletedTask));
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention",
+                method = nameof(DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit), root = _rootPath, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = currentAction?.IsCompleted ?? false,
+                secondSettled = replacement?.IsCompleted ?? false
+            }));
         }
 
-        Assert.NotNull(terminalAction);
-        var replacement = fs.ClearGameStateAsync();
-        await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.False(replacement.IsCompleted);
-
-        allowProfileWrite.TrySetResult();
-        var completedState = await terminalAction!.WaitAsync(TimeSpan.FromSeconds(10));
-        await replacement.WaitAsync(TimeSpan.FromSeconds(5));
-
-        Assert.Equal("Completed", completedState.State);
-        var profilePath = Path.Combine(
-            _rootPath,
-            DarenQteRewardProfileService.ProfileRelativePath.Replace(
-                '/',
-                Path.DirectorySeparatorChar));
-        Assert.True(File.Exists(profilePath));
-        Assert.Contains(
-            "darenShowcase",
-            await File.ReadAllTextAsync(profilePath),
-            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1476,7 +1576,9 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             writeLease));
     }
 
-    private FileSystemManager CreateFileSystem(Func<Task>? onCanonicalWriteContention = null)
+    private FileSystemManager CreateFileSystem(
+        Func<Task>? onMainOwnerContention = null,
+        Func<Task>? onCanonicalWriteContention = null)
     {
         var fs = new FileSystemManager(
             _rootPath,
@@ -1484,6 +1586,7 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
+                MainOwnerLockContendedAsync = onMainOwnerContention,
                 CanonicalWriteLockContendedAsync = onCanonicalWriteContention
             });
         fs.EnsureDirectoryStructure();

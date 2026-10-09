@@ -1,3 +1,29 @@
+## F18 remaining ordinary contention8 — fixture WIP, 2026-10-09
+
+Source #1553/T064; continue the reviewed27-assignment classification. Exact8:
+worker Apply versus Load; original gacha/Submit/atomic-browser transaction versus
+replacement; QTE accept/practice/Daren completion versus replacement; FileExists
+writer-registers-in-follow-up-gap. Additional precise category
+portable-canonical-contention-consumers-linux owns2 unit+6 integration Facts;
+old owners remain. No production behavior or GM/schema/prompt change.
+
+Port independent sibling observation to MainOwner; retain separate canonical0,
+positive original pause and blocked contender, all original final product oracles.
+Finally release all barriers and join actual original tasks before fixture cleanup;
+Daren retains its current action even before reaching terminal pause. Emit compact
+source-era counters and task settlement; root absence verified after actual run.
+Original coordinator intermediate readback assertions move inside the admitted
+transaction callback and borrow its original lease after second write, before the
+fully-written/finish pause. Public sibling reads during that pause would themselves
+wait at admission; this preserves exact phase/content without bypassing authority.
+Observation budgets unchanged. No deliberately stale-hook timeout/runtime RED claim.
+
+Independent source/exact8 review and fresh both-project Plan8/actual8 pending;
+no runtime acceptance from this WIP. Three Windows-only create-only publication
+fixtures remain native-qualified separately;9 physical/negative and3 existing dual
+observers remain distinct. Other F18/path/owned-close/whole-registry work continues.
+B2–B5 paused; no T061–T065 completion/main/CI/merge or new clone.
+
 ## F18 ordinary contention4 — measured bounded result, 2026-10-09
 
 Source9fcbbec71ead4ae46b71674ed45b241a39f43def; independent SOURCE/FIXTURE/EXACT4
@@ -16,7 +42,7 @@ only2 integration C#files plus docs/catalog/selection changed sincec92. Unit/pro
 runtime/support/Bridge/crash-host inputs unchanged; no integration compile link into
 unit. Reviewer independently accepts provenance; not a new both-project build.
 [Source-pinned raw packet](recovery/storage-migration-contention-rmw-20261009/manifest.json):
-16 artifacts/originals,26 source pins. Final carrier/catalog review pending.
+16 artifacts/originals,26 source pins. Final independent carrier/catalog/docs PASSe3bc37414f309e23d63fda5a359abe773f45c037. All16 artifacts/originals26pins independently verified.
 Continue remaining F18 contention, physical cuts/generation controls, F16 and concrete
 owning consumers, then whole-registry classification; T061–T065 stay open and B2–B5
 paused. Do not replay accepted4 unchanged.

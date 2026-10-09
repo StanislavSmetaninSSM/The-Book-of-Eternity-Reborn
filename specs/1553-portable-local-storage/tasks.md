@@ -2,7 +2,7 @@
 
 Original ordinary contention4 at9fcbbec completes4/4 Linux PASS112704,8.6052322s,
 positive main admission/separate canonical0, original tasks/lease settled and4 roots
-absent. Independent source/fixture/raw gates PASS; final carrier/catalog review pending.
+absent. Independent source/fixture/raw gates PASS; final carrier/catalog/docs PASSe3bc3741.
 Matching discovery544/11336 valid0; exact build provenance and packet in plan.
 Other F18/consumer queues remain open; no T061–T065 checkbox changed, no runtime/
 fullF18/native claim. B2–B5 paused.
