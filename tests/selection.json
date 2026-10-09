@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-remaining-owning-close-linux",
-      "reason": "T063/T065 actual original six-route RED atf5856ff5/200030:6knownPASS/6causalFAIL,12complete,all12strictroots absent. Same actual CSP lost to actual late secondary close for bootstrap/UI/profile/prompt generation/prompt lock/QTE; preparation history separately preserved. Minimal original close fix next, no current-source GREEN claim.",
+      "reason": "T063/T065 runtime7aa6be72 actual20072212/12PASS7.6135260s,all12strictrootsabsent. Six actualoriginal owners retain samegenuineCSP+same secondaryclose andfullsettlement; sixknownDTO/result controlsPASS. Earlier causal6PASS/6FAIL and preparation groups separatelyretained. Runner/TRXExit0; externalwrapper1 separatelyreproduced by no-testBashprobes andretained, no runnerchange/replay. IndependentGREEN/raw/carrier andcombinedcatalog next. Otherownersopen.",
       "contracts": [
         "#1553",
         "FR-002",

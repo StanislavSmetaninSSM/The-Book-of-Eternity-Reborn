@@ -1,3 +1,26 @@
+## Six original owners bounded GREEN12 — 2026-10-09
+
+Runtime7aa6be72f5b381d37fb81774356b6881c5776990 original RED/source/exact12
+independent PASS. Fresh integration Plan20055112/1,0execution52.6177445s;
+actual20072212/12PASS7.6135260s,1/1complete,0skip/duplicate/timeout,bothcleanup.
+All six negatives retain same genuine primary CSP and same secondary close,
+one attachment/close, unchanged generation except deliberate foreign initial
+prompt-generation cut; full lease/ambient/main/context/lock settlement. Six
+original known DTO/config/UI lease/profile/prompt/QTE controls PASS. All12
+strict roots absent. Original prior6PASS/6causalFAIL and preparation history
+remain immutable distinct groups; no double-counting original executions.
+Shell wrapper reports1 despite runner/TRX actualExit0. Short no-test Bash
+probes reproduce wrapper1 with observed0/explicitexit0 under set-e, while
+normal end-of-script true returns0; exact external root cause unestablished.
+Retain separate host-exit-probe, unchanged runner source pinned; no test replay
+or runner/scaffolding change. Independent GREEN/raw/carrier review next.
+New ownership catalog will be combined with next original fixture boundaries.
+Further actual owners are open; next shared initial-generation owner, then
+established typed browser result close, then mod manifest/cache and managed
+world-profile folder UI, small original control/inventory/trade/normalizer/
+engine-repair/media groups per precise source contracts. No six-route whole
+closure claim. T061–T065 unchecked, B2–B5 paused, native/systemd unqualified.
+
 ## Six original owning closes installed — WIP, 2026-10-09
 
 Original causal RED12 preserved/ref/raw d06b73d3:62artifacts/39pins verified
