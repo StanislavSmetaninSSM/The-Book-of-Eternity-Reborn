@@ -1,3 +1,21 @@
+## Original pending/control and journal owners — test-first WIP, 2026-10-09
+
+Mod/folder GREEN13/sharedcatalog/raw/carrier independent PASS999a16e7; four packets
+65/72,99/66,31/40,69/45 verified; single discovery593/11367 executes0. Next11 actual
+API owners22 known/unknown fixture independently PASS (draft5e514676): Guardian
+Write/Scoped/Clear/Health4, Shining Write/Scoped/Collection/Replace/Health5, power
+journal Append/Repair2. Scoped actualresolver/authority, actualpending JSON/absence
+and repairedjournal audit, inspected activeoriginalowner/context-null; latecloser
+only samegenuineCSP. Allothercanonical paths/bytes, currentgeneration, requestgate/
+lease/ambient/main/rawlock settlement andstrict22roots. Current product callers
+scoped/clear/replace/health; directwrites/journal APIs dormant, no legacy-save
+compatibility or fulltrade/health semantics claim. Runtime unchanged, UNBUILT/
+UNRUN; fresh integrationPlan22 thenoriginal22; minimal same-scope CSPcapture and
+existing Release(false,uncertainty) only after causalbaseline. Original gate-finally
+order unchanged. No GM gameplay/schema/prompt/example contract change. Other
+owners/finalmethodinventory/GitHub-only restore open; T061–T065 unchecked/B2–B5
+paused/native Windows andtransport/systemd unqualified.
+
 ## Mod/folder bounded GREEN13 and combined new-owner discovery — 2026-10-09
 
 Runtime8866c34ff010edd1bbb264777330587474c33711 independent RED/source/design/

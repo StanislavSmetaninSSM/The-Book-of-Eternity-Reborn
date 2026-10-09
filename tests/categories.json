@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-pending-control-close-linux",
+      "responsibility": "Eleven actual original owning API methods,22 known/genuine-uncertainty plus lateclose cases: Guardian pending Write/Scoped/Clear/Health, Shining pending Write/Scoped/Collection/Replace/Health and powerjournal Append/Repair. Actual scopes/current schema, target decisions, original owner/gate/lease settlement and unchanged other canonical bytes.",
+      "excludes": "Not whole trade/health semantics or business B2. Direct-write and powerjournal methods dormant API qualification; scoped/clear/replace/health have current product callers. No legacy-save compatibility, native Windows, live GM/provider/desktop or other owners.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
+        "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
+        "BookOfEternityClient/Services/GuardianPowerEventState.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.PendingControl.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalPendingControlAndJournalOwnersRetainGenuineUncertaintyOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-mod-manifest-cache-linux",
       "responsibility": "Original SystemModService manifest/cache publication single owner: normalization, dirty semantic no-op, clean changed:false no-op, read/mutation refusal, genuine publication uncertainty, late uncertain close and actual committed close; eight integration roots plus original semantic2 unit controls. Cache changes only after known publication/no-op; completed false-return and known close result preserved.",
       "excludes": "No full atomicity with later caller SaveSettings, mod payload schema/mechanic change, native Windows, desktop/provider/live GM, B2 or other owners. Existing unrelated listing5 retained without replay.",

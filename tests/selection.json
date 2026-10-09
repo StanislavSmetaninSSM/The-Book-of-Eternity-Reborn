@@ -2,8 +2,21 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-pending-control-close-linux",
+      "reason": "T063/T065 actual11 API owners22 current-schema known/unknown lateclose. Independent finalfixture/design/exact22PASS; installedUNBUILT/UNRUN against unchangedruntime. Scoped actualresolver/genuinepublication/actualowner inspection/sameCSP+secondary; requestgates/fullsettlement/allothercanonicalbytes. Directwrite/journal dormant separated. Fresh Plan22 thenoriginal22 required before runtimefix.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
       "category": "portable-original-mod-manifest-cache-linux",
-      "reason": "T063/T065 runtime8866c34f actual20575613/13PASS16.6909366s complete3/3, including originalmod8+unchangedsemanticunit2. Oneowner/latecache/completedflag knownfalse/true and genuineunknown primary/secondary; strictmod8roots. OriginalPlan11/actual8 incomplete and separate sourceRED1 retained. Packet65/72 verified; finalgatepending. No fullcallerSaveSettingsatomicity.",
+      "reason": "T063/T065 runtime8866c34f actual20575613/13PASS16.6909366s complete3/3, including originalmod8+unchangedsemanticunit2. Oneowner/latecache/completedflag knownfalse/true and genuineunknown primary/secondary; strictmod8roots. OriginalPlan11/actual8 incomplete and separate sourceRED1 retained. Packet65/72 verified; independentfinalGREEN/raw/carrier/sharedcatalogPASS999a16e7. No fullcallerSaveSettingsatomicity.",
       "contracts": [
         "#1553",
         "FR-002",
