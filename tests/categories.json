@@ -11,7 +11,10 @@
         "BookOfEternityClient.IntegrationTests/ImageSourceAdmissionTests.cs"
       ],
       "related": [
-        "portable-image-export-known"
+        {
+          "id": "portable-image-export-known",
+          "when": "Together with the eleven source-admission rows verifies original latest/overwrite/missing-source export semantics."
+        }
       ],
       "requirements": {
         "frontendBuild": false,

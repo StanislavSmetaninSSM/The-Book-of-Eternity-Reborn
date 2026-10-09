@@ -1,3 +1,11 @@
+## Image catalog preparation correction — zero execution, 2026-10-09
+
+Corrected fixture/design AstraXHigh PASSebc62065; remoteSHA/raw2 verified. First
+Plan command failed while reading the new category: related was a string instead
+of catalog-required {id,when}. No build/discovery/tests started; this is preparation
+failure, not causal RED. Correct only related metadata, retain raw preparation log
+in the bounded evidence packet. Runtime/tests unchanged. Repeat exact Plan14.
+
 ## Image fixture/design review corrections — unbuilt WIP, 2026-10-09
 
 Independent actual AstraXHigh b2aedbb6 found two pre-execution corrections: browser
