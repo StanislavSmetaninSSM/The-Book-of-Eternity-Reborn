@@ -1445,7 +1445,7 @@
     },
     {
       "category": "portable-treatment-committed-observers",
-      "reason": "F18 two original treatment callbacks observed old physical writes. Port to genuine committed journal/After images, retain later original corruption/removal/restoration and exact business outcomes; source/fixture gate and exact2 fresh Plan precede actual execution, currently unverified.",
+      "reason": "T064 original2 Committed obligations have composed Linux evidence: command-proof1@8c49f44f/140108 plus terminal1@06092c41/141952, not one2GREENrun. Exact command corruption/quarantine and removal/restoration/held-resource/restart blocking with strict cleanup. Both initial Arm and older refusal-oracle failures retained. RAW/CATALOG PASSd336; no runtime/B2/native/whole closure.",
       "contracts": [
         "#1553",
         "F18",
@@ -1458,7 +1458,7 @@
     },
     {
       "category": "portable-treatment-terminal-committed-observer",
-      "reason": "Isolate the one pre-operation observer prerequisite failure from initial1401081PASS/1FAIL: baseline must be original durableBefore, late arm occurs after accepted publication consumed command. Require genuine committed presence/removal/restoration and unchanged original release contract; freshPlan1 and actual1 pending.",
+      "reason": "T064 isolated terminal Fact1 at06092c41: freshPlan1411051/0; actual1419521PASS, real committed presence/removal/exact restoration, precise restart refusal with copied reservation state unchanged and original inside/outside publication blocking. Final raw/catalog PASSd336; first command-proof PASS8c49 is retained without replay. Historical two failures remain.",
       "contracts": [
         "#1553",
         "F18",

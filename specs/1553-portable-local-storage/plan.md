@@ -16,7 +16,8 @@ request oracle after the real cut. Packet [manifest](recovery/storage-migration-
 has38artifacts/originals52pins verified; original23/26 unchanged. Matching discovery
 142028 validates564categories/11344methods-files,0execution8.5292690s,bothcleanup;
 NoBuild uses integration06092/unit533 with unchanged production/projects. Final independent
-RAW/CATALOG/CARRIER gate pending. Wound25 final gate PASSbd496ce6; Effects14 PASSa2db0770.
+RAW/CATALOG/INTEGRITY PASSd3368c1f; two stale selection reason strings corrected
+without membership, contract or execution changes. Wound25 final gate PASSbd496ce6; Effects14 PASSa2db0770.
 Next: six explicitly native legacy publication controls, dead Location hook removal,
 remaining F18/mods oracle/selection and all consumer/registry queues. T061–T065 remain
 unchecked; native Windows unexecuted, B2–B5 paused. Whole #1553 is not complete.
