@@ -1,3 +1,27 @@
+## TreatmentGREEN3 / Engine initial4 / Savecausal2 — WIP, 2026-10-09
+
+One freshintegrationPlan2313589/3 at90b160c2,0exec47.6407767s; separateactual
+Treatment2315303/3PASS24.3883028s1/1bothcleanup/strict6roots0skipdupTimeout;
+Engine2316024complete=ascensionknownPASS/ascensioncausalFAIL/replay2PREPARATIONFAIL
+20.5558373s1/1bothcleanup/strict6rootsabsent; Save2317162complete=normalPASS/
+linkedrootcausalFAIL7.9796097s1/1bothcleanup/strict2roots0skipdupTimeout.
+NoaggregateGREEN9. Treatmentknown_close actualPublishedAgreementAdvanced with
+sameactiveProbe->CompleteFinalized PASS; unknownsameCSP+secondary/noLater/Closing0.
+Packet immutableRED19/18+build_refusal2/18+GREEN19/18 verifiedoriginals.
+EngineascensiongenuineCSPmaskedsamecloser thenordinarycatch logs/deletes andtwo
+laterleases, outwardInvalidDataException; allgenuinefirstcut evidence retained.
+Replay beforearm ArgumentNullException atcommandread afteractualComplete already
+quarantines surfaces: TWOprepFAIL, notcausal. Correctfixture captures actualraw
+command/pending BEFORErefresh, then restages exactsamebytesafterrealFinalized;
+actualhistory-ownedExactReplay andpersistedresult mustprove eligibility. Split
+permanentascension2/replay2 ownership; replayonly correctedbaseline, notreplayold
+ascensionbaseline. Save linkedroot actualNotCreated withpathfencerejection,
+externalreadNOTdemonstrated; existingoptionalroot skipguard nextsourcegate.
+Engineinitial/buildrefusal andSaveoriginalraw/sourcepins immutable; no tests
+rerunjustforartifactpreservation. FinalTreatmentGREEN/raw/carrier gate next.
+ContinueavailableProposalStore originalfixture viaexistingisolatedrenameadapter,
+no workerprocess/defaultbackend/durableACK qualification. T061–T065/B2–B5/nativeopen.
+
 ## New Engine fixture namespace correction / zero execution preserved — WIP, 2026-10-09
 
 SharedfreshPlan attempt231122 at54bf4bd2 failed integrationbuild43.2885888s,

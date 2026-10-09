@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-save-optional-images-root-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "90b160c2e85ffb069f3be42fb42e58cd13236df0",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.2145381,
+  "Descriptors": [
+    {
+      "Name": "portable-save-optional-images-root-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-optional-images-root-linux",
+      "Categories": [
+        "portable-save-optional-images-root-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SaveOptionalImagesRootTests.OriginalSaveSkipsLinkedOptionalImagesRootAndPreservesLiteralHostNames",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SaveOptionalImagesRootTests.OriginalSaveSkipsLinkedOptionalImagesRootAndPreservesLiteralHostNames",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

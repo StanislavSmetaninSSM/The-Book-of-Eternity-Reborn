@@ -1,0 +1,46 @@
+{
+  "rootLink": true,
+  "root": "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2",
+  "images": "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/game_session/images",
+  "outside": "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/outside-optional-images",
+  "selected": "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/outside-optional-images/npcs/portrait.png",
+  "selectedBytes": "Hyk7",
+  "outsideAfter": "Hyk7",
+  "actualLinkTarget": "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/outside-optional-images",
+  "failure": null,
+  "disposition": "NotCreated",
+  "followUp": false,
+  "blocked": false,
+  "resultFailure": "System.IO.InvalidDataException: Canonical game-session path traverses reparse point '/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/game_session/images'.\n   at BookOfEternityClient.Core.FileSystemManager.EnsureNoExistingReparsePoint(String authorityRoot, String fullPath, String authorityName) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 740\n   at BookOfEternityClient.Core.FileSystemManager.ResolvePath(String relativePath) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 678\n   at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SaveLoadService.cs:line 263\n   at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SaveLoadService.cs:line 358\n   at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(CanonicalWriteLease lease, String saveName, String description, String saveDir, Int32 turnNumber) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SaveLoadService.Creation.cs:line 306",
+  "outsideBefore": {
+    "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/outside-optional-images/scenes/ephemeral.png": "OmE=",
+    "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/outside-optional-images/Scenes/literal.png": "GjU=",
+    "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/outside-optional-images/npcs/portrait.png": "Hyk7"
+  },
+  "outsideAfterFiles": {
+    "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/outside-optional-images/scenes/ephemeral.png": "OmE=",
+    "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/outside-optional-images/Scenes/literal.png": "GjU=",
+    "/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/outside-optional-images/npcs/portrait.png": "Hyk7"
+  },
+  "errors": [
+    "System.IO.InvalidDataException: Canonical game-session path traverses reparse point '/tmp/boe-save-images-root-57d1f66dbb3b4a80bb0a43e783b98dc2/game_session/images'.\n   at BookOfEternityClient.Core.FileSystemManager.EnsureNoExistingReparsePoint(String authorityRoot, String fullPath, String authorityName) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 740\n   at BookOfEternityClient.Core.FileSystemManager.ResolvePath(String relativePath) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 678\n   at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SaveLoadService.cs:line 263\n   at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SaveLoadService.cs:line 358\n   at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(CanonicalWriteLease lease, String saveName, String description, String saveDir, Int32 turnNumber) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SaveLoadService.Creation.cs:line 306"
+  ],
+  "DestinationRelativePath": null,
+  "reads": [
+    "game_state/resources/resource_definitions.json",
+    "game_state/resources/resource_state.json",
+    "game_state/resources/resource_history.json",
+    "game_state/meta/soul_state.json",
+    "game_state/resources/resource_owner_authority.json",
+    "game_state/world/test_fixture_state.json",
+    "game_state/meta/soul_state.json",
+    "game_state/resources/resource_history.json",
+    "game_state/resources/resource_state.json",
+    "game_state/resources/resource_definitions.json"
+  ],
+  "publications": [],
+  "entries": {},
+  "manifest": null,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJjZjY2YzQzMjg5NzE0MDdlYjhiMzZmNDA5NWEzYjA0YSJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJjZjY2YzQzMjg5NzE0MDdlYjhiMzZmNDA5NWEzYjA0YSJ9"
+}
