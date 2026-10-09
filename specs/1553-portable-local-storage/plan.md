@@ -1,3 +1,38 @@
+## Whole migration resumed — cloud capacity recovered, 2026-10-09
+
+Latest owner/parent instruction explicitly continues the entire #1553 migration
+from766ccb1d11cb2b7b57a9d7e940754145689babbc: F18 and remaining consumers, then exact
+whole-registry reconciliation including excluded/stale tests. Story acceptance
+is one bounded result, not completion. Earlier stop was only the model-switch
+safepoint; it does not block current work. #1536 B2–B5 stays paused. Main/CI/merge/
+permissions/HOME-PC/live-provider boundaries remain unchanged.
+
+Read-only capacity census found current checkout6.5GiB (TestResults5.4GiB, including
+production-main4.5GiB and category logs808MiB), repeated standalone recovery clones
+~715–905MiB each, shared tools1.8GiB. Four old reproducible #1553 restore clones were
+selected; all were clean including ignored/untracked status, standalone one-worktree,
+without alternates or detected workspace-root references and no active cwd/exe/fd use.
+GitHub commit/tree SHA and ALL416 task-changed files were fetched and verified against
+Git blob IDs before removal. Every selected source SHA is an ancestor of current HEAD.
+[Complete source/tree/readback/removal receipt](recovery/storage-migration-cloud-space-reclaim-20261009.json).
+
+Removed only `/workspace/boe-1553-migration-restore`, `boe-1553-f03-restore`,
+`boe-1553-outcomes-restore`, `boe-1553-restoration-restore`. Reclaimed3,077,160,960bytes;
+free space rose443,301,888→3,520,462,848bytes. No process terminated, no current checkout,
+original TestResults/evidence, latest full worker e12 restore, Story selected restore,
+#1536 work/audit/binding, tools, user files or credentials removed. No new clone.
+This resolves the capacity blocker for bounded continuation; no test/build or product
+acceptance follows from disk cleanup. Older below-455MiB notes below are historical.
+
+Next source-completeness review is F18 admission/contention fixture migration using
+the retained27-candidate census; independently distinguish stale admission observers,
+intentional physical negative controls, real same-admission generation changes, and
+failure-path release/join defects. Three existing StateManager/StateDistributor dual
+main/canonical signals already reach admission; their remaining cleanup needs must not
+be misreported as unreached hooks. Then bounded ports/checks with positive reach and
+unchanged budgets, remaining F16 path producers/owning consumers, and whole-selection
+reconciliation. T061–T065 remain open. Runtime/fixtures/catalog unchanged sinceStory.
+
 ## Current cloud handoff — bounded Story12 accepted, 2026-10-09
 
 Source #1553; sole-writer branch `1553-storage-migration-cloud-20261008`, base/main

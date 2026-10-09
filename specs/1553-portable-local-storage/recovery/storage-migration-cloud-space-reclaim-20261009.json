@@ -1,0 +1,2155 @@
+{
+  "base": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "current": "766ccb1d11cb2b7b57a9d7e940754145689babbc",
+  "candidates": [
+    {
+      "path": "/workspace/boe-1553-migration-restore",
+      "gitDirectory": true,
+      "head": "eb60495facd1ed1c4ca31a932296787f135b6162",
+      "tree": "1a978d06e40d165969303ad75aa03368af0efd11",
+      "origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+      "status": "",
+      "bytes": 748728320,
+      "trackedFiles": 24886,
+      "ancestor": 0,
+      "remoteCommitAndTreeVerified": true,
+      "remoteChangedFiles": [
+        {
+          "path": "specs/1553-portable-local-storage/plan.md",
+          "blob": "565a29399060fbb198073cbb61229922b6a37def",
+          "sha256": "9bf04fa50dd89b3f3b18bd46a2968cc72faf1e7c6570eed4eb2b9a58de6a3f76"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/callsites.jsonl.gz",
+          "blob": "686b88e67729024dd197cf77eac6ce59588a1507",
+          "sha256": "2af1da6366a513319ca66e40410ec8985b8ffe462b71859db8f35d7a2f86c3a7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/corpus.json",
+          "blob": "e6dc6af45d44521f93d80ff6317da971128723f8",
+          "sha256": "0b086cebaf58f018aa4ca3f9bf2801eab2b975daf862a4e6b2e489f4f76f6a20"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/manifest.json",
+          "blob": "4217fbc75cad4780987fde7f094bdc0fc76bfd9c",
+          "sha256": "804b195c3e0d5f577928e9c25bb1319e12514fb3de8a226490999862bd420ce0"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/route-symbols.json",
+          "blob": "6860a04245519e99f1a066ef4a99ebe82d10ee5a",
+          "sha256": "8c53489efdffc3f52bb96911f6a38a18272414d4f53717c5478f1ae8cb64adac"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/routes.json",
+          "blob": "7b5fdc5c88bb83fadf1d896c2fd24b7d888dad50",
+          "sha256": "4410a76efa4356371fcec5a5f92125906ed796adba0dc2377b848bb09dff0fbc"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/scan.py",
+          "blob": "5e5bb220feeabf45c4bc78e061023309870a43a7",
+          "sha256": "c88ed8f2278d27450f82dac99ededca0c41514791b60032c3bcb937dee86f672"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/storage-migration-inventory.md",
+          "blob": "27afe59ea3b9eb2086116beb2162055b8df0145a",
+          "sha256": "8c7b9174bd1ada6a8615b98f3cc750c981219deb229d3fb22a04132b619f6ed8"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/tasks.md",
+          "blob": "b0e5005d41b1699cf863b059fcac371fea2f0593",
+          "sha256": "a3aca18345f9ea993bd31419131820359cdbd3368542020487bcb2c1fa5c03a0"
+        }
+      ],
+      "removed": true
+    },
+    {
+      "path": "/workspace/boe-1553-f03-restore",
+      "gitDirectory": true,
+      "head": "00d04d44f3451f4024485b0433922518c018fc03",
+      "tree": "357ff18108c5057f7c632480b28423deaad61e63",
+      "origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+      "status": "",
+      "bytes": 769134592,
+      "trackedFiles": 24936,
+      "ancestor": 0,
+      "remoteCommitAndTreeVerified": true,
+      "remoteChangedFiles": [
+        {
+          "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs",
+          "blob": "33109a5f951dcb5802436652619372539ae29946",
+          "sha256": "94dfd34a1db29e1a1cf21859445563ebcd77d03e68fe5352661c6801eda6fd5c"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+          "blob": "266d493f13ff3e1f9234fc5f227ef7af9ebd8597",
+          "sha256": "1a6311166b7123cd186e46213545c875858c98408a205ed67b68b364aad73d5d"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+          "blob": "678eb2a6dc676813b18e67eb661006ecdd3b79b8",
+          "sha256": "3a632ae6077530fed9348bb9b624afb2aae69f6e9d918f12dbe73d51cb1f255c"
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+          "blob": "4d4afd55c3a08c7e25e391fc8108b7e119405259",
+          "sha256": "b1459147d08c70da87ef3af069d954ee9004a395295dd94a5694c24bda8dcd62"
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+          "blob": "5c7228017205cbda82c690a236362a36410a05e6",
+          "sha256": "5ee5a78d8e7ddbcd296921e721b6f5037380382b85a74d34fefd87b3b3c369c2"
+        },
+        {
+          "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+          "blob": "d3389c143b21f403feb73ea1560c6f1c0a6b40e6",
+          "sha256": "6b67a56b86ae216a423335a1639f9bebc4a727f3783a51cbdf110a734829458e"
+        },
+        {
+          "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+          "blob": "5cdf8906ed6503653bad8dd7e7b52a6bbae4a1f6",
+          "sha256": "fa94cbea79dfba212d4cdbc00d412949d06c0d1fbe63c0b9845df39a7b98f26a"
+        },
+        {
+          "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+          "blob": "0565ebbd794152b2a7c4f2036d7152cbbc40524c",
+          "sha256": "176b0af190ab7c536f3af98303753e8bd9fba00ac0b81b44f879648789b8f013"
+        },
+        {
+          "path": "BookOfEternityClient/Services/ConsoleLocalTurnRollbackArtifacts.cs",
+          "blob": "39769af1d0ea30c40c05b937e969a0ad99fee98d",
+          "sha256": "340d10cc5194b510cd95fcf2c8503b2a74038e359932cb481f54d853d2371713"
+        },
+        {
+          "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs",
+          "blob": "fd9f1189531d1131217c33eba64075c93625bbdf",
+          "sha256": "4416fa9a8002ed65fba07505edbdf17065652c254072846e526f8317a2359ed4"
+        },
+        {
+          "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+          "blob": "78573217e6e3c29ee7e2c736f8ff3d79ae1dcd84",
+          "sha256": "e6e740c5bc59a682b458168680bdd578e37f29d396d64b0b4ccbdff0416c1da2"
+        },
+        {
+          "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+          "blob": "12d93241858bb406373d1c0e47058ee986a20aa1",
+          "sha256": "7fa47fde3347c90c1322629153d91fd9ee3751b2b87df75cc278114ed3e8177c"
+        },
+        {
+          "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+          "blob": "e17017b042978852bebbefb960863caaf5d203a1",
+          "sha256": "dd4c42143c7b9880e8c64733356da01a187440283350ab53df90000963b57cab"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/plan.md",
+          "blob": "c7e4831d55efd1baa8769b8fd4852c6301336b24",
+          "sha256": "81dfcdb362720c943430f45924cb98f8425426107cad7ac54a3909fad75170fb"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/callsites.jsonl.gz",
+          "blob": "686b88e67729024dd197cf77eac6ce59588a1507",
+          "sha256": "2af1da6366a513319ca66e40410ec8985b8ffe462b71859db8f35d7a2f86c3a7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/corpus.json",
+          "blob": "e6dc6af45d44521f93d80ff6317da971128723f8",
+          "sha256": "0b086cebaf58f018aa4ca3f9bf2801eab2b975daf862a4e6b2e489f4f76f6a20"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/manifest.json",
+          "blob": "4217fbc75cad4780987fde7f094bdc0fc76bfd9c",
+          "sha256": "804b195c3e0d5f577928e9c25bb1319e12514fb3de8a226490999862bd420ce0"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/route-symbols.json",
+          "blob": "6860a04245519e99f1a066ef4a99ebe82d10ee5a",
+          "sha256": "8c53489efdffc3f52bb96911f6a38a18272414d4f53717c5478f1ae8cb64adac"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/routes.json",
+          "blob": "7b5fdc5c88bb83fadf1d896c2fd24b7d888dad50",
+          "sha256": "4410a76efa4356371fcec5a5f92125906ed796adba0dc2377b848bb09dff0fbc"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/scan.py",
+          "blob": "5e5bb220feeabf45c4bc78e061023309870a43a7",
+          "sha256": "c88ed8f2278d27450f82dac99ededca0c41514791b60032c3bcb937dee86f672"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-Build-integration.log.gz",
+          "blob": "0166d6c3013ab4b5ca2ce484ef6543c3c810ac84",
+          "sha256": "3db1b8acd07368458267fa97a0502817e12a76f119a7c2391ee96b98bc742d73"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-Build-unit.log.gz",
+          "blob": "8f795e07f61e9373d45e9afa687fa2ec8cba82b0",
+          "sha256": "1bb51ec31b94fcab295dbe82e7b245e4ffc8a5b329924215b36c4aa46f8d3ee9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-catalog-audit.json",
+          "blob": "beb96abae15866e284d411d8d29c2c3dbd179ca5",
+          "sha256": "e1c6c3cd1573c712ea2139e64f03073b470b62545e55050f3dd29cdac65fadb1"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-dotnet-test.log.gz",
+          "blob": "c9490acd4e5e9383a287a447cdefe5ce4ce71507",
+          "sha256": "d11a37d7b9831ddf7b944e64c928669d7331d6f71dc623436f2bc267c184d175"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-summary.json",
+          "blob": "6813b72dbb1d5c7821db00ab66be0168681fd869",
+          "sha256": "9aa189f5b244b2d7f7dfb18675ea41f4afc0f20af9bb334e0fa347d08bd9c1ba"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-dotnet-test.log.gz",
+          "blob": "9b326057669ea7f32caeb075a73286780058ed20",
+          "sha256": "15f9f5a5897a66227e9e77c85f847fedcafdf1c33fae278b7881a52c0c41ee94"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-plan.json",
+          "blob": "ee0019393e720fbad64414543ca57cf6a19fa2ab",
+          "sha256": "1e9169f5e417174de3876d60ab1284b1bbaf9d2e0a0d4223bc8fc763d23224bf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "f02659dc9db0e2a881c8b6f285ec70cad9f51b13",
+          "sha256": "f67827e104369d214a4b0a1003812717fe4300325551519504fb92c4333a5aad"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-portable-pending-beforeimage-admission-integration-002.trx",
+          "blob": "c506ac7e203d3c4f2ec638c346233d1e14d91001",
+          "sha256": "f8032d1a078f3923f1e95cf024f4039d26c4ca581474d13e932e5c1ca85a4bdf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-summary.json",
+          "blob": "cea11ccc983ab362fd62948f58998c0ab7c309d5",
+          "sha256": "de7767694e80c58da03f08bd0ec5c3c7e35156a9c536016661884c225c4cb1e3"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/manifest.json",
+          "blob": "48a694111fd0999d52940578275fd998f9691082",
+          "sha256": "b7133dc4c68053553902ce74af5e73c526149f79f87c9ece72028be0ee77936f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/plan-dotnet-test.log.gz",
+          "blob": "715dea30ac75dcea67aa7a2b26b876f29cc59819",
+          "sha256": "1ba9881dfd12670fd657336261a348d5762072ebf28e70372e660507a3cc744c"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/plan-plan.json",
+          "blob": "23b6616ed272873789b1de05d4638d4a80729980",
+          "sha256": "6e611500134ef0818e3c6cc254576b4be807715525db30343b7a1c85025d1224"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/plan-summary.json",
+          "blob": "6cba04b5537a77e32c39f314a3cfbb5eeded1d2d",
+          "sha256": "96357140de236e90741d048688eea8a2fa2bada7858d0b66100889eb625f0ccd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-build-failure-dotnet-test.log.gz",
+          "blob": "fb88ea89159628155d083f0958ffe2d5bb18060a",
+          "sha256": "269b58ef6db6faa630aec35e8fd4ac9c9cd7574195cb2c8c5f2523a5df008994"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-build-failure-summary.json",
+          "blob": "d25bf725551d26cd787dceab334aa04a0a47084b",
+          "sha256": "34722fc31abf1ed0ca0437d4ac8894d01cd3e4582cdf343df987fa8bfa9ed9ac"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-dotnet-test.log.gz",
+          "blob": "490a129df164b8d908522a7810877d1e0680aa09",
+          "sha256": "a0c61ddb5d21ce2a9ab2ed31e2e4bf48b27d1f769c9a0808a535e21bcfa322e9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-plan.json",
+          "blob": "919bff3694109b43f8af85582aac5b00a2cbcac0",
+          "sha256": "f3313cd104260ae67c2efa2d9d391048496c11671df2107eccb07e4cfd34ebb6"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-summary.json",
+          "blob": "4c2cf05cb3bab1dadabf9ac08b48533fd4b58457",
+          "sha256": "1872039fd14397f88331dc7e64c89a20b10ddca625dea2044677c09f475f7bf7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-dotnet-test.log.gz",
+          "blob": "8b71d6f59c60a0e1951b6521a1a9712e1416789a",
+          "sha256": "9658a24b0bb87c1f0c2c7b1aaa8442c771390ff857753c57164aea9a07f38daf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-plan.json",
+          "blob": "b5ba62c0f312729d9c468b98bec8831c26261b8a",
+          "sha256": "452af972393049a4de40c2483add4668dca5f8e5740bdb3c2eec5fe87fb0bc1f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "c4181fdb3ca0b16372ef079e97f6e99dd5c865ac",
+          "sha256": "ae5d6c699d060fe2fbe5a1992bea72885b104e864fe50a46252c098347b72268"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-summary.json",
+          "blob": "fb6600e38a1eb2d65bcfa277e551bdee5a958b10",
+          "sha256": "907d45a74c5b013cd80d3dce22b36a50d1c182d92263e74949c7d4f6e88918c9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-dotnet-test.log.gz",
+          "blob": "413dbf361c38ab6b3946e53ff17af9f9bcd95673",
+          "sha256": "a958658f54d7dc058d116bc35e7f25fff4fe3195a02d5b79de986a92694f9dca"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-plan.json",
+          "blob": "d98d4212040c1f15ab3458389a79f180efccd3c8",
+          "sha256": "b10c1d772c48d3bebab9882d1b44db4d7c8d6ae36195a88c4bb0137f8dce6ab5"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "bb3c2b3926a4dbc8a743e7ba46eecbc1921fff3b",
+          "sha256": "a52fb75b323e3b5cb031c0f648249bd40f170723d843b83f86e17bf8eb0db1ee"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-summary.json",
+          "blob": "1e4fa7c0ea5e6a7b5e86fd3824f3af8c4ed0256c",
+          "sha256": "13b2fadf2c050a63fa903412f9b96ac327249eb9b03aa85d75521ce62c051713"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-build-failure-dotnet-test.log.gz",
+          "blob": "8807448b534657ab30a0167c54e78530be163656",
+          "sha256": "153632143ff380a5c63cf8a7985c7efdacf44b3c4c583bc93f025d979eba4802"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-build-failure-summary.json",
+          "blob": "0e2f96a642019dc83927b14fddd682cd44f3b767",
+          "sha256": "bc5dfe9f9573ccffb7b610f7268da829de2b03d70128af86ecc4cb296f459037"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-dotnet-test.log.gz",
+          "blob": "3a8adb44dd9f83d1f82459e0fe2d8d5bc2abc7f3",
+          "sha256": "327cd133e076df573917b6434e1705837ab48562cb5539098116281d1fb80540"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-plan.json",
+          "blob": "8e6eada8f9a9a1256784656b7edb04e9b20805d8",
+          "sha256": "9fd2d0ee24eb2e63c6dddbb469b1468f68b7f6919624914e8293a59e87c03771"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-summary.json",
+          "blob": "e3407ee6908d36acf93ec1e2faf025c994b75ff4",
+          "sha256": "717160f4321d514e7b4b49fcbe31e2a4d8001a03058bdc91fd1f30598a5129b9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/manifest.json",
+          "blob": "8cf45a5a79683ca43bbead4671bb14e61bc6bfab",
+          "sha256": "978bd1d25ecb70d71f842a08ff672d85e8517403be9d4287f27343a676bcc0c9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/plan-only-dotnet-test.log.gz",
+          "blob": "79324bcadbcd190a522654df35c174c3c6d8b2f9",
+          "sha256": "b24408c0e4655e5f767edf93d5666b1ce16a0d8ce0f15d8ea19f3ab330c9aede"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/plan-only-plan.json",
+          "blob": "5d94fd3cef576acbaf2321b4ff5db5e41255b59f",
+          "sha256": "8db63dc8ca4002ff079209c71cf217916f34a37ca90984418b8efe0825aac03b"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/plan-only-summary.json",
+          "blob": "0671315d6e89ca331d7f009f6043ee1ac0b07ec6",
+          "sha256": "e5b87f740eb50d61ad9e62f5f710d57fdbeaba5ab9898ca1a55ab6aea315a3fa"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-dotnet-test.log.gz",
+          "blob": "fb16742fde8d21a3a0799cbcd8b3405082b0729c",
+          "sha256": "1d54094daddd4b0d4944eae2e12c7d6c7b25cd23cd811a33b13e4e5e24ecb7ac"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-plan.json",
+          "blob": "cc2ffa064b4a55c27d5e2666bdf67109d68055b2",
+          "sha256": "2664002c4b56689dff233443681e6c8574937079833cab7bca367d00164aab07"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "bb2c163bb130d4eb71f1b2446d05486f03e61d9a",
+          "sha256": "d4824e1a5f46bdb74579fe1ed187db53190656c4641565a6f73d58b2677e81fb"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-summary.json",
+          "blob": "b915b28b6101fe385ff3ed367503518bb50a2033",
+          "sha256": "f7a5ae25a99cd21990155f802f3876f09dc5b4900c01519d52e64ca9516cf1a9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-plan-dotnet-test.log.gz",
+          "blob": "3fd42167c24177ff8273a82c1d3a98d42ab14fdd",
+          "sha256": "5be9839f752bed4be524f1dacf2be83f99925d909930a403ad2d4e50c73cb129"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-plan-plan.json",
+          "blob": "1128a7b2c2b9103c581e37e492c06c4289786c40",
+          "sha256": "e45ed1d0293fcb87a9263ac6b0c33fb275b95945f886f25bc2fd66ea6fa446ca"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-plan-summary.json",
+          "blob": "1447db52db82351c7033e449efbddbbde380acc8",
+          "sha256": "8b2ca5c7d9ef04cbccc0fd0750b0ce94255b7856898959178aecab7a52e185db"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-dotnet-test.log.gz",
+          "blob": "d262d725593dc18be845bf933eb2bcf181b2d971",
+          "sha256": "398ccd27aec6cc143cabd1e8dc63e29a6085ee5c116fd74334b9db2a48f872a9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-plan.json",
+          "blob": "3a067bf4068269dd6377941ac310296b4fe8f7d5",
+          "sha256": "87864a2f1d9bbc4c6952dc95a4b1b8f04cdf3ec020372f2091228fbf5804a441"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "4c498fef85be7288d2b5abf9707ffb758b97c8e2",
+          "sha256": "97add54fa6ce1a33f3f992f898f4a93430b7d9708c013b035a2042711fe8aea8"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-summary.json",
+          "blob": "4b9df4705d957776c051c51b4b2b8ea696b28760",
+          "sha256": "c0d39dce7acba00b6200649954357ba75590fd047c95a8a76e4e4c97e25559de"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/storage-migration-inventory.md",
+          "blob": "88b919c08a29928d5d52da73e972bcb7ea7d04cc",
+          "sha256": "fcbde7df8b1166c1282fe1009706cab7ddaa907ab3d180f05c1186590fd608fb"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/tasks.md",
+          "blob": "d1dec9944df3fe52edd93163dfc1d78d626bfbc9",
+          "sha256": "232143602377dec37fd61be526a62e1f3009dca2f945b0d9e57037ba73f5d023"
+        },
+        {
+          "path": "tests/categories.json",
+          "blob": "ae4578e8c5f030426a2cb823dfb4f856b3d44634",
+          "sha256": "b502c25530f053967d53ead0b7922479d1ec6703bd8c90b69f4540d91ca558df"
+        },
+        {
+          "path": "tests/selection.json",
+          "blob": "cf9554ceb002aa99e79644a5687b89a929f67fdd",
+          "sha256": "177679bf91602a32857f5d7e354eca6bbee96546cae6f60d934e121e03b26f93"
+        }
+      ],
+      "removed": true
+    },
+    {
+      "path": "/workspace/boe-1553-outcomes-restore",
+      "gitDirectory": true,
+      "head": "9f07d3857f4d75dc65f57dc016d231ab75c9c5a3",
+      "tree": "2b5ccac37cda63f4dcc19c7b6bff06f8407f1a71",
+      "origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+      "status": "",
+      "bytes": 775852032,
+      "trackedFiles": 24989,
+      "ancestor": 0,
+      "remoteCommitAndTreeVerified": true,
+      "remoteChangedFiles": [
+        {
+          "path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.Outcomes.cs",
+          "blob": "5f511263955a83a923dc0c85be925bc5b5eb755f",
+          "sha256": "2f32ca5c6233cab36a25e1abf3a438e249b69c4b19db2e0d1abc3c89d0cda405"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs",
+          "blob": "33109a5f951dcb5802436652619372539ae29946",
+          "sha256": "94dfd34a1db29e1a1cf21859445563ebcd77d03e68fe5352661c6801eda6fd5c"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.OrdinaryOutcome.cs",
+          "blob": "b443dba7e042d00efe1118eea1b94480aa5612ad",
+          "sha256": "e04fdc45b473298d292f696fe3317af4747f5ff7945c86fd1333687bd07ed771"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+          "blob": "266d493f13ff3e1f9234fc5f227ef7af9ebd8597",
+          "sha256": "1a6311166b7123cd186e46213545c875858c98408a205ed67b68b364aad73d5d"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+          "blob": "678eb2a6dc676813b18e67eb661006ecdd3b79b8",
+          "sha256": "3a632ae6077530fed9348bb9b624afb2aae69f6e9d918f12dbe73d51cb1f255c"
+        },
+        {
+          "path": "BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs",
+          "blob": "b7423d33fe151ba32d70450f12d569f6e3de1870",
+          "sha256": "e53690c64ba7eeb266384915f446d51031c089b7dd5d19a4841644a48cd3abd5"
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+          "blob": "23a1188abe10f636c0133417f38984c0838a8daf",
+          "sha256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad"
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+          "blob": "7b487ced5bb0b3a787d1a93da820994dffd7ffec",
+          "sha256": "ff441588ac21cb2aa2b50124cfa9e85c8a72b01c4da910e7b88d9e162a41b24f"
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+          "blob": "5c7228017205cbda82c690a236362a36410a05e6",
+          "sha256": "5ee5a78d8e7ddbcd296921e721b6f5037380382b85a74d34fefd87b3b3c369c2"
+        },
+        {
+          "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+          "blob": "d3389c143b21f403feb73ea1560c6f1c0a6b40e6",
+          "sha256": "6b67a56b86ae216a423335a1639f9bebc4a727f3783a51cbdf110a734829458e"
+        },
+        {
+          "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+          "blob": "5cdf8906ed6503653bad8dd7e7b52a6bbae4a1f6",
+          "sha256": "fa94cbea79dfba212d4cdbc00d412949d06c0d1fbe63c0b9845df39a7b98f26a"
+        },
+        {
+          "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+          "blob": "0565ebbd794152b2a7c4f2036d7152cbbc40524c",
+          "sha256": "176b0af190ab7c536f3af98303753e8bd9fba00ac0b81b44f879648789b8f013"
+        },
+        {
+          "path": "BookOfEternityClient/Services/ConsoleLocalTurnRollbackArtifacts.cs",
+          "blob": "39769af1d0ea30c40c05b937e969a0ad99fee98d",
+          "sha256": "340d10cc5194b510cd95fcf2c8503b2a74038e359932cb481f54d853d2371713"
+        },
+        {
+          "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs",
+          "blob": "fd9f1189531d1131217c33eba64075c93625bbdf",
+          "sha256": "4416fa9a8002ed65fba07505edbdf17065652c254072846e526f8317a2359ed4"
+        },
+        {
+          "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+          "blob": "78573217e6e3c29ee7e2c736f8ff3d79ae1dcd84",
+          "sha256": "e6e740c5bc59a682b458168680bdd578e37f29d396d64b0b4ccbdff0416c1da2"
+        },
+        {
+          "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+          "blob": "12d93241858bb406373d1c0e47058ee986a20aa1",
+          "sha256": "7fa47fde3347c90c1322629153d91fd9ee3751b2b87df75cc278114ed3e8177c"
+        },
+        {
+          "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+          "blob": "e17017b042978852bebbefb960863caaf5d203a1",
+          "sha256": "dd4c42143c7b9880e8c64733356da01a187440283350ab53df90000963b57cab"
+        },
+        {
+          "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+          "blob": "b5f2a67fe6c537d176a3aeb3ab42549df2d2df91",
+          "sha256": "e52abb43f61021d88e4ece622687c8d014a8f47b1ef672d9cf10dfffe08fdeef"
+        },
+        {
+          "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+          "blob": "fca7c3099917b207abd8ba295146a1d5aeef4e98",
+          "sha256": "2a786979f80bd5003f41cbc30bd33ceee8af03a66f99f546761c3c97a7edb647"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/plan.md",
+          "blob": "ab62a534b75b1eb5f4053fa0af719e4025824506",
+          "sha256": "c53db67fa746aeec2fba16ddc6d661ee73f1b476dd8e1b17edc55a3f49b69311"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/callsites.jsonl.gz",
+          "blob": "686b88e67729024dd197cf77eac6ce59588a1507",
+          "sha256": "2af1da6366a513319ca66e40410ec8985b8ffe462b71859db8f35d7a2f86c3a7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/corpus.json",
+          "blob": "e6dc6af45d44521f93d80ff6317da971128723f8",
+          "sha256": "0b086cebaf58f018aa4ca3f9bf2801eab2b975daf862a4e6b2e489f4f76f6a20"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/manifest.json",
+          "blob": "4217fbc75cad4780987fde7f094bdc0fc76bfd9c",
+          "sha256": "804b195c3e0d5f577928e9c25bb1319e12514fb3de8a226490999862bd420ce0"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/route-symbols.json",
+          "blob": "6860a04245519e99f1a066ef4a99ebe82d10ee5a",
+          "sha256": "8c53489efdffc3f52bb96911f6a38a18272414d4f53717c5478f1ae8cb64adac"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/routes.json",
+          "blob": "7b5fdc5c88bb83fadf1d896c2fd24b7d888dad50",
+          "sha256": "4410a76efa4356371fcec5a5f92125906ed796adba0dc2377b848bb09dff0fbc"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/scan.py",
+          "blob": "5e5bb220feeabf45c4bc78e061023309870a43a7",
+          "sha256": "c88ed8f2278d27450f82dac99ededca0c41514791b60032c3bcb937dee86f672"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/browser-red-dotnet-test.log.gz",
+          "blob": "093853ad08975d9c14a2798b3ca173b00c0bb9f7",
+          "sha256": "51fe7eb5fd9683cf4667a29be2b6734b01f636529b0ef46205f2c4b72a45ebe7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/browser-red-plan.json",
+          "blob": "6d26b34827ce69b8fd4254ca9362fffa74871c84",
+          "sha256": "1ce1cb5cb8ded109bf166c7d922bb958434b203e0ccf2777b6fa7a9ce85feb8f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/browser-red-portable-browser-rollback-outcomes-integration-001.trx.gz",
+          "blob": "6bbac4a2f79f69367a207ea3727fe4375396c5dc",
+          "sha256": "dac7dfdce860d6abf59bc5da3ebb0c8da2932f19abe1b2173d02e5adbc964d44"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/browser-red-summary.json",
+          "blob": "9aac6d22ae689d21231e92b40707ed905c2ab1e1",
+          "sha256": "0a7f0b091f9d6464fc31d191761a2fa40415f045884a465c166f9835a3774b62"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/manifest.json",
+          "blob": "d09456c8ca0f4d49652a6941c2cac3dd53280c05",
+          "sha256": "8bf4d05124b6b9ae153098b35ab59c4df210d0586e4747280b1157ed0497350a"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/ordinary-green-dotnet-test.log.gz",
+          "blob": "87d1892505feaaae04ccc55ab50b895b7814c7bb",
+          "sha256": "40cc247cbf87fd54d69ae489dac3e84e93745a769a45259a47f4e3651df35c09"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/ordinary-green-plan.json",
+          "blob": "ff9ae957bdb433db8a30960144fb294ec0b4f23a",
+          "sha256": "adf7fae84cbfd4cb58038b281697d1a82d43f0a3ee0037ce3be5b6228e98dfbe"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/ordinary-green-portable-ordinary-outcome-notice-integration-001.trx.gz",
+          "blob": "6b29bf133c91973d2253c9919456f523b4f4af5f",
+          "sha256": "c088ed8de10f1ca9b5e6e65f1078b8550bc4a9ab8c6bd3e58b2ae5adb48c4627"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/ordinary-green-portable-ordinary-publication-outcomes-unit-002.trx.gz",
+          "blob": "0dcd7040b48636cf96fb51d60f28b0703ba43f2a",
+          "sha256": "24f8e463ab96c6d44992c26845fc15dcb46ce6de1e71815b90fa3390221d8484"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/ordinary-green-summary.json",
+          "blob": "9cf1e8b1e62933e6ea196c9c2e96cfe71279ea8b",
+          "sha256": "29ef45764adc1dcc16aae4e7f86aafb0e7f2b1ee877f96d775bfb6b7a59c2a07"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/plan-Build-integration.log.gz",
+          "blob": "34448813d3d721a8de0fba4c15b6acf60118e08a",
+          "sha256": "076717307f2ee02d58a0b71100e866c1398229c14afca765d06f2296cfabf09b"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/plan-Build-unit.log.gz",
+          "blob": "24c3d74036f5cc2eb143f7b9f61dcf05bcca479e",
+          "sha256": "5f59d355f192375a34d4bda59f21ecf15a4db91afc8d2551d42818121f2a8af9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/plan-dotnet-test.log.gz",
+          "blob": "35b84a43ae889fb7b0f8e54ff16d3d8c73075d3a",
+          "sha256": "c85f58242bc63c53748a5f5f5d228e0210aa8dff627d749e360af192cf357e2d"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/plan-plan.json",
+          "blob": "7c75253ef0965d58c9cb4f10aabe5297e067b601",
+          "sha256": "18082f83974999e18cd2d6e79dca03c8b1326181b6b2084286f7f826a95bff0b"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/plan-summary.json",
+          "blob": "39d7fe7328d054e6c280efd93c49fed6b62fcf1b",
+          "sha256": "7e646ed0d96b7a80efbedc3b9d24ef243c7caf0afef85c2363d64bfc21c63fb1"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-Build-integration.log.gz",
+          "blob": "0166d6c3013ab4b5ca2ce484ef6543c3c810ac84",
+          "sha256": "3db1b8acd07368458267fa97a0502817e12a76f119a7c2391ee96b98bc742d73"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-Build-unit.log.gz",
+          "blob": "8f795e07f61e9373d45e9afa687fa2ec8cba82b0",
+          "sha256": "1bb51ec31b94fcab295dbe82e7b245e4ffc8a5b329924215b36c4aa46f8d3ee9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-catalog-audit.json",
+          "blob": "beb96abae15866e284d411d8d29c2c3dbd179ca5",
+          "sha256": "e1c6c3cd1573c712ea2139e64f03073b470b62545e55050f3dd29cdac65fadb1"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-dotnet-test.log.gz",
+          "blob": "c9490acd4e5e9383a287a447cdefe5ce4ce71507",
+          "sha256": "d11a37d7b9831ddf7b944e64c928669d7331d6f71dc623436f2bc267c184d175"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-summary.json",
+          "blob": "6813b72dbb1d5c7821db00ab66be0168681fd869",
+          "sha256": "9aa189f5b244b2d7f7dfb18675ea41f4afc0f20af9bb334e0fa347d08bd9c1ba"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-dotnet-test.log.gz",
+          "blob": "9b326057669ea7f32caeb075a73286780058ed20",
+          "sha256": "15f9f5a5897a66227e9e77c85f847fedcafdf1c33fae278b7881a52c0c41ee94"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-plan.json",
+          "blob": "ee0019393e720fbad64414543ca57cf6a19fa2ab",
+          "sha256": "1e9169f5e417174de3876d60ab1284b1bbaf9d2e0a0d4223bc8fc763d23224bf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "f02659dc9db0e2a881c8b6f285ec70cad9f51b13",
+          "sha256": "f67827e104369d214a4b0a1003812717fe4300325551519504fb92c4333a5aad"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-portable-pending-beforeimage-admission-integration-002.trx",
+          "blob": "c506ac7e203d3c4f2ec638c346233d1e14d91001",
+          "sha256": "f8032d1a078f3923f1e95cf024f4039d26c4ca581474d13e932e5c1ca85a4bdf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-summary.json",
+          "blob": "cea11ccc983ab362fd62948f58998c0ab7c309d5",
+          "sha256": "de7767694e80c58da03f08bd0ec5c3c7e35156a9c536016661884c225c4cb1e3"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/manifest.json",
+          "blob": "647b71bbe69bfc487108122f931e7d81f0e8907c",
+          "sha256": "3c84326d760df58f56b3e8b1372c077a05f4fbd265d6001760e8a0a1b307c5f0"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/plan-dotnet-test.log.gz",
+          "blob": "715dea30ac75dcea67aa7a2b26b876f29cc59819",
+          "sha256": "1ba9881dfd12670fd657336261a348d5762072ebf28e70372e660507a3cc744c"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/plan-plan.json",
+          "blob": "23b6616ed272873789b1de05d4638d4a80729980",
+          "sha256": "6e611500134ef0818e3c6cc254576b4be807715525db30343b7a1c85025d1224"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/plan-summary.json",
+          "blob": "6cba04b5537a77e32c39f314a3cfbb5eeded1d2d",
+          "sha256": "96357140de236e90741d048688eea8a2fa2bada7858d0b66100889eb625f0ccd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-build-failure-dotnet-test.log.gz",
+          "blob": "fb88ea89159628155d083f0958ffe2d5bb18060a",
+          "sha256": "269b58ef6db6faa630aec35e8fd4ac9c9cd7574195cb2c8c5f2523a5df008994"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-build-failure-summary.json",
+          "blob": "d25bf725551d26cd787dceab334aa04a0a47084b",
+          "sha256": "34722fc31abf1ed0ca0437d4ac8894d01cd3e4582cdf343df987fa8bfa9ed9ac"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-dotnet-test.log.gz",
+          "blob": "490a129df164b8d908522a7810877d1e0680aa09",
+          "sha256": "a0c61ddb5d21ce2a9ab2ed31e2e4bf48b27d1f769c9a0808a535e21bcfa322e9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-plan.json",
+          "blob": "919bff3694109b43f8af85582aac5b00a2cbcac0",
+          "sha256": "f3313cd104260ae67c2efa2d9d391048496c11671df2107eccb07e4cfd34ebb6"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-summary.json",
+          "blob": "4c2cf05cb3bab1dadabf9ac08b48533fd4b58457",
+          "sha256": "1872039fd14397f88331dc7e64c89a20b10ddca625dea2044677c09f475f7bf7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-dotnet-test.log.gz",
+          "blob": "8b71d6f59c60a0e1951b6521a1a9712e1416789a",
+          "sha256": "9658a24b0bb87c1f0c2c7b1aaa8442c771390ff857753c57164aea9a07f38daf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-plan.json",
+          "blob": "b5ba62c0f312729d9c468b98bec8831c26261b8a",
+          "sha256": "452af972393049a4de40c2483add4668dca5f8e5740bdb3c2eec5fe87fb0bc1f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "c4181fdb3ca0b16372ef079e97f6e99dd5c865ac",
+          "sha256": "ae5d6c699d060fe2fbe5a1992bea72885b104e864fe50a46252c098347b72268"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-summary.json",
+          "blob": "fb6600e38a1eb2d65bcfa277e551bdee5a958b10",
+          "sha256": "907d45a74c5b013cd80d3dce22b36a50d1c182d92263e74949c7d4f6e88918c9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-dotnet-test.log.gz",
+          "blob": "413dbf361c38ab6b3946e53ff17af9f9bcd95673",
+          "sha256": "a958658f54d7dc058d116bc35e7f25fff4fe3195a02d5b79de986a92694f9dca"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-plan.json",
+          "blob": "d98d4212040c1f15ab3458389a79f180efccd3c8",
+          "sha256": "b10c1d772c48d3bebab9882d1b44db4d7c8d6ae36195a88c4bb0137f8dce6ab5"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "bb3c2b3926a4dbc8a743e7ba46eecbc1921fff3b",
+          "sha256": "a52fb75b323e3b5cb031c0f648249bd40f170723d843b83f86e17bf8eb0db1ee"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-summary.json",
+          "blob": "1e4fa7c0ea5e6a7b5e86fd3824f3af8c4ed0256c",
+          "sha256": "13b2fadf2c050a63fa903412f9b96ac327249eb9b03aa85d75521ce62c051713"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-build-failure-dotnet-test.log.gz",
+          "blob": "8807448b534657ab30a0167c54e78530be163656",
+          "sha256": "153632143ff380a5c63cf8a7985c7efdacf44b3c4c583bc93f025d979eba4802"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-build-failure-summary.json",
+          "blob": "0e2f96a642019dc83927b14fddd682cd44f3b767",
+          "sha256": "bc5dfe9f9573ccffb7b610f7268da829de2b03d70128af86ecc4cb296f459037"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-dotnet-test.log.gz",
+          "blob": "3a8adb44dd9f83d1f82459e0fe2d8d5bc2abc7f3",
+          "sha256": "327cd133e076df573917b6434e1705837ab48562cb5539098116281d1fb80540"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-plan.json",
+          "blob": "8e6eada8f9a9a1256784656b7edb04e9b20805d8",
+          "sha256": "9fd2d0ee24eb2e63c6dddbb469b1468f68b7f6919624914e8293a59e87c03771"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-summary.json",
+          "blob": "e3407ee6908d36acf93ec1e2faf025c994b75ff4",
+          "sha256": "717160f4321d514e7b4b49fcbe31e2a4d8001a03058bdc91fd1f30598a5129b9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/manifest.json",
+          "blob": "8cf45a5a79683ca43bbead4671bb14e61bc6bfab",
+          "sha256": "978bd1d25ecb70d71f842a08ff672d85e8517403be9d4287f27343a676bcc0c9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/plan-only-dotnet-test.log.gz",
+          "blob": "79324bcadbcd190a522654df35c174c3c6d8b2f9",
+          "sha256": "b24408c0e4655e5f767edf93d5666b1ce16a0d8ce0f15d8ea19f3ab330c9aede"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/plan-only-plan.json",
+          "blob": "5d94fd3cef576acbaf2321b4ff5db5e41255b59f",
+          "sha256": "8db63dc8ca4002ff079209c71cf217916f34a37ca90984418b8efe0825aac03b"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/plan-only-summary.json",
+          "blob": "0671315d6e89ca331d7f009f6043ee1ac0b07ec6",
+          "sha256": "e5b87f740eb50d61ad9e62f5f710d57fdbeaba5ab9898ca1a55ab6aea315a3fa"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-dotnet-test.log.gz",
+          "blob": "fb16742fde8d21a3a0799cbcd8b3405082b0729c",
+          "sha256": "1d54094daddd4b0d4944eae2e12c7d6c7b25cd23cd811a33b13e4e5e24ecb7ac"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-plan.json",
+          "blob": "cc2ffa064b4a55c27d5e2666bdf67109d68055b2",
+          "sha256": "2664002c4b56689dff233443681e6c8574937079833cab7bca367d00164aab07"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "bb2c163bb130d4eb71f1b2446d05486f03e61d9a",
+          "sha256": "d4824e1a5f46bdb74579fe1ed187db53190656c4641565a6f73d58b2677e81fb"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-summary.json",
+          "blob": "b915b28b6101fe385ff3ed367503518bb50a2033",
+          "sha256": "f7a5ae25a99cd21990155f802f3876f09dc5b4900c01519d52e64ca9516cf1a9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-plan-dotnet-test.log.gz",
+          "blob": "3fd42167c24177ff8273a82c1d3a98d42ab14fdd",
+          "sha256": "5be9839f752bed4be524f1dacf2be83f99925d909930a403ad2d4e50c73cb129"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-plan-plan.json",
+          "blob": "1128a7b2c2b9103c581e37e492c06c4289786c40",
+          "sha256": "e45ed1d0293fcb87a9263ac6b0c33fb275b95945f886f25bc2fd66ea6fa446ca"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-plan-summary.json",
+          "blob": "1447db52db82351c7033e449efbddbbde380acc8",
+          "sha256": "8b2ca5c7d9ef04cbccc0fd0750b0ce94255b7856898959178aecab7a52e185db"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-dotnet-test.log.gz",
+          "blob": "d262d725593dc18be845bf933eb2bcf181b2d971",
+          "sha256": "398ccd27aec6cc143cabd1e8dc63e29a6085ee5c116fd74334b9db2a48f872a9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-plan.json",
+          "blob": "3a067bf4068269dd6377941ac310296b4fe8f7d5",
+          "sha256": "87864a2f1d9bbc4c6952dc95a4b1b8f04cdf3ec020372f2091228fbf5804a441"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "4c498fef85be7288d2b5abf9707ffb758b97c8e2",
+          "sha256": "97add54fa6ce1a33f3f992f898f4a93430b7d9708c013b035a2042711fe8aea8"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-summary.json",
+          "blob": "4b9df4705d957776c051c51b4b2b8ea696b28760",
+          "sha256": "c0d39dce7acba00b6200649954357ba75590fd047c95a8a76e4e4c97e25559de"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/catalog-Build-integration.log.gz",
+          "blob": "47640bb7e47543242025d51f2345e85f5bfb114c",
+          "sha256": "07a925435c5b5d0fa28e41d2a79f696ac06d296c868d345df62bffdc92ac21b0"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/catalog-Build-unit.log.gz",
+          "blob": "3daf0c3de770d968184194d96aeef4dff1e011db",
+          "sha256": "7641b1055980030db7486e8b9123d6690cec5967313e0dda2d9832b2996d3e29"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/catalog-catalog-audit.json",
+          "blob": "be83b3e109f807383e17e5bd79819e019b4f183c",
+          "sha256": "f525de485d84ea390ceace9a4229418963e3349cf9679605e9d01d21de466d1c"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/catalog-dotnet-test.log.gz",
+          "blob": "969c6a3c5b8e879914c192514774c1c94c4c55d4",
+          "sha256": "8d2ce323242e2c7e28ab61ac842607509e8a47494593c0ec72be54e0c641a5b7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/catalog-summary.json",
+          "blob": "3817ec4039a637aeae3f01bc2dfa0c8293de6b8d",
+          "sha256": "009f20780ebb9820d4d7a0e2e69010eeb05166c062db31d0e0a6c48b24568adf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-dotnet-test.log.gz",
+          "blob": "4da575b9b5ecc35168e298169643366658fc6f23",
+          "sha256": "3e890ab5c4dc8d7404aaf6423f2cf7742ef3bb8fee7c674395310ffebf5d1506"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-plan.json",
+          "blob": "3358a0c0a39db0917b9cbab54a6458d931224acf",
+          "sha256": "ebeabef9bad38b7ed70ac6f0462beed01fc6c5085172ae294f64e3f7e3bc27b4"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-portable-browser-rollback-outcomes-integration-001.trx.gz",
+          "blob": "4e7e02c876af6be5e68a1463f06531d78a41000b",
+          "sha256": "717611dba1f28c1997adf71f2c8a06362f7ecb0a79c101ecf02575da84203c07"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-portable-ordinary-outcome-notice-integration-002.trx.gz",
+          "blob": "4b0c3ca0f1c6c2f6d8e3ce10eb076e0554885713",
+          "sha256": "d42567ae5207d504dffa5c15b55cea93608699b71775ce2e71f61c87febae069"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-portable-ordinary-publication-outcomes-unit-003.trx.gz",
+          "blob": "d96ff298255b9570449f3f94d272dc8a79f56b35",
+          "sha256": "1b0acff59c4b1cef22cf45babbaf593b19513fe25b2cd5e2755ee22f8d4dbb12"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-summary.json",
+          "blob": "9be55822a911ae2241c70af55d241d051f41317f",
+          "sha256": "52ef738923178c7a60513ec3cbf52037215828e112a4e2e3853ba784e98a395a"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/manifest.json",
+          "blob": "e9ca20e6b6469d3157ec1c73960abeace8506208",
+          "sha256": "d7bb3da7544ddd5c1c489113a35a6504f289db31179f9a12d5bbd47609414497"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/plan-Build-integration.log.gz",
+          "blob": "237f359ca5159dbf971f75e9ca3517bdb6e412c4",
+          "sha256": "2f65c06f38836e28ac41738333a2c93abc4a0f2ac0a5df005f94a856a3891ae6"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/plan-Build-unit.log.gz",
+          "blob": "20bf4600f90eb0db0cedd755c2a28e3932d4512a",
+          "sha256": "2477f88839574c2d04db6895e0dae659eb85c45889852105ccbdf29bf1e85314"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/plan-dotnet-test.log.gz",
+          "blob": "50365889c7239ba6e226986f5f1a656271c198ad",
+          "sha256": "9e2f7e75ccc9495ac1ae7f3fdcac9a4c7b0dcbfede2fb7287a2322e0cfe92746"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/plan-plan.json",
+          "blob": "d2b778d3edeedbc8cc38d6311416efaef3285b93",
+          "sha256": "371421ff39abf4e1aec81d0d2e99eed2ef32a02e7cc9e5e4aad33efb334ae736"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/plan-summary.json",
+          "blob": "607279ac6dfaba8386855a45286786fdc630db72",
+          "sha256": "505d28e6cd0725443ba70ef490af581fe62241da616f4d521c21f63f5a0a9b08"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/console-platform-green-dotnet-test.log.gz",
+          "blob": "001d71e98f2a91b940348ca61a61fca841950141",
+          "sha256": "e3af96cac3366446d80510d322fccdbc5f8308f760beb7c30ffc0469bb174732"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/console-platform-green-plan.json",
+          "blob": "e77acd38634a2c795718f14ea9cfbc5b26984361",
+          "sha256": "abe6f89dcfff0ff2967c321906e97f845dc8a9cd40215f8d2f53bd6baed35f5f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/console-platform-green-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "41901884c36369f376f3bdf7dbb89148fde282f6",
+          "sha256": "d110e73d85606c1af2443ef2d817a334308241c67a8384d07bf9a508c539524d"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/console-platform-green-summary.json",
+          "blob": "9146a180cb5caccbfbcd1d71fb51445035af1767",
+          "sha256": "9dea5e01076a2f10334abb89cea0897f04074e5f4289fed711585057a414520e"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/manifest.json",
+          "blob": "d8f5e8fc35f61a8d8b29ad0a46ace5d46e3aa839",
+          "sha256": "b5ea433f3b2bb896fd6b28df6fdcde5873dde8eb695d4bb73331831c8dd3c3fd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/notice-red-dotnet-test.log.gz",
+          "blob": "febcaa0d195c64d33ca177aa750e8af0de2e457a",
+          "sha256": "556d9a32534d0496631586d0baa70534de42203d3ea5388da0dd7c648bb529f7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/notice-red-plan.json",
+          "blob": "86b756ec24c99828ebf61b94109b19be5739e304",
+          "sha256": "c62449f9013537c091c496c21e37eb8ed434ad44d135adadf562d21996ed6737"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/notice-red-portable-ordinary-outcome-notice-integration-001.trx",
+          "blob": "94e794996d36a51aa94388148131d904a807ed1d",
+          "sha256": "621ea9e13c9a551c212df4a1c9f94aa8dfdba42231176b766489f5d151f6b463"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/notice-red-summary.json",
+          "blob": "d5b78873d5edec873e4545126c1d2d7bdde6ccab",
+          "sha256": "8026167c147cd31d628beaeec10ad12ee5fe9b28ca6b6be584428ea024117b86"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/ordinary-red-dotnet-test.log.gz",
+          "blob": "32e1d29600fcb918bfe8d1632fa64b64cfb9a4bd",
+          "sha256": "f51fe8c3c707b7b4273fbd7b3430f2148723982407b9ca9458f7e2e95dd77ece"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/ordinary-red-plan.json",
+          "blob": "76696459b5c88daa699c2c14e6dd2c631d51749d",
+          "sha256": "073523edd1ff41676ba1de9ba8f82276fd0f212d6949fea02591d3f182f8a044"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/ordinary-red-portable-ordinary-publication-outcomes-unit-001.trx",
+          "blob": "c6a23102636ee0847653af82bc49700af8fc2d0d",
+          "sha256": "e7cc0ee128182d997a7f8e83c3775f51431bf17ee76f67765613c47f0d0d5e65"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/ordinary-red-summary.json",
+          "blob": "fa787eb5faec3cb708462e18b28df8db2e6d963d",
+          "sha256": "2bece82a65977df7ce5a6744ce5aa29c5edf42295edf4a77b1f3ba7413fdabfd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/plan-Build-integration.log.gz",
+          "blob": "faa68c709ab9c440cb28e9e59788889aa0cd3b70",
+          "sha256": "22f0da3959c76643c7868bfd2886614344c2133581928e2876fdd3f87c681432"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/plan-Build-unit.log.gz",
+          "blob": "d03f850b76534101851bd32bfc53c0698fe8efbc",
+          "sha256": "0738240ec2372fbe3f986e45ef8d36786a6b5e412cae77563b7afd91eaf8aaaa"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/plan-dotnet-test.log.gz",
+          "blob": "e85c6c3f2a7c95ca27270dcb6906933f8e2f901c",
+          "sha256": "f45dd497c8eefde83c3b96aff10bd9cc7a15a5090c2b90ca4c00c84572618efd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/plan-plan.json",
+          "blob": "91775c582456aea3c72e8df11d542f656a54e967",
+          "sha256": "ad24a25cfc613e3b8568ce54b2f3958f5d6f1846e37ec04d936df60ab9fbfc60"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/plan-summary.json",
+          "blob": "ebde37f8b97abff5993e0490c272809583e6b7f0",
+          "sha256": "f944bad2f9db8dcb1fc023fa73bc5e5d8dcb4476e46d9ba429812feb0589977c"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/storage-migration-inventory.md",
+          "blob": "c4534a5d3c14838e051f4f734516f00ca849351f",
+          "sha256": "607f8568b437c3241d94c7a1ab90cbae6c6f01db29bf5e6922db6eac79d41639"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/tasks.md",
+          "blob": "d813f9540d261d5d4b67a65abc29108d28753bcd",
+          "sha256": "5dde4dc0903d543c882219fee91e087cd51a6e0e93c89584615b0d043c034d34"
+        },
+        {
+          "path": "tests/categories.json",
+          "blob": "d1adb189a63c4331fe675b48beabbaa084cf541b",
+          "sha256": "2cd1b3f36ea565b96c5f72e5d6f7a615ce5fa69f6821045d9c5cb95513fda5aa"
+        },
+        {
+          "path": "tests/selection.json",
+          "blob": "cdb4649588c8d8c1c7d2004f9bc650709a096a53",
+          "sha256": "b7a66779129078632b4ed80496993db9c3150d1e1f09fa366c8092bc8e28997e"
+        }
+      ],
+      "removed": true
+    },
+    {
+      "path": "/workspace/boe-1553-restoration-restore",
+      "gitDirectory": true,
+      "head": "26b36a08e833849db3e3176355e8d61c88100d2f",
+      "tree": "6cdc22e83031e05fc4323865bcd19cfef4e0632e",
+      "origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+      "status": "",
+      "bytes": 783446016,
+      "trackedFiles": 25068,
+      "ancestor": 0,
+      "remoteCommitAndTreeVerified": true,
+      "remoteChangedFiles": [
+        {
+          "path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.Outcomes.cs",
+          "blob": "5f511263955a83a923dc0c85be925bc5b5eb755f",
+          "sha256": "2f32ca5c6233cab36a25e1abf3a438e249b69c4b19db2e0d1abc3c89d0cda405"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.Recovery.cs",
+          "blob": "94255de0d24bc4905786d2c6573d1115ad0afeeb",
+          "sha256": "9f1b08b3511fab820eb476834f8abd21c6c564dd3aae8c62bdf5b3171c9ad2f1"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxBoundaryTests.cs",
+          "blob": "21d39023085b52870f76ccbb6665f74ec4fcc030",
+          "sha256": "37ecb0d7508ad687a789fa5844986fdc36fea35bbde5e99c7ffb6f1de95b3fbf"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs",
+          "blob": "33109a5f951dcb5802436652619372539ae29946",
+          "sha256": "94dfd34a1db29e1a1cf21859445563ebcd77d03e68fe5352661c6801eda6fd5c"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.OrdinaryOutcome.cs",
+          "blob": "b443dba7e042d00efe1118eea1b94480aa5612ad",
+          "sha256": "e04fdc45b473298d292f696fe3317af4747f5ff7945c86fd1333687bd07ed771"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.RestorationOutcome.cs",
+          "blob": "a2831dcb8d861aa04c7fc4bc4cf43243ec3e1123",
+          "sha256": "9781676653f832cb9bdf48e44a851b2916b45485fffe8446e43e619a18c2ef2a"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+          "blob": "aea6f1032d350f69cafdc884d60059772e3c8b90",
+          "sha256": "d54cde2330e6b549b6c65ece9d8c30a10d95c91244da1bea4623a593a0ffd8cb"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.RestorationOutcome.cs",
+          "blob": "df87b5011732c5204d85ec34667ec2626734e81b",
+          "sha256": "6b36359b1c09c5384620fb347bb175bd8d093cdc35978a20b27ca6932a25a97b"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+          "blob": "678eb2a6dc676813b18e67eb661006ecdd3b79b8",
+          "sha256": "3a632ae6077530fed9348bb9b624afb2aae69f6e9d918f12dbe73d51cb1f255c"
+        },
+        {
+          "path": "BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs",
+          "blob": "b7423d33fe151ba32d70450f12d569f6e3de1870",
+          "sha256": "e53690c64ba7eeb266384915f446d51031c089b7dd5d19a4841644a48cd3abd5"
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+          "blob": "23a1188abe10f636c0133417f38984c0838a8daf",
+          "sha256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad"
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+          "blob": "7b487ced5bb0b3a787d1a93da820994dffd7ffec",
+          "sha256": "ff441588ac21cb2aa2b50124cfa9e85c8a72b01c4da910e7b88d9e162a41b24f"
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+          "blob": "5c7228017205cbda82c690a236362a36410a05e6",
+          "sha256": "5ee5a78d8e7ddbcd296921e721b6f5037380382b85a74d34fefd87b3b3c369c2"
+        },
+        {
+          "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+          "blob": "d3389c143b21f403feb73ea1560c6f1c0a6b40e6",
+          "sha256": "6b67a56b86ae216a423335a1639f9bebc4a727f3783a51cbdf110a734829458e"
+        },
+        {
+          "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+          "blob": "0c8ac083de73fd2da6419fe11b8391d885bd74d7",
+          "sha256": "dc9a7da0614e05ec48297293b7b03b52fa9a71e5d4ac3eb229b1cc181e898618"
+        },
+        {
+          "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+          "blob": "0565ebbd794152b2a7c4f2036d7152cbbc40524c",
+          "sha256": "176b0af190ab7c536f3af98303753e8bd9fba00ac0b81b44f879648789b8f013"
+        },
+        {
+          "path": "BookOfEternityClient/Services/ConsoleLocalTurnRollbackArtifacts.cs",
+          "blob": "39769af1d0ea30c40c05b937e969a0ad99fee98d",
+          "sha256": "340d10cc5194b510cd95fcf2c8503b2a74038e359932cb481f54d853d2371713"
+        },
+        {
+          "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs",
+          "blob": "fd9f1189531d1131217c33eba64075c93625bbdf",
+          "sha256": "4416fa9a8002ed65fba07505edbdf17065652c254072846e526f8317a2359ed4"
+        },
+        {
+          "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+          "blob": "78573217e6e3c29ee7e2c736f8ff3d79ae1dcd84",
+          "sha256": "e6e740c5bc59a682b458168680bdd578e37f29d396d64b0b4ccbdff0416c1da2"
+        },
+        {
+          "path": "BookOfEternityClient/Services/QteSceneService.cs",
+          "blob": "269a2d7ea0175c0a26e618d82a311bea61e54d34",
+          "sha256": "37f954394a3078ad9f54d1290ecbd4bcbb3021a5e5bb66c8c9bca91d87a04180"
+        },
+        {
+          "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+          "blob": "12d93241858bb406373d1c0e47058ee986a20aa1",
+          "sha256": "7fa47fde3347c90c1322629153d91fd9ee3751b2b87df75cc278114ed3e8177c"
+        },
+        {
+          "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+          "blob": "e17017b042978852bebbefb960863caaf5d203a1",
+          "sha256": "dd4c42143c7b9880e8c64733356da01a187440283350ab53df90000963b57cab"
+        },
+        {
+          "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+          "blob": "b5f2a67fe6c537d176a3aeb3ab42549df2d2df91",
+          "sha256": "e52abb43f61021d88e4ece622687c8d014a8f47b1ef672d9cf10dfffe08fdeef"
+        },
+        {
+          "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+          "blob": "fca7c3099917b207abd8ba295146a1d5aeef4e98",
+          "sha256": "2a786979f80bd5003f41cbc30bd33ceee8af03a66f99f546761c3c97a7edb647"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/plan.md",
+          "blob": "585c34ce02e4e1a8b532cd495583dbd635b0d7db",
+          "sha256": "fb0b1e0678b642ec747a214ea50b23221cc806baac64d06cf285d5fe6dcb6183"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/callsites.jsonl.gz",
+          "blob": "686b88e67729024dd197cf77eac6ce59588a1507",
+          "sha256": "2af1da6366a513319ca66e40410ec8985b8ffe462b71859db8f35d7a2f86c3a7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/corpus.json",
+          "blob": "e6dc6af45d44521f93d80ff6317da971128723f8",
+          "sha256": "0b086cebaf58f018aa4ca3f9bf2801eab2b975daf862a4e6b2e489f4f76f6a20"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/manifest.json",
+          "blob": "4217fbc75cad4780987fde7f094bdc0fc76bfd9c",
+          "sha256": "804b195c3e0d5f577928e9c25bb1319e12514fb3de8a226490999862bd420ce0"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/route-symbols.json",
+          "blob": "6860a04245519e99f1a066ef4a99ebe82d10ee5a",
+          "sha256": "8c53489efdffc3f52bb96911f6a38a18272414d4f53717c5478f1ae8cb64adac"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/routes.json",
+          "blob": "7b5fdc5c88bb83fadf1d896c2fd24b7d888dad50",
+          "sha256": "4410a76efa4356371fcec5a5f92125906ed796adba0dc2377b848bb09dff0fbc"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-20261008/scan.py",
+          "blob": "5e5bb220feeabf45c4bc78e061023309870a43a7",
+          "sha256": "c88ed8f2278d27450f82dac99ededca0c41514791b60032c3bcb937dee86f672"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/browser-red-dotnet-test.log.gz",
+          "blob": "093853ad08975d9c14a2798b3ca173b00c0bb9f7",
+          "sha256": "51fe7eb5fd9683cf4667a29be2b6734b01f636529b0ef46205f2c4b72a45ebe7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/browser-red-plan.json",
+          "blob": "6d26b34827ce69b8fd4254ca9362fffa74871c84",
+          "sha256": "1ce1cb5cb8ded109bf166c7d922bb958434b203e0ccf2777b6fa7a9ce85feb8f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/browser-red-portable-browser-rollback-outcomes-integration-001.trx.gz",
+          "blob": "6bbac4a2f79f69367a207ea3727fe4375396c5dc",
+          "sha256": "dac7dfdce860d6abf59bc5da3ebb0c8da2932f19abe1b2173d02e5adbc964d44"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/browser-red-summary.json",
+          "blob": "9aac6d22ae689d21231e92b40707ed905c2ab1e1",
+          "sha256": "0a7f0b091f9d6464fc31d191761a2fa40415f045884a465c166f9835a3774b62"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/manifest.json",
+          "blob": "d09456c8ca0f4d49652a6941c2cac3dd53280c05",
+          "sha256": "8bf4d05124b6b9ae153098b35ab59c4df210d0586e4747280b1157ed0497350a"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/ordinary-green-dotnet-test.log.gz",
+          "blob": "87d1892505feaaae04ccc55ab50b895b7814c7bb",
+          "sha256": "40cc247cbf87fd54d69ae489dac3e84e93745a769a45259a47f4e3651df35c09"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/ordinary-green-plan.json",
+          "blob": "ff9ae957bdb433db8a30960144fb294ec0b4f23a",
+          "sha256": "adf7fae84cbfd4cb58038b281697d1a82d43f0a3ee0037ce3be5b6228e98dfbe"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/ordinary-green-portable-ordinary-outcome-notice-integration-001.trx.gz",
+          "blob": "6b29bf133c91973d2253c9919456f523b4f4af5f",
+          "sha256": "c088ed8de10f1ca9b5e6e65f1078b8550bc4a9ab8c6bd3e58b2ae5adb48c4627"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/ordinary-green-portable-ordinary-publication-outcomes-unit-002.trx.gz",
+          "blob": "0dcd7040b48636cf96fb51d60f28b0703ba43f2a",
+          "sha256": "24f8e463ab96c6d44992c26845fc15dcb46ce6de1e71815b90fa3390221d8484"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/ordinary-green-summary.json",
+          "blob": "9cf1e8b1e62933e6ea196c9c2e96cfe71279ea8b",
+          "sha256": "29ef45764adc1dcc16aae4e7f86aafb0e7f2b1ee877f96d775bfb6b7a59c2a07"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/plan-Build-integration.log.gz",
+          "blob": "34448813d3d721a8de0fba4c15b6acf60118e08a",
+          "sha256": "076717307f2ee02d58a0b71100e866c1398229c14afca765d06f2296cfabf09b"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/plan-Build-unit.log.gz",
+          "blob": "24c3d74036f5cc2eb143f7b9f61dcf05bcca479e",
+          "sha256": "5f59d355f192375a34d4bda59f21ecf15a4db91afc8d2551d42818121f2a8af9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/plan-dotnet-test.log.gz",
+          "blob": "35b84a43ae889fb7b0f8e54ff16d3d8c73075d3a",
+          "sha256": "c85f58242bc63c53748a5f5f5d228e0210aa8dff627d749e360af192cf357e2d"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/plan-plan.json",
+          "blob": "7c75253ef0965d58c9cb4f10aabe5297e067b601",
+          "sha256": "18082f83974999e18cd2d6e79dca03c8b1326181b6b2084286f7f826a95bff0b"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-browser-outcomes-red-20261008/plan-summary.json",
+          "blob": "39d7fe7328d054e6c280efd93c49fed6b62fcf1b",
+          "sha256": "7e646ed0d96b7a80efbedc3b9d24ef243c7caf0afef85c2363d64bfc21c63fb1"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-Build-integration.log.gz",
+          "blob": "0166d6c3013ab4b5ca2ce484ef6543c3c810ac84",
+          "sha256": "3db1b8acd07368458267fa97a0502817e12a76f119a7c2391ee96b98bc742d73"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-Build-unit.log.gz",
+          "blob": "8f795e07f61e9373d45e9afa687fa2ec8cba82b0",
+          "sha256": "1bb51ec31b94fcab295dbe82e7b245e4ffc8a5b329924215b36c4aa46f8d3ee9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-catalog-audit.json",
+          "blob": "beb96abae15866e284d411d8d29c2c3dbd179ca5",
+          "sha256": "e1c6c3cd1573c712ea2139e64f03073b470b62545e55050f3dd29cdac65fadb1"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-dotnet-test.log.gz",
+          "blob": "c9490acd4e5e9383a287a447cdefe5ce4ce71507",
+          "sha256": "d11a37d7b9831ddf7b944e64c928669d7331d6f71dc623436f2bc267c184d175"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/catalog-summary.json",
+          "blob": "6813b72dbb1d5c7821db00ab66be0168681fd869",
+          "sha256": "9aa189f5b244b2d7f7dfb18675ea41f4afc0f20af9bb334e0fa347d08bd9c1ba"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-dotnet-test.log.gz",
+          "blob": "9b326057669ea7f32caeb075a73286780058ed20",
+          "sha256": "15f9f5a5897a66227e9e77c85f847fedcafdf1c33fae278b7881a52c0c41ee94"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-plan.json",
+          "blob": "ee0019393e720fbad64414543ca57cf6a19fa2ab",
+          "sha256": "1e9169f5e417174de3876d60ab1284b1bbaf9d2e0a0d4223bc8fc763d23224bf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "f02659dc9db0e2a881c8b6f285ec70cad9f51b13",
+          "sha256": "f67827e104369d214a4b0a1003812717fe4300325551519504fb92c4333a5aad"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-portable-pending-beforeimage-admission-integration-002.trx",
+          "blob": "c506ac7e203d3c4f2ec638c346233d1e14d91001",
+          "sha256": "f8032d1a078f3923f1e95cf024f4039d26c4ca581474d13e932e5c1ca85a4bdf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/green-summary.json",
+          "blob": "cea11ccc983ab362fd62948f58998c0ab7c309d5",
+          "sha256": "de7767694e80c58da03f08bd0ec5c3c7e35156a9c536016661884c225c4cb1e3"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/manifest.json",
+          "blob": "647b71bbe69bfc487108122f931e7d81f0e8907c",
+          "sha256": "3c84326d760df58f56b3e8b1372c077a05f4fbd265d6001760e8a0a1b307c5f0"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/plan-dotnet-test.log.gz",
+          "blob": "715dea30ac75dcea67aa7a2b26b876f29cc59819",
+          "sha256": "1ba9881dfd12670fd657336261a348d5762072ebf28e70372e660507a3cc744c"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/plan-plan.json",
+          "blob": "23b6616ed272873789b1de05d4638d4a80729980",
+          "sha256": "6e611500134ef0818e3c6cc254576b4be807715525db30343b7a1c85025d1224"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-green-20261008/plan-summary.json",
+          "blob": "6cba04b5537a77e32c39f314a3cfbb5eeded1d2d",
+          "sha256": "96357140de236e90741d048688eea8a2fa2bada7858d0b66100889eb625f0ccd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-build-failure-dotnet-test.log.gz",
+          "blob": "fb88ea89159628155d083f0958ffe2d5bb18060a",
+          "sha256": "269b58ef6db6faa630aec35e8fd4ac9c9cd7574195cb2c8c5f2523a5df008994"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-build-failure-summary.json",
+          "blob": "d25bf725551d26cd787dceab334aa04a0a47084b",
+          "sha256": "34722fc31abf1ed0ca0437d4ac8894d01cd3e4582cdf343df987fa8bfa9ed9ac"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-dotnet-test.log.gz",
+          "blob": "490a129df164b8d908522a7810877d1e0680aa09",
+          "sha256": "a0c61ddb5d21ce2a9ab2ed31e2e4bf48b27d1f769c9a0808a535e21bcfa322e9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-plan.json",
+          "blob": "919bff3694109b43f8af85582aac5b00a2cbcac0",
+          "sha256": "f3313cd104260ae67c2efa2d9d391048496c11671df2107eccb07e4cfd34ebb6"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-plan-summary.json",
+          "blob": "4c2cf05cb3bab1dadabf9ac08b48533fd4b58457",
+          "sha256": "1872039fd14397f88331dc7e64c89a20b10ddca625dea2044677c09f475f7bf7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-dotnet-test.log.gz",
+          "blob": "8b71d6f59c60a0e1951b6521a1a9712e1416789a",
+          "sha256": "9658a24b0bb87c1f0c2c7b1aaa8442c771390ff857753c57164aea9a07f38daf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-plan.json",
+          "blob": "b5ba62c0f312729d9c468b98bec8831c26261b8a",
+          "sha256": "452af972393049a4de40c2483add4668dca5f8e5740bdb3c2eec5fe87fb0bc1f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "c4181fdb3ca0b16372ef079e97f6e99dd5c865ac",
+          "sha256": "ae5d6c699d060fe2fbe5a1992bea72885b104e864fe50a46252c098347b72268"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/expanded-red-summary.json",
+          "blob": "fb6600e38a1eb2d65bcfa277e551bdee5a958b10",
+          "sha256": "907d45a74c5b013cd80d3dce22b36a50d1c182d92263e74949c7d4f6e88918c9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-dotnet-test.log.gz",
+          "blob": "413dbf361c38ab6b3946e53ff17af9f9bcd95673",
+          "sha256": "a958658f54d7dc058d116bc35e7f25fff4fe3195a02d5b79de986a92694f9dca"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-plan.json",
+          "blob": "d98d4212040c1f15ab3458389a79f180efccd3c8",
+          "sha256": "b10c1d772c48d3bebab9882d1b44db4d7c8d6ae36195a88c4bb0137f8dce6ab5"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "bb3c2b3926a4dbc8a743e7ba46eecbc1921fff3b",
+          "sha256": "a52fb75b323e3b5cb031c0f648249bd40f170723d843b83f86e17bf8eb0db1ee"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-fixture-failure-summary.json",
+          "blob": "1e4fa7c0ea5e6a7b5e86fd3824f3af8c4ed0256c",
+          "sha256": "13b2fadf2c050a63fa903412f9b96ac327249eb9b03aa85d75521ce62c051713"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-build-failure-dotnet-test.log.gz",
+          "blob": "8807448b534657ab30a0167c54e78530be163656",
+          "sha256": "153632143ff380a5c63cf8a7985c7efdacf44b3c4c583bc93f025d979eba4802"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-build-failure-summary.json",
+          "blob": "0e2f96a642019dc83927b14fddd682cd44f3b767",
+          "sha256": "bc5dfe9f9573ccffb7b610f7268da829de2b03d70128af86ecc4cb296f459037"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-dotnet-test.log.gz",
+          "blob": "3a8adb44dd9f83d1f82459e0fe2d8d5bc2abc7f3",
+          "sha256": "327cd133e076df573917b6434e1705837ab48562cb5539098116281d1fb80540"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-plan.json",
+          "blob": "8e6eada8f9a9a1256784656b7edb04e9b20805d8",
+          "sha256": "9fd2d0ee24eb2e63c6dddbb469b1468f68b7f6919624914e8293a59e87c03771"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/first-runtime-plan-summary.json",
+          "blob": "e3407ee6908d36acf93ec1e2faf025c994b75ff4",
+          "sha256": "717160f4321d514e7b4b49fcbe31e2a4d8001a03058bdc91fd1f30598a5129b9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/manifest.json",
+          "blob": "8cf45a5a79683ca43bbead4671bb14e61bc6bfab",
+          "sha256": "978bd1d25ecb70d71f842a08ff672d85e8517403be9d4287f27343a676bcc0c9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/plan-only-dotnet-test.log.gz",
+          "blob": "79324bcadbcd190a522654df35c174c3c6d8b2f9",
+          "sha256": "b24408c0e4655e5f767edf93d5666b1ce16a0d8ce0f15d8ea19f3ab330c9aede"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/plan-only-plan.json",
+          "blob": "5d94fd3cef576acbaf2321b4ff5db5e41255b59f",
+          "sha256": "8db63dc8ca4002ff079209c71cf217916f34a37ca90984418b8efe0825aac03b"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/plan-only-summary.json",
+          "blob": "0671315d6e89ca331d7f009f6043ee1ac0b07ec6",
+          "sha256": "e5b87f740eb50d61ad9e62f5f710d57fdbeaba5ab9898ca1a55ab6aea315a3fa"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-dotnet-test.log.gz",
+          "blob": "fb16742fde8d21a3a0799cbcd8b3405082b0729c",
+          "sha256": "1d54094daddd4b0d4944eae2e12c7d6c7b25cd23cd811a33b13e4e5e24ecb7ac"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-plan.json",
+          "blob": "cc2ffa064b4a55c27d5e2666bdf67109d68055b2",
+          "sha256": "2664002c4b56689dff233443681e6c8574937079833cab7bca367d00164aab07"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "bb2c163bb130d4eb71f1b2446d05486f03e61d9a",
+          "sha256": "d4824e1a5f46bdb74579fe1ed187db53190656c4641565a6f73d58b2677e81fb"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/red-summary.json",
+          "blob": "b915b28b6101fe385ff3ed367503518bb50a2033",
+          "sha256": "f7a5ae25a99cd21990155f802f3876f09dc5b4900c01519d52e64ca9516cf1a9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-plan-dotnet-test.log.gz",
+          "blob": "3fd42167c24177ff8273a82c1d3a98d42ab14fdd",
+          "sha256": "5be9839f752bed4be524f1dacf2be83f99925d909930a403ad2d4e50c73cb129"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-plan-plan.json",
+          "blob": "1128a7b2c2b9103c581e37e492c06c4289786c40",
+          "sha256": "e45ed1d0293fcb87a9263ac6b0c33fb275b95945f886f25bc2fd66ea6fa446ca"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-plan-summary.json",
+          "blob": "1447db52db82351c7033e449efbddbbde380acc8",
+          "sha256": "8b2ca5c7d9ef04cbccc0fd0750b0ce94255b7856898959178aecab7a52e185db"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-dotnet-test.log.gz",
+          "blob": "d262d725593dc18be845bf933eb2bcf181b2d971",
+          "sha256": "398ccd27aec6cc143cabd1e8dc63e29a6085ee5c116fd74334b9db2a48f872a9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-plan.json",
+          "blob": "3a067bf4068269dd6377941ac310296b4fe8f7d5",
+          "sha256": "87864a2f1d9bbc4c6952dc95a4b1b8f04cdf3ec020372f2091228fbf5804a441"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "4c498fef85be7288d2b5abf9707ffb758b97c8e2",
+          "sha256": "97add54fa6ce1a33f3f992f898f4a93430b7d9708c013b035a2042711fe8aea8"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-console-red-20261008/restage-red-summary.json",
+          "blob": "4b9df4705d957776c051c51b4b2b8ea696b28760",
+          "sha256": "c0d39dce7acba00b6200649954357ba75590fd047c95a8a76e4e4c97e25559de"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/catalog-Build-integration.log.gz",
+          "blob": "47640bb7e47543242025d51f2345e85f5bfb114c",
+          "sha256": "07a925435c5b5d0fa28e41d2a79f696ac06d296c868d345df62bffdc92ac21b0"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/catalog-Build-unit.log.gz",
+          "blob": "3daf0c3de770d968184194d96aeef4dff1e011db",
+          "sha256": "7641b1055980030db7486e8b9123d6690cec5967313e0dda2d9832b2996d3e29"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/catalog-catalog-audit.json",
+          "blob": "be83b3e109f807383e17e5bd79819e019b4f183c",
+          "sha256": "f525de485d84ea390ceace9a4229418963e3349cf9679605e9d01d21de466d1c"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/catalog-dotnet-test.log.gz",
+          "blob": "969c6a3c5b8e879914c192514774c1c94c4c55d4",
+          "sha256": "8d2ce323242e2c7e28ab61ac842607509e8a47494593c0ec72be54e0c641a5b7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/catalog-summary.json",
+          "blob": "3817ec4039a637aeae3f01bc2dfa0c8293de6b8d",
+          "sha256": "009f20780ebb9820d4d7a0e2e69010eeb05166c062db31d0e0a6c48b24568adf"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-dotnet-test.log.gz",
+          "blob": "4da575b9b5ecc35168e298169643366658fc6f23",
+          "sha256": "3e890ab5c4dc8d7404aaf6423f2cf7742ef3bb8fee7c674395310ffebf5d1506"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-plan.json",
+          "blob": "3358a0c0a39db0917b9cbab54a6458d931224acf",
+          "sha256": "ebeabef9bad38b7ed70ac6f0462beed01fc6c5085172ae294f64e3f7e3bc27b4"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-portable-browser-rollback-outcomes-integration-001.trx.gz",
+          "blob": "4e7e02c876af6be5e68a1463f06531d78a41000b",
+          "sha256": "717611dba1f28c1997adf71f2c8a06362f7ecb0a79c101ecf02575da84203c07"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-portable-ordinary-outcome-notice-integration-002.trx.gz",
+          "blob": "4b0c3ca0f1c6c2f6d8e3ce10eb076e0554885713",
+          "sha256": "d42567ae5207d504dffa5c15b55cea93608699b71775ce2e71f61c87febae069"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-portable-ordinary-publication-outcomes-unit-003.trx.gz",
+          "blob": "d96ff298255b9570449f3f94d272dc8a79f56b35",
+          "sha256": "1b0acff59c4b1cef22cf45babbaf593b19513fe25b2cd5e2755ee22f8d4dbb12"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/green-summary.json",
+          "blob": "9be55822a911ae2241c70af55d241d051f41317f",
+          "sha256": "52ef738923178c7a60513ec3cbf52037215828e112a4e2e3853ba784e98a395a"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/manifest.json",
+          "blob": "e9ca20e6b6469d3157ec1c73960abeace8506208",
+          "sha256": "d7bb3da7544ddd5c1c489113a35a6504f289db31179f9a12d5bbd47609414497"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/plan-Build-integration.log.gz",
+          "blob": "237f359ca5159dbf971f75e9ca3517bdb6e412c4",
+          "sha256": "2f65c06f38836e28ac41738333a2c93abc4a0f2ac0a5df005f94a856a3891ae6"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/plan-Build-unit.log.gz",
+          "blob": "20bf4600f90eb0db0cedd755c2a28e3932d4512a",
+          "sha256": "2477f88839574c2d04db6895e0dae659eb85c45889852105ccbdf29bf1e85314"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/plan-dotnet-test.log.gz",
+          "blob": "50365889c7239ba6e226986f5f1a656271c198ad",
+          "sha256": "9e2f7e75ccc9495ac1ae7f3fdcac9a4c7b0dcbfede2fb7287a2322e0cfe92746"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/plan-plan.json",
+          "blob": "d2b778d3edeedbc8cc38d6311416efaef3285b93",
+          "sha256": "371421ff39abf4e1aec81d0d2e99eed2ef32a02e7cc9e5e4aad33efb334ae736"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-green-20261008/plan-summary.json",
+          "blob": "607279ac6dfaba8386855a45286786fdc630db72",
+          "sha256": "505d28e6cd0725443ba70ef490af581fe62241da616f4d521c21f63f5a0a9b08"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/console-platform-green-dotnet-test.log.gz",
+          "blob": "001d71e98f2a91b940348ca61a61fca841950141",
+          "sha256": "e3af96cac3366446d80510d322fccdbc5f8308f760beb7c30ffc0469bb174732"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/console-platform-green-plan.json",
+          "blob": "e77acd38634a2c795718f14ea9cfbc5b26984361",
+          "sha256": "abe6f89dcfff0ff2967c321906e97f845dc8a9cd40215f8d2f53bd6baed35f5f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/console-platform-green-portable-console-rollback-preparation-integration-001.trx",
+          "blob": "41901884c36369f376f3bdf7dbb89148fde282f6",
+          "sha256": "d110e73d85606c1af2443ef2d817a334308241c67a8384d07bf9a508c539524d"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/console-platform-green-summary.json",
+          "blob": "9146a180cb5caccbfbcd1d71fb51445035af1767",
+          "sha256": "9dea5e01076a2f10334abb89cea0897f04074e5f4289fed711585057a414520e"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/manifest.json",
+          "blob": "d8f5e8fc35f61a8d8b29ad0a46ace5d46e3aa839",
+          "sha256": "b5ea433f3b2bb896fd6b28df6fdcde5873dde8eb695d4bb73331831c8dd3c3fd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/notice-red-dotnet-test.log.gz",
+          "blob": "febcaa0d195c64d33ca177aa750e8af0de2e457a",
+          "sha256": "556d9a32534d0496631586d0baa70534de42203d3ea5388da0dd7c648bb529f7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/notice-red-plan.json",
+          "blob": "86b756ec24c99828ebf61b94109b19be5739e304",
+          "sha256": "c62449f9013537c091c496c21e37eb8ed434ad44d135adadf562d21996ed6737"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/notice-red-portable-ordinary-outcome-notice-integration-001.trx",
+          "blob": "94e794996d36a51aa94388148131d904a807ed1d",
+          "sha256": "621ea9e13c9a551c212df4a1c9f94aa8dfdba42231176b766489f5d151f6b463"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/notice-red-summary.json",
+          "blob": "d5b78873d5edec873e4545126c1d2d7bdde6ccab",
+          "sha256": "8026167c147cd31d628beaeec10ad12ee5fe9b28ca6b6be584428ea024117b86"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/ordinary-red-dotnet-test.log.gz",
+          "blob": "32e1d29600fcb918bfe8d1632fa64b64cfb9a4bd",
+          "sha256": "f51fe8c3c707b7b4273fbd7b3430f2148723982407b9ca9458f7e2e95dd77ece"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/ordinary-red-plan.json",
+          "blob": "76696459b5c88daa699c2c14e6dd2c631d51749d",
+          "sha256": "073523edd1ff41676ba1de9ba8f82276fd0f212d6949fea02591d3f182f8a044"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/ordinary-red-portable-ordinary-publication-outcomes-unit-001.trx",
+          "blob": "c6a23102636ee0847653af82bc49700af8fc2d0d",
+          "sha256": "e7cc0ee128182d997a7f8e83c3775f51431bf17ee76f67765613c47f0d0d5e65"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/ordinary-red-summary.json",
+          "blob": "fa787eb5faec3cb708462e18b28df8db2e6d963d",
+          "sha256": "2bece82a65977df7ce5a6744ce5aa29c5edf42295edf4a77b1f3ba7413fdabfd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/plan-Build-integration.log.gz",
+          "blob": "faa68c709ab9c440cb28e9e59788889aa0cd3b70",
+          "sha256": "22f0da3959c76643c7868bfd2886614344c2133581928e2876fdd3f87c681432"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/plan-Build-unit.log.gz",
+          "blob": "d03f850b76534101851bd32bfc53c0698fe8efbc",
+          "sha256": "0738240ec2372fbe3f986e45ef8d36786a6b5e412cae77563b7afd91eaf8aaaa"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/plan-dotnet-test.log.gz",
+          "blob": "e85c6c3f2a7c95ca27270dcb6906933f8e2f901c",
+          "sha256": "f45dd497c8eefde83c3b96aff10bd9cc7a15a5090c2b90ca4c00c84572618efd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/plan-plan.json",
+          "blob": "91775c582456aea3c72e8df11d542f656a54e967",
+          "sha256": "ad24a25cfc613e3b8568ce54b2f3958f5d6f1846e37ec04d936df60ab9fbfc60"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-outcomes-red-20261008/plan-summary.json",
+          "blob": "ebde37f8b97abff5993e0490c272809583e6b7f0",
+          "sha256": "f944bad2f9db8dcb1fc023fa73bc5e5d8dcb4476e46d9ba429812feb0589977c"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/catalog-Build-integration.log.gz",
+          "blob": "a3966ef2b10a986ffa8b712bee16d845df76576c",
+          "sha256": "849405017f454a3b4d9e4faf51654d776af1755d5d2cb3061f749a7d27b8b2b5"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/catalog-Build-unit.log.gz",
+          "blob": "1244ddc974d841a17d5ff06f6863adf68dd1f404",
+          "sha256": "bb470ccaaa86084ab1bb45b0abf1c9a95f760d8b6e32af60fc0d214355514fc2"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/catalog-catalog-audit.json",
+          "blob": "4e45ffee62e0f11eac16bef4e7b82889f574d0ad",
+          "sha256": "524beae645f57bc1b7a38ce0886177b1acecf9cf12f5424afcabe61aa564c2f6"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/catalog-dotnet-test.log.gz",
+          "blob": "59782ae9cc9df2bb9783c1a2e4ff273fc5baa82f",
+          "sha256": "91a9e102fc4ba6a41543b9fa0e7656340f9367b88b88bb655c0965a5e4e59a62"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/catalog-summary.json",
+          "blob": "8bb45057b48d5c12856b3c2d278270f74230d2f3",
+          "sha256": "3e49e6028feea41f5bdb512bd3f7b9ca51d831135238c53d91104873e1289246"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/green-dotnet-test.log.gz",
+          "blob": "465e29ab95a8c9d0c846a11b387c3de3dcbe1232",
+          "sha256": "392beb152f791291ce422e8f6a433a970ac1cc1d614e507101e934e4d0a056be"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/green-plan.json",
+          "blob": "f7618c293f5a85b96550ff3fb2a90d4ab391dc6e",
+          "sha256": "e1fd31719bc801e347ac93ec5122d58c1824800ce48351e3c6ef17d0a2c4f9bc"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/green-portable-ordinary-outcome-recovery-neighbors-integration-001.trx.gz",
+          "blob": "00bbdf976ac198bba21f61b9a2fd94e152ef0069",
+          "sha256": "5a0785be0fbb8bdbfb72d1c80cb715dbb264ae280f681ddaac9498f2899e1afa"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/green-portable-restoration-publication-outcomes-integration-002.trx.gz",
+          "blob": "5a74e42ada23d7d16b94da9496745a1b6751e1d8",
+          "sha256": "42180c1c6e53d3628e2c00d4e084968896cbcb3c2c5e4ff55058752da369988e"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/green-summary.json",
+          "blob": "0ecc77d5b9e849507a40d125b266f43dee628f5c",
+          "sha256": "f2c0eca45f6240223a3cb1ae3c138569808745e70e434eac26016b222cb76857"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/manifest.json",
+          "blob": "f7b8417c82d04414479170e84d1e4dfb5a4775d3",
+          "sha256": "d8365e3244b9c61fbe89b6c1c58cd97250c60b2f41dfcff15132b791ee764828"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/plan-Build-integration.log.gz",
+          "blob": "d193956287ab88bef1f3ebba072fa6e255ec897e",
+          "sha256": "d4825ff92fadc5e3813b3948dde48ef56da8de1302605df109eaa88a93efdadd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/plan-dotnet-test.log.gz",
+          "blob": "06e0c4ac62dec06b9679dff4c223f4b9914390aa",
+          "sha256": "646c69aa27b383065fff9659077c6df2266045a9d740b0c46d7782c58db08d9a"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/plan-plan.json",
+          "blob": "35fb254a53f82a97f5a2f920e7e41a2e5a2f6a83",
+          "sha256": "1704631bb0e82fc709282c0783ff53246d75d1d908e68a7e93c5e2a15dd448a3"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/plan-summary.json",
+          "blob": "f7b7ff1b6692863da88ed26e7f2604ac3d621a71",
+          "sha256": "0f80f77e080f32b33dbe27317f946862edf9c6599113729de62c951e7c7c051d"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-catalog-Build-integration.log.gz",
+          "blob": "b9437f8df61c483950e5f5c732db4ca962b75117",
+          "sha256": "28844c52a9752a10ebd1f4c7ffe36614bec0d75f8262f2405a25bab18dd08da9"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-catalog-Build-unit.log.gz",
+          "blob": "7dbefe842525e7621b31fd52285a5dd4e504a58a",
+          "sha256": "58bdd950eb9e6b51f7a5d2cd975802ac40eeb002e7cdace02bdce1fbd138be8a"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-catalog-catalog-audit.json",
+          "blob": "6a6f36f646ff3395e0dffd20f4c3a4bea2d05bf2",
+          "sha256": "8eb3f31b06e5fecf0412a2cb4cf2399eb1c715859a6bb31a2348d0b99fa139ed"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-catalog-dotnet-test.log.gz",
+          "blob": "612b0849768f59c141cddcc610dcd3cadd324dcc",
+          "sha256": "d12796420d343ab4e0ad76f1f5f16721676decc0b89d780b44032a3ad93330c7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-catalog-summary.json",
+          "blob": "dd210b0988922be0bb90ea06851e62dd7b96c088",
+          "sha256": "c50364f12ecf72332cc59ff89465bc58506d37f45b3c8da1d69b30f986a3a409"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-green-dotnet-test.log.gz",
+          "blob": "d2d08eab551d04f3cac453f51906e27a287ecc3c",
+          "sha256": "cb3426783dd33fbfc3759c0af693d18b4f569c9156683ae23e63de2abc08d8f8"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-green-plan.json",
+          "blob": "2f595e91ab724112360345f55e92179c6a013859",
+          "sha256": "91160c4d87c337a7508e7ec7037c2e3b1b1e77afc1438593ca1d094a33d74708"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-green-portable-restoration-publication-outcomes-integration-001.trx.gz",
+          "blob": "4a053ecd9d53ac6f459347ee87f01fb06fa99efc",
+          "sha256": "6ae0b42b9c1713caebc4e1407192e1caabb5604363be6d29302840f37af34afa"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-green-summary.json",
+          "blob": "e84d6b20f4710d1da2ef8689a4e7aad084b9ff60",
+          "sha256": "68b5b28ecce449740ddc37fa3a6c7f118cb8fae7beb1d3cc5931df13b3d244f2"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-plan-Build-integration.log.gz",
+          "blob": "75315192b66cc1c8890579f7a118c7c505eea29f",
+          "sha256": "e2c4fcb12a9f4613426b71684ca09c4e3015f23def2408126c732f50c0fd69f8"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-plan-dotnet-test.log.gz",
+          "blob": "8c9ad6494e2efdce3fbc5606c839e6666c1f2ca4",
+          "sha256": "17830120d1edcc9bc1bc1ffd0004eaea4fdd28959508ff93ccd8d36d76d13d9a"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-plan-plan.json",
+          "blob": "907a6267defe1c6315ad20f6837737ad869df042",
+          "sha256": "e8b5978091abf62b5ed028d5ade5ae6b3399b806455b2755b3898aa5c2444f01"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-green-20261008/refresh-final-plan-summary.json",
+          "blob": "0fc4cd33f9ce82396847aaf976f48d2923728fa4",
+          "sha256": "072c2e220befc9b05ac40984b5453633fdcb6e035a12061124b8c9b2f6d7cfd3"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/bom-plan-Build-integration.log.gz",
+          "blob": "cbe208edfd0c617d2f29b745060e652468947709",
+          "sha256": "4d7c1e7ffc375441d718ef42afd5163db4083ff16e5805c3f2374012bee4d339"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/bom-plan-dotnet-test.log.gz",
+          "blob": "febb6c97144af7f7dc8549b5a17f00bb899a6010",
+          "sha256": "9bb1c62592a870bc9960a7e35a4543d8c7737f18929981229c8486cd98a16091"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/bom-plan-plan.json",
+          "blob": "b77ff107b631a786aef02d41335f42dbaf513c96",
+          "sha256": "11b4be084c62419f9857fbbc11daa8b4d70a1f7dcff2077f528781e0078b372c"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/bom-plan-summary.json",
+          "blob": "9690790cb604c9e4ccd392a43e300c4f9f4b0c71",
+          "sha256": "00a24360ca250670d344a582f6a8ace025485d3410a84e6261145af618f72064"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/bom-red-dotnet-test.log.gz",
+          "blob": "23b0121f1415c8762c2ea6831ff26f73ec554430",
+          "sha256": "9c066e3d061529dfabe04e5237c47556a85f65939eb997b8ef1586a0e9a13448"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/bom-red-plan.json",
+          "blob": "7fd44b170921bb0c4e0a4829a469fec58c911bbb",
+          "sha256": "16c52933ae7006919c3d5d64eb25c6ddc8dc2538d582fdbaecc1a9df83195520"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/bom-red-portable-restoration-publication-outcomes-integration-001.trx.gz",
+          "blob": "347bd04364edc185420c4d1d621e39bd9cbee89b",
+          "sha256": "2792b7d31a4059617e04d398ca6fa5fc81260eeffd36588eab8cb526e70774bd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/bom-red-summary.json",
+          "blob": "9675f2033cd32100fac7722868d6091e5a3206f2",
+          "sha256": "41b6e6386ae29b06cfc3dd304315475fe04e00703ed3088c85184539327b51a2"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/diagnostic-plan-Build-integration.log.gz",
+          "blob": "4d64daaadefaa3a89c90bfef9575c23162651de3",
+          "sha256": "3ccf8ea9d80dd68889ac4cb65a19d7d11e9ec2437e7e7439db580dedf51b7f60"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/diagnostic-plan-dotnet-test.log.gz",
+          "blob": "0031cd1b54458157a1d40fcdde1761a4539f2330",
+          "sha256": "c5ef18ee6e61fac7d3898ee6e85be2a8d591f6ece8b9756c0bf5a609c26fcb07"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/diagnostic-plan-plan.json",
+          "blob": "3c949c6ea1b081e3c35f5e994c0c9d6a5f8ea364",
+          "sha256": "7d3ff3d7556bc437f391bfa02ee7523591f7ec1e77e2706491c564db8a86df5c"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/diagnostic-plan-summary.json",
+          "blob": "aeef0b0789101415b963c7bb3fad29047678f6be",
+          "sha256": "58a3ebe1eff8f7cc2f9eb64072a767992fa08bf31d7118b2669ffc460eabc291"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/diagnostic-red-dotnet-test.log.gz",
+          "blob": "c15610357ddc7280041c1848a4075efe8658a05a",
+          "sha256": "f10eb86d0f04287346fcdb433518903783d82d37440ca7adce1bb45381ec540f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/diagnostic-red-plan.json",
+          "blob": "2343dfbf3cb73214cfd1b1b74ad66d7b4e80eab3",
+          "sha256": "17cfb944e001765e575ef34f1bc34511f2b9735ebf2346b3496f97aab88c48cb"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/diagnostic-red-portable-restoration-publication-outcomes-integration-001.trx.gz",
+          "blob": "fd3c2364d036a4459bce13bf339c33b71ae01ab9",
+          "sha256": "95cd4b549ac3a3b857fbd88dc7247f69e6bf1b541ce377d7c2b33e1635e66726"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/diagnostic-red-summary.json",
+          "blob": "55a1d39d8b7b50a3b4e7d39dde5bc62c488e2ef4",
+          "sha256": "50239b005b5c25597b31a17e7c5aaa25a72c8d684532f7f2fa649a9e8c5fc746"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/exact-plan-Build-integration.log.gz",
+          "blob": "a7e9bf90457ef1531a6975094522bd8eb0fd39fd",
+          "sha256": "9e58eb89db78e9875865e575b1ab522a44e742d2ce208312e124627a8dd08800"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/exact-plan-dotnet-test.log.gz",
+          "blob": "29a99a8e2a811d03a404c65244c99cdc7383da19",
+          "sha256": "126e183300a09430d05eea3e2ce04ba6bb0fa613af641aba6ccb646342c0083a"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/exact-plan-plan.json",
+          "blob": "76727abc29030893bf67d7cf1421698239cb883f",
+          "sha256": "7df5c932f2cdb1007179d5ebd174c5b32ccaa0562a4b8a844e795d924afd3e3f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/exact-plan-summary.json",
+          "blob": "18d11daf5af65e3ed5b2344733d498d72a5ab027",
+          "sha256": "62babf78717169dbd78d18df02269074f971537a8b1908353294147c21f22e0d"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/exact-red-dotnet-test.log.gz",
+          "blob": "cbd71cde97ceafa0b9042efb2de580dc68e8fa1b",
+          "sha256": "932321182fd0491ec9574fe7e781278f4afa89675f47fa615004aa4c17af3f89"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/exact-red-plan.json",
+          "blob": "8f8d8b7baed9f8b119024764524e1577d15a8de2",
+          "sha256": "ce841a211c0d185c1536d90341284289d18902bc2c501db9a01363e708510f0f"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/exact-red-portable-restoration-publication-outcomes-integration-001.trx.gz",
+          "blob": "7770d937258324131970c6e89906357096ad78ab",
+          "sha256": "9359b2cb5bab23c4aa86dfc6100c3e67692e562e25ebdbf1ea7ce14e33ae15ba"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/exact-red-summary.json",
+          "blob": "7077ff5143206ab9ae470fb9c3445693244dd502",
+          "sha256": "7bf81c923efa167b028a4485982b0c2783c53e11c75ed7490cd4b4eb63608c7b"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/initial-plan-Build-integration.log.gz",
+          "blob": "14f841846d36462b9b5455909509c98c1121a475",
+          "sha256": "8dd0bccd7d96240e03487842a5ed470cdbac0a980a4b7798416b5e29eda26d5c"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/initial-plan-dotnet-test.log.gz",
+          "blob": "4655426b12ea292678e4fb8c33c26b847084dfa9",
+          "sha256": "e029a8853137f5aa73a6452b62b839526a304d2b22ae4ca94c0a2ad70a7f41e7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/initial-plan-plan.json",
+          "blob": "e8b921e0fa415a175a9a669794d8d9ffaee55024",
+          "sha256": "c1918363da09d03ba39ffcf340ca11baaa3f9e568a7cc2bc86267b3fbdbc714e"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/initial-plan-summary.json",
+          "blob": "b36234244c6bde46c0632461f001ababa3af6bf4",
+          "sha256": "f021840755638ca3e962379cf15cc8fc3b27bb4fe0d67d9d831b54b6fe87c33e"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/initial-red-dotnet-test.log.gz",
+          "blob": "40a9308d2c45be96c5018eb34ee0189e8cce9c6a",
+          "sha256": "527831c2bf6d940efc0666a5f0abda6783fc77db792745934e43d21a47c555df"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/initial-red-plan.json",
+          "blob": "52aa9d11ed5bb9ba92532997f04a3c3969906332",
+          "sha256": "ed242a5d3d6dbfc8ba0bcbae214c901ba6cf5b2fdeffcad036c1fec94451a87a"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/initial-red-portable-restoration-publication-outcomes-integration-001.trx.gz",
+          "blob": "81f831531ae9d2b731586044677b913dc5bc6f62",
+          "sha256": "ca7afc0af9e0723e6e71ddca8eb1c18bf7030b1d0f4400c76649695ced8b364b"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/initial-red-summary.json",
+          "blob": "e5af862d2daca5a3b48ea2d86163693021e83004",
+          "sha256": "c6767d3f4789bab12c59bb23a1663f60bdfed52257f1ce940e981d5258bd4093"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/manifest.json",
+          "blob": "312b24e189e2597332bc100f1b096d1b34705961",
+          "sha256": "38bb5ac35f12f8e8a098b9a36264fd51763b8790c766659614818a6e753036ef"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/neighbors-green-dotnet-test.log.gz",
+          "blob": "1d45f3db8fdfa671bc85248dc94871736c4dec1d",
+          "sha256": "1699c7c47e7378679809ab7b9bdeac39bdc11072bf41e3bdc2a27a69468903e8"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/neighbors-green-plan.json",
+          "blob": "3a468151f3d115f7fb044c735e991ae98755c32a",
+          "sha256": "3e4107582f6997acd1a28e0fbffe9750d937b0949f9c02f0d86e5b5a1feea5b1"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/neighbors-green-portable-ordinary-outcome-recovery-neighbors-integration-001.trx.gz",
+          "blob": "adcb7f6fb8e1f3e8115f72499dd1b9f8cf7f1ca7",
+          "sha256": "ebc0eb0ca600dc1e0eccf5e3d481882f51a97690c620e3ea45bd6a6d464285bd"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/neighbors-green-summary.json",
+          "blob": "95b1c7ae7b937a4e4241748ac641a7de74cbaecc",
+          "sha256": "5daf0ef1801badc5e610b04f0d78b506739751162886245cda0037000f7ff741"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/neighbors-red-dotnet-test.log.gz",
+          "blob": "9a36a0f127033258a6179c4d55c555f8025e4073",
+          "sha256": "c832c3568711ab5e3fedb31a18e242ed79816103910fc53bc3cb1ed8bc42d5e7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/neighbors-red-plan.json",
+          "blob": "d8cb9b03cfe158aad015e9b405febc0eb8c8d05f",
+          "sha256": "6a03495eacd61cb8fd9a61666a392b89ce452bc50963cac864040d24381fb3b6"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/neighbors-red-portable-ordinary-outcome-recovery-neighbors-integration-001.trx.gz",
+          "blob": "4c7fb231d2c6f50bea96e735d61cadb92d3df413",
+          "sha256": "f67aff71d9687f64de945fee44f5353d78918f095bc6634dc821d897077103e1"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/neighbors-red-summary.json",
+          "blob": "e9f20b0032d41bb4704781c74d652af384f54fa9",
+          "sha256": "bfaa2b8436035c7e34fc92845e503d5c6bdb00c935787e6e2d56d7287fff56a4"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/refresh-plan-Build-integration.log.gz",
+          "blob": "0c15073be7dac1c58c36be151711b0777eb7687d",
+          "sha256": "7ea71bf4e33dffc1369aa1d3cf879da83a084ce8a3828ea09d5ca72461475a24"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/refresh-plan-dotnet-test.log.gz",
+          "blob": "0e644c5a130d1c956240d83cc251b6418bb178dc",
+          "sha256": "14b626565584e2c142efe9fc1ab466d027026f4e97cab319c71bbe296304791a"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/refresh-plan-plan.json",
+          "blob": "dd9f59b227f1b995e0aee47473b968b96742d3d3",
+          "sha256": "ced6ac3a8dd6db9eaa33686278029204ba37106acb5882183f57fef714adcdee"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/refresh-plan-summary.json",
+          "blob": "7d4334ada7630f929292949148ee6bc6c67d8f5a",
+          "sha256": "4c4fa30cb9b35103fe83301f5dd6b3a897f3563cacfb1f0ba21cd24db433d576"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/refresh-red-dotnet-test.log.gz",
+          "blob": "b1bd3e9dddb677a54a9b3ded37942d8c301f9053",
+          "sha256": "b281370cd2ddddfda1d4963167390caa95d80dceeb82ef77af0ae96ba99f9bf4"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/refresh-red-plan.json",
+          "blob": "8fb68b70fe4adb89c2eaad6d609337ea4d08c8da",
+          "sha256": "f1707f6d11470af3320d0cedff65e6325042da7a6e6c682b47e962a556ae39a7"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/refresh-red-portable-restoration-publication-outcomes-integration-001.trx.gz",
+          "blob": "c4b18d12e9f97df4be968b7d739293c8f573dcf7",
+          "sha256": "b06dee6a290fe292ca5cd3a3a25427af9a296ef3cea797055bff6946ec3eff3d"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/recovery/storage-migration-restoration-red-20261008/refresh-red-summary.json",
+          "blob": "889313314d71c17ce7747e3e7cc30fda9b994aba",
+          "sha256": "c2aad091d3e2c9c6687aa0f73ad1b4742b48c47fd8fee3523a868a8c85612da8"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/storage-migration-inventory.md",
+          "blob": "013ca83ba1a33e96948f01da96ad059cd67cb04b",
+          "sha256": "4e7343d5991d609a0f4c93ac63b22d529a8ebd9f97814d2fefa3cca6c8ba1149"
+        },
+        {
+          "path": "specs/1553-portable-local-storage/tasks.md",
+          "blob": "d813f9540d261d5d4b67a65abc29108d28753bcd",
+          "sha256": "5dde4dc0903d543c882219fee91e087cd51a6e0e93c89584615b0d043c034d34"
+        },
+        {
+          "path": "tests/categories.json",
+          "blob": "6c5986a56ce67907d420e0fba539d7c173972dbf",
+          "sha256": "57724f0de47facdd3f7853204a261f05adc8a6bde7d660ae6bc200c3ee6614b4"
+        },
+        {
+          "path": "tests/selection.json",
+          "blob": "22fa5a1ee2e2acef684af97a723cca2a03ae69c1",
+          "sha256": "76f8f72e940543624db1906e016a80b1025f39a6d10e148f1caaae8e7d8b6a3d"
+        }
+      ],
+      "removed": true
+    }
+  ],
+  "activeReferences": [],
+  "reclaimableAllocatedBytes": 3077160960,
+  "decision": "Only four clean standalone reproducible task restore clones; current/last full/Story selected/1536/source results/tools/secrets untouched. No process terminated.",
+  "deleted": true,
+  "freeBytesBefore": 443301888,
+  "freeBytesAfter": 3520462848,
+  "freedBytes": 3077160960,
+  "completedUtc": "2026-10-09T11:14:47.479212+00:00",
+  "crossCheckoutAuthorityCheck": "All candidates standalone one-worktree clones without alternates; no workspace-root .git/alternate reference pointed to them; no active cwd/exe/fd references immediately before removal."
+}

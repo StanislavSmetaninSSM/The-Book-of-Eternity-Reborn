@@ -1,5 +1,11 @@
 ## Current migration status — 2026-10-09
 
+Whole #1553 migration explicitly resumed from766ccb1d; Story is one accepted slice.
+Capacity blocker resolved by verified removal of4 reproducible old restore clones,
+3,077,160,960bytes recovered; original evidence/results/tools and active work retained.
+Next F18 source/selection gate and remaining consumers, then whole-registry reconciliation.
+See current plan and exact reclamation receipt; B2–B5 stays paused.
+
 Source #1553, cloud branch1553-storage-migration-cloud-20261008. Bounded F16 image23
 (runtime c02b3ed5, final16db2f7a), gallery8 (source4020035b, final9dbeea70) and
 canonical-listings15 (runtime92382b4a, final8ab39b83) have independent final evidence
