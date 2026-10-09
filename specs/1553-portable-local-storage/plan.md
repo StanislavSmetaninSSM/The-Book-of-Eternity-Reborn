@@ -1,3 +1,14 @@
+## Shared initial-generation close installed — WIP, 2026-10-09
+
+Original causal RED2 packet13artifacts/10pins preserved/ref/raw60d786d9.
+Only the actual initial-generation elseif scope now retains genuine CSP through
+existing ReleaseOwnedLeaseAsync(completed:false) before the original bound
+callback; ordinary body, generation/binding and main lifecycle order unchanged.
+Installed UNBUILT/UNRUN. Combined RED/source/exact2 independent gate then fresh
+Plan/actual2; no unchanged passing sets replay. Client-owned storage boundary,
+no GM mechanic/schema/prompt/example update. Typed browser next; other named
+publishers/mod/UI and final method inventory remain open. T061–T065 unchecked.
+
 ## Shared initial-generation original causal RED2 — WIP, 2026-10-09
 
 Independent final six GREEN12/raw/carrier PASSf8b14bb1 and initial-generation

@@ -127,7 +127,11 @@ internal static class SessionOperationContext
             string generation;
             if(initializedGeneration != null) generation=initializedGeneration;
             else if(!TryGetExpectedGeneration(files.BasePath,out generation)) {
-                await using var lease=await files.AcquireCanonicalWriteLeaseAsync();generation=files.GetOrCreateSessionGeneration(lease);
+                var lease=await files.AcquireCanonicalWriteLeaseAsync();
+                CoordinatedStatePublicationUncertainException? uncertainty=null;
+                try {generation=files.GetOrCreateSessionGeneration(lease);}
+                catch(CoordinatedStatePublicationUncertainException failure){uncertainty=failure;throw;}
+                finally {await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(files,lease,false,uncertainty);}
             }
             result=await RunBoundCoreAsync(files,generation,async()=> {
                 var value=await operation();
