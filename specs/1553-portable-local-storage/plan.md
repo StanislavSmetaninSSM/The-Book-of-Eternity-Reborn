@@ -1,3 +1,14 @@
+## Engine exact-name evidence/catalog gate — 2026-10-09
+
+Independent AstraXHigh GREEN/raw/carrier PASS791089b3: actual25/25,19exactnegative
+byte/generation maps unchanged, Unicode3/originalneighbors3 PASS,22strictrootsabsent.
+Fresh both-project catalog182804 at791089b3 validates584categories/11355methods-files,
+0execution69.0712549s,bothcleanup,0timeout/duplicates. Engine packet113artifacts/44pins
+verified originals; previous compile2/11, RED53/11, GREEN53/11 immutable. Final
+catalog/carrier review pending; next available browser pre-spend/queue boundary.
+Current source ownership157unique IDs is not aggregate execution authorization.
+T061–T065 remain unchecked; no native/allF16/allconsumer acceptance.
+
 ## Engine exact-name bounded GREEN25 — 2026-10-09
 
 Runtime5279dbd4 independently source/design/exact25 PASS. Fresh integration
@@ -5,7 +16,7 @@ Plan18254425/1,0execution51.9941765s; actual18270325/25PASS8.1499631s,
 complete1/1,0skip/duplicate/timeout,bothcleanup. All22new strictrootsabsent;
 negative retained full file/path bytes andgeneration unchanged; original Unicode
 baseline/backup/cleanup plus original exactbytes/exclusion/staging3 PASS.
-[Packet](recovery/storage-migration-engine-snapshot-20261009/manifest.json)107artifacts/33pins
+[Packet](recovery/storage-migration-engine-snapshot-20261009/manifest.json)108artifacts/33pins
 verified originalbytes; prior compile0 and6PASS19causalRED immutable. Fresh catalog
 and independent raw/catalog/carrier gate remain. Only original engine baseline/
 backup/cleanup rawinput boundaries qualified; other browser/incarnation/Explorer/

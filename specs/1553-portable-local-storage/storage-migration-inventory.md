@@ -1,3 +1,16 @@
+## Latest bounded engine producer result — 2026-10-09
+
+Runtime5279dbd4 and source/design/exact25 independentPASS; actual182703GREEN25/25,
+8.1499631s,complete1/1,bothcleanup,22strictnewrootsabsent. Baseline/backup16,
+cleanup4,suppliedrollback2 andoriginalbytes/exclusion/staging3 qualify this boundary.
+Prior6PASS19causalRED and compile-only0 remain visible in
+[engine packet](recovery/storage-migration-engine-snapshot-20261009/manifest.json).
+Independent raw/carrier PASS791089b3; freshbothcatalog584/11355 discovery0; final
+catalogcarrier pending. Sourcecensus below stays pinned96553e1e, not silentlyrewritten.
+Priority1 engine ordering/identity row below is now historically demonstrated/fixed
+for this finiteunit; browser,incarnation/Explorer,spiritual andotherowners stillopen.
+Continue available #1553 work; B2–B5 paused, T061–T065 unchecked.
+
 ## Authoritative current checkpoint — 2026-10-09
 
 Source/evidence carrier `96553e1e32990d1026844baa49eed69c3e60b0a1` on
