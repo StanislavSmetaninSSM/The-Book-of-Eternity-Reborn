@@ -1,3 +1,30 @@
+## F18 split actual — four passing obligations, three strict-read failures, 2026-10-09
+
+Frozen4409840e SOURCE/FIXTURE/EXACT-SELECTION independently PASS. Corrected fresh
+integration Plan124350 selectsLife1/1,0executed46.8563591s; prior124117 provides exact
+1/1/5 split. Snapshot124500 completes1/1PASS7.5656805s; Life124515 completes1FAIL
+12.0572330s; remaining124602 completes3PASS/2FAIL12.7124576s. Every actual has final
+TRX, complete descriptor, bothcleanup,0skip/duplicate/timeout. These are separate runs.
+
+Snapshot now has checkpoint1/Committed1/exactgeneration/sentinels and no later reads,
+mutations or input. Browser/beforeinspection/sourceguard also pass. Life diagnostic
+errors=[], request1,repairwrite0/cleanupintent1, genuine rawacceptedcheckpoint1/rotation1;
+strict read oracle fails on narrative opened + absent interface attempted afterrotation.
+Process reaches genuine acceptedcheckpoint1/rotation1; opens narrative/interface/debug
+and attempts absent combatlog. Late/Idle reaches1/1, attempts absent pendingmanifest.
+All three correctly end SessionReplaced and retain exact replacement bytes,0mutation/
+input, original tasks joined and owned roots removed. Read hook entries are not all
+successful reads; no premature runtime defect/global reader fix/whole3 acceptance.
+Independent contract/consumer-boundary classification pending. Current replacement
+sentinels cover Ready/request (Late uses named file), not replacement output payloads.
+
+[Packet](recovery/storage-migration-generation-checkpoints-20261009/manifest.json)
+now50artifacts/originals64pins verified. Historical timeout/seed/schema/build errors
+remain unchanged. No replay of four passing obligations absent relevant changes.
+Next classify and close only the three read failures; native3 source map requires real
+Windows primitives (compile/Plan only on Linux), physical cuts/F16/ownedclose/whole
+registry remain. B2–B5 paused; no task checkbox/main/CI change.
+
 ## F18 Life guard source correction — WIP, 2026-10-09
 
 Independent review atb73dd802 catches path-only guard also rejecting successful cleanup

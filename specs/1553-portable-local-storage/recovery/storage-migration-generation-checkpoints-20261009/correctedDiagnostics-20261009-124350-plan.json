@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-session-generation-life-finalization-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4409840e2866b7b285e5bcf38e78befa5b742abc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.5601464,
+  "Descriptors": [
+    {
+      "Name": "portable-session-generation-life-finalization-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-session-generation-life-finalization-linux",
+      "Categories": [
+        "portable-session-generation-life-finalization-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_GenerationChangesAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_GenerationChangesAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

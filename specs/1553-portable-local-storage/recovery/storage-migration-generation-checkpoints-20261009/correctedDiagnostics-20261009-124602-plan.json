@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "portable-session-generation-checkpoint-fixtures-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4409840e2866b7b285e5bcf38e78befa5b742abc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.56185,
+  "Descriptors": [
+    {
+      "Name": "portable-session-generation-checkpoint-fixtures-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-session-generation-checkpoint-fixtures-linux",
+      "Categories": [
+        "portable-session-generation-checkpoint-fixtures-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LateTerminalAndIdleFlow_SessionReplacementAfterBinding_DoesNotTouchReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_GenerationChangesAfterAcceptedValidation_AbortsBeforeMutatingReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_GenerationChangesBeforeTerminalInspection_DoesNotConsumeReplacementSignal|FullyQualifiedName=BookOfEternityClient.Tests.IntegrationTestBoundaryTests.GameEngineLifeTransitionReplacementTest_UsesCheckpointInsteadOfPolling|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserMortalWorldGenerationFencingTests.StatDistribution_GenerationChangesBeforeMortalLease_DoesNotWriteIntoReplacementSession",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LateTerminalAndIdleFlow_SessionReplacementAfterBinding_DoesNotTouchReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_GenerationChangesAfterAcceptedValidation_AbortsBeforeMutatingReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_GenerationChangesBeforeTerminalInspection_DoesNotConsumeReplacementSignal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.IntegrationTestBoundaryTests.GameEngineLifeTransitionReplacementTest_UsesCheckpointInsteadOfPolling",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserMortalWorldGenerationFencingTests.StatDistribution_GenerationChangesBeforeMortalLease_DoesNotWriteIntoReplacementSession",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
