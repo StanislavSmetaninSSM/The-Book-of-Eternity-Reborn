@@ -202,14 +202,16 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
             TaskCreationOptions.RunContinuationsAsynchronously);
         var replacementContended = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously);
+        var mainAdmissionContentions = 0;
         var replacementFs = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
-                CanonicalWriteLockContendedAsync = () =>
+                MainOwnerLockContendedAsync = () =>
                 {
+                    Interlocked.Increment(ref mainAdmissionContentions);
                     replacementContended.TrySetResult();
                     return Task.CompletedTask;
                 }
@@ -233,36 +235,45 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
             PlayerAction = "Продолжить старый ход.",
             PreGeneratedDices1d20 = new[] { 12, 7, 19 }
         });
-        await preparationReachedPublication.Task.WaitAsync(TimeSpan.FromSeconds(10));
-
-        var replacementTask = Task.Run(async () =>
+        Task? replacementTask = null;
+        Exception? preparationFailure = null;
+        try
         {
-            await using var lifecycleLease = await replacementFs.AcquireSessionLifecycleLeaseAsync();
-            await using var replacementLease =
-                await replacementFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
-            replacementFs.RotateSessionGeneration(replacementLease);
-            replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.TurnRequestPath);
-            replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
-            replacementFs.DeleteFile(replacementLease, PendingTurnSnapshotAuthority.AuthorityPath);
-            replacementFs.DeleteDirectoryTree(
-                replacementLease,
-                LiveTurnPreparationService.PendingTurnSnapshotDirectory);
-            await replacementFs.WriteFileAtomicAsync(
-                replacementLease,
-                "game_state/core/replacement_marker.json",
-                """{"session":"replacement"}""");
-        });
-
-        await Task.WhenAny(replacementTask, replacementContended.Task)
-            .WaitAsync(TimeSpan.FromSeconds(10));
-        releasePreparation.TrySetResult();
-
-        var preparationFailure = await Record.ExceptionAsync(
-            () => preparationTask.WaitAsync(TimeSpan.FromSeconds(10)));
+            await preparationReachedPublication.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            replacementTask = Task.Run(async () =>
+            {
+                await using var lifecycleLease = await replacementFs.AcquireSessionLifecycleLeaseAsync();
+                await using var replacementLease =
+                    await replacementFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
+                replacementFs.RotateSessionGeneration(replacementLease);
+                replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.TurnRequestPath);
+                replacementFs.DeleteFile(replacementLease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+                replacementFs.DeleteFile(replacementLease, PendingTurnSnapshotAuthority.AuthorityPath);
+                replacementFs.DeleteDirectoryTree(
+                    replacementLease,
+                    LiveTurnPreparationService.PendingTurnSnapshotDirectory);
+                await replacementFs.WriteFileAtomicAsync(
+                    replacementLease,
+                    "game_state/core/replacement_marker.json",
+                    """{"session":"replacement"}""");
+            });
+            await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            Assert.False(replacementTask.IsCompleted);
+        }
+        finally
+        {
+            releasePreparation.TrySetResult();
+            var preparationSettlement = Record.ExceptionAsync(
+                () => preparationTask.WaitAsync(TimeSpan.FromSeconds(10)));
+            await Task.WhenAll(preparationSettlement, replacementTask ?? Task.CompletedTask)
+                .WaitAsync(TimeSpan.FromSeconds(15));
+            preparationFailure = await preparationSettlement;
+        }
+        Assert.True(mainAdmissionContentions > 0);
+        Assert.True(replacementTask?.IsCompletedSuccessfully == true);
         Assert.True(
             preparationFailure is null or SessionReplacedException,
             preparationFailure?.ToString());
-        await replacementTask.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.True(_fs.FileExists("game_state/core/replacement_marker.json"));
         Assert.False(_fs.FileExists(LiveTurnPreparationService.TurnRequestPath));

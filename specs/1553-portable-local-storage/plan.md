@@ -1,3 +1,18 @@
+## Remaining3 pre-build admission correction completion — 2026-10-09
+
+Parent source review found the same old canonical-only wait in the selected, previously unexecuted
+Live session-replacement control. It now uses existing MainOwner contention with positive blocked
+replacement, retains exact current/replaced artifact assertions, and always releases its barrier and
+settles both started tasks together (expected preparation SessionReplaced retained). No artificial
+timeout run is needed for this source-identified fixture error. The linked Live control is unchanged.
+Task.WhenAll drains both actors even when one fails; original fixture wait budgets remain5/10s and
+bounded join15s is ownership cleanup, not a larger product/category timeout. Runtime unchanged.
+
+Future F18 admission-observer census: parent found27 canonical-contention assignment candidates,
+including intentional dual hooks and negative-zero audit controls; this is not27 proven defects and
+must not trigger blanket replacement. New adjacent MainMenu Shining reentry/ordinary-return catches
+and original realm service owned-close remain queued with lore/realm, outside preparation acceptance.
+
 ## Preparation remaining3 fixture correction WIP — 2026-10-09
 
 Partial carrier1302c7d3 preserves93 artifacts/45 pins. The unchanged concurrency test's writer now
