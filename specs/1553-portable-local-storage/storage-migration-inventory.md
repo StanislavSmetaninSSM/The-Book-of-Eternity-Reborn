@@ -1,3 +1,44 @@
+## Current remaining source-only classification — 2026-10-09
+
+Parent/reviewer inspected a44-row lexical catch/write aid at54d. These are source findings and
+bounded fixture proposals, not44 executed failures or required mirror-implementation tests. Existing
+accepted source-era packets retain their scopes. Connected remaining units:
+
+- Progression's three broad catches (current fixture4 build-only) and StoryService append/marker;
+  original life/incarnation/ascension consumers must stop before progression/cleanup after actual
+  CSP. Preserve known best-effort failure and same decision through owned AppendFileAtomic close.
+- Snapshot/preparation: four EnsureAfterlife*InitializedForSnapshot writers; baseline manifest/
+  authority cleanup; CreatePreTurnBackup cleanup/aggregation; LiveTurnPreparation and original
+  BrowserAfterlifeTurnRequestQueue request cleanup. Actual cuts must preserve earlier signed
+  artifacts and distinguish known cleanup from Unknown, with no new lease from observers.
+- Browser rollback staging: StageLocalBrowserTransaction backup/manifest failure cleans prior
+  backups; actual second-backup/manifest Unknown needs no-later-attempt proof. TryDeleteLocal and
+  original TryDeleteBrowser exact out-failure carriers already stop; no blanket filter. Retain
+  StageOriginalBrowser native schema6 fixture-only generator and original handler qualification.
+- Authoritative Ready tails: TryWriteHarnessTerminalError Unknown→false/Cancelled; worker Ready
+  Unknown→audit/trajectory/fallback. Preserve already-Applied facts and stop canonical continuation;
+  diagnostic log suppression differs from required audit/Ready. Clear/RepairPreparedShiningPackage
+  write→refresh remains live. The private IncarnationAndAfterlife cleanup record/two-method cluster
+  has parent exact5-reference closed census; deletion needs independent review, not causal tests.
+- Explorer SafeExecute may continue CompleteCommandResult→rollback discard after Unknown.
+  Whole original boundaries include offering relic/archive removal, Shining treasury partial
+  compensation, soul-relic ensure/equip/unequip, InkFeathers deduction and companion/faction
+  directives. Preserve partial restoration and same typed notice, no new all-or-none contract.
+  Archive reservation-clear and candidate-refresh tails need their original caller evidence.
+- Spiritual C2 PendingRepair broad catch/readback/reopen can treat unresolved journal as settled
+  from After bytes. Qualify original submission/private callers with authentic common publication;
+  existing IOException-after-committed controls differ. PrivateAdapter IO-only catch lets CSP escape.
+  No B2–B5 resumption or long gameplay loops for this source assessment.
+- F16/F18 retain prior maps. LOAD case-distinct payload preservation does not require pending-turn
+  reader acceptance of confusable keys. Detect/refuse unrepresentable cohorts BEFORE ignore-case
+  maps/copies/publications; preserve existing reader fixed-authority alias rejection. Literal Linux
+  backslash needs full producer→authority→reader proof or early refusal, never silent renaming.
+  Canonical story exports require admitted source/output scope; they are not external technical IO.
+
+Excluded false positives: storage outside parse-only catches, JsonException-only inventory/relic
+fallback, guardian cleanup that rethrows, exact out-failure carriers, diagnostic-only logs and retained
+original native recorder handlers. The44 aid is nonexhaustive; all-caller best-effort audit/terminal telemetry, archive action/candidate outer flow and C2 reopened-owner tracing remain incomplete. These source-only rows do not close T062/T063/F16/F18.
+
 ## Current Prepared original remote receipt checkpoint — 2026-10-09
 
 Connected source gap was causally reproduced through original Running neutral-owner IPC:

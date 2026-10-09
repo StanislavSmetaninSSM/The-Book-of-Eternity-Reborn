@@ -1,3 +1,14 @@
+## Progression build-only correction — 2026-10-09
+
+Plan013705 atclean1868 failed Build-integration CS0535: ProgressionNoInput omitted required
+AssertCompleted.24.4031882s,0planned/executed,bothcleanup. f700 adds only AssertCompleted
+asserting Reads==0; no production change. Saved2 artifacts/6 historical source pins in progression
+packet. Initial packaging used a nonexistent IO interface source path and stopped before manifest;
+this metadata correction pins the actual Core/IConsoleInputSource.cs and verifies original bytes.
+No test or behavior verdict follows from that packaging error. Focused fixture gate and matching
+fresh integration Plan4 precede causal execution. Current remaining source-only map below preserves
+parent/reviewer findings; no new domain/B2 scope or generic whole-operation atomicity.
+
 ## Progression original consumer causal4 gate — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT4 PASS for the unchanged690 draft retained atc7c56722.

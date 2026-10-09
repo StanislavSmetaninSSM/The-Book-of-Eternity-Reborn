@@ -1,0 +1,47 @@
+{
+  "scope": "Progression original consumer work; initial fixture compilation failure, no causal execution yet.",
+  "initialCompile": {
+    "source": "1868fb91f19b8874b1aa3b119741d746c3badb14",
+    "qualification": "Plan013705 failed compilation CS0535: fixture missing IConsoleInputSource.AssertCompleted.24.4031882s,0executed,bothcleanup. Not causal RED.",
+    "artifacts": [
+      {
+        "path": "compile-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-013705-143-204386-cdfdb47841bb4615b6147dd40061ac9e-categories/dotnet-test.log",
+        "sha256": "ea9a5597e9eb49f6a83c097543b4463ddb57671f589c1759392e4e5169bf42b3",
+        "originalSha256": "9c6419301d28f6dd0f4630e63fdbdda044325269310bb7ed28b9c32d335df5b9"
+      },
+      {
+        "path": "compile-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-013705-143-204386-cdfdb47841bb4615b6147dd40061ac9e-categories/summary.json",
+        "sha256": "31a21a64578a368175b99dc49c723de0d1102bc0491b4ec4a192a2d394c08c4b",
+        "originalSha256": "31a21a64578a368175b99dc49c723de0d1102bc0491b4ec4a192a2d394c08c4b"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ProgressionOutcome.cs",
+        "sha256": "0ca106fbcbcda4a9eaac4c3ff936cb2685fdabb3b6e7a510cdee45a47e9e2fb8"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/IConsoleInputSource.cs",
+        "sha256": "eeb8876078e8612e4c26c5eb03bd4ff2ed9790617334bae29db6f82c916b2969"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "cda92216a68cc4ce843e5e8fd92a373a74bd5a8d39135c4b179d7d9a592f41f9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "sha256": "c48aa0d940119b8690d058214bf96e21ce0ba9ed4ea5a518d69905ce2bf87eb8"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "2e991fce380e9265ddbcd5141bea0433469617b1a17eab0aea2f233399ee6147"
+      }
+    ]
+  }
+}
