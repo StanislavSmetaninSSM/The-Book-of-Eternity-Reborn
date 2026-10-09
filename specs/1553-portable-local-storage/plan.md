@@ -1,3 +1,26 @@
+## F18 native legacy6 and original mods UI2 — bounded source WIP, 2026-10-09
+
+Source #1553, based3b249330. Six original Windows physical-publication tests now use
+existing RunLegacyStorageRecoveryAsync with the SAME explicit write lease overload,
+verify restored scope flag and positive original native hooks. Retain original exact
+identity/absence/hard-link/journal/committed-cleanup assertions; strict owned-root cleanup.
+Helper disposes its lease before original public recovery read. Windows assertion prevents
+silent Linux PASS. Renamed LegacyAtomicWrite methods move six exact canonical-storage
+selectors to explicit legacy-physical-publication-windows; native execution remains unrun.
+Remove only dead MortalLocation failure fields/property/Arm/callback, after all callers
+migrated to actual LocalPublicationObserver. No production mechanism removed.
+
+Separate exact portable-mods-original-ui2 retains both original /моды Facts unchanged
+for initial diagnosis. Existing accepted listings15 did not execute the outdated whole-
+output no-game_session assertion. Current UI intentionally prints exact manual-opening
+path. Capture original result before narrowly correcting the oracle; preserve player
+choices and technical-leak/hidden-error checks. No runtime/B2/GM/prompt change.
+
+Next independent source/exact selection review, fresh Plan8 (native6+mods2,0execution),
+then actual ONLY mods2 on Linux. Native6 build/discovery is not native acceptance.
+Final catalog/evidence/registry review pending; Treatment2 completed and reviewed,
+T061–T065 overall remain open with the other source/consumer queues.
+
 ## F18 Treatment2 — composed Linux evidence complete, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT1 PASS06092c412c44b3b2d2fbcc63945480fe2f554fd4.

@@ -2,6 +2,61 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-mods-original-ui",
+      "responsibility": "Two original /моды Explorer panels: detail loop and player-facing choices after canonical listing admission, preserving hidden-error checks and exact manual-opening path contract.",
+      "excludes": "Actual desktop launch, complete Explorer UI, settings mutation, manifest atomicity and native qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Exploration/ExplorerMode.MetaStoryAndStatus.cs",
+        "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legacy-physical-publication-windows",
+      "responsibility": "Six original Windows physical recorder/recovery publication contracts through an explicit legacy lease: source/destination hard-link fences, exact identity/absence rollback and committed cleanup recovery. Positive original hook witnesses are mandatory.",
+      "excludes": "Ordinary trusted-local publication, Linux qualification, new gameplay/B2, and native execution in the cloud Linux environment.",
+      "changeHints": [
+        "BookOfEternityClient/Core/ReversibleFilePublication*",
+        "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "windows-latest"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-canonical-contention-rmw-linux",
       "responsibility": "Four original normalizer/validation/cache and guardian journal read-modify-write races: reached original pause, positive main-owner contention, no later canonical contention before admission, blocked contender and original final state; gates released, actual tasks settled and returned lease disposed before fixture cleanup.",
       "excludes": "No native create-only directory/save publication, full F18, generation replacement, live GM/desktop, or runtime behavior change. This migrates existing fixture observation and settlement; no manufactured product RED.",
@@ -6673,20 +6728,14 @@
             "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsRuntimeRootReparsePoint",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AppendFileAtomicIfCurrentSessionAsync_DropsStaleSessionTelemetry",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_DanglingDestinationLinkFailsClosedWithoutReplacing",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_DirectoryDestinationFailsBeforeMutationHookOrStaging",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_FileAtIntermediateParentFailsBeforeMutationHook",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_HandleAuthoritySupportsLongCanonicalPaths",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_MissingDescriptorCreateOnlyBackendFailsBeforeTempOrHook",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_ParentSwapAfterFinalValidationIsBlocked",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_RechecksReparseConfinementAtMutationBoundary",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_RejectsHardLinkedExistingDestination",
-            "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_UnsupportedBackendStillAllowsCreateOnlyPublication",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AtomicWrite_UnsupportedOverwriteFailsBeforeTempJournalOrHook",
             "BookOfEternityClient.Tests.FileSystemManagerTests.AuthorityPublication_DoesNotUsePathnameMoveFallback",

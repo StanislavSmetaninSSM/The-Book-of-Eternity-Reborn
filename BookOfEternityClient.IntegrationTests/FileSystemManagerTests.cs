@@ -2716,11 +2716,34 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.Equal(originalBytes, await File.ReadAllBytesAsync(canonicalPath));
     }
 
-    [Fact]
-    public async Task AtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination()
+    // These controls qualify the retained physical recorder/recovery handler, not the ordinary writer.
+    private async Task WriteThroughLegacyPublicationAsync(FileSystemManager files, string path, byte[] bytes)
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        Assert.False(lease.IsLegacyStorageRecovery);
+        var entered = false;
+        try
+        {
+            await files.RunLegacyStorageRecoveryAsync(lease, async () =>
+            {
+                Assert.True(lease.IsLegacyStorageRecovery);
+                entered = true;
+                await files.WriteFileAtomicBytesAsync(lease, path, bytes);
+            });
+        }
+        finally
+        {
+            _output.WriteLine(JsonSerializer.Serialize(new { kind = "native-legacy-publication-route",
+                path, entered, flagRestored = !lease.IsLegacyStorageRecovery }));
+            Assert.False(lease.IsLegacyStorageRecovery);
+        }
+    }
+
+    [Fact]
+    public async Task LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination()
+    {
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/post-publication-source-link.json";
@@ -2753,7 +2776,7 @@ public sealed class FileSystemManagerTests : IDisposable
             hooks);
 
         await Assert.ThrowsAsync<InvalidDataException>(
-            () => raceFs.WriteFileAtomicBytesAsync(
+            () => WriteThroughLegacyPublicationAsync(raceFs,
                 relativePath,
                 replacementBytes));
 
@@ -2790,10 +2813,10 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task AtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence()
+    public async Task LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/post-publication-source-link-absent.json";
@@ -2802,12 +2825,16 @@ public sealed class FileSystemManagerTests : IDisposable
         var aliasPath = Path.Combine(
             _rootPath,
             "post-publication-absence-alias.json");
+        var hookCount = 0;
         var hooks = FileSystemManagerHookTestHelper.WithPathHook(
             "AfterPhysicalFilePublishedAsync",
             path =>
             {
                 if (path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    hookCount++;
                     WindowsHardLinkTestHelper.Create(aliasPath, path);
+                }
                 return Task.CompletedTask;
             });
         var raceFs = new FileSystemManager(
@@ -2817,10 +2844,11 @@ public sealed class FileSystemManagerTests : IDisposable
             hooks);
 
         await Assert.ThrowsAsync<InvalidDataException>(
-            () => raceFs.WriteFileAtomicBytesAsync(
+            () => WriteThroughLegacyPublicationAsync(raceFs,
                 relativePath,
                 replacementBytes));
 
+        Assert.Equal(1, hookCount);
         Assert.False(File.Exists(destinationPath));
         Assert.Equal(
             replacementBytes,
@@ -2828,10 +2856,10 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task AtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence()
+    public async Task LegacyAtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/rollback-final-absence-race.json";
@@ -2840,16 +2868,16 @@ public sealed class FileSystemManagerTests : IDisposable
             _rootPath,
             "missing-rollback-final-target.json");
         var hookInvoked = false;
+        var publicationCount = 0;
         var hooks = new FileSystemManagerHooks
         {
             AfterPhysicalFilePublishedAsync = path =>
-                path.Equals(
-                    destinationPath,
-                    StringComparison.OrdinalIgnoreCase)
-                    ? Task.FromException(
-                        new IOException(
-                            "Injected post-publication failure."))
-                    : Task.CompletedTask
+            {
+                if (!path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                    return Task.CompletedTask;
+                publicationCount++;
+                return Task.FromException(new IOException("Injected post-publication failure."));
+            }
         };
         FileSystemManagerHookTestHelper.SetPathHook(
             hooks,
@@ -2875,10 +2903,11 @@ public sealed class FileSystemManagerTests : IDisposable
         try
         {
             await Assert.ThrowsAsync<InvalidDataException>(
-                () => raceFs.WriteFileAtomicBytesAsync(
+                () => WriteThroughLegacyPublicationAsync(raceFs,
                     relativePath,
                     [0x18, 0x29, 0x3A]));
 
+            Assert.Equal(1, publicationCount);
             Assert.True(hookInvoked);
             Assert.True(
                 File.GetAttributes(destinationPath)
@@ -2899,10 +2928,10 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task AtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing()
+    public async Task LegacyAtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/destination-link-race.json";
@@ -2914,14 +2943,24 @@ public sealed class FileSystemManagerTests : IDisposable
         var aliasPath = Path.Combine(
             _rootPath,
             "destination-link-race-alias.json");
+        var authorityCount = 0;
+        var publicationCount = 0;
         var hooks = FileSystemManagerHookTestHelper.WithPathHook(
             "AfterPhysicalFileAuthorityValidatedAsync",
             path =>
             {
                 if (path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    authorityCount++;
                     WindowsHardLinkTestHelper.Create(aliasPath, path);
+                }
                 return Task.CompletedTask;
             });
+        FileSystemManagerHookTestHelper.SetPathHook(hooks, "AfterPhysicalFilePublishedAsync", path =>
+        {
+            if (path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase)) publicationCount++;
+            return Task.CompletedTask;
+        });
         var raceFs = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
@@ -2929,10 +2968,12 @@ public sealed class FileSystemManagerTests : IDisposable
             hooks);
 
         await Assert.ThrowsAsync<InvalidDataException>(
-            () => raceFs.WriteFileAtomicBytesAsync(
+            () => WriteThroughLegacyPublicationAsync(raceFs,
                 relativePath,
                 [0xD4, 0xE5, 0xF6]));
 
+        Assert.Equal(1, authorityCount);
+        Assert.Equal(0, publicationCount);
         Assert.Equal(priorBytes, await File.ReadAllBytesAsync(destinationPath));
         Assert.Equal(
             priorIdentity with { NumberOfLinks = 2 },
@@ -2941,10 +2982,10 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task AtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal()
+    public async Task LegacyAtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/post-publication-failure.json";
@@ -2953,25 +2994,30 @@ public sealed class FileSystemManagerTests : IDisposable
         var destinationPath = _fs.ResolvePath(relativePath);
         var priorIdentity =
             WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        var hookCount = 0;
+        var injected = new IOException("Injected post-publication failure.");
         var hooks = FileSystemManagerHookTestHelper.WithPathHook(
             "AfterPhysicalFilePublishedAsync",
-            path => path.Equals(
-                    destinationPath,
-                    StringComparison.OrdinalIgnoreCase)
-                ? Task.FromException(
-                    new IOException("Injected post-publication failure."))
-                : Task.CompletedTask);
+            path =>
+            {
+                if (!path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                    return Task.CompletedTask;
+                hookCount++;
+                return Task.FromException(injected);
+            });
         var raceFs = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance,
             hooks);
 
-        await Assert.ThrowsAsync<IOException>(
-            () => raceFs.WriteFileAtomicBytesAsync(
+        var failure = await Assert.ThrowsAsync<IOException>(
+            () => WriteThroughLegacyPublicationAsync(raceFs,
                 relativePath,
                 [0x34, 0x45, 0x56]));
 
+        Assert.Equal(1, hookCount);
+        Assert.Same(injected, failure);
         Assert.Equal(priorBytes, await File.ReadAllBytesAsync(destinationPath));
         Assert.Equal(
             priorIdentity,
@@ -3088,10 +3134,10 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task AtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes()
+    public async Task LegacyAtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/committed-cleanup-debt.json";
@@ -3100,6 +3146,7 @@ public sealed class FileSystemManagerTests : IDisposable
         await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
         var destinationPath = _fs.ResolvePath(relativePath);
         string? blockedQuarantinePath = null;
+        var hookCount = 0;
         var hooks = FileSystemManagerHookTestHelper.WithPathHook(
             "AfterPhysicalFilePublishedAsync",
             path =>
@@ -3108,6 +3155,7 @@ public sealed class FileSystemManagerTests : IDisposable
                         destinationPath,
                         StringComparison.OrdinalIgnoreCase))
                 {
+                    hookCount++;
                     var quarantinePath = Assert.Single(
                         Directory.GetFiles(
                             Path.GetDirectoryName(destinationPath)!,
@@ -3130,10 +3178,11 @@ public sealed class FileSystemManagerTests : IDisposable
 
         try
         {
-            await raceFs.WriteFileAtomicBytesAsync(
+            await WriteThroughLegacyPublicationAsync(raceFs,
                 relativePath,
                 publishedBytes);
 
+            Assert.Equal(1, hookCount);
             Assert.NotNull(blockedQuarantinePath);
             Assert.Equal(
                 publishedBytes,

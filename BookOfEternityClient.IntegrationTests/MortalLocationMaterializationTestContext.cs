@@ -12,8 +12,6 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
     internal const string IdentityIndexPath = "game_state/world/location_identity_index.json";
 
     private readonly string _expectedTempRoot;
-    private string? _armedWriteFailurePath;
-    private int _remainingWriteFailureMatches;
 
     private MortalLocationMaterializationTestContext(string rootPath)
     {
@@ -25,7 +23,6 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
         Directory.CreateDirectory(RootPath);
         var hooks = new FileSystemManagerHooks
         {
-            AfterPhysicalFilePublishedAsync = AfterPhysicalFilePublishedAsync,
             LocalPublicationObserver = (phase, index) => CurrentPublicationObserver?.Invoke(phase, index)
         };
         FileSystem = new FileSystemManager(
@@ -49,8 +46,6 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
     internal CanonicalStateNormalizer Normalizer { get; }
 
     internal string RootPath { get; }
-
-    internal string? InjectedPublishedPath { get; private set; }
 
     internal Action<TrustedLocalPublicationPhase, int>? CurrentPublicationObserver { get; set; }
 
@@ -120,17 +115,6 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
                     ["worldMapUpdates"] = worldMapUpdates.DeepClone()
                 });
         }
-    }
-
-    internal void ArmInjectedWriteFailure(string relativePath, int matchingWrite = 1)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
-        if (matchingWrite < 1)
-            throw new ArgumentOutOfRangeException(nameof(matchingWrite));
-
-        _armedWriteFailurePath = relativePath;
-        _remainingWriteFailureMatches = matchingWrite;
-        InjectedPublishedPath = null;
     }
 
     internal async Task CaptureValidatedPendingSnapshotAsync(int turn = 42)
@@ -235,24 +219,4 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
         return ValueTask.CompletedTask;
     }
 
-    private Task AfterPhysicalFilePublishedAsync(string absolutePath)
-    {
-        if (_armedWriteFailurePath == null ||
-            !string.Equals(
-                Path.GetFullPath(absolutePath),
-                Path.GetFullPath(FileSystem.ResolvePath(_armedWriteFailurePath)),
-                StringComparison.OrdinalIgnoreCase))
-        {
-            return Task.CompletedTask;
-        }
-
-        _remainingWriteFailureMatches--;
-        if (_remainingWriteFailureMatches > 0)
-            return Task.CompletedTask;
-
-        InjectedPublishedPath = _armedWriteFailurePath;
-        _armedWriteFailurePath = null;
-        return Task.FromException(
-            new IOException($"Injected Mortal location write failure for '{absolutePath}'."));
-    }
 }

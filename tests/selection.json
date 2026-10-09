@@ -2,6 +2,24 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-mods-original-ui",
+      "reason": "F16 outstanding original /моды UI oracle omitted from accepted listings15: exact two original panels, no whole console-explorer. First record unchanged old no-game_session assertion, then permit only the exact intentional manual-opening path while retaining technical-leak/hidden-error checks. Runtime unchanged; current execution pending.",
+      "contracts": [
+        "#1553",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "legacy-physical-publication-windows",
+      "reason": "T064 six retained native physical recorder/recovery controls now use their explicit original legacy handler and require positive native hook reachability. Cloud build/discovery only; Windows execution remains unrun and cannot be inferred from Linux. No ordinary-publication or B2 claim.",
+      "contracts": [
+        "#1553",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-effect-spiritual-carrier-publication",
       "reason": "T064 isolated prior pre-arm spiritual fixture failure corrected by exact guardian profile through real owner composition before signed snapshot. Actual4182/1342491PASS: rawissues=[],realcut1/originalengine rollback/exactdiagnostic/gen/two roots removed. Retain13 passing obligations at prior source without replay; no B2/runtime/native claim.",
       "contracts": [
