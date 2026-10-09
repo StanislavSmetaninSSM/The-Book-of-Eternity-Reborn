@@ -2471,7 +2471,7 @@ public sealed partial class QteSceneService
     {
         try
         {
-            var relative = TrustedLocalFilePublication.GetLocalRelativePath(
+            var relative = FileSystemManager.GetLocalRelativePath(
                 _fs.GameSessionPath, absolutePath, OperatingSystem.IsWindows());
             _fs.TryRemoveEmptyCanonicalDirectory(writeLease, relative, includeEmptyDescendants: false);
         }

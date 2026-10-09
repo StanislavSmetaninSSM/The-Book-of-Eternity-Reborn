@@ -1,3 +1,14 @@
+## F10 mixed20 build correction — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT-SELECTION PASS5122 accepted proposed mixed20; public deferred
+Resume owns the same selected lease helper but has no injected own-close execution claim.
+Matching Plan003843 failed compilation CS0117 at QteSceneService2474: the existing relative-path
+helper belongs to FileSystemManager, not TrustedLocalFilePublication. Build46.407662s,
+wall46.6789643s,exit1; zero discovered descriptors/tests executed, both cleanup flags true.
+The exact qualifier is corrected without behavior/selection changes. Failed artifacts and four
+historical source pins are retained separately. Fresh matching Plan20 is still required before
+actual; this failure is not causal RED and no runtime acceptance is claimed.
+
 ## F10 connected source corrections / proposed mixed20 — 2026-10-09
 
 Independent runtime review found owning-close seams before the new caller catches: original
