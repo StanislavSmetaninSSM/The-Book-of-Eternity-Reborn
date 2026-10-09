@@ -1,0 +1,160 @@
+{
+  "source": "48ed86186ceaa5c45edea06e48a46322a9b45377",
+  "actual": "20261009-092357-876-309841-a23c3817e0b24138a1c939bcfc7c917b-categories",
+  "tests": {
+    "Total": 12,
+    "Executed": 12,
+    "Passed": 3,
+    "Failed": 9
+  },
+  "wallTime": "00:01:58.7040011",
+  "rows": [
+    {
+      "mode": "dependent_request_delete_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "sameCSP": false,
+      "result": "Rejected",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 141
+    },
+    {
+      "mode": "initial_cancel_success",
+      "outcome": "Passed",
+      "cuts": 0,
+      "sameCSP": false,
+      "result": "Rejected",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 0
+    },
+    {
+      "mode": "cancel_request_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "sameCSP": false,
+      "result": "Rejected",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 139
+    },
+    {
+      "mode": "reconcile_ready_delete_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "sameCSP": false,
+      "result": "RetryableHeld",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 141
+    },
+    {
+      "mode": "dependent_ready_delete_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "sameCSP": false,
+      "result": "Rejected",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 141
+    },
+    {
+      "mode": "reconcile_request_delete_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "sameCSP": false,
+      "result": "RetryableHeld",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 141
+    },
+    {
+      "mode": "initial_checkpoint_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "sameCSP": false,
+      "result": "Rejected",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 137
+    },
+    {
+      "mode": "dependent_checkpoint_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "sameCSP": false,
+      "result": "Rejected",
+      "laterReads": 2,
+      "laterMutations": 1,
+      "priorImages": 141
+    },
+    {
+      "mode": "dependent_next_cancel_success",
+      "outcome": "Passed",
+      "cuts": 0,
+      "sameCSP": false,
+      "result": "Rejected",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 0
+    },
+    {
+      "mode": "request_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "sameCSP": false,
+      "result": "Rejected",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 139
+    },
+    {
+      "mode": "initial_pending_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "sameCSP": false,
+      "result": "Rejected",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 138
+    },
+    {
+      "mode": "reconcile_next_cancel_success",
+      "outcome": "Passed",
+      "cuts": 0,
+      "sameCSP": false,
+      "result": "Rejected",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "priorImages": 0
+    }
+  ],
+  "removedRoots": [
+    "/tmp/boe-resource-materialization-2729fc71792d46b6be51a1edbfb666e1",
+    "/tmp/boe-gameengine-turnlifecycle-b12f91d6d8444deca556bcf0ccd10183",
+    "/tmp/boe-resource-materialization-008dd199ab0846c1b73ba977fbbe9202",
+    "/tmp/boe-gameengine-turnlifecycle-3f6a3f163b9b49269a88823dc5e5f4c6",
+    "/tmp/boe-resource-materialization-7f225889bbca427aa760d003a2e5f8fc",
+    "/tmp/boe-gameengine-turnlifecycle-2d6b8e98e6fc438590b4a9ec85f0c270",
+    "/tmp/boe-resource-materialization-aeadefbb4f7d42eba4db6324a0eed1e6",
+    "/tmp/boe-gameengine-turnlifecycle-5a2e664bce2b443d893f8c438dd0bca2",
+    "/tmp/boe-resource-materialization-ba5277b14dba4ec8ad7491df81292547",
+    "/tmp/boe-gameengine-turnlifecycle-b840a60f8b1a4733b65fc52d47e1dbda",
+    "/tmp/boe-resource-materialization-a3553d1bd1e54245aa52cd0a2a66c6ba",
+    "/tmp/boe-gameengine-turnlifecycle-d50407d2bd96417ba18332d041db8565",
+    "/tmp/boe-resource-materialization-662730dee8fb447ebbe7afb9c0899396",
+    "/tmp/boe-gameengine-turnlifecycle-68f3d13a71a74e9fa1e1fca11595c518",
+    "/tmp/boe-resource-materialization-ce5662d39ac44bc58a290d64c4dbf26c",
+    "/tmp/boe-gameengine-turnlifecycle-43e7312bd3f94c6e96b3a6c3630f3862",
+    "/tmp/boe-resource-materialization-d59775b4948645098c58661cce70e4ba",
+    "/tmp/boe-gameengine-turnlifecycle-fc0ab864ceeb4eccb5a1981a896c6bad",
+    "/tmp/boe-resource-materialization-cba55cf98e0242c79dd547d2aa63f162",
+    "/tmp/boe-gameengine-turnlifecycle-57991dd464df43039d5a8c78a4c0ed7c",
+    "/tmp/boe-resource-materialization-ac5cd30637cc4aa58169edad773d2b7b",
+    "/tmp/boe-gameengine-turnlifecycle-4a57af5683554c01ba54238d0e37530d",
+    "/tmp/boe-resource-materialization-9a00f7765f1f4bd8bae1e23ef987ef1a",
+    "/tmp/boe-gameengine-turnlifecycle-501e04e5fab44982b507b2ea92843c1c"
+  ],
+  "scope": "Original signed GameEngine entry/wait/reconciliation;9authentic cuts,3finite ordinaryEscape controls, actualA-to-B/priorcheckpoint retention. Root/method settlement; no exact keycount/injected secondaryleaseclose/fullacceptedturn/C4/B2/native claim."
+}

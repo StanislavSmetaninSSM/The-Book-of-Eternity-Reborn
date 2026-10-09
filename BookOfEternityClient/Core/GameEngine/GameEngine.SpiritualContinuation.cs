@@ -118,108 +118,122 @@ public partial class GameEngine
                 SpiritualWoundContinuationRequest? request;
                 IReadOnlyList<ValidationIssue> issues;
                 ValidatedPendingTurnSnapshotContext context;
-                await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
                 {
-                    ThrowIfRepairSessionReplaced(lease, generation);
-                    if (AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(_fs, lease, out var retained))
-                        return LogSpiritualContinuationIssues(await retained.ValidateCurrentInputsAsync(_fs, lease))
-                            ? SpiritualContinuationAdmission.Admitted : SpiritualContinuationAdmission.Rejected;
-
-                    var current = await _validator.ReadSpiritualWoundContinuationAsync(lease);
-                    if (current.Disposition == "no_checkpoint")
+                    var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                    Exception? entryFailure = null;
+                    try
                     {
-                        foreach (var transportPath in new[] { ValidationRepairRequestPath, ValidationRepairReadyPath })
+                        ThrowIfRepairSessionReplaced(lease, generation);
+                        if (AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(_fs, lease, out var retained))
+                            return LogSpiritualContinuationIssues(await retained.ValidateCurrentInputsAsync(_fs, lease))
+                                ? SpiritualContinuationAdmission.Admitted : SpiritualContinuationAdmission.Rejected;
+
+                        var current = await _validator.ReadSpiritualWoundContinuationAsync(lease);
+                        if (current.Disposition == "no_checkpoint")
                         {
-                            var previous = await _fs.ReadFileAsync(lease, transportPath);
-                            if (HasSpiritualContinuationEnvelope(previous))
-                                throw new InvalidDataException("Public continuation transport cannot restore missing C2 authority.");
+                            foreach (var transportPath in new[] { ValidationRepairRequestPath, ValidationRepairReadyPath })
+                            {
+                                var previous = await _fs.ReadFileAsync(lease, transportPath);
+                                if (HasSpiritualContinuationEnvelope(previous))
+                                    throw new InvalidDataException("Public continuation transport cannot restore missing C2 authority.");
+                            }
+                            var resolution = await ResolveActivePendingTurnSnapshotContextAsync();
+                            if (resolution.Context is not { } fresh)
+                                return SpiritualContinuationAdmission.Admitted; // Ordinary admission diagnoses an unusable baseline.
+                            context = fresh;
+                            if (!await HasSignedSpiritualExchangeIntentAsync(lease, context))
+                                return SpiritualContinuationAdmission.Admitted;
+                            EnsureSpiritualOriginalContext(context, originalContext, expectedTurn);
+                            await RequireSpiritualOriginalRequestAsync(lease, context);
+                            if (_fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath))
+                                throw new InvalidDataException("A spiritual command has no private checkpoint authority.");
+                            if (!await BeginAcceptedSpiritualCaptureAsync(lease))
+                            {
+                                // Begin has disposed its capture. Only genuinely absent private state may return
+                                // to ordinary diagnostics; a partially written or damaged checkpoint never does.
+                                var afterCapture = await _validator.ReadSpiritualWoundContinuationAsync(lease);
+                                return afterCapture.Disposition == "no_checkpoint"
+                                    ? SpiritualContinuationAdmission.RequiresInitialResourceValidation
+                                    : SpiritualContinuationAdmission.Rejected;
+                            }
+                            if (AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(_fs, lease, out _))
+                                return SpiritualContinuationAdmission.Admitted;
+                            // The first capture has been disposed before the cold owner is reopened.
+                            current = await _validator.ReadSpiritualWoundContinuationAsync(lease);
                         }
-                        var resolution = await ResolveActivePendingTurnSnapshotContextAsync();
-                        if (resolution.Context is not { } fresh)
-                            return SpiritualContinuationAdmission.Admitted; // Ordinary admission diagnoses an unusable baseline.
-                        context = fresh;
-                        if (!await HasSignedSpiritualExchangeIntentAsync(lease, context))
-                            return SpiritualContinuationAdmission.Admitted;
+
+                        var snapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+                        context = snapshot.Context ?? throw new InvalidDataException("The spiritual snapshot is unavailable.");
                         EnsureSpiritualOriginalContext(context, originalContext, expectedTurn);
                         await RequireSpiritualOriginalRequestAsync(lease, context);
-                        if (_fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath))
-                            throw new InvalidDataException("A spiritual command has no private checkpoint authority.");
-                        if (!await BeginAcceptedSpiritualCaptureAsync(lease))
+                        if (current.Disposition is "blocked" or "automatic_continuation")
                         {
-                            // Begin has disposed its capture. Only genuinely absent private state may return
-                            // to ordinary diagnostics; a partially written or damaged checkpoint never does.
-                            var afterCapture = await _validator.ReadSpiritualWoundContinuationAsync(lease);
-                            return afterCapture.Disposition == "no_checkpoint"
-                                ? SpiritualContinuationAdmission.RequiresInitialResourceValidation
-                                : SpiritualContinuationAdmission.Rejected;
+                            // Only the actual adapter may repair pending images or save an automatic guarantee.
+                            var opened = await _validator.OpenC2PrivateSessionAsync(lease);
+                            var boundary = await ResolveSpiritualPrivateBoundaryAsync(lease, opened);
+                            if (boundary != SpiritualContinuationAdmission.Admitted)
+                                return boundary;
+                            current = await _validator.ReadSpiritualWoundContinuationAsync(lease);
                         }
-                        if (AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(_fs, lease, out _))
+                        var outstandingDependentRequest = false;
+                        if (current.Disposition == "dependent_draft")
+                        {
+                            var transport = await TryReconcileDependentSpiritualTransportAsync(lease, context, current);
+                            if (!transport.Allowed)
+                                return SpiritualContinuationAdmission.RetryableHeld;
+                            current = transport.Current;
+                            outstandingDependentRequest = transport.OutstandingRequest;
+                        }
+                        if (current.Disposition == "completed_unpublished")
+                        {
+                            await CleanupObsoleteSpiritualTransportAsync(lease, context);
+                            // The completed owner must be reopened with physical snapshot reads. Register after
+                            // cleanup, before ordinary validation starts its cached snapshot scope.
+                            var publicationIssues = await _validator.TryPrepareSpiritualC4PublicationAsync(lease);
+                            if (publicationIssues is null || !LogSpiritualContinuationIssues(publicationIssues) ||
+                                !AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(_fs, lease, out _))
+                            {
+                                _logger.LogWarning("Completed spiritual continuation did not register publication authority.");
+                                return SpiritualContinuationAdmission.Rejected;
+                            }
                             return SpiritualContinuationAdmission.Admitted;
-                        // The first capture has been disposed before the cold owner is reopened.
-                        current = await _validator.ReadSpiritualWoundContinuationAsync(lease);
-                    }
-
-                    var snapshot = await ResolveActivePendingTurnSnapshotContextAsync();
-                    context = snapshot.Context ?? throw new InvalidDataException("The spiritual snapshot is unavailable.");
-                    EnsureSpiritualOriginalContext(context, originalContext, expectedTurn);
-                    await RequireSpiritualOriginalRequestAsync(lease, context);
-                    if (current.Disposition is "blocked" or "automatic_continuation")
-                    {
-                        // Only the actual adapter may repair pending images or save an automatic guarantee.
-                        var opened = await _validator.OpenC2PrivateSessionAsync(lease);
-                        var boundary = await ResolveSpiritualPrivateBoundaryAsync(lease, opened);
-                        if (boundary != SpiritualContinuationAdmission.Admitted)
-                            return boundary;
-                        current = await _validator.ReadSpiritualWoundContinuationAsync(lease);
-                    }
-                    var outstandingDependentRequest = false;
-                    if (current.Disposition == "dependent_draft")
-                    {
-                        var transport = await TryReconcileDependentSpiritualTransportAsync(lease, context, current);
-                        if (!transport.Allowed)
-                            return SpiritualContinuationAdmission.RetryableHeld;
-                        current = transport.Current;
-                        outstandingDependentRequest = transport.OutstandingRequest;
-                    }
-                    if (current.Disposition == "completed_unpublished")
-                    {
-                        await CleanupObsoleteSpiritualTransportAsync(lease, context);
-                        // The completed owner must be reopened with physical snapshot reads. Register after
-                        // cleanup, before ordinary validation starts its cached snapshot scope.
-                        var publicationIssues = await _validator.TryPrepareSpiritualC4PublicationAsync(lease);
-                        if (publicationIssues is null || !LogSpiritualContinuationIssues(publicationIssues) ||
-                            !AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(_fs, lease, out _))
+                        }
+                        if (current.Disposition == "dependent_draft" && current.Issues.Count == 0 &&
+                            !outstandingDependentRequest && current.AcceptedRequest is null)
                         {
-                            _logger.LogWarning("Completed spiritual continuation did not register publication authority.");
+                            var resumed = await _validator.OpenC2PrivateSessionAsync(lease);
+                            using var owner = resumed.Session;
+                            if (resumed.Disposition != "dependent_continuation" || owner is null)
+                            {
+                                LogSpiritualContinuationIssues(resumed.Issues, "Saved decision is unavailable.");
+                                return SpiritualContinuationAdmission.Rejected;
+                            }
+                            var next = await owner.ResumeDependentContinuationAsync(lease);
+                            owner.Dispose();
+                            var boundary = await ResolveSpiritualPrivateBoundaryAsync(lease, next);
+                            if (boundary != SpiritualContinuationAdmission.Admitted)
+                                return boundary;
+                            await CleanupObsoleteSpiritualTransportAsync(lease, context);
+                            continue;
+                        }
+                        if (current.Disposition is not ("decision" or "dependent_draft") || current.Request is null)
+                        {
+                            LogSpiritualContinuationIssues(current.Issues, "No current spiritual response can be requested.");
                             return SpiritualContinuationAdmission.Rejected;
                         }
-                        return SpiritualContinuationAdmission.Admitted;
+                        request = current.Request;
+                        issues = current.Issues;
                     }
-                    if (current.Disposition == "dependent_draft" && current.Issues.Count == 0 &&
-                        !outstandingDependentRequest && current.AcceptedRequest is null)
+                    catch (CoordinatedStatePublicationUncertainException uncertainty)
                     {
-                        var resumed = await _validator.OpenC2PrivateSessionAsync(lease);
-                        using var owner = resumed.Session;
-                        if (resumed.Disposition != "dependent_continuation" || owner is null)
-                        {
-                            LogSpiritualContinuationIssues(resumed.Issues, "Saved decision is unavailable.");
-                            return SpiritualContinuationAdmission.Rejected;
-                        }
-                        var next = await owner.ResumeDependentContinuationAsync(lease);
-                        owner.Dispose();
-                        var boundary = await ResolveSpiritualPrivateBoundaryAsync(lease, next);
-                        if (boundary != SpiritualContinuationAdmission.Admitted)
-                            return boundary;
-                        await CleanupObsoleteSpiritualTransportAsync(lease, context);
-                        continue;
+                        entryFailure = uncertainty;
+                        throw;
                     }
-                    if (current.Disposition is not ("decision" or "dependent_draft") || current.Request is null)
+                    finally
                     {
-                        LogSpiritualContinuationIssues(current.Issues, "No current spiritual response can be requested.");
-                        return SpiritualContinuationAdmission.Rejected;
+                        await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease,
+                            completed: false, operationFailure: entryFailure);
                     }
-                    request = current.Request;
-                    issues = current.Issues;
                 }
 
                 // Neither a private owner, snapshot override nor canonical lease crosses this external wait.
@@ -230,8 +244,9 @@ public partial class GameEngine
         }
         catch (SessionReplacedException) { throw; }
         catch (OperationCanceledException) { throw; }
-        catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or
-            JsonException or InvalidOperationException or FormatException or OverflowException or DecoderFallbackException)
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+            error is (IOException or InvalidDataException or UnauthorizedAccessException or
+            JsonException or InvalidOperationException or FormatException or OverflowException or DecoderFallbackException))
         {
             _logger.LogWarning(error, "The accepted spiritual continuation was rejected before publication.");
             return SpiritualContinuationAdmission.Rejected;
@@ -263,8 +278,9 @@ public partial class GameEngine
         {
             return await ReconcileDependentSpiritualTransportAsync(lease, context, current);
         }
-        catch (Exception error) when (error is InvalidDataException or JsonException or InvalidOperationException or
-            KeyNotFoundException or FormatException or OverflowException or DecoderFallbackException)
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+            error is (InvalidDataException or JsonException or InvalidOperationException or
+            KeyNotFoundException or FormatException or OverflowException or DecoderFallbackException))
         {
             _logger.LogWarning(error, "Dependent spiritual transport remains held without replacing its recovery inputs.");
             return (current, false, false);
@@ -519,55 +535,69 @@ public partial class GameEngine
             byte[] requestBytes;
             bool hasReady;
             var created = DateTime.UtcNow.ToString("O");
-            await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
-                ThrowIfRepairSessionReplaced(lease, generation);
-                await RequireSpiritualOriginalRequestAsync(lease, context);
-                var current = await _validator.ReadSpiritualWoundContinuationAsync(lease, request);
-                if (firstSuccessorPublication)
+                var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                Exception? requestFailure = null;
+                try
                 {
-                    var transport = await TryReconcileDependentSpiritualTransportAsync(lease, context, current);
-                    if (!transport.Allowed)
-                        return SpiritualContinuationAdmission.RetryableHeld;
-                    current = transport.Current;
-                    issues = current.Issues;
-                }
-                RequireSameSpiritualContinuation(current.Request, request);
-                var existing = await _fs.ReadFileBytesAsync(lease, ValidationRepairRequestPath);
-                if (existing is not null)
-                {
-                    var existingRoot = ReadSpiritualTransportRoot(DecodeSpiritualTransport(existing));
-                    RequireSpiritualTransportIdentity(existingRoot, context);
-                    if (existingRoot[SpiritualWoundContinuationProtocol.EnvelopeName] is not { } envelope)
-                        throw new InvalidDataException("An unrelated repair request cannot be replaced by continuation.");
-                    RequireSameSpiritualContinuation(SpiritualWoundContinuationProtocol.ReadRequest(
-                        JsonSerializer.SerializeToElement(envelope)), request);
-                }
-                var report = new ValidationRepairRequest
-                {
-                    SessionId = context.SessionId, RequestId = context.RequestId, TurnNumber = context.TurnNumber,
-                    Source = source, DetectedAtUtc = created, RevalidationAttempt = ++attempt,
-                    FullTurnResubmissionRequired = false, SpiritualWoundContinuation = request,
-                    GmInstructions = "Продолжи исходный ход по spiritualWoundContinuation. Верни закрытый конверт через " +
-                        "validation_repair_ready.json с исходными sessionId, requestId и turnNumber. Не повторяй ход, " +
-                        "не меняй действия или кубики. Текст сцены остаётся в output/narrative_response.json.response. " +
-                        "В dependent_draft исправляй только выданные JSON pointers и верни пустой woundDecisions. " +
-                        "Ready завершает только текущий выданный набор исправлений. Клиент может выдать следующий " +
-                        "dependent_draft: ответь отдельно с его новым continuationId, сохраняя уже выбранную рану.",
-                    Errors = issues.Select(issue => new ValidationRepairIssue
+                    ThrowIfRepairSessionReplaced(lease, generation);
+                    await RequireSpiritualOriginalRequestAsync(lease, context);
+                    var current = await _validator.ReadSpiritualWoundContinuationAsync(lease, request);
+                    if (firstSuccessorPublication)
                     {
-                        Code = issue.Code ?? "spiritual_continuation_invalid", FilePath = issue.FilePath,
-                        Severity = issue.Severity.ToString(), Category = issue.Category.ToString(),
-                        Message = issue.Message, Actor = issue.Actor, Section = issue.Section,
-                        Expected = issue.Expected, Actual = issue.Actual, RepairHint = issue.RepairHint
-                    }).ToList()
-                };
-                requestBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(report, JsonOpts));
-                if (!SameSpiritualBytes(existing, await _fs.ReadFileBytesAsync(lease, ValidationRepairRequestPath)))
-                    throw new InvalidDataException("The spiritual repair request changed before publication.");
-                await _fs.WriteFileAtomicBytesAsync(lease, ValidationRepairRequestPath, requestBytes);
-                firstSuccessorPublication = false;
-                hasReady = _fs.FileExists(lease, ValidationRepairReadyPath);
+                        var transport = await TryReconcileDependentSpiritualTransportAsync(lease, context, current);
+                        if (!transport.Allowed)
+                            return SpiritualContinuationAdmission.RetryableHeld;
+                        current = transport.Current;
+                        issues = current.Issues;
+                    }
+                    RequireSameSpiritualContinuation(current.Request, request);
+                    var existing = await _fs.ReadFileBytesAsync(lease, ValidationRepairRequestPath);
+                    if (existing is not null)
+                    {
+                        var existingRoot = ReadSpiritualTransportRoot(DecodeSpiritualTransport(existing));
+                        RequireSpiritualTransportIdentity(existingRoot, context);
+                        if (existingRoot[SpiritualWoundContinuationProtocol.EnvelopeName] is not { } envelope)
+                            throw new InvalidDataException("An unrelated repair request cannot be replaced by continuation.");
+                        RequireSameSpiritualContinuation(SpiritualWoundContinuationProtocol.ReadRequest(
+                            JsonSerializer.SerializeToElement(envelope)), request);
+                    }
+                    var report = new ValidationRepairRequest
+                    {
+                        SessionId = context.SessionId, RequestId = context.RequestId, TurnNumber = context.TurnNumber,
+                        Source = source, DetectedAtUtc = created, RevalidationAttempt = ++attempt,
+                        FullTurnResubmissionRequired = false, SpiritualWoundContinuation = request,
+                        GmInstructions = "Продолжи исходный ход по spiritualWoundContinuation. Верни закрытый конверт через " +
+                            "validation_repair_ready.json с исходными sessionId, requestId и turnNumber. Не повторяй ход, " +
+                            "не меняй действия или кубики. Текст сцены остаётся в output/narrative_response.json.response. " +
+                            "В dependent_draft исправляй только выданные JSON pointers и верни пустой woundDecisions. " +
+                            "Ready завершает только текущий выданный набор исправлений. Клиент может выдать следующий " +
+                            "dependent_draft: ответь отдельно с его новым continuationId, сохраняя уже выбранную рану.",
+                        Errors = issues.Select(issue => new ValidationRepairIssue
+                        {
+                            Code = issue.Code ?? "spiritual_continuation_invalid", FilePath = issue.FilePath,
+                            Severity = issue.Severity.ToString(), Category = issue.Category.ToString(),
+                            Message = issue.Message, Actor = issue.Actor, Section = issue.Section,
+                            Expected = issue.Expected, Actual = issue.Actual, RepairHint = issue.RepairHint
+                        }).ToList()
+                    };
+                    requestBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(report, JsonOpts));
+                    if (!SameSpiritualBytes(existing, await _fs.ReadFileBytesAsync(lease, ValidationRepairRequestPath)))
+                        throw new InvalidDataException("The spiritual repair request changed before publication.");
+                    await _fs.WriteFileAtomicBytesAsync(lease, ValidationRepairRequestPath, requestBytes);
+                    firstSuccessorPublication = false;
+                    hasReady = _fs.FileExists(lease, ValidationRepairReadyPath);
+                }
+                catch (CoordinatedStatePublicationUncertainException uncertainty)
+                {
+                    requestFailure = uncertainty;
+                    throw;
+                }
+                finally
+                {
+                    await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease,
+                        completed: false, operationFailure: requestFailure);
+                }
             }
             PublishAgentConsoleValidationRepairSnapshot();
             if (!hasReady)
@@ -584,107 +614,136 @@ public partial class GameEngine
                 await EnsureRepairSessionCurrentAsync(generation);
                 if (_inputSource.KeyAvailable && _inputSource.ReadKey(intercept: true).Key == ConsoleKey.Escape)
                 {
-                    await using var cancelledLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                    ThrowIfRepairSessionReplaced(cancelledLease, generation);
-                    await RequireSpiritualOriginalRequestAsync(cancelledLease, context);
-                    await DeleteExactSpiritualTransportAsync(cancelledLease, ValidationRepairRequestPath, requestBytes);
-                    return SpiritualContinuationAdmission.Rejected;
+                    var cancelledLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                    Exception? cancellationFailure = null;
+                    try
+                    {
+                        ThrowIfRepairSessionReplaced(cancelledLease, generation);
+                        await RequireSpiritualOriginalRequestAsync(cancelledLease, context);
+                        await DeleteExactSpiritualTransportAsync(cancelledLease, ValidationRepairRequestPath, requestBytes);
+                        return SpiritualContinuationAdmission.Rejected;
+                    }
+                    catch (CoordinatedStatePublicationUncertainException uncertainty)
+                    {
+                        cancellationFailure = uncertainty;
+                        throw;
+                    }
+                    finally
+                    {
+                        await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, cancelledLease,
+                            completed: false, operationFailure: cancellationFailure);
+                    }
                 }
                 if (!_fs.FileExists(ValidationRepairReadyPath))
                 {
                     await Task.Delay(100);
                     continue;
                 }
-                await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                ThrowIfRepairSessionReplaced(lease, generation);
-                await RequireSpiritualOriginalRequestAsync(lease, context);
-                if (!SameSpiritualBytes(requestBytes, await _fs.ReadFileBytesAsync(lease, ValidationRepairRequestPath)))
-                    throw new InvalidDataException("The spiritual request was replaced while awaiting Ready.");
-                var readyBytes = await _fs.ReadFileBytesAsync(lease, ValidationRepairReadyPath);
-                if (readyBytes is null) continue;
-                SpiritualWoundContinuationResponse? response = null;
-                ValidationService.SpiritualWoundContinuationEvaluation? evaluation = null;
-                ValidationService.SpiritualWoundDependentProgressCommitResult? committedProgress = null;
+                var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                Exception? readyFailure = null;
                 try
                 {
-                    using var document = JsonDocument.Parse(DecodeSpiritualTransport(readyBytes));
-                    ValidateSpiritualTransportOuterKeys(document.RootElement);
-                    var root = JsonNode.Parse(document.RootElement.GetRawText())!.AsObject();
-                    if (root["sessionId"] is JsonValue session && session.TryGetValue<string>(out var sessionId) &&
-                        sessionId != context.SessionId)
-                        return SpiritualContinuationAdmission.Rejected;
-                    RequireSpiritualTransportIdentity(root, context);
-                    response = SpiritualWoundContinuationProtocol.ReadResponse(
-                        document.RootElement.GetProperty(SpiritualWoundContinuationProtocol.EnvelopeName));
-                    // A Ready completes its exact issued frontier, which may expose a separate request.
-                    if (request.Phase == "dependent_draft")
+                    ThrowIfRepairSessionReplaced(lease, generation);
+                    await RequireSpiritualOriginalRequestAsync(lease, context);
+                    if (!SameSpiritualBytes(requestBytes, await _fs.ReadFileBytesAsync(lease, ValidationRepairRequestPath)))
+                        throw new InvalidDataException("The spiritual request was replaced while awaiting Ready.");
+                    var readyBytes = await _fs.ReadFileBytesAsync(lease, ValidationRepairReadyPath);
+                    if (readyBytes is null) continue;
+                    SpiritualWoundContinuationResponse? response = null;
+                    ValidationService.SpiritualWoundContinuationEvaluation? evaluation = null;
+                    ValidationService.SpiritualWoundDependentProgressCommitResult? committedProgress = null;
+                    try
                     {
-                        var processed = await _validator.EvaluateAndCommitSpiritualWoundDependentResponseAsync(
-                            lease, request, response, expectedRequestBytes: requestBytes, expectedReadyBytes: readyBytes);
-                        evaluation = processed.Evaluation;
-                        committedProgress = processed.Progress;
-                        if (evaluation is null)
+                        using var document = JsonDocument.Parse(DecodeSpiritualTransport(readyBytes));
+                        ValidateSpiritualTransportOuterKeys(document.RootElement);
+                        var root = JsonNode.Parse(document.RootElement.GetRawText())!.AsObject();
+                        if (root["sessionId"] is JsonValue session && session.TryGetValue<string>(out var sessionId) &&
+                            sessionId != context.SessionId)
+                            return SpiritualContinuationAdmission.Rejected;
+                        RequireSpiritualTransportIdentity(root, context);
+                        response = SpiritualWoundContinuationProtocol.ReadResponse(
+                            document.RootElement.GetProperty(SpiritualWoundContinuationProtocol.EnvelopeName));
+                        // A Ready completes its exact issued frontier, which may expose a separate request.
+                        if (request.Phase == "dependent_draft")
                         {
-                            LogSpiritualContinuationIssues(committedProgress.Issues, "The response witness remains held for recovery.");
+                            var processed = await _validator.EvaluateAndCommitSpiritualWoundDependentResponseAsync(
+                                lease, request, response, expectedRequestBytes: requestBytes, expectedReadyBytes: readyBytes);
+                            evaluation = processed.Evaluation;
+                            committedProgress = processed.Progress;
+                            if (evaluation is null)
+                            {
+                                LogSpiritualContinuationIssues(committedProgress.Issues, "The response witness remains held for recovery.");
+                                return SpiritualContinuationAdmission.RetryableHeld;
+                            }
+                        }
+                        else
+                            evaluation = await _validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, request, response);
+                        issues = evaluation.Disposition == ValidationService.SpiritualWoundContinuationDisposition.Rejected
+                            ? evaluation.Issues : [];
+                    }
+                    catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                        error is (JsonException or InvalidOperationException or
+                        InvalidDataException or KeyNotFoundException or FormatException))
+                    {
+                        issues = [new ValidationIssue(ValidationRepairReadyPath, IssueSeverity.Error,
+                            error.Message, code: "spiritual_continuation_ready_invalid")];
+                    }
+                    if (issues.Count != 0 || response is null)
+                    {
+                        await DeleteExactSpiritualTransportAsync(lease, ValidationRepairReadyPath, readyBytes);
+                        break;
+                    }
+                    if (evaluation?.Disposition == ValidationService.SpiritualWoundContinuationDisposition.Advanced)
+                    {
+                        var committed = committedProgress!;
+                        if (committed.Disposition != "committed" || committed.NextRequest is null)
+                        {
+                            LogSpiritualContinuationIssues(committed.Issues, "The completed frontier remains held for recovery.");
                             return SpiritualContinuationAdmission.RetryableHeld;
                         }
+                        // Confirmed private progress activates B before exact old A transport cleanup.
+                        // No saved wound decision or ordinary advancement is consumed here.
+                        await DeleteExactSpiritualTransportAsync(lease, ValidationRepairReadyPath, readyBytes);
+                        await DeleteExactSpiritualTransportAsync(lease, ValidationRepairRequestPath, requestBytes);
+                        // Reuse only detached comparison data. The next publication loop releases this
+                        // lease and freshly authenticates B instead of first rebuilding it in the caller.
+                        request = committed.NextRequest;
+                        issues = committed.Issues;
+                        attempt = 0;
+                        firstSuccessorPublication = true;
+                        break;
                     }
-                    else
-                        evaluation = await _validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, request, response);
-                    issues = evaluation.Disposition == ValidationService.SpiritualWoundContinuationDisposition.Rejected
-                        ? evaluation.Issues : [];
-                }
-                catch (Exception error) when (error is JsonException or InvalidOperationException or
-                    InvalidDataException or KeyNotFoundException or FormatException)
-                {
-                    issues = [new ValidationIssue(ValidationRepairReadyPath, IssueSeverity.Error,
-                        error.Message, code: "spiritual_continuation_ready_invalid")];
-                }
-                if (issues.Count != 0 || response is null)
-                {
-                    await DeleteExactSpiritualTransportAsync(lease, ValidationRepairReadyPath, readyBytes);
-                    break;
-                }
-                if (evaluation?.Disposition == ValidationService.SpiritualWoundContinuationDisposition.Advanced)
-                {
-                    var committed = committedProgress!;
-                    if (committed.Disposition != "committed" || committed.NextRequest is null)
+                    var narrative = ReadSpiritualTransportRoot(await _fs.ReadFileAsync(lease, "output/narrative_response.json"));
+                    var scene = narrative["response"]?.GetValue<string>();
+                    var opened = await _validator.OpenC2PrivateSessionAsync(lease);
+                    using var owner = opened.Session;
+                    if (owner is null || (request.Phase == "decision" ? opened.Disposition != "offer" :
+                            opened.Disposition != "dependent_continuation"))
                     {
-                        LogSpiritualContinuationIssues(committed.Issues, "The completed frontier remains held for recovery.");
-                        return SpiritualContinuationAdmission.RetryableHeld;
+                        LogSpiritualContinuationIssues(opened.Issues, "The current response owner is unavailable.");
+                        return SpiritualContinuationAdmission.Rejected;
                     }
-                    // Confirmed private progress activates B before exact old A transport cleanup.
-                    // No saved wound decision or ordinary advancement is consumed here.
+                    var next = request.Phase == "decision"
+                        ? await owner.SubmitDecisionAsync(lease, response.WoundDecisions.Single(), scene)
+                        : await owner.ResumeDependentContinuationAsync(lease);
+                    owner.Dispose();
+                    var boundary = await ResolveSpiritualPrivateBoundaryAsync(lease, next);
+                    if (boundary != SpiritualContinuationAdmission.Admitted)
+                        return boundary;
                     await DeleteExactSpiritualTransportAsync(lease, ValidationRepairReadyPath, readyBytes);
                     await DeleteExactSpiritualTransportAsync(lease, ValidationRepairRequestPath, requestBytes);
-                    // Reuse only detached comparison data. The next publication loop releases this
-                    // lease and freshly authenticates B instead of first rebuilding it in the caller.
-                    request = committed.NextRequest;
-                    issues = committed.Issues;
-                    attempt = 0;
-                    firstSuccessorPublication = true;
-                    break;
+                    return SpiritualContinuationAdmission.Admitted;
                 }
-                var narrative = ReadSpiritualTransportRoot(await _fs.ReadFileAsync(lease, "output/narrative_response.json"));
-                var scene = narrative["response"]?.GetValue<string>();
-                var opened = await _validator.OpenC2PrivateSessionAsync(lease);
-                using var owner = opened.Session;
-                if (owner is null || (request.Phase == "decision" ? opened.Disposition != "offer" :
-                        opened.Disposition != "dependent_continuation"))
+                catch (CoordinatedStatePublicationUncertainException uncertainty)
                 {
-                    LogSpiritualContinuationIssues(opened.Issues, "The current response owner is unavailable.");
-                    return SpiritualContinuationAdmission.Rejected;
+                    readyFailure = uncertainty;
+                    throw;
                 }
-                var next = request.Phase == "decision"
-                    ? await owner.SubmitDecisionAsync(lease, response.WoundDecisions.Single(), scene)
-                    : await owner.ResumeDependentContinuationAsync(lease);
-                owner.Dispose();
-                var boundary = await ResolveSpiritualPrivateBoundaryAsync(lease, next);
-                if (boundary != SpiritualContinuationAdmission.Admitted)
-                    return boundary;
-                await DeleteExactSpiritualTransportAsync(lease, ValidationRepairReadyPath, readyBytes);
-                await DeleteExactSpiritualTransportAsync(lease, ValidationRepairRequestPath, requestBytes);
-                return SpiritualContinuationAdmission.Admitted;
+                finally
+                {
+                    await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease,
+                        completed: false, operationFailure: readyFailure);
+                }
             }
         }
     }

@@ -1,3 +1,28 @@
+## Original C2 GameEngine causal9 and runtime WIP — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT12 PASS48ed8618. Fresh Plan092250 succeeds
+12 cases/1 descriptor,0 tests,43.6307761s. Matching actual092357 completes
+**12/12:3 PASS,9 genuine FAIL**,118.7040011s; both cleanup flags, no timeout/skip/
+duplicate. Every unknown reaches actual member0/nonCommitted journal and original
+CSP: four write cuts and five deletion cuts. Seven ordinary Rejected and two
+RetryableHeld results wrongly lose that CSP. Dependent checkpoint failure also
+performs two Ready reads and one attempted mutation; no later publication/recovery/
+admission. All137–141 prior committed images, exact journals/foreign targets and
+24 distinct removed fixture roots validate. Three genuine ordinary Escape controls
+pass, including new B publication and one durable accepted-A progress row. No exact
+keycount or injected secondary close is claimed; method/root settlement is observed.
+
+[Engine raw packet](recovery/storage-migration-c2-engine-20261009/manifest.json)
+retains57 artifacts/originals80 historical source pins including compile0 separately.
+Runtime WIP changes exactly three demonstrated publisher catch filters and four
+existing owning lease scopes in GameEngine.SpiritualContinuation.cs. Retain first
+actual CSP through original physical close; helper uses completed:false, preserving
+existing ordinary close-failure behavior. No new lease, admission, cancellation,
+read-only classification, retry/selection rule or gameplay contract is introduced.
+Next independent source/raw/exact12 gate, fresh Plan12 and GREEN12. Fixture remains
+unchanged from48ed. Service26 is unchanged and not replayed. Whole accepted turn/C4,
+B2–B5, native Windows and actual secondary lease-close remain separately open.
+
 ## Original C2 GameEngine storage outcome — bounded fixture WIP, 2026-10-09
 
 Source #1553,T062/T064/T065. Service26 final independent Astra XHigh catalog/carrier
