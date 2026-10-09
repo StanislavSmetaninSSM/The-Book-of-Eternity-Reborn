@@ -1,0 +1,214 @@
+{
+  "scope": "Composed33 unique Explorer/Forge obligations, not one33 run",
+  "composition": {
+    "20261009-053250": 10,
+    "20261009-055028": 21,
+    "20261009-055816": 2
+  },
+  "runs": [
+    {
+      "run": "20261009-053250",
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "tests": {
+        "Total": 12,
+        "Executed": 12,
+        "Passed": 11,
+        "Failed": 1
+      },
+      "passedNames": [
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CompanionDirective_UpdatesNpcCoreWithoutException",
+        "BookOfEternityClient.Tests.AfterlifeArchiveActionStateTests.EnsureHealthyAsync_OutsideAfterlife_UnresolvedRequestRetainsReservationAndPendingFile",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDirective_UpdatesFactionCoreWithoutException",
+        "BookOfEternityClient.Tests.AfterlifeArchiveActionStateTests.EnsureHealthyAsync_OutsideAfterlife_MatchingReceiptWithoutReservation_ClearsStaleRequestFile",
+        "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgeReshape_WritesExistingForgeRequestAndCommitsRelicReroll",
+        "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgePromptAfterAnotherPendingCoreActionAppears_ReturnsPlayerFacingBlocker",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningPolitics_RealignmentPreviewCanCancelWithoutWritingPendingRequest",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCorrectedInputsReachPublication(mode: \"companion\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCorrectedInputsReachPublication(mode: \"leadership\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCorrectedInputsReachPublication(mode: \"realignment\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCorrectedInputsReachPublication(mode: \"attraction\")"
+      ]
+    },
+    {
+      "run": "20261009-055028",
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "tests": {
+        "Total": 22,
+        "Executed": 22,
+        "Passed": 21,
+        "Failed": 1
+      },
+      "passedNames": [
+        "BookOfEternityClient.Tests.AfterlifeArchiveCandidateServiceTests.RefreshFromCurrentStateAsync_MalformedCurrentSoulState_RetainsExistingManifest",
+        "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(mode: \"offering_throw\", uncertain: True)",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"faction\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(mode: \"treasury\", uncertain: False)",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"unequip\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"forge\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(mode: \"offering_false\", uncertain: True)",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication(reservation: True)",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"normalize\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"treasury\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"offering_feathers\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"candidate\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(mode: \"offering_throw\", uncertain: False)",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"offering_archive\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"offering_relic\")",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(mode: \"treasury\", uncertain: True)",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication(reservation: False)",
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"equip\")",
+        "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitRetainsCommittedFollowUp",
+        "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgeReshape_WritesExistingForgeRequestAndCommitsRelicReroll"
+      ]
+    },
+    {
+      "run": "20261009-055816",
+      "source": "4e31b15e3eaf391f18ad41300f51940309c1596c",
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "passedNames": [
+        "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement",
+        "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure"
+      ]
+    }
+  ],
+  "accepted": {
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_CompanionDirective_UpdatesNpcCoreWithoutException": {
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "run": "20261009-053250"
+    },
+    "BookOfEternityClient.Tests.AfterlifeArchiveActionStateTests.EnsureHealthyAsync_OutsideAfterlife_UnresolvedRequestRetainsReservationAndPendingFile": {
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "run": "20261009-053250"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_FactionDirective_UpdatesFactionCoreWithoutException": {
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "run": "20261009-053250"
+    },
+    "BookOfEternityClient.Tests.AfterlifeArchiveActionStateTests.EnsureHealthyAsync_OutsideAfterlife_MatchingReceiptWithoutReservation_ClearsStaleRequestFile": {
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "run": "20261009-053250"
+    },
+    "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgeReshape_WritesExistingForgeRequestAndCommitsRelicReroll": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgePromptAfterAnotherPendingCoreActionAppears_ReturnsPlayerFacingBlocker": {
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "run": "20261009-053250"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningPolitics_RealignmentPreviewCanCancelWithoutWritingPendingRequest": {
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "run": "20261009-053250"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCorrectedInputsReachPublication(mode: \"companion\")": {
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "run": "20261009-053250"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCorrectedInputsReachPublication(mode: \"leadership\")": {
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "run": "20261009-053250"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCorrectedInputsReachPublication(mode: \"realignment\")": {
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "run": "20261009-053250"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCorrectedInputsReachPublication(mode: \"attraction\")": {
+      "source": "554dfe119253f6607ff1b410dd7251d22337733b",
+      "run": "20261009-053250"
+    },
+    "BookOfEternityClient.Tests.AfterlifeArchiveCandidateServiceTests.RefreshFromCurrentStateAsync_MalformedCurrentSoulState_RetainsExistingManifest": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(mode: \"offering_throw\", uncertain: True)": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"faction\")": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(mode: \"treasury\", uncertain: False)": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"unequip\")": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"forge\")": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(mode: \"offering_false\", uncertain: True)": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication(reservation: True)": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"normalize\")": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"treasury\")": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"offering_feathers\")": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"candidate\")": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(mode: \"offering_throw\", uncertain: False)": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"offering_archive\")": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"offering_relic\")": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback(mode: \"treasury\", uncertain: True)": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication(reservation: False)": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput(mode: \"equip\")": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitRetainsCommittedFollowUp": {
+      "source": "18475a51455b53c102e3919f24a42374df5e425a",
+      "run": "20261009-055028"
+    },
+    "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement": {
+      "source": "4e31b15e3eaf391f18ad41300f51940309c1596c",
+      "run": "20261009-055816"
+    },
+    "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure": {
+      "source": "4e31b15e3eaf391f18ad41300f51940309c1596c",
+      "run": "20261009-055816"
+    }
+  }
+}

@@ -1,3 +1,26 @@
+## Explorer/Forge bounded result — 2026-10-09
+
+Runtime5d68 and fixture4e31 now have **composed33 unique Linux passing obligations**:
+10 retained at554/053250 +21 at18475/055028 + corrected2 at4e31/055816. This is not
+a single33 run. Historical partial11P1F19unrun, later21P1 stale-baseline failure and
+separate unoffered-reroll fixture failure remain preserved and are not relabelled PASS.
+
+Independent source/fixture/exact2 gate passed4e31. Fresh Plan055714 builds integration
+and selects2/2 descriptors,0 execution (40.3606907s). Actual055816 completes2PASS,
+11.2357816s, bothcleanup/no skip/duplicate/timeout. Root confirms authentic retained
+primary-Unknown journal/foreign bytes, actual committed lockAtCut==lockAfter, truthful
+Failed/private warning/no-repeat, retired form, no later canonical work,2 explicit roots
+removed. Original reroll cancellation now proves actually offered and changed suggestion,
+then preserves canonical entitlement/pending absence. No product-code change was needed
+for either stale fixture. Other21 were retained without replay.
+
+Fresh both-project discovery055912 at4e31: **524 categories/11319 methods-files valid**,
+0 tests,19.7460756s, bothcleanup. [Full source-pinned raw packet](recovery/storage-migration-explorer-archive-20261009/manifest.json).
+Final independent raw/carrier gate is pending. No whole-game/native Windows/secondary-close
+fault claim; sibling browser projections retain source-only qualification. Next authorized
+family is Ready/worker/audit/proposal; C2, F16, F18, concrete owned closes, nested Prepared
+consumer trace and whole-selection reconciliation remain open. B2–B5 stay paused.
+
 ## Explorer final fixture corrections — unbuilt/unrun, 2026-10-09
 
 Independent raw review accepts055028 as21PASS/1 stale lock-baseline fixture failure,

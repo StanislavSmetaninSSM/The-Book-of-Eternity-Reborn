@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-explorer-forge-unknown-current",
-      "reason": "Correct only the stale pre-Submit UI-lock byte oracle to the real committed lock at the fault after complete21P1fixtureF at18475; one actual original browser case.",
+      "reason": "Corrected original browser primary-Unknown case PASS4e31/055816: exact committed lock at fault retained, safe Failed/no-repeat and form retirement, no later work. Earlier stale pre-Submit oracle failure preserved.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -14,7 +14,7 @@
     },
     {
       "category": "portable-explorer-reroll-current-fixture",
-      "reason": "Positive menu oracle failed atd968/055451 because two-form seed cannot offer reroll; add third valid distinct form before genuine bootstrap and retain cancellation/entitlement assertions. One case, no runtime change.",
+      "reason": "Original cancellation PASS4e31/055816 after stale two-form seed failured968/055451; genuine offered reroll, exhausted next menu, changed suggestion and unchanged canonical entitlement/pending absence. Fixture-only correction.",
       "contracts": [
         "#1553",
         "T064-STORAGE-CUTS",

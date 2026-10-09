@@ -1,3 +1,9 @@
+## Explorer/Forge bounded verification — 2026-10-09
+
+Composed33 unique Linux PASS =10@554+21@18475+2@4e31; no single33 run.
+Both stale fixtures corrected with positive oracles; final raw/carrier review pending.
+Catalog524/11319 valid0 at4e31. T061–T065 remain open; B2–B5 paused.
+
 ## Current resumed checkpoint — 2026-10-09
 
 Owner resumed work after model switch. Explorer actual22 at18475 is21PASS/1 stale fixture
