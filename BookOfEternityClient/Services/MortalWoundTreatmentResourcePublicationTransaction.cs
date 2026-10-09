@@ -554,7 +554,10 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             {
                 await DisposeLeaseAsync(
                     writeLease,
-                    result is not null && ClosesReceipt(result));
+                    result is not null &&
+                    (ClosesReceipt(result) ||
+                     result is { IsValid: true, Outcome:
+                         MortalWoundTreatmentPublicationTransactionOutcome.PublishedAgreementAdvanced }));
             }
         }
     }
@@ -1689,7 +1692,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         {
             if (Volatile.Read(ref _publicationUncertainty) is { } uncertainty)
                 uncertainty.SourceException.Data["TreatmentPublicationLeaseCloseFailure"] = closingFailure;
-            // The one-use registry state is already terminal or uncertainty is retained. A lock-handle close
+            // A confirmed publication outcome or uncertainty is already retained. A lock-handle close
             // failure must not turn an exact resource commit into a second spend.
         }
     }

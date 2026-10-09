@@ -1,3 +1,15 @@
+## Treatment progression known advance close guard installed — WIP, 2026-10-09
+
+Exactly Advancefinally suppresseslateclose also for actualvalid
+PublishedAgreementAdvanced result. ClosesReceipt/ObserveClosure untouched; active
+receipt remains Probe->Complete. Existing uncertainty latch/diagnostic marker
+unchanged. SharedDispose helper comment now describes confirmedoutcome, body
+unchanged. Original2PASS1causalFAIL packet19artifacts18pins retainedbdb53e61,
+ref/raw21 verified. Runtime UNBUILT/UNRUN; combinedcausal/source/exact3 gate then
+freshGREEN3, nooldownerreplay. Treatmentgamecontract/GMprompts/schema unchanged.
+EngineFinalfixture2f3bbcd5 independentPASS remains uninstalled; Savefixture review.
+T061–T065/B2–B5/native andremainingmethodcensus stillopen.
+
 ## Treatment progression original baseline actual2PASS/1causalFAIL — WIP, 2026-10-09
 
 FreshPlan2306373/1 at17e1d5a7,0exec49.2757138s; actual2307523complete=
