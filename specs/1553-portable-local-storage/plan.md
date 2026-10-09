@@ -1,3 +1,20 @@
+## Original terminal wait runtime — WIP/unbuilt/unrun, 2026-10-09
+
+After six reached ownership failures, the original method retains keyTask and always
+cancels then individually awaits both actual tasks before CTS disposal. Actual wait
+CSP has precedence over ordinary Status/key failures; exact same object carries each
+actual secondary exception. Completed comes only from the settled original wait task;
+cleanup cancellation and ordinary input/presentation failures cannot reverse it, while
+an actual Escape preserves Cancelled. Without a terminal completion, original Status
+or wait failure escapes; ordinary key failure retains the original best-effort policy.
+No canonical logging/recovery is added in settlement, no input API or clock changes.
+
+Only GameEngine.TurnLifecycle.cs changes. Existing seven fixture rows and source guard
+are byte-identical to2cd; source/RED-packet/exact8 review precedes fresh both-project
+Plan8 and actual8. No native blocking-input interruption guarantee, outer response
+cleanup or full migration acceptance. Client-owned task/outcome handling changes no
+GM prompt, gameplay schema or authored contract; no GM documentation update needed.
+
 ## Original terminal wait causal RED — 2026-10-09
 
 Independent fixture/exact8 PASS2cd44cd4b081b2bc774ce85947da55412c289761.

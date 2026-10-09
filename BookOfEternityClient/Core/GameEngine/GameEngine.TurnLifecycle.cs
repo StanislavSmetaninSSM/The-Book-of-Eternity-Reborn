@@ -498,14 +498,20 @@ public partial class GameEngine
             return TerminalSignalWaitOutcome.Cancelled;
         }, cts.Token);
 
+        Task? keyTask = null;
+        Exception? presentationFailure = null;
+        Exception? waitFailure = null;
+        Exception? keyFailure = null;
+        TerminalSignalWaitOutcome? terminalResult = null;
+        var escapeRequested = false;
         try
         {
-            var result = await AnsiConsole.Status()
+            await AnsiConsole.Status()
                 .Spinner(Spinner.Known.Dots12)
                 .SpinnerStyle(Style.Parse("cyan"))
                 .StartAsync(_loc.T("thinking"), async ctx =>
                 {
-                    _ = Task.Run(() =>
+                    keyTask = Task.Run(() =>
                     {
                         while (!cts.Token.IsCancellationRequested)
                         {
@@ -514,6 +520,7 @@ public partial class GameEngine
                                 var key = _inputSource.ReadKey(intercept: true);
                                 if (key.Key == ConsoleKey.Escape)
                                 {
+                                    escapeRequested = true;
                                     cts.Cancel();
                                     return;
                                 }
@@ -546,12 +553,55 @@ public partial class GameEngine
                     }
                 });
 
-            return cts.IsCancellationRequested ? TerminalSignalWaitOutcome.Cancelled : result;
+        }
+        catch (Exception failure)
+        {
+            presentationFailure = failure;
         }
         finally
         {
             if (!cts.IsCancellationRequested)
                 cts.Cancel();
+
+            // A renderer failure can bypass the delegate's await. Both original
+            // tasks still belong to this scope, including a synchronous key read.
+            // Cancellation requests settlement; it does not establish settlement.
+            try { terminalResult = await waitTask; }
+            catch (OperationCanceledException) when (cts.IsCancellationRequested)
+            { terminalResult = TerminalSignalWaitOutcome.Cancelled; }
+            catch (Exception failure) { waitFailure = failure; }
+            try { if (keyTask != null) await keyTask; }
+            catch (Exception failure) { keyFailure = failure; }
+        }
+
+        var uncertainty = waitFailure as CoordinatedStatePublicationUncertainException
+            ?? presentationFailure as CoordinatedStatePublicationUncertainException
+            ?? keyFailure as CoordinatedStatePublicationUncertainException;
+        if (uncertainty != null)
+        {
+            RetainSecondaryFailure(uncertainty, "TerminalWaitTaskFailure", waitFailure);
+            RetainSecondaryFailure(uncertainty, "TerminalWaitPresentationFailure", presentationFailure);
+            RetainSecondaryFailure(uncertainty, "TerminalWaitKeyFailure", keyFailure);
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(uncertainty).Throw();
+        }
+
+        // Only the original waiter establishes Completed. Cleanup cancellation
+        // and an observed ordinary key/renderer failure cannot reverse that fact.
+        if (terminalResult == TerminalSignalWaitOutcome.Completed)
+            return escapeRequested ? TerminalSignalWaitOutcome.Cancelled : TerminalSignalWaitOutcome.Completed;
+
+        var originalFailure = presentationFailure ?? waitFailure;
+        if (originalFailure != null)
+        {
+            RetainSecondaryFailure(originalFailure, "TerminalWaitTaskFailure", waitFailure);
+            RetainSecondaryFailure(originalFailure, "TerminalWaitKeyFailure", keyFailure);
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(originalFailure).Throw();
+        }
+        return TerminalSignalWaitOutcome.Cancelled;
+
+        static void RetainSecondaryFailure(Exception original, string key, Exception? secondary)
+        {
+            if (secondary != null && !ReferenceEquals(original, secondary)) original.Data[key] = secondary;
         }
     }
 
