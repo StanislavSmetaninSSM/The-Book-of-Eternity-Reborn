@@ -13,9 +13,14 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Theory]
-    [InlineData("ascension", false)] [InlineData("ascension", true)]
-    [InlineData("finalized_replay", false)] [InlineData("finalized_replay", true)]
-    public async Task OriginalEngineAscensionAndFinalizedReplayOwnersRetainGenuineUncertaintyOnClose(string mode, bool uncertain)
+    [InlineData(false)] [InlineData(true)]
+    public Task OriginalEngineAscensionOwnerRetainsGenuineUncertaintyOnClose(bool uncertain) => RunOriginalFinalOwnerCloseAsync("ascension", uncertain);
+
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public Task OriginalEngineFinalizedReplayOwnerRetainsGenuineUncertaintyOnClose(bool uncertain) => RunOriginalFinalOwnerCloseAsync("finalized_replay", uncertain);
+
+    private async Task RunOriginalFinalOwnerCloseAsync(string mode, bool uncertain)
     {
         Assert.True(OperatingSystem.IsLinux());
         using var cut = new CleanupPublicationCut();
@@ -69,6 +74,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         cut.Attach(files);
         if (context != null)
         {
+            var originalCommandBytes = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+            var originalPendingBytes = await files.ReadFileBytesAsync(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
             var refresh = await InvokePrivateTaskResultAsync(engine, "RefreshAcceptedTurnCanonicalStateForValidationAsync", HeldTreatmentPipelineContext.Turn, snapshotContext);
             var returnedTransaction = refresh.GetType().GetProperty("TreatmentResourcePublicationTransaction", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!.GetValue(refresh);
             await using var disposedTransaction = returnedTransaction as IAsyncDisposable;
@@ -80,11 +87,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             var finalized = await transaction.CompleteAsync(files);
             Assert.True(finalized.IsValid); Assert.Empty(finalized.Issues);
             Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Finalized, finalized.Outcome);
+            // A durable retry restores the exact real submitted bytes after the real receipt has finalized.
+            await files.WriteFileAtomicBytesAsync(AcceptedMechanicsPlan.WoundCommandPath, originalCommandBytes);
+            if (originalPendingBytes != null) await files.WriteFileAtomicBytesAsync(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, originalPendingBytes);
             using var command = JsonDocument.Parse(LocalSettingsPreparation.DecodeText((await files.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath))!));
-            using var pending = JsonDocument.Parse(LocalSettingsPreparation.DecodeText((await files.ReadFileBytesAsync(WoundAcceptedTurnSnapshotContract.PendingResolutionPath))!));
+            using var pending = originalPendingBytes == null ? null : JsonDocument.Parse(LocalSettingsPreparation.DecodeText((await files.ReadFileBytesAsync(WoundAcceptedTurnSnapshotContract.PendingResolutionPath))!));
             var history = WoundHistoryState.Parse(await files.ReadFileAsync(WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
             Assert.True(history.IsValid);
-            var catalog = MortalWoundTreatmentPersistedRequestCatalog.Parse(command.RootElement, pending.RootElement, history);
+            var catalog = MortalWoundTreatmentPersistedRequestCatalog.Parse(command.RootElement, pending?.RootElement, history);
             Assert.True(catalog.IsValid); Assert.Empty(catalog.HeldRequests);
             var actualRequest = Assert.Single(catalog.FinalizedRequests);
             Assert.Equal(context.Request.RequestFingerprint, actualRequest.RequestFingerprint);
@@ -191,7 +201,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var allowed = new[] { files.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath), files.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath) };
                 Assert.Equal(beforeFiles.Keys.Except(allowed).Order(StringComparer.Ordinal), afterFiles.Keys.Except(allowed).Order(StringComparer.Ordinal));
                 foreach (var pair in beforeFiles.Where(pair => !allowed.Contains(pair.Key, StringComparer.Ordinal))) Assert.Equal(pair.Value, afterFiles[pair.Key]);
-                var pendingAfter = JsonNode.Parse(LocalSettingsPreparation.DecodeText((await files.ReadFileBytesAsync(WoundAcceptedTurnSnapshotContract.PendingResolutionPath))!))!.AsObject();
+                var pendingAfterBytes = await files.ReadFileBytesAsync(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+                var pendingAfter = pendingAfterBytes == null ? null : JsonNode.Parse(LocalSettingsPreparation.DecodeText(pendingAfterBytes))!.AsObject();
                 Assert.False(MortalWoundTreatmentDurableSurfaceQuarantine.ContainsExactRequestRows(new JsonObject(), pendingAfter,
                     context!.Request.Coordinates.OperationKey, context.Request.Coordinates.AttemptId, context.Request.RequestFingerprint));
                 Assert.Empty(await new ValidationService(files, NullLogger<ValidationService>.Instance).ValidateAcceptedTurnCanonicalResourceMaterializationAsync());

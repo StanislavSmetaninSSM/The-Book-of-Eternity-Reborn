@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-proposal-store-owning-close-linux",
+      "reason": "T063/T065 independentfixture/design/exact4PASS4eacfec9 installedbyteidentical; originalProposalStore productionunchanged UNBUILT/UNRUN. Actualtypedresult/task/gen/rename/inbox/audit/samelease/knownlateclose/genuineCSP/refusalcontrols, no defaultnativebackend/workerprocess/durableACK. FreshPlan4 andactualoriginalbaseline4.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
+      "category": "portable-original-engine-finalized-replay-close-linux",
+      "reason": "T063/T065 independentlyapprovedcorrectedfixture2e1ec5c3 exactreplay2 installedbyteidentical; restagesactualrawsubmittedbytes afterrealFinalized, actualhistoryExactReplay/eligibilitymustpassbeforearm. Productionquarantineunchanged UNBUILT/UNRUN; freshcorrectedoriginal2 baseline withoutrepeatacceptedascensionknownbaseline. No fakehistory/receipt/native/B2/wholeflow.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
       "category": "portable-save-optional-images-root-linux",
       "reason": "T063/T065 independentlyapprovedfixture/design/exact2 PASSfcbd3064 installedbyteidentical. OriginalSaveunchanged UNBUILT/UNRUN; currentdefaultSavevalidation, optionalrootlinkvsnormalexactnames, realmanifest/observedrelative reads/fulloutsidebytes. SharedfreshPlan9/3 withTreatmentGREEN3+Engineoriginal4; separateactualSaveoriginal2 baseline. Noexternal-read claim/native/B2/fullSaveLoad.",
       "contracts": [
@@ -15,8 +41,8 @@
       ]
     },
     {
-      "category": "portable-original-engine-ascension-replay-close-linux",
-      "reason": "T063/T065 independentfixture/design/exact4 PASS2f3bbcd5 installedbyteidentical; actualmaxChaosSoul/currentquartet and finalizedheldhistoryExactReplay. Originalproductiontwoowners unchanged UNBUILT/UNRUN, exactraw maps/BOM-aware JSON onlypresentation/actualowner/cut/fullsettlement/noLater. NextonefreshPlanTreatmentGREEN3+Engineoriginal4 then separate actualruns. NoB2/native/fullgame/input/wholeflow claim.",
+      "category": "portable-original-engine-ascension-close-linux",
+      "reason": "T063/T065 source26eae3c4 retainsactualgenuineCSP+sameclose/noLater beforeordinarycatch. Original231602knownP/causalF and2unrelatedreplaypreparationFAIL immutable. Permanentexactascension2 selection, nextfreshGREEN2 only; no originalbaseline replay/native/B2/fullgame/knownlateclose.",
       "contracts": [
         "#1553",
         "FR-002",

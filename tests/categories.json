@@ -2,6 +2,57 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-proposal-store-owning-close-linux",
+      "responsibility": "Actual original ProposalStore owner4 viaexistingfixtureadmission localrename adapter ONLY: known actualbundle/inbox/derivedaudit+ordinarywarning, thensameownerreal knownlateclose; genuineCSPatderivedauditfirstIntent/member0 plussecondaryclose/noLater/Closing0; actualtaskbytesrefusal beforepublication. Realcurrentgen/task/proposal/actualowner samecallbacklease/witnesses/fullsettlement/staging+strictrootcleanup.",
+      "excludes": "No default descriptorbackend/native worker/backend process/daemon/liveGM/provider/durableledger/ACK/crashdurability/fullworker/B2-B5 qualification. Factoryonly noEnter/host/Run; adapterlocalrenameat2 isexplicitfixture-route, never defaultbackendqualification. Known publisheddecision requires actual result creation aftercallbacks, notonlyrename.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.ProposalStore.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalProposalStoreRetainsActualPublishedWarningAndStopsOnUncertainty"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-original-engine-finalized-replay-close-linux",
+      "responsibility": "Actual original finalized treatment quarantine owner2 known/genuineCSP+secondaryclose. Actual heldcommand/pending bytes preserved BEFORErealrefresh/Probe/CompleteFinalized, exactbytesrestaged asdurable retry, historyownedcatalog0held1finalized/ExactReplay/result+narrative validated BEFOREarm. OriginalfirstIntent/member0/actualowninglease/fullsettlement/noLater/Closing0/generation/strictroots. Knownexactcommand/pendingremoved andallotherGameSession bytes (wounds/resources/history/spends) unchanged.",
+      "excludes": "Durable retry/quarantine storageowner only; initial2 preparationFAIL preserved. No fulltreatment/game/B2-B5/nativeWindows/provider/GM/workerprocess/input/knownlateclose/wholeflowatomicity qualification. Actualrestagedsubmittedbytes disclosed, no syntheticreceipt/historyauthority.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.OriginalFinalOwnersClose.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineFinalizedReplayOwnerRetainsGenuineUncertaintyOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-save-optional-images-root-linux",
       "responsibility": "Original typedSave2 normal optionalimages and linkedoptionalroot: defaultSavevalidation/actualgeneration, real Committed archive/exact manifest payload-key/hash/length coverage. Normal exactLinux images/npcs and uppercaseScenes preserved/observedreads; lower scenes ephemeral excluded. Linkedimagesroot skipped consistentlywithoptional AddDirectory root policy,0relativeimages reads, no external seededpath/byte changes/linkchange; originallease/privatestaging/strictrootcleanup.",
       "excludes": "Optionalimagesroot only; no completeSave/Load/nativeWindows/provider/imagegeneration/desktop/game/B2-B5/legacy-savequalification. No externalread demonstrated inoriginal: admissionmayreject before file read, originalfalse/result errors causallyqualify availability risk only.",
@@ -27,8 +78,8 @@
       ]
     },
     {
-      "id": "portable-original-engine-ascension-replay-close-linux",
-      "responsibility": "Two actual original Engine owners4 known/genuineCSP+sameownerlateclose: real maximalEnlightenment ChaosSoul/currentquartet ascension and actual heldtreatment refresh->Probe->CompleteFinalized->catalog0held1finalized->historyExactReplay quarantine. OriginalfirstIntent/member0/actualhoistedlease/fullsettlement/noLater/Closing0/generation/strictroots. KnownactualShining/soul/resourcevalidator/ASCENSIONstory/lore/refresh and exactcommand/pendingquarantine/allotherSessionbytes unchanged.",
+      "id": "portable-original-engine-ascension-close-linux",
+      "responsibility": "Actual original Engine ascension owner2 known/genuineCSP+secondaryclose: real maxChaosSoul/currentquartet, originalfirstIntent/member0/lease/fullsettlement/noLater/Closing0/generation. KnownactualShining/soul/currentresourcevalidator/ASCENSIONstory/lore/runtime. Sourcegate beforeGREEN.",
       "excludes": "Storage/lifetime only; no fullgame/B2-B5/nativeWindows/provider/GM/process/input qualification. Ascension invokesordinary console RenderAscensionTransition, notnativeUIprocess. Knowncontrols no closer. No wholeflowatomicity: prior publications allowed. No v3/syntheticjournal fixture.",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
@@ -47,7 +98,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineAscensionAndFinalizedReplayOwnersRetainGenuineUncertaintyOnClose"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineAscensionOwnerRetainsGenuineUncertaintyOnClose"
           ]
         }
       ]

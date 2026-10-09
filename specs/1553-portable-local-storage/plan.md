@@ -1,3 +1,21 @@
+## Corrected replay2 and original ProposalStore4 fixtures installed — test-first WIP, 2026-10-09
+
+Independentfixture/design gates PASS2e1ec5c3 /4eacfec9 installedbyte-identical.
+Permanentascension2/replay2 wrappers callprivatecommonharness; oldcombined4
+selection retired (immutableinitialruntime1knownP1causalF2prepFAIL retained).
+Replay capturesactualsubmittedcommand/pendingbytes BEFORErefresh; afterreal
+Probe->CompleteFinalized restages exactrawbytes asdiscloseddurableretry, actual
+history-ownedcatalog0held1finalized/ExactReplay/result/narrative prerequisite.
+Originalquarantine unchanged; correctedoriginal2 baseline next, notoldascension
+baseline replay. ProposalStore factoryonly existinglocalrenameadapter, noEnter/
+host/worker/ledger/ACK; actualcurrenttask/gen/proposal/bundle/inbox/derivedaudit
+andordinarywarning, sameactualowner/knownlateclose; genuineCSPatderivedaudit/
+secondary/noLater/refusal/fullsettlement/staging+strictroot. OriginalStoreunchanged.
+Saveguard ordering correction preservedbeforebuild; finalsourcegate next.
+One freshintegrationPlan10/4 then separateactualascensionGREEN2/SaveGREEN2/
+replayoriginal2/Proposaloriginal4. TreatmentGREEN3 unchanged notrerun.
+T061–T065/B2–B5/native/wholemigration remainopen; noGM-facing contractchange.
+
 ## Optional images root admission ordering corrected before build — WIP, 2026-10-09
 
 Independent source review traces actualRED failure to ResolvePath("images") BEFORE
