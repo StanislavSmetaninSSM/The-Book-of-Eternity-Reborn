@@ -130,6 +130,24 @@ public partial class FileSystemManager
         return paths;
     }
 
+    // Preserve the host's original top-level wildcard selection before validating entries.
+    internal IReadOnlyList<string> EnumerateCanonicalLocalDirectoryFiles(
+        CanonicalWriteLease lease, string relativeRoot, string searchPattern)
+    {
+        EnsureCanonicalWriteLeaseActive(lease);
+        VerifyCurrentSessionOperation(lease);
+        EnsureSafeCanonicalRelativePath(relativeRoot);
+        var scope = new TrustedLocalFileScope([GameSessionPath]);
+        var root = scope.ValidateDirectory(ResolvePath(relativeRoot));
+        var files = Directory.Exists(root)
+            ? Directory.EnumerateFiles(root, searchPattern, SearchOption.TopDirectoryOnly)
+                .Select(path => scope.ValidateFile(path))
+                .Select(path => GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows())).ToArray()
+            : [];
+        VerifyCurrentSessionOperation(lease);
+        return files;
+    }
+
     private static IReadOnlyList<string> EnumerateLocalTreeFiles(TrustedLocalFileScope scope, string root,
         Func<string, bool>? exclude = null, bool jsonOnly = false, List<string>? inspectedDirectories = null,
         bool recursive = true)

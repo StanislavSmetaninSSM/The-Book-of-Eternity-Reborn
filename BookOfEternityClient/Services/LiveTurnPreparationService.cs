@@ -34,6 +34,17 @@ internal sealed class LiveTurnPreparationService
         QteSceneService.QteOfferPath
     };
 
+    private static readonly string[] SnapshotExcludedFiles =
+    [
+        TurnRequestPath, PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,
+        PendingTurnStateService.PendingDiceStatePath,
+        "game_state/control/gm_bridge_status.json", "game_state/control/gm_daemon_status.json",
+        "game_state/control/gm_trajectory_ledger.jsonl", "game_state/control/validation_repair_request.json",
+        "game_state/control/validation_repair_ready.json", "game_state/control/terminal_protocol_failure_request.json",
+        "game_state/control/validation_auto_rollback_report.json", "game_state/control/local_ui_session_lock.json",
+        "game_state/history/chat_log.json"
+    ];
+
     internal static readonly JsonSerializerOptions ManifestJsonOptions = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
     internal static readonly JsonSerializerOptions ManifestHashJsonOptions = new()
@@ -75,6 +86,7 @@ internal sealed class LiveTurnPreparationService
     private async Task<LiveTurnPreparationResult> PrepareUnderLeaseAsync(
         FileSystemManager.CanonicalWriteLease writeLease, LiveTurnPreparationOptions options)
     {
+        ReadSignedSnapshotInventory(writeLease);
         CleanupPreparedTurnArtifacts(writeLease);
         ClearStalePendingDiceState(writeLease);
 
@@ -225,45 +237,32 @@ internal sealed class LiveTurnPreparationService
         return root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
     }
 
-    private IEnumerable<string> EnumerateSnapshotFiles(FileSystemManager.CanonicalWriteLease writeLease)
+    private IReadOnlyList<string> ReadSignedSnapshotInventory(FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var relative in _fs.EnumerateFiles(writeLease, "*"))
-        {
-            if (!SnapshotRoots.Any(root => IsPathInsideRoot(relative, root)) &&
-                !OptionalOutputFiles.Contains(relative, StringComparer.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            if (!ShouldExcludeSnapshotFile(relative))
-                files.Add(relative);
-        }
-
-        return files;
+        var candidates = _fs.EnumerateFiles(writeLease, "*")
+            .Where(relative => SnapshotRoots.Any(root => IsPathInsideRoot(relative, root)) ||
+                OptionalOutputFiles.Contains(relative, StringComparer.OrdinalIgnoreCase) ||
+                SnapshotExcludedFiles.Contains(relative, StringComparer.OrdinalIgnoreCase)).ToArray();
+        PendingTurnSnapshotAuthority.RequireExactSignedPaths(candidates
+            .Concat(EnumerateStoryContinuityFiles(writeLease))
+            .Concat(PendingTurnSnapshotPathPresenceV1.LogicalPaths)
+            .Concat(OptionalOutputFiles)
+            .Concat(SnapshotExcludedFiles));
+        return candidates;
     }
+
+    private IEnumerable<string> EnumerateSnapshotFiles(FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadSignedSnapshotInventory(writeLease).Where(relative => !ShouldExcludeSnapshotFile(relative))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
     private static bool IsPathInsideRoot(string relativePath, string root) =>
         string.Equals(relativePath, root, StringComparison.OrdinalIgnoreCase) ||
         relativePath.StartsWith($"{root}/", StringComparison.OrdinalIgnoreCase);
 
     private static bool ShouldExcludeSnapshotFile(string relative) =>
-        string.Equals(relative, TurnRequestPath, StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, PendingTurnSnapshotManifestPath, StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
+        SnapshotExcludedFiles.Contains(relative, StringComparer.OrdinalIgnoreCase) ||
         relative.StartsWith($"{PendingTurnSnapshotDirectory}/", StringComparison.OrdinalIgnoreCase) ||
         relative.StartsWith("game_state/control/gm_context_pack/", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, PendingTurnStateService.PendingDiceStatePath, StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/gm_daemon_status.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/gm_trajectory_ledger.jsonl", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/validation_repair_request.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/validation_auto_rollback_report.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/local_ui_session_lock.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
         relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase);
 
     private async Task SnapshotFileIfPresentAsync(

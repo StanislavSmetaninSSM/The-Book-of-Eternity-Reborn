@@ -1,3 +1,26 @@
+## F16 isolated original cleanup causal1 and minimal runtime — WIP, 2026-10-09
+
+Sourcebeac97e8 installedexact1 gatePASS; previoussigned/ZIP raw PASS (42/13 and20/24).
+Freshintegration Plan1725211/1,0execution53.1356390s; actual172626 **1executed1causalFAIL**,
+1/1complete8.0887501s,0skip/dup/timeout,bothcleanup. Actual cleanup_alias original
+prepare returnsnormally after changingallfiveoldartifactfiles, exactgeneration and
+sourcealias bytes retained; strictrootremoved. [Signed packet](recovery/storage-migration-signed-snapshot-20261009/manifest.json)
+addsisolatedbaseline/sourcepins without modifyingprevious22/15 evidence. No rerun15/22.
+
+Install independently accepted inertfourfile minimal correction: signer rawmapkeys/
+pathvalues/baselines beforeBuild normalization/byte reads, exact repeated paths allowed;
+firstLive raweligible+story+logical/output/excludedfixed names beforecleanup and again
+beforecasefold. Physicalexcludedfixedmatches included for inputcasealiases, copying
+stillexcludes them; exact13file equalities centralized with originalprefix/rollback
+predicates. ZIP selectedhost '*.zip' top-level cohort fullymaterialized/validated before
+metadata/deletion, exacthostrelativepaths, ValidateFile missingtolerant for original
+absence handling, actualread/deletion revalidate, sorting/perarchiveIO/legacyexternal
+fallback unchanged. Nativepayloadname/oldreader/valueequality contracts unchanged.
+RuntimeUNBUILT/UNRUN. Next frozen isolatedRAW/minimal-source/exact42 gate, freshboth
+projects Plan42, actual42 and matching fresh catalog, both finalpackets/independent
+carrier. Other engine/browser/incarnation/spiritual producers/cleanup/owners remain
+open, no broadF16/T061–T065/native/gameplay/aggregate claim; B2–B5 paused.
+
 ## F16 actual original RED and isolated cleanup-alias follow-up — WIP, 2026-10-09
 
 Source d4795b2a runtime5a unchanged; independent correctedfixture/exact41 PASS.

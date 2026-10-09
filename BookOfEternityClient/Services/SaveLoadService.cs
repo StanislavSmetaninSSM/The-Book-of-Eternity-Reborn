@@ -412,11 +412,15 @@ public partial class SaveLoadService
         if (!Directory.Exists(fullDir))
             return saves;
 
-        foreach (var saveFile in Directory.GetFiles(fullDir, "*.zip"))
+        var selected = ordinary
+            ? _fs.EnumerateCanonicalLocalDirectoryFiles(lease, saveDir, "*.zip")
+                .Select(path => (FullPath: _fs.ResolvePath(path), RelativePath: path)).ToArray()
+            : Directory.GetFiles(fullDir, "*.zip")
+                .Select(path => (FullPath: path, RelativePath: Path.GetRelativePath(_fs.GameSessionPath, path).Replace('\\', '/'))).ToArray();
+        foreach (var (saveFile, relativePath) in selected)
         {
             try
             {
-                var relativePath = Path.GetRelativePath(_fs.GameSessionPath, saveFile).Replace('\\', '/');
                 var info = ordinary
                     ? await ReadOrdinarySaveMetadataWithRetryAsync(lease, relativePath)
                     : await ReadOriginalSaveMetadataWithRetryAsync(saveFile);
@@ -1605,11 +1609,9 @@ public partial class SaveLoadService
             if (!Directory.Exists(fullDir))
                 return;
 
-            var files = Directory.GetFiles(fullDir, "*.zip")
-                .OrderByDescending(f => File.GetCreationTime(f))
+            var files = _fs.EnumerateCanonicalLocalDirectoryFiles(writeLease, saveDir, "*.zip")
+                .OrderByDescending(file => File.GetCreationTime(_fs.ResolvePath(file)))
                 .Skip(Math.Max(maxSaves, 0))
-                .Select(file => Path.GetRelativePath(_fs.GameSessionPath, file)
-                    .Replace('\\', '/'))
                 .ToArray();
 
             if (_hooks?.BeforeAutosaveDeletionAsync != null)

@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-signed-preparation-cleanup-alias-linux",
-      "reason": "T063/F16 independent inert correction/isolated original-cleanup alias fixture PASS. New1 installed UNBUILT/UNRUN; existing15 originalneighbors PASS, signed22 actual3P19causalF, ZIP4 actual4causalF retained. Finalfinite42=38signed+ZIP4, no wholeF16.",
+      "reason": "T063/F16 independent installed/raw/design PASSbeac; fresh41Plan, separateoriginalneighbors15PASS7.722s, signed22=3PASS19causalFAIL7.614s, isolatedactualcleanupalias1causalFAIL8.088s with fiveartifactfileschanged and strictrootcleanup. Only firstLiveproducer/signing preflight minimal runtime installed UNBUILT/UNRUN; finalsigned38 plusZIP4=42 finite, no other producer/native/wholeF16 claim.",
       "contracts": [
         "#1553",
         "FR-006",
@@ -13,7 +13,7 @@
     },
     {
       "category": "portable-signed-snapshot-spelling-linux",
-      "reason": "T063/R25/F16 test-first WIP: independent AstraXHigh design/draft/selection PASS; installed source unbuilt/unrun. Signed22+affected15=37 and separate ZIP4. Runtime unchanged; preservation is after clean original admission, before producer cleanup/copy. No whole F16/native/gameplay claim.",
+      "reason": "T063/F16 independent installed/raw/design PASSbeac; fresh41Plan, separateoriginalneighbors15PASS7.722s, signed22=3PASS19causalFAIL7.614s, isolatedactualcleanupalias1causalFAIL8.088s with fiveartifactfileschanged and strictrootcleanup. Only firstLiveproducer/signing preflight minimal runtime installed UNBUILT/UNRUN; finalsigned38 plusZIP4=42 finite, no other producer/native/wholeF16 claim.",
       "contracts": [
         "#1553",
         "FR-006",
@@ -23,7 +23,7 @@
     },
     {
       "category": "portable-signed-snapshot-authority-neighbors",
-      "reason": "T063/R25/F16 test-first WIP: independent AstraXHigh design/draft/selection PASS; installed source unbuilt/unrun. Signed22+affected15=37 and separate ZIP4. Runtime unchanged; preservation is after clean original admission, before producer cleanup/copy. No whole F16/native/gameplay claim.",
+      "reason": "T063/F16 independent installed/raw/design PASSbeac; fresh41Plan, separateoriginalneighbors15PASS7.722s, signed22=3PASS19causalFAIL7.614s, isolatedactualcleanupalias1causalFAIL8.088s with fiveartifactfileschanged and strictrootcleanup. Only firstLiveproducer/signing preflight minimal runtime installed UNBUILT/UNRUN; finalsigned38 plusZIP4=42 finite, no other producer/native/wholeF16 claim.",
       "contracts": [
         "#1553",
         "FR-006",
@@ -33,7 +33,7 @@
     },
     {
       "category": "portable-save-archive-exact-listing-linux",
-      "reason": "T063/R25/F16 test-first WIP: independent AstraXHigh design/draft/selection PASS; installed source unbuilt/unrun. Signed22+affected15=37 and separate ZIP4. Runtime unchanged; preservation is after clean original admission, before producer cleanup/copy. No whole F16/native/gameplay claim.",
+      "reason": "T063/F16 independent fixture/design/rawPASSbeac; actualZIP4 complete0PASS4causalFAIL7.135s: lostliteralname, silentlyskippedlink, realCommittedarchive deleted before later retentionrefusal. Initialcompilefailure0testsretained. Four strictrootsabsent. Minimal hostpattern/top-level selectedcohort exact/missing-tolerant preflight installed UNBUILT/UNRUN; perfileIO/order/nativefallback unchanged, nofullLoad/nativeWindows.",
       "contracts": [
         "#1553",
         "FR-006",

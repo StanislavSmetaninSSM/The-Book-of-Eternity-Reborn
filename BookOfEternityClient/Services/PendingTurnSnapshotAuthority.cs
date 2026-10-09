@@ -111,6 +111,21 @@ internal static class PendingTurnSnapshotAuthority
         return true;
     }
 
+    // Signing maps cannot represent changed spelling or distinct case aliases.
+    // Native payload names and the retained reader's normalization are separate contracts.
+    internal static void RequireExactSignedPaths(IEnumerable<string> paths)
+    {
+        var seen = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var path in paths)
+        {
+            if (!IsSafeRelativePath(path) || path != path.Trim() || path.Contains('\\'))
+                throw new InvalidDataException($"Signed snapshot path is not exactly representable: '{path}'.");
+            if (seen.TryGetValue(path, out var existing) && !string.Equals(path, existing, StringComparison.Ordinal))
+                throw new InvalidDataException($"Signed snapshot paths have distinct case aliases: '{existing}' and '{path}'.");
+            seen.TryAdd(path, path);
+        }
+    }
+
     internal static bool HasUsableManifestStructure<TManifest>(
         TManifest manifest,
         Func<TManifest, IDictionary<string, string>?> getFiles,
@@ -379,6 +394,16 @@ internal static class PendingTurnSnapshotAuthority
         bool hashSnapshotBytesExactly = true)
         where TManifest : class
     {
+        var rawFiles = getFiles(manifest);
+        var rawRollbackBackups = getRollbackBackups?.Invoke(manifest);
+        RequireExactSignedPaths((rawFiles?.Keys ?? [])
+            .Concat(rawFiles?.Values ?? [])
+            .Concat(getSnapshotFileHashes(manifest)?.Keys ?? [])
+            .Concat(getClientOwnedValidationHashes(manifest)?.Keys ?? [])
+            .Concat(rawRollbackBackups?.Keys ?? [])
+            .Concat(rawRollbackBackups?.Values ?? [])
+            .Concat(getRollbackBaselineFiles(manifest) ?? []));
+
         var payload = BuildAuthorityPayload(
             manifest,
             manifestHashOptions,
