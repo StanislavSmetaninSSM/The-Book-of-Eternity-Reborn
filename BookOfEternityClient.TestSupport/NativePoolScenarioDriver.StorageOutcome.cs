@@ -20,6 +20,7 @@ internal static partial class NativePoolScenarioDriver
         GmWorkerNativeLineageLaunch? owner = null;
         GmWorkerProcessHostLaunch? host = null;
         GmWorkerDurableExecution? execution = null;
+        GmWorkerRootExecutionLease? originalRootLease = null;
         Task<int>? originalCompletion = null;
         Task<GmWorkerTaskRunResult>? originalRun = null;
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
@@ -72,7 +73,25 @@ internal static partial class NativePoolScenarioDriver
             var auditPath = fs.ResolvePath(GmWorkerAuditLog.AuditLogPath);
             var bundleRoot = fs.ResolvePath(GmWorkerProposalStore.ProposalRoot + "/worker_proposal_" + task.TaskId);
             var ledgerPath = Path.Combine(root, ".boe_runtime", "worker-runs-v1", "state.json");
-            WorkerRunRecord Record() => GmWorkerRunLedgerCodec.Decode(new(root), File.ReadAllBytes(ledgerPath)).Entries.Single();
+            (WorkerRunRecord Record, string Source, byte[] StateBytes, byte[]? RetiredBytes, WorkerRunRetiredReference? Reference) ReadRecord()
+            {
+                var stateBytes = File.ReadAllBytes(ledgerPath);
+                var state = GmWorkerRunLedgerCodec.Decode(new(root), stateBytes);
+                var identity = execution!.Identity;
+                var active = state.Entries.SingleOrDefault(record => record.Identity.RunId == identity.RunId);
+                if (active != null)
+                {
+                    Require(active.Identity == identity && !state.Retired.Any(reference => reference.RunId == identity.RunId), "active record lost original identity or has duplicate retirement");
+                    return (active, "active", stateBytes, null, null);
+                }
+                var reference = state.Retired.Single(item => item.RunId == identity.RunId);
+                var bytes = File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(ledgerPath)!, "retired", reference.RunId + ".json"));
+                var retired = GmWorkerRunRecordCodec.Decode(bytes);
+                Require(retired.Identity == identity && reference.Epoch == identity.Epoch
+                    && reference.TaskKeySha256 == GmWorkerRunLedgerCodec.TaskKey(identity)
+                    && reference.RecordSha256 == GmWorkerRunLedgerCodec.Hash(bytes), "retired record lost exact original identity/hash/reference");
+                return (retired, "retired", stateBytes, bytes, reference);
+            }
             WorkerAuditEvent LastAudit() => GmWorkerJson.Deserialize<WorkerAuditEvent>(File.ReadLines(auditPath).Last().TrimStart('\uFEFF'))!;
             Dictionary<string, byte[]> Snapshot(string? path) => path != null && Directory.Exists(path)
                 ? Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories).Where(p => !p.EndsWith(".lock", StringComparison.Ordinal))
@@ -90,6 +109,7 @@ internal static partial class NativePoolScenarioDriver
                 _ => null
             };
             object? factsAtCut = null;
+            object? cleanupOwnerAtCut = null;
             Dictionary<string, byte[]>? bundleAtCut = null, workspaceAtCut = null;
             string? workspacePath = null, receiptPath = null;
             byte[]? receiptBytes = null;
@@ -101,7 +121,8 @@ internal static partial class NativePoolScenarioDriver
                 : path == auditPath && LastAudit().EventType == expectedEvent);
             probe.BeforeCut = () =>
             {
-                var record = Record();
+                var observed = ReadRecord();
+                var record = observed.Record;
                 var reservedBytes = File.ReadAllBytes(taskPath);
                 var reserved = GmWorkerJson.Deserialize<WorkerTaskPacket>(System.Text.Encoding.UTF8.GetString(reservedBytes).TrimStart('\uFEFF'))!;
                 Require(reserved.TaskId == task.TaskId && reserved.WorkerId == task.WorkerId && reserved.SessionGeneration == generation
@@ -120,10 +141,12 @@ internal static partial class NativePoolScenarioDriver
                 Require(execution!.Authority.StopEvidence?.State == GmWorkerStopState.StoppedWithinScope && execution.Authority.OutputsSettled,
                     "publication/diagnostic cut lacks original stop/output facts");
                 workspacePath = record.Identity.WorkspacePath;
+                cleanupOwnerAtCut = Field(execution, "_cleanupOwner");
                 bundleAtCut = Snapshot(bundleRoot); workspaceAtCut = Snapshot(workspacePath);
                 factsAtCut = new
                 {
                     record.Identity, record.Progress, diskPhase = record.Phase.ToString(),
+                    recordSource = observed.Source, stateBytes = observed.StateBytes, retiredBytes = observed.RetiredBytes, retiredReference = observed.Reference,
                     livePhase = FenceField<WorkerRunRecord>(execution, "_record")!.Phase.ToString(),
                     publicationAcknowledged = Ack(), originalPublicationRecorded = Recorded(),
                     task = reserved, taskBytes = reservedBytes, actualGeneration = generation,
@@ -131,6 +154,7 @@ internal static partial class NativePoolScenarioDriver
                     workerStarts = FenceWorkerStarts(output), originalCompletionSettled = originalCompletion?.IsCompleted,
                     stop = execution.Authority.StopEvidence, execution.Authority.OutputsSettled,
                     slotHeld = SlotHeld(), reaper.EntryCount, reaper.OwnedCapacity,
+                    rootLeaseActive = originalRootLease?.IsActive, cleanupOwnerExists = cleanupOwnerAtCut != null,
                     workspaceExists = Directory.Exists(workspacePath), bundleAtCut, workspaceAtCut
                 };
             };
@@ -142,6 +166,7 @@ internal static partial class NativePoolScenarioDriver
                 {
                     owner = (GmWorkerNativeLineageLaunch)actual;
                     execution = FenceField<GmWorkerDurableExecution>(owner, "_durable")!;
+                    originalRootLease = FenceField<GmWorkerRootExecutionLease>(execution, "_root")!;
                     if (disposal != null) owner.SetSyntheticObservationFault(disposal);
                 },
                 AfterHostPrepared = actual => host = actual,
@@ -183,8 +208,11 @@ internal static partial class NativePoolScenarioDriver
             {
                 reaperPasses++; await reaper.RunPassAsync();
             }
-            var recordAfter = Record();
+            var recordObservationAfter = ReadRecord();
+            var recordAfter = recordObservationAfter.Record;
             var cleanupOwner = Field(execution, "_cleanupOwner");
+            var originalWorkspaceRetained = cleanupOwner != null && Field(execution, "_workspace") is { } originalWorkspace
+                && ReferenceEquals(originalWorkspace, Field(cleanupOwner, "_originalWorkspace"));
             var physicalSettled = cleanupOwner != null && Field(cleanupOwner, "_owner") == null
                 && Field(cleanupOwner, "_processHostLaunch") == null && Field(cleanupOwner, "_workerCompletionTask") == null;
             var actualStop = execution!.Authority.StopEvidence;
@@ -196,22 +224,29 @@ internal static partial class NativePoolScenarioDriver
                 result?.TimedOut, result?.ExitCode, DispatchSettled = originalRun.IsCompleted,
                 SameOriginalUncertainty = probe.OriginalUncertainty != null && ReferenceEquals(probe.OriginalUncertainty, failure),
                 SameRetainedUncertainty = probe.OriginalUncertainty != null && ReferenceEquals(probe.OriginalUncertainty, CanonicalFailure()),
-                OriginalCauseRetained = ReferenceEquals(failure?.Data["GmWorkerOriginalFailure"], known),
+                OriginalCauseRetained = ReferenceEquals(probe.OriginalUncertainty?.Data["GmWorkerOriginalFailure"], known),
                 CleanupFailureRetained = probe.OriginalUncertainty?.Data["GmWorkerCleanupFailure"] is Exception,
                 TimeoutFactRetained = failure?.Data["GmWorkerTerminalOutcome"]?.ToString(),
                 generation, task, taskBytes = Bytes(taskPath), factsAtCut, atReturn, releases, knownHits, workspaceCalls, reaperPasses,
                 acceptedBeforeReaper, firstReaperAccepted, acceptedAfter = result?.HasValidatedExecutionFor(task) == true,
                 recordAfter.Identity, recordAfter.Progress, diskPhase = recordAfter.Phase.ToString(),
+                recordSource = recordObservationAfter.Source, stateBytes = recordObservationAfter.StateBytes,
+                retiredBytes = recordObservationAfter.RetiredBytes, retiredReference = recordObservationAfter.Reference,
                 livePhase = FenceField<WorkerRunRecord>(execution, "_record")!.Phase.ToString(),
                 publicationAcknowledged = Ack(), originalPublicationRecorded = Recorded(), execution.RetirementAcknowledged,
                 actualStop, execution.Authority.OutputsSettled, execution.IsUncertain,
                 originalCompletionSettled = originalCompletion?.IsCompleted, workerStarts = FenceWorkerStarts(output),
                 ownerOutputTasksSettled = owner!.HostStandardOutput.IsCompletedSuccessfully && owner.HostStandardError.IsCompletedSuccessfully,
                 physicalSettled, disposeAttempts = disposal?.DisposeAttempts ?? 0, slotHeld = SlotHeld(), reaper.EntryCount, reaper.OwnedCapacity,
+                rootLeaseActive = originalRootLease?.IsActive, originalWorkspaceRetained,
+                sameCleanupOwner = cleanupOwnerAtCut == null ? (bool?)null : ReferenceEquals(cleanupOwnerAtCut, cleanupOwner),
                 workspaceExists = workspacePath != null && Directory.Exists(workspacePath), bundleAfter, workspaceAfter,
                 receiptPath, receiptBytes, AuditAfter = Bytes(auditPath), Cut = probe.Evidence()
             };
             Require(originalRun.IsCompleted && releases == 1 && owner != null && execution != null, "original pool/owner was not reached and settled");
+            Require(originalRootLease != null && ReferenceEquals(originalRootLease, Field(execution, "_root")) && originalWorkspaceRetained,
+                "cleanup lost its original root/workspace object identity");
+            if (cleanupOwnerAtCut != null) Require(ReferenceEquals(cleanupOwnerAtCut, cleanupOwner), "cleanup owner changed after canonical uncertainty");
             Require(actualStop?.State == GmWorkerStopState.StoppedWithinScope && execution.Authority.OutputsSettled && !execution.IsUncertain,
                 "canonical outcome replaced original native stop/output facts");
             Require(owner.HostStandardOutput.IsCompletedSuccessfully && owner.HostStandardError.IsCompletedSuccessfully && physicalSettled,
@@ -231,7 +266,7 @@ internal static partial class NativePoolScenarioDriver
             {
                 probe.RequireStopped();
                 Require(ReferenceEquals(probe.OriginalUncertainty, CanonicalFailure()), "original execution did not retain first canonical uncertainty");
-                Require(SlotHeld() && reaper.EntryCount == 1 && reaper.OwnedCapacity == 1 && !execution.RetirementAcknowledged,
+                Require(SlotHeld() && reaper.EntryCount == 1 && reaper.OwnedCapacity == 1 && !execution.RetirementAcknowledged && originalRootLease.IsActive,
                     "canonical uncertainty released original slot/root/quarantine capacity");
                 Require(Same(bundleAtCut!, bundleAfter), "actual durable bundle changed after uncertainty");
                 Require(Same(workspaceAtCut!, workspaceAfter), "original detached workspace changed after uncertainty");
@@ -247,7 +282,8 @@ internal static partial class NativePoolScenarioDriver
                 if (mode.StartsWith("inbox_unknown", StringComparison.Ordinal) || mode == "derived_audit_unknown")
                     Require(Ack() && !Recorded() && workspaceCalls == 0 && Directory.Exists(workspacePath), "Store uncertainty forged acceptance or removed its original workspace");
                 if (early) Require(workspaceCalls == 0 && Directory.Exists(workspacePath), "terminal diagnostic uncertainty removed the original workspace before settlement");
-                if (mode == "terminal_audit_unknown") Require(ReferenceEquals(failure!.Data["GmWorkerOriginalFailure"], known), "original worker cause was lost");
+                if (mode is "terminal_audit_unknown" or "cleanup_audit_unknown" or "reaper_audit_unknown")
+                    Require(ReferenceEquals(probe.OriginalUncertainty!.Data["GmWorkerOriginalFailure"], known), "original diagnostic cause was lost");
                 if (mode == "timeout_audit_unknown") Require(failure!.Data["GmWorkerTerminalOutcome"]?.ToString() == "TimedOut", "actual decided timeout was lost");
                 if (disposal != null) Require(disposal.DisposeAttempts >= 2 && probe.OriginalUncertainty!.Data["GmWorkerCleanupFailure"] is Exception,
                     "secondary original disposal failure was not retained and physically settled");
@@ -255,7 +291,7 @@ internal static partial class NativePoolScenarioDriver
             else
             {
                 Require(probe.Cuts == 0 && probe.OriginalUncertainty == null && !File.Exists(probe.JournalPath), "known control retained uncertain canonical storage");
-                Require(!SlotHeld() && reaper.EntryCount == 0 && reaper.OwnedCapacity == 0 && execution.RetirementAcknowledged,
+                Require(!SlotHeld() && reaper.EntryCount == 0 && reaper.OwnedCapacity == 0 && execution.RetirementAcknowledged && !originalRootLease.IsActive,
                     "known control did not retire original capacity");
                 if (mode == "cancelled") Require(failure is OperationCanceledException && result == null, "actual cancellation changed outcome");
                 else if (mode == "known_failure") Require(failure == null && result?.Status.State == WorkerBridgeState.Failed && knownHits == 1, "known worker failure policy changed");
@@ -272,18 +308,27 @@ internal static partial class NativePoolScenarioDriver
         {
             // Separate fixture teardown never manufactures publication, retirement,
             // slot release or a successful assertion; retained logical debt is recorded above.
-            try
+            var cleanupFailures = new List<string>();
+            async Task Attempt(string phase, Func<Task> action)
             {
-                if (owner != null) { _ = await owner.StopAndObserveAsync(); await owner.DisposeAsync(); }
-                if (originalCompletion != null)
+                try { await action(); }
+                catch (Exception failure) { cleanupFailures.Add(phase + ": " + failure); }
+            }
+            if (owner != null && Field(owner, "_disposed") is not true)
+            {
+                await Attempt("original-owner-stop", async () => { _ = await owner.StopAndObserveAsync(); });
+                await Attempt("original-owner-outputs", async () => { _ = await owner.SettleOutputsAsync(); });
+                await Attempt("original-owner-dispose", async () => await owner.DisposeAsync());
+            }
+            if (originalCompletion != null)
+                await Attempt("original-waiter", async () =>
                 {
                     try { await originalCompletion.WaitAsync(TimeSpan.FromSeconds(5)); }
                     catch when (originalCompletion.IsCompleted) { }
-                }
-                if (host != null) await host.DisposeAsync();
-                admission?.Dispose();
-            }
-            catch (Exception failure) { evidence["FixtureCleanupFailure"] = failure.ToString(); }
+                });
+            if (host != null) await Attempt("original-host-dispose", async () => await host.DisposeAsync());
+            await Attempt("original-admission-dispose", () => { admission?.Dispose(); return Task.CompletedTask; });
+            if (cleanupFailures.Count != 0) evidence["FixtureCleanupFailure"] = cleanupFailures;
             await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(evidence));
         }
     }

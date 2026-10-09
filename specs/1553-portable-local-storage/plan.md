@@ -1,3 +1,18 @@
+## Durable worker fixture review corrections — WIP, 2026-10-09
+
+Independent frozen7933 review blocked execution on two fixture defects: successful
+retirement removes the active record, and stopping an already disposed original owner
+reuses a disposed native gate. Corrected before any build/run: resolve actual active
+OR matching retired record, verify original identity/epoch/task-key/archive hash and
+retain raw state/archive/reference/origin. Teardown inspects actual disposal state,
+settles a still-owned original stop/output/dispose, then independently attempts actual
+waiter/host/admission cleanup with separate failures. Product facts remain measured
+before teardown. Added direct original root-lease IsActive retention/release and actual
+cleanup/root/workspace object identity; exact known exception identity is checked on
+the captured CSP for terminal, cleanup and delayed reaper diagnostics. Known audit
+control proves best-effort continuation, not a Store warning-string observation.
+Fixture/source/exact14 re-review next; runtime unchanged, all14 unbuilt/unrun.
+
 ## Durable worker Store/pool/quarantine — design and fixture WIP, 2026-10-09
 
 Previous bounded prelaunch final independent PASS at ebec26688cddefc451facff85911442b917ceceb:
