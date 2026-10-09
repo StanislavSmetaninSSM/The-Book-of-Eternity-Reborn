@@ -1,3 +1,29 @@
+## Original Bridge/prelaunch pool — fixture WIP, 2026-10-09
+
+Previous terminal8 final independent PASS2e817050; all58 originals/45 pins and
+catalog527/11325 accepted. This next unit implements the bounded fixture scope below,
+not runtime. Five rows execute actual private Bridge dispatch -> original main pin ->
+ProposalOnlyDispatch -> real Pool: reservation Unknown, dispatch-audit Unknown, known
+reservation failure then diagnostic Unknown, ordinary known reservation failure and
+public Linux backend refusal. Native admission is explicitly injected only in four
+prelaunch cases, durable:false; private reaper has no background loop. Hard workspace,
+attach and release guards prohibit a worker launch. Original bounded neutral terminal
+main uses existing guardian/stop recipe, no provider or game-running GM.
+
+New TestSupport probe observes actual nonCommitted member0 publication, inserts foreign
+bytes in the isolated target and captures the actual CSP; no fabricated exception or
+replacement service. Captures committed config/context/current-generation and earlier
+reservation images, current original main pin/worker slot/quarantine capacity, exact
+journals and attempted later reads/mutations/ordinary admission. Main stop and admission
+close occur even on RED; errors are retained independently. Original operation settles,
+slot/reaper capacity drain, then guardian ECHILD/no-emergency proof precedes deletion of
+only this case's neutral canonical root. Raw scenario/guardian/build evidence remains.
+No default Linux worker activation or durable bundle/ACK claim. No runtime change yet.
+
+Next independent fixture/exact5 gate, fresh unit Plan5 then actual5. Correct only reached
+runtime boundaries and preserve partial/failure evidence. Full durable Store/cleanup and
+C2/F16/F18/remaining owners continue afterward. Existing accepted cohorts are unchanged.
+
 ## Original terminal wait bounded GREEN — 2026-10-09
 
 Independent SOURCE/RED-CARRIER/EXACT8 PASS59f455a4fc9066113000ddc72c883dbd3f57a43d.
@@ -14,7 +40,8 @@ Fresh both-project catalog071309 at59f455: **527 categories/11325 methods-files
 valid,0 tests**,11.0118066s,both cleanup flags, no unmapped/stale selectors.
 [Source-pinned original evidence](recovery/storage-migration-terminal-wait-20261009/manifest.json)
 contains58 artifacts/45 pins; all58 originals root-verified. Final independent
-GREEN/raw/catalog/carrier gate pending. Historical070528 remains7/8=1PASS6FAIL,
+GREEN/raw/catalog/carrier/docs PASS at2e817050e542a9d9a1853711a274cd5e9cbfd5ed.
+Historical070528 remains7/8=1PASS6FAIL,
 unitguardunrun,75.9822979s. No reclassification of those lifetime failures as swallowed CSP.
 The selection prose now records actual evidence rather than its prior unbuilt WIP label.
 No native blocking-input interruption, outer response cleanup, full worker or migration claim.

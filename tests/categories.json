@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-prelaunch-storage-linux",
+      "responsibility": "Original private Bridge dispatch, original main pin, proposal-only dispatcher and real pool before launch: actual reservation/dispatch-audit Unknown, known reservation refusal then diagnostic Unknown, known refusal and public Linux backend refusal. Actual slot/quarantine ownership and original main stop are observed.",
+      "excludes": "No worker launch or provider/live GM, durable StopValidated/bundle/ACK, full Bridge-to-Store or native Windows qualification; only existing bounded neutral terminal main fixture is started. No fabricated CSP or replacement dispatcher.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+        "BookOfEternityGMBridge/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerPrelaunchStorageTests.OriginalBridgePrelaunchStorageRetainsUncertaintyAndReleasesOwnedCapacity"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-terminal-wait-storage-linux",
       "responsibility": "Original terminal wait seven finite scenarios: timeout/runtime-health actual publication uncertainty, exact secondary key failure, existing Ready completion, Escape, known timeout refusal/success, and early Status startup failure with original wait ownership; plus affected fail-fast source guard.",
       "excludes": "No live GM/provider/process, full outer WaitForGmResponse rollback, arbitrary native blocking-input interruption, bridge/pool/C2/native-Windows or simultaneous lease-close fault qualification. RED retains the actual compiler-owned wait task for teardown; callback completion is not called key-task join.",

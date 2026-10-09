@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-worker-prelaunch-storage-linux",
+      "reason": "Five original Bridge-to-prelaunch-pool rows, genuine common-publisher reservation/audit/diagnostic cuts and known/default-backend controls. Per-case original main pin, no worker launch, capacity and guardian cleanup proof. Fixture WIP unbuilt/unrun. Accepted terminal8 and priorReady12/diagnostic15 are not replayed.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-terminal-wait-storage-linux",
       "reason": "Actual8/8 Linux PASS59f455a4/071130 after matching fresh both-project Plan8. Seven original terminal wait rows preserve outcome/secondary cause and settle owned tasks; exact existing fail-fast guard passes. Historical2cd RED7/8=1PASS6 lifetimeFAIL/unitguardunrun retained. No earlier Ready12/diagnostic15 replay; no native blocking-input or outer response cleanup claim.",
       "contracts": [

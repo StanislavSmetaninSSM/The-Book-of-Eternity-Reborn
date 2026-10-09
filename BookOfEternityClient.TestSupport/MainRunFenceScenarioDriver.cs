@@ -186,6 +186,9 @@ internal static class MainRunFenceScenarioDriver
                 await Call("StopShellAsync");
                 Require(owner.Record.Disposition==GmSessionRunDisposition.Stopped&&!owner.RetainsAuthority,"Helper fixture lost original main retirement.");
             }
+            else if(mode.StartsWith("terminal-main-worker-storage-",StringComparison.Ordinal)) {
+                await MainWorkerStorageOutcomeScenario.RunAsync(mode["terminal-main-worker-storage-".Length..],root,package,host!,type!,owner,()=>Call("StopShellAsync"),result);
+            }
             else if(mode.StartsWith("terminal-main-worker-dispatch-",StringComparison.Ordinal)) {
                 await MainWorkerDispatchScenario.RunAsync(mode["terminal-main-worker-dispatch-".Length..],root,package,host!,type!,owner,()=>Call("StopShellAsync"),result);
             }
