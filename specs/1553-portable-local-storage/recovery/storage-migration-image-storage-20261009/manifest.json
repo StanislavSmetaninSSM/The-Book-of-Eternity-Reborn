@@ -354,5 +354,117 @@
       }
     ],
     "sourcePins": []
+  },
+  "spelling_red": {
+    "source": "8d2806816a0dccf9ed354e93799c8a91d94a6025",
+    "qualification": "Raw exact selected source/summary/TRX; build-only/causal/fixture/outcome classification in plan.",
+    "artifacts": [
+      {
+        "path": "spelling_red-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-100128-540-315487-aa6c8de8008c47aea8acae6eb6226554-categories/plan.json",
+        "sha256": "d43257aa947f80df9a92162e45f90e78486b53c838f172d05f4bdc8f3987b294",
+        "originalSha256": "d43257aa947f80df9a92162e45f90e78486b53c838f172d05f4bdc8f3987b294"
+      },
+      {
+        "path": "spelling_red-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-100128-540-315487-aa6c8de8008c47aea8acae6eb6226554-categories/summary.json",
+        "sha256": "b131685523412144726c102d9617ac72b38b7fb74a5905033286181cdc629dbe",
+        "originalSha256": "b131685523412144726c102d9617ac72b38b7fb74a5905033286181cdc629dbe"
+      },
+      {
+        "path": "spelling_red-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-100128-540-315487-aa6c8de8008c47aea8acae6eb6226554-categories/Build-unit.log",
+        "sha256": "436d7cf4d911fff357dffb6c3eeebd37657da153e6029f0198e50e9f0fecbb32",
+        "originalSha256": "2aef3f8cfacff299508f6bd1fab9b0df13a0ec639560cc6a7a5ee378e42bd78b"
+      },
+      {
+        "path": "spelling_red-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-100128-540-315487-aa6c8de8008c47aea8acae6eb6226554-categories/dotnet-test.log",
+        "sha256": "3e139d08fe258c932fd868bd59600fec90bb8810cd6827606dd2cd2d906e8162",
+        "originalSha256": "edaf445bf5f56de4411cc8d1efeba129c3fff8ffa4ea078c243bb274a5d7fbe2"
+      },
+      {
+        "path": "spelling_red-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-100236-584-315842-d7134d2d4e90465e98d1f2f9be466743-categories/plan.json",
+        "sha256": "8a249e673c13264443c9455510a5c9d967f64a5a36ac38b47cd0f96f21459a97",
+        "originalSha256": "8a249e673c13264443c9455510a5c9d967f64a5a36ac38b47cd0f96f21459a97"
+      },
+      {
+        "path": "spelling_red-actual-portable-image-export-path-spelling-unit-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-100236-584-315842-d7134d2d4e90465e98d1f2f9be466743-categories/portable-image-export-path-spelling-unit-001.trx",
+        "sha256": "4fd875a0249e77c3797eb8bb1c987a4569c13af60fcb90f08c1cbeb3cab0f6b0",
+        "originalSha256": "2ca9ddf05cc275227ad3043f0d8f91fe2d3abe1d94a5f81ae62807bdc9c1daf4"
+      },
+      {
+        "path": "spelling_red-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-100236-584-315842-d7134d2d4e90465e98d1f2f9be466743-categories/summary.json",
+        "sha256": "0dbb20a8f2ba0beb8caed076f2a41ed9b0d787c4cd43fb213fe48de0f98fd968",
+        "originalSha256": "0dbb20a8f2ba0beb8caed076f2a41ed9b0d787c4cd43fb213fe48de0f98fd968"
+      },
+      {
+        "path": "spelling_red-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-100236-584-315842-d7134d2d4e90465e98d1f2f9be466743-categories/dotnet-test.log",
+        "sha256": "2cb6f0540343adcb785c93eda9f8f5c0005bc9b7da155be61e7c01586265002f",
+        "originalSha256": "565be0f6b859f60314263617bd361a0e3cf9888fefc26a1fdad36e42e68c4c8d"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Services/ImageService.cs",
+        "sha256": "69c31585e4615bdfc4a90f30a28778c2ac0bf50ed4f4cffa84764d6190b8de37"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ImageStorageOutcomeTests.cs",
+        "sha256": "aed147cd8e4f42c75a8f47bfa5a37fb91526d9a0018761b47f90b5b6335dde2e"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GmWorkerStorageOutcomeTests.cs",
+        "sha256": "3e45154c5cac1709a23339070ff4b8569cf115942b1bba07b65b9eef0ca65ae6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+        "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ImageServiceTests.cs",
+        "sha256": "cf7e187dcc0895309b32cf14797ffebfc60f4785ce7060195bb33a3191fb1e48"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "63597a0fd619f511755dd560b74a626672f6d682d163d8fd21e6b1e2a00d9197"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "26c4bfa77d3b062c5fdd8b84655623cdddc3f5903ce634e76bb19edb542242cb"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/ImageExportPathSpellingTests.cs",
+        "sha256": "b9b291f2fff2f4c09bbd005641a6fef6c70ab98d23db1f11f15f5358114ec08a"
+      }
+    ]
   }
 }

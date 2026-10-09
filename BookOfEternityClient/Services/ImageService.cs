@@ -777,6 +777,11 @@ public class ImageService
 
     internal static bool IsCanonicalExportPathSpelling(string path, string root, bool windows)
     {
+        if (windows)
+        {
+            path = TrustedLocalFileScope.NormalizeWindowsPathSpelling(path);
+            root = TrustedLocalFileScope.NormalizeWindowsPathSpelling(root);
+        }
         var comparison = windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         var separator = windows ? '\\' : '/';
         root = root.TrimEnd(separator);
@@ -787,7 +792,13 @@ public class ImageService
     // link so aliases inside a link target's own ancestors are resolved as well.
     private static string ResolveExportAliases(string path)
     {
-        path = Path.GetFullPath(path);
+        static string Normalize(string candidate)
+        {
+            var fullPath = Path.GetFullPath(candidate);
+            return OperatingSystem.IsWindows()
+                ? TrustedLocalFileScope.NormalizeWindowsPathSpelling(fullPath) : fullPath;
+        }
+        path = Normalize(path);
         var comparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
         var visited = new HashSet<string>(comparer);
         for (var links = 0; links < 64; links++)
@@ -809,7 +820,7 @@ public class ImageService
                     ? new DirectoryInfo(current) : new FileInfo(current);
                 var target = entry.ResolveLinkTarget(returnFinalTarget: false)
                     ?? throw new IOException("Cannot resolve export path alias.");
-                path = Path.GetFullPath(Path.Combine([target.FullName, .. segments[(i + 1)..]]));
+                path = Normalize(Path.Combine([target.FullName, .. segments[(i + 1)..]]));
                 resolved = true;
                 break;
             }

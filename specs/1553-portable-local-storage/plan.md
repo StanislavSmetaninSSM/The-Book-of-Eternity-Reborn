@@ -1,3 +1,20 @@
+## F16 image runtime and spelling correction — WIP, 2026-10-09
+
+Independent exact8 fixture/metadata PASS8d280681. Fresh Plan100128 builds unit,
+8/1 selected,0executed,38.5534412s. Actual100236 completes8: **4PASS/4FAIL**,
+7.0576586s,bothcleanup,notimeout/skip/duplicate. Four mixed extended/ordinary drive
+and UNC candidate/root comparisons incorrectly returnfalse; ordinary/sibling/Linux
+case/literal controls pass. This is pure production-used pathname predicate evidence,
+not Windows filesystem execution. Raw packet now46artifacts/originals40pins including
+the catalog parse refusal separately (no build/tests there).
+
+The correction reuses existing TrustedLocalFileScope.NormalizeWindowsPathSpelling
+for both operands and every alias restart, conditionally on Windows. Linux literal
+backslashes stay untouched. Other ImageService changes and exact12 fixture are
+unchanged since3e56/44dcc respectively. Next independent source/raw/EXACT23 gate,
+fresh both-project Plan23, then original image12 +existingexport3 +purepath8.
+No wholeF16/native/secondaryclose/B2–B5 acceptance is claimed.
+
 ## F16 spelling catalog preparation correction — 2026-10-09
 
 The first Plan8 invocation at66dc fails before build/discovery/test: new related
