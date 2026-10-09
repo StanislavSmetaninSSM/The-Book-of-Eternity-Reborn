@@ -2,8 +2,34 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-mod-manifest-cache-linux",
+      "reason": "T063/T065 fixture/refineddesign/exact10 independentPASS beforeinstallation. Original8integration+semanticunit2; runtimeunchanged UNBUILT/UNRUN. Known-close behavior change explicit, completion separate from changed bool; causalbaseline before source. Other canonical listing5 not replayed.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-005",
+        "FR-006",
+        "FR-015",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-original-world-profile-folder-linux",
+      "reason": "T063/T050 safe source-only1 baseline independently reviewed; original UI directProcess.Start must stay UNRUN under no-desktop constraint. Only read-onlysource Fact installed, UI2 reserved after managed helper change. No actualprocess/provider/native association.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-005",
+        "FR-006",
+        "FR-015",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-original-browser-owning-result-close-linux",
-      "reason": "T063/T065 original owning browser typed-result close, fixture/design/exact12 independently reviewed before installation. Actual original atomic3dispositions Browser6/projection3/nested1/Preparedsettings1/incompletecallback1. Runtime unchanged; UNBUILT/UNRUN, fresh Plan12 then causal original baseline required. No replay of unchanged accepted groups; catalog combined with new owning boundaries.",
+      "reason": "T063/T065 runtime63edbf83 fresh Plan20451112/1 then actual20461212/12PASS8.4599314s, complete1/1/bothcleanup/strict12roots/0skipduplicateTimeout. Real Browser/generic/nested/Prepared/incomplete results and fullsettlement preserved; packet66artifacts/30pins verifiedoriginals, original4P/8causalFAIL immutable. Independentsource/exact12PASS; finalGREEN/raw/carrier reviewpending, catalogcombinedpending. No unchanged accepted group replay.",
       "contracts": [
         "#1553",
         "FR-002",

@@ -1,3 +1,24 @@
+## Mod manifest/cache and safe folder baseline installed — test-first WIP, 2026-10-09
+
+Browser GREEN12 packet/ref/raw2a75780a saved66artifacts/30pins; finalreview next.
+Mod fixture/refined-design/exact10 independently PASS: original8integration
+routes plus existing semanticunit2 split from prior canonical listing7 (remaining5
+ownership/history unchanged, not replayed). Adds actual committed-close control
+and clean normalized no-op false/exactbytes/0mutation, actual same originalowner
+inspection and completed journal/bytes before late close; one acquisition oracle
+after outcome assertions. Cache update follows known manifest publication/no-op,
+new completionflag after cacheassignment is separate from changed bool. Known
+completed-close preservation is intentional behavior change; oldFSMfalse release
+could throw. Does not claim full atomicity with caller SaveSettings. Runtime
+unchanged, UNBUILT/UNRUN. World folder fixture/design/exact3 independently PASS;
+only safe read-onlysource Fact installed/category1, original actualUI UNRUN due
+user no-desktop restriction. No Process.Start/desktop fixture executed at baseline.
+After causal source guard, one-line existing managedhelper plus actualinert UI2
+checks output BEFORE Clear/manualpath/exactrequest/original0or1pause andcleanup.
+Fresh both-project Plan selected mod10+folder-source1, actualoriginal11 next.
+Combined category discovery later. No GM mechanic/schema/prompt/example change;
+other actual publishers/finalinventory open; T061–T065 unchecked/B2–B5 paused.
+
 ## Original browser established-result bounded GREEN12 — 2026-10-09
 
 Runtime63edbf83807df6043ab755d434c032e1dc463697 combined RED/source/exact12

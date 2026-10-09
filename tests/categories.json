@@ -2,6 +2,63 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-mod-manifest-cache-linux",
+      "responsibility": "Original SystemModService manifest/cache publication single owner: normalization, dirty semantic no-op, clean changed:false no-op, read/mutation refusal, genuine publication uncertainty, late uncertain close and actual committed close; eight integration roots plus original semantic2 unit controls. Cache changes only after known publication/no-op; completed false-return and known close result preserved.",
+      "excludes": "No full atomicity with later caller SaveSettings, mod payload schema/mechanic change, native Windows, desktop/provider/live GM, B2 or other owners. Existing unrelated listing5 retained without replay.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SystemModService.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.ModManifest.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalSystemModManifestCommitsCacheOnlyAfterKnownPublication"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_DoesNotRewrite_WhenSemanticsUnchanged",
+            "BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_RebuildsInvalidManifest"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-original-world-profile-folder-linux",
+      "responsibility": "Original world-setup folder association: initial safe source-only1 baseline (actual original UI unrun because direct Process.Start); after minimal managed helper route two inert actual UI cases verify exact path/request/outcome before Clear and original 0/1 pause.",
+      "excludes": "No actual desktop process or positive native association, no claim outcome persists on next screen, no world gameplay/GM contract or full desktop qualification.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaWorldSetupAndDebug.cs",
+        "BookOfEternityClient.Tests/WorldProfileFolderConsumerTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WorldProfileFolderConsumerTests.OriginalWorldSetupFolderRouteUsesManagedAssociation"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-browser-owning-result-close-linux",
       "responsibility": "Original browser RunBoundTransactionAsync owning close after actual atomic committed/rollback/uncertain decisions: six Browser result controls, three actual generic projections, nested readmission, real Prepared/settings committed cohort and incomplete callback. Twelve independent Linux roots; attach only after genuine decision and inspected unique active owner/context-null. Preserve actual result/frozen outcome, secondary diagnostics, config/projection/runtime and strict cleanup.",
       "excludes": "No fabricated result/lease/exception, session-finalization-hook substitution, native main transport, other owners, desktop/provider/live GM, B2 gameplay or whole migration qualification.",
@@ -20833,7 +20890,7 @@
     },
     {
       "id": "portable-canonical-listings-known",
-      "responsibility": "Seven affected original neighbors: manifest unchanged/invalid semantics, text world-profile metadata, borrowed-lease settings mod read, actual mods menu association/next frame and world-setup cancel preservation.",
+      "responsibility": "Five original remaining listing neighbors: text world-profile metadata, borrowed-lease settings mod read, actual mods menu association/next frame and world-setup cancel preservation. Original manifest semantic2 now owned by portable-original-mod-manifest-cache-linux; historical7 execution retained separately.",
       "excludes": "No live desktop/provider/GM, native Windows, full turn/repair or settings/manifest atomicity. Existing explicit-lease prepared readers retain their authority. No case-fold cohort policy or structural mkdir publication.",
       "changeHints": [
         "BookOfEternityClient/Services/SystemModService.cs",
@@ -20852,8 +20909,6 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_DoesNotRewrite_WhenSemanticsUnchanged",
-            "BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_RebuildsInvalidManifest",
             "BookOfEternityClient.Tests.WorldDirectiveServiceTests.GetAvailableProfilesAsync_TextProfile_MapsFullBodyToDetailedWorldDescription",
             "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.ModListingUsesDraftSelectionAndPortableInputValidationWithoutPublication",
             "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt"
