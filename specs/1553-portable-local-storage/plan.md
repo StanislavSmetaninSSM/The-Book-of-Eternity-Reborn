@@ -1,3 +1,23 @@
+## F18 original finalizer contract — fixture WIP, 2026-10-09
+
+Independent raw/source classification of4409840e: Life/Process read unchanged outputs
+inside nested BuildGameResponseFromFiles, whose original generation postcheck prevents
+return to caller. Late only attempts an absent manifest. Original92a fixture promises
+SessionReplaced + exact replacement preservation, not zero ordinary read attempts;
+these three failures are the new oracle's overreach, not proven runtime regression.
+No production guard/facade change is justified. Historical assertions remain recorded.
+
+Reviewed fixture correction captures an explicit read cohort's raw bytes/absence before
+rotation and compares after original task settles. Every later read must be inside that
+ordinal cohort, disjoint from replacement sentinels. Default empty cohort remains strict
+zero reads elsewhere. All generation/exception/mutation/input/sentinel checks retained.
+Life/Process also capture actual caller turn/last-response identity+serialized value/
+image prompt at the real checkpoint and require unchanged after failure. This does not
+qualify arbitrary stale reads, replacement-output reads or a complete output-reader
+route. Source/fixture/selection gate and fresh integration build pending, then exact
+Life1 and Process/Late2 only; four previously passing obligations are retained.
+No schema/GM/gameplay change; B2–B5 paused; whole migration queues remain open.
+
 ## F18 split actual — four passing obligations, three strict-read failures, 2026-10-09
 
 Frozen4409840e SOURCE/FIXTURE/EXACT-SELECTION independently PASS. Corrected fresh

@@ -20319,7 +20319,7 @@
     },
     {
       "id": "portable-session-generation-checkpoint-fixtures-linux",
-      "responsibility": "Four original stale-generation consumer fixtures plus connected Life source guard. Actual same-admission committed rotation, genuine joined SessionReplaced outcome, exact replacement state and no later canonical reads/mutations/input. Terminal snapshot and Life accepted finalization have separate diagnostic owners.",
+      "responsibility": "Four original generation consumer fixtures plus Life source guard. Real same-admission committed rotation and joined SessionReplaced; replacement sentinel preservation, no mutations/input, unchanged caller response/turn where applicable. Default zero reads; explicit unchanged output/absent manifest cohort has exact before/after byte checks.",
       "excludes": "No concurrent external Load/NewGame winner, new generation binding, raw generation edit, live GM, native Windows, unchanged accepted-incarnation replay or complete-turn acceptance. Existing semantic category owners retained under accurate new names.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/SessionGenerationCheckpointFixture.cs",
@@ -20373,7 +20373,7 @@
     },
     {
       "id": "portable-session-generation-life-finalization-linux",
-      "responsibility": "Original Life evaluation dispatch and real current-schema accepted validation before same-admission generation rotation. Seed diagnostic does not replace accepted validation; no provider repair dispatch, exact replacement state and no later canonical reads/mutations/input.",
+      "responsibility": "Original current-schema Life evaluation reaches genuine accepted validation before rotation, without repair dispatch. Exact replacement sentinels, unchanged caller turn/response/image, no mutations/input; explicit unchanged narrative/interface read cohort retains exact bytes/absence. No claim of arbitrary stale-reader safety.",
       "excludes": "No concurrent external Load/NewGame winner, new generation binding, raw generation edit, live GM, native Windows, unchanged accepted-incarnation replay or complete-turn acceptance. Existing semantic category owners retained under accurate new names.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/SessionGenerationCheckpointFixture.cs",
@@ -20392,6 +20392,32 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_GenerationChangesAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-session-generation-finalizer-retention-linux",
+      "responsibility": "Two original Process/Late generation finalizers: genuine committed rotation and SessionReplaced; exact replacement sentinels, zero mutation/input and permitted reads only of an explicit unchanged byte/absence cohort. Process caller turn/response/image never receives stale materialization.",
+      "excludes": "No concurrent external Load/NewGame winner, new generation binding, raw generation edit, live GM, native Windows, unchanged accepted-incarnation replay or complete-turn acceptance. Existing semantic category owners retained under accurate new names.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SessionGenerationCheckpointFixture.cs",
+        "BookOfEternityClient/Core/SessionOperationContext.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_GenerationChangesAfterAcceptedValidation_AbortsBeforeMutatingReplacement",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LateTerminalAndIdleFlow_SessionReplacementAfterBinding_DoesNotTouchReplacement"
           ]
         }
       ]

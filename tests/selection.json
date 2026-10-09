@@ -2,8 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-session-generation-finalizer-retention-linux",
+      "reason": "T064 isolated Process/Late2 after complete1246023PASS/2 overbroad-new-oracle failures. Preserve original no-consumption contract and unchanged byte/absence cohort; strict zero-read remains default for other consumers. No runtime change; review/build/actual pending.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-session-generation-life-finalization-linux",
-      "reason": "T064 isolated prerequisite correction after interrupted122606; Original Life evaluation dispatch and real current-schema accepted validation before same-admission generation rotation. Seed diagnostic does not replace accepted validation; no provider repair dispatch, exact replacement state and no later canonical reads/mutations/input. Fresh source review/build/actual pending.",
+      "reason": "T064 current prerequisite run124515 reaches real accepted Life checkpoint/rotation; failed new zero-all-read assertion. Correct to original no-consumption contract with exact unchanged read cohort and immutable caller-state checks; source/actual pending.",
       "contracts": [
         "#1553",
         "FR-005",

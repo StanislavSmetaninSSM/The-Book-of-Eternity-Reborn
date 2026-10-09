@@ -827,7 +827,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                         await probe.RotateAsync(checkpoint.ToString(), new Dictionary<string, byte[]>
                         {
                             [replacementPath] = Encoding.UTF8.GetBytes("""{"owner":"replacement"}""")
-                        });
+                        }, ["game_state/control/pending_turn_snapshot.json"]);
                 }
             });
         var failure = await Record.ExceptionAsync(() => InvokePrivateAsync<bool>(
@@ -6497,7 +6497,9 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var terminalStarts = 0;
-        var engine = CreateGameEngine(
+        GenerationFinalizerState? stateAtCheckpoint = null;
+        GameEngine? engine = null;
+        engine = CreateGameEngine(
             probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: InertRealmSettings,
             fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
@@ -6561,12 +6563,20 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                         return;
                     }
                     if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
-                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels());
+                    {
+                        stateAtCheckpoint = CaptureGenerationFinalizerState(engine!);
+                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels(),
+                            ["output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json", "game_state/combat/combat_log.json"]);
+                    }
                 }
             });
         var failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(
             engine, "ProcessPlayerTurn", "Проверить финализацию старого хода.", null));
-        probe.Verify(failure, new { terminalStarts });
+        var stateAfterFailure = CaptureGenerationFinalizerState(engine);
+        probe.Verify(failure, new { terminalStarts, stateAtCheckpoint, stateAfterFailure });
+        Assert.NotNull(stateAtCheckpoint);
+        Assert.Same(stateAtCheckpoint.Response, stateAfterFailure.Response);
+        Assert.Equal(stateAtCheckpoint, stateAfterFailure);
         Assert.Equal(1, terminalStarts);
         Assert.False(File.Exists(probe.Files.ResolvePath("stories/story.md")));
     }
@@ -9171,7 +9181,9 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                 Assert.Fail("The current Life response must validate without dispatching provider repair.");
             }
         };
-        var engine = CreateGameEngine(
+        GenerationFinalizerState? stateAtCheckpoint = null;
+        GameEngine? engine = null;
+        engine = CreateGameEngine(
             probe.ObserveInput(new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4))),
             configureSettings: InertRealmSettings, fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
@@ -9208,7 +9220,11 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                     }
 
                     if (checkpoint == SessionFinalizationCheckpoint.RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites)
-                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels());
+                    {
+                        stateAtCheckpoint = CaptureGenerationFinalizerState(engine!);
+                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels(),
+                            ["output/narrative_response.json", "output/interface_updates.json"]);
+                    }
                 }
             });
         var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
@@ -9220,7 +9236,11 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
 
         var failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(
             engine, "CheckLifeTransitions", acceptedSnapshotContext));
-        probe.Verify(failure, new { lifeRequests, repairDispatchAttempts, repairCleanupIntents });
+        var stateAfterFailure = CaptureGenerationFinalizerState(engine);
+        probe.Verify(failure, new { lifeRequests, repairDispatchAttempts, repairCleanupIntents, stateAtCheckpoint, stateAfterFailure });
+        Assert.NotNull(stateAtCheckpoint);
+        Assert.Same(stateAtCheckpoint.Response, stateAfterFailure.Response);
+        Assert.Equal(stateAtCheckpoint, stateAfterFailure);
         Assert.Equal(0, repairDispatchAttempts);
         Assert.Equal(1, lifeRequests);
         Assert.False(File.Exists(Path.Combine(probe.Files.GameSessionPath, "error_log.txt")));
@@ -11073,6 +11093,19 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         public void AssertCompleted()
         {
         }
+    }
+
+    private sealed record GenerationFinalizerState(
+        int TurnNumber, GameResponse? Response, string? ResponseJson, string? ImagePrompt);
+
+    private static GenerationFinalizerState CaptureGenerationFinalizerState(GameEngine engine)
+    {
+        var response = GetPrivateFieldValue<GameResponse?>(engine, "_lastResponse");
+        return new GenerationFinalizerState(
+            GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber,
+            response,
+            response is null ? null : JsonSerializer.Serialize(response, SnapshotHashJsonOpts),
+            GetPrivateFieldValue<string?>(engine, "_pendingImagePrompt"));
     }
 
     private static T GetPrivateField<T>(object instance, string fieldName) where T : class

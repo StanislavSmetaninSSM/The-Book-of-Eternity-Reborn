@@ -14,6 +14,7 @@ internal sealed class SessionGenerationCheckpointFixture
     private readonly List<string> _laterReads = [];
     private readonly List<string> _laterMutations = [];
     private readonly Dictionary<string, byte[]> _sentinels = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, byte[]?> _unchangedReadImages = new(StringComparer.Ordinal);
     private byte[]? _rotationJournal;
     private byte[]? _committedGeneration;
     private string? _replacementGeneration;
@@ -66,11 +67,17 @@ internal sealed class SessionGenerationCheckpointFixture
         return probe;
     }
 
-    internal async Task RotateAsync(string checkpoint, IReadOnlyDictionary<string, byte[]> sentinels)
+    internal async Task RotateAsync(string checkpoint, IReadOnlyDictionary<string, byte[]> sentinels,
+        IReadOnlyCollection<string>? allowedUnchangedReadPaths = null)
     {
         Assert.False(Rotated);
         _checkpoint = checkpoint;
         _checkpoints++;
+        foreach (var path in allowedUnchangedReadPaths ?? [])
+        {
+            Assert.DoesNotContain(path, sentinels.Keys);
+            _unchangedReadImages.Add(path, CleanupPublicationCut.ReadOptional(Files.ResolvePath(path)));
+        }
         await using var lifecycle = await Files.AcquireSessionLifecycleLeaseAsync();
         await using var lease = await Files.AcquireSessionReplacementWriteLeaseAsync(lifecycle);
         foreach (var (path, bytes) in sentinels)
@@ -85,13 +92,16 @@ internal sealed class SessionGenerationCheckpointFixture
     internal void Verify(Exception? failure, object? details = null)
     {
         var after = _sentinels.Keys.ToDictionary(path => path, path => CleanupPublicationCut.ReadOptional(Files.ResolvePath(path)), StringComparer.Ordinal);
+        var unchangedReadsAfter = _unchangedReadImages.Keys.ToDictionary(
+            path => path, path => CleanupPublicationCut.ReadOptional(Files.ResolvePath(path)), StringComparer.Ordinal);
         var generationAfter = File.ReadAllBytes(Files.SessionGenerationPath);
         _output(JsonSerializer.Serialize(new
         {
             kind = "f18-generation-checkpoint", root = Files.BasePath, _checkpoint, _checkpoints,
             OriginalGeneration, _replacementGeneration, _committedRotations, _rotationJournal,
             _committedGeneration, generationAfter, before = _sentinels, after,
-            _laterReads, _laterMutations, LaterInputReads, OriginalTaskJoined = true,
+            _laterReads, _unchangedReadImages, unchangedReadsAfter,
+            _laterMutations, LaterInputReads, OriginalTaskJoined = true,
             Failure = failure?.ToString(), details
         }));
         Assert.Equal(1, _checkpoints);
@@ -103,7 +113,14 @@ internal sealed class SessionGenerationCheckpointFixture
         var replaced = Assert.IsType<SessionReplacedException>(failure);
         Assert.Equal(OriginalGeneration, replaced.ExpectedGeneration);
         Assert.Equal(_replacementGeneration, replaced.ActualGeneration);
-        Assert.Empty(_laterReads);
+        foreach (var observation in _laterReads)
+        {
+            var path = observation[(observation.IndexOf(':') + 1)..];
+            Assert.True(_unchangedReadImages.ContainsKey(path), $"Unexpected post-rotation read: {observation}");
+            Assert.False(_sentinels.ContainsKey(path), $"Replacement sentinel was read: {observation}");
+        }
+        foreach (var path in _unchangedReadImages.Keys)
+            Assert.Equal(_unchangedReadImages[path], unchangedReadsAfter[path]);
         Assert.Empty(_laterMutations);
         Assert.Equal(0, LaterInputReads);
         foreach (var path in _sentinels.Keys) Assert.Equal(_sentinels[path], after[path]);
