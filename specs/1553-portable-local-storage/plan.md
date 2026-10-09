@@ -1,3 +1,16 @@
+## Original Inventory causal baseline — WIP, 2026-10-09
+
+Fixture source320ff5d8 fresh Plan2136096/1,0execution49.6248751s;
+actual2137196complete=3knownPASS/3causalFAIL8.5918815s,1/1bothcleanup,
+0skipduplicateTimeout and6strictrootsabsent. Allthree actualowning states/
+Intent/currentsealedstate prerequisites reached. Samegenuinepublication CSP
+masked bysame lateoriginalclose IOException; knownDTO/count/transitions/
+currentvalidator PASS. Packet21artifacts/18pins verifiedoriginals, immutableRED.
+Next minimal three originalowner CSPcapture/rethrow and existingRelease(false);
+no core transition/borrowed API/oracle change. Engine/media finalindependent
+GREEN/raw/carrier PASSc042d5e2; repair4/exact8 draft independentPASS5051180b.
+Catalog combine pending; T061–T065 unchecked, otherowners/B2/native open.
+
 ## Original Inventory owning publishers — test-first WIP, 2026-10-09
 
 Installed independently reviewed6-case Drop/Split/Merge original owner fixture,

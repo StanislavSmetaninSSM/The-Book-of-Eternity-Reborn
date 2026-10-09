@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-original-inventory-owning-close-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "320ff5d8b3390dfbc12d2f4c5db442b88906299b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 49.33418,
+  "Descriptors": [
+    {
+      "Name": "portable-original-inventory-owning-close-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-inventory-owning-close-linux",
+      "Categories": [
+        "portable-original-inventory-owning-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalInventoryOwnersRetainGenuinePublicationUncertaintyOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalInventoryOwnersRetainGenuinePublicationUncertaintyOnClose",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}

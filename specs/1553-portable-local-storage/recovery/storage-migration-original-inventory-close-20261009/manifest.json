@@ -1,0 +1,208 @@
+{
+  "scope": "Three actual original public Inventory Drop/Split/Merge owning scopes6 known/uncertainty-plus-secondary-close rows. Two compatible current-schema sealed item stacks with no resource balances, real receipts/index/pristine resources/composed authority, raw canonical maps and original owner settlement. No resource-bearing stack/full console-browser gameplay/B2/native/GM/provider qualification.",
+  "red": {
+    "source": "320ff5d8b3390dfbc12d2f4c5db442b88906299b",
+    "artifacts": [
+      {
+        "path": "red-20261009-213609-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-213609-913-444752-4240c7ea73f240aeaabb5ac119cd20fe-categories/plan.json",
+        "sha256": "bdb61c8d940e9c2cca063223e42a64c42f63a6c6dc9105c9316d6853612cf57c",
+        "originalSha256": "bdb61c8d940e9c2cca063223e42a64c42f63a6c6dc9105c9316d6853612cf57c"
+      },
+      {
+        "path": "red-20261009-213609-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-213609-913-444752-4240c7ea73f240aeaabb5ac119cd20fe-categories/summary.json",
+        "sha256": "3c451acb4b6163c470fddd5ef3f0dca78af7504ae8d735650aa8671d05eb8527",
+        "originalSha256": "3c451acb4b6163c470fddd5ef3f0dca78af7504ae8d735650aa8671d05eb8527"
+      },
+      {
+        "path": "red-20261009-213609-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-213609-913-444752-4240c7ea73f240aeaabb5ac119cd20fe-categories/Build-integration.log",
+        "sha256": "6cbbb1f62200ffbe147eb6527dc12b25580e99699e90d64433b9253b4c07591d",
+        "originalSha256": "c45b57df367beeccaeb791cc2e99f752bab09cb63cf54896743ec10e172294bb"
+      },
+      {
+        "path": "red-20261009-213609-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-213609-913-444752-4240c7ea73f240aeaabb5ac119cd20fe-categories/dotnet-test.log",
+        "sha256": "e6cb221bdc10e7474168823135f51fefa9287b7b2425846a4eda8b31608fa660",
+        "originalSha256": "f2cf2f5f6a81b96ec609982e47a1e6f5c60f1cfcbecb85925176a86f54112ff8"
+      },
+      {
+        "path": "red-20261009-213719-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-213719-637-445135-a43963af17f6479bb092650e1a76ca05-categories/plan.json",
+        "sha256": "1fdaeca87851e1e3bfc33d3ce414f03e30c81565079e8a77d0c3684763887dcf",
+        "originalSha256": "1fdaeca87851e1e3bfc33d3ce414f03e30c81565079e8a77d0c3684763887dcf"
+      },
+      {
+        "path": "red-20261009-213719-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-213719-637-445135-a43963af17f6479bb092650e1a76ca05-categories/summary.json",
+        "sha256": "45abe476ac7d4544887541544f2719f1b151e0ead54fc7c641114fee96281658",
+        "originalSha256": "45abe476ac7d4544887541544f2719f1b151e0ead54fc7c641114fee96281658"
+      },
+      {
+        "path": "red-20261009-213719-portable-original-inventory-owning-close-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-213719-637-445135-a43963af17f6479bb092650e1a76ca05-categories/portable-original-inventory-owning-close-linux-integration-001.trx",
+        "sha256": "8db17fd85f15f4e6c2be520d80d4f87fd3e9684857378e401301e1d47b1846cb",
+        "originalSha256": "bdacd9b4b3822a251aa7d642abe545e8d7a8fcbe606277ab29fceae7df106645"
+      },
+      {
+        "path": "red-20261009-213719-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-213719-637-445135-a43963af17f6479bb092650e1a76ca05-categories/dotnet-test.log",
+        "sha256": "d66acce0f5ced8f89f56c0a3ef8c6edeed8f3a2bf7e6d8c5732af01267bf1e73",
+        "originalSha256": "2aacdeab842722c08ff858b6ab7ecc7ef451a321a279a306d820b91684f0aa14"
+      },
+      {
+        "path": "red-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-original-inventory-close-red-rows/emitted-roots-after-run.json",
+        "sha256": "9aa725220438060c697a5a5af3e692088989d74fc6857b774893263b2fbf1716",
+        "originalSha256": "9aa725220438060c697a5a5af3e692088989d74fc6857b774893263b2fbf1716"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-5-1.json",
+        "sha256": "c280ee06d98c4886438ac03a014af607afb71abc7b6761eaee3880b6e596af50",
+        "originalSha256": "c280ee06d98c4886438ac03a014af607afb71abc7b6761eaee3880b6e596af50"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-5-0.json",
+        "sha256": "6151e82cad9aee20a2fd412c0355549e559cb1ca51f84a9d48cba1e9b235c3f6",
+        "originalSha256": "25c7eb38a9f5064997a591b63d3db5e4fe73c58bebbfdf53a48e56dad01a1593"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-4-1.json",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-4-1.json",
+        "sha256": "728d2feb43d2d6ae6c4ebf1a37e27a873ec384ab2122281d63c7ead9b456739b",
+        "originalSha256": "728d2feb43d2d6ae6c4ebf1a37e27a873ec384ab2122281d63c7ead9b456739b"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-4-0.json",
+        "sha256": "86866029ffc299144e62e18f6c1405642690c09c5c0b0f76b9a5892670d70005",
+        "originalSha256": "e66a16729a8173f1c4ab706d72c9e95f50d31c1569c53044a32550070ad7752e"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-3-1.json",
+        "sha256": "dbab092740d815057c1798e964e2f9a860255d7186d30fcd528c2f64a4452927",
+        "originalSha256": "dbab092740d815057c1798e964e2f9a860255d7186d30fcd528c2f64a4452927"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-3-0.json",
+        "sha256": "6a0a66f64ebfdeb625918098dbfd5b9aae48e3abf138d2c33469a1b2a134237b",
+        "originalSha256": "9ac0e70eee27ba58344308a3c1c762b280f8d11651f6f5bd87f4e4a0e28a3804"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-2-1.json",
+        "sha256": "fd64b985af5f91474a4dd417cfff7a57533418b099107d2f8a975b3899a37be6",
+        "originalSha256": "fd64b985af5f91474a4dd417cfff7a57533418b099107d2f8a975b3899a37be6"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-2-0.json",
+        "sha256": "8cda124e7b6c2f11e4d98aa6ad86a8063e5bd16f2848fa250e182b82fbe690ae",
+        "originalSha256": "85667917f5fa3129a3ec0473cfdc52ef76e3b9e964c5eec5bc4536bb26583247"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-1-1.json",
+        "sha256": "190b1ece1260a3d1564836db6de76cf1bdfc822c5ff5d71f779edb46fd07e307",
+        "originalSha256": "190b1ece1260a3d1564836db6de76cf1bdfc822c5ff5d71f779edb46fd07e307"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-1-0.json",
+        "sha256": "2a3d9939dfb286c01f38e025d9e188cb7e05bfd52951bf82f451a443f5ec1b23",
+        "originalSha256": "603feb7ac0da277a50fc65795c1fe76b7f99e5bf14d23a1f8b138541c3b6206f"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-0-1.json",
+        "sha256": "04db3b8503dbe3616daaf698b86a392a7e8b7097a6cfc5b81ac1a328a072afac",
+        "originalSha256": "04db3b8503dbe3616daaf698b86a392a7e8b7097a6cfc5b81ac1a328a072afac"
+      },
+      {
+        "path": "red-row-portable-original-inventory-owning-close-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-original-inventory-close-red-rows/portable-original-inventory-owning-close-linux-integration-001-0-0.json",
+        "sha256": "036f089aa722efcd599ad93c9b91ac1f4a0d5edfe078f2a16bebb42891ccf7d5",
+        "originalSha256": "f2c758c0fd557423daa9d77ad45b44d125a3038e78e992ec96df30a0f658220a"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Inventory.cs",
+        "sha256": "a66eaa7537814c08884a005b8fcd24124c6c08a1dc63aab7f5e0316e4fc9d1a0"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+        "sha256": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs",
+        "sha256": "9e84db305654a9d3fcad97c3adebf202bb3fe91d34995ddcba28c179254f6012"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/MortalItemTestFixture.cs",
+        "sha256": "e56068052adc936a39c2b412a8077dc03bb4d9805678ea25c8493fda489fcbba"
+      },
+      {
+        "path": "BookOfEternityClient/Services/InventoryManagementService.cs",
+        "sha256": "4bcb77ab95c9d2a5466228a1b5ab2ba29bfbb574723271c391b24b5f063908fa"
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalItemTransitionWriter.cs",
+        "sha256": "2dabd7f84d0eec935ecd40aa245144e807864350f9899c7a878537d5c6426f6b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalItemTransitionWriter.Stacks.cs",
+        "sha256": "f4880d93779d24b8eb06a14c5ec759b70b2b853e5a8d758aec6520d921aa7aa9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalItemTransitionWriter.Resources.cs",
+        "sha256": "05825f159f7354b1313d1f5e452e6bdb6f5f650a49476dd5b79854a1d7309347"
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalItemIdentityState.cs",
+        "sha256": "50034ba7d600ea21e8da0c34c878719b6cdfc2bb28fb532fe869e3094fd801d2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ResourceBootstrapStateBuilder.cs",
+        "sha256": "67e824df0d6f0e0ec890d52a969e9291d433bab7c01ab51c2afd3c6c207eb433"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalResourceOwnerAuthorityComposer.cs",
+        "sha256": "0ebf495c393c9dc7108b0a1c03071336dafcf4f0c4d3cda5006184f84be38900"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "1e3a3321ea07e2886cb3d134d91427bc87afbc96ae6a7990b1f249502920571e"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "07aba7bb2be5a9e9dd193b7d553d6ce4ada2f24d80d7fecd086ccd4df79150da"
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+      }
+    ]
+  }
+}
