@@ -6,7 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed partial class MortalWoundRecoveryTests
+public sealed partial class MortalWoundRecoveryTests(Xunit.Abstractions.ITestOutputHelper output)
 {
     /// <summary>
     /// Restores every canonical byte after a later recovery write fails, then
@@ -19,29 +19,34 @@ public sealed partial class MortalWoundRecoveryTests
         var authored = scenario.Wound.DeepClone().AsObject();
         authored["recovery"]!["currentStepThreshold"] = 1;
         scenario = scenario with { Wound = authored };
-        Fixture? current = null;
         byte[]? originalPlayer = null;
         var armed = false;
         var fired = false;
         var observedEarlierWrite = false;
+        CurrentCommittedPublicationWitness? witness = null;
+        var injected = new IOException("Injected recovery history write failure after carrier publication.");
+        var failureObservedBeforeReadmission = false;
         var hooks = new FileSystemManagerHooks
         {
+            LocalPublicationObserver = (phase, index) =>
+            {
+                if (armed) witness!.Observe(phase, index);
+            },
             BeforeCanonicalMutationAsync = path =>
             {
                 if (armed && path == WoundHistoryState.HistoryPath)
                 {
-                    var actualPlayer = File.ReadAllBytes(current!.FileSystem.ResolvePath(
-                        WoundCarrierCatalog.PlayerPath));
+                    var actualPlayer = witness!.RequireSingleCurrent(WoundCarrierCatalog.PlayerPath);
                     observedEarlierWrite = !originalPlayer!.AsSpan().SequenceEqual(actualPlayer);
                     fired = true;
                     armed = false;
-                    throw new IOException("Injected recovery history write failure after carrier publication.");
+                    throw injected;
                 }
                 return Task.CompletedTask;
             }
         };
-        using var fixture = Fixture.Create(scenario, hooks);
-        current = fixture;
+        var fixture = Fixture.Create(scenario, hooks);
+        using var owned = new OriginalFixtureCompletion(fixture.Root, fixture.Dispose, output.WriteLine);
         fixture.PrepareCanonicalRefreshItemAuthority();
         fixture.ReadmitCurrentRecoveryBinding();
         var before = fixture.CaptureCanonicalTreeBytes();
@@ -56,8 +61,18 @@ public sealed partial class MortalWoundRecoveryTests
         Assert.NotNull(composed.Receipt);
         fixture.AssertCanonicalTreeBytesUnchanged(before);
 
+        witness = new(fixture.FileSystem, WoundCarrierCatalog.PlayerPath);
         armed = true;
-        var failure = Assert.Throws<CanonicalStateWriteException>(() => fixture.PublishWithCanonicalRefresh());
+        var failure = Assert.Throws<CanonicalStateWriteException>(() => fixture.PublishWithCanonicalRefresh(error =>
+        {
+            witness.AssertRestored("wound-recovery-original-committed-rollback",
+                before.ToDictionary(pair => Path.Combine(fixture.Root, pair.Key), pair => (byte[]?)pair.Value,
+                    StringComparer.Ordinal), error, output.WriteLine);
+            fixture.AssertCanonicalTreeBytesUnchanged(before);
+            failureObservedBeforeReadmission = true;
+        }));
+        Assert.True(failureObservedBeforeReadmission);
+        Assert.Same(injected, failure.InnerException);
         Assert.Equal(WoundHistoryState.HistoryPath, failure.RelativePath);
         Assert.True(fired);
         Assert.True(observedEarlierWrite);
@@ -105,7 +120,7 @@ public sealed partial class MortalWoundRecoveryTests
         /// <returns>
         /// The refreshed common plan and canonical diagnostics on success.
         /// </returns>
-        internal AcceptedTurnCanonicalStateRefresh.Result PublishWithCanonicalRefresh()
+        internal AcceptedTurnCanonicalStateRefresh.Result PublishWithCanonicalRefresh(Action<Exception>? beforeReadmission = null)
         {
             Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
             try
@@ -116,6 +131,11 @@ public sealed partial class MortalWoundRecoveryTests
                     new ValidationService(FileSystem, NullLogger<ValidationService>.Instance),
                     new Dictionary<string, string>(StringComparer.Ordinal))
                     .GetAwaiter().GetResult();
+            }
+            catch (Exception failure)
+            {
+                beforeReadmission?.Invoke(failure);
+                throw;
             }
             finally
             {

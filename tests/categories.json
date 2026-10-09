@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-committed-rollback",
+      "responsibility": "Three original C4/wound recovery rollback/retry obligations with real current Committed resource/receipt/player witnesses, unchanged before-write/read failures, exact outer restoration and recovery receipt replay.",
+      "excludes": "New wound/B2 gameplay, live GM, complete afterlife cutover or recovery suite, native execution and mid-publication process loss.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCommonPublication.cs",
+        "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.PublicationRollback.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_PublicationFailureRestoresSignedOriginal",
+            "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_LaterWriteFailureRollsBackAndExactRetryHeals"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-mods-original-ui-detail",
       "responsibility": "Isolated original /моды detail-panel manual-opening-path oracle; exact current path label and single line are required, all other technical/error checks preserved.",
       "excludes": "Unchanged choices Fact already passed baseline; actual desktop launch, entire Explorer UI, runtime/settings mutation and native qualification.",

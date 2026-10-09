@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-committed-rollback",
+      "reason": "T064 faithful original C4two/woundrecoveryone: preserve genuine before-write/read refusals and outer rollback; replace prewrite/raw-only publication assumptions with actual Committed journal/After witnesses, raw restoration before fresh admission and strict original fixture cleanup. All business/retry/cold-receipt assertions retained. Fresh source/exact3/Plan/actual pending; B2 paused.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-mods-original-ui-detail",
       "reason": "F16 isolated failed original detail oracle corrected at5e0a: Plan1431431/0; actual1432411PASS with exact single current manual-path line, other technical/error checks retained and root removed. ChoicesPASS135881 retained without replay; original baseline failure preserved.",
       "contracts": [

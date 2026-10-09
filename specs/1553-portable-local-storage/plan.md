@@ -1,3 +1,25 @@
+## F18 original C4/recovery publication witnesses3 — source WIP, 2026-10-09
+
+Basee9143e82 (native/mods final RAW/CATALOG/CARRIER PASS). Existing two C4 rows and
+one wound recovery rollback/retry Fact keep their genuine signed setup and original
+pre-write/readback IOException boundaries. No conversion to postwrite injected failure.
+C4 write row must reach exact resource prewrite refusal with zero selected Committed
+witnesses; readback row requires actual resource and spiritual-receipt Committed journals,
+After hashes/raw bytes before original receipt read fault. Wound requires actual committed
+player carrier changed from Before before original history refusal; retains full rollback,
+exact receipt/retry/healing/turn45/cold replay assertions.
+
+New test-only raw observer reads actual current journal synchronously, no lease or mutation.
+Failure evidence records full original raw cohort/generation/no journal before facade reads;
+wound helper's optional observation runs after original refresh failure but BEFORE its
+existing finally reacquires fixture lease. Original fixture disposal closes its current
+lease before root absence is asserted; no fallback deletion hides cleanup failure.
+No production/GM/prompt/schema changes, no B2–B5 development or native qualification.
+Exact portable-original-committed-rollback3 added alongside retained semantic owners.
+Next independent source/exact3 gate, fresh integrationPlan3 then boundedactual3; actual
+reach/setup/outcomes unknown until execution. Remaining staged/binding/midpublication11
+and whole F16/consumer/owned-close/registry work stays open; T061–T065 unchecked.
+
 ## F18 native6 source qualification and mods composed2 GREEN — 2026-10-09
 
 Independent source/exact8 PASS135881 and baseline/classification/source-exact1 PASS5e0a.
@@ -18,7 +40,7 @@ Discovery143302567categories/11344methods-files valid0,10.1234952s,bothcleanup.
 NoBuild integrationfresh5e0a/unit533; production/projects unchanged. Packet
 [manifest](recovery/storage-migration-native-mods-20261009/manifest.json)27artifacts/
 originals39pins verified, baseline13/13 unchanged. Final independent RAW/CATALOG/CARRIER
-review pending. Treatment reason correction3b249330 independently closed without replay.
+PASS e9143e82. Treatment reason correction3b249330 independently closed without replay.
 Remaining F18: C4/wound rollback witnesses3; binding/staged/midpublication11 (worker1
 native, other10 file responders), faithful cleanup/cold boundaries. Remaining consumer/
 F16/owned-close registry queues unchanged; T061–T065 open and B2–B5 paused.
