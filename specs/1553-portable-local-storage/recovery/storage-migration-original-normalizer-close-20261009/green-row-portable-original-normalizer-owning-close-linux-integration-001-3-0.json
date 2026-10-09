@@ -1,0 +1,51 @@
+{
+  "mode": "generic",
+  "uncertain": false,
+  "root": "/tmp/boe-resource-materialization-ce89d49d7e3e4c4e894b4aa3b3ae3796",
+  "boundary": "CanonicalStateNormalizer+<NormalizeAccumulatedStateAsync>",
+  "actualOwnerState": "BookOfEternityClient.Services.CanonicalStateNormalizer+<NormalizeAccumulatedStateAsync>d__27/<writeLease>5__1",
+  "acquisitionPauses": 1,
+  "publicationPauses": 1,
+  "attachments": 0,
+  "Calls": 0,
+  "resultPresent": false,
+  "sameActualPlan": false,
+  "failure": null,
+  "samePrimary": false,
+  "sameSecondary": false,
+  "lockAvailable": true,
+  "activeAfter": false,
+  "ambientClosed": true,
+  "mainClosed": true,
+  "contextClosed": true,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJmMTY3MmI1OTUwYWE0MzA4OGMxODg4ZDNmOTA2YmNjZCJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJmMTY3MmI1OTUwYWE0MzA4OGMxODg4ZDNmOTA2YmNjZCJ9",
+  "targetAfter": "77u/ewogICJOUENKb3VybmFscyI6IFsKICAgIHsKICAgICAgIk5QQ0lkIjogIm5wY19qb3VybmFsIiwKICAgICAgIm5vdGUiOiAiQ3VycmVudCBhdXRob3JlZCBub3RlIiwKICAgICAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTA5VDAwOjAwOjAwWiIsCiAgICAgICJqb3VybmFsRW50cmllcyI6IFsKICAgICAgICB7CiAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiQ3VycmVudCBhdXRob3JlZCBlbnRyeSIsCiAgICAgICAgICAidGltZXN0YW1wIjogIjIwMjYtMTAtMDlUMDA6MDA6MDBaIgogICAgICAgIH0KICAgICAgXSwKICAgICAgImxhc3RKb3VybmFsTm90ZSI6ICJDdXJyZW50IGF1dGhvcmVkIG5vdGUiCiAgICB9CiAgXQp9",
+  "beforeFiles": {
+    "/tmp/boe-resource-materialization-ce89d49d7e3e4c4e894b4aa3b3ae3796/game_session/game_state/npcs/npc_journals.json": "77u/eyJOUENKb3VybmFscyI6W3siTlBDSWQiOiJucGNfam91cm5hbCIsIm5vdGUiOiJDdXJyZW50IGF1dGhvcmVkIG5vdGUiLCJ0aW1lc3RhbXAiOiIyMDI2LTEwLTA5VDAwOjAwOjAwWiIsImpvdXJuYWxFbnRyaWVzIjpbIkN1cnJlbnQgYXV0aG9yZWQgZW50cnkiXX1dfQ=="
+  },
+  "atIntentFiles": {
+    "/tmp/boe-resource-materialization-ce89d49d7e3e4c4e894b4aa3b3ae3796/game_session/game_state/npcs/npc_journals.json": "77u/eyJOUENKb3VybmFscyI6W3siTlBDSWQiOiJucGNfam91cm5hbCIsIm5vdGUiOiJDdXJyZW50IGF1dGhvcmVkIG5vdGUiLCJ0aW1lc3RhbXAiOiIyMDI2LTEwLTA5VDAwOjAwOjAwWiIsImpvdXJuYWxFbnRyaWVzIjpbIkN1cnJlbnQgYXV0aG9yZWQgZW50cnkiXX1dfQ=="
+  },
+  "afterFiles": {
+    "/tmp/boe-resource-materialization-ce89d49d7e3e4c4e894b4aa3b3ae3796/game_session/game_state/npcs/npc_journals.json": "77u/ewogICJOUENKb3VybmFscyI6IFsKICAgIHsKICAgICAgIk5QQ0lkIjogIm5wY19qb3VybmFsIiwKICAgICAgIm5vdGUiOiAiQ3VycmVudCBhdXRob3JlZCBub3RlIiwKICAgICAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTA5VDAwOjAwOjAwWiIsCiAgICAgICJqb3VybmFsRW50cmllcyI6IFsKICAgICAgICB7CiAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiQ3VycmVudCBhdXRob3JlZCBlbnRyeSIsCiAgICAgICAgICAidGltZXN0YW1wIjogIjIwMjYtMTAtMDlUMDA6MDA6MDBaIgogICAgICAgIH0KICAgICAgXSwKICAgICAgImxhc3RKb3VybmFsTm90ZSI6ICJDdXJyZW50IGF1dGhvcmVkIG5vdGUiCiAgICB9CiAgXQp9"
+  },
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

@@ -1,3 +1,24 @@
+## Normalizer actual GREEN8 / Afterlife actual causal8 — WIP, 2026-10-09
+
+One fresh integration Plan22231416/2 at3b195aa4,0execution106.4841160s,
+0build errors; separate actualNormalizer2225118/8PASS9.6393409s and
+actualAfterlife222617complete8=4knownPASS/4causalFAIL9.1862446s.
+Each1/1complete,bothcleanup,0skipduplicateTimeout/strict8roots. No aggregate
+GREEN16. Normalizer runtime92a6f54d combinedsource/exact8PASS; all4 same genuine
+CSP+secondary/fullsettlement/noLater/Closing0 and knownactualplans/journal/item
+receipt/index/currentvalidators PASS. [Normalizerpacket](recovery/storage-migration-original-normalizer-close-20261009/manifest.json)
+50artifacts44pins verified originals, immutableRED25/22; finalGREEN/rawgate next.
+
+All four original Afterlife owners/Intent/member0 reached real CSP masked bysame
+late original close; fullsettlement/noLater/Closing0/currentgeneration confirmed.
+Known realBuildplan/owner+resource afterimages/bootstrap memoryallocation,
+consume chosen life and actualallocation1→0, progression ordinals/report removal
+/current resource validation PASS. [Afterlifepacket](recovery/storage-migration-original-afterlife-state-close-20261009/manifest.json)
+26artifacts19pins verified originals. Next minimal4 actualowning wrappers CSP
+capture/rethrowexistingRelease(false,sameexception), preserve core/fixture/authority;
+combinedRED/source/exact8 gate then freshGREEN8. Fullnew-ownercatalog next stable
+accepted batch. B2–B5/native/knownlateclose/fullgame remain open; T061–T065 unchecked.
+
 ## Original Afterlife state four owners — test-first WIP, 2026-10-09
 
 Independent fixture/design/exact8 PASS2a2b03af installed byte-identically. Actual
