@@ -110,10 +110,13 @@ the old checkpoint already belongs to main. Returning to it loses later
 Windows/Linux relay/HTTP changes and does not recover missing feature completion.
 Actual old binding failure has unchanged seed/validator/profile/cost source at
 main and migration checkpoints; [immutable history proof](recovery/storage-migration-spiritual-lifecycle-20261009/binding-cold-contract-history.json).
-Resolving whether force_binding belongs to the game art registry is a paused
-#1536 product-contract decision, not a storage fixture rename/removal. Native
-Windows and systemd handling were already owner-directed; no repeated decision
-or HOME-PC task is needed.
+The [approved #1536 spec](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/specs/1536-complete-wound-materialization/spec.md#L439)
+already includes force_binding in the eligible combat-art set and requires its
+original cold regression. This is an existing implementation/fixture-contract
+conflict to reconcile within paused B2, not a new user choice to remove/rename
+the art or invent a mechanic. Resuming B2 remains outside the current storage
+scope. Native Windows and systemd handling were already owner-directed; no
+repeated decision or HOME-PC task is needed.
 
 No game rule, GM response/schema, accepted-turn mechanics or command was added
 by the current storage block. GM gameplay prompt/example changes are therefore
