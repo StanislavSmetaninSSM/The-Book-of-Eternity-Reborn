@@ -1,3 +1,44 @@
+## F16 Story listing/read/export — bounded fixture WIP, 2026-10-09
+
+Source #1553,R25/F16,T063/T064/T065. Prior listing15 final independent RAW/CATALOG/
+CARRIER PASS8ab39b8335a81294deb9a3c313ddb0a211f0146c:58artifacts/originals66pins,
+541/11335catalog0. Gallery/image/listing accepted cohorts are not replayed.
+
+Independent source/design consult accepts one coherent source/export boundary:
+public Story list/read acquire original short admission; export-all borrows an
+explicit-lease reader under its source+publication scope. Preserve physical-line
+count, lastN BEFORE skipping blank/malformed JSON, BOM decoding, missing-file empty
+result and bounded ordinary I/O fallback. Root/leaf/path, recovery InvalidData,
+CSP and replacement remain outside read fallback; keep current metadata/narrative.
+Chapter export publishes already displayed entries. Both exports preserve existing
+second-resolution names and UTF8 BOM, use common file publication, close before UI/key,
+and let original publication CSP reach the already-qualified outer SafeExecute stop.
+SafeExecute currently excludes CSP only: actual replacement through its outer catch
+is NOT qualified or silently changed here. Timestamp overwrite remains source-only;
+no clock seam or coincidental collision is introduced merely to manufacture proof.
+
+New10 fixture-only modes: public list/read retainedUnknown2; genuine leaf-link2
+(read already refuses through ResolvePath and is a preserved negative control);
+five physical UTF16 BOM lines valid1/blank/valid2/broken/valid3 with lastN2=>only3,
+missing file and count5; known pre-read IOException with positive injection1;
+actual /story offered chapter/all exportUnknown2, asserting original CSP/no later
+prompt/key and exact publisher journal; original private export-all Committed-debt
+recovery-before-source-read1; original chapter displayed-entry publication/BOM/literal
+Linux filename and lease-free-key1. Positive key lease probe is gated on raw prior
+journal absence AND actual committed publication, so it cannot fix missing recovery.
+Every root is independent and explicitly removed; all raw rows precede assertions.
+Old raw-reader failure hook may be unreached: do not label it a reached IO refusal.
+
+Next independent frozen SOURCE/FIXTURE/EXACT10 gate, fresh integration Plan10 and
+baseline10; then minimal runtime and selected12 with existing console-reader and
+browser-readable-story neighbors. Original parser/read error policy must be inspected
+against actual baseline before editing. No runtime/Story code change yet. Updated
+current task/inventory headers supersede stale pending-review/stop introductions
+without changing any checkbox or historical evidence. T061–T065 open, B2–B5 paused.
+No new gameplay/GM-authored schema or history acceptance policy; no prompt/example
+update is required for the client-owned storage boundary. Full engine/native/rotation/
+secondary-close/timestamp-overwrite execution and wholeF16 remain unqualified.
+
 ## F16 original canonical listings bounded15 GREEN — 2026-10-09
 
 Independent SOURCE/RED-RAW/EXACT15 PASS92382b4a. Tested runtime/source

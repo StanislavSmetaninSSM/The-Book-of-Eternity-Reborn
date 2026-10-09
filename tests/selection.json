@@ -1072,6 +1072,34 @@
         "T064-STORAGE-CUTS",
         "T065-STORAGE-CLOSURE"
       ]
+    },
+    {
+      "category": "portable-story-read-export-linux",
+      "reason": "F16 Story fixture-only WIP, unbuilt/unrun. Ten original story boundaries: admitted public list/read retain unknown evidence and reject linked leaves, physical-line lastN/BOM/malformed/missing semantics, positive known IO read interruption, original offered console chapter/all export uncertainty stop, real Committed recovery before export-all reads and displayed chapter preservation with actual publication/release-before-key.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-story-read-export-known",
+      "reason": "F16 Story fixture-only WIP, unbuilt/unrun. Original console story reader and browser story dossier remain readable through the migrated shared story source; exact two existing entrypoints.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
     }
   ]
 }

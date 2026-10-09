@@ -1,9 +1,20 @@
-## Latest accepted checkpoint and next family — 2026-10-09
+## Current migration status — 2026-10-09
 
-Explorer final gate PASS6f61302b:257 artifacts/239 pins and composed33 unique Linux
-passing obligations; stale reroll fixture is now qualified. Ready/worker current
-bounded design and remaining connected tails are at the top of plan.md. T061–T065
-and whole migration remain open; no native Windows execution is inferred.
+Source #1553, cloud branch1553-storage-migration-cloud-20261008. Bounded F16 image23
+(runtime c02b3ed5, final16db2f7a), gallery8 (source4020035b, final9dbeea70) and
+canonical-listings15 (runtime92382b4a, final8ab39b83) have independent final evidence
+PASS. These are separate source-era runs, not an aggregate selection. Latest catalog
+541categories/11335methods-files is discovery-only at92382b4a,0tests. Gallery packet
+62artifacts/80pins and listings58/66 are verified; source/counters/cleanup/limits and
+older accepted C2/worker/Explorer blocks are in [plan](plan.md).
+
+Current Story listing/read/export fixtures are unbuilt/unrun; runtime unchanged.
+Other F16 snapshot/path consumers, F18 observer/admission migration, concrete owning
+closes, nested prepared consumers and whole-selection reconciliation remain open.
+T061–T065 stay unchecked; #1536 B2–B5 paused. No whole-game/native Windows/full-turn
+or simultaneous secondary-close acceptance. Main/CI/live/provider/desktop unchanged.
+Historical status entries below retain their source dates; current continuation is
+at the top of plan.md, not an older pending review or safe-stop paragraph.
 
 ## Current Explorer/Forge acceptance map — 2026-10-09
 

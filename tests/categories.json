@@ -20110,6 +20110,57 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-story-read-export-linux",
+      "responsibility": "Ten original story boundaries: admitted public list/read retain unknown evidence and reject linked leaves, physical-line lastN/BOM/malformed/missing semantics, positive known IO read interruption, original offered console chapter/all export uncertainty stop, real Committed recovery before export-all reads and displayed chapter preservation with actual publication/release-before-key.",
+      "excludes": "No full game/repair, live GM/desktop, native Windows, actual session replacement, secondary close, or timestamp collision/overwrite execution. Retained Unknown read admission is distinct from the original export publication CSP.",
+      "changeHints": [
+        "BookOfEternityClient/Services/StoryService.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.StoryReadExportAdmissionTests.OriginalStoryReadsAndExportsKeepStorageAuthority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-story-read-export-known",
+      "responsibility": "Original console story reader and browser story dossier remain readable through the migrated shared story source; exact two existing entrypoints.",
+      "excludes": "No full game/repair, live GM/desktop, native Windows, actual session replacement, secondary close, or timestamp collision/overwrite execution. Retained Unknown read admission is distinct from the original export publication CSP.",
+      "changeHints": [
+        "BookOfEternityClient/Services/StoryService.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Story_RendersReaderWithoutException",
+            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_Story_RendersReadableEntriesWithoutStoryFileNames"
+          ]
+        }
+      ]
     }
   ]
 }
