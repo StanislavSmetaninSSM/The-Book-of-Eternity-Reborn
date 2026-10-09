@@ -292,20 +292,33 @@ public sealed class LocalUiSessionLockService
         var hasExpectedGeneration = SessionOperationContext.TryGetExpectedGeneration(
             _fs.BasePath,
             out var expectedGeneration);
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (!hasExpectedGeneration)
-            expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
-        else if (!_fs.IsCurrentSessionGeneration(writeLease, expectedGeneration))
-            throw new SessionReplacedException(
-                "The local UI lock operation belongs to a replaced session.",
-                expectedGeneration,
-                actualGeneration: null);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            if (!hasExpectedGeneration)
+                expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+            else if (!_fs.IsCurrentSessionGeneration(writeLease, expectedGeneration))
+                throw new SessionReplacedException(
+                    "The local UI lock operation belongs to a replaced session.",
+                    expectedGeneration,
+                    actualGeneration: null);
 
-        return await SessionOperationContext.RunBoundAsync(
-            _fs,
-            expectedGeneration,
-            writeLease,
-            () => operation(writeLease));
+            return await SessionOperationContext.RunBoundAsync(
+                _fs,
+                expectedGeneration,
+                writeLease,
+                () => operation(writeLease));
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
     }
 
     private async Task RunCanonicalAsync(

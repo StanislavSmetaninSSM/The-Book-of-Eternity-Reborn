@@ -1,3 +1,22 @@
+## Six original owning closes installed — WIP, 2026-10-09
+
+Original causal RED12 preserved/ref/raw d06b73d3:62artifacts/39pins verified
+originals. Runtime now catches the actual CSP at bootstrap, UI lock, Daren
+profile, prompt generation, prompt lock and QTE terminal owners, retaining it
+through existing ReleaseOwnedLeaseAsync(completed:false) in original finally
+scope. Original business body/ordering remains; QTE completed fields stay inside
+original owned scope after real profile publication, and prompt second admission
+still occurs only after the first generation owner closes. No helper API or
+GM authored mechanic/schema/prompt/example change. Installed UNBUILT/UNRUN.
+Combined original RED/source/exact12 independent gate before fresh Plan12/actual12.
+Independent inventory finds further actual owning publishers and a separate
+browser established-result close boundary; six named owners are not whole owner
+closure. Inventory AST needs declaration span/signature identity (name-only keys
+collapse overloads) and all855source-blob pins, still syntax-only. Next bounded
+choices will use method-specific contracts, actual fixtures and accepted limits.
+Mod cache/folder UI remain available. T061–T065 unchecked; B2–B5 paused,
+native Windows/systemd/whole migration unqualified.
+
 ## Remaining six original owners causal RED12 — WIP, 2026-10-09
 
 Refined captured-owner fixture and partial evidence independent PASSf5856ff5.
@@ -50,7 +69,8 @@ Owner inspector now reports actual field/type names on missing unique owner,
 without game/user content. Other assertions unchanged. Diagnostic source gate,
 then narrow original missing-route probe; refine exact12 only after cause.
 Current syntax-only Roslyn read of855productfiles locates169acquisition calls
-in70files/162named methods,106using syntax,51method release-helper mentions.
+in70files/162(Path,Method) name keys (overloads collapsed),106using-syntax
+rows and51invocation rows in48name keys mentioning the release helper.
 This is candidate census, not semantic defect/acceptance classification; old
 102single-line grep is explicitly incomplete. Method inventory still open.
 T061–T065 unchecked; B2–B5 paused, native/systemd/whole migration unqualified.

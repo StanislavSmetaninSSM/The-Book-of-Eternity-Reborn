@@ -296,15 +296,28 @@ public sealed class DarenQteRewardProfileService
         var hasExpectedGeneration = SessionOperationContext.TryGetExpectedGeneration(
             _fs.BasePath,
             out var expectedGeneration);
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (!hasExpectedGeneration)
-            expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            if (!hasExpectedGeneration)
+                expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
 
-        return await SessionOperationContext.RunBoundAsync(
-            _fs,
-            expectedGeneration,
-            writeLease,
-            () => operation(writeLease));
+            return await SessionOperationContext.RunBoundAsync(
+                _fs,
+                expectedGeneration,
+                writeLease,
+                () => operation(writeLease));
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
     }
 
     private static DarenRewardProfileState NormalizeProfile(string raw)

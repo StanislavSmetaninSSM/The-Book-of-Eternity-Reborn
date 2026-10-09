@@ -66,8 +66,21 @@ public sealed class ExplorerWebPromptSessionService
         ExplorerWebCommandRequest request)
     {
         string expectedGeneration;
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
             expectedGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
 
         return await AttachSessionIfNeededAsync(
             result,
@@ -87,25 +100,38 @@ public sealed class ExplorerWebPromptSessionService
         var requiresLock = RequiresLocalUiLock(result.Command);
         try
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            if (!_fs.IsCurrentSessionGeneration(writeLease, expectedGeneration))
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? uncertainty = null;
+            try
             {
-                throw new SessionReplacedException(
-                    "The prompt result belongs to a replaced game session.",
-                    expectedGeneration,
-                    actualGeneration: null);
-            }
+                if (!_fs.IsCurrentSessionGeneration(writeLease, expectedGeneration))
+                {
+                    throw new SessionReplacedException(
+                        "The prompt result belongs to a replaced game session.",
+                        expectedGeneration,
+                        actualGeneration: null);
+                }
 
-            return await SessionOperationContext.RunBoundAsync(
-                _fs,
-                expectedGeneration,
-                writeLease,
-                () => AttachSessionBoundAsync(
+                return await SessionOperationContext.RunBoundAsync(
+                    _fs,
+                    expectedGeneration,
                     writeLease,
-                    result,
-                    owner,
-                    requiresLock,
-                    expectedGeneration));
+                    () => AttachSessionBoundAsync(
+                        writeLease,
+                        result,
+                        owner,
+                        requiresLock,
+                        expectedGeneration));
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                uncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+            }
         }
         catch (SessionReplacedException)
         {

@@ -51,14 +51,27 @@ public partial class StateManager
     public Task<string> BootstrapLocalStorageAsync()=>SessionOperationContext.RunParticipatingBootstrapAsync(_fs,BootstrapLocalStorageCoreAsync);
     private async Task<string> BootstrapLocalStorageCoreAsync()
     {
-        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        _fs.EnsureDirectoryStructure(lease);
-        var before = await _fs.ReadLocalFileBytesAsync(lease, "config.json");
-        var loaded = before == null ? null : DecodeLocalSettings(before);
-        var desired = before ?? EncodeLocalSettings(Settings);
-        var generation = _fs.BootstrapLocalStorage(lease, before, desired);
-        if (loaded != null) Settings.ApplyLoadedValues(loaded);
-        return generation;
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            _fs.EnsureDirectoryStructure(lease);
+            var before = await _fs.ReadLocalFileBytesAsync(lease, "config.json");
+            var loaded = before == null ? null : DecodeLocalSettings(before);
+            var desired = before ?? EncodeLocalSettings(Settings);
+            var generation = _fs.BootstrapLocalStorage(lease, before, desired);
+            if (loaded != null) Settings.ApplyLoadedValues(loaded);
+            return generation;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, uncertainty);
+        }
     }
 
     public async Task LoadSettingsAsync()
