@@ -1,3 +1,14 @@
+## Browser replacement original fixture installed — test-first WIP, 2026-10-09
+
+Independentfixture/design/exact4PASS760e7ca4/cd99addb. Onlyrawoutput added explicit
+sameFollowUpPrimary forreleaseaggregate afternonblockingreview; assertions/body
+unchanged. InstalledbyteidenticalnewSHAc663108ead040921465e8c287978534ebc0fd328884c647ef8ccdf7187546e19.
+Permanentfiniteexclusive integration4 category owns actualadmission/releaseknown+
+genuineuncertain, productionunchanged UNBUILT/UNRUN. FreshPlan4 and original4
+next beforeminimal2lexicalguards; no broad catalog/category execution. Allprevious
+replay/Proposal/Ascension/Save/Treatmentacceptednotrerun. No loader/native/archive/
+GM/game/B2–B5/wholeLoad qualification; T061–T065 stayopen.
+
 ## Browser replacement original-owner exact4 draft — WIP, 2026-10-09
 
 Independent design/safe-seamPASS: source-grounded census161/162 canloseactualCSP

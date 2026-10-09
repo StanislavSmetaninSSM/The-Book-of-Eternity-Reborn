@@ -2044,6 +2044,19 @@
         "T064-STORAGE-CUTS",
         "T065-STORAGE-CLOSURE"
       ]
+    },
+    {
+      "category": "portable-original-browser-replacement-close-linux",
+      "reason": "T063/T065 original161/162 source-grounded CSP+secondary masking hypothesis; independent fixture/design/exact4PASS760e7ca4, output-only sameFollowUpPrimary clarification installedbyteidentical c663108ead040921465e8c287978534ebc0fd328884c647ef8ccdf7187546e19. Originalproductionunchanged UNBUILT/UNRUN; freshPlan4 then actualoriginalbaseline4 beforeminimalguards. Real UIlock only; no loader/native/fullLoad.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
     }
   ]
 }

@@ -21977,6 +21977,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-original-browser-replacement-close-linux",
+      "responsibility": "Four actual original browser replacement admission/release owners with real UI-lock publication/token/current generation. Known controls retain ordinary refusal delegate result and actual token release; genuine CSP+sameownerclose retains Uncertain admission or NotLoaded refusal with SAME CSP followup, noLater/Closing0/fullsettlement/strictroots. Selected asynchronous acquisition then actual first Intent/member0; release exact Before/absentAfter.",
+      "excludes": "No loader/archive-admission/native/backend/process/desktop/GM/game/B2-B5/fullLoad/web qualification. Callback returns a disclosed controlled ordinary NotLoaded refusal; no replacement is run. Known controls lack late closer, other closure variants remain unqualified.",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.BrowserReplacement.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalBrowserReplacementOwnersRetainGenuineUncertaintyAndRefusal"
+          ]
+        }
+      ]
     }
   ]
 }
