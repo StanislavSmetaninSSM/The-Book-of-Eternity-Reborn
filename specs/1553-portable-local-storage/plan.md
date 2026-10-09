@@ -1,3 +1,26 @@
+## Progression original consumer causal4 gate — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT4 PASS for the unchanged690 draft retained atc7c56722.
+Proceed only portable-progression-outcome-causal-linux: actual base publication, status clear after
+prior base Committed, mark-only level receipt with computedLevel2, and actual AddStatPoints
+computed publication after prior points Committed. The runtime Mortal view is an explicit component
+context, not a completed accepted turn. Original methods/storage publisher execute; no live GM or
+interactive distribution. Retain actual cut/first CSP/journal/foreign bytes/prior committed bytes,
+measured later hooks and owned-root cleanup before interpreting RED. Fresh integration Plan/build
+and actual4 remain pending. No production change yet.
+
+Minimal proposed runtime after causal evidence: exclude actual typed CSP from the three connected
+broad catches in ProcessStatsIncreasedAsync, CheckLevelUpAsync and CharacteristicsService.ComputeAndWriteAsync.
+Keep known parse/nonstorage fallback and XP/stat math. Final candidate5 adds existing original
+CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart only; reconsider if actual
+runtime delta expands. Storage reads outside parse-only catches remain unchanged.
+
+Prepared final carrier c7c56722 independent RAW8/INTEGRITY/DOCS PASS:59 artifacts/26 pins,
+all original ACK identities and dispositions accepted. No new full restore claimed; parent retains
+e5 as latest fresh GitHub-only full restoration and plans a combined later restore. Global catalog
+will be refreshed after this reviewed integration build, with zero test execution in discovery.
+Remaining T062/F16/F18 source candidates remain open, not implied covered by these four cases.
+
 ## Prepared original remote receipt final8 checkpoint — 2026-10-09
 
 Runtime7cf3cdf9 independently source/exact8 PASS. Matching Plan013102 fresh unit/support/bridge

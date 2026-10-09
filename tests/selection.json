@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-progression-outcome-causal-linux",
+      "reason": "Independent fixture/selection PASS: four actual original base/status-clear/mark-only/computed publication Unknown cuts with prior committed bytes and no continuation; causal execution before any three-catch runtime correction.",
+      "contracts": ["#1553", "FR-003", "FR-004", "T062-STORAGE-OUTCOMES"]
+    },
+    {
       "category": "portable-prepared-remote-outcome-linux",
       "reason": "Original remote receipt causal3 at54d corrected at7cf; final013211 remote3 PASS with actual Committed/RolledBack/Uncertain, exact original ACK/fullidentity, known bytes/runtime Apply and Unknown no continuation.",
       "contracts": ["#1553", "FR-003", "FR-004", "T062-STORAGE-OUTCOMES", "T063-REMAINING-CONSUMERS"]
