@@ -1,3 +1,14 @@
+## Optional images root admission ordering corrected before build — WIP, 2026-10-09
+
+Independent source review traces actualRED failure to ResolvePath("images") BEFORE
+one-line reparse guard. Fixedconstant optionalroot first spelled non-following
+Path.Combine(GameSessionPath,"images"); Exists+IsReparse skip occurs BEFORE
+ResolvePath, which staysinsideacceptednonlinked branch beforeactualchildenumeration/
+admittedfile reads. No arbitrarypathinput/unsafe read/otherroot fallback introduced.
+Prior26eae3c4 sourceattempt UNBUILT/UNRUN, no test replay; actualoriginalRED unchanged.
+Ascension guard/fixture/Evidence/TreatmentGREEN unchanged. Reviewexactorderingdelta
+beforefreshSaveGREEN2. No GM gamecontractchange ornative/fullSaveLoad qualification.
+
 ## Ascension original owning guard and optional images root guard — WIP, 2026-10-09
 
 Exactly CheckAscensionTrigger originallexicalowning scope captures/rethrows SAME

@@ -260,9 +260,10 @@ public partial class SaveLoadService
                     manifestEntries);
 
                 // Add entity images (NPCs, items, locations, player — NOT scenes)
-                var imagesPath = _fs.ResolvePath("images");
+                var imagesPath = Path.Combine(_fs.GameSessionPath, "images");
                 if (Directory.Exists(imagesPath) && !FileSystemManager.IsReparsePoint(imagesPath))
                 {
+                    imagesPath = _fs.ResolvePath("images");
                     foreach (var subDir in Directory.GetDirectories(imagesPath))
                     {
                         var dirName = Path.GetFileName(subDir);
