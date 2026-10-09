@@ -1,3 +1,20 @@
+## Shared initial-generation original causal RED2 — WIP, 2026-10-09
+
+Independent final six GREEN12/raw/carrier PASSf8b14bb1 and initial-generation
+fixture/design/exact2 PASS4b9fb330. Fresh integration Plan202406 at4b9fb330:
+2/1,0execution102.6485712s. Actual2025542complete=1knownPASS/1causalFAIL,
+7.5231903s,1/1complete,0skip/duplicate/timeout,bothcleanup/two strict roots absent.
+Actual original initial-generation CSP is lost to same late close IOException;
+no callback/result on uncertainty; full original lease/main/ambient/context/lock
+settlement already occurs. Ordinary callback observes actual generation and
+already closed initial owner. [Packet](recovery/storage-migration-original-generation-close-20261009/manifest.json)
+13artifacts/10pins, stored/original/Git source hashes verified. No runtime edits.
+Next minimal CSP catch/release inside same initial-generation scope only,
+combined RED/source/exact2 independent gate then fresh Plan/actual2. Typed browser
+needs actual established T/frozen outcome and follow-up/readmission/main-close
+signal, with generic/Prepared/incomplete-callback controls; exact12 design PASS.
+Remaining publishers/mod/UI open; T061–T065 unchecked/B2–B5 paused.
+
 ## Shared original initial-generation owner — test-first WIP, 2026-10-09
 
 Six original owners GREEN12 packet/ref/raw f8b14bb1 saved; independent final
