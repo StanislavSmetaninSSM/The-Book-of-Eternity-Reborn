@@ -1,0 +1,75 @@
+{
+  "mode": "write_refusal",
+  "root": "/tmp/boe-original-mod-manifest-211bc61fa84e44bfba9d9737e34587da",
+  "result": null,
+  "failure": "System.IO.IOException: Actual original mod manifest mutation refusal.\n   at BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.<>c__DisplayClass8_1.<<OriginalSystemModManifestCommitsCacheOnlyAfterKnownPublication>b__5>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.ModManifest.cs:line 67\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.FileSystemManager.InvokeBeforeCanonicalMutationBoundaryAsync(String relativePath) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 5537\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 224\n   at BookOfEternityClient.Core.FileSystemManager.PublishOrdinaryFileWithOutcomeAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 328\n   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 315\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 851\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(CanonicalWriteLease writeLease, String relativePath, String content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 759\n   at BookOfEternityClient.Services.SystemModService.WriteManifestForGmAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SystemModService.cs:line 89\n   at BookOfEternityClient.Services.SystemModService.WriteManifestForGmAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SystemModService.cs:line 97\n   at BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.<>c__DisplayClass8_1.<<OriginalSystemModManifestCommitsCacheOnlyAfterKnownPublication>b__9>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.ModManifest.cs:line 136\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "acquisitions": 1,
+  "reads": [
+    "mods/active.md",
+    "game_state/core/system_mods.json",
+    "game_state/core/system_mods.json"
+  ],
+  "mutations": [
+    "game_state/core/system_mods.json"
+  ],
+  "readCuts": 0,
+  "writeCuts": 1,
+  "pauses": 0,
+  "originalState": null,
+  "attachments": 0,
+  "Calls": 0,
+  "beforeCache": [
+    "active.md",
+    "missing.md",
+    "ACTIVE.MD"
+  ],
+  "afterCache": [
+    "active.md",
+    "missing.md",
+    "ACTIVE.MD"
+  ],
+  "cacheOwnerSame": true,
+  "beforeManifest": "77u/eyJwcmlvciI6Im1hbmlmZXN0In0=",
+  "afterManifest": "77u/eyJwcmlvciI6Im1hbmlmZXN0In0=",
+  "committedManifest": null,
+  "beforeGeneration": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2ZjQ3NzIyN2JmMGM0YzgzOGExYjgwMTFhODlmODUwMSJ9",
+  "afterGeneration": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2ZjQ3NzIyN2JmMGM0YzgzOGExYjgwMTFhODlmODUwMSJ9",
+  "beforeFiles": {
+    ".boe_runtime/locks/canonical-write.lock": "",
+    ".boe_runtime/locks/gm-main-owner.lock": "",
+    ".boe_runtime/session-generation/current.json": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2ZjQ3NzIyN2JmMGM0YzgzOGExYjgwMTFhODlmODUwMSJ9",
+    "game_session/game_state/core/system_mods.json": "77u/eyJwcmlvciI6Im1hbmlmZXN0In0=",
+    "game_session/mods/active.md": "77u/IyBFeGFjdCBhY3RpdmUgbW9kCk9yaWdpbmFsIGNvbnRlbnQuCg=="
+  },
+  "afterFiles": {
+    ".boe_runtime/locks/canonical-write.lock": "",
+    ".boe_runtime/locks/gm-main-owner.lock": "",
+    ".boe_runtime/session-generation/current.json": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2ZjQ3NzIyN2JmMGM0YzgzOGExYjgwMTFhODlmODUwMSJ9",
+    "game_session/game_state/core/system_mods.json": "77u/eyJwcmlvciI6Im1hbmlmZXN0In0=",
+    "game_session/mods/active.md": "77u/IyBFeGFjdCBhY3RpdmUgbW9kCk9yaWdpbmFsIGNvbnRlbnQuCg=="
+  },
+  "lockAvailable": true,
+  "originalActive": null,
+  "originalMainClosed": true,
+  "originalAmbientClosed": true,
+  "samePrimary": false,
+  "sameSecondary": false,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

@@ -1,3 +1,20 @@
+## Mod/folder bounded GREEN13 and combined new-owner discovery — 2026-10-09
+
+Runtime8866c34ff010edd1bbb264777330587474c33711 independent RED/source/design/
+exact13 PASS. Fresh both-project Plan20560013/3,0execution67.1289040s; actual
+20575613/13PASS16.6909366s,3/3complete,0skip/duplicate/timeout,bothcleanup.
+Mod8 originalintegration and2 unchanged semanticunit; folder source1+inertUI2.
+Eight strict mod roots and two strict UI roots absent; unchanged semanticunit2
+retain their existing soft cleanup, not counted as strict. One actual discovery
+210002 at same runtime validates593categories/11367methods-files,0execution,
+8.2783918s,bothcleanup. Shared in four new-owner packets, not four runs.
+[Mod/folder packet](recovery/storage-migration-original-mod-folder-20261009/manifest.json)
+65artifacts/72pins verified originals; original incomplete8/11 and separate source1
+remain immutable. Six/gen/browser packets now99/66,31/40,69/45 respectively.
+Final independent GREEN/raw/carrier/catalog gate next; remaining actual pending/
+control and business publishers remain open, no unchanged accepted set replay.
+T061–T065 unchecked/B2–B5 paused/native transport/systemd unqualified.
+
 ## Mod single owner/cache and managed folder installed — WIP, 2026-10-09
 
 Original mod8/sourcefolder1 causal baseline preserved/ref/rawf64862d4,30artifacts/

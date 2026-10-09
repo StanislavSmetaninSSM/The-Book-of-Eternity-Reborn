@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-mod-manifest-cache-linux",
-      "reason": "T063/T065 originalPlan11/3 actual8/1incomplete2PASS/6causalFAIL10.8029480s preserved; originalsemanticunit2UNRUNduefirstfailedDescriptor. Newoneowner/latecache/completedflag installedUNBUILT/UNRUN, exactmod10+folder3 sourcegate thenfreshPlan13/actual13. Knownclosepreservation intentionalchange; nofullcallerSaveSettingsatomicity.",
+      "reason": "T063/T065 runtime8866c34f actual20575613/13PASS16.6909366s complete3/3, including originalmod8+unchangedsemanticunit2. Oneowner/latecache/completedflag knownfalse/true and genuineunknown primary/secondary; strictmod8roots. OriginalPlan11/actual8 incomplete and separate sourceRED1 retained. Packet65/72 verified; finalgatepending. No fullcallerSaveSettingsatomicity.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -16,7 +16,7 @@
     },
     {
       "category": "portable-original-world-profile-folder-linux",
-      "reason": "T063/T050 safe source-only baseline actual2050591causalFAIL6.5119510s bothcleanup; originaldesktopUIUNRUN underno-desktop. Existingmanagedhelper installed+inertactualUI2 fixture; final3UNBUILT/UNRUN. Output beforeClear/manualpath/exactrequest/pause0or1; no nextscreen persistence oractualdesktopassociationclaim.",
+      "reason": "T063/T050 actual205756 complete13 includes folder3 sourceguard/inertUI2PASS. Existingmanagedhelper, outputbeforeClear/manualpath/exactrequest/pause0or1; strictUI2roots, no actualdesktop process. Originalsafe sourceRED1 separate, originaldesktopUIUNRUN. One sharedcatalog210002593/11367discovery0.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -29,7 +29,7 @@
     },
     {
       "category": "portable-original-browser-owning-result-close-linux",
-      "reason": "T063/T065 runtime63edbf83 fresh Plan20451112/1 then actual20461212/12PASS8.4599314s, complete1/1/bothcleanup/strict12roots/0skipduplicateTimeout. Real Browser/generic/nested/Prepared/incomplete results and fullsettlement preserved; packet66artifacts/30pins verifiedoriginals, original4P/8causalFAIL immutable. Independentsource/exact12PASS; independent finalGREEN/raw/carrierPASS2a75780a, catalogcombinedpending. No unchanged accepted group replay.",
+      "reason": "T063/T065 runtime63edbf83 fresh Plan20451112/1 then actual20461212/12PASS8.4599314s, complete1/1/bothcleanup/strict12roots/0skipduplicateTimeout. Real Browser/generic/nested/Prepared/incomplete results and fullsettlement preserved; packet69artifacts/45pins verifiedoriginals, original4P/8causalFAIL immutable. Independentsource/exact12PASS; independent finalGREEN/raw/carrierPASS2a75780a, sharedcatalog210002593/11367discovery0. No unchanged accepted group replay.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -42,7 +42,7 @@
     },
     {
       "category": "portable-original-participating-generation-close-linux",
-      "reason": "T063/T065 runtimea19d4078 fresh Plan2032022/1 and actual2033022/2PASS8.0827172s, bothcleanup/strict2roots/0skipduplicateTimeout. Same genuine generation CSP+secondary close, no unknown callback; known actualgeneration/closed owner callback. Packet28artifacts/30pins, independent finalGREEN/raw/carrierPASS13f40584. Original1knownPASS/1causalFAIL and preparationFAILED separatelyretained. Catalogpending; no unchanged test replay.",
+      "reason": "T063/T065 runtimea19d4078 fresh Plan2032022/1 and actual2033022/2PASS8.0827172s, bothcleanup/strict2roots/0skipduplicateTimeout. Same genuine generation CSP+secondary close, no unknown callback; known actualgeneration/closed owner callback. Packet31artifacts/40pins, independent finalGREEN/raw/carrierPASS13f40584. Original1knownPASS/1causalFAIL and preparationFAILED separatelyretained. Sharedcatalog210002593/11367discovery0; no unchanged test replay.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -55,7 +55,7 @@
     },
     {
       "category": "portable-original-remaining-owning-close-linux",
-      "reason": "T063/T065 runtime7aa6be72 actual20072212/12PASS7.6135260s,all12strictrootsabsent. Six actualoriginal owners retain samegenuineCSP+same secondaryclose andfullsettlement; sixknownDTO/result controlsPASS. Earlier causal6PASS/6FAIL and preparation groups separatelyretained. Runner/TRXExit0; externalwrapper1 separatelyreproduced by no-testBashprobes andretained, no runnerchange/replay. Independent finalGREEN/raw/carrierPASSf8b14bb1; combinedcatalogpending. Otherownersopen.",
+      "reason": "T063/T065 runtime7aa6be72 actual20072212/12PASS7.6135260s,all12strictrootsabsent. Six actualoriginal owners retain samegenuineCSP+same secondaryclose andfullsettlement; sixknownDTO/result controlsPASS. Earlier causal6PASS/6FAIL and preparation groups separatelyretained. Runner/TRXExit0; externalwrapper1 separatelyreproduced by no-testBashprobes andretained, no runnerchange/replay. Independent finalGREEN/raw/carrierPASSf8b14bb1; packet99/66/sharedcatalog210002593/11367discovery0. Otherownersopen.",
       "contracts": [
         "#1553",
         "FR-002",

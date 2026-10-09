@@ -1,3 +1,19 @@
+## Latest bounded original-owner results — 2026-10-09
+
+| Actual owner boundary | Actual execution and packet | Limits |
+|---|---|---|
+| Bootstrap/UI lock/profile/prompt generation/prompt lock/QTE terminal | Runtime7aa6be72; actual20072212/12PASS7.6135260s; [packet](recovery/storage-migration-original-remaining-close-20261009/manifest.json)99artifacts/66pins, final independentf8b14bb1 | Six original owners only; known+uncertain routes, strict12roots. External tool exit anomaly preserved separately; runner/TRX actual0. |
+| Shared actual initial generation | Runtimea19d4078; actual2033022/2PASS8.0827172s; [packet](recovery/storage-migration-original-generation-close-20261009/manifest.json)31/40, final independent13f40584 | Callback observes actual generation after owning lease closes; compile preparation failure retained separately. |
+| Established Browser/generic results and original callback failure | Runtime63edbf83; actual20461212/12PASS8.4599314s; [packet](recovery/storage-migration-original-browser-result-close-20261009/manifest.json)69/45, final independent2a75780a | Real committed/rollback/uncertain decisions, generic projections, nested binding, Prepared settings and incomplete callback. Local contract only; native transport unqualified. |
+| Mod manifest/cache and managed world-profile folder | Runtime8866c34f; actual20575613/13PASS16.6909366s; [packet](recovery/storage-migration-original-mod-folder-20261009/manifest.json)65/72, final gate pending | Mod8+unchanged semanticunit2; folder source1+inertUI2. No desktop process or whole caller SaveSettings atomicity claim. |
+
+One shared new-owner discovery210002 at8866c34f validates593categories/11367methods-
+files,0tests executed,8.2783918s,bothcleanup; referenced by all four packets,
+not four executions. Original mod baseline planned11/completed8 is incomplete;
+separate source-only causal1 and final complete13 remain distinct. Older source
+census remains immutable. Remaining actual owner groups require method-specific
+classification and original-route evidence; T061–T065 unchecked, B2–B5 paused.
+
 ## Latest original producer admission results — 2026-10-09
 
 | Bounded original route | Runtime / actual verification | Evidence / limits |

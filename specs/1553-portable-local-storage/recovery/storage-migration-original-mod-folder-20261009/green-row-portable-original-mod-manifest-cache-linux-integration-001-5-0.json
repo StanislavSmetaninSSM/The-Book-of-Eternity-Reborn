@@ -1,0 +1,73 @@
+{
+  "mode": "normalize",
+  "root": "/tmp/boe-original-mod-manifest-97de51aae8c74d4794ba542a47664e41",
+  "result": true,
+  "failure": null,
+  "acquisitions": 1,
+  "reads": [
+    "mods/active.md",
+    "game_state/core/system_mods.json",
+    "game_state/core/system_mods.json"
+  ],
+  "mutations": [
+    "game_state/core/system_mods.json"
+  ],
+  "readCuts": 0,
+  "writeCuts": 0,
+  "pauses": 0,
+  "originalState": null,
+  "attachments": 0,
+  "Calls": 0,
+  "beforeCache": [
+    "active.md",
+    "missing.md",
+    "ACTIVE.MD"
+  ],
+  "afterCache": [
+    "active.md"
+  ],
+  "cacheOwnerSame": false,
+  "beforeManifest": "77u/eyJwcmlvciI6Im1hbmlmZXN0In0=",
+  "afterManifest": "77u/ewogICJtb2RzRGlyZWN0b3J5IjogIm1vZHMiLAogICJhY3RpdmVDb3VudCI6IDEsCiAgInRvdGFsQ291bnQiOiAxLAogICJlbmFibGVkU3lzdGVtTW9kcyI6IFsKICAgICJhY3RpdmUubWQiCiAgXSwKICAiYWN0aXZlTW9kcyI6IFsKICAgIHsKICAgICAgImZpbGVOYW1lIjogImFjdGl2ZS5tZCIsCiAgICAgICJyZWxhdGl2ZVBhdGgiOiAibW9kcy9hY3RpdmUubWQiLAogICAgICAibW9kSWQiOiAiYWN0aXZlIiwKICAgICAgIm5hbWUiOiAiRXhhY3QgYWN0aXZlIG1vZCIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJPcmlnaW5hbCBjb250ZW50LiIsCiAgICAgICJleHRlbnNpb24iOiAiLm1kIiwKICAgICAgImxhc3RNb2RpZmllZFV0YyI6ICIyMDI2LTEwLTA5VDIwOjU4OjA3LjAyMDkyNTRaIiwKICAgICAgImNvbnRlbnQiOiAiIyBFeGFjdCBhY3RpdmUgbW9kXG5PcmlnaW5hbCBjb250ZW50LlxuIgogICAgfQogIF0sCiAgImF2YWlsYWJsZU1vZHMiOiBbCiAgICB7CiAgICAgICJmaWxlTmFtZSI6ICJhY3RpdmUubWQiLAogICAgICAicmVsYXRpdmVQYXRoIjogIm1vZHMvYWN0aXZlLm1kIiwKICAgICAgIm1vZElkIjogImFjdGl2ZSIsCiAgICAgICJuYW1lIjogIkV4YWN0IGFjdGl2ZSBtb2QiLAogICAgICAiZGVzY3JpcHRpb24iOiAiT3JpZ2luYWwgY29udGVudC4iLAogICAgICAiZXh0ZW5zaW9uIjogIi5tZCIsCiAgICAgICJsYXN0TW9kaWZpZWRVdGMiOiAiMjAyNi0xMC0wOVQyMDo1ODowNy4wMjA5MjU0WiIsCiAgICAgICJlbmFibGVkIjogdHJ1ZQogICAgfQogIF0sCiAgIl9sYXN0VXBkYXRlZCI6ICIyMDI2LTEwLTA5VDIwOjU4OjA3LjAzMTMzMjdaIgp9",
+  "committedManifest": null,
+  "beforeGeneration": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiIzM2E0MzY1YTE0OTM0YTNhYWU2ZGM5YTcxYzBiOTdlYyJ9",
+  "afterGeneration": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiIzM2E0MzY1YTE0OTM0YTNhYWU2ZGM5YTcxYzBiOTdlYyJ9",
+  "beforeFiles": {
+    ".boe_runtime/locks/canonical-write.lock": "",
+    ".boe_runtime/locks/gm-main-owner.lock": "",
+    ".boe_runtime/session-generation/current.json": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiIzM2E0MzY1YTE0OTM0YTNhYWU2ZGM5YTcxYzBiOTdlYyJ9",
+    "game_session/game_state/core/system_mods.json": "77u/eyJwcmlvciI6Im1hbmlmZXN0In0=",
+    "game_session/mods/active.md": "77u/IyBFeGFjdCBhY3RpdmUgbW9kCk9yaWdpbmFsIGNvbnRlbnQuCg=="
+  },
+  "afterFiles": {
+    ".boe_runtime/locks/canonical-write.lock": "",
+    ".boe_runtime/locks/gm-main-owner.lock": "",
+    ".boe_runtime/session-generation/current.json": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiIzM2E0MzY1YTE0OTM0YTNhYWU2ZGM5YTcxYzBiOTdlYyJ9",
+    "game_session/game_state/core/system_mods.json": "77u/ewogICJtb2RzRGlyZWN0b3J5IjogIm1vZHMiLAogICJhY3RpdmVDb3VudCI6IDEsCiAgInRvdGFsQ291bnQiOiAxLAogICJlbmFibGVkU3lzdGVtTW9kcyI6IFsKICAgICJhY3RpdmUubWQiCiAgXSwKICAiYWN0aXZlTW9kcyI6IFsKICAgIHsKICAgICAgImZpbGVOYW1lIjogImFjdGl2ZS5tZCIsCiAgICAgICJyZWxhdGl2ZVBhdGgiOiAibW9kcy9hY3RpdmUubWQiLAogICAgICAibW9kSWQiOiAiYWN0aXZlIiwKICAgICAgIm5hbWUiOiAiRXhhY3QgYWN0aXZlIG1vZCIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJPcmlnaW5hbCBjb250ZW50LiIsCiAgICAgICJleHRlbnNpb24iOiAiLm1kIiwKICAgICAgImxhc3RNb2RpZmllZFV0YyI6ICIyMDI2LTEwLTA5VDIwOjU4OjA3LjAyMDkyNTRaIiwKICAgICAgImNvbnRlbnQiOiAiIyBFeGFjdCBhY3RpdmUgbW9kXG5PcmlnaW5hbCBjb250ZW50LlxuIgogICAgfQogIF0sCiAgImF2YWlsYWJsZU1vZHMiOiBbCiAgICB7CiAgICAgICJmaWxlTmFtZSI6ICJhY3RpdmUubWQiLAogICAgICAicmVsYXRpdmVQYXRoIjogIm1vZHMvYWN0aXZlLm1kIiwKICAgICAgIm1vZElkIjogImFjdGl2ZSIsCiAgICAgICJuYW1lIjogIkV4YWN0IGFjdGl2ZSBtb2QiLAogICAgICAiZGVzY3JpcHRpb24iOiAiT3JpZ2luYWwgY29udGVudC4iLAogICAgICAiZXh0ZW5zaW9uIjogIi5tZCIsCiAgICAgICJsYXN0TW9kaWZpZWRVdGMiOiAiMjAyNi0xMC0wOVQyMDo1ODowNy4wMjA5MjU0WiIsCiAgICAgICJlbmFibGVkIjogdHJ1ZQogICAgfQogIF0sCiAgIl9sYXN0VXBkYXRlZCI6ICIyMDI2LTEwLTA5VDIwOjU4OjA3LjAzMTMzMjdaIgp9",
+    "game_session/mods/active.md": "77u/IyBFeGFjdCBhY3RpdmUgbW9kCk9yaWdpbmFsIGNvbnRlbnQuCg=="
+  },
+  "lockAvailable": true,
+  "originalActive": null,
+  "originalMainClosed": true,
+  "originalAmbientClosed": true,
+  "samePrimary": true,
+  "sameSecondary": false,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}
