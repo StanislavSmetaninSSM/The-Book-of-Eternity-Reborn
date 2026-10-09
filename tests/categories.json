@@ -20498,7 +20498,7 @@
     },
     {
       "id": "portable-save-load-name-boundary-neighbors-linux",
-      "responsibility": "Exact five boundary neighbors for host-specific archive normalization: four original trimmed-name alias refusals before config/library/ephemeral mutation, plus original ZipSlip sandbox refusal and live-session preservation.",
+      "responsibility": "Six boundary neighbors for host-specific archive normalization: four original trimmed-name alias refusals before config/library/ephemeral mutation, original ZipSlip sandbox refusal and actual ZIP slash-directory-with-payload refusal before load admission/publication.",
       "excludes": "No broad canonical-storage suite or acceptance of other native-name cases.",
       "changeHints": [
         "BookOfEternityClient/Services/SaveLoadService.cs"
@@ -20516,7 +20516,8 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RejectsZipSlipEntriesAndPreservesLiveSession",
-            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation"
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.GenuineArchiveDirectoryWithPayloadRejectsBeforeLoadAdmission"
           ]
         }
       ]

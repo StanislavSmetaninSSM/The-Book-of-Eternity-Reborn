@@ -156,4 +156,35 @@ public sealed partial class PortableLoadReplacementTests
         AssertOwnedScratchEmpty();
         _output.WriteLine(JsonSerializer.Serialize(new { kind = "f16-manifested-native-load", root = _root, rollback, cuts, paths = expected.Keys }));
     }
+
+    [Fact]
+    public async Task GenuineArchiveDirectoryWithPayloadRejectsBeforeLoadAdmission()
+    {
+        using var owned = new CleanupOwnedFixture(_root, _output.WriteLine);
+        var source = await PrepareCurrentArchiveAsync();
+        AppendManifestedPayload(source, "lore/forbidden/", [1]);
+        var protectedFiles = SnapshotLibraryAndSource(source);
+        var before = SnapshotCompleteNamespace();
+        var generation = File.ReadAllBytes(_files.SessionGenerationPath);
+
+        var result = await _service.LoadGameWithOutcomeAsync(source);
+
+        Report(result);
+        Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
+        Assert.Contains("directory 'lore/forbidden/' contains payload bytes",
+            Assert.IsType<InvalidDataException>(result.Failure).Message);
+        Assert.Equal(0, _prepared);
+        Assert.Equal(0, _lifecycleOpen);
+        Assert.Empty(_phases);
+        Assert.Equal(before.OrderBy(pair => pair.Key).ToArray(), SnapshotCompleteNamespace().OrderBy(pair => pair.Key).ToArray());
+        Assert.Equal(generation, File.ReadAllBytes(_files.SessionGenerationPath));
+        AssertPreserved(protectedFiles);
+        Assert.Equal("Old live soul", _state.CurrentState.SoulName);
+        Assert.Equal(28, _state.Settings.ConsoleFontSize);
+        AssertOwnedScratchEmpty();
+        _output.WriteLine(JsonSerializer.Serialize(new
+        {
+            kind = "f16-real-directory-payload-refusal", root = _root, _prepared, _lifecycleOpen, publicationPhases = _phases.Count
+        }));
+    }
 }

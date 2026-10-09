@@ -136,5 +136,88 @@
         "sha256": "5506d3e693b5004d55d3bb420ed7502952bd852a35ec62c87680525a50a52da5"
       }
     ]
+  },
+  "initialGreenPlan": {
+    "source": "a3c5954560fe751171d10e394a4a6e11a055b77f",
+    "artifacts": [
+      {
+        "path": "initialGreenPlan-20261009-130501-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-130501-689-351145-29582dd9364c4d7596aa1584f1b56db8-categories/plan.json",
+        "sha256": "453af8bd0349c4c2eefd1d52705331e88a91e89760e749371d53cfd4480d40e7",
+        "originalSha256": "453af8bd0349c4c2eefd1d52705331e88a91e89760e749371d53cfd4480d40e7"
+      },
+      {
+        "path": "initialGreenPlan-20261009-130501-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-130501-689-351145-29582dd9364c4d7596aa1584f1b56db8-categories/summary.json",
+        "sha256": "e3f324a7f7506134e99c8ed77a9b35b4681785a561349ed47009863a125abff9",
+        "originalSha256": "e3f324a7f7506134e99c8ed77a9b35b4681785a561349ed47009863a125abff9"
+      },
+      {
+        "path": "initialGreenPlan-20261009-130501-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-130501-689-351145-29582dd9364c4d7596aa1584f1b56db8-categories/Build-integration.log",
+        "sha256": "c96f677a1f87339f1d833e1e2b84b56c52488388faab05affeee07f7b1d0a47e",
+        "originalSha256": "73a7fea2f2ce0493a11b0dc86d81a4bac26c75fed584039785e32e4505435c2e"
+      },
+      {
+        "path": "initialGreenPlan-20261009-130501-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-130501-689-351145-29582dd9364c4d7596aa1584f1b56db8-categories/dotnet-test.log",
+        "sha256": "4f0374c49e907732f043cf87b3b77693161e15bf0f93bb104cbc196a56cdcfb5",
+        "originalSha256": "509ddc0040a0b192190fea691747b27298791ea8f24469dacbee6e12fb089f01"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.LiteralNames.cs",
+        "sha256": "ea3a038e1e04ad0bb841045b783909d9937b2e51a773ab00f376388c595067c5"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.SaveNativeNames.cs",
+        "sha256": "52e3d91fe5c56e56d6d491ceaafc9a2623e5e91f463ff5f4771d6a62fd899563"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs",
+        "sha256": "60434627e6bedd561e3c79069c7400fd09a6df3cf3763c8508b9614a9ad8c685"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs",
+        "sha256": "898668236584bf82c05107e77053b0f880bbc5a4d28c0f2c65592b9a2710a74f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.Topology.cs",
+        "sha256": "ac075a27868518e0f9bf0116c6f516bdef26e18af4605a82b4051843c3e22f2d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+        "sha256": "3a632ae6077530fed9348bb9b624afb2aae69f6e9d918f12dbe73d51cb1f255c"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "04a6e8aeb0e6138cd1e4b87744e9a40b03e98e8885a05140a503c02d49f213f9"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+        "sha256": "228cb24f1ebbce770a328c0ab21b203980d7b7b0039895ec0571bad04d0fa82a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+        "sha256": "c8ef404d4755c2419e5d44b60683cc555cc714807edab5dca89f3f1d1d26f077"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+        "sha256": "a88d3deb51e378beb24d2152b3cbff4dd0f885518af50668c3043ff0c8243251"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "cea3481a7222d278b80e7b0acd586e18dbb6f89ae0c73d6f1fbbf32f84978d57"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "4cef4fb3c5e1c437c1a29d9828cf6cd29c4515e70f124c4861747f0bc98f547b"
+      }
+    ]
   }
 }

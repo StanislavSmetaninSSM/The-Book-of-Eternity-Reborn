@@ -25,7 +25,7 @@
     },
     {
       "category": "portable-save-load-name-boundary-neighbors-linux",
-      "reason": "T063 F16 exact5 original neighbors: trimmed alias4 +ZipSlip1. Avoid broad alias-category expansion. Runtime host separator/directory classification now changed; final verification pending.",
+      "reason": "T063 F16 exact6 linked boundaries: original trimmed alias4 +ZipSlip1 +actual ZIP slash-directory-with-byte1. Last case complements positive literal Linux trailing-backslash file; no broad budget cohort. Final verification pending.",
       "contracts": [
         "#1553",
         "FR-005",

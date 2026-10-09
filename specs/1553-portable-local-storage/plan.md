@@ -1,3 +1,15 @@
+## F16 genuine directory negative — fixture WIP, 2026-10-09
+
+Fresh integration Plan130501 ata3c59545 selects exact21/4,0executed46.7447905s,
+bothcleanup. No actual at that source. Independent review requests one actual ZIP
+slash-directory carrying1byte refusal to complement the literal trailing-backslash
+file positive; descriptor-only budget tests do not qualify directory classification.
+Add this narrow case before final execution: NotLoaded before preparation/lifecycle/
+publication; exact live namespace/generation/source/library/settings and scratch retained.
+Final selection becomes22 = causal4 + Save-native4 + Load-native8 + boundary6; no broad
+budget/alias owner. Test-only addition requires fresh integration build/source gate.
+Historical Plan21 retained with its exact source; no pass count inferred from planning.
+
 ## F16 native-name causal baseline and runtime WIP — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT4 PASSb64a5008. Fresh integration Plan130018 selects
