@@ -1,3 +1,39 @@
+## F10 original cleanup/staging causal packet — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT-SELECTION PASS52ec; fresh Plan001538 built integration
+85.2262s, wall88.9417897s, exact8/1/0. Actual001731 is clean52ec,8/8 completed in one
+descriptor,0 PASS/8 causal FAIL,12.0934515s,exit1/no timeout/duplicates,both runner cleanup
+flags true. Independent raw review confirms all8 real MemberPublished/index0 cuts with actual
+CSP, byte-identical retained uncommitted single-member journals/foreign targets and explicit
+owned-root removal. No fixture miss. Saved packet:32 stored/expanded/original artifacts,
+20 historical source pins, verified locally; independent saved-carrier gate follows.
+
+| Actual original contour | Reached observation |
+|---|---|
+| Exact restore then engine backup cleanup | Original cleanup CSP is replaced by one throwing diagnostic logger; no later reached reads/mutations/leases. Exact canonical baseline was restored before the cut. |
+| Undispatched preparation cleanup | Original CSP swallowed; next backup read/mutation and a new CleanupPending lease attempted. Outward later recovery InvalidDataException; signed manifest/authority remain exact. |
+| Nested public QTE action cleanup | Three later backup reads and four mutation attempts (three backups plus qte_history); no history/runtime publication. Later CSP arises from recovery refusal, replacing original decision. |
+| Final public QTE action cleanup | History and terminal runtime each committed once, exact bytes retained; one logger throw replaces original CSP. |
+| Browser operation uncertainty | Four later reads include rollback backup/member and UI lock; canonical lock-release mutation attempted. Uncertain result, no later publication. |
+| Browser restoration uncertainty | Two UI-lock reads and lock-release mutation attempted; actual CSP lacks exact known callback cause (raw boolean false). |
+| Browser committed cleanup uncertainty | Actual durable commit marker and member retained; Success/Committed/NeedsFollowUp true, ContinuationBlocked false; two UI-lock reads and release mutation attempted. |
+| Original player request staging | Three subsequent nonclosing lease attempts plus one separately identified readonly finalization lease. No GM wait/Escape; snapshot/authority exact. |
+
+All later publication counts are zero. Recovery observer phases are zero, NOT recovery attempts:
+raw stacks show recovery rejected during unknown-member preflight before its observer fires.
+Several desired assertions after the first read/lease oracle were not reached; raw values support
+the interpretation, not a passed downstream assertion. No native, full browser-QTE UI or
+whole-operation atomicity claim follows. Runtime remained unchanged for this packet.
+
+Bounded runtime next: let SAME CSP escape engine/QTE cleanup before logging or later files;
+preserve it through original owned lease release; exclude it from original staging compensation
+and nested cleanup catches. Keep known prepublication cleanup refusal behavior. Browser original
+operation/restoration CSP must skip further rollback/release, retain first business diagnostic and
+Uncertain; actual postcommit cleanup CSP keeps Committed plus follow-up/ContinuationBlocked,
+with in-memory access disposal only. No global latch/new authority/outcome type. Existing QTE
+known cleanup refusal and direct-gacha consumed-debt plus affected browser known rollback/debt
+controls will be selected from the actual delta. Source/selection gate precedes GREEN.
+
 ## F10 test-only cleanup/staging fixture WIP — 2026-10-09
 
 The approved design is now concrete eight-row test source: engine original restore and
