@@ -1,3 +1,29 @@
+## Preparation initial actual11 / nine causal and two fixture failures — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT11 PASS at5c1510e. Matching Plan025038 freshly built integration
+87.4629187s, wall92.0219468s,11planned/1descriptor/0executed. Actual025236 completed11/11,
+0PASS11FAIL,10.3190795s,exit1,no skipped/duplicate/timeout,both runner cleanup flags true.
+All eleven owned roots were removed (nine JSON receipts and two original DirectGacha cleanup lines).
+
+Independent reviewer and parent classify NINE genuine causal cuts, not eleven. Every reached cut
+has MemberPublished/index0, original actual CSP, SHA-verified byte-identical retained journal/foreign
+member and exact prior committed images. Initializer4 each attempts one later validated read/mutation;
+backup attempts one cleanup read/mutation and wraps the decision; backup_cleanup has no later measured
+work but wraps the same CSP in Aggregate. Stage attempts read1/mutation1; DirectGacha primary read5/
+mutation3; owner-cleanup read1/mutation1 after ordered request-refusal1/queue-refusal1/manifest-delete2.
+Browser outcomes are already explicit Uncertain/failed; their continuation attempts remain defects.
+All later publications/recovery callbacks/nonclosing leases are zero, with one separate readonly close
+per browser row. Zero recovery callbacks does not prove no recovery attempt. Downstream assertions
+after the first failure remain unexecuted; exact retained images/journals were independently compared.
+
+Authority and LivePrepare are TWO fixture failures: path-only selectors hit initial cleanup DELETE
+(After.Exists=false), so ValidateManifest fails before cut count/actual CSP. Correct only these selectors
+to require a present After image and split authority into an exact separately owned Fact. Fresh Plan2
+and isolated actual2 require focused frozen source approval; do not replay the nine reached rows.
+Production remains unchanged. No runtime/native/full-turn/secondary-close acceptance follows.
+[Packet](recovery/storage-migration-preparation-20261009/manifest.json) preserves all37 artifacts and
+15 historical source pins, including both fixture failures and the original complete eleven-case run.
+
 ## Preparation fixture source correction — 2026-10-09
 
 Independent review of frozen724 found no additional blockers beyond the writer's three pre-build
