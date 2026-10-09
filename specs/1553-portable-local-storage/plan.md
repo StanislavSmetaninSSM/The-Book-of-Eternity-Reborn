@@ -1,3 +1,24 @@
+## Mod single owner/cache and managed folder installed — WIP, 2026-10-09
+
+Original mod8/sourcefolder1 causal baseline preserved/ref/rawf64862d4,30artifacts/
+36pins verified originals; originalsemanticunit2 UNRUN afterfailedDescriptor.
+Mod now owns one actual lease for original input/read/write, updates cache only
+after successful publication or confirmed semanticno-op; separate completed=true
+AFTERcacheassignment preserves knownchangedbool includingfalse and existinghelper
+logs secondaryclose. ActualCSP retained through samehelper/lateownerclose. Original
+manifest schema/content/timestamp and dirtyselection normalization unchanged;
+knownclose behavior change explicit, no fullatomicity with callerSaveSettings.
+World profile folder route uses existing OpenFolderOrPrintPath only; no helper
+change. Actualinert UI2 fixture installed after safe causal sourceguard, exact
+folder3/mod10 total13/3descriptors; outputbeforeClear/manualpath/exactrequest/
+originalpause0or1/strictcleanup/disabledaudio. Original desktop UI remainsUNRUN.
+Installed UNBUILT/UNRUN; combined RED/source/exact13 independentgate thenfresh
+bothprojectPlan13/actual13. Browser finalGREEN/raw/carrier independentPASS2a75780a;
+selection stale statuses corrected, no prioracceptedcohort replay. Combined
+newownershipcatalog/finalmethodinventory andotheractualpublishers remainopen.
+Client-owned boundaries change noGM mechanic/schema/prompt/example.
+T061–T065 unchecked/B2–B5 paused/native transport/systemd unqualified.
+
 ## Original mod RED8 and safe folder source RED1 — WIP, 2026-10-09
 
 Mod fixture/design/exact10 and folder source-only1/finalUI3 independent PASS,

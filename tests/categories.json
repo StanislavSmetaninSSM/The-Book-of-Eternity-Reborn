@@ -53,7 +53,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.WorldProfileFolderConsumerTests.OriginalWorldSetupFolderRouteUsesManagedAssociation"
+            "BookOfEternityClient.Tests.WorldProfileFolderConsumerTests.OriginalWorldSetupFolderRouteUsesManagedAssociation",
+            "BookOfEternityClient.Tests.WorldProfileFolderConsumerTests.ActualWorldSetupFolderKeepsManualPathAndOriginalPause"
           ]
         }
       ]

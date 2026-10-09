@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-mod-manifest-cache-linux",
-      "reason": "T063/T065 fixture/refineddesign/exact10 independentPASS beforeinstallation. Original8integration+semanticunit2; runtimeunchanged UNBUILT/UNRUN. Known-close behavior change explicit, completion separate from changed bool; causalbaseline before source. Other canonical listing5 not replayed.",
+      "reason": "T063/T065 originalPlan11/3 actual8/1incomplete2PASS/6causalFAIL10.8029480s preserved; originalsemanticunit2UNRUNduefirstfailedDescriptor. Newoneowner/latecache/completedflag installedUNBUILT/UNRUN, exactmod10+folder3 sourcegate thenfreshPlan13/actual13. Knownclosepreservation intentionalchange; nofullcallerSaveSettingsatomicity.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -16,7 +16,7 @@
     },
     {
       "category": "portable-original-world-profile-folder-linux",
-      "reason": "T063/T050 safe source-only1 baseline independently reviewed; original UI directProcess.Start must stay UNRUN under no-desktop constraint. Only read-onlysource Fact installed, UI2 reserved after managed helper change. No actualprocess/provider/native association.",
+      "reason": "T063/T050 safe source-only baseline actual2050591causalFAIL6.5119510s bothcleanup; originaldesktopUIUNRUN underno-desktop. Existingmanagedhelper installed+inertactualUI2 fixture; final3UNBUILT/UNRUN. Output beforeClear/manualpath/exactrequest/pause0or1; no nextscreen persistence oractualdesktopassociationclaim.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -29,7 +29,7 @@
     },
     {
       "category": "portable-original-browser-owning-result-close-linux",
-      "reason": "T063/T065 runtime63edbf83 fresh Plan20451112/1 then actual20461212/12PASS8.4599314s, complete1/1/bothcleanup/strict12roots/0skipduplicateTimeout. Real Browser/generic/nested/Prepared/incomplete results and fullsettlement preserved; packet66artifacts/30pins verifiedoriginals, original4P/8causalFAIL immutable. Independentsource/exact12PASS; finalGREEN/raw/carrier reviewpending, catalogcombinedpending. No unchanged accepted group replay.",
+      "reason": "T063/T065 runtime63edbf83 fresh Plan20451112/1 then actual20461212/12PASS8.4599314s, complete1/1/bothcleanup/strict12roots/0skipduplicateTimeout. Real Browser/generic/nested/Prepared/incomplete results and fullsettlement preserved; packet66artifacts/30pins verifiedoriginals, original4P/8causalFAIL immutable. Independentsource/exact12PASS; independent finalGREEN/raw/carrierPASS2a75780a, catalogcombinedpending. No unchanged accepted group replay.",
       "contracts": [
         "#1553",
         "FR-002",

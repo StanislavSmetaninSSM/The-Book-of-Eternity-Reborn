@@ -68,25 +68,33 @@ public sealed partial class SystemModService
 
     public async Task<bool> WriteManifestForGmAsync()
     {
-        var mods = await GetAvailableModsAsync(includeContent: true);
-        var normalizedEnabled = mods
-            .Where(mod => mod.Enabled)
-            .Select(mod => mod.FileName)
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        var changed = !_settings.EnabledSystemMods.SequenceEqual(normalizedEnabled, StringComparer.OrdinalIgnoreCase);
-        _settings.EnabledSystemMods = normalizedEnabled;
-
-        var manifest = BuildManifestNode(mods, normalizedEnabled);
-        var currentJson = await _fs.ReadFileAsync(ManifestPath);
-        if (!SemanticallyMatchesExistingManifest(currentJson, manifest))
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        var completed = false;
+        try
         {
-            manifest["_lastUpdated"] = DateTime.UtcNow.ToString("o");
-            await _fs.WriteFileAtomicAsync(ManifestPath, manifest.ToJsonString(JsonOpts));
-        }
+            var mods = await ReadAvailableModsAsync(lease, _settings.EnabledSystemMods);
+            var normalizedEnabled = mods
+                .Where(mod => mod.Enabled)
+                .Select(mod => mod.FileName)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
-        return changed;
+            var changed = !_settings.EnabledSystemMods.SequenceEqual(normalizedEnabled, StringComparer.OrdinalIgnoreCase);
+            var manifest = BuildManifestNode(mods, normalizedEnabled);
+            var currentJson = await _fs.ReadFileAsync(lease, ManifestPath);
+            if (!SemanticallyMatchesExistingManifest(currentJson, manifest))
+            {
+                manifest["_lastUpdated"] = DateTime.UtcNow.ToString("o");
+                await _fs.WriteFileAtomicAsync(lease, ManifestPath, manifest.ToJsonString(JsonOpts));
+            }
+
+            _settings.EnabledSystemMods = normalizedEnabled;
+            completed = true;
+            return changed;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed, uncertainty); }
     }
 
     private static JsonObject BuildManifestNode(

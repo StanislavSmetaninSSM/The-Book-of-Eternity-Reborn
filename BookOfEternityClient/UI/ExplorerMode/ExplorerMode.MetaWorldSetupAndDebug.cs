@@ -675,19 +675,7 @@ public partial class ExplorerMode
 
             if (choice == "📂 Открыть папку профилей")
             {
-                try
-                {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = profilesDir,
-                        UseShellExecute = true
-                    });
-                }
-                catch
-                {
-                    MarkupLine($"[yellow]{Markup.Escape(profilesDir)}[/]");
-                    WaitForKey();
-                }
+                OpenFolderOrPrintPath(profilesDir);
             }
         }
     }
