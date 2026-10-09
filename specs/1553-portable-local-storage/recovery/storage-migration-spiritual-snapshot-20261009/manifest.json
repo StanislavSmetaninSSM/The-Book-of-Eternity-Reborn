@@ -280,5 +280,286 @@
         "sha256": "9df03b6713f05ce6dbb5be575b593392c8f59780bcb61e72e22da556b97e9efc"
       }
     ]
+  },
+  "green": {
+    "source": "2522c340ad6cd7c53b21b0cc67cbfb7aa2d46ef4",
+    "artifacts": [
+      {
+        "path": "green-20261009-193300-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193300-929-418423-7fa97f0596a54596ada568106dc953e7-categories/plan.json",
+        "sha256": "14c53f466ce6761e180f2d3064b93391205dc900817c9b30dd75d44c2c5c7244",
+        "originalSha256": "14c53f466ce6761e180f2d3064b93391205dc900817c9b30dd75d44c2c5c7244"
+      },
+      {
+        "path": "green-20261009-193300-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193300-929-418423-7fa97f0596a54596ada568106dc953e7-categories/summary.json",
+        "sha256": "95a86bc285ebb8a345bb9b501679c97ccc076ec2a08deb99438b491b0f6ec8cd",
+        "originalSha256": "95a86bc285ebb8a345bb9b501679c97ccc076ec2a08deb99438b491b0f6ec8cd"
+      },
+      {
+        "path": "green-20261009-193300-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193300-929-418423-7fa97f0596a54596ada568106dc953e7-categories/Build-integration.log",
+        "sha256": "a20a90ff49fc99aede42b2a0946be4b972d6383524dca8b7726edbc0f957396b",
+        "originalSha256": "af26bd1730e7d8fc00015e4257427b16884af70611b95ca5c6792fb491c38ab2"
+      },
+      {
+        "path": "green-20261009-193300-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193300-929-418423-7fa97f0596a54596ada568106dc953e7-categories/dotnet-test.log",
+        "sha256": "c8fd304149d7afb7661b12e525faaff2b2737c799741022d762d955bafb2bf2d",
+        "originalSha256": "4042fc33808a140516cd42943ba387d22fdfd2775c0b50914a2ce1ec6149f1b5"
+      },
+      {
+        "path": "green-20261009-193427-portable-spiritual-capture-exact-names-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193427-355-418754-4ad90c1f5248414cac353ddb11640ded-categories/portable-spiritual-capture-exact-names-linux-integration-001.trx",
+        "sha256": "04af76b0bb87da577927525209f51b6538044a4c6edbee3ad939c4bd73babb49",
+        "originalSha256": "beb8486dbe4b03b4f3525131ca9b98d411a8c7629b17ded2d021250f7720003f"
+      },
+      {
+        "path": "green-20261009-193427-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193427-355-418754-4ad90c1f5248414cac353ddb11640ded-categories/plan.json",
+        "sha256": "82ef30abcab8c2db38e0fa2ceb666ad15a68567a80381e1cd7005c9aea9e2237",
+        "originalSha256": "82ef30abcab8c2db38e0fa2ceb666ad15a68567a80381e1cd7005c9aea9e2237"
+      },
+      {
+        "path": "green-20261009-193427-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193427-355-418754-4ad90c1f5248414cac353ddb11640ded-categories/summary.json",
+        "sha256": "3a260313d7e268b2c9c7f41f9e6f12a0495fd428f03af2d9680fb1a80bc062e9",
+        "originalSha256": "3a260313d7e268b2c9c7f41f9e6f12a0495fd428f03af2d9680fb1a80bc062e9"
+      },
+      {
+        "path": "green-20261009-193427-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-193427-355-418754-4ad90c1f5248414cac353ddb11640ded-categories/dotnet-test.log",
+        "sha256": "e6bd1b8f142d888063f1a81efb1d456c2610d9ba79dd4a58fe006fdc40561a33",
+        "originalSha256": "23ef437b68d32b5f2586a914681417e512b07bf0ac82f76aec9c2594dd56f7ff"
+      },
+      {
+        "path": "green-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/emitted-roots-after-run.json",
+        "sha256": "4e0bddf7e92188aad0ab47ac548487534d696375620582dd5bda59ad3658b32d",
+        "originalSha256": "4e0bddf7e92188aad0ab47ac548487534d696375620582dd5bda59ad3658b32d"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-15-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-15-1.json",
+        "sha256": "0379b286afbf73307a805c41c466b5a24700c9b44a73fa3754fd8282e73d8210",
+        "originalSha256": "0379b286afbf73307a805c41c466b5a24700c9b44a73fa3754fd8282e73d8210"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-15-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-15-0.json",
+        "sha256": "36758ecd4a8925ac1e65c79676a8b1b4a020ea58a2d31d6be54f5bac214a2e29",
+        "originalSha256": "00dc6b290d0bc46a49b8a5db6686e41d087f880d706dea44aab8ddeb2a729b3e"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-14-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-14-1.json",
+        "sha256": "5d85cbfc43ee9e7084d309bc40237d2bb417a19dd02b1f20f82521416f633e1c",
+        "originalSha256": "5d85cbfc43ee9e7084d309bc40237d2bb417a19dd02b1f20f82521416f633e1c"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-14-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-14-0.json",
+        "sha256": "fae09e5c4f0b214354a80785b3d98adb7c63d0d84ecd807c57f5886441b27e36",
+        "originalSha256": "2196b10a54c4203be0a97b90ef90516a885e0d420f9452066853472a35442ccd"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-13-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-13-1.json",
+        "sha256": "1c4d2a755c1648d374e0a7ad36b24899bfeab51f8d18390585d15dea6f756720",
+        "originalSha256": "1c4d2a755c1648d374e0a7ad36b24899bfeab51f8d18390585d15dea6f756720"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-13-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-13-0.json",
+        "sha256": "7fe75907c223c7cda14fc57a57bec0832f4c0a2673ab40df86df6c3a2fdbea5f",
+        "originalSha256": "69e1b63c86d2a1f6774c99732c20b2d42640cc15bbab86e2b334db1f0aaf51cf"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-12-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-12-1.json",
+        "sha256": "77e4c11d0e9dbf7ece086b68b25099f45d66b9aabdedee8a08e9a457b8c47a0b",
+        "originalSha256": "77e4c11d0e9dbf7ece086b68b25099f45d66b9aabdedee8a08e9a457b8c47a0b"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-12-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-12-0.json",
+        "sha256": "ca65a22f188c259f59187b0f6a61b3974d41c56e328f99da5967316076e986a8",
+        "originalSha256": "51bf57598c9b47932c00aa58e949a71c7bf6c1b6e4cccf8938804889ad925170"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-11-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-11-1.json",
+        "sha256": "aa70dae3ca89aa11da720ef38da0d8fc2e4ad927f26e10606faf074ceb5083e9",
+        "originalSha256": "aa70dae3ca89aa11da720ef38da0d8fc2e4ad927f26e10606faf074ceb5083e9"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-11-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-11-0.json",
+        "sha256": "3b2bf2b8ad85493d7216d9fc850ac152840b6788dfa5383d292d70e2509720e4",
+        "originalSha256": "bd84d8b4e87741e704ae8e3b3ef46a8ef35d70df188f031a5d2a02c0f309ae6b"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-8-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-8-1.json",
+        "sha256": "549f94a2b5587809ffb67560df1e851fe6a622daa1e02d8f0035c4de158348e1",
+        "originalSha256": "549f94a2b5587809ffb67560df1e851fe6a622daa1e02d8f0035c4de158348e1"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-8-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-8-0.json",
+        "sha256": "b0cbfd2fbc9f253161aca216f14fca3aa16f038bf06ef1f8d5840f5097f111d6",
+        "originalSha256": "e4dd44ed7a0c3ec0dd350355dadd51c05b644323c451cde721678928e3ed5a4d"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-7-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-7-1.json",
+        "sha256": "196021456137f36bd281286c88f5caa7acd3d2d7230aa7638b558b8aa0ecb64c",
+        "originalSha256": "196021456137f36bd281286c88f5caa7acd3d2d7230aa7638b558b8aa0ecb64c"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-7-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-7-0.json",
+        "sha256": "369615e37bf79af0276e10b82208934ccfc66da21d4876a58b8348a10b777dac",
+        "originalSha256": "a668672d70eed169a095ec2ee9570e975324a18012d24514ddb445baf73be12c"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-6-1.json",
+        "sha256": "8c44010694d8ed4ab8c4a9277d2c30749fa01d7c3b290d1e9405aed943ab4023",
+        "originalSha256": "8c44010694d8ed4ab8c4a9277d2c30749fa01d7c3b290d1e9405aed943ab4023"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-6-0.json",
+        "sha256": "836e1111c012c604b6f520953369356afa065834e126a1746fda4dd3cc686735",
+        "originalSha256": "d95e185b9a87b95f99b954b5c27fdda15f4dc542ef199a7244b4e6b1fb5bd799"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-5-1.json",
+        "sha256": "7633e01c70d3df6b141d86005ba08ab8b3c916d4b2b90980d8b034b23a70c04b",
+        "originalSha256": "7633e01c70d3df6b141d86005ba08ab8b3c916d4b2b90980d8b034b23a70c04b"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-5-0.json",
+        "sha256": "3f04cf14e3474fb2e30e9fafa5cfd647ba719d1b9d51c9f03998659903378a49",
+        "originalSha256": "0851e826dc34bb23c7ae9413667fa8edbc33f8be90feb0e1299e48493c8c01d6"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-4-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-4-1.json",
+        "sha256": "3beae9e77f44c00bd09ad05d046d771e0b51186d6764e4804e879cea92d91083",
+        "originalSha256": "3beae9e77f44c00bd09ad05d046d771e0b51186d6764e4804e879cea92d91083"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-4-0.json",
+        "sha256": "2330a04a82a69d1cde3b78a5547e24457adc60fde3ce3a8bbdb8e77d410084bb",
+        "originalSha256": "9d57fcdfa5fb0d9a64641fc846a0e4510c29007497cb9179dd8101088d08d6c0"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-3-1.json",
+        "sha256": "d156912676f43344ca5b8563eafeca1f3f2d4653d4d0c102b8e023b23ff8bf4f",
+        "originalSha256": "d156912676f43344ca5b8563eafeca1f3f2d4653d4d0c102b8e023b23ff8bf4f"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-3-0.json",
+        "sha256": "3e168c2062645917c7fa5aa3e33c589b915cdaaf81271466614e744b679a4028",
+        "originalSha256": "2f56723c1af72e2aac88ce7b63b325eae6920f95c2d475914540bf0c56cad427"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-2-1.json",
+        "sha256": "cd456401fcab91467d7aae3687d2bbe2dcfd0e4544e43e13f03bee103ada23ba",
+        "originalSha256": "cd456401fcab91467d7aae3687d2bbe2dcfd0e4544e43e13f03bee103ada23ba"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-2-0.json",
+        "sha256": "63b951eb04654db54e8f50c849357bb6e19056cabe3e32cf52e18682f028aecb",
+        "originalSha256": "4e605f6e451ebd1765b8dc8822604b9e70d8ef47b14032317829f303390a4f8e"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-1-1.json",
+        "sha256": "abd2217bf18fbd62f1b8209d73a773ef6a4f898c6aeceed49e1836278aa8b429",
+        "originalSha256": "abd2217bf18fbd62f1b8209d73a773ef6a4f898c6aeceed49e1836278aa8b429"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-1-0.json",
+        "sha256": "5ad209ea84456b3684cd63287d18cd8e683ec49c30578e13e6ba2edeed0aa28b",
+        "originalSha256": "2129f011fd88e57f3a7ab4ddef4b2933915b799a17bf0791690ee2fb16655184"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-0-1.json",
+        "sha256": "5e2d4788fbba100e1c78ca25214f8f21fc40d95624c665938b5545b616a34097",
+        "originalSha256": "5e2d4788fbba100e1c78ca25214f8f21fc40d95624c665938b5545b616a34097"
+      },
+      {
+        "path": "green-row-portable-spiritual-capture-exact-names-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-green-rows/portable-spiritual-capture-exact-names-linux-integration-001-0-0.json",
+        "sha256": "d004e6e40570bd80c160e2bfbbf6b9ac5650d0c451449fc410a9505ed9089fea",
+        "originalSha256": "0e337606d316f3a63c64c3de5a8a8333d1816283bf2c4d5a0428d1fba821cbb9"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualExactNames.cs",
+        "sha256": "600accd62e9d82f3a9f5dea7f3f77445bbe4708619a24990bdd68d33fd457184"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualOriginalDraftInputs.cs",
+        "sha256": "01cf817271ccfa9feabd1915c303162a714e8e740a33ae2e06a873d6304901ce"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrame.cs",
+        "sha256": "0b8d6a57e013566e6ae4782821d161a6f101dd7c53916af88d472a662f1904fa"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CurrentCommittedPublicationWitness.cs",
+        "sha256": "49f94d09e5e2fc8d6bde1c981365fa52ae7e0098516d53c03aa8fc9b9ec1e624"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs",
+        "sha256": "4e469421db8c3c201e58bfc218f1bdf1c6ba12a701483eb18f8c68ae731f45bd"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs",
+        "sha256": "23ab7ee1c59825d38232c99d1bc5082f874b9a7cc46547345e4d8e628569e972"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SpiritualWoundCaptureCheckpointState.cs",
+        "sha256": "cd0fb7b5eb34c2f6d60973ce2ee2c56c1c50aca2797438b9613b6c576a2b7eee"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "sha256": "6b924fe31e3f31a610496594cee3e916dc282657061f8a8a0d10590fc91ac80a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "8b20548e4b8029cfede783446e6004f359e60a50f45d284bedbfbdaa48ce7087"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "9df03b6713f05ce6dbb5be575b593392c8f59780bcb61e72e22da556b97e9efc"
+      }
+    ]
   }
 }

@@ -1,3 +1,21 @@
+## Latest original producer admission results — 2026-10-09
+
+| Bounded original route | Runtime / actual verification | Evidence / limits |
+|---|---|---|
+| Engine baseline, backup and cleanup | 5279dbd4, actual18270325/25PASS | Final independent7274da21; packet113/44 and584/11355 discovery. |
+| Browser public gacha and borrowed queue | 4bff0b4f, actual18452019/19PASS | Final independent4e22c30f; packet67/52 and586/11358 discovery. |
+| Incarnation inventory and Explorer stage/mark | cc401fab, actual19150120/20PASS9.7923003s | Independent raw/carrier787a01e8; packet82/26. Twelve negative cases preserve actual owner and old bytes with zero mutations. |
+| Spiritual original direct/intake capture | 2522c340, actual19342717/17PASS14.1431223s | Packet74/26; independent raw/carrier pending. Nine negative cases preserve actual owner; ordinary stale/exceptional reader failure revokes it. |
+
+These are four separate executions with original causal baselines, not a single
+aggregate run. Explorer/spiritual combined ownership discovery remains next;
+no accepted set is replayed unchanged. Original cold gameplay/B2–B5 remains
+paused, T061–T065 unchecked, native Windows and whole-client acceptance open.
+Source census below remains pinned96553e1e. Its priority1 original producer rows
+are historical for these finite boundaries; priority2 actual owning closes,
+priority3 manifest/cache and folder opener and remaining method classification
+are the next work. No blanket F16/native/consumer qualification.
+
 ## Latest bounded browser producer result — 2026-10-09
 
 Runtime4bff0b4f, actual184520GREEN19/19,14.4416863s,complete2/2,bothcleanup.

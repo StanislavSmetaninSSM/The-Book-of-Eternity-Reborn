@@ -1,3 +1,19 @@
+## Spiritual bounded GREEN17 — 2026-10-09
+
+Runtime2522c340ad6cd7c53b21b0cc67cbfb7aa2d46ef4 source/refined-design/exact17
+independent PASS. Fresh integration Plan193300:17/1,0execution54.9748440s;
+actual193427:17/17PASS14.1431223s,1/1complete,0skips/duplicates/timeout,
+both cleanup. Nine raw negatives return the existing path-alias issue, zero
+mutations/full identical physical file bytes/paths/generation and real old owner
+retained/current. Unicode direct/intake and excluded native payload positives
+publish no files and capture genuine exact images. Actual stale-request and
+same synchronous read IOException revoke the old owner exactly as before.
+All14 new strict roots absent, three original controls PASS. Packet74artifacts/
+26pins verified originals; earlier8PASS/9causalFAIL immutable. Independent
+raw/carrier and combined Explorer/spiritual ownership discovery are next.
+Remaining original owning closes follow; T061–T065 unchecked, B2–B5 paused;
+no cold gameplay/native Windows/whole migration acceptance.
+
 ## Spiritual early raw admission installed — WIP, 2026-10-09
 
 Original draft eligibility/exclusions are factored separately from exact path
