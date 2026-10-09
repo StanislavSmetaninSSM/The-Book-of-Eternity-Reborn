@@ -1,3 +1,13 @@
+## Pending/control fixture physical root corrected — WIP, 2026-10-09
+
+Fresh Plan21114322/1,0execution109.5962576s succeeded. Actual21134022executed/
+22FAILED7.1833705s,1/1complete,bothcleanup/0duplicateTimeout; everycase stopped
+at new ReadCanonicalFiles before originaloperation. Root/game_state mistaken;
+FSM actual root/game_session/game_state. No causal runtime RED. Preparation
+packet retained sourceac4a2a2f and originals; strict22roots absent. Only fixture
+path now uses actualfiles.GameSessionPath. Runtime unchanged; final focused
+review of correction thenfresh Plan22/actual22. No passing original set replay.
+
 ## Original pending/control and journal owners — test-first WIP, 2026-10-09
 
 Mod/folder GREEN13/sharedcatalog/raw/carrier independent PASS999a16e7; four packets

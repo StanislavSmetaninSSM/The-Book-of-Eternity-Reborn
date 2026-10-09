@@ -129,7 +129,7 @@ public sealed partial class OriginalOwnedLeaseCloseTests
             : mode.StartsWith("shining", StringComparison.Ordinal) ? ShiningTradeRequestState.PendingRequestsPath : GuardianPowerEventState.JournalPath;
         target = files.ResolvePath(relative); cut.Select = (path, _) => path == target;
         var generationBefore = CleanupPublicationCut.ReadOptional(files.SessionGenerationPath);
-        Dictionary<string, byte[]> ReadCanonicalFiles() => Directory.EnumerateFiles(Path.Combine(root, "game_state"), "*", SearchOption.AllDirectories)
+        Dictionary<string, byte[]> ReadCanonicalFiles() => Directory.EnumerateFiles(Path.Combine(files.GameSessionPath, "game_state"), "*", SearchOption.AllDirectories)
             .ToDictionary(path => path, File.ReadAllBytes, StringComparer.Ordinal);
         var beforeFiles = ReadCanonicalFiles();
         var closeFailure = new IOException("Actual pending/control original owner late close.");
