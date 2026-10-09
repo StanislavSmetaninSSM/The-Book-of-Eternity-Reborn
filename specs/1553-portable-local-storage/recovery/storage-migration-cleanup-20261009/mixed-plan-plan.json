@@ -1,0 +1,120 @@
+{
+  "Categories": [
+    "portable-cleanup-outcome-causal-linux",
+    "portable-cleanup-outcome-neighbors-linux",
+    "portable-cleanup-release-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ef59782e7854abf9796460dc74b155d86a6de34d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 50.469905,
+  "Descriptors": [
+    {
+      "Name": "portable-cleanup-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-cleanup-outcome-causal-linux",
+      "Categories": [
+        "portable-cleanup-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserBoundaryStopsContinuation|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalRollbackAndUndispatchedPrepStopNextConsumer|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalTurnStagingDoesNotCompensateUncertainRequest|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.CleanupUnknown_OriginalQteActionStopsNestedAndFinalContinuation",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserBoundaryStopsContinuation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalRollbackAndUndispatchedPrepStopNextConsumer",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalTurnStagingDoesNotCompensateUncertainRequest",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.CleanupUnknown_OriginalQteActionStopsNestedAndFinalContinuation",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-cleanup-outcome-neighbors-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-cleanup-outcome-neighbors-linux",
+      "Categories": [
+        "portable-cleanup-outcome-neighbors-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SharedWriteAppendCompareExchangeDelete_RecordAndRestoreFirstBaseline|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_ConsumedDeletionDebtRetainsKnownCleanupPolicy|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPlayerCancel_RealStagingRetiresOnlyConsumedSnapshot|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeStateChangesAsync_RemovesQteBackupRootAfterSuccessfulRun|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_PreservesSiblingBackupRunDirectory|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SharedWriteAppendCompareExchangeDelete_RecordAndRestoreFirstBaseline",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_ConsumedDeletionDebtRetainsKnownCleanupPolicy",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPlayerCancel_RealStagingRetiresOnlyConsumedSnapshot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeStateChangesAsync_RemovesQteBackupRootAfterSuccessfulRun",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_PreservesSiblingBackupRunDirectory",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-cleanup-release-causal-linux-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-cleanup-release-causal-linux",
+      "Categories": [
+        "portable-cleanup-release-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserReleaseRetainsEstablishedOutcome",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserReleaseRetainsEstablishedOutcome",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,29 @@
+## F10 mixed20 actual result / release correction design — 2026-10-09
+
+Clean ef59782 matching Plan004226 succeeded: integration46.9205505s, wall50.7479652s,
+20/3 planned,0executed. Actual004402 completed20/20 across3/3 descriptors,18PASS/2FAIL,
+27.8309577s,exit1,no timeout/skips/duplicates,both runner cleanup flags true. Independent raw
+review accepts original8+known10 PASS and two genuine release outcome/diagnostic failures.
+All10 cut rows retain exact actual journals/foreign bytes and owned-root removal. Release rows
+pass zero later reached reads/mutations/nonclosing leases/publications/recovery phases, with
+one separately tagged readonly closing lease each. No later-write escape is observed there.
+
+Restored release has exact canonical Before/callback1 before cut, RolledBack, but loses original
+business cause and both follow-up/blocked flags. Its later flag assertions were not executed.
+Committed release has actual prior durable marker witness (nonnull empty bytes), canonical After,
+Committed/NeedsFollowUp, but blocked=false; the later disposition assertion was not executed.
+Original final QTE now retains actual completion and same CSP; logger throw counts0 mean the
+logging path was avoided, not an injected logger failure preserved. Native/secondary-close/full
+QteWeb UI behavior remains unqualified.
+
+Minimal remaining correction: let actual CSP escape the owned-lease TryRelease helper; capture
+it at original restored/committed release callers, attach exact known callback cause where present,
+and return the already-established RolledBack/Committed plus follow-up/ContinuationBlocked through
+the existing capture mechanism. No new lease, retry, rollback or outcome type. The SessionReplaced
+caller must likewise not swallow an actual release CSP. Known ordinary release refusal remains false.
+Only the two release rows need fresh execution after this isolated correction if independent selection
+review agrees; retain18 at ef59782 without claiming one fresh20GREEN run. Full raw packet is preserved.
+
 ## F10 mixed20 build correction — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT-SELECTION PASS5122 accepted proposed mixed20; public deferred
