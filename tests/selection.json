@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-afterlife-state-owning-close-linux",
+      "reason": "T063/T065 independent actualfixture/design/exact8 PASS2a2b03af installedbyteidentical. Real Build plan/memory bootstrap/current reroll spend1to0/preinitialized progression. ORIGINALruntime unchanged for these4owners; fresh sharedintegrationPlan16/2 also builds requiredNormalizerGREEN8, actualrunsseparate. Baseline8UNBUILT/UNRUN, noaggregateGREEN16/fullgame/B2/native/knownlateclose qualification. Fullnew-ownercatalogpendingstablebatch.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
       "category": "portable-original-normalizer-owning-close-linux",
       "reason": "T063/T065 independently reviewed fixturefed1158a8/1: four actual unbound owning wrappers, real plan and item handoff/preflight, current journal cleanup and bootstrap item. Unknown actualIntent baseline avoids whole-flow promise, samegenuineCSP+secondaryclose/fullsettlement/noLater/Closing0/strict8roots. Runtime unchanged UNBUILT/UNRUN; fresh originalPlan8/actual8 before demonstrated correction. No prior accepted sets replayed.",
       "contracts": [

@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-afterlife-state-owning-close-linux",
+      "responsibility": "Four actual original owning state APIs8 known/genuine publication uncertainty plus secondary lateclose: AfterlifeOwnerResource TryCommit with real Build plan, ShiningBlessing bootstrap memory-only actual allocation, consume actual chosen memory and reroll spend1to0, and preinitialized progression accepted outcome. Actual original owners/first publication/fullsettlement/generation/noLater/currentresourcevalidation/strict roots. Unknown bytes pinned at actual Intent.",
+      "excludes": "Storage/lifetime boundaries only, no new gameplay/B2-B5/full blessing/resource grant/Guardian/training/console-browser or native Windows/live GM/provider/process qualification. Known controls have no injected late closer; prior legitimate publications do not imply whole-flow atomicity.",
+      "changeHints": [
+        "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+        "BookOfEternityClient/Services/ShiningBlessingEffectState.cs",
+        "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.AfterlifeState.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalAfterlifeStateOwnersRetainGenuinePublicationUncertaintyOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-normalizer-owning-close-linux",
       "responsibility": "Four actual unbound CanonicalStateNormalizer owning wrappers8 known/genuine uncertainty-plus-secondary-close. Real validated common plan and raw-item handoff, ordinary current NPC journal note cleanup and current raw-item bootstrap. Same actual plan/real carrier-receipt/history/current validators, original owner/full settlement/generation/strict roots. Unknown byte oracle uses actual selected Intent, allowing legitimate prior publications.",
       "excludes": "No held treatment publication coordinator, full accepted turn/game/console/browser/business B2-B5, native Windows/live GM/provider/process. Known controls have no injected late closer; no whole-flow atomicity claim.",

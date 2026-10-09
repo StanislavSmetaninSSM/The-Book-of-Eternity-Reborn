@@ -1,3 +1,19 @@
+## Original Afterlife state four owners — test-first WIP, 2026-10-09
+
+Independent fixture/design/exact8 PASS2a2b03af installed byte-identically. Actual
+unbound AfterlifeOwnerResource commit uses real BuildAsync plan; blessing memory
+bootstrap uses current quartet/package/allocation; memory consume derives actual
+prior bootstrap/candidate and asserts allocation1→0; progression derives actual
+control/report and initialized schedule. Same original owner/Intent/member0,
+genuine CSP+secondary close/fullsettlement/noLater/Closing0/currentgeneration/
+all-other-game_state atIntent/strict8 roots/current canonical resource validator.
+These four production owners unchanged UNBUILT/UNRUN before original baseline.
+Normalizer combined causal/source/exact8 PASS92a6f54d; one fresh integration
+Plan16/2 builds Normalizer requiredGREEN8 + separate Afterlife baseline8, then two
+separate actualruns. No aggregateGREEN16 or unchanged accepted group replay.
+Fullcatalog deferred stable accepted batch; B2–B5/T061–T065/native/knownlateclose
+remain open. Client-owned lifetime fix adds no GM capability or schema/example.
+
 ## Original Normalizer uncertainty correction installed — WIP, 2026-10-09
 
 Exactly four original unbound owning wrappers retain/rethrow same genuine CSP
