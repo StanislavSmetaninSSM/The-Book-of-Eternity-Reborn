@@ -1,0 +1,90 @@
+{
+  "source": "41c8e4f6950f506f8ee8935ea2b4ba4b73a02975",
+  "qualification": "bounded source consultation, not complete callgraph or executed failures; direct typed catches elsewhere may intentionally validate JSON",
+  "rows": [
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.Politics.cs",
+      "lines": [
+        373,
+        480
+      ],
+      "classification": "confirmed-source-only",
+      "reason": "Actual canonical pending realignment/leadership writes; direct CSP swallowed by InvalidOperation catch then input/return.",
+      "blob": "d26af444c773ebd4625cc042b9cca7504467ef36"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs",
+      "lines": [
+        1488
+      ],
+      "classification": "confirmed-source-only",
+      "reason": "Actual coordinated forge/reroll commit; direct CSP swallowed then input/return.",
+      "blob": "9f6827df09ee8a9b93d7afeaa39d36587d29c894"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "lines": [
+        501
+      ],
+      "classification": "confirmed-source-only",
+      "reason": "Actual attraction pending request ordinary write; direct CSP swallowed before pending-action field.",
+      "blob": "e17017b042978852bebbefb960863caaf5d203a1"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "lines": [
+        1484
+      ],
+      "classification": "confirmed-source-only",
+      "reason": "Actual coordinated forge writer CSP replaced by sanitized InvalidOperation; generic AtomicCore rollback instead of typed uncertain branch.",
+      "blob": "0c9b5efe402b7e632c731a241a694206eeb9caf4"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserGameScreenService.cs",
+      "lines": [
+        225,
+        263
+      ],
+      "classification": "no-storage-in-catch-scope",
+      "reason": "JsonValue conversion only.",
+      "blob": "a8ab842c2ee40491d1b83ddce327f04ce58bbf83"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLifecycleDashboardService.cs",
+      "lines": [
+        286,
+        304
+      ],
+      "classification": "no-storage-in-catch-scope",
+      "reason": "JsonValue conversion only.",
+      "blob": "0e874c251f8d869cb6443d1d83cd7366ec2b07f7"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+      "lines": [
+        648
+      ],
+      "classification": "no-storage-in-catch-scope",
+      "reason": "JsonValue conversion only.",
+      "blob": "1b4c79829f2d0dc889862cd60ac556ab60767152"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs",
+      "lines": [
+        242
+      ],
+      "classification": "no-storage-in-catch-scope",
+      "reason": "Pure ProjectPlayerSoulRealm after-image validation; owned TryCommit is separate queued scope.",
+      "blob": "145db1a26a57a792bee8d02c61c6ea0d082377b2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+      "lines": [
+        292
+      ],
+      "classification": "no-storage-in-catch-scope",
+      "reason": "Pure BuildNormalizedSoulStateRoot; no publisher in caught scope.",
+      "blob": "f1630e23e4b305f8a68f86b608b599d0d9c6a635"
+    }
+  ]
+}

@@ -1,6 +1,9 @@
 ## Current accepted / open map — 2026-10-09
 
-Latest tested source bd0673 retains runtime c7672208 lore/realm correction. Composed14 =12@c767 plus
+Latest tested source020ac5e8 accepts bounded continuation12 (17.7182074s), with seven authentic Unknown
+carriers/retained prior effects and five known-policy controls. Independent/parent raw PASS, packet71/36
+verified, matching fresh catalog517/11311 valid0; final carrier review pending. Helper/null-context and
+secondary-close/native/full-loop qualifications remain. Earlier bd0673 retains runtime c7672208 lore/realm correction. Composed14 =12@c767 plus
 corrected generation/sourceguard2@bd (12.9031643s), not a single14 run. Same actual CSP and ordinary
 lore routing are proven at original boundaries; the earlier raw physical deletion/unreached cut and
 blocked old replacement fixture remain historical evidence. Saved72 artifacts/50 pins verify; matching
@@ -12,7 +15,8 @@ Prepared-Shining5 bbf/1265 accepted47/27; Story12 b79/6ee accepted64/21; progres
 Prepared remote8 7cf/c7 accepted59/26. Earlier F13/F14/F17/treatment/cleanup receipts retain their recorded
 scopes, not new executions. Latest actual full GitHub-only restore remains e5; final combined restore pending.
 
-Open: memory/accepted-continuation/canonical bookkeeping, Explorer whole-command and GameLoop diagnostics,
+Open: remaining accepted-continuation owners and Ready-specific bookkeeping cause retention, Explorer
+whole-command and GameLoop diagnostics,
 authoritative Ready/worker/audit/proposal, C2, F16 media/listing/export/path producer admission, F18 current
 publication/admission observer ports and full reconciliation. No whole-game/native or simultaneous
 secondary-close fault claim; prepared-Shining generation policy remains separately unqualified.
@@ -42,7 +46,8 @@ not runtime replay. No full-turn/native/secondary-close guarantee or full migrat
 Lore raw deletion, realm update/MainMenu incarnation/reentry/ordinary return catches and their owned
 closes are now accepted in composed14 above; their initial source findings remain in historical receipts.
 Current memory-legacy apply/canonical application audit/finalize, engine Shining-blessing wrapper,
-rejected rollback and canonical best-effort bookkeeping have actual causal7 complete at e800/040245 (7 genuine Unknown failures), runtime correction pending.
+rejected rollback and canonical best-effort bookkeeping have accepted final12 at020ac following genuine causal7 at e800. Shared Ready-specific cause retention
+and other owning publication boundaries remain separate unqualified paths.
 Shared bookkeeping callers include diagnostic report writes plus subsequent transient/control deletions;
 known failure→actual reportUnknown is distinct. Preserve local flags/accepted facts and known policy.
 Ready accepted/cleared trajectory append catches3438/3592 remain open, with connected generation-bound
@@ -53,7 +58,9 @@ Explorer Politics373/480, TradeAndForge1488, attraction501 and
 browser forge1484 InvalidOperation catches also include CSP; keep whole-command/parity qualification.
 GameLoop canonical logging before CSP classification and known-error→diagnostic-CSP are distinct
 remaining boundaries. F18 parent census27 canonical-contention assignment candidates includes dual
-and intentional negative controls: not27 defects, no blanket hook substitution.
+and intentional negative controls: not27 defects, no blanket hook substitution. Five precise source-only
+censuses are preserved in the accepted-continuation evidence manifest with original source identities,
+including worker reserve-CAS→early-failure audit; none is an executed failure count.
 
 Owned-close consistency source finding (superseded by bounded a88d correction above): public Write→Bytes,
 public CAS (current live CAS callers pass explicit leases), DeleteWithLock and internal owned

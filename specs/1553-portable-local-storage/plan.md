@@ -1,3 +1,49 @@
+## Accepted-continuation final12 complete — 2026-10-09
+
+Runtime/source020ac5e8 passed independent SOURCE/EXACT12. Matching Plan040734 freshly built integration
+39.7411169s, wall43.2301272s,12/2planned0executed. Actual040831 completes12/12PASS,2/2descriptors,
+17.7182074s,exit0,no skips/duplicates/timeouts,bothcleanup. Independent and parent raw gates PASS.
+All seven actual MemberPublished/index0 Unknown cuts retain authentic exact journals/foreign targets;
+same-original-CSP and final image/cause assertions now execute and pass. Later measured validated reads,
+mutations, ordinary lease attempts, publications and recovery-phase callbacks are zero; separately
+identified readonly closing1 each for original incarnation application/audit. Input1/10/0 and request0
+pass; prior actual Strength3/11, points8/0, produced finalize state, Shining expiry9, rollback evidence,
+diagnostic/control bytes and exact known missing-backup cause survive. All seven owned roots removed.
+Five unchanged known controls pass, including real ordinary effect success and known report refusal.
+
+This accepts six bounded direct-CSP stop boundaries, original known-cause attachment and two same-owned-
+lease captures. Finalize remains helper-only, Shining original wrapper has null accepted context; no
+full bootstrap/accepted-loop, whole-operation atomicity, native or simultaneous secondary-close claim.
+Shared Ready-specific original-error retention and other publisher-owning scopes remain queued.
+
+[Packet](recovery/storage-migration-accepted-continuation-20261009/manifest.json) verifies71 saved/
+expanded/present-original artifacts +36 historical Git pins (causal29/15, green30/18, catalog7/3,
+source-only remaining censuses5/0). Existing unit source-contract Plan040906 refreshes unit build only
+12.7631273s/wall16.6377689s,1planned0executed. Catalog040944 uses both current project outputs:
+517categories/11311methods-files valid,0tests,7.8634374s,exit0,bothcleanup. No accepted tests replayed for
+catalog freshness. Final independent carrier/docs gate pending; latest actual full GitHub-only restore
+e5 unchanged, final combined restore pending.
+
+Five parent/reviewer source-only completeness aids are now durable in this same packet: owned-close
+120sites/56files (not120 defects), branch-classified admission observers27, generation-gate recipes,
+actual typed-catch followups and original worker reservation→early-failure audit path. They retain
+internal source-era identities, intentional negative/physical/read-only/API-only distinctions, and no
+new runtime claims. Broader owners are reconciled within connected units, not converted blindly.
+
+Next authorized finite unit: original GameLoop error handling and canonical diagnostics. Actual loop
+primary realmCSP must skip canonical LogError; controlled known Text-input error→actual logCSP must
+produce effective private storage-error observation retaining known cause. Original invalid-life-end
+helper must stop before deleting its signal after logUnknown; keep existing known-success helper1.
+Use original AgentConsole Text/Error hooks plus separate Spectre reentry confirmation, controlled final
+Error-key exit, no new production seam/full normal-loop claim. Frozen fixture/source gate precedes
+execution. Explorer/Ready-worker/audit/proposal/C2/F16/F18 and final full migration reconciliation remain open.
+
+Carry-forward: FailClosedAcceptedTurnCanonicalRefresh has a known original exception and report/delete
+bookkeeping; attach exact cause if its later publication becomes uncertain when that Ready unit is
+qualified. Diagnostic-only ValidationIssue callers have no original exception to invent. Actual worker
+TryReserveTask CAS Unknown currently enters early-failure audit before launch, a separate queued cut
+from dispatch-audit Unknown; preserve original Linux refusal and explicit fixture capability bounds.
+
 ## Accepted-continuation runtime WIP / final12 — 2026-10-09
 
 Independent raw and causal carrier gates PASS76f6c6a0 (29/15), parent independently corroborates actual
