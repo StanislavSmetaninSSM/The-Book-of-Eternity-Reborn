@@ -10,8 +10,8 @@ Fresh both-project `-ValidateCatalog` at clean `c92f24327e1fd399c9afab444205c289
 (110425) succeeds: **543categories/11336methods-files valid,0executed**,63.2492407s,
 integration build42.9449717s/unit12.2583623s,bothcleanup. This is discovery only,
 not additional runtime PASS. [Story packet](recovery/storage-migration-story-read-export-20261009/manifest.json)
-has70 artifacts/originals60 frozen source pins, root-verified. Next finish independent
-RAW/CATALOG/CARRIER gate and exact remote/selected-file recovery; do not replay passed12.
+has70 artifacts/originals60 frozen source pins, root-verified. Exact remote/selected-file recovery is verified below; final independent
+RAW/CATALOG/CARRIER gate is pending. Do not replay passed12.
 All runtime/fixture/catalog bytes are unchanged since the tested source.
 
 Continuation after this bounded handoff: source-review F16 snapshot producers and
@@ -29,10 +29,30 @@ Environment remains saved Linux cloud, SDK10.0.401/runtime8.0.31+10.0.12/pwsh7.5
 source `/workspace/.boe-1553-migration-session/env.sh` for tools. Full-suite/Fast/PreMerge,
 live GM/provider, HOME-PC/desktop, CI/settings/main/merge remain out of scope.
 Disk currently has about444MiB free; a prior comparable full clean checkout needed
-about905MiB. Current recovery will therefore explicitly cover selected exact GitHub
-files in a new empty directory, not claim a new full branch checkout. Last full
+about905MiB. Current recovery explicitly covers selected exact GitHub files in a new empty
+directory, not a new full branch checkout. Last full
 clean branch restoration remains the older durable-worker e12aa3a4 checkpoint.
 No native Windows/full engine/actual rotation/secondary-close/timestamp collision claim.
+
+## Story selected-file recovery — verified 2026-10-09
+
+Exact remote `5cabbfeca0871288734bda73ad1b31362948cd40` was read again before
+recovery. Fresh empty `/workspace/boe-story-selected-restore-5cabbfeca087` received
+100 current files (5,867,226bytes) directly from GitHub raw exact-commit URLs; every
+Git blob and SHA256 matched. No old checkout, local Git objects or source cache was
+copied. Recovered inputs include required instructions/spec/plan/tasks/inventory,
+20 relevant source/test/catalog paths and the full Story packet. All70 stored and
+expanded artifact hashes were checked from the restored files. Additionally all60
+historical source pins were fetched directly from their exact original commits and
+matched, under the restore's `frozen-sources/`. [Detailed receipt](recovery/storage-migration-story-selected-restore-20261009.json).
+
+This proves those selected files and source-era Story evidence can be recovered;
+it is NOT a full Git checkout, build/test from the restored directory, or recovery
+of every migration family. Original audit #1536 remains independently preserved at
+`13c820294df2bf7e824b06eb41ddc73bd18b87c0`; main remainsd0241e71 and old wound branch
+1fc5e59b. Ref/ancestry were rechecked:0old-only/28main-new, matching old/PR1554 merge
+tree24de5ac. Current runtime/tests unchangeda5d9684e; final raw/carrier review pending.
+Disk after selected recovery425MiB free. No unrelated files or evidence were deleted.
 
 ## F16 Story exact12 GREEN — catalog/final gate pending, 2026-10-09
 
