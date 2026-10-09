@@ -29,11 +29,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         var soul = CreateLifecycleSoulState("Memory continuation", mode == "finalize" ? "Mortal World" : "Chaos Sea");
         var legacy = new JsonObject
         {
-            ["legacyId"] = "bounded_memory_strength", ["legacyType"] = "startingCharacteristicBonus",
+            ["legacyId"] = "bounded_memory_strength", ["legacyType"] = "startingCharacteristicBonus", ["sourceLifeHint"] = "A prior ordinary life",
             ["characteristic"] = Characteristics.Strength, ["bonus"] = 2,
             ["applicationState"] = "pending", ["grantSource"] = "memoryLegacyGrant",
             ["grantSnapshot"] = new JsonObject { ["legacyId"] = "bounded_memory_strength",
-                ["legacyType"] = "startingCharacteristicBonus", ["characteristic"] = Characteristics.Strength, ["bonus"] = 2 }
+                ["legacyType"] = "startingCharacteristicBonus", ["sourceLifeHint"] = "A prior ordinary life", ["characteristic"] = Characteristics.Strength, ["bonus"] = 2 }
         };
         soul["pendingMemoryLegacy"] = legacy;
         await SeedMortalLifeTransitionAuthorityAsync(soul);
@@ -114,7 +114,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(OperatingSystem.IsLinux());
         using var probe = new AcceptedContinuationProbe(_rootPath);
         var files = probe.Files;
-        await SeedMortalLifeTransitionAuthorityAsync(CreateLifecycleSoulState("Shining continuation", "Mortal World"));
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(files,
+            new AfterlifeOwnerResourceAcceptedState(
+                Profiles: CreatePlayerSoulProfiles("Shining continuation", "Shining Abode"),
+                SpiritualConflict: AfterlifeSpiritualConflictState.CreateDefaultRoot(),
+                SoulState: CreateLifecycleSoulState("Shining continuation", "Mortal World"),
+                ShiningAbode: ShiningAbodeState.CreateDefaultState(), Guardians: CreateEmptyGuardiansState()));
         var card = new JsonObject
         {
             ["cardId"] = "bounded_route", ["dedupeKey"] = "route:bounded_route", ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
@@ -122,7 +127,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ["sourceActorId"] = "guardian_dawn", ["effectFamily"] = "route", ["rarity"] = ShiningAbodeState.RarityCommon,
             ["effectPayload"] = new JsonObject { ["type"] = "seed_early_routes", ["routeOptions"] = 1, ["latestTurn"] = 8 }
         };
-        var prepared = new JsonObject { ["preparedAtTurn"] = 0, ["selectedCardIds"] = new JsonArray("bounded_route"), ["selectedCards"] = new JsonArray(card) };
+        var prepared = new JsonObject { ["preparedAtTurn"] = 1, ["selectedCardIds"] = new JsonArray("bounded_route"), ["selectedCards"] = new JsonArray(card) };
         var materialized = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(files, prepared, 2);
         Assert.True(materialized.Success, materialized.ErrorMessage);
         var effect = Assert.Single(ReadContinuationObject(files, ContinuationSoul)[ShiningBlessingEffectState.SoulStateProperty]!["pendingRouteEffects"]!.AsArray());

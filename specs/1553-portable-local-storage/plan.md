@@ -14,6 +14,12 @@ oracles, prohibit later measured work and clean owned roots. No fabricated CSP/a
 The known rollback cause is the exact logged outer InvalidDataException with one missing mapped genuine
 backup; report fields are checked before foreign injection and its identity must survive as diagnostic.
 
+Source review before any build corrected Shining setup: the real reroll materializer requires positive
+preparedAtTurn and a complete Shining player profile even with zero reroll allocation. The fixture now
+uses original quartet bootstrap with that profile and Mortal soul, then real materialization; no raw
+owner edits. Matching memory grant/root include canonical nonempty sourceLifeHint. The earlier draft
+was unbuilt/unexecuted; this is source-only fixture correction, not a causal failure.
+
 Current changes are fixtures/category metadata only, unbuilt/unexecuted; production remains c767.
 Frozen independent source/fixture/exact7 gate then matching integration Plan/build is required before
 causal execution. Known policy neighbors will be selected with the bounded demonstrated runtime delta.
