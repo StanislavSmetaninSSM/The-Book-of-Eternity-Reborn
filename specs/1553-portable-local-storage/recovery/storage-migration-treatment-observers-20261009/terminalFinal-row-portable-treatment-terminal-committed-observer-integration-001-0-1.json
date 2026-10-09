@@ -1,0 +1,22 @@
+{
+  "kind": "treatment-terminal-competing-restart-refusal",
+  "Code": "mortal_wound_treatment_resource_reservation_authority_invalid",
+  "Expected": "no unresolved terminal publication blocker",
+  "Actual": "treatment publication compensation requires a session restart",
+  "before": [
+    {
+      "operation": "operation_t061_guaranteed_current_capability_proof_stabilizes_resource_publication_terminal_lifecycle_release_refusal",
+      "state": "ConfirmedHeld",
+      "PersistedRequestFingerprint": "sha256:2dc05276ddd10c6915c8797986e4a665fd0117383fbb6d4dc7ece7d9cc9117f8",
+      "AuthorityFingerprint": "sha256:62ab700ee01d2f4651bb4385cd7545fbc13655873c73499e0031276c2267651b"
+    }
+  ],
+  "after": [
+    {
+      "operation": "operation_t061_guaranteed_current_capability_proof_stabilizes_resource_publication_terminal_lifecycle_release_refusal",
+      "state": "ConfirmedHeld",
+      "PersistedRequestFingerprint": "sha256:2dc05276ddd10c6915c8797986e4a665fd0117383fbb6d4dc7ece7d9cc9117f8",
+      "AuthorityFingerprint": "sha256:62ab700ee01d2f4651bb4385cd7545fbc13655873c73499e0031276c2267651b"
+    }
+  ]
+}

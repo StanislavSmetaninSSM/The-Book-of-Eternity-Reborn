@@ -1,3 +1,26 @@
+## F18 Treatment2 — composed Linux evidence complete, 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT1 PASS06092c412c44b3b2d2fbcc63945480fe2f554fd4.
+Fresh integration Plan141105 selects1/1,0execution44.3342314s; actual141952
+passes1/1,complete1/1,15.6636090s,bothcleanup,0skip/duplicate/timeout.
+Commands: `./scripts/test-csharp.ps1 -Category portable-treatment-terminal-committed-observer -Parallelism 1 -PlanOnly`, then same category `-NoBuild`.
+Actual Committed request presence→removal→exact restoration is reached; original
+ReleaseFailed/specific-code/full-tree/ConfirmedHeld and inside/after-scope publication
+blocking assertions all pass. Exact authority_invalid restart refusal preserves copied
+reservation keys/scalars; actual held lease inactive and owned root removed. Generation
+unchanged/no journal. No runtime or B2–B5 implementation change.
+
+Composed2 = command-proof1@8c49f44f/140108 + terminal1@06092c41/141952, not one2GREENrun.
+Both historical failures remain: initial observer Arm prerequisite, then old competing-
+request oracle after the real cut. Packet [manifest](recovery/storage-migration-treatment-observers-20261009/manifest.json)
+has38artifacts/originals52pins verified; original23/26 unchanged. Matching discovery
+142028 validates564categories/11344methods-files,0execution8.5292690s,bothcleanup;
+NoBuild uses integration06092/unit533 with unchanged production/projects. Final independent
+RAW/CATALOG/CARRIER gate pending. Wound25 final gate PASSbd496ce6; Effects14 PASSa2db0770.
+Next: six explicitly native legacy publication controls, dead Location hook removal,
+remaining F18/mods oracle/selection and all consumer/registry queues. T061–T065 remain
+unchecked; native Windows unexecuted, B2–B5 paused. Whole #1553 is not complete.
+
 ## Current F18 original rollback witness result — 2026-10-09
 
 Source0d16af64: wound24/offscreen1 all25PASS13541616.8904362s after fresh integration

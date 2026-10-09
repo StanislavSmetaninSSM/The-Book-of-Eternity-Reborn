@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-treatment-terminal-committed-observer"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "06092c412c44b3b2d2fbcc63945480fe2f554fd4",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0516158,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0362493,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0859006,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 40.3585758,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0044909,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 7,
+  "WallTime": "00:00:44.3342314",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 1,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-treatment-terminal-committed-observer-integration-001"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
