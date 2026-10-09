@@ -1,10 +1,20 @@
+## Current progression outcome checkpoint — 2026-10-09
+
+Exactly three original catch exclusions at2a372 stop actual CSP in base/status processing, level
+marking and computed publication. Causal4 genuine failures become final4 PASS; original finite
+restart-level-award control also passes. Final5 complete10.5218797s; same original decision, retained
+journal/foreign bytes/prior committed images, zero later measured work and owned cleanup verified
+independently. Packet48 artifacts/25 pins retains build-only failure and RED separately; final saved
+carrier review pending. Current catalog503/11293 valid0 at2a372 after fresh integration+unit builds,
+not runtime replay. No full-turn/native/secondary-close guarantee or full migration closure.
+
 ## Current remaining source-only classification — 2026-10-09
 
 Parent/reviewer inspected a44-row lexical catch/write aid at54d. These are source findings and
 bounded fixture proposals, not44 executed failures or required mirror-implementation tests. Existing
 accepted source-era packets retain their scopes. Connected remaining units:
 
-- Progression's three broad catches (current fixture4 build-only) and StoryService append/marker;
+- Progression's three broad catches (bounded final5 PASS at2a372; source/raw accepted) and StoryService append/marker;
   original life/incarnation/ascension consumers must stop before progression/cleanup after actual
   CSP. Preserve known best-effort failure and same decision through owned AppendFileAtomic close.
 - Snapshot/preparation: four EnsureAfterlife*InitializedForSnapshot writers; baseline manifest/
@@ -62,7 +72,7 @@ known cleanup refusal/committed debt/rollback policies and exact-directory sibli
 Historical catalog500/11291 valid0 at102d. [Packet](recovery/storage-migration-cleanup-20261009/manifest.json)
 has111 artifacts/98 historical pins verified; final independent carrier and parent fresh restore PASSe5.
 No remote main ACK, injected secondary close, full browser-QTE UI, native or whole-turn guarantee.
-Progression's three source-identified swallowing catches remain a separate T062 tail; F16/F18 open.
+Progression's three catches are separately corrected at2a372 with final5 PASS; other T062 tails and F16/F18 remain open.
 
 ## Current treatment outcome checkpoint — 2026-10-08
 

@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "portable-progression-outcome-causal-linux",
+    "portable-progression-outcome-neighbor"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "2a372661d3da473d5d7231ef3ebe42d52a35bb52",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 40.995127,
+  "Descriptors": [
+    {
+      "Name": "portable-progression-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-progression-outcome-causal-linux",
+      "Categories": [
+        "portable-progression-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProgressionUnknown_OriginalConsumerPreservesDecisionAndStops",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProgressionUnknown_OriginalConsumerPreservesDecisionAndStops",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-progression-outcome-neighbor-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-progression-outcome-neighbor",
+      "Categories": [
+        "portable-progression-outcome-neighbor"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

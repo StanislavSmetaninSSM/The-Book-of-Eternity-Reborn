@@ -1,3 +1,27 @@
+## Progression final5 / current catalog checkpoint — 2026-10-09
+
+Runtime2a372661 source/exact5 and independent raw PASS. Matching Plan014802 integration
+37.4146901s,wall41.2782960,5/2planned0executed. Actual014853 complete5/5PASS in2descriptors,
+10.5218797s,exit0,no skips/duplicates/timeouts,bothcleanup. All four actual MemberPublished/index0
+cuts1 preserve the same original CSP, exact uncommitted journal/foreign target and input0; measured
+later validated-read/mutation/ordinary-lease/publication/recovery phases0. Prior base/points actual
+Committed1 and exact final images pass. Four owned roots explicitly removed; original finite scripted
+restart-level-award neighbor passes. No rollback of earlier confirmed publications or whole-turn claim.
+
+Catalog014913 rebuilt current integration1.4360629s and unit11.0574839s before discovery, wall
+20.3194900s,503categories/11293methods-files valid,0executed,exit0/bothcleanup. This supersedes
+historical102d500/11291 for current source; it does not rerun Prepared8 or acceptedcleanup26.
+[Progression packet](recovery/storage-migration-progression-20261009/manifest.json) has48 artifacts/
+25 historical source pins; original compile failure and four causal REDs retained separately. Final
+saved artifact/docs gate pending. Latest parent full GitHub-only restore remains e5; no fresh restore
+claimed for this carrier. No native, liveGM, fullUI, secondary-close fault or fullmigration acceptance.
+
+Next bounded unit: Story append/marker and actual original transition consumers, retaining known
+best-effort failure, prior committed transition facts and owned-lease first cause. Source-only snapshot/
+preparation, Explorer, authoritative Ready/worker, C2, F16/F18 queues remain tracked in currentinventory.
+No GM-authored schema/math/capability changes here; no prompt/example migration needed for these
+client-owned typed outcome exclusions. T062/T063 remain unchecked.
+
 ## Progression runtime correction WIP — 2026-10-09
 
 After independent causal4 acceptance and saved e1731df2 packet22/14, production delta is exactly
