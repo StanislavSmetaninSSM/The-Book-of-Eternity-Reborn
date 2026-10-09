@@ -1,3 +1,25 @@
+## F18 current-gacha Clear — test-first source WIP, 2026-10-09
+
+Independent RAW3/causal1/carrier PASScdc35c7a verifies38 artifacts/originals76pins.
+Diagnostic115443 is authentic supported-current refusal, not an expected-refusal
+contract. Dual3 accepted; no unchanged replay. Add current-authority negatives from
+actual successful gacha: request mismatch, exact backup drift, extra valid-shaped
+unmapped backup; no-clear rotation retains valid evidence. Original positive now
+requires actual Committed replacement, changed generation and fresh StateManager
+bootstrap after Clear. Separate recognized empty direct-gacha structure positive and
+unknown-empty/linked-child negatives cover the crash-stable structural distinction.
+Existing manifestless orphan remains selected. No production edit yet.
+
+Reviewed design: Clear-only signed exception; existing full pending authority/request/
+exact hashes and exact retained backup set, ordinary path validation throughout. Other
+legacy roots and no-clear actual-backup guards remain. Empty recognized directory-only
+chains are harmless structure; reject arbitrary children/links/files, do not depend on
+post-commit pruning that could race cleanup debt or be interrupted. Existing common
+replacement publishes all deletion+generation members. No new authority/schema/GM
+capability, so no prompt/example update is required. Next source/selection review,
+focused empty-chain RED, then minimal runtime fix and exact target verification.
+B2–B5 paused; wholeF18/F16/owned-close/registry continue after this block.
+
 ## F18 causal gacha replacement established; dual3 measured — 2026-10-09
 
 Frozen d2d13d960acde8f0d46113804a23f14184b74659 has independent SOURCE/FIXTURE/

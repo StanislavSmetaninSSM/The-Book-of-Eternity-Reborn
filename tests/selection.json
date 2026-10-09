@@ -2,6 +2,18 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-gacha-clear-authority-linux",
+      "reason": "T064 genuine diagnostic115443 proves legitimate adopted gacha Clear refusal. Test-first exact current authority and postClear bootstrap; source/build/actual pending.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "FR-007",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-canonical-contention-gacha-diagnostic-linux",
       "reason": "T064 isolated original gacha1 retains successful replacement expectation; qualify current adopted rollback authority and exact pre/post evidence before diagnosing parameterless legacy guard. Source/build/run pending.",
       "contracts": [

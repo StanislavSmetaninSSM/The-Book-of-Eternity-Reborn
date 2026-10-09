@@ -20282,6 +20282,40 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-gacha-clear-authority-linux",
+      "responsibility": "Current direct-gacha Clear admits only fully validated current pending authority and exact retained backups. Original contention success includes next bootstrap; negative mutations/extra evidence/no-clear preserve exact state. Recognized empty structure and unknown/link refusals.",
+      "excludes": "No live GM, desktop, native Windows, whole-session replay, or accepted7 neighbor replay. Existing owners retained.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts",
+            "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ReplacementRequiresExactCurrentAuthority",
+            "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RecognizedEmptyDirectGachaStructureIsNotUnresolvedEvidence",
+            "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnknownOrLinkedEmptyBrowserStructureIsNotSilentlyAccepted"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence"
+          ]
+        }
+      ]
     }
   ]
 }

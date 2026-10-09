@@ -106,6 +106,46 @@ public sealed class PortableClientStorageTests : IDisposable
     }
 
     [Fact]
+    public async Task Bootstrap_RecognizedEmptyDirectGachaStructureIsNotUnresolvedEvidence()
+    {
+        var empty = _files.ResolvePath($"{ExplorerLocalTurnRollbackArtifacts.Root}/browser_direct_gacha/1_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(empty);
+        var generation = await _state.BootstrapLocalStorageAsync();
+        Assert.True(Guid.TryParseExact(generation, "N", out _));
+        Assert.True(Directory.Exists(empty));
+        Assert.Empty(Directory.EnumerateFileSystemEntries(empty));
+        var fresh = new StateManager(new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance),
+            new GameSettings(), NullLogger<StateManager>.Instance);
+        Assert.Equal(generation, await fresh.BootstrapLocalStorageAsync());
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Bootstrap_UnknownOrLinkedEmptyBrowserStructureIsNotSilentlyAccepted(bool linked)
+    {
+        var direct = _files.ResolvePath($"{ExplorerLocalTurnRollbackArtifacts.Root}/browser_direct_gacha");
+        Directory.CreateDirectory(direct);
+        var child = Path.Combine(direct, linked ? $"1_{Guid.NewGuid():N}" : "unknown-empty");
+        var outside = Path.Combine(_root, "outside-empty");
+        Directory.CreateDirectory(outside);
+        if (linked) Directory.CreateSymbolicLink(child, outside);
+        else Directory.CreateDirectory(child);
+        try
+        {
+            await Assert.ThrowsAsync<InvalidDataException>(() => _state.BootstrapLocalStorageAsync());
+            Assert.False(File.Exists(_files.ResolvePath("config.json")));
+            Assert.False(File.Exists(_files.SessionGenerationPath));
+            Assert.True(Directory.Exists(child));
+            Assert.Empty(Directory.EnumerateFileSystemEntries(outside));
+        }
+        finally
+        {
+            if (linked) Directory.Delete(child);
+        }
+    }
+
+    [Fact]
     public async Task OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent()
     {
         await _state.BootstrapLocalStorageAsync();
