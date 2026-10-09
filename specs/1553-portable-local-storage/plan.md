@@ -1,3 +1,33 @@
+## F18 causal gacha replacement established; dual3 measured — 2026-10-09
+
+Frozen d2d13d960acde8f0d46113804a23f14184b74659 has independent SOURCE/FIXTURE/
+EXACT4 PASS. Fresh unit Plan115229 selects4/2,0execution,74.8435587s; unchanged
+integration remains88130. Separate dual3 actual115356 completes3/3PASS,6.7614701s,
+bothcleanup. All three original pauses1/main1/canonical0, actorssettled,3rootsabsent.
+Separate diagnostic1 actual115443 is genuine1FAIL,8.2651871s,complete/bothcleanup:
+actual gachaSuccess=true, replacement main7/canonical0/lockopen1, no mutations or
+publications before InvalidData guard refusal. Authentic current request/manifest/
+detached authority maps exact pre-spend soul backup. All11 raw pre-refusal images
+(including generation) equal post-refusal and post-diagnostic; separate diagnostic
+lease records0publication/0recovery observations. Both original actors settled/root
+absent. This positively establishes supported-current gacha replacement as the causal
+candidate; original expected success remains. [Packet](recovery/storage-migration-contention-consumers-20261009/manifest.json)
+now38 artifacts/originals76pins; independent raw/next-design gate pending.
+
+Minimal proposed runtime scope after review: session CLEAR may consume ONLY the
+already recognized current direct-gacha before-images after validating existing full
+pending authority/current request/exact mapped bytes and rejecting every extra backup.
+Keep no-clear generation rotation and all other old/unknown evidence guards unchanged.
+Use the existing common single replacement publication for file deletions+generation;
+no namespace-only allowlist, recovery replay, raw deletion or callback lease acquisition.
+Require original gacha concurrent replacement GREEN plus request-mismatch, backup-byte
+drift, unreferenced valid-shaped backup and existing manifestless orphan negatives.
+Negatives start from actual successful gacha+validated adoption, then perturb one input;
+prove exact all-file/generation retention and0replacement mutations/publications.
+Before production change, preserve source/selection review and causal1 above. Existing
+7+dual3 need no unchanged replay; native3/physical/generation/F16/owned-close queues
+remain. B2–B5 paused; no wholeF18/T061–T065/main/CI/merge claim.
+
 ## F18 diagnostic observer correction — 2026-10-09
 
 Source review found one fixture ordering gap in f5dd: WaitAsync's timeout proxy could

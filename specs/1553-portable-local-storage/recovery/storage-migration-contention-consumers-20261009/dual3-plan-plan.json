@@ -1,0 +1,63 @@
+{
+  "Categories": [
+    "portable-canonical-contention-settlement-linux",
+    "portable-canonical-contention-gacha-diagnostic-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d2d13d960acde8f0d46113804a23f14184b74659",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 74.5759849,
+  "Descriptors": [
+    {
+      "Name": "portable-canonical-contention-gacha-diagnostic-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-canonical-contention-gacha-diagnostic-linux",
+      "Categories": [
+        "portable-canonical-contention-gacha-diagnostic-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-canonical-contention-settlement-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-canonical-contention-settlement-linux",
+      "Categories": [
+        "portable-canonical-contention-settlement-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter|FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter|FullyQualifiedName=BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

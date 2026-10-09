@@ -1,0 +1,10 @@
+{
+  "kind": "f18-dual-contention-settlement",
+  "method": "DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
+  "root": "/tmp/boe-state-distributor-lease-57d7d44b790a43f399df2e192cb5c838",
+  "paused": 1,
+  "mainContentions": 1,
+  "canonicalContentions": 0,
+  "firstSettled": true,
+  "secondSettled": true
+}
