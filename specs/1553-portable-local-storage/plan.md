@@ -1,3 +1,23 @@
+## Next connected source finding / progression fixture draft — 2026-10-09
+
+Independent final bounded cleanup raw/carrier PASSe5b63ba7 (111 artifacts/98 pins); parent fresh
+restore is completing. That local storage evidence does not qualify a remote main receipt.
+Independent source tracing confirms Prepared returns explicit Uncertain without updating existing
+BrowserDecisionCapture, whose default Completed reaches the actual original remote close. This
+is a connected remaining P2, not an executed remote failure or invalidation of local cleanup26.
+Prioritize a genuine Running neutral owner/original remote admission/actual publication cut and
+exact terminal receipt+ACK identity before a minimal existing-capture correction. Preserve real
+Committed/RolledBack/Uncertain, no global inferred outcome/new public type or live GM.
+
+The already-designed progression4 now has a test-only draft, uniquely owned bounded category,
+with real bootstrap storage and the original methods. It selects a mortal runtime view, level2/base1,
+actual base/status_clear/mark/computed members, positive prior Committed transaction/bytes for
+status_clear and AddStatPoints, exact Unknown journal and no later measured work. Mark-only
+uses computedLevel2; AddStatPoints is invoked directly, so no UI award branch can hang after old
+swallow behavior. Any unexpected input fails the fixture. No progression production edits, build,
+execution or fixture acceptance; existing restart neighbor will join its final finite5 proposal.
+This draft waits while the connected Prepared remote receipt boundary is qualified.
+
 ## F10 bounded cleanup result / composed26 checkpoint — 2026-10-09
 
 Final runtime102d610b has independent source/selection PASS. Matching Plan005652 built integration

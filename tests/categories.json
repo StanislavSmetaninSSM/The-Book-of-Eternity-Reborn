@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-progression-outcome-causal-linux",
+      "responsibility": "Four original progression publication-Unknown contours: base stats, status clearing after confirmed base, mark-only level receipt and AddStatPoints computed output after confirmed points. Actual cut, same decision and no later measured work.",
+      "excludes": "No XP/stat math change, full accepted turn, interactive stat distribution, provider/native execution. Test-only draft remains unexecuted pending focused fixture gate.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient/Services/CharacteristicsService.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-cleanup-outcome-causal-linux",
+          "when": "Shared current publication cut evidence changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProgressionUnknown_OriginalConsumerPreservesDecisionAndStops"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-cleanup-outcome-causal-linux",
       "responsibility": "Eight original consumer publication-Unknown boundaries: engine backup and undispatched cleanup, actual player request staging, nested/final QTE normalization cleanup, browser operation/restore/postcommit cleanup. Actual current MemberPublished journal/bytes and reached post-cut continuation observations.",
       "excludes": "No provider or GM process, native Windows, full QTE web/UI qualification, progression math or whole-operation atomicity.",
