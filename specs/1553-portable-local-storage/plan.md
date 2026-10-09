@@ -1,3 +1,31 @@
+## Prepared-Shining final5 / current catalog — 2026-10-09
+
+Runtimebbf1c29f independent SOURCE/EXACT5 and causal/census integrity PASS. Matching Plan022903
+fresh integration43.09817s and unit11.9287045s,wall62.4535339,5planned/2descriptors/0executed.
+Actual023023 completes5/5PASS,2/2descriptors,15.6537964s,exit0,no skips/duplicates/timeouts,
+bothcleanup. Two real Unknown package-removal cuts now execute/pass Same(original CSP), retain
+authentic exact journal/foreign member and have zero later measured read/mutation/ordinary-lease/
+publication/recovery callbacks. Idle has one separately identified readonly finalization; helper0.
+Both known rollback controls retain exact before bytes/journal absence/same logged original cause;
+existing pure gate control passes. Input0 and all four owned-root removal assertions pass.
+
+Discovery023105 uses the matching fresh both-project outputs:507categories/11297methods-files,
+valid0executed,8.8396439s,exit0/bothcleanup. The [packet](recovery/storage-migration-prepared-shining-20261009/manifest.json)
+preserves47 artifacts/27 historical source pins (causal20/11, separate dead census2/1, green22/12,
+catalog3/3), locally verified stored/expanded/original bytes. Final independent raw/carrier gate
+pending. Dead closed cluster removal is separately source-censused5→0,51lines; no dead-code RED.
+Clear is explicitly helper-only, idle the original normalization consumer. No fabricated successful
+GM bootstrap, generation-replacement policy, native/full-gameplay or secondary-close fault proof.
+Latest actual parent GitHub-only restoration remains e5; newer saved packets are not called restored.
+
+Next bounded T062/T065 work is self-owned API close consistency: Bytes/publicCAS/DeleteWithLock/
+AppendIfCurrentSession capture direct actual CSP before original lease release using the established
+Append pattern. Source-visible secondary-close masking is not an executed double-fault RED. Proposed
+finite15: existing actual facade9, explicit release-component3, new actual conditional-append Unknown1,
+existing conditional success/stale1 and CAS conflict1. No new runtime hooks/global latch; original
+preparation/Explorer/Ready-worker/C2 and F16/F18 remain open. Browser preparation must include actual
+DirectGacha owner catch/finally cleanup, not queue helper alone. No GM prompt/schema change.
+
 ## Prepared-Shining runtime / exact5 WIP — 2026-10-09
 
 Independent and parent raw gates accept causal4 atc185: known rollback2 PASS, actual Unknown2

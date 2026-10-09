@@ -6,7 +6,7 @@ actual Unknown5 same-carrier/no measured later continuation, known rollback2, or
 replaced4 and known life failure1. Prior eight-image sets and authentic journals remain exact;
 readonly finalization distinct, no whole-transition rollback. Packet64/21 verified locally, final
 independent artifact/docs gate PASS6ee00c8b. Catalog505/11296 valid0 uses both matching fresh outputs.
-Prepared-Shining helpers, other preparation owners/Explorer/Ready-worker/C2 and F16/F18 remain open.
+Prepared-Shining bounded final5 passes atbbf; other preparation owners/Explorer/Ready-worker/C2 and F16/F18 remain open.
 
 ## Current progression outcome checkpoint — 2026-10-09
 
@@ -26,9 +26,9 @@ AppendIfCurrentSession can lose a body CSP to a secondary lease disposal fault. 
 Dispose retains release faults only. Apply the established direct-CSP-before-owned-disposal pattern
 with proportionate review; existing explicit-lease ExternalPublicationContext controls do not prove
 these self-owned double-fault paths. No global Dispose suppression or fabricated runtime RED.
-Prepared-Shining causal4 reaches2P2 genuine failures; its two-filter runtime correction is WIP; its helpers' caught generation-replacement policy remains an
+Prepared-Shining causal4 reaches2P2 genuine failures; its two-filter correction passes final5 atbbf; its helpers' caught generation-replacement policy remains an
 explicit separate qualification, not inferred from CSP cuts. Closed private three-declaration cluster
-has parent-confirmed five internal references/no live callers; 51-line deletion has before5/after0 saved census and awaits source review.
+has parent-confirmed five internal references/no live callers; 51-line deletion has independently accepted before5/after0 saved census and fresh compile; no runtime RED claim.
 
 Current Story unit passes final12 atb79, with causal2P5F preserved and independent source/raw gates. Remaining
 source follow-ups are not blocked on this fixture and are not seven-case acceptance:

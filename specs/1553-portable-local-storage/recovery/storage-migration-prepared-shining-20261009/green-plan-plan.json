@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "portable-prepared-shining-outcome-linux",
+    "portable-prepared-shining-outcome-neighbor"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "bbf1c29f35203e842bdb369869e9da9902af0755",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 62.1957896,
+  "Descriptors": [
+    {
+      "Name": "portable-prepared-shining-outcome-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-prepared-shining-outcome-linux",
+      "Categories": [
+        "portable-prepared-shining-outcome-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparedShiningCleanup_OriginalBoundaryPreservesPublicationDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparedShiningCleanup_OriginalBoundaryPreservesPublicationDecision",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-prepared-shining-outcome-neighbor-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-prepared-shining-outcome-neighbor",
+      "Categories": [
+        "portable-prepared-shining-outcome-neighbor"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ShiningAbodeStateTests.OpenGates_ThenPreparePackage_BuildsFrozenSnapshot",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ShiningAbodeStateTests.OpenGates_ThenPreparePackage_BuildsFrozenSnapshot",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
