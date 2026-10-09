@@ -1,3 +1,24 @@
+## F18 Effects14 — complete13PASS/1fixture failure, 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT14 PASSefd66468. Fresh integration Plan13315014/1,
+0execution45.0726466s. Actual133612 completes13PASS/1FAIL18.0303399s,14/14cases/1descriptor,
+bothcleanup,0skip/duplicate/timeout. Exact category portable-effect-original-rollback-publication,
+actual -NoBuild after fresh PlanOnly. Twelve reached MemberPublished cut1 cases pass,
+and genuine Committed post-check+command-consumption case passes;13 actual original
+engine rollbacks preserve raw baseline/absence/diagnostic/generation and no active journal.
+All28emitted roots removed. [Packet](recovery/storage-migration-known-rollback-20261009/manifest.json)
+now128artifacts/originals94pins verified; raw classification review pending.
+
+SpiritualConflict owner row fails its original raw-validation prerequisite BEFORE probe
+arming: spiritual_source_input_invalid (source actor lacks exact original realm profile),
+then source_snapshot_binding_mismatch. Existing seed materializes player_soul while its
+opposition guardian_condition_source has no persistent profile. This is fixture/admission
+failure, not a reached publication or rollback defect. Do not change runtime or bypass
+validation. Diagnose current coherent profile/quartet seed; isolate that one row as a
+separate Fact/owner for continuation, preserving original source semantics and13 passing
+obligations without replay. Full historical14 result stays recorded. B2–B5 remain paused;
+this is storage-fixture current admission, not spiritual gameplay completion.
+
 ## F18 Effects14 — fixture WIP, 2026-10-09
 
 Four original methods: Player7/Owner5/Pending1/FocusedSkill1. Thirteen known-rollback

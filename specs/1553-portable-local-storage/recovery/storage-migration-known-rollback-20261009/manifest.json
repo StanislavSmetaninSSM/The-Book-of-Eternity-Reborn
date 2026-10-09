@@ -705,5 +705,478 @@
         "sha256": "936d23bce661782bd2d50dc0658313255628c935a62d4245ff07e5bb9a3a0259"
       }
     ]
+  },
+  "effectsInitial14": {
+    "source": "efd664687f85a40b38b37eb1d1942cbc5eef4f4f",
+    "artifacts": [
+      {
+        "path": "effectsInitial14-20261009-133150-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-133150-916-357766-23c5e38485954a52974026ace40694bc-categories/plan.json",
+        "sha256": "8c504735a8ae57e7a7856a59bc0e2dcf5cf8c21b056593ebcedf5cd423a22903",
+        "originalSha256": "8c504735a8ae57e7a7856a59bc0e2dcf5cf8c21b056593ebcedf5cd423a22903"
+      },
+      {
+        "path": "effectsInitial14-20261009-133150-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-133150-916-357766-23c5e38485954a52974026ace40694bc-categories/summary.json",
+        "sha256": "ecc57a5006693a1bdc501587dd0c6212996130c189faebe0a8a0ca7c7a6289dc",
+        "originalSha256": "ecc57a5006693a1bdc501587dd0c6212996130c189faebe0a8a0ca7c7a6289dc"
+      },
+      {
+        "path": "effectsInitial14-20261009-133150-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-133150-916-357766-23c5e38485954a52974026ace40694bc-categories/Build-integration.log",
+        "sha256": "3f56d049c097e55dce53b2dbe0724fead43d2486a45563039c6427dd82a7cf1f",
+        "originalSha256": "a4677c92dd4495a5786a33b5d1f6a3e44ead54d967fa8a3ffbe8b44b4901ed1b"
+      },
+      {
+        "path": "effectsInitial14-20261009-133150-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-133150-916-357766-23c5e38485954a52974026ace40694bc-categories/dotnet-test.log",
+        "sha256": "b4d7088da93a8f17679c3844c375797b93dc26e60bc4a4a8750bd30b627184c8",
+        "originalSha256": "bcfd27fca2393e12eb33c619010cea7126199146b4ce30000e778d00a1a50acb"
+      },
+      {
+        "path": "effectsInitial14-20261009-133612-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-133612-760-358438-268ae590e3e14010a55555af486bed6c-categories/plan.json",
+        "sha256": "39eb96312e019bd425de2db83133526f1e2cb9d87e95970e22ef858e33519902",
+        "originalSha256": "39eb96312e019bd425de2db83133526f1e2cb9d87e95970e22ef858e33519902"
+      },
+      {
+        "path": "effectsInitial14-20261009-133612-portable-effect-original-rollback-publication-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-133612-760-358438-268ae590e3e14010a55555af486bed6c-categories/portable-effect-original-rollback-publication-integration-001.trx",
+        "sha256": "449a8795a71093c2651650387fe1b53b1de0b85d03de2df88615e31778f5f479",
+        "originalSha256": "b366174ea3e0ce173b49fbe3a48b1874fd76b6d6e2fe8d6b3c9ff1254fd37671"
+      },
+      {
+        "path": "effectsInitial14-20261009-133612-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-133612-760-358438-268ae590e3e14010a55555af486bed6c-categories/summary.json",
+        "sha256": "b1251e27682fb96bfbc61370448a3f5ce77938611d1cfdfa47e74f931803ac82",
+        "originalSha256": "b1251e27682fb96bfbc61370448a3f5ce77938611d1cfdfa47e74f931803ac82"
+      },
+      {
+        "path": "effectsInitial14-20261009-133612-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-133612-760-358438-268ae590e3e14010a55555af486bed6c-categories/dotnet-test.log",
+        "sha256": "a105dbe636896a81262fc6f9121fa11f03bcc874b3d99dc3fc4fe37381c95901",
+        "originalSha256": "788abae8a36252b8b3e75b0a044940a65d9da50ca823a461d63caf469b4f4348"
+      },
+      {
+        "path": "effectsInitial14-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/emitted-roots-after-run.json",
+        "sha256": "abc4e05ff7a4f74fb2ab31ad8dd04f3f79b9a492bb871fbdb3db9f017aa5f340",
+        "originalSha256": "abc4e05ff7a4f74fb2ab31ad8dd04f3f79b9a492bb871fbdb3db9f017aa5f340"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-13-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-13-3.json",
+        "sha256": "026305e8854fee7a746ee7a17ef2a4c6c5c64d7283c414c982c80a3fbc12b55f",
+        "originalSha256": "026305e8854fee7a746ee7a17ef2a4c6c5c64d7283c414c982c80a3fbc12b55f"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-13-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-13-2.json",
+        "sha256": "1e53d4cf905047c1a18dda66ccf13fa98f12012c56e5182f87aa2a0dbe77d034",
+        "originalSha256": "1e53d4cf905047c1a18dda66ccf13fa98f12012c56e5182f87aa2a0dbe77d034"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-13-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-13-1.json",
+        "sha256": "ad6235c31f0b6a261ccae4d6e7a0bf8bbbc6ae6741c1467241a5c84baa765167",
+        "originalSha256": "46a85cc4290e2c855345c035efa3b21536e228c7652ae3f5ad5b29a2a2c3c8f1"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-13-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-13-0.json",
+        "sha256": "2ff4683fc6a45041193a748e001c574badbdad4863302af2f84d1972f130f9b6",
+        "originalSha256": "39d2301b7b672e4ffc1e7391ceaec66e0ead0ae3dcfbe6ab5d1b13308d9312af"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-12-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-12-3.json",
+        "sha256": "d713d8038985ff9ffa1a1acc61622513421bcc27d8cf6af5222735756b3ba348",
+        "originalSha256": "d713d8038985ff9ffa1a1acc61622513421bcc27d8cf6af5222735756b3ba348"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-12-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-12-2.json",
+        "sha256": "43dd1cedbc7716cd1577be4204c24f7c08eb94dff7718d004eb366ff9c11b461",
+        "originalSha256": "43dd1cedbc7716cd1577be4204c24f7c08eb94dff7718d004eb366ff9c11b461"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-12-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-12-1.json",
+        "sha256": "1ff5036bf107af5b2e5985e28f3b8a9730bbb68867eedf2e07b30527acfac440",
+        "originalSha256": "971bdfd474e09177388b177ac35a78793429d74895a90b84de5cd703bb7cdab0"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-12-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-12-0.json",
+        "sha256": "35770658b5ec26f340f379d24beb663d9e16a4dde4e919933e2671234ba8cdb7",
+        "originalSha256": "f178b40d5a5d83854905661f6920fe7ce99200de2e5b4699f3f862daf8afc037"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-11-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-11-3.json",
+        "sha256": "dbf280e718da606f22e0455130dce5f53eb4d2d31f68ae999e30555ca020d2fa",
+        "originalSha256": "dbf280e718da606f22e0455130dce5f53eb4d2d31f68ae999e30555ca020d2fa"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-11-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-11-2.json",
+        "sha256": "f320c2d0ef0eb87756ecf10bb4bbabda7a6350f3c91e324e48ad3fc9076e3b0e",
+        "originalSha256": "f320c2d0ef0eb87756ecf10bb4bbabda7a6350f3c91e324e48ad3fc9076e3b0e"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-11-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-11-1.json",
+        "sha256": "8ca86a56cfe63d0d266af3109d3e729787e7e49e03e382bb658007ee5ed7bad6",
+        "originalSha256": "b14adbeb044f787cf421f14d621fa6d07087fdcef518e092f314c3f221af5eb5"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-11-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-11-0.json",
+        "sha256": "3521e75ac0f48a3e2b2778be1b3d450d9511aff26d896fd5fdb96c765595376a",
+        "originalSha256": "2919e1bd05030a54984cf40b80dd61df474d595c4c96efd184914aa68bc5684b"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-10-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-10-3.json",
+        "sha256": "d6a3d61405216672dd65f5c068a1eb205391cce8fc8a01963dcf547bf5cfb182",
+        "originalSha256": "d6a3d61405216672dd65f5c068a1eb205391cce8fc8a01963dcf547bf5cfb182"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-10-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-10-2.json",
+        "sha256": "7cc0c05dad57ce6a875638a011365794d5a2a320e85208cb7a9c35272db37f58",
+        "originalSha256": "7cc0c05dad57ce6a875638a011365794d5a2a320e85208cb7a9c35272db37f58"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-10-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-10-1.json",
+        "sha256": "5e914ca51ba127b3246a72a5ffce5dcc24590014d2368819acc5497ac80d0a02",
+        "originalSha256": "e381a54eabf9b0aad8f0800d351e779a4b4795740f7c9edbb33ed0e3d89db690"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-10-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-10-0.json",
+        "sha256": "f54df469f53bc4a7728cf6052da45882bc1fd94d9f4f64afcde50a66340a4d99",
+        "originalSha256": "54fc76dae164293dd556ae29460665c9389c9b1e190292e3625614b6fd3a621a"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-9-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-9-3.json",
+        "sha256": "9f487879cb93f5bb8f3afd3c9c552ad4fc1b9ab8dac523d3dd19556e30fd1eff",
+        "originalSha256": "9f487879cb93f5bb8f3afd3c9c552ad4fc1b9ab8dac523d3dd19556e30fd1eff"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-9-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-9-2.json",
+        "sha256": "34c2a8f3958b2f13d3e22e1019f20450cae2b6543b316901470626af9c204aa3",
+        "originalSha256": "34c2a8f3958b2f13d3e22e1019f20450cae2b6543b316901470626af9c204aa3"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-9-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-9-1.json",
+        "sha256": "930acdb38f49f5375b466fd3ad43541407a9df117f3086a6014619eb604422e3",
+        "originalSha256": "52d271a3edc1d8d541a9bfc4da309ddaf19b2e2e4589ad086db217bc44d39224"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-9-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-9-0.json",
+        "sha256": "c6ebc4b92dcfa7b072ed8cbc31f11d6326e702cc872ce30b3164cfe471c2548c",
+        "originalSha256": "430628db7c688f4d436cbafb2808705919cd1749e07c19b9949edfd47aec5db1"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-8-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-8-3.json",
+        "sha256": "3e397ff752db9ba77d513f138c329ded7f739efbf0113d9e57b6a215264bb870",
+        "originalSha256": "3e397ff752db9ba77d513f138c329ded7f739efbf0113d9e57b6a215264bb870"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-8-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-8-2.json",
+        "sha256": "05ba1c406ee8b720a9303e911c851950f649e1cfd079b2f37a2cecba1644163a",
+        "originalSha256": "05ba1c406ee8b720a9303e911c851950f649e1cfd079b2f37a2cecba1644163a"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-8-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-8-1.json",
+        "sha256": "8ba5060571947f5417144b825aee03a06ede7317e688ff282f56e504b7238ab0",
+        "originalSha256": "77b31703b4b684784b5c15a8db32dd4cee0970bad6a64d19d5170a5258fa8897"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-8-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-8-0.json",
+        "sha256": "0e13344226cd2ce24f3f85b423e98d3a3a88e707fde522a93b9247257151866f",
+        "originalSha256": "28b49b2ab4746c6ff2a66d2d69d16ec138940c29b1337965acb578a890b7c313"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-7-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-7-3.json",
+        "sha256": "3a9d0a16ee02e2a066c5abe42f80e31511238aaa18bc10ff337fe1b9415a5f0b",
+        "originalSha256": "3a9d0a16ee02e2a066c5abe42f80e31511238aaa18bc10ff337fe1b9415a5f0b"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-7-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-7-2.json",
+        "sha256": "5475527e80716e8eff8dcba54b6e1c668e1f7e8448ff58413af809c9690055af",
+        "originalSha256": "5475527e80716e8eff8dcba54b6e1c668e1f7e8448ff58413af809c9690055af"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-7-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-7-1.json",
+        "sha256": "cb6975fac14d65f291df6fc8d6c34ffbdc06bd4e5e47597eec0e332e70d4d01e",
+        "originalSha256": "30eb9ccb5afecb6b6a54b030486517d801b379946f918e68963b8f1974a07c63"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-7-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-7-0.json",
+        "sha256": "5a7e11825d2e88a896b05d57916515d533957d6e88fc21e81cd17365cc13d15a",
+        "originalSha256": "55b7abde27363ccc08204008067bb8ebe01bb9a100b5190fcd42ae9f28694d75"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-6-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-6-3.json",
+        "sha256": "ed365942009e456f4ff7b15e316e07ed464ffde631ee8c0d8c7f4d86a0f6100d",
+        "originalSha256": "ed365942009e456f4ff7b15e316e07ed464ffde631ee8c0d8c7f4d86a0f6100d"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-6-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-6-2.json",
+        "sha256": "c965fd02bfe0138fad6c36b62d118709225d927963980262ae4cbc60c98dc2e4",
+        "originalSha256": "c965fd02bfe0138fad6c36b62d118709225d927963980262ae4cbc60c98dc2e4"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-6-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-6-1.json",
+        "sha256": "d9d2c3a49fc059bf41608f2ee563f621dfa076fa1790c7974d6b1beee5bf8d15",
+        "originalSha256": "d62d1767e100c0f2632ba9b4a0b81ce23f01d8949976aeb3928890b0f3168d06"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-6-0.json",
+        "sha256": "f660b655ef4766c90023c10b05d4902e2bd079f3e649850f01af55f5c4a6d62b",
+        "originalSha256": "36f77d2b7f7a58cd8448230b72a9ab9c01c1377bb19af9e145524683d98ea920"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-5-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-5-3.json",
+        "sha256": "ddabfee081aae032c901e5f75e8d6ec3ba7b06aaa300e268aa50db5dbb4a9768",
+        "originalSha256": "ddabfee081aae032c901e5f75e8d6ec3ba7b06aaa300e268aa50db5dbb4a9768"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-5-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-5-2.json",
+        "sha256": "879f82d1f188cc0a73bf3fcf14392534a731cb9873022cfb5bde114f014be009",
+        "originalSha256": "879f82d1f188cc0a73bf3fcf14392534a731cb9873022cfb5bde114f014be009"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-5-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-5-1.json",
+        "sha256": "3ffd7e913fb18aefbe14c4d1fde00b3dceb1a228b0eefabaabd68622c9c220d8",
+        "originalSha256": "5b41c4051c26e0df01108e5d4c230038f230a9c46f723a09bcf9d68936c75090"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-5-0.json",
+        "sha256": "f2d9194df492bfd67749dd47a0bef930c4e9ff4fdf28845f4a8e4019fd1304eb",
+        "originalSha256": "2285edd305f4ae96328847c8410ce485f47de9de4efb2c587a6897968579d598"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-4-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-4-3.json",
+        "sha256": "197e047efdd774c754774157c87f0ab72b4f874f2b0e25fe8500cf7f0b1674e9",
+        "originalSha256": "197e047efdd774c754774157c87f0ab72b4f874f2b0e25fe8500cf7f0b1674e9"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-4-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-4-2.json",
+        "sha256": "a34a1105a66953281aeb3ceb416ed5a0dc7e18da4ae7cab7e40d4241ea60f92f",
+        "originalSha256": "a34a1105a66953281aeb3ceb416ed5a0dc7e18da4ae7cab7e40d4241ea60f92f"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-4-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-4-1.json",
+        "sha256": "a199aae45fb86767273a9b26812a34204d3a03d6bbdf7b11e0815c0e15752c9a",
+        "originalSha256": "4c5f57ab3c3c7e09f1183df2658b8fd5a9d503d76eb882d1f15a357ee5e14956"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-4-0.json",
+        "sha256": "f17afcb32448fe3e8678287593725b71bcd12b913a2e278304123b7bc83e8ca2",
+        "originalSha256": "d01065b6fd17dca579071f2990d9e0609474ccdd34ac11f2a4a0a202af4f05af"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-3-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-3-3.json",
+        "sha256": "3996333142ea30686c19986df8a4169c407a6a062fbed672b99baadfc22713d2",
+        "originalSha256": "3996333142ea30686c19986df8a4169c407a6a062fbed672b99baadfc22713d2"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-3-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-3-2.json",
+        "sha256": "725d4ea9e2a9af7a05cf2536515bd51f82ca7ac45c7683de32b039cf01fb77b3",
+        "originalSha256": "725d4ea9e2a9af7a05cf2536515bd51f82ca7ac45c7683de32b039cf01fb77b3"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-3-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-3-1.json",
+        "sha256": "9b614e826db462da8db99b6c5385c204a4cc4f96537c941aaaebb483896ed219",
+        "originalSha256": "d1e473ca747f22c748376c264e3e3cd2d6ab231e6ac0042c3d7936586538e9f7"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-3-0.json",
+        "sha256": "014d7a96e84bcf1e859d3d4a013e483288fe050cf0a7a56707e88227d9a5385c",
+        "originalSha256": "ba6191bf2850bd2176279f215676a21c4bc5f8121ddbef092c7893a8ad0517d3"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-2-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-2-3.json",
+        "sha256": "521330abe5ccda1dc74c172dd1b2ad79087e2fc1e18051c19571137ecff81799",
+        "originalSha256": "521330abe5ccda1dc74c172dd1b2ad79087e2fc1e18051c19571137ecff81799"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-2-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-2-2.json",
+        "sha256": "6becb6e742023e4b6004dd64e3f184f81d15e7394ecb64cc39e922866f232e1e",
+        "originalSha256": "6becb6e742023e4b6004dd64e3f184f81d15e7394ecb64cc39e922866f232e1e"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-2-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-2-1.json",
+        "sha256": "b10fdf97b9fb6741215e10a023dd5306120faf91d48e4d4cd0844aa19fa08d47",
+        "originalSha256": "ae1eab13dd240ac82c19d75e038c6f2f1a93fb7116b67547b8443228edf52f37"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-2-0.json",
+        "sha256": "262a6aebb22b67ea36473087592dacbb0b025f559f02c0d627198c6cff2c2841",
+        "originalSha256": "1dad7f5d3303fcf49007bf7840cd1d9a8af00a24c4186294ae2275d52aab0227"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-1-3.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-1-3.json",
+        "sha256": "585cd4fb30ed66ad83d65857608867536c1324f3a8a33c5ac26d686d7d9005ea",
+        "originalSha256": "585cd4fb30ed66ad83d65857608867536c1324f3a8a33c5ac26d686d7d9005ea"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-1-2.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-1-2.json",
+        "sha256": "6e29403a125aeb3d1dddb88500ec88e60b198809e94b0275b4b799ebf22a358b",
+        "originalSha256": "6e29403a125aeb3d1dddb88500ec88e60b198809e94b0275b4b799ebf22a358b"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-1-1.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-1-1.json",
+        "sha256": "3f21b813c398dfa869d5041b55c98e68bff97be62329b6631d46f8e040ee826e",
+        "originalSha256": "4e9d02062c6f6fb1dc6e05a2997cda18e8ce86470ecd04e2f92baa992b91f5a3"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-1-0.json",
+        "sha256": "3d15ac2a9f02b8d10d64b92d6e8057b66c57441cef05c5f232d67c905370cf49",
+        "originalSha256": "125e7e34a8da56ba6c1c003fb4e76e9048d92e79f29148608f1b26981a26cc88"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-0-1.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-0-1.json",
+        "sha256": "e68b37673545c63f71f16577a7fba9c6175e9f610b19fa3501fd392f91962485",
+        "originalSha256": "e68b37673545c63f71f16577a7fba9c6175e9f610b19fa3501fd392f91962485"
+      },
+      {
+        "path": "effectsInitial14-row-portable-effect-original-rollback-publication-integration-001-0-0.json",
+        "source": "/tmp/boe-known-rollback-effectsInitial14/portable-effect-original-rollback-publication-integration-001-0-0.json",
+        "sha256": "f0db75f47834761d4bcc03f8fee15455aadf9984aee4aaf1ee4560c45f1f5cf5",
+        "originalSha256": "f0db75f47834761d4bcc03f8fee15455aadf9984aee4aaf1ee4560c45f1f5cf5"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs",
+        "sha256": "61f9416150ccff954902eb878fe1975ebdec6da9eaecd30393a35bd28aa05f02"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GuardianCorrectionServiceTests.cs",
+        "sha256": "f36a47f4e68a21455992a328e3c121118e649eed22ae4b2fec67feb1a5c54434"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/AfterlifeActorMaterializationTestFixture.cs",
+        "sha256": "5e8f4acef14095e6674c77dd7391080ed576582e9e9551a9059ae38568255d14"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+        "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+        "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+        "sha256": "cdb09fddfbcd8b1b0140a22e4baa23095be0ed2bdc6defb6b5cb676b5b2e564e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+        "sha256": "f1f8b1cfbc1a1e972506848cb3f7f7bf5f8f496fc28a8de2d2da7f72f2759b69"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "9d522b3a3636286f3cb4672b419177bebcc164396cde8c0b71c89e9d89139091"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "742208ec408b24e3da12fb9405228dd616918894da1d2b233b72cb325d70c38c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/EffectMaterializationLifecycleTests.cs",
+        "sha256": "020fda69845992338074c59ca17133d9dadfdb352086ceb6862e9f2bc940372f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs",
+        "sha256": "108d4c43a947fbaa55d27cb6f6f53c6a7f5492c4cfc8168f713da74c2e3a94b1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/EffectPublicationFailureProbe.cs",
+        "sha256": "d1d5f2fe9ef1756a34ddd7070d0328e0b10c642288e763bba360a9c4456dd389"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/EffectMaterializationTestContext.cs",
+        "sha256": "60c84be6d45efe462e65df0684512636ca89c4f909323f4f87a7ee8e7d0ef596"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs",
+        "sha256": "de89853995e04e557530ceafb0d49badb78d0df1a16823092a2aa14a72acd37f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+        "sha256": "936d23bce661782bd2d50dc0658313255628c935a62d4245ff07e5bb9a3a0259"
+      }
+    ]
   }
 }
