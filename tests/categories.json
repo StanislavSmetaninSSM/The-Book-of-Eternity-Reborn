@@ -6,7 +6,7 @@
       "responsibility": "Two original /моды Explorer panels: detail loop and player-facing choices after canonical listing admission, preserving hidden-error checks and exact manual-opening path contract.",
       "excludes": "Actual desktop launch, complete Explorer UI, settings mutation, manifest atomicity and native qualification.",
       "changeHints": [
-        "BookOfEternityClient/Exploration/ExplorerMode.MetaStoryAndStatus.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
         "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs"
       ],
       "related": [],

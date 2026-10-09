@@ -10,8 +10,9 @@ selectors to explicit legacy-physical-publication-windows; native execution rema
 Remove only dead MortalLocation failure fields/property/Arm/callback, after all callers
 migrated to actual LocalPublicationObserver. No production mechanism removed.
 
-Separate exact portable-mods-original-ui2 retains both original /моды Facts unchanged
-for initial diagnosis. Existing accepted listings15 did not execute the outdated whole-
+Separate exact portable-mods-original-ui2 retains both original /моды scenarios and
+assertions for initial diagnosis; adds raw rendered/choice/path evidence and strict
+owned-root cleanup only. Existing accepted listings15 did not execute the outdated whole-
 output no-game_session assertion. Current UI intentionally prints exact manual-opening
 path. Capture original result before narrowly correcting the oracle; preserve player
 choices and technical-leak/hidden-error checks. No runtime/B2/GM/prompt change.
