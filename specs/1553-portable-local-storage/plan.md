@@ -1,3 +1,15 @@
+## F16 preparation correction — WIP, 2026-10-09
+
+Installed source/exact41 independent AstraXHigh PASSa5052072. Initial freshPlan171347
+failsintegrationcompilation CS0246 at SaveArchiveExactListingTests:54 missingSaveInfo
+Models namespace:97.0875912s,0planned/0discovery/0execution,bothcleanup. This is NOT
+causalRED. [ZIP packet](recovery/storage-migration-archive-listing-20261009/manifest.json)
+retains original failedpreparation/sourcepins. Addonly missingModels using; runtime
+unchanged5a, assertions/categorycounts unchanged. Next narrow independent correction
+check, freshboth-project Plan41, originalunit15 BEFORE newSigned22 (separate invocations
+to guaranteecontrolscomplete), separateZIP4. No NoBuild against stalehelper/testbinaries.
+Signed/ZIP raw causal evidence and runtimecorrections remain unrun; T061–T065 unchecked.
+
 ## F16 signed/ZIP original test-first units — WIP, 2026-10-09
 
 Source #1553,T063/T065; basecd22bdf0. Original owned-close final independent

@@ -1,0 +1,70 @@
+{
+  "scope": "Original ZIP list and autosave retention exact admitted host-pattern top-level selected cohort. Selected-link refusal, original metadata sorting, real autosave commitment and follow-up, unselected links preserved. No full Load/native physical fallback/native Windows/gameplay qualification.",
+  "preparation": {
+    "source": "a505207248140dc2888db351d113832a1c108872",
+    "artifacts": [
+      {
+        "path": "preparation-20261009-171347-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-171347-814-396467-23cc07a36c2b420493099063fed9ad87-categories/summary.json",
+        "sha256": "cf17cc526c7534a906367415983a02822d636f957ae67cbc65efe4f9c5dd0539",
+        "originalSha256": "cf17cc526c7534a906367415983a02822d636f957ae67cbc65efe4f9c5dd0539"
+      },
+      {
+        "path": "preparation-20261009-171347-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-171347-814-396467-23cc07a36c2b420493099063fed9ad87-categories/dotnet-test.log",
+        "sha256": "e5d6014a43e18eee402fbc4b9d84d87ca049ad626c5fd16f32f5dce45170802c",
+        "originalSha256": "d644cbd4c9cecc982e288dc76c17000e0b997a824c0e9f57da89cad7eb2b5864"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/SaveArchiveExactListingTests.cs",
+        "sha256": "0757dd670bec25f6e23282c41b959685098378e1a2f2b1c8b6589fd663827c52"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/PortableSaveFixture.cs",
+        "sha256": "7c05b769b4342ccad9692599eab0f37d35e4dea4077631ab213a62680a81e2b6"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+        "sha256": "c8ef404d4755c2419e5d44b60683cc555cc714807edab5dca89f3f1d1d26f077"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+        "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "5c549aac5127ada3b2dd1e3ad3f332754ba8a626484b2dfdcbd372dc792798a6"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "a97a457256a092745d1a60d45f50972eb70d953fd4b106f7d01d2179ead83870"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+        "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "d3d8701c113d60e1046d9d4e3c4e83b6e5d099f62b629d4e990e4fde9f8ff519"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "da21c7557d6efb4861473f4110625dd81723dd02ff43f6f478cc4a39bc8cbbe2"
+      }
+    ]
+  }
+}
