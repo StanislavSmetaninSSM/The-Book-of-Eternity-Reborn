@@ -75,6 +75,17 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
         }
         else
         { Directory.CreateDirectory(outputDirectory); File.WriteAllBytes(outputImage, imageBytes); }
+        // Original lookup/scene selection is top-level only. Ignored descendants
+        // must not become authority dependencies merely because admission is added.
+        var ignoredImage = Path.Combine(Path.GetDirectoryName(imagePath)!, "ignored", "link.png");
+        var ignoredOutput = Path.Combine(outputDirectory, "ignored", "link.png");
+        if (IsDebtMode(mode) || mode == "browser_existing")
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(ignoredImage)!);
+            File.CreateSymbolicLink(ignoredImage, outsideImage);
+            Directory.CreateDirectory(Path.GetDirectoryName(ignoredOutput)!);
+            File.CreateSymbolicLink(ignoredOutput, outsideImage);
+        }
         File.SetLastWriteTimeUtc(mode == "scene_output_link" ? outsideImage : outputImage, DateTime.UtcNow);
         Exception? seedFailure = null;
         var unknown = mode.EndsWith("_unknown", StringComparison.Ordinal) || mode == "external_prompt";
@@ -97,13 +108,22 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
         var journalBefore = CleanupPublicationCut.ReadOptional(seedCut.JournalPath);
         var weatherBefore = CleanupPublicationCut.ReadOptional(weatherPath);
         var admissions = 0;
+        var ordinaryAdmissions = 0;
+        var closingAdmissions = 0;
+        var closing = false;
         var sourceReads = new List<string>();
         var recoveryBeforeSourceRead = new List<bool>();
         var recovered = new List<string>();
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
-                BeforeCanonicalWriteLockOpenAsync = () => { admissions++; return Task.CompletedTask; },
+                BeforeCanonicalWriteLockOpenAsync = () =>
+                {
+                    admissions++;
+                    if (closing) { closingAdmissions++; closing = false; } else ordinaryAdmissions++;
+                    return Task.CompletedTask;
+                },
+                SessionOperationClosingAsync = () => { Assert.False(closing); closing = true; return Task.CompletedTask; },
                 BeforeCanonicalReadOpenAsync = path =>
                 {
                     sourceReads.Add(path);
@@ -165,15 +185,23 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
         {
             mode, root, relative, imagePath, outputImage, outsideImage, exportPath, imageBytes,
             failure = failure?.ToString(), seedFailure = seedFailure?.ToString(), selected, exported, exportedBytes, browser, stages,
-            admissions, sourceReads, recoveryBeforeSourceRead, recovered, requests, admissionsAtAssociation,
+            admissions, ordinaryAdmissions, closingAdmissions, closing, sourceReads, recoveryBeforeSourceRead, recovered, requests, admissionsAtAssociation,
             recoveredAtAssociation, releasedBeforeAssociation, debtCuts, journalBefore, journalAfter, weatherBefore, weatherAfter,
             originalGeneration, generationAfter = File.ReadAllBytes(files.SessionGenerationPath),
             imageAfter = File.ReadAllBytes(imagePath), outsideAfter = File.ReadAllBytes(outsideImage),
             linkTarget = mode == "lookup_link" ? new FileInfo(imagePath).LinkTarget : mode == "scene_output_link" ? new DirectoryInfo(outputDirectory).LinkTarget : null,
+            ignoredImageLink = File.Exists(ignoredImage) ? new FileInfo(ignoredImage).LinkTarget : null,
+            ignoredOutputLink = File.Exists(ignoredOutput) ? new FileInfo(ignoredOutput).LinkTarget : null,
             console = consoleText.ToString(), SeedCut = seedCut.Evidence()
         }));
         Assert.Equal(originalGeneration, File.ReadAllBytes(files.SessionGenerationPath));
         Assert.Equal(imageBytes, File.ReadAllBytes(imagePath)); Assert.Equal(imageBytes, File.ReadAllBytes(outsideImage));
+        Assert.False(closing);
+        if (IsDebtMode(mode) || mode == "browser_existing")
+        {
+            Assert.Equal(outsideImage, new FileInfo(ignoredImage).LinkTarget);
+            Assert.Equal(outsideImage, new FileInfo(ignoredOutput).LinkTarget);
+        }
         if (unknown && mode != "external_prompt")
         {
             Assert.IsType<InvalidDataException>(failure); Assert.Equal(1, admissions);
@@ -199,7 +227,8 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
             else if (mode == "browser_existing")
             {
                 Assert.True(browser!.Success, browser.ErrorMessage); Assert.NotNull(browser.MediaId); Assert.StartsWith("/api/media/", browser.Url);
-                Assert.Equal(0, stages); Assert.Equal(2, admissions); Assert.Empty(requests);
+                Assert.Equal(0, stages); Assert.Equal(3, admissions); Assert.Equal(2, ordinaryAdmissions);
+                Assert.Equal(1, closingAdmissions); Assert.Empty(requests);
             }
             else
             {
@@ -219,4 +248,6 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
             }
         }
     }
+
+    private static bool IsDebtMode(string mode) => mode.EndsWith("_debt", StringComparison.Ordinal);
 }
