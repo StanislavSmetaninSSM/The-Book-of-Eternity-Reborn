@@ -1,3 +1,44 @@
+## Preparation original consumers / test-only11 WIP — 2026-10-09
+
+Owned-close final15 raw/carrier PASS f9f7d8a1 (25 artifacts/11 pins); runtimea88d, catalog508/11298
+valid0 remain source-era receipts. Next independent design accepted eleven real publisher cuts:
+- Original engine baseline initializes each of four missing afterlife roots separately. Seed other
+  three valid default roots + afterlife soul, select exact missing member0; do not infer reach.
+- Original baseline authority publication after actual committed manifest and exact copied hashes.
+- Original pre-turn backup second publication after observed first backup commit; separate known
+  second capture refusal followed by actual first-backup deletion Unknown, retaining known cause.
+- Original LivePrepare final request after authentic manifest/authority commits and exact correlation.
+- Original AtomicCore StageLocal second backup after actual first commit, before callback. Its original
+  boundary returns explicit Uncertain; no fabricated outward CSP exception is required.
+- Actual DirectGacha Pull request publication after prepaid soul/signed authority/staged original soul.
+- Same real Pull with ordered known request refusal, first queue manifest-delete refusal, then owner's
+  second manifest-delete actual Unknown. This distinct cleanup contour must stop the finally backup
+  deletion and retain exact second known failure as diagnostic; earlier known request recorded separately.
+
+All actual cuts use common original publisher metadata and captured first CSP, raw journal/bytes,
+prior committed images, no-later reached read/mutation/nonclosing-lease/publication/recovery counters.
+Readonly original finalization is separate. No original lease is acquired from an observer. Known
+preflight refusals are bounded fixture phase selectors, not fabricated CSP. No attempt is labeled a
+completed recovery merely from zero recovery observer callbacks. Raw evidence precedes assertions;
+all fixtures own cleanup and no-input/no-provider boundaries. Shared BrowserDirectGacha fixture adds
+null-default observation forwarding only, leaving existing callbacks/production behavior unchanged.
+
+Production is unchanged. Exact11 =engine7 +Live1 +Stage1 +DirectGacha2, one bounded integration
+category. Source/fixture/selection gate precedes fresh Plan11/causal11; no build/execution yet.
+Known controls for final runtime selection will protect exact snapshot/capture failure, LivePrepare
+linked/current-generation replacement, browser known queue rollback and consumed deletion debt.
+Runtime design remains same actual CSP before cleanup and owned release; StageLocal must always
+release in-memory Browser access even when retaining canonical evidence. No whole-cohort transaction,
+global latch, GM schema/math/prompt change, native or secondary-close execution claim.
+
+Further source-only findings (not this eleven's acceptance): ClearCurrentWorldLore raw physical delete
+needs ordinary sequential cohort migration; UpdateSoulStateRealm and MainMenu incarnation compensation
+catches must preserve first CSP and prior committed realm. Memory-legacy apply/canonical audit/finalize,
+engine Shining-blessing wrapper and rejected-rollback bookkeeping catches also need their own actual
+continuation units. Parse-only catches and in-memory-only flag clearing are not automatically defects.
+RunBestEffort bookkeeping's reviewed callers write canonical reports/delete controls; known failure→
+diagnostic Unknown is a distinct future contour, not covered by primary restoration Unknown alone.
+
 ## Owned API close consistency final15 — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT15 PASS a88d70f5. Matching Plan023543 freshly builds integration

@@ -1,7 +1,7 @@
 ## Current accepted / open map — 2026-10-09
 
 Latest tested source a88d70f5: owned API close consistency15/15 PASS; fresh matching both-project
-catalog508/11298 valid0. Final packet25/11 awaits independent carrier gate. This is actual publication
+catalog508/11298 valid0. Final packet25/11 independent carrier PASSf9f7d8a1. This is actual publication
 plus explicit release-component evidence, not injected self-owned double-fault/native qualification.
 Prepared-Shining bounded5 atbbf/carrier1265 independently accepted47/27; Story12 atb79/carrier6ee
 accepted64/21; progression5 at2a372/carrier7f accepted48/25; Prepared remote8 at7cf/carrierc7 accepted59/26.
@@ -35,6 +35,15 @@ carrier review PASS7f706089. Current catalog503/11293 valid0 at2a372 after fresh
 not runtime replay. No full-turn/native/secondary-close guarantee or full migration closure.
 
 ## Current remaining source-only classification — 2026-10-09
+
+Additional connected source findings, not executed defects: ClearCurrentWorldLore raw physical
+per-file deletion bypasses the common publisher despite owned lease; realm update and MainMenu
+incarnation catches can convert/compensate actual CSP. Memory-legacy apply/canonical application
+audit/finalize, engine Shining-blessing wrapper, rejected rollback and canonical best-effort bookkeeping
+need separate original consumer qualification. Shared bookkeeping callers include diagnostic report
+writes plus subsequent transient/control deletions; a known failure followed by actual reportUnknown
+is distinct. Preserve local flags/accepted facts and known refusal policy without a global latch.
+Current preparation test-only11 does not claim these tails complete.
 
 Owned-close consistency source finding (superseded by bounded a88d correction above): public Write→Bytes,
 public CAS (current live CAS callers pass explicit leases), DeleteWithLock and internal owned

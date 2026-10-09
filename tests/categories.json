@@ -2,6 +2,37 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-preparation-outcome-causal-linux",
+      "responsibility": "Eleven real publication cuts through original engine snapshot/backup preparation, LivePrepare, AtomicCore staging and direct-gacha queue/owner cleanup.",
+      "excludes": "No whole-turn/all-files atomicity, live GM/provider, native or secondary-close qualification; returned browser Uncertain is distinguished from thrown CSP.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterActualDecision",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalLivePrepareStopsAfterPublishedRequest",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalAtomicStageStopsBeforeCallback",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalDirectGachaStopsQueueAndOwnerCleanup"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-owned-api-close-consistency",
       "responsibility": "Self-owned ordinary API first-CSP-before-close consistency: actual facade outcomes, one conditional append Unknown, real release component and existing nonpublication return controls.",
       "excludes": "No fabricated self-owned simultaneous publication/Dispose-failure RED, native execution, broad facade19 or original main receipt changes.",

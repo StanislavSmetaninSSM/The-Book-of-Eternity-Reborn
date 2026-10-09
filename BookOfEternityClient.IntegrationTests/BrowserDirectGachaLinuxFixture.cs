@@ -22,6 +22,7 @@ internal sealed class BrowserDirectGachaLinuxFixture(ITestOutputHelper output, s
     internal StateManager State { get; private set; } = null!;
     internal BrowserAfterlifeWriteService Service { get; private set; } = null!;
     internal Func<string, Task>? Mutation { get; set; }
+    internal FileSystemManagerHooks? StorageObservationHooks { get; set; }
     internal Action<TrustedLocalPublicationPhase, int>? Publication { get; set; }
     internal Func<Task>? Closing { get; set; }
     internal byte[] BeforeSoul { get; private set; } = [];
@@ -38,7 +39,11 @@ internal sealed class BrowserDirectGachaLinuxFixture(ITestOutputHelper output, s
         Files = new(Root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
+                BeforeCanonicalMutationAsync = path => StorageObservationHooks?.BeforeCanonicalMutationAsync?.Invoke(path) ?? Task.CompletedTask,
                 BeforeCanonicalMutationBoundaryAsync = path => Mutation?.Invoke(path) ?? Task.CompletedTask,
+                AfterCanonicalReadInitialValidationAsync = path => StorageObservationHooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(path) ?? Task.CompletedTask,
+                BeforeCanonicalWriteLockOpenAsync = () => StorageObservationHooks?.BeforeCanonicalWriteLockOpenAsync?.Invoke() ?? Task.CompletedTask,
+                LocalPublicationRecoveryObserver = (phase, index) => StorageObservationHooks?.LocalPublicationRecoveryObserver?.Invoke(phase, index),
                 LocalPublicationObserver = (phase, index) => Publication?.Invoke(phase, index),
                 SessionOperationClosingAsync = () => Closing?.Invoke() ?? Task.CompletedTask
             });

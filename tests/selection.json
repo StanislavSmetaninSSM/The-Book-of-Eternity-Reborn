@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-preparation-outcome-causal-linux",
+      "reason": "Test-only actual preparation11, before runtime correction. Genuine prior committed artifacts and exact publisher Unknown must be reached; source/fixture gate and matching fresh build required. No long GM or artificial CSP.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
       "category": "portable-owned-api-close-consistency",
       "reason": "Source-consistency final15 passes at a88d/023656: actual facade9 + explicit release-component3 + new actual conditional Unknown1 + original integration current/stale append1 and CAS conflict1. No simultaneous self-owned double-fault execution claim.",
       "contracts": [
