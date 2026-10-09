@@ -1,3 +1,20 @@
+## Original Normalizer causal baseline recovered and verified — WIP, 2026-10-09
+
+Verified existing clean source e1b32dd3e80981da1ac2e980976d67f0b842d1c8 and
+its retained fresh Plan2209058/1,0execution48.7564429s; actual221002complete8
+=4knownPASS/4causalFAIL9.3864821s,1/1bothcleanup0skipduplicateTimeout/strict8roots.
+No repeated run: both summaries pin exact clean e1b32dd3; fixture byte-identical
+fed1158a. Each actual four original owners/Intent/member0 reached genuine CSP,
+then same late original close masked it. Fullsettlement/noLater/Closing0 and
+known real plans/afterimages/current journal/current item receipt/history/validators
+PASS. [Packet](recovery/storage-migration-original-normalizer-close-20261009/manifest.json)
+25artifacts22pins verified originals. Independent state reconciliation confirms
+remote/source/artifact consistency; process attribution is not inferred from Git.
+Next minimal four same original owning scopes CSPcapture/rethrowexistingRelease
+false; bound normalization/core/authority/fixture unchanged. Combined causal/
+source/exact8 gate then fresh GREEN8; fullcatalog pending stablebatch.
+B2–B5/T061–T065/native/knownlateclose remain open; no whole-flow atomicity.
+
 ## Original Normalizer owners — test-first WIP, 2026-10-09
 
 Independent fixture/design/exact8 PASSfed1158a installed byte-identically. Four
