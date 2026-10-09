@@ -1,3 +1,15 @@
+## F18 committed-witness3 — compile-only fixture correction, 2026-10-09
+
+SOURCE/FIXTURE/EXACT3 PASS321c985a; fresh Plan143812 failed integration compilation
+40.8153131s,0planned/0executed,no timeout,ownedcleanup complete. Two CS0122 errors
+referenced private Fixture.Root from the containing partial test class. This is source
+access failure, not reached cut/runtime RED. Original log/summary plus14sourcepins are
+preserved in [packet](recovery/storage-migration-committed-rollback-20261009/manifest.json).
+Use the existing public fixture.FileSystem.BasePath, identical original root supplied to
+its constructor, for strict cleanup and raw absolute paths. No fixture accessibility,
+production, scenario, oracle or category change. Reviewed source design remains; fresh
+Plan3 thenactual3 still required. B2–B5 paused and whole1553 queues unchanged.
+
 ## F18 original C4/recovery publication witnesses3 — source WIP, 2026-10-09
 
 Basee9143e82 (native/mods final RAW/CATALOG/CARRIER PASS). Existing two C4 rows and

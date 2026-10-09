@@ -1,0 +1,78 @@
+{
+  "scope": "Three original C4/wound recovery pre-write/readback rollback/retry obligations with genuine current Committed witnesses. No new gameplay/B2, live GM, native execution or whole-migration qualification.",
+  "compile": {
+    "source": "321c985a3f56f613d51a077c81291da12c584924",
+    "artifacts": [
+      {
+        "path": "compile-20261009-143812-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-143812-755-372109-73e14f74f0004b21a245dadfca5366c1-categories/summary.json",
+        "sha256": "c9517bd7496a07d7a0099557f7dde62e7a238fe81c8eb76cebf7e55158c8f596",
+        "originalSha256": "c9517bd7496a07d7a0099557f7dde62e7a238fe81c8eb76cebf7e55158c8f596"
+      },
+      {
+        "path": "compile-20261009-143812-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-143812-755-372109-73e14f74f0004b21a245dadfca5366c1-categories/dotnet-test.log",
+        "sha256": "90481fa4919b94f775cd39e1eb9383ffd2f6fad8c5e586d4bdc7e4f9dd1a28f9",
+        "originalSha256": "f7781e1936a320aa4c0de38bdb3f60e4cb0745be9dc6926cd0bdf698a79692c4"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCommonPublication.cs",
+        "sha256": "d93b17e668696f590819e3cf046838a45f7e44d4d0b65b2c6210c7415a81dcce"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.PublicationRollback.cs",
+        "sha256": "26e5c956c4379c94dec2bf8d81eca07ce99d1916dfefb138358b218071a344a6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+        "sha256": "4faf575e2f0b0660d3a02be62c4121926014f9a7d8fdae5ad287aba8c3e66aef"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CurrentCommittedPublicationWitness.cs",
+        "sha256": "49f94d09e5e2fc8d6bde1c981365fa52ae7e0098516d53c03aa8fc9b9ec1e624"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "a97a457256a092745d1a60d45f50972eb70d953fd4b106f7d01d2179ead83870"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+        "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+        "sha256": "936d23bce661782bd2d50dc0658313255628c935a62d4245ff07e5bb9a3a0259"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "sha256": "65dbab31e85f55a090d80e0a6937b0ef287d39121a95b68c810c9c06351cbee8"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "6afb8de8fd16df74a13b27cf4101c9ec9313ff7f8a05d20f7497c3f2d952fe5f"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "f283a43a99c936facf6e83bf25462f6f61cded229ec31e83b4b0814c155a8f37"
+      }
+    ]
+  }
+}

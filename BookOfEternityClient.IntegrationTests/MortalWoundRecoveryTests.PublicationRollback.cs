@@ -46,7 +46,7 @@ public sealed partial class MortalWoundRecoveryTests(Xunit.Abstractions.ITestOut
             }
         };
         var fixture = Fixture.Create(scenario, hooks);
-        using var owned = new OriginalFixtureCompletion(fixture.Root, fixture.Dispose, output.WriteLine);
+        using var owned = new OriginalFixtureCompletion(fixture.FileSystem.BasePath, fixture.Dispose, output.WriteLine);
         fixture.PrepareCanonicalRefreshItemAuthority();
         fixture.ReadmitCurrentRecoveryBinding();
         var before = fixture.CaptureCanonicalTreeBytes();
@@ -66,7 +66,7 @@ public sealed partial class MortalWoundRecoveryTests(Xunit.Abstractions.ITestOut
         var failure = Assert.Throws<CanonicalStateWriteException>(() => fixture.PublishWithCanonicalRefresh(error =>
         {
             witness.AssertRestored("wound-recovery-original-committed-rollback",
-                before.ToDictionary(pair => Path.Combine(fixture.Root, pair.Key), pair => (byte[]?)pair.Value,
+                before.ToDictionary(pair => Path.Combine(fixture.FileSystem.BasePath, pair.Key), pair => (byte[]?)pair.Value,
                     StringComparer.Ordinal), error, output.WriteLine);
             fixture.AssertCanonicalTreeBytesUnchanged(before);
             failureObservedBeforeReadmission = true;
