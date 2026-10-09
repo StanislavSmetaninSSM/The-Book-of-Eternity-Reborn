@@ -2,6 +2,77 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-spiritual-automatic-cold-recovery",
+      "responsibility": "Original automatic guarantee cold recovery and repeated startup without a new GM decision, with settled raw observer.",
+      "excludes": "Other spiritual lifecycles, native workers, force-binding B2 contract resolution and live GM.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnSpiritualContinuation_AutomaticGuaranteeColdResumePublishesOnceWithoutNewDecision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-spiritual-interruption-finalization",
+      "responsibility": "Original postpublication and poststory interruption boundaries, settled original actors and exact cold outcome.",
+      "excludes": "Other spiritual lifecycles, native workers, force-binding B2 contract resolution and live GM.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualInterruption_PostPublicationBeforeStoryRecoversAtomically",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualInterruption_PostStoryBeforeTerminalCleanupRecoversAtomically"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-spiritual-dependent-file-recovery",
+      "responsibility": "Original saved-choice normal and position dependent file responses after warm interruption; exact private images, separate Ready and cold publication.",
+      "excludes": "Other spiritual lifecycles, native workers, force-binding B2 contract resolution and live GM.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnSpiritualContinuation_FileDependentDraftResumesSavedChoiceAfterInterruption",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnSpiritualContinuation_FilePositionDependentDraftResumesSavedChoiceAfterInterruption"
+          ]
+        }
+      ]
+    },
+    {
       "id": "native-spiritual-staged-worker-publication",
       "responsibility": "Original Windows pwsh.exe staged worker A/B publication and original signed cold recovery; compile/discovery only on Linux.",
       "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",

@@ -1,3 +1,22 @@
+## F18 shared-helper consumers5 — source WIP, 2026-10-09
+
+Baseb875281d preserves composed9/currentbindingB2failure/native1unrun; raw4 finalgate pending.
+Exact affected five have original semantic broad owner plus three finite owners2+2+1.
+Saved-choice normal/position responder2 replaces competing main lease/facade reads and
+three authored writes with raw original-image checks/existing external file-GM transport.
+Original request identity, selected decision, allowed correction pointers, saved-command
+byte equality, response counts and Ready-last ordering retained. No native worker caller
+uses this helper; unused worker branch unchanged. Interruption2 already use3fe transport;
+automatic1 only observes raw files and supplies no GM response.
+
+All five retain shared direct joins of both original actors; original context disposal now
+has strict absence receipts, plus original generation/no-current-journal after final original
+business assertions. In-engine checkpoint lease atInterruptionProbe87 remains unchanged;
+it belongs to original engine context and is not an independent competing responder.
+No production/GM contract, B2–B5, timeout or broad owner execution changes. Next independent
+source/exact5 review, fresh integrationPlan5, thenactual5 and one discovery-only catalog
+for the whole current F18 slice. Other Prepared/Image/F16/owned-close queues remain open.
+
 ## F18 original lifecycle11 — composed nine PASS, one old B2 failure, one native unrun
 
 Source3fe28a9d file-GM correction is independently accepted; carrier7d91ebbc partialRAW

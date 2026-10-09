@@ -77,7 +77,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             PlayerAction = "Удержать встречное духовное давление.", Timestamp = DateTime.UtcNow.ToString("O"),
             PreGeneratedDices1d20 = position ? [15, 5, 8, 9] : [15, 5, 12, 8]
         };
-        await using var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async original =>
+        var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async original =>
         {
             var chat = Assert.IsType<JsonObject>(await original.ReadJsonAsync("game_state/history/chat_log.json"));
             chat["sessionId"] = request.SessionId;
@@ -97,6 +97,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync",
                 request, rollback, "dependent-spiritual-original");
         }, hooks: hooks);
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), text => _directGachaOutput?.WriteLine(text));
+        var storageWitness = new SpiritualLifecyclePublicationWitness(context.FileSystem,
+            text => _directGachaOutput?.WriteLine(text));
         physicalContext = context;
         if (position)
         {
@@ -226,6 +230,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (worker)
             await AssertDependentSpiritualWorkersAsync(context, warmRequest, coldRequest);
         await AssertDependentSpiritualPublicationAsync(context, coldEngine, originalDraft, warmRequest, decisionFingerprint, position);
+        storageWitness.AssertSettled("additional-spiritual-original-actors-settled");
     }
 
     /// <summary>
@@ -348,32 +353,28 @@ public sealed partial class GameEngineTurnLifecycleTests
                         }
                         if (!worker)
                         {
-                            using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                            deadline.CancelAfter(TimeSpan.FromSeconds(10));
-                            await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync(cancellationToken: deadline.Token))
-                            {
-                                foreach (var pair in originals)
-                                    Assert.Equal(pair.Value, await fs.ReadFileBytesAsync(lease, pair.Key));
-                                Assert.False(fs.FileExists(lease, SpiritualWoundOpportunityReceiptState.StatePath));
-                                if (savedCommand is not null)
-                                    Assert.Equal(savedCommand, await fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
-                            }
+                            // An independent file-GM responder must not contend for the engine main owner.
+                            foreach (var pair in originals)
+                                Assert.Equal(pair.Value, CleanupPublicationCut.ReadOptional(fs.ResolvePath(pair.Key)));
+                            Assert.False(File.Exists(fs.ResolvePath(SpiritualWoundOpportunityReceiptState.StatePath)));
+                            if (savedCommand is not null)
+                                Assert.Equal(savedCommand, File.ReadAllBytes(fs.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)));
                             JsonElement[] decisions;
                             if (phase == "decision")
                             {
-                                var narrative = ParseDependentSpiritualBytes(Assert.IsType<byte[]>(await fs.ReadFileBytesAsync("output/narrative_response.json")));
+                                var narrative = ParseDependentSpiritualBytes(await File.ReadAllBytesAsync(fs.ResolvePath("output/narrative_response.json"), cancellationToken));
                                 narrative["response"] = position
                                     ? "Душа удерживает встречное давление. Чужое давление надломило волю хранителя. Во втором обмене оба сохраняют pressure; новое напряжение не возникает."
                                     : "Душа удерживает встречное давление. Чужое давление надломило волю хранителя. Хранитель сохраняет исходное guard во втором обмене.";
                                 narrative["timestamp"] = DateTime.UtcNow.ToString("O");
-                                await fs.WriteFileAtomicAsync("output/narrative_response.json", narrative.ToJsonString());
+                                await WriteSpiritualFileGmJsonAsync(fs, "output/narrative_response.json", narrative.ToJsonString(), cancellationToken);
                                 decisions = [position
                                     ? AfterlifeResourceCutoverTests.CreateSpiritualDependentPositionDecision(continuation.Offer!.OpportunityRef)
                                     : AfterlifeResourceCutoverTests.CreateSpiritualDependentGuardDecision(continuation.Offer!.OpportunityRef)];
                             }
                             else
                             {
-                                var conflict = ParseDependentSpiritualBytes(Assert.IsType<byte[]>(await fs.ReadFileBytesAsync(AfterlifeSpiritualConflictState.StatePath)));
+                                var conflict = ParseDependentSpiritualBytes(await File.ReadAllBytesAsync(fs.ResolvePath(AfterlifeSpiritualConflictState.StatePath), cancellationToken));
                                 if (position)
                                     ApplySpiritualPositionDependentCorrection(conflict);
                                 else
@@ -381,10 +382,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                                     conflict["activeConflict"]!["exchangeLog"]![1]!["actionCostAudit"]!["opposition"]!["effectiveCost"] = 3;
                                     conflict["activeConflict"]!["exchangeLog"]![1]!["actionCostAudit"]!["opposition"]!["after"] = 0;
                                 }
-                                await fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, conflict.ToJsonString());
+                                await WriteSpiritualFileGmJsonAsync(fs, AfterlifeSpiritualConflictState.StatePath, conflict.ToJsonString(), cancellationToken);
                                 decisions = [];
                             }
-                            await fs.WriteFileAtomicAsync("game_state/control/validation_repair_ready.json", JsonSerializer.Serialize(new
+                            await WriteSpiritualFileGmJsonAsync(fs, "game_state/control/validation_repair_ready.json", JsonSerializer.Serialize(new
                             {
                                 sessionId = original.SessionId, requestId = original.RequestId, turnNumber = 42,
                                 timestamp = DateTime.UtcNow.ToString("O"), status = "success",
