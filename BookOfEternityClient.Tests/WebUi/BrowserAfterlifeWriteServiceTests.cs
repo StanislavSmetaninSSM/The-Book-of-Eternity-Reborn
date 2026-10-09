@@ -383,6 +383,52 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
                 }
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
+        var preSpendSoul = await fs.ReadFileBytesAsync("game_state/meta/soul_state.json");
+        Dictionary<string, byte[]> Snapshot() => Directory.GetFiles(
+                fs.GameSessionPath, "*", SearchOption.AllDirectories)
+            .ToDictionary(path => "session/" + Path.GetRelativePath(fs.GameSessionPath, path),
+                File.ReadAllBytes, StringComparer.Ordinal)
+            .Append(new KeyValuePair<string, byte[]>("$generation", File.ReadAllBytes(fs.SessionGenerationPath)))
+            .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+        static void AssertSameSnapshot(Dictionary<string, byte[]> before, Dictionary<string, byte[]> after)
+        {
+            Assert.Equal(before.Keys.OrderBy(key => key, StringComparer.Ordinal),
+                after.Keys.OrderBy(key => key, StringComparer.Ordinal));
+            foreach (var pair in before) Assert.Equal(pair.Value, after[pair.Key]);
+        }
+        Dictionary<string, byte[]>? beforeReplacement = null;
+        var replacementLockOpens = 0;
+        var replacementMutations = 0;
+        var replacementPublications = new List<string>();
+        var replacementFs = new FileSystemManager(
+            concurrentRoot, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                MainOwnerLockContendedAsync = () =>
+                {
+                    Interlocked.Increment(ref mainContentions);
+                    replacementContended.TrySetResult();
+                    return Task.CompletedTask;
+                },
+                CanonicalWriteLockContendedAsync = () =>
+                {
+                    Interlocked.Increment(ref canonicalContentions);
+                    return Task.CompletedTask;
+                },
+                AfterCanonicalWriteLockOpenedAsync = () =>
+                {
+                    Interlocked.Increment(ref replacementLockOpens);
+                    beforeReplacement = Snapshot();
+                    return Task.CompletedTask;
+                },
+                BeforeCanonicalMutationBoundaryAsync = _ =>
+                {
+                    Interlocked.Increment(ref replacementMutations);
+                    return Task.CompletedTask;
+                },
+                LocalPublicationObserver = (phase, _) => replacementPublications.Add(phase.ToString())
+            });
+
         var gacha = service.TryApplyAsync(
             "/gacha",
             Answers(
@@ -395,7 +441,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         try
         {
             Assert.Same(profileInputsRead.Task, await Task.WhenAny(gacha, profileInputsRead.Task).WaitAsync(TimeSpan.FromSeconds(5)));
-            replacement = fs.ClearGameStateAsync();
+            replacement = replacementFs.ClearGameStateAsync();
             await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
             Assert.Equal(1, paused);
             Assert.True(mainContentions > 0);
@@ -404,9 +450,56 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
             allowProfileRefresh.TrySetResult();
             var result = await gacha.WaitAsync(TimeSpan.FromSeconds(15));
-            await replacement.WaitAsync(TimeSpan.FromSeconds(15));
-
             Assert.True(result.Success, result.Message);
+            var replacementFailure = await Record.ExceptionAsync(
+                () => replacement.WaitAsync(TimeSpan.FromSeconds(15)));
+            if (replacementFailure != null)
+            {
+                // Capture refusal state before any diagnostic admission can recover storage.
+                var afterReplacement = Snapshot();
+                Assert.Equal(1, replacementLockOpens);
+                Assert.NotNull(beforeReplacement);
+                AssertSameSnapshot(beforeReplacement!, afterReplacement);
+                Assert.Equal(0, replacementMutations);
+                Assert.Empty(replacementPublications);
+                var diagnosticPublications = 0;
+                var diagnosticRecoveryObservations = 0;
+                var diagnosticFs = new FileSystemManager(
+                    concurrentRoot, NullLogger<FileSystemManager>.Instance,
+                    PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                    {
+                        LocalPublicationObserver = (_, _) => diagnosticPublications++,
+                        LocalPublicationRecoveryObserver = (_, _) => diagnosticRecoveryObservations++
+                    });
+                string backupPath;
+                byte[]? backupBytes;
+                PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload authority;
+                await using (var diagnosticLease = await diagnosticFs.AcquireCanonicalWriteLeaseAsync())
+                {
+                    authority = ExplorerLocalTurnRollbackArtifacts.RequireCurrentPendingRollbackAuthority(
+                        diagnosticFs, diagnosticLease);
+                    backupPath = authority.RollbackBackups["game_state/meta/soul_state.json"];
+                    Assert.True(ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaBackup(backupPath));
+                    backupBytes = await diagnosticFs.ReadFileBytesAsync(diagnosticLease, backupPath);
+                    Assert.Equal(preSpendSoul, backupBytes);
+                }
+                var afterDiagnostic = Snapshot();
+                AssertSameSnapshot(afterReplacement, afterDiagnostic);
+                Assert.Equal(0, diagnosticPublications);
+                Assert.Equal(0, diagnosticRecoveryObservations);
+                _output.WriteLine(JsonSerializer.Serialize(new
+                {
+                    kind = "f18-gacha-replacement-diagnostic", root = _rootPath,
+                    success = result.Success, result.Message,
+                    replacementFailure = replacementFailure.GetType().FullName,
+                    replacementMessage = replacementFailure.Message,
+                    replacementLockOpens, replacementMutations, replacementPublications,
+                    beforeReplacement, afterReplacement,
+                    diagnosticAuthority = authority, backupPath, preSpendSoul, backupBytes,
+                    afterDiagnostic, diagnosticPublications, diagnosticRecoveryObservations
+                }));
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(replacementFailure).Throw();
+            }
             Assert.False(fs.FileExists("game_state/meta/soul_state.json"));
             Assert.False(fs.FileExists(AfterlifeEntityProfileState.StatePath));
             Assert.False(fs.FileExists(BrowserPendingTurnInspector.TurnRequestPath));

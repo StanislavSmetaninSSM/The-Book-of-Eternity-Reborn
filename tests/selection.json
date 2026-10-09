@@ -2,8 +2,31 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-canonical-contention-gacha-diagnostic-linux",
+      "reason": "T064 isolated original gacha1 retains successful replacement expectation; qualify current adopted rollback authority and exact pre/post evidence before diagnosing parameterless legacy guard. Source/build/run pending.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "FR-007",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-canonical-contention-settlement-linux",
+      "reason": "T064 three existing dual-observer fixtures require actual task settlement before cleanup, not a reachability port; source/build/run pending. Original writer-survival and known-failure oracles retained.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-canonical-contention-consumers-linux",
-      "reason": "T064 fixture-only current-admission/settlement port of original8 consumer cases; source review/build/execution pending. Preserve every original product oracle; no runtime RED/fix claim.",
+      "reason": "T064 source88130 actual114248 executes8:7PASS/1FAIL. Original gacha Clear hits rollback guard; successful current pending adoption is not yet proven by old row. Independent raw7/carrier53b825 accepted; retain7 without replay and qualify gacha in isolated diagnostic.",
       "contracts": [
         "#1553",
         "FR-002",

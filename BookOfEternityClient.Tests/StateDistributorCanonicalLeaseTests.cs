@@ -5,6 +5,7 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
@@ -12,10 +13,12 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
 {
     private const string WeatherPath = "game_state/world/weather.json";
     private readonly string _rootPath;
+    private readonly ITestOutputHelper _output;
     private readonly FileSystemManager _fs;
 
-    public StateDistributorCanonicalLeaseTests()
+    public StateDistributorCanonicalLeaseTests(ITestOutputHelper output)
     {
+        _output = output;
         _rootPath = Path.Combine(
             Path.GetTempPath(),
             "boe-state-distributor-lease-" + Guid.NewGuid().ToString("N"));
@@ -26,6 +29,9 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
     [Fact]
     public async Task DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         await _fs.WriteFileAtomicAsync(WeatherPath, "{\"marker\":\"baseline\"}");
         var backupsCaptured = NewSignal();
         var releaseFailure = NewSignal();
@@ -37,6 +43,7 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
             {
                 AfterBackupsCapturedAsync = async () =>
                 {
+                    Interlocked.Increment(ref paused);
                     backupsCaptured.TrySetResult(true);
                     await releaseFailure.Task;
                     throw new IOException("Injected failure after backup capture.");
@@ -46,39 +53,66 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
         {
             MainOwnerLockContendedAsync = () =>
             {
+                Interlocked.Increment(ref mainContentions);
                 writerContended.TrySetResult(true);
                 return Task.CompletedTask;
             },
             CanonicalWriteLockContendedAsync = () =>
             {
+                Interlocked.Increment(ref canonicalContentions);
                 writerContended.TrySetResult(true);
                 return Task.CompletedTask;
             }
         });
 
         var distributionTask = distributor.DistributeAsync(CreateWeatherResponse());
-        var backupBoundary = await Task.WhenAny(distributionTask, backupsCaptured.Task).WaitAsync(TimeSpan.FromSeconds(5));
-        if (backupBoundary == distributionTask) await distributionTask;
-        Assert.Same(backupsCaptured.Task, backupBoundary);
-        var writerTask = writerFs.WriteFileAtomicAsync(
-            WeatherPath,
-            "{\"marker\":\"accepted-concurrent-writer\"}");
-        var firstObserved = await Task.WhenAny(writerTask, writerContended.Task)
-            .WaitAsync(TimeSpan.FromSeconds(5));
-        releaseFailure.TrySetResult(true);
+        Task? writerTask = null;
+        try
+        {
+            var backupBoundary = await Task.WhenAny(distributionTask, backupsCaptured.Task).WaitAsync(TimeSpan.FromSeconds(5));
+            if (backupBoundary == distributionTask) await distributionTask;
+            Assert.Same(backupsCaptured.Task, backupBoundary);
+            writerTask = writerFs.WriteFileAtomicAsync(
+                WeatherPath,
+                "{\"marker\":\"accepted-concurrent-writer\"}");
+            var firstObserved = await Task.WhenAny(writerTask, writerContended.Task)
+                .WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions + canonicalContentions > 0);
+            Assert.False(writerTask.IsCompleted);
+            releaseFailure.TrySetResult(true);
 
-        await Assert.ThrowsAsync<IOException>(() => distributionTask);
-        await writerTask;
+            await Assert.ThrowsAsync<IOException>(() => distributionTask);
+            await writerTask;
 
-        Assert.Same(writerContended.Task, firstObserved);
-        Assert.Equal(
-            "accepted-concurrent-writer",
-            ReadMarker(await _fs.ReadFileAsync(WeatherPath)));
+            Assert.Same(writerContended.Task, firstObserved);
+            Assert.Equal(
+                "accepted-concurrent-writer",
+                ReadMarker(await _fs.ReadFileAsync(WeatherPath)));
+        }
+        finally
+        {
+            releaseFailure.TrySetResult(true);
+            await Record.ExceptionAsync(() => Task.WhenAll(
+                distributionTask ?? Task.CompletedTask, writerTask ?? Task.CompletedTask));
+            _output.WriteLine(JsonSerializer.Serialize(new
+            {
+                kind = "f18-dual-contention-settlement",
+                method = nameof(DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter), root = _rootPath, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = distributionTask?.IsCompleted ?? false,
+                secondSettled = writerTask?.IsCompleted ?? false
+            }));
+        }
+
     }
 
     [Fact]
     public async Task DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         await _fs.WriteFileAtomicAsync(WeatherPath, "{\"marker\":\"baseline\"}");
         var mutationApplied = NewSignal();
         var releaseFailure = NewSignal();
@@ -92,6 +126,7 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
                 {
                     if (!path.Equals(WeatherPath, StringComparison.OrdinalIgnoreCase))
                         return;
+                    Interlocked.Increment(ref paused);
                     mutationApplied.TrySetResult(true);
                     await releaseFailure.Task;
                     throw new IOException("Injected failure after first mutation.");
@@ -101,37 +136,61 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
         {
             MainOwnerLockContendedAsync = () =>
             {
+                Interlocked.Increment(ref mainContentions);
                 writerContended.TrySetResult(true);
                 return Task.CompletedTask;
             },
             CanonicalWriteLockContendedAsync = () =>
             {
+                Interlocked.Increment(ref canonicalContentions);
                 writerContended.TrySetResult(true);
                 return Task.CompletedTask;
             }
         });
 
         var distributionTask = distributor.DistributeAsync(CreateWeatherResponse());
-        var mutationBoundary = await Task.WhenAny(distributionTask, mutationApplied.Task).WaitAsync(TimeSpan.FromSeconds(5));
-        if (mutationBoundary == distributionTask) await distributionTask;
-        Assert.Same(mutationApplied.Task, mutationBoundary);
-        var writerTask = writerFs.WriteFileAtomicAsync(
-            WeatherPath,
-            "{\"marker\":\"accepted-concurrent-writer\"}");
-        var firstObserved = await Task.WhenAny(writerTask, writerContended.Task)
-            .WaitAsync(TimeSpan.FromSeconds(5));
-        releaseFailure.TrySetResult(true);
+        Task? writerTask = null;
+        try
+        {
+            var mutationBoundary = await Task.WhenAny(distributionTask, mutationApplied.Task).WaitAsync(TimeSpan.FromSeconds(5));
+            if (mutationBoundary == distributionTask) await distributionTask;
+            Assert.Same(mutationApplied.Task, mutationBoundary);
+            writerTask = writerFs.WriteFileAtomicAsync(
+                WeatherPath,
+                "{\"marker\":\"accepted-concurrent-writer\"}");
+            var firstObserved = await Task.WhenAny(writerTask, writerContended.Task)
+                .WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions + canonicalContentions > 0);
+            Assert.False(writerTask.IsCompleted);
+            releaseFailure.TrySetResult(true);
 
-        await Assert.ThrowsAsync<IOException>(() => distributionTask);
-        await writerTask;
+            await Assert.ThrowsAsync<IOException>(() => distributionTask);
+            await writerTask;
 
-        Assert.Same(writerContended.Task, firstObserved);
-        Assert.Equal(
-            "accepted-concurrent-writer",
-            ReadMarker(await _fs.ReadFileAsync(WeatherPath)));
-        Assert.Empty(Directory.GetFiles(
-            Path.GetDirectoryName(_fs.ResolvePath(WeatherPath))!,
-            "weather.json.backup.*"));
+            Assert.Same(writerContended.Task, firstObserved);
+            Assert.Equal(
+                "accepted-concurrent-writer",
+                ReadMarker(await _fs.ReadFileAsync(WeatherPath)));
+            Assert.Empty(Directory.GetFiles(
+                Path.GetDirectoryName(_fs.ResolvePath(WeatherPath))!,
+                "weather.json.backup.*"));
+        }
+        finally
+        {
+            releaseFailure.TrySetResult(true);
+            await Record.ExceptionAsync(() => Task.WhenAll(
+                distributionTask ?? Task.CompletedTask, writerTask ?? Task.CompletedTask));
+            _output.WriteLine(JsonSerializer.Serialize(new
+            {
+                kind = "f18-dual-contention-settlement",
+                method = nameof(DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter), root = _rootPath, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = distributionTask?.IsCompleted ?? false,
+                secondSettled = writerTask?.IsCompleted ?? false
+            }));
+        }
+
     }
 
     [Fact]

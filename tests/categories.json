@@ -20230,6 +20230,58 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-canonical-contention-settlement-linux",
+      "responsibility": "Three existing dual MainOwner/canonical observer fixtures: StateManager mirror and StateDistributor backup/first-write failure. Preserve original reached boundary and concurrent writer survival; release gates and settle original actors before root cleanup.",
+      "excludes": "No missing-boundary port or production behavior change; no injected cleanup assertion-failure or native/fullF18 claim. Original owners retained.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/StateManagerTests.cs",
+        "BookOfEternityClient.Tests/StateDistributorCanonicalLeaseTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease",
+            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter",
+            "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-canonical-contention-gacha-diagnostic-linux",
+      "responsibility": "Isolated original gacha replacement regression: prove successful queued turn, actual waiting replacement, and (on refusal) exact retained generation/session images plus separately validated pending authority and pre-spend backup without diagnostic mutation. Original successful-Clear expectation retained.",
+      "excludes": "No expected-refusal policy substitution, namespace-only authorization, raw deletion, live GM, or replay of accepted7 neighbors.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/WebUi/BrowserAfterlifeWriteServiceTests.cs",
+        "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts"
+          ]
+        }
+      ]
     }
   ]
 }

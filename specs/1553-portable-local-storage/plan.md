@@ -1,3 +1,33 @@
+## F18 diagnostic1 and dual-settlement3 — source WIP, 2026-10-09
+
+Independent RAW7/carrier PASS53b825d68a8bf2db72a8ebb0e19d15d9a36b9ad4 verifies19
+artifacts/originals20pins. Review rejects the provisional expected-refusal interpretation:
+current direct-gacha long-lived before-images are explicitly neutral/current, not unresolved
+legacy journals (accepted browser-direct-gacha-linux-plan steps3/5/6; BrowserProtocol23–28).
+FR007, orphan refusal and generic NewGame error handling do not override successful
+replacement of a valid current pending turn. Old result.Success assertion was after the
+throwing replacement await, so the actual failure alone does not yet prove valid adoption.
+
+Isolated diagnostic category portable-canonical-contention-gacha-diagnostic-linux keeps
+that original successful-Clear expectation. Actual gacha success is asserted first.
+A separate same-root replacement manager observes the original canonical-lock-open,
+reads raw generation/session snapshots without an observer lease, and counts actual
+replacement mutations/publications. On failure capture/compare all exact state BEFORE
+any diagnostic admission. Then a separately labelled owned diagnostic lease validates
+existing request/manifest/detached authority and mapped exact pre-spend soul backup.
+Recompare snapshots and zero publication/recovery observations after diagnostic close;
+emit source evidence then rethrow original replacement failure. No production/expectation
+change; source/Plan/actual pending. This is one causal qualification, not a replay of7.
+
+Separate exact3 portable-canonical-contention-settlement-linux updates existing dual
+observers in StateManager mirror and StateDistributor backup/first-write failure fixtures.
+Keep both existing signals, add separate counters/positive original pause and blocked
+writer, finally release gates and join actual actors before root cleanup. This is task
+settlement repair, not a missing-reach port or runtime change. Original known exception/
+concurrent-writer-survival assertions remain. Both groups select4 unit Facts for the next
+fresh unit Plan/actual after source review; integration output88130 remains unchanged.
+B2–B5 paused; no main/CI/native/fullF18 or injected-failure cleanup qualification.
+
 ## F18 contention8 — measured7PASS/1FAIL, 2026-10-09
 
 Frozen88130d5bd210eb34f28b9f697db541f00d2f5c74 passes independent SOURCE/FIXTURE/
