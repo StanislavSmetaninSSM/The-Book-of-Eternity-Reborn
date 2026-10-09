@@ -2,6 +2,18 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-canonical-contention-rmw-linux",
+      "reason": "F18 fixture-only current-admission port4, unbuilt/unrun. Original normalizer/validation/cache and guardian journal races preserve every final state oracle while observing main-owner admission and settling actual actors/lease before cleanup. Original category ownership retained.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-005",
+        "FR-009",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-spiritual-c2-storage-outcome-linux",
       "reason": "C2 original service11 passed within exact26 at47b1e259; genuine seven Unknown outcomes, four successes and original capture/lease cleanup. Accepted raw carrier42ed with service-only limits; no unchanged replay.",
       "contracts": [

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
@@ -32,13 +33,15 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
         CanonicalResourceOwnerAuthorityComposer.AuthorityPath
     ];
 
+    private readonly ITestOutputHelper _output;
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly ScenarioCoreService _scenarioCoreService;
     private readonly GuardianCorrectionService _guardianCorrectionService;
 
-    public GuardianCorrectionServiceTests()
+    public GuardianCorrectionServiceTests(ITestOutputHelper output)
     {
+        _output = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-guardian-corrections-tests-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
 
@@ -1915,6 +1918,8 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
         var secondWriterContended = new TaskCompletionSource<bool>(
             TaskCreationOptions.RunContinuationsAsynchronously);
         var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var firstFileSystem = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
@@ -1942,9 +1947,15 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
+                MainOwnerLockContendedAsync = () =>
+                {
+                    Interlocked.Increment(ref mainContentions);
+                    secondWriterContended.TrySetResult(true);
+                    return Task.CompletedTask;
+                },
                 CanonicalWriteLockContendedAsync = () =>
                 {
-                    secondWriterContended.TrySetResult(true);
+                    Interlocked.Increment(ref canonicalContentions);
                     return Task.CompletedTask;
                 }
             });
@@ -1952,30 +1963,42 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
         var firstTask = GuardianPowerEventState.AppendJournalEntriesAsync(
             firstFileSystem,
             new[] { new JsonObject { ["eventId"] = "guardian_event_first" } });
-        await firstReadEntered.Task.WaitAsync(TimeSpan.FromSeconds(30));
-        var secondTask = GuardianPowerEventState.AppendJournalEntriesAsync(
-            secondFileSystem,
-            new[] { new JsonObject { ["eventId"] = "guardian_event_second" } });
+        Task? secondTask = null;
         try
         {
-            await secondWriterContended.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            await Task.WhenAny(firstTask, firstReadEntered.Task).WaitAsync(TimeSpan.FromSeconds(30));
+            if (!firstReadEntered.Task.IsCompleted) await firstTask;
+            Assert.True(firstReadEntered.Task.IsCompletedSuccessfully);
+            secondTask = GuardianPowerEventState.AppendJournalEntriesAsync(
+                secondFileSystem,
+                new[] { new JsonObject { ["eventId"] = "guardian_event_second" } });
+            await Task.WhenAny(secondTask, secondWriterContended.Task).WaitAsync(TimeSpan.FromSeconds(30));
+            Assert.True(secondWriterContended.Task.IsCompletedSuccessfully);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
             Assert.False(secondTask.IsCompleted);
+            releaseFirstRead.TrySetResult(true);
+
+            await Task.WhenAll(firstTask, secondTask).WaitAsync(TimeSpan.FromSeconds(30));
+            var journal = JsonNode.Parse(
+                Assert.IsType<string>(await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath)))!.AsObject();
+            Assert.Equal(
+                new[] { "guardian_event_first", "guardian_event_second" },
+                journal["entries"]!.AsArray().OfType<JsonObject>()
+                    .Select(entry => entry["eventId"]!.GetValue<string>())
+                    .OrderBy(static eventId => eventId, StringComparer.Ordinal));
         }
         finally
         {
             releaseFirstRead.TrySetResult(true);
+            await Record.ExceptionAsync(() => Task.WhenAll(firstTask, secondTask ?? Task.CompletedTask));
+            _output.WriteLine(JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention", method = nameof(AppendJournalEntriesAsync_ConcurrentManagersPreserveBothEvents),
+                root = _rootPath, paused, mainContentions, canonicalContentions,
+                firstSettled = firstTask.IsCompleted, secondSettled = secondTask?.IsCompleted
+            }));
         }
-
-        await Task.WhenAll(firstTask, secondTask).WaitAsync(TimeSpan.FromSeconds(30));
-        var journal = JsonNode.Parse(
-            Assert.IsType<string>(await _fs.ReadFileAsync(
-                GuardianPowerEventState.JournalPath)))!.AsObject();
-        Assert.Equal(
-            new[] { "guardian_event_first", "guardian_event_second" },
-            journal["entries"]!.AsArray()
-                .OfType<JsonObject>()
-                .Select(entry => entry["eventId"]!.GetValue<string>())
-                .OrderBy(static eventId => eventId, StringComparer.Ordinal));
     }
 
     private async Task WriteRawAsync(string path, string content)

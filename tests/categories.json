@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-canonical-contention-rmw-linux",
+      "responsibility": "Four original normalizer/validation/cache and guardian journal read-modify-write races: reached original pause, positive main-owner contention, no later canonical contention before admission, blocked contender and original final state; gates released, actual tasks settled and returned lease disposed before fixture cleanup.",
+      "excludes": "No native create-only directory/save publication, full F18, generation replacement, live GM/desktop, or runtime behavior change. This migrates existing fixture observation and settlement; no manufactured product RED.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.Resources.cs",
+        "BookOfEternityClient.IntegrationTests/GuardianCorrectionServiceTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerResourceTests.CommonPlan_EffectCachePublicationAtCanonicalMutationBoundary_WaitsForCanonicalContour",
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerResourceTests.CommonPlan_PublicValidationPublishesBeforeWaitingNormalizerContinues",
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerResourceTests.CommonPlan_PublicValidationWaitsForNormalizerAndRevalidatesFreshState",
+            "BookOfEternityClient.Tests.GuardianCorrectionServiceTests.AppendJournalEntriesAsync_ConcurrentManagersPreserveBothEvents"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-terminal-cleanup-pending-linux",
       "responsibility": "Original durable native owner with known pre-release failure and DisposeOnce: actual reaper pass while original terminal decision hook is pending settles physical ownership but must retain workspace, audit, retirement and slot/root until the actual original decision. One finite race control, no timer-based inference.",
       "excludes": "No provider/live GM or public production Linux worker activation, native Windows, full original Bridge-to-Store, new crash/restart/published-disk ACK-false matrix, nondurable cleanup/reaper diagnostic Unknown, or actual secondary canonical lease-close fault. Prior prelaunch public Linux refusal remains separately evidenced, not replayed.",

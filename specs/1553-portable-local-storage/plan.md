@@ -1,3 +1,31 @@
+## F18 first ordinary contention4 — reviewed fixture-only plan, 2026-10-09
+
+Source #1553,T064. Independent read-only completeness/design PASS56059ab8 confirms
+27 hook assignments:13 port candidates covering15 methods,9 retained physical/negative,
+3 existing dual observers,2 already-corrected preparation cases. This is not27 defects.
+First exact4: GuardianCorrectionServiceTests.AppendJournalEntriesAsync_ConcurrentManagersPreserveBothEvents;
+CanonicalStateNormalizerResourceTests.CommonPlan_EffectCachePublicationAtCanonicalMutationBoundary_WaitsForCanonicalContour,
+CommonPlan_PublicValidationPublishesBeforeWaitingNormalizerContinues,
+CommonPlan_PublicValidationWaitsForNormalizerAndRevalidatesFreshState.
+
+These independent siblings first wait at MainOwner. Port their fixture observation,
+record separate positive main/zero canonical counters, preserve original pause/pending
+contender and final event/cache/validation oracles. Finally releases gates and awaits
+actual tasks before context/root cleanup; actual returned publication lease is disposed
+also after failure. Keep30s observation budgets; use task-or-boundary checks to surface
+an early failure promptly. No deliberate obsolete-hook timeout baseline or production
+RED is claimed: this is migration of four existing test oracles, not a runtime fix.
+
+Exact category portable-canonical-contention-rmw-linux owns only these4; original
+class-category ownership remains. No runtime/GM/schema change, no new game behavior,
+no prompt/example update. Next frozen source/fixture/exact4 review then fresh integration
+Plan4/actual4 and required discovery. All other F18/native cases stay open. In particular
+ProposalInbox/runtime-save/runtime-directory publication calls a Windows-only descriptor
+capability gate before its pause; a hook rename cannot qualify it on Linux. Dual
+StateManager/StateDistributor rows need cleanup settlement, not a reachability port.
+Independent capacity receipt/status review also PASS56059ab8: all416 hashes/blobs and
+byte arithmetic checked; pre-deletion live/process/network checks remain recorded evidence.
+
 ## Whole migration resumed — cloud capacity recovered, 2026-10-09
 
 Latest owner/parent instruction explicitly continues the entire #1553 migration

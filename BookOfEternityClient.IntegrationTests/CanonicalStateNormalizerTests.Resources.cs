@@ -4,10 +4,11 @@ using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Runtime.CompilerServices;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class CanonicalStateNormalizerResourceTests
+public sealed class CanonicalStateNormalizerResourceTests(ITestOutputHelper output)
 {
     /// <summary>
     /// Verifies both leased authority wrappers forward fresh allocation scopes to their real planners.
@@ -425,6 +426,8 @@ public sealed class CanonicalStateNormalizerResourceTests
     public async Task CommonPlan_EffectCachePublicationAtCanonicalMutationBoundary_WaitsForCanonicalContour()
     {
         var effectInput = CreateIndependentEffectInput();
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var armed = false;
         var paused = 0;
         var boundaryReached = new TaskCompletionSource<bool>(
@@ -443,9 +446,15 @@ public sealed class CanonicalStateNormalizerResourceTests
                 boundaryReached.TrySetResult(true);
                 await releaseBoundary.Task;
             },
+            MainOwnerLockContendedAsync = () =>
+            {
+                Interlocked.Increment(ref mainContentions);
+                publicationContended.TrySetResult(true);
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
-                publicationContended.TrySetResult(true);
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             }
         };
@@ -475,33 +484,50 @@ public sealed class CanonicalStateNormalizerResourceTests
                 .BindTo(normalizationLease)
                 .NormalizeAccumulatedStateWithPlanAsync(backups);
         });
-        await boundaryReached.Task.WaitAsync(TimeSpan.FromSeconds(30));
+        Task<FileSystemManager.CanonicalWriteLease>? publicationLeaseTask = null;
+        var publicationLeaseReleased = false;
+        try
+        {
+            await Task.WhenAny(normalizationTask, boundaryReached.Task).WaitAsync(TimeSpan.FromSeconds(30));
+            if (!boundaryReached.Task.IsCompleted) await normalizationTask;
+            Assert.True(boundaryReached.Task.IsCompletedSuccessfully);
+            publicationLeaseTask = Task.Run(() => context.FileSystem.AcquireCanonicalWriteLeaseAsync());
+            await Task.WhenAny(publicationLeaseTask, publicationContended.Task).WaitAsync(TimeSpan.FromSeconds(30));
+            Assert.True(publicationContended.Task.IsCompletedSuccessfully);
+            Assert.False(publicationLeaseTask.IsCompleted);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
 
-        var publicationLeaseTask = Task.Run(
-            () => context.FileSystem.AcquireCanonicalWriteLeaseAsync());
-        await publicationContended.Task.WaitAsync(TimeSpan.FromSeconds(30));
-        Assert.False(publicationLeaseTask.IsCompleted);
-
-        releaseBoundary.TrySetResult(true);
-        Assert.Null(await normalizationTask.WaitAsync(TimeSpan.FromSeconds(30)));
-        await using var publicationLease = await publicationLeaseTask
-            .WaitAsync(TimeSpan.FromSeconds(30));
-        SeedIndependentValidatedEffectCache(
-            context.FileSystem,
-            publicationLease,
-            effectInput);
-        Assert.True(EffectAcceptedTurnPlanAuthority.TryPeekValidated(
-            context.FileSystem,
-            publicationLease,
-            out _));
-        EffectAcceptedTurnPlanAuthority.InvalidateValidated(
-            context.FileSystem,
-            publicationLease);
+            releaseBoundary.TrySetResult(true);
+            Assert.Null(await normalizationTask.WaitAsync(TimeSpan.FromSeconds(30)));
+            var publicationLease = await publicationLeaseTask.WaitAsync(TimeSpan.FromSeconds(30));
+            SeedIndependentValidatedEffectCache(context.FileSystem, publicationLease, effectInput);
+            Assert.True(EffectAcceptedTurnPlanAuthority.TryPeekValidated(context.FileSystem, publicationLease, out _));
+            EffectAcceptedTurnPlanAuthority.InvalidateValidated(context.FileSystem, publicationLease);
+        }
+        finally
+        {
+            releaseBoundary.TrySetResult(true);
+            await Record.ExceptionAsync(() => Task.WhenAll(normalizationTask, publicationLeaseTask ?? Task.CompletedTask));
+            if (publicationLeaseTask?.IsCompletedSuccessfully == true)
+            {
+                await publicationLeaseTask.Result.DisposeAsync();
+                publicationLeaseReleased = true;
+            }
+            output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention", method = nameof(CommonPlan_EffectCachePublicationAtCanonicalMutationBoundary_WaitsForCanonicalContour), root = context.RootPath,
+                paused, mainContentions, canonicalContentions, firstSettled = normalizationTask.IsCompleted,
+                secondSettled = publicationLeaseTask?.IsCompleted, publicationLeaseReleased
+            }));
+        }
     }
 
     [Fact]
     public async Task CommonPlan_PublicValidationPublishesBeforeWaitingNormalizerContinues()
     {
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var armed = false;
         var paused = 0;
         var validationReadEntered = new TaskCompletionSource<bool>(
@@ -527,9 +553,15 @@ public sealed class CanonicalStateNormalizerResourceTests
                 validationReadEntered.TrySetResult(true);
                 await releaseValidation.Task;
             },
+            MainOwnerLockContendedAsync = () =>
+            {
+                Interlocked.Increment(ref mainContentions);
+                normalizationContended.TrySetResult(true);
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
-                normalizationContended.TrySetResult(true);
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             }
         };
@@ -546,28 +578,41 @@ public sealed class CanonicalStateNormalizerResourceTests
         Task<AcceptedMechanicsPlan?>? normalizationTask = null;
         try
         {
-            await validationReadEntered.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            await Task.WhenAny(validationTask, validationReadEntered.Task).WaitAsync(TimeSpan.FromSeconds(30));
+            if (!validationReadEntered.Task.IsCompleted) await validationTask;
+            Assert.True(validationReadEntered.Task.IsCompletedSuccessfully);
             normalizationTask = context.Normalizer
                 .NormalizeAcceptedMechanicsAsync(backups: null);
-            await normalizationContended.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            await Task.WhenAny(normalizationTask, normalizationContended.Task).WaitAsync(TimeSpan.FromSeconds(30));
+            Assert.True(normalizationContended.Task.IsCompletedSuccessfully);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
             Assert.False(normalizationTask.IsCompleted);
+
+            releaseValidation.TrySetResult(true);
+            var issues = await validationTask.WaitAsync(TimeSpan.FromSeconds(30));
+            Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+            Assert.NotNull(normalizationTask);
+            var plan = await normalizationTask.WaitAsync(TimeSpan.FromSeconds(30));
+
+            Assert.NotNull(plan);
+            Assert.Null(await context.ReadJsonAsync(ResourceMaterializationContract.CommandPath));
+            Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+                context.FileSystem));
+            Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+                context.FileSystem));
         }
         finally
         {
             releaseValidation.TrySetResult(true);
+            await Record.ExceptionAsync(() => Task.WhenAll(validationTask, normalizationTask ?? Task.CompletedTask));
+            output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention", method = nameof(CommonPlan_PublicValidationPublishesBeforeWaitingNormalizerContinues), root = context.RootPath,
+                paused, mainContentions, canonicalContentions, firstSettled = validationTask.IsCompleted,
+                secondSettled = normalizationTask?.IsCompleted
+            }));
         }
-
-        var issues = await validationTask.WaitAsync(TimeSpan.FromSeconds(30));
-        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.NotNull(normalizationTask);
-        var plan = await normalizationTask.WaitAsync(TimeSpan.FromSeconds(30));
-
-        Assert.NotNull(plan);
-        Assert.Null(await context.ReadJsonAsync(ResourceMaterializationContract.CommandPath));
-        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
-            context.FileSystem));
-        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
-            context.FileSystem));
     }
 
     [Fact]
@@ -838,6 +883,8 @@ public sealed class CanonicalStateNormalizerResourceTests
     [Fact]
     public async Task CommonPlan_PublicValidationWaitsForNormalizerAndRevalidatesFreshState()
     {
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var armed = false;
         var paused = 0;
         var normalizationMutationEntered = new TaskCompletionSource<bool>(
@@ -856,9 +903,15 @@ public sealed class CanonicalStateNormalizerResourceTests
                 normalizationMutationEntered.TrySetResult(true);
                 await releaseNormalization.Task;
             },
+            MainOwnerLockContendedAsync = () =>
+            {
+                Interlocked.Increment(ref mainContentions);
+                validationContended.TrySetResult(true);
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
-                validationContended.TrySetResult(true);
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             }
         };
@@ -880,27 +933,40 @@ public sealed class CanonicalStateNormalizerResourceTests
         Task<IReadOnlyList<ValidationIssue>>? validationTask = null;
         try
         {
-            await normalizationMutationEntered.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            await Task.WhenAny(normalizationTask, normalizationMutationEntered.Task).WaitAsync(TimeSpan.FromSeconds(30));
+            if (!normalizationMutationEntered.Task.IsCompleted) await normalizationTask;
+            Assert.True(normalizationMutationEntered.Task.IsCompletedSuccessfully);
             validationTask = context.Validator
                 .ValidateAcceptedTurnRawResourceMaterializationAsync();
-            await validationContended.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            await Task.WhenAny(validationTask, validationContended.Task).WaitAsync(TimeSpan.FromSeconds(30));
+            Assert.True(validationContended.Task.IsCompletedSuccessfully);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
             Assert.False(validationTask.IsCompleted);
+
+            releaseNormalization.TrySetResult(true);
+            var plan = await normalizationTask.WaitAsync(TimeSpan.FromSeconds(30));
+            Assert.NotNull(validationTask);
+            _ = await validationTask.WaitAsync(TimeSpan.FromSeconds(30));
+
+            Assert.NotNull(plan);
+            Assert.Null(await context.ReadJsonAsync(ResourceMaterializationContract.CommandPath));
+            Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
+                context.FileSystem));
+            Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
+                context.FileSystem));
         }
         finally
         {
             releaseNormalization.TrySetResult(true);
+            await Record.ExceptionAsync(() => Task.WhenAll(normalizationTask, validationTask ?? Task.CompletedTask));
+            output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention", method = nameof(CommonPlan_PublicValidationWaitsForNormalizerAndRevalidatesFreshState), root = context.RootPath,
+                paused, mainContentions, canonicalContentions, firstSettled = normalizationTask.IsCompleted,
+                secondSettled = validationTask?.IsCompleted
+            }));
         }
-
-        var plan = await normalizationTask.WaitAsync(TimeSpan.FromSeconds(30));
-        Assert.NotNull(validationTask);
-        _ = await validationTask.WaitAsync(TimeSpan.FromSeconds(30));
-
-        Assert.NotNull(plan);
-        Assert.Null(await context.ReadJsonAsync(ResourceMaterializationContract.CommandPath));
-        Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
-            context.FileSystem));
-        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(
-            context.FileSystem));
     }
 
     [Fact]
