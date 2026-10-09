@@ -1,0 +1,97 @@
+{
+  "Categories": [
+    "portable-original-engine-ascension-close-linux",
+    "portable-save-optional-images-root-linux",
+    "portable-original-engine-finalized-replay-close-linux",
+    "portable-original-proposal-store-owning-close-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "6431c208c8698708740f5c6516a94eb54ffd3a75",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 50.4224087,
+  "Descriptors": [
+    {
+      "Name": "portable-original-engine-ascension-close-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-engine-ascension-close-linux",
+      "Categories": [
+        "portable-original-engine-ascension-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineAscensionOwnerRetainsGenuineUncertaintyOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineAscensionOwnerRetainsGenuineUncertaintyOnClose",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-original-engine-finalized-replay-close-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-engine-finalized-replay-close-linux",
+      "Categories": [
+        "portable-original-engine-finalized-replay-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineFinalizedReplayOwnerRetainsGenuineUncertaintyOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineFinalizedReplayOwnerRetainsGenuineUncertaintyOnClose",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-original-proposal-store-owning-close-linux-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-proposal-store-owning-close-linux",
+      "Categories": [
+        "portable-original-proposal-store-owning-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalProposalStoreRetainsActualPublishedWarningAndStopsOnUncertainty",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalProposalStoreRetainsActualPublishedWarningAndStopsOnUncertainty",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-save-optional-images-root-linux-integration-004",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-optional-images-root-linux",
+      "Categories": [
+        "portable-save-optional-images-root-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SaveOptionalImagesRootTests.OriginalSaveSkipsLinkedOptionalImagesRootAndPreservesLiteralHostNames",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SaveOptionalImagesRootTests.OriginalSaveSkipsLinkedOptionalImagesRootAndPreservesLiteralHostNames",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

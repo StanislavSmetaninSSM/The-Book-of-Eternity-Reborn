@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-proposal-store-owning-close-linux",
-      "reason": "T063/T065 independentfixture/design/exact4PASS4eacfec9 installedbyteidentical; originalProposalStore productionunchanged UNBUILT/UNRUN. Actualtypedresult/task/gen/rename/inbox/audit/samelease/knownlateclose/genuineCSP/refusalcontrols, no defaultnativebackend/workerprocess/durableACK. FreshPlan4 andactualoriginalbaseline4.",
+      "reason": "T063/T065 freshPlan232300 at6431c208; actual232700 original4 complete=3PASS/known_close1causalFAIL7.3002985s: actual bundle/inbox/audit and PublishedWithWarning replaced by Rejected after close. Existing isolated rename adapter/factory only, no Enter/worker/defaultnative/durableACK. Preserve original baseline before source guard; genuineCSP/refusal controls PASS.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -16,7 +16,7 @@
     },
     {
       "category": "portable-original-engine-finalized-replay-close-linux",
-      "reason": "T063/T065 independentlyapprovedcorrectedfixture2e1ec5c3 exactreplay2 installedbyteidentical; restagesactualrawsubmittedbytes afterrealFinalized, actualhistoryExactReplay/eligibilitymustpassbeforearm. Productionquarantineunchanged UNBUILT/UNRUN; freshcorrectedoriginal2 baseline withoutrepeatacceptedascensionknownbaseline. No fakehistory/receipt/native/B2/wholeflow.",
+      "reason": "T063/T065 corrected real durable retry fixture passes actual history-owned ExactReplay prerequisites. FreshPlan232300 at6431c208; actual232630 original2 complete=known1PASS/uncertain1causalFAIL19.3981892s: SAME primary masked by closeIO. Immutable initial2prepFAIL retained; quarantine source unchanged; preserve baseline before guard. No fakehistory/native/B2/fullflow.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -29,7 +29,7 @@
     },
     {
       "category": "portable-save-optional-images-root-linux",
-      "reason": "T063/T065 independentlyapprovedfixture/design/exact2 PASSfcbd3064 installedbyteidentical. OriginalSaveunchanged UNBUILT/UNRUN; currentdefaultSavevalidation, optionalrootlinkvsnormalexactnames, realmanifest/observedrelative reads/fulloutsidebytes. SharedfreshPlan9/3 withTreatmentGREEN3+Engineoriginal4; separateactualSaveoriginal2 baseline. Noexternal-read claim/native/B2/fullSaveLoad.",
+      "reason": "T063/T065 original232? availability RED retained (normal1PASS/linked1FAIL at231716); corrected b22822aa inspects fixed optional root before ResolvePath. Fresh shared Plan232300 at6431c208 selects10/4,0execution; separate actual232618 SaveGREEN2/2 PASS7.9163561s. Real manifest/exactnames/0linkedimagesreads/outsidebytes/staging/strict2roots; no fullSaveLoad/native/B2 qualification.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -42,7 +42,7 @@
     },
     {
       "category": "portable-original-engine-ascension-close-linux",
-      "reason": "T063/T065 source26eae3c4 retainsactualgenuineCSP+sameclose/noLater beforeordinarycatch. Original231602knownP/causalF and2unrelatedreplaypreparationFAIL immutable. Permanentexactascension2 selection, nextfreshGREEN2 only; no originalbaseline replay/native/B2/fullgame/knownlateclose.",
+      "reason": "T063/T065 original231602 knownPASS/causalFAIL and unrelated replay2prepFAIL immutable. Runtime26eae3c4; freshPlan232300 at6431c208; separateactual232606 ascensionGREEN2/2PASS7.7395915s, same genuineCSP+secondary/noLater/fullsettlement/strictroots. No oldbaseline replay/native/B2/fullgame/knownlateclose.",
       "contracts": [
         "#1553",
         "FR-002",

@@ -1,3 +1,21 @@
+## Four separate last-owner executions preserved before fixes — WIP, 2026-10-09
+
+Fresh integration Plan232300 at6431c208 selects10/4,0execution50.7403629s,
+bothcleanup. Separate actualascension2326062/2PASS7.7395915s; Save2326182/2PASS
+7.9163561s; correctedreplay232630complete=known1PASS/uncertain1causalFAIL
+19.3981892s; Proposal232700complete=3PASS/known_close1causalFAIL7.3002985s.
+Each1/1complete, bothcleanup/0skipduplicateTimeout/strictownedrootsabsent.
+No aggregateGREEN10. Ascension samegenuineCSP+secondary/noLater accepted; Save
+normalexactnames+manifest and linkedoptionalroot0reads/fulloutsidebytes accepted.
+Replay now passes actual Finalized/history-ownedExactReplay prerequisites; genuine
+CSP is masked by sameoriginalleasecloseIO. Original2prepFAIL immutable. Proposal
+actualbundle/inbox/audit persists but realPublishedWithWarning becomes Rejected
+becauseoriginalRelease(false,null) closes withIO; unknownalreadySAMECSP and
+prepublicationtaskrefusal controlsPASS. Archive originals/sourcepins before
+minimalreplayCSP guard and Proposalconfirmedresult guard. No native-defaultbackend,
+worker/host/Enter/ledger/ACK/provider/game/B2-B5/wholeflow qualification.
+T061–T065 and finalsemanticcensus/GitHub-onlyemptyclone remainopen.
+
 ## Corrected replay2 and original ProposalStore4 fixtures installed — test-first WIP, 2026-10-09
 
 Independentfixture/design gates PASS2e1ec5c3 /4eacfec9 installedbyte-identical.
