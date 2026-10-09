@@ -1,3 +1,52 @@
+## F18 shared-helper five — Linux5/5 PASS, evidence review pending, 2026-10-09
+
+Continuation from published d8799cfde6c8401d4ab93e8399f6aa428387bdc0; both local
+stop files matched remote bytes and exact commit/tree, checkout synchronized clean
+without overwriting worktree data. Ordinary Git ls-remote now succeeds; no credential
+change. Explicitly launched `gpt-6-astra` / `xhigh` SOURCE/FIXTURE/EXACT5 PASS for
+b875→4fec, including inert d879 sketch. Root continuation uses user-selected Sol6.1xhigh.
+
+Fresh integration Plan153933 atd879 selects5/3,0execution92.6429347s (build88.2293188s).
+Actual154140 **5/5PASS**, complete3/3,80.6065298s,0skip/duplicate/timeout,bothcleanup.
+Exactly dependent saved-choice normal/position2, postpublication/poststory interruption2,
+automatic cold1. Original decisions/correction/Ready/cold/replay assertions pass; five
+final raw witnesses retain identical generation and absent current journal, zero new
+phase witnesses claimed. All five emitted original resource roots are removed.
+Commands are the three finite owners in the stop entry: PlanOnly then NoBuild,
+Parallelism1. No replay of the unchanged earlier nine passing obligations.
+
+Discovery154401:575categories/11344methods-files valid,0tests,9.0424466s,bothcleanup.
+Fresh integrationd879/unit533078a9; production/project/unit bodies unchanged. The first
+catalog command incorrectly included Parallelism1, unsupported in the Audit parameter
+set: immediate parameter-binding failure,0build/discovery/tests; log retained separately.
+Correct command: `./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild`.
+[Evidence packet](recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json)
+retains prior66artifacts/57pins unchanged plus new five/plan/catalog/raw/cleanup material;
+all stored/decompressed/original hashes and source pins verified before publication.
+Independent RAW5/CATALOG/CARRIER review remains pending, so publication is WIP acceptance.
+
+Previous independent b875 RAW4/HISTORY PASS supersedes historical pending labels below.
+Current original16 obligations are composed9PASS + separate5PASS, old bindingcold1FAILED
+and nativeworker1UNRUN; never one16GREEN run. Binding history remains the paused B2
+contract conflict, no gameplay/registry/oracle workaround. C4/recovery3 finalgate PASS1d643a73;
+native/mods finalgate PASSe9143e82. Historical results remain pinned, not rerun.
+
+Process-report correction: /proc descriptor census cannot inspect every existing process.
+`ps` still shows the two old idle MSBuild nodeReuse servers311962/312391; earlier stop
+wording that they disappeared is not supported. They are not active builds. Selected
+runner cleanup passed; fresh census after this bounded block must distinguish active
+build/test processes from idle servers. No credentials/main/CI/issues were changed.
+
+Next after evidence gate: qualify real settings/audio services nested in existing
+SessionOperationContext→coordinator binding. Add exact unknown-config, committed-config
+plus uncertain lock release, confirmed rollback/healthy controls and lock-acquire/release
+failures; prove original result/cause, generation/runtime/raw evidence and zero ordinary
+readmission after unresolved/follow-up outcome. This is supported service composition,
+not an HTTP-route claim. Runtime correction follows causal evidence, using existing
+BlockPostOperationReadmission on CapturePreparedResult and both outer catches only.
+Other Image-source/F16signed+ZIP/original-owned-close/current inventory/fresh restore
+queues remain open; T061–T065 unchecked, B2–B5 paused, no native Windows qualification.
+
 ## SAFE STOP — migration #1553, model handoff, 2026-10-09
 
 Owner requested a safe stop for a separate next turn using Sol 6.1 xhigh. This does

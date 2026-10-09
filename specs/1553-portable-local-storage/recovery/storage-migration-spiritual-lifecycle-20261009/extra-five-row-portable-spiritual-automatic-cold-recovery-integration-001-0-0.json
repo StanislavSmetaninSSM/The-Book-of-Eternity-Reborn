@@ -1,0 +1,9 @@
+{
+  "kind": "spiritual-lifecycle-publication",
+  "boundary": "automatic-cold-and-replay-actors-settled",
+  "root": "/tmp/boe-resource-materialization-295ff920eba04a058310f4b0b7c84262",
+  "beforeGeneration": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI3NDFjM2VlNTFlMzY0NmQyYjUwOGRiZTQzMzkzYzkyMiJ9",
+  "generation": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI3NDFjM2VlNTFlMzY0NmQyYjUwOGRiZTQzMzkzYzkyMiJ9",
+  "journal": null,
+  "events": []
+}
