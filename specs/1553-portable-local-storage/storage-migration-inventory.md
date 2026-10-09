@@ -136,9 +136,11 @@ verify exact SHA/tree, clean status, no `.git/objects/info/alternates` and
 `git fsck --full --strict`. Read AGENTS.md, development-workflow, testing,
 constitution, spec/plan/tasks and this current map before changes. Preserve the
 named immutable packet files and their historical Git-source hashes. The census
-scanner requires source96553e1e bytes (its embedded SOURCE), not a silently
-retargeted snapshot; use a clean checkout at that SHA and `--out` a separate
-empty directory for reproduction. Current metadata/scanner receipts do not
+scanner was introduced in metadata carriere631b9b7 and requires source96553e1e
+bytes (its embedded SOURCE), not a silently retargeted snapshot. Reproduce from
+a clean e631b9b7 or later metadata carrier that contains the scanner and retains
+those2239pinned source blobs, using `--out` a separate empty directory. A clean
+96553e1e checkout does not contain this scanner. Current metadata/scanner receipts do not
 replace the target project fresh-build → bounded original tests → independent
 review gates for the next implementation. No desktop task or tool reinitialization
 is required.
