@@ -159,7 +159,9 @@ internal static class MainWorkerStorageOutcomeScenario
                 PinCountAfter = (int)typeof(GmSessionRunCoordinator).GetField("_pins", flags)!.GetValue(owner)!,
                 SlotRetained = Slots().Contains(SlotKey()), reaper.EntryCount, reaper.OwnedCapacity,
                 prior, afterImages = prior.ToDictionary(pair => pair.Key, pair => Bytes(pair.Key), StringComparer.Ordinal),
-                AuditAfter = Bytes(fs.ResolvePath(GmWorkerAuditLog.AuditLogPath)), Cut = probe.Evidence()
+                AuditAfter = Bytes(fs.ResolvePath(GmWorkerAuditLog.AuditLogPath)),
+                AuditCommitted = probe.Committed.GetValueOrDefault(fs.ResolvePath(GmWorkerAuditLog.AuditLogPath)),
+                Cut = probe.Evidence()
             };
         }
         Require((bool)evidence["OriginalWorkerMainRetired"]!, "original main stop did not retire its owner");
