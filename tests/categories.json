@@ -2,6 +2,42 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-owned-api-close-consistency",
+      "responsibility": "Self-owned ordinary API first-CSP-before-close consistency: actual facade outcomes, one conditional append Unknown, real release component and existing nonpublication return controls.",
+      "excludes": "No fabricated self-owned simultaneous publication/Dispose-failure RED, native execution, broad facade19 or original main receipt changes.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision",
+            "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry",
+            "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure",
+            "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualConditionalAppendUncertaintyRetainsTheOriginalDecision",
+            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition",
+            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FileSystemManagerTests.AppendFileAtomicIfCurrentSessionAsync_DropsStaleSessionTelemetry",
+            "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-prepared-shining-outcome-linux",
       "responsibility": "Four prepared-Shining cleanup outcome controls: original idle normalization and explicitly helper-only Clear, each real publication Unknown versus known rollback best effort.",
       "excludes": "No fabricated successful bootstrap, live GM/provider, full Shining gameplay, generation-replacement or secondary close-fault qualification.",

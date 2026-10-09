@@ -824,8 +824,19 @@ public partial class FileSystemManager
 
     public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        await WriteFileAtomicBytesAsync(writeLock, relativePath, content);
+        var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try { await WriteFileAtomicBytesAsync(writeLock, relativePath, content); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLock, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     internal async Task WriteFileAtomicBytesAsync(
@@ -947,17 +958,31 @@ public partial class FileSystemManager
         string expectedSessionGeneration,
         CancellationToken cancellationToken)
     {
-        await using var writeLease = await AcquireCanonicalWriteLeaseAsync(
+        var writeLease = await AcquireCanonicalWriteLeaseAsync(
             cancellationToken: cancellationToken);
-        if (!IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
-            return false;
+        Exception? publicationUncertainty = null;
+        try
+        {
+            if (!IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+                return false;
 
-        await AppendFileAtomicAsync(
-            writeLease,
-            relativePath,
-            content,
-            cancellationToken);
-        return true;
+            await AppendFileAtomicAsync(
+                writeLease,
+                relativePath,
+                content,
+                cancellationToken);
+            return true;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     public async Task<CanonicalFileMutationResult> CompareExchangeFileBytesAsync(
@@ -965,8 +990,19 @@ public partial class FileSystemManager
         byte[]? expectedContent,
         byte[]? desiredContent)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        return await CompareExchangeFileBytesAsync(writeLock, relativePath, expectedContent, desiredContent);
+        var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try { return await CompareExchangeFileBytesAsync(writeLock, relativePath, expectedContent, desiredContent); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLock, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     internal async Task<CanonicalFileMutationResult> CompareExchangeFileBytesAsync(
@@ -3354,8 +3390,19 @@ public partial class FileSystemManager
 
     private async Task DeleteFileWithLockAsync(string relativePath)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        DeleteFile(writeLock, relativePath);
+        var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try { DeleteFile(writeLock, relativePath); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLock, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     private static async Task RecordCanonicalMutationIntentAsync(

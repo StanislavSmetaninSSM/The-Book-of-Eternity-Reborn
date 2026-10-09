@@ -1,4 +1,7 @@
 using System.Text.Json;
+using System.Runtime.ExceptionServices;
+using System.Security.Cryptography;
+using Xunit.Abstractions;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging;
@@ -13,10 +16,12 @@ public sealed class PortableOrdinaryPublicationOutcomeTests : IDisposable
     private readonly FileSystemManager _files;
     private readonly WarningLogger _logger = new();
     private Action<TrustedLocalPublicationPhase, int>? _observer;
+    private readonly ITestOutputHelper _output;
     private string Active => Path.Combine(_files.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
 
-    public PortableOrdinaryPublicationOutcomeTests()
+    public PortableOrdinaryPublicationOutcomeTests(ITestOutputHelper output)
     {
+        _output = output;
         _files = new FileSystemManager(_root, _logger, PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks { LocalPublicationObserver = (phase, index) => _observer?.Invoke(phase, index) });
         _files.EnsureDirectoryStructure();
@@ -24,6 +29,66 @@ public sealed class PortableOrdinaryPublicationOutcomeTests : IDisposable
         File.WriteAllBytes(_files.SessionGenerationPath,
             JsonSerializer.SerializeToUtf8Bytes(new { SchemaVersion = 1, GenerationId = Guid.NewGuid().ToString("N") }));
         File.WriteAllBytes(_files.ResolvePath(Member), [0x41]);
+    }
+
+    [Fact]
+    public async Task ActualConditionalAppendUncertaintyRetainsTheOriginalDecision()
+    {
+        string generation;
+        await using (var lease = await _files.AcquireCanonicalWriteLeaseAsync())
+            generation = _files.GetOrCreateSessionGeneration(lease);
+        var forward = new InjectedFailure();
+        CoordinatedStatePublicationUncertainException? original = null;
+        var reached = 0;
+        byte[]? journalAtCut = null;
+        byte[]? published = null;
+        byte[] foreign = [0x83, 0x97, 0xA1];
+        bool Contains(Exception error) => ReferenceEquals(error, forward) ||
+            error is AggregateException aggregate && aggregate.InnerExceptions.Any(Contains) ||
+            error.InnerException is { } inner && Contains(inner);
+        EventHandler<FirstChanceExceptionEventArgs> firstChance = (_, e) =>
+        {
+            if (e.Exception is CoordinatedStatePublicationUncertainException actual && Contains(actual))
+                original ??= actual;
+        };
+        _observer = (phase, index) =>
+        {
+            if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
+            Assert.Equal(0, index);
+            AssertActualMember();
+            reached++;
+            journalAtCut = File.ReadAllBytes(Active);
+            published = File.ReadAllBytes(_files.ResolvePath(Member));
+            File.WriteAllBytes(_files.ResolvePath(Member), foreign);
+            throw forward;
+        };
+        Exception? failure;
+        AppDomain.CurrentDomain.FirstChanceException += firstChance;
+        try
+        {
+            failure = await Record.ExceptionAsync(() =>
+                _files.AppendFileAtomicIfCurrentSessionAsync(Member, "B", generation));
+        }
+        finally
+        {
+            _observer = null;
+            AppDomain.CurrentDomain.FirstChanceException -= firstChance;
+        }
+        var retainedJournal = File.Exists(Active) ? File.ReadAllBytes(Active) : null;
+        var retainedMember = File.ReadAllBytes(_files.ResolvePath(Member));
+        _output.WriteLine(JsonSerializer.Serialize(new
+        {
+            generation, reached, published, journalAtCut, retainedJournal, retainedMember,
+            JournalSha256 = journalAtCut == null ? null : Convert.ToHexString(SHA256.HashData(journalAtCut)),
+            OriginalUncertainty = original?.ToString(), Failure = failure?.ToString(),
+            SameOriginal = ReferenceEquals(original, failure)
+        }));
+        Assert.Equal(1, reached);
+        Assert.Equal(new byte[] { 0x41, 0x42 }, published);
+        Assert.NotNull(original);
+        Assert.Same(original, failure);
+        Assert.Equal(journalAtCut, retainedJournal);
+        Assert.Equal(foreign, retainedMember);
     }
 
     [Theory]
@@ -146,5 +211,7 @@ public sealed class PortableOrdinaryPublicationOutcomeTests : IDisposable
     {
         _observer = null;
         if (Directory.Exists(_root)) Directory.Delete(_root, true);
+        _output.WriteLine(JsonSerializer.Serialize(new { OwnedFixtureRoot = _root, OwnedFixtureRemoved = !Directory.Exists(_root) }));
+        Assert.False(Directory.Exists(_root));
     }
 }

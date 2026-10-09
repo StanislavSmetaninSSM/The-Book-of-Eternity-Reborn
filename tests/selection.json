@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-owned-api-close-consistency",
+      "reason": "Source-consistency final15: existing actual facade9 + explicit release-component3 + new actual conditional Unknown1 + original integration current/stale append1 and CAS conflict1. Existing broader owners unselected; no simultaneous self-owned double-fault execution claim.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-prepared-shining-outcome-linux",
       "reason": "Final5 atbbf/023023 passes unchanged causal/known4 plus original pure gate1; same actual CSP/no later measured work. Dead private cluster is separately source-censused5→0, not a runtime RED.",
       "contracts": [

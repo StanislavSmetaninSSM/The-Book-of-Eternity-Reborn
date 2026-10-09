@@ -1,3 +1,33 @@
+## Owned API close consistency / exact15 WIP — 2026-10-09
+
+Prepared-Shining final carrier1265 stores47 artifacts/27 pins; parent verification PASS, independent
+final gate pending. This next T062/T065 unit applies the already-tested Story Append close pattern
+to public Bytes (text delegates here), public CAS, private self-owned Delete, and internal self-owned
+session-checked Append. Each captures only direct actual CSP before its original lease disposal,
+then invokes unchanged ReleaseOwnedLeaseAsync(completed:false). No new lease, global latch,
+publication policy, swallowing of non-CSP close failure, or completed-write warning policy change.
+Public CAS's live production callers use explicit leases; this wrapper is API/test coverage.
+
+The defect is structural source evidence: await-using can replace a body exception with a release
+failure; current lease Dispose cannot retain the unseen body CSP. We do not fabricate a simultaneous
+self-owned double-fault causal RED. Existing actual ExternalPublicationContext disposal tests are
+component evidence, with synthetic primary in two rows, not public-wrapper double-fault proof.
+No new production hook exposes the internal lease. Four wrappers keep capture before exact original
+release; normal returns, cancellation and non-CSP body/close behavior stay unchanged.
+
+Reviewer-approved finite15: actual self-owned facade Unknown4/known rollback4/committed-debt1;
+release-component3; one new real current-generation conditional Append Unknown; existing integration
+conditional current-success/stale-false1 and CAS-conflict1. The new row captures the first actual
+publisher CSP containing its unique nontransient cut, exact active journal and foreign member before
+asserting same original decision. No constructed CSP, explicit recovery or replay. Unit fixture
+cleanup now emits actual owned-root removal; existing business bodies are unchanged. Selected exact
+methods have no overlap; broad historical owners remain unselected. Source/selection gate before
+fresh both-project Plan15 and actual15; no build/test has run at this checkpoint.
+
+No gameplay/math/schema/GM-authoring contract changes, so no prompt/example edit. Secondary-close
+fault/native/full migration remain unqualified. Separate preparation owners, Explorer/Ready-worker/
+C2 and F16/F18 continue after this bounded consistency unit.
+
 ## Prepared-Shining final5 / current catalog — 2026-10-09
 
 Runtimebbf1c29f independent SOURCE/EXACT5 and causal/census integrity PASS. Matching Plan022903
