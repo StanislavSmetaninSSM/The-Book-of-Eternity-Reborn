@@ -1,3 +1,11 @@
+## Browser post-projection source closure WIP — 2026-10-09
+
+Afterlife three duplicate-request presenters used to replace the projected result, and two archive
+success presenters overwrote its message. They now apply ordinary presentation only without actual
+follow-up/continuation blocking, preserving the factual result and safe warning otherwise. These five
+adjacent paths are source-qualified; forge whole-Submit rows do not claim their executed coverage.
+No new canonical action, outcome inference or protocol. Exact31 remains pending frozen source gate.
+
 ## Explorer known-selector source correction — 2026-10-09
 
 Unbuilt3ee03054 proposed the historical reroll-cancel recipe as a known neighbor. Static recheck found

@@ -323,7 +323,7 @@ public sealed class BrowserAfterlifeWriteService
                 : $"ГМ получит запрос разговора с Хранителем {guardianName}.",
             payload: null);
 
-        return duplicateDuringWrite
+        return duplicateDuringWrite && !writeResult.NeedsFollowUp && !writeResult.ContinuationBlocked
             ? BuildDuplicateGuardianSocialResult(guardianName, interactionType)
             : writeResult;
     }
@@ -413,7 +413,8 @@ public sealed class BrowserAfterlifeWriteService
             $"ГМ получит просьбу подготовить состав Обители {abode.AbodeName} Хранителя {abode.GuardianName}.",
             payload: null);
 
-        return duplicateDuringWrite ? BuildDuplicateResidentsRequestResult(abode) : writeResult;
+        return duplicateDuringWrite && !writeResult.NeedsFollowUp && !writeResult.ContinuationBlocked
+            ? BuildDuplicateResidentsRequestResult(abode) : writeResult;
     }
 
     private async Task<BrowserPromptWriteResult> ApplyResidentInteractionAsync(
@@ -489,7 +490,8 @@ public sealed class BrowserAfterlifeWriteService
                 : $"ГМ получит запрос разговора с обитателем {resident.Entry.DisplayName}.",
             payload: null);
 
-        return duplicateDuringWrite ? BuildDuplicateInteractionRequestResult(resident, interactionType) : writeResult;
+        return duplicateDuringWrite && !writeResult.NeedsFollowUp && !writeResult.ContinuationBlocked
+            ? BuildDuplicateInteractionRequestResult(resident, interactionType) : writeResult;
     }
 
     private async Task<BrowserPromptWriteResult> ApplyResidentTransferAsync(
@@ -2379,7 +2381,8 @@ public sealed class BrowserAfterlifeWriteService
             "Архивная консультация создана",
             completionMessage,
             payload);
-        return result.Success ? result with { Message = completionMessage } : result;
+        return result.Success && !result.NeedsFollowUp && !result.ContinuationBlocked
+            ? result with { Message = completionMessage } : result;
     }
 
     private async Task<BrowserPromptWriteResult> ApplyArchiveProjectFuelAsync(
@@ -2470,7 +2473,8 @@ public sealed class BrowserAfterlifeWriteService
             "Подпитка проекта создана",
             completionMessage,
             payload);
-        return result.Success ? result with { Message = completionMessage } : result;
+        return result.Success && !result.NeedsFollowUp && !result.ContinuationBlocked
+            ? result with { Message = completionMessage } : result;
     }
 
     private async Task<BrowserPromptWriteResult> ApplySoulRelicEquipAsync(
