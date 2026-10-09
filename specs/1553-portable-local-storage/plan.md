@@ -22,8 +22,10 @@ cleanup implementation. No exact root-receipt claim is added for those three.
 retains83artifacts/originals54pins: initial Plan0, original4P8F with one authenticCSP
 and two raw-bypass failures, catalog refusal before build/tests, pure spelling4P4F,
 and exact23 GREEN. Root verifies stored/expanded/original hashes and frozen source.
-Next independent GREEN/raw carrier review, matching discovery-only catalog and final
-metadata gate. Next F16 unit is original constructor/gallery directory admission;
+Fresh both-project discovery100742 at clean carriercc2a6a95 succeeds:
+537categories/11333methods-files,0executed,63.7886737s,bothcleanup. Packet now
+88artifacts/originals68pins, all root-verified. Independent GREEN/raw and final
+metadata gates follow. Next F16 unit is original constructor/gallery directory admission;
 listings/story exports/path producers and F18/other owning closes remain open.
 No wholeF16/settings/GameLoop/native/actualsecondaryclose/B2–B5 completion.
 
