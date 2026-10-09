@@ -1,3 +1,19 @@
+## Original item trade/transport owners — test-first WIP, 2026-10-09
+
+Installed independently reviewed14-case fixturea9e175cb byteidentically. Five
+original owningnulllease branches: NPCBuy/Sell/BuyBack, Storage/Vehicle each
+deposit/retrieve. Supportedsealed resource-free items, currenttrade/location/
+index/pristineresourceauthority; Buyback setup derivesactual priorSell entry.
+Known typedDTO/money/slot/buyback/currentcarrier/history/validation; unknown
+sourcecarrier firstnonGuard actualcut/originalowner/sameCSP+lateclose/full
+settlement/allothergame_state bytes/currentgeneration/strict14roots.
+Runtimeunchanged UNBUILT/UNRUN. Afterengine sourcegate, one fresh integration
+Plan22/2 forengine requiredGREEN8 andoriginaltradebaseline14; actualruns
+separately withfreshsamebuild, not aggregateGREEN22. Combinednew-owner
+fullcatalog deferreduntilnextstableacceptedbatch, since14 addsanother owner;
+selectedplanning isnot fullcatalogqualification. No GM schema/mechanic/pending
+format change, B2–B5 paused andT061–T065 unchecked. Inventory finalgatePASS72a.
+
 ## Original engine cleanup correction installed — WIP, 2026-10-09
 
 Exactlyfour original cleanup scopes capture/rethrow genuine CSP and callexisting
