@@ -99,11 +99,11 @@ public sealed partial class GameEngineTurnLifecycleTests
                     await fs.WriteFileAtomicAsync(lease, AfterlifeSpiritualConflictState.StatePath,
                         AfterlifeResourceCutoverTests.CreateSpiritualStagedCorrectionA(draft).ToJsonString());
                     var response = new SpiritualWoundContinuationResponse { ContinuationId = a.ContinuationId, WoundDecisions = [] };
-                    await fs.WriteFileAtomicAsync(lease, requestPath, JsonSerializer.Serialize(new ValidationRepairRequest
+                    await fs.WriteFileAtomicAsync(lease, requestPath, JsonSerializer.Serialize(new
                     {
-                        SessionId = request.SessionId, RequestId = request.RequestId, TurnNumber = request.TurnNumber,
-                        Source = "storage-original", DetectedAtUtc = DateTime.UtcNow.ToString("O"),
-                        RevalidationAttempt = 1, SpiritualWoundContinuation = a
+                        sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+                        source = "storage-original", detectedAtUtc = DateTime.UtcNow.ToString("O"),
+                        revalidationAttempt = 1, spiritualWoundContinuation = a
                     }, SnapshotHashJsonOpts));
                     await fs.WriteFileAtomicAsync(lease, readyPath, JsonSerializer.Serialize(new
                     {

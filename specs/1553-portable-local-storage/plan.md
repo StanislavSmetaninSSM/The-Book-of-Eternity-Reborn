@@ -17,7 +17,13 @@ remain separate from the current uncertain single-file publication. A synthetic 
 uses the real issued envelope; no GM/process/provider is started. Actual secondary close
 failure and whole accepted-turn/C4/B2–B5/native Windows remain outside this slice.
 
-Fixture12 is unbuilt/unrun; no RED or success claimed. Next independent source/fixture/
+Fixturefc9258b3 fresh Plan092048 failed compile before discovery: CS0246 because
+ValidationRepairRequest is a private nested engine type. Zero tests,39.2859918s;
+[raw packet](recovery/storage-migration-c2-engine-20261009/manifest.json) retains
+2artifacts/originals40pins. Replace only the fixture transport serialization with
+an anonymous exact lower-camel envelope carrying the same authenticated metadata
+and actual A. This is preparation failure, not behavioral RED. Runtime unchanged.
+Corrected fixture12 is unbuilt/unrun. Next independent source/fixture/
 exact12 gate, fresh Plan12 then actual causal run. Only demonstrated catch boundaries
 and their owning close scopes may change afterward. Existing service26 is unaffected
 and is not replayed. No gameplay/GM-authored field contract changes are proposed.
