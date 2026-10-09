@@ -117,6 +117,7 @@ public sealed class ImageDirectoryAdmissionTests(ITestOutputHelper output)
             Ansi = AnsiSupport.No, ColorSystem = ColorSystemSupport.NoColors,
             Interactive = InteractionSupport.No, Out = new AnsiConsoleOutput(consoleText)
         });
+        AnsiConsole.Console.Profile.Width = 240;
         try
         {
             DesktopOpenResult? result = null;

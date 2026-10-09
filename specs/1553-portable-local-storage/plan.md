@@ -1,3 +1,20 @@
+## F16 gallery partial verification and fixture correction — 2026-10-09
+
+Independent SOURCE/RED-RAW/EXACT8 PASSaae3660b. Fresh both-project Plan102616
+succeeds8/2,0executed,59.7319487s. Actual102723 stops after integration4:
+**2PASS/2FAIL**,10.7927608s,bothcleanup,no timeout/skip/duplicate; original unit4
+remain unexecuted. Constructor and committed-debt cases pass. Unknown and symlink
+correctly yield Failed without association; prior storage/retained-byte assertions
+pass, then the contiguous console-path assertion fails because default80-column
+rendering wraps `/images/` and `npcs` across lines. Raw output confirms the exact
+path is present with a rendering newline. This is fixture width, not storage RED.
+
+Set only the new fixture console width to240, matching DesktopHelpersFixture's
+existing exact-path controls. Runtime remains aae366; do not weaken path assertions.
+The packet retains this partial separately:38artifacts/originals48historicalpins.
+Next independent narrow raw/fixture gate then fresh Plan8 and actual8; no GREEN,
+wholeF16, native, session-rotation, secondary-close or settings/GameLoop claim yet.
+
 ## F16 original gallery causal4 and runtime WIP — 2026-10-09
 
 Independent corrected fixture/EXACT4 PASS8d0f064d. Fresh Plan101808 succeeds:
