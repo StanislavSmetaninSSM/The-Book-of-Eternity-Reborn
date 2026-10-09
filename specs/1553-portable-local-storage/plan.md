@@ -1,4 +1,4 @@
-## Current cloud handoff — Story12 evidence accepted, metadata follow-up, 2026-10-09
+## Current cloud handoff — bounded Story12 accepted, 2026-10-09
 
 Source #1553; sole-writer branch `1553-storage-migration-cloud-20261008`, base/main
 `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. Runtime/tested source remains
@@ -11,7 +11,8 @@ Fresh both-project `-ValidateCatalog` at clean `c92f24327e1fd399c9afab444205c289
 integration build42.9449717s/unit12.2583623s,bothcleanup. This is discovery only,
 not additional runtime PASS. [Story packet](recovery/storage-migration-story-read-export-20261009/manifest.json)
 has70 artifacts/originals60 frozen source pins, root-verified. Exact remote/selected-file recovery is verified below. Independent RAW/CATALOG/
-CARRIER integrity PASS at5cabbfec; two stale selection reasons are corrected below.
+CARRIER integrity PASS at5cabbfec; focused final metadata/recovery PASS at
+59d091e0e982b50ba3a3102af6c3e5b8bd6aba61 closes the two stale reason strings.
 Do not replay passed12.
 All runtime/fixture/catalog bytes are unchanged since the tested source.
 
@@ -45,7 +46,11 @@ fixture-only unbuilt/unrun WIP. Corrected only those two reason strings to actua
 a5d9684e/110318 status; parsed selection excluding reasons is exactly unchanged.
 No runtime, fixture, catalog membership or contracts changed; no test replay needed.
 The restoration receipt supplement ef7c62b9 preserves all60 independently downloaded
-historical source files as well. Final focused metadata confirmation follows.
+historical source files as well. Focused final independent Astra XHigh metadata/recovery PASS at59d091e0 closes P3.
+Reviewer independently hashed all60 recovered historical source files against their
+exact Git blobs; no remaining blocker for bounded Story12. No runtime/test replay.
+This final status-only checkpoint records that completed review; remaining migration
+queues and the selected-only recovery limitation above are unchanged.
 
 ## Story selected-file recovery — verified 2026-10-09
 
