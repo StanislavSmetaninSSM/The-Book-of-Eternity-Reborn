@@ -17,7 +17,11 @@ chains are harmless structure; reject arbitrary children/links/files, do not dep
 post-commit pruning that could race cleanup debt or be interrupted. Existing common
 replacement publishes all deletion+generation members. No new authority/schema/GM
 capability, so no prompt/example update is required. Next source/selection review,
-focused empty-chain RED, then minimal runtime fix and exact target verification.
+exact9 baseline (gacha and empty-chain positives expected RED), then minimal runtime
+fix and exact target verification. Before execution source review found BOM-prefixed
+request parsing; corrected to BOM-aware File.ReadAllText. Fresh both-project Plan120904
+on c363 selected9/2,0executed in111.2183523s. After this one unit fixture correction,
+fresh unit output is required; unchanged integration provenance remains c363.
 B2–B5 paused; wholeF18/F16/owned-close/registry continue after this block.
 
 ## F18 causal gacha replacement established; dual3 measured — 2026-10-09

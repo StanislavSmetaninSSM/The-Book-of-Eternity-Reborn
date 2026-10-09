@@ -576,7 +576,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         {
             case "request-mismatch":
                 var requestPath = _fs.ResolvePath("input/turn_request.json");
-                var request = JsonNode.Parse(File.ReadAllBytes(requestPath))!.AsObject();
+                var request = JsonNode.Parse(File.ReadAllText(requestPath))!.AsObject();
                 request["requestId"] = Guid.NewGuid().ToString("N");
                 File.WriteAllText(requestPath, request.ToJsonString());
                 break;
