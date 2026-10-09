@@ -1,3 +1,31 @@
+## F16 Story exact12 GREEN — catalog/final gate pending, 2026-10-09
+
+Independent SOURCE/RED-RAW/EXACT12 PASS at tested clean source
+`a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132`. Fresh Plan110221 succeeds12/2,
+0executed,50.3996228s (Build-integration46.0985257s). Both selected descriptors
+are integration: the earlier future wording “both-project Plan12” was imprecise;
+unit is not built by this selection. Actual110318: **12/12 PASS**,2/2descriptors,
+11.1803219s,bothcleanup,no skipped/duplicate/timeout. Next catalog must build both
+projects freshly; NoBuild is not justified for the stale unit assembly.
+
+Root verified actual /story chapter/all reach original common MemberPublished,
+retain authentic nonCommitted journal/member hashes/foreign target bytes and the
+same CSP, with0 later reads/mutations/admissions/recovery/publication/prompt/key.
+Public list/read refuse retained Unknown before any source read. Linked leaves
+refuse without read-through; BOM/physical lines/lastN/missing and reached ordinary
+IOException controls PASS. Original all-export removes real Committed debt before
+source read, then publishes exact output; chapter preserves displayed turn91 and
+literal Linux backslash name. Both positive exports retain actual Committed journal/
+After hash/UTF8 BOM and release before a separately counted same-root key probe.
+All10 independent new roots are explicitly removed; old console/browser2 retain
+their original fixture cleanup, without a new explicit-root receipt claim.
+
+[Packet](recovery/storage-migration-story-read-export-20261009/manifest.json)
+contains65 artifacts/originals40source pins, root verified. Runtime/fixture unchanged
+sincea5d. Next fresh both-project discovery-only catalog, then final independent
+RAW/CATALOG/CARRIER review and source recovery. No full-engine/native/rotation/
+secondary-close/timestamp collision or wholeF16 claim; B2–B5 paused,T061–T065 open.
+
 ## F16 Story admitted read/export correction — WIP/unbuilt/unrun, 2026-10-09
 
 Source #1553,R25/F16,T063/T064/T065. Baseline packet preserved at60fe9707;

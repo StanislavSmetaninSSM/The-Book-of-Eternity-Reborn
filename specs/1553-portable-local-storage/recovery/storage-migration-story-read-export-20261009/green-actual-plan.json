@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "portable-story-read-export-linux",
+    "portable-story-read-export-known"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.172438,
+  "Descriptors": [
+    {
+      "Name": "portable-story-read-export-known-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-story-read-export-known",
+      "Categories": [
+        "portable-story-read-export-known"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Story_RendersReaderWithoutException|FullyQualifiedName=BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_Story_RendersReadableEntriesWithoutStoryFileNames",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Story_RendersReaderWithoutException",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_Story_RendersReadableEntriesWithoutStoryFileNames",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-story-read-export-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-story-read-export-linux",
+      "Categories": [
+        "portable-story-read-export-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.StoryReadExportAdmissionTests.OriginalStoryReadsAndExportsKeepStorageAuthority",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.StoryReadExportAdmissionTests.OriginalStoryReadsAndExportsKeepStorageAuthority",
+          "Cases": 10
+        }
+      ]
+    }
+  ]
+}
