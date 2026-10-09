@@ -1,3 +1,27 @@
+## F18 Treatment2 — one PASS / one observer prerequisite failure, 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT2 PASS8c49f44f. Fresh integration Plan1400132/1,
+0execution50.0762459s; actual140108 completes2/2 with1PASS/1FAIL20.0864523s,
+bothcleanup,0skip/duplicate/timeout. Commands category portable-treatment-committed-observers
+with -Parallelism1 -PlanOnly then -NoBuild. First actual command-proof row passes:
+genuine committed command, exact next-boundary whitespace corruption, original typed
+quarantine/energy/tree/hold-release/competing-grant assertions, unchanged generation/no
+journal. Both actual fixture leases inactive and2roots removed.
+
+Second fails the NEW observer Arm prerequisite BEFORE terminal release. Original
+PublishCachedResourcePlanOpen calls full AcceptedTurnCanonicalStateRefresh, which consumes
+the command before returning an open transaction; the original durableBefore was captured
+before that call. The observer incorrectly required current live request presence at Arm.
+This is fixture timing, not reached release/removal or runtime failure. Source release
+core first restores before-images, then quarantines, attempts lifecycle release and restores
+again on refusal. Correct only observer baseline capture: validate the original durableBefore
+cohort, keep late Arm, record current image and require actual committed presence→removal→
+restoration sequence. Isolate failed Fact1 for rerun; retain first passing row/source.
+
+[Original plan/TRX/raw/source packet](recovery/storage-migration-treatment-observers-20261009/manifest.json)
+12artifacts/originals13pins verified. Initial result/source retained, classification review
+pending. No production change, no B2/native qualification; whole migration remains active.
+
 ## F18 Treatment2 — original committed observations WIP, 2026-10-09
 
 Source #1553, current branch, basebd496ce6. Two original Facts retain genuine scenario,
