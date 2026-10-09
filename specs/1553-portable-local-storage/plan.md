@@ -1,3 +1,22 @@
+## Preparation partial GREEN19/21 / original contention control — 2026-10-09
+
+Independent SOURCE/EXACT21 PASS85baf7a4. Plan030300 freshly built integration37.4076715s and
+unit11.2988999s,wall55.5083149s,21planned/4descriptors/0executed. Actual030403 executed19/21,
+18PASS1FAIL,3/4descriptors complete,25.7892940s,exit1,no runner timeout/duplicates,bothcleanup.
+All eleven genuine publication cases now PASS: same first CSP (or original explicit browser outcome),
+exact retained journal/foreign/prior committed bytes and zero later measured canonical work; known
+causes pass their diagnostic checks, readonly closing counted separately. Seven integration known
+controls PASS. Two Live unit controls were never started because the runner stopped after failure.
+
+The remaining unchanged snapshot-concurrency control reached firstCaptured, then timed out waiting
+for CanonicalWriteLockContendedAsync at9738. Original main admission is acquired BEFORE that hook;
+an independent writer can contend there first. This is not evidence of mixed snapshot bytes. The old
+fixture also lacks a finally that releases/drains its snapshot and writer tasks when its signal times
+out. Correct only this fixture to observe actual earlier main-owner contention and always release/join;
+retain positive writer-wait and exact before/after snapshot assertions. Isolate this1 plus unexecuted
+Live2 after source gate/fresh Plan3; do not replay passed18. Runtime remains unchanged while diagnosing.
+Raw packet retains the incomplete21 selection and original timeout; no complete21 GREEN claim.
+
 ## Preparation runtime / affected21 WIP — 2026-10-09
 
 Causal carrierccead01e stores51 artifacts/30 pins; independent raw gates accept nine5c +two c9

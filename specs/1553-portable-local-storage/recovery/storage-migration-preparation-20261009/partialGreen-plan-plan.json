@@ -1,0 +1,132 @@
+{
+  "Categories": [
+    "portable-preparation-outcome-causal-linux",
+    "portable-preparation-manifest-outcome-causal-linux",
+    "portable-preparation-outcome-known-controls"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "85baf7a460e2364852601744f69a7d4ba7733e18",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 55.2720927,
+  "Descriptors": [
+    {
+      "Name": "portable-preparation-manifest-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-preparation-manifest-outcome-causal-linux",
+      "Categories": [
+        "portable-preparation-manifest-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterPublishedAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalLivePrepareStopsAfterPublishedRequest",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterPublishedAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalLivePrepareStopsAfterPublishedRequest",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-preparation-outcome-causal-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-preparation-outcome-causal-linux",
+      "Categories": [
+        "portable-preparation-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalAtomicStageStopsBeforeCallback|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalDirectGachaStopsQueueAndOwnerCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterActualDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalAtomicStageStopsBeforeCallback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalDirectGachaStopsQueueAndOwnerCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterActualDecision",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "portable-preparation-outcome-known-controls-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-preparation-outcome-known-controls",
+      "Categories": [
+        "portable-preparation-outcome-known-controls"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence|FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_RollbackPreparationFailureReleasesUiLock|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_ConcurrentWriterCannotMixSnapshotFiles|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreatePreTurnBackup_WhenAnyTrackedFileCannotBeCaptured_FailsInsteadOfReturningPartialAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_ConsumedDeletionDebtRetainsKnownCleanupPolicy",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_RollbackPreparationFailureReleasesUiLock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_ConcurrentWriterCannotMixSnapshotFiles",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreatePreTurnBackup_WhenAnyTrackedFileCannotBeCaptured_FailsInsteadOfReturningPartialAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_ConsumedDeletionDebtRetainsKnownCleanupPolicy",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-preparation-outcome-known-controls-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-preparation-outcome-known-controls",
+      "Categories": [
+        "portable-preparation-outcome-known-controls"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts|FullyQualifiedName=BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

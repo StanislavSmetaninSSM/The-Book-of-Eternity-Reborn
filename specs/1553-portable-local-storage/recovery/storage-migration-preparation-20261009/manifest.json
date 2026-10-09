@@ -441,5 +441,325 @@
         "sha256": "f0fcc3e10a9ab85cad501b717697d382e36c10370641a38344959077e19e0918"
       }
     ]
+  },
+  "partialGreen": {
+    "source": "85baf7a460e2364852601744f69a7d4ba7733e18",
+    "qualification": "Raw exact selected source/summary/TRX and owned evidence; causal versus fixture and assertion reach classified in plan.",
+    "artifacts": [
+      {
+        "path": "partialGreen-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030300-920-227219-a1db2ea1bc5a4a8cb0cb98cf75dae229-categories/Build-integration.log",
+        "sha256": "a0521a5056374a239c03ad3cf694d56ee9a18f6c91c6054d97ff3f903a51770b",
+        "originalSha256": "85ef4f272c924e561eed50a7fd1f70213e9f2d533f931c80a5f672e22c7f271a"
+      },
+      {
+        "path": "partialGreen-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030300-920-227219-a1db2ea1bc5a4a8cb0cb98cf75dae229-categories/Build-unit.log",
+        "sha256": "b81df1bf38281426ff367af09b128ec48b29f0bce6de866634231fa68d579769",
+        "originalSha256": "403659f2c944c92a796341291f59c7ed1fb884af95961ca53ea2c238cdf4f465"
+      },
+      {
+        "path": "partialGreen-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030300-920-227219-a1db2ea1bc5a4a8cb0cb98cf75dae229-categories/dotnet-test.log",
+        "sha256": "69fca449f0529da1ebf2cbce2be8fc86d32ffeb2e6009b83947d388406fd3896",
+        "originalSha256": "b89ae0f5ad9498d2fb163f430a86aac46532473dcbf00872f6231f7c09fd0770"
+      },
+      {
+        "path": "partialGreen-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030300-920-227219-a1db2ea1bc5a4a8cb0cb98cf75dae229-categories/plan.json",
+        "sha256": "319ce243f4dbfd443b6d227c8f038fbe937b5fc65f2051fb033e67878b0ba87a",
+        "originalSha256": "319ce243f4dbfd443b6d227c8f038fbe937b5fc65f2051fb033e67878b0ba87a"
+      },
+      {
+        "path": "partialGreen-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030300-920-227219-a1db2ea1bc5a4a8cb0cb98cf75dae229-categories/summary.json",
+        "sha256": "8fe27b06b755037e8c5fc462e27c2b12eada8cfd2bc45696870a31700e80dbea",
+        "originalSha256": "8fe27b06b755037e8c5fc462e27c2b12eada8cfd2bc45696870a31700e80dbea"
+      },
+      {
+        "path": "partialGreen-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030403-602-227845-4ad810e964a34a9a9fecf9f7bb69014c-categories/dotnet-test.log",
+        "sha256": "6e8bc636774e110a7995d4dd7e60dc8919c6a80955f569f38625a410a9e5a97f",
+        "originalSha256": "eb9e704e0e627488f770a895131ffe8183af144b379789d0852e11ea607699d4"
+      },
+      {
+        "path": "partialGreen-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030403-602-227845-4ad810e964a34a9a9fecf9f7bb69014c-categories/plan.json",
+        "sha256": "4411b933c5f2575bb775e97f485481bec2ea987e0ea8d232f0cf5e1df1578e28",
+        "originalSha256": "4411b933c5f2575bb775e97f485481bec2ea987e0ea8d232f0cf5e1df1578e28"
+      },
+      {
+        "path": "partialGreen-actual-portable-preparation-manifest-outcome-causal-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030403-602-227845-4ad810e964a34a9a9fecf9f7bb69014c-categories/portable-preparation-manifest-outcome-causal-linux-integration-001.trx",
+        "sha256": "472f10abd96a8e1b4dd8c9364867505af18ccfb84885251757e7c57597384def",
+        "originalSha256": "4e40a4cb5c4d0fd8d1a7b9d47f9cead2883bfe6cee82e7fffbe74c80efdbb717"
+      },
+      {
+        "path": "partialGreen-actual-portable-preparation-outcome-causal-linux-integration-002.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030403-602-227845-4ad810e964a34a9a9fecf9f7bb69014c-categories/portable-preparation-outcome-causal-linux-integration-002.trx",
+        "sha256": "3559eec0d985b20bcfa5eed08cc8e0324658687508454ff6b7878e1334828927",
+        "originalSha256": "387073b2fe8dcc10d45312887834fc62b299da25710a08565791121fa89b9f91"
+      },
+      {
+        "path": "partialGreen-actual-portable-preparation-outcome-known-controls-integration-003.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030403-602-227845-4ad810e964a34a9a9fecf9f7bb69014c-categories/portable-preparation-outcome-known-controls-integration-003.trx",
+        "sha256": "40c5ae4048c89c8bf9a9b0e585d3b1748aacf416cc17198156d54982da3af99e",
+        "originalSha256": "56b21a93e94c7fb859804b6e0d4c5c54f837d3af0957877e36b7c9d7b6ed8f19"
+      },
+      {
+        "path": "partialGreen-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-030403-602-227845-4ad810e964a34a9a9fecf9f7bb69014c-categories/summary.json",
+        "sha256": "37f78fd0fb52293e008c82129cbbeeb0238f31370b4a6de1887720e02bd09be1",
+        "originalSha256": "37f78fd0fb52293e008c82129cbbeeb0238f31370b4a6de1887720e02bd09be1"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-manifest-outcome-causal-linux-integration-001-0-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-manifest-outcome-causal-linux-integration-001-0-0-journal.bin",
+        "sha256": "2019ae0ae558c52889b3911b9634b0ca45ac0e6802a4a99530412e7ccb59d1f0",
+        "originalSha256": "59b81830467858943e4390347b3ec3cffb3ccb2515d92e85a8b5698a66384164"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-manifest-outcome-causal-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-manifest-outcome-causal-linux-integration-001-0-0.json",
+        "sha256": "12f26ba7f35b2c061faa9c1e29e15a4586e7b57e59fb4b9733868802aed02f62",
+        "originalSha256": "12deb1859c8b5523afc931edda770b897fc0be5c2a6adae81d54c474b07fbda9"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-manifest-outcome-causal-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-manifest-outcome-causal-linux-integration-001-0-1.json",
+        "sha256": "f5c27490467449042403d47cea6482329773ab10bc56958acd652af8437e7ea2",
+        "originalSha256": "f5c27490467449042403d47cea6482329773ab10bc56958acd652af8437e7ea2"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-manifest-outcome-causal-linux-integration-001-1-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-manifest-outcome-causal-linux-integration-001-1-0-journal.bin",
+        "sha256": "cb6ed855a0c8f5b5d42ec4a6ff0bd03f9460f0779f4212a66820d86f6e5a14d6",
+        "originalSha256": "3d890afca92637bb8dfb1024a9c5b00e76776bfde561b5bac1375a6bac679598"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-manifest-outcome-causal-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-manifest-outcome-causal-linux-integration-001-1-0.json",
+        "sha256": "98b2ad898a19f59ea13a2271e46fbc5bdeaa1490bdb432364e0031008b41ea22",
+        "originalSha256": "554149190d39e07478e7a11755101ac5882e964fc335de9808846b51835f135c"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-manifest-outcome-causal-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-manifest-outcome-causal-linux-integration-001-1-1.json",
+        "sha256": "202392526567f600ac76c699226ec5d4540881df45689afa8f7c25b7371402be",
+        "originalSha256": "202392526567f600ac76c699226ec5d4540881df45689afa8f7c25b7371402be"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-0-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-0-0-journal.bin",
+        "sha256": "814065191969bfa8bff6d3ab7a2412f0c0627f9fec62c79295936fff4f02c385",
+        "originalSha256": "b2006f3afdbc86c730c441a62abd546c9ae774bd9c0fb8d1a5f3ace6ff1ea1c3"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-0-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-0-0.json",
+        "sha256": "a797191739d754247e92dc11a9afdec757bb14de48c0fae487e4fca2c9a949b2",
+        "originalSha256": "b798e544719f5d453f904ff4c3c08650503b9c7a7c7527de34850180b5165fcb"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-0-1.json",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-0-1.json",
+        "sha256": "2e8ad9d0aa0c1c4f9d52326f7efe39f83c3c38da520b175242a02f0eff2e0c7f",
+        "originalSha256": "2e8ad9d0aa0c1c4f9d52326f7efe39f83c3c38da520b175242a02f0eff2e0c7f"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-1-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-1-0-journal.bin",
+        "sha256": "506222913b5b779d3acb6e324789ed3eb1c349aa4c06a8df191501fbff5468a4",
+        "originalSha256": "9025674a1f64fcf81436b6396b50a7f117d3c42e6abf1f79e5b195eabb7f8df5"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-1-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-1-0.json",
+        "sha256": "079803d54e856ef5cd5cd54910cb57ab56d187a9592d81f1418ee97969d67d67",
+        "originalSha256": "b7969064cd1c5d6fbc069d375ebdc854e6292d7776baa3a15e6a3006bfaf754f"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-1-1.json",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-1-1.json",
+        "sha256": "a2c9737345398b8864da0a5e930799a974fd2b22c5246a11fb54946beec50887",
+        "originalSha256": "a2c9737345398b8864da0a5e930799a974fd2b22c5246a11fb54946beec50887"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-2-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-2-0-journal.bin",
+        "sha256": "028a867f30ac833a397d77f47807a59127ea90404c6abb40bb668248702476a4",
+        "originalSha256": "576a98e2783b818207f188379511e5951ee7f38d08331947e248bbb1adba0545"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-2-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-2-0.json",
+        "sha256": "ce3caa077226936c9d0c6993578caf3de1ec842416989688c2dcc34612c5616e",
+        "originalSha256": "98fbec1d426bee8fc8780bbce8a531b7c7bcdcc6b2a2003a47588f2eea1301cc"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-2-1.json",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-2-1.json",
+        "sha256": "584bab1fc1ead428c325577fce0a8a1011985db962c341ef357ef55b7253f6fe",
+        "originalSha256": "584bab1fc1ead428c325577fce0a8a1011985db962c341ef357ef55b7253f6fe"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-3-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-3-0-journal.bin",
+        "sha256": "f44b59175b6ae4e24a4d5e0c4af4f11e2183c771f242f4fe1ad9cb7141748708",
+        "originalSha256": "92ccee8a8ab158dc58248e074cac70c313b7bf150e3967b4b156188789fd100e"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-3-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-3-0.json",
+        "sha256": "805b1e9a4ecc728535e4617dc6736de02afabd9e1f8034b4a95546c8ce44ed9d",
+        "originalSha256": "2219f6183f0834b19cc0fba243d8747783b7d162b80f1721911a052bb16fe2fa"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-3-1.json",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-3-1.json",
+        "sha256": "da20e8a0ea52d5a86ac880bd2d28f12bf8f1e215787798230cfd2a835684d4bf",
+        "originalSha256": "da20e8a0ea52d5a86ac880bd2d28f12bf8f1e215787798230cfd2a835684d4bf"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-4-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-4-0-journal.bin",
+        "sha256": "b88732e4af610244c775ead761c5d3aeacfef3c2d58316ad7eb1b4fe114b5137",
+        "originalSha256": "5ecb2514f366cd3e834c419a7aa666113701c7ea8613750f98ca18fc8caededd"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-4-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-4-0.json",
+        "sha256": "1ac335169a48c7125cba5c5886ce9d153b985a6a768d2854535f55574240d041",
+        "originalSha256": "a5caa27e63ade3bebb0ac322c429dac5583aecb9ef7f55c3ebea9abea46175a3"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-4-1.json",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-4-1.json",
+        "sha256": "d2571d840cecff1cd5feceda7da69f109afe019c76fd9cd3816151df0dfbac6b",
+        "originalSha256": "d2571d840cecff1cd5feceda7da69f109afe019c76fd9cd3816151df0dfbac6b"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-5-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-5-0-journal.bin",
+        "sha256": "e2604cbef0e7580e474daa13f84b23e3e32294693d454d664dba4ef225982f7e",
+        "originalSha256": "9da54ea3524505500e229f58aee498cfc0b475190a7bdd79c23c56ed1293ecde"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-5-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-5-0.json",
+        "sha256": "43ca0b3ac628d23ab42c0d37dd0006bc5f796977e706bd4ca155f6347d7e2d90",
+        "originalSha256": "fe4aa3bdd6068f9eb20bbba9cf60cc605700fb3fc165d0eff76bd7ac0db4bbe3"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-6-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-6-0-journal.bin",
+        "sha256": "42ebef0a46acd6750ebee2e3078ef69fe0abae1ad24f0e2658a818f364a56a6e",
+        "originalSha256": "eaabe7a25fa2087a5fc9303bd46d555d3a4f073a011687862842d4b88e15f04e"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-6-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-6-0.json",
+        "sha256": "9202e77aef243c46ced0a99bd6155226b8d222c91726f13f081007877956d3c8",
+        "originalSha256": "5f74e15ae9109fdd04fb303880e170df9d692010d47b27016e6f77fab33ddc30"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-6-1.json",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-6-1.json",
+        "sha256": "f163217b996237e5afd8b92f4e928777415429188aa7f8007ffa52aeda0fe1e1",
+        "originalSha256": "f163217b996237e5afd8b92f4e928777415429188aa7f8007ffa52aeda0fe1e1"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-7-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-7-0-journal.bin",
+        "sha256": "493248d1f5b2a48b4900cd4b27f4a8f45aa267fa222b42139cdc4e9e7c953804",
+        "originalSha256": "5020fe2b055e123ca6d70f8a8b35ff189cbe9eaa61e5ec31b0af9a76df70369b"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-7-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-7-0.json",
+        "sha256": "7bb50a93003c4ec2053d72903a92e41a48898c024743aa609458b8b091be4805",
+        "originalSha256": "f786f9dce56001df178b9299b7d11addb5b1eafdcc1e052d9f0c3f8c137a6c3c"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-7-1.json",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-7-1.json",
+        "sha256": "fb71b6f11b49fe51d644af3d2ae407efb2fcb551060bd0536490277d5e65647b",
+        "originalSha256": "fb71b6f11b49fe51d644af3d2ae407efb2fcb551060bd0536490277d5e65647b"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-8-0-journal.bin.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-8-0-journal.bin",
+        "sha256": "2bf59962a50aa5e208694d40d01fdb1ef2a561d640cd3e0d36e767161f3ba382",
+        "originalSha256": "2ac8fee336cadd959f2cd1c99871d53d684a1bdc122a9b24503089838c8a65d6"
+      },
+      {
+        "path": "partialGreen-row-portable-preparation-outcome-causal-linux-integration-002-8-0.json.gz",
+        "source": "/tmp/boe-preparation-partialGreen/portable-preparation-outcome-causal-linux-integration-002-8-0.json",
+        "sha256": "54008e602eb381066e1ae835813664a994954c5c746400074112c63e3f020862",
+        "originalSha256": "5b6f4133cc7f99888f6c9c8b9416eec6a480eae4d443df264260520b2c3e046a"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/PreparationPublicationProbe.cs",
+        "sha256": "a52b19ea9c456ffc37eecc26bb3b660ae22776a77142d6fed4b49d9544278c5b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PreparationOutcome.cs",
+        "sha256": "fb77923c20eba17176229969bda3bd89e063c956b01f591ea35187baed69e3ab"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.PreparationOutcome.cs",
+        "sha256": "4ce6b91ae65dc7cea381aa4f00b3ef02f3017a9255ea2462f965583fc10c5bbf"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxFixture.cs",
+        "sha256": "1e034530f7a29d048cab26eb1201af7ed9e916e427318e99804c3db5a4f79dad"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+      },
+      {
+        "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "sha256": "6930b07b3a7609b87e684e798b3f1d8af580327b0a50441df484102aa8beb2fe"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+        "sha256": "a862a23cd5cb111f4cca315c9b8e2c9e6658c87d83bbc84a3eb78baa0b9cc3b6"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+        "sha256": "d260f9d8309dfb39611715a7b1417dc259840c824026c87976279ae9e12f8525"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+        "sha256": "2fd7cc6f34bd4ad49d27e1fff2ad9abb4bbeb4f2bd3779c81e181c4a45189c1c"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "sha256": "0373b719aa40ce7707628e2c574b26208268cc633f38a32b2ced2ddf96c1f19e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "d2aec89979dfcf5471565271a50229c4288c0a3a40166f24d4755f62622a34de"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "c35f1474f6b7b96f620d3ab5e2ad61f0e2268b3ccae8496e76bf152aa376be37"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "5ae716cc859273d74db97cd77a67184c4bf71ed2f55902710372cf5b86c37d86"
+      }
+    ]
   }
 }
