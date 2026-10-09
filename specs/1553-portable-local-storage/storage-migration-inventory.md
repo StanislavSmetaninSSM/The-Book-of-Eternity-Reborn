@@ -4,7 +4,7 @@ Latest tested source41ac9a45 retains runtime85baf7a4 preparation correction. Com
 obligations =18@85b +3@41ac, not a single21GREEN. Genuine publication11 and known7 pass initially;
 remaining corrected current-admission snapshot/replacement controls2 plus unchanged linked1 pass
 separately. Saved108 artifacts/70 pins and matching fresh both-project catalog512/11303 valid0;
-final independent carrier gate pending. Prior owned-close15 at a88d/carrierf9 accepted25/11 remains
+final independent carrier and parent gates PASS41c8e4f. New lore/realm exact7 is test-only, unbuilt/unexecuted. Prior owned-close15 at a88d/carrierf9 accepted25/11 remains
 source-consistency plus actual publication/component evidence, not injected simultaneous double fault.
 Prepared-Shining bounded5 atbbf/carrier1265 independently accepted47/27; Story12 atb79/carrier6ee
 accepted64/21; progression5 at2a372/carrier7f accepted48/25; Prepared remote8 at7cf/carrierc7 accepted59/26.
@@ -407,3 +407,10 @@ GM/Mortal rationale: no game rule, GM response field or new API is designed here
 ## Inventory review corrections
 
 The first independent source review required a fresh cross-platform versus retained-recovery split for F06, explicit native managed-wrapper/entrypoint indexing and fixture-only bundle scope, a broader callback census beyond selected publication names, and removal of broad media/mod/library technical exemptions. Each correction above was checked against the pinned source. The updated index is still lexical-only; independent completeness re-review remains required before migration. No runtime behavior, test, category or selection was changed.
+
+Lore/realm fixture scope note (2026-10-09): direct Clear includes literal-backslash path; original
+MainMenu incarnation rows use representable paths because its EnumerateIncarnationLocalPrepRollbackFiles
+producer still rewrites backslashes/uses IgnoreCase. This is an additional F16 producer source finding,
+not a failed lore run or silently accepted alias. F18 nested contenders borrowing the current
+MainAdmission (TradeRequest/worker cancellation/CoordinatedStateWriteHelper observers) may legitimately
+reach canonical contention; independent suppressed-flow readers may block at MainOwner first.

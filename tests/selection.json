@@ -2,6 +2,18 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-lore-realm-outcome-causal-linux",
+      "reason": "Test-only unbuilt/unexecuted lore7: direct Clear routing1, original incarnation known/Unknown2, actual realm commit/reset2 and original Shining return2. Old raw path cannot reach common cut; finite pending-setup refusal bounds that route without GM. Freeze/source gate before Plan/actual.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T063-REMAINING-CONSUMERS",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
       "category": "portable-preparation-current-admission-controls",
       "reason": "Final remaining3 PASS at41ac/030951: corrected snapshot/replacement current-main-admission observers directly join original actors; linked1 unchanged. Completes composed21 with retained18@85b, no single21GREEN claim.",
       "contracts": [

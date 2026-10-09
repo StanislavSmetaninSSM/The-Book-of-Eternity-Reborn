@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-lore-realm-outcome-causal-linux",
+      "responsibility": "Seven original lore/realm boundaries: exact physical-to-ordinary routing, original incarnation known restoration versus second-delete Unknown, actual life realm commit/postcommit reset and original Shining reentry/ordinary return.",
+      "excludes": "Pre-fix raw deletion is routing evidence, never a fabricated CSP. No whole-transition atomicity, GM/provider, native or simultaneous secondary-close qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoreClear_OriginalConsumerUsesOrdinaryPublicationsForExactFiles",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoreClear_OriginalIncarnationStopsOrRestoresKnownSetupFailure",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RealmUnknown_OriginalLifeTransitionPreservesDecisionAndPriorCommits",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RealmUnknown_OriginalShiningReturnPreservesDecision"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-preparation-current-admission-controls",
       "responsibility": "Three remaining preparation controls: actual earlier main-owner serialization with unconditional task drain, and unchanged linked LivePrepare and corrected current-admission replacement controls unexecuted in the partial21 run.",
       "excludes": "No replay of unrelated browser or accepted-turn aggregates; no actual secondary-close fault, native or full-turn qualification.",

@@ -1,3 +1,41 @@
+## Lore/realm test-only WIP — 2026-10-09
+
+Preparation composed21 and final carrier41c8e4f are independently accepted (108 artifacts/70 pins);
+no accepted preparation replay. Current new source is only an exact seven-case integration fixture
+and category, unbuilt/unexecuted. Runtime remains85b. Source #1553/T062–T064; next gate is independent
+frozen SOURCE/FIXTURE/EXACT7, then matching integration Plan/build and one bounded causal run.
+
+Direct original Clear observes real deletion and demands one ordinary committed decision per selected
+file, including a Linux literal-backslash name and retained rollback-name sentinel. The old route has
+zero common publications; this is factual routing failure, not actual CSP. Original HandleIncarnation
+uses real three-line input/one confirmation and staged F03 authority: one row requires second observed
+ordinary deletion Unknown, another known pending-setup refusal must restore exact lore bytes. On the
+old raw route that same refusal stops before GM dispatch, so an unreached cut is never causal Unknown.
+Those original incarnation rows use representable ordinary names: its existing rollback producer still
+rewrites backslashes and is separately queued in F16, not silently included in this storage unit.
+
+Two original CheckLifeTransitions rows use genuine accepted snapshot/authority/Ready and Mortal resource
+quartet, selecting actual realm batch member0 versus the later independent rival-state deletion. The
+latter captures actual prior Committed realm/profile/resource images and requires exact retention;
+published members inside the uncertain batch are not called independently committed. Two original
+Shining reentry/ordinary-return rows use genuine fresh quartet authority and active default Shining state,
+with actual reentry confirmation. The first real common journal binds current generation and includes
+soul/resource members. A post-cut lease hook counts/refuses erroneous diagnostic admission only after
+actual CSP; it is a finite safety refusal, not uncertainty fabrication or proof of zero attempts.
+
+Raw journal/target/first-cause/committed images and input/request counters precede assertions. All rows
+own roots and hooks. Known failures remain distinct; no full incarnation/bootstrap/GM, gameplay,
+native or injected secondary-close claim. No GM-authored schema/prompt contract changes are proposed.
+The runtime design remains same-lease ordinary per-file Clear with trusted bounded subtree enumeration,
+exact host spelling and rollback-name preservation; direct CSP escapes realm/MainMenu catch boundaries
+and is captured before original owned closes. No all-lore atomicity or new global state.
+
+Remaining map addition: MainMenu EnumerateIncarnationLocalPrepRollbackFiles uses IgnoreCase/raw
+recursive enumeration/unconditional backslash rewrite; include it with F16 producer early refusal or
+host-path preservation, rather than silently coalescing names. F18 admission observers require actual
+async ownership analysis: nested contenders borrowing MainAdmission may genuinely reach canonical
+contention, unlike independent suppressed-flow/sibling operations. No blanket replacement of27 hooks.
+
 ## Preparation bounded composed21 complete — 2026-10-09
 
 Runtime85baf7a4 passes independent SOURCE/EXACT21 and eleven genuine publisher controls plus seven
@@ -21,7 +59,7 @@ class cleanup remains best-effort without per-case JSON; parent separately obser
 Git pins, all saved/expanded/original verified. It retains initial fixture2, nine causal5c, isolated causal2
 c9, partial19/21, final3 and both corrected source-era control files; no evidence overwritten. Discovery
 031011 at clean41ac uses matching fresh both-project builds:512 categories/11303 methods-files valid,
-0tests,8.5092457s,exit0,bothcleanup. Final independent raw/carrier gate pending. Latest actual GitHub-only
+0tests,8.5092457s,exit0,bothcleanup. Final independent raw/carrier and parent integrity gates PASS at41c8e4f (108/70). Latest actual GitHub-only
 full restore remains e5; current carrier is published/read back, not newly restored. No whole preparation
 atomicity, native/full-turn, simultaneous secondary-close fault or unrelated consumer acceptance.
 
