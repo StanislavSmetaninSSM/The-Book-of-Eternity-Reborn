@@ -1,3 +1,34 @@
+## Accepted-continuation causal7 test-only WIP — 2026-10-09
+
+Lore final carrier f40ebd66 passes independent/parent integrity/docs gates72/50; composed14 remains
+12@c767+2@bd. No replay, newer fresh clone or whole migration acceptance is claimed.
+
+Next finite7 follows reviewed T062 source paths: actual original incarnation memory application and
+application-audit (genuine accepted authority, real effect commits, finite1/10 keys), genuine applied
+memory finalization helper (helper-only), original Shining runtime wrapper with one genuinely materialized
+route deadline effect (null-context wrapper-only), original rejected rollback restoration, known genuine
+missing-backup failure followed by actual diagnostic publication, and original diagnostic-only consumer's
+transient report deletion after its diagnostic commit. All use authentic MemberPublished/index0 and
+first actual CSP, retain exact journal/foreign target and prior committed images, record raw before
+oracles, prohibit later measured work and clean owned roots. No fabricated CSP/authority/applicationAudit.
+The known rollback cause is the exact logged outer InvalidDataException with one missing mapped genuine
+backup; report fields are checked before foreign injection and its identity must survive as diagnostic.
+
+Current changes are fixtures/category metadata only, unbuilt/unexecuted; production remains c767.
+Frozen independent source/fixture/exact7 gate then matching integration Plan/build is required before
+causal execution. Known policy neighbors will be selected with the bounded demonstrated runtime delta.
+No new GM-authored contract/prompt/example change: this is local storage stop propagation, not memory,
+Shining, rollback policy or progression math. Full bootstrap/accepted-loop/native/secondary-close fault
+remain unqualified. Latest actual full GitHub-only restoration remains e5.
+
+Carry-forward source-only completeness: Ready trajectory append catches3438/3592 and original generation-
+bound publisher wrappers remain in the Ready/bookkeeping graph; read-only helpers are excluded. Parent
+F18 admission census27 distinguishes13 ports (15 methods),9 intentional physical/negative,3 dual,2
+accepted preparation; separate generation-gate recipes need source-correct scopes, not blanket changes.
+Read-only owner census f40 contains120 lexical sites/56files, not120 defects: prioritize actual publishing
+bodies in their connected units, preserve field-only disposal and known return semantics, and do not
+invent simultaneous faults/global Dispose conversion. Explorer/GameLoop/Ready-worker/C2/F16/F18 remain open.
+
 ## Lore/realm bounded composed14 complete — 2026-10-09
 
 Runtime c7672208 and independent source/census gate qualify same-lease ordinary lore deletion, four
@@ -23,7 +54,7 @@ integration controls pass. No inferred full realm/incarnation atomicity or compe
 [Packet](recovery/storage-migration-lore-realm-20261009/manifest.json) contains72 artifacts/50 historical
 Git pins, all saved/expanded/original verified, including closed4→0 source census and failed old recipe.
 Discovery034441 uses matching fresh both-project bd outputs:515 categories/11307 methods-files valid,
-0tests,8.0492443s,exit0,bothcleanup. Final independent carrier/docs gate pending. Latest actual full
+0tests,8.0492443s,exit0,bothcleanup. Final independent and parent carrier/docs gates PASS f40ebd66 (72/50). Latest actual full
 GitHub-only restore remains e5; newer checkpoints are pushed/readback, not freshly restored. Native,
 simultaneous secondary-close fault, full gameplay and whole #1553 migration remain open.
 

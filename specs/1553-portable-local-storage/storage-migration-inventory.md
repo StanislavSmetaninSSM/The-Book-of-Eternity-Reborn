@@ -4,7 +4,7 @@ Latest tested source bd0673 retains runtime c7672208 lore/realm correction. Comp
 corrected generation/sourceguard2@bd (12.9031643s), not a single14 run. Same actual CSP and ordinary
 lore routing are proven at original boundaries; the earlier raw physical deletion/unreached cut and
 blocked old replacement fixture remain historical evidence. Saved72 artifacts/50 pins verify; matching
-fresh both-project discovery515/11307 valid0, final independent carrier gate pending. Generation control
+fresh both-project discovery515/11307 valid0, final independent/parent carrier PASSf40 (72/50). Generation control
 uses original same admission/real committed rotation, not external concurrent Clear/new nested adoption.
 
 Preparation composed21 at85b/41ac and carrier41c8 accepted108/70; owned-close15 a88d/f9 accepted25/11;
@@ -39,17 +39,17 @@ not runtime replay. No full-turn/native/secondary-close guarantee or full migrat
 
 ## Current remaining source-only classification — 2026-10-09
 
-Additional connected source findings, not executed defects: ClearCurrentWorldLore raw physical
-per-file deletion bypasses the common publisher despite owned lease; realm update and MainMenu
-incarnation catches can convert/compensate actual CSP. Memory-legacy apply/canonical application
-audit/finalize, engine Shining-blessing wrapper, rejected rollback and canonical best-effort bookkeeping
-need separate original consumer qualification. Shared bookkeeping callers include diagnostic report
-writes plus subsequent transient/control deletions; a known failure followed by actual reportUnknown
-is distinct. Preserve local flags/accepted facts and known refusal policy without a global latch.
-Preparation composed21 does not claim these tails complete. MainMenu Shining reentry2523 and ordinary
-return2742 catch actual CSP before canonical LogError; latter still holds its lease, with bounded
-self-contention rather than a proven infinite deadlock. Original realm/Shining service owned-close
-capture belongs this queued unit. Explorer Politics373/480, TradeAndForge1488, attraction501 and
+Lore raw deletion, realm update/MainMenu incarnation/reentry/ordinary return catches and their owned
+closes are now accepted in composed14 above; their initial source findings remain in historical receipts.
+Current memory-legacy apply/canonical application audit/finalize, engine Shining-blessing wrapper,
+rejected rollback and canonical best-effort bookkeeping have test-only finite7 drafted, unbuilt/unexecuted.
+Shared bookkeeping callers include diagnostic report writes plus subsequent transient/control deletions;
+known failure→actual reportUnknown is distinct. Preserve local flags/accepted facts and known policy.
+Ready accepted/cleared trajectory append catches3438/3592 remain open, with connected generation-bound
+publisher owner scopes; read-only helpers are not equivalent. The finite owner source census120sites/
+56files is not120 defects and does not establish simultaneous publication+close failures. Remaining
+publishers are assessed with their original consumers, no global Dispose rewrite or operation latch.
+Explorer Politics373/480, TradeAndForge1488, attraction501 and
 browser forge1484 InvalidOperation catches also include CSP; keep whole-command/parity qualification.
 GameLoop canonical logging before CSP classification and known-error→diagnostic-CSP are distinct
 remaining boundaries. F18 parent census27 canonical-contention assignment candidates includes dual

@@ -19382,6 +19382,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-accepted-continuation-outcome-causal-linux",
+      "responsibility": "Seven actual publication cuts: original incarnation memory application/audit, real finalized-memory helper, original Shining effect wrapper, original rejected rollback and its known-failure diagnostic, original diagnostic-only transient deletion before control cleanup.",
+      "excludes": "No full accepted-turn or bootstrap/GM acceptance. Finalize helper and Shining null-context wrapper are scoped accordingly. No generation replacement/native/simultaneous secondary-close fault proof; source-only adjacent owners remain queued.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient/Services/ProgressionScheduleService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MemoryLegacyUnknown_OriginalConsumerRetainsPriorEffect",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ShiningEffectUnknown_OriginalEngineWrapperPreservesExpiredDecision",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RejectedRollbackUnknown_OriginalCallerStopsBeforeFurtherBookkeeping",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BookkeepingDeleteUnknown_OriginalDiagnosticCallerStopsBeforeNextControls"
+          ]
+        }
+      ]
     }
   ]
 }

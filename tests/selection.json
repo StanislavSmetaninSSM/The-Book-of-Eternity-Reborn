@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-accepted-continuation-outcome-causal-linux",
+      "reason": "Test-only WIP exact7; source-derived genuine producers and original consumers, real MemberPublished/journal/CSP, finite input and no-request safety. Unbuilt/unexecuted pending frozen source/fixture gate. Prior lore composed14 retained without replay.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
       "category": "portable-lore-realm-current-generation-controls",
       "reason": "Final remaining2 PASS atbd0673/034417: actual same-admission committed rotation and original SessionReplaced fencing plus source guard. Composed14 with retained12@c767; no concurrent external Clear/adoption claim.",
       "contracts": [
