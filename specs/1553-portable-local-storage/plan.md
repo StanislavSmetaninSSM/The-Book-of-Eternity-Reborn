@@ -1,3 +1,35 @@
+## Durable worker canonical outcome and cleanup phases — runtime WIP, 2026-10-09
+
+Independent admission3/new fixture1 PASS257075de;196 artifacts/originals104pins.
+Fresh Plan083059 selects1/1,0 executed40.2444762s. Actual083207 clean257 completes
+**1/1 FAIL**,8.6636048s,both cleanup flags,no timeout/skip/duplicate. Actual original
+run remains incomplete inside terminal-decision hook, while real reaper settles the
+second disposal, deletes original workspace, writes required audit and retires root/
+slot/capacity. This is a reached phase-ordering failure. Native stop/output/guardian
+and final original task/root cleanup succeed; raw1 and two native source/binary pins
+are retained separately from14 and3. No fabricated terminal decision or CSP claim.
+
+WIP runtime retains first actual canonical CSP on original ExecutionAuthority,
+separately from native uncertainty. Publication/Allows refuses subsequent acceptance;
+actual prior ACK/publication facts remain. Store derived inbox/audit catches exclude
+CSP and preserve it through owned lease close; required-audit lease does likewise.
+One original cleanup owner now retains a counted terminal-diagnostics barrier across
+physical settlement/transfer. CompleteFailure latches CSP before releasing its outer
+barrier and only then permits final cleanup; nested cleanup diagnostics hold their own
+barrier before transfer, including success-path cleanup. Physical owner/waiter/host
+settlement remains possible after canonical Unknown, but workspace hooks/deletion,
+required audit/fallback, retirement and slot/root release stop. Delayed required-audit
+Unknown preserves already-absent workspace and blocks later result acceptance/retry.
+Reaper skips canonical telemetry while pending/blocked and retains actual secondary
+cleanup failure without replacing first CSP. No canonical fault becomes native Uncertain.
+
+All five runtime files are unbuilt/unrun WIP. Next combined source/raw/exact15 review,
+fresh unit Plan15 and actual15. Tests are unchanged from257; fifteen is a new whole
+bounded union, not an existing PASS. Nondurable cleanup/reaper diagnostic CSP, native
+Windows/full Bridge-to-Store/published-disk ACKfalse crash/secondary lease-close remain
+unqualified. Client-owned storage control changes no GM-authored/gameplay schema, so
+no prompt/example update is required. C2/F16/F18/other owners/final selection stay open.
+
 ## Required cleanup admission reached; pending-phase fixture — WIP, 2026-10-09
 
 Independent SOURCE/RAW/EXACT3 PASS d4edc6d4;155 artifacts/originals52pins accepted.

@@ -38,6 +38,7 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
     private int _cleanupCompleted;
     private bool _workspaceHookCompleted, _terminalAuditRecorded, _quarantined;
     private CoordinatedStatePublicationUncertainException? _requiredAuditUncertainty;
+    private int _terminalDiagnosticsPending;
 
     internal GmWorkerQuarantinedExecution(
         string identity, GmWorkerExecutionAuthority authority, GmWorkerOwnedLaunch? owner,
@@ -67,6 +68,27 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
         if (_completion == null && _durable?.TerminalPlanFrozen != true) _quarantined = true;
     }
 
+    // Nested original diagnostics retain the same barrier across transfer to
+    // the reaper. An inner cleanup warning cannot release the terminal decision.
+    internal IDisposable HoldTerminalDiagnostics()
+    {
+        Interlocked.Increment(ref _terminalDiagnosticsPending);
+        return new TerminalDiagnostics(this);
+    }
+
+    private sealed class TerminalDiagnostics(GmWorkerQuarantinedExecution owner) : IDisposable
+    {
+        private GmWorkerQuarantinedExecution? _owner = owner;
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _owner, null) is { } retained)
+                Interlocked.Decrement(ref retained._terminalDiagnosticsPending);
+        }
+    }
+
+    private sealed class TerminalDiagnosticsPendingException()
+        : InvalidOperationException("Original worker terminal diagnostics are still pending.");
+
     public async Task<GmWorkerCleanupEvidence> ConfirmDeathAsync()
     {
         await _confirmationGate.WaitAsync();
@@ -93,6 +115,33 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
         finally { _confirmationGate.Release(); }
     }
 
+    internal async Task SettlePhysicalAsync()
+    {
+        await _cleanupGate.WaitAsync();
+        try { await SettlePhysicalCoreAsync(); }
+        finally { _cleanupGate.Release(); }
+    }
+
+    private async Task SettlePhysicalCoreAsync()
+    {
+        if (Volatile.Read(ref _cleanupCompleted) != 0) return;
+        if (_durable != null) await _durable.RequireCleanupAuthorityAsync();
+        _ = _authority.RequireCleanupEvidence();
+        if (_owner != null) { await _owner.DisposeAsync(); _owner = null; }
+        // Join this exact original waiter before disposing the host gates.
+        if (_workerCompletionTask != null)
+        {
+            try { await _workerCompletionTask.WaitAsync(TimeSpan.FromSeconds(5)); }
+            catch when (_workerCompletionTask.IsCompleted) { }
+            _workerCompletionTask = null;
+        }
+        if (_processHostLaunch != null)
+        {
+            await _processHostLaunch.DisposeAsync();
+            _processHostLaunch = null;
+        }
+    }
+
     public async Task CleanupConfirmedAsync()
     {
         if (Volatile.Read(ref _cleanupCompleted) != 0) return;
@@ -100,23 +149,10 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
         try
         {
             if (Volatile.Read(ref _cleanupCompleted) != 0) return;
-            if (_durable != null) await _durable.RequireCleanupAuthorityAsync();
-            _ = _authority.RequireCleanupEvidence();
-            if (_owner != null) { await _owner.DisposeAsync(); _owner = null; }
-
-            // The pool canceled this original waiter. Observe its actual settlement
-            // before disposing the named-channel gates it may still be using.
-            if (_workerCompletionTask != null)
-            {
-                try { await _workerCompletionTask.WaitAsync(TimeSpan.FromSeconds(5)); }
-                catch when (_workerCompletionTask.IsCompleted) { }
-                _workerCompletionTask = null;
-            }
-            if (_processHostLaunch != null)
-            {
-                await _processHostLaunch.DisposeAsync();
-                _processHostLaunch = null;
-            }
+            await SettlePhysicalCoreAsync();
+            _authority.ThrowIfCanonicalPublicationFailed();
+            if (Volatile.Read(ref _terminalDiagnosticsPending) != 0)
+                throw new TerminalDiagnosticsPendingException();
             if (_workspace != null && !_workspaceHookCompleted)
             {
                 if (_beforeWorkspaceCleanupAsync != null) await _beforeWorkspaceCleanupAsync(_workspace.GameSessionPath);
@@ -166,10 +202,32 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
             _workerSlot?.Dispose(); _workerSlot = null;
             Volatile.Write(ref _cleanupCompleted, 1);
         }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            _authority.RetainCanonicalPublicationFailure(failure);
+            _authority.ThrowIfCanonicalPublicationFailed();
+            throw;
+        }
         finally { _cleanupGate.Release(); }
     }
 
-    public Task RecordReaperFailureAsync(Exception failure) => _recordFailureAsync(failure);
+    public async Task RecordReaperFailureAsync(Exception failure)
+    {
+        if (failure is TerminalDiagnosticsPendingException) return;
+        if (failure is CoordinatedStatePublicationUncertainException uncertainty)
+            _authority.RetainCanonicalPublicationFailure(uncertainty);
+        _authority.RetainSecondaryCleanupFailure(failure);
+        // Read the barrier before the shared fault: its final release happens
+        // only after original diagnostics have latched any canonical uncertainty.
+        if (Volatile.Read(ref _terminalDiagnosticsPending) != 0 || _authority.CanonicalPublicationFailure != null)
+            return;
+        try { await _recordFailureAsync(failure); }
+        catch (CoordinatedStatePublicationUncertainException auditUncertainty)
+        {
+            _authority.RetainCanonicalPublicationFailure(auditUncertainty);
+            throw;
+        }
+    }
 
     // Constructor visibility does not grant authority: the completion must be
     // this original owner's one private, phase-checked retained instance.
@@ -186,6 +244,7 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
             GmWorkerExecutionWorkspace workspace) =>
             ReferenceEquals(_owner, owner) && ReferenceEquals(owner._completion, this) && ReferenceEquals(owner._durable, execution) &&
             ReferenceEquals(owner._originalWorkspace, workspace) && owner._workspaceDeletionCompleted &&
+            Volatile.Read(ref owner._terminalDiagnosticsPending) == 0 && owner._authority.CanonicalPublicationFailure == null &&
             owner._owner == null && owner._processHostLaunch == null && owner._workerCompletionTask == null &&
             (!Facts.RequiredAudit || owner._terminalAuditRecorded);
     }

@@ -70,75 +70,89 @@ public sealed class GmWorkerProposalStore
                     cancellationToken);
             }
 
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
                 cancellationToken: cancellationToken, workerPurpose: durableExecution?.PublicationPurpose());
-            if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
-            {
-                return WorkerProposalPublicationResult.SessionWasReplaced(
-                    "Worker task no longer belongs to the current game session generation.");
-            }
-
-            var currentTaskBytes = await _fs.ReadFileBytesAsync(taskPath);
-            _fs.EnsureCanonicalWriteLeaseActive(writeLease);
-            if (!ExactBytesEqual(currentTaskBytes, expectedTaskBytes))
-            {
-                return WorkerProposalPublicationResult.Rejected(
-                    "Worker task no longer belongs to the current game session generation.");
-            }
-
-            if (_fs.FileExists(proposalInboxPath) ||
-                !_fs.TryRemoveEmptyCanonicalDirectory(writeLease, finalBundleRelativePath))
-            {
-                return WorkerProposalPublicationResult.Rejected(
-                    $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.");
-            }
-
-            if (!publicationAuthority.TryBeginPublication())
-                throw new OperationCanceledException(cancellationToken);
-
-            if (durableExecution != null) await durableExecution.BeginPublicationAsync(proposal, proposalBytes, importedContent);
-            _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+            Exception? publicationUncertainty = null;
             try
             {
-                if (_syntheticPublication == null)
-                    await _fs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
-                        writeLease, stagingBundleRoot, finalBundleRelativePath);
-                else
-                    await _syntheticPublication.PublishAsync(_fs,
-                        writeLease, stagingBundleRoot, finalBundleRelativePath);
-            }
-            catch (IOException) when (Directory.Exists(finalBundleRoot))
-            {
-                return WorkerProposalPublicationResult.Rejected(
-                    $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.");
-            }
+                if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+                {
+                    return WorkerProposalPublicationResult.SessionWasReplaced(
+                        "Worker task no longer belongs to the current game session generation.");
+                }
 
-            if (durableExecution != null) await durableExecution.AcknowledgePublicationAsync();
-            string? warning = null;
-            try
-            {
-                await _publishInboxAsync(writeLease, proposalInboxPath, proposalBytes);
-            }
-            catch (Exception ex)
-            {
-                warning = $"Proposal bundle is durable, but derived inbox publication failed: {ex.Message}";
-            }
+                var currentTaskBytes = await _fs.ReadFileBytesAsync(taskPath);
+                _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+                if (!ExactBytesEqual(currentTaskBytes, expectedTaskBytes))
+                {
+                    return WorkerProposalPublicationResult.Rejected(
+                        "Worker task no longer belongs to the current game session generation.");
+                }
 
-            if (publishDerivedAuditAsync != null)
-            {
+                if (_fs.FileExists(proposalInboxPath) ||
+                    !_fs.TryRemoveEmptyCanonicalDirectory(writeLease, finalBundleRelativePath))
+                {
+                    return WorkerProposalPublicationResult.Rejected(
+                        $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.");
+                }
+
+                if (!publicationAuthority.TryBeginPublication())
+                    throw new OperationCanceledException(cancellationToken);
+
+                if (durableExecution != null) await durableExecution.BeginPublicationAsync(proposal, proposalBytes, importedContent);
+                _fs.EnsureCanonicalWriteLeaseActive(writeLease);
                 try
                 {
-                    await publishDerivedAuditAsync(writeLease);
+                    if (_syntheticPublication == null)
+                        await _fs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                            writeLease, stagingBundleRoot, finalBundleRelativePath);
+                    else
+                        await _syntheticPublication.PublishAsync(_fs,
+                            writeLease, stagingBundleRoot, finalBundleRelativePath);
                 }
-                catch (Exception ex)
+                catch (IOException) when (Directory.Exists(finalBundleRoot))
                 {
-                    warning = string.IsNullOrWhiteSpace(warning)
-                        ? $"Proposal bundle is durable, but derived audit publication failed: {ex.Message}"
-                        : warning + $" Derived audit publication also failed: {ex.Message}";
+                    return WorkerProposalPublicationResult.Rejected(
+                        $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.");
                 }
-            }
 
-            return WorkerProposalPublicationResult.PublishedWithWarning(warning);
+                if (durableExecution != null) await durableExecution.AcknowledgePublicationAsync();
+                string? warning = null;
+                try
+                {
+                    await _publishInboxAsync(writeLease, proposalInboxPath, proposalBytes);
+                }
+                catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
+                {
+                    warning = $"Proposal bundle is durable, but derived inbox publication failed: {ex.Message}";
+                }
+
+                if (publishDerivedAuditAsync != null)
+                {
+                    try
+                    {
+                        await publishDerivedAuditAsync(writeLease);
+                    }
+                    catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
+                    {
+                        warning = string.IsNullOrWhiteSpace(warning)
+                            ? $"Proposal bundle is durable, but derived audit publication failed: {ex.Message}"
+                            : warning + $" Derived audit publication also failed: {ex.Message}";
+                    }
+                }
+
+                return WorkerProposalPublicationResult.PublishedWithWarning(warning);
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                publicationUncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+            }
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException)
         {

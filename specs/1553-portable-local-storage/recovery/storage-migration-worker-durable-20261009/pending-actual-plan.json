@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-worker-terminal-cleanup-pending-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "257075de765c788f17c8ba9e128b280dd8210f2d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.6690572,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-terminal-cleanup-pending-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-terminal-cleanup-pending-linux",
+      "Categories": [
+        "portable-worker-terminal-cleanup-pending-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalReaperWaitsForActualTerminalDecision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalReaperWaitsForActualTerminalDecision",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
