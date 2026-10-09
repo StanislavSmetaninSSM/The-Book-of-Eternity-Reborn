@@ -1221,12 +1221,23 @@ public partial class GameEngine
             }
             catch (Exception ex)
             {
-                LogError(ex);
-                if (ex is CoordinatedStatePublicationUncertainException)
+                var effectiveFailure = ex;
+                if (ex is not CoordinatedStatePublicationUncertainException)
+                {
+                    try
+                    {
+                        LogError(ex);
+                    }
+                    catch (CoordinatedStatePublicationUncertainException diagnosticFailure)
+                    {
+                        effectiveFailure = diagnosticFailure;
+                    }
+                }
+                if (effectiveFailure is CoordinatedStatePublicationUncertainException)
                 {
                     AnsiConsole.MarkupLine($"\n[red]❌ {Markup.Escape(CoordinatedStatePublicationUncertainException.PlayerMessage)}[/]");
                 }
-                else if (ex is CommittedSaveContinuationException)
+                else if (effectiveFailure is CommittedSaveContinuationException)
                 {
                     AnsiConsole.MarkupLine($"\n[yellow]⚠ {Markup.Escape(CommittedSaveContinuationException.PlayerMessage)}[/]");
                 }
@@ -1236,7 +1247,7 @@ public partial class GameEngine
                     AnsiConsole.MarkupLine("[dim]Вернитесь к последнему доступному состоянию и повторите действие позже.[/]");
                 }
                 AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-                RecordGameLoopErrorObservation(ex);
+                RecordGameLoopErrorObservation(effectiveFailure);
                 _inputSource.ReadKey(intercept: true);
             }
         }
@@ -3930,6 +3941,11 @@ public partial class GameEngine
         }
         catch (SessionReplacedException)
         {
+            throw;
+        }
+        catch (CoordinatedStatePublicationUncertainException diagnosticFailure)
+        {
+            diagnosticFailure.Data["CanonicalDiagnosticOriginalFailure"] = ex;
             throw;
         }
         catch

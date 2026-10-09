@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-game-loop-diagnostic-outcome-linux",
-      "reason": "Exact4 causal4c834790/042107 complete1PASS+3 real publisher failures; primary logging admission, secondary diagnostic outcome presentation and helper continuation. Final same4 proposed after narrow runtime source gate; earlier accepted12 not replayed.",
+      "reason": "Exact4 affected original GameLoop/diagnostic consumers, unchanged causal fixtures+known helper. Causal4c/042107 complete1P3 genuine failures; narrow effective-failure/canonical log fix awaits frozen source gate and matching fresh Plan/actual4.",
       "contracts": [
         "#1553",
         "FR-003",

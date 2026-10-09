@@ -1,3 +1,17 @@
+## GameLoop diagnostic runtime WIP — 2026-10-09
+
+Causal4/042107 independently accepted: three genuine failures plus unchanged known PASS; saved carrier
+94e80ee6 verifies17 artifacts/13 pins. Narrow runtime delta is only original loop effective-failure
+handling and canonical log helper: primary CSP bypasses canonical LogError; actual secondary log CSP
+becomes the displayed/observed effective failure without recursive logging. AppendErrorLogEntry adds
+exact original cause to the same CSP and rethrows before later callers' canonical continuation. Known
+non-CSP diagnostic failures and SessionReplaced behavior stay unchanged. Actual controlled loop exit
+still returns normally; no global latch, result/API, prompt/game mechanic or new transaction change.
+
+Same exact4 fixtures unchanged. Fresh matching integration Plan4 and actual4 pending frozen independent
+SOURCE/EXACT4 review; no runtime PASS or native/full gameplay/secondary-close claim. Client-owned error
+presentation/storage stop only: no GM-authored schema, prompt/example or resolver contract changed.
+
 ## GameLoop diagnostic causal4 — 2026-10-09
 
 Frozen4c834790 passes independent SOURCE/FIXTURE/EXACT4. Fresh integration Plan041925 completes
