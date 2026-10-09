@@ -88,7 +88,8 @@ public partial class ValidationService
                 var checkpointBytes = Encoding.UTF8.GetBytes(
                     SpiritualWoundCaptureCheckpointState.SerializeCanonical(checkpoint));
                 try { await writer(lease, this, checkpointPath, checkpointBytes); }
-                catch (Exception) { /* Exact read-back resolves uncertain atomic replacement. */ }
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
+                { /* Exact read-back is permitted only for a known ordinary transport failure. */ }
 
                 byte[]? confirmedCheckpoint;
                 try { confirmedCheckpoint = await _validator._fs.ReadFileBytesAsync(lease, checkpointPath); }
@@ -127,7 +128,8 @@ public partial class ValidationService
                 var pendingBytes = Encoding.UTF8.GetBytes(
                     SpiritualWoundDecisionPendingState.SerializeCanonical(pending));
                 try { await writer(lease, this, pendingPath, pendingBytes); }
-                catch (Exception) { /* Checkpoint remains the committed recovery boundary. */ }
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
+                { /* Exact read-back is permitted only for a known ordinary transport failure. */ }
 
                 byte[]? confirmedPending;
                 byte[]? checkpointAfterPending;

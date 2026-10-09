@@ -1,4 +1,23 @@
-## C2 private transport storage outcome — next bounded T062 slice, 2026-10-09
+## C2 private transport causal7 and runtime WIP — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT11 PASS3e88690a. Fresh Plan090014 succeeds
+43.2620023s,11 cases/1 descriptor,0 executed. Matching actual090122 completes
+**11/11:4 PASS,7 genuine FAIL**,34.2058768s; both cleanup flags, no timeout/skip/
+duplicate. Every selected unknown reaches one authentic nonCommitted member0
+journal and original CSP, then wrongly returns blocked/repair_required with1–3
+post-cut canonical reads. Exact journals/foreign/prior images and all11 original
+lease/root settlements remain. Four ordinary controls pass. No fixture miss or
+synthetic CSP is counted as RED. [Raw packet](recovery/storage-migration-c2-outcome-20261009/manifest.json)
+retains41 artifacts/originals68 pins including separate compile0 evidence.
+
+Runtime WIP excludes CSP at exactly seven demonstrated writer catches and three
+enclosing publisher catches (submission, repair, dependent). Read-only catches,
+ordinary IOException readback, generation/owner admission, capture revocation and
+disposal remain. No owned lease is added to borrowing APIs. Next independent source/
+raw/exact26 gate, fresh Plan26 then new11 plus existing known15. Engine callers and
+full C2 remain separately open; no GM/gameplay schema change or repeated other cohort.
+
+## C2 private transport storage outcome — bounded T062 design, 2026-10-09
 
 Fixture9f06 fresh Plan085805 fails before discovery,0 tests: CS1061 from a
 nonexistent CaptureOperationFailure call in the new fixture. Remove that call;

@@ -155,5 +155,383 @@
         "sha256": "7eed494f0e263487726cc745c89771989597180e5fdaa001108242e5c454642b"
       }
     ]
+  },
+  "red": {
+    "source": "3e88690a3864741a88619b50ad727a7df4f5d15c",
+    "qualification": "Raw exact selected source/summary/TRX; build-only/causal/fixture/outcome classification in plan.",
+    "artifacts": [
+      {
+        "path": "red-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-090014-857-304929-4e1caa36f4254676a7d22dfadff70158-categories/plan.json",
+        "sha256": "761bdd6403e4219350de899a9b3a43c809f244c158f0eccfa2bbb62fd00fab2e",
+        "originalSha256": "761bdd6403e4219350de899a9b3a43c809f244c158f0eccfa2bbb62fd00fab2e"
+      },
+      {
+        "path": "red-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-090014-857-304929-4e1caa36f4254676a7d22dfadff70158-categories/summary.json",
+        "sha256": "44980b19ac0735cada441002dd694b2441a81556c0d9a9095c2c0f4e83c03ade",
+        "originalSha256": "44980b19ac0735cada441002dd694b2441a81556c0d9a9095c2c0f4e83c03ade"
+      },
+      {
+        "path": "red-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-090014-857-304929-4e1caa36f4254676a7d22dfadff70158-categories/Build-integration.log",
+        "sha256": "79085ca6ddf480a10b331fc14b7d38808c4224b613a07b1cbfb5fe2984929af7",
+        "originalSha256": "7f45aa6306695ee3ec86bc332ead6f99d66bfac9a18013685c3d4fb80e31b9f8"
+      },
+      {
+        "path": "red-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-090014-857-304929-4e1caa36f4254676a7d22dfadff70158-categories/dotnet-test.log",
+        "sha256": "7aa67ea0374e0235b82dcce12152fc9fa980e2ecac32bb17b735790a06fbbb97",
+        "originalSha256": "2dfdbe6a72598e52d7ceab95808da75f3a98de438ce384a636d070845b63e282"
+      },
+      {
+        "path": "red-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-090122-599-305255-f38796d96fa14201bbd79d1364a5755c-categories/plan.json",
+        "sha256": "ffd79e5729c078460de297794f54a4733b42bee7d3aa7d744286fd0b17293571",
+        "originalSha256": "ffd79e5729c078460de297794f54a4733b42bee7d3aa7d744286fd0b17293571"
+      },
+      {
+        "path": "red-actual-portable-spiritual-c2-storage-outcome-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-090122-599-305255-f38796d96fa14201bbd79d1364a5755c-categories/portable-spiritual-c2-storage-outcome-linux-integration-001.trx",
+        "sha256": "17cd497d9c5d99066934db32d718d70be239b9cee58c580eb8ae9e48cfc9a65d",
+        "originalSha256": "2bed670d726ce6e94e9fd2949806a2d3caf1ebed5d69f779a48f9f68b2ecf74d"
+      },
+      {
+        "path": "red-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-090122-599-305255-f38796d96fa14201bbd79d1364a5755c-categories/summary.json",
+        "sha256": "20e763ce934d001609a49f1d4a6cb5db1aff242de00fe0a9c75ee9a399a1c767",
+        "originalSha256": "20e763ce934d001609a49f1d4a6cb5db1aff242de00fe0a9c75ee9a399a1c767"
+      },
+      {
+        "path": "red-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-090122-599-305255-f38796d96fa14201bbd79d1364a5755c-categories/dotnet-test.log",
+        "sha256": "0084a7b64b34b40c6a925602e0743bc71acfe95edec574edc858c0e7a0501a4d",
+        "originalSha256": "413e4eba5356112e8665dce0844f26128b6acb8dfcaa7369ef72c01b0cd2513a"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-10-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-10-1.json",
+        "sha256": "432d3154553824766b3f7271b0907a685edb2f47b58e2c8215346a520be7c6e4",
+        "originalSha256": "432d3154553824766b3f7271b0907a685edb2f47b58e2c8215346a520be7c6e4"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-10-0-journal.bin.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-10-0-journal.bin",
+        "sha256": "7245d46a5948ca913f8ef9222babd0757611879b9e9a855dc0d3c9233bc5aa05",
+        "originalSha256": "25a90f55680abaf0d90bbe84b45b9346a16414ebb31595afa70eb2fa049a78f9"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-10-0.json.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-10-0.json",
+        "sha256": "7d6cdee5e074aae40939ac8fc503a0bf51dbddd22cc802cbe1d84620ed3d02f7",
+        "originalSha256": "1756c35b18132037df45d2d0ee19a7c349023a70133f9c7f9764b0287202e6f1"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-9-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-9-1.json",
+        "sha256": "0f1f71d08f20d72319aea241bc180a0b5bc2ae9e981f3143c1b566eac206c05e",
+        "originalSha256": "0f1f71d08f20d72319aea241bc180a0b5bc2ae9e981f3143c1b566eac206c05e"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-9-0-journal.bin.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-9-0-journal.bin",
+        "sha256": "c6f8d57191eac541d590bf3d65c60235935c13a3e9d753dc406ee66a03d9eea1",
+        "originalSha256": "74d02e0ef6df331bd0e3ce6b587d8f48ab7710c36ce7a3ed445d42eac9beb5f1"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-9-0.json.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-9-0.json",
+        "sha256": "e9cb1efeb968a8f94d26f98ee641a00e1ae42f55a985abd4e035718bc09a1e0b",
+        "originalSha256": "9f84cd3a37448bd83b2c18b15efea1e63d65b755266f4249ed347962533b2a0f"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-8-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-8-1.json",
+        "sha256": "48260e2650e93864527e7f90bded2b53f56ae3436b897725d5e8fbc68707d3f7",
+        "originalSha256": "48260e2650e93864527e7f90bded2b53f56ae3436b897725d5e8fbc68707d3f7"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-8-0.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-8-0.json",
+        "sha256": "16efb7a06c4d68abc783fe698e789c2662fbb84a9b4b6413b8383e148e69537c",
+        "originalSha256": "16efb7a06c4d68abc783fe698e789c2662fbb84a9b4b6413b8383e148e69537c"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-7-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-7-1.json",
+        "sha256": "ae443be25dff78a144a12444442e7d444ab63b4796c65988a18c19c5d7d73ad7",
+        "originalSha256": "ae443be25dff78a144a12444442e7d444ab63b4796c65988a18c19c5d7d73ad7"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-7-0-journal.bin.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-7-0-journal.bin",
+        "sha256": "0eb4210c03388543f121c844658bb46ac2200f91c23461b772181f51fe16f246",
+        "originalSha256": "755e0e311e4a60474dda9f3af7d9d7263d275c20d568ff3714829e4e58d6e8c7"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-7-0.json.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-7-0.json",
+        "sha256": "9f4aa3002cb98fd4aadd0c04c1f8d87f01b9fb3c1f99bc7b1513d8478b5c803d",
+        "originalSha256": "4fa6178acfed9fd56d9267536c945b6860e7a549ab90c0619cb2cac48ec10f23"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-6-1.json",
+        "sha256": "8f93372b1cd163c82a51f30fd24534d00822bb21bc44cd24ba02f314334fb66a",
+        "originalSha256": "8f93372b1cd163c82a51f30fd24534d00822bb21bc44cd24ba02f314334fb66a"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-6-0-journal.bin.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-6-0-journal.bin",
+        "sha256": "0d06ccfa7c4f7f3afeb247f5323511e74ae7347f48635d08a3ead9b8527f02e5",
+        "originalSha256": "3160e3a5c0753a658555cbcc6d5a23545c1b2d05f50399cffc15dff186839462"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-6-0.json",
+        "sha256": "8ab50ee639e1e10c44a98a6809ae583533f72dbe8590f6173521b51d667a9c8d",
+        "originalSha256": "68da0c5a60f76c2959a56bfda7bd1fb5eb91ef90d01ea68f367f3a9bf445c9ec"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-5-1.json",
+        "sha256": "609006637b49629348a0b66841d1e328213835451492d57a9d54de9815c41543",
+        "originalSha256": "609006637b49629348a0b66841d1e328213835451492d57a9d54de9815c41543"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-5-0.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-5-0.json",
+        "sha256": "6a5c78307e66259d5f4a6043bd5e027e81a6c7fa7b5a6a5f5b9279ee814e80eb",
+        "originalSha256": "6a5c78307e66259d5f4a6043bd5e027e81a6c7fa7b5a6a5f5b9279ee814e80eb"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-4-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-4-1.json",
+        "sha256": "50ecd75a1beabbb686ef78f3d604b0d5a1b2469c3ae479954d8e8c485f5fb6a5",
+        "originalSha256": "50ecd75a1beabbb686ef78f3d604b0d5a1b2469c3ae479954d8e8c485f5fb6a5"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-4-0.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-4-0.json",
+        "sha256": "67177b6043c298c0e223e30ffd27dc9365a7dd2fc510b022e75b0ceae1e52742",
+        "originalSha256": "67177b6043c298c0e223e30ffd27dc9365a7dd2fc510b022e75b0ceae1e52742"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-3-1.json",
+        "sha256": "95a047730319934f27f55af4c3f94bdf2ae32717be896cf2e8b3be0e8aaed4b4",
+        "originalSha256": "95a047730319934f27f55af4c3f94bdf2ae32717be896cf2e8b3be0e8aaed4b4"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-3-0-journal.bin.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-3-0-journal.bin",
+        "sha256": "18b97ad4e730aa499e3bd72f80f8295c609f11b79bf383f217f74661cecf9444",
+        "originalSha256": "c2a72fa07f1793753f181e215d32901faee6adb1dcdd5019743800e953652534"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-3-0.json",
+        "sha256": "905a813e9980de74050f33f6be966252ee8b82becd076291477e8b2677b3bb36",
+        "originalSha256": "5e8e1bbc375f7649cc5d3484f9b84f34ee800a895371315bbee24c201cdb3189"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-2-1.json",
+        "sha256": "fe66b3de1af56bf4fc902639fa7cdb23d32ee2416ca8c8f44862bed48d778b61",
+        "originalSha256": "fe66b3de1af56bf4fc902639fa7cdb23d32ee2416ca8c8f44862bed48d778b61"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-2-0.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-2-0.json",
+        "sha256": "8ea67616eeb405b94368fd35b21546c8fc5b468eba37c0a8408e2f50c7a234a5",
+        "originalSha256": "8ea67616eeb405b94368fd35b21546c8fc5b468eba37c0a8408e2f50c7a234a5"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-1-1.json",
+        "sha256": "7264ace793f509aa0cfd863b161b42c71ef42875351bfe6b36ca9d801a518229",
+        "originalSha256": "7264ace793f509aa0cfd863b161b42c71ef42875351bfe6b36ca9d801a518229"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-1-0-journal.bin.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-1-0-journal.bin",
+        "sha256": "7f8eb526c79e51fd822ef48e7c36a5b04922b9ba4ee484d61849cce3f42a40b7",
+        "originalSha256": "9a8d4a84dc4b7d2d0bf15b530f49731b3093d7c57e87b2a3c496bcee262abec0"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-1-0.json",
+        "sha256": "3ce2748e4e2e5608c8b6a94cb7b704478e07331b40bf844187050b21b54bd4e0",
+        "originalSha256": "58de97bd3d81c813e84d3b1ae68f96dae1a2080c46b8769fc560873a18c287a8"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-0-1.json",
+        "sha256": "98b91ede7f4b517b3174409dfbb9cc92a427aba9ab3982ecf27067c58b573df8",
+        "originalSha256": "98b91ede7f4b517b3174409dfbb9cc92a427aba9ab3982ecf27067c58b573df8"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-0-0-journal.bin.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-0-0-journal.bin",
+        "sha256": "61f73ab6cbf0f39d2130dd196d10f81a7602af3c183440beec8a81bb54c0e244",
+        "originalSha256": "526769e7b6f216041604ab5e8c65918cf188cfab28fc60b600cf4d0f03e159b1"
+      },
+      {
+        "path": "red-row-portable-spiritual-c2-storage-outcome-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-c2-red/portable-spiritual-c2-storage-outcome-linux-integration-001-0-0.json",
+        "sha256": "485917ae9e303a0f7cdf5ad5b9a378ecf73ad77d7e03cc5a13119691d8ad9cd1",
+        "originalSha256": "ca879a99389158260c68835f026350d3803154a904b8d0be5e3d46ad47cba27b"
+      },
+      {
+        "path": "root-red-verifier.py",
+        "source": "/tmp/boe_verify_c2.py",
+        "sha256": "d031eb06b07fb775ff013ddabac6ac81b844789923dab386e0909ddcbe0c9c75",
+        "originalSha256": "d031eb06b07fb775ff013ddabac6ac81b844789923dab386e0909ddcbe0c9c75"
+      },
+      {
+        "path": "root-red-receipt.json",
+        "source": "/tmp/boe-c2-root-red.json",
+        "sha256": "99533d4de08070a7c4e80351454959c760162298d2e19f8ba793f19888ba6a3a",
+        "originalSha256": "99533d4de08070a7c4e80351454959c760162298d2e19f8ba793f19888ba6a3a"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2InitialTransport.cs",
+        "sha256": "4871ad824989c0c5af3c5aca11d39c8d525ddaade5908f458ee6a6077929f28b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedTransport.cs",
+        "sha256": "6ccee88f510190164a7efeac8999c63041a0be84db34cef262065b593d75ffa7"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingSubmission.cs",
+        "sha256": "93f29c49b45a8be21f0bda72b2699c87a6668de58dc6e674857d473fcab53dbf"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingRepair.cs",
+        "sha256": "942417727a015731f9b09ccef2903377a088ed25ce522abefa90479b59f8a234"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingClassifier.cs",
+        "sha256": "6f0babf9b6b44c554bdd392bc6693edc138165394875be299ef7ec8eff3852b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedDecisionDraft.cs",
+        "sha256": "65d3aea406782678df350c4f40db60d30859ff9b7b84cf64dde6f56e5fab2e4a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PrivateAdapter.cs",
+        "sha256": "165018387100212a14cee85af02fb3a94505aa8299e2acdb96d441d2038e3a6e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedReplay.cs",
+        "sha256": "4c1b10f675da3eec5f4c3fc5c253e7d1b60729808e5d0d1e01a8bc1131c5047e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2InitialReplay.cs",
+        "sha256": "b1a54261e5a5f9f29073010b14b0789662dc4d681e3a91f1b2cca96519d3fda0"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs",
+        "sha256": "4598559532634814eb5a6bafb779a1f416f097f280fa70623e651c41af727d9c"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs",
+        "sha256": "28d9b30d4a1d873b1acb057f42a59b45cbd2186aa9439328d912faca5a7663a2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalC2FirstCheckpointDraft.cs",
+        "sha256": "866e44a160589aaa8bdde380d16b3f695651f8033102cfc76ec920e2e69a7914"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationTransport.cs",
+        "sha256": "5163f0f5a0125915589052d32405f1e43c6f4b025acbab990470fcd05be565ba"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationDraft.cs",
+        "sha256": "6793bcf32cc9b63542135c86c7ce8ef172c37618f834ff4ec7b0d6aec42b0aa6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStorageOutcome.cs",
+        "sha256": "7cc19167846d7a605cbf1f4c7e9d7b2dd4ee96cb19c4a82a5a4a577a6b6d4fa4"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStagedPreparedFixture.cs",
+        "sha256": "f7eae8151245f2736bfcd251a03541f1c8a84c7345e6e7f72414f590c6cb3b45"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStagedFixture.cs",
+        "sha256": "c963cc69ad45842303fbfd2d6676e6eaafcfb218cdb72329963416e9d6d35db5"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStagedCommitFailures.cs",
+        "sha256": "5a674e58828ae6720f1fb09b1d00d62d466c926eacfc404a71e40053351286b0"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2SavedDecisionReplay.cs",
+        "sha256": "b5b68500bcbf187b1c0bfe8da8a574ea38e3b60c895122fae00f1fbddd65c266"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2PendingClassifier.cs",
+        "sha256": "fb7433605b51de72c387925161e9df36d3971aedfe5c974fd956368ab4864c0b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2InitialTransport.cs",
+        "sha256": "8d9d0b1cbfb20f12065290073ca2df36122c1e5d704c8fdf6f2b47a838e93b09"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2SavedPendingRepair.cs",
+        "sha256": "0d7d67e700ebfd82d77fb5278e7394a49848215f6d2ae97c9d3759f227d3735b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2PendingRepair.cs",
+        "sha256": "8e648f73dc54601818ab67300186875eda16009cd4cc92448cb69aff37aa18c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrame.cs",
+        "sha256": "0b8d6a57e013566e6ae4782821d161a6f101dd7c53916af88d472a662f1904fa"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GmWorkerStorageOutcomeTests.cs",
+        "sha256": "3e45154c5cac1709a23339070ff4b8569cf115942b1bba07b65b9eef0ca65ae6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+        "sha256": "925cdbdde1fd593d6df10902cae97dd0bec0af2a19629d60005116df6fd4efab"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "efd8f3be1c4cdb72a06eeb5e76e6d45951afe96958f34092eaea842990fd21f0"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "7eed494f0e263487726cc745c89771989597180e5fdaa001108242e5c454642b"
+      }
+    ]
   }
 }

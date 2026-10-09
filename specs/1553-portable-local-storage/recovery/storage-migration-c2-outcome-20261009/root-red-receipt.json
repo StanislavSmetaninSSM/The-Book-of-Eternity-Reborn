@@ -1,0 +1,136 @@
+{
+  "source": "3e88690a3864741a88619b50ad727a7df4f5d15c",
+  "actual": "20261009-090122-599-305255-f38796d96fa14201bbd79d1364a5755c-categories",
+  "tests": {
+    "Total": 11,
+    "Executed": 11,
+    "Passed": 4,
+    "Failed": 7
+  },
+  "rows": [
+    {
+      "mode": "saved_checkpoint_unknown",
+      "outcome": "Failed",
+      "cut": 1,
+      "sameCSP": false,
+      "disposition": "blocked",
+      "laterReads": 1,
+      "retainedPriorImages": 40,
+      "closeFailure": null
+    },
+    {
+      "mode": "initial_checkpoint_unknown",
+      "outcome": "Failed",
+      "cut": 1,
+      "sameCSP": false,
+      "disposition": "blocked",
+      "laterReads": 1,
+      "retainedPriorImages": 38,
+      "closeFailure": null
+    },
+    {
+      "mode": "initial_success",
+      "outcome": "Passed",
+      "cut": 0,
+      "sameCSP": false,
+      "disposition": "committed",
+      "laterReads": 0,
+      "retainedPriorImages": 0,
+      "closeFailure": null
+    },
+    {
+      "mode": "saved_pending_unknown",
+      "outcome": "Failed",
+      "cut": 1,
+      "sameCSP": false,
+      "disposition": "repair_required",
+      "laterReads": 2,
+      "retainedPriorImages": 40,
+      "closeFailure": null
+    },
+    {
+      "mode": "repair_success",
+      "outcome": "Passed",
+      "cut": 0,
+      "sameCSP": false,
+      "disposition": "repaired",
+      "laterReads": 0,
+      "retainedPriorImages": 0,
+      "closeFailure": null
+    },
+    {
+      "mode": "dependent_success",
+      "outcome": "Passed",
+      "cut": 0,
+      "sameCSP": false,
+      "disposition": "committed",
+      "laterReads": 0,
+      "retainedPriorImages": 0,
+      "closeFailure": null
+    },
+    {
+      "mode": "dependent_unknown",
+      "outcome": "Failed",
+      "cut": 1,
+      "sameCSP": false,
+      "disposition": "blocked",
+      "laterReads": 1,
+      "retainedPriorImages": 40,
+      "closeFailure": null
+    },
+    {
+      "mode": "initial_pending_unknown",
+      "outcome": "Failed",
+      "cut": 1,
+      "sameCSP": false,
+      "disposition": "repair_required",
+      "laterReads": 1,
+      "retainedPriorImages": 39,
+      "closeFailure": null
+    },
+    {
+      "mode": "saved_success",
+      "outcome": "Passed",
+      "cut": 0,
+      "sameCSP": false,
+      "disposition": "committed",
+      "laterReads": 0,
+      "retainedPriorImages": 0,
+      "closeFailure": null
+    },
+    {
+      "mode": "repair_unknown",
+      "outcome": "Failed",
+      "cut": 1,
+      "sameCSP": false,
+      "disposition": "blocked",
+      "laterReads": 3,
+      "retainedPriorImages": 39,
+      "closeFailure": null
+    },
+    {
+      "mode": "submission_unknown",
+      "outcome": "Failed",
+      "cut": 1,
+      "sameCSP": false,
+      "disposition": "blocked",
+      "laterReads": 1,
+      "retainedPriorImages": 40,
+      "closeFailure": null
+    }
+  ],
+  "removedRoots": [
+    "/tmp/boe-resource-materialization-4b6909753f534a4d871e8d8ffbfd1fae",
+    "/tmp/boe-resource-materialization-b0c2026996d54bd4bd602100eac9c4eb",
+    "/tmp/boe-resource-materialization-a1f2deb523c84083b933bdfb4f6bd813",
+    "/tmp/boe-resource-materialization-c1bc360552ae47b4af9d75898ae66d99",
+    "/tmp/boe-resource-materialization-50349b8e535b49728c938eac67368d83",
+    "/tmp/boe-resource-materialization-5d1bf660ef1d46adbeabe6c82b0387aa",
+    "/tmp/boe-resource-materialization-a1f3d9dbd1fe4e30a02e557adbb7ad77",
+    "/tmp/boe-resource-materialization-45bb5086c1874185b6d4ad051dcf1b6a",
+    "/tmp/boe-resource-materialization-c6dd9566b7584765a78955a0beb82ff2",
+    "/tmp/boe-resource-materialization-7165626452604b1e99c85dd4c04011b5",
+    "/tmp/boe-resource-materialization-c0aeb54217fa45f5aa5bba24246599b6"
+  ],
+  "scope": "Original services only; seven authentic retained journal/foreign cuts and exact previous committed images;4success, original capture/borrowedlease/root settlement. Known15 GREEN if included; no full engine/native/secondaryclose."
+}

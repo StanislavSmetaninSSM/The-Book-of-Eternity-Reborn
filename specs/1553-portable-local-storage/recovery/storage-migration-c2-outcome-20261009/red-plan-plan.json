@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-spiritual-c2-storage-outcome-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "3e88690a3864741a88619b50ad727a7df4f5d15c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 43.00285,
+  "Descriptors": [
+    {
+      "Name": "portable-spiritual-c2-storage-outcome-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-c2-storage-outcome-linux",
+      "Categories": [
+        "portable-spiritual-c2-storage-outcome-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualPrivateTransportPreservesCanonicalPublicationOutcome",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 11,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualPrivateTransportPreservesCanonicalPublicationOutcome",
+          "Cases": 11
+        }
+      ]
+    }
+  ]
+}

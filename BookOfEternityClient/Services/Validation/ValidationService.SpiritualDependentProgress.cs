@@ -146,8 +146,9 @@ public partial class ValidationService
                 return Result(ProgressFailure("blocked", "spiritual_dependent_progress_reopen_failed"));
             return Result(new("committed", next.Request, next.Issues));
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-            InvalidOperationException or FormatException or JsonException or OverflowException or DecoderFallbackException)
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+            (error is IOException or UnauthorizedAccessException or InvalidOperationException or
+                FormatException or JsonException or OverflowException or DecoderFallbackException))
         {
             return Result(ProgressFailure("blocked", "spiritual_dependent_progress_failed"));
         }
@@ -263,7 +264,8 @@ public partial class ValidationService
                 var writer = writeOverrideAsync ?? ((FileSystemManager.CanonicalWriteLease held,
                     string path, byte[] content) => _validator._fs.WriteFileAtomicBytesAsync(held, path, content));
                 try { await writer(lease, SpiritualWoundCaptureCheckpointState.StatePath, bytes); }
-                catch (Exception) { /* Exact read-back resolves old, new or ambiguous outcomes. */ }
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
+                { /* Exact read-back is permitted only for a known ordinary transport failure. */ }
                 var observed = await _validator._fs.ReadFileBytesAsync(lease, SpiritualWoundCaptureCheckpointState.StatePath);
                 if (!ExactBytes(observed, bytes))
                     return ExactBytes(observed, pair.CheckpointBytes)

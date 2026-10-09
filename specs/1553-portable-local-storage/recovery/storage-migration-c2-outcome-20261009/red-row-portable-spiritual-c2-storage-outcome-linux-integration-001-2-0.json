@@ -1,0 +1,33 @@
+{
+  "mode": "initial_success",
+  "uncertain": false,
+  "failure": null,
+  "closeFailure": null,
+  "SameOriginalUncertainty": false,
+  "disposition": "committed",
+  "captureCurrentAfter": true,
+  "captureCurrentFinal": false,
+  "originalContinuation": null,
+  "nextContinuation": null,
+  "atCut": null,
+  "PriorAtCut": null,
+  "afterImages": null,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

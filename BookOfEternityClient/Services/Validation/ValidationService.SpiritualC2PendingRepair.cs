@@ -123,7 +123,8 @@ public partial class ValidationService
                     SpiritualOriginalTurnCapture _, string path, byte[] bytes) =>
                     _fs.WriteFileAtomicBytesAsync(heldLease, path, bytes));
             try { await writer(lease, capture, pendingPath, pendingBytes); }
-            catch (Exception) { /* The exact read-back determines an uncertain replacement. */ }
+            catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
+            { /* Exact read-back is permitted only for a known ordinary transport failure. */ }
 
             byte[]? confirmedCheckpoint;
             byte[]? confirmedPending;
@@ -166,8 +167,8 @@ public partial class ValidationService
             }
             return new("repaired", currentOwner, currentPacket, []);
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-            InvalidOperationException)
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+            (error is IOException or UnauthorizedAccessException or InvalidOperationException))
         {
             return PendingRepairFailure("blocked", "spiritual_pending_repair_failed");
         }
