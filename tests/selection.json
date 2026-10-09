@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-explorer-reroll-current-fixture",
+      "reason": "Expose stale two-form reroll-cancel fixture with positive offered-choice and changed-suggestion assertions before correcting only seed; no runtime change. One exact case.",
+      "contracts": [
+        "#1553",
+        "T064-STORAGE-CUTS",
+        "FR-015"
+      ]
+    },
+    {
       "category": "portable-explorer-archive-binding-controls",
       "reason": "Frozen correction proposal22=unrun18+failed actual committed-release1+unrun candidate1+affected healthy nested Submit1+actual closing replacement1. Repeat only healthy Submit from prior11 because it reaches changed nested postcheck; other10 retained. Independent source/selection then fresh Plan required.",
       "contracts": [

@@ -1,3 +1,12 @@
+## Reroll fixture positive oracle — unbuilt/unrun, 2026-10-09
+
+One original reroll-cancel test now requires the real first menu to offer reroll, the
+second to consume its local reservation and display a different suggestion. The old
+two-form seed is deliberately unchanged for this failing-fixture demonstration.
+Move its exact selector from console-explorer-afterlife into portable-explorer-reroll-current-fixture;
+run only that one case after fresh Plan1. No production or browser-fixture edit yet.
+Existing055028 retains21PASS/1 stale lock-baseline failure; no accepted cohort replay.
+
 ## Resumed Explorer verification — 2026-10-09
 
 Owner confirmed the manual model switch and authorized continuation of the existing migration;

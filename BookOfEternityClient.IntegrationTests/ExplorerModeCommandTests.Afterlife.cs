@@ -5712,6 +5712,18 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("shining_forge_reroll_cancel_preserves_entitlement");
+        var formPrompts = _console.SelectionChoicesHistory
+            .Where(entry => entry.Title.Contains("Новая форма реликвии", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        Assert.Equal(2, formPrompts.Length);
+        Assert.Contains("🔄 Перебросить благословением (1)", formPrompts[0].Choices);
+        Assert.DoesNotContain(formPrompts[1].Choices,
+            choice => choice.Contains("Перебросить благословением", StringComparison.Ordinal));
+        var firstSuggestion = Assert.Single(formPrompts[0].Choices,
+            choice => choice.Contains("Использовать предложенную форму", StringComparison.Ordinal));
+        var rerolledSuggestion = Assert.Single(formPrompts[1].Choices,
+            choice => choice.Contains("Использовать предложенную форму", StringComparison.Ordinal));
+        Assert.NotEqual(firstSuggestion, rerolledSuggestion);
         Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
         var afterRoot = JsonNode.Parse((await File.ReadAllTextAsync(soulPath))!)!.AsObject();
         var entitlements = afterRoot[ShiningBlessingEffectState.SoulStateProperty]!["relicRefinementEntitlements"]!.AsObject();

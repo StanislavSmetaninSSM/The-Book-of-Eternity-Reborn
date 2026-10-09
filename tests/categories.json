@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-explorer-reroll-current-fixture",
+      "responsibility": "Original forge reroll cancellation with genuinely offered reroll, changed suggestion and preserved entitlement; qualifies stale two-form fixture under #1553.",
+      "excludes": "No live GM/native/full gameplay or fabricated menu choice. No replay of accepted Explorer uncertainty cohort.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Afterlife.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-explorer-archive-binding-controls",
       "responsibility": "Remaining committed-release original Submit/candidate plus affected healthy nested Submit and actual readonly-closing generation replacement. Select with causal18 for exact22 after scoped binding correction.",
       "excludes": "No replay of retained corrected4/known6. No global continuation latch, outcome relabel, native or secondary-close injection; sibling browser presenters remain source-qualified.",
@@ -7673,7 +7697,6 @@
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_NoSoulRelicsUsesPlayerFacingRussianWording",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_OverviewMarksWrongCycleInventoryAsStale",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_ReshapeFallbackHumanizesPromptAndNormalizesCanonicalFormTag",
-            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RetuneFallbackOffersTemplateBeforeManualJson",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_TradeLifecycleInspectionDoesNotTruncateGachaHistory",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_TradeLifecycleInspectionLabelsSameCycleFallbackAsHistorical",
