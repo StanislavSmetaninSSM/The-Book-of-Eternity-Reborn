@@ -1,3 +1,19 @@
+## Browser raw producer test-first — WIP, 2026-10-09
+
+Original publicgacha7+borrowedqueue8+originalpublicgacha2 finite17/onecategory
+installed UNBUILT/UNRUN. Everynewrow owns originalfixture; genuineStage/getpending
+before directqueue suppliedrollbackvalue corruption is disclosed; retained oldpending
+request/manifest/authority/old.bin byte maps captured afterrawtestsetup, nofakepublication.
+Publicnegatives require zerocanonicalmutation BEFOREExecuteAtomic/UIguard/stage/spend;
+queue negatives require outsidecatch preflight beforecopy/oldpendingcleanup/Replace.
+Rawcase/output/story/cleanupaliases, literalbackslash/outertrim; Unicodepositive proves
+actual originalmanifest mapping/exactsource andpre-spendbackup. NoGM/HTTPprocess.
+Proposed correction: queue-owned common rawinventory/fixedphysicalmatch guard called
+before publicgacha ExecuteAtomic and queue try/Replace, thenbeforecopy; exactrollback
+strings kept afteradmission, originalcopy/exclusion predicates andborrowedlease preserved.
+Next independent fixture/design/exact17 gate, freshPlan17/actual17 originalbrowserruntime.
+Engine boundedGREEN25 separate; T061–T065 unchecked/B2–B5 paused; continue availablework.
+
 ## Engine exact-name evidence/catalog gate — 2026-10-09
 
 Independent AstraXHigh GREEN/raw/carrier PASS791089b3: actual25/25,19exactnegative

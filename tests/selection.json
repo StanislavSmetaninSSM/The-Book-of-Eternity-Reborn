@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-browser-snapshot-exact-names-linux",
+      "reason": "T063/F16 original browser pre-spend/queue raw spelling test-first17: publicgacha7+originalborrowedqueue8+originalpublicgacha2, rawnames and originalrollback value, retained oldpending evidence and fullbyte/generation maps, Unicode exactcopy/actualauthority positive. InstalledUNBUILT/UNRUN, browserruntimeunchanged. Engine25 and earlier42 not replayed without changedboundary.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-engine-snapshot-exact-names-linux",
       "reason": "T063/F16 original engine raw path admission: actual182703 source5279dbd4 GREEN25/25 after freshintegrationPlan25/1,8.1499631s,complete1/1,bothcleanup. Baseline/backup16,cleanup4,suppliedrollback2 and originalbyte/exclusion/staging3. Strict22newrootsabsent; prior6PASS19causalRED and compile0 preserved. Source/design/exact25 independentPASS; independent raw/carrier PASS791089b3; freshbothcatalog182804584/11355 discovery0, finalcatalogcarrier pending. Other producers/owners/native unqualified; accepted firstLive/signer/ZIP42 not replayed.",
       "contracts": [

@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-browser-snapshot-exact-names-linux",
+      "responsibility": "Original public browser direct gacha7 before stage/spend and borrowed queue8 before snapshot copying or cleanup catch, raw rollback-value negative and Unicode positives; original public gacha2 neighbors.",
+      "excludes": "No incarnation/Explorer/spiritual producers, other owners, HTTP, native Windows or B2 gameplay.",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+        "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.ExactSnapshotNames.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserGachaAdmitsRawSnapshotNamesBeforeStageOrSpend",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserQueueAdmitsRawInventoryAndRollbackBeforeCopiesOrFailureCleanup",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-engine-snapshot-exact-names-linux",
       "responsibility": "Original engine baseline and pre-turn backup16 plus cleanup preservedpaths4 and actual supplied rollback2 before cleanup/init/copy/fold, Unicode positives and three original byte/exclusion/staging neighbors.",
       "excludes": "No browser/incarnation/Explorer/spiritual producer, other owners, native Windows or B2 gameplay.",
