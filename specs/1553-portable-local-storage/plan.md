@@ -1,3 +1,48 @@
+## Preparation bounded composed21 complete — 2026-10-09
+
+Runtime85baf7a4 passes independent SOURCE/EXACT21 and eleven genuine publisher controls plus seven
+known controls at030403. That original invocation remains incomplete19/21 (18P1 old-observer fixtureF,
+Live2 unrun), never rewritten as21GREEN. Corrected current-admission controls41ac9a45 pass independent
+SOURCE/EXACT3; matching Plan030849 fresh integration38.4396199s/unit10.2792632s,wall55.8020720s,
+3planned/2descriptors/0executed. Actual030951 completes3/3PASS,2/2,12.8927483s,exit0,no skipped/
+duplicates/timeouts,bothcleanup. Runtime is unchanged after85b. Composed21 =18@85b +3@41ac.
+
+All eleven actual cuts now execute/pass exact original-CSP (or original explicit browser disposition),
+retained authentic journal/foreign member, prior committed bytes and zero later reached reads/mutations/
+ordinary leases/publications/recovery observer phases. Four readonly closing leases are separate.
+Known capture/owner causes remain attached where tested. All eleven owned roots removed. Corrected
+snapshot control positively records mainAdmissionContentions1 and both original tasks joined, retains
+exact serialized before/after bytes, and explicitly removes its root. Corrected Live replacement uses
+the same real earlier admission and directly joins actual tasks; both unit controls pass. Their original
+class cleanup remains best-effort without per-case JSON; parent separately observed zero matching
+/tmp/boe-live-turn-prep-* roots afterward. Do not equate runner cleanup with missing per-case receipts.
+
+[Packet](recovery/storage-migration-preparation-20261009/manifest.json) stores108 artifacts/70 historical
+Git pins, all saved/expanded/original verified. It retains initial fixture2, nine causal5c, isolated causal2
+c9, partial19/21, final3 and both corrected source-era control files; no evidence overwritten. Discovery
+031011 at clean41ac uses matching fresh both-project builds:512 categories/11303 methods-files valid,
+0tests,8.5092457s,exit0,bothcleanup. Final independent raw/carrier gate pending. Latest actual GitHub-only
+full restore remains e5; current carrier is published/read back, not newly restored. No whole preparation
+atomicity, native/full-turn, simultaneous secondary-close fault or unrelated consumer acceptance.
+
+Next authorized unit is lore/realm, including original Shining reentry/ordinary-return catches and
+owned release. ClearCurrentWorldLore currently routes directly to physical deletion; baseline routing
+proof must not fabricate a pre-fix CSP. Preserve exact host filename spelling with bounded trusted
+current_world enumeration, rollback-name exclusions and sequential partial outcomes. Genuine realm
+publication/reset cuts retain prior committed realm/quartet; MainMenu incarnation must not compensate
+Unknown. Existing dead two deletion helpers plus newly unreachable wrapper after migration need a
+fresh closed dependency census if removed; keep old backup/load primitives.
+
+New remaining source-only map details: MainMenu reentry catch2523 and ordinary-return catch2742 can
+log canonical errors after real publication CSP; the latter still holds its lease, causing bounded
+self-contention before error-log acquisition, not a proven infinite deadlock. Preserve first cause
+before its owned close and ShiningReturnCycleResourceService wrapper close. Explorer Politics realignment/
+leadership, TradeAndForge forge, attraction and browser forge InvalidOperation catches include CSP;
+whole original command/caller parity needs separate cuts, not blanket parser changes. GameLoop's
+canonical LogError before CSP classification and diagnostic's own CSP remain separate boundaries.
+F18 adds parent census27 canonical-lock observer candidates (dual/negative controls included), not27
+defects; actual earlier admission observations require case-specific review. No current21 expansion.
+
 ## Remaining3 join correction before build — 2026-10-09
 
 Independent review found protective WaitAsync around cleanup could finish before the actual original

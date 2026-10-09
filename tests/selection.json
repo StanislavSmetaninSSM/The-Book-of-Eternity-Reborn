@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-preparation-current-admission-controls",
-      "reason": "Only final remaining3 after partial19/21: repair obsolete canonical-contention observation using original MainOwnerLockContended and always drain both tasks; Live linked1 is unchanged and replacement1 has the same admission/join correction; both were previously unexecuted. Preserve passed18; fresh matching Plan3/source gate required.",
+      "reason": "Final remaining3 PASS at41ac/030951: corrected snapshot/replacement current-main-admission observers directly join original actors; linked1 unchanged. Completes composed21 with retained18@85b, no single21GREEN claim.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -25,7 +25,7 @@
     },
     {
       "category": "portable-preparation-manifest-outcome-causal-linux",
-      "reason": "Final preparation authority1/Live1: actual causal2 reached atc9/025917 after initial selector fixture failures retained. Exact same cut/prior-image assertions protect typed stop; paired with reached9 and known10.",
+      "reason": "Authority/Live2 actual cuts PASS at85b/030403 after causal c9 and initial selector misses retained. Together with9+known10 completes composed21 across85b/41ac.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -36,7 +36,7 @@
     },
     {
       "category": "portable-preparation-outcome-causal-linux",
-      "reason": "Final preparation original initializer4/backup2/Stage1/DirectGacha2: nine actual causal cuts retained at5c/025236. Unchanged semantic bodies and exact first-CSP/no-later-work oracles protect corrected consumers; known10 selected separately.",
+      "reason": "Nine original causal obligations PASS at85b/030403: same first CSP/explicit browser outcome, exact journal/prior images and no measured later work. Historical5c causal receipt retained; no replay for fixture-only remaining3.",
       "contracts": [
         "#1553",
         "FR-003",

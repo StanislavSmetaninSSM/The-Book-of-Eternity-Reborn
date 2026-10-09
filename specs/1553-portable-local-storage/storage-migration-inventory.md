@@ -1,14 +1,17 @@
 ## Current accepted / open map — 2026-10-09
 
-Latest tested source a88d70f5: owned API close consistency15/15 PASS; fresh matching both-project
-catalog508/11298 valid0. Final packet25/11 independent carrier PASSf9f7d8a1. This is actual publication
-plus explicit release-component evidence, not injected self-owned double-fault/native qualification.
+Latest tested source41ac9a45 retains runtime85baf7a4 preparation correction. Composed21 passing
+obligations =18@85b +3@41ac, not a single21GREEN. Genuine publication11 and known7 pass initially;
+remaining corrected current-admission snapshot/replacement controls2 plus unchanged linked1 pass
+separately. Saved108 artifacts/70 pins and matching fresh both-project catalog512/11303 valid0;
+final independent carrier gate pending. Prior owned-close15 at a88d/carrierf9 accepted25/11 remains
+source-consistency plus actual publication/component evidence, not injected simultaneous double fault.
 Prepared-Shining bounded5 atbbf/carrier1265 independently accepted47/27; Story12 atb79/carrier6ee
 accepted64/21; progression5 at2a372/carrier7f accepted48/25; Prepared remote8 at7cf/carrierc7 accepted59/26.
 Earlier F13/F14/F17/treatment/cleanup scoped acceptances below remain historical evidence, not new
 executions. Latest actual fresh GitHub-only full restore is e5; newer carrier restoration is pending.
 
-Open: connected preparation owners (engine/LivePrepare/browser/DirectGacha), Explorer whole-command
+Open: remaining lore/realm and memory/accepted-continuation boundaries, Explorer whole-command
 outcomes, authoritative Ready/worker/audit/proposal continuations, C2 transport propagation, F16 media/
 listing/export/path admission, F18 exact fault/observer ports and final complete reconciliation.
 Generation-replacement policy of prepared-Shining helpers and native/secondary-close/full-gameplay
@@ -43,7 +46,14 @@ audit/finalize, engine Shining-blessing wrapper, rejected rollback and canonical
 need separate original consumer qualification. Shared bookkeeping callers include diagnostic report
 writes plus subsequent transient/control deletions; a known failure followed by actual reportUnknown
 is distinct. Preserve local flags/accepted facts and known refusal policy without a global latch.
-Current preparation test-only11 does not claim these tails complete.
+Preparation composed21 does not claim these tails complete. MainMenu Shining reentry2523 and ordinary
+return2742 catch actual CSP before canonical LogError; latter still holds its lease, with bounded
+self-contention rather than a proven infinite deadlock. Original realm/Shining service owned-close
+capture belongs this queued unit. Explorer Politics373/480, TradeAndForge1488, attraction501 and
+browser forge1484 InvalidOperation catches also include CSP; keep whole-command/parity qualification.
+GameLoop canonical logging before CSP classification and known-error→diagnostic-CSP are distinct
+remaining boundaries. F18 parent census27 canonical-contention assignment candidates includes dual
+and intentional negative controls: not27 defects, no blanket hook substitution.
 
 Owned-close consistency source finding (superseded by bounded a88d correction above): public Write→Bytes,
 public CAS (current live CAS callers pass explicit leases), DeleteWithLock and internal owned
