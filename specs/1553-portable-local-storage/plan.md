@@ -1,3 +1,22 @@
+## F18 Effects — composed14 bounded Linux obligations GREEN, 2026-10-09
+
+Independent initial RAW/carrier70906a8b accepts13PASS and classifies remaining row as
+pre-arm fixture failure; source/fixture/exact1 gate PASS4182f737. Fresh integration
+Plan1341261/1,0execution44.1848086s; actual1342491/1PASS8.5991532s,complete1/1,
+bothcleanup,0skip/duplicate/timeout. Command `./scripts/test-csharp.ps1 -Category portable-effect-spiritual-carrier-publication -NoBuild`; preceding same-category PlanOnly builds integration.
+Original spiritual raw issues=[]; actual selected MemberPublishedcut1/index0, selected
+before-image restored and original engine rollback restores13raw baseline/absence paths,
+exact diagnostic/generation, no journal; both roots removed. No runtime change was needed.
+
+Composed14=13@efd66468/133612 + corrected1@4182f737/134249, not one14GREEN rerun.
+Historical initial13PASS/1fixtureFAIL is retained unchanged. Matching discovery134324:
+560categories/11344methods-files valid0,9.1257760s,bothcleanup; NoBuild justified by
+integrationfresh4182/unit533 and unchanged runtime. [Packet](recovery/storage-migration-known-rollback-20261009/manifest.json)
+now145artifacts/originals138pins verified. Final isolated raw/catalog/carrier review pending;
+Guardian8 and Location8/Resource4 earlier accepted independently. Whole remaining
+wound24/treatment2/offscreen1 cuts,F16signed producers,ownedclose and registry stay open.
+No native/B2–B5/gameplay acceptance; prior accepted13 are not replayed.
+
 ## F18 spiritual owner fixture — isolated correction WIP, 2026-10-09
 
 Root and independent source diagnosis find current precedent at

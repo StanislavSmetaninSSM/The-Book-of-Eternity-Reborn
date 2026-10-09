@@ -1,3 +1,12 @@
+## Current physical-cut fixture obligations — 2026-10-09
+
+Guardian8@764818a9 and Location8/Resource4@66f655ee independently accepted. Effects
+composed14=13@efd +1@4182; corrected spiritual actual1342491PASS8.5991532s reaches real
+cut and exact original engine rollback, rawissues=[]/2rootsremoved. Historical initial
+13PASS/1pre-arm fixtureFAIL retained; no runtime change. Catalog560/11344valid0; packet
+145/138 verified, final isolated raw/carrier review pending. Other physicalcuts/F16/
+ownedclose/whole closure stay open. T061–T065 remain unchecked and B2–B5 paused.
+
 ## Current known-rollback consumer evidence — 2026-10-09
 
 Guardian8 at764818a9 and Location8/Resource4 at66f655ee pass as separate original runs.
