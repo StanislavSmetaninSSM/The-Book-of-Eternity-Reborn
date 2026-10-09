@@ -1,3 +1,21 @@
+## F18 spiritual owner fixture — isolated correction WIP, 2026-10-09
+
+Root and independent source diagnosis find current precedent at
+EffectAfterlifeAdapterTests.Conditions.cs:843–881: keep original player materialization,
+append complete guardian_condition_source profile with realmShiningAbode/pressure2 to
+its detached profile root, and pass Profiles plus SpiritualConflict to real BuildAsync/
+TryCommitAsync before signed snapshot43. No second quartet reset or isolated direct
+profile write. Missing-profile exception revokes source-session creation, so the later
+snapshot-binding error is derivative Session=null; no independent wrong-ID claim.
+
+Extract unchanged owner body into private shared assertion; original theory retains4,
+new exactspiritualFact1 retains source/target, actualvalidation, originalbackup/cut/
+rollback/diagnostic/generation/cleanup. Existing semanticowner and complete14owner add
+newFact; a separate1category permits only failed row to run. Historical13PASS/1fixtureFAIL
+stays preserved at70906a8b, packet128/94. New raw-admission diagnostics precede assertion
+only for this spiritual row. Source/fixture gate and freshPlan1 precede actual1; runtime
+unchanged, no B2–B5 or native claim, no replay13. Whole migration queues remain open.
+
 ## F18 Effects14 — complete13PASS/1fixture failure, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT14 PASSefd66468. Fresh integration Plan13315014/1,

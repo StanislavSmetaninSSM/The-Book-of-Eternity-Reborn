@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-effect-spiritual-carrier-publication",
+      "reason": "T064 isolated previously unreached spiritual owner row fromefd actual13361213PASS/1fixtureFAIL. Add missing exact guardian profile through current owner composition before signing, retain all original raw-validation/cut/rollback assertions; final1 pending,13 source-era passes preserved.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-effect-original-rollback-publication",
       "reason": "T064 port originalEffect13+focusedSkill1 with genuine current cut/committed witnesses. Immediate selected-member rollback differs from later explicit original-engine whole tracked rollback; source/fixture/actual gates pending, no runtime/native claim.",
       "contracts": [

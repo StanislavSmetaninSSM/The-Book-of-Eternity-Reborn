@@ -7063,7 +7063,8 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_StructurallyInvalidManifest_FailsClosed",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_GenerationChangesAfterTerminalSnapshot_DoesNotReadReplacementSignal",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_TerminalErrorDoesNotHoldSessionLifecycleLease"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WaitForGmResponse_TerminalErrorDoesNotHoldSessionLifecycleLease",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_SpiritualCarrierPublicationFailureRestoresEntireTrackedSet"
           ]
         }
       ]
@@ -20623,7 +20624,32 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_PlayerPublicationFailureRestoresEntireTrackedSet",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_OwnerCarrierPublicationFailureRestoresEntireTrackedSet",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_PendingResolutionPublicationFailureRestoresEntireTrackedSet",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectSkillScopeLifecycleTests_FocusedPublicationFailureRollsBackEveryTrackedSurface"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectSkillScopeLifecycleTests_FocusedPublicationFailureRollsBackEveryTrackedSurface",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_SpiritualCarrierPublicationFailureRestoresEntireTrackedSet"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-effect-spiritual-carrier-publication",
+      "responsibility": "F18 isolated original spiritual-conflict effect carrier rollback after adding the missing current original guardian realm profile through real owner/quartet composition before signed snapshot. Raw admission, actual changed MemberPublished and exact original engine rollback/diagnostic/generation/two-root cleanup.",
+      "excludes": "No B2-B5 gameplay, new source contract, bypassed validator, runtime change, replay of13 accepted effect obligations or native Windows claim. This Fact is split from the original five-row owner theory; four unaffected rows remain there.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/EffectMaterializationLifecycleTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_SpiritualCarrierPublicationFailureRestoresEntireTrackedSet"
           ]
         }
       ]

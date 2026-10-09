@@ -26,8 +26,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         EffectCarrierCatalog.NpcPath,
         EffectCarrierCatalog.EnemiesPath,
         EffectCarrierCatalog.AlliesPath,
-        EffectCarrierCatalog.AfterlifeProfilesPath,
-        EffectCarrierCatalog.SpiritualConflictPath
+        EffectCarrierCatalog.AfterlifeProfilesPath
     };
 
     [Fact]
@@ -252,8 +251,14 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     [Theory]
     [MemberData(nameof(EffectOwnerCarrierFailurePaths))]
-    public async Task EffectMaterializationLifecycleTests_OwnerCarrierPublicationFailureRestoresEntireTrackedSet(
-        string carrierPath)
+    public Task EffectMaterializationLifecycleTests_OwnerCarrierPublicationFailureRestoresEntireTrackedSet(
+        string carrierPath) => AssertEffectOwnerCarrierPublicationRollbackAsync(carrierPath);
+
+    [Fact]
+    public Task EffectMaterializationLifecycleTests_SpiritualCarrierPublicationFailureRestoresEntireTrackedSet() =>
+        AssertEffectOwnerCarrierPublicationRollbackAsync(EffectCarrierCatalog.SpiritualConflictPath);
+
+    private async Task AssertEffectOwnerCarrierPublicationRollbackAsync(string carrierPath)
     {
         using var ownedClass = new CleanupOwnedFixture(_rootPath, WriteEffectCutEvidence);
         var probe = new EffectPublicationFailureProbe();
@@ -295,6 +300,12 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        if (carrierPath == EffectCarrierCatalog.SpiritualConflictPath)
+            WriteEffectCutEvidence(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "effect-spiritual-current-admission",
+                issues = issues.Select(issue => new { issue.Code, issue.FilePath, issue.Expected, issue.Actual }).ToArray()
+            }));
         Assert.True(
             issues.All(static issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, issues.Select(static issue =>
@@ -527,10 +538,19 @@ public sealed partial class GameEngineTurnLifecycleTests
                 "Shining Abode",
                 sourceArtId,
                 CreateSpiritualRollbackDefinition());
+            // Both original conflict members need persistent realm profiles before signing the snapshot.
+            var profiles = (await context.ReadJsonAsync(
+                EffectMaterializationTestContext.AfterlifeProfilesPath))!.AsObject();
+            var guardian = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile(
+                "guardian", "guardian_condition_source", "Shining Abode", materializedAtTurn: 42);
+            guardian["standardArts"]!["pressure"] = 2;
+            guardian["activeEffects"] = new JsonArray();
+            profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray().Add(guardian);
             var spiritualConflict = CreateSpiritualRollbackConflict(conflictId);
             var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
                 context.FileSystem,
                 new AfterlifeOwnerResourceAcceptedState(
+                    Profiles: profiles,
                     SpiritualConflict: spiritualConflict),
                 turn: 42);
             Assert.True(
