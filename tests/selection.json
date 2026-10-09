@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-committed-rollback",
-      "reason": "T064 faithful original C4two/woundrecoveryone: preserve genuine before-write/read refusals and outer rollback; replace prewrite/raw-only publication assumptions with actual Committed journal/After witnesses, raw restoration before fresh admission and strict original fixture cleanup. All business/retry/cold-receipt assertions retained. Fresh source/exact3/Plan/actual pending; B2 paused.",
+      "reason": "T064 original C4two/woundrecoveryone qualified at d2e6ef9c: fresh Plan1440223/0 and actual1445293/3PASS. Actual Committed journal/After witnesses precede original write/read cuts; raw full rollback80+80+43paths, unchanged generation/no journal, strict3root cleanup and original retry/healing/cold replay assertions. Prior compile-only failure retained; no runtime/native/B2 qualification.",
       "contracts": [
         "#1553",
         "FR-006",

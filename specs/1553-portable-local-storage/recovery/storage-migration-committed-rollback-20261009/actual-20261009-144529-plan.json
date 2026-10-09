@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-original-committed-rollback"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d2e6ef9c05bf3610d09af4d288aa60573416c877",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.0325946,
+  "Descriptors": [
+    {
+      "Name": "portable-original-committed-rollback-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-committed-rollback",
+      "Categories": [
+        "portable-original-committed-rollback"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_PublicationFailureRestoresSignedOriginal|FullyQualifiedName=BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_LaterWriteFailureRollsBackAndExactRetryHeals",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC4_PublicationFailureRestoresSignedOriginal",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_LaterWriteFailureRollsBackAndExactRetryHeals",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

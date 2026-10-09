@@ -1,3 +1,26 @@
+## F18 original C4/recovery rollback3 — bounded Linux GREEN, 2026-10-09
+
+Source d2e6ef9c (independent source correction PASS after compile-only143812 failure):
+fresh integration Plan144022 selected3/1,0execution45.1309254s. Actual144529 passes3/3,
+complete1/1,38.6449003s,0skip/duplicate/timeout,both runner cleanup complete.
+Original C4 prewrite row has zero selected commits; C4 readback row has genuine resource
+and receipt Committed journals; recovery row has genuine changed player carrier Committed
+before the original history refusal. Raw full restoration80+80+43paths, generation equality,
+no journal and3owned roots removed are independently inspectable in the packet. Original
+same-cause, authority invalidation, retry/healing/turn45/cold receipt assertions all pass.
+No runtime/gameplay/GM contract change or B2–B5 work; native Windows remains unexecuted.
+
+Commands: `./scripts/test-csharp.ps1 -Category portable-original-committed-rollback -PlanOnly -Parallelism 1`,
+then same category `-NoBuild`; `-ValidateCatalog -NoBuild` at144620 validates568categories/
+11344methods-files,0execution10.5029929s,both cleanup. Integration freshd2e6/unit533;
+production/projects unchanged. [Packet](recovery/storage-migration-committed-rollback-20261009/manifest.json)
+20artifacts/originals42sourcepins verified, including immutable prior compile failure2/14.
+Final independent raw/catalog/carrier review pending. Native/mods final gate PASSe9143e82.
+Next binding2/staged8/midpublication1: worker1 native source/build only; ten original
+file-responder scenarios require current journal witnesses and complete actor settlement.
+Shared cleanup helpers affect16Facts (five extra source-qualified callers). F16producers,
+remaining consumers/owned-close/legacy inventory and whole1553 stay open; T061–T065 unchecked.
+
 ## F18 committed-witness3 — compile-only fixture correction, 2026-10-09
 
 SOURCE/FIXTURE/EXACT3 PASS321c985a; fresh Plan143812 failed integration compilation
