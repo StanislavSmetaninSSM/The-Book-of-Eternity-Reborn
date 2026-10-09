@@ -212,6 +212,7 @@ internal sealed partial class GmSessionRunCoordinator
         try
         {
         await using var lifecycle=await _files.AcquireSessionLifecycleLeaseAsync();
+        {
         var lease=await _files.AcquireCanonicalWriteLeaseAsync(cancellationToken:token);
         CoordinatedStatePublicationUncertainException? owningPublicationUncertainty=null;
         try
@@ -234,6 +235,7 @@ internal sealed partial class GmSessionRunCoordinator
         }
         catch(CoordinatedStatePublicationUncertainException failure){owningPublicationUncertainty=failure;throw;}
         finally{await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_files,lease,false,owningPublicationUncertainty);}
+        }
             var prepared=await prepare(Identity.RunId);
             _terminal=prepared.Session;
             using(Enter(true))await using(var lease=await _files.AcquireMainMetadataLeaseAsync())

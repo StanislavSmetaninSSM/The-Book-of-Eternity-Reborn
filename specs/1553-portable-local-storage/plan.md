@@ -1,3 +1,11 @@
+## Cold Launch original lexical scope retained — WIP, 2026-10-09
+
+Independent source review caught canonical lease local colliding with later
+original main-metadata lease variable before any build. Restored originallexical
+block around first canonical acquisition/try/catch/finally. No core/order/native
+barrier/fixture change; zero failed build/execution for this source correction.
+Combined causal/source/exact10 gate continues before freshverification.
+
 ## Original Interaction4 + cold Launch1 uncertainty scopes installed — WIP, 2026-10-09
 
 Exactly5 actual originalowning scopes retain/rethrow samegenuine CSP and invoke
