@@ -1,3 +1,20 @@
+## Original engine/media owners — test-first WIP, 2026-10-09
+
+Pending/control GREEN22 packet137/45 preserved/ref/raw afteractual212315;
+final independent GREEN gate ongoing. Next three original owners6 known/unknown
+fixture/design/exact6 independently PASS27ade1ae: Engine actual unbound cold
+CaptureCurrentSessionGeneration, public Browser coldgeneration→existing image,
+public Browser warmgeneration→actual CommitStagedImage. Realconstructor/services,
+disabledAudioDispose; existing localstage seam producesPNG, noHTTP/provider/game/
+desktop/native invocation. Additional actualcommitacquisition asyncbarrier makes
+inner originalowner hoisted before Intentinspection, no fabricated owner/CSP/
+result/generation. Actual typedmedia reference/PNG/generation plusclosingleases1
+forboundcommit/0forcoldcuts andfulllease/generateGate/ambient/main/rawlock strict
+cleanup. InstalledUNBUILT/UNRUN; runtime unchanged. Fresh Plan6/actualoriginal6,
+causalRED required before minimal actualsame-scope capture/release. Other owners
+andfinalmethodinventory/restore open; T061–T065unchecked/B2–B5paused. No GM
+mechanic/schema/prompt/example change.
+
 ## Pending/control bounded GREEN22 — 2026-10-09
 
 Runtimefa63f9216f5b7131945056d0e9a1d3a1aba2a7eb combined originalRED/source/

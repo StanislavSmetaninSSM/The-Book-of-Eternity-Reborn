@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-engine-media-owning-close-linux",
+      "responsibility": "Three actual owning scopes6 known/genuine-uncertainty plus lateclose: GameEngine unbound cold generation Capture, public BrowserMedia cold generation followed by actual existing reference, and public BrowserMedia warm generation actual local staged PNG commit. Original owner/context inspection, real typed media/generation/PNG results, mandatory closing lease count1or0, fulllease/generateGate settlement and strictroots.",
+      "excludes": "No running engine/game, provider/HTTP, native desktop/audio/Windows, B2, whole media or engine lifecycle acceptance. Stage delegate is existing local seam; no positive external provider or live browser claim.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineMedia.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineAndBrowserMediaPublishersRetainActualUncertaintyOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-pending-control-close-linux",
       "responsibility": "Eleven actual original owning API methods,22 known/genuine-uncertainty plus lateclose cases: Guardian pending Write/Scoped/Clear/Health, Shining pending Write/Scoped/Collection/Replace/Health and powerjournal Append/Repair. Actual scopes/current schema, target decisions, original owner/gate/lease settlement and unchanged other game_state file paths/bytes.",
       "excludes": "Not whole trade/health semantics or business B2. Direct-write and powerjournal methods dormant API qualification; scoped/clear/replace/health have current product callers. No legacy-save compatibility, native Windows, live GM/provider/desktop or other owners.",
