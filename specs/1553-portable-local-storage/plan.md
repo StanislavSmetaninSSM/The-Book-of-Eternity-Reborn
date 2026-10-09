@@ -1,3 +1,15 @@
+## Ready/worker exact12 fixture freeze — WIP, 2026-10-09
+
+Test-only first implementation of the bounded design below; runtime unchanged.
+Two new original-consumer fixture files own nine actual-Unknown rows and three
+known-policy controls through portable-worker-ready-storage-outcomes-linux.
+No build or execution yet. Independent fixture/exact-selection gate precedes
+fresh integration Plan12 and actual12. Preserve reached faults and any fixture
+misses separately before runtime changes. The helper cannot claim retention of
+an ApplyGateDecision it never receives; it proves genuine prior accepted bytes,
+task/proposal and actual successful Ready publication. Full accepted TryRun
+remains source-qualified. No provider/process or C2 CAS execution is selected.
+
 ## Ready/worker publication continuation — design for next bounded unit, 2026-10-09
 
 Explorer/Forge final independent raw/catalog/composition/carrier gate **PASS** at

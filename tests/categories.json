@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-ready-storage-outcomes-linux",
+      "responsibility": "Original worker router/build/latest-task/initial-generation, accepted ApplyReserved, Ready publication/audit/diagnostic and engine dispatch preserve actual publication uncertainty and prior accepted facts; nine causal rows plus three known controls.",
+      "excludes": "No live worker/process/provider, full gameplay, native Windows, C2 continuation CAS, pool reservation/store/ACK/trajectory/harness closure or simultaneous body-and-close double fault. Controlled validator qualifies storage acceptance only; Ready helper does not own the apply decision.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts",
+            "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerKnownPublicationPolicyRemains",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorkerAuditUnknown_OriginalEngineDispatcherDoesNotReturnFallbackOutcome"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-explorer-forge-unknown-current",
       "responsibility": "Original primary-Unknown browser forge Submit retains its actual independently committed UI-lock image at the fault; result/form/no-later-work oracles.",
       "excludes": "No replay of other21 passing binding-correction cases; no whole browser/native/secondary-close claim.",

@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-worker-ready-storage-outcomes-linux",
+      "reason": "WIP exact12 source gate: genuine common-publication cuts at original Ready/worker consumers, no later canonical work or worker launch, actual accepted bytes/decision and known cause retention; three ordinary-policy controls. Unbuilt/unexecuted at fixture freeze.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS",
+        "T065-PUBLISHER-OWNED-CLOSE"
+      ]
+    },
+    {
       "category": "portable-explorer-forge-unknown-current",
       "reason": "Corrected original browser primary-Unknown case PASS4e31/055816: exact committed lock at fault retained, safe Failed/no-repeat and form retirement, no later work. Earlier stale pre-Submit oracle failure preserved.",
       "contracts": [
