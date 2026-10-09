@@ -322,7 +322,7 @@ public partial class SaveLoadService
                 await ValidateArchiveStructureAsync(archive, stagingRoot, preserveNativePayloadNames: true);
                 foreach (var entry in archive.Entries)
                 {
-                    if (string.IsNullOrEmpty(entry.Name)) continue;
+                    if (IsArchiveDirectoryPath(entry.FullName)) continue;
                     // Windows GetFullPath can erase trailing spaces. Check original
                     // spelling after original manifest/hash admission, before resolution.
                     if (!entry.FullName.Equals(entry.FullName.Trim(), StringComparison.Ordinal))

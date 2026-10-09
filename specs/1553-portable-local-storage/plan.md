@@ -1,3 +1,29 @@
+## F16 native-name causal baseline and runtime WIP — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT4 PASSb64a5008. Fresh integration Plan130018 selects
+4/1,0executed46.8519871s. Actual130211 completes0PASS/4FAIL8.2581984s,complete1/1,
+bothcleanup,0skip/duplicate/timeout. Enumeration returns12 names but only11distinct;
+producer rewrites literal trailing-backslash source to an invalid canonical segment.
+Both independently manifested Load rows refuse before preparation/lifecycle/publication:
+central budget calls literal trailing-backslash payload a directory with bytes. Thus
+rollback row proves an admission failure, NOT a reached rollback cut. Four owned roots
+removed. [Baseline packet](recovery/storage-migration-literal-names-20261009/manifest.json)
+13artifacts/originals13pins verified; raw/source gate pending with runtime review.
+
+Runtime now preserves host-relative spellings during held enumeration, actual save
+source reads, ZIP entries/manifest claims, target resolution and normalized inventory.
+Shared host-aware directory classification is used by central-directory budget, ZIP
+budget/inventory and typed extraction; Windows alternate separators remain unchanged.
+Containment uses actual host comparison. Existing rejection/limit/authority logic stays.
+No separate journal, schema/GM capability or signed pending-reader change.
+
+Final proposed exact21 uses new4 + existingSave-native4 + Load-native8 + exactboundary5
+(trimmed aliases4 and originalZipSlip1). Review caught broad alias-owner has more than4;
+use one explicit existing method instead. Save-native owner now explicitly Linux (its
+existing bodies assert Linux); no CI workflow/settings changed. Source/fixture/exact21
+review and fresh both-project build/Plan precede final actual. Other F16 signed producers,
+literal save destination names, physicalcuts/ownedclose/whole registry remain open.
+
 ## F16 exact native payload names — test-first WIP, 2026-10-09
 
 Read-only source map identifies host backslash folding in held enumeration and Save

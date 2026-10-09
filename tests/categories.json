@@ -4221,7 +4221,8 @@
       ],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": false
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
@@ -20473,11 +20474,7 @@
           "when": "When producer/archive normalization changes, retain fixed-authority, manifest, alias and sandbox refusal contracts."
         },
         {
-          "id": "portable-load-alias-admission",
-          "when": "When producer/archive normalization changes, retain fixed-authority, manifest, alias and sandbox refusal contracts."
-        },
-        {
-          "id": "portable-save-load-zip-slip-neighbor",
+          "id": "portable-save-load-name-boundary-neighbors-linux",
           "when": "When producer/archive normalization changes, retain fixed-authority, manifest, alias and sandbox refusal contracts."
         }
       ],
@@ -20500,8 +20497,8 @@
       ]
     },
     {
-      "id": "portable-save-load-zip-slip-neighbor",
-      "responsibility": "Original exact archive sandbox escape rejection and retained live session, selected as a boundary neighbor for host-specific native-name normalization.",
+      "id": "portable-save-load-name-boundary-neighbors-linux",
+      "responsibility": "Exact five boundary neighbors for host-specific archive normalization: four original trimmed-name alias refusals before config/library/ephemeral mutation, plus original ZipSlip sandbox refusal and live-session preservation.",
       "excludes": "No broad canonical-storage suite or acceptance of other native-name cases.",
       "changeHints": [
         "BookOfEternityClient/Services/SaveLoadService.cs"
@@ -20518,7 +20515,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RejectsZipSlipEntriesAndPreservesLiveSession"
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RejectsZipSlipEntriesAndPreservesLiveSession",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation"
           ]
         }
       ]

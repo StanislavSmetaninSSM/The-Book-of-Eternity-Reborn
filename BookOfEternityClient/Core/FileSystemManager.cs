@@ -1656,7 +1656,7 @@ public partial class FileSystemManager
             throw new ArgumentException("Search pattern is required.", nameof(searchPattern));
 
         return EnumerateFilesWithoutFollowingReparsePoints(GameSessionPath, searchPattern)
-            .Select(path => Path.GetRelativePath(GameSessionPath, path).Replace('\\', '/'))
+            .Select(path => GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows()))
             .ToArray();
     }
 

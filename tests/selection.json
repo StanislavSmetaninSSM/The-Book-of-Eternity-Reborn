@@ -2,8 +2,30 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-save-load-zip-slip-neighbor",
-      "reason": "T063 F16 native-name normalization: new exact4 causal fixtures, then affected native case/hash/alias/sandbox neighbors. Test-first source only; runtime baseline/build/review pending. No signed producer or Windows qualification.",
+      "category": "portable-load-native-names",
+      "reason": "T063 F16 affected exact native case/manifest/fixed-authority/hash neighbors after host-specific normalization change; final measured acceptance pending, historical PASS not substituted. Linux actual planned; no fresh Windows qualification.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-save-native-names",
+      "reason": "T063 F16 affected exact native case/manifest/fixed-authority/hash neighbors after host-specific normalization change; final measured acceptance pending, historical PASS not substituted. Linux actual planned; no fresh Windows qualification.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-save-load-name-boundary-neighbors-linux",
+      "reason": "T063 F16 exact5 original neighbors: trimmed alias4 +ZipSlip1. Avoid broad alias-category expansion. Runtime host separator/directory classification now changed; final verification pending.",
       "contracts": [
         "#1553",
         "FR-005",
@@ -14,7 +36,7 @@
     },
     {
       "category": "portable-save-load-literal-names-linux",
-      "reason": "T063 F16 native-name normalization: new exact4 causal fixtures, then affected native case/hash/alias/sandbox neighbors. Test-first source only; runtime baseline/build/review pending. No signed producer or Windows qualification.",
+      "reason": "T063 F16 genuine baseline1302114/4FAIL (enumeration fold, producer read rewrite, loader directory misclassification); two Load cuts unreached before admission. Host-specific runtime correction pending exact4+17 affected neighbors.",
       "contracts": [
         "#1553",
         "FR-005",
