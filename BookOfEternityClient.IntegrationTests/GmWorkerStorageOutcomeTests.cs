@@ -165,6 +165,7 @@ public sealed class GmWorkerStorageOutcomeTests(ITestOutputHelper output)
             {
                 Assert.Same(task, failure!.Data["GmWorkerTask"]);
                 Assert.Same(proposal, failure.Data["GmWorkerProposal"]);
+                Assert.Equal(mode == "ready_audit", failure.Data["GmWorkerReadySignalCreated"] is true);
                 Assert.Equal(AcceptedWeather, weatherAfter);
             }
             if (mode == "ready_audit")

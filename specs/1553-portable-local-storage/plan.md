@@ -14,6 +14,11 @@ Dispose change, new public API or on-disk format. Required audit suppressFailure
 semantics unchanged; its separate owned close stays in the remaining owner inventory.
 Known best-effort audit and known Ready-failure policy are preserved.
 
+The Ready fixture additionally requires the Created diagnostic fact to be absent
+for primary Ready Unknown and known Ready refusal followed by audit Unknown.
+This strengthens the planned negative fact oracle; historical RED fails earlier
+and is unchanged.
+
 This is client-owned storage outcome handling; GM-authored schemas, prompts/examples,
 mechanics and commands do not change. Fresh Plan12, actual12 and both-project catalog
 validation remain pending after frozen source/exact-selection review. C2 CAS, full
