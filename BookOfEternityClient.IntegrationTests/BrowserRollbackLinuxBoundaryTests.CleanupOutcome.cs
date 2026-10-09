@@ -56,10 +56,11 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
                 if (mode == "restoration") throw businessFailure;
             }, prepareAfterRollback: () => () => rollbackCallback++));
         output.WriteLine(JsonSerializer.Serialize(new { mode, callbackReached, result, Failure = failure?.ToString(),
-            rollbackCallback, lockBeforeCut, RetainedLock = CleanupPublicationCut.ReadOptional(lockPath), committedMarker,
+            rollbackCallback, BusinessCauseRetained = cut.RetainsDiagnostic(businessFailure), lockBeforeCut, RetainedLock = CleanupPublicationCut.ReadOptional(lockPath), committedMarker,
             MemberBytes = CleanupPublicationCut.ReadOptional(memberPath), Cut = cut.Evidence() }));
         cut.AssertReachedAndStopped();
         Assert.True(callbackReached); Assert.Null(failure); Assert.NotNull(result);
+        if (mode == "restoration") Assert.True(cut.RetainsDiagnostic(businessFailure), "The actual uncertainty must retain the exact original callback failure.");
         Assert.Equal(0, rollbackCallback); Assert.Equal(lockBeforeCut, File.ReadAllBytes(lockPath));
         Assert.True(result.NeedsFollowUp); Assert.True(result.ContinuationBlocked);
         Assert.Equal(mode == "committed_cleanup", result.Success);

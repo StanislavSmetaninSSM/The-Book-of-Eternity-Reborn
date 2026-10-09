@@ -87,8 +87,21 @@ internal sealed class CleanupPublicationCut : IDisposable
     {
         Assert.Equal(1, Cuts); Assert.Equal(0, Index); Assert.NotNull(OriginalUncertainty);
         Assert.Equal(JournalAtCut, ReadOptional(JournalPath)); Assert.Equal(Foreign, ReadOptional(Target!));
-        Assert.Empty(LaterMutations); Assert.Equal(0, LaterPublications); Assert.Equal(0, LaterRecovery); Assert.Equal(0, LaterLeases);
+        Assert.Empty(LaterReads); Assert.Empty(LaterMutations); Assert.Equal(0, LaterPublications); Assert.Equal(0, LaterRecovery); Assert.Equal(0, LaterLeases);
         Assert.False(_closingLease);
+    }
+    internal bool RetainsDiagnostic(Exception wanted)
+    {
+        var visited = new HashSet<Exception>(ReferenceEqualityComparer.Instance);
+        bool Walk(Exception? error)
+        {
+            if (error == null || !visited.Add(error)) return false;
+            if (ReferenceEquals(error, wanted)) return true;
+            if (error is AggregateException aggregate && aggregate.InnerExceptions.Any(Walk)) return true;
+            if (Walk(error.InnerException)) return true;
+            return error.Data.Values.Cast<object?>().OfType<Exception>().Any(Walk);
+        }
+        return Walk(OriginalUncertainty);
     }
     private static bool Contains(Exception error, Exception wanted) => ReferenceEquals(error, wanted) ||
         error is AggregateException aggregate && aggregate.InnerExceptions.Any(e => Contains(e, wanted)) ||

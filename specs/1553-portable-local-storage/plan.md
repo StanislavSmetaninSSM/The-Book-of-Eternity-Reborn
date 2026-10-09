@@ -19,7 +19,14 @@ postcommit requires an actual durable marker and retains Committed plus Continua
 QteWebInteractionService currently ignores these flags after building its state, so these generic
 coordinator fixtures make no UI follow-up or complete browser-QTE acceptance claim.
 
-This is an unbuilt, unexecuted, unreviewed test-only WIP at the eight-row category above.
+Independent review of50736c8e found two oracle gaps, now corrected: zero later reached
+validated/opened reads is asserted in every case, and browser restoration requires the exact
+original callback exception in the actual CSP diagnostic graph. This does not count all attempted
+reads. A logger throw count of zero on GREEN means the changed path escaped before logging,
+not that an injected secondary logger failure was exercised. The remaining fixture/source and
+exact-eight selection review found no blocker; focused correction gate remains required.
+
+This is an unbuilt and unexecuted test-only WIP at the eight-row category above.
 No production change. Next: complete source/fixture review and exact selection gate, then matching
 PlanOnly/build before any causal execution. Known prepublication QTE and direct-gacha refusal
 neighbors remain obligations for the final affected runtime selection. Separate progression4
