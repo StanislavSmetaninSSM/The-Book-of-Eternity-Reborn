@@ -1,3 +1,26 @@
+## Remaining original owning publishers — test-first WIP, 2026-10-09
+
+Combined Explorer/spiritual catalog/carrier independent PASS496d3815; previous
+runtime/GREEN groups unchanged. Next T063/T065 bounded category12/1 covers six
+actual public routes: bootstrap, UI lock, Daren profile, prompt generation,
+prompt lock and standalone QTE terminal, each known positive and genuine
+publication uncertainty plus secondary release failure. Uses existing actual
+CleanupPublicationCut and asynchronous acquisition/IntentPublished barriers to
+inspect the original active hoisted lease through original awaited task states.
+Secondary disposer attaches only after the same genuine CSP is emitted; no
+fabricated lease, result or QTE attempt. Actual QTE success route reaches real
+terminal publication; unknown must retain its actual pre-publication attempt.
+Asserts primary/secondary identity, generation boundaries, no prompt session
+publication on failure, ambient/main/context/lock settlement and strict roots.
+Preparation failures are UNRUN, not causal runtime failures. Production six
+owners unchanged; new fixture UNBUILT/UNRUN. Independent fixture/refined design/
+exact12 gate, fresh Plan12 then original actual12 before minimal close fix.
+Exact-rollback refresh source is read-only: no ordinary mirror repair and no
+invented publisher double-fault. These client-owned storage close boundaries
+change no GM authored mechanic/schema/prompt/example. Other method inventory,
+mod manifest/cache and original managed folder UI remain. T061–T065 unchecked;
+B2–B5 paused, no native Windows/systemd/whole migration acceptance.
+
 ## Original producer combined catalog/evidence gate — 2026-10-09
 
 Independent AstraXHigh Explorer GREEN/raw/carrier PASS787a01e8 and spiritual

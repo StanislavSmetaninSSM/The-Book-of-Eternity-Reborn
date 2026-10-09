@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 namespace BookOfEternityClient.Tests;
 
 [Collection(GameEngineTurnLifecycleCollection.CollectionName)]
-public sealed class OriginalOwnedLeaseCloseTests(ITestOutputHelper output)
+public sealed partial class OriginalOwnedLeaseCloseTests(ITestOutputHelper output)
 {
     [Theory]
     [InlineData("refresh")]

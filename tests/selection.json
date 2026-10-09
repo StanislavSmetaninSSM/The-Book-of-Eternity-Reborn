@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-remaining-owning-close-linux",
+      "reason": "T063/T065 test-first WIP12/1 UNBUILT/UNRUN: six original owning publishers each actual known positive and unknown primary plus late actual-owner secondary close; no production changes yet. Independent fixture/design/exact12 gate before fresh original Plan/actual causal baseline. Actual root/route acquisition or introspection preparation failure is UNRUN, never causal runtime RED.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-spiritual-capture-exact-names-linux",
       "reason": "T063/F16 actual193427 runtime2522c340 GREEN17/17 afterfreshPlan17/1,14.1431223s,complete1/1/bothcleanup0duplicates/timeouts/skips,14strictrootsabsent. Nine raw negatives existingaliasissue/0mutation/fullsamebytes+generation/realoldownerretained; Unicode2/nativeexcluded1 and realstale1/readIOException1 preserve original semantics,old3controlsPASS. Earlier8PASS9causalRED preserved. Source/design/exact17 independentPASS; raw/carrier independentPASSd4b8f75e; combinedcatalog193559588/11361discovery0, finalcatalogcarrier next. No B2/coldgameplay/native/allconsumers acceptance; unchanged engine/browser/Explorer selections not replayed.",
       "contracts": [
