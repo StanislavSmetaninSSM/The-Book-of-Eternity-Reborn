@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-game-loop-diagnostic-outcome-linux",
-      "reason": "Exact4 affected original GameLoop/diagnostic consumers, unchanged causal fixtures+known helper. Causal4c/042107 complete1P3 genuine failures; narrow effective-failure/canonical log fix awaits frozen source gate and matching fresh Plan/actual4.",
+      "reason": "Final exact4 PASSfdc219f0/042423,8.2415967s: original loop primary and diagnostic Unknown typed private stop, original life-end same carrier/cause/signal, known helper success. Fresh matching Plan4; no accepted12 replay. Causal1P3F retained; controlled one-iteration scope, no full loop/native/double-close claim.",
       "contracts": [
         "#1553",
         "FR-003",

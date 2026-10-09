@@ -1,3 +1,29 @@
+## GameLoop diagnostic final4 complete — 2026-10-09
+
+Runtime fdc219f0 passes independent SOURCE/EXACT4. Matching Plan042324 freshly builds integration
+41.6155348s/wall45.7592163s, exact4/1planned0executed. Actual042423 completes4/4PASS,1/1descriptor,
+8.2415967s,exit0,no skips/duplicates/timeouts,bothcleanup; independent raw gate PASS. All three actual
+MemberPublished/index0 cuts retain authentic uncommitted journals/hash/foreign bytes (realm6 members,
+log1 each). Later measured reads/mutations/ordinary and closing lease attempts/publications/recovery
+callbacks are zero. Original loops join with Text1/Error1, Spectre1(primary)/0(diagnostic), no extra
+input/request and null outward failure after the controlled final Error-key exit. Actual typed/private
+no-retry observation assertions now pass. Primary error_log remains unchanged; secondary diagnostic
+and original life-end helper preserve the exact known cause. Helper propagates the same original CSP
+and retains exact signal bytes. All three explicit fixture roots removed and absent; known helper1 PASS.
+
+[Packet](recovery/storage-migration-game-loop-diagnostic-20261009/manifest.json) verifies41 saved/
+expanded/present-original artifacts and29 historical Git pins (causal17/13,green17/13,catalog7/3).
+Fresh unit Plan042505 refreshes matching shared-runtime output only:1planned0executed,15.6717026s wall.
+Discovery042529 uses both current project outputs:518categories/11313methods-files valid,0tests,
+8.0427466s,exit0,bothcleanup. No accepted tests replayed for catalog. Final carrier integrity/docs gate
+pending; latest actual GitHub-only full restore remains e5, combined final restore pending.
+
+This closes the bounded original GameLoop/canonical diagnostic continuation and presentation paths,
+not all commands or a full normal loop/next user action. Controlled known Text-input primary and final
+Error-key exit are explicit fixture boundaries; no GM/provider/native/simultaneous secondary-close claim.
+No game/GM-authored schema or prompt/example changed. Next connected Explorer/Archive command boundaries,
+Ready/worker/C2, F16/F18 and remaining concrete publisher-owning scopes stay authorized/open.
+
 ## GameLoop diagnostic runtime WIP — 2026-10-09
 
 Causal4/042107 independently accepted: three genuine failures plus unchanged known PASS; saved carrier

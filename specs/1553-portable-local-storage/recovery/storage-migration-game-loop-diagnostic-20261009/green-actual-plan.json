@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-game-loop-diagnostic-outcome-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "fdc219f099874e090f9e12aff30593851c1a5d8f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.8727694,
+  "Descriptors": [
+    {
+      "Name": "portable-game-loop-diagnostic-outcome-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-game-loop-diagnostic-outcome-linux",
+      "Categories": [
+        "portable-game-loop-diagnostic-outcome-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GameLoopDiagnosticUnknown_OriginalInvalidLifeEndRetainsSignalAndCause|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GameLoopUnknown_OriginalLoopPresentsDecisionWithoutCanonicalDiagnosticContinuation|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleInvalidTriggerLifeEndRuntimeFailure_DeletesSignalAndWritesErrorLog",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GameLoopDiagnosticUnknown_OriginalInvalidLifeEndRetainsSignalAndCause",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GameLoopUnknown_OriginalLoopPresentsDecisionWithoutCanonicalDiagnosticContinuation",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleInvalidTriggerLifeEndRuntimeFailure_DeletesSignalAndWritesErrorLog",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

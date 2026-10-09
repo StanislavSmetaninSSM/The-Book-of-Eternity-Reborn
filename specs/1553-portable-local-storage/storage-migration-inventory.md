@@ -1,11 +1,11 @@
-<!-- GameLoop causal4c/042107: complete4=1 known PASS+3 genuine failures; actual cut/journal/owned cleanup; runtime correction pending. -->
 ## Current accepted / open map — 2026-10-09
 
-Latest tested source020ac5e8 accepts bounded continuation12 (17.7182074s), with seven authentic Unknown
-carriers/retained prior effects and five known-policy controls. Independent/parent raw PASS, packet71/36
-verified, matching fresh catalog517/11311 valid0; final independent/parent carrier PASS122b3a04.
-Next GameLoop diagnostic4 is test-only WIP, unbuilt/unexecuted pending frozen review. Helper/null-context and
-secondary-close/native/full-loop qualifications remain. Earlier bd0673 retains runtime c7672208 lore/realm correction. Composed14 =12@c767 plus
+Latest tested sourcefdc219f0 accepts original GameLoop/diagnostic4 (8.2415967s), genuine three Unknown
+cuts/no measured continuation/typed private observation/exact known cause. Independent raw PASS; saved
+packet41/29 verified, fresh matching discovery518/11313 valid0; final carrier integrity gate pending.
+Original loops use controlled final Error-key exit, not full gameplay/next action. Prior continuation12
+at020ac accepted17.7182074s, final carrier122b3a04 independently accepted71/36; helper/null-context and
+secondary-close/native qualifications remain. Earlier bd0673 retains runtime c7672208 lore/realm correction. Composed14 =12@c767 plus
 corrected generation/sourceguard2@bd (12.9031643s), not a single14 run. Same actual CSP and ordinary
 lore routing are proven at original boundaries; the earlier raw physical deletion/unreached cut and
 blocked old replacement fixture remain historical evidence. Saved72 artifacts/50 pins verify; matching
@@ -18,7 +18,7 @@ Prepared remote8 7cf/c7 accepted59/26. Earlier F13/F14/F17/treatment/cleanup rec
 scopes, not new executions. Latest actual full GitHub-only restore remains e5; final combined restore pending.
 
 Open: remaining accepted-continuation owners and Ready-specific bookkeeping cause retention, Explorer
-whole-command and GameLoop diagnostics,
+whole-command,
 authoritative Ready/worker/audit/proposal, C2, F16 media/listing/export/path producer admission, F18 current
 publication/admission observer ports and full reconciliation. No whole-game/native or simultaneous
 secondary-close fault claim; prepared-Shining generation policy remains separately unqualified.
