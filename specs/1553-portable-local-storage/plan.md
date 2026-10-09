@@ -1,3 +1,24 @@
+## Remaining owner partial original baseline — WIP, 2026-10-09
+
+Nested alias delta independent PASS16431adf. Fresh integration Plan195243:
+12/1,0execution60.9202704s. Actual195359 completes12/1 in8.6741993s:
+3PASS (bootstrap/QTE/prompt-generation known), 3causalFAIL (same three actual
+unknown primary lost to actual secondary close), 6preparationFAIL/UNRUN
+(UI-lock/profile/prompt-lock pairs: actual task traversal finds no owner).
+Both cleanup,0duplicates/timeout; all12 strict roots absent. Do not call this
+six-route RED or infer remaining six publication behavior. Exact raw log/summary/
+TRX/rows/source pins retained as baseline_attempt1; no production changes.
+Next minimal actual-state diagnostic on the real task/awaiter graph before
+fixing fixture reachability; do not substitute a synthetic lease/result.
+Owner inspector now reports actual field/type names on missing unique owner,
+without game/user content. Other assertions unchanged. Diagnostic source gate,
+then narrow original missing-route probe; refine exact12 only after cause.
+Current syntax-only Roslyn read of855productfiles locates169acquisition calls
+in70files/162named methods,106using syntax,51method release-helper mentions.
+This is candidate census, not semantic defect/acceptance classification; old
+102single-line grep is explicitly incomplete. Method inventory still open.
+T061–T065 unchecked; B2–B5 paused, native/systemd/whole migration unqualified.
+
 ## Remaining owner fixture compilation corrected — WIP, 2026-10-09
 
 Fixture/design/exact12 independent PASS e8b8f59a. Fresh Plan194928 build fails

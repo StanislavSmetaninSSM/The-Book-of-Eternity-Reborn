@@ -250,12 +250,16 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         var tasks = new Queue<Task>(); tasks.Enqueue(operation);
         var visited = new HashSet<Task>(ReferenceEqualityComparer.Instance);
         var owners = new List<(FileSystemManager.CanonicalWriteLease, string)>();
+        var actualStates = new List<object>();
         while (tasks.TryDequeue(out var task))
         {
             if (!visited.Add(task)) continue;
             var state = task.GetType().GetField("StateMachine", flags)?.GetValue(task);
             if (state == null) continue;
             var stateType = state.GetType().FullName!;
+            actualStates.Add(new { TaskType = task.GetType().FullName, StateType = stateType,
+                Fields = state.GetType().GetFields(flags).Select(field => new { field.Name,
+                    DeclaredType = field.FieldType.FullName, ActualType = field.GetValue(state)?.GetType().FullName }) });
             foreach (var field in state.GetType().GetFields(flags))
             {
                 var value = field.GetValue(state);
@@ -267,6 +271,9 @@ public sealed partial class OriginalOwnedLeaseCloseTests
                         if (awaiterField.GetValue(value) is Task awaited) tasks.Enqueue(awaited);
             }
         }
-        return Assert.Single(owners.DistinctBy(owner => owner.Item1));
+        var distinct = owners.DistinctBy(owner => owner.Item1).ToArray();
+        Assert.True(distinct.Length == 1,
+            "Actual owning-lease preparation failed: " + JsonSerializer.Serialize(new { boundary, OwnerCount = distinct.Length, actualStates }));
+        return distinct[0];
     }
 }
