@@ -1,3 +1,20 @@
+## Final owning-acquisition semantic census — WIP, 2026-10-09
+
+Pinned product sourceb02339db:855 tracked C# files/170 acquisition sites/164 full
+method declarations/70 files, Roslyn syntax spans/signatures/genericparameters/
+methodbodyhashes and all855sourcehashes. Explicitmanual per170 classification:
+75source-only,88finitepacket-associated,2changed-runtimepending,3retainedlegacy,
+2prohibitednative. These are acquisition classifications, not testexecution or
+allmethod/caller acceptance. Independent fullsemantic review pending.
+[Reproduciblecollector+sourcepins+classification](recovery/storage-migration-final-owner-census-20261009/manifest.json).
+MultipleWaitSpiritual/RunTask/GenerateImage/ExecuteSessionReplacement/Prompt
+acquisitions retain distinct entries/fullsignatures; helpername/CSPgrep never
+chooses classification. ReadOnly/latch/runtimeplan/admission/recovery/legacy/
+nativePrepared+Release and specialized typed decisions explicit. Knownlateclose
+qualified only TreatmentAdvance currently; Proposal originalknown_closeFAIL until
+freshGREEN4. Fullscopeclosure/T061–T065/B2–B5/native remainsopen. Census reproducibility,
+final discovery-only catalog and NEW EMPTY GitHub-onlyfullhistoryrestore next.
+
 ## Replay uncertainty and Proposal confirmed-result guards — WIP, 2026-10-09
 
 Original correctedreplay1PASS/1causalFAIL and Proposal3PASS/1causalFAIL retained

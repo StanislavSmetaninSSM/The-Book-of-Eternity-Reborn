@@ -1,0 +1,3440 @@
+{
+  "scope": "Final reproducible product owning-acquisition source census and manual per-acquisition semantic adjudication; independent review pending, zero test execution. Not complete consumer acceptance. Product source b02339db unchanged after runtime guards; native/recovery/legacy/read-only/ordinary known-close limits explicit.",
+  "source": "b02339db19b8253f15a5e957f7be075a3dd57c8b",
+  "artifacts": [
+    {
+      "path": "collect-owning-candidates.ps1",
+      "sha256": "8eef5431b135deb8677caa439c7c873394e2d1ed29c9ca681f6e63e41636e791"
+    },
+    {
+      "path": "owning-candidates.json",
+      "sha256": "bee9bc0b6d26abb7bb18382f2f0ad0c1d5243fef58ad24391b18a062f4984527"
+    },
+    {
+      "path": "semantic-classification.json",
+      "sha256": "57bbab304ce3969a5f9f2ee1ebd20fc187ba251a0290023fdf0a0ffdd66e3c8b"
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleAccessToken.cs",
+      "sha256": "2b12cd950a4f9f63f6b25f2e41729221e90a39581f5160a71693365505fc5697"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleApiHost.cs",
+      "sha256": "c279232b0e136c140a5a562e321c8abc965627ea7dcb1e1635d885de9354dde9"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleE2EObservationMapper.cs",
+      "sha256": "044c36c2819676513fd2cad7921a3415c360b1d0614e40abb9499718f16dd22b"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleInputModels.cs",
+      "sha256": "bdeb57770cec71cb59cb0544b22083346ae6ebb823d1e97be20a1482fd9e5d9d"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleLiveInputSource.cs",
+      "sha256": "3a1f932bc800a229357bf307fb8e01f0f110f340c6f308f350c4bcf5eb3eca9f"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleModels.cs",
+      "sha256": "1531ed0f67801f13dcf79aa675f14396c66b31aa93221590bfbdb2d735ea908d"
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleStateStore.cs",
+      "sha256": "04360e44179f74cad8c86dd98232810bc01140f892f4e0285be8f6012689759a"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/ExplorerCommandCatalog.cs",
+      "sha256": "08e607f20171870ef9fbec5c9dff05d59d9a020ea3f84ffde6d4103536e1154c"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/ExplorerCommandMigrationRegistry.cs",
+      "sha256": "0024a87ed3d82117bbae7805c7a4f34fca223179d49fc182b163aaf1f01f7a44"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/ExplorerCommandParser.cs",
+      "sha256": "525f1d66171b8d147a43fc3dbd6a2d1de55fadb001f227b8a311d39014ceed9e"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/ExplorerCommandResult.cs",
+      "sha256": "1ca4bac1e547118b122b9e310acdd1880b80f6b7ce423454cb0c76176b99e57a"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/ExplorerHelpCommandResultBuilder.cs",
+      "sha256": "6e5b17c545f73bc1c97f14e486a3d8999a0dd5625755456f956230c146f9c916"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/ExplorerRealmTradeCommandResolver.cs",
+      "sha256": "3cbbb386de877feb74f5e1589ef8bb1a058eb4b8f77413733fc4cefb5fdbb266"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/UiActions.cs",
+      "sha256": "b847ff5d0fa1a6a8b931cffe4759d83d3051d49a4f85204f3a26505771c72d94"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/UiBlocks.cs",
+      "sha256": "5a6aa505389df1424f40953015e61e8147b6488f78e913a71292e67111be9bd9"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/UiNotifications.cs",
+      "sha256": "4bbb537801ead3a942c2fd69597b13d28872f7c0332b5cc37b352b6678f3015b"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/UiPromptSession.cs",
+      "sha256": "ee061ddb8ee322fe25634569aab8c5a92456f17003f352b68e8f2fbe6504541c"
+    },
+    {
+      "path": "BookOfEternityClient/CommandProtocol/UiPrompts.cs",
+      "sha256": "a90076a42064449214f4c5287d44e81ba19553f12944f8f4be5f4094ed04d0cb"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/ClientStartupOptions.cs",
+      "sha256": "414d0eab9dee8ecacc278912b195e5cd83311da255eac1adbc1282b1122c9cca"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/ConsoleE2EObservationArtifacts.cs",
+      "sha256": "8efdce4ffc613cefbc2f828bebc6cd23c80862c4707a029c7d2d55fe25777b83"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/ConsoleE2ESandbox.cs",
+      "sha256": "8076bd22ddcbce694502a1fef1efe832ce3b3611a7bbbd8f3c0eebfa17ded64f"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/ConsoleE2EScriptedInput.cs",
+      "sha256": "8eda2e772477cb58914d0a9914fbe67dbc78d7d4fdfd19f379a312b69ac49b6f"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/FileMapping.cs",
+      "sha256": "0e657357c315ffe740983d3f9c3347475dc1907d84f059753eddcf95f707b538"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/GameSettings.cs",
+      "sha256": "0191f2f8bc0dead66da78c8e539d09366fc9e30774a7263b2623a94568f5a7c6"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/GmBridgePasteVisibilityPolicy.cs",
+      "sha256": "6a48253700cef39107255460fa420c44f4ad7d7919949906e8ad048330a7b8d3"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "sha256": "a07fa2ff57b1b34e0fc4863b7857b259eb3f966777e115cf3b455a3314a48d01"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/ProductVersion.cs",
+      "sha256": "cb3c84d13c54cb0f061512666f2ed3d9a1bbbcaedde50149fec1ba77ed219290"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2"
+    },
+    {
+      "path": "BookOfEternityClient/Core/AbodePowerRules.cs",
+      "sha256": "59a147370ca060748dcf643f37657b137983e8c0e0e62c00da8c5cd45ef08c2a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/BufferedConsolePasteCapture.cs",
+      "sha256": "28fd49482b49beb0948c5ad2fc9233597bf5b3861a50c8d6f171dfe54ee7435a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
+      "sha256": "d6e1bc480d50227ce43d1703e48fee9cf19bb45d859f5bd937a2a3432751d928"
+    },
+    {
+      "path": "BookOfEternityClient/Core/ConsoleMainMenuInputHandler.cs",
+      "sha256": "8f5e2ba687fe513241b73cb08efd68c6c74a9a8390fb16b0f55b54e4bbfbc603"
+    },
+    {
+      "path": "BookOfEternityClient/Core/ConsoleSettingsPreview.cs",
+      "sha256": "20b72aa471c57b9bb8224bff51412d254458052e96a71ffd86644b85009b107a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/ConsoleSettingsSession.cs",
+      "sha256": "42dab966177a1590b5c6c0f62341e14d3cb318fb45f926af7f707e4425934e1e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/DialogueOptionControlTagNormalizer.cs",
+      "sha256": "1d29b2f022af651eea548aec4b483b4892c88678034962fe4ed18b1645ad0d7a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "sha256": "71954c0c0e0b73c989208d870470ea9ab7906c9e28aea8d42c06923db90a507f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+      "sha256": "1e1bca8520a3e65d2177a9819af87f10adbcef65a7fb77fb2628a0bcb322abb7"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+      "sha256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+      "sha256": "2345923f3a46e23e4c997a3107a5ca2b3a446d402ac05f698a489fc9277e32cb"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
+      "sha256": "299be7845bef06b7d819c90036292aa000fff51a0e462569a3260d4028a6587e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
+      "sha256": "ae147b09feb7152aa7a7dfed8b0fc801119f5f7d366524bf1bdccd6825e55a94"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+      "sha256": "228cb24f1ebbce770a328c0ab21b203980d7b7b0039895ec0571bad04d0fa82a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "sha256": "6339edc304920d693ec54717210e445c90451131936bbf8b2f09462e0b3c219a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs",
+      "sha256": "323d61e2ef12ff77662712d5ce199a2ca0dfe6211544ff8e19cd60e984b93cd1"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "sha256": "4a738f91985c2dd42a9117e22f0d9e0b824495b3594798a9b5579095fb0db6d4"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+      "sha256": "beac7a4733bc8de2816c3acedc365b69be19a048efff513cb47ee60c82ef1d21"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.SyntheticBundlePublication.cs",
+      "sha256": "f5ee6627f47e9c5503b6cf8bc1c7903c3413debc4496717375f153c74700b142"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "a97a457256a092745d1a60d45f50972eb70d953fd4b106f7d01d2179ead83870"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "sha256": "d372ecf78ecde37d351272d0e0c9b2476bb4a54f494d48762c1579e13885ab8b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs",
+      "sha256": "5f5d1c7e810fd1a82a7dd786800506ebeb97435663c114baa5486f6bcab9a9dc"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "sha256": "068b82d978b059dea898b23b44cb6a46b1d830bf29528c9aa9d8a60610d63f85"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+      "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs",
+      "sha256": "2e101960e4a6c9fda2d10f7f20ea7d35ddeb6ea371cf1fff9237f92139d2d794"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+      "sha256": "1b59be5ce9a915769d55be60fb2bd1a18d96188b025ed3a2e81d7458fa362c02"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.LoadLifecycle.cs",
+      "sha256": "ba8bc0a64ac59084ea0863925c2348c6fdfc1cc742a4c89ed2020f399a7475cf"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "sha256": "530bb99fe41ec1a9a361cc7f34505e3d6abddd9b9ef549f2232e4420a6cf71a7"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+      "sha256": "3af0179ee02e06e17ef35cd2acc998feeafe8ed1884a7209b62148387376631d"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "sha256": "6b67a56b86ae216a423335a1639f9bebc4a727f3783a51cbdf110a734829458e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "sha256": "93c88283dbd11457059db639a431f4b6328c356a7105e1cb9553a0fc52f6a45d"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SettingsInitialization.cs",
+      "sha256": "5bedf79bb3e9b09f694673128ea779b71e7eae1a66cbe94a05d55743e7a84cce"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "a079fd921eff2f9f0acb9d2eae487aabc5a108f60e19ba906857d4b9d6c29a6d"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "bd24437c725c1fde0aec3fa01aed7fb301385c87a5dc32e5030b6dc1ee8d4e6f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameLoop.cs",
+      "sha256": "2b65cc471048f7f68252e1262a6fe5ac62b142f21c61bae9c594c5da5e3ea90d"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameResponseRefreshMerger.cs",
+      "sha256": "df23031991eebb625f601a4ebe227c2738639862bb996851d4dbf6e685b84e8b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+      "sha256": "558999c2b6ca8da75e9518b4ef70a73674a251d4ba3933fe2be6751ef2e3593f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+      "sha256": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GuardianManifestation.cs",
+      "sha256": "30b2af366d5a3b6d4e24d95bdb6d38348fd9bec9ada66c98871fd9596c6e6701"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GuardianRelationshipRules.cs",
+      "sha256": "fd8857e38f9e27a9152a6f608c04d804e2aadf7a0cce941850acf3265bf7f957"
+    },
+    {
+      "path": "BookOfEternityClient/Core/IConsoleInputSource.cs",
+      "sha256": "eeb8876078e8612e4c26c5eb03bd4ff2ed9790617334bae29db6f82c916b2969"
+    },
+    {
+      "path": "BookOfEternityClient/Core/ITextComposerConsole.cs",
+      "sha256": "88f12bfbbc46e11e64297f50b8945a62c113fdfbecf93b93b1aa3f87163800e9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/IncarnationTriggerContract.cs",
+      "sha256": "d406204075b1c12ea02df1e0aaee371cabd7e0887d2a21fc97b156ff6f0e3894"
+    },
+    {
+      "path": "BookOfEternityClient/Core/LinuxCreateOnlyDirectoryRename.cs",
+      "sha256": "49343a0a18082919a922abb6afc7a84dec61fb8bec09029b097ac4ed58e08c30"
+    },
+    {
+      "path": "BookOfEternityClient/Core/LoadTransactionOperations.cs",
+      "sha256": "38977a9cc50cd017846fef296752b03a05bf6d282a989c21fc57da7efb833171"
+    },
+    {
+      "path": "BookOfEternityClient/Core/LocalSettingsPreparation.cs",
+      "sha256": "16be91c521661274b2d7f06883f59c678f831d66b96bba663c71adaeca5a306e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/MainOperationContinuationException.cs",
+      "sha256": "5c9e2ad69823b9228631ab2c7043522a989d86bf17eef30405f4aa74c7648ba1"
+    },
+    {
+      "path": "BookOfEternityClient/Core/PhysicalFileAuthority.cs",
+      "sha256": "84b5cd866cbc2a6c091d608afbf167fbd61199d0891987c2b32b6c1549bd3bca"
+    },
+    {
+      "path": "BookOfEternityClient/Core/PlayerFacingTextNormalizer.cs",
+      "sha256": "a3f6e26d52c6db299cdcfeaad2d4a68886df1900fc38dde479620156a9d250dd"
+    },
+    {
+      "path": "BookOfEternityClient/Core/ReputationScales.cs",
+      "sha256": "cb36719382316ef9edf14f57625928e2d73a680546a26114b3290978ca03ac92"
+    },
+    {
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "sha256": "bfdf8240934087df916177de2be7a5843d1d179b872ae7c8fe622b74eacd50ba"
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StandardTextComposerConsole.cs",
+      "sha256": "2d7ced14bb70abc4f7daaba30f3a154ef5fd277129e6985669a51d2744440b04"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.LocalSettings.cs",
+      "sha256": "4c8b6defec4d8ba56be1e78769c72da9706ef6fdf437f5d44adfe469dd782403"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "sha256": "d13fa26a95678f6b56bf0de979b73880478b39507667dcc49965a02b133767a6"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "sha256": "fc37727e91dcce1af6d9270d37dba103f3b2ee51bddd1436ca86e548a636a73e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TextComposer.cs",
+      "sha256": "5e10cfa329c516bd1d3f829622e1197c417bc54c76acde32a0470773a25a63cb"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+      "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Deferred.cs",
+      "sha256": "f8c6db40f934bdafd08ff781b0aa657753c538b119dd6703a197bdff1f30141b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+      "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs",
+      "sha256": "7ecc1654cf23caaaca167f7610367cd6e5a4883d9a4b50542f899cd7fbc7ebfc"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "sha256": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+      "sha256": "78ee3c6b545622fd200985596372137bda29d4d7398ca508eda7da5b7874ab64"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs",
+      "sha256": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalNamespacePlan.cs",
+      "sha256": "87467df0dd342c656cdf6be48ed74a8dfb87a382ec2926426298fee334c59dad"
+    },
+    {
+      "path": "BookOfEternityClient/Core/WorkerRunLedgerPersistence.cs",
+      "sha256": "0d18fd381ba2d04688b9031bb95bfaff500ccfab1217928095bc516f681b43c2"
+    },
+    {
+      "path": "BookOfEternityClient/IO/StateDistributor.cs",
+      "sha256": "55762adcd9ec302a221953829f6616dbba43b5ccce11c0a468064b33e53dd02b"
+    },
+    {
+      "path": "BookOfEternityClient/Models/DataModels.cs",
+      "sha256": "e9a49448470192259364d55eb51cef95eb4d493b1235cb734406e960a3feed61"
+    },
+    {
+      "path": "BookOfEternityClient/Models/GameResponse.cs",
+      "sha256": "dcc178fdcb21ed5bd5d14d2fc48c03371b8f0858e0ada86d65ab9778271f27bb"
+    },
+    {
+      "path": "BookOfEternityClient/Models/GameState/AggregatedGameState.cs",
+      "sha256": "3d844f0087aeca7459f72b603dd2669fb89e3b169c20dca3174e75639bc2c304"
+    },
+    {
+      "path": "BookOfEternityClient/Models/TurnRequest.cs",
+      "sha256": "1f0220e601cad7b886b775c0638e833107e9ad88ea7d0d7e53a31685db3c6221"
+    },
+    {
+      "path": "BookOfEternityClient/Program.cs",
+      "sha256": "f6d7cf1a39f22717cf4da64becf7dd73f78deb2a50ed85203160e586152fd8b3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedEffectBoundaryTranscript.cs",
+      "sha256": "9e686b7a3f9d32c54f1bf4d8449cfdc47ef3203e05405a585dd02f5a8e712a7b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedEffectUseArbiter.cs",
+      "sha256": "1037ce90e9841a5ff413d8e5f64f44d01829596f077056e79c4fc94406773977"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.LiveWounds.cs",
+      "sha256": "526e6ba78b409621f64516c618561d4096de038f59ecfd0481922dae337a87cc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.MortalRecovery.cs",
+      "sha256": "a2db5d193cb32fb220cdaccaf664395d3d8824965ffc99742e876260e4161d98"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsDirectWoundPublicationAuthority.cs",
+      "sha256": "79382114c9c5a8e896b8c7ed6929c433c13c115733256d1f7fefe8407a9ef718"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsOwnerTransition.cs",
+      "sha256": "e4991a2bb670623a612ac577dcfe275768be9c05cc1dbe7ee181793894b34628"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "sha256": "d9089b7edbc9a276c928fe62e9d3aa1890750e400421533975a5f7d42e401b9e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs",
+      "sha256": "5befc8c24573d03c211e0bab7b857c90071519f3627f655e2da209b3a7efe675"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.LiveTurn.cs",
+      "sha256": "aaa2075f9b4f4e973ea6408af3abf9553e56c7d3442cd88cc9e20345bbbb42a6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.MissingSide.cs",
+      "sha256": "6278bb215c3a971cd4cad1664b5900466fd0b51a7d3211e8395d546517488315"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.OriginalPrefix.cs",
+      "sha256": "59fffe873e9607bb334dd6f6eff0a7dbc59260faa6122191372b682a7e6e7b79"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.OriginalSpiritualReduction.cs",
+      "sha256": "3ff2777d94afe4d3dcfac3078d96ef921358b965c82bfdc8589590638dd0877a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.OriginalSpiritualResources.cs",
+      "sha256": "f9a365baaaa433ed6a4d4fd6ccde26cbdb5ab2744cc1124b46b29aee5584ea8e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.PendingContinuation.cs",
+      "sha256": "60ba980c39d8e46b45ef8138a352257ef3891e7a6344332824a69375ce302e0e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.ResourcePrefixView.cs",
+      "sha256": "2f142955ccd35fdd1ad06fae0e695b0da253ff7f2c54d7b4a3bc61843d6809d6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.SpiritualMechanics.cs",
+      "sha256": "7aa20f1ced7617910d09f683d3d269e2bbbe01623507e6d2a82f3b9801ef0630"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.TerminalSpiritualResources.cs",
+      "sha256": "f3ed843980d86a1647ac67d451c5d61de09a3c212d50c8d2c262bfeac5e92ec1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.WoundFutureCandidates.cs",
+      "sha256": "c4c0eef98b2a25589354df801745bfea37c114fb072e00522c5afd964467354f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.WoundInstances.cs",
+      "sha256": "99db59f46bae37980c4f3d2bb07da1620e43d54471bcc654c67cb954c1cef000"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "sha256": "91a8ced91d6ef96c3d53a64d53f9e17d47daf901828f42d431772a25e53480a2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+      "sha256": "68d120c2367d8e7af8cb936e11d35f01bc50f3759f1a9b0aaf1aa1ff31e7d5fb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalRecovery.cs",
+      "sha256": "c645b92006618c59ebcd17d940944fa6af54ae83ce21e32c168fe14e95660c1a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "sha256": "3bacf2c2294c88b10acd0d137c153ba2e219acc93903e74cad155081474d4705"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "sha256": "e31a87fa150b9787494713c89ba0a25028b9f8567594ee32c80d52670a8cd0b5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnProjectionClock.cs",
+      "sha256": "b8fdda0730c89d3f02c4824938f7b0cc89e147dcf5b979eba4aa0c521aa0aba7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ActorJournalState.cs",
+      "sha256": "61cfbe4223121aa04e4d848ebb23ff3ed97acb7cb3a200ab605d06b78ab3ea63"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ActorMaterializationContract.cs",
+      "sha256": "a86fbd775c08065872bb0292c005c786a6946486660c56aafbdd83798f5e1669"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ActorMemoryService.cs",
+      "sha256": "7f9234dc1d0ab90e42bd5162efbb92ce5947bda562b2000ac1976ca4767dc5cc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ActorSocialInteractionRequestState.cs",
+      "sha256": "03e254be75f21a61c6d045a2121b83dca89c7f9d9feb25f98e00361e514867b7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeActionCostRules.cs",
+      "sha256": "816cd4450e5b493049f9f426e59128ba35d80e541fb2c01c37eb95dee0a94e35"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeActiveThreatState.cs",
+      "sha256": "2d3f5a41e9c16e9f00a7380ff91156778907548e4fd4bbcd836cd0437c58e048"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeArchiveActionState.cs",
+      "sha256": "5eb55664c0e5baf335e79dbe534f6438dbac68ab39dac512393bca8691a39246"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeArchiveCandidateService.cs",
+      "sha256": "ab38d24fa9ee1bd4cd683bad5ccf425b5768400477b972942d8eb1b2f26b7b24"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeArchiveConsultationService.cs",
+      "sha256": "410c339532c96e9e55f708ebc565d5af92194cad6b690c75b9996804e8eea456"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeArchiveProjectFuelService.cs",
+      "sha256": "a674227f367d47eddcc699c0e052090974bbd5c04dfd675705a90db6436063e8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeArchiveState.cs",
+      "sha256": "b0bfb8d53f4b8636aa53c6a5e08de31f95f3a2a7e76d41fe94905a7b48bcbb86"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeAscensionAuthority.cs",
+      "sha256": "481855beadba9b9c6e7b10cc1dcc28be4fd6cfcbc088db533d7d440f58395909"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeChronicleState.cs",
+      "sha256": "89349d326aa8387d5cd60e41b0bdc9ae115016b6d251d2aee0cfbc0b830b1e90"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeConflictActionPointProjection.cs",
+      "sha256": "245be55eca30114d50547913acae008741fbcd86d1309d47af4a975cfe1bd948"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeContractRegistry.cs",
+      "sha256": "baf73c92d63578063e92904277503dcc3322cd57c7db38f47734fa5c4a181c7a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeControlStateRules.cs",
+      "sha256": "aa1711e223bc2ba60e795e385e1b7b0111c8ea153babe64e3fceb89199ed68d5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeGachaAttemptProjection.cs",
+      "sha256": "d96dddf9f04fa54a06342af00d06ef7ac5a56069d0b09f15150ee8f16a4b7da8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeGlobalFlagState.cs",
+      "sha256": "a691456b31cef9901855c1351bb936084bda65724cd0a055c6353ff8c9ecf171"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeGuardianGachaResourceOutcome.cs",
+      "sha256": "4c5fc7971c18c6561b64dfbab5a57999b3a8e5dded3952ab19c7ec6b2a50a951"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeGuardianReturnCycleState.cs",
+      "sha256": "009d2d123a5fa45fe585b6efc3b56374f7c3f1c69d5ea2d41a41105691822225"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeLocalActionGuard.cs",
+      "sha256": "a2b342be880cc1fa9e2c8d934b81844844bcc9594ae1d830bf1082ebe040487c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeNotificationState.cs",
+      "sha256": "e2a7998461720231e3a8f708ae5bd899419034485fc49b7eeed6e703e80991c2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStatePlanner.cs",
+      "sha256": "b59594676efb70723398dad68418059d5f796bfff72d5ff4910a60219641654c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+      "sha256": "81dd85490ee4793b448d5b23eaabb5273ed3c1a6a5d9228e445f3ce310b6d40b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeProfileVisibility.cs",
+      "sha256": "f4b37709f7376d3faccbeb74a2dcdb64a9a3639b1e6e290c2f7bf62ce24a1211"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeProgressionTuning.cs",
+      "sha256": "fd3316aef9096f924cb01c47474493e117c102c8479c02e965ec407c7925de50"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeResourceOwnerComposer.cs",
+      "sha256": "c87f38ca05631b68f928b31111164326202a7e9dee38e80fdc54399cd81505cc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeReturnGuardService.cs",
+      "sha256": "1e10ddc29700aa3c312de010a89a3a033891518f3200bbb5c589b313dc601ee3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeShiningGachaResourceOutcome.cs",
+      "sha256": "1c582f6b6451997a14d216f62dbca42d40f79e56effbb06e75d17a3476175b63"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.MissingSide.cs",
+      "sha256": "170e2f637d6ba59360e15090a23b75c99ae2e89c9ecb0e01d9456cabcd7331fa"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs",
+      "sha256": "15edadff4ee07812be20fa3cd9819edd719247e763410013974462f736e63524"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictState.RawExchange.cs",
+      "sha256": "7db718d8921c7de29d7e6608d54b4d4ff9817e00e8c034d995b238cd15d4b4eb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs",
+      "sha256": "5d6b770bdf7a4bde1429addbb89cd8354fee99303716dc4ef8106e128eec5ebc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs",
+      "sha256": "29daa4c29e7b2a7c62c93b7df1629b654afc535e83bdf8453f33ab98dc9d2bfe"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeStoryOutlineState.cs",
+      "sha256": "397e7afb201297296f2289a11222f19b0679a82ccbd36c5bb5110325091c8911"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeTrainingCostPolicy.cs",
+      "sha256": "f29fcb64379a229342eb8ad1a083a87c90b91590fa3504d358abf8b1bdce395d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Audio/AudioPlayback.cs",
+      "sha256": "89d1e081ca831f3e527c6d9935effb2a3a80e7893eee265be1c400cfe2a4bd70"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Audio/SdlAudioApi.cs",
+      "sha256": "2dfeed17806d5857fae83246993341414a9e934f9e4bee7d654c54b12079c701"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Audio/SdlAudioBackend.cs",
+      "sha256": "f30e0eebf191b25a5f948af3ecc48484c6fa9082188c718c8b2273bd7c380258"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Audio/WindowsAudioBackend.cs",
+      "sha256": "a76353f36c3c12d9006e296b11bd7277921b66efab7158886ae14efb76dcd5c9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AudioService.SettingsPreview.cs",
+      "sha256": "1a46760f41f901b4b2ac58606cc7900285c3c9b3284498a4be247599ac59dd35"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AudioService.cs",
+      "sha256": "2236f56e7f3c6b626d249a480eb6065abe8fe4dbb311386606dbe40949d3f67c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalJsonUtf8.cs",
+      "sha256": "8d369549d3b15da614f5782a15b3890cbeede14ce10972051d4960ee3e6d5bd8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalResourceOwnerAuthorityComposer.cs",
+      "sha256": "0ebf495c393c9dc7108b0a1c03071336dafcf4f0c4d3cda5006184f84be38900"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalResourceQuartetTransaction.cs",
+      "sha256": "4d9460fefdd82276f37bb30b5c38416f67f6b3bb2ea12176a868380fb59d84db"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "sha256": "af3eed10ef8f253aea0aa4d4b47b3b4690a7ba81dab4163a16aef5c62bc2dab9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+      "sha256": "4fae1174656cb789c79854c6a94a72ae152b2ad8e14c5d3f34388cffa7be053e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeActiveThreats.cs",
+      "sha256": "62f7c0f95fd2d36e619c83889fdd458134f327c76d7f961f26f38828ea73746a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeChronicles.cs",
+      "sha256": "40893917010fb38ba65b9f7ac136e02e4fe7be45f75419d99a98fd9fa1127693"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeEntityProfiles.cs",
+      "sha256": "62e5f76cff48e07c4ba89eaefc6a4d952678cf3895935ada6947b4f1e3656404"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeGlobalFlags.cs",
+      "sha256": "b437dd128e936bef323030e90c09d7614210b1b97efa6dadd08a8a5b9043fac4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeSpiritualConflict.cs",
+      "sha256": "653d51ba7382df92f196e0ba4ae5bb9914f75e74937414b31dcb259716c563b6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeStoryOutline.cs",
+      "sha256": "432eec32a41261508138c2637f91c87bad2b59cd8564994281db3eba4df9020a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.ChaosSeaGuardianPolitics.cs",
+      "sha256": "8c0d57f58c407f86d844d4a3745c59471b640d25956ac15e57a561a1337075e2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Effects.cs",
+      "sha256": "eed32b7292f7a0882d990b092cfba09696abffd9ca62c0dd893f8a1b35cba4c9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.FactionAndInventoryHelpers.cs",
+      "sha256": "2572f36a1b537190ed10375baada357f321c1d033fa703dc57619ad8c8e60926"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Factions.cs",
+      "sha256": "dc390475408e8ad395443ae44c50c74f2616413d8ffbbde6996299028d3924f3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardianProjectHelpers.cs",
+      "sha256": "6edaf6fe85d264e2139794c6a12761fbdee86a226dee277a125634d93b5498e3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardiansAndProjects.cs",
+      "sha256": "28c4bbb02b583fb95f936ec9978ac10e53300747ac38c18ac328db7fb13193f9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs",
+      "sha256": "392c25ee6bce6cf92933c33ae85798466ef107095678777dec279f84d7d49ac8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItemPublicationBaseline.cs",
+      "sha256": "0e27f88df1d665b34322cfb65e9e43d5ded7a48d2659a77c5caab7e46319d65d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItemTransfers.cs",
+      "sha256": "6a136f13f60fbcfcf409f5fb904919e9526d64316bf478f43bdf7f9e071bec75"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+      "sha256": "65dbab31e85f55a090d80e0a6937b0ef287d39121a95b68c810c9c06351cbee8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalLocations.cs",
+      "sha256": "12855ca308dc2ede3c35129db38920992a7d69286aa6599ee9110a838b9b0c08"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs",
+      "sha256": "7428e8134b0783fa363c934daec8d0841357188298e766e11a6ce1e54abe7f05"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs",
+      "sha256": "de89853995e04e557530ceafb0d49badb78d0df1a16823092a2aa14a72acd37f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.QuestsAndRivals.cs",
+      "sha256": "e7fed747f772c900788bc23a3e411363b35de971774bfbd5686bba4b2499dbff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs",
+      "sha256": "74e490f5309d9b22267374a4e1017810c1e622d7f5bd842cbf22c29b7dd6347e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SharedAndSoulHelpers.cs",
+      "sha256": "7750e2cc3102dcff057d4439de89739743c25308f43b694b90049f4b5c8ffe72"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.ShiningAbode.cs",
+      "sha256": "70e298d234e6cf6b059bccf8daf265793569e0b2fcbf577dc9e214ea75352ed5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Skills.cs",
+      "sha256": "bed823d90c9389abf73ea046300e2f96aea0ed966b5a11eb5d63c2ee2779bdc2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+      "sha256": "75996ce71acf62c3c63660b151a2a53419fb0aa285b3e1305c4815fb8d50e4eb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SpiritualPublication.cs",
+      "sha256": "f47605d40d9459c9573e797f9dd2d815c2fc0e570910bd7e66e4e3da05d94ceb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs",
+      "sha256": "38c24a590ac40fa525485dcd14292d25d08896fae0b4a8ce1a3c930e605e92a9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ChaosSeaBootstrapStateBuilder.cs",
+      "sha256": "f3fb2c849eb5c44ebfa0f3c34d91af1365750a95e879962aede5bc4c6efbda94"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ChaosSeaGuardianPoliticsState.cs",
+      "sha256": "97ea600156c907b064c57e1154dcb2a486207f59c859015083dd069ebf8445b0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "sha256": "f870eefb237bbe4564f76bc4963544d36d37760f9a0ccae3c6480110e631a8e2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ClipboardCommandReader.cs",
+      "sha256": "fe2cf3f7464dd304b932e73e8f59b3857b83257376c8b7560136a79cedf4447b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ClipboardService.cs",
+      "sha256": "5f28106e8048955c7a9a163f38404f9a220eb8622331a6c83cea060e33f6dfa0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CombatantIdentityState.cs",
+      "sha256": "3658bc9648f015b3668bde8b463c9e8708ad0b1efc6b810c6768f0403576eb88"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ConsoleAppearanceService.cs",
+      "sha256": "b71013c291697e2161e79267772bac75b5601eee5ac77c8c69db7dc670079a23"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ConsoleLocalTurnRollbackArtifacts.cs",
+      "sha256": "340d10cc5194b510cd95fcf2c8503b2a74038e359932cb481f54d853d2371713"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CraftRequestState.cs",
+      "sha256": "4c9324bf07052f145e34483f958306d1a04d111c56ddfc515526048d91ea15db"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CriticalStateHealthService.cs",
+      "sha256": "f55cbe8b0a25ee6a4713e2b6a43503f2194afbe41b771f9443fa65cdfd117449"
+    },
+    {
+      "path": "BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
+      "sha256": "1ad5d5e42a27a4dd6a53c3403c0084c1f945c57b7377833e5368131f98fb8503"
+    },
+    {
+      "path": "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
+      "sha256": "61e8fa7d5edae3f52cef85d42060a9ecc5cc11d73a136e152cd0f07bc96b9488"
+    },
+    {
+      "path": "BookOfEternityClient/Services/DarenRewardProfileRollbackTransaction.cs",
+      "sha256": "6ff121f63b70e6857c1985506ae4bcb7410579c4f4a133e13238e0261056a332"
+    },
+    {
+      "path": "BookOfEternityClient/Services/DesktopPathOpener.cs",
+      "sha256": "00e7f0cfcbd04af74fc327b4a5f0d41a97694641d79c3d83278299dbd0052d1d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedEventReportCatalog.cs",
+      "sha256": "537b6064e7145371980fd3fc39a10d55c8fe7086520b7bc6969244a87fa0e655"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "sha256": "98edf2165005f314d6b72c6f4c330318b16d9a541f52be046ea5885b9aa6ffc4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs",
+      "sha256": "a5a185c73511a66258c9e7dcda76797482e913c63c8dfa65c51744d9b56ab23d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.BaseResourceRouting.cs",
+      "sha256": "b15132f6116b082b7441b758236d629f64409c97cc25202ac2593d6bff411adb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs",
+      "sha256": "60f38c1649208e7fe9e143e35ae8173619c1e4a0806e69d62549b7b288c04b7d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.DraftState.cs",
+      "sha256": "84ca745e49d50ab23f453810ea7133d2d70339f6bb45f6cbde510504b21d8c60"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.DraftWoundApplication.cs",
+      "sha256": "b21f444e05de7f6cf65f6a78996b944e2e7c904abb9ce876ac56cc178ce47b94"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.DraftWoundSelection.cs",
+      "sha256": "3a66f106e0e67bf91402dbedcc3dfaeede6ce5b9145b3fa7e1e70b813d0b4459"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.DraftWounds.cs",
+      "sha256": "a103a65e81e69254a8e6b5dfeb7cf4f9e082b6dc9fe37e5e42ec159bb50b390a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.LiveWoundCompletion.cs",
+      "sha256": "b57c784728be89b54aafc9a6e0ef5f11441beeebda9113c7f403f7bbeb1c85ba"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs",
+      "sha256": "3bcfcb69b1c0a22e91d3e286a12dd812669927fe6c1fa6218dcefa9e63fbb73d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.WoundDependencyCut.cs",
+      "sha256": "0ef2a4bc0acbb404e72b3e3652675c735b9c130e76424efe179675c21153b71f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.WoundReadView.cs",
+      "sha256": "dde9e100983f1703f8c0f9b26445eb44a0fdce3e103fc69f0befb544c71cf7e0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.WoundRoutingInstallation.cs",
+      "sha256": "297f5e1956816544e01aac54426f0fc75233792c5b6c0d8c87f3b8a22d781817"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.WoundRoutingPreparation.cs",
+      "sha256": "f7c7a0ea3904a6c9555d1e7928fab042fea94f6d3a5b409f4ad8eb615cabb241"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.WoundTriggerJournal.cs",
+      "sha256": "3f1e7f07b958dd07c2585451b9795ed0458be7c7b0ba6b6218e05284999761fd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "sha256": "194821964c9a9c25b8f12f076fea765bcb017aac66980f976e7338e9fca820fe"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectBuiltInSourceCatalog.cs",
+      "sha256": "3e8f64f259d74f5cc2588189afa74191cb1720264b8f6e09daafb57e2660fd62"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "sha256": "ee19e8e3ce918984c0c5dddefd49e7236043ce4a13f452e518ac5763db35c7ab"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectComponentProfiles.cs",
+      "sha256": "c36fe4256315a5d876f6f9e4bf681426113f1171aa34d2a0f1901be49dbc0cac"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectDetachedRollSourceAuthority.cs",
+      "sha256": "ad61655b43372c6d2730d92b74fc8e0cca4123279e48d57f33300f5b4c250def"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectEventOutcomeCatalog.cs",
+      "sha256": "97a6c645fd20e22ba36190e68fcb013d2b1ccb3d4bbfe7c77907aa84be1bec36"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectEventTypeCatalog.cs",
+      "sha256": "d67e223c8deca54231ba346d961e67cc6dc08a15c1565306a4940d43c26555fe"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectIdentityHistoryOwner.cs",
+      "sha256": "87da5881d96c043f6fb5efed93d599885c85bee104d5f5eaa42ee2cbae584e00"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectIdentityState.cs",
+      "sha256": "416284cfd30da1e76f731f5f45e4e56ca4bc0e7347a0c4c9045ae3c8433b644f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectMaterializationContract.cs",
+      "sha256": "5b2a9c8d26a6e5372661d622d66d6efb44d8f12d1096e8ed42fc45ef201fd4e3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectMechanicsSnapshot.cs",
+      "sha256": "5818fe389cbc4d2b2799e01340b2b0d719f3494a140959e669d5501da8e7115d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectReactionContract.cs",
+      "sha256": "a29df8322badbb0f568323561b32c3bd798f8ba1849852f1ad737290f31b33ce"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectReactionExecutor.cs",
+      "sha256": "307878203694ac8198a3aecdd66e6505e5cef6b356dd215ea9ffcd6c4450872f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectReactionResultCatalog.cs",
+      "sha256": "6622bae7db75808873307dc2edce526f0d4e2bb3fb5c97c5cc6caafb72fd1440"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectRepairPacketBuilder.cs",
+      "sha256": "52f9c6e150e3803d6b95076305a5427e13a5da31a934d37fdd3fa3688aa26977"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectReplacementTargetIndex.cs",
+      "sha256": "b88e745b937624874ded70892bd139b29d16f2205441bc81775e13137cb13229"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectReplayIdentity.cs",
+      "sha256": "a2bee476c6fea08593c8f12732fe997d05a044a2bf9dee529960cc485ff2642d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectRollContributionResolver.cs",
+      "sha256": "1e16ed43739ee46fab5a44d2b496bb55f21dd73f38da70086898107d3d6a0f5d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectRollSkillScopeAuthority.cs",
+      "sha256": "bc227006ba915530c20c309a6d5bd6925daeeb92b3131e1a087e5394fc5c2864"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectSourceAuthority.cs",
+      "sha256": "3fe3208487a96ebc861721502562a35219ba361a0d566e23fc5b9fca2e88bd86"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectSourceDefinitionContract.cs",
+      "sha256": "e41de08f76a25df1c27474dc7d725a40a5985665679d31b5bd10116d5c34919f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectSourcePredicateCatalog.cs",
+      "sha256": "3ad7ec54fec2a768e93315b2d472814377cc277ee8cf14ca5e86d691e329687f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectTargetAuthority.cs",
+      "sha256": "2444200ba1552bcb64b49d9a25cc2a1313aa22b4967c8e79205f599f93cab7e0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExactIdentifierConfusableKey.cs",
+      "sha256": "5f05303db35192808d3a499257958aaad8b6b98055665ce19509047840de57cf"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.BrowserProtocol.cs",
+      "sha256": "2c94c73cffaf46b11440dbd62b7ef680934ea56a33fdb16096511aa7eb45eb1d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+      "sha256": "a862a23cd5cb111f4cca315c9b8e2c9e6658c87d83bbc84a3eb78baa0b9cc3b6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs",
+      "sha256": "4416fa9a8002ed65fba07505edbdf17065652c254072846e526f8317a2359ed4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs",
+      "sha256": "385e5b7d62360681e89ef506dddf5de67137295fc093cd3bf158131cf1c04b3f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "sha256": "fe8da16e44de41740550260583bfb9ae1bb170bed98bd70c903bcd9f5b8ab556"
+    },
+    {
+      "path": "BookOfEternityClient/Services/FactionCoreChangesContract.cs",
+      "sha256": "adcffaa66c0a54902846222eb952bfbe7ff581bbcd27102b658f100d90b7f535"
+    },
+    {
+      "path": "BookOfEternityClient/Services/FactionMaterializationContract.cs",
+      "sha256": "89660f4372cf49d9e798efcc47d7ad8ee97e7cd22fa143900281c224308638df"
+    },
+    {
+      "path": "BookOfEternityClient/Services/FateShieldReactionArbiter.cs",
+      "sha256": "75722c5708b8bb80d5409581cbd5d967d290544f1281bd01270f53afbb9a1e97"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+      "sha256": "3d831a22f3fc3bacfbf51f6bc4126d2ff35e8b7a05f24abfe9b9e2e8a07fe884"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionProtocol.cs",
+      "sha256": "8633c78bf0c31039848e4030d433960f1e2e94e9195f79db534cd0d894413f57"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+      "sha256": "b0b1ae63cbe10572aea04ed9177290ac745d48c66bf2479a1f0eec3a0708f8e5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs",
+      "sha256": "4488491ac2911d8b4c49347d10760106fc72e9c37f9a0169aa4d37f303cea349"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "sha256": "223ff5442373639857570fa6a86b3c0b9a85e3ffd51697699c19afb171045202"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunAdmission.cs",
+      "sha256": "aa1338fbfa3ba4b8a89851acaa41b4a5bfa3b95c8cc3239116fc24057add621a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "sha256": "398ab9432f99a3aee33be2a07395f8569ab30006130676c0cb5cf138f8baa278"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "sha256": "0d72cd4250b7ab06d69502b0f8947742c26e129b96290b137e281949a87c2f9d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+      "sha256": "9b87c57f63804de304bbd49e999ff06536c0fce4a592e9f3e81542adebba9f14"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs",
+      "sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+      "sha256": "d95af2322418dec67deaae1c0bd793ecdfd6130f933ccff6b74b0985626e8ade"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs",
+      "sha256": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/LinuxPtyStream.cs",
+      "sha256": "8af14b69d3235041e9bc44203eb736917be6db9d86e35bd82c458130f46590af"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/LinuxSystemdCgroupFiles.cs",
+      "sha256": "daeb3e6ec5f37e1d53724ac54c4b8bc65b7a32a4636881ca5af9345303d5658e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/NeutralTerminalLaunch.cs",
+      "sha256": "327652cb6c5c4085e0c665aff68e135b1838210218bf301cba3aa9ebe12a56e0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "sha256": "524f05673fd4b4f890896e43c06ed46fb11170e5112abcb214e1acecaeae07df"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/PartialNativeTerminalSession.cs",
+      "sha256": "26fd5e7f39d3b910c8f07ed480c084205d0194e459df6c25e8302da8a00e0998"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "sha256": "46b141084f32f109d9bf921a4f551c0ccd3bae4d557b4ec77d5f649bca07c34b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SdBusScopeCodec.cs",
+      "sha256": "8c18e7739c4f13397914e6060b73bd6c87d98a30c1bc094d99c9e1dd7d09fff1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdCgroupObservation.cs",
+      "sha256": "0b4243729b0eda83c587ecc68f3508933b6c8eb7b9824e5f25c5005620b77b7b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdCgroupSource.cs",
+      "sha256": "58e721520b8b6c4754138d34bcedd6f5a007992f5188795dc388a8f8885c8ec5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdOwnedTerminalSession.cs",
+      "sha256": "c1b902543b297cdefdcd3e9d32047eb124531e7055dbd62e121a0a864679f91e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdScopeContracts.cs",
+      "sha256": "8e94176cce17c735bd55d8224bd894a85fd8e3ded6151103890b5955f5cb81f1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdSdBusTransport.cs",
+      "sha256": "e347e655701605376353f8ff2caff2898d6d40f490dbada556b694758973bd07"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdUserBus.cs",
+      "sha256": "89ae5b8ac08556ec8ee5716a91e4410b8161783ac5eee964244b5f4931c50d59"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdUserScopeOwner.cs",
+      "sha256": "1a2d1750e3fb08902c50652867a44d3a1caf977979ca72973000131a2582d31c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservation.cs",
+      "sha256": "f06d6f533b1e237f905e76ac21e3dec01803ff154e669f7250a7b24b5a5cff6a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
+      "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmTreatmentRouteDraft.cs",
+      "sha256": "c8bfb59192d8969f7d2589d6ea33e12a80e8e2477f71c28211c7b9551b4d7e6e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/ActorMaterializationRepairPreservationGuard.cs",
+      "sha256": "8e29dbce0a4f4fa9c74afc28974ada3823b695f527e30c51f2a81d0057152eb3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/AfterlifeRealmAuthorityContract.cs",
+      "sha256": "100cd7d703c7204a11282fd0328ff986d5a7edbbd72ed297a2b10df523b0f006"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.SpiritualContinuation.cs",
+      "sha256": "2d338f219e79ca34b470730ba2705a7d9473938e8923f4fda59900c8e5a4620d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs",
+      "sha256": "da5c325211cd932a5cf6aa1663271410e343c80cb1ab24c909c6e5b736859c20"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditEventIdGenerator.cs",
+      "sha256": "d86ecfec2c6f412e9c0f7828ccef2ab9b98de6a6484eda3f08c13680af785437"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+      "sha256": "d802d7e01092b3fdfa8995f569d97268e02933167d3b303760821ef7cc74db0e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "sha256": "fdc63764d17b50c37477c900b9a8fea0c97ec7eaaab84b1a25c0703dacd2a7a1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "sha256": "9bd7db2044c2e23c76a24e76ce52950ee4e331597f0ca87ec82ac80fba0366b2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+      "sha256": "262b9f8e27639fd791e4a60ee32cadf9e5fc66e71a24cab2daf183197989e265"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerContractValidator.cs",
+      "sha256": "2a1ed15b35058beb8c3415dce783e0e551f0be211bf6ff69a451b694e9eef472"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDispatchAdmission.cs",
+      "sha256": "92d8c35eb7f1977a55252b294b1658cbec83251feee14a36e370eb11f464ee70"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
+      "sha256": "ae6af3a0854ba562a10c5efc4c056a6ff809976b7f458782fe9b1472c8d9d7cb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs",
+      "sha256": "f98dff889c7ef1c63aa74ffe4838f10a66075623402f4cb5e2112eeefa0f5cb2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
+      "sha256": "8423cf82b8d7c844f43b5e5964df69b6ec079526379ed1056cd388bf780d2b56"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs",
+      "sha256": "e8d62a1d41a2ebdb8c800e4b903b592353bfeadd5c6183b80875cb06f2ce7f01"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerJson.cs",
+      "sha256": "f33387bea8124a10ab220d09e2e0b29adbc9d3a7af1a56fd62370efa5e6e1c6a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs",
+      "sha256": "16331789f5a39b4c01cb1584f61266b698fea67ed5348398fc710885d8747ba4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeDescriptors.cs",
+      "sha256": "59540c43658b8a079ae842eb252196ad3878c3912a3726a4a6b2c1a1f8a62160"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+      "sha256": "9709b5558b66d87a5e8f7914aacc2078eb6b57d0f670223f14cab69e741390b6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeObservationFault.cs",
+      "sha256": "1b424a44e7cd6e465714ecd5ae0f8d3b5a027027078b5ce869cae88fc3902300"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePackage.cs",
+      "sha256": "20fcd945a355ab36c09ea1aecc7c3438a2eaa93fe65fe73b4eab1c0d5525a9c4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePoolAdmission.cs",
+      "sha256": "e72723e9756778f745683dfcd5a38956a155289cc5cfe00debec2e7ded8b3f53"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerOwnedLaunch.cs",
+      "sha256": "632fd3b046ff0732351341e78f49b2af5334766f69169e6d2e367e50b408ccac"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "sha256": "eec1069daa3b96d482441caaa90d67ec6b94a786d74ff635f31d9781fa3f7413"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs",
+      "sha256": "91527d69d2ec77494aba09fbf06c3c719d156e9b108dd6fb89a16052c6e09d29"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs",
+      "sha256": "8bd8b3103b6c09f2dd375480d910ca8515018c291963681901edd7896e0fa58c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalInboxService.cs",
+      "sha256": "fc607a6bc8d2f7ed6aa6917b7869e05bd632a9da8f65cc8dfebb931644afe08b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs",
+      "sha256": "2ebd23fac2b0a375b8a8a364addae309938c0a23efd7394e81b50146e38436b8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs",
+      "sha256": "28c5e41f2f5d4773acab418391228c503dda8ecf83e4752830610401633c4f26"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs",
+      "sha256": "e197b63015df2f185fa090497f0bc9e78c983ddcbcb0f33d293827d92022a030"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+      "sha256": "38815d9a3925d781b9b3b8975e24f90b56009d6ebe781b36cd07c9bfb18c0ff2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.Live.cs",
+      "sha256": "7cb48318758a847e606590c5f98448be855478c952526214c5e0bf29955584a9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs",
+      "sha256": "78323e87cade8ccc5c27871783cacac6cd086bd235f88883f888f0cdcf91c610"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedgerCodec.cs",
+      "sha256": "9be3446206a21e618662ccec4ef1f0948d5cbb46dead257f05a5b63678b10f0f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecord.cs",
+      "sha256": "915adb12c606de413d22db64244a7fa2358b8881671bcb9a4faf887bdbad153d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs",
+      "sha256": "6084fea6d064d4856e2d866f237631fa6a1bb8ca326e60c193ca4e506b95fec7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerSyntheticBundlePublication.cs",
+      "sha256": "d6552bef4445890e8f26c40c942fa16077afb4cda7aa91ad18b86fba51c6a0b0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs",
+      "sha256": "4b31c7f2ac645c299b3050f0f89e01dcfa8fcfbec25d3d1dc76d1ab4e1a6d89e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "sha256": "7d61cd430af76ba491f5c3aed1236ae35092eda599f7054d38cb4a6e66312853"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs",
+      "sha256": "2960a8393c651768896bee1867aa971dff40c4d33000320b0cfb9454e3086056"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/MortalCharacteristicAuthorityContract.cs",
+      "sha256": "9702e39dd5b48c585d27f600a167a91b24452684e84180f34afc6d892f708973"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/NativeHeldTerminalPidfd.cs",
+      "sha256": "f28605ce42ef70daf610ff24c27a1a9c3d12b6d08a8e38429c4c30ea4ff61e91"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "sha256": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianAbodeOfferingState.cs",
+      "sha256": "94caa7d66133344bb088050ce87f5cd1815e72b19109bf21446b918392803db4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs",
+      "sha256": "4c7bcdb716281e961b5882b10d1d378c5804bc52c2a7285f56ec1e329e80ebe7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianAbodeResidentState.cs",
+      "sha256": "84ed91efea8eb31538cac667100a99f70aab2eba2f86d5f3153022796544bc42"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+      "sha256": "4bb3f34de7dc2341cf7c7481a5787158b557085f091571f726be8d0963f113b5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianDomainDisplay.cs",
+      "sha256": "9e3dda944f9790c94432c5b8e0c75d0d8ce490266f70ab2064554655802f3b98"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianGachaChargeRules.cs",
+      "sha256": "10031d54f86c8e9bcb6b594056f74081a0e59fe8c5b87496f682bd9bed3e9e89"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianPolicyContracts.cs",
+      "sha256": "2be228ffd895e11dcfe28b8c4f05905a47d638f4fccd2d960f8baa4348245c0f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianPowerEventState.cs",
+      "sha256": "7d0d022dcdb70de607368725bb0388c6d80145d2522a67bb73479355339f87ab"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianProjectState.cs",
+      "sha256": "b7b776abc6535f8a78e041638a87864d655f8c72238c57b0b3f0e26679d5c75b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianSocialJournalState.cs",
+      "sha256": "9f23a7b366bfb3f6f23a8bac2bf7601f377bdeeb437dc50223cc33f382cbdf60"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianThoughtJournalState.cs",
+      "sha256": "fbe99d062748126c1aeff7ffdc6aa1bef74fab3e4059cbcc1740418674736da7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
+      "sha256": "5b69b4a71660bd9bcc899b6b184aaccbfa877e0c325db5e9a58b738a22822b3d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianTradeService.cs",
+      "sha256": "d945a4dc48139278ba57cca15946c46a9389357760bc8c1980b154743028e51d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ImageService.cs",
+      "sha256": "152f7ae6afc901f74cbdfad26221fd9ad79e0275f783795650b390cefbf744a9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/InventoryEquipmentService.cs",
+      "sha256": "3d80c8ab26464ee3eddb06cce4a8982807dc0c9e4447e493d28ebe40a22924e5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/InventoryManagementService.cs",
+      "sha256": "4baf0e4f676ccbba92c6ec098c5d39733719cdad6a0400a1ec2699dee0ff2749"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LifeEvaluationRewardAnalyzer.cs",
+      "sha256": "102de6c9380c652c060f245323e88626d9e147774c37ea0d6cf1226ff0f1d9bb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LinuxClipboardReaderIdentity.cs",
+      "sha256": "bd98d3bcb2dfca55412e2ee90d43ad68de11a2ec6c7196e78975465702d1b927"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationCli.cs",
+      "sha256": "05eeddaf25a8c20ffe56d4b1c0589259ead40dd401db6d247521d68d2acb3d78"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "sha256": "528027b576914c12337385bb50176524feb5286a38ac697b74538333add57509"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LocalInteractionScopeService.cs",
+      "sha256": "31d64ce7d40d3171a56ddfabbe87879c5ca2e62b763e19caa8d42b49104be09a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LocalMapViewService.cs",
+      "sha256": "44324de9c14437917fe08b02a7fb18380264abe37dfd8f7d0750b55b9f9cc55e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LocalMapViewerAssets.cs",
+      "sha256": "eb6fe9e134f8c84c353fa3633e7aae9a1203eef6106662446fc0ef4aacaba786"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LocalMediaService.cs",
+      "sha256": "a9c5f3f277c00b1839b50b60d5655f64b16838d34f442ab0cb0717d4b2ef9ca9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LocalUiSessionLockService.cs",
+      "sha256": "e5e209c5f2e95580f467cb0159bde339d01710ad7239cd8f9690f4e03f1cc7ac"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MathAssistantContractState.cs",
+      "sha256": "f3e31d24d452174748a322d0799d1922e2bcd9948f24c372ecf3e5b91e4bf4b1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MathAssistantService.cs",
+      "sha256": "af39631ffb98afcc80b95bdb264f106365d71790cb940f2de7d538b6dcec8a99"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalActorAcceptedTurnAuthority.cs",
+      "sha256": "bacb3c8586fe1eec6554b9ace8ae71928a6ab5d2c2381b425b8d6485fd3d8487"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalBootstrapLocationScaffold.cs",
+      "sha256": "ad6815ed71f2860465a8a921e5db139fdd29a971506db0d3e8e0282a6b787774"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalBootstrapStateBuilder.cs",
+      "sha256": "128074197039ebaa28444713dc5ab1fcda9d534ea41550926ee2d26aba41d3c4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemAcceptedEffectSourceAuthority.cs",
+      "sha256": "46ef4f16f2c02f3fa3e5c457a88e6fd3f7f2e78a3650468e10aae8dc86d50a4a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemAcceptedTransferCatalog.cs",
+      "sha256": "5204ff87f59ddc164d716d86a38fde19baa32cdcfeda77cc1b2dadc3b8f956bd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs",
+      "sha256": "e0d9d290889eb598d1568b867a1514c141a66a4be17e1c72036f8d9647be3928"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemCarrierCatalog.cs",
+      "sha256": "2dbe92eee3619c788008dfa1300c34fdf92a5f56879370400ccb59472dd81784"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemConsumptionPlanner.cs",
+      "sha256": "197612d2379fa30ce5518c6febab7797b5f5f39b7ca4d3f068fd013b773d97cb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemEquipmentAuthority.cs",
+      "sha256": "d5ee0f560193375c1cc0a9678db0994f8616a75e9e59486bcc7812ebe9003a3e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemIdentityFactory.cs",
+      "sha256": "64497d26c26e4814c0c8588f08d88674a9829ea0ef752c190bafd809b6093543"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemIdentityState.cs",
+      "sha256": "50034ba7d600ea21e8da0c34c878719b6cdfc2bb28fb532fe869e3094fd801d2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemLocalActionPolicy.cs",
+      "sha256": "be95b6265f9eda29889fc598268244d3bb430411adfee40db6d383fb77654d81"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemMaterializationContract.cs",
+      "sha256": "726e6fea660ba20b78dcafc4f35e363d2c42220772bb3b9cce2542e52ce8aced"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemNpcMirrorPolicy.cs",
+      "sha256": "0dbdfd0e969b48cc58746102d08a4b57866af3b40d20b1c768cf4224d046156a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemNpcTradeTailPolicy.cs",
+      "sha256": "66a77e4608ea2756b4a1b0f05a95b86d19874f2964f2885f6d568554ef4cd9c8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemOwnedResourceConsumptionPlanner.cs",
+      "sha256": "194e6fea3bf06ca75f12122d51fd5dc7ac40c033e6de30c53fe549dd86156281"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemPlayerFailureMessages.cs",
+      "sha256": "b86affffd31ec16e93b7721caeedd30a9957a642c5337c9a64f95d3bcc1bc9e4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemProjectionRootParser.cs",
+      "sha256": "cb74aeab2690931a460dbfc6ce3bc8ff175cc84d480fdfafa72f98dd0ac86c83"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemPublicationBaselinePlanner.cs",
+      "sha256": "6193279e3aafd1f191ed1c0bfe817e944663aa7af13ef6f5ba83b0051896b532"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemPublicationTailTransforms.cs",
+      "sha256": "6e494b092bbe6d0098d737d4b9f6e6c97725bddad9c9ce4783a01ac2b90e235a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemRepairPacketBuilder.cs",
+      "sha256": "7fd2a3e3ae98f9d5bebae6a31cbfb95625a26733e105b870a7789a6f46e9f741"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemRouteAuthorityCatalog.cs",
+      "sha256": "e7ea88ed3f4be2376a23e499e5ed4266f14f6adb49ce91147b6956ddf77b29fc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemTransferPlanner.cs",
+      "sha256": "6a137734bcb32bc9f3f971917e3f2478ffeabd8045af15fa3da17d74b86bff2f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemTransitionWriter.Resources.cs",
+      "sha256": "05825f159f7354b1313d1f5e452e6bdb6f5f650a49476dd5b79854a1d7309347"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemTransitionWriter.Stacks.cs",
+      "sha256": "f4880d93779d24b8eb06a14c5ec759b70b2b853e5a8d758aec6520d921aa7aa9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemTransitionWriter.cs",
+      "sha256": "2dabd7f84d0eec935ecd40aa245144e807864350f9899c7a878537d5c6426f6b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationAcceptedTurnPlan.cs",
+      "sha256": "33943c68b3c51f5b3fd37b804723cacb923804e31c64057b65d2ad30e4e5a9c8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationAcceptedTurnPlanCache.cs",
+      "sha256": "54499ad0cd1b67a59a4ebce2acba01240bc938edca1d5499b4c2f65061215ee0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationAcceptedTurnPlanner.GovernedCommands.cs",
+      "sha256": "9be9aad8ea34f6d047da1359842b2d3de8f74bfd8b6b4c1cfcf89beb8ea6ea92"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationAcceptedTurnPlanner.cs",
+      "sha256": "ae0ba04e0cdc3a495e8be581ef20f7547484038814a8eb6cbaa78d03f2bef48b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationActiveThreatContract.cs",
+      "sha256": "591a0be2fa16d538e041456762e33b6df757d1c3cc7f0639175f7a672ebd35f1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationCompanionAuthority.cs",
+      "sha256": "088a10f05dc5d47595d00450d773f039b47966630a9f80a8965b550134f597e5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationCustomStateContract.cs",
+      "sha256": "c4477a0af2e280f734b63a09a59ce5a74a2975e216ae419cf6173e641a97aadd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationIdentityState.cs",
+      "sha256": "ccfb17a09fd2591179e502fe8b0cda3fc10f74b6e50d7a593feae78abe35c19c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationMaterializationContract.cs",
+      "sha256": "c0ecbe3e13f82ee28038b897045856b8a5c1d0b75167fe31dc121c8945e9529f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationPlayerProjection.cs",
+      "sha256": "3d5b050f56865ac01483970dce83122f3d3719c8e62490bed1413fb2150c49a8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationRepairPacketBuilder.cs",
+      "sha256": "fd300d379d9216590ba199b1cb98c675ebc36973dee0327310574b2d563f6298"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationStorageContentsState.cs",
+      "sha256": "27d01910e64b2e8e13cfed19e2fce7ffbadaba7bbc78bfed71f415a07eff2a25"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalLocationStorageMetadataContract.cs",
+      "sha256": "796606104da242e10e32300fe3114cc8a51a820b22d7af5af1af1d7c757914f1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalResourceOwnerComposer.cs",
+      "sha256": "59394d795227a633e35fa11f61a7f0fe640cc15d8c8d79f596ae828b97a5bb37"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundCanonicalAnchorPlan.cs",
+      "sha256": "740d2c418a9fb588ee98aa42e58089605755a35b77b8f00ef3493cc9f88e5ef5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundCourseModeAuthority.cs",
+      "sha256": "67078014adb101bee09beda026625e8d9bc40ef80c921fe71633d887faea8bff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundCriticalReactionPublicationPlanner.cs",
+      "sha256": "43523afc8d804143963c26883275df45a1b8c153e75e8ce2cfa851510941ca51"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundCriticalReactionReservationRegistry.cs",
+      "sha256": "7fc34c2ff251c0dea11ce77c55c2616eda3c82b82f271b466b5a0848fc7d76b9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundDeteriorationPolicyContract.cs",
+      "sha256": "79b9c6db8aceb86e44c3be936b2ba7cc4a4fa039be47028759bea7e599a1296f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundGameTimeAuthority.cs",
+      "sha256": "dcb2e8fec93034a1730f07214b22eb48a577e9d6d6e2cf1d271ae673e442ebd5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOccurrenceProducer.cs",
+      "sha256": "fb47dc0aeb162712d5852b5a6db586434e450830718986c36b6b452f138f5c4d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOccurrenceState.cs",
+      "sha256": "8429906352687b5e54b2d85b620187d9083778303d497de3aa811648395e5e9d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+      "sha256": "e9ef8b932a24c426d7a1af0c2deef86608c7714a51edca92fc00a3a3c5a08078"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityReceiptState.cs",
+      "sha256": "73ee8c2837d461b5abcece31db0bac03a34f20a6c025140bb279a39a14ba2fa1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityValidationAuthority.cs",
+      "sha256": "2cc7557567726fd0c02dfcd6e504c43aa99944453569d3258391fa1dcd192daa"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.FreshValidation.cs",
+      "sha256": "da1fc4f8ae180a03c2635f7250deecd0836f092fb5f9aa38d95cedaf18752be6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.cs",
+      "sha256": "90d54272b838d7f5d676c724741e8dd4f4e18e2c2484d91a863f2cf9e50d78b3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundProcedureClaimRecoveryCoordinator.cs",
+      "sha256": "491f7f5ca358cda396cdbe435f1ae3b2cb0b5afa20656327534328f88b0c6016"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundProcedureClaimRecoveryResult.cs",
+      "sha256": "7cb77eed598c20a379e5efb92d90c779f37feaa5b0f1579bad8457831407f119"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundProcedureDiceReservationRegistry.cs",
+      "sha256": "6154af27d946d4193eeb63992a8593d634d6f3a35e37842033a6da9f4b3e989b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundRecoveryAcceptedPlanComposer.cs",
+      "sha256": "a62f20a83f6e745830ea6d746e960be67891d24adcd85df8e7d415ca1586ecfa"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundRecoveryAuthoringAuthority.cs",
+      "sha256": "7f3ff828fe8772b3e035d1a0b6100db935ad10a8457133a5123bb539c9c0a4bf"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundRecoveryPersistence.Math.cs",
+      "sha256": "a12a81bdb05386ec21dafd234d5fe2aeec7f1d2cf289e5bf1e932dd29316cc3b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundRecoveryPersistence.cs",
+      "sha256": "d04e358fb557e217d9e1a4506952c23b32fa3a01ec6e1853aed637559c06f9c6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs",
+      "sha256": "42392b89ee853c57fa217d28f1c46be11e299c5235ddeb1da169a4230f597936"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundRecoveryProgressProgram.cs",
+      "sha256": "006c568f5ac3fecb928eb12a348e89e962e9a6552357eb3914d523ee802d26e0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentAcceptedCanonicalProjection.cs",
+      "sha256": "70376d3dc8c44efea47298e869cd6062d4ea139589d836a39a2af7cdc16e1a1a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.cs",
+      "sha256": "2c02b391f1cef80e115bc66f2d0c2ada92bc3d694403912bee47b9beb556f535"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs",
+      "sha256": "141f571e9020841ac013c9fb3a6e66fb6149703e1fc49f0e303be588c7772f74"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs",
+      "sha256": "bc41999747c497088f03333bb345edf0478d760f3bdbf4bc9a06073a8fa4f551"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentCapabilityContract.cs",
+      "sha256": "d71c262b0d87350e89bffd4074448f9d8648974865c0e955d64e7cf6b6ffac57"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentContract.GmDraftWriting.cs",
+      "sha256": "be4322fb653d0e25e18552aa778ecf352a3787b06d703c752dc1e621028f1bcb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentContract.GmDrafts.cs",
+      "sha256": "11e9c2eba650b710df49d53e31f9570d7333e8b902b09f995a7d0b48ed99dca8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentContract.MemberShapes.cs",
+      "sha256": "6f2141dd3ac18ac201a80b678f1296b163cc99987c35d00e78a1c099f2330f52"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentContract.RouteWriting.cs",
+      "sha256": "0590ae4edd48814929ca7fa0ac635cd9b329c935a562e0d0e78cf60cebc3f88b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentContract.WoundGraph.cs",
+      "sha256": "3af22aea3c86b97ccfade9289c821a3e49667368e2b91da0931a0bcfa0636210"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentContract.cs",
+      "sha256": "2f7f24f8a5f9b256da8fd67edf4013949147812a781917628671589b96a13060"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentDetachedSealValidator.cs",
+      "sha256": "f9c389fe9c4a3390eda48df616e18366b1be08f3d853622a81e97ba44836816b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentDeteriorationPreparation.cs",
+      "sha256": "e6b8adf547925506223ca4defbab3d148618e77c5fb248d94abd79b1f2c734e5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentFreshAuthorityValidator.cs",
+      "sha256": "ab08e60508cd7fecced655f0439691f1c74559e19984500fdd675ee89884a71c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentItemOwnerSuccessor.cs",
+      "sha256": "4a98eb94cef5b7c663ea8e02db78ccd0ed0ad2a8a4c71caf35402b525c1a8ca5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.Equality.cs",
+      "sha256": "278d93c9aa9d85684a85437d0db4cf4fd1b4499630f88e7f71728b65b3e11210"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.Proof.cs",
+      "sha256": "7be7995de5f9f06baffd999c268c1f38dc41114a57b06c5456cdd78d1230b59c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.Recomposition.cs",
+      "sha256": "2c5f390bf01a07e0c53b598ee7ec35159e2e492ffa233fa4be6d09a5ef81b3f6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.ResourceProof.cs",
+      "sha256": "763a60659ff8f0226fffb6729825bce5a79d238aacc301a798e54e01cf4e1f75"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.cs",
+      "sha256": "ac78ec2412725b80fd21305de23c5c0083f170532d7272f51e1efe22fe57cbb8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentMemberFingerprint.cs",
+      "sha256": "6f49b36f65eaf4bb425fa7181f44d56e9f29fc4e1425327acce2676dbfef7a5b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentModel.cs",
+      "sha256": "54cc45f842122a6cb6a2defa20f1a2b4e34bc902d19571355326a532d9a787ab"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.Course.cs",
+      "sha256": "8c06f23975b0292bc2704c0f70cd66522939a9bf942eb4e25fa6d5b11eb11e22"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.cs",
+      "sha256": "f902d242ef3c7f88c0ece94d22b50d8e610edcf6cba8fbd6f04584c0025393ec"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "sha256": "ca7b36dd5904e02d42de25b365d0fea597e9c7eee3651960d0e32184682070ef"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPlanner.Alternative.cs",
+      "sha256": "b10d16f6efd1d15eb2c9cff51b4159b99b18ced572f30252b024bcba3bef68f0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPlanner.Diagnosis.cs",
+      "sha256": "f2451383f1fa5e029e7876d8b34e593d67e3ac5a2f631582be153a8cd8650367"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPlanner.Requests.cs",
+      "sha256": "370e4f5d808b9cd03973db0e1983b43c47c5c982a4bc73003cad4a761cdccc4a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPlanner.cs",
+      "sha256": "dd932a094af34a5f0b5d75d27f73d0cb1df26787d0e61f41cefd9face1ae625a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPolicyGraphProjection.cs",
+      "sha256": "7e909cea056f1e869e7349217ef0dc1472f74a849bf887160ba8195823785616"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPublicationTakeReceipt.cs",
+      "sha256": "cd4a90670295cf55b7ef128ee47fd6c38891e6ae2a5b1dbb5768d46d73ec3143"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentReceipt.cs",
+      "sha256": "b2c28ebc896ffce6eaf042c25d7e43f10694815a53e150df8f07c24d78fe4458"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentRequirementAuthorityBundle.cs",
+      "sha256": "d49ce1f952b1137a5076385f187cf6edc4efe827fd03a27adf3a50224919a30e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResolver.Semantics.cs",
+      "sha256": "97e2b56bb801ccda9168ffea23ad908befe633eb8dd175e2fc5498ffd24c6ff8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResolver.cs",
+      "sha256": "ec91fc271dc671f69bd6e57dea432deff954a79b88f78aa2dd3dbf75427025ef"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs",
+      "sha256": "a4521aac38e0855dcd6c15171e5f23d72271c7df1a12a7704656898914056718"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublication.cs",
+      "sha256": "7c231e735fb25811120f9600de36e4e1e31f5a7572adcd6535848a68062accd8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+      "sha256": "9b00a0b24a46b10f9f3d1501a34a3245725f196e40342353930da7c0e2a1ff19"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourceReservationRegistry.cs",
+      "sha256": "9bf40c73b2cdc08e2f913d841ff95bb45313f6a30d938546bad38c2a47d3ecac"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentRouteFingerprint.cs",
+      "sha256": "bbd13f4d8f1c5e8956d17aadb73ec8725aebe646e7a7ff3108bfd3c1bb685509"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentSceneAuthorityContract.cs",
+      "sha256": "6f31209caa4d045d37e220f8db3193c8be5bef8ae9130733fa2c7751e994c7ec"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentSeverityReductionPlanner.cs",
+      "sha256": "221d736e327036c137ca403e61eaa8f02b981c8ebf9f04f2c0cc83861a8d0317"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentSeverityRematerializationPlanner.cs",
+      "sha256": "b32737fc2ccd28170ce3b52c9f85886341ff90f88d9559df6d2d105add97fe41"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentWorkingGraphProjection.cs",
+      "sha256": "5547fbf0c30630818852b9d130d395b2833a9704f25618f8360580266b70b1b8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentWorkingWoundSimulator.cs",
+      "sha256": "a3d96584fdad45c33bf2173be37fa74166f2166d8cc386cf44a42b149a574666"
+    },
+    {
+      "path": "BookOfEternityClient/Services/NpcCoreChangesContract.cs",
+      "sha256": "c7bcd5987b3b337fc2c34f1b643a19e52d6cad649516f8e45c704ef430f36969"
+    },
+    {
+      "path": "BookOfEternityClient/Services/NpcInteractionJournalState.cs",
+      "sha256": "7f5a4a34973bc823e44852fa9382d8eb3a265e5c3e57ef7658b057db80f599a4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/NpcTradeRequestState.cs",
+      "sha256": "24304eb1d54546701601e77c94267a639f324073553c907f15701682d9738c49"
+    },
+    {
+      "path": "BookOfEternityClient/Services/NpcTradeService.Data.cs",
+      "sha256": "f1e9c6141476cc4ff815badccb7f6ccd29f84f9e7cac0aa6b96c631119d3fbe4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/NpcTradeService.cs",
+      "sha256": "c7f569a8e7e5c2b0732d935e2642fa5b6beb8f3efa252c3b3ebc67469025ba57"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "sha256": "6b924fe31e3f31a610496594cee3e916dc282657061f8a8a0d10590fc91ac80a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "sha256": "ae7afcfddf00b69e4a6dc77fedf456f20213ed9b4436e6391c8a74ee03b584d5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PlayerGuardianFoundationState.cs",
+      "sha256": "0bbf9e8d3d810cebf3e302a0d9cdc30e836c697b2b32e5f16f07a382a728bb8d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "sha256": "cae67d35831c5cd67df85fc049657fb51ed400ba1749b984f0e4c6331afbeaf9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs",
+      "sha256": "5dd7ed260a0b83a9c72d532ef28d91af7b6c63577ba77d6cb59ee1a000e3557a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+      "sha256": "c9bd53f0ad72d1135cbe630b44150793a29c4dabe8a2e3cda41b90174a2e4894"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteDeferredEffectResolutionTransport.cs",
+      "sha256": "00978d30571e9c3d2eb6e2155c3ee82f4099a3bdd07361625f51dbc23440dabb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteKeyInput.cs",
+      "sha256": "af370cd6e335fad0d7353a07adfe60e7d221e2c68c66cfc6406a2d1ab7caf33d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.AgentConsole.cs",
+      "sha256": "c431577c2400369f7b2c9a4344f55497eb8a639110750867b0e0e9ce2f8d41ba"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.Daren.cs",
+      "sha256": "612a62208d29336372afb396cfcc9d126990aea9156beb994bb49aaddfc9249c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.Practice.cs",
+      "sha256": "d76b4042d4d27e5a8b4a653923f01823fe51d7e07e3de5d6c017f13759f8b310"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "sha256": "5a5fc696e72df7b4c0970eab6a5b371918f749a94ad915485c1356cd8484ceba"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteTerminalResourceOutcome.cs",
+      "sha256": "4508d48fc7151beb935d80aa503ec8c867ed7b297daf3daaced8b0d59bb08b93"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QuestRewardAuthority.cs",
+      "sha256": "0b6826b260532cfd7d65ef901a203e6a77f232ad62088455f164692bbe34e34b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ReadableInventoryDocumentAuthority.cs",
+      "sha256": "d781c93a0d39740a5375b364a52babc3f7678998d1f86fd0eeb6a73287754f03"
+    },
+    {
+      "path": "BookOfEternityClient/Services/RealmSegregationAutoRollbackService.cs",
+      "sha256": "da6fbd7ad4792d9fd7a53f3bc4d9adcbd7e3c943850773ce6f91182997629289"
+    },
+    {
+      "path": "BookOfEternityClient/Services/RealmSemantics.cs",
+      "sha256": "c1d1c78c492a1ef82d2c7138b4114503792bde2f95dbe40b7fbfc07f1f10ea5f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs",
+      "sha256": "ab93eb62616d98b19666f1a1c9bdb89ab03a034c229d8b174bd65ca210b61a60"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceAuthorityWorkMeter.cs",
+      "sha256": "c95457337ac345ed153baf8b346fd2a9466637ce6f059ad147c17093cb90b0b7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceBootstrapStateBuilder.cs",
+      "sha256": "67e824df0d6f0e0ec890d52a969e9291d433bab7c01ab51c2afd3c6c207eb433"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceCapacityFormulaCatalog.cs",
+      "sha256": "789e15a0548360d4ac64e43d53b505844dd677f2f005a6e590096b46f88019e4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceDefinitionCatalog.cs",
+      "sha256": "308e332b2b608dc0f6b3754b4d8fea0a8609cbd058155f5d6fb7b253e1ccd726"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceHistoryState.cs",
+      "sha256": "9ca92a9ea5765f340a33ca4d53eb7c376ea3b99dd16790826a4d25ca1798bcba"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceHistoryWorkingSet.cs",
+      "sha256": "7455611c73e2b05f1b426a31efdd6cc212f712656c43ea51757a8f5ddc5e8506"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceMaterializationContract.cs",
+      "sha256": "53b3bd3a975636808d0c1a7c099c784e2d155cf6d501a9db24cf1f8d73ad9c7a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceMutationReducer.cs",
+      "sha256": "319583ac152c9fc368327cc26fcfbce3679e43ff3e8b2a0893e56d8821c5806e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceMutationSourceCatalog.cs",
+      "sha256": "a8d1963104ca7fbef01ba5ad67335af1df6be435e3b0cf4d164c10b88004fc6a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceOwnerAuthority.cs",
+      "sha256": "1ddda2064fa62f38954c48d34135601a9b7ce30af42b5fe5a7fff156a204f779"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceOwnerComposition.cs",
+      "sha256": "a52efa59fb6e51a3ad36e2d9f3e551fdacd0de8fa584cf1c9f9a071f114ed06d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceOwnerMaterializationPlanner.cs",
+      "sha256": "b0e33a7994a38afcad07f9dcc1d9da4ef09cb3326a897b7354d1013085388312"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourcePendingResolutionState.cs",
+      "sha256": "35c7a124d7022d2c9839eb1e5c50d783b772aa2bdf4fe18ec72dc09816caf204"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourcePlayerFailureMessages.cs",
+      "sha256": "2bfccee1b6de68df7da0dfb007328fe1c08471dcc88d1381c85500b3d3f7906a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceProjectionService.cs",
+      "sha256": "5348e8f1115771b7bb848af94f4fc292188ab91f8cd3e221bf4bb04e6f723521"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceRegisteredSystemOutcomeAdapter.cs",
+      "sha256": "2a39f3a4aef4950f060df574cff4bedac276c37ca6544f95b3fc7f45495a49c9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceRepairPacketBuilder.cs",
+      "sha256": "00d1e9b3142b44ba834fca729ef7d44574e3ff8c8288d8132cd5dfc4dcf88bb9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceStateContract.cs",
+      "sha256": "102e49de3e16953d2316b1404f57902b72aded308812574f063f7563a98ec645"
+    },
+    {
+      "path": "BookOfEternityClient/Services/RivalSoulArcService.cs",
+      "sha256": "9428b0af42fb32218ed49e1455d25d9878b76dd29820f8c2bffedeffd6f80f75"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "sha256": "e0fceb10f412b90fd07a696d55362c66da4272a730b6095a9f9e09e516861d2c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+      "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "sha256": "a88d3deb51e378beb24d2152b3cbff4dd0f885518af50668c3043ff0c8243251"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "sha256": "ae0907053fadc15b497bf44387893d623f33116de1ba65fbfd9f2127e63de40b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ScenarioCoreService.cs",
+      "sha256": "9c5a20e4db01dc66c6f38908af0f541611d6afc0e7fa6d239424b48d4f5f4088"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningAbodeState.FactionPoliticalMemory.cs",
+      "sha256": "0fb30efdfd32bf4d68a91984a8dcdd07559d99d9e685a7c3e1c70d8df139fcc4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningAbodeState.Gacha.cs",
+      "sha256": "dc58b9e08f6ba3e49eedd26440ed863675da95d0af56a1b964f3e7026f56364b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningAbodeState.Gameplay.cs",
+      "sha256": "40b4bbbed214a25fac9db938d43da32ed1b6eb4322c1a8c8a95696cdd5e9dd47"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningAbodeState.TradeAndForge.cs",
+      "sha256": "9415d4eeb4f77829a5bdf3f944479d15f89d3ad76bdaca8452639cc1054a2b52"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningAbodeState.Treasury.cs",
+      "sha256": "eaeb1a199079a697dee1aad48962af509d3b482c72d19129da9eb5a4cfca1817"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningAbodeState.cs",
+      "sha256": "940ed36904be677527cfb8d5fd714ba53f5a20ab7700b54407903907e6d19873"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningBlessingEffectState.cs",
+      "sha256": "c800dd307fab1a953e0bb3c26f9eee68a40c688afbebecab02b0a81f43c753d5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningBlessingRerollAllocationContract.cs",
+      "sha256": "1540dcf8613380ec55e52a56976a75a82661b1a47b662ed15bbfb9cf0e22c397"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningBlessingRerollResourceService.cs",
+      "sha256": "dee415706cf7084f8acbf6f5555aaa2ddfc603590ca217f45e1302e4d8150173"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningCoreActionRequestState.cs",
+      "sha256": "39f804c0ccd0681d18e6d4022702efbce1c307f0f107401a264e86685b9a6374"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningFactionRequestState.cs",
+      "sha256": "5d6f11eac11a25fec640f5377fa31701f72b3d5686bc16876ec038442ff98dc1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningReturnCycleResourcePlanner.cs",
+      "sha256": "73ad479938150961358459436b7e923f8f2a02a2e4a12d6e86c14cb4095d0cfe"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs",
+      "sha256": "d4b25a9d4b0f3eb6b9407479d9a7b9252f832c5aded7d49e1bfdd528545a6e98"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
+      "sha256": "d24fc24c1caf0e8c84088db3ab507bc9e34537a97ee4e42dc3f7f0ae2e1a992e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningTradeService.cs",
+      "sha256": "54a57d9b216c1515080cba77e2d86136ed5005c3526986c9bb914025b2dd8855"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SoulIdentityService.cs",
+      "sha256": "67db0406d223f9b7efed2f2b10b80635408af0144550aa109fed5b4e89de5d26"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SoulRelicEquipmentService.cs",
+      "sha256": "aa8fa795c8120e27dc6cf05f43efacf3d29105cf089d1067bb05d1f8ab586b31"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SourceOfLightCapstoneState.cs",
+      "sha256": "e24f7a29b56c3342da93370e90d387555f63f7c6bc1476d63029fb6603778164"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualBindingTerminalControlCorrection.cs",
+      "sha256": "98aebf6ccb4934a9b8297a7f71de7bbb98d60982c209f05cfc5863ac2f7ed292"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualConflictDangerPolicy.cs",
+      "sha256": "65f340ba7f366bd1d1221da6eb95742042938aed81593460a28771962185e6b3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualHealingOutcomeMath.cs",
+      "sha256": "1750a2afdece34fa81bed9498f53bb2ccd2056851678b83e5b244e5027361a9b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualLiveWoundCompletion.cs",
+      "sha256": "3d112ba0aeae0e85b82f013bd80e26f45f5f0bb9018858e6ad015c83b7afb152"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs",
+      "sha256": "23ab7ee1c59825d38232c99d1bc5082f874b9a7cc46547345e4d8e628569e972"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundCandidateOwnerComposer.cs",
+      "sha256": "69ad06c93e59eaf8da61defef497f691fc186a18d90e7099ac8a69147f6b1ec0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundCaptureCheckpointState.cs",
+      "sha256": "cd0fb7b5eb34c2f6d60973ce2ee2c56c1c50aca2797438b9613b6c576a2b7eee"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundConflictContributionProjector.cs",
+      "sha256": "162bed571d588caf1d542dd3fbdb1c9dfe4564c7ddd8b50936d79578a2938d30"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundConflictInstanceState.cs",
+      "sha256": "f283fff1dd3c1aa04bed1da8ef4ea5ef577ce9444ef7ccfc257ed89be636b80a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundContinuationProtocol.cs",
+      "sha256": "7455208a4c86ece0b2344b80ce259f84a7f1c9844779bb2b994c2d031b6cde1f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundDecisionPendingState.cs",
+      "sha256": "6ffcaca917acc7ffba066ebc9440ee0fee08c230f869a3c0c140b82ebfb58dc7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.SourceOnly.cs",
+      "sha256": "e4e4c071d2522afee3940ef6a79e517b02c94abcfbfbc27bf9f824766db11851"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.cs",
+      "sha256": "723af8936a7bc5b47d7921817fdf3e937ed4c8d3ba4a7c4cdcb29f59a847338d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundDependentDraftPolicy.cs",
+      "sha256": "bfaf1a75ae9fddf64af4cba4da11a8d7426710bd4635cdb63c9764e33ef73599"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundEffectIdentityFactory.cs",
+      "sha256": "befcb5b8ef1f7b8a8dc92317be1c09386d1100eccd8ced897892fc3f497011c7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundFirstOfferInstanceResolver.cs",
+      "sha256": "e95752e226dd5b4703a658d4234c2119757cc540d6598820f9a3ecb1afda92da"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundLocationIdentityFactory.cs",
+      "sha256": "4a9174eaf7b3eb57771fb149ba4a992398a041d8ada4fb59e676fafe35bcb6f6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundOpportunityMath.cs",
+      "sha256": "9403a302ed63b2a7516704290d3c94e861322393975b02825c1b4acffed39fe3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.cs",
+      "sha256": "891dd804d226782d86cab7c7a81d739eaff2bb1366730d2e64913187549d7608"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundProjectionClock.Probes.cs",
+      "sha256": "1232a8af4bbc4bcb20d4c7fe03b9ee368e20ab0f8b685562d476f0f6eeabfd77"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundProjectionClock.Speculation.cs",
+      "sha256": "26f7cbce1bed5d19a134c4dd43ad18ba88ce9d99c606c52ee13ef6b667fb23a4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundProjectionClock.cs",
+      "sha256": "fb4bbbd69573d3ad1189c711a4b8757fac418242be3b0aee1644ac3a59d8b5ca"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundPublishedOutput.cs",
+      "sha256": "f4169038f880605de3b8cbae272461f9a5c7886a474f5751e17526c94d26507e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundRecoveryMath.cs",
+      "sha256": "552faebdd4cac3fd6f1b3084f7024d8f4c83ca900bed3f2d636285fede99e7bf"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundReplayJournal.Speculation.cs",
+      "sha256": "ffd3c9bd478a9545d38970cf19a68883d220e40f463a3d581a249f0999b3c8ef"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundReplayJournal.cs",
+      "sha256": "02d68814876efc6542b3bea96afd97809477d1e94c0268dfc52fa8aed406979a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundResourceIdentityFactory.Creation.cs",
+      "sha256": "a628ec5dbe633c971b2e20ca8fb165cec361fcb19dcbdd91eafbe1c8630e3b96"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundResourceIdentityFactory.cs",
+      "sha256": "a75c8c1b01e5497229325d444542c63a6e253e6ef4d0d36683b05c6a8c04a601"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundSourceEnvelope.cs",
+      "sha256": "9c53de9172c9dca1eace6645695368eb588a7d60c404af695904f2b6665c6e35"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs",
+      "sha256": "387ad17099ea70a81e2537d4dacb87355ec4fba516a07455d3b94772d3f80ded"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundStateJson.cs",
+      "sha256": "f7a6fbe2d5b9aa7ea361883d0f3e9ab06ebe443346f6eb51c4802ca9d2db3878"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundTurnEvidence.cs",
+      "sha256": "ba2f8e9c150a05528ca78d37266de5034253a67c647af1563836c0d1ab8da2bf"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundVehicleIdentityFactory.cs",
+      "sha256": "3c30c7cb7540c36540fc270ccc1a328ad4638dbbb0e9b31b631b052532b3b381"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StorageTransportMoveService.cs",
+      "sha256": "4159e270d5f5ecc1a7160729b5acf107d80f15c920d08ca3ba23e104ab0838e1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "sha256": "9f2980aa35b6306198e5ef87056005a3734927204924b8d96d24abf3728b419f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StructuredBonusCanonicalizer.cs",
+      "sha256": "0404c4f678a7e46bb82cbf55207ff85060f2645d6e6ace8b9370a35fccb434d0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SystemGuardianLibraryService.cs",
+      "sha256": "74cab4a0350770fcbeb1b1d783c3bca603bab7cb78660829df902e1c4be5f1a5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SystemModService.Prepared.cs",
+      "sha256": "43363825c8bde4e59cdf2238bbe3db41bdb51ff121faddec62dd9f6d20e68d57"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SystemModService.cs",
+      "sha256": "22de5a42acc8a6c419eb2d1273f61bcae43a4680159c50e601492d1073ece6e4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/TrainingRequestState.cs",
+      "sha256": "524b30a6c574b22c19274120e45d55683b3bed98163107c10e5a314f334f1df8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/TrainingService.cs",
+      "sha256": "a6926a8ca0b00a8d898ca9ecf7cc152359ab75b1fbe1ae490b43a54f4dd9bc9b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs",
+      "sha256": "b4b9af5aace2f47e65944835b5543f1b950bb12c34d34fcb112df264ae2ebc02"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "sha256": "10089c4b8d54747b6ae2048d3be840bd2a6a915cd0ce176554345c0888594bcd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ActorJournalCrossRefs.cs",
+      "sha256": "e5b1405ad21c193fc3ab7965d3e29e0dfd118886a6092349f46d12aca8239d35"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ActorJournals.cs",
+      "sha256": "7f54285b4dd3e6690dc97190fac9b1c338381e454174f557b201f1fd6b8efa0b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationBinding.cs",
+      "sha256": "22bf78161fc966a6c50cc8b7962a4105ac318c1542253ba09ef10caaf90dc0e5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationContinuity.cs",
+      "sha256": "fb0fea580480f4141029c33f42ab38fac92a1cf1eb98997547dda6900058a8af"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationTradeAuthority.cs",
+      "sha256": "85a69fe9c7ff6307b995b4255c3cf6cf704ceedfef6ab0e455a4bee113469fc3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeActiveThreats.cs",
+      "sha256": "4b2f950d3e30262c597f533ef5e1d016750e4435c7581cd3683c2bcec5f695b8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeArchiveTradeAndLifecycle.cs",
+      "sha256": "b1802b0118538af647648b0803b84bb92d155e5ffdd59e4c0bdd3a70fd44ede7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeChronicles.cs",
+      "sha256": "9a1419d9c4ed6068d8005bfa58d21f4a7d0ca91bb24fdf4f80182d2884c133c0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeCombatConditions.cs",
+      "sha256": "dfbd505b555f308ce7df3b3dd6fd30fa67f662ccae06eb59ee1a58c455953a81"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs",
+      "sha256": "b64a95b08244fd98350c886de2c19ea8f0345047291c25a2441876980677c9ce"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeGlobalFlags.cs",
+      "sha256": "fc1ee24f5fe18c1a6f845ef766f3c86b1abf9130f31035c124a0ddab38d9f5a5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.Danger.cs",
+      "sha256": "595f55ba0e4f2b1984bb9dc1d3c0835cabb09683db7210a48a2d1b32903b267b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.Frame.cs",
+      "sha256": "805de75e56f35d146d9918fc2329459bf41c2df60752bd0974f8ea413153651d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+      "sha256": "5eb03db7c9b75486404bb4219d79b62d8c6981d63f06af31a8e4dd07529e1e6f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeStoryOutline.cs",
+      "sha256": "01091f65a96e9e3fd36e230a229e8babd5c4d17ee6080d09504a496ed749a06c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "sha256": "0e9643541f3864f92f99ce06c29ff5824df33ca25613bb1e978a59aac4942854"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ChaosSeaGuardianPolitics.cs",
+      "sha256": "2e1c070e981b28a8be69f3dc216d99063591759a0767364808109527357cd115"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.CoreBootstrapAndCrossRefs.cs",
+      "sha256": "1c4696da83450319b10e1ca941affa5c5cd2d3389f99d72217ed25f50b1e079f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs",
+      "sha256": "ac3b8d4d77674067557518c6fcfdab6d42ca33139bbc375e562d80cc08a75f15"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.FactionCoreChanges.cs",
+      "sha256": "6ea65bf4e414c1050ef4ce5d2939f25349917c611784ba9b5faf2d9a0e307188"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs",
+      "sha256": "c31d6a98874b052c97085dd0fec851c7b773929daefb60005dcb942d57270488"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.FactionsAndProjects.cs",
+      "sha256": "519b6ba62619fe848be7ca9b621b1aaa7c18de5edcdc22c74fe79732a0a2ac66"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianAndRivalCrossRefs.cs",
+      "sha256": "3f1403d0ceb8181bab8568097db4b2b1359b439ba29bdc6f05c3e0cc778bac39"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+      "sha256": "b148dc8ddd9e13eba334793b963a9a51fa5902d8a3b761677b3d4b65d4365212"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianProjectsAndGacha.cs",
+      "sha256": "55b480e0c130e002f66849977091839dfb4545cced4b438c05b2bd42f8fa313a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardiansAndAfterlife.cs",
+      "sha256": "0cc60e658442a70540c489fae2e0e69644ca1aae9d8dae987232899c95c0b6ae"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs",
+      "sha256": "8bb6e1c8ed5c0178f73f9d69e3646c19ecfcbebdfc693168d515150c907555db"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
+      "sha256": "47afd0d98eb09dbbe5782c1f523ce63b2528cdefe972f2c8c405b5753c0e7335"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MathAssistant.cs",
+      "sha256": "2d4be26f948cadbbee3871881b5f7a83e8b19b3fc8c0ee3bb4bcce061faf8bfc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs",
+      "sha256": "f00e8249aa9561971dff1d3aadcf99b0de2e1321b2588c6acf860bbd38d97f4d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalBootstrapContentAnchors.cs",
+      "sha256": "7f144adb71a902d471549e05fb5acb4a2aa00527e22b72f0628d7c263944574f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalBootstrapPlaceholderNames.cs",
+      "sha256": "ea6d18bf6a2ff5a139b67be9a8322d643023fe5e550904b7d5773108ab07b25c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs",
+      "sha256": "b0e9bd001b5674935f8cb27928f8ce9c29a0e4b31271155dc6e3e3071cfaa995"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs",
+      "sha256": "bc6a6f0d2b571d30108aa90cf2d3ed5a02570a8bda35b77c2ed42e2f7c028cb5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs",
+      "sha256": "dc342fb74ab4075460d8724018f6878e33920fc8e829fb950ae9a983e28025fb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalOriginalTurnCapture.cs",
+      "sha256": "a0a96d4b473abc228e83184dc59ac0aad5d7e05801d81ed401c6ed95d7a84def"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalOriginalTurnMaterialization.cs",
+      "sha256": "4da00b71b8345cbdb6eabf8b798401f42e6fee78e4caa76224192ce124a0111d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalOriginalTurnSelection.cs",
+      "sha256": "c7dd5530c718f7cb47b2d0ff0ba9a32daee0015098f4fab962cd47054bfb660a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalWoundTreatmentDetachedSources.cs",
+      "sha256": "ac6497440ebc289013e765796e30324f9cf7622d729a8d23878415dd8bc62edf"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcCoreChanges.cs",
+      "sha256": "5c96f4bb13c83a88c9bfcd1c180e5de556ecbbb8fc85f6befc6887d0d4ba569a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "sha256": "9581356324418c0867a0f947d88cf3347d06d8b635c1075a9b3004b1c8384635"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "sha256": "28d7114a73fefa461d4e8502fd88d2d661c4a664f26a9767840556d1b0f37c31"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "sha256": "4f4783307c8149557f8b60f1659788f534efcf4c4acc3a3cfb7a2b42c8c9c639"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestRewardAuthority.cs",
+      "sha256": "8cca09203435e2be22495363b98a723debba329f3e58cb9722b0fbcf25c3544a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsAndSoulState.cs",
+      "sha256": "d7ae9436b054878818c36759a60d1ffb44c9375ec6a58c88faa73101ba67bb60"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "sha256": "e4dfac4e5aa9abb18424e960c370585302433a5d1a8c65bd3d5c010ddb05a44a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ReadableInventoryDocuments.cs",
+      "sha256": "185d1a78e375280845389027ed6b4df8a556d18a372d84921a00e59717e70695"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "sha256": "27cbb3a49da317c542b573451e29e78990a70f7e78141eaaf460a483e362ce51"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.RivalThreads.cs",
+      "sha256": "87dd3f1326cb0ebc5d4935de145f15266fb30e0177064b8e36960c0a6a0a7576"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs",
+      "sha256": "67a523a3c6109fe1d62716953d5b26ad38e4d8cefa68ce6572e31334fa7263de"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "sha256": "a0f42912f0714e163a6a56147a19a8d7ef2c51849c5eba4fcfe48c947ff4c3f3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs",
+      "sha256": "081b4fd60653f4ac130b4598c232ab7cba233ebec17722d766ddc92461269b35"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ShiningFactionMaterialization.cs",
+      "sha256": "d9df2c736443863025b0cc939641e926fcd857b3536ec7bb21ce4172c2ee7fe5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SourceOfLightCapstone.cs",
+      "sha256": "54a1c6bcc93746bf862bd1f927e10ba5952338f879ad2c00b022db9e2efc7d87"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualBindingDependency.cs",
+      "sha256": "843be084df48a1308a0edb8a2741f4aa794c00d6fee6783ec0bebc7ad6655582"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DecisionFrontier.cs",
+      "sha256": "d28bbd3dd7aba31e594dc94ec8bbd1851983b6abbf0c69aaf7c4d1ad9c13721f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentContext.cs",
+      "sha256": "709c8e3ec518f8bb721551cc424044c88f417331c54aca274a7e0be9bf1ab2dd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentWalk.cs",
+      "sha256": "353f239dab54676e6b511e6848d3f14cc65eca443a2905310bd4fc8a297d8d18"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2InitialReplay.cs",
+      "sha256": "b1a54261e5a5f9f29073010b14b0789662dc4d681e3a91f1b2cca96519d3fda0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2InitialTransport.cs",
+      "sha256": "6aa6128f0fa344a63f202af21a27ffb3b70664bb8755579f4b2b5242401e6957"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingClassifier.cs",
+      "sha256": "6f0babf9b6b44c554bdd392bc6693edc138165394875be299ef7ec8eff3852b4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingRepair.cs",
+      "sha256": "37824804a21db649048d44c0f63f45c72233b1b78e6a3d1b17f2dcdc7a01a133"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingSubmission.cs",
+      "sha256": "90d42cf5dc906525045cf313b29cc5960a7b403f216cc0d424ed7fddd0261257"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PrivateAdapter.cs",
+      "sha256": "165018387100212a14cee85af02fb3a94505aa8299e2acdb96d441d2038e3a6e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedDecisionDraft.cs",
+      "sha256": "65d3aea406782678df350c4f40db60d30859ff9b7b84cf64dde6f56e5fab2e4a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedReplay.cs",
+      "sha256": "4c1b10f675da3eec5f4c3fc5c253e7d1b60729808e5d0d1e01a8bc1131c5047e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedTransport.cs",
+      "sha256": "e37f61ba5c714ec238dd65b49744193961d6c6eb96f5845e940b554c435d3a6f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC3DeclineReduction.cs",
+      "sha256": "990d651bee7dd7bcb21ed1e10cd35d8409362ba453c351eeb98fa34c1537e762"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC3SourceOnlyReduction.cs",
+      "sha256": "3b0329c06de53dc2afc314ef69c463bb7e1b4893491f6aa3e579d93cb6e3c1f3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC4Publication.cs",
+      "sha256": "1450ddceb5664d11806de8af59ef5db064969501b02febc40b375d7996a65e9e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC4PublicationAuthority.cs",
+      "sha256": "c1f31c86463fc1a3010416d7e5361258e055c3d90d923cc98657161af8ea492e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualCompletedConflictValidation.cs",
+      "sha256": "e022b81739cbbf980ac179b1713f62abc05d8a66bcf7856e95fc30c38e23d01d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationDraft.cs",
+      "sha256": "6793bcf32cc9b63542135c86c7ce8ef172c37618f834ff4ec7b0d6aec42b0aa6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationTransport.cs",
+      "sha256": "5163f0f5a0125915589052d32405f1e43c6f4b025acbab990470fcd05be565ba"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualCurrentWoundView.cs",
+      "sha256": "56f64509cfe52be4c79321d94300adb472dba48aad3994862a4c45ca02c7d940"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentCostProjection.cs",
+      "sha256": "0345d8a44b3e87dd196a78fc1b56fbb7ce0249f88ad71cbf81efb9a8c9ef5e3b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs",
+      "sha256": "4008208eb0d260c95aa140729d21847c9c11fa959cafda65c2b57e7eda29ea1a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualExecutedConflictPrefix.cs",
+      "sha256": "88f705b05b1c47e3014d4acaec9d70737a7464bf3d1a249938e6cb937d4663a1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualMechanicsOwner.cs",
+      "sha256": "ccabaa57f7eb5d4df511800209cae89728ef21bacb3397866c57ad40a6e0f88a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalAllocations.cs",
+      "sha256": "1ae35ac66f1c850216612ea2a447ded45d23de74cc5a33e17735cff7f2928e60"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalC1CandidateOwnerImages.cs",
+      "sha256": "ed7830984cd46f9d07ea73aa711438353037db3bddc98abc5a6f7d6158abd54a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalC1FirstOffer.cs",
+      "sha256": "ab7caece1e6db64d56fa1c70c5528ea912ec62054c19893202e72409fafd3609"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalC1ImageInventory.cs",
+      "sha256": "1fdb6381b3b0e96d7a6c99468ed69fd3815c37a3c4391caa39312711aac0eba2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalC1SignedOrigin.cs",
+      "sha256": "36ab88fc169adbc2081aef3c66cf817fc42568e19c2f9240e05dfdf7497a3c10"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalC2FirstCheckpointDraft.cs",
+      "sha256": "866e44a160589aaa8bdde380d16b3f695651f8033102cfc76ec920e2e69a7914"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalClosedExchangeEvidence.cs",
+      "sha256": "6212aa31716e435640bda85ec9b845e047193d399529e8b92026714e5b233965"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalCreationReceipt.cs",
+      "sha256": "ee2f4e1360ad46fada975f3170472875cb2aa8e200805e3128d6dc6ef76cd8a9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalExchangeInventory.cs",
+      "sha256": "de7299103430851e811bb30118bc21304b78e34f4322a12ccfa985ddb85480a5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalLocationItemReadView.cs",
+      "sha256": "f0e6ff06f7eca072582f178e59348b5f54b71410ded7a0e609cf04a69a2d151a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalResourcePrefixView.cs",
+      "sha256": "def5029e30d4ad0f49cac1243f1e78c54d0c6599eaab2407d610f30a28c9eb2a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs",
+      "sha256": "4e469421db8c3c201e58bfc218f1bdf1c6ba12a701483eb18f8c68ae731f45bd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCompletion.cs",
+      "sha256": "0927eb9f8411cc37b7331a98b911242ec9e5a0289d7629fc2def71b5241e017c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnContinuation.cs",
+      "sha256": "6405983d1755e9ee9082ceb10f4e5c3f730d9ece4e79a652840f59f3cc34bb0d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnMaterialization.cs",
+      "sha256": "2a52f2e2e9f389a67d40630e5b8ab60d44e58433771f05aa472d789495d0272d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnOpportunities.cs",
+      "sha256": "1aa70dab48e7ff0c6ea501cc45709e62c23810029e3e7878a2a9d298418120dd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnOutputProjection.cs",
+      "sha256": "79b59973fded534bcf55909f2a25559af3eb9b4f9b08a7625ed5c6e5c56b881a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnPrefix.cs",
+      "sha256": "e6fc0493b6966c7b069a9a6eb8a56321e5f58d87f54a832e10ff32659d0fa1fe"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnWoundSelection.cs",
+      "sha256": "fa7a1ca9fa4310eff450d26111a988104c5d99295e4ab437736a44cc7c142451"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnWoundState.cs",
+      "sha256": "409caf21d7f9be3e53e782762c4106f58924505199ad2bd01bb2db9744d2b1e1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnWounds.cs",
+      "sha256": "1098e8fe07fe1c9f946ea7fcf2a9fbc72d65b82e47166c5fff496b738ddd11cc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualPositionDependency.cs",
+      "sha256": "f72e57a24f1e518cf157797f77a3993a45ec9b5c00feccaeac1c29568d5853c1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualRetainedPayloads.cs",
+      "sha256": "b030ea764049405eb4876c47d8715b668f3d0368ca06ce00a4b87f1a2eb5cd7f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualSourceFrontier.cs",
+      "sha256": "f6aeb512de1a1eeefb0e4a419d685835a2b04040c6b93efdefc74b5f0353affb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualSpecialActionCosts.cs",
+      "sha256": "bc2027fe7e17e5149049da5b8fe1006aba01d235df4f1ba3d77b0e2b4162b4fc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualTerminalPreparation.cs",
+      "sha256": "9e819640b03929e1c4f05d51e91ed438917078a464a4194901cf2dc6ff4c0ef5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundMechanics.cs",
+      "sha256": "95fdedd72fdf97f58dfff21bea5e2f6fe43f9b4bf311e239b708c2b506cde880"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundPosition.cs",
+      "sha256": "9df0207062ef2cf941f2591531f62404c0dfa9719a8803dde42fb91c8da3a49f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs",
+      "sha256": "9c05faa1fe96fa41a119a9938802d273bf31b717333904d52826c7c4aa299baf"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceContinuation.cs",
+      "sha256": "163472b7c13b59e0a35d478a3c77968da0f19ea8ad95e21859ed9cc7392f4fa3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceMissingAudit.cs",
+      "sha256": "c4efa1cbb09d481f701c7ffdcddbc633c5884f90c00587597618af6e65b8cbff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourcePrefix.cs",
+      "sha256": "b63243d4fcea33873605fc2f8d8363dd805f4bc0aed95ca85e699d50716ba914"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceProbes.cs",
+      "sha256": "dcf2bee25382277a1a2c17975296697a18ce769e0f36f7d4ce8f88b72036c446"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceTransaction.cs",
+      "sha256": "8ef32dd5c6f612c9def43b1ea323765e1da159946d31029cea3cbd933590d654"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.Training.cs",
+      "sha256": "105374be0b567b78ef3e176517aa857e167adea027c919c652f87698210becdc"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+      "sha256": "b7054e4d37cc7ff27074ecbce9d7dc497b5ae2ccc5310af98d2cba99354c3ce8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs",
+      "sha256": "5ac589c65e826322906125d98d0620e389a85163b874a0a0ab9c5172247f89b5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "sha256": "a8bd34a8e45bff7b16ba375424830f2237e6bb5db5106d4341de5037799d7ab7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/VehicleIdentityFactory.cs",
+      "sha256": "7e2cd5849f5d359087df8c2e6064d27fce2cec6a774a612eb6fc27b80c006aab"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WorldDirectiveService.cs",
+      "sha256": "1e272e2a48ac49eb82894c917fa3476d24c568bfe9c903b358cb56fe3529c2c0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedEventAuthorityComposer.cs",
+      "sha256": "30972cf68de43c533d5338025dd76c0d06415f2e233d9d0ddc09738450c9c0a1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedOwnerCarrierAuthority.cs",
+      "sha256": "f81cccdf8a4d2a0adab546d59d93b14a5aed4b35a8e8ed62619d5db0980cbd86"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTransitionCommand.cs",
+      "sha256": "f12394e6aa8c24cf236e74288b89ec0b9fd2e5619a409748e86099177f340805"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "sha256": "689be4a9152cf6031bf903f77445d8c5c1c89645f3b0912584a1fb4fb72cb9ef"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanCache.cs",
+      "sha256": "51729068c009682d7a5fb7db5b31942ee9db3901b838b86104e9e0437815daad"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalRecoveryPublication.cs",
+      "sha256": "7d31ad5e6df453c6802c24ceed378f5f97ffd25cd5ef5d10011315031a9f1ced"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs",
+      "sha256": "72ffacddd73eb0d219e341229ccd1dc3b3f51928351b8b129a6496d7f28d2543"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentSkillPublication.cs",
+      "sha256": "faf302fcc83e0aadc1043bda26ef252a3294930d44d2599d3305edf62a7a0375"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs",
+      "sha256": "72116112a06d64c644931e9f24422d796e12d7a6d87657ec0b189c647847d42f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalRecovery.cs",
+      "sha256": "0455968755194d5d58850524f09f90e9592d7c24579f56502eb546e0109fc9c1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs",
+      "sha256": "39f5f5ee1d481bf078813ee9466cd95fa2b16059e54e1ab063aa81f69c18cf74"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAlternativeTreatmentResponse.cs",
+      "sha256": "1680e231b244a7d669835b2934e6e86393320ec757a27bb87cb35dc74d6dac44"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "sha256": "af9fd37ffd70d54178ca0b3452ce13b47213f2658ac4501d3844172dfe48f50d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundConsequenceEnvelopeCatalog.cs",
+      "sha256": "a0f41e89102130a503c871c88162b3602cb34236f9ceffe6fc4953c422a89c21"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundEffectCarrierAdapter.cs",
+      "sha256": "82f3276e4ae4ecb8789c34fba3835b300bf961e3483cdf0969ec61183a4a5cfa"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundEffectIdentityLineageAnalyzer.cs",
+      "sha256": "023c5c5606cadaa1e6304e6b4bee39e12e18ec035933d9bd0db015db9ae6a7a7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundHistoryState.RecoveryReplay.cs",
+      "sha256": "b70777c109917471a4e9e708a3d2fe52eb7b3a21e31c85f5550d9d1342c2d49f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundHistoryState.TransitionResults.cs",
+      "sha256": "4b33d1511a77b12f50b89edf1fcc89b65074b8d3d13803b325451365205512fe"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundHistoryState.TreatmentReplay.cs",
+      "sha256": "591908ad96c529ff2ebe9f885806d1667328d358b327b0bca259cf9d2dec7c20"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundHistoryState.cs",
+      "sha256": "7b7083e040ea9fe2338531b6f12e5a54837a1fa186282ed87bd1ec5527f3bea9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundIdentityState.cs",
+      "sha256": "6fcce26db18bea5f20fd51e127b674beeb4d7662ab72b6d90f0bf44c13907601"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundMaterializationContract.cs",
+      "sha256": "abbf2e11659d58985e156629b6ff77de86e93ec5f6c0e6962bea4b03db9487ef"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundOperationBeforeData.cs",
+      "sha256": "00c9c1b2dd34d18062aa9d2e9e8a7f7bf03c05bfa4146fedcaf3ca7bb03c2295"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundOpportunityAuthority.cs",
+      "sha256": "93009268a67da6c6a5bb244b87eeceb3f7b4294885dfa5aee7f7b4654681189f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundPersistedConsequenceEnvelopeAdapter.cs",
+      "sha256": "e858091ca81305f81b5b8d77b814d316527ea7445d1a336dec034309fd266d05"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundReactionLineageAuthority.cs",
+      "sha256": "a45178cb59cffc5c019a7cf12cd692a1c0a392a19c3dee332a22f63cbe38abf8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundRepairPacket.AlternativeTreatment.cs",
+      "sha256": "e3e0788a30e52441d43fb2d93416ea9c15dfe318e3903536b5e080a659d44849"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundRepairPacketBuilder.AlternativePersistence.cs",
+      "sha256": "6678cc9d22fcdfe22490d60b42e87ee89b0afa9db83eb840931178ed983bc474"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundRepairPacketBuilder.AlternativeTreatment.cs",
+      "sha256": "d6c01b1a45d3cf8e3cf761b81d2eaf38b091cecb6c27b0de7eb958cac7b55ab7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundRepairPacketBuilder.PersistenceValidation.cs",
+      "sha256": "358fcaa3bf9dbdbaffae7cd8d1d4cf9d39e579efdb0a9d5cbb444df5960ad68c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundRepairPacketBuilder.cs",
+      "sha256": "f47ba26feaced549034771ec5bf2334d0c2ea3a23cebf58788ee40faede3e89e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.AcceptedTransitionParsing.cs",
+      "sha256": "a42d8a92d84b1f1300b11fab4746dbecfc61821cd3d9c6452fe0d6dac7b86018"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.AcceptedTransitions.cs",
+      "sha256": "e754abd18d6da47afc30edc80936fcebe661d7808895d831516617f412aed657"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.AlternativeTreatmentResponses.cs",
+      "sha256": "eaa3935b5ba8e5d115208cbd58b56c68a5a9b1be535169bfa5a5d93d376081a1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.CommandParsing.cs",
+      "sha256": "e63bc86dddb3f83481e703fa58d27bee89f54c88a1d03460c60adcf3dd129ac4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.Parsing.cs",
+      "sha256": "7e82165f1b2e79700567f9d5bc7e0b90367d30a8cf3f46dea65545357fb1ce52"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.Serialization.cs",
+      "sha256": "a13f98309e40542e521df90e6931d44cc2d8016997684c0a0d19a9b4fd9302da"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.TreatmentComplications.cs",
+      "sha256": "427c1b490d0b44f34b95c9dd0b5b3e2f71c8769b0c17eba0542fd66f93d6a6c9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.cs",
+      "sha256": "c64ce92db6878f262a98bfa7bf74b55057403fb68a53c6fe7b978c86cc6b4d59"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundSameRankOwnedSourceContinuity.cs",
+      "sha256": "155ca7c47292975011f7dbe26e4a6627fcc32899b68ae2e05d6592099bdf9bb7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundSourceAuthority.cs",
+      "sha256": "a3fc6a312a2a0bdd4ebc770f5df93f53c57b7b61f83951edf24d6c006e3f14f2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundStateReduction.cs",
+      "sha256": "c9437a95327e0c13e69f83bdf7b3cd98b315e216f9f0096c2c22e6d825fac0c9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundTransitionReducer.Alternative.cs",
+      "sha256": "c9a611c23d5e794010bdffa8b547c1ad5ab521f747e80ca970b64b3662263e53"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundTransitionReducer.Diagnosis.cs",
+      "sha256": "03069a4c9c093412bd70720c56bb79723376a97f4048f7089a76719e151ce838"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundTransitionReducer.cs",
+      "sha256": "51935ad4ae40a31072957b00559722ab649284716bce832752f6fed7dbca4a62"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundTransitionResult.cs",
+      "sha256": "c5647cc7e8de02c4cbf11013b1c2d5ca9aa81458476bb897e0567d68c92c3056"
+    },
+    {
+      "path": "BookOfEternityClient/UI/AfterlifeCombatConditionPlayerAuditSanitizer.cs",
+      "sha256": "99edb6e7bb102f6e812d8bffc8b132da87f38caa5f8a6db4bc7210eabfe3f1c6"
+    },
+    {
+      "path": "BookOfEternityClient/UI/AgentConsoleRecordingExplorerConsole.cs",
+      "sha256": "87eeee9245fd06ed5b05b77cd9fc28977b4e27a10884672e885a964a4c8f4756"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ConsoleLayout.cs",
+      "sha256": "6e3e57997ca5c360cea1330f4ea2ae6a7707b4152b8ce4460ab74a8b219d229a"
+    },
+    {
+      "path": "BookOfEternityClient/UI/EffectPlayerProjection.cs",
+      "sha256": "ad90b29566bad3dc4f61a7c0083b5c129ca60df265e3490eda06a38f673e2e5b"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerAfterlifeCombatCommandResultBuilder.cs",
+      "sha256": "31ec8d435ffbb65548abb6e8bda31bef09d7b1972d89418f6a5a1aea8c38b820"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerChaosSeaCommandResultBuilder.cs",
+      "sha256": "498cffaebf13fd1f68e52281d5065bec6a826902e94cbbe25dee124a7a19a6ef"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerCommandResultConsoleRenderer.cs",
+      "sha256": "cecd72e4f8bc78888880262b0365f5e1f235c7ec101826e2131dbc6914475ff5"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerEffectPlayerCardBuilder.cs",
+      "sha256": "953a7c1f87ac7c875cf7c836d1d3110ae8d58722ca8fc35a256a207c0f72dd4e"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.Training.cs",
+      "sha256": "969b6c918218aa37de628f053d54786ff4f0efdc487465c258924c74683fe237"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs",
+      "sha256": "3ebbb3944a626ae82388ed608c87041536f1a354ce16a32ce02e8c9aa4848415"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMathCommandResultBuilder.cs",
+      "sha256": "54676ce24c7f13d6f79c5e7f26afeaefef87a8d5783ad608edb7d586a3cb395b"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode.cs",
+      "sha256": "29e0fadf7f25d7399a09d6cde5eb8d4faba0063f3a990c045ab9114b52edba0b"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ActiveThreats.cs",
+      "sha256": "480aa2b9376c703295a4b5505bcf9c220ac3f5431ed19522ded7ec3d04a4a68c"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ChaosSea.ActionPreviews.cs",
+      "sha256": "ad44dd1b343aadc6a5db6c088918d6c504f68f2765b1f02c4c8d0dfb83c4ac30"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.Chronicles.cs",
+      "sha256": "defb1166a13d0ce55a0e634b193ec249436c9a535f542d4bd875d5eaec184885"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.EntityProfiles.cs",
+      "sha256": "c63d39c199da4df5c1e00dd5b2dfb560ee81c70df25e3a037d22474bd55b13bc"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.GuardiansProjectsTrade.cs",
+      "sha256": "791c1da0cad98b4304c2e93f41000b8451ffcf387ff19378ac0088d40b3091f2"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "sha256": "dae8ca299532f3b5db0277e7017be2dfc3ab38c4182c8665e4a25a5654648257"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.MemoryScene.cs",
+      "sha256": "448e65ee12c82d904dc3b376b9aa240c87feeb0fe417ee7ec772ff12da81661e"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.PlayerGuardianFoundation.cs",
+      "sha256": "3d39c59994efe5758f2b8181ee32ce04f9b1b4bc01445daf86091979060913a4"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SarefStory.cs",
+      "sha256": "087cb10245b47ab481c2ac5372103eb96d93150caa62d938ef53d3f033aa441a"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.ActionPreviews.cs",
+      "sha256": "fb76a6b365839ccd40e0745f7c71ee140406528ec1c0b3e323ab868e1381086b"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.Actions.cs",
+      "sha256": "29848f6f0ba94d38507998db5b7d98e85a9b08706dee783903e3bfe2d4f61ff9"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.Gates.cs",
+      "sha256": "d933c674478f7af0f4730f36be9e6acbc6c030364a3b42c16ae26402168c2587"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.Politics.cs",
+      "sha256": "b0b27e80392b7a8fedfb55a698c38f8ab5c8660ad6c5a8aa796e292fd68e6950"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs",
+      "sha256": "37d3ff5fcf0a63cff2a56c376df4bb75dc9530ac8bc03edeb687cc83d1d08daa"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.Treasury.cs",
+      "sha256": "73e2c226c0f0ea71f8001ed312086c1635f858d3b7b2be0fc686a09a39b44ef6"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.cs",
+      "sha256": "c4c98cdf93a54042da0f4f7b5046ebfda343a39670514d43ba397fc5dfcf63ce"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs",
+      "sha256": "5860a43a26147356c5b0dd244964ec1f8f3b4bb63d3c7f22f1320f261b81982f"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SourceOfLight.cs",
+      "sha256": "4b03b2208bb79c21f2ea9b59afae8170dfe96f15eaa7de642f95b8bbbf4224bb"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs",
+      "sha256": "1eb1ce317ddac41e5cc9fb228918d25e2554c8b3f761e4458867f520af88857d"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.StatusAudit.cs",
+      "sha256": "c8f3d5845cc4e06cbece9e71df5832813358d5c10ac4bab44200a9fca679d293"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.cs",
+      "sha256": "8d91c9d41da829aba0ade8325a1453f8c153784a22d8bc5c4c56d53b757b1d4a"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.FactionsAndWorldNews.cs",
+      "sha256": "9c4334e9be4b5f701676ae376e7308a89ffeac3c9410c4c9c8771b39588431a8"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.HelpDto.cs",
+      "sha256": "9a15fb0d3826f0076a560de7038e4dc4595cfa61581f5154ec3538eaa1110a3b"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Inventory.cs",
+      "sha256": "7575d87b40a50c2064d47e6a724374be11212076a0027166b81b914c767d9b22"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MathAssistant.cs",
+      "sha256": "99fb48f0583e9c52748713ec98dbf6518dbeb502fd826661b39e64178a4d20bd"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaLoreAndTravel.cs",
+      "sha256": "732b06d5b5d2f8112fe304950076eb902c54ddb3f9e7f08a97c51f10c2aa16ea"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaPanels.cs",
+      "sha256": "72a0778dc53492b2b757c0bb47d84b51d5f55abc2c3b311607983f4b2daf7c3a"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
+      "sha256": "ac0e110db4b6c8ed1186687fdca6b90fa979f58951066ffd777cb7d7b6a90b94"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaWorldSetupAndDebug.cs",
+      "sha256": "afc7cdf09498555d4c1363b1253126d330b0d1443080dedfac2d254d0cd1b520"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs",
+      "sha256": "b87053391b17712612b82abf94315b8795ed5db16ba4439c2f9e9c2793e481ee"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Rendering.cs",
+      "sha256": "f216929a9d9e2de577906633de34c6c88a4c59a520e634b349eece5e9f7eaecb"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs",
+      "sha256": "8a1c68f34fa527e56e8edf76de048c10ce640683491f6c9712237ebdeb95a4ab"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.cs",
+      "sha256": "ae2546a61c16e225e0b2b56aeb7b86015649fcb08e1cc54a31d20f0868ac7841"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PlayerFacingLocationLabels.cs",
+      "sha256": "e2c2703a4355c5e6cc114490d5571e9b82a387312d4e13dce7e6ed5a9b3f3efc"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "sha256": "43aa44e0fbacd852fb40ad72c214c465785968e2d072aa5f73d905d2b59ea3f4"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.QuestsAndRivals.cs",
+      "sha256": "b4ba97b3630e6bbe28e5d02d7224ddae26567f506f61fe8da392acbe2ada2282"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Trade.cs",
+      "sha256": "e8af13d116c0c35e73db0240678af8b0f2f2c62f7f633b4f279e0c6cfe1d1702"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Training.cs",
+      "sha256": "30a55388ee71eebda8bb444dfe732ace503ce8f106195f43095966cc932e0b2a"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndQuests.cs",
+      "sha256": "25e4b4e500d0f0a3f4cc31fc17c74a00ffd2390421f39e17f4e6830963505484"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs",
+      "sha256": "967a6dd67ccc81d4c96024c32805b732196990ef731a28f60f36a60507f609b3"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMortalEffectDetailActions.cs",
+      "sha256": "54a9bfb029c7367a460a96637c81350cbad94e6d292e5555809522cf48f57adf"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs",
+      "sha256": "e42995915b4a6f25820cacb532b7d83081243d04d3ed41b235af55aa9452deba"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMortalWorldNewsCommandResultBuilder.cs",
+      "sha256": "b62ec3d92742a768fb14d7a887e3d8d0d775d72a94ec9fdd38b65d2be5d31bf3"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerPlayerFacingLabels.cs",
+      "sha256": "48891f25d314daeac8a19dfee8f7cd1d331f6666511adf4b7bb2382201969286"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerShiningAbodeCommandResultBuilder.cs",
+      "sha256": "cf19afaad54bb195d31d88d668c3cd88283c5b1fcd539812007f61681c8002a4"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.SarefActions.cs",
+      "sha256": "2c96575f7554b8359b7bda9c5f4a17468d6147b1f5e3f4ff28eddaae7689b89d"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+      "sha256": "e2f0ab5e1eb53718e5870d1b7c7d4e0d9cb921955e1d6a9f8d274f2711a03a68"
+    },
+    {
+      "path": "BookOfEternityClient/UI/GameInterface.cs",
+      "sha256": "637c3943b653f12170c5507f307c15d3c83bb7944620b530e729150a795a7cf9"
+    },
+    {
+      "path": "BookOfEternityClient/UI/IExplorerConsole.cs",
+      "sha256": "42c2ff930cc9a0818701f13529d462756a073cca4afa511900e0afa366c82714"
+    },
+    {
+      "path": "BookOfEternityClient/UI/LocalizationManager.cs",
+      "sha256": "4c12cc29075d4246baf9aab6c10504d0e0d624dd6de24cf7c97b9d1dbfae6659"
+    },
+    {
+      "path": "BookOfEternityClient/UI/MortalItemPlayerProjection.cs",
+      "sha256": "e3369dd17e97fae05e8680b1e4a93929fcb0d2b7567fa32066f52829a07f5188"
+    },
+    {
+      "path": "BookOfEternityClient/UI/NpcDetailSectionProjection.cs",
+      "sha256": "9f71121b90d430b0a32ffad216de644ab6f8794f293bb709657f1d57b1101358"
+    },
+    {
+      "path": "BookOfEternityClient/UI/NpcJournalFallbackProjection.cs",
+      "sha256": "46b4cb39139ffce9bb9d732bb445b7ab1782f3e0ba3a84f486e1f3d62dac51c3"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ReadableInventoryDocumentShelfProjection.cs",
+      "sha256": "4e0cafdbf6e8e6e7eb69043c83dd84abfc42a7aea17c22fd9ac868a0ec51819c"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ReputationDisplay.cs",
+      "sha256": "f77d78c5b6d99d9383dc32c2e7adcc0061db0e35e04b956e1295846de031c741"
+    },
+    {
+      "path": "BookOfEternityClient/UI/SpectreConsoleSafe.cs",
+      "sha256": "5cf7499f8822d23c4b37a09eb963ce550ffab72fce2a08941fd4b74c8540f194"
+    },
+    {
+      "path": "BookOfEternityClient/UI/SpectreExplorerConsole.cs",
+      "sha256": "f849c271ccb6a95e1b8f5ace03b4489071801ed68a9892f56525b75eddac65e5"
+    },
+    {
+      "path": "BookOfEternityClient/UI/StructuredBonusDisplay.cs",
+      "sha256": "9875fa7044f668f71141fe8aefe82348aeb4dfe63eb676e554f42b7af66329ab"
+    },
+    {
+      "path": "BookOfEternityClient/UI/WoundPlayerNotification.cs",
+      "sha256": "9f4f5ec2817aecf013ffa5e8c12ec55b14c6ce39caea9c24f07b81a604605305"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeArchiveActionContext.cs",
+      "sha256": "6c52f4a10d33f62dd903d155db8ffd09a3ff0bcab4fd9e8b1ef950f847d4819b"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+      "sha256": "b65be6da62f49f4afecb9a92d5e8a8645e3d04de24256693f4d15b48deca7696"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "sha256": "f3ed3ac34ec28d201c1da63b1316496734d23e3b6d9befd075b1dbe771d9fb1f"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserAudioService.cs",
+      "sha256": "18ce7d62ee0671c069ba3ffa20fa4c8a8db8940e8a5918c6ecc9a4c7f46788df"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserClientSettingsService.cs",
+      "sha256": "5145b901bff15ff9a652f31646a4243b229fcb760584ea48fc14b92a2017daa7"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserCommandCoverageService.cs",
+      "sha256": "03704478e2e810e8b01e86ab3b39c0c7be4e02eda1dcd7d15ca9b378179319b7"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserEntityDossierPrototypeNormalizer.cs",
+      "sha256": "3b4a2d407755686e3d2ad82b42284fb3c9ffdc3ac17a0329c27774dd478ffb87"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserGameScreenService.cs",
+      "sha256": "27d85725e3879ac801066e78bf64c6bb21cabccdd764eb58958875c231a677f6"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLifecycleDashboardService.cs",
+      "sha256": "8f70a645edf6936a1b661295fbc7498a1157dd12541359b01066152fd6fa2c8d"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLoadStateService.cs",
+      "sha256": "11b19e342909d5b720b1276078939af70a88f614bc23ccc30def43c00234208e"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs",
+      "sha256": "d645d922e8a7f11ad4e924fb83e769308a60c9dcff2e5c07715f116ded8c1320"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.SaveCreation.cs",
+      "sha256": "2804c96e15c7c4f5ca5d1bb0bd946d2e87b7b98144f20f8031b1b128c12711b0"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "sha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs",
+      "sha256": "f1b364d67e601f796b4cc53a87ac49c9de356f403f6f81e622e7d9d682844d63"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs",
+      "sha256": "909ec7e65238bcc24d1857bce8b9e0f8c7aa93030a2990a6f141dd1b3bba4ee0"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserPendingTurnInspector.cs",
+      "sha256": "368c2e12077315a8eeac26a4eff49a2c3e3654c175fdb2483d1b4329b075f328"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserPlayerActionService.cs",
+      "sha256": "1d832221c1ad42201130430b89ae618e692c328a154a70700be64f9cc36c36c5"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserPlayerCommandMenuBuilder.cs",
+      "sha256": "03d177613fe63196b89024b52cba401ecf237fc9e6db5b0e531befa317b2f972"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs",
+      "sha256": "55c639dc2977647cdb54b922fb1081d9931c33a117fba4a0deab2d674bf76ff7"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserSarefStoryWriteService.cs",
+      "sha256": "3c45534527a60cce914918b79a0d2ba1bffe1f8869e8e06f1813893408dda2c6"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserSettingsWriteException.cs",
+      "sha256": "50d1413c91b59d8da565b7e759a997d1d69b46befb02824c50c8ac2bd2a13270"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/ExplorerWebCommandService.cs",
+      "sha256": "ad96ca0240e6f11c04a19fa1f78e733687a7dd90897766cf18205e9f4cf385c4"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
+      "sha256": "1e553ca0367eb9f2556debafcf8944d9bc99aa92aebb546ed57138341a720fca"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiFrontendAssets.cs",
+      "sha256": "5583be5313b397d790536c98c54af597f4c2e33bd09cb47d4b5db6be8e8a7542"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "sha256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.LoadLifecycle.cs",
+      "sha256": "2469f744f25cba8197c927b50a4f52c782dc16627acccc532e4a031d509a8306"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+      "sha256": "519127ac828a9dd63fecf814afe6505a1dc4da7ca8c20dfcfea8ebb1e9a5ed28"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiSessionStatusService.cs",
+      "sha256": "d4a5e8eac23a816ae850206cedfbb2011ee80c5280d86529c46541f4d1d44197"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/QteInteractionTokenAuthority.cs",
+      "sha256": "7c6a7422cc8cded72f60153bac758efdc27a66c50e6a479357736c3b74d2f31c"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/QteWebInteractionService.cs",
+      "sha256": "36003dc767c41e6ad6ca58962da50fb65a6ef8542a042c4c20fbdcb35eddbf85"
+    }
+  ]
+}
