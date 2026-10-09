@@ -1,3 +1,15 @@
+## Original Normalizer uncertainty correction installed — WIP, 2026-10-09
+
+Exactly four original unbound owning wrappers retain/rethrow same genuine CSP
+and call existing ReleaseOwnedLeaseAsync(_fs,samelease,false,sameexception).
+Bound normalization/core/plan/item/treatment authorities/returns/order and
+fixture/helper unchanged. Original4knownPASS/4causalFAIL at e1b32dd3 preserved
+25artifacts22pins at48952c79/ref/raw27. Runtime UNBUILT/UNRUN; next independent
+combined causal/source/exact8 gate then fresh selected Plan8/actualGREEN8.
+No knownlateclose or whole-flow atomicity/gameplay/B2/native qualification.
+Storage-only lifetime correction introduces no GM/schema/prompt/example change.
+Combined full new-owner catalog deferred stable accepted batch, T061–T065 open.
+
 ## Original Normalizer causal baseline recovered and verified — WIP, 2026-10-09
 
 Verified existing clean source e1b32dd3e80981da1ac2e980976d67f0b842d1c8 and

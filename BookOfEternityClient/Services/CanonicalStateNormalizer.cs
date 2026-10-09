@@ -261,9 +261,23 @@ public partial class CanonicalStateNormalizer
     {
         if (_writeLease == null)
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            await BindTo(writeLease).NormalizeAccumulatedStateAsync(backups);
-            return;
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? publicationFailure = null;
+            try
+            {
+                await BindTo(writeLease).NormalizeAccumulatedStateAsync(backups);
+                return;
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                publicationFailure = uncertain;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, false, publicationFailure);
+            }
         }
 
         EnsureGenericNormalizationHasNoAcceptedMechanicsAuthority();
@@ -279,9 +293,23 @@ public partial class CanonicalStateNormalizer
     {
         if (_writeLease == null)
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await BindTo(writeLease)
-                .NormalizeAccumulatedStateWithPlanAsync(backups);
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? publicationFailure = null;
+            try
+            {
+                return await BindTo(writeLease)
+                    .NormalizeAccumulatedStateWithPlanAsync(backups);
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                publicationFailure = uncertain;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, false, publicationFailure);
+            }
         }
 
         EnsureHeldTreatmentPublicationUsesCoordinator();
@@ -348,10 +376,24 @@ public partial class CanonicalStateNormalizer
     {
         if (_writeLease == null)
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            await BindTo(writeLease)
-                .NormalizeClientOwnedBootstrapAccumulatedStateAsync(backups);
-            return;
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? publicationFailure = null;
+            try
+            {
+                await BindTo(writeLease)
+                    .NormalizeClientOwnedBootstrapAccumulatedStateAsync(backups);
+                return;
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                publicationFailure = uncertain;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, false, publicationFailure);
+            }
         }
 
         await EnsureClientOwnedBootstrapNormalizationBoundaryAsync();

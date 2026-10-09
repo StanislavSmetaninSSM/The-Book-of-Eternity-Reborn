@@ -48,10 +48,24 @@ public partial class CanonicalStateNormalizer
     {
         if (_writeLease == null)
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await BindTo(writeLease).NormalizeAcceptedMechanicsAsync(
-                backups,
-                mortalLocationPlan);
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? publicationFailure = null;
+            try
+            {
+                return await BindTo(writeLease).NormalizeAcceptedMechanicsAsync(
+                    backups,
+                    mortalLocationPlan);
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                publicationFailure = uncertain;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, false, publicationFailure);
+            }
         }
 
         EnsureHeldTreatmentPublicationUsesCoordinator();
