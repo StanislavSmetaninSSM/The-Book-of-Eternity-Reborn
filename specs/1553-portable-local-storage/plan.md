@@ -1,3 +1,23 @@
+## ReplayGREEN2 and ProposalGREEN4, corrected census — WIP, 2026-10-09
+
+Independentcombinedcausal/source/exactgatePASSb023 and AscensionGREEN2/SaveGREEN2
+raw/carrierPASS4b9839eb (92artifacts119pins/12strictroots/refraw63+3). Freshboth
+catalog234520 atdab3795b610categories/11384methods-files,0execution130.3386603s,
+bothcleanup; NoBuildPlan2347476/2,0exec4.2162612s. Separateactualreplay234801
+2/2PASS18.7800525s; Proposal2348544/4PASS7.2277514s, each1/1complete,bothcleanup/
+0skipduplicateTimeout/strictrootsabsent. NoaggregateGREEN6 and noacceptedreplay.
+Same ONEcatalog added to4 latestpackets, nofour-execution claim. Genuine replay
+sameCSP+secondary/noLater and actualProposalPublishedWithWarning known_close/
+CSP/refusal contractsPASS; native-defaultbackend/worker/durableACK excluded.
+Independentfinal GREEN gate next. All immutablecausal/preparationraw retained.
+Census structural/hashPASSdab (855/170/164/70); semantic corrections applied:
+Imagecoldgeneration/gallerycanonical, mixedhelperpublisher, separatepromptoverload,
+correctimagepacketlinks, sharedhelper-onlycontext -> source-only, finite committed_
+closeMod and typedBrowser close-retention. Twoactual Browser replacement owners
+retain source-grounded OPEN CSP+secondary masking hypothesis; safe originalfixture
+exact4 via real UI-lock pub/ordinary NotLoaded delegate next, no loader/native.
+T061–T065/B2–B5/otherordinaryknownclose/read-only/legacy/native stayopen.
+
 ## Final owning-acquisition semantic census — WIP, 2026-10-09
 
 Pinned product sourceb02339db:855 tracked C# files/170 acquisition sites/164 full

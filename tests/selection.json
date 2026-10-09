@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-proposal-store-owning-close-linux",
-      "reason": "T063/T065 freshPlan232300 at6431c208; actual232700 original4 complete=3PASS/known_close1causalFAIL7.3002985s: actual bundle/inbox/audit and PublishedWithWarning replaced by Rejected after close. Existing isolated rename adapter/factory only, no Enter/worker/defaultnative/durableACK. Preserve original baseline before source guard; genuineCSP/refusal controls PASS.",
+      "reason": "T063/T065 original4=3PASS1known_closecausalFAIL retained; runtimeb023 causal/sourcegatePASS; freshbothcatalog234520/Plan234747; separateactual234854GREEN4/4PASS7.2277514s retains actual PublishedWithWarning+bytes afterknownclose, genuineCSP/refusal/noLater/fullsettlement/strictroots. Existing isolatedrename adapter only; no defaultnative/worker/ACK/fullflow.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -16,7 +16,7 @@
     },
     {
       "category": "portable-original-engine-finalized-replay-close-linux",
-      "reason": "T063/T065 corrected real durable retry fixture passes actual history-owned ExactReplay prerequisites. FreshPlan232300 at6431c208; actual232630 original2 complete=known1PASS/uncertain1causalFAIL19.3981892s: SAME primary masked by closeIO. Immutable initial2prepFAIL retained; quarantine source unchanged; preserve baseline before guard. No fakehistory/native/B2/fullflow.",
+      "reason": "T063/T065 corrected genuine Finalized/ExactReplay original2=1PASS1causalFAIL retained; runtimeb023 causal/sourcegatePASS, freshbothcatalog234520610/11384/0exec, Plan2347476/2; separateactual234801GREEN2/2PASS18.7800525s preserves SAME CSP+secondary/fullsettlement/noLater/strictroots. No fakehistory/native/B2/fullflow.",
       "contracts": [
         "#1553",
         "FR-002",
@@ -29,7 +29,7 @@
     },
     {
       "category": "portable-save-optional-images-root-linux",
-      "reason": "T063/T065 original232? availability RED retained (normal1PASS/linked1FAIL at231716); corrected b22822aa inspects fixed optional root before ResolvePath. Fresh shared Plan232300 at6431c208 selects10/4,0execution; separate actual232618 SaveGREEN2/2 PASS7.9163561s. Real manifest/exactnames/0linkedimagesreads/outsidebytes/staging/strict2roots; no fullSaveLoad/native/B2 qualification.",
+      "reason": "T063/T065 original availability RED retained (normal1PASS/linked1FAIL at231716); corrected b22822aa inspects fixed optional root before ResolvePath. Fresh shared Plan232300 at6431c208 selects10/4,0execution; separate actual232618 SaveGREEN2/2 PASS7.9163561s. Real manifest/exactnames/0linkedimagesreads/outsidebytes/staging/strict2roots; no fullSaveLoad/native/B2 qualification.",
       "contracts": [
         "#1553",
         "FR-002",

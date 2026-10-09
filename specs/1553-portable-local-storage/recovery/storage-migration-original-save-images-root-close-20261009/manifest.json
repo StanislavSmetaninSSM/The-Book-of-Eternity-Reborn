@@ -308,5 +308,82 @@
         "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
       }
     ]
+  },
+  "catalog": {
+    "source": "dab3795b70ca9e07be5a822cef6dea83261ff65f",
+    "artifacts": [
+      {
+        "path": "catalog-20261009-234520-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-234520-527-481265-06d54791e1f3495abb90e1cd080b0eb3-categories/catalog-audit.json",
+        "sha256": "b2b831ae8252d34f851edd6bc75ba9565bdb446dd6eb3857d4f473da6b256f2e",
+        "originalSha256": "b2b831ae8252d34f851edd6bc75ba9565bdb446dd6eb3857d4f473da6b256f2e"
+      },
+      {
+        "path": "catalog-20261009-234520-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-234520-527-481265-06d54791e1f3495abb90e1cd080b0eb3-categories/summary.json",
+        "sha256": "2bd11385690235903f2b8d273602a54fa6f71a46e33af7ec4423e34cc52da9cc",
+        "originalSha256": "2bd11385690235903f2b8d273602a54fa6f71a46e33af7ec4423e34cc52da9cc"
+      },
+      {
+        "path": "catalog-20261009-234520-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-234520-527-481265-06d54791e1f3495abb90e1cd080b0eb3-categories/Build-integration.log",
+        "sha256": "0f797f1901b87bc54cd5abf472a8eb854b79f24b5b0a5a5bdf13ab6704d3a189",
+        "originalSha256": "8d28ff2995e8d2a3c28fcfd53b6aba831a598c2c958aea6f6b7c8778e07c928f"
+      },
+      {
+        "path": "catalog-20261009-234520-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-234520-527-481265-06d54791e1f3495abb90e1cd080b0eb3-categories/Build-unit.log",
+        "sha256": "f7b0c61e143ee4b2ea88d24a033aa8be348ca5149ba17778f671dabefb3a6cb1",
+        "originalSha256": "bdd8908ee2a3d3435e142139efb0597ebcb02452cf52d97475f55f00bd383cf1"
+      },
+      {
+        "path": "catalog-20261009-234520-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-234520-527-481265-06d54791e1f3495abb90e1cd080b0eb3-categories/dotnet-test.log",
+        "sha256": "38cf6760d5a27ef27169dab63267569917d3a4e8420bf7eaa42e9ffe806b0589",
+        "originalSha256": "4617c704205fbcad29dbf4a20066be435e56533c650072daea7359e676e4f1fd"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/SaveOptionalImagesRootTests.cs",
+        "sha256": "fcbd3064c34f48c21f19c0378a5084296757092f672730aa4665d173d7046a4b"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/PortableSaveFixture.cs",
+        "sha256": "7c05b769b4342ccad9692599eab0f37d35e4dea4077631ab213a62680a81e2b6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+        "sha256": "ae0907053fadc15b497bf44387893d623f33116de1ba65fbfd9f2127e63de40b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+        "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "0624bf4ad403f563f6be07c6e2d35e1b5bf8fd20ea93978d5750801c92e21a08"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "a5a34c3679c5edbcd4c69fccbca8e4a1975477a84cd0295accab8b94546e73d9"
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+      }
+    ]
   }
 }
