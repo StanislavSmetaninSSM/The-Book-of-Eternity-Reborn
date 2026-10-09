@@ -1,0 +1,67 @@
+{
+  "Categories": [
+    "portable-browser-snapshot-exact-names-linux",
+    "portable-browser-snapshot-native-noncandidates-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4bff0b4f497029b32bb12c345b017752e9a45ccb",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 50.1098513,
+  "Descriptors": [
+    {
+      "Name": "portable-browser-snapshot-exact-names-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-browser-snapshot-exact-names-linux",
+      "Categories": [
+        "portable-browser-snapshot-exact-names-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserGachaAdmitsRawSnapshotNamesBeforeStageOrSpend|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserQueueAdmitsRawInventoryAndRollbackBeforeCopiesOrFailureCleanup|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 17,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserGachaAdmitsRawSnapshotNamesBeforeStageOrSpend",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserQueueAdmitsRawInventoryAndRollbackBeforeCopiesOrFailureCleanup",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-browser-snapshot-native-noncandidates-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-browser-snapshot-native-noncandidates-linux",
+      "Categories": [
+        "portable-browser-snapshot-native-noncandidates-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserSnapshotGuardPreservesNoncandidateNativePayloadNames",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserSnapshotGuardPreservesNoncandidateNativePayloadNames",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

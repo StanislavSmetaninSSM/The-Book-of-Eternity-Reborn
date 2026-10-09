@@ -1,3 +1,17 @@
+## Browser exact-name bounded GREEN19 — 2026-10-09
+
+Runtime4bff0b4f source/design/exact19 independent AstraXHigh PASS; freshintegration
+Plan18441619/2,0execution50.4527004s; actual18452019/19PASS14.4416863s,
+complete2/2,0skip/duplicate/timeout,bothcleanup. All13negatives emit zeromutations
+andexactfullfile/pathbyte maps+generation, oldqueueevidence unchanged; Unicode2,
+nonnativecandidatebin2 andoriginalpublicgacha2 PASS withgenuine originalbackups.
+All19fixture rootsabsent (17newJSON+2originalstrictCleanup log roots).
+[Packet](recovery/storage-migration-browser-snapshot-20261009/manifest.json)62artifacts/39pins
+verified originals, previousRED24/13 andseparatepositive11/13 immutable. Freshcatalog
+andindependentraw/catalog/carrier gate remain. Only originalgacha/queue admission
+qualified; no HTTP/otherproducer/native Windows/allF16 orB2 acceptance.
+Continue incarnation/Explorer/spiritual andotherowners; T061–T065unchecked.
+
 ## Browser early exact-name correction installed — WIP, 2026-10-09
 
 Queue-owned rawpreflight uses original game_stateJSON eligibility/skip andlore
