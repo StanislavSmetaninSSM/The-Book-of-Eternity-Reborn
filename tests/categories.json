@@ -2,6 +2,43 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-story-outcome-neighbors",
+      "responsibility": "Existing Story append lease-wait and closed-session refusal four plus original known life-transition dispatch-failure diagnostic, protecting unchanged admission and best-effort behavior.",
+      "excludes": "No narrative-world aggregate, live GM/provider, full transition success or secondary close-fault injection.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Services/StoryService.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-story-outcome-causal-linux",
+          "when": "Original Story publication-outcome or transition stop behavior changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.StoryServiceTests.StoryAppend_WaitsForCanonicalWriteLease",
+            "BookOfEternityClient.Tests.StoryServiceTests.StoryAppend_EscapedClosedSession_PropagatesSessionReplaced"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_LifeEvaluationDispatchFailure_WritesErrorLog"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-story-outcome-causal-linux",
       "responsibility": "Seven original Story append/marker and life/incarnation/ascension publication-outcome controls: real Unknown stop versus confirmed known rollback best effort, retaining earlier transition commits.",
       "excludes": "No live GM/provider, full accepted turn, interactive incarnation allocation, native Windows or secondary owned-close fault qualification.",
@@ -6044,7 +6081,6 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_FileSystemExampleState_DispatchesAutomaticLifeEvaluation",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_LifeEvaluationDispatchFailure_WritesErrorLog",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CollectAcceptedTurnRawStateIssuesAsync_DirectNpcCoreMutation_IsRejectedBeforeNormalization",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectSkillScopeLifecycleTests_FocusedPublicationFailureRollsBackEveryTrackedSurface",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectSkillScopeLifecycleTests_TurnRequestCatalog_OrdinaryGameEnginePublishesCanonicalCatalog",
@@ -11747,7 +11783,6 @@
             "BookOfEternityClient.Tests.RivalSoulArcServiceTests.*",
             "BookOfEternityClient.Tests.SarefCommandDisplayQualityTests.*",
             "BookOfEternityClient.Tests.ScenarioCoreServiceTests.*",
-            "BookOfEternityClient.Tests.StoryServiceTests.*",
             "BookOfEternityClient.Tests.SystemModServiceTests.*",
             "BookOfEternityClient.Tests.WorldDirectiveServiceTests.*"
           ]

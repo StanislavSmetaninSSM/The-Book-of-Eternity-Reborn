@@ -2375,7 +2375,7 @@ public partial class GameEngine
             AnsiConsole.MarkupLine("[red]⚠ Клиент отклонил некорректный TriggerLifeEnd и очистил game_state/control/life_transitions.json.[/]");
             AnsiConsole.MarkupLine($"[dim]{GameInterface.EscapeMarkup(ex.Message)}[/]");
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             if (!requestDispatched)
                 await CleanupUndispatchedTransitionPrepAsync(rollbackBackups, localStateMutated, manifestCreated);
@@ -2914,7 +2914,7 @@ public partial class GameEngine
             await RebindRuntimeAfterSessionReplacementAsync();
             return false;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
             if (!requestDispatched)
@@ -3893,7 +3893,7 @@ public partial class GameEngine
             GameInterface.RenderAscensionTransition();
             await RefreshRuntimeStateAsync();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             LogError(ex);
             _fs.DeleteFile("game_state/control/ascension.json");

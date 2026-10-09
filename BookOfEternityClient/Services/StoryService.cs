@@ -61,7 +61,7 @@ public class StoryService
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Failed to append story entry for turn {Turn}", turnNumber);
         }
@@ -92,7 +92,7 @@ public class StoryService
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Failed to append story marker: {Type}", markerType);
         }

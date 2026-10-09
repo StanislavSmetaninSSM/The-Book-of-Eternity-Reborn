@@ -1,3 +1,19 @@
+## Story runtime correction / exact12 WIP — 2026-10-09
+
+Independent and parent raw classification accepted the reached Story causal7 at8ac; saved carrier
+6f104492 contains29 artifacts/9 pins, local integrity PASS. Runtime now changes only five original
+catch filters (Story append2 + life/incarnation/ascension outer3) and captures actual CSP before
+public AppendFileAtomicAsync disposes its original lease. Existing ReleaseOwnedLeaseAsync retains
+same CSP with secondary close diagnostic; completed:false and null failure on other paths preserve
+previous ordinary completion/close-failure semantics. No new lease, retry, cache, schema or journal.
+No actual secondary-close fault injection is claimed.
+
+Final exact12 = unchanged causal7 plus original Story lease-wait/replaced4 and known life dispatch
+failure1, moved from narrative-world/turn-lifecycle-core into finite neighbor ownership. No bodies
+or known policy assertions changed. Frozen runtime/source/selection review and fresh both-project
+Plan12 precede actual12. Earlier progression/Prepared/cleanup evidence remains separate and will
+not be rerun solely for this change. Whole transitions/gameplay/native and other source tails stay open.
+
 ## Story original-consumer causal7 checkpoint — 2026-10-09
 
 Frozen8acda8d6 independent SOURCE/FIXTURE/EXACT7 PASS. Matching Plan020533 freshintegration

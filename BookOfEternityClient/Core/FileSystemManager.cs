@@ -860,8 +860,19 @@ public partial class FileSystemManager
 
     public async Task AppendFileAtomicAsync(string relativePath, string content)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        await AppendFileAtomicAsync(writeLock, relativePath, content);
+        var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try { await AppendFileAtomicAsync(writeLock, relativePath, content); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLock, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     internal async Task AppendFileAtomicAsync(
