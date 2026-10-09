@@ -19998,6 +19998,56 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-image-directory-admission-linux",
+      "responsibility": "Four original image constructor/gallery boundaries: absent canonical root construction stays pure; retained Unknown admission refuses before mkdir/association; real Committed cleanup debt recovers before structural mkdir and lease-free association; symbolic-link failure remains truthful and preserves outside bytes.",
+      "excludes": "Controlled association callback only, no desktop/process/provider. Structural directory creation is not a journaled file publication; no actual session-rotation, native Windows, settings/GameLoop or fullF16 qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ImageService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ImageDirectoryAdmissionTests.OriginalGalleryAdmitsStorageBeforeDirectoryOrAssociation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-image-gallery-known",
+      "responsibility": "Four original gallery controls: root/NPC exact single managed request, unsupported kind no creation and ordinary file-blocker failure with manual path. Explicit fixture bootstrap replaces reliance on image-constructor mkdir.",
+      "excludes": "Controlled association callback only, no desktop/process/provider. Structural directory creation is not a journaled file publication; no actual session-rotation, native Windows, settings/GameLoop or fullF16 qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ImageService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest",
+            "BookOfEternityClient.Tests.DesktopLaunchContractTests.InvalidGalleryKindDoesNotCreateOrOpenUnknownFolder",
+            "BookOfEternityClient.Tests.DesktopImageConsumerTests.RealGalleryCreationFailureIsHandledWithManualPath"
+          ]
+        }
+      ]
     }
   ]
 }

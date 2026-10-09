@@ -1,3 +1,37 @@
+## F16 constructor/gallery admission — bounded fixture WIP, 2026-10-09
+
+Source #1553,T062/T063/T064/T065,R25/F16. Prior image23 final independent RAW/
+CATALOG/CARRIER PASS16db2f7aa7dbba30ac1d2093bfa4a9a62d54545a:88artifacts/
+originals68pins verified; current catalog537/11333,0tests. No image23 replay.
+
+Independent scoped source consult accepts a finite next unit: constructor stops
+creating canonical images directories; original gallery acquires one short canonical
+lease, checks worker-general/generation/pending-publication authority and exact type/
+link policy, structurally prepares only its selected directory, releases before the
+existing managed association with createIfMissing:false. TrustedLocalFileScope.mkdir
+is structural, not an atomic file decision; it must not invent a generation or
+Committed bytes. Ordinary preparation failures remain Failed/manual-path; actual CSP
+and replacement escape. No gallery settings/GameLoop/native/real desktop claim.
+
+New exact4 fixture-only covers a genuinely absent canonical game_session/images
+constructor path; actual retained nonCommitted Unknown before gallery admission;
+real Committed cleanup debt recovered before mkdir/open; and symlink refusal with
+outside sentinel preserved. New gallery recovery is an independent operation:
+ordinary SessionMutation admission propagates raw InvalidData recovery refusal
+(FSM3722–3733 wraps only SessionReplacement), so the expected gallery projection is
+Failed/manual with exact evidence and no mkdir/association, not seed-CSP identity.
+The controlled launch records journal/bytes/directory BEFORE any bounded same-root
+lease probe, preventing that probe from supplying missing recovery itself.
+
+Existing gallery4 later covers root/NPC single request, unsupported kind and file
+blocker with manual path. DesktopHelpersFixture currently depends on constructor
+mkdir and will explicitly EnsureDirectoryStructure when behavior migrates; that
+bootstrap creates images but not npcs. No fixture setup change before causal4.
+Next independent SOURCE/FIXTURE/EXACT4 gate, fresh integration Plan4 and baseline4;
+then minimal original runtime/fixture migration and fresh both-project GREEN8.
+Actual session rotation, native Windows, secondary lease-close and wholeF16 remain
+unqualified; no new GM-authored/gameplay contract or example is required.
+
 ## F16 original image bounded23 GREEN — 2026-10-09
 
 Independent SOURCE/RED-RAW/EXACT23 PASSc02b3ed5. Tested runtime/source

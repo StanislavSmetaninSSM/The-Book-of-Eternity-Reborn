@@ -1022,6 +1022,30 @@
         "T064-STORAGE-CUTS",
         "T065-STORAGE-CLOSURE"
       ]
+    },
+    {
+      "category": "portable-image-directory-admission-linux",
+      "reason": "Next bounded F16 constructor/gallery unit; fixture-only and unrun. Four original image constructor/gallery boundaries: absent canonical root construction stays pure; retained Unknown admission refuses before mkdir/association; real Committed cleanup debt recovers before structural mkdir and lease-free association; symbolic-link failure remains truthful and preserves outside bytes.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-image-gallery-known",
+      "reason": "Next bounded F16 constructor/gallery unit; fixture-only and unrun. Four original gallery controls: root/NPC exact single managed request, unsupported kind no creation and ordinary file-blocker failure with manual path. Explicit fixture bootstrap replaces reliance on image-constructor mkdir.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
     }
   ]
 }
