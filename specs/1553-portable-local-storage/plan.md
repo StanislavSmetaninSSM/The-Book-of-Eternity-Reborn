@@ -1,3 +1,31 @@
+## Original Bridge/prelaunch pool — causal RED and runtime WIP, 2026-10-09
+
+Independent fixture/exact5 PASS at033a05c53be93a6ff3170ec1dd2ea211013d6547.
+Fresh unit Plan072720:5/1 planned,0 execution,80.7362153s. Actual072855:
+**5/5 complete,2PASS/3FAIL**,1/1 descriptors,15.7871780s; both cleanup flags,
+no skips/duplicates/timeouts. [Raw packet](recovery/storage-migration-worker-prelaunch-20261009/manifest.json)
+retains authentic nonCommitted member0 journals, published/foreign/prior bytes,
+actual generation/task/audit correlation, all five guardian reports and native
+source/binary provenance. Root parser verifies3 cuts,5 removed owned roots,
+15 native source/binary pairs. All original pins/slots/reaper capacity drain;
+no forbidden workspace/attach/release hook reached, no worker launched.
+
+Reservation and task-dispatched audit Unknown each become ordinary WorkerFailed
+and attempt one later canonical admission (fixture stops it). Known reservation
+IOException followed by real task-failed audit Unknown also becomes WorkerFailed,
+losing the exact first cause. Both ordinary known controls pass. These are real
+runtime failures, not missed cuts or teardown failures. Raw SameOriginalUncertainty
+on the two controls is null/null ReferenceEquals and is not an uncertainty witness.
+
+WIP correction: exclude direct CSP from the two prelaunch ordinary catches; retain
+it through actual reservation-lease close; terminal telemetry propagates actual
+CSP and retains supplied known cause under GmWorkerOriginalFailure. Known telemetry
+best effort remains. Shared terminal telemetry is also used after launch: full
+Store/publication/cleanup paths remain explicitly open for the next bounded unit,
+not qualified by these five prelaunch rows. No gameplay/GM-authored/schema change;
+no prompts/examples update is needed. No actual secondary lease-close fault claim.
+Next combined source/raw/selection review, then fresh Plan5 and actual5 only.
+
 ## Original Bridge/prelaunch pool — fixture WIP, 2026-10-09
 
 Previous terminal8 final independent PASS2e817050; all58 originals/45 pins and

@@ -466,7 +466,8 @@ public sealed class GmWorkerBridgePool
             string message,
             bool sessionReplaced = false,
             string? eventType = null,
-            IReadOnlyList<string>? details = null)
+            IReadOnlyList<string>? details = null,
+            Exception? originalFailure = null)
         {
             if (!string.IsNullOrWhiteSpace(eventType))
             {
@@ -476,7 +477,8 @@ public sealed class GmWorkerBridgePool
                     task,
                     message,
                     details ?? [],
-                    lifecycleCancellation.Token);
+                    lifecycleCancellation.Token,
+                    originalFailure);
             }
 
             if (_hooks?.BeforeTerminalFailureDecisionAsync != null)
@@ -498,7 +500,8 @@ public sealed class GmWorkerBridgePool
                     profile,
                     task,
                     timeoutMessage,
-                    []);
+                    [],
+                    originalFailure: originalFailure);
                 var timeoutStatus = Track(
                     WorkerBridgeState.TimedOut,
                     ready: false,
@@ -544,12 +547,13 @@ public sealed class GmWorkerBridgePool
             var result = await CompleteEarlyFailureAsync(ex.Message);
             return result;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             return await CompleteEarlyFailureAsync(
                 ex.Message,
                 eventType: "task-failed",
-                details: [ex.GetType().Name]);
+                details: [ex.GetType().Name],
+                originalFailure: ex);
         }
         if (!reservation.Reserved)
         {
@@ -586,12 +590,13 @@ public sealed class GmWorkerBridgePool
         {
             return await CompleteEarlyFailureAsync(ex.Message);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             return await CompleteEarlyFailureAsync(
                 ex.Message,
                 eventType: "task-failed",
-                details: [ex.GetType().Name]);
+                details: [ex.GetType().Name],
+                originalFailure: ex);
         }
 
         GmWorkerDurableExecution? durableExecution = null;
@@ -1221,34 +1226,48 @@ public sealed class GmWorkerBridgePool
         string proposalInboxPath,
         CancellationToken cancellationToken, GmWorkerDispatchAdmission? dispatch)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
             cancellationToken: cancellationToken, workerPurpose: dispatch?.ReservationPurpose);
-        cancellationToken.ThrowIfCancellationRequested();
-        if (_fs.FileExists(taskPath) || _fs.FileExists(proposalInboxPath))
-            return WorkerTaskReservation.Reject(
-                $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
-
-        if (!_fs.IsCurrentSessionGeneration(writeLease, task.SessionGeneration))
+        Exception? publicationUncertainty = null;
+        try
         {
-            return WorkerTaskReservation.SessionWasReplaced(
-                "Worker task context does not belong to the current game session generation.");
+            cancellationToken.ThrowIfCancellationRequested();
+            if (_fs.FileExists(taskPath) || _fs.FileExists(proposalInboxPath))
+                return WorkerTaskReservation.Reject(
+                    $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
+
+            if (!_fs.IsCurrentSessionGeneration(writeLease, task.SessionGeneration))
+            {
+                return WorkerTaskReservation.SessionWasReplaced(
+                    "Worker task context does not belong to the current game session generation.");
+            }
+
+            var reservedTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(DecodeUtf8(taskBytes)!);
+            if (reservedTask == null)
+                throw new InvalidDataException("Serialized worker task reservation could not be read back.");
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var reserved = await _fs.CompareExchangeFileBytesAsync(
+                               writeLease,
+                               taskPath,
+                               expectedContent: null,
+                               desiredContent: taskBytes) == CanonicalFileMutationResult.Applied;
+            if (reserved && dispatch != null) await dispatch.CompleteReservationAsync(_fs, writeLease);
+            return reserved
+                ? new WorkerTaskReservation(true, reservedTask, taskBytes, null, false)
+                : WorkerTaskReservation.Reject(
+                    $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
         }
-
-        var reservedTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(DecodeUtf8(taskBytes)!);
-        if (reservedTask == null)
-            throw new InvalidDataException("Serialized worker task reservation could not be read back.");
-
-        cancellationToken.ThrowIfCancellationRequested();
-        var reserved = await _fs.CompareExchangeFileBytesAsync(
-                           writeLease,
-                           taskPath,
-                           expectedContent: null,
-                           desiredContent: taskBytes) == CanonicalFileMutationResult.Applied;
-        if (reserved && dispatch != null) await dispatch.CompleteReservationAsync(_fs, writeLease);
-        return reserved
-            ? new WorkerTaskReservation(true, reservedTask, taskBytes, null, false)
-            : WorkerTaskReservation.Reject(
-                $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     private static WorkerTaskSnapshot CaptureTaskSnapshot(WorkerTaskPacket task)
@@ -1477,7 +1496,8 @@ public sealed class GmWorkerBridgePool
         WorkerTaskPacket task,
         string summary,
         IReadOnlyList<string> details,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        Exception? originalFailure = null)
     {
         if (_auditLog == null)
             return;
@@ -1494,9 +1514,16 @@ public sealed class GmWorkerBridgePool
                     details),
                 cancellationToken);
         }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            if (originalFailure != null)
+                failure.Data["GmWorkerOriginalFailure"] = originalFailure;
+            throw;
+        }
         catch (Exception)
         {
-            // Terminal telemetry is subordinate to the already-decided worker outcome.
+            // Known telemetry failures are subordinate to the worker outcome.
+            // Uncertain canonical publication must stop subsequent storage work.
         }
     }
 
