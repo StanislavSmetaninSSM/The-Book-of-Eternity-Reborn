@@ -1,3 +1,37 @@
+## Lore/realm bounded composed14 complete — 2026-10-09
+
+Runtime c7672208 and independent source/census gate qualify same-lease ordinary lore deletion, four
+consumer CSP exclusions and four original owned-close captures. Composed14 =12 passing obligations
+at c767/033623 plus corrected generation control/sourceguard2 at bd0673/034417. The partial13/14 with
+old replacement fixture failure and initial routing/causal7 remain preserved; no single14GREEN claim.
+
+Independent final2 raw gate PASS. Matching Plan034307 built integration40.8761276s/unit11.1620438s,
+wall58.9466953s,2cases/2descriptors/0executed. Actual034417 completes2/2PASS,2/2,12.9031643s,exit0,
+no skips/duplicates/timeouts,bothcleanup. Actual same-admission checkpoint rotates original generation
+3d2e7b…→031a76… in a genuine Committed journal (SHA d03a008c70e19ea0e1271ce5243c4fac2fd9f5ec750c98cc21004a6b1bb3725d).
+Exact final generation/sentinels and real SessionReplaced expected/actual IDs pass, postrotation opened
+reads/mutations/input0, original task directly joined and owned root explicitly removed. Source guard
+passes. This does not assert concurrent external Clear or adoption of a new nested binding.
+
+Prior actual7 atc767 now proves all five genuine Unknown cuts, including original incarnation second
+lore deletion after the first committed deletion: same CSP, exact retained authentic journal/foreign
+member, zero later measured canonical work, readonly closure separate. Direct Clear commits all three
+exact host names (literal backslash included) and preserves rollback sentinel. Known incarnation refusal
+restores exact F03 bytes; realm-reset prior seven images remain exact. Five additional original known
+integration controls pass. No inferred full realm/incarnation atomicity or compensation after Unknown.
+
+[Packet](recovery/storage-migration-lore-realm-20261009/manifest.json) contains72 artifacts/50 historical
+Git pins, all saved/expanded/original verified, including closed4→0 source census and failed old recipe.
+Discovery034441 uses matching fresh both-project bd outputs:515 categories/11307 methods-files valid,
+0tests,8.0492443s,exit0,bothcleanup. Final independent carrier/docs gate pending. Latest actual full
+GitHub-only restore remains e5; newer checkpoints are pushed/readback, not freshly restored. Native,
+simultaneous secondary-close fault, full gameplay and whole #1553 migration remain open.
+
+Next authorized coherent unit is memory/Shining/accepted-continuation and canonical best-effort
+bookkeeping. Preserve original accepted/effect facts, real publisher decisions and known policies;
+source-derived seeds/input remain unexecuted until frozen fixtures pass review. Remaining Explorer,
+GameLoop diagnostics, Ready-worker/audit/proposal, C2, F16/F18 and final reconciliation stay open.
+
 ## Lore remaining2 current-generation fixture correction — 2026-10-09
 
 Partial carrier e9cea306 preserves56 artifacts/31 pins; independent raw accepts twelve completed

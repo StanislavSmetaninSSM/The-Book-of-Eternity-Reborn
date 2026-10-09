@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-lore-realm-current-generation-controls",
-      "reason": "Remaining2 only: corrected original same-admission checkpoint rotation control and unexecuted source guard after c767 partial13/14. Preserve accepted12 and old blocked replacement recipe; no runtime delta.",
+      "reason": "Final remaining2 PASS atbd0673/034417: actual same-admission committed rotation and original SessionReplaced fencing plus source guard. Composed14 with retained12@c767; no concurrent external Clear/adoption claim.",
       "contracts": [
         "#1553",
         "FR-003",

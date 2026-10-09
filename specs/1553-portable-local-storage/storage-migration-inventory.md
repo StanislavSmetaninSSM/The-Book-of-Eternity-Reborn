@@ -1,21 +1,21 @@
 ## Current accepted / open map — 2026-10-09
 
-Latest tested source41ac9a45 retains runtime85baf7a4 preparation correction. Composed21 passing
-obligations =18@85b +3@41ac, not a single21GREEN. Genuine publication11 and known7 pass initially;
-remaining corrected current-admission snapshot/replacement controls2 plus unchanged linked1 pass
-separately. Saved108 artifacts/70 pins and matching fresh both-project catalog512/11303 valid0;
-final independent carrier and parent gates PASS41c8e4f. Lore/realm exact7 at7b completes1P6F: four genuine realm Unknown losses plus physical routing1/unreached common cut1; known original restoration1PASS. Saved26/14, runtime repair pending. Prior owned-close15 at a88d/carrierf9 accepted25/11 remains
-source-consistency plus actual publication/component evidence, not injected simultaneous double fault.
-Prepared-Shining bounded5 atbbf/carrier1265 independently accepted47/27; Story12 atb79/carrier6ee
-accepted64/21; progression5 at2a372/carrier7f accepted48/25; Prepared remote8 at7cf/carrierc7 accepted59/26.
-Earlier F13/F14/F17/treatment/cleanup scoped acceptances below remain historical evidence, not new
-executions. Latest actual fresh GitHub-only full restore is e5; newer carrier restoration is pending.
+Latest tested source bd0673 retains runtime c7672208 lore/realm correction. Composed14 =12@c767 plus
+corrected generation/sourceguard2@bd (12.9031643s), not a single14 run. Same actual CSP and ordinary
+lore routing are proven at original boundaries; the earlier raw physical deletion/unreached cut and
+blocked old replacement fixture remain historical evidence. Saved72 artifacts/50 pins verify; matching
+fresh both-project discovery515/11307 valid0, final independent carrier gate pending. Generation control
+uses original same admission/real committed rotation, not external concurrent Clear/new nested adoption.
 
-Open: remaining lore/realm and memory/accepted-continuation boundaries, Explorer whole-command
-outcomes, authoritative Ready/worker/audit/proposal continuations, C2 transport propagation, F16 media/
-listing/export/path admission, F18 exact fault/observer ports and final complete reconciliation.
-Generation-replacement policy of prepared-Shining helpers and native/secondary-close/full-gameplay
-claims remain unqualified. The following source-era receipts retain their original counts/revisions.
+Preparation composed21 at85b/41ac and carrier41c8 accepted108/70; owned-close15 a88d/f9 accepted25/11;
+Prepared-Shining5 bbf/1265 accepted47/27; Story12 b79/6ee accepted64/21; progression5 2a372/7f accepted48/25;
+Prepared remote8 7cf/c7 accepted59/26. Earlier F13/F14/F17/treatment/cleanup receipts retain their recorded
+scopes, not new executions. Latest actual full GitHub-only restore remains e5; final combined restore pending.
+
+Open: memory/accepted-continuation/canonical bookkeeping, Explorer whole-command and GameLoop diagnostics,
+authoritative Ready/worker/audit/proposal, C2, F16 media/listing/export/path producer admission, F18 current
+publication/admission observer ports and full reconciliation. No whole-game/native or simultaneous
+secondary-close fault claim; prepared-Shining generation policy remains separately unqualified.
 
 ## Historical Story source-era checkpoint — 2026-10-09
 
