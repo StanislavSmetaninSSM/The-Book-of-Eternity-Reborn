@@ -1,3 +1,21 @@
+## Original engine/media causal RED6 — WIP, 2026-10-09
+
+Fixture7fe2bdb2/ref/raw4; freshPlan2124596/1,0execution46.5470915s. Actual212600
+6complete=3knownPASS/3causalFAIL7.2710830s,1/1complete,bothcleanup/0duplicateTimeout/
+strict6roots absent. Allthree actualowner states inspected/contextnull andactual
+Intent reached; three genuineCSP replaced by same originallatecloseIOException.
+Known actualgeneration/initialowneralreadyclosed/mediaDTO/url/id/PNG PASS; unknown
+coldstage0/closingleases0, warmstagedcommit1/mandatoryclosinglease1 observed.
+Fulllease/ambient/main/context/rawlock/generateGate settle. Known raw samePrimary
+compares two nulls, not evidence; nextfixturefield guardsactualnonnullCSP.
+[Packet](recovery/storage-migration-original-engine-media-close-20261009/manifest.json)
+21artifacts/16pins verified originals. Pending22finalGREEN/raw/carrier independent
+PASSebd1dc47, catalognewownerspending. Next same-scope CSPcapture/releasefalse in
+exactthreeowners; preserveinitialgenerationcloseBEFORERunBound andmediareference
+order. CombinedoriginalRED/source/exact6 gate beforefreshPlan/actual6. Inventory
+next3owners6 draftfixture/design independently PASSa66eaa75, still/tmp UNRUN.
+Other owners/finalinventory/restore open; T061–T065unchecked/B2–B5paused.
+
 ## Original engine/media owners — test-first WIP, 2026-10-09
 
 Pending/control GREEN22 packet137/45 preserved/ref/raw afteractual212315;
