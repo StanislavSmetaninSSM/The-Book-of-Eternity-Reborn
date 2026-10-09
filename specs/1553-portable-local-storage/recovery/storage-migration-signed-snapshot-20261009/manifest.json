@@ -1,0 +1,314 @@
+{
+  "scope": "Original detached signer and first original LiveTurnPreparation producer exact paths, raw-map/path-value/baseline admission before normalization or producer cleanup. Existing affected signer/reader/preparation neighbors preserved. No remaining engine/browser/incarnation/spiritual producer/native/gameplay qualification.",
+  "red": {
+    "source": "d4795b2aee341e1ee8513edb815f6cbfff2cb807",
+    "artifacts": [
+      {
+        "path": "red-20261009-171808-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-171808-338-396929-728d4b45dda1441891e12b003abf578c-categories/plan.json",
+        "sha256": "89b424bb61037817a8a8c852a0b3dc21128eff1e3591d9ca0af50560b3330f17",
+        "originalSha256": "89b424bb61037817a8a8c852a0b3dc21128eff1e3591d9ca0af50560b3330f17"
+      },
+      {
+        "path": "red-20261009-171808-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-171808-338-396929-728d4b45dda1441891e12b003abf578c-categories/summary.json",
+        "sha256": "93abe5e931f2740f5f54019fb890b6299a410b690c47654f3e249792a5ac799c",
+        "originalSha256": "93abe5e931f2740f5f54019fb890b6299a410b690c47654f3e249792a5ac799c"
+      },
+      {
+        "path": "red-20261009-171808-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-171808-338-396929-728d4b45dda1441891e12b003abf578c-categories/Build-integration.log",
+        "sha256": "040b855be50a38e9df396140a558981cc279df9dc15899e75a63a81e2ba31681",
+        "originalSha256": "5a5566ed213b747682b24878700368d39395ee14319855568cbfc54bc63bea6e"
+      },
+      {
+        "path": "red-20261009-171808-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-171808-338-396929-728d4b45dda1441891e12b003abf578c-categories/Build-unit.log",
+        "sha256": "037bf78f87b4b843785221ce3a7482c4c998d96a0fd1d4306cce176e014efbe5",
+        "originalSha256": "e69cbc791b1b092e6ee97f264c11bbff45e5f04146c952d0618f571a5f480b49"
+      },
+      {
+        "path": "red-20261009-171808-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-171808-338-396929-728d4b45dda1441891e12b003abf578c-categories/dotnet-test.log",
+        "sha256": "ec64b9316c45383a44b0991a3510d2c78c8e0ae3f7a9e8daeaf04bb6dc51be00",
+        "originalSha256": "ef8bbd7bf3685fd164484df020382d29134497a1ea78d735dc5ecc5108263398"
+      },
+      {
+        "path": "red-20261009-172121-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172121-777-397406-72ec399f3fba4962948831167579894c-categories/plan.json",
+        "sha256": "2012bdee22099246ef131dd5eea6a7b22b2c38e3c946f86ba02ee8550c867592",
+        "originalSha256": "2012bdee22099246ef131dd5eea6a7b22b2c38e3c946f86ba02ee8550c867592"
+      },
+      {
+        "path": "red-20261009-172121-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172121-777-397406-72ec399f3fba4962948831167579894c-categories/summary.json",
+        "sha256": "d9cedcf3d9c07067ac330e0f0ae5b119a3bb1ff4fd714c1268fd67f7bce18937",
+        "originalSha256": "d9cedcf3d9c07067ac330e0f0ae5b119a3bb1ff4fd714c1268fd67f7bce18937"
+      },
+      {
+        "path": "red-20261009-172121-portable-signed-snapshot-authority-neighbors-unit-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172121-777-397406-72ec399f3fba4962948831167579894c-categories/portable-signed-snapshot-authority-neighbors-unit-001.trx",
+        "sha256": "c5e291664cf285695c98fbf4e7b7ba7ebfd810ecdf9fd95372ce3f0dd260b051",
+        "originalSha256": "3f9c9e071b799747ed86625b1167e2378be22fe2bdc5fe948071f458e65063ac"
+      },
+      {
+        "path": "red-20261009-172121-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172121-777-397406-72ec399f3fba4962948831167579894c-categories/dotnet-test.log",
+        "sha256": "67ab273aa49a3d1bd5abf0ee06ed66f762b2040870fde01a7de1e71c133d1a57",
+        "originalSha256": "b212830ef5027a5ee2c32f11818c9dd4ce6f6143504e6b8927aa1c12da4fad34"
+      },
+      {
+        "path": "red-20261009-172146-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172146-100-397790-1c606204c0c140ada29042cb22afbe29-categories/plan.json",
+        "sha256": "d721bb4945aad7a22368fddde1d4ad314eb60d0c8c29534f987448880c8427f3",
+        "originalSha256": "d721bb4945aad7a22368fddde1d4ad314eb60d0c8c29534f987448880c8427f3"
+      },
+      {
+        "path": "red-20261009-172146-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172146-100-397790-1c606204c0c140ada29042cb22afbe29-categories/summary.json",
+        "sha256": "71f2d99523639e88c9a49e52bd775cfef78693373d3ac36fd7189ce4c4b78a0d",
+        "originalSha256": "71f2d99523639e88c9a49e52bd775cfef78693373d3ac36fd7189ce4c4b78a0d"
+      },
+      {
+        "path": "red-20261009-172146-portable-signed-snapshot-spelling-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172146-100-397790-1c606204c0c140ada29042cb22afbe29-categories/portable-signed-snapshot-spelling-linux-integration-001.trx",
+        "sha256": "8fdcc4a458dc2f13a89d5dff13119bce7115fed2142cb16a5dc90c233f82ed03",
+        "originalSha256": "815872b7c675391576b5064247c321503f6445b6541006e49c31ee7f3b734341"
+      },
+      {
+        "path": "red-20261009-172146-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-172146-100-397790-1c606204c0c140ada29042cb22afbe29-categories/dotnet-test.log",
+        "sha256": "5ca71ace22ecb09a81c210ef0ee9fa8972b6516a28cadbacd6e95976d212e7fe",
+        "originalSha256": "03f356803e7931cbafcc4a79e0a9a0551527d358fabea81062182869476bafd0"
+      },
+      {
+        "path": "red-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/emitted-roots-after-run.json",
+        "sha256": "9cc8bccbffeb59da25a6e63b84835a48b7d09a58b67c40bdc1513d538177c3e0",
+        "originalSha256": "9cc8bccbffeb59da25a6e63b84835a48b7d09a58b67c40bdc1513d538177c3e0"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-21-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-21-0.json",
+        "sha256": "8afbd764c60611d6a1c13bafbfc742bf5c8b3a442cfb2fa04e371a376c7e9710",
+        "originalSha256": "8afbd764c60611d6a1c13bafbfc742bf5c8b3a442cfb2fa04e371a376c7e9710"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-20-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-20-0.json",
+        "sha256": "cbe97041b7c0a85fe13a4f9d669f722ca0044b1368938b64aeca4c083f2c22ec",
+        "originalSha256": "cbe97041b7c0a85fe13a4f9d669f722ca0044b1368938b64aeca4c083f2c22ec"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-19-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-19-0.json",
+        "sha256": "93b20984cfa45545a3fee7313fe70e0621161d246c5b7b3b6c7d1dca3ebd144f",
+        "originalSha256": "93b20984cfa45545a3fee7313fe70e0621161d246c5b7b3b6c7d1dca3ebd144f"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-18-1.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-18-1.json",
+        "sha256": "230e4fce5bd6614652d05210c899dbc40fd41ff786bfa4cf70b518dfb5d95819",
+        "originalSha256": "230e4fce5bd6614652d05210c899dbc40fd41ff786bfa4cf70b518dfb5d95819"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-18-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-18-0.json",
+        "sha256": "3c580ce7316339f0cc2d0f8ca20550c1d97a73db3871dc6b8b82ee7d547cf920",
+        "originalSha256": "3c580ce7316339f0cc2d0f8ca20550c1d97a73db3871dc6b8b82ee7d547cf920"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-17-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-17-0.json",
+        "sha256": "87322a41db782e22ee8008dd59b2771d71a5df17477aefc4bd52ac0a4e7e4cb2",
+        "originalSha256": "87322a41db782e22ee8008dd59b2771d71a5df17477aefc4bd52ac0a4e7e4cb2"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-16-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-16-0.json",
+        "sha256": "ed7ea7427b1a71e06da9c20025776a164fad959fc5d78a2be55b13bafb412c5b",
+        "originalSha256": "ed7ea7427b1a71e06da9c20025776a164fad959fc5d78a2be55b13bafb412c5b"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-15-1.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-15-1.json",
+        "sha256": "d3885ab8f110acb30bb21351fc927cd610e3840a2ef83eadf694f55900a1f872",
+        "originalSha256": "d3885ab8f110acb30bb21351fc927cd610e3840a2ef83eadf694f55900a1f872"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-15-0.json.gz",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-15-0.json",
+        "sha256": "27899022bf0409f35227fb03050435d8ef04a34c4708dfcc7089b544d6f7567e",
+        "originalSha256": "70a61ac9b82a27e17cf15ec442c6089f739cdb43798574051d30975752c25bc1"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-14-1.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-14-1.json",
+        "sha256": "7300307731904dacfb3da08b4083605bcfe3d5fd20d4fb5413648ecb41de6490",
+        "originalSha256": "7300307731904dacfb3da08b4083605bcfe3d5fd20d4fb5413648ecb41de6490"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-14-0.json.gz",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-14-0.json",
+        "sha256": "9e72ba2d054083ed71392fc3e283c5439ca7a0c9e8f50ee8f603da1b6e005277",
+        "originalSha256": "10994812f0d50f9dfd2fe815f882de51df6ad994ca0906f84ddb9fb356152338"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-13-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-13-0.json",
+        "sha256": "6f68098a38936cdcf4ab420523596c3bebe65b0b52a4552d332ffa24fca1ef5d",
+        "originalSha256": "6f68098a38936cdcf4ab420523596c3bebe65b0b52a4552d332ffa24fca1ef5d"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-12-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-12-0.json",
+        "sha256": "a839bbbf547950e28b63e7b1e5ec8d0fd9ba8433339e3d1d4f82d186218342dc",
+        "originalSha256": "a839bbbf547950e28b63e7b1e5ec8d0fd9ba8433339e3d1d4f82d186218342dc"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-11-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-11-0.json",
+        "sha256": "a3d350091110cd097774c1028450ebf2085491a3a50e59c7ed0a05088794fe1b",
+        "originalSha256": "a3d350091110cd097774c1028450ebf2085491a3a50e59c7ed0a05088794fe1b"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-10-1.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-10-1.json",
+        "sha256": "42e15dca4a1c1078c0cb71be8a4029c37e52ebdb9cab6e5f15094eaf3e984570",
+        "originalSha256": "42e15dca4a1c1078c0cb71be8a4029c37e52ebdb9cab6e5f15094eaf3e984570"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-10-0.json.gz",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-10-0.json",
+        "sha256": "91083342487cd5728072ff4337ae56a49cbb26d13799b6c493035f390229056d",
+        "originalSha256": "8275a4550a921b6064ff846b0ea1619763f6d669489b6f0e5af30d5c7ca37c27"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-9-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-9-0.json",
+        "sha256": "340eac72118ae9751cd99b666be3f05ebbb6121a1748375b3b8388c75d3e274e",
+        "originalSha256": "340eac72118ae9751cd99b666be3f05ebbb6121a1748375b3b8388c75d3e274e"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-8-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-8-0.json",
+        "sha256": "cefddf435e3f70092b0b7bdbb60ac0e7540ae536786895645aed96a59331cfa3",
+        "originalSha256": "cefddf435e3f70092b0b7bdbb60ac0e7540ae536786895645aed96a59331cfa3"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-7-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-7-0.json",
+        "sha256": "d68919e57fa5a5105fb696bf008d740e01174918a9b8322a82d449f26cdb773c",
+        "originalSha256": "d68919e57fa5a5105fb696bf008d740e01174918a9b8322a82d449f26cdb773c"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-6-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-6-0.json",
+        "sha256": "5cf1954ccd023aebc7895db469980d314675f9c4479218e55c9362c1653d45c5",
+        "originalSha256": "5cf1954ccd023aebc7895db469980d314675f9c4479218e55c9362c1653d45c5"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-5-1.json",
+        "sha256": "95ed7cfb0645dc4b8d77bff56b51d248e3b4fc067045510ceb3a5c11b7f0f548",
+        "originalSha256": "95ed7cfb0645dc4b8d77bff56b51d248e3b4fc067045510ceb3a5c11b7f0f548"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-5-0.json",
+        "sha256": "6c4959dc428e863ecfbd91abfd147bf6a4cc6a9de2e2febf5cd638f10ca46623",
+        "originalSha256": "28efd556f5f57f97bd2665168276bdfb89b4381ff8fef305702537cb5dbb0c01"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-4-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-4-0.json",
+        "sha256": "dc9630337b90b0a6ac05b7842cd949109a54bc9a798cf63b0c44c36c72987d96",
+        "originalSha256": "dc9630337b90b0a6ac05b7842cd949109a54bc9a798cf63b0c44c36c72987d96"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-3-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-3-0.json",
+        "sha256": "0da5b7f33fac168b3cc58cfd81acb3bf342aaff71fc085e16aae1cea4f1733b6",
+        "originalSha256": "0da5b7f33fac168b3cc58cfd81acb3bf342aaff71fc085e16aae1cea4f1733b6"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-2-1.json",
+        "sha256": "5bc6ef1b2f2984860cacbaffe3ec98f3940be4fca73bc4aabcf817c929672da2",
+        "originalSha256": "5bc6ef1b2f2984860cacbaffe3ec98f3940be4fca73bc4aabcf817c929672da2"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-2-0.json",
+        "sha256": "b5a6d75addf8dc3a8db1e6e1b88f4baa78652090caeedac668603189ec012604",
+        "originalSha256": "25fa60528adc90f87c8f161c580afc62b02c162dfc2f933b3920953d3be3724d"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-1-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-1-0.json",
+        "sha256": "6a4b52d3d5e2af0d5c70620e8e410acd0db7a3ad7cc10a01590cf3d43666ab3b",
+        "originalSha256": "6a4b52d3d5e2af0d5c70620e8e410acd0db7a3ad7cc10a01590cf3d43666ab3b"
+      },
+      {
+        "path": "red-row-portable-signed-snapshot-spelling-linux-integration-001-0-0.json",
+        "source": "/tmp/boe-signed-snapshot-red-rows/portable-signed-snapshot-spelling-linux-integration-001-0-0.json",
+        "sha256": "b04cb8d20585b88f07cc2ea707cb11a5820321bba59e188dc25653aff89dd28f",
+        "originalSha256": "b04cb8d20585b88f07cc2ea707cb11a5820321bba59e188dc25653aff89dd28f"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/SignedSnapshotExactPathTests.cs",
+        "sha256": "ef9915ee6f6feebaa8327032826603f3dbbae36e1720d5a9b8f432dbef46d776"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PendingTurnSnapshotAuthorityTests.cs",
+        "sha256": "d9eb48aadf347bd4417990470d80004572bea8eff213f538076a882adb7b5832"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs",
+        "sha256": "cf7b7699ffea2ce73e04b7e6b8c864139222502b90c9fcb4a7b6980ffd6e97eb"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/LiveTurnPreparationServiceTests.cs",
+        "sha256": "b4f3535b7443ecdb1b7fee4a62f51eaff05a27ff275b2380fef11e019d619d3d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "sha256": "02cd444581a0bd93fc671cc1b9a6dd29005e485321adf403365f034db3461f14"
+      },
+      {
+        "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "sha256": "6930b07b3a7609b87e684e798b3f1d8af580327b0a50441df484102aa8beb2fe"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "a97a457256a092745d1a60d45f50972eb70d953fd4b106f7d01d2179ead83870"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "5c549aac5127ada3b2dd1e3ad3f332754ba8a626484b2dfdcbd372dc792798a6"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "d3d8701c113d60e1046d9d4e3c4e83b6e5d099f62b629d4e990e4fde9f8ff519"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "da21c7557d6efb4861473f4110625dd81723dd02ff43f6f478cc4a39bc8cbbe2"
+      }
+    ]
+  }
+}

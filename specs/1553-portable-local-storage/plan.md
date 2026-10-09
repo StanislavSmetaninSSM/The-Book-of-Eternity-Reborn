@@ -1,3 +1,34 @@
+## F16 actual original RED and isolated cleanup-alias follow-up — WIP, 2026-10-09
+
+Source d4795b2a runtime5a unchanged; independent correctedfixture/exact41 PASS.
+Fresh both-project Plan17180841/3,0execution72.2759672s,bothcleanup. Runner sorts
+categories; three ACTUAL separate commands guarantee knowncontrols complete: original
+unit15 at172121 **15/15PASS**,1/1,7.7221238s; newSigned22 at172146 **3PASS/19causalFAIL**,
+22/22,1/1,7.6141203s; ZIP4 at172231 **0PASS/4causalFAIL**,4/4,1/1,7.1357971s.
+All0skip/duplicate/timeout, bothcleanup. No single37/41 execution claim.
+Signed14bad signer paths emit authority instead of refusal (rollback value reads1);
+exactduplicate/Unicode2pass. Five original Live negative cases change all five retained
+artifact files before continuing/refusing; ordinary Unicode originalproducer positive
+passes. Six strictnewLive roots removed. ZIP literal list omits actualselectedarchive,
+literal retention gives erroneous follow-up; selected link listing skips file silently,
+link retention deletes newly Committed archive before laterinvalidfile. Four strictroots
+removed; actualraworder establishes fourcausal, not fixture/assumedcounts. Packets:
+[signed](recovery/storage-migration-signed-snapshot-20261009/manifest.json),
+[ZIP](recovery/storage-migration-archive-listing-20261009/manifest.json); initial97s
+compilefailure remains separatezeroexecutionpreparation. Hashes/originalpins verified.
+
+Independent inert-source review found/fixed physical fixedinputalias exclusion and
+missing-archive regression: rawexcludedfixedmatches now enterpreflight but notcopy;
+ZIP uses missing-tolerant ValidateFile before originalreader/deleter revalidation.
+Original exclusion equalities centralized without changing predicates. Both corrected
+designs PASS. AddONE isolated originalcleanupaliasFact (input/Turn_Request vs retained
+canonical lower), sourcefixture/designPASS, installedUNBUILT/UNRUN. Existing22rows
+unchanged. Next installed/raw gate, freshintegrationPlan1/actual1 without unchanged
+15/22 replay; only then install demonstrated4file runtimecorrection and frozenreview,
+freshfinal42 (38signed+ZIP4)/bothprojects/catalog/finalpackets. No remaining other
+engine/browser/incarnation/spiritual producer, physicalcleanup/otherowner/native/
+gameplay/fullF16 acceptance; T061–T065 unchecked; B2–B5 paused.
+
 ## F16 preparation correction — WIP, 2026-10-09
 
 Installed source/exact41 independent AstraXHigh PASSa5052072. Initial freshPlan171347

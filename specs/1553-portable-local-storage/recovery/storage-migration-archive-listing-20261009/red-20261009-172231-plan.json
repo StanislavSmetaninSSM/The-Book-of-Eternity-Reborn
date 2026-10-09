@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-save-archive-exact-listing-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d4795b2aee341e1ee8513edb815f6cbfff2cb807",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.5597703,
+  "Descriptors": [
+    {
+      "Name": "portable-save-archive-exact-listing-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-archive-exact-listing-linux",
+      "Categories": [
+        "portable-save-archive-exact-listing-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SaveArchiveExactListingTests.OriginalArchiveConsumersPreserveExactSelectedNamesAndIgnoreUnselectedLinks",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SaveArchiveExactListingTests.OriginalArchiveConsumersPreserveExactSelectedNamesAndIgnoreUnselectedLinks",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

@@ -109,6 +109,7 @@ public sealed class SignedSnapshotExactPathTests(ITestOutputHelper output)
             "literal_backslash" => new[] { "lore/odd\\leaf.json" },
             "outer_trim" => new[] { "lore/trailing.json " },
             "story_alias" => new[] { "stories/Chapter.jsonl", "stories/chapter.jsonl" },
+            "cleanup_alias" => new[] { "input/Turn_Request.json" },
             _ => new[] { "lore/ История.json" }
         };
         foreach (var path in names)
@@ -145,6 +146,10 @@ public sealed class SignedSnapshotExactPathTests(ITestOutputHelper output)
             foreach (var (path, bytes) in before) Assert.Equal(bytes, after[path]);
         }
     }
+
+    [Fact]
+    public Task OriginalLivePreparationRefusesCleanupPathAliasBeforeOldEvidenceCleanup() =>
+        OriginalLivePreparationRefusesUnrepresentableInventoryBeforeOldEvidenceCleanup("cleanup_alias");
 
     private static Dictionary<string, byte[]> Capture(string root) => Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
         .ToDictionary(path => Path.GetRelativePath(root, path), File.ReadAllBytes, StringComparer.Ordinal);

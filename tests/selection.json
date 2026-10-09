@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-signed-preparation-cleanup-alias-linux",
+      "reason": "T063/F16 independent inert correction/isolated original-cleanup alias fixture PASS. New1 installed UNBUILT/UNRUN; existing15 originalneighbors PASS, signed22 actual3P19causalF, ZIP4 actual4causalF retained. Finalfinite42=38signed+ZIP4, no wholeF16.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-signed-snapshot-spelling-linux",
       "reason": "T063/R25/F16 test-first WIP: independent AstraXHigh design/draft/selection PASS; installed source unbuilt/unrun. Signed22+affected15=37 and separate ZIP4. Runtime unchanged; preservation is after clean original admission, before producer cleanup/copy. No whole F16/native/gameplay claim.",
       "contracts": [

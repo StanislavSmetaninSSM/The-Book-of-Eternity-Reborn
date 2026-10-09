@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-signed-preparation-cleanup-alias-linux",
+      "responsibility": "One original Liveprepare fixed input cleanup-path alias refuses before deleting retained canonical turn/manifest/authority/snapshot/dice file bytes, generation unchanged and strict root removal.",
+      "excludes": "Other first-producer22 rows have a separate owner; no other signed producers/native/whole turn.",
+      "changeHints": [
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient.IntegrationTests/SignedSnapshotExactPathTests.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-signed-snapshot-spelling-linux",
+          "when": "Combine with signed22 and affected15 after original physical fixed-input alias correction."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalLivePreparationRefusesCleanupPathAliasBeforeOldEvidenceCleanup"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-signed-snapshot-spelling-linux",
       "responsibility": "Original detached signer16 and original liveprepare6: exact raw keys/path-values/baselines, unsafe spelling and case aliases refused before reads/old evidence cleanup; exact repeated paths and Unicode positives.",
       "excludes": "Only first live producer plus signing admission, not remaining engine/browser/incarnation/spiritual producers, historical reader change, native Windows, GM or whole turn.",
