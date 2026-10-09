@@ -1,3 +1,11 @@
+## Owner-requested safe stop — 2026-10-09
+
+#1553 remains open; T062–T065 are unfinished and B2–B5 remain paused. Resume from the
+[authoritative plan handoff](plan.md#authoritative-safe-stop-handoff--2026-10-09-explorerforge-boundary).
+Frozen5d68fead has independent SOURCE/EXACT22 PASS only: fresh Plan22/build and actual22 are
+**unrun**. Partial31 remains12executed/11PASS/1genuineFAIL/19unrun; carrier142/99 verified.
+No build/test or next-family work after the owner's manual-model-switch stop request.
+
 ## Storage migration continuation — 2026-10-08
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553),

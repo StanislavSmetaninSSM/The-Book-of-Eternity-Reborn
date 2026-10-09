@@ -17,7 +17,7 @@ Prepared-Shining5 bbf/1265 accepted47/27; Story12 b79/6ee accepted64/21; progres
 Prepared remote8 7cf/c7 accepted59/26. Earlier F13/F14/F17/treatment/cleanup receipts retain their recorded
 scopes, not new executions. Latest actual full GitHub-only restore remains e5; final combined restore pending.
 
-Explorer current: causal20=16@5dc+4@259 plus known2 preserved at010a112/64. Runtime554 partial31 executes12:11PASS+one real original committed-release post-verification continuation failure;19unrun. Packet142/99 preserved, no final acceptance.
+Explorer current: causal20=16@5dc+4@259 plus known2 preserved at010a112/64. Runtime554 partial31 executes12:11PASS+one real original committed-release post-verification continuation failure;19unrun. Packet142/99 independently accepted. Correction5d68 has independent SOURCE/EXACT22 PASS only; matching fresh build/actual22 are unrun. Owner-requested safe stop for manual model switch; authoritative resume commands and open-family caveats are at the top of [plan](plan.md). No final Explorer acceptance.
 
 Open: remaining accepted-continuation owners and Ready-specific bookkeeping cause retention, Explorer
 whole-command,
@@ -60,8 +60,8 @@ publisher owner scopes; read-only helpers are not equivalent. The finite owner s
 publishers are assessed with their original consumers, no global Dispose rewrite or operation latch.
 Explorer Politics373/480, TradeAndForge1488, attraction501 and
 browser forge1484 InvalidOperation catches also include CSP; keep whole-command/parity qualification.
-GameLoop canonical logging before CSP classification and known-error→diagnostic-CSP are distinct
-remaining boundaries. F18 parent census27 canonical-contention assignment candidates includes dual
+GameLoop canonical logging before CSP classification and known-error→diagnostic-CSP were closed
+by the bounded original-loop/helper4 atfdc/e77 above; other caller families are not implied covered. F18 parent census27 canonical-contention assignment candidates includes dual
 and intentional negative controls: not27 defects, no blanket hook substitution. Five precise source-only
 censuses are preserved in the accepted-continuation evidence manifest with original source identities,
 including worker reserve-CAS→early-failure audit; none is an executed failure count.

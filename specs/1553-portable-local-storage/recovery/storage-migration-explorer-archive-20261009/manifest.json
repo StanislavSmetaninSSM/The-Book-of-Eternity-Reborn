@@ -1271,5 +1271,42 @@
         "sha256": "ab221f63b257fdcb29535216bbc35b90ebf8c98d7100a0bebd6965551bf432c6"
       }
     ]
+  },
+  "handoffSourceAids": {
+    "source": "5d68fead937b5b14010ef660a66f04683c661d17",
+    "qualification": "Preservation only at owner-requested stop. Each source-only aid retains its own historical source identity; no new execution, runtime acceptance or completeness from lexical counts. Historical initial/corrected/greenPartial sections unchanged.",
+    "artifacts": [
+      {
+        "path": "handoff-source-ready-followup-source-e77-reviewed.json",
+        "source": "/tmp/boe-1553-ready-followup-source-e77-reviewed.json",
+        "sha256": "50e5405e36d10e20e7b1fded1ece83cc4d5e1929aff561462152f66d2c2b8177",
+        "originalSha256": "50e5405e36d10e20e7b1fded1ece83cc4d5e1929aff561462152f66d2c2b8177"
+      },
+      {
+        "path": "handoff-source-c2-source-e77.json",
+        "source": "/tmp/boe-1553-c2-source-e77.json",
+        "sha256": "6c8b5c12b0774e8830951faa548b78330222ff7b692bca79e63f86e1d2cb7000",
+        "originalSha256": "6c8b5c12b0774e8830951faa548b78330222ff7b692bca79e63f86e1d2cb7000"
+      },
+      {
+        "path": "handoff-source-selection-audit-e77.json",
+        "source": "/tmp/boe-1553-selection-audit-e77.json",
+        "sha256": "af4318366ef8ec1912f36fe8ee24a10711705a47d9b007f9664c5672cb6fa3e1",
+        "originalSha256": "af4318366ef8ec1912f36fe8ee24a10711705a47d9b007f9664c5672cb6fa3e1"
+      },
+      {
+        "path": "handoff-source-selector-moves-e77.json",
+        "source": "/tmp/boe-1553-selector-moves-e77.json",
+        "sha256": "a0cae2b8be107d90c6be03fdf814febb0221b88c9c6e6838301aa9f968bc95b8",
+        "originalSha256": "a0cae2b8be107d90c6be03fdf814febb0221b88c9c6e6838301aa9f968bc95b8"
+      },
+      {
+        "path": "handoff-source-wildcard-moves-e77.json",
+        "source": "/tmp/boe-1553-wildcard-moves-e77.json",
+        "sha256": "9b8660f3e0d02c32502b3ed60f827c85b39a970c8fc2099236da76d2a5bf9c0f",
+        "originalSha256": "9b8660f3e0d02c32502b3ed60f827c85b39a970c8fc2099236da76d2a5bf9c0f"
+      }
+    ],
+    "sourceFiles": []
   }
 }

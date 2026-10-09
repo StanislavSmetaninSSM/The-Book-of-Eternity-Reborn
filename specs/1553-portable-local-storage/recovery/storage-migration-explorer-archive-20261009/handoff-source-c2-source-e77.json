@@ -1,0 +1,165 @@
+{
+  "purpose": "Source-only C2 continuation work aid; no runtime edits/build/tests/discovery, no B2 acceptance",
+  "source": "e77dcf1abd135a89474bfed4c6dc1046783b0842",
+  "pins": [
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2InitialTransport.cs",
+      "blob": "38e6818d648b95bc8eb9e8151035494ccc5a27d0",
+      "sha256": "4871ad824989c0c5af3c5aca11d39c8d525ddaade5908f458ee6a6077929f28b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedTransport.cs",
+      "blob": "b5df7360e67af2dd7168044395338d33519c30c8",
+      "sha256": "6ccee88f510190164a7efeac8999c63041a0be84db34cef262065b593d75ffa7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingSubmission.cs",
+      "blob": "9672e8ecca7c696a5fbc3ff6287e02832d1eba8c",
+      "sha256": "93f29c49b45a8be21f0bda72b2699c87a6668de58dc6e674857d473fcab53dbf"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingRepair.cs",
+      "blob": "7acd4af882a5240d3c675071b0bd58f32c60785f",
+      "sha256": "942417727a015731f9b09ccef2903377a088ed25ce522abefa90479b59f8a234"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs",
+      "blob": "944affd92ab9b0dbd39e748226f7da9f7d5d728f",
+      "sha256": "4598559532634814eb5a6bafb779a1f416f097f280fa70623e651c41af727d9c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs",
+      "blob": "8bdaa6b94a7cf610c6d1d0fde1220fd017243b7f",
+      "sha256": "28d9b30d4a1d873b1acb057f42a59b45cbd2186aa9439328d912faca5a7663a2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC4Publication.cs",
+      "blob": "d5af2603ce33e95c433b6120aa86239afaad4ffd",
+      "sha256": "1450ddceb5664d11806de8af59ef5db064969501b02febc40b375d7996a65e9e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedReplay.cs",
+      "blob": "27a3848d30ffd699c09c7ad903ea1b04ccd8aa64",
+      "sha256": "4c1b10f675da3eec5f4c3fc5c253e7d1b60729808e5d0d1e01a8bc1131c5047e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationTransport.cs",
+      "blob": "5be10549586d12a98090371b3e4ab6913bc29ca9",
+      "sha256": "5163f0f5a0125915589052d32405f1e43c6f4b025acbab990470fcd05be565ba"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PrivateAdapter.cs",
+      "blob": "a6bfea52fcf73c578c9d3e8f04e12c93bd9b30b4",
+      "sha256": "165018387100212a14cee85af02fb3a94505aa8299e2acdb96d441d2038e3a6e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "blob": "027f15a2e654e91359c15d4e627f0197972a5407",
+      "sha256": "925cdbdde1fd593d6df10902cae97dd0bec0af2a19629d60005116df6fd4efab"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2InitialTransport.cs",
+      "blob": "a24e256268ab2a5b21f4b13cf333cbd0b642a38f",
+      "sha256": "8d9d0b1cbfb20f12065290073ca2df36122c1e5d704c8fdf6f2b47a838e93b09"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2PendingRepair.cs",
+      "blob": "24b90994a997436d87d89255280dce3594edbd12",
+      "sha256": "8e648f73dc54601818ab67300186875eda16009cd4cc92448cb69aff37aa18c2"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2SavedPendingRepair.cs",
+      "blob": "39dcf11760aad17f9a8bf87cdfd4f4a653038bf4",
+      "sha256": "0d7d67e700ebfd82d77fb5278e7394a49848215f6d2ae97c9d3759f227d3735b"
+    }
+  ],
+  "findings": [
+    {
+      "id": "C2-01",
+      "locations": [
+        "SpiritualC2InitialTransport:85-126",
+        "GameEngine.SpiritualContinuation:465-469"
+      ],
+      "status": "source-demonstrated-connected-risk",
+      "detail": "Original checkpoint and pending writes catch all at87/110, then ordinary readback. Engine treats committed OR repair_required as captured=true. Genuine common publisher Unknown must stop before readback or later pending publication; do not infer accepted runtime defect without causal fixture."
+    },
+    {
+      "id": "C2-02",
+      "locations": [
+        "SpiritualC2SavedTransport:89-153"
+      ],
+      "status": "source-demonstrated-connected-risk",
+      "detail": "Original saved checkpoint/pending catch all91/130 then readback; readback catches95/113/139 are separate. Preserve independently committed checkpoint when pending publication becomes Unknown; do not assert both files form one batch."
+    },
+    {
+      "id": "C2-03",
+      "locations": [
+        "SpiritualC2PendingSubmission:177-215"
+      ],
+      "status": "source-demonstrated-connected-risk",
+      "detail": "Actual pending-submission checkpoint writer catch179 falls through to readback, RepairSpiritualPending200 and resumed CommitC2Saved204. Outer206 includes InvalidOperationException and would flatten rethrown CSP. FinallyRevokeUnderLease remains required."
+    },
+    {
+      "id": "C2-04",
+      "locations": [
+        "SpiritualC2PendingRepair:124-177"
+      ],
+      "status": "source-demonstrated-connected-risk",
+      "detail": "Actual repair writer catch126 follows with reads and owner reopen153. Outer169 includes InvalidOperationException and would flatten rethrown CSP. Existing readonly IOException/Unauthorized catch138 need not become blanket rewrite. Finally disposes old capture."
+    },
+    {
+      "id": "C2-05",
+      "locations": [
+        "SpiritualDependentProgress:138-153",
+        "SpiritualDependentProgress:264-285"
+      ],
+      "status": "source-demonstrated-connected-risk",
+      "detail": "Actual dependent progress checkpoint writer catch266 falls through to readback and caller ReadSpiritualWoundContinuation142. Outer EvaluateAndCommit catch149 includes InvalidOperationException. Keep exact accepted response/checkpoint/Ready retained, no false rejected or next frontier after actual Unknown."
+    },
+    {
+      "id": "C2-06",
+      "locations": [
+        "GameEngine.SpiritualContinuation:231-238",
+        "GameEngine.SpiritualContinuation:260-271",
+        "GameEngine.SpiritualContinuation:622-647"
+      ],
+      "status": "source-demonstrated-connected-risk",
+      "detail": "Outer233 maps InvalidOperation including CSP to Rejected; TryReconcile266 catches CSP from actual permitted obsolete transport cleanup; actual response EvaluateAndCommit622 catch637 maps CSP to ready_invalid then DeleteExactReady646. Must trace original callers and owned close; helper-only proof cannot qualify whole original engine."
+    },
+    {
+      "id": "C2-07",
+      "locations": [
+        "SpiritualOriginalTurnCapture:1039-1064"
+      ],
+      "status": "source-qualified-revocation-preservation",
+      "detail": "RevokeUnderLease checks active lease, invalidates matching in-memory effect authority, then Dispose invalidates journal, resource/effect/source owners and fields. Retain this finally/disposal; it is not permission for canonical rollback or recovery."
+    },
+    {
+      "id": "C2-08",
+      "locations": [
+        "AfterlifeResourceCutoverTests.SpiritualC2PendingRepair:90-134",
+        "AfterlifeResourceCutoverTests.SpiritualC2InitialTransport:249-345",
+        "AfterlifeResourceCutoverTests.SpiritualC2SavedPendingRepair:85-126"
+      ],
+      "status": "existing-source-controls-unexecuted-by-this-audit",
+      "detail": "Existing injection names say uncertain IOException, but old means no write, new means fully completed ordinary write then IOException, third means fully completed other image then IOException. Those cases carry no actual common nonCommitted journal/CSP and should retain exact readback policy; do not replace them with fake CSP or treat as actual Unknown qualification."
+    },
+    {
+      "id": "C2-09",
+      "locations": [
+        "SpiritualC4Publication:164",
+        "SpiritualC2SavedReplay:173",
+        "SpiritualContinuationTransport:64",
+        "SpiritualC2PrivateAdapter:196"
+      ],
+      "status": "trace-candidates-not-confirmed-defects",
+      "detail": "C4 authority construction, saved replay and continuation projection have read/in-memory paths; continuation opens with allowAutomaticTransport:false. Trace transitive callbacks before altering catches. Private adapter submit IOException/Unauthorized catch196 does not catch CSP by itself. No blanket catch conversion."
+    }
+  ],
+  "verificationPlan": "Future finite original initial/saved/pending-repair/submission/dependent cuts via actual MemberPublished plus foreign retained image; assert reached phase, same CSP, no postcut read/reopen/Readydelete, prior committed images and owned cleanup; preserve known IO controls. Exact selection and source review precede any actual run."
+}

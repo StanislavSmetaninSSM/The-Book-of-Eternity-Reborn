@@ -1,0 +1,167 @@
+{
+  "kind": "source-only; no build/test execution or defect acceptance",
+  "source": "e77dcf1abd135a89474bfed4c6dc1046783b0842",
+  "sources": [
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "blob": "66702543107f9633a85c625cefaea077dad695b4",
+      "sha256": "f6982c4340a6cdc2942b56763f3738df2b0c91f158318c21dbb8e14d470cae50"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "blob": "5675c1b20a7414f08753eedd76aa9ff197b9e717",
+      "sha256": "f799eb5631a3eda6465da3f1e0e8caa05898e7f629425ebc89e6748dd657e770"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "blob": "ef5bb189f9ec935260ece5ae2da7032a0d368867",
+      "sha256": "839bfed0d548d24af9288503f37f1df6c04e0789140f82c0f6faad1073060837"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GmWorkerValidationRepairDelegatorTests.cs",
+      "blob": "a1ef8dda4758e717a62da625ec472f0d9e8ecb7d",
+      "sha256": "2ae7422e583235fefbfded6d95f465eed60bd019c1dbb0ff06d57f75cc7d49c6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+      "blob": "35299ea975160e25e8e94c5aeaf85add0f088304",
+      "sha256": "401100aa4874634d50d1528d9c12808d7db6c92d8ce7d2d75c27f72e410eff5a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "blob": "027f15a2e654e91359c15d4e627f0197972a5407",
+      "sha256": "925cdbdde1fd593d6df10902cae97dd0bec0af2a19629d60005116df6fd4efab"
+    }
+  ],
+  "findings": [
+    {
+      "id": "ready-latest-task",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "lines": [
+        148,
+        166,
+        381
+      ],
+      "trace": "TryRun -> WriteLatestTaskIfCurrent owned publication -> generic task-build catch -> router audit -> TaskBuildFailed",
+      "obligation": "real latest-task MemberPublished Unknown must preserve original carrier/identity and stop audit/pool; no worker launch needed"
+    },
+    {
+      "id": "ready-created-audit",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "lines": [
+        473,
+        476,
+        498
+      ],
+      "trace": "Ready committed -> ready-created canonical audit Unknown -> AuditLog.AppendEventCore136 suppresses -> Created=true -> Applied; if core suppression is corrected, outer Ready catch498 remains connected",
+      "obligation": "preserve Accepted decision and Ready committed bytes on original uncertainty, stop success/further diagnostic audit and fallback",
+      "additional_source": {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+        "lines": [
+          107,
+          136
+        ]
+      }
+    },
+    {
+      "id": "ready-failure-diagnostic",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "lines": [
+        498,
+        512,
+        533
+      ],
+      "trace": "known Ready failure -> TryRecordPostApplyDiagnostic512 -> default audit core136 suppresses actual audit publication Unknown; owned AppendEventIfCurrent acquisition failure outside core can reach delegator catch533",
+      "obligation": "preserve known original failure and Accepted facts on same real CSP; no Applied-without-Ready success continuation",
+      "additional_source": {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+        "lines": [
+          107,
+          136
+        ]
+      }
+    },
+    {
+      "id": "engine-worker-outer",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "lines": [
+        7572,
+        7590,
+        7623,
+        3852,
+        3877
+      ],
+      "trace": "engine RunWorkerValidationRepair generic catch7623 -> WorkerFailed -> WriteValidationRepairRequestForSession3852/3877 writes fallback request; separate SpiritualContinuation575 caller is queued C2",
+      "obligation": "propagated uncertainty must not be recoded as ordinary worker failure",
+      "additional_source": {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+        "lines": [
+          233,
+          575
+        ]
+      }
+    },
+    {
+      "id": "old-ready-controls-native",
+      "path": "BookOfEternityClient.IntegrationTests/GmWorkerValidationRepairDelegatorTests.cs",
+      "lines": [
+        49,
+        427,
+        1127,
+        1151
+      ],
+      "trace": "old named fake-worker tests construct real pool and pwsh.exe script profiles, no synthetic native admission",
+      "obligation": "not a cheap Linux substitute; qualify backend or bound helper scope and preserve default refusal"
+    },
+    {
+      "id": "terminal-wait-scope",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "lines": [
+        448,
+        474,
+        488,
+        508,
+        578,
+        698
+      ],
+      "trace": "Existing Ready is checked immediately461; timeout is floored at15s and runtime-health first checks15s; Escape may exit early. Harness catch738 swallows actual writeUnknown; request read703 lies outside this catch; unretained keyTask508 is cancelled but not joined",
+      "obligation": "direct helper proof must stay labeled helper; full harness-timeout/runtime-health proof must qualify bounded clock/timing and actual key-task cleanup; Cancelled branches86/272/1442 perform canonical cleanup/rollback"
+    },
+    {
+      "id": "ready-primary-write",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "lines": [
+        466,
+        473,
+        498
+      ],
+      "trace": "actual Ready write or continuation CAS Unknown -> generic Ready catch498 -> postapply diagnostic canonical work",
+      "obligation": "separate primary cut; preserve accepted decision and exact correlated request/proposal; no next audit or fallback"
+    },
+    {
+      "id": "router-audit",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "lines": [
+        116,
+        128,
+        166,
+        539
+      ],
+      "trace": "early router audit and known task-build failure diagnostic use default audit core136 which suppresses canonical publication uncertainty",
+      "obligation": "classify with worker audit family; preserve known original cause where one exists, do not fabricate cause for ordinary skip router event"
+    },
+    {
+      "id": "applied-without-ready-tail",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "lines": [
+        3069,
+        3458,
+        3339
+      ],
+      "trace": "Applied without Ready -> accepted worker repair trajectory -> canonical ledger append; independent of already Accepted facts",
+      "obligation": "ordinary known-Ready-failure policy remains; unknown diagnostic must not enter this continuation"
+    }
+  ],
+  "review": "Independent Astra XHigh source review; no builds/tests. Corrected inner-audit suppression and timeout scope from first temporary aid.",
+  "supersedes_temporary_aid_sha256": "02bc9844627c44eba0f09fd5a2a1122ad09649234ec09dc897f93c1a0c59aec4"
+}

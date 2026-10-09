@@ -1,3 +1,113 @@
+## Authoritative safe-stop handoff — 2026-10-09, Explorer/Forge boundary
+
+Owner requested a safe stop for a manual model switch to Sol 6.1. **Do not start a build,
+run tests, or begin the next family during this handoff.** No model, access, main, CI,
+or gameplay configuration was changed. #1553 remains open; #1536 B2–B5 remain paused.
+Earlier dated checkpoints below are historical; this section is the current resume point.
+
+- Workspace: `/workspace/boe-1553-storage-migration`; branch
+  `1553-storage-migration-cloud-20261008`.
+- Frozen implementation and selection: `5d68fead937b5b14010ef660a66f04683c661d17`,
+  clean and exact GitHub branch SHA verified before this documentation-only handoff.
+  Independent Astra SOURCE/FIXTURE/EXACT22 **PASS** received at that SHA. It is
+  **unbuilt and unexecuted**, not a runtime acceptance. This handoff commit changes
+  documentation only; use its final GitHub branch tip when resuming.
+- Preserved partial carrier: `eb49a05338753a2b3ca6ef4c081548f918d2dba8`;
+  [manifest](recovery/storage-migration-explorer-archive-20261009/manifest.json):
+  all142 stored/frozen/expanded/present-original artifacts and99 historical source
+  pins independently verified. No evidence was removed or rewritten.
+- Causal coverage:20 genuine publication failures =16 at5dc0a2a0 +4 at25916862;
+  known compensation2 passed at5dc. Initial four fixture misses remain preserved.
+- Latest actual at554dfe11, `20261009-053250-082-261710-894f618be2c7499c8d05a47c4f1f6f32-categories`:
+  **12/31 executed =11 PASS +1 genuine continuation failure;19 unrun**,16.4504968s,
+  both runner cleanup flags. Matching fresh Plan053040 built both projects.
+  The failure retains actual domain Committed images, an existing empty committed
+  marker, and the authentic UI-lock-delete Unknown journal/foreign bytes, then attempts
+  one ordinary nested postcheck admission (plus separate readonly closing1).
+  Submit result/notification/form-retirement assertions were not reached.
+- Correction5d68 marks only the existing matching BindingState from actual browser
+  `ContinuationBlocked`. It skips only no-lease ordinary post-operation readmission;
+  explicit-lease verification, ThrowIfInvalid, readonly finalization, generation
+  replacement precedence, and factual Committed/RolledBack/Uncertain remain intact.
+  No global filesystem latch or message/NeedsFollowUp inference.
+
+### Exact next operation after the owner resumes work
+
+Re-read AGENTS/workflow/testing/current spec/tasks; verify clean local and exact remote
+SHA. Source/selection review is complete for5d68; no further implementation is pending
+before the **fresh both-project Plan22**. The old554 binaries cannot qualify5d68.
+From the checkout, with the existing environment (or equivalent SDK10/runtime8 setup):
+
+```bash
+source /workspace/.boe-1553-migration-session/env.sh
+pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category portable-explorer-archive-outcome-causal-linux,portable-explorer-archive-binding-controls -PlanOnly'
+```
+
+Only after successful matching build/selection confirms exactly22 planned and0 executed:
+
+```bash
+pwsh -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category portable-explorer-archive-outcome-causal-linux,portable-explorer-archive-binding-controls -NoBuild'
+```
+
+Selection is original unexecuted18 plus binding4: failed committed-release Submit,
+unexecuted malformed-candidate control, healthy original Submit, and actual tree-CSP/
+closing-generation replacement control. Healthy Submit is intentionally repeated because
+it reaches the changed nested postcheck; ten other prior PASS remain retained. Eventual
+unique scope would be composed32=retained10+new22, **not a single32 run**. Classify any
+partial/failure honestly; preserve original artifacts and do not replay passing cohorts
+without a relevant new change. Then independent raw gate, saved packet, matching discovery
+only, and final carrier gate. Latest accepted global discovery remains **518/11313 atfdc219f**,
+zero tests; it is not a current5d68 inventory/build claim.
+
+### Remaining authorized work after Explorer acceptance
+
+1. Ready/worker/audit/proposal: preserve actual accepted apply, committed Ready and durable
+   bundle/ACK facts while stopping actual publication uncertainty. Cover latest-task and
+   reservation publications before launch, Ready versus its later audit, known failure to
+   diagnostic Unknown, trajectory/harness and original outer fallback paths. Existing
+   pwsh.exe/native-dependent positive worker recipes are not portable no-launch controls.
+   ProposalOnlyDispatch BuildTask's conditional generation publication and known-build-error
+   audit need connected handling/owned close; original Program consumer remains a source
+   qualification unless selected. Genuine ApplyGate seed uses actual commit and current
+   generation, with controlled validator explicitly qualified; do not fabricate Accepted.
+2. C2 original writer/readback and outer InvalidOperation paths through engine Ready deletion;
+   preserve known completed-write/readback policy, revoke/dispose field authority, and exact
+   prior checkpoint facts. Member After bytes alone do not settle an unresolved journal.
+3. F16 media/listing/export/path producers: host-exact spelling, canonical story export under
+   proper admission, and explicit early refusal of unrepresentable snapshot cohorts before
+   case-insensitive coalescing. Preserve existing reader alias/unsafe-path contracts.
+4. F18 publication-hook and admission/generation-fixture ports with real original scope,
+   barrier release and actual task joins; not blanket substitution of27 lexical hooks.
+   Remaining concrete publisher-owned closes use source-classified live branches, not120
+   automatic rewrites or invented simultaneous-double-fault claims.
+5. Whole intended selection and accepted/open-map reconciliation; explicit include or reviewed
+   exclusion of eight historical new IDs omitted from selection. No all-category replay.
+   Final single GitHub-only fresh restore is parent-owned. Latest actually completed restore
+   before this handoff remains e5; newer remote checkpoints are not claimed freshly restored.
+
+Shared Prepared postcheck caveat: the new marker is set from BrowserLocalWriteResult's actual
+ContinuationBlocked only. CapturePreparedResult carries disposition separately; nested Prepared
+postchecks and other original consumers are not implicitly qualified by this correction or by
+previous Prepared8. Trace and obtain bounded original-consumer evidence before any broader claim.
+Sibling Mortal/Saref/browser presenters remain source-qualified, not whole-entry execution from
+forge. Native/full gameplay/provider and self-owned simultaneous secondary-close faults remain
+unqualified. T062–T065 are not complete.
+
+Durable source-only aids are in the accepted-continuation manifest (owned-close, admission,
+generation, typed catches and worker reservation). The existing Explorer manifest now appends
+five exact original source-only aids: reviewed Ready, C2, selection audit, exact-selector moves
+and wildcard moves. Historical142/99 sections are unchanged; handoff preservation adds5 artifacts
+(no new runtime/source acceptance), giving147 stored artifacts and99 manifest source pins.
+Embedded aids retain their historical source pins and qualifications. ProposalOnlyDispatch's
+additional connected source caveat is recorded in the queue above; it is not an executed failure.
+
+Normal `dotnet build-server shutdown` in the established SDK environment returned0 at stop.
+No active test runner, testhost, PowerShell job or implementation executor session remains.
+Historical MSBuild node PIDs261287/261530/261531 changed to defunct child records after normal
+shutdown; no generic kill or new build was used. No Plan/build/test started after the stop.
+All code/results remain in place. Final handoff remote SHA and parent fresh-restore receipt
+are reported separately after publication.
+
 ## Scoped browser post-operation correction WIP — 2026-10-09
 
 After preserved eb49a053 partial31, original BindingState can record that its actual browser result has
