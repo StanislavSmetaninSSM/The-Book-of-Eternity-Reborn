@@ -22,8 +22,11 @@ public sealed partial class QteSceneServiceTests : IDisposable
     private readonly FileSystemManager _fs;
     private readonly QteSceneService _service;
 
-    public QteSceneServiceTests()
+    private readonly Xunit.Abstractions.ITestOutputHelper? _cleanupOutput;
+
+    public QteSceneServiceTests(Xunit.Abstractions.ITestOutputHelper? output = null)
     {
+        _cleanupOutput = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-qte-tests-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);

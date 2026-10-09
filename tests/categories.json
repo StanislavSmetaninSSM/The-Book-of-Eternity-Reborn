@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-cleanup-outcome-causal-linux",
+      "responsibility": "Eight original consumer publication-Unknown boundaries: engine backup and undispatched cleanup, actual player request staging, nested/final QTE normalization cleanup, browser operation/restore/postcommit cleanup. Actual current MemberPublished journal/bytes and reached post-cut continuation observations.",
+      "excludes": "No provider or GM process, native Windows, full QTE web/UI qualification, progression math or whole-operation atomicity. Test-only causal candidate, not runtime acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient/Services/QteSceneService.cs",
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalRollbackAndUndispatchedPrepStopNextConsumer",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalTurnStagingDoesNotCompensateUncertainRequest",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.CleanupUnknown_OriginalQteActionStopsNestedAndFinalContinuation",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserBoundaryStopsContinuation"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-treatment-terminal-causal-linux",
       "responsibility": "Original pre-canonical terminal consumer typed publication Uncertain plus known safe HeldBlocked and failed restoration Aggregate. Actual command member/receipt and known failure distinctions; exact affected method neighbors.",
       "excludes": "No broad treatment/gameplay category or native Windows qualification.",

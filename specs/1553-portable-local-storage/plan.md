@@ -1,3 +1,28 @@
+## F10 test-only cleanup/staging fixture WIP — 2026-10-09
+
+The approved design is now concrete eight-row test source: engine original restore and
+undispatched preparation (2), original ProcessPlayerTurn staging (1), actual public QTE
+nested/final cleanup (2), original browser operation/restoration/postcommit cleanup (3).
+A scoped fixture observer reads the real current publication journal at MemberPublished,
+retains exact bytes, writes foreign fixture bytes and throws a known nontransient fault;
+the actual CSP is captured by identity. Post-cut counters describe reached hook boundaries.
+Only the next lock acquisition following actual SessionOperationClosing is classified as
+read-only finalization. Evidence is emitted before desired GREEN assertions and fixture removal.
+Two existing logger boundaries deliberately throw after the cut to test first-decision retention.
+
+Original staging uses actual local bootstrap/Chaos Sea initialization and original cancellation
+before arming the request publication cut; it captures real snapshot/authority bytes before any
+GM wait. No provider, fake GM response or publication-observer lease is introduced. Browser
+postcommit requires an actual durable marker and retains Committed plus ContinuationBlocked;
+QteWebInteractionService currently ignores these flags after building its state, so these generic
+coordinator fixtures make no UI follow-up or complete browser-QTE acceptance claim.
+
+This is an unbuilt, unexecuted, unreviewed test-only WIP at the eight-row category above.
+No production change. Next: complete source/fixture review and exact selection gate, then matching
+PlanOnly/build before any causal execution. Known prepublication QTE and direct-gacha refusal
+neighbors remain obligations for the final affected runtime selection. Separate progression4
+and F16/F18 remain pending; no broad lifecycle test request follows.
+
 ## F10 cleanup and connected outcome-tail design checkpoint — 2026-10-08
 
 Treatment final independent carrier gate PASScf58:100 artifacts/164 historical pins;

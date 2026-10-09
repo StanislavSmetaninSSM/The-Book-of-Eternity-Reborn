@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-cleanup-outcome-causal-linux",
+      "reason": "Proposed original cleanup/staging8 causal packet only; runtime unchanged. Test-only source/fixture gate and matching build required before actual. Known refusal neighbors join final runtime selection.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES"
+      ]
+    },
+    {
       "category": "portable-treatment-terminal-causal-linux",
       "reason": "Final exact three for changed original terminal consumer: same typed uncertainty/own-lease-close and known safe/Unsafe settlement policies. Other thirteen passing obligations retained from their unchanged relevant sources.",
       "contracts": [
