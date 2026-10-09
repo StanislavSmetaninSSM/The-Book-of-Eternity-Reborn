@@ -1,0 +1,159 @@
+{
+  "scope": "Original C2 private transport storage outcome service slice; no full engine/GM/B2-B5/native Windows acceptance.",
+  "compile": {
+    "source": "9f06dfd8b36522c52aaeb2be92509be01f2cc4d2",
+    "qualification": "Raw exact selected source/summary/TRX; build-only/causal/fixture/outcome classification in plan.",
+    "artifacts": [
+      {
+        "path": "compile-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-085805-813-304435-7811f957d7084a8292edae39759469f2-categories/summary.json",
+        "sha256": "2d42d3da2bd0a0a8f07af73c02381f0dab4480528a89a3f42f874d69e23409fc",
+        "originalSha256": "2d42d3da2bd0a0a8f07af73c02381f0dab4480528a89a3f42f874d69e23409fc"
+      },
+      {
+        "path": "compile-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-085805-813-304435-7811f957d7084a8292edae39759469f2-categories/dotnet-test.log",
+        "sha256": "c3e2d36369317af2a610ceec6f0f69ac7adf92620c52b538be420eb83c7dee2c",
+        "originalSha256": "0d59f9188a0af9d6c06fe251a326becb1426c089db7047d643000236c0de49fd"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2InitialTransport.cs",
+        "sha256": "4871ad824989c0c5af3c5aca11d39c8d525ddaade5908f458ee6a6077929f28b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedTransport.cs",
+        "sha256": "6ccee88f510190164a7efeac8999c63041a0be84db34cef262065b593d75ffa7"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingSubmission.cs",
+        "sha256": "93f29c49b45a8be21f0bda72b2699c87a6668de58dc6e674857d473fcab53dbf"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingRepair.cs",
+        "sha256": "942417727a015731f9b09ccef2903377a088ed25ce522abefa90479b59f8a234"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PendingClassifier.cs",
+        "sha256": "6f0babf9b6b44c554bdd392bc6693edc138165394875be299ef7ec8eff3852b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedDecisionDraft.cs",
+        "sha256": "65d3aea406782678df350c4f40db60d30859ff9b7b84cf64dde6f56e5fab2e4a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2PrivateAdapter.cs",
+        "sha256": "165018387100212a14cee85af02fb3a94505aa8299e2acdb96d441d2038e3a6e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedReplay.cs",
+        "sha256": "4c1b10f675da3eec5f4c3fc5c253e7d1b60729808e5d0d1e01a8bc1131c5047e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2InitialReplay.cs",
+        "sha256": "b1a54261e5a5f9f29073010b14b0789662dc4d681e3a91f1b2cca96519d3fda0"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs",
+        "sha256": "4598559532634814eb5a6bafb779a1f416f097f280fa70623e651c41af727d9c"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs",
+        "sha256": "28d9b30d4a1d873b1acb057f42a59b45cbd2186aa9439328d912faca5a7663a2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalC2FirstCheckpointDraft.cs",
+        "sha256": "866e44a160589aaa8bdde380d16b3f695651f8033102cfc76ec920e2e69a7914"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationTransport.cs",
+        "sha256": "5163f0f5a0125915589052d32405f1e43c6f4b025acbab990470fcd05be565ba"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationDraft.cs",
+        "sha256": "6793bcf32cc9b63542135c86c7ce8ef172c37618f834ff4ec7b0d6aec42b0aa6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStorageOutcome.cs",
+        "sha256": "1869424e732019933d3b9a26aff08e53d54e594fce7923c0ab24fd59667d8456"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStagedPreparedFixture.cs",
+        "sha256": "f7eae8151245f2736bfcd251a03541f1c8a84c7345e6e7f72414f590c6cb3b45"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStagedFixture.cs",
+        "sha256": "c963cc69ad45842303fbfd2d6676e6eaafcfb218cdb72329963416e9d6d35db5"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStagedCommitFailures.cs",
+        "sha256": "5a674e58828ae6720f1fb09b1d00d62d466c926eacfc404a71e40053351286b0"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2SavedDecisionReplay.cs",
+        "sha256": "b5b68500bcbf187b1c0bfe8da8a574ea38e3b60c895122fae00f1fbddd65c266"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2PendingClassifier.cs",
+        "sha256": "fb7433605b51de72c387925161e9df36d3971aedfe5c974fd956368ab4864c0b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2InitialTransport.cs",
+        "sha256": "8d9d0b1cbfb20f12065290073ca2df36122c1e5d704c8fdf6f2b47a838e93b09"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2SavedPendingRepair.cs",
+        "sha256": "0d7d67e700ebfd82d77fb5278e7394a49848215f6d2ae97c9d3759f227d3735b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualC2PendingRepair.cs",
+        "sha256": "8e648f73dc54601818ab67300186875eda16009cd4cc92448cb69aff37aa18c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrame.cs",
+        "sha256": "0b8d6a57e013566e6ae4782821d161a6f101dd7c53916af88d472a662f1904fa"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GmWorkerStorageOutcomeTests.cs",
+        "sha256": "3e45154c5cac1709a23339070ff4b8569cf115942b1bba07b65b9eef0ca65ae6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+        "sha256": "925cdbdde1fd593d6df10902cae97dd0bec0af2a19629d60005116df6fd4efab"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "efd8f3be1c4cdb72a06eeb5e76e6d45951afe96958f34092eaea842990fd21f0"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "7eed494f0e263487726cc745c89771989597180e5fdaa001108242e5c454642b"
+      }
+    ]
+  }
+}

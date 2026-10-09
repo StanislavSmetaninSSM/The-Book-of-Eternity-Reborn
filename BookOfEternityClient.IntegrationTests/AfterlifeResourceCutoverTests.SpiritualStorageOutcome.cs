@@ -148,10 +148,8 @@ public sealed partial class AfterlifeResourceCutoverTests
                 }
             });
             captureCurrentAfter = capture?.IsCurrentOwner;
-            // The service APIs borrow this exact lease. The caller records its
-            // actual body failure before closing; it supplies no synthetic outcome.
-            if (failure is CoordinatedStatePublicationUncertainException actual)
-                lease.CaptureOperationFailure(actual);
+            // These service APIs borrow this exact lease. Preserve the observed
+            // body failure separately while measuring its original physical close.
             capture?.Dispose();
             closeFailure = await Record.ExceptionAsync(async () => await lease.DisposeAsync());
             lease = null;

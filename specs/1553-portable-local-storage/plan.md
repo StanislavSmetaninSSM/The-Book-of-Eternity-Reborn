@@ -1,5 +1,12 @@
 ## C2 private transport storage outcome — next bounded T062 slice, 2026-10-09
 
+Fixture9f06 fresh Plan085805 fails before discovery,0 tests: CS1061 from a
+nonexistent CaptureOperationFailure call in the new fixture. Remove that call;
+the original body exception is already retained locally and the original lease
+Dispose is measured separately. No production delta or behavioral RED. Saved
+build log/summary and34 source pins retain this preparation failure. Exact next
+RED selection is11 new cases; fifteen existing known controls follow with GREEN.
+
 Prerequisite durable15 final catalog/carrier PASS e12aa3a4. Root freshly cloned
 that exact SHA from GitHub into a new empty directory: tree6679665c,29657 tracked
 files, clean checkout/no alternates/full fsck0; all389 artifacts312 pins validate.
