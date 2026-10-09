@@ -1,3 +1,15 @@
+## Remaining owner fixture compilation corrected — WIP, 2026-10-09
+
+Fixture/design/exact12 independent PASS e8b8f59a. Fresh Plan194928 build fails
+95.7306107s before discovery: DarenShowcaseAttemptState and QteActionResolution
+are nested original QteSceneService types, not namespace-level Models types.
+Add exact aliases; production unchanged. 0planned/0executed, both cleanup,
+0timeout/duplicates. This is preparation FAILED/UNRUN, not causal runtime RED.
+Original runner summary/log retained in original-remaining-close preparation
+packet. Also clarify Daren profile original writer uses UTF8.GetBytes without
+BOM; shared BOM-aware decoder supports it and original BOM-prefixed UI config.
+Delta source gate then fresh Plan12/actual baseline. T061–T065 unchecked.
+
 ## Remaining owner original byte decoding corrected — test-first WIP, 2026-10-09
 
 Independent delta identifies real original UTF-8 BOM in bootstrap encoding.

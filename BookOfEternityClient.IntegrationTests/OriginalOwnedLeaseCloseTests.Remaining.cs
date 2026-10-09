@@ -9,6 +9,8 @@ using BookOfEternityClient.Services;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using DarenShowcaseAttemptState = BookOfEternityClient.Services.QteSceneService.DarenShowcaseAttemptState;
+using QteActionResolution = BookOfEternityClient.Services.QteSceneService.QteActionResolution;
 
 namespace BookOfEternityClient.Tests;
 

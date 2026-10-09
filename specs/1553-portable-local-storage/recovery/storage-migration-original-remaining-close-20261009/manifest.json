@@ -1,0 +1,74 @@
+{
+  "scope": "Six actual original public owning publishers with known and uncertainty-plus-secondary-close controls. Twelve independent Linux rows through original public routes and actual hoisted owner; no other-owner/native/B2 qualification.",
+  "preparation": {
+    "source": "e8b8f59ab30003c071d1709b8d4e5aaf8aa3ba9e",
+    "artifacts": [
+      {
+        "path": "preparation-20261009-194928-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-194928-279-421986-043a5a44ec084ba38687e89a69e1b94c-categories/summary.json",
+        "sha256": "4e7210bd9c1eac6f6c4ca70ebfcc3d5a4824aa8d632da02c72ee21acbee26cd5",
+        "originalSha256": "4e7210bd9c1eac6f6c4ca70ebfcc3d5a4824aa8d632da02c72ee21acbee26cd5"
+      },
+      {
+        "path": "preparation-20261009-194928-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-194928-279-421986-043a5a44ec084ba38687e89a69e1b94c-categories/dotnet-test.log",
+        "sha256": "5add3b0aa3302f3b36e5a9facfed933cf83315e617bb5831924cf2779b8ff32f",
+        "originalSha256": "b897dfd5d14ccebccc689578536dd1a2e09eaa22060874af67251344701bffbd"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+        "sha256": "065795c59b82232e0f151ef289ecf8a31f6bc2dc85da32dccd1c498230df6be5"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs",
+        "sha256": "9e84db305654a9d3fcad97c3adebf202bb3fe91d34995ddcba28c179254f6012"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/StateManager.cs",
+        "sha256": "e5910e9e1452f81515b0b34c925120e3374096c6f06cc939c400909ed9a04661"
+      },
+      {
+        "path": "BookOfEternityClient/Services/LocalUiSessionLockService.cs",
+        "sha256": "d4468dda11a11917bd11441e9bdf06fe7402605db34679db77fe0ab39ab9bc4e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
+        "sha256": "959c79ff2e05fd492632b7708f9b8331d3771c033f1df8aca1109d475e7282ab"
+      },
+      {
+        "path": "BookOfEternityClient/Services/QteSceneService.Daren.cs",
+        "sha256": "3a800f8a707fbdd1d670d4d26d6dc7a245fe337dafcad591ae12f5c77f2c48a3"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
+        "sha256": "1c5657de82c7a1c9dfd39dd2109cda7888e0854bd0c69ce5a9b06142a8b70d69"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "f354da1523228547dbbea33afb8d0616d431c32ddd610105fa23cd78f75596eb"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "2a9512cbd99686b0fafeab04e66985c96fd40c8e8f560786918416342554d836"
+      }
+    ]
+  }
+}
