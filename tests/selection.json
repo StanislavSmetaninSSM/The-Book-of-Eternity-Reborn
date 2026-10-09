@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-explorer-archive-outcome-causal-linux",
+      "reason": "Test-only WIP17 of proposed22; original consumer seams and genuine publisher cuts. Compensation3Unknown+2known still being constructed. Unbuilt/unexecuted, frozen source/selection gate required before Plan.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
       "category": "portable-game-loop-diagnostic-outcome-linux",
       "reason": "Final exact4 PASSfdc219f0/042423,8.2415967s: original loop primary and diagnostic Unknown typed private stop, original life-end same carrier/cause/signal, known helper success. Fresh matching Plan4; no accepted12 replay. Causal1P3F retained; controlled one-iteration scope, no full loop/native/double-close claim.",
       "contracts": [

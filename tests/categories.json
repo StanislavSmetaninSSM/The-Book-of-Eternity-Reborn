@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-explorer-archive-outcome-causal-linux",
+      "responsibility": "Original Explorer command storage-outcome boundaries: normalization, relics, offering, treasury, directives, archive candidates, politics, attraction and forge; original idle archive repair and original browser forge Submit. Test-only WIP17 of proposed22.",
+      "excludes": "No full gameplay/provider/native execution. Compensation5 still pending; no build or causal acceptance. Browser projection siblings remain source-qualified only.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+        "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
+        "BookOfEternityClient/Services/AfterlifeArchiveActionState.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication",
+            "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-lore-realm-current-generation-controls",
       "responsibility": "Two remaining lore controls: actual same-admission checkpoint generation rotation fences the old original incarnation body, and the previously unexecuted source guard.",
       "excludes": "No external concurrent Clear or nested new-generation adoption claim; no replay of accepted12, no native or secondary-close injection.",

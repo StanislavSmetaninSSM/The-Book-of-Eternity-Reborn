@@ -1,3 +1,22 @@
+## Explorer/Archive test-only WIP17 of proposed22 — 2026-10-09
+
+GameLoop final carrier e77dcf1a accepted:41 artifacts/29 pins, final4 and matching catalog518/11313.
+Current draft owns14 original TryProcessCommand rows,2 original idle archive reconciliation rows and1
+original browser forge Submit row. Optional child fixture hooks/forwarding console preserve default setup;
+all new child roots have explicit hard cleanup after observer disposal. Real publisher journal cuts and
+actual committed-before images are the intended evidence; no runtime delta or executed result exists.
+
+Still constructing three distinct compensation Unknown paths (offering known request failure→restore,
+offering bool failure→inner restore, Treasury known Soul refusal→first Shining restore) and two genuine
+known compensation controls. Proposed22 is not a current executed/approved selection. Draft17 and optional
+constructor seams are unbuilt/unexecuted; frozen source/fixture/selection review precedes matching Plan.
+Original whole-Submit projection must preserve actual coordinator disposition/follow-up/continuation block,
+retire form in memory and avoid canonical lock release after Unknown. Afterlife/Mortal/Saref producers are
+source-connected; forge row qualifies only actual Afterlife/shared Submit behavior. No KeepSessionOpen
+retry surrogate, global latch, transaction/game mechanic or GM-authored schema change is proposed.
+
+Remaining Ready/worker/C2/F16/F18 and publisher-owner scopes stay open; latest actual full restore e5.
+
 ## GameLoop diagnostic final4 complete — 2026-10-09
 
 Runtime fdc219f0 passes independent SOURCE/EXACT4. Matching Plan042324 freshly builds integration
@@ -15,8 +34,7 @@ and retains exact signal bytes. All three explicit fixture roots removed and abs
 expanded/present-original artifacts and29 historical Git pins (causal17/13,green17/13,catalog7/3).
 Fresh unit Plan042505 refreshes matching shared-runtime output only:1planned0executed,15.6717026s wall.
 Discovery042529 uses both current project outputs:518categories/11313methods-files valid,0tests,
-8.0427466s,exit0,bothcleanup. No accepted tests replayed for catalog. Final carrier integrity/docs gate
-pending; latest actual GitHub-only full restore remains e5, combined final restore pending.
+8.0427466s,exit0,bothcleanup. No accepted tests replayed for catalog. Final carrier integrity/docs PASS e77dcf1a (independent and parent); latest actual GitHub-only full restore remains e5, combined final restore pending.
 
 This closes the bounded original GameLoop/canonical diagnostic continuation and presentation paths,
 not all commands or a full normal loop/next user action. Controlled known Text-input primary and final

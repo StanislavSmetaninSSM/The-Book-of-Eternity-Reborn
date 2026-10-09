@@ -12,7 +12,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests.WebUi;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed class BrowserShiningRelicForgeParityTests : IDisposable
+public sealed partial class BrowserShiningRelicForgeParityTests : IDisposable
 {
     private const string OwnerId = "browser-shining-relic-forge-test";
 
@@ -22,12 +22,16 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
     private readonly ExplorerWebCommandService _commandService;
     private readonly ExplorerWebPromptSessionService _promptSessions;
 
-    public BrowserShiningRelicForgeParityTests()
+    private readonly Xunit.Abstractions.ITestOutputHelper? _storageOutcomeOutput;
+    public BrowserShiningRelicForgeParityTests(Xunit.Abstractions.ITestOutputHelper? output = null)
+        : this(null, output) { }
+    private BrowserShiningRelicForgeParityTests(FileSystemManagerHooks? hooks, Xunit.Abstractions.ITestOutputHelper? output)
     {
+        _storageOutcomeOutput = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-browser-shining-relic-forge-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
 
-        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, hooks);
         _fs.EnsureDirectoryStructure();
         _stateManager = new StateManager(_fs, new GameSettings(), NullLogger<StateManager>.Instance);
         var validation = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
