@@ -117,8 +117,12 @@ public sealed class WorldDirectiveService
 
     public async Task<List<WorldProfileDescriptor>> GetAvailableProfilesAsync()
     {
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        _fs.VerifyCurrentSessionOperation(lease);
         var profilesDir = GetProfilesDirectoryPath();
-        Directory.CreateDirectory(profilesDir);
+        var scope = new TrustedLocalFileScope([profilesDir]);
+        if (!Directory.Exists(profilesDir))
+            return [];
 
         var files = Directory
             .EnumerateFiles(profilesDir, "*.*", SearchOption.TopDirectoryOnly)
@@ -128,8 +132,14 @@ public sealed class WorldDirectiveService
 
         var result = new List<WorldProfileDescriptor>(files.Count);
         foreach (var file in files)
-            result.Add(await BuildProfileDescriptorAsync(file));
+        {
+            var path = scope.ValidateFile(file, allowMissing: false);
+            var bytes = await _fs.ReadLocalFileBytesAsync(lease, $"{ProfilesDirectory}/{Path.GetFileName(path)}")
+                ?? throw new FileNotFoundException("A world profile disappeared during listing.", path);
+            result.Add(BuildProfileDescriptor(path, LocalSettingsPreparation.DecodeText(bytes)));
+        }
 
+        _fs.VerifyCurrentSessionOperation(lease);
         return result;
     }
 
@@ -316,12 +326,11 @@ public sealed class WorldDirectiveService
         return string.Join(Environment.NewLine, parts.Where(p => !string.IsNullOrWhiteSpace(p)));
     }
 
-    private async Task<WorldProfileDescriptor> BuildProfileDescriptorAsync(string fullPath)
+    private WorldProfileDescriptor BuildProfileDescriptor(string fullPath, string content)
     {
         var fileName = Path.GetFileName(fullPath);
-        var relativePath = $"{ProfilesDirectory}/{fileName}".Replace('\\', '/');
+        var relativePath = $"{ProfilesDirectory}/{fileName}";
         var extension = Path.GetExtension(fullPath);
-        var content = await File.ReadAllTextAsync(fullPath);
 
         if (string.Equals(extension, ".json", StringComparison.OrdinalIgnoreCase))
         {

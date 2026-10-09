@@ -1,3 +1,27 @@
+## F16 canonical-listing causal8 and runtime WIP — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT8 PASSaacd0045. Fresh integration Plan103541
+selects8/1,0executed,42.2735750s. Actual103654 completes **8/8 FAIL**,
+6.9266506s,bothcleanup,no timeout/skip/duplicate. These are reached original
+consumer failures: both list methods have0admission; both absent directories are
+created; literal Linux descriptor paths are rewritten and do not roundtrip; both
+supported leaf symlinks are read through; both authentic retained Unknown journals
+are bypassed and normal descriptors returned. Root independently parses all rows,
+exact seed journal/member hashes and foreign bytes;8distinct roots are removed.
+[Listing packet](recovery/storage-migration-canonical-listings-20261009/manifest.json)
+preserves26artifacts/originals22sourcepins. Presence of source tests is not GREEN.
+
+Minimal runtime changes two original services: public mods owns one short lease,
+reuses the existing explicit-lease reader, projects Content=null on request and
+removes dead raw-reader helper; prepared/settings callers remain borrowed. World
+profiles validates the root/each supported leaf and reads BOM-aware canonical bytes
+under one original lease, outside existing metadata parser catches. Missing listing
+directories stay absent. Descriptor relative paths use the exact host leaf name.
+Sorting, enabled selection, metadata/timestamps and manifest publication remain
+unchanged. These are readonly owning scopes, not newly coupled publication decisions.
+Next independent SOURCE/RED-RAW/EXACT15, fresh both-project Plan15 and actual15.
+No native/full-engine/settings atomicity/rotation/secondary-close/fullF16 claim.
+
 ## F16 canonical lists — bounded fixture WIP, 2026-10-09
 
 Source #1553,R25/F16,T063/T064/T065. Gallery final independent RAW/CATALOG/CARRIER

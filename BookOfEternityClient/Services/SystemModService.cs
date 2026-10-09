@@ -61,21 +61,9 @@ public sealed partial class SystemModService
 
     public async Task<List<SystemModDescriptor>> GetAvailableModsAsync(bool includeContent = false)
     {
-        var modsDir = GetModsDirectoryPath();
-        Directory.CreateDirectory(modsDir);
-
-        var enabled = new HashSet<string>(_settings.EnabledSystemMods, StringComparer.OrdinalIgnoreCase);
-        var files = Directory
-            .EnumerateFiles(modsDir, "*.*", SearchOption.TopDirectoryOnly)
-            .Where(path => SupportedExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))
-            .OrderBy(path => Path.GetFileName(path), StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        var result = new List<SystemModDescriptor>(files.Count);
-        foreach (var file in files)
-            result.Add(await BuildDescriptorAsync(file, includeContent, enabled.Contains(Path.GetFileName(file))));
-
-        return result;
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var mods = await ReadAvailableModsAsync(lease, _settings.EnabledSystemMods);
+        return mods.Select(mod => includeContent ? mod : mod with { Content = null }).ToList();
     }
 
     public async Task<bool> WriteManifestForGmAsync()
@@ -209,16 +197,10 @@ public sealed partial class SystemModService
         return $"{active}/{mods.Count}";
     }
 
-    private async Task<SystemModDescriptor> BuildDescriptorAsync(string fullPath, bool includeContent, bool enabled)
-    {
-        var content = await File.ReadAllTextAsync(fullPath);
-        return BuildDescriptor(fullPath, content, includeContent, enabled);
-    }
-
     private SystemModDescriptor BuildDescriptor(string fullPath, string content, bool includeContent, bool enabled)
     {
         var fileName = Path.GetFileName(fullPath);
-        var relativePath = $"{ModsDirectory}/{fileName}".Replace('\\', '/');
+        var relativePath = $"{ModsDirectory}/{fileName}";
         var extension = Path.GetExtension(fullPath);
 
         var descriptor = new SystemModDescriptor

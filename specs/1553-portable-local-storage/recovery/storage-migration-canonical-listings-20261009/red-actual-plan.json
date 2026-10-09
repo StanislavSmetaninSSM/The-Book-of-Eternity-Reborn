@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-canonical-listings-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "aacd00457a4de03d98ec0cbd28c437a3ac2abed7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.5354193,
+  "Descriptors": [
+    {
+      "Name": "portable-canonical-listings-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-canonical-listings-linux",
+      "Categories": [
+        "portable-canonical-listings-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.CanonicalListingAdmissionTests.OriginalListsAdmitRecoveryAndPreserveExactInputs",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.CanonicalListingAdmissionTests.OriginalListsAdmitRecoveryAndPreserveExactInputs",
+          "Cases": 8
+        }
+      ]
+    }
+  ]
+}
