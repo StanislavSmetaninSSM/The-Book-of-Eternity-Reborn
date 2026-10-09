@@ -1,3 +1,26 @@
+## F10 isolated release GREEN / prepared causal RED — 2026-10-09
+
+Clean2755 matching Plan005050 fresh integration39.5200121s/wall43.4709098s,3/2planned0executed.
+Actual005147 stopped after the first Prepared1 causal failure:1/3executed,1/2descriptors,
+6.9564100s,exit1. It is NOT a completed3-case run. Separate005235 executed release2/2PASS,
+1/1complete,7.6826051s,exit0 on the same matching build. No skips/duplicates/timeouts; both
+runner cleanup flags and every explicit owned-root cleanup succeeded in each invocation.
+
+Both release rows now reach all same-cause/established-disposition/follow-up/blocked assertions,
+retain authentic journals and foreign lock bytes, and perform no later measured canonical work.
+Prepared1 genuinely reaches MemberPublished0 with explicit Uncertain/NeedsFollowUp/noApply,
+exact retained journal/foreign member/UIlock. It then reads UIlock twice and attempts its mutation;
+no later publication, nonclosing lease or completed recovery observer phase. Read oracle fails;
+subsequent result assertions are unexecuted, their raw values independently available. No thrown
+CSP is fabricated for this explicit-outcome API. Ordinary readonly finalization is separately counted.
+
+Smallest Prepared correction is to skip its original release finally only when actual result is
+Uncertain, preserving the existing publicationOutcome and follow-up. Known Committed/RolledBack/
+Blocked cleanup policies remain unchanged. Fresh affected selection should include Prepared1 and
+existing exact PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence4 plus ordinary
+PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup1, after source review.
+Do not repeat accepted release2 or original18 for this distinct partial-class branch.
+
 ## F10 release caller isolation / prepared causal1 — 2026-10-09
 
 Parent/reviewer caller census found Prepared and SaveCreation also use the boolean release helper.
