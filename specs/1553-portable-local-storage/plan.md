@@ -1,3 +1,24 @@
+## Image scene classifier causal12 and lexical correction — WIP, 2026-10-09
+
+Independent actual AstraXHigh extraction/fixture/design PASS4bb50a7e. Fresh unit
+Plan163456 selects12/1,0execution37.6813189s; actual163553 **12executed8PASS/4causalFAIL**,
+complete1/1,6.6770582s,0skip/duplicate/timeout,bothcleanup. Exact existing production
+classifier rejects ordinary colon/quote/device text and prematurely validates canonical
+ADS leaf; all drive/extendedUNC/sibling/Linux controls pass. These are pure string
+failures executed on Linux, no native Windows filesystem/process assertion.
+[Packet](recovery/storage-migration-image-source-20261009/manifest.json) retains raw
+unit baseline alongside immutable14 and16 baselines/source pins.
+
+Only scene classifier now changes: nonvalidating separator/extended-drive/UNC spelling
+plus lexical host-prefix comparison; no filesystem/Path API or Windows component
+validation in classification. Actual canonical candidate still acquires storage admission
+and uses strong original namespace/byte authority; actual external aliases/export target
+retain existing strict validation. Ordinary source IO mapping/source lease/default
+recursive/generation/provider paths unchanged. Correction unbuilt/unrun. Next frozen
+independent raw/source gate, fresh both-project Plan28, actual28 and discovery-only
+catalog with matching fresh binaries, final evidence review. B2–B5 paused; F16signed/
+ZIP/original-owned-close/current registry/fresh GitHub-only restore remain open.
+
 ## Image Windows text classification — test-first extraction, 2026-10-09
 
 Independent AstraXHigh RED/raw PASS33e3735b (69artifacts/30pins), source changes

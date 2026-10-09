@@ -878,10 +878,24 @@ public class ImageService
         return path.Equals(root, comparison) || path.StartsWith(root + separator, comparison);
     }
 
-    // Test-first extraction of the existing scene classifier. Namespace validation
-    // remains unchanged until the focused text/path boundary has causal evidence.
-    internal static bool IsCanonicalScenePromptPathSpelling(string path, string root, bool windows) =>
-        IsCanonicalExportPathSpelling(path, root, windows);
+    // Classify text without validating it as a Windows filename. This grants no
+    // authority: canonical candidates still pass the admitted reader's checks.
+    internal static bool IsCanonicalScenePromptPathSpelling(string path, string root, bool windows)
+    {
+        static string WindowsLexicalSpelling(string value)
+        {
+            value = value.Replace('/', '\\');
+            if (value.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase)) return @"\\" + value[8..];
+            if (value.StartsWith(@"\\?\", StringComparison.Ordinal) && value.Length >= 7 &&
+                char.IsAsciiLetter(value[4]) && value[5] == ':' && value[6] == '\\') return value[4..];
+            return value;
+        }
+        if (windows) { path = WindowsLexicalSpelling(path); root = WindowsLexicalSpelling(root); }
+        var comparison = windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        var separator = windows ? '\\' : '/';
+        root = root.TrimEnd(separator);
+        return path.Equals(root, comparison) || path.StartsWith(root + separator, comparison);
+    }
 
     // Inspect existing ancestors without creating the destination. Restart after each
     // link so aliases inside a link target's own ancestors are resolved as well.

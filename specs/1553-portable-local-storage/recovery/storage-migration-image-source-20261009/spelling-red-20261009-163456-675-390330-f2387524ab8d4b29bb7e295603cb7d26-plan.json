@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-image-scene-prompt-spelling"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4bb50a7e43c9efe8360afc1c3083cf8216fa72ff",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 37.4218298,
+  "Descriptors": [
+    {
+      "Name": "portable-image-scene-prompt-spelling-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-image-scene-prompt-spelling",
+      "Categories": [
+        "portable-image-scene-prompt-spelling"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ImageScenePromptPathSpellingTests.ScenePromptClassificationDoesNotValidateUnrelatedText",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ImageScenePromptPathSpellingTests.ScenePromptClassificationDoesNotValidateUnrelatedText",
+          "Cases": 12
+        }
+      ]
+    }
+  ]
+}
