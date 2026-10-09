@@ -1,3 +1,28 @@
+## Explorer final31 partial execution — 2026-10-09
+
+Frozen554dfe11 passes independent SOURCE/FIXTURE/EXACT31. Matching Plan053040 builds integration
+89.6379361s and unit13.824971s, wall110.8341930s, exact31/4 planned,0 executed, clean554/bothcleanup.
+Actual053250 stops after12/31 across2/4 descriptors:11PASS +1 genuine newly reached continuation FAIL,
+16.4504968s, no skips/duplicates/timeouts, both runner cleanup flags. Corrected command4 and known
+integration7 pass; unit candidate1 and original causal/known18 remain UNEXECUTED, not failed or passed.
+
+New original browser committed-release row reaches actual domain Committed and actual existing zero-byte
+browser committed marker before normal cleanup removes it, then genuine UI-lock-delete MemberPublished0
+Unknown. Authentic uncommitted journal/hash/foreign target retained; domain and prior images byte-exact.
+The failure is one later ordinary admission at SessionOperationContext.RunWithinBindingAsync post-operation
+VerifyCurrentSessionOperationAsync, with separately readonly closing1. No later reached reads/mutations/
+publication/recovery callbacks. Original result/notification/form-retirement assertions are unexecuted;
+raw result null/formRetired false reflects the refused verification, not a returned ordinary failure.
+This is a real connected continuation defect, not a missed cut or fabricated outcome. Five actual cut
+rows have ten explicit removed owned roots; known fixture cleanup retains its historical qualification.
+
+[Packet](recovery/storage-migration-explorer-archive-20261009/manifest.json) now142 saved/expanded/present
+original artifacts and99 historical source pins verifies. Preserve accepted11 without replay. Next scoped
+design must stop ordinary postchecks for actual ContinuationBlocked on the original operation while
+preserving factual Committed/RolledBack/Uncertain and mandatory readonly finalization/replacement checks.
+Independent design/source gate required before correction; remaining19 plus new row1 will be isolated.
+No completed31/native/wholebrowser/fullplay/secondary-close claim. Latest actual full restore remains e5.
+
 ## Browser fourth duplicate presenter correction — 2026-10-09
 
 Independent source review identified the fourth resident-transfer duplicate presenter omitted from cd4.

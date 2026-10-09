@@ -2,7 +2,7 @@
 
 Latest tested sourcefdc219f0 accepts original GameLoop/diagnostic4 (8.2415967s), genuine three Unknown
 cuts/no measured continuation/typed private observation/exact known cause. Independent raw PASS; saved
-packet41/29 verified, fresh matching discovery518/11313 valid0; final carrier integrity gate pending.
+packet41/29 and final independent/parent carrier PASSe77 verified, matching source-era discovery518/11313 valid0.
 Original loops use controlled final Error-key exit, not full gameplay/next action. Prior continuation12
 at020ac accepted17.7182074s, final carrier122b3a04 independently accepted71/36; helper/null-context and
 secondary-close/native qualifications remain. Earlier bd0673 retains runtime c7672208 lore/realm correction. Composed14 =12@c767 plus
@@ -16,6 +16,8 @@ Preparation composed21 at85b/41ac and carrier41c8 accepted108/70; owned-close15 
 Prepared-Shining5 bbf/1265 accepted47/27; Story12 b79/6ee accepted64/21; progression5 2a372/7f accepted48/25;
 Prepared remote8 7cf/c7 accepted59/26. Earlier F13/F14/F17/treatment/cleanup receipts retain their recorded
 scopes, not new executions. Latest actual full GitHub-only restore remains e5; final combined restore pending.
+
+Explorer current: causal20=16@5dc+4@259 plus known2 preserved at010a112/64. Runtime554 partial31 executes12:11PASS+one real original committed-release post-verification continuation failure;19unrun. Packet142/99 preserved, no final acceptance.
 
 Open: remaining accepted-continuation owners and Ready-specific bookkeeping cause retention, Explorer
 whole-command,
