@@ -1,3 +1,38 @@
+## Image original source admission — bounded28 GREEN, final evidence gate pending
+
+Source570ce89e independent final source/RED PASS. Fresh both-projectPlan163834
+28/3,0execution59.2052094s (integration40.7891128s,unit10.978091s); actual164111
+**28/28PASS**,complete3/3,15.9284684s,0skip/duplicate/timeout,bothcleanup.
+Command categories portable-image-export-known, portable-image-source-admission-linux,
+portable-image-scene-prompt-spelling as a PowerShell array, PlanOnly then NoBuild,
+Parallelism1. Source13 includes genuine prior Unknown4, real Committed debt3, external
+prompt1, leaf/directory links2, browser held-lease1 and ordinary IO/text controls2.
+Three unchanged export Facts and12pure production-used spelling controls pass.
+Four retained Unknown sources have one refused admission and zero source reads,
+association requests or exports; actual journal/foreign/generation unchanged. Three
+real Committed debts recover before lookup/read/association; export bytes are exact,
+scene probe proves release before desktop association. Ignored nested links remain
+untouched in debt/browser rows. Browser2ordinary+1readonlyclosing, zero providerstage;
+source IO maps CopyFailed without creating export destination. All13strictrootsabsent.
+Pure Windows rows executed on Linux qualify string classification, no native I/O.
+
+Discovery164223 validates578categories/11347methods-files,0tests,8.5590224s,bothcleanup;
+both projects freshly built at570ce89e. [Packet](recovery/storage-migration-image-source-20261009/manifest.json)
+retains original14 5P9F, follow-up16 14P2F, pure12 8P4F and final28GREEN separately;
+preparationcatalogfailure0execution remains disclosed. Prior77artifacts/46pins unchanged;
+all stored/decompressed/original/source hashes checked before publication. Independent
+final GREEN/CATALOG/CARRIER review pending. No unchanged accepted image23 or aggregate
+replay, native/provider/desktop process/gameplay qualification. Whole F16/owned-close/
+current inventory/fresh GitHub-only restore and T061–T065 remain open; B2–B5 paused.
+
+Next original-owned-close representative: publicStateManager.Refresh and original FSM
+publicWriteFileAtomicBytes positive control, actual original hoisted leases and late
+secondary disposer after genuine publisher Unknown. Inert /tmp design reviewed actual
+AstraXHigh PASS (noexecution); unique real lease inspection must precede arming, taskjoin
+precedes raw lockavailability probe/strictcleanup. No synthetic injectedlease/production
+hook/36mirror replay. Implement only demonstrated owner capture, then F16signed/ZIP
+and authoritative accepted/open inventory plus fresh restore. Draft notyetinstalled.
+
 ## Image scene classifier causal12 and lexical correction — WIP, 2026-10-09
 
 Independent actual AstraXHigh extraction/fixture/design PASS4bb50a7e. Fresh unit

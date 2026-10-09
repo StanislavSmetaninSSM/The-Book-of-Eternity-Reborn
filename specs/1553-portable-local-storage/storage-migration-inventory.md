@@ -1,3 +1,16 @@
+## Latest image source scope — 2026-10-09
+
+Runtime570ce89e has independently source-reviewed admitted lookup/export/scene and
+borrowed browser existing-image lookup, preserving original top-level selection,
+external prompt/export semantics and actual canonical namespace validation. Fresh
+28/28 Linux PASS164111 after both-projectPlan28; source13+originalexport3+pure12,
+no native Windows/provider/desktop-process claim. Catalog578/11347 discovery0,
+13strictrootsabsent. [Packet](recovery/storage-migration-image-source-20261009/manifest.json)
+contains three distinct causal baselines and GREEN; final evidence review pending.
+This adds to previously accepted image23/gallery8/listings15/Story12 bounded scopes,
+without accepting whole R25/F16. Signed producers/ZIP listing-retention, original-owned
+close representatives and authoritative inventory/fresh restore remain open.
+
 ## Latest bounded status — 2026-10-09
 
 Prepared supported nested original settings/audio: independent AstraXHigh final
