@@ -11,7 +11,7 @@ path is present with a rendering newline. This is fixture width, not storage RED
 
 Set only the new fixture console width to240, matching DesktopHelpersFixture's
 existing exact-path controls. Runtime remains aae366; do not weaken path assertions.
-The packet retains this partial separately:38artifacts/originals48historicalpins.
+The packet retains this partial separately:39artifacts/originals48historicalpins.
 Next independent narrow raw/fixture gate then fresh Plan8 and actual8; no GREEN,
 wholeF16, native, session-rotation, secondary-close or settings/GameLoop claim yet.
 
