@@ -2,8 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-preparation-manifest-outcome-causal-linux",
+      "reason": "Isolated corrected authority1 + LivePrepare1 after initial11 had two fixture selector failures. Require present After image and actual prior manifest evidence; do not replay the nine reached causal rows. Production unchanged; fresh matching Plan2 then causal2 after source gate.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
       "category": "portable-preparation-outcome-causal-linux",
-      "reason": "Test-only actual preparation11, before runtime correction. Genuine prior committed artifacts and exact publisher Unknown must be reached; source/fixture gate and matching fresh build required. No long GM or artificial CSP.",
+      "reason": "Retained nine reached causal failures at5c/025236; semantic bodies unchanged by authority Fact split. Do not rerun unchanged9 for isolated fixture correction. Final runtime selection remains pending.",
       "contracts": [
         "#1553",
         "FR-003",

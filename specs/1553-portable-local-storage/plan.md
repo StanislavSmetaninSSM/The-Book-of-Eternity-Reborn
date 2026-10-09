@@ -1,3 +1,12 @@
+## Preparation isolated manifest fixtures / exact2 WIP — 2026-10-09
+
+Initial11 carrier96aa preserves37 artifacts/15 pins and accepted nine-causal/two-fixture classification.
+Only authority/Live selectors now require After.Exists=true, excluding their initial cleanup deletions.
+Authority is a separate Fact calling the unchanged common engine body; original theory retains six
+rows. The old category now owns nine reached cases; new manifest category owns authority1+Live1 only.
+Production remains unchanged. Focused source gate then fresh Plan2/actual2; neither build nor execution
+has occurred at this correction checkpoint. No replay of the nine already reached failures.
+
 ## Preparation initial actual11 / nine causal and two fixture failures — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT11 PASS at5c1510e. Matching Plan025038 freshly built integration

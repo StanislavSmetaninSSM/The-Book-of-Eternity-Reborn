@@ -14,10 +14,16 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("profiles")]
     [InlineData("chronicle")]
     [InlineData("flags")]
-    [InlineData("authority")]
     [InlineData("backup")]
     [InlineData("backup_cleanup")]
-    public async Task PreparationUnknown_OriginalEngineStopsAfterActualDecision(string mode)
+    public Task PreparationUnknown_OriginalEngineStopsAfterActualDecision(string mode) =>
+        RunOriginalEnginePreparationUnknownAsync(mode);
+
+    [Fact]
+    public Task PreparationUnknown_OriginalEngineStopsAfterPublishedAuthority() =>
+        RunOriginalEnginePreparationUnknownAsync("authority");
+
+    private async Task RunOriginalEnginePreparationUnknownAsync(string mode)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         Assert.True(OperatingSystem.IsLinux());
@@ -62,7 +68,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ? knownCuts == 1 && path == firstBackup && !member.GetProperty("After").GetProperty("Exists").GetBoolean()
                 : path.EndsWith(suffix, StringComparison.Ordinal) && probe.CommittedBackups(suffix).Length == 1 &&
                   path != probe.CommittedBackups(suffix)[0]
-            : path == files.ResolvePath(mode == "authority" ? PendingTurnSnapshotAuthority.AuthorityPath : roots[mode].Path);
+            : path == files.ResolvePath(mode == "authority" ? PendingTurnSnapshotAuthority.AuthorityPath : roots[mode].Path) &&
+              (mode != "authority" || member.GetProperty("After").GetProperty("Exists").GetBoolean());
         probe.BeforeCut = () =>
         {
             if (isBackup) Assert.Single(probe.CommittedBackups(suffix));
@@ -104,7 +111,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         files.EnsureDirectoryStructure();
         await files.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Mortal World\",\"currentIncarnation\":2}");
         await files.WriteFileAtomicAsync("lore/codex_entries.json", "{\"entries\":[]}");
-        probe.Select = (path, _) => path == files.ResolvePath("input/turn_request.json");
+        probe.Select = (path, member) => path == files.ResolvePath("input/turn_request.json") &&
+            member.GetProperty("After").GetProperty("Exists").GetBoolean();
         probe.BeforeCut = () =>
         {
             var manifest = probe.ValidateManifest(requireAuthority: true);

@@ -2,8 +2,37 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-preparation-manifest-outcome-causal-linux",
+      "responsibility": "Two actual publication cuts after committed manifest evidence: original engine detached authority and original LivePrepare final request; initial cleanup deletions are excluded.",
+      "excludes": "No whole-turn/all-files atomicity, live GM/provider, native or secondary-close qualification; returned browser Uncertain is distinguished from thrown CSP.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterPublishedAuthority",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalLivePrepareStopsAfterPublishedRequest"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-preparation-outcome-causal-linux",
-      "responsibility": "Eleven real publication cuts through original engine snapshot/backup preparation, LivePrepare, AtomicCore staging and direct-gacha queue/owner cleanup.",
+      "responsibility": "Nine reached original preparation publication cuts: engine initializer/backup, AtomicCore staging and direct-gacha queue/owner cleanup. Authority and LivePrepare publish cuts have separate ownership.",
       "excludes": "No whole-turn/all-files atomicity, live GM/provider, native or secondary-close qualification; returned browser Uncertain is distinguished from thrown CSP.",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
@@ -25,7 +54,6 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterActualDecision",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalLivePrepareStopsAfterPublishedRequest",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalAtomicStageStopsBeforeCallback",
             "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalDirectGachaStopsQueueAndOwnerCleanup"
           ]
