@@ -1,3 +1,12 @@
+## Remaining owner original byte decoding corrected — test-first WIP, 2026-10-09
+
+Independent delta identifies real original UTF-8 BOM in bootstrap encoding.
+Known bootstrap oracle now uses original PrepareLocalLoadSettings; UI-lock and
+Daren persisted JSON use existing BOM-aware LocalSettingsPreparation.DecodeText
+(the original text writers also prefix BOM). Generation control uses same pure
+decoder. Exact12 unchanged, production unchanged, UNBUILT/UNRUN. Delta gate
+before fresh original Plan/actual baseline. No passing test replay occurred.
+
 ## Remaining owner positive results strengthened — test-first WIP, 2026-10-09
 
 Independent fixture/design/exact12 review8f476697 supports original routes and

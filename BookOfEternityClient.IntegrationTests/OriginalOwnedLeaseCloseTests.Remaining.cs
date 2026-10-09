@@ -191,14 +191,14 @@ public sealed partial class OriginalOwnedLeaseCloseTests
             Assert.NotNull(targetAfter); Assert.False(targetAfter.SequenceEqual(CleanupPublicationCut.Foreign));
             Assert.False(File.Exists(cut.JournalPath));
             var returned = operation!.GetType().GetProperty("Result")!.GetValue(operation);
-            using var generationDocument = JsonDocument.Parse(generationAfter!);
+            using var generationDocument = JsonDocument.Parse(LocalSettingsPreparation.DecodeText(generationAfter!));
             var actualGeneration = generationDocument.RootElement.GetProperty("GenerationId").GetString();
             if (mode != "prompt_generation") Assert.Equal(generationBefore, generationAfter);
             else Assert.False(string.IsNullOrWhiteSpace(actualGeneration));
             if (mode == "bootstrap")
             {
                 Assert.Equal(actualGeneration, Assert.IsType<string>(returned));
-                var decoded = JsonSerializer.Deserialize<GameSettings>(targetAfter, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+                var decoded = StateManager.PrepareLocalLoadSettings(targetAfter);
                 Assert.NotNull(decoded);
                 Assert.Equal(JsonSerializer.Serialize(manager.Settings), JsonSerializer.Serialize(decoded));
             }
@@ -207,7 +207,7 @@ public sealed partial class OriginalOwnedLeaseCloseTests
                 var acquired = Assert.IsType<LocalUiSessionLockResult>(returned);
                 Assert.True(acquired.Acquired); Assert.NotNull(acquired.Lease); Assert.NotNull(acquired.ActiveLock);
                 Assert.Equal("owned-close", acquired.Lease.OwnerId); Assert.Equal(actualGeneration, acquired.Lease.SessionGeneration);
-                using var persisted = JsonDocument.Parse(targetAfter);
+                using var persisted = JsonDocument.Parse(LocalSettingsPreparation.DecodeText(targetAfter));
                 Assert.Equal(acquired.Lease.LeaseToken, persisted.RootElement.GetProperty("leaseToken").GetString());
                 Assert.Equal(acquired.ActiveLock.OwnerId, persisted.RootElement.GetProperty("ownerId").GetString());
             }
@@ -217,7 +217,7 @@ public sealed partial class OriginalOwnedLeaseCloseTests
                 Assert.True(recorded.Updated); Assert.NotNull(recorded.Profile.DarenShowcase);
                 Assert.Equal("perfect_shadow", recorded.Profile.DarenShowcase.BestTierId);
                 Assert.Equal(90, recorded.Profile.DarenShowcase.BestScore);
-                var persisted = JsonSerializer.Deserialize<DarenRewardProfileState>(targetAfter)!;
+                var persisted = JsonSerializer.Deserialize<DarenRewardProfileState>(LocalSettingsPreparation.DecodeText(targetAfter))!;
                 Assert.Equal(recorded.Profile.DarenShowcase.BestTierId, persisted.DarenShowcase!.BestTierId);
                 Assert.Equal(recorded.Profile.DarenShowcase.BestScore, persisted.DarenShowcase.BestScore);
             }
