@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-engine-repair-owning-close-linux",
+      "responsibility": "Four actual original GameEngine repair/command cleanup owning scopes8: exact three-file deletion, ready-only deletion, ready deletion with actual expected generation, and Guardian command-key removal preserving original data/logger/order. Real disabled engine dependencies, original owner/context/acquisition/Intent inspection, genuine publication uncertainty plus secondary lateclose, full lease/main/ambient/context/generation/rawlock/other game_state settlement and strict roots.",
+      "excludes": "No Engine.Run or gameplay, accepted GM Guardian semantics, live GM/provider/HTTP/process/native desktop/audio/Windows/systemd/B2-B5. Repair bytes are unparsed storage targets; ordinary known controls have no injected lateclose.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineRepair.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRepairCleanupOwnersRetainGenuineUncertaintyOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-inventory-owning-close-linux",
       "responsibility": "Three actual original public Inventory Drop/Split/Merge owning scopes6: genuine current sealed compatible resource-free stacks, actual receipts/index/pristine resources/authority. Known DTO/count/carrier/transitions and current validation; genuine actual publication uncertainty plus secondary late original close, no follow-up, full owner/lease/main/ambient/context/generation/lock settlement and strict roots.",
       "excludes": "No resource-bearing stacks or full console/browser gameplay, business B2-B5, native Windows, live GM/provider/process. Ordinary known controls have no injected late closer. Actual owners only; borrowed APIs unchanged.",

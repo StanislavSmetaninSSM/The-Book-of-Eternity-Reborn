@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-engine-repair-owning-close-linux",
+      "reason": "T063/T065 original engine repair/command4owning scopes8 test-first WIP, fixture/design/exact8 independentPASS5051180b. Actual expectedgeneration+supported cleanup surfaces; genuine actualCSP/secondary/fullsettlement/currentgen/allothergame_statebytes/strict8roots. Runtime unchanged, UNBUILT/UNRUN; originalPlan8/actual8 before demonstrated correction. No accepted GM semantics/game/process/native/B2.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
       "category": "portable-original-inventory-owning-close-linux",
       "reason": "T063/T065 runtimea0069271 freshPlan2142086/1 0exec47.4464540s; actual2143166/6PASS8.5133483s,complete1/1/bothcleanup/strict6roots0skipdupTimeout. Three same genuineCSP+secondaryoriginalclose, fullsettlement/nofollowup; knownDTO/count/carrier/history/currentvalidationPASS. Packet42/36 verified, original3P/3causalFAILimmutable. IndependentRED/source/exact6PASS, finalGREEN/raw/carriergatepending; combinedcatalogafterrepair8. Resource-free stacks only, knownlateclose/fullconsole-browser/B2/native unqualified.",
       "contracts": [

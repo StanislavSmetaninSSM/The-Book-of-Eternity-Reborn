@@ -1,3 +1,16 @@
+## Original engine repair/command cleanup — test-first WIP, 2026-10-09
+
+Installed independent fixture/design/exact8 PASS5051180b byteidentically. Four
+original private owner routes: repair files3, readyonly, readyexpectedgeneration,
+Guardian commandkey removal. Real disabled engine/audio disposedbeforestrictroot;
+unparsed repair targets and raw existing Guardian commandkey qualify storage
+cleanup only, not accepted GM Guardian semantics. Original sameowner/actualIntent/
+genuine CSP plus same lateclose, currentgeneration/fullsettlement/allother
+game_state bytes andstrict8roots. Runtime unchanged UNBUILT/UNRUN; fresh
+integrationPlan8/actual8 before correction. Inventory actualGREEN6 preserved
+at72a71dbe, finalGREEN/raw/carrier review pending. Combinedcatalog afterrepair;
+T061–T065 unchecked, B2–B5/native/wholeclient open. No GM-authored contract change.
+
 ## Original Inventory actual GREEN6 — WIP carrier, 2026-10-09
 
 Runtimea0069271 has independent originalRED/source/exact6 PASS. Fresh
