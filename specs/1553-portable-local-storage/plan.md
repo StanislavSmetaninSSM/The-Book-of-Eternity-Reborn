@@ -1,3 +1,19 @@
+## Original pending/control causal RED22 — WIP, 2026-10-09
+
+Corrected runtime unchanged source91bbbef7 fresh Plan21163122/1,0execution
+52.6075343s. Actual21180322complete=11knownPASS/11causalFAIL7.7860133s,1/1complete,
+bothcleanup/0duplicateTimeout/strict22roots absent. Everyactualowner/Intent/current
+scope reached; alllease/ambient/main/context/rawlock/requestgates and othergame_state
+bytes/generation settle. All11 genuineCSP replaced by same latecloseIOException;
+oneactualattachment/closer each. Known pending typed JSON/absence and journalaudit
+oracles PASS. Known raw samePrimary field compares two nulls; it is not primary
+identity evidence (next fixture output guards nonnull). [Packet](recovery/storage-migration-original-pending-control-close-20261009/manifest.json)
+84artifacts/30pins verified originals; initial22preparationFAIL immutable/separate.
+Next minimal same-scope CSP capture/rethrow and existing Release(false,uncertainty)
+inside11actual owners, retaining original RequestWriteGate finally/order. Independent
+RED/source/exact22 gate thenfresh Plan22/actual22; other owners/finalinventory open.
+No GM schema/gameplay/example change; T061–T065 unchecked/B2–B5paused.
+
 ## Pending/control correction gate — 2026-10-09
 
 Independent correction/source/evidence PASS87e5b893:31artifacts/15pins and22

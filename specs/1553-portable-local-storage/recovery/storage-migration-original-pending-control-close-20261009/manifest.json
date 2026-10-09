@@ -252,5 +252,390 @@
         "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
       }
     ]
+  },
+  "red": {
+    "source": "91bbbef76fa0dcb92abc3e9c3418a8abb10cf806",
+    "artifacts": [
+      {
+        "path": "red-20261009-211631-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-211631-737-438602-37db27e7083b4b1288ad5e48c50ba5e6-categories/plan.json",
+        "sha256": "0bb29dbaa6a1732e44bffca24cfdaeec0aab3d480f625456952205cdc8be0017",
+        "originalSha256": "0bb29dbaa6a1732e44bffca24cfdaeec0aab3d480f625456952205cdc8be0017"
+      },
+      {
+        "path": "red-20261009-211631-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-211631-737-438602-37db27e7083b4b1288ad5e48c50ba5e6-categories/summary.json",
+        "sha256": "f4254225fe77c41819add7b7714bbb2d6662bd777c93adeb83c3dc3452449cd8",
+        "originalSha256": "f4254225fe77c41819add7b7714bbb2d6662bd777c93adeb83c3dc3452449cd8"
+      },
+      {
+        "path": "red-20261009-211631-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-211631-737-438602-37db27e7083b4b1288ad5e48c50ba5e6-categories/Build-integration.log",
+        "sha256": "e4692fab6e91b5b16896db5f3bbc2212f596c14021eb8fbbdd7e4a746169baad",
+        "originalSha256": "48f789bea3f8e1c656467ac9c35be64b275b85e57de85b4fc71d24efb17a8ad7"
+      },
+      {
+        "path": "red-20261009-211631-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-211631-737-438602-37db27e7083b4b1288ad5e48c50ba5e6-categories/dotnet-test.log",
+        "sha256": "60fa3cb48ee1f419f719150f7c818089851fc0dc6be45a37886f048355dc0e65",
+        "originalSha256": "2a0f8c454827532f90b37271843c5229b9adea2d01a609c53321f5272d098538"
+      },
+      {
+        "path": "red-20261009-211803-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-211803-153-439130-357071be4ce14cd6ab065d61d855ace7-categories/plan.json",
+        "sha256": "f1d264e9b0c04974dfc1281b645e99033e152ae17a5665596464e680458b1977",
+        "originalSha256": "f1d264e9b0c04974dfc1281b645e99033e152ae17a5665596464e680458b1977"
+      },
+      {
+        "path": "red-20261009-211803-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-211803-153-439130-357071be4ce14cd6ab065d61d855ace7-categories/summary.json",
+        "sha256": "e4716b2684f418b344a30a88b31a38a9a6617fcd197ccbac913cdca6d764ed5a",
+        "originalSha256": "e4716b2684f418b344a30a88b31a38a9a6617fcd197ccbac913cdca6d764ed5a"
+      },
+      {
+        "path": "red-20261009-211803-portable-original-pending-control-close-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-211803-153-439130-357071be4ce14cd6ab065d61d855ace7-categories/portable-original-pending-control-close-linux-integration-001.trx",
+        "sha256": "c68c05cecb40740a3885204ff7ed1262dd012da5ab8e7356e0394a898884dbaf",
+        "originalSha256": "e32a73ede30225a7e66b25cffdd12a9b065eebd191edc29d4e0371b3c95154c4"
+      },
+      {
+        "path": "red-20261009-211803-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-211803-153-439130-357071be4ce14cd6ab065d61d855ace7-categories/dotnet-test.log",
+        "sha256": "7f27b4679d85b7eedbcf4eead8d4c1646aa798a305d6e225573b899edfd58b5b",
+        "originalSha256": "23a41e6753e562de65b3303dc08b6b3ffa250ddd263c45c3cd94ab31c1aeb77a"
+      },
+      {
+        "path": "red-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/emitted-roots-after-run.json",
+        "sha256": "d72ba0c4714fd79636824064aa420572769fa2c215f0e38b3e705977f988dacd",
+        "originalSha256": "d72ba0c4714fd79636824064aa420572769fa2c215f0e38b3e705977f988dacd"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-21-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-21-1.json",
+        "sha256": "f1a420e189611e46f34b6d8c5fb5d146b3e62c31f3f65309ff90a3a50342d501",
+        "originalSha256": "f1a420e189611e46f34b6d8c5fb5d146b3e62c31f3f65309ff90a3a50342d501"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-21-0.json.gz",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-21-0.json",
+        "sha256": "0e8b9e344a69fc610565a175fe31584f08b5ff76db1c37c0217957aac5e9f1dd",
+        "originalSha256": "b294bd8db7db5dab073b8c6c65c885329994f271a262d2d79d6580da76f9422c"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-20-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-20-1.json",
+        "sha256": "02199c019cbe291470a0cd5bdf9c96a5c7f79cc62199ce13758e962e479cdfdc",
+        "originalSha256": "02199c019cbe291470a0cd5bdf9c96a5c7f79cc62199ce13758e962e479cdfdc"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-20-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-20-0.json",
+        "sha256": "2e742cdd9174c0bfbfa6584666030b13a4cc9c1fb4169de58592f7865af793d8",
+        "originalSha256": "2e742cdd9174c0bfbfa6584666030b13a4cc9c1fb4169de58592f7865af793d8"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-19-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-19-1.json",
+        "sha256": "77d53d6eb90b5536d2398c6d3b77951f03c9095030bc1f292cb8dcd382ce7bdd",
+        "originalSha256": "77d53d6eb90b5536d2398c6d3b77951f03c9095030bc1f292cb8dcd382ce7bdd"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-19-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-19-0.json",
+        "sha256": "26af30f4c9485bc0cbe7b6dad71e72386f746cac883b86330a4df2fc70e7c9a1",
+        "originalSha256": "26af30f4c9485bc0cbe7b6dad71e72386f746cac883b86330a4df2fc70e7c9a1"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-18-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-18-1.json",
+        "sha256": "f4183aafb26e1321d43989cb77cd09892848ca711aeab2718028409374b96ae4",
+        "originalSha256": "f4183aafb26e1321d43989cb77cd09892848ca711aeab2718028409374b96ae4"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-18-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-18-0.json",
+        "sha256": "2cf72d3fa222eaa5c681006751d7cbe393ba48cdb8050b1757670f2cf3c95712",
+        "originalSha256": "2cf72d3fa222eaa5c681006751d7cbe393ba48cdb8050b1757670f2cf3c95712"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-17-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-17-1.json",
+        "sha256": "6d3c58509ce747f8e056c069e3d6827cad3a17d0be6c29c9841b2e5307eb6613",
+        "originalSha256": "6d3c58509ce747f8e056c069e3d6827cad3a17d0be6c29c9841b2e5307eb6613"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-17-0.json.gz",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-17-0.json",
+        "sha256": "793e3908af20800186b09c2d1d7ef45c2d23c61de7961a5ae987599de9be10fd",
+        "originalSha256": "3e9fb75234273c4c57320158d5d04687069804fa62b6446e4a0f1d1f1c05e41d"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-16-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-16-1.json",
+        "sha256": "ba830cca833a827a6e29dc823f8fea46e46f6d6c202adcc2e82bddacafcb7a41",
+        "originalSha256": "ba830cca833a827a6e29dc823f8fea46e46f6d6c202adcc2e82bddacafcb7a41"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-16-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-16-0.json",
+        "sha256": "ef8f5f79f10368c922a34ba33091b4c0576851cfad60447bc2825ff326b8b6a9",
+        "originalSha256": "ef8f5f79f10368c922a34ba33091b4c0576851cfad60447bc2825ff326b8b6a9"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-15-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-15-1.json",
+        "sha256": "1167c3753bc92d7e5be69a4102cf2331bb6cce0d8a7356ddcdc974b90b57d1c6",
+        "originalSha256": "1167c3753bc92d7e5be69a4102cf2331bb6cce0d8a7356ddcdc974b90b57d1c6"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-15-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-15-0.json",
+        "sha256": "c4915ea0fe2e04fed66192f08d5a11b3803f766ecaba44e746350d9680a55b56",
+        "originalSha256": "c4915ea0fe2e04fed66192f08d5a11b3803f766ecaba44e746350d9680a55b56"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-14-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-14-1.json",
+        "sha256": "78045b2db4c3a2b7ae9147fdd9737a1b9211eccda45aa45e8459c56755f65c45",
+        "originalSha256": "78045b2db4c3a2b7ae9147fdd9737a1b9211eccda45aa45e8459c56755f65c45"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-14-0.json.gz",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-14-0.json",
+        "sha256": "8342f7fc28ed8e5ad52c54aaf6ff6f9a57d956f37895d616674d1285e15e5e48",
+        "originalSha256": "ec066c705f50f71534e8b2e08db7a0addbb56417f4a19a71176fd58a1eceae55"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-13-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-13-1.json",
+        "sha256": "5cb256c5f479c927a527a65c307143755915769ed5d129486cf53ad2ef6b2a6d",
+        "originalSha256": "5cb256c5f479c927a527a65c307143755915769ed5d129486cf53ad2ef6b2a6d"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-13-0.json.gz",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-13-0.json",
+        "sha256": "de3451e59508f9b5d3100e05b2bb12506f15aabae9f3ff7462ae723438691091",
+        "originalSha256": "5cc07dcffd98947a8677e9efb673d0a5bd187770545da511075a127a10732788"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-12-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-12-1.json",
+        "sha256": "43ddd1431f572f857c47283df215e230ae9c48c4377c4b91c1e0d03367f76a51",
+        "originalSha256": "43ddd1431f572f857c47283df215e230ae9c48c4377c4b91c1e0d03367f76a51"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-12-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-12-0.json",
+        "sha256": "89ee64bd1a7355a4f6824c6fe91acbca990d1ed96b45fa6baae3b69c10d414be",
+        "originalSha256": "89ee64bd1a7355a4f6824c6fe91acbca990d1ed96b45fa6baae3b69c10d414be"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-11-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-11-1.json",
+        "sha256": "d92dc92285c18e455c94a2eddcfd4c4f940f858ede1596eb62b324add7e3470a",
+        "originalSha256": "d92dc92285c18e455c94a2eddcfd4c4f940f858ede1596eb62b324add7e3470a"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-11-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-11-0.json",
+        "sha256": "a76f84930dab8bc8cec7ce59348be746eb138c4858943948e781d0d457cbf5da",
+        "originalSha256": "a76f84930dab8bc8cec7ce59348be746eb138c4858943948e781d0d457cbf5da"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-10-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-10-1.json",
+        "sha256": "03700d66bcc036edd30ae91d87262db28b1937eba3fd2eec4f7673597e5b126d",
+        "originalSha256": "03700d66bcc036edd30ae91d87262db28b1937eba3fd2eec4f7673597e5b126d"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-10-0.json.gz",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-10-0.json",
+        "sha256": "b332694897725b9f5f2e860a7fb04298b5a7785e27dd8fe0d81aa03f12d8bc3b",
+        "originalSha256": "311bf35550f7271ec6ea13c80475f873be7656ad018342d57c1fecbae0c9ae68"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-9-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-9-1.json",
+        "sha256": "91e8b29834381cfcc47daf45d897b96c8e6f1c7fb20623ce27d1846277ff336c",
+        "originalSha256": "91e8b29834381cfcc47daf45d897b96c8e6f1c7fb20623ce27d1846277ff336c"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-9-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-9-0.json",
+        "sha256": "3297fd27202b0a4a2f4f81a6479ebd00995179f7edbe2058e0fe2c943e592f23",
+        "originalSha256": "3297fd27202b0a4a2f4f81a6479ebd00995179f7edbe2058e0fe2c943e592f23"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-8-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-8-1.json",
+        "sha256": "0cc91d2d6fa3da6b60ccd49779adceedd5a6bc53b153365c223d71d30f236134",
+        "originalSha256": "0cc91d2d6fa3da6b60ccd49779adceedd5a6bc53b153365c223d71d30f236134"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-8-0.json.gz",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-8-0.json",
+        "sha256": "672152abbf6e7c75d60032534917235c1f8d1eeda3f089019583fc3056d4e816",
+        "originalSha256": "dad2e71a18f117a2edc6366cff0517f5f31ca1687a98f6e81ff879955ddd0827"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-7-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-7-1.json",
+        "sha256": "e49401eb1d03b196906c5d7567969321c463af5ea3ffeb439b7a9a3f627d8e65",
+        "originalSha256": "e49401eb1d03b196906c5d7567969321c463af5ea3ffeb439b7a9a3f627d8e65"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-7-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-7-0.json",
+        "sha256": "2814bc6827ef951b774da7ff867730febfd35bb3a218177eb6dbd4697e11c718",
+        "originalSha256": "2814bc6827ef951b774da7ff867730febfd35bb3a218177eb6dbd4697e11c718"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-6-1.json",
+        "sha256": "b087a9f53c049f84133b745519ba15c95b88baa608eca9b00224dd9531bec201",
+        "originalSha256": "b087a9f53c049f84133b745519ba15c95b88baa608eca9b00224dd9531bec201"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-6-0.json",
+        "sha256": "6b336032fcaf70eda64bc19afe169c83b65a6c9b6a12b06aee648f4209769987",
+        "originalSha256": "7cf6565129de576f78855426408ab29732ab9eadca90f527c9a79574156e508e"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-5-1.json",
+        "sha256": "554c47520534371af3b7b82a62bc5cc2b2e322c9f2506042741ae8336e29b272",
+        "originalSha256": "554c47520534371af3b7b82a62bc5cc2b2e322c9f2506042741ae8336e29b272"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-5-0.json",
+        "sha256": "1988a9652d5dce75d2d99145c8929d22a45442472d0f5bc01b18d2fe8d4c943e",
+        "originalSha256": "c45a04cd944ea61f1c9d54ddab36559207341dc29f29cdf81b95a915cad281e8"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-4-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-4-1.json",
+        "sha256": "47fe91eb6fdf00756f93af6f493d670413fef86502f9b86ce7e62bcf5884fffd",
+        "originalSha256": "47fe91eb6fdf00756f93af6f493d670413fef86502f9b86ce7e62bcf5884fffd"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-4-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-4-0.json",
+        "sha256": "941afdfa7fbcb780c99ce3c839e0908903124c85379c7a23454b68981c3416ab",
+        "originalSha256": "941afdfa7fbcb780c99ce3c839e0908903124c85379c7a23454b68981c3416ab"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-3-1.json",
+        "sha256": "d0e745f0a2d78c791ad60f4e618e3f25b933d23a7e7809c31263ac0286ede42c",
+        "originalSha256": "d0e745f0a2d78c791ad60f4e618e3f25b933d23a7e7809c31263ac0286ede42c"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-3-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-3-0.json",
+        "sha256": "17ee7c8a4209c8a77188f27b1c0854db2dc5e7bd5f6f18139b7e40c0529c284a",
+        "originalSha256": "17ee7c8a4209c8a77188f27b1c0854db2dc5e7bd5f6f18139b7e40c0529c284a"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-2-1.json",
+        "sha256": "66f7cf8d7eff32ecb268b92fd6bc395d9fc427497c7c8223b488669b6ec5cb15",
+        "originalSha256": "66f7cf8d7eff32ecb268b92fd6bc395d9fc427497c7c8223b488669b6ec5cb15"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-2-0.json",
+        "sha256": "c604d24a1ac99c655e842108ff37e690cab1f8ca1ef979fa696e09bccfe3df5a",
+        "originalSha256": "a62b9d02490856f269ae9c60175e4ad600618faa9918717666333d157888c034"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-1-1.json",
+        "sha256": "7ca4d228de4a7ecd7cd76e23979ccd102585bce074156daee30a411a7485060a",
+        "originalSha256": "7ca4d228de4a7ecd7cd76e23979ccd102585bce074156daee30a411a7485060a"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-1-0.json",
+        "sha256": "e2bd8c9ff3ab0662f88acee51c415941132c2d3f39baf2a6fa04a2e29d1f44f3",
+        "originalSha256": "1fd0442188fdc1f307e3dcae0f5bb1d51f743db1d057e6b0b97034b7f4a19201"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-0-1.json",
+        "sha256": "b62f792a7e874dc67f2c53b0b9d99e81d01d2ceaa00b95ef2e185935bc5e9d02",
+        "originalSha256": "b62f792a7e874dc67f2c53b0b9d99e81d01d2ceaa00b95ef2e185935bc5e9d02"
+      },
+      {
+        "path": "red-row-portable-original-pending-control-close-linux-integration-001-0-0.json",
+        "source": "/tmp/boe-original-pending-control-close-red-rows/portable-original-pending-control-close-linux-integration-001-0-0.json",
+        "sha256": "28e2d67b4e80537196f5498d51a6ec4fc77e9e4b742bb963f26b69f463b97e76",
+        "originalSha256": "28e2d67b4e80537196f5498d51a6ec4fc77e9e4b742bb963f26b69f463b97e76"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.PendingControl.cs",
+        "sha256": "7f85fb5b5e5d069d7bcc434cff03869deaf6c72382c7bd83fbd1f2a31069336a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+        "sha256": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs",
+        "sha256": "9e84db305654a9d3fcad97c3adebf202bb3fe91d34995ddcba28c179254f6012"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ShiningFactionTestMaterialization.cs",
+        "sha256": "707ed0853d559c664e83095332c0e9c2fc7343c72af34e0138e6c6acad052ac3"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
+        "sha256": "deeadc31d9fd64f04c2d11fa6a43267fab1a563c36b5219162c0d9970e10fe39"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
+        "sha256": "76647048e7c6059755c5c41ca2612638a446e5baff6d627ccec23ea08b8f96b9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianPowerEventState.cs",
+        "sha256": "78ec4bc4a4b7705bae8d37765200e276afc990c3cc6d75e879063382acb9d54a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/LocalInteractionScopeService.cs",
+        "sha256": "31d64ce7d40d3171a56ddfabbe87879c5ca2e62b763e19caa8d42b49104be09a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "965ba5310c62459a63867e76718cef093ca538666b733e1e0060ed568f0d03a2"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "9eb5b45465d7822630118906778a84ce91700f3afd065ea661c9680de1e77109"
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+      }
+    ]
   }
 }
