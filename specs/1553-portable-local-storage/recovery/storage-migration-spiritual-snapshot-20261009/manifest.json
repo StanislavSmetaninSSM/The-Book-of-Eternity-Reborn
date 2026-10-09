@@ -1,0 +1,284 @@
+{
+  "scope": "Original spiritual direct12/intake2 actual retained-capture raw draft/physical-witness admission before revocation, including unchanged ordinary stale-reader and exceptional-reader revocation and Unicode/native excluded positives, plus three original controls. Seventeen selected cases; no B2/cold gameplay or other-owner qualification.",
+  "red": {
+    "source": "e281e4150e000fc903a1b169419c23510f1ca0c7",
+    "artifacts": [
+      {
+        "path": "red-20261009-192614-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-192614-916-417064-94facca9ad9f4bd888e32a36991dcd99-categories/plan.json",
+        "sha256": "5a9634171519b9e0ef2f4de1cdee474e9100197ab4b11742ab5c0fff750b57a9",
+        "originalSha256": "5a9634171519b9e0ef2f4de1cdee474e9100197ab4b11742ab5c0fff750b57a9"
+      },
+      {
+        "path": "red-20261009-192614-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-192614-916-417064-94facca9ad9f4bd888e32a36991dcd99-categories/summary.json",
+        "sha256": "d73cd41a34d81b6cf0a4f644610007100ff68630c014694027bbc2a4cc7036ab",
+        "originalSha256": "d73cd41a34d81b6cf0a4f644610007100ff68630c014694027bbc2a4cc7036ab"
+      },
+      {
+        "path": "red-20261009-192614-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-192614-916-417064-94facca9ad9f4bd888e32a36991dcd99-categories/Build-integration.log",
+        "sha256": "2c08599eaab7d84a52653e78c4eb3c21c937ddcde8a34834006491f85a59627d",
+        "originalSha256": "2c00e2372a5b850eb953684fd73325cec6118c4cac3797fd2374cd4396e28c0d"
+      },
+      {
+        "path": "red-20261009-192614-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-192614-916-417064-94facca9ad9f4bd888e32a36991dcd99-categories/dotnet-test.log",
+        "sha256": "bcdf3e3ab355df2eeec7fae006492c217e3d314fc2e8fb74ae9d8a3a071139a8",
+        "originalSha256": "8c1de0c59919eac25740a102faa69a0ccfa688f541ae56ba3960fc8cec6e647c"
+      },
+      {
+        "path": "red-20261009-192828-portable-spiritual-capture-exact-names-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-192828-958-417379-851a2133641d4cba8738ff8fd1740a5c-categories/portable-spiritual-capture-exact-names-linux-integration-001.trx",
+        "sha256": "5ccb5de699b11bcfc9236b809a85569798a95444e24a4292e85ed3eaa184c5da",
+        "originalSha256": "4411443dce319c969090268fc472293e27b91315cbe92c7bbf6807b0dfc4e923"
+      },
+      {
+        "path": "red-20261009-192828-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-192828-958-417379-851a2133641d4cba8738ff8fd1740a5c-categories/plan.json",
+        "sha256": "6ce263b1de70ad1a8e2412b95c03f2abfe66bc531ea7482bb096ce2e21a7ef4a",
+        "originalSha256": "6ce263b1de70ad1a8e2412b95c03f2abfe66bc531ea7482bb096ce2e21a7ef4a"
+      },
+      {
+        "path": "red-20261009-192828-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-192828-958-417379-851a2133641d4cba8738ff8fd1740a5c-categories/summary.json",
+        "sha256": "3580c7d59cad307f269ab764feb7e01ef267fe428d7c43e087f9a41ed1648780",
+        "originalSha256": "3580c7d59cad307f269ab764feb7e01ef267fe428d7c43e087f9a41ed1648780"
+      },
+      {
+        "path": "red-20261009-192828-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-192828-958-417379-851a2133641d4cba8738ff8fd1740a5c-categories/dotnet-test.log",
+        "sha256": "b5227fa959ba9d4f93bb84fc1dd99ca2e15ed823dfe4c3f1542c4c8737d8cd3d",
+        "originalSha256": "0699c5df60a68aa96b92afaab291c23c3415a5fb1f95650516d9cab316869e4a"
+      },
+      {
+        "path": "red-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/emitted-roots-after-run.json",
+        "sha256": "8b8565cb1e4a182537ba871b6649f5cc7093cd2b5f6df6d1c9d1d009b1a39aa3",
+        "originalSha256": "8b8565cb1e4a182537ba871b6649f5cc7093cd2b5f6df6d1c9d1d009b1a39aa3"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-16-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-16-1.json",
+        "sha256": "6a146f06a2c6931cf13f9d5343d7e79ac4eeec4d91cc76fa60605cb78818277c",
+        "originalSha256": "6a146f06a2c6931cf13f9d5343d7e79ac4eeec4d91cc76fa60605cb78818277c"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-16-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-16-0.json",
+        "sha256": "7c5ec7f0fc36a697cc6f324882c2d713c46887bfd23c89005f0633ae09e7b94e",
+        "originalSha256": "39748eeba36de8da896e2b637c0202ff6eafc256645d0ca9b020e3c22707ead2"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-14-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-14-1.json",
+        "sha256": "dde3950104fc2e9419a613fc12429ac2b34194de12ffd47f77d0bb31b9f233a6",
+        "originalSha256": "dde3950104fc2e9419a613fc12429ac2b34194de12ffd47f77d0bb31b9f233a6"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-14-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-14-0.json",
+        "sha256": "51f39edfd797b4b0b53bc71f5e5f66b6d2e1edbe2b262a021287a72f6649a0db",
+        "originalSha256": "9b729a7f7083161e7ccb5865a50cf2755902aff620b0e1053d4fd02b70895335"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-13-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-13-1.json",
+        "sha256": "6bec6c7a0eeb98169f7e980f1405248adccdb40227be286fcf9cf0ede5cc87c3",
+        "originalSha256": "6bec6c7a0eeb98169f7e980f1405248adccdb40227be286fcf9cf0ede5cc87c3"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-13-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-13-0.json",
+        "sha256": "1197f69ed5de822c764ccc90c79827cbaf42b19a89d9cbc8d7a6449dd9c1d9c2",
+        "originalSha256": "4efb603716221559ed437e46a3ead5df53ffc8a3f2ec0b517f9f060537dabd57"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-12-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-12-1.json",
+        "sha256": "2a2c29447e8c501a6000c87433214a124805346cd479da35307c9389f15c82b0",
+        "originalSha256": "2a2c29447e8c501a6000c87433214a124805346cd479da35307c9389f15c82b0"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-12-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-12-0.json",
+        "sha256": "a726dec62764e9be273b04de0d91d9b8ae7854decf16b14f638afaee9bd46a9a",
+        "originalSha256": "abef2c01d7cf0ef1e5d1684df816041427cf5e32a62eba362c90be7827ec688a"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-11-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-11-1.json",
+        "sha256": "67e4c48d8f2637cde6a92a9ea1f3ef1d6c360f5fab962dc234d717dffb5ec078",
+        "originalSha256": "67e4c48d8f2637cde6a92a9ea1f3ef1d6c360f5fab962dc234d717dffb5ec078"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-11-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-11-0.json",
+        "sha256": "4f90bcbabfbdb47fe2f99b793af1842b2712f862bbb270196da8a2bb4d2bb863",
+        "originalSha256": "1472f5b55197211a5d6f4fe02a421cf33046f5fbf838f5d73a0810415e6ba3b4"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-10-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-10-1.json",
+        "sha256": "c97cfead8afab8a731228bccf0271715696026505909efc3460148ce2a7822a8",
+        "originalSha256": "c97cfead8afab8a731228bccf0271715696026505909efc3460148ce2a7822a8"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-10-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-10-0.json",
+        "sha256": "1a43630ae8b9993aa74d2924efbda697f475b50e521e7b616618c1b639cee7c6",
+        "originalSha256": "cd81698f19d10ea8ac30f58b24af419c5cdea3d45b658482585526339bade112"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-9-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-9-1.json",
+        "sha256": "42db1cad9659b3664b7d894a89685cdd9eb3877ef6e2a4899bc86adfb7adf867",
+        "originalSha256": "42db1cad9659b3664b7d894a89685cdd9eb3877ef6e2a4899bc86adfb7adf867"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-9-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-9-0.json",
+        "sha256": "0521f1444a24a1e10e23a82ffa2acb82cb6304f20225600437358bd8f86867ee",
+        "originalSha256": "062a10310b4f64edaf99b39a28cb6d4e8ac986d40cf0cbfb9b4e056ee6b527c7"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-8-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-8-1.json",
+        "sha256": "f9c1f91a6fedaee36828d08101376e47f132fa485c452d543c70d3761a0416ee",
+        "originalSha256": "f9c1f91a6fedaee36828d08101376e47f132fa485c452d543c70d3761a0416ee"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-8-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-8-0.json",
+        "sha256": "a5ae8795128878299949364f39bc6f14ecb64a1b466b6919279bd34b1610c440",
+        "originalSha256": "fce1b326a4129dede10e67fe4222eeef4410a3a5cc1532ae883325b498bcacdb"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-7-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-7-1.json",
+        "sha256": "87f70b447d4574df98d8101aaadd3fc1a016e743b476648a783194c933c5b8a8",
+        "originalSha256": "87f70b447d4574df98d8101aaadd3fc1a016e743b476648a783194c933c5b8a8"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-7-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-7-0.json",
+        "sha256": "3b51b114119215ad6ce33f9bc158284c6247c9deb42b2cdee4cfac483a63da34",
+        "originalSha256": "c95c88c74674164733412fea163cb76237e95ae420c3c9c07896fe08f17df585"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-6-1.json",
+        "sha256": "83df90db454e5793c8f7e30c5389a8ef9dc5138f6c251a504ac244476289df16",
+        "originalSha256": "83df90db454e5793c8f7e30c5389a8ef9dc5138f6c251a504ac244476289df16"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-6-0.json",
+        "sha256": "15b4098a5e98a3310ce9bbe5a03e5cfd22e42d64d14c904deaa9158745c71953",
+        "originalSha256": "b7f95a2f6e02420c3280cd2b5da0e2c96de74fb91d39676fc2aeda281d1533c8"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-3-1.json",
+        "sha256": "63823280cbd481703e3da430f3d7863062ab31eb3adccea3dd6c3dcccde006f8",
+        "originalSha256": "63823280cbd481703e3da430f3d7863062ab31eb3adccea3dd6c3dcccde006f8"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-3-0.json",
+        "sha256": "6e9c21b1da6af0f9a0f643b8c0270f4715cfb76a23c4bc45721665c31ad3ad1e",
+        "originalSha256": "adf1358030ccdd3edf5a210aa59b47f3d4067290a60bc6719e916d50f3c40c36"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-2-1.json",
+        "sha256": "03179f55001908336eb3ba85785088eeb6a7d26b2dc050c8ccf2abfa80f83867",
+        "originalSha256": "03179f55001908336eb3ba85785088eeb6a7d26b2dc050c8ccf2abfa80f83867"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-2-0.json",
+        "sha256": "af8a7994dc6cfa28588cac7d09fb58dcd54d375dcbf8df09a9f416e6344889c2",
+        "originalSha256": "f80f1ccce5a7c3d857864e1e5d2b97796d32bbfeadbd54d67cf440e4329e9b61"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-1-1.json",
+        "sha256": "7e77a91eff033ef55e3f116a32c7891081a704c43e29660f33c58c502570ee10",
+        "originalSha256": "7e77a91eff033ef55e3f116a32c7891081a704c43e29660f33c58c502570ee10"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-1-0.json",
+        "sha256": "906881a3a35882889a1604ca0f41042fb7f4b6badca51475263c11659e2f3cff",
+        "originalSha256": "41fb440fd273e82f822d5b072d78a29270c9dc0054f5545af701730ed395ceef"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-0-1.json",
+        "sha256": "4a804be0896205f6e5f536ae3d4a7f21550061a536b0dda97fcb5ab5ee545cac",
+        "originalSha256": "4a804be0896205f6e5f536ae3d4a7f21550061a536b0dda97fcb5ab5ee545cac"
+      },
+      {
+        "path": "red-row-portable-spiritual-capture-exact-names-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-spiritual-snapshot-red-rows/portable-spiritual-capture-exact-names-linux-integration-001-0-0.json",
+        "sha256": "abd58bc7798caa03cfb83ef50d65cd7ebaa83dbe7515f3b17124fc734bb3b541",
+        "originalSha256": "2a98c2aea11fd7fabf9e6ad30d16c6e2bff070379911427fe63ac3e1389cc63e"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualExactNames.cs",
+        "sha256": "600accd62e9d82f3a9f5dea7f3f77445bbe4708619a24990bdd68d33fd457184"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualOriginalDraftInputs.cs",
+        "sha256": "01cf817271ccfa9feabd1915c303162a714e8e740a33ae2e06a873d6304901ce"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrame.cs",
+        "sha256": "0b8d6a57e013566e6ae4782821d161a6f101dd7c53916af88d472a662f1904fa"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CurrentCommittedPublicationWitness.cs",
+        "sha256": "49f94d09e5e2fc8d6bde1c981365fa52ae7e0098516d53c03aa8fc9b9ec1e624"
+      },
+      {
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs",
+        "sha256": "28d9b30d4a1d873b1acb057f42a59b45cbd2186aa9439328d912faca5a7663a2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs",
+        "sha256": "4218a8f920da46133b6ebb70818b5928c84cea55eb08acb385a83c343fa02fdb"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SpiritualWoundCaptureCheckpointState.cs",
+        "sha256": "cd0fb7b5eb34c2f6d60973ce2ee2c56c1c50aca2797438b9613b6c576a2b7eee"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+        "sha256": "6b924fe31e3f31a610496594cee3e916dc282657061f8a8a0d10590fc91ac80a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "8b20548e4b8029cfede783446e6004f359e60a50f45d284bedbfbdaa48ce7087"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "9df03b6713f05ce6dbb5be575b593392c8f59780bcb61e72e22da556b97e9efc"
+      }
+    ]
+  }
+}

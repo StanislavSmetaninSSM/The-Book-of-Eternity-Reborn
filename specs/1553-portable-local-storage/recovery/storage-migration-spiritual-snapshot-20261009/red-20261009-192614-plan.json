@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-spiritual-capture-exact-names-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e281e4150e000fc903a1b169419c23510f1ca0c7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 106.9252862,
+  "Descriptors": [
+    {
+      "Name": "portable-spiritual-capture-exact-names-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-capture-exact-names-linux",
+      "Categories": [
+        "portable-spiritual-capture-exact-names-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_ExcludedPhysicalManifestStillGuardsFreshness|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_RejectsCaseAliasedDraftRootWithoutWritingFiles|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_RetainsUntouchedDistributedDraftWithoutWritingFiles|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualRawInventoryIsAdmittedBeforeRevokingActualCapture",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 17,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_ExcludedPhysicalManifestStillGuardsFreshness",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_RejectsCaseAliasedDraftRootWithoutWritingFiles",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_RetainsUntouchedDistributedDraftWithoutWritingFiles",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualRawInventoryIsAdmittedBeforeRevokingActualCapture",
+          "Cases": 14
+        }
+      ]
+    }
+  ]
+}

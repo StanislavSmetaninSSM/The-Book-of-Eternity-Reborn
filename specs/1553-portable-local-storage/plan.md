@@ -1,3 +1,22 @@
+## Spiritual original causal RED17 — WIP, 2026-10-09
+
+Fixture/refined design/exact17 independent PASS e281e4150e000fc903a1b169419c23510f1ca0c7.
+Fresh integration Plan192614:17/1,0 execution,107.2253868s. Actual192828:
+17 completed=8PASS/9causalFAIL,15.4934990s,complete1/1,0duplicates/timeout,
+both cleanup. All14 new strict roots absent. Nine raw-name negatives retain
+full file/path bytes and generation with zero mutations, but lose the actual
+old capture/currentness: direct/intake case aliases throw late ArgumentException;
+root_alias returns the existing issue after revocation; other six silently
+accept/omit invalid names. Unicode2/nativeexcluded1, stale-request1/readIOException1
+and three original controls PASS. All actual first-capture/currentness prerequisites
+passed; no preparation-only failures or forged captures.
+[Packet](recovery/storage-migration-spiritual-snapshot-20261009/manifest.json):37artifacts/
+13source pins, stored/original/hash verification PASS. Next minimal common pure
+raw preflight before old-owner revocation, retaining ordinary reader-error
+revocation and cold/warm cohorts, then source/exact17 gate and fresh17. Catalog
+discovery remains combined with Explorer fixture change. Other owners open,
+T061–T065 unchecked/B2–B5 paused; no cold gameplay/native Windows qualification.
+
 ## Spiritual exceptional-reader control — test-first WIP, 2026-10-09
 
 Fixture/refined design/exact16 independent PASS057916a9 with two source
