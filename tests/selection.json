@@ -2,6 +2,96 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "spiritual-staged-recovery-issued-successor",
+      "reason": "T064 F18 original lifecycle fixture port WIP: actual current publication journal/After witnesses, retained original cut/Ready/replay assertions, both original actor tasks drained before root disposal and strict cleanup. Native worker1 source/build only; selected controlled file responders10 require fresh exact execution. No B2/runtime/native PASS claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "spiritual-staged-recovery-ready",
+      "reason": "T064 F18 original lifecycle fixture port WIP: actual current publication journal/After witnesses, retained original cut/Ready/replay assertions, both original actor tasks drained before root disposal and strict cleanup. Native worker1 source/build only; selected controlled file responders10 require fresh exact execution. No B2/runtime/native PASS claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "spiritual-staged-recovery-before-ready",
+      "reason": "T064 F18 original lifecycle fixture port WIP: actual current publication journal/After witnesses, retained original cut/Ready/replay assertions, both original actor tasks drained before root disposal and strict cleanup. Native worker1 source/build only; selected controlled file responders10 require fresh exact execution. No B2/runtime/native PASS claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "spiritual-binding-cold-publication",
+      "reason": "T064 F18 original lifecycle fixture port WIP: actual current publication journal/After witnesses, retained original cut/Ready/replay assertions, both original actor tasks drained before root disposal and strict cleanup. Native worker1 source/build only; selected controlled file responders10 require fresh exact execution. No B2/runtime/native PASS claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "spiritual-binding-live-publication",
+      "reason": "T064 F18 original lifecycle fixture port WIP: actual current publication journal/After witnesses, retained original cut/Ready/replay assertions, both original actor tasks drained before root disposal and strict cleanup. Native worker1 source/build only; selected controlled file responders10 require fresh exact execution. No B2/runtime/native PASS claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "native-spiritual-staged-worker-publication",
+      "reason": "T064 F18 original lifecycle fixture port WIP: actual current publication journal/After witnesses, retained original cut/Ready/replay assertions, both original actor tasks drained before root disposal and strict cleanup. Native worker1 source/build only; selected controlled file responders10 require fresh exact execution. No B2/runtime/native PASS claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-spiritual-midpublication-recovery",
+      "reason": "T064 F18 original lifecycle fixture port WIP: actual current publication journal/After witnesses, retained original cut/Ready/replay assertions, both original actor tasks drained before root disposal and strict cleanup. Native worker1 source/build only; selected controlled file responders10 require fresh exact execution. No B2/runtime/native PASS claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-spiritual-staged-committed-recovery",
+      "reason": "T064 F18 original lifecycle fixture port WIP: actual current publication journal/After witnesses, retained original cut/Ready/replay assertions, both original actor tasks drained before root disposal and strict cleanup. Native worker1 source/build only; selected controlled file responders10 require fresh exact execution. No B2/runtime/native PASS claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-spiritual-staged-file-publication",
+      "reason": "T064 F18 original lifecycle fixture port WIP: actual current publication journal/After witnesses, retained original cut/Ready/replay assertions, both original actor tasks drained before root disposal and strict cleanup. Native worker1 source/build only; selected controlled file responders10 require fresh exact execution. No B2/runtime/native PASS claim.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-original-committed-rollback",
       "reason": "T064 original C4two/woundrecoveryone qualified at d2e6ef9c: fresh Plan1440223/0 and actual1445293/3PASS. Actual Committed journal/After witnesses precede original write/read cuts; raw full rollback80+80+43paths, unchanged generation/no journal, strict3root cleanup and original retry/healing/cold replay assertions. Prior compile-only failure retained; no runtime/native/B2 qualification.",
       "contracts": [

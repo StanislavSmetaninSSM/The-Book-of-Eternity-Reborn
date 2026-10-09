@@ -151,7 +151,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         object? result = null;
         Exception? failure = null;
-        Exception? cleanup = null;
+        var cleanup = new List<Exception>();
         try
         {
             var first = await Task.WhenAny(operation, observation.Failure.Task).WaitAsync(timeout);
@@ -162,19 +162,21 @@ public sealed partial class GameEngineTurnLifecycleTests
         catch (Exception error) { failure = error; }
         finally
         {
-            stop.Cancel();
-            try { await observer.WaitAsync(TimeSpan.FromSeconds(5)); }
-            catch (Exception error) { cleanup = error; }
-            if (!operation.IsCompleted)
+            try { stop.Cancel(); }
+            catch (Exception error) { cleanup.Add(error); }
+            if (!operation.IsCompleted) input.Enqueue(Key(ConsoleKey.Escape));
+            try { await observer; }
+            catch (Exception error) { cleanup.Add(error); }
+            try { await operation; }
+            catch (Exception error)
             {
-                input.Enqueue(Key(ConsoleKey.Escape));
-                try { await operation.WaitAsync(TimeSpan.FromSeconds(10)); }
-                catch (Exception error) { cleanup = error; }
+                if (!ReferenceEquals(error, failure)) cleanup.Add(error);
             }
+            Assert.True(operation.IsCompleted && observer.IsCompleted);
         }
         if (observation.Failure.Task.IsCompletedSuccessfully)
             failure ??= new InvalidOperationException(observation.Failure.Task.Result);
-        return (result, failure, cleanup);
+        return (result, failure, cleanup.Count == 0 ? null : new AggregateException(cleanup));
     }
 
     /// <summary>

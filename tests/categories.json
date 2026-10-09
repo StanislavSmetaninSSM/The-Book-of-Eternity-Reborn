@@ -2,6 +2,104 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "native-spiritual-staged-worker-publication",
+      "responsibility": "Original Windows pwsh.exe staged worker A/B publication and original signed cold recovery; compile/discovery only on Linux.",
+      "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_WorkerAThenBPublishesOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-spiritual-midpublication-recovery",
+      "responsibility": "Original independent mixed cut between committed resource and wound publication, exact copied generation and signed authority, cold all-before/all-after recovery.",
+      "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualMidPublication_ColdCopiedCutRecoversAtomically"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-spiritual-staged-committed-recovery",
+      "responsibility": "Original cold recovery after accepted A before Ready cleanup, requiring separately issued B Ready.",
+      "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterACommitBeforeCleanupIssuesB"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-spiritual-staged-file-publication",
+      "responsibility": "Original staged file A/B publication, stale Ready refusal and orphan Ready blocking with actual journal witnesses and settled actors.",
+      "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_FileAThenBPublishesOnce",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_StaleAReadyDoesNotCompleteB",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_WarmOrphanReadyAfterACommitBlocksB"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-committed-rollback",
       "responsibility": "Three original C4/wound recovery rollback/retry obligations with real current Committed resource/receipt/player witnesses, unchanged before-write/read failures, exact outer restoration and recovery receipt replay.",
       "excludes": "New wound/B2 gameplay, live GM, complete afterlife cutover or recovery suite, native execution and mid-publication process loss.",

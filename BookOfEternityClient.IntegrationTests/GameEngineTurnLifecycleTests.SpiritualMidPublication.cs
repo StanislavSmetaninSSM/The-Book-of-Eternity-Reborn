@@ -26,6 +26,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var checkpoints = new ConcurrentQueue<string>();
         GameEngine? engine = null;
         ResourceMaterializationTestContext? physical = null;
+        SpiritualLifecyclePublicationWitness? witness = null;
         Dictionary<string, byte[]>? cut = null;
         Dictionary<string, byte[]>? committed = null;
         byte[]? originalStory = null;
@@ -37,10 +38,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             PlayerAction = "Удержать встречное духовное давление.", Timestamp = DateTime.UtcNow.ToString("O"),
             PreGeneratedDices1d20 = [15, 5, 12, 8]
         };
-        await using var copied = await ResourceMaterializationTestContext.CreateAsync();
+        var copied = await ResourceMaterializationTestContext.CreateAsync();
+        using var ownedCopy = new OriginalFixtureCompletion(copied.RootPath,
+            () => copied.DisposeAsync().GetAwaiter().GetResult(), text => _directGachaOutput?.WriteLine(text));
         Assert.Empty(await ReadSpiritualEntryGuardFilesAsync(copied));
         var hooks = new FileSystemManagerHooks
         {
+            LocalPublicationObserver = (phase, index) => { witness?.Observe(phase, index); },
             BeforeCanonicalMutationAsync = async path =>
             {
                 if (physical is null || cut is not null || path != WoundIdentityState.StatePath)
@@ -57,6 +61,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var points = state.Ledger!.Entries.Where(row => row.Coordinate.ResourceKey == "spiritual_action_points").ToArray();
                 if (points.Length != 2 || points.Any(row => row.Current != 3m))
                     return;
+                witness!.RequireLatestCurrent(ResourceMaterializationContract.StatePath);
+                witness.AssertSettled("mid-original-between-committed-publications");
                 cut = await ReadSpiritualEntryGuardFilesAsync(physical);
                 generationBytes = await File.ReadAllBytesAsync(physical.FileSystem.SessionGenerationPath);
                 Assert.True(!Directory.Exists(physical.FileSystem.PhysicalPublicationTransactionsRootPath) ||
@@ -64,6 +70,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                     "The cut must be between completed per-file publications, not omit an active per-file recovery journal.");
                 await CopySpiritualMidPublicationImagesAsync(copied, cut, generationBytes);
                 await AssertSpiritualEntryGuardFilesAsync(copied, cut);
+                Assert.Equal(generationBytes, File.ReadAllBytes(copied.FileSystem.SessionGenerationPath));
+                Assert.False(File.Exists(Path.Combine(copied.FileSystem.RuntimeRootPath,
+                    "trusted-local-publication-v1", "active.json")));
                 captureCount++;
             }
         };
@@ -84,7 +93,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 committed = await ReadSpiritualEntryGuardFilesAsync(physical);
             }
         };
-        await using var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async baseline =>
+        var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async baseline =>
         {
             var chat = Assert.IsType<JsonObject>(await baseline.ReadJsonAsync("game_state/history/chat_log.json"));
             chat["sessionId"] = request.SessionId;
@@ -103,7 +112,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             await baseline.WriteExactJsonAsync("input/turn_request.json", JsonSerializer.Serialize(request, SnapshotHashJsonOpts));
             await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollback, "mid-publication-spiritual-original");
         }, hooks: hooks);
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), text => _directGachaOutput?.WriteLine(text));
         physical = context;
+        witness = new(context.FileSystem, text => _directGachaOutput?.WriteLine(text),
+            ResourceMaterializationContract.StatePath);
         var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync("game_state/control/pending_turn_snapshot.json"));
         var original = new Dictionary<string, byte[]>(StringComparer.Ordinal);
         foreach (var path in manifest["rollbackBaselineFiles"]!.AsArray().Select(value => value!.GetValue<string>()))
@@ -128,6 +141,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 $"Warm result={warm.Result}; error={warm.Error}; cleanup={warm.Cleanup}; captures={captureCount}; " +
                 $"requests={warmObservation.Responses}; repair={warmObservation.LastRepair}. {logger.Describe()}\n{diagnostics}");
         }
+        witness.AssertSettled("mid-warm-actors-settled");
         Assert.Equal(1, captureCount);
         Assert.Equal(1, warmObservation.Responses);
         Assert.NotNull(cut);
@@ -140,6 +154,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(generationBytes, await File.ReadAllBytesAsync(copied.FileSystem.SessionGenerationPath));
         Assert.NotEqual(context.RootPath, copied.RootPath);
 
+        Assert.False(File.Exists(Path.Combine(copied.FileSystem.RuntimeRootPath,
+            "trusted-local-publication-v1", "active.json")));
+        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new { kind = "mid-copied-cut-before-cold-admission",
+            root = copied.RootPath, generationBytes, copiedGeneration = File.ReadAllBytes(copied.FileSystem.SessionGenerationPath),
+            images = cut, journalAbsent = true }));
         var coldFs = new FileSystemManager(copied.RootPath, NullLogger<FileSystemManager>.Instance);
         var coldInput = new QueuedConsoleInputSource([]);
         var coldEngine = CreateGameEngine(coldInput, fileSystem: coldFs, logger: logger);

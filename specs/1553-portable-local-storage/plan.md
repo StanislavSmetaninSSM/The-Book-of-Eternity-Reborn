@@ -1,3 +1,25 @@
+## F18 original binding/staged/midpublication11 — fixture WIP, 2026-10-09
+
+Base1d643a73 (C4/recovery3 final independent RAW/CATALOG/CARRIER PASS). Existing binding2,
+staged8 and midpublication1 keep genuine signed setup and original file/worker/Ready/cold
+semantics. Test-only observer validates actual current journal members/After hashes: Committed
+for durable B and accepted A progress, MemberPublished for the orphan B negative counter.
+Cuts remain original next-admission, BeforeRead, BeforeDelete or between-file boundaries;
+mid copy requires committed resource, no active current journal and exact copied generation.
+Raw observer cannot acquire a lease or mutate publisher. Cold staged observer retains same-root
+journal witnesses. Dead old physical publication reader removed after zero-callsite census.
+Original pwsh.exe worker is explicitly nativeWindows; Linux may only compile/discover it.
+
+Both shared await helpers cancel/enqueue Escape before independently joining BOTH original
+tasks, retaining primary error and all secondary faults; no increased local/runner deadline.
+This changes16Facts: current11 plus saved-choice2/automatic-cold1/postpublication-poststory2
+source-qualified only. Original fixture disposal then strict root absence receipts; no delete
+under live actors. No runtime, gameplay, GM contract or B2–B5 development change.
+Exact existing binding2/staged-cold3 owners plus new staged-file3/committed-cold1/mid1/native1
+owners retain original budgets and semantic owners. Next independent source/exact11 review,
+fresh integrationPlan11 (zeroexecution), then controlled Linux10 in bounded owners. Native1
+actual remains UNRUN. F16, consumers, owned-close, legacy inventory and T061–T065 remain open.
+
 ## F18 original C4/recovery rollback3 — bounded Linux GREEN, 2026-10-09
 
 Source d2e6ef9c (independent source correction PASS after compile-only143812 failure):
@@ -15,7 +37,7 @@ then same category `-NoBuild`; `-ValidateCatalog -NoBuild` at144620 validates568
 11344methods-files,0execution10.5029929s,both cleanup. Integration freshd2e6/unit533;
 production/projects unchanged. [Packet](recovery/storage-migration-committed-rollback-20261009/manifest.json)
 20artifacts/originals42sourcepins verified, including immutable prior compile failure2/14.
-Final independent raw/catalog/carrier review pending. Native/mods final gate PASSe9143e82.
+Final independent RAW/CATALOG/CARRIER PASS1d643a73. Native/mods final gate PASSe9143e82.
 Next binding2/staged8/midpublication1: worker1 native source/build only; ten original
 file-responder scenarios require current journal witnesses and complete actor settlement.
 Shared cleanup helpers affect16Facts (five extra source-qualified callers). F16producers,

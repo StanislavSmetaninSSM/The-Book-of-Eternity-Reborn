@@ -460,15 +460,18 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         finally
         {
-            stop.Cancel();
-            try { await callback.WaitAsync(TimeSpan.FromSeconds(5)); }
+            try { stop.Cancel(); }
             catch (Exception error) { cleanup.Add(error); }
-            if (!operation.IsCompleted)
+            if (!operation.IsCompleted) input.Enqueue(Key(ConsoleKey.Escape));
+            // Drain both originals independently: a timed-out proxy cannot authorize root disposal.
+            try { await callback; }
+            catch (Exception error) { cleanup.Add(error); }
+            try { await operation; }
+            catch (Exception error)
             {
-                input.Enqueue(Key(ConsoleKey.Escape));
-                try { await operation.WaitAsync(TimeSpan.FromSeconds(5)); }
-                catch (Exception error) { cleanup.Add(error); }
+                if (!ReferenceEquals(error, failure)) cleanup.Add(error);
             }
+            Assert.True(operation.IsCompleted && callback.IsCompleted);
         }
         Assert.True(observation.Failure is null && cleanup.Count == 0,
             $"Primary: {failure}; callback: {observation.Failure}; cleanup: {string.Join("\n", cleanup)}; " +

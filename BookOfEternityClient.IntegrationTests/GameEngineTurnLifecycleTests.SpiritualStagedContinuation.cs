@@ -105,6 +105,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task RunSpiritualStagedLifecycleAsync(bool worker, string cut, bool staleA = false, bool orphanAfterA = false)
     {
         Assert.False(worker && (cut != "decision" || staleA || orphanAfterA));
+        if (worker) Assert.True(OperatingSystem.IsWindows(), "Original worker profile requires native pwsh.exe.");
         Assert.False(orphanAfterA && (cut != "none" || staleA));
         const string repairPath = "game_state/control/validation_repair_request.json";
         const string readyPath = "game_state/control/validation_repair_ready.json";
@@ -112,6 +113,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var logger = new SpiritualLifecycleTestLogger();
         var shared = new SpiritualStagedObservation();
         ResourceMaterializationTestContext? physical = null;
+        SpiritualLifecyclePublicationWitness? witness = null;
         Dictionary<string, byte[]?>? interrupted = null;
         byte[]? recoveredCheckpoint = null;
         byte[]? recoveredCommand = null;
@@ -126,6 +128,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         async Task InterruptAsync()
         {
             if (Interlocked.CompareExchange(ref interruptions, 1, 0) != 0) return;
+            witness!.AssertSettled("staged-interruption-" + cut);
             interrupted = await ReadSpiritualStagedPhysicalImagesAsync(physical!);
             throw new OperationCanceledException("Staged continuation interrupted at durable " + cut + ".");
         }
@@ -172,6 +175,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var priorReady = ParseDependentSpiritualBytes(await File.ReadAllBytesAsync(readyFile));
                 if (priorRequest["spiritualWoundContinuation"]?["continuationId"]?.GetValue<string>() != shared.A.ContinuationId ||
                     priorReady["spiritualWoundContinuation"]?["continuationId"]?.GetValue<string>() != shared.A.ContinuationId) return;
+                Assert.Equal(await File.ReadAllBytesAsync(checkpointPath),
+                    witness!.RequireLatestCurrent(SpiritualWoundCaptureCheckpointState.StatePath));
                 // The engine reaches exact A Ready deletion only after confirmed progress readback and owner reconstruction.
                 await InterruptAsync();
             },
@@ -193,6 +198,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 if (!File.Exists(checkpointPath) || !File.Exists(physical.FileSystem.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath))) return;
                 var checkpoint = ParseDependentSpiritualBytes(await File.ReadAllBytesAsync(checkpointPath));
                 if (checkpoint["checkpoint"]?["pendingSubmission"]?["dependentDraftProgress"] is not JsonArray { Count: 1 }) return;
+                Assert.Equal(shared.A.ContinuationId,
+                    ParseDependentSpiritualBytes(witness!.RequireLatestCurrent(SpiritualWoundCaptureCheckpointState.StatePath))
+                    ["checkpoint"]!["pendingSubmission"]!["dependentDraftProgress"]![0]!["acceptedContinuationId"]!.GetValue<string>());
                 if (Interlocked.CompareExchange(ref orphanInjections, 1, 0) != 0) return;
                 var originalTurn = ParseDependentSpiritualBytes(await File.ReadAllBytesAsync(physical.FileSystem.ResolvePath("input/turn_request.json")));
                 orphanReady = System.Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
@@ -219,31 +227,34 @@ public sealed partial class GameEngineTurnLifecycleTests
                 if (ready["spiritualWoundContinuation"]?["continuationId"]?.GetValue<string>() == shared.A.ContinuationId)
                     await InterruptAsync();
             },
-            AfterPhysicalFilePublishedAsync = async path =>
+            LocalPublicationObserver = (phase, index) =>
             {
-                if (physical is not null && string.Equals(path,
-                    physical.FileSystem.ResolvePath(SpiritualWoundCaptureCheckpointState.StatePath), StringComparison.OrdinalIgnoreCase))
+                if (witness is null) return;
+                foreach (var publication in witness.Observe(phase, index))
                 {
-                    var checkpoint = ParseDependentSpiritualBytes(await ReadSpiritualStagedPublishedBytesAsync(path));
-                    if (checkpoint["checkpoint"]?["pendingSubmission"]?["dependentDraftProgress"] is JsonArray { Count: 1 })
-                        Interlocked.CompareExchange(ref confirmedProgressPublicationTicks, DateTime.UtcNow.Ticks, 0);
-                }
-                if ((cut != "b_publish" && !orphanAfterA) || physical is null || interruptions != 0 ||
-                    !string.Equals(path, physical.FileSystem.ResolvePath(repairPath), StringComparison.OrdinalIgnoreCase)) return;
-                var publishedBytes = await ReadSpiritualStagedPublishedBytesAsync(path);
-                var raw = ParseDependentSpiritualBytes(publishedBytes);
-                var fields = raw["spiritualWoundContinuation"]?["dependentDraftFields"] as JsonArray;
-                if (fields is not null && fields.Any(row => row?["jsonPointer"]?.GetValue<string>().Contains("/exchangeLog/2/", StringComparison.Ordinal) == true))
-                {
-                    if (orphanAfterA)
+                    if (publication.Bytes is null) continue;
+                    if (phase == TrustedLocalPublicationPhase.Committed &&
+                        publication.Path == SpiritualWoundCaptureCheckpointState.StatePath)
+                    {
+                        var checkpoint = ParseDependentSpiritualBytes(publication.Bytes);
+                        if (checkpoint["checkpoint"]?["pendingSubmission"]?["dependentDraftProgress"] is JsonArray { Count: 1 })
+                            Interlocked.CompareExchange(ref confirmedProgressPublicationTicks, DateTime.UtcNow.Ticks, 0);
+                    }
+                    if ((cut != "b_publish" && !orphanAfterA) || interruptions != 0 || publication.Path != repairPath) continue;
+                    var raw = ParseDependentSpiritualBytes(publication.Bytes);
+                    var fields = raw["spiritualWoundContinuation"]?["dependentDraftFields"] as JsonArray;
+                    if (fields is null || !fields.Any(row => row?["jsonPointer"]?.GetValue<string>()
+                        .Contains("/exchangeLog/2/", StringComparison.Ordinal) == true)) continue;
+                    if (orphanAfterA && phase == TrustedLocalPublicationPhase.MemberPublished)
                     {
                         Interlocked.Increment(ref orphanBPublications);
                         input.Enqueue(Key(ConsoleKey.Escape));
-                        return;
                     }
-                    // This callback precedes publication confirmation; throwing here would roll B back.
-                    observedBRequest = publishedBytes;
-                    Volatile.Write(ref observedBPublications, 1);
+                    if (!orphanAfterA && phase == TrustedLocalPublicationPhase.Committed)
+                    {
+                        observedBRequest = publication.Bytes;
+                        Volatile.Write(ref observedBPublications, 1);
+                    }
                 }
             }
         };
@@ -254,7 +265,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             PlayerAction = "Удержать встречное духовное давление.", Timestamp = DateTime.UtcNow.ToString("O"),
             PreGeneratedDices1d20 = [5, 15, 20, 18, 9, 8]
         };
-        await using var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async original =>
+        var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async original =>
         {
             await AfterlifeResourceCutoverTests.SeedSpiritualWorseningTierAuthorityAsync(original);
             var chat = Assert.IsType<JsonObject>(await original.ReadJsonAsync("game_state/history/chat_log.json"));
@@ -277,7 +288,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             await original.WriteExactJsonAsync("input/turn_request.json", JsonSerializer.Serialize(request, SnapshotHashJsonOpts));
             await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, backup, "staged-spiritual-original");
         }, hooks: hooks);
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), text => _directGachaOutput?.WriteLine(text));
         physical = context;
+        witness = new(context.FileSystem, text => _directGachaOutput?.WriteLine(text),
+            repairPath, SpiritualWoundCaptureCheckpointState.StatePath, ResourceMaterializationContract.StatePath);
         var originalDraft = await AfterlifeResourceCutoverTests.WriteSpiritualStagedOriginalExchangesAsync(context);
         await WriteSpiritualStagedLifecycleOutputsAsync(context, request);
         var originalImages = await ReadSpiritualStagedPhysicalImagesAsync(context);
@@ -315,8 +330,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.True(warm.Error is null && warm.Result is true, $"{warm.Error}; {logger.Describe()}");
             else Assert.IsAssignableFrom<OperationCanceledException>(warm.Error);
         }
+        witness.AssertSettled("staged-warm-actors-settled-" + cut);
         if (orphanAfterA)
         {
+            Assert.True(Interlocked.Read(ref confirmedProgressPublicationTicks) > 0);
             Assert.Equal(1, orphanInjections);
             Assert.Equal(0, orphanBPublications);
             Assert.NotNull(orphanImages);
@@ -361,10 +378,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             var beforeBReady = cut == "a_commit" ? await ReadSpiritualStagedPhysicalImagesAsync(context) : null;
             var unansweredB = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             var unansweredBLocks = 0;
-            var coldHooks = cut != "a_commit" ? null : new FileSystemManagerHooks
+            var coldHooks = new FileSystemManagerHooks
             {
+                LocalPublicationObserver = hooks.LocalPublicationObserver,
                 BeforeCanonicalWriteLockOpenAsync = async () =>
                 {
+                    if (cut != "a_commit") return;
                     var publishedRequest = context.FileSystem.ResolvePath(repairPath);
                     if (!File.Exists(publishedRequest) || File.Exists(context.FileSystem.ResolvePath(readyPath))) return;
                     var report = ParseDependentSpiritualBytes(await File.ReadAllBytesAsync(publishedRequest));
@@ -454,6 +473,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             acceptedEngine = coldEngine;
         }
+        witness.AssertSettled("staged-final-actors-settled-" + cut);
+        Assert.True(Interlocked.Read(ref confirmedProgressPublicationTicks) > 0);
         Assert.Equal(3, shared.Phase.Requests.Count);
         Assert.NotNull(shared.A);
         Assert.NotNull(shared.B);
@@ -464,21 +485,4 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (worker) await AssertSpiritualStagedWorkersAsync(context, shared);
     }
 
-    /// <summary>
-    /// Reads a publication callback's destination while the publisher retains its source handle through confirmation.
-    /// </summary>
-    /// <param name="absolutePath">
-    /// The normalized physical destination supplied by the publication callback.
-    /// </param>
-    /// <returns>
-    /// Exact observed bytes read with cooperative sharing, without retries or canonical lease acquisition.
-    /// </returns>
-    private static async Task<byte[]> ReadSpiritualStagedPublishedBytesAsync(string absolutePath)
-    {
-        await using var stream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read,
-            FileShare.ReadWrite | FileShare.Delete, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
-        using var memory = new MemoryStream();
-        await stream.CopyToAsync(memory);
-        return memory.ToArray();
-    }
 }
