@@ -1,3 +1,16 @@
+## Replay uncertainty and Proposal confirmed-result guards — WIP, 2026-10-09
+
+Original correctedreplay1PASS/1causalFAIL and Proposal3PASS/1causalFAIL retained
+withsource6431c208 at4b9839eb; ascensionGREEN2/SaveGREEN2 preserved separately.
+Exactly original replayowning method captures/rethrows SAME CSP toexisting
+ReleaseOwnedLeaseAsync(false,sameexception); unchanged originalbody/order/returns.
+Proposal completedflag setonly AFTER actual PublishedWithWarning construction,
+not bundle rename or inbox attempt; existingRelease usesconfirmedresult tokeep
+publication+warning afterlateclose. Generation/taskrefusals and genuineCSP paths
+unchanged. RuntimeUNBUILT/UNRUN, combinedcausal/source/exact2+4 review beforefresh
+buildandseparateGREEN; noacceptedascension/Save/Treatment replay. T061–T065/B2–B5/
+native-defaultbackend/worker/ACK/wholeflow stayopen; noGM-facingcontractchange.
+
 ## Four separate last-owner executions preserved before fixes — WIP, 2026-10-09
 
 Fresh integration Plan232300 at6431c208 selects10/4,0execution50.7403629s,

@@ -73,6 +73,7 @@ public sealed class GmWorkerProposalStore
             var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
                 cancellationToken: cancellationToken, workerPurpose: durableExecution?.PublicationPurpose());
             Exception? publicationUncertainty = null;
+            var publishedResultEstablished = false;
             try
             {
                 if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
@@ -141,7 +142,9 @@ public sealed class GmWorkerProposalStore
                     }
                 }
 
-                return WorkerProposalPublicationResult.PublishedWithWarning(warning);
+                var publishedResult = WorkerProposalPublicationResult.PublishedWithWarning(warning);
+                publishedResultEstablished = publishedResult.Published;
+                return publishedResult;
             }
             catch (CoordinatedStatePublicationUncertainException failure)
             {
@@ -151,7 +154,7 @@ public sealed class GmWorkerProposalStore
             finally
             {
                 await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
-                    _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+                    _fs, writeLease, completed: publishedResultEstablished, operationFailure: publicationUncertainty);
             }
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException)
