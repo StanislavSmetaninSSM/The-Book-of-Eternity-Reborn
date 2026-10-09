@@ -1,7 +1,34 @@
+## Prepared original remote receipt fixture WIP — 2026-10-09
+
+Tracked T062/T063; test-only three-row packet after690fb8. Actual Running neutral original
+Bridge host/server seeds under a finished original pin, then invokes ExecutePreparedAsync with no
+local Current. The actual prepare lease retains its owning remote admission and exact granted
+identity/generation; actual publication MemberPublished selects one target and establishes genuine
+Unknown (foreign bytes), RolledBack (nontransient failure with known image), or Committed.
+Raw result/bytes/journal/UI lock, original TerminalClose, server frame and retained CloseObserved
+are recorded before desired receipt assertions and explicit fixture repair. Server observation alone
+is not ACK proof: require exact original IDs/identity, retained CloseObserved and owner query
+ClosedObserved, ClosingFailed=false. Unknown permits no later reached opened reads/mutation
+attempts and no Apply. Original owner stop is separately proved after disclosed evidence cleanup;
+existing physical guardian remains independent. No live GM/provider/native/UI claim.
+
+Unique selected category portable-prepared-remote-outcome-linux owns exactly3 unit rows.
+Production remains unchanged; fixture/source/selection review, matching Plan/build and causal
+execution remain unrun. Minimal proposed later fix uses existing BrowserDecisionCapture at the
+actual Prepared disposition before callbacks/cleanup/close, without global inference/new type.
+Progression4 draft remains deferred/unbuilt/unexecuted; no replay of accepted cleanup26.
+
+Parent final GitHub-only restoration ofe5b63ba7500869d9486c168fbc4f41e174fa5f04 PASS:
+/workspace/boe-1553-cleanup-final-restore, treebe7c337eb2543002f6c1965d0367caa8a9e36278,
+28041 tracked, clean/no alternates, all111 stored/expanded artifacts+98 historical source pins
+verified, explicit git fsck --full exit0 with empty output. No builds/tests in restore.
+This closes the bounded local cleanup carrier gate; original remote outcome is the separate
+source-confirmed P2 being causally tested here.
+
 ## Next connected source finding / progression fixture draft — 2026-10-09
 
 Independent final bounded cleanup raw/carrier PASSe5b63ba7 (111 artifacts/98 pins); parent fresh
-restore is completing. That local storage evidence does not qualify a remote main receipt.
+restore PASS is recorded above. That local storage evidence does not qualify a remote main receipt.
 Independent source tracing confirms Prepared returns explicit Uncertain without updating existing
 BrowserDecisionCapture, whose default Completed reaches the actual original remote close. This
 is a connected remaining P2, not an executed remote failure or invalidation of local cleanup26.

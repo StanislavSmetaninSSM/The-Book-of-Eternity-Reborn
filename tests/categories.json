@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-prepared-remote-outcome-linux",
+      "responsibility": "Three original Prepared publication outcomes through real Running neutral main remote admission and exact terminal close/ACK: committed, rolled back and genuine Unknown.",
+      "excludes": "No live GM/provider, worker, native Windows, UI or global main-outcome inference; local cleanup26 remains separate evidence.",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs",
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-cleanup-prepared-causal-linux",
+          "when": "Prepared publication or canonical cleanup behavior changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PreparedRemoteOutcomeTests.OriginalRemoteCloseRetainsPreparedPublicationDecision"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-progression-outcome-causal-linux",
       "responsibility": "Four original progression publication-Unknown contours: base stats, status clearing after confirmed base, mark-only level receipt and AddStatPoints computed output after confirmed points. Actual cut, same decision and no later measured work.",
       "excludes": "No XP/stat math change, full accepted turn, interactive stat distribution, provider/native execution. Test-only draft remains unexecuted pending focused fixture gate.",

@@ -155,7 +155,13 @@ internal static class MainRunFenceScenarioDriver
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
-            if(mode.StartsWith("terminal-main-daemon-storage-",StringComparison.Ordinal)) {
+            if(mode.StartsWith("terminal-main-prepared-outcome-",StringComparison.Ordinal)) {
+                using var control=new CancellationTokenSource();
+                var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
+                try {await PreparedRemoteOutcomeScenario.ExerciseAsync(mode["terminal-main-prepared-outcome-".Length..],files,owner,host!,type!,()=>Call("StopShellAsync"),result);}
+                finally {await control.CancelAsync();await server;}
+            }
+            else if(mode.StartsWith("terminal-main-daemon-storage-",StringComparison.Ordinal)) {
                 using var control=new CancellationTokenSource();
                 var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
                 try {await GmDaemonStorageScenario.ExerciseAsync(mode["terminal-main-daemon-storage-".Length..],files,owner,folder,()=>Call("StopShellAsync"),result);}
