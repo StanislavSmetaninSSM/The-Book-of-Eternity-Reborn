@@ -1,3 +1,14 @@
+## F18 native3 — source and compile qualification, 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT3 PASSbcd5f6e6. Fresh both-project Plan125552 selects
+unit1/integration2 (3cases/2descriptors),0executed64.8782462s,bothcleanup. [Packet](recovery/storage-migration-native-contention-20261009/manifest.json)
+contains5artifacts/6pins. Native success/failure-path task settlement remains unverified
+because actual descriptor-bound primitives require Windows; no Linux execution or
+substitute platform PASS. Original semantic owners remain. Source changes do not grant
+HOME-PC/desktop permission. Generation final RAW/CATALOG/CARRIER PASS40d994ff verifies
+70artifacts/originals80pins and composed7. Next physicalcuts/F16/ownedclose/whole registry;
+no task checkbox or main/CI change; B2–B5 paused.
+
 ## F18 native runtime contention — fixture WIP, 2026-10-09
 
 Read-only source map identifies three actual descriptor-bound runtime publications:

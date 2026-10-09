@@ -1,0 +1,64 @@
+{
+  "scope": "Native Windows runtime create-only publication fixtures: source/compile/exact Plan only on Linux; zero tests executed, native actual and failure-path cleanup unverified.",
+  "plan": {
+    "source": "bcd5f6e60a4c74d0965123e967329e685a105fda",
+    "artifacts": [
+      {
+        "path": "plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-125552-100-349383-70e76c2a41394f579f54aef814e3a88d-categories/plan.json",
+        "sha256": "80dc95c855b275821a754c7fc78897aac213185524886c54970a28c900af0d8e",
+        "originalSha256": "80dc95c855b275821a754c7fc78897aac213185524886c54970a28c900af0d8e"
+      },
+      {
+        "path": "summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-125552-100-349383-70e76c2a41394f579f54aef814e3a88d-categories/summary.json",
+        "sha256": "1d99d526daad8693c7f75e479dc57bba5ed3cb49dceece6fc3b44244d7ac0287",
+        "originalSha256": "1d99d526daad8693c7f75e479dc57bba5ed3cb49dceece6fc3b44244d7ac0287"
+      },
+      {
+        "path": "Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-125552-100-349383-70e76c2a41394f579f54aef814e3a88d-categories/Build-integration.log",
+        "sha256": "ae9cb652a0d87061ff8a2a2bb84176d3e5255ed3422db5869e4f5b405c3ca1a3",
+        "originalSha256": "0e3376499d6f0792f178f691774be8255efac4304e4d6be38bd6a5a995b34b4c"
+      },
+      {
+        "path": "Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-125552-100-349383-70e76c2a41394f579f54aef814e3a88d-categories/Build-unit.log",
+        "sha256": "92158960651c7e9353bf05bd56e90a4740659de0e893ccefb51e366c22467149",
+        "originalSha256": "ffc54572050dedd5385b41d8ff70a65c437cdfe8fac42901ece7bf38df2320fc"
+      },
+      {
+        "path": "dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-125552-100-349383-70e76c2a41394f579f54aef814e3a88d-categories/dotnet-test.log",
+        "sha256": "e1eeb03d8b6cb112a8fbe7b2466df196978d044e085f1aebaa9c8b03c1308ed9",
+        "originalSha256": "547398baba750485fbb9129097d542800f65c0ecb53c9fc8a10f702dcf371bff"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.Tests/GmWorkerProposalInboxTests.cs",
+        "sha256": "1269fc27a3a06ce67408848b8626244b53c5346cda660f5dc24bb3d5e0618d5f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+        "sha256": "73917b97d78a2c86021de9cca601379ee14b89ddae51bb716b180d813d159617"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "sha256": "6339edc304920d693ec54717210e445c90451131936bbf8b2f09462e0b3c219a"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "d116b92ee6e6a0d5d156c892b9ad07e1dba5c7e0a2b309c6fed3cee81a06916c"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "9d49f289ac480b609121cb24a75fc48dc66b6a2df03be9142ea8ed9012e8ba50"
+      }
+    ]
+  }
+}
