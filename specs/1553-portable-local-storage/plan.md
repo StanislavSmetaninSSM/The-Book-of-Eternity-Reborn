@@ -1,3 +1,13 @@
+## Browser noncandidate positive baseline — WIP, 2026-10-09
+
+Source6d7de837 independentfixture/design/exact2 PASS. Fresh integrationPlan1838452/1,
+0execution48.7020534s; actual1839532/2PASS8.2355160s,complete1/1,bothcleanup,
+0skip/duplicate/timeout. Originalpublicgacha andborrowedqueue preserve3rawnativebin
+names/bytes, omitallfromactualmanifest, publishgenuinepre-spendbackup. Twoemitted
+rootsabsent. Packet37artifacts26pins verified originals; prior17 RED immutable.
+No browserruntimechange. Next minimal2filepreflight thenfresh19/2, notbaseline19
+replay. Otherproducers/owners open; T061–T065unchecked/B2–B5paused.
+
 ## Browser eligibility positive supplement — WIP, 2026-10-09
 
 Add isolated originalgacha/borrowedqueue2 for noncandidate game_state binary names:
