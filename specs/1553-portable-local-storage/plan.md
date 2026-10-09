@@ -1,3 +1,30 @@
+## Repair/proposal diagnostics bounded GREEN — 2026-10-09
+
+Independent RED/carrier PASSf554, SOURCE/EXACT15 PASS386c78a77ec8a69c220ca7700f07d56bc97fa433.
+Matching fresh Plan064509 builds integration38.6114192s,15/1 selected,0 tests,
+wall42.3212938s. Actual064558: **15/15 PASS**,8.0985011s, both cleanup flags,
+no skips/duplicates/timeouts. All7 original publication cut assertions now execute:
+same CSP, exact original diagnostic causes, actual accepted decision/task, exact
+journals/foreign bytes/prior images, no measured later canonical work. Report commit
+survives the subsequent uncertain Ready deletion;15 owned roots removed. Eight known
+controls retain original policy. Historical8PASS/7FAIL at4580 stays preserved.
+
+Fresh both-project discovery064614 at386c: **526 categories/11324 methods-files
+valid,0 tests**,20.1794058s, both cleanup flags; integration1.3679248s/unit10.8166169s.
+[Raw source-pinned carrier](recovery/storage-migration-repair-diagnostics-20261009/manifest.json)
+contains97 artifacts/57 pins. Final independent raw/catalog/carrier gate pending.
+Earlier Ready12 remains accepted at11b/351 without replay; these are separate runs,
+not a single27 test run. No whole worker/bridge/terminal-wait/C2/native/double-close claim.
+
+Next connected ownership qualification must cover actual terminal wait/key settlement
+and original pool reservation/dispatch/store publication plus durable ACK and cleanup.
+A Store fixture without an actual stopped execution cannot fabricate durable ACK;
+GmWorkerDurableExecution.BeginPublication requires original bound StopValidated authority.
+Prelaunch reservation/dispatch can use existing isolated synthetic native admission
+without creating a worker. Full bridge dispatch and default public Linux refusal stay
+part of the connected pool qualification. C2/F16/F18/other publisher owners and selection
+reconciliation remain open; B2–B5 paused. No completed task checkbox changes.
+
 ## Repair/proposal diagnostic runtime — WIP/unbuilt/unrun, 2026-10-09
 
 Minimum correction after seven reached failures: ProposalOnlyDispatch excludes CSP

@@ -1,3 +1,8 @@
+Repair/proposal diagnostic15 Linux PASS386c78a7/064558 (7 original publication cuts
++8 known controls), source gate PASS; final raw/carrier gate pending. Catalog526/11324
+valid0. EarlierReady12 retained separately at11b/351; full wait/key/bridge/pool/C2/native
+and T061–T065 remain open. See current plan and both source-pinned evidence packets.
+
 Ready/worker bounded12 Linux PASS at11b97493/063038 (9 original publication Unknown
 +3 known controls), source/fixture gate PASS; final evidence/carrier gate pending.
 Catalog525/11322 valid0. Scope and remaining connected consumers are in plan.md;

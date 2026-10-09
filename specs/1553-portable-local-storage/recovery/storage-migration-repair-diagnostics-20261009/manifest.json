@@ -359,5 +359,479 @@
         "sha256": "a4353f30da6267a2e7322bd03e7b510a450627d329b99606c925ab79a4cb9264"
       }
     ]
+  },
+  "green15": {
+    "source": "386c78a77ec8a69c220ca7700f07d56bc97fa433",
+    "qualification": "Raw exact selected source/summary/TRX and owned evidence; causal versus fixture and assertion reach classified in plan.",
+    "artifacts": [
+      {
+        "path": "green15-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064509-509-276312-42aa5f97553146818a9fd9163858fc77-categories/Build-integration.log",
+        "sha256": "56fe1cef3ac6ef2c9fd9783f09cb31682b27cb26362599f76089926673231e96",
+        "originalSha256": "6e167a8f6931062585c9ff3ad024d46c6a76a15444b1388d1c996b578a06e9f0"
+      },
+      {
+        "path": "green15-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064509-509-276312-42aa5f97553146818a9fd9163858fc77-categories/dotnet-test.log",
+        "sha256": "8a301366a080afddb9d60dea960952b2d18bb7c809bc10cb4303285d57c093e1",
+        "originalSha256": "accaca5321023b75454f09c4e9b29fb72279b68ca4023f818f0d4c3b34714c70"
+      },
+      {
+        "path": "green15-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064509-509-276312-42aa5f97553146818a9fd9163858fc77-categories/plan.json",
+        "sha256": "fb9d89fe7b6ef16e31416a4fb0665a318fadb64341f29a1a511cbb51e036d44a",
+        "originalSha256": "fb9d89fe7b6ef16e31416a4fb0665a318fadb64341f29a1a511cbb51e036d44a"
+      },
+      {
+        "path": "green15-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064509-509-276312-42aa5f97553146818a9fd9163858fc77-categories/summary.json",
+        "sha256": "b55ee410b6810e9b44e89ab4b1cec71b8dc23707b87bf9785bd8de34fd1de0ff",
+        "originalSha256": "b55ee410b6810e9b44e89ab4b1cec71b8dc23707b87bf9785bd8de34fd1de0ff"
+      },
+      {
+        "path": "green15-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064558-642-276596-ce8ae7a2593f4f188f2779597d24c92c-categories/dotnet-test.log",
+        "sha256": "7a8668a2e35b428a86855d49cf61fdae541ce8daa68cc303d4adfe3c746c7a84",
+        "originalSha256": "6a6834a9ec082e0f42679ca96940a337cb7cb3d8348eadba7729d97cc831cd98"
+      },
+      {
+        "path": "green15-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064558-642-276596-ce8ae7a2593f4f188f2779597d24c92c-categories/plan.json",
+        "sha256": "e88d20256ac565ad239b5dac5a67670f7f89d3917cc205d9c5f7c801ebe292bc",
+        "originalSha256": "e88d20256ac565ad239b5dac5a67670f7f89d3917cc205d9c5f7c801ebe292bc"
+      },
+      {
+        "path": "green15-actual-portable-worker-repair-diagnostics-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064558-642-276596-ce8ae7a2593f4f188f2779597d24c92c-categories/portable-worker-repair-diagnostics-linux-integration-001.trx",
+        "sha256": "446e8b6f87949517d0f67160c8ed57a2b4f8609ba613241d19ce6f35d750a24c",
+        "originalSha256": "88e8beddb749f390687693bd4e0cb3eceff7677a667383ac36e9875b759d86de"
+      },
+      {
+        "path": "green15-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064558-642-276596-ce8ae7a2593f4f188f2779597d24c92c-categories/summary.json",
+        "sha256": "ade20f0f6e52518b76b9ef44a45eb0d957ddf64c11570876fc3c5a988773033e",
+        "originalSha256": "ade20f0f6e52518b76b9ef44a45eb0d957ddf64c11570876fc3c5a988773033e"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-0-0.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-0-0.json",
+        "sha256": "97d124232dfad6f8b36a41ccd6a8ae5fcba933b71a9d3f38eb8d78fd4dfe3fb7",
+        "originalSha256": "97d124232dfad6f8b36a41ccd6a8ae5fcba933b71a9d3f38eb8d78fd4dfe3fb7"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-0-1.json",
+        "sha256": "31d3da00975954393e1ee1ca66698f2827e8e1f7833ccd9acf55cacc4e56405a",
+        "originalSha256": "31d3da00975954393e1ee1ca66698f2827e8e1f7833ccd9acf55cacc4e56405a"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-1-0-journal.bin.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-1-0-journal.bin",
+        "sha256": "2877b2e7a8cdbef34f59b6a7c770c09ebcda88e868f0f8b7b63e8b4b279e45d2",
+        "originalSha256": "b46071fb02782e387da553b1e6a1b8757f1d018858f316ad04ff36f7441a1a5d"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-1-0.json",
+        "sha256": "aade39efdf8c4babb9d09eb0b185bd42ab727d179bdaeb3237c1de200c2577a2",
+        "originalSha256": "4eb811785dc046dac45c8fa17cc956d543031521d2bc2a7e219ad3b54ab7f438"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-1-1.json",
+        "sha256": "02952f97611309beeaa405dab89cf32a90823f412f2bccb05726f3409d9fd618",
+        "originalSha256": "02952f97611309beeaa405dab89cf32a90823f412f2bccb05726f3409d9fd618"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-10-0-journal.bin.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-10-0-journal.bin",
+        "sha256": "ffab6b07276fdae450d6121af99b01eec4ec6ca58aa30bc3eabbe25f9f402cce",
+        "originalSha256": "b6f8f86a0e2c29988fa0e40f53de6756b491f3616ea6ee4719918dcf48883246"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-10-0.json.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-10-0.json",
+        "sha256": "9401e6f4ee3ec8cf984e8b2886f91890bc9d98b306ad77230f464e70ed499c96",
+        "originalSha256": "6c6483abbc6210a289e7a9001af5643e019065d450520003a3bdd056e61b543f"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-10-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-10-1.json",
+        "sha256": "120735e149816ed574b78451be6e56250201b3f3c885ac58284246697e741bb6",
+        "originalSha256": "120735e149816ed574b78451be6e56250201b3f3c885ac58284246697e741bb6"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-11-0-journal.bin.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-11-0-journal.bin",
+        "sha256": "302a788361a84f9982f7b96dd8db617aa1568878931b954fb0cba6901e067977",
+        "originalSha256": "6eb74d4153d6b84e718a3da00f514ec9c9c58ab004803ebeddf477c01093c879"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-11-0.json.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-11-0.json",
+        "sha256": "25545667e511112cd08e33099d8cced2b17474abb567c101c970af621d019a6c",
+        "originalSha256": "5dd38d58864beb757c2c33879b34e6e96e5bdd8bc5cfc410816e55f30d3e7772"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-11-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-11-1.json",
+        "sha256": "647d9415a6d8f342a0a8c1e9844b7099448230058721086986e2c4727d601db3",
+        "originalSha256": "647d9415a6d8f342a0a8c1e9844b7099448230058721086986e2c4727d601db3"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-12-0.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-12-0.json",
+        "sha256": "50841215f1dbc382047e80169c7f24bf9464916bf9790d3b61edd9379613ec98",
+        "originalSha256": "50841215f1dbc382047e80169c7f24bf9464916bf9790d3b61edd9379613ec98"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-12-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-12-1.json",
+        "sha256": "4a33ba5328e7388b616d7fdc8ad8daaf58c1800ae51048783e3089229ba2689f",
+        "originalSha256": "4a33ba5328e7388b616d7fdc8ad8daaf58c1800ae51048783e3089229ba2689f"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-13-0-journal.bin.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-13-0-journal.bin",
+        "sha256": "b7eee2c4149d8c18c08cf06c55edcd679ac75df75b9bac1e42966e240ea219bb",
+        "originalSha256": "2f0c7613946181964e7f00ff9e2da499dee19d0131971bf694927185f6abdf1a"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-13-0.json.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-13-0.json",
+        "sha256": "35e995de8916b0ec81099ea4b1291cca1274cb7c5e1a6a5e628095a85e263fc1",
+        "originalSha256": "eef95f9e4a8fb8eabfe746316dd5f0b6533fd2cb0cc0bb99cbdd514806ea928c"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-13-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-13-1.json",
+        "sha256": "fad26b729020abf894762c53f3644d189439961d289ef2dc21dcb19a43b360e6",
+        "originalSha256": "fad26b729020abf894762c53f3644d189439961d289ef2dc21dcb19a43b360e6"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-14-0.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-14-0.json",
+        "sha256": "0f323c6304533ab468cb122357a0b214fb597e4488c99a1ef665069dcdb45d61",
+        "originalSha256": "0f323c6304533ab468cb122357a0b214fb597e4488c99a1ef665069dcdb45d61"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-14-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-14-1.json",
+        "sha256": "84dc8d5cf3460854b09b17e73c27e9f5718bc8a18fc46d8bc75a25fd755e0c3c",
+        "originalSha256": "84dc8d5cf3460854b09b17e73c27e9f5718bc8a18fc46d8bc75a25fd755e0c3c"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-2-0.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-2-0.json",
+        "sha256": "77c5e1a8605fab85bd35cd93c0114b0df483d1c322f0327f688926357b790adf",
+        "originalSha256": "77c5e1a8605fab85bd35cd93c0114b0df483d1c322f0327f688926357b790adf"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-2-1.json",
+        "sha256": "9e50fd3a2d4ea84490c2317d4d5017ef532776b1517ab731ed17c8f78f7c51e7",
+        "originalSha256": "9e50fd3a2d4ea84490c2317d4d5017ef532776b1517ab731ed17c8f78f7c51e7"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-3-0.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-3-0.json",
+        "sha256": "9c9fc19593000c629c2e3d7848a70002160ca6da4e73098467cc88fd1e3d6df7",
+        "originalSha256": "9c9fc19593000c629c2e3d7848a70002160ca6da4e73098467cc88fd1e3d6df7"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-3-1.json",
+        "sha256": "7e473c6754d428916eaea613f0879b3dccc0f9dfe732e38102d0e8a1f51ad589",
+        "originalSha256": "7e473c6754d428916eaea613f0879b3dccc0f9dfe732e38102d0e8a1f51ad589"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-4-0-journal.bin.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-4-0-journal.bin",
+        "sha256": "a2d5d71503a306b25565c8556b4cccd7a93820793976796629b30f66e6bd4906",
+        "originalSha256": "de48912c04ebedd6a5f2e601c9598e6c640f53a3549d125511d9433967fdc8c3"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-4-0.json",
+        "sha256": "188c92b30596a8340e9d1e73acd6125b341054b812f1896f23411cf98cef5420",
+        "originalSha256": "c0d4e81b2ea996d2b6651694cce6baee098ae72a1f0c6a27a7222f6bef1dfe74"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-4-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-4-1.json",
+        "sha256": "c0ba28555d8b2a989a72eedd72be384da7850845c87db73011d4e9715d574f78",
+        "originalSha256": "c0ba28555d8b2a989a72eedd72be384da7850845c87db73011d4e9715d574f78"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-5-0.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-5-0.json",
+        "sha256": "f6d7fa78ee174ab95b18ca8d7cb2f118658b22397a9ff280ade8443c1b9fe00a",
+        "originalSha256": "f6d7fa78ee174ab95b18ca8d7cb2f118658b22397a9ff280ade8443c1b9fe00a"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-5-1.json",
+        "sha256": "ced5e592762482c606ceacfd3534718e903a58405196e3772fed43c8294e0dc3",
+        "originalSha256": "ced5e592762482c606ceacfd3534718e903a58405196e3772fed43c8294e0dc3"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-6-0-journal.bin.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-6-0-journal.bin",
+        "sha256": "560a0e3141d10a3d2eeb5e54278475748b542810bfa07a2629b856d8d28d6c75",
+        "originalSha256": "bc97160c2ba1cef6b57556f5cf208da8c578e3edd38c5071d4223a7999fe6f07"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-6-0.json",
+        "sha256": "52e08c2f1d71048d92fa81506f5ebb1eb614fa2ee477e8c8232517e03821f5c5",
+        "originalSha256": "8d14e85f55f0d6efe6576036d5e85977b349d8f3de35bbb27d8417d4d79342ab"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-6-1.json",
+        "sha256": "a7be683df47bc0187e4308ca514f8713892ca7d3b07749a441ac3afd8e2264e9",
+        "originalSha256": "a7be683df47bc0187e4308ca514f8713892ca7d3b07749a441ac3afd8e2264e9"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-7-0-journal.bin.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-7-0-journal.bin",
+        "sha256": "427754e83eddd18207c5340b61a4fc92bd634072e37cbbf4af722030d887daae",
+        "originalSha256": "f41e8beef36657cfde3ef6776b243f998f0fba1f8b64b1518f1ef799418390d2"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-7-0.json.gz",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-7-0.json",
+        "sha256": "9d5c46239f47ff359876c58d06911f2479c521e6c5d0498d5ee219d396439437",
+        "originalSha256": "d957873063b0184692f031ab3f08aa585326214aa5aa21f9309ae8e7e7dd6fe5"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-7-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-7-1.json",
+        "sha256": "b61f08a219a9455ababca8f36451ffe4542e8a82332c7d2499d4436499704fed",
+        "originalSha256": "b61f08a219a9455ababca8f36451ffe4542e8a82332c7d2499d4436499704fed"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-8-0.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-8-0.json",
+        "sha256": "e6ac2aa02d13c2afc324f0050f738dd4ebf24d0b1bef1d1a52ea0a220eaaab48",
+        "originalSha256": "e6ac2aa02d13c2afc324f0050f738dd4ebf24d0b1bef1d1a52ea0a220eaaab48"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-8-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-8-1.json",
+        "sha256": "cde49baccf6142dfbf7ebb1e5a029a280e253ffff37460f3e41ddede491ce171",
+        "originalSha256": "cde49baccf6142dfbf7ebb1e5a029a280e253ffff37460f3e41ddede491ce171"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-9-0.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-9-0.json",
+        "sha256": "8cffc29279690a6c4f87902d89c0caffeec98d5f576a691bc8e2c46098447b50",
+        "originalSha256": "8cffc29279690a6c4f87902d89c0caffeec98d5f576a691bc8e2c46098447b50"
+      },
+      {
+        "path": "green15-row-portable-worker-repair-diagnostics-linux-integration-001-9-1.json",
+        "source": "/tmp/boe-repair-diagnostics-green15/portable-worker-repair-diagnostics-linux-integration-001-9-1.json",
+        "sha256": "0623bb2ee3e81682c762ef74fdc3cab1c0ac3ae50bd90ac0aa0edb9ef658bbdc",
+        "originalSha256": "0623bb2ee3e81682c762ef74fdc3cab1c0ac3ae50bd90ac0aa0edb9ef658bbdc"
+      },
+      {
+        "path": "green15-root-receipt.json",
+        "source": "/tmp/boe-1553-repair-diag-root-green15.json",
+        "sha256": "1153694c5e0add538f62cfcde78db1496070de9858ec3d971091d030c8863917",
+        "originalSha256": "1153694c5e0add538f62cfcde78db1496070de9858ec3d971091d030c8863917"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GmWorkerProposalDiagnosticStorageTests.cs",
+        "sha256": "9fe5bbcf9113c7376bae6a18ad4be8ec8a9cacb95a303327ff5d6e5ded223234"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.RepairDiagnosticStorageOutcome.cs",
+        "sha256": "f3ba5067191a34ea382481e44179b049271c00029ea493e51558eb03a9a481b4"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GmWorkerStorageOutcomeTests.cs",
+        "sha256": "3e45154c5cac1709a23339070ff4b8569cf115942b1bba07b65b9eef0ca65ae6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "165354067b7a85355b1b33cbf07f8cf9677344007043ea7098e09bc70e0286cb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmWorkerBridgeTestFixtures.cs",
+        "sha256": "a16c1e4b87250c27db9db8dba21e73ad95ad987eec7f4dd17188418945e92474"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "fea86112a179358626077a0957bd421794ee2f822e4f24e72584803619c6fd5d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+        "sha256": "5b7ee145e130913736d26d513f7260a819f59ab8e2171b437daedf5352d2cdbd"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs",
+        "sha256": "2ebd23fac2b0a375b8a8a364addae309938c0a23efd7394e81b50146e38436b8"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs",
+        "sha256": "da5c325211cd932a5cf6aa1663271410e343c80cb1ab24c909c6e5b736859c20"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "sha256": "6629d0db336c38327f02bc2d0d884bf635b71a51ba166fd3497607b6a8ff979a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "0415737086fc444af7a98200f96010e1df1c7ef9338283f14745ebbed5c1e368"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "d951e4ad1498ce36c453ee0a295b11ee25cfac944669510e24746766dcfef508"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+        "sha256": "6b67a56b86ae216a423335a1639f9bebc4a727f3783a51cbdf110a734829458e"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "5218c7c261992f0bfcd3101bc1f349d6ff4ea16a2fae5425568250192b16b7fe"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "da9859cbb98ee22f41c81a4edd46a5ff48fa03b0d5aa997fa66f7cf62e85d1fe"
+      }
+    ]
+  },
+  "catalog": {
+    "source": "386c78a77ec8a69c220ca7700f07d56bc97fa433",
+    "qualification": "Raw exact selected source/summary/TRX and owned evidence; causal versus fixture and assertion reach classified in plan.",
+    "artifacts": [
+      {
+        "path": "catalog-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064614-380-276889-ddfb4f7785924031a14f45deab10341d-categories/Build-integration.log",
+        "sha256": "686e4f68f1b33736f395443e6bb9426e59c82b6610e8ee20e7b31989c80054b5",
+        "originalSha256": "0472d64be346e89dc2fd681987ddb1fe9b0b04b6fcca19c37322d20b0d53b97b"
+      },
+      {
+        "path": "catalog-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064614-380-276889-ddfb4f7785924031a14f45deab10341d-categories/Build-unit.log",
+        "sha256": "44c750f7413d634dcf663a2b5a13c590caa34e9de4808ee4e36db9ca1bc6b133",
+        "originalSha256": "f4d6ce46fe6104a1ae409eb99782571906351dd7564ab4a71f806ceb11ea5226"
+      },
+      {
+        "path": "catalog-plan-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064614-380-276889-ddfb4f7785924031a14f45deab10341d-categories/catalog-audit.json",
+        "sha256": "fa84c84389a4e63f2fff715c5a605a35455c721b7f9bac89da438690e9fcaa5a",
+        "originalSha256": "fa84c84389a4e63f2fff715c5a605a35455c721b7f9bac89da438690e9fcaa5a"
+      },
+      {
+        "path": "catalog-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064614-380-276889-ddfb4f7785924031a14f45deab10341d-categories/dotnet-test.log",
+        "sha256": "ed6e9e09c8621c4846c81510e807f2df0017ff8f96f3938176319766c4e11629",
+        "originalSha256": "95bdf1d1d318942ab7b5cf9f5088d1866724e1bb10b11e97426508165922d9b6"
+      },
+      {
+        "path": "catalog-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-064614-380-276889-ddfb4f7785924031a14f45deab10341d-categories/summary.json",
+        "sha256": "211e6977c0155f48996c6a733b1d547a8493b58b0e9d302883469f508efd7bd9",
+        "originalSha256": "211e6977c0155f48996c6a733b1d547a8493b58b0e9d302883469f508efd7bd9"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GmWorkerProposalDiagnosticStorageTests.cs",
+        "sha256": "9fe5bbcf9113c7376bae6a18ad4be8ec8a9cacb95a303327ff5d6e5ded223234"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.RepairDiagnosticStorageOutcome.cs",
+        "sha256": "f3ba5067191a34ea382481e44179b049271c00029ea493e51558eb03a9a481b4"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GmWorkerStorageOutcomeTests.cs",
+        "sha256": "3e45154c5cac1709a23339070ff4b8569cf115942b1bba07b65b9eef0ca65ae6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "165354067b7a85355b1b33cbf07f8cf9677344007043ea7098e09bc70e0286cb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmWorkerBridgeTestFixtures.cs",
+        "sha256": "a16c1e4b87250c27db9db8dba21e73ad95ad987eec7f4dd17188418945e92474"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "fea86112a179358626077a0957bd421794ee2f822e4f24e72584803619c6fd5d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+        "sha256": "5b7ee145e130913736d26d513f7260a819f59ab8e2171b437daedf5352d2cdbd"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs",
+        "sha256": "2ebd23fac2b0a375b8a8a364addae309938c0a23efd7394e81b50146e38436b8"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs",
+        "sha256": "da5c325211cd932a5cf6aa1663271410e343c80cb1ab24c909c6e5b736859c20"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "sha256": "6629d0db336c38327f02bc2d0d884bf635b71a51ba166fd3497607b6a8ff979a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "0415737086fc444af7a98200f96010e1df1c7ef9338283f14745ebbed5c1e368"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "d951e4ad1498ce36c453ee0a295b11ee25cfac944669510e24746766dcfef508"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+        "sha256": "6b67a56b86ae216a423335a1639f9bebc4a727f3783a51cbdf110a734829458e"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "5218c7c261992f0bfcd3101bc1f349d6ff4ea16a2fae5425568250192b16b7fe"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "da9859cbb98ee22f41c81a4edd46a5ff48fa03b0d5aa997fa66f7cf62e85d1fe"
+      }
+    ]
   }
 }
