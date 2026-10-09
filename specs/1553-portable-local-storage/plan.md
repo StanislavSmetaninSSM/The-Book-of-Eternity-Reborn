@@ -3,17 +3,19 @@
 Owner authorizes all remaining available #1553 consumers from verified5d605fea;
 not stop at a partial checkpoint. B2–B5 paused; cold force_binding is preexisting
 implementation/fixture mismatch with approved spec, no new product choice.
-Installed original baseline/backup14+cleanup4+actual supplied rollback2 tests and three exact original
-byte/exclusion/staging neighbors (finite23/one category), runtime unchanged.
+Installed original baseline/backup16+cleanup4+actual supplied rollback2 tests and three exact original
+byte/exclusion/staging neighbors (finite25/one category), runtime unchanged.
 Negatives capture full path/byte map and generation before actual original methods;
 Unicode controls read actual produced mapping/backups, strict roots after AudioDispose.
 Preflight must precede baseline terminal deletion/old snapshot cleanup/init,
 backup HashSet/copy and preserved-path normalization/deletion. Shared tracked-file
 enumerator stays unchanged because repair/restore also use it. Callee cannot recover
-aliases lost by older IgnoreCase producers; those owners stay open. No build/run yet.
+aliases lost by older IgnoreCase producers; those owners stay open. Raw physical
+fixed output/cleanup matches must precede optional FileExists(lowercase) filtering;
+output_alias two rows demonstrate that distinct path. No build/run yet.
 Initial metadata authoring SyntaxError had zero build/discovery/execution; test file
 alone was preserved805e123b, current metadata now completed before any runner.
-Next independent fixture/design/exact23 gate, fresh integration Plan23/actual23
+Next independent fixture/design/exact25 gate, fresh integration Plan25/actual25
 before minimal demonstrated runtime correction. Existing signed42 not replayed.
 Then browser/incarnation/Explorer/spiritual producers and other original owners,
 authoritative inventory and final remote restore; T061–T065 remain unchecked.

@@ -11,6 +11,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData("baseline", "case_alias")]
     [InlineData("baseline", "fixed_alias")]
+    [InlineData("baseline", "output_alias")]
     [InlineData("baseline", "literal_backslash")]
     [InlineData("baseline", "outer_trim")]
     [InlineData("baseline", "story_alias")]
@@ -18,6 +19,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("baseline", "unicode")]
     [InlineData("backup", "case_alias")]
     [InlineData("backup", "fixed_alias")]
+    [InlineData("backup", "output_alias")]
     [InlineData("backup", "literal_backslash")]
     [InlineData("backup", "outer_trim")]
     [InlineData("backup", "story_alias")]
@@ -38,6 +40,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 "case_alias" => new[] { "lore/Entry.json", "lore/entry.json" },
                 "fixed_alias" => new[] { "game_state/meta/SOUL_STATE.json" },
+                "output_alias" => new[] { "output/" + Path.GetFileName(QteSceneService.QteOfferPath).ToUpperInvariant() },
                 "literal_backslash" => new[] { "lore/odd\\leaf.json" },
                 "outer_trim" => new[] { "lore/trailing.json " },
                 "story_alias" => new[] { "stories/Chapter.jsonl", "stories/chapter.jsonl" },
