@@ -1,4 +1,24 @@
-## Durable worker bounded GREEN15 — evidence review pending, 2026-10-09
+## Durable worker accepted bounded15 — 2026-10-09
+
+Independent actual Astra XHigh final source/raw gate **PASS09cb4b5b**, tested
+runtime670e42ac. Reviewer separately verified15 distinct PASS, six authentic cuts,
+ten actual ACK bundles, original delayed acceptance loss/pending-phase ordering,
+15 physical/guardian/root cleanups and all384 artifacts/260 source pins.
+Fresh both-project catalog084930 at clean09cb succeeds **531 categories/11329
+methods-files**,0 executed,56.9355047s; integration build38.9267972s/unit9.4680495s,
+both cleanup flags. Saved packet now389 artifacts/originals312 historical pins.
+Final catalog/carrier integrity review and combined fresh GitHub-only restoration
+follow; older restore18475 is not evidence of this later source.
+
+Next bounded source family is C2 original checkpoint/pending/submission/repair/
+dependent progress and connected engine catches. Preserve known completed-write
+IOException readback policy and mandatory in-memory capture revocation; actual
+common nonCommitted publication uncertainty must stop canonical readback/reopen/
+Ready deletion without erasing prior committed checkpoint. Existing source census
+is not executed proof. Finite reached-cut tests and exact selection/source review
+precede runtime changes; no B2–B5 acceptance, full game or native Windows claim.
+
+## Durable worker bounded GREEN15 — historical evidence checkpoint, 2026-10-09
 
 Runtime670e42ac passed fresh Plan084603:15 cases/1 descriptor,0 executed,
 36.0992390s. Matching actual084648 completed **15/15 PASS**,1/1 descriptors,
