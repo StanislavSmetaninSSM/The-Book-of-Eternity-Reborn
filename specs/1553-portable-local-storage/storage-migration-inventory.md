@@ -1,3 +1,10 @@
+## Latest accepted checkpoint and next family — 2026-10-09
+
+Explorer final gate PASS6f61302b:257 artifacts/239 pins and composed33 unique Linux
+passing obligations; stale reroll fixture is now qualified. Ready/worker current
+bounded design and remaining connected tails are at the top of plan.md. T061–T065
+and whole migration remain open; no native Windows execution is inferred.
+
 ## Current Explorer/Forge acceptance map — 2026-10-09
 
 Runtime5d68 and fixture4e31 now have **composed33 unique Linux passing obligations**:

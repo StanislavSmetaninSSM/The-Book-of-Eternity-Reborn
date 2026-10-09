@@ -1,3 +1,46 @@
+## Ready/worker publication continuation — design for next bounded unit, 2026-10-09
+
+Explorer/Forge final independent raw/catalog/composition/carrier gate **PASS** at
+6f61302b9123f68937440735985d2d27f9340f3d:257 artifacts/239 pins, composed33
+(10@554+21@18475+2@4e31), current discovery524/11319 valid0. No broader acceptance.
+
+Next unit follows the reviewed Ready source aid. Keep actual common-publication CSP
+and original accepted facts through canonical audit, task build/latest-task, Ready
+and engine dispatch boundaries. Known ordinary diagnostic failure remains best-effort.
+No GM contract, gameplay, provider, live worker or native Windows change is intended.
+
+Finite proposed original-consumer evidence (freeze exact category membership before run):
+- Router no-issues audit; latest-task publication; known task-build failure followed by
+  audit Unknown; conditional initial-generation publication (reach must be measured).
+- Real ApplyReservedAsync accepted weather change followed by audit Unknown: retain
+  the actual ApplyGateDecision/proposal and committed bytes on the same exception.
+- Original TryWriteReadySignalAsync after genuine accepted apply: Ready Unknown;
+  Ready committed then audit Unknown; known Ready failure then audit Unknown.
+  Ready helper execution is not whole accepted TryRun/worker execution.
+- Original engine RunWorkerValidationRepairIfAvailableAsync with no-issues audit
+  Unknown must not return WorkerFailed and enable fallback.
+- Known controls: ordinary audit failure stays best-effort, genuine accepted apply
+  plus Ready succeeds, and known Ready failure preserves accepted bytes/diagnostic.
+
+Use existing publisher MemberPublished/index0 cuts with authentic retained journal,
+foreign exact bytes, first-chance original CSP, prior Committed images and hard guards
+on later canonical admission plus worker slot/workspace/attach/release. Fresh roots
+and actual current generation, no handwritten generation or fabricated Accepted.
+The accepted-apply seed uses existing controlled validator callback, explicitly not
+full production validation. No forked copy of coordinator or new production test API.
+
+Runtime shape only after reached causal evidence: typed CSP exclusions at demonstrated
+catches; retain actual decision/task/proposal and known original exception as diagnostic
+facts without converting Unknown into success/rejection. Ready-created fact is recorded
+only after actual successful publication, never inferred from After bytes. Capture direct
+CSP before closing each affected self-owned lease; no simultaneous-double-fault claim.
+Preserve ordinary generation checks, readonly close, and existing known-failure policy.
+
+Pool reservation/dispatch/store bundle+ACK/cleanup/terminal telemetry, proposal-only
+dispatch, accepted/cleared trajectory and harness terminal consumers remain connected
+follow-up obligations before whole-family closure. C2, F16, F18, other owned closes,
+nested Prepared and final selection reconciliation remain open. B2–B5 remain paused.
+
 ## Explorer/Forge bounded result — 2026-10-09
 
 Runtime5d68 and fixture4e31 now have **composed33 unique Linux passing obligations**:
