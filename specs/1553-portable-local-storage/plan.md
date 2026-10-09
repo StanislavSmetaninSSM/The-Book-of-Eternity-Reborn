@@ -16,7 +16,8 @@ This changes16Facts: current11 plus saved-choice2/automatic-cold1/postpublicatio
 source-qualified only. Original fixture disposal then strict root absence receipts; no delete
 under live actors. No runtime, gameplay, GM contract or B2–B5 development change.
 Exact existing binding2/staged-cold3 owners plus new staged-file3/committed-cold1/mid1/native1
-owners retain original budgets and semantic owners. Next independent source/exact11 review,
+owners retain original budgets and semantic owners. Native owner explicitly declares
+windows-latest (metadata only; no CI settings changed). Next independent source/exact11 review,
 fresh integrationPlan11 (zeroexecution), then controlled Linux10 in bounded owners. Native1
 actual remains UNRUN. F16, consumers, owned-close, legacy inventory and T061–T065 remain open.
 
