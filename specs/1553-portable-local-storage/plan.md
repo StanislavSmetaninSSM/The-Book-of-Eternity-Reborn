@@ -1,3 +1,17 @@
+## Original Inventory actual GREEN6 — WIP carrier, 2026-10-09
+
+Runtimea0069271 has independent originalRED/source/exact6 PASS. Fresh
+integration Plan2142086/1,0execution47.4464540s; actual2143166/6PASS
+8.5133483s,1/1complete,bothcleanup/0skipduplicateTimeout/strict6roots.
+Three samegenuineCSP+samesecondaryclose retained; knownactualDTO/count/
+carrier/transitions/immutableindex/currentcanonicalvalidation PASS. Full original
+lease/main/ambient/context/rawlock/currentgeneration/allothergame_state settlement.
+[Packet](recovery/storage-migration-original-inventory-close-20261009/manifest.json)
+42artifacts/36pins verifiedoriginals; causal3knownPASS/3FAILimmutable. Final
+independent GREEN/raw/carrier gate pending. Knownlateclose/resource-bearing
+stacks/fullconsole-browser/B2/native remain unqualified. Next accepted repair4
+fixture8; one combined new-owner discovery afterthat, no acceptedInventory replay.
+
 ## Original Inventory correction installed — WIP, 2026-10-09
 
 Three original public Drop/Split/Merge owning wrappers explicitly capture and
