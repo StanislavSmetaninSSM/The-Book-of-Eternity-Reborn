@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-prepared-shining-outcome-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "c1858fda073765e20ec8704e546881cc1d2e81d7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.008221,
+  "Descriptors": [
+    {
+      "Name": "portable-prepared-shining-outcome-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-prepared-shining-outcome-linux",
+      "Categories": [
+        "portable-prepared-shining-outcome-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparedShiningCleanup_OriginalBoundaryPreservesPublicationDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparedShiningCleanup_OriginalBoundaryPreservesPublicationDecision",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

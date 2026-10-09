@@ -1,3 +1,26 @@
+## Prepared-Shining causal4 checkpoint — 2026-10-09
+
+Frozen c1858fda SOURCE/FIXTURE/EXACT4 PASS; matching Plan022043 freshintegration41.6426463s,
+wall45.6669863,4/1planned0executed. Actual022149 complete4/4,2PASS/2 reached causal failures,
+9.1759148s,exit1,no skips/duplicates/timeouts,bothcleanup. Known rows positively publish removal
+then restore exact Before, remove journal and log same original nontransient failure; both pass.
+Unknown rows reach actual MemberPublished/index0 with valid prior frozen package and all absence
+prerequisites. Actual exception paths identify RepairStale...1025 and ClearPrepared...985, not an
+assumed physical ancestor selector. Both swallow the actual CSP and return normally. Idle then
+attempts one ordinary lease and separately one original readonly finalization; Clear has no later
+measured work. Later validated-read/mutation/publication/recovery-phase callbacks0 does not rule
+out attempted recovery. Both authentic journals remain exact with foreign Shining bytes, input0;
+all four owned roots explicitly removed. Idle Same assertion after lease check did not execute;
+raw outwardnull/actual CSP are separate evidence. Direct Clear Same(null) fails after stop assertions.
+
+[Packet](recovery/storage-migration-prepared-shining-20261009/manifest.json) preserves20 artifacts/
+11 Git source pins, locally verified stored/expanded/original bytes. Independent raw gate pending.
+Minimal supported runtime correction is direct-CSP exclusion in these two helper generic catches;
+ordinary known rollback and other policies unchanged. Separate generation-replacement/owned-close
+consistency remains source-only and is not automatically fixed or qualified. Parent source census
+of closed private record/two-method cluster is retained in /tmp/boe-prepared-shining-dead-before.json
+for a later reviewed deletion checkpoint; no dead-code runtime RED claimed. No production edits yet.
+
 ## Prepared-Shining test-only finite4 WIP — 2026-10-09
 
 Base Story carrier6ee00c8b now has independent and parent final integrity/docs PASS64 artifacts/
