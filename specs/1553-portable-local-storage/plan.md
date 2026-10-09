@@ -1,3 +1,22 @@
+## Original owned-close representatives — bounded Linux2 GREEN, evidence gate pending
+
+Source5a08258a independent installedfixture/RED/raw/minimal-source/exact2 AstraXHigh PASS.
+Fresh integration Plan165712 selects2/1,0execution47.1920463s; actual165821
+**2/2PASS**,complete1/1,7.2912668s,0skip/dup/timeout,bothcleanup. Both actual original
+publicRefresh/publicFSMwrite tasks preserve SAME genuine publisher CSP and SAME
+Data secondary disposerIOException, unique actual hoisted lease before arming,
+attachment1/disposal1, inactive/ambient/main/contextnull and raw original lockfree
+after taskjoin. Runtime/gen/journal/foreign unchanged, no later reads/mutations/
+leases/recovery/publications. Both strictownedroots absent. Fresh-both-project
+ValidateCatalog165853 (normal build, no NoBuild) validates579/11348,0tests,
+22.4113247s,bothcleanup. [Packet](recovery/storage-migration-original-owned-close-20261009/manifest.json)
+retains separate1PASS/1causalFAIL original baseline and exact source pins, verifies
+stored/decompressed/originals. Independent final GREEN/CATALOG/CARRIER gate pending.
+Only demonstrated publicRefresh capture changed; FSM/borrowed/other owners unchanged.
+No 36mirror replay/native/gameplay/wholeowner qualification. RemainingBootstrap,
+LocalUiLock/ExplorerWebPrompt/DarenQteReward/QteSceneDaren/other owners and F16signed/
+ZIP/current inventory/fresh restore remain open; T061–T065 unchecked; B2–B5 paused.
+
 ## Original owned lease-close causal2 and minimal refresh correction — WIP, 2026-10-09
 
 Source #1553,T062/T065; installedfixture/exact2 independent AstraXHigh PASS33732611.
