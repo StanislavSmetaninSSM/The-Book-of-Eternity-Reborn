@@ -2290,47 +2290,55 @@ public partial class GameEngine
         Exception exception,
         RollbackSnapshot? rollbackSnapshot)
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        var writeFailure = FindCanonicalStateWriteException(exception);
-        var filePath = writeFailure?.RelativePath ?? "accepted_turn_canonical_state";
-        _logger.LogError(
-            exception,
-            "Accepted-turn canonical refresh failed after {Source} at {FilePath}; leaving full rollback to the caller.",
-            source,
-            filePath);
-
-        var report = new
+        try
         {
-            source,
-            detectedAtUtc = DateTime.UtcNow.ToString("o"),
-            reason = "Accepted-turn canonical refresh failed during an atomic state write.",
-            rollbackAvailable = HasRollbackCapability(rollbackSnapshot),
-            errors = new[]
-            {
-                new
-                {
-                    code = "accepted_turn_canonical_refresh_failed",
-                    filePath,
-                    exceptionType = exception.GetType().FullName,
-                    message = exception.Message,
-                    details = exception.ToString()
-                }
-            }
-        };
+            var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+            var writeFailure = FindCanonicalStateWriteException(exception);
+            var filePath = writeFailure?.RelativePath ?? "accepted_turn_canonical_state";
+            _logger.LogError(
+                exception,
+                "Accepted-turn canonical refresh failed after {Source} at {FilePath}; leaving full rollback to the caller.",
+                source,
+                filePath);
 
-        await RunBestEffortFailClosedBookkeepingAsync(
-            "write the accepted-turn canonical refresh diagnostic report",
-            () => WriteValidationRepairFileForSessionAsync(
-                ValidationDiagnosticFailureReportPath,
-                JsonSerializer.Serialize(report, JsonOpts),
-                sessionGeneration));
-        await RunBestEffortFailClosedBookkeepingAsync(
-            "clean validation-repair control files after canonical refresh failure",
-            () => DeleteValidationRepairFilesForSessionAsync(sessionGeneration));
-        AnsiConsole.MarkupLine(
-            HasRollbackCapability(rollbackSnapshot)
-                ? "[yellow]↩ Изменения мира не были приняты; состояние до хода будет восстановлено.[/]"
-                : "[yellow]⚠ Изменения мира не были приняты. Продолжение этого хода остановлено.[/]");
+            var report = new
+            {
+                source,
+                detectedAtUtc = DateTime.UtcNow.ToString("o"),
+                reason = "Accepted-turn canonical refresh failed during an atomic state write.",
+                rollbackAvailable = HasRollbackCapability(rollbackSnapshot),
+                errors = new[]
+                {
+                    new
+                    {
+                        code = "accepted_turn_canonical_refresh_failed",
+                        filePath,
+                        exceptionType = exception.GetType().FullName,
+                        message = exception.Message,
+                        details = exception.ToString()
+                    }
+                }
+            };
+
+            await RunBestEffortFailClosedBookkeepingAsync(
+                "write the accepted-turn canonical refresh diagnostic report",
+                () => WriteValidationRepairFileForSessionAsync(
+                    ValidationDiagnosticFailureReportPath,
+                    JsonSerializer.Serialize(report, JsonOpts),
+                    sessionGeneration));
+            await RunBestEffortFailClosedBookkeepingAsync(
+                "clean validation-repair control files after canonical refresh failure",
+                () => DeleteValidationRepairFilesForSessionAsync(sessionGeneration));
+            AnsiConsole.MarkupLine(
+                HasRollbackCapability(rollbackSnapshot)
+                    ? "[yellow]↩ Изменения мира не были приняты; состояние до хода будет восстановлено.[/]"
+                    : "[yellow]⚠ Изменения мира не были приняты. Продолжение этого хода остановлено.[/]");
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            failure.Data["CanonicalRefreshOriginalFailure"] = exception;
+            throw;
+        }
     }
 
     private async Task RunBestEffortFailClosedBookkeepingAsync(
@@ -3436,7 +3444,7 @@ public partial class GameEngine
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(
                 ex,
@@ -3461,36 +3469,47 @@ public partial class GameEngine
         int attempt,
         ValidationRepairDispatchState dispatch)
     {
-        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
-        var sourceTurn = dispatch.WorkerResult?.Task?.SourceTurn;
-        var workerSessionGeneration = dispatch.WorkerResult?.Task?.SessionGeneration;
-        if (string.IsNullOrWhiteSpace(workerSessionGeneration))
+        try
         {
-            _logger.LogWarning(
-                "Skipped worker accepted validation repair trajectory because its reserved task session generation is unavailable after {Source}.",
-                source);
-            return;
-        }
-        var ready = new ValidationRepairReady
-        {
-            SessionId = sourceTurn?.SessionId ?? pendingSnapshot.Context?.SessionId ?? string.Empty,
-            RequestId = sourceTurn?.RequestId ?? pendingSnapshot.Context?.RequestId ?? string.Empty,
-            TurnNumber = sourceTurn?.TurnNumber ?? pendingSnapshot.Context?.TurnNumber ?? 0,
-            UpdatedAtUtc = DateTime.UtcNow.ToString("o"),
-            Note = dispatch.WorkerResult?.FallbackReason
-        };
+            var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+            var sourceTurn = dispatch.WorkerResult?.Task?.SourceTurn;
+            var workerSessionGeneration = dispatch.WorkerResult?.Task?.SessionGeneration;
+            if (string.IsNullOrWhiteSpace(workerSessionGeneration))
+            {
+                _logger.LogWarning(
+                    "Skipped worker accepted validation repair trajectory because its reserved task session generation is unavailable after {Source}.",
+                    source);
+                return;
+            }
+            var ready = new ValidationRepairReady
+            {
+                SessionId = sourceTurn?.SessionId ?? pendingSnapshot.Context?.SessionId ?? string.Empty,
+                RequestId = sourceTurn?.RequestId ?? pendingSnapshot.Context?.RequestId ?? string.Empty,
+                TurnNumber = sourceTurn?.TurnNumber ?? pendingSnapshot.Context?.TurnNumber ?? 0,
+                UpdatedAtUtc = DateTime.UtcNow.ToString("o"),
+                Note = dispatch.WorkerResult?.FallbackReason
+            };
 
-        await AppendAcceptedValidationRepairTrajectoryAsync(
-            source,
-            errors,
-            attempt,
-            ready,
-            pendingSnapshot,
-            workerSessionGeneration,
-            acceptanceScope: "worker_apply_gate",
-            terminalKind: "worker_apply_gate_accepted",
-            signalPath: null,
-            dispatchStatus: "worker_applied_without_ready_signal");
+            await AppendAcceptedValidationRepairTrajectoryAsync(
+                source,
+                errors,
+                attempt,
+                ready,
+                pendingSnapshot,
+                workerSessionGeneration,
+                acceptanceScope: "worker_apply_gate",
+                terminalKind: "worker_apply_gate_accepted",
+                signalPath: null,
+                dispatchStatus: "worker_applied_without_ready_signal");
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            if (dispatch.WorkerResult?.ApplyDecision is { } decision)
+                failure.Data["GmWorkerApplyDecision"] = decision;
+            if (dispatch.WorkerResult?.Task is { } task)
+                failure.Data["GmWorkerTask"] = task;
+            throw;
+        }
     }
 
     private async Task AppendClearedValidationRepairTrajectoryAsync(
@@ -3589,7 +3608,7 @@ public partial class GameEngine
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(
                 ex,
@@ -7957,9 +7976,23 @@ public partial class GameEngine
 
     private async Task DeleteValidationRepairFilesForSessionAsync(string expectedSessionGeneration)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
-        DeleteValidationRepairFiles(writeLease);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
+        {
+            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+            DeleteValidationRepairFiles(writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     private void DeleteValidationRepairFiles(FileSystemManager.CanonicalWriteLease writeLease)

@@ -143,9 +143,14 @@ public sealed class GmWorkerProposalOnlyDispatchService
             task = await BuildTaskAsync(routing.Profile, request,cancellationToken);
         }
         catch (OperationCanceledException) when(cancellationToken.IsCancellationRequested) { throw; }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
-            await RecordDispatchFailureAsync(routing.Profile.WorkerId, "", ex.Message);
+            try { await RecordDispatchFailureAsync(routing.Profile.WorkerId, "", ex.Message); }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                failure.Data["GmWorkerOriginalFailure"] = ex;
+                throw;
+            }
             return Invalid(ex.Message, request.TaskType, routing.Profile.WorkerId);
         }
 
@@ -195,10 +200,22 @@ public sealed class GmWorkerProposalOnlyDispatchService
         var createdAtUtc = DateTimeOffset.UtcNow.ToString("O");
         IReadOnlyList<WorkerFileReference> contextFiles;
         string sessionGeneration;
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(cancellationToken:cancellationToken))
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(cancellationToken:cancellationToken);
+        Exception? publicationUncertainty = null;
+        try
         {
             sessionGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
             contextFiles = await BuildContextFilesAsync(profile, request.ContextPaths, writeLease,cancellationToken);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
 
         var task = request.TaskType switch

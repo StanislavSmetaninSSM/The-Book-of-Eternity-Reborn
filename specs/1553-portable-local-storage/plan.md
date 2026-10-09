@@ -1,3 +1,22 @@
+## Repair/proposal diagnostic runtime — WIP/unbuilt/unrun, 2026-10-09
+
+Minimum correction after seven reached failures: ProposalOnlyDispatch excludes CSP
+from ordinary build refusal and retains exact known context failure on audit CSP;
+its conditional-generation owner captures direct CSP before same-lease release.
+Original accepted/cleared trajectory and terminal writer exclude CSP from best-effort
+catch paths. Actual worker-accepted trajectory owner retains only the decision/task
+it actually receives; no success or accepted fact is fabricated. Canonical-refresh
+owner retains its exact original exception on propagated CSP, including the report
+and subsequent cleanup boundary. Current-session repair cleanup captures body CSP
+before releasing its original lease. Other ordinary-failure policy remains unchanged.
+
+Three runtime files changed; on-disk/schema/GM-authored formats and prompts/examples
+are unchanged, so no GM guide update is needed for this client-owned outcome handling.
+All15 fixtures/category membership unchanged. Frozen source/exact15 review then fresh
+Plan15 and actual15; catalog discovery afterward. Full bridge/worker/wait/key/C2 and
+native/double-fault remain unqualified; conditional CaptureCurrentSessionGeneration
+owner remains open as recorded below. No replay of unchanged acceptedReady12.
+
 ## Repair/proposal diagnostic causal RED — 2026-10-09
 
 Independent fixture/exact15 gate PASS4580be59b4d049966cee831e52dd1acbf21aac41.

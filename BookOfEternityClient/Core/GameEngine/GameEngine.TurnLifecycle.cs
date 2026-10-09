@@ -735,7 +735,7 @@ public partial class GameEngine
                 errorMessage);
             return true;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Failed to publish harness terminal error {HarnessSource}.", harnessSource);
             return false;
