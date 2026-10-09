@@ -19900,6 +19900,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-spiritual-c2-engine-outcome-linux",
+      "responsibility": "Twelve finite original signed GameEngine C2 entry/wait/reconciliation cases: nine actual Unknown cuts at initial checkpoint/pending, request publication/cancellation, dependent progress and exact Ready/request cleanup; three ordinary Escape controls with genuine A-to-B progress. Same original CSP, prior committed images, no post-cut canonical work and owned fixture cleanup.",
+      "excludes": "No full accepted turn/C4 publication, live GM/provider, B2-B5 acceptance, native Windows or actual secondary canonical close failure. Service26 has its separate accepted evidence.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalSpiritualEnginePreservesCanonicalPublicationOutcome"
+          ]
+        }
+      ]
     }
   ]
 }

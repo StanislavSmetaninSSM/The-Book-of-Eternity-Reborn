@@ -1,3 +1,27 @@
+## Original C2 GameEngine storage outcome — bounded fixture WIP, 2026-10-09
+
+Source #1553,T062/T064/T065. Service26 final independent Astra XHigh catalog/carrier
+PASS42ed726b;86artifacts/originals136pins. The next connected slice targets actual
+ContinueAcceptedSpiritualTurnAsync, WaitForSpiritualContinuationAsync and dependent
+transport reconciliation. Three broad enclosing catches still flatten actual CSP;
+their publisher-owned lease scopes must preserve original operation uncertainty
+through physical close. Pure read-only classification stays unchanged.
+
+New test-only finite12 uses the original GameEngine snapshot/backup signer, existing
+independent unsigned scaffold and genuine first capture/selected wound/A correction.
+Nine actual MemberPublished cuts cover initial checkpoint/pending, request publication,
+Escape deletion, dependent checkpoint and Ready/request deletion on both normal advance
+and cold reconciliation. Three explicit ordinary Escape controls prove original request
+publication and genuine A-to-B progress. Prior committed checkpoint/transport bytes
+remain separate from the current uncertain single-file publication. A synthetic response
+uses the real issued envelope; no GM/process/provider is started. Actual secondary close
+failure and whole accepted-turn/C4/B2–B5/native Windows remain outside this slice.
+
+Fixture12 is unbuilt/unrun; no RED or success claimed. Next independent source/fixture/
+exact12 gate, fresh Plan12 then actual causal run. Only demonstrated catch boundaries
+and their owning close scopes may change afterward. Existing service26 is unaffected
+and is not replayed. No gameplay/GM-authored field contract changes are proposed.
+
 ## C2 private transport accepted bounded26 — 2026-10-09
 
 Independent SOURCE/RED-RAW/EXACT26 PASS47b1e259. Runtime/source
