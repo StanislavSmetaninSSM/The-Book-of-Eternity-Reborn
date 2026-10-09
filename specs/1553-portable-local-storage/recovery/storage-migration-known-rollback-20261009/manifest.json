@@ -1470,5 +1470,877 @@
         "sha256": "936d23bce661782bd2d50dc0658313255628c935a62d4245ff07e5bb9a3a0259"
       }
     ]
+  },
+  "woundOffscreen": {
+    "source": "0d16af64926ded3a1492aff1a3648a2d895ff764",
+    "artifacts": [
+      {
+        "path": "woundOffscreen-20261009-135226-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135226-110-361888-04c7b4c3452248fda7e5fcf2d8aee1c4-categories/plan.json",
+        "sha256": "fa2894edc6c1d7536421a609021a714c753f65952b1d7294f469aeaf175aeb2f",
+        "originalSha256": "fa2894edc6c1d7536421a609021a714c753f65952b1d7294f469aeaf175aeb2f"
+      },
+      {
+        "path": "woundOffscreen-20261009-135226-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135226-110-361888-04c7b4c3452248fda7e5fcf2d8aee1c4-categories/summary.json",
+        "sha256": "491bd0aa106de719b22c8d1d9a937735f0649a8b8741db029cb2145b145aabf0",
+        "originalSha256": "491bd0aa106de719b22c8d1d9a937735f0649a8b8741db029cb2145b145aabf0"
+      },
+      {
+        "path": "woundOffscreen-20261009-135226-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135226-110-361888-04c7b4c3452248fda7e5fcf2d8aee1c4-categories/Build-integration.log",
+        "sha256": "6889487fbb87fab5350bf5ec9bb4418e47349dce9621515808cfbc56d81b3adc",
+        "originalSha256": "d5025d3d642eafbaa157f73cb4f453ee6985e57fd22aca3ca51174d5fc3a380a"
+      },
+      {
+        "path": "woundOffscreen-20261009-135226-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135226-110-361888-04c7b4c3452248fda7e5fcf2d8aee1c4-categories/dotnet-test.log",
+        "sha256": "8e7a4a745e459fcfbae83e75cc29ddeac2afdefc805a7bbae1f6933067446739",
+        "originalSha256": "2a73c26972837fee1018ec85eb83fb4326496ff0f39c1ee9d7e1e548a7a96e39"
+      },
+      {
+        "path": "woundOffscreen-20261009-135416-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135416-607-362372-390e4884ed7a457d955c31a58eed1d3e-categories/plan.json",
+        "sha256": "dfa793424361e079da4b2599be4525a01a5a5f62baf65c9208225a2538f033fe",
+        "originalSha256": "dfa793424361e079da4b2599be4525a01a5a5f62baf65c9208225a2538f033fe"
+      },
+      {
+        "path": "woundOffscreen-20261009-135416-portable-wound-original-rollback-publication-integration-002.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135416-607-362372-390e4884ed7a457d955c31a58eed1d3e-categories/portable-wound-original-rollback-publication-integration-002.trx",
+        "sha256": "960ad02066145e7c022f526c8697a5eb14bac21b932052ca149c781a347cfbca",
+        "originalSha256": "3fee6370e3d1ebe06df8aae16576fadf29ecc201db7488290cbe8f10cb7dd9ab"
+      },
+      {
+        "path": "woundOffscreen-20261009-135416-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135416-607-362372-390e4884ed7a457d955c31a58eed1d3e-categories/summary.json",
+        "sha256": "1ac13f64e9bea23048b84a842a5d669c76c6fdc518209ba80a8fb88004cd0fe4",
+        "originalSha256": "1ac13f64e9bea23048b84a842a5d669c76c6fdc518209ba80a8fb88004cd0fe4"
+      },
+      {
+        "path": "woundOffscreen-20261009-135416-portable-location-offscreen-rollback-publication-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135416-607-362372-390e4884ed7a457d955c31a58eed1d3e-categories/portable-location-offscreen-rollback-publication-integration-001.trx",
+        "sha256": "24a3f3efffe0a0d0d909ffb936f914755baf9ce760b8de729b3f5de5e459f2e7",
+        "originalSha256": "d2f45b6ca09a57ccf5d8a2d169a9d3045a4438da9116e37bff3d4b2f69206911"
+      },
+      {
+        "path": "woundOffscreen-20261009-135416-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135416-607-362372-390e4884ed7a457d955c31a58eed1d3e-categories/dotnet-test.log",
+        "sha256": "907ceef7b9aac58d9deee5547d864cab35c677cacadb8f4b7675abc38e840baa",
+        "originalSha256": "5ad70950e837d842f47c11a628fc82ea062af53a4053a7afc9dc6743950a581d"
+      },
+      {
+        "path": "woundOffscreen-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/emitted-roots-after-run.json",
+        "sha256": "f20ceea44c94bb2a777682c66ab53e7341283f37d992f41dd9fed066be73eb63",
+        "originalSha256": "f20ceea44c94bb2a777682c66ab53e7341283f37d992f41dd9fed066be73eb63"
+      },
+      {
+        "path": "woundOffscreen-row-portable-location-offscreen-rollback-publication-integration-001-0-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-location-offscreen-rollback-publication-integration-001-0-1.json",
+        "sha256": "b59bfdfe6a5a5acd4edbdef77886576e8bb5c1eb20d4c8b797a2cd6ea160be0d",
+        "originalSha256": "b59bfdfe6a5a5acd4edbdef77886576e8bb5c1eb20d4c8b797a2cd6ea160be0d"
+      },
+      {
+        "path": "woundOffscreen-row-portable-location-offscreen-rollback-publication-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-location-offscreen-rollback-publication-integration-001-0-0.json",
+        "sha256": "2e9891bfd5c0750832654b1be2e458167b57811ef7ebe595114f43a8211d9e04",
+        "originalSha256": "03891c7dc095fd0f4e2bc88b4f3f393b891209e8f6665fe4427a66f9df0b91f7"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-23-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-23-3.json",
+        "sha256": "b5f8a89731e2262485a1544981b4ec08d7b804c18bb65d9a2a4ba98855035708",
+        "originalSha256": "b5f8a89731e2262485a1544981b4ec08d7b804c18bb65d9a2a4ba98855035708"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-23-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-23-2.json",
+        "sha256": "03e303e23a417be99b36a1709245f82736436b48d28209ac92c1f6b5af06c370",
+        "originalSha256": "03e303e23a417be99b36a1709245f82736436b48d28209ac92c1f6b5af06c370"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-23-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-23-1.json",
+        "sha256": "5188ddd76c7bd9a3490b3297f9c589a3a982a34f72c3c6e847462a8de2f8203c",
+        "originalSha256": "5188ddd76c7bd9a3490b3297f9c589a3a982a34f72c3c6e847462a8de2f8203c"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-23-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-23-0.json",
+        "sha256": "50d0368a1af17c4db193fa429d91416b3113301c9311ca8e3a0fe7f0c7a5d252",
+        "originalSha256": "50d0368a1af17c4db193fa429d91416b3113301c9311ca8e3a0fe7f0c7a5d252"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-22-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-22-3.json",
+        "sha256": "4025f61c4a0f94abd22e5e0756f17be4d644441a076eb73c5f02b35c23717e7f",
+        "originalSha256": "4025f61c4a0f94abd22e5e0756f17be4d644441a076eb73c5f02b35c23717e7f"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-22-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-22-2.json",
+        "sha256": "e88759152715a0bc3d929f2c9f4b574a74a83494e1c7ff59fa3fdbdbd38c8ffb",
+        "originalSha256": "e88759152715a0bc3d929f2c9f4b574a74a83494e1c7ff59fa3fdbdbd38c8ffb"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-22-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-22-1.json",
+        "sha256": "c8a560658a7f0420335e78c28ee68c74029c5b4740ef7538cade3be4f2ab6b14",
+        "originalSha256": "c8a560658a7f0420335e78c28ee68c74029c5b4740ef7538cade3be4f2ab6b14"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-22-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-22-0.json",
+        "sha256": "c7127b8e91a3255e2c64a216c2256290772fa28be61f138f5edd267116533775",
+        "originalSha256": "c7127b8e91a3255e2c64a216c2256290772fa28be61f138f5edd267116533775"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-21-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-21-3.json",
+        "sha256": "b4cf8d71b1c78a333f55b828f27db95aa1cb03f921b64f241b55f0f2768630cf",
+        "originalSha256": "b4cf8d71b1c78a333f55b828f27db95aa1cb03f921b64f241b55f0f2768630cf"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-21-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-21-2.json",
+        "sha256": "87f90a74880470b592a939746ddea438dbeba34ecabd518040da3643a6224adb",
+        "originalSha256": "87f90a74880470b592a939746ddea438dbeba34ecabd518040da3643a6224adb"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-21-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-21-1.json",
+        "sha256": "1fc091bbb5e2af5d2b62c3a492590a80e48a3954a1cf51ad52c685a8bff2f2f4",
+        "originalSha256": "1fc091bbb5e2af5d2b62c3a492590a80e48a3954a1cf51ad52c685a8bff2f2f4"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-21-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-21-0.json",
+        "sha256": "f8687c113ac52959e0d5db6bef0ecdf2311711d6894aec39dd76377976bb5974",
+        "originalSha256": "f8687c113ac52959e0d5db6bef0ecdf2311711d6894aec39dd76377976bb5974"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-20-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-20-3.json",
+        "sha256": "15864a823e366b64c28a93e3ec038bdddb96fe1fcaadbea7cb0359026bbebdb0",
+        "originalSha256": "15864a823e366b64c28a93e3ec038bdddb96fe1fcaadbea7cb0359026bbebdb0"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-20-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-20-2.json",
+        "sha256": "e67e7121ea51273143843d1c325327205404565ce0bb8f341514ece1318b08ab",
+        "originalSha256": "e67e7121ea51273143843d1c325327205404565ce0bb8f341514ece1318b08ab"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-20-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-20-1.json",
+        "sha256": "2f43587b1b59214a6005b475d9665411078c7ab25c7eb6480cfc184ece992e17",
+        "originalSha256": "2f43587b1b59214a6005b475d9665411078c7ab25c7eb6480cfc184ece992e17"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-20-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-20-0.json",
+        "sha256": "2725d6fa3d6feb61b400e74d70a8b2c70aa6c16798b3ce1175b7057670dac52e",
+        "originalSha256": "2725d6fa3d6feb61b400e74d70a8b2c70aa6c16798b3ce1175b7057670dac52e"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-19-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-19-3.json",
+        "sha256": "dcb252f30277b7f9e345421cf170d5312517ee1a97cccab750612cb3d16990f5",
+        "originalSha256": "dcb252f30277b7f9e345421cf170d5312517ee1a97cccab750612cb3d16990f5"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-19-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-19-2.json",
+        "sha256": "243a6f9771b86462ac8ae6b81ca53856349372bd036624ba04f810cd872b80df",
+        "originalSha256": "243a6f9771b86462ac8ae6b81ca53856349372bd036624ba04f810cd872b80df"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-19-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-19-1.json",
+        "sha256": "bb8b67f02a98213c9a9947fb10c5b80c7797e48010ff2682dff12ab1e4896aa1",
+        "originalSha256": "bb8b67f02a98213c9a9947fb10c5b80c7797e48010ff2682dff12ab1e4896aa1"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-19-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-19-0.json",
+        "sha256": "dab5f134a39ce985182fc5c3dcecda9b50c43e8653a6152466921697494559fa",
+        "originalSha256": "dab5f134a39ce985182fc5c3dcecda9b50c43e8653a6152466921697494559fa"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-18-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-18-3.json",
+        "sha256": "80f8905c9e4c840cc8c66d8a4ea3440ca2436875d1599c72c6622ddbeeff2bc6",
+        "originalSha256": "80f8905c9e4c840cc8c66d8a4ea3440ca2436875d1599c72c6622ddbeeff2bc6"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-18-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-18-2.json",
+        "sha256": "9be22f99292f7d4dc0dc12431df490d4e92c95eab693b271704d426ff043532c",
+        "originalSha256": "9be22f99292f7d4dc0dc12431df490d4e92c95eab693b271704d426ff043532c"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-18-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-18-1.json",
+        "sha256": "ac382e720da29dffdb04e96d68b78d18b8f4f412a783605ff218903e6c7ceafa",
+        "originalSha256": "ac382e720da29dffdb04e96d68b78d18b8f4f412a783605ff218903e6c7ceafa"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-18-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-18-0.json",
+        "sha256": "b3abd2d6353c45f038cd179e749cf60ec1ae07f4b0a8ac43502aac21944a3407",
+        "originalSha256": "b3abd2d6353c45f038cd179e749cf60ec1ae07f4b0a8ac43502aac21944a3407"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-17-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-17-3.json",
+        "sha256": "da9342de42e831e053995aa2c44ebc4da9db535c9f77ebebcc3187f8527173d9",
+        "originalSha256": "da9342de42e831e053995aa2c44ebc4da9db535c9f77ebebcc3187f8527173d9"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-17-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-17-2.json",
+        "sha256": "cc75922b011d38002c8d2b7a210455e252017b19f42df5a5a69df3b6a7baad9a",
+        "originalSha256": "cc75922b011d38002c8d2b7a210455e252017b19f42df5a5a69df3b6a7baad9a"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-17-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-17-1.json",
+        "sha256": "1f004ed777c065b9642e12130e5526488b181eb8f108c2d9974f1f086798732f",
+        "originalSha256": "1f004ed777c065b9642e12130e5526488b181eb8f108c2d9974f1f086798732f"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-17-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-17-0.json",
+        "sha256": "44add8f383af64122af9db576b94b7e0f52b68153568cac575bc87050a71084c",
+        "originalSha256": "44add8f383af64122af9db576b94b7e0f52b68153568cac575bc87050a71084c"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-16-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-16-3.json",
+        "sha256": "52acefefb0fcff14d3009f2a6382714ab72f2a07d23e5881d3ebc6edb5ae0ec4",
+        "originalSha256": "52acefefb0fcff14d3009f2a6382714ab72f2a07d23e5881d3ebc6edb5ae0ec4"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-16-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-16-2.json",
+        "sha256": "57c5ae06b9bc07df1d5125c9eda90eaacfdb59980fde36485347edaffc143686",
+        "originalSha256": "57c5ae06b9bc07df1d5125c9eda90eaacfdb59980fde36485347edaffc143686"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-16-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-16-1.json",
+        "sha256": "f77f1fd0c91aca902245019b5aa15d476337a8a2833c84bfa85efd82b383836e",
+        "originalSha256": "f77f1fd0c91aca902245019b5aa15d476337a8a2833c84bfa85efd82b383836e"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-16-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-16-0.json",
+        "sha256": "c8035a04c19967b61592da274cbf39179119470fd28b1c54e9729d58e3236c2c",
+        "originalSha256": "c8035a04c19967b61592da274cbf39179119470fd28b1c54e9729d58e3236c2c"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-15-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-15-3.json",
+        "sha256": "9852e58f339a6b6bcc4abbc4ea9568e7cf461f9cbef2213547f3dce7292fd293",
+        "originalSha256": "9852e58f339a6b6bcc4abbc4ea9568e7cf461f9cbef2213547f3dce7292fd293"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-15-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-15-2.json",
+        "sha256": "728004e26423299b8ca0273965ebe7fbdea5833ac46594de09bfe723591ace1f",
+        "originalSha256": "728004e26423299b8ca0273965ebe7fbdea5833ac46594de09bfe723591ace1f"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-15-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-15-1.json",
+        "sha256": "7443b1063501b6d36bf85f405d6234c23a0d460d18ad10f2d787577a748fec0a",
+        "originalSha256": "7443b1063501b6d36bf85f405d6234c23a0d460d18ad10f2d787577a748fec0a"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-15-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-15-0.json",
+        "sha256": "22aa8b1e1f35e765b46ba72f41894f892042c79a5bb5933114a531e97480ba21",
+        "originalSha256": "22aa8b1e1f35e765b46ba72f41894f892042c79a5bb5933114a531e97480ba21"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-14-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-14-3.json",
+        "sha256": "1709ac64e9d590d3f66d0eac9e4ad5d57ea95822bf1709b3fd8c80da89b0d22d",
+        "originalSha256": "1709ac64e9d590d3f66d0eac9e4ad5d57ea95822bf1709b3fd8c80da89b0d22d"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-14-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-14-2.json",
+        "sha256": "9f2b22b57716e07d0fb1ae0384bf2cd1784b3822fee153065416521c74162b11",
+        "originalSha256": "9f2b22b57716e07d0fb1ae0384bf2cd1784b3822fee153065416521c74162b11"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-14-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-14-1.json",
+        "sha256": "96acaecb1962b811660cebb4722ed27459e0a9b417944a04bde009b217b87d13",
+        "originalSha256": "96acaecb1962b811660cebb4722ed27459e0a9b417944a04bde009b217b87d13"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-14-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-14-0.json",
+        "sha256": "33b8580b4d04d183e63e0c3a7fa2022948c56eed960b17e064c8e8ec43d8e592",
+        "originalSha256": "33b8580b4d04d183e63e0c3a7fa2022948c56eed960b17e064c8e8ec43d8e592"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-13-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-13-3.json",
+        "sha256": "9a84ebd5c6016cfff337aea040c6b49c709768d5c1afd3888d4a1421fae88b28",
+        "originalSha256": "9a84ebd5c6016cfff337aea040c6b49c709768d5c1afd3888d4a1421fae88b28"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-13-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-13-2.json",
+        "sha256": "69d4d4cbbeb8df19888b6992746a10ae6e07cc359ee1779c3dbd2760de990e3a",
+        "originalSha256": "69d4d4cbbeb8df19888b6992746a10ae6e07cc359ee1779c3dbd2760de990e3a"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-13-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-13-1.json",
+        "sha256": "45bdda201a98f404e3af75d85d42cbdc4af49a4410c6e71d679ad617baa061c6",
+        "originalSha256": "45bdda201a98f404e3af75d85d42cbdc4af49a4410c6e71d679ad617baa061c6"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-13-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-13-0.json",
+        "sha256": "6dbd761be69b3c96371b4b3097134417de430c53662f8f3917b726455a7a84e2",
+        "originalSha256": "6dbd761be69b3c96371b4b3097134417de430c53662f8f3917b726455a7a84e2"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-12-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-12-3.json",
+        "sha256": "fff7d24b0bb0cb9d0ddb50eca28c7f0729cc17cd5aab6d8a2bca81fb1ce194a1",
+        "originalSha256": "fff7d24b0bb0cb9d0ddb50eca28c7f0729cc17cd5aab6d8a2bca81fb1ce194a1"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-12-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-12-2.json",
+        "sha256": "718b8cbcd3a80721a226a8b36ce2a27ef69a171982aefd9bf54bff7167ead735",
+        "originalSha256": "718b8cbcd3a80721a226a8b36ce2a27ef69a171982aefd9bf54bff7167ead735"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-12-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-12-1.json",
+        "sha256": "9566c88c3bd2df6fa1ef391cc6c7a40f08e056c620778559fd86e6646d4d7dd2",
+        "originalSha256": "9566c88c3bd2df6fa1ef391cc6c7a40f08e056c620778559fd86e6646d4d7dd2"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-12-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-12-0.json",
+        "sha256": "15b9e9d74a9318579bfc821fbd12751adc7f1fe98eea054cd545027c3014ffcd",
+        "originalSha256": "15b9e9d74a9318579bfc821fbd12751adc7f1fe98eea054cd545027c3014ffcd"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-11-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-11-3.json",
+        "sha256": "c38973c808345ceceff2f7dd55851f1d2aec945b3ffe1fc02c031c524e4c33e9",
+        "originalSha256": "c38973c808345ceceff2f7dd55851f1d2aec945b3ffe1fc02c031c524e4c33e9"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-11-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-11-2.json",
+        "sha256": "466f31f28ac759f6b31a6211bd98c0eca8ee33c4a72429edae522f8734ac46a9",
+        "originalSha256": "466f31f28ac759f6b31a6211bd98c0eca8ee33c4a72429edae522f8734ac46a9"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-11-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-11-1.json",
+        "sha256": "4856b0cb2a2c98d5fe867aab12eb848f7a2de1a3c559f91e44e250f59f1e2c51",
+        "originalSha256": "4856b0cb2a2c98d5fe867aab12eb848f7a2de1a3c559f91e44e250f59f1e2c51"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-11-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-11-0.json",
+        "sha256": "4dda6e6870ff72c1ce058a8e2c6e2cbf193d5b6ca57878252ded3fe21c42d155",
+        "originalSha256": "4dda6e6870ff72c1ce058a8e2c6e2cbf193d5b6ca57878252ded3fe21c42d155"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-10-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-10-3.json",
+        "sha256": "0b1ad0a5eecca6e8e0b1012bc01515c96dd446f2f792c7e35576fe36afcf4ce6",
+        "originalSha256": "0b1ad0a5eecca6e8e0b1012bc01515c96dd446f2f792c7e35576fe36afcf4ce6"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-10-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-10-2.json",
+        "sha256": "42a877a3bc5f08eae9d6992204eb79b9b1581821db560be5665769c8246801c7",
+        "originalSha256": "42a877a3bc5f08eae9d6992204eb79b9b1581821db560be5665769c8246801c7"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-10-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-10-1.json",
+        "sha256": "94d14b0845775bf090b6f7fd5d9666415bf8a4a9e008cb92215fa2dae54ede5c",
+        "originalSha256": "94d14b0845775bf090b6f7fd5d9666415bf8a4a9e008cb92215fa2dae54ede5c"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-10-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-10-0.json",
+        "sha256": "21024fe814d2af62767c21d6140456cc5dde50f2de1f71a06165983570f30be8",
+        "originalSha256": "21024fe814d2af62767c21d6140456cc5dde50f2de1f71a06165983570f30be8"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-9-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-9-3.json",
+        "sha256": "d6c9f2f411f2dfee1dc32ae98fe57ba8aee294c69fbecaed4f53aed3931eaf1e",
+        "originalSha256": "d6c9f2f411f2dfee1dc32ae98fe57ba8aee294c69fbecaed4f53aed3931eaf1e"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-9-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-9-2.json",
+        "sha256": "7a9f4a852f1d6b135e72247f9f0274fc872b9a82a7fdc5c35f4d03617a5adbe6",
+        "originalSha256": "7a9f4a852f1d6b135e72247f9f0274fc872b9a82a7fdc5c35f4d03617a5adbe6"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-9-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-9-1.json",
+        "sha256": "c32817c90e8a4f625f4da1de341f575d0bd45f534d6a395e260e487149c65a48",
+        "originalSha256": "c32817c90e8a4f625f4da1de341f575d0bd45f534d6a395e260e487149c65a48"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-9-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-9-0.json",
+        "sha256": "759e011faadaf1883a73e1c7e1cf064c05e15ea7bd63c47857094f34a2d886ed",
+        "originalSha256": "759e011faadaf1883a73e1c7e1cf064c05e15ea7bd63c47857094f34a2d886ed"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-8-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-8-3.json",
+        "sha256": "126b28eaf1460e140917f8a15979a3134b9b19a39a24f1ade22ab4526bdc549f",
+        "originalSha256": "126b28eaf1460e140917f8a15979a3134b9b19a39a24f1ade22ab4526bdc549f"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-8-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-8-2.json",
+        "sha256": "2640a71a2fdd007f68ea01b31fd9c6fb11ba29db944795c1e547a6f5ee6cc61d",
+        "originalSha256": "2640a71a2fdd007f68ea01b31fd9c6fb11ba29db944795c1e547a6f5ee6cc61d"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-8-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-8-1.json",
+        "sha256": "fbbc90d3ad6aa32b003099dc2cb52bbfc7e8c3c34a9cdb5c6aa2fb036cfdb300",
+        "originalSha256": "fbbc90d3ad6aa32b003099dc2cb52bbfc7e8c3c34a9cdb5c6aa2fb036cfdb300"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-8-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-8-0.json",
+        "sha256": "d2b95b188405cf6a96eec185db43409d00ffb0e0ff9648c40edd35b3b6a4c525",
+        "originalSha256": "d2b95b188405cf6a96eec185db43409d00ffb0e0ff9648c40edd35b3b6a4c525"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-7-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-7-3.json",
+        "sha256": "02de531813299b706a9cb250f65dcbbb4d276947a8599bad3fdf78c200a49967",
+        "originalSha256": "02de531813299b706a9cb250f65dcbbb4d276947a8599bad3fdf78c200a49967"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-7-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-7-2.json",
+        "sha256": "1254fa4e077c525f71060b2dbdcf23c0b7273bbddc19c670bd28d14479697d13",
+        "originalSha256": "1254fa4e077c525f71060b2dbdcf23c0b7273bbddc19c670bd28d14479697d13"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-7-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-7-1.json",
+        "sha256": "1d8210891edb61e30e19b3fae1e06cbba31b6d19440262bb050c39baf9b2865d",
+        "originalSha256": "1d8210891edb61e30e19b3fae1e06cbba31b6d19440262bb050c39baf9b2865d"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-7-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-7-0.json",
+        "sha256": "08c3361c5c1bd8abbbe28d2532cbb6fcd8e7b679818a459bd090cfb1b4d011c2",
+        "originalSha256": "08c3361c5c1bd8abbbe28d2532cbb6fcd8e7b679818a459bd090cfb1b4d011c2"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-6-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-6-3.json",
+        "sha256": "c6bc5091a6a616c8345c1a7f400971d65b2813f7a54c193ba02ed4ba93fe795f",
+        "originalSha256": "c6bc5091a6a616c8345c1a7f400971d65b2813f7a54c193ba02ed4ba93fe795f"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-6-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-6-2.json",
+        "sha256": "4e7197bb64a442c2a7ff509d08898796f14662ffb9e00858bd5f57a79b2faa3c",
+        "originalSha256": "4e7197bb64a442c2a7ff509d08898796f14662ffb9e00858bd5f57a79b2faa3c"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-6-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-6-1.json",
+        "sha256": "0782004beebf9711fce7584b3aa6605c8269e5a8902d1c8ea423f99ad0f3f665",
+        "originalSha256": "0782004beebf9711fce7584b3aa6605c8269e5a8902d1c8ea423f99ad0f3f665"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-6-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-6-0.json",
+        "sha256": "82255308a090b77d99dab47155b687f8947a5e5ac3b80ac9784abe94085d0ce3",
+        "originalSha256": "82255308a090b77d99dab47155b687f8947a5e5ac3b80ac9784abe94085d0ce3"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-5-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-5-3.json",
+        "sha256": "d8bc93387135b932a2f703c5a2a89149df51ce3b5fc2a23fb366d3a806ad75b3",
+        "originalSha256": "d8bc93387135b932a2f703c5a2a89149df51ce3b5fc2a23fb366d3a806ad75b3"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-5-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-5-2.json",
+        "sha256": "ea825d1a8c9cada454ba0e081806899606050cee54c3df83602c1949fd7ec76b",
+        "originalSha256": "ea825d1a8c9cada454ba0e081806899606050cee54c3df83602c1949fd7ec76b"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-5-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-5-1.json",
+        "sha256": "3e73a5d0129eb5a8967287cb8bfdca3c0ea41ca84b24b0f9185c88c2949dd0da",
+        "originalSha256": "3e73a5d0129eb5a8967287cb8bfdca3c0ea41ca84b24b0f9185c88c2949dd0da"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-5-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-5-0.json",
+        "sha256": "944c07b8bda74395797a783f8423cc24062621edc18569aab424cfbcaee4f5a3",
+        "originalSha256": "944c07b8bda74395797a783f8423cc24062621edc18569aab424cfbcaee4f5a3"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-4-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-4-3.json",
+        "sha256": "e88f1110b0abe193932ec24c54afcbb1c509f5aaf7a60f1829fa6ba8947b994e",
+        "originalSha256": "e88f1110b0abe193932ec24c54afcbb1c509f5aaf7a60f1829fa6ba8947b994e"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-4-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-4-2.json",
+        "sha256": "1e3bf44a417c79f93d3eb1fbc25b0b728ed68a1de576acbd87ed25403dd95bc9",
+        "originalSha256": "1e3bf44a417c79f93d3eb1fbc25b0b728ed68a1de576acbd87ed25403dd95bc9"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-4-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-4-1.json",
+        "sha256": "3097c345f892fe3ec1d4ba0e7e8e81bba683c08ceac670efbdf91eecff086c78",
+        "originalSha256": "3097c345f892fe3ec1d4ba0e7e8e81bba683c08ceac670efbdf91eecff086c78"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-4-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-4-0.json",
+        "sha256": "1c1da46754cca2e6e9e9ac3a12b48ac0207e45575af5f9ac6642b4fe2dd5b225",
+        "originalSha256": "1c1da46754cca2e6e9e9ac3a12b48ac0207e45575af5f9ac6642b4fe2dd5b225"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-3-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-3-3.json",
+        "sha256": "8cbcf552cf6a80c210803943e28f8c179bbab4dd31a30bbd5544f2df13d13a87",
+        "originalSha256": "8cbcf552cf6a80c210803943e28f8c179bbab4dd31a30bbd5544f2df13d13a87"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-3-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-3-2.json",
+        "sha256": "507e2552c3429f179b7920dd33965249c193933bca339d5d4d8bacea738f51f7",
+        "originalSha256": "507e2552c3429f179b7920dd33965249c193933bca339d5d4d8bacea738f51f7"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-3-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-3-1.json",
+        "sha256": "fff610c355b3911bba22bac2c882fc25a5a9e09a392ef0e8646edc9a1b1fdff6",
+        "originalSha256": "fff610c355b3911bba22bac2c882fc25a5a9e09a392ef0e8646edc9a1b1fdff6"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-3-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-3-0.json",
+        "sha256": "a8c95a6f7b00e67ebdba9c6d2e1dd36d22113184ca1dd5db513c4da15e1342a5",
+        "originalSha256": "a8c95a6f7b00e67ebdba9c6d2e1dd36d22113184ca1dd5db513c4da15e1342a5"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-2-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-2-3.json",
+        "sha256": "f9c4a209713fff56350244bdbcfa235e8b9976b004042ce1656e5f1c0f9633f9",
+        "originalSha256": "f9c4a209713fff56350244bdbcfa235e8b9976b004042ce1656e5f1c0f9633f9"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-2-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-2-2.json",
+        "sha256": "6419446243ab3e458d0c67cc996d27320c4f21a32eb68fb1ed8b8fdf5bab9402",
+        "originalSha256": "6419446243ab3e458d0c67cc996d27320c4f21a32eb68fb1ed8b8fdf5bab9402"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-2-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-2-1.json",
+        "sha256": "67389345d1e2d7c7c9569c0fd4f2041dadd0da5f72c2e7ee741f4809d4f3a9ef",
+        "originalSha256": "67389345d1e2d7c7c9569c0fd4f2041dadd0da5f72c2e7ee741f4809d4f3a9ef"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-2-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-2-0.json",
+        "sha256": "0db15bf63144aee0f4ceb21b3a836c79d1a19b27e9ff3948c094cd67672b9e2e",
+        "originalSha256": "0db15bf63144aee0f4ceb21b3a836c79d1a19b27e9ff3948c094cd67672b9e2e"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-1-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-1-3.json",
+        "sha256": "641bd305c313d38260c2a6bc9e49bf47f900469b231c9d53dd94d2a85c1e00bb",
+        "originalSha256": "641bd305c313d38260c2a6bc9e49bf47f900469b231c9d53dd94d2a85c1e00bb"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-1-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-1-2.json",
+        "sha256": "d78ce59e1bdbf7a65e49c7e130d76e72eaa234424eadc0a33a9db7407d7a697b",
+        "originalSha256": "d78ce59e1bdbf7a65e49c7e130d76e72eaa234424eadc0a33a9db7407d7a697b"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-1-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-1-1.json",
+        "sha256": "d1872c3221928edebee2d778ba05343788079c949c0b199d2dd2736279435789",
+        "originalSha256": "d1872c3221928edebee2d778ba05343788079c949c0b199d2dd2736279435789"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-1-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-1-0.json",
+        "sha256": "eb89a0b9ac8c519ac3ce09756eb188356a40cef5dffe34c4378a1a7834b86eeb",
+        "originalSha256": "eb89a0b9ac8c519ac3ce09756eb188356a40cef5dffe34c4378a1a7834b86eeb"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-0-3.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-0-3.json",
+        "sha256": "b20a70603fc81d06b367bf2457a67187764a586172f032a2169aa207d1d766b4",
+        "originalSha256": "b20a70603fc81d06b367bf2457a67187764a586172f032a2169aa207d1d766b4"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-0-2.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-0-2.json",
+        "sha256": "29f8a50ee2f3d92512c170b8899c62ca49e719de4eeb1a1410283d701194a5bf",
+        "originalSha256": "29f8a50ee2f3d92512c170b8899c62ca49e719de4eeb1a1410283d701194a5bf"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-0-1.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-0-1.json",
+        "sha256": "5ce0c7cdc32365113bee7ab203cbd4a6c7adf8178778ea036b35d6ffb411ab25",
+        "originalSha256": "5ce0c7cdc32365113bee7ab203cbd4a6c7adf8178778ea036b35d6ffb411ab25"
+      },
+      {
+        "path": "woundOffscreen-row-portable-wound-original-rollback-publication-integration-002-0-0.json",
+        "source": "/tmp/boe-known-rollback-woundOffscreen/portable-wound-original-rollback-publication-integration-002-0-0.json",
+        "sha256": "e4314d6d913ce0859e09239d842b70664b926d359d0ffe50c2c5c76230d464db",
+        "originalSha256": "e4314d6d913ce0859e09239d842b70664b926d359d0ffe50c2c5c76230d464db"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs",
+        "sha256": "61f9416150ccff954902eb878fe1975ebdec6da9eaecd30393a35bd28aa05f02"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GuardianCorrectionServiceTests.cs",
+        "sha256": "f36a47f4e68a21455992a328e3c121118e649eed22ae4b2fec67feb1a5c54434"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/AfterlifeActorMaterializationTestFixture.cs",
+        "sha256": "5e8f4acef14095e6674c77dd7391080ed576582e9e9551a9059ae38568255d14"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+        "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+        "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+        "sha256": "cdb09fddfbcd8b1b0140a22e4baa23095be0ed2bdc6defb6b5cb676b5b2e564e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+        "sha256": "f1f8b1cfbc1a1e972506848cb3f7f7bf5f8f496fc28a8de2d2da7f72f2759b69"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "3f07c8a159cfc738c292cc5dbd4d8fe18170a39acb685b92330ad7e8ed6c7dee"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "1ea63f7312d7b0fea891fddc4e2890978a1aa6922f8ac6881c0a5e557b33da00"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs",
+        "sha256": "a6b67997476c4f95a4480209f1e2927c8c55da5dec635664799faaf6fc69794c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Lifecycle.cs",
+        "sha256": "0a21d5ba6da138b32d4c0eda1cbc23fca2f15ea01c95235c89b24de1e2ce8ac8"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationTestContext.cs",
+        "sha256": "c97fe8f961c2981aebf10af0feb652879a8561f37e77990e68848a5c914ff052"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.Publication.cs",
+        "sha256": "2d8ac256cf563a4f605cd0a314ed800b0f9c8256ae8fd421cef388c18738e192"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/EffectPublicationFailureProbe.cs",
+        "sha256": "d1d5f2fe9ef1756a34ddd7070d0328e0b10c642288e763bba360a9c4456dd389"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs",
+        "sha256": "de89853995e04e557530ceafb0d49badb78d0df1a16823092a2aa14a72acd37f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "sha256": "65dbab31e85f55a090d80e0a6937b0ef287d39121a95b68c810c9c06351cbee8"
+      }
+    ]
+  },
+  "woundOffscreenCatalog": {
+    "source": "0d16af64926ded3a1492aff1a3648a2d895ff764",
+    "artifacts": [
+      {
+        "path": "woundOffscreenCatalog-20261009-135440-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135440-364-362864-0bb390515b3f4b17864a982b85a59cd8-categories/catalog-audit.json",
+        "sha256": "8d07a0ea8026b351ad864670b8bcf25c6eb82f7e6003afb05150aa4a06dd1a01",
+        "originalSha256": "8d07a0ea8026b351ad864670b8bcf25c6eb82f7e6003afb05150aa4a06dd1a01"
+      },
+      {
+        "path": "woundOffscreenCatalog-20261009-135440-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135440-364-362864-0bb390515b3f4b17864a982b85a59cd8-categories/summary.json",
+        "sha256": "0c8a6ee0df189ed5d3ccde61ecf6dde715991c8009694a1aba4492c5df9051b0",
+        "originalSha256": "0c8a6ee0df189ed5d3ccde61ecf6dde715991c8009694a1aba4492c5df9051b0"
+      },
+      {
+        "path": "woundOffscreenCatalog-20261009-135440-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-135440-364-362864-0bb390515b3f4b17864a982b85a59cd8-categories/dotnet-test.log",
+        "sha256": "e2681a15bb2281f53cdb4d85ed45a4fff2084794c262c14ea0ebb27eb0933440",
+        "originalSha256": "2bed78a8442db6b3f6ca9a4a41f4c3e998b641ed230b86f17e99027971cd946a"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs",
+        "sha256": "61f9416150ccff954902eb878fe1975ebdec6da9eaecd30393a35bd28aa05f02"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GuardianCorrectionServiceTests.cs",
+        "sha256": "f36a47f4e68a21455992a328e3c121118e649eed22ae4b2fec67feb1a5c54434"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/AfterlifeActorMaterializationTestFixture.cs",
+        "sha256": "5e8f4acef14095e6674c77dd7391080ed576582e9e9551a9059ae38568255d14"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+        "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+        "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+        "sha256": "cdb09fddfbcd8b1b0140a22e4baa23095be0ed2bdc6defb6b5cb676b5b2e564e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+        "sha256": "f1f8b1cfbc1a1e972506848cb3f7f7bf5f8f496fc28a8de2d2da7f72f2759b69"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "3f07c8a159cfc738c292cc5dbd4d8fe18170a39acb685b92330ad7e8ed6c7dee"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "1ea63f7312d7b0fea891fddc4e2890978a1aa6922f8ac6881c0a5e557b33da00"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs",
+        "sha256": "a6b67997476c4f95a4480209f1e2927c8c55da5dec635664799faaf6fc69794c"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.Lifecycle.cs",
+        "sha256": "0a21d5ba6da138b32d4c0eda1cbc23fca2f15ea01c95235c89b24de1e2ce8ac8"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationTestContext.cs",
+        "sha256": "c97fe8f961c2981aebf10af0feb652879a8561f37e77990e68848a5c914ff052"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.Publication.cs",
+        "sha256": "2d8ac256cf563a4f605cd0a314ed800b0f9c8256ae8fd421cef388c18738e192"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/EffectPublicationFailureProbe.cs",
+        "sha256": "d1d5f2fe9ef1756a34ddd7070d0328e0b10c642288e763bba360a9c4456dd389"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs",
+        "sha256": "de89853995e04e557530ceafb0d49badb78d0df1a16823092a2aa14a72acd37f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "sha256": "65dbab31e85f55a090d80e0a6937b0ef287d39121a95b68c810c9c06351cbee8"
+      }
+    ]
   }
 }

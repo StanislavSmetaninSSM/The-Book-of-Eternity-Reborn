@@ -1,3 +1,21 @@
+## F18 wound24 / offscreen1 — bounded Linux25 GREEN, 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT25 PASS0d16af64926ded3a1492aff1a3648a2d895ff764.
+Fresh integration Plan13522625/2,0execution90.6394130s (build86.2281333s).
+Actual13541625/25PASS16.8904362s,complete2/2,bothcleanup,0skip/duplicate/timeout.
+Command `./scripts/test-csharp.ps1 -Category @("portable-wound-original-rollback-publication", "portable-location-offscreen-rollback-publication") -Parallelism 1 -NoBuild`; preceding same-category PlanOnly freshly builds integration.
+Raw12before refusals plus12changed wound MemberPublished cuts retain actual cause,
+selected-only immediate restoration, then24original engine rollbacks each match12raw
+paths/absence/gen/no journal. Offscreen1 reaches changed MemberPublished and original
+AcceptedRefresh restores80raw tracked paths with original wrapped cause/path. All49
+emitted roots removed. No gameplay/B2 or runtime change/qualification inferred.
+
+Matching discovery135440562categories/11344methods-files valid0,8.4490962s,bothcleanup;
+NoBuild integrationfresh0d16/unitfresh533 with unchanged production/projects. [Packet](recovery/storage-migration-known-rollback-20261009/manifest.json)
+now256artifacts/originals186pins verified. Final independent RAW/CATALOG/CARRIER review
+pending. Prior effects14 finalPASSa2db retained without replay. Next Treatment2 exact
+Committed observations, then remaining F16producers/ownedclose/whole registry; B2–B5paused.
+
 ## F18 wound24 / offscreen1 — original rollback fixtures WIP, 2026-10-09
 
 Source #1553; existing branch1553-storage-migration-cloud-20261008, basea2db0770.

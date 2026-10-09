@@ -1,0 +1,37 @@
+{
+  "kind": "wound-original-engine-rollback",
+  "boundary": "before",
+  "failurePath": "output/narrative_response.json",
+  "rollback": true,
+  "expected": {
+    "game_state/player/wounds.json": "eyJiYXNlbGluZU9yZGluYWwiOjAsInN0YXRlIjoiYWNjZXB0ZWQifQ==",
+    "game_state/wounds/wound_identity_index.json": null,
+    "game_state/player/effects.json": "eyJiYXNlbGluZU9yZGluYWwiOjIsInN0YXRlIjoiYWNjZXB0ZWQifQ==",
+    "game_state/effects/effect_identity_index.json": null,
+    "game_state/resources/resource_state.json": "eyJiYXNlbGluZU9yZGluYWwiOjQsInN0YXRlIjoiYWNjZXB0ZWQifQ==",
+    "game_state/meta/afterlife_entity_profiles.json": null,
+    "game_state/control/progression_schedule.json": "eyJiYXNlbGluZU9yZGluYWwiOjYsInN0YXRlIjoiYWNjZXB0ZWQifQ==",
+    "game_state/control/progression_report.json": null,
+    "game_state/wounds/wound_history.json": "eyJiYXNlbGluZU9yZGluYWwiOjgsInN0YXRlIjoiYWNjZXB0ZWQifQ==",
+    "output/narrative_response.json": null,
+    "output/interface_updates.json": "eyJiYXNlbGluZU9yZGluYWwiOjEwLCJzdGF0ZSI6ImFjY2VwdGVkIn0=",
+    "output/debug_logs.json": null
+  },
+  "actual": {
+    "game_state/player/wounds.json": "eyJiYXNlbGluZU9yZGluYWwiOjAsInN0YXRlIjoiYWNjZXB0ZWQifQ==",
+    "game_state/wounds/wound_identity_index.json": null,
+    "game_state/player/effects.json": "eyJiYXNlbGluZU9yZGluYWwiOjIsInN0YXRlIjoiYWNjZXB0ZWQifQ==",
+    "game_state/effects/effect_identity_index.json": null,
+    "game_state/resources/resource_state.json": "eyJiYXNlbGluZU9yZGluYWwiOjQsInN0YXRlIjoiYWNjZXB0ZWQifQ==",
+    "game_state/meta/afterlife_entity_profiles.json": null,
+    "game_state/control/progression_schedule.json": "eyJiYXNlbGluZU9yZGluYWwiOjYsInN0YXRlIjoiYWNjZXB0ZWQifQ==",
+    "game_state/control/progression_report.json": null,
+    "game_state/wounds/wound_history.json": "eyJiYXNlbGluZU9yZGluYWwiOjgsInN0YXRlIjoiYWNjZXB0ZWQifQ==",
+    "output/narrative_response.json": null,
+    "output/interface_updates.json": "eyJiYXNlbGluZU9yZGluYWwiOjEwLCJzdGF0ZSI6ImFjY2VwdGVkIn0=",
+    "output/debug_logs.json": null
+  },
+  "GenerationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJjMmIyYTE5MDMxOTk0NmYwYjYzYWZjODQ2NjU5ZjAxOSJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJjMmIyYTE5MDMxOTk0NmYwYjYzYWZjODQ2NjU5ZjAxOSJ9",
+  "journalAfter": null
+}

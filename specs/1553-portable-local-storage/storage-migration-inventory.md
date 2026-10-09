@@ -1,3 +1,12 @@
+## Current F18 original rollback witness result — 2026-10-09
+
+Source0d16af64: wound24/offscreen1 all25PASS13541616.8904362s after fresh integration
+Plan13522625/0. Original12before+13actual changed MemberPublished witnesses,24engine
+raw12-path rollbacks and offscreenraw80-path compensation, generation/no journal,
+49strict roots removed. Catalog135440562/11344valid0. Raw packet256artifacts/186pins,
+final independent evidence gate pending; no native/B2/gameplay qualification. Treatment2,
+F16signed producers/ownedclose and whole registry remain open; T061–T065 unchecked.
+
 ## Current physical-cut fixture obligations — 2026-10-09
 
 Guardian8@764818a9 and Location8/Resource4@66f655ee independently accepted. Effects

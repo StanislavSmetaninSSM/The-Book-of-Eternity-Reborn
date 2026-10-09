@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "portable-wound-original-rollback-publication",
+    "portable-location-offscreen-rollback-publication"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "0d16af64926ded3a1492aff1a3648a2d895ff764",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0557536,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0383433,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0876676,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 86.2281333,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0039598,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:01:30.6394130",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 25,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-location-offscreen-rollback-publication-integration-001",
+      "portable-wound-original-rollback-publication-integration-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
