@@ -1337,6 +1337,9 @@ public partial class GameEngine
             }
             catch (Exception ex)
             {
+#if DEBUG
+                EmitGameLoopFixtureFailure(ex);
+#endif
                 var effectiveFailure = ex;
                 if (ex is not CoordinatedStatePublicationUncertainException)
                 {
@@ -4186,6 +4189,25 @@ public partial class GameEngine
             _fs.DeleteFile("game_state/control/ascension.json");
         }
     }
+
+#if DEBUG
+    private static void EmitGameLoopFixtureFailure(Exception failure)
+    {
+        var nonce = Environment.GetEnvironmentVariable("BOE_TEST_GAME_LOOP_FAILURE_NONCE");
+        if (!Guid.TryParseExact(nonce, "N", out var parsed) || parsed.ToString("N") != nonce) return;
+        try
+        {
+            // Explicit fixture diagnostics only: captured stderr, no filesystem
+            // admission, recovery or replacement of the original exception.
+            Console.Error.WriteLine("\n" + JsonSerializer.Serialize(new
+            {
+                kind = "boe-game-loop-fixture-failure", nonce, pid = Environment.ProcessId,
+                exceptionType = failure.GetType().FullName, exception = failure.ToString()
+            }));
+        }
+        catch { /* Diagnostic failure must leave the original outcome intact. */ }
+    }
+#endif
 
     /// <summary>
      /// Logs an error to game_session/error_log.txt for diagnostics.

@@ -45,6 +45,7 @@ for key, name in [("TMPDIR", "tmp"), ("XDG_CONFIG_HOME", "config"),
     directory.mkdir()
     env[key] = str(directory)
 pipe = "gc-" + uuid.uuid4().hex[:12]
+failure_nonce = uuid.uuid4().hex
 relay = repo / "tools/gm-relay"
 env["BOE_TEST_GAME_CHAIN_QUEUE"] = str(queue)
 command = "& '/usr/bin/python3' '" + str(relay / "relay_cli.py") + "' --session '" + str(session) + "' --queue $env:BOE_TEST_GAME_CHAIN_QUEUE --model 'deterministic-no-provider'"
@@ -81,7 +82,10 @@ class Peer:
             fcntl.ioctl(self.slave, termios.TIOCSCTTY, 0)
             os.tcsetpgrp(self.slave, os.getpid())
 
-        self.process = subprocess.Popen(argv, cwd=ship, env=env, stdin=self.slave,
+        peer_env = dict(env)
+        if scenario == "browser-relay" and name.startswith("client-"):
+            peer_env["BOE_TEST_GAME_LOOP_FAILURE_NONCE"] = failure_nonce
+        self.process = subprocess.Popen(argv, cwd=ship, env=peer_env, stdin=self.slave,
                                         stdout=subprocess.PIPE if captured else self.slave,
                                         stderr=subprocess.STDOUT if captured else self.slave, preexec_fn=own)
         self.streams = {self.master: "echo" if captured else "output"}
@@ -135,6 +139,12 @@ def wait(predicate, label, seconds=20):
 def fresh(peer, marker, offset=0, seconds=20):
     def observed():
         assert peer.process.poll() is None, peer.name + " exited before " + marker
+        diagnostic = re.search(r'\{"kind":"boe-game-loop-fixture-failure",[^\r\n]*\}', peer.text())
+        if diagnostic:
+            failure = json.loads(diagnostic.group())
+            assert failure["nonce"] == failure_nonce and failure["pid"] == peer.process.pid
+            result["OriginalGameLoopFailure"] = failure
+            raise AssertionError("Original GameLoop exception: " + failure["exception"])
         return marker in peer.text(offset)
     wait(observed, peer.name + ": " + marker, seconds)
 
