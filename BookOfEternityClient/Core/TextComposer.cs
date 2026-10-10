@@ -23,10 +23,9 @@ internal sealed class TextComposerOptions
     public string ClearCommand { get; init; } = "/clear";
 }
 
-internal sealed class TextComposerInputClosedException(string draft, bool interrupted = false) : OperationCanceledException("Ввод закрыт; черновик не отправлен.")
+internal sealed class TextComposerInputClosedException(string draft) : OperationCanceledException("Ввод закрыт; черновик не отправлен.")
 {
     public string Draft { get; } = draft;
-    public bool Interrupted { get; } = interrupted;
 }
 
 internal static class TextComposer
@@ -95,7 +94,7 @@ internal static class TextComposer
         while (true)
         {
             var draft = lines.Count == 0 ? options.DefaultValue ?? string.Empty : string.Join("\n", lines);
-            var line = ReadLine(console, draft, appendCompletedLines: lines.Count > 0);
+            var line = ReadLine(console, draft);
             if (IsClipboardShortcut(line))
             {
                 if (ReadClipboard(console, clipboardService, out var text))
@@ -143,20 +142,8 @@ internal static class TextComposer
         }
     }
 
-    private static string ReadLine(ITextComposerConsole console, string draft, bool appendCompletedLines = false)
-    {
-        try
-        {
-            return console.ReadLine() ?? throw new TextComposerInputClosedException(draft);
-        }
-        catch (TextComposerInputClosedException interrupted)
-        {
-            var preserved = string.IsNullOrEmpty(interrupted.Draft)
-                ? draft
-                : appendCompletedLines ? Combine(draft, interrupted.Draft) : interrupted.Draft;
-            throw new TextComposerInputClosedException(preserved, interrupted.Interrupted);
-        }
-    }
+    private static string ReadLine(ITextComposerConsole console, string draft) =>
+        console.ReadLine() ?? throw new TextComposerInputClosedException(draft);
 
     private static bool IsClipboardShortcut(string input)
     {
