@@ -1,4 +1,32 @@
-## F18 original lifecycle11 — composed nine PASS, one old B2 failure, one native unrun
+## Актуальная конечная сверка миграции — 2026-10-10
+
+Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+Источник принятого runtime/evidence: `bbf896fe57392a4b794ff0c4a42565dfe570368d`;
+исходники финальной semantic map: `ac3783c12ee31b12e57f73c5fc360916b97efdc8`.
+[Миграционный итог и актуальные границы](storage-migration-inventory.md),
+[принятый plan](plan.md), [semantic classification](recovery/storage-migration-final-owner-census-20261009/semantic-classification.json).
+
+T061–T065 ниже остаются `[ ]`: у каждого явно записаны **принятое ограниченное
+покрытие и настоящий остаток**. Финальная source-проверка не выявила конкретного
+доказанного неисправленного storage-дефекта в этой карте; это не whole-migration
+или all-platform PASS. 81 source-only строка — acquisition-классификация, не81
+дефект; три legacy owner сохранены намеренно; два native ledger owner не исполнены.
+Ordinary known-close имеет прямые finite доказательства только в перечисленных
+сценариях. B2 cold FAIL остаётся открытым; B2–B5 вне текущей metadata-задачи.
+
+Прежняя model-switch пауза и очереди Explorer/Treatment/Ascension/replay/Save images/
+census перекрыты поздними принятыми результатами в inventory. Эта сверка меняет
+только docs, без сборок, тестов, discovery, игрового процесса или нового clone.
+Открытые task checkboxes и ограничения не являются автоматически запущенными
+задачами. Возобновление runtime работы требует отдельного конкретного поручения.
+
+## Исторический журнал миграционных checkpoints
+
+До раздела «Актуальные обязательства T060–T065» сохранены прежние записи;
+формулировки next/current/open/stop относятся к их source/date, а не к текущему
+поручению. Исторические PASS/FAIL/preparation/UNRUN не переписаны.
+
+## Исторический checkpoint: F18 original lifecycle11 — composed nine PASS, one old B2 failure, one native unrun
 
 Source3fe28a9d file-GM correction is independently accepted; carrier7d91ebbc partialRAW
 PASS verifies5PASS in150152, bindingcold1FAIL and then4unrun. Isolated unchanged remaining4
@@ -26,7 +54,7 @@ transport; corrected interruption2 and automatic raw-observer1 need qualificatio
 actor drain/strict cleanup. Existing broad40-selector owner must not run. Remaining Prepared,
 Image, F16signed/ZIP, owned-close and authoritative legacy closure continue; T061–T065 unchecked.
 
-## F18 original C4/recovery rollback3 — bounded Linux GREEN, 2026-10-09
+## Исторический checkpoint: F18 original C4/recovery rollback3 — bounded Linux GREEN, 2026-10-09
 
 Source d2e6ef9c (independent source correction PASS after compile-only143812 failure):
 fresh integration Plan144022 selected3/1,0execution45.1309254s. Actual144529 passes3/3,
@@ -49,7 +77,7 @@ file-responder scenarios require current journal witnesses and complete actor se
 Shared cleanup helpers affect16Facts (five extra source-qualified callers). F16producers,
 remaining consumers/owned-close/legacy inventory and whole1553 stay open; T061–T065 unchecked.
 
-## F18 native6 source qualification and mods composed2 GREEN — 2026-10-09
+## Исторический checkpoint: F18 native6 source qualification and mods composed2 GREEN — 2026-10-09
 
 Independent source/exact8 PASS135881 and baseline/classification/source-exact1 PASS5e0a.
 Native6 fresh Plan1427598/2 with mods2,0execution92.2573195s (build87.7971458s):
@@ -74,7 +102,7 @@ Remaining F18: C4/wound rollback witnesses3; binding/staged/midpublication11 (wo
 native, other10 file responders), faithful cleanup/cold boundaries. Remaining consumer/
 F16/owned-close registry queues unchanged; T061–T065 open and B2–B5 paused.
 
-## F18 Treatment2 — composed Linux evidence complete, 2026-10-09
+## Исторический checkpoint: F18 Treatment2 — composed Linux evidence complete, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT1 PASS06092c412c44b3b2d2fbcc63945480fe2f554fd4.
 Fresh integration Plan141105 selects1/1,0execution44.3342314s; actual141952
@@ -98,7 +126,7 @@ Next: six explicitly native legacy publication controls, dead Location hook remo
 remaining F18/mods oracle/selection and all consumer/registry queues. T061–T065 remain
 unchecked; native Windows unexecuted, B2–B5 paused. Whole #1553 is not complete.
 
-## Current F18 original rollback witness result — 2026-10-09
+## Исторический checkpoint: Current F18 original rollback witness result — 2026-10-09
 
 Source0d16af64: wound24/offscreen1 all25PASS13541616.8904362s after fresh integration
 Plan13522625/0. Original12before+13actual changed MemberPublished witnesses,24engine
@@ -107,7 +135,7 @@ raw12-path rollbacks and offscreenraw80-path compensation, generation/no journal
 final independent evidence gate pending; no native/B2/gameplay qualification. Treatment2,
 F16signed producers/ownedclose and whole registry remain open; T061–T065 unchecked.
 
-## Current physical-cut fixture obligations — 2026-10-09
+## Исторический checkpoint: Current physical-cut fixture obligations — 2026-10-09
 
 Guardian8@764818a9 and Location8/Resource4@66f655ee independently accepted. Effects
 composed14=13@efd +1@4182; corrected spiritual actual1342491PASS8.5991532s reaches real
@@ -116,7 +144,7 @@ cut and exact original engine rollback, rawissues=[]/2rootsremoved. Historical i
 145/138 verified, final isolated raw/carrier review pending. Other physicalcuts/F16/
 ownedclose/whole closure stay open. T061–T065 remain unchecked and B2–B5 paused.
 
-## F16 exact native payload names — bounded evidence, 2026-10-09
+## Исторический checkpoint: F16 exact native payload names — bounded evidence, 2026-10-09
 
 Runtime a3c59545 / source533078a9: exact22/22 Linux PASS13145419.4931150s, complete4/4,
 bothcleanup. Actual literal MemberPublished rollbackcut1 reached; exact Save/Load names
@@ -126,7 +154,7 @@ carrier review pending. See current plan and literal-names packet. This closes o
 native payload spelling slice; signed producers/save destination names/physicalcuts/
 ownedclose/whole registry remain. T061–T065 unchecked; B2–B5 paused; Windows unexecuted.
 
-## F18 current bounded evidence — 2026-10-09
+## Исторический checkpoint: F18 current bounded evidence — 2026-10-09
 
 Original ordinary contention4 at9fcbbec completes4/4 Linux PASS112704,8.6052322s,
 positive main admission/separate canonical0, original tasks/lease settled and4 roots
@@ -135,7 +163,7 @@ Matching discovery544/11336 valid0; exact build provenance and packet in plan.
 Other F18/consumer queues remain open; no T061–T065 checkbox changed, no runtime/
 fullF18/native claim. B2–B5 paused.
 
-## Current migration status — 2026-10-09
+## Исторический checkpoint: Current migration status — 2026-10-09
 
 Whole #1553 migration explicitly resumed from766ccb1d; Story is one accepted slice.
 Capacity blocker resolved by verified removal of4 reproducible old restore clones,
@@ -174,24 +202,24 @@ Ready/worker bounded12 Linux PASS at11b97493/063038 (9 original publication Unkn
 Catalog525/11322 valid0. Scope and remaining connected consumers are in plan.md;
 T061–T065 stay open, B2–B5 paused. No whole worker/C2/native/double-close acceptance.
 
-## Accepted Explorer, continuing Ready — 2026-10-09
+## Исторический checkpoint: Accepted Explorer, continuing Ready — 2026-10-09
 
 Final independent Explorer gate PASS6f61302b (composed33;257 artifacts/239 pins).
 Next bounded Ready/worker unit is planned in plan.md. No T061–T065 completion.
 
-## Explorer/Forge bounded verification — 2026-10-09
+## Исторический checkpoint: Explorer/Forge bounded verification — 2026-10-09
 
 Composed33 unique Linux PASS =10@554+21@18475+2@4e31; no single33 run.
 Both stale fixtures corrected with positive oracles; final raw/carrier review pending.
 Catalog524/11319 valid0 at4e31. T061–T065 remain open; B2–B5 paused.
 
-## Current resumed checkpoint — 2026-10-09
+## Исторический checkpoint: Current resumed checkpoint — 2026-10-09
 
 Owner resumed work after model switch. Explorer actual22 at18475 is21PASS/1 stale fixture
 baseline FAIL; full counts/cleanup and next exact fixture corrections are in the plan.
 T061–T065 remain open; B2–B5 stay paused. Historical stop instructions below are superseded.
 
-## Owner-requested safe stop — 2026-10-09
+## Исторический checkpoint: Owner-requested safe stop — 2026-10-09
 
 #1553 remains open; T062–T065 are unfinished and B2–B5 remain paused. Resume from the
 [authoritative plan handoff](plan.md#authoritative-safe-stop-handoff--2026-10-09-explorerforge-boundary).
@@ -199,18 +227,30 @@ Frozen5d68fead has independent SOURCE/EXACT22 PASS only: fresh Plan22/build and 
 **unrun**. Partial31 remains12executed/11PASS/1genuineFAIL/19unrun; carrier142/99 verified.
 No build/test or next-family work after the owner's manual-model-switch stop request.
 
-## Storage migration continuation — 2026-10-08
+## Актуальные обязательства T060–T065
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553),
 latest explicit owner request; [current inventory/engineering order](storage-migration-inventory.md).
 No #1536 B2–B5 resumption, CI/merge/security change or desktop/live GM work.
 
 - [x] T060-STORAGE-INVENTORY Build pinned full-source mechanism/caller index and source-reviewed family/classification map; independent Astra XHigh completeness review before migration. Lexical candidate labels are not accepted decisions. Independent Astra XHigh completeness followup accepted `eb60495facd1ed1c4ca31a932296787f135b6162` after four source-map/index corrections; this closes only the inventory gate, not dynamic routes or migration.
-- [ ] T061-CONSOLE-ROLLBACK Migrate the complete generic console pending rollback stage/adopt/restore/cleanup lifecycle after causal original consumer evidence, preserving exact bytes/absence, request/generation/owner and retained evidence. Source/evidence gates PASS ebd645cc, 30/30 bounded Linux GREEN and discovery443/11218/zero executed. Bounded Linux F03 accepted; native Windows16-case owner recipe remains unexecuted, live command qualification not claimed.
-- [ ] T062-STORAGE-OUTCOMES Establish and fix demonstrated ordinary uncertainty/committed-debt propagation and compensation/retry/cache/notification gaps at actual command boundaries; preserve original partial-restore guarantees and successful closure. Bounded ordinary facade/AgentConsole/browser outcome slice has19/19 Linux PASS at83f6e9a7 and catalog446/11224/zero executed; independent Astra XHigh source/evidence review PASS. Connected QTE/pre-turn restoration including second mirror publication accepted at9e30 (10 final cases plus7 separately pinned neighbors). A02 accepted normalizer/compensation/original handler accepted7/7 at28eacf. A04 tree carrier/actual closing/notice has15/15 atfbec, independent source/evidence gate PASS. Treatment settlement/Dispose/mirror and original pre-canonical terminal source/raw gates PASS through522293: composed16 unique Linux passing obligations across e311/ef0e/8fcbb/522293, with historical failures retained and no single16-run/native/whole-turn claim. Final carrier and parent fresh GitHub-only restoration PASScf58 (100 artifacts/164 pins). Final cleanup/staging causal8 executed at52ec (8 reached causal failures, complete12.0934515s, all journals/owned cleanup retained), with independent raw acceptance; packet32 artifacts/20 pins preserved. Cleanup runtime source gates through102d and composed26 unique Linux passing obligations:18@ef59782,2@2755,6@102d; final6 complete14.7592230s, catalog500/11291 valid0. Saved111 artifacts/98 historical pins verify; final independent carrier and parent GitHub-only restore PASSe5 (111/98). Separate Prepared original remote-close causal3 at54d confirmed defaultCompleted; Prepared-only capture7cf passes final8 (remote3 plus known5)14.4882009s with genuine original ACK/fullidentity. Saved59 artifacts/26 pins; independent final carrier PASSc7c56722. Initial8 and later release2/Prepared1 causal failures remain preserved; no single26run/native/fullUI claim. Progression actualcausal4 at a9e4 corrected by exactly3 catch exclusions2a372; final5/5 PASS10.5218797s with known restart guard, independent source/raw PASS. Saved48 artifacts/25 pins; current fresh-both-project catalog503/11293 valid0. Final carrier integrity/docs PASS7f706089 (48/25); Story original-consumer causal7 at8ac (2P5 reached causalF) corrected by b79; final12/12 PASS21.2819654s with independent source/raw acceptance, catalog505/11296 valid0 and saved64/21; final carrier integrity/docs PASS6ee00c8b. Prepared-Shining causal4 atc1852P2F corrected by bbf two CSP filters; final5/5PASS15.6537964s, catalog507/11297 valid0; separate closed51-line private cluster removal has census5→0. Packet47/27 final independent carrier PASS1265. Self-owned API close consistency four wrappers passes source gate and final15/15 at a88d (13.6134918s), catalog508/11298 valid0; packet25/11 final independent carrier PASSf9f7d8a1, no actual self-owned double-fault claim. Original preparation runtime85b passes composed21 =18@85b partial19/21 +3 corrected current-admission controls@41ac (12.8927483s); historical nine causal+two fixture and isolated causal2 preserved. Packet108/70 and matching catalog512/11303 valid0 verified, final independent carrier and parent gates PASS41c8. Lore/realm runtimec767 passes composed14=12@c767+2 corrected generation/sourceguard@bd (12.9031643s); independent source/raw gates PASS, packet72/50 and catalog515/11307 valid0, final independent/parent carrier PASSf40; accepted-continuation actual causal7 e800 corrected by six stops/known cause/two original owner captures020ac; final12/12PASS17.7182074s with independent/parent raw gates, packet71/36 and fresh current catalog517/11311 valid0, final independent/parent carrier PASS122b3a04; GameLoop diagnostic4 finalPASSfdc219f0/042423 (8.2415967s), independent source/raw gates, packet41/29 and current fresh catalog518/11313 valid0, final independent/parent carrier PASSe77 (41/29); Explorer initial22 clean5dc completes2P20F (16 genuine Unknown +4 fixture misses), known compensation2 PASS; isolated corrected4 reaches4 genuine failures at259, combined20 causal preserved010a112/64. Runtime554 partial31 executes12=11PASS+actual committed-release postverification failure1,19unrun; packet142/99, final gate pending. Remaining boundaries stay open. Remaining accepted-continuation/bookkeeping/Explorer/Ready/worker/C2 and F16/F18 tails stay open.
-- [ ] T063-REMAINING-CONSUMERS Migrate reviewed fresh Windows browser/Daren consumers as complete units; handle fresh inactive-snapshot physical retirement separately across platforms, preserving original old-journal handler/refusal. Assess QTE distribution and helper/daemon protocol tails without new gameplay/API or unsupported atomicity promises. Native Windows remains unverified until actually executed. A01 isolated adapter and owner gates accepted (boot16, metadata7, owner25 bounded Linux); shared original dispatch/Load5f150 independently accepted16 Linux cases; Windows Bridge/ConPTY/status activation c45 has bounded source/component PASS7 Linux; native recipes unexecuted. Separate pre-recovery config/cache causal RED b169 is preserved; same-owner post-recovery factory correction43e has source/selection PASS and actual10/10 Linux GREEN; final independent evidence PASS at cc178; A03 independent fixture gate9a35 and actual7 complete1PASS6causalFAIL preserved; minimal result/absorbing-uncertainty/original-close correctione33c source/selection PASS, actual10/10 Linux GREEN and discovery473/11262/0; final independent evidence/carrier PASSd366. F06 existing24 baseline complete21PASS3causalFAIL at68c5: Windows-only deletion reached; ten new publication/caller controls plus missing-authority retry extension have independent fixture/design PASS3cbe; runtime47ce has independent source/selection PASS and actual34/34 Linux GREEN; discovery475/11264/0, final independent evidence/carrier PASS2f373. F04/F05 exact46 unchanged Linux baseline has independent source/selection PASS534a and actual46/46 GREEN; new protocol/native fixture source gate7ab3 accepted and actual4 shared controls PASS (carrier6e623), native28 compiled/discovered0. Initial runtime242d56 GREEN retained; parent neutral-only scratch P2 corrected atc8d with independent source/fixture/selection and raw evidence PASS57/57 Linux, native30 compile/discovery0. Final independent be3d carrier PASS59 artifacts/96 pins and parent fresh GitHub-only restore PASS26232 files/full fsck0. Native Windows remains unexecuted. F13 design94f912 and corrected test-only fixture82f independently accepted. Actual19061010 complete0PASS10FAIL comprises nine causal failures plus one realm-link fixture failure; preserve original logical/physical cleanup distinctions. Isolated retained-path correctionc2bc passed focused gates and actual191330 reaches one causal failure with full logical/physical cleanup; ten semantic causal obligations are now reached across9+1, while historical fixture failure stays disclosed. Final causal carrier676 independently accepted109 artifacts/48 pins and parent fresh restore PASS. Full F13 dedicated generation/witness/transport/PS unit compiled and passed independent source/selection review6d26. First actual53 selection executed52 (32 PASS/20 original-contract fixture failures), realm1 unexecuted. Fixture correction6ed yields original21 PASS plus one stale-diagnostic failure, preserved; minimal cause-code fix45a has independent source/selection PASS and actual20/20 GREEN. Composed unique53: causal9/A03three@6d26 + original21@6ed + current18/stale1/realm1@45a. Catalog485/11276 valid/0. Final independent evidence/carrier and parent fresh GitHub-only restoration PASS38940493 (1144/194,27388 files/full fsck0); native and full migration remain open. F14 initial actual QTE5 at d376 reached two positive PASS and three causal failures; separate delivery4 PASS. Independent carrier383 accepted80 artifacts/48 pins and parent fresh GitHub-only restore PASS27473 files/full fsck0. Whole connected runtime8dd has independent source/fixture/selection and raw evidence PASS; exact27/27 Linux GREEN103.5351509s, six complete descriptors, catalog489/11279 valid/zero. Current14 includes exact cohort/conditional/transport boundaries; two local losses have no invented remote receipt, and separate A03 caught-loss retains logical Unresolved. Final carrier946419 independently accepted414 artifacts/132 pins; parent fresh GitHub-only restore PASS27810 files/full fsck0. Native/full migration remain open.
-- [ ] T064-STORAGE-CUTS Replace stale ordinary fault/observation assumptions with correct current phase and positive reached-cut evidence; retain explicitly primitive/legacy tests, fix dead helpers and add narrow regression guards/category ownership.
-- [ ] T065-STORAGE-CLOSURE Reconcile every relevant inventory candidate/family, inspect selected RED/GREEN/cleanup/evidence, discovery-only catalog and independent review, publish/verify exact source/evidence checkpoints and fresh restore. No whole-game/all-platform claim from bounded tests.
+- [ ] T061-CONSOLE-ROLLBACK Принято ограниченно: исходный generic console stage/adopt/restore/cleanup — Linux30/30, carrier ebd645cc; более поздний incarnation/Explorer raw-inventory unit20/20 — cc401fab. Сохраняются bytes/absence, generation/owner и старая authority. [Console evidence](recovery/storage-migration-console-green-20261008/manifest.json), [producer evidence](recovery/storage-migration-explorer-snapshot-20261009/manifest.json). Остаток: native Windows16-case owner recipe не исполнен; live command и весь rollback lifecycle на всех платформах не приняты.
+- [ ] T062-STORAGE-OUTCOMES Принято ограниченно: ранее source-pinned facade/QTE/normalizer/compensation/cleanup/Prepared/Story/progression units и Explorer composed33 (10+21+2, три source-era запуска), затем actual-owner guards; последние TreatmentAdvance3/3, Ascension2/2, finalized replay2/2, ProposalStore4/4 и Browser replacement4/4. [Explorer](recovery/storage-migration-explorer-archive-20261009/manifest.json), [latest outcome coverage](storage-migration-inventory.md). Исторические Explorer FAIL/UNRUN и Treatment known_close FAIL сохранены, но не являются текущей очередью этих принятых случаев. Остаток: whole command/game flow, source-only caller boundaries и ordinary known-close вне явно квалифицированных сценариев; source-only не означает неисправленный дефект.
+- [ ] T063-REMAINING-CONSUMERS Принято ограниченно: fresh browser schema7/Daren Linux57, inactive retirement34, F13 helper composed53 и F14 daemon27; последующие Ready/worker/audit/proposal/C2, Prepared nesting, media/listings/raw producers и конкретные original owners — только по их finite packets. [Final plan](plan.md), [final semantic map](recovery/storage-migration-final-owner-census-20261009/semantic-classification.json). Остаток: native Windows; реальные default worker/Prepared durable owner ACK; 81 source-only acquisition не имеют прямой полной runtime-приёмки; три legacy owner сохраняются намеренно. Полный consumer/all-platform контракт остаётся открыт, автоматической очереди из81 дефекта нет.
+- [ ] T064-STORAGE-CUTS Принято ограниченно: достигнутые genuine ordinary publication cuts с первичной CSP/secondary, settlement/noLater/Closing0 и strict cleanup в named packets; raw spelling отказ до folding/stage/spend; F17 removal пяти недостижимых методов с source census5→0 и unchanged current-route1/1. [Removal](recovery/storage-migration-dead-helpers-20261008/manifest.json), [latest Browser cuts](recovery/storage-migration-original-browser-replacement-close-20261009/manifest.json). Исходные causal FAIL, preparation failures и native/legacy hooks сохранены. Остаток: положительные native physical cuts и неисполненные source-only/ordinary known-close сценарии; их проверять только при конкретном затронутом контракте, не портировать все hooks автоматически.
+- [ ] T065-STORAGE-CLOSURE Принято ограниченно: финальная ручная карта855 product C# files/170 acquisition sites/164 declarations/70 owning files; 81 source-only/84 finite-packet-associated/3 legacy/2 native. Catalog611/11385 — fresh both-project discovery, zero execution; независимое source/GREEN/semantic review и exact-tip GitHub-only restore bbf896fe (32789 tracked blobs,90 manifests/7676 artifact references/10300 pins,fsck0) приняты. [Pinned final plan](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/plan.md), [census](recovery/storage-migration-final-owner-census-20261009/manifest.json). Эта конечная metadata-сверка согласует текущие документы; не повторяет runtime/catalog/clone. Остаток: whole migration/game/all-platform acceptance, native execution и paused B2 cold FAIL; без blanket PASS или закрытия issue.
+
+### Исторические записи T061–T065 до конечной сверки
+
+Сохранённые ниже записи описывают прежние checkpoints; их очереди/FAIL/UNRUN
+не переопределяют актуальный принятый scope и остаток выше.
+
+> - [ ] T061-CONSOLE-ROLLBACK Migrate the complete generic console pending rollback stage/adopt/restore/cleanup lifecycle after causal original consumer evidence, preserving exact bytes/absence, request/generation/owner and retained evidence. Source/evidence gates PASS ebd645cc, 30/30 bounded Linux GREEN and discovery443/11218/zero executed. Bounded Linux F03 accepted; native Windows16-case owner recipe remains unexecuted, live command qualification not claimed.
+> - [ ] T062-STORAGE-OUTCOMES Establish and fix demonstrated ordinary uncertainty/committed-debt propagation and compensation/retry/cache/notification gaps at actual command boundaries; preserve original partial-restore guarantees and successful closure. Bounded ordinary facade/AgentConsole/browser outcome slice has19/19 Linux PASS at83f6e9a7 and catalog446/11224/zero executed; independent Astra XHigh source/evidence review PASS. Connected QTE/pre-turn restoration including second mirror publication accepted at9e30 (10 final cases plus7 separately pinned neighbors). A02 accepted normalizer/compensation/original handler accepted7/7 at28eacf. A04 tree carrier/actual closing/notice has15/15 atfbec, independent source/evidence gate PASS. Treatment settlement/Dispose/mirror and original pre-canonical terminal source/raw gates PASS through522293: composed16 unique Linux passing obligations across e311/ef0e/8fcbb/522293, with historical failures retained and no single16-run/native/whole-turn claim. Final carrier and parent fresh GitHub-only restoration PASScf58 (100 artifacts/164 pins). Final cleanup/staging causal8 executed at52ec (8 reached causal failures, complete12.0934515s, all journals/owned cleanup retained), with independent raw acceptance; packet32 artifacts/20 pins preserved. Cleanup runtime source gates through102d and composed26 unique Linux passing obligations:18@ef59782,2@2755,6@102d; final6 complete14.7592230s, catalog500/11291 valid0. Saved111 artifacts/98 historical pins verify; final independent carrier and parent GitHub-only restore PASSe5 (111/98). Separate Prepared original remote-close causal3 at54d confirmed defaultCompleted; Prepared-only capture7cf passes final8 (remote3 plus known5)14.4882009s with genuine original ACK/fullidentity. Saved59 artifacts/26 pins; independent final carrier PASSc7c56722. Initial8 and later release2/Prepared1 causal failures remain preserved; no single26run/native/fullUI claim. Progression actualcausal4 at a9e4 corrected by exactly3 catch exclusions2a372; final5/5 PASS10.5218797s with known restart guard, independent source/raw PASS. Saved48 artifacts/25 pins; current fresh-both-project catalog503/11293 valid0. Final carrier integrity/docs PASS7f706089 (48/25); Story original-consumer causal7 at8ac (2P5 reached causalF) corrected by b79; final12/12 PASS21.2819654s with independent source/raw acceptance, catalog505/11296 valid0 and saved64/21; final carrier integrity/docs PASS6ee00c8b. Prepared-Shining causal4 atc1852P2F corrected by bbf two CSP filters; final5/5PASS15.6537964s, catalog507/11297 valid0; separate closed51-line private cluster removal has census5→0. Packet47/27 final independent carrier PASS1265. Self-owned API close consistency four wrappers passes source gate and final15/15 at a88d (13.6134918s), catalog508/11298 valid0; packet25/11 final independent carrier PASSf9f7d8a1, no actual self-owned double-fault claim. Original preparation runtime85b passes composed21 =18@85b partial19/21 +3 corrected current-admission controls@41ac (12.8927483s); historical nine causal+two fixture and isolated causal2 preserved. Packet108/70 and matching catalog512/11303 valid0 verified, final independent carrier and parent gates PASS41c8. Lore/realm runtimec767 passes composed14=12@c767+2 corrected generation/sourceguard@bd (12.9031643s); independent source/raw gates PASS, packet72/50 and catalog515/11307 valid0, final independent/parent carrier PASSf40; accepted-continuation actual causal7 e800 corrected by six stops/known cause/two original owner captures020ac; final12/12PASS17.7182074s with independent/parent raw gates, packet71/36 and fresh current catalog517/11311 valid0, final independent/parent carrier PASS122b3a04; GameLoop diagnostic4 finalPASSfdc219f0/042423 (8.2415967s), independent source/raw gates, packet41/29 and current fresh catalog518/11313 valid0, final independent/parent carrier PASSe77 (41/29); Explorer initial22 clean5dc completes2P20F (16 genuine Unknown +4 fixture misses), known compensation2 PASS; isolated corrected4 reaches4 genuine failures at259, combined20 causal preserved010a112/64. Runtime554 partial31 executes12=11PASS+actual committed-release postverification failure1,19unrun; packet142/99, final gate pending. Remaining boundaries stay open. Remaining accepted-continuation/bookkeeping/Explorer/Ready/worker/C2 and F16/F18 tails stay open.
+> - [ ] T063-REMAINING-CONSUMERS Migrate reviewed fresh Windows browser/Daren consumers as complete units; handle fresh inactive-snapshot physical retirement separately across platforms, preserving original old-journal handler/refusal. Assess QTE distribution and helper/daemon protocol tails without new gameplay/API or unsupported atomicity promises. Native Windows remains unverified until actually executed. A01 isolated adapter and owner gates accepted (boot16, metadata7, owner25 bounded Linux); shared original dispatch/Load5f150 independently accepted16 Linux cases; Windows Bridge/ConPTY/status activation c45 has bounded source/component PASS7 Linux; native recipes unexecuted. Separate pre-recovery config/cache causal RED b169 is preserved; same-owner post-recovery factory correction43e has source/selection PASS and actual10/10 Linux GREEN; final independent evidence PASS at cc178; A03 independent fixture gate9a35 and actual7 complete1PASS6causalFAIL preserved; minimal result/absorbing-uncertainty/original-close correctione33c source/selection PASS, actual10/10 Linux GREEN and discovery473/11262/0; final independent evidence/carrier PASSd366. F06 existing24 baseline complete21PASS3causalFAIL at68c5: Windows-only deletion reached; ten new publication/caller controls plus missing-authority retry extension have independent fixture/design PASS3cbe; runtime47ce has independent source/selection PASS and actual34/34 Linux GREEN; discovery475/11264/0, final independent evidence/carrier PASS2f373. F04/F05 exact46 unchanged Linux baseline has independent source/selection PASS534a and actual46/46 GREEN; new protocol/native fixture source gate7ab3 accepted and actual4 shared controls PASS (carrier6e623), native28 compiled/discovered0. Initial runtime242d56 GREEN retained; parent neutral-only scratch P2 corrected atc8d with independent source/fixture/selection and raw evidence PASS57/57 Linux, native30 compile/discovery0. Final independent be3d carrier PASS59 artifacts/96 pins and parent fresh GitHub-only restore PASS26232 files/full fsck0. Native Windows remains unexecuted. F13 design94f912 and corrected test-only fixture82f independently accepted. Actual19061010 complete0PASS10FAIL comprises nine causal failures plus one realm-link fixture failure; preserve original logical/physical cleanup distinctions. Isolated retained-path correctionc2bc passed focused gates and actual191330 reaches one causal failure with full logical/physical cleanup; ten semantic causal obligations are now reached across9+1, while historical fixture failure stays disclosed. Final causal carrier676 independently accepted109 artifacts/48 pins and parent fresh restore PASS. Full F13 dedicated generation/witness/transport/PS unit compiled and passed independent source/selection review6d26. First actual53 selection executed52 (32 PASS/20 original-contract fixture failures), realm1 unexecuted. Fixture correction6ed yields original21 PASS plus one stale-diagnostic failure, preserved; minimal cause-code fix45a has independent source/selection PASS and actual20/20 GREEN. Composed unique53: causal9/A03three@6d26 + original21@6ed + current18/stale1/realm1@45a. Catalog485/11276 valid/0. Final independent evidence/carrier and parent fresh GitHub-only restoration PASS38940493 (1144/194,27388 files/full fsck0); native and full migration remain open. F14 initial actual QTE5 at d376 reached two positive PASS and three causal failures; separate delivery4 PASS. Independent carrier383 accepted80 artifacts/48 pins and parent fresh GitHub-only restore PASS27473 files/full fsck0. Whole connected runtime8dd has independent source/fixture/selection and raw evidence PASS; exact27/27 Linux GREEN103.5351509s, six complete descriptors, catalog489/11279 valid/zero. Current14 includes exact cohort/conditional/transport boundaries; two local losses have no invented remote receipt, and separate A03 caught-loss retains logical Unresolved. Final carrier946419 independently accepted414 artifacts/132 pins; parent fresh GitHub-only restore PASS27810 files/full fsck0. Native/full migration remain open.
+> - [ ] T064-STORAGE-CUTS Replace stale ordinary fault/observation assumptions with correct current phase and positive reached-cut evidence; retain explicitly primitive/legacy tests, fix dead helpers and add narrow regression guards/category ownership.
+> - [ ] T065-STORAGE-CLOSURE Reconcile every relevant inventory candidate/family, inspect selected RED/GREEN/cleanup/evidence, discovery-only catalog and independent review, publish/verify exact source/evidence checkpoints and fresh restore. No whole-game/all-platform claim from bounded tests.
+
 
 - [x] T052-FINAL-READINESS Source #1553, owner-authorized bounded integration handoff from 20bdeb6c: reconcile accepted/deferred requirements; close the reviewed installed Linux configuration guide gap and causal owned test-child fixture-root preparation pin; risk-selected current launcher/Load/pin checks plus guide consumer contract; independent Sol6.1/xhigh source/evidence/metadata review, exact remote/readback/fresh GitHub recovery. No full suite or new live GM. Owner defers actual systemd S2/S3; backend remains disabled. Native Windows runs AFTER merge in parent-coordinated «Лориан-Codex bridge». Parent handles merge; none here. [Current map/plan](final-readiness.md). Actual independent Sol6.1/xhigh design/source/evidence/metadata PASS (metadatac104e5b2), final30uniquePASS, catalog435/11194discovery0. Exact final-tip remote/readback/GitHub-only restoration and hosted CI are writer delivery gates; parent confirms inaccessible protection and handles merge. No whole#1553 completion claim.
 

@@ -1,3 +1,29 @@
+## Конечная metadata-сверка миграции #1553 — 2026-10-10
+
+По отдельному поручению согласованы [tasks.md](tasks.md) и
+[storage-migration-inventory.md](storage-migration-inventory.md) с принятым source/
+evidence `bbf896fe57392a4b794ff0c4a42565dfe570368d` и final semantic map source
+`ac3783c12ee31b12e57f73c5fc360916b97efdc8`. Прежние Explorer FAIL/UNRUN/model stop,
+Treatment known-close/Ascension/replay/Save images/census очереди явно обозначены
+историческими; raw/source pins и отметки T061–T065 сохранены. У каждого task теперь
+отдельно сформулированы finite acceptance и настоящий остаток. Краткий итог именно
+миграции — found/fixed/removed/retained/unverified — в начале inventory.
+81 source-only acquisitions не объявлены дефектами;3legacy намеренно сохранены,
+2native/Windows и B2 coldFAIL остаются открыты; blanketPASS/issue closure нет.
+
+Проверка этого блока: read-only Spec Kit prerequisites/cross-artifact consistency,
+source/evidence links/counts, historical body preservation, git diff/whitespace,
+обязательное независимое Astra/xhigh metadata review и обычное commit/push/exact
+remote byte/SHA readback. Статическая сверка PASS: original task/inventory bodies сохранены (кроме history
+heading labels/перемещения старых task notes),5 открытых current task IDs,22 новых
+source/evidence links,неизменные170 semantic records и6 archived GREEN summaries.
+Review/publication — WIP до фактических gate результатов.
+Нет новых runtime/test/spec/selection/GM-contract изменений; сборки, test runner,
+discovery, GM/game/desktop/native процессы и full clone не запускаются. Прежний
+restorePASS относится ровно кbbf896fe; эта metadata редакция проверяется remote
+readback, не выдаётся за ещё одно тяжёлое восстановление. Main/CI/merge/issues
+не меняются; после передачи этого ограниченного блока активная работа заканчивается.
+
 ## Итог облачного storage-блока #1553 — 2026-10-10
 
 Ветка: `1553-storage-migration-cloud-20261008`, основание main

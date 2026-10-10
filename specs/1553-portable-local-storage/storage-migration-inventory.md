@@ -1,4 +1,66 @@
-## Current original owner checkpoint and catalog — 2026-10-09
+# Storage migration inventory — конечная сверка 2026-10-10
+
+Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+Принятый source/evidence tip: `bbf896fe57392a4b794ff0c4a42565dfe570368d`, ветка
+`1553-storage-migration-cloud-20261008`; main: `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`.
+Эта редакция согласует только metadata; runtime/tests/spec/selection не меняются.
+[Финальный plan](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/plan.md), [manual semantic classification](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/semantic-classification.json),
+[task scope и остаток T061–T065](tasks.md).
+
+## Итог запроса о миграции
+
+| Статус | Установленный результат и точное evidence | Граница |
+|---|---|---|
+| Найдено | Исторические genuine causal RED выявили потерю publication uncertainty при catch/close/continuation, поздний spelling refusal и потерю established result. [Финальная карта](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/semantic-classification.json):855 product C# files/170 acquisition sites/164 full declarations/70 owning files. | Финальное независимое ревью этой карты не нашло конкретного доказанного неисправленного storage-дефекта. Карта не исчерпывает все динамические пути игры. |
+| Исправлено | Named consumers сохраняют SAME CSP/secondary, завершённый результат, generation/bytes/absence и отсутствие последующей ordinary работы после Unknown; producers проверяют raw имена до folding/stage/spend/cleanup. Поздние ограниченные результаты перечислены ниже. | Каждый PASS принадлежит своему actual source и finite packet; нет нового aggregate прогона или whole-game обещания. |
+| Удалено | Пять доказанно недостижимых private helpers F17: census5→0, original current-route1/1, [removal packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-dead-helpers-20261008/manifest.json), принятый carrier2fcd6e92. Отдельный закрытый51-line compensation cluster удалён в [Prepared-Shining packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-prepared-shining-20261009/manifest.json). | Только закрытые кластеры с reachability/source proof. Live owned-write/authority-delete и native/legacy handlers остаются. В этой metadata-сверке код не удаляется. |
+| Сохранено | Все original causal/preparation/partial FAIL/UNRUN и raw/TRX/source pins; original known-error/refusal/result правила; named native physical hooks и три legacy acquisition #68/#69/#70. [Semantic map](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/semantic-classification.json), [final source/evidence census](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/manifest.json). | Legacy stage/delete-backup/delete-empty-directory owners намеренно сохраняют старую rollback namespace; их не считать очередью на автоматический game-journal rewrite. |
+| Не проверено | Native Windows/current physical-positive controls; реальные default Linux worker и Prepared/Release durable owner ACK (#81/#82); source-only runtime/whole-consumer scopes и ordinary known-close вне named finite cases; B2 cold FAIL остаётся открытым. | 81 source-only /84 finite-packet-associated /3 legacy /2 native — классификация170 acquisitions, не подсчёт81 дефекта и не all-platform приёмка. |
+
+## Поздние результаты, перекрывающие прежние очереди
+
+Все строки — ранее выполненные ограниченные проверки. Эта документационная
+сверка не выполняет их заново и не складывает случаи в один GREEN-набор.
+
+| Прежняя очередь | Принятое evidence и source | Настоящий остаток |
+|---|---|---|
+| Explorer partial FAIL/UNRUN и model-switch stop | [Explorer packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-explorer-archive-20261009/manifest.json): composed33 unique Linux obligations =10 retained at554dfe11 +21 at18475a5 +2 at4e31b15e; [final gate6f61302b9123f68937440735985d2d27f9340f3d](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/6f61302b9123f68937440735985d2d27f9340f3d). Первоначальные11P1F19UNRUN, stale-baseline и unoffered-reroll failures сохранены как история. | Это три запуска, не33-case run. Native/whole Explorer/game и sibling source-only projections не приняты; прежняя пауза модели больше не инструкция остановки. |
+| Treatment Advance known_close | [Treatment packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-treatment-advance-close-20261009/manifest.json): source90b160c2, actual231530 **3/3 PASS**,24.3883028s; реальный Probe→Complete и PublishedAgreementAdvanced result сохраняются после late close; carrier6f537a21 принят. | Приёмка этого established-result boundary; ClosesReceipt/ObserveClosure не изменены. Не все treatment/whole-turn/native close paths. |
+| Engine Ascension | [Engine final packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-engine-final-close-20261009/manifest.json): source6431c208, actual232606 **2/2 PASS**,7.7395915s; carrier4b9839eb принят. | Настоящий original owner/known+CSP controls; полный transition/native/gameplay не принят. |
+| Finalized treatment replay quarantine | [Engine final packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-engine-final-close-20261009/manifest.json): source dab3795b, actual234801 **2/2 PASS**,18.7800525s; original Finalized/history-owned ExactReplay prerequisites доказаны; carrier49e6122e принят. | Старые replay preparation failures и corrected causal RED сохранены; не считать их текущим UNRUN или новой whole-treatment приёмкой. |
+| Save optional images root | [Save images packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-save-images-root-close-20261009/manifest.json): source6431c208, actual232618 **2/2 PASS**,7.9163561s: exact supported names+manifest и отказ linked optional root с0 outside reads/full outside bytes; carrier4b9839eb принят. | Optional-root contract только; full Save/Load/archive/rotation/native отдельно. |
+| ProposalStore confirmed outcome | [Proposal packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-proposal-store-close-20261009/manifest.json): source dab3795b, actual234854 **4/4 PASS**,7.2277514s; настоящий PublishedWithWarning после bundle/inbox/audit сохраняется после known_close; carrier49e6122e принят. | Изолированный existing synthetic rename adapter; default native worker/durable ACK не квалифицированы. |
+| Browser replacement admission/release | [Browser packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-browser-replacement-close-20261009/manifest.json): clean sourceac3783c1 (runtime4b304141), actual000609 **4/4 PASS**,7.7666428s; admission retains Uncertain/SAME CSP+secondary, release retains original refusal+SAME CSP+secondary; independent c6369ae7 PASS. | Real UI-lock owners и disclosed ordinary NotLoaded callback; full Load/archive/native и ordinary known-close faults не приняты. Original known2PASS/uncertainty2 causalFAIL сохранён. |
+| Final census/catalog/restore | [Census](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/manifest.json): byte-exact regenerated855/170/164/70,81/84/3/2; final catalog611/11385 atac3783c1 — fresh both-project build/discovery,0 executions. Independent source/semantic/metadata review PASSc6369ae7/bbf896fe. Exact bbf GitHub-only restore:32789 tracked blobs,90 manifests/7676 artifact references/10300 pins,fsck0; standalone receipt outside checkout. | Source/evidence integrity не превращает FAIL/UNRUN в PASS. Прежние965/102-owner lexical census и old restore остаются pinned history. Новый тяжёлый clone для этих metadata изменений не создаётся. |
+
+## Актуальный остаток и правила продолжения
+
+- T061–T065 остаются открытыми ровно в границах, описанных в [tasks.md](tasks.md).
+  Нет подтверждённой текущей storage-очереди из superseded строк таблиц ниже.
+- 81 source-only строки сохраняют собственные rationale/limits. При затрагивающем
+  изменении выбрать actual boundary и минимальную проверку; не объявлять все эти
+  строки дефектами и не запускать все категории для общего PASS.
+- Три legacy owner сохранены намеренно; named original handlers/physical witnesses
+  и observer hooks не удаляются по текстовому поиску. Два native owner и native
+  Windows execution остаются честно UNRUN; B2 cold — честно FAIL.
+- Ordinary known-close qualified только в named ProposalStore, TreatmentAdvance,
+  Mod committed-close и typed Browser result/continuation-retention scenarios,
+  согласно полям `ordinaryKnownCloseQualified`/`ordinaryKnownCloseScenario` карты.
+  Browser replacement GREEN4 не расширяет эту квалификацию.
+- Для этого заключительного поручения осталось только независимое metadata review,
+  обычное commit/push и exact remote bytes/SHA verification. Runtime/GM/provider/
+  game/desktop/HOME-PC, CI/main/merge/issues и новый full clone не выполняются.
+  После передачи нет запущенной фоновой реализации или тестовой очереди.
+
+## Исторический журнал и исходные pinned inventories
+
+**Все разделы ниже — исторические checkpoints.** Их слова current/latest/next,
+remaining/open, model-switch stop и resume-команды относятся только к указанным
+source/date. Они не переопределяют актуальные таблицы выше или текущие T061–T065.
+Текст evidence, source pins, старые lexical corpora и прежние failure/UNRUN сохранены;
+исторические методные кандидаты не подменяются новым автоматическим census.
+
+## Исторический checkpoint: Current original owner checkpoint and catalog — 2026-10-09
 
 Runtime1fab649c; current discovery230021 freshly builds both projects, validates
 605categories/11379methods-files,0executed64.5713977s/bothcleanup. Same ONE catalog
@@ -27,7 +89,7 @@ baseline, EngineAscension/finalizedtreatmentreplay, Saveoptionalimagesroot and
 authoritative fullsignature170candidate semanticclassification. Remaining GM/
 worker native candidates remain source-only/prohibited qualification as scoped.
 
-## Latest bounded original-owner results — 2026-10-09
+## Исторический checkpoint: Latest bounded original-owner results — 2026-10-09
 
 | Actual owner boundary | Actual execution and packet | Limits |
 |---|---|---|
@@ -43,7 +105,7 @@ separate source-only causal1 and final complete13 remain distinct. Older source
 census remains immutable. Remaining actual owner groups require method-specific
 classification and original-route evidence; T061–T065 unchecked, B2–B5 paused.
 
-## Latest original producer admission results — 2026-10-09
+## Исторический checkpoint: Latest original producer admission results — 2026-10-09
 
 | Bounded original route | Runtime / actual verification | Evidence / limits |
 |---|---|---|
@@ -61,7 +123,7 @@ are historical for these finite boundaries; priority2 actual owning closes,
 priority3 manifest/cache and folder opener and remaining method classification
 are the next work. No blanket F16/native/consumer qualification.
 
-## Latest bounded browser producer result — 2026-10-09
+## Исторический checkpoint: Latest bounded browser producer result — 2026-10-09
 
 Runtime4bff0b4f, actual184520GREEN19/19,14.4416863s,complete2/2,bothcleanup.
 Originalpublicgacha7/borrowedqueue8 admitrawinventorybeforestage/spend/copy/catch;
@@ -75,7 +137,7 @@ Priority1 browser rowbelow isnow historicalfor thisfiniteunit; incarnation/Explo
 spiritual andotherowners remain open. Sourcecensus stays965pinned, T061–T065unchecked,
 B2–B5paused; continueavailablework, noHTTP/nativeWindows/allconsumer qualification.
 
-## Latest bounded engine producer result — 2026-10-09
+## Исторический checkpoint: Latest bounded engine producer result — 2026-10-09
 
 Runtime5279dbd4 and source/design/exact25 independentPASS; actual182703GREEN25/25,
 8.1499631s,complete1/1,bothcleanup,22strictnewrootsabsent. Baseline/backup16,
@@ -88,7 +150,7 @@ Priority1 engine ordering/identity row below is now historically demonstrated/fi
 for this finiteunit; browser,incarnation/Explorer,spiritual andotherowners stillopen.
 Continue available #1553 work; B2–B5 paused, T061–T065 unchecked.
 
-## Authoritative current checkpoint — 2026-10-09
+## Исторический checkpoint: Authoritative current checkpoint — 2026-10-09
 
 Source/evidence carrier `96553e1e32990d1026844baa49eed69c3e60b0a1` on
 `1553-storage-migration-cloud-20261008`; tested runtime
@@ -118,7 +180,7 @@ signed53/26 and ZIP20/24 groups,11strict roots absent, remote111-file byte readb
 Shared GREEN artifacts in two packets record one execution, not84 tests. Current
 selection reasons now reflect that execution; archived source pins are unchanged.
 
-## Current source corpus and family decisions
+## Исторический checkpoint: Current source corpus and family decisions
 
 [Current pinned census](recovery/storage-migration-current-20261009/manifest.json)
 at96553e1e includes2239tracked source files/32633lexical occurrences, no decoding
@@ -161,7 +223,7 @@ confirmed masking defects. Exact body review establishes the candidates below.
 | F18 | Original phase/cold/settlement obligations accepted only per packet. Old native physical hooks intentionally remain; ordinary zero-hook guards are separate. Binding cold FAILED/native worker UNRUN remain visible. |
 | F19 | Prepared nested settings/audio11 is current acceptance. Browser preference storage is technical; HTTP/result/cache/notification consumers require their own actual boundary evidence. |
 
-## Confirmed remaining source boundaries and next acceptance gates
+## Исторический checkpoint: Confirmed remaining source boundaries and next acceptance gates
 
 Links below pin exact current source. These are source-proven ordering/identity
 risks, **not claimed new causal RED executions**. Do not edit a producer before
@@ -182,7 +244,7 @@ the lexical census into "zero remaining consumers". Next implementation starts
 with priority1 engine original producer, then browser and incarnation/Explorer;
 storage capture fixes must not resume B2–B5 game-rule work.
 
-## Retained hooks, history and recovery limits
+## Исторический checkpoint: Retained hooks, history and recovery limits
 
 Current tracked C# census has12literal `AfterPhysicalFilePublishedAsync`
 references: production definition+two invocations and9test references. Six belong
@@ -238,7 +300,7 @@ replace the target project fresh-build → bounded original tests → independen
 review gates for the next implementation. No desktop task or tool reinitialization
 is required.
 
-## Latest image source scope — historical checkpoint, 2026-10-09
+## Исторический checkpoint: Latest image source scope — historical checkpoint, 2026-10-09
 
 Runtime570ce89e has independently source-reviewed admitted lookup/export/scene and
 borrowed browser existing-image lookup, preserving original top-level selection,
@@ -251,7 +313,7 @@ This adds to previously accepted image23/gallery8/listings15/Story12 bounded sco
 without accepting whole R25/F16. Signed producers/ZIP listing-retention, original-owned
 close representatives and authoritative inventory/fresh restore remain open.
 
-## Latest bounded status — 2026-10-09
+## Исторический checkpoint: Latest bounded status — 2026-10-09
 
 Prepared supported nested original settings/audio: independent AstraXHigh final
 GREEN/CATALOG/CARRIER PASS4d0be367 (runtimecb670be5),11/11,64artifacts/32pins.
@@ -261,7 +323,7 @@ unchanged. F16signed/ZIP, original owned-close and authoritative whole-inventory
 reconciliation remain open. This current entry supersedes older pending labels only
 for the identified accepted packets, not whole T061–T065.
 
-## Prepared nested original services — Linux11/11 GREEN, final evidence gate pending
+## Исторический checkpoint: Prepared nested original services — Linux11/11 GREEN, final evidence gate pending
 
 Sourcecb670be5 independent RED/raw/minimal-source PASS. Fresh both-projectPlan155639
 11/2,0execution60.0954678s (integration40.811141s,unit11.633035s); actual155753
@@ -293,7 +355,7 @@ and original browser existing-image caller's held lease with explicit overload. 
 accepted image23 write/gallery cohort. F16signed/ZIP, original owned closes, current
 registry and fresh GitHub-only restore remain open.
 
-## F18 shared-helper five — Linux5/5 PASS, evidence review pending, 2026-10-09
+## Исторический checkpoint: F18 shared-helper five — Linux5/5 PASS, evidence review pending, 2026-10-09
 
 Continuation from published d8799cfde6c8401d4ab93e8399f6aa428387bdc0; both local
 stop files matched remote bytes and exact commit/tree, checkout synchronized clean
@@ -342,7 +404,7 @@ BlockPostOperationReadmission on CapturePreparedResult and both outer catches on
 Other Image-source/F16signed+ZIP/original-owned-close/current inventory/fresh restore
 queues remain open; T061–T065 unchecked, B2–B5 paused, no native Windows qualification.
 
-## F18 original lifecycle11 — composed nine PASS, one old B2 failure, one native unrun
+## Исторический checkpoint: F18 original lifecycle11 — composed nine PASS, one old B2 failure, one native unrun
 
 Source3fe28a9d file-GM correction is independently accepted; carrier7d91ebbc partialRAW
 PASS verifies5PASS in150152, bindingcold1FAIL and then4unrun. Isolated unchanged remaining4
@@ -370,7 +432,7 @@ transport; corrected interruption2 and automatic raw-observer1 need qualificatio
 actor drain/strict cleanup. Existing broad40-selector owner must not run. Remaining Prepared,
 Image, F16signed/ZIP, owned-close and authoritative legacy closure continue; T061–T065 unchecked.
 
-## F18 original C4/recovery rollback3 — bounded Linux GREEN, 2026-10-09
+## Исторический checkpoint: F18 original C4/recovery rollback3 — bounded Linux GREEN, 2026-10-09
 
 Source d2e6ef9c (independent source correction PASS after compile-only143812 failure):
 fresh integration Plan144022 selected3/1,0execution45.1309254s. Actual144529 passes3/3,
@@ -393,7 +455,7 @@ file-responder scenarios require current journal witnesses and complete actor se
 Shared cleanup helpers affect16Facts (five extra source-qualified callers). F16producers,
 remaining consumers/owned-close/legacy inventory and whole1553 stay open; T061–T065 unchecked.
 
-## F18 native6 source qualification and mods composed2 GREEN — 2026-10-09
+## Исторический checkpoint: F18 native6 source qualification and mods composed2 GREEN — 2026-10-09
 
 Independent source/exact8 PASS135881 and baseline/classification/source-exact1 PASS5e0a.
 Native6 fresh Plan1427598/2 with mods2,0execution92.2573195s (build87.7971458s):
@@ -418,7 +480,7 @@ Remaining F18: C4/wound rollback witnesses3; binding/staged/midpublication11 (wo
 native, other10 file responders), faithful cleanup/cold boundaries. Remaining consumer/
 F16/owned-close registry queues unchanged; T061–T065 open and B2–B5 paused.
 
-## F18 Treatment2 — composed Linux evidence complete, 2026-10-09
+## Исторический checkpoint: F18 Treatment2 — composed Linux evidence complete, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT1 PASS06092c412c44b3b2d2fbcc63945480fe2f554fd4.
 Fresh integration Plan141105 selects1/1,0execution44.3342314s; actual141952
@@ -442,7 +504,7 @@ Next: six explicitly native legacy publication controls, dead Location hook remo
 remaining F18/mods oracle/selection and all consumer/registry queues. T061–T065 remain
 unchecked; native Windows unexecuted, B2–B5 paused. Whole #1553 is not complete.
 
-## Current F18 original rollback witness result — 2026-10-09
+## Исторический checkpoint: Current F18 original rollback witness result — 2026-10-09
 
 Source0d16af64: wound24/offscreen1 all25PASS13541616.8904362s after fresh integration
 Plan13522625/0. Original12before+13actual changed MemberPublished witnesses,24engine
@@ -451,7 +513,7 @@ raw12-path rollbacks and offscreenraw80-path compensation, generation/no journal
 final independent evidence gate pending; no native/B2/gameplay qualification. Treatment2,
 F16signed producers/ownedclose and whole registry remain open; T061–T065 unchecked.
 
-## Current physical-cut fixture obligations — 2026-10-09
+## Исторический checkpoint: Current physical-cut fixture obligations — 2026-10-09
 
 Guardian8@764818a9 and Location8/Resource4@66f655ee independently accepted. Effects
 composed14=13@efd +1@4182; corrected spiritual actual1342491PASS8.5991532s reaches real
@@ -460,7 +522,7 @@ cut and exact original engine rollback, rawissues=[]/2rootsremoved. Historical i
 145/138 verified, final isolated raw/carrier review pending. Other physicalcuts/F16/
 ownedclose/whole closure stay open. T061–T065 remain unchecked and B2–B5 paused.
 
-## Current known-rollback consumer evidence — 2026-10-09
+## Исторический checkpoint: Current known-rollback consumer evidence — 2026-10-09
 
 Guardian8 at764818a9 and Location8/Resource4 at66f655ee pass as separate original runs.
 The latter actual13273512/12PASS20.1031176s restores80raw paths/generation after realcut1
@@ -469,7 +531,7 @@ Location/Resource final independent raw gate pending. Guardian/reconciliation ac
 b190/66f (28/28); historical64 selection inclusion is not fresh execution. Effects/wounds/
 treatment/offscreen cuts and F16/ownedclose/whole closure remain open; B2–B5 paused.
 
-## Current F18 Guardian and selection reconciliation — 2026-10-09
+## Исторический checkpoint: Current F18 Guardian and selection reconciliation — 2026-10-09
 
 Guardian8 exact current-publication rollback PASS764818a9/132026,8.7818633s with cut1
 per row,9raw tracked images/generation restored and8owned roots removed; packet25/14,
@@ -485,7 +547,7 @@ are reconciled; four F18 old names have selected renamed owners. This is source 
 not whole migration acceptance. Baseline d024 F01–F19 map below remains historical.
 Current intended selection124IDs; no aggregate run. T061–T065 unchecked; B2–B5 paused.
 
-## F16 exact native payload names — bounded evidence, 2026-10-09
+## Исторический checkpoint: F16 exact native payload names — bounded evidence, 2026-10-09
 
 Runtime a3c59545 / source533078a9: exact22/22 Linux PASS13145419.4931150s, complete4/4,
 bothcleanup. Actual literal MemberPublished rollbackcut1 reached; exact Save/Load names
@@ -495,7 +557,7 @@ carrier review pending. See current plan and literal-names packet. This closes o
 native payload spelling slice; signed producers/save destination names/physicalcuts/
 ownedclose/whole registry remain. T061–T065 unchecked; B2–B5 paused; Windows unexecuted.
 
-## F18 generation fixture obligations — composed evidence, 2026-10-09
+## Исторический checkpoint: F18 generation fixture obligations — composed evidence, 2026-10-09
 
 Six original consumer fixtures plus connected sourceguard now have composed7 Linux
 passing obligations:4@4409840e +3@1fbf7885, not one7run. Real same-admission checkpoint/
@@ -507,7 +569,7 @@ Catalog125306552/11339valid0; packet70/80, final raw/carrier review pending. Gac
 independent92a5 accepted41/32; no replay. Native3, physicalcuts,F16,ownedclose,whole
 registry remain; B2–B5 paused. Source and run details in current plan.
 
-## F18 current gacha replacement — bounded result, 2026-10-09
+## Исторический checkpoint: F18 current gacha replacement — bounded result, 2026-10-09
 
 Authentic diagnostic115443 exposed legitimate pending-gacha Clear refusal. Runtime
 850dde reuses full current authority/request/hash validation and exact retained backup
@@ -519,7 +581,7 @@ carrier review pending. Earlier mixed8 now has7PASS88130 plus gacha850dde, no re
 Dual3d2 raw accepted atcdc. Six generation fixtures source-qualified next; native3,
 physical cuts/F16/concrete owned close and whole registry remain open. B2–B5 paused.
 
-## F18 current bounded evidence — 2026-10-09
+## Исторический checkpoint: F18 current bounded evidence — 2026-10-09
 
 Original ordinary contention4 at9fcbbec completes4/4 Linux PASS112704,8.6052322s,
 positive main admission/separate canonical0, original tasks/lease settled and4 roots
@@ -528,7 +590,7 @@ Matching discovery544/11336 valid0; exact build provenance and packet in plan.
 Other F18/consumer queues remain open; no T061–T065 checkbox changed, no runtime/
 fullF18/native claim. B2–B5 paused.
 
-## Current migration status — 2026-10-09
+## Исторический checkpoint: Current migration status — 2026-10-09
 
 Whole #1553 migration explicitly resumed from766ccb1d; Story is one accepted slice.
 Capacity blocker resolved by verified removal of4 reproducible old restore clones,
@@ -555,7 +617,7 @@ or simultaneous secondary-close acceptance. Main/CI/live/provider/desktop unchan
 Historical status entries below retain their source dates; current continuation is
 at the top of plan.md, not an older pending review or safe-stop paragraph.
 
-## Current Explorer/Forge acceptance map — 2026-10-09
+## Исторический checkpoint: Current Explorer/Forge acceptance map — 2026-10-09
 
 Runtime5d68 and fixture4e31 now have **composed33 unique Linux passing obligations**:
 10 retained at554/053250 +21 at18475/055028 + corrected2 at4e31/055816. This is not
@@ -578,7 +640,7 @@ fault claim; sibling browser projections retain source-only qualification. Next 
 family is Ready/worker/audit/proposal; C2, F16, F18, concrete owned closes, nested Prepared
 consumer trace and whole-selection reconciliation remain open. B2–B5 stay paused.
 
-## Current resumed Explorer result — 2026-10-09
+## Исторический checkpoint: Current resumed Explorer result — 2026-10-09
 
 Clean18475 fresh Plan22 succeeded; actual055028 completes21PASS/1 stale-lock-baseline
 fixture FAIL, all22 executed. Genuine committed-release continuation now passes. Primary
@@ -586,7 +648,7 @@ Unknown retains the actual pre-fault refreshed lock and no later canonical work;
 the pre-Submit byte oracle and the separate unoffered reroll recipe remains next. Existing
 older maps below retain their source-era qualifications. No new whole-family closure.
 
-## Current accepted / open map — 2026-10-09
+## Исторический checkpoint: Current accepted / open map — 2026-10-09
 
 Latest tested sourcefdc219f0 accepts original GameLoop/diagnostic4 (8.2415967s), genuine three Unknown
 cuts/no measured continuation/typed private observation/exact known cause. Independent raw PASS; saved
@@ -633,7 +695,7 @@ independently. Packet48 artifacts/25 pins retains build-only failure and RED sep
 carrier review PASS7f706089. Current catalog503/11293 valid0 at2a372 after fresh integration+unit builds,
 not runtime replay. No full-turn/native/secondary-close guarantee or full migration closure.
 
-## Current remaining source-only classification — 2026-10-09
+## Исторический checkpoint: Current remaining source-only classification — 2026-10-09
 
 Lore raw deletion, realm update/MainMenu incarnation/reentry/ordinary return catches and their owned
 closes are now accepted in composed14 above; their initial source findings remain in historical receipts.
@@ -725,7 +787,7 @@ Excluded false positives: storage outside parse-only catches, JsonException-only
 fallback, guardian cleanup that rethrows, exact out-failure carriers, diagnostic-only logs and retained
 original native recorder handlers. The44 aid is nonexhaustive; all-caller best-effort audit/terminal telemetry, archive action/candidate outer flow and C2 reopened-owner tracing remain incomplete. These source-only rows do not close T062/T063/F16/F18.
 
-## Current Prepared original remote receipt checkpoint — 2026-10-09
+## Исторический checkpoint: Current Prepared original remote receipt checkpoint — 2026-10-09
 
 Connected source gap was causally reproduced through original Running neutral-owner IPC:
 all3 actual Prepared results closed Completed despite Committed/RolledBack/Uncertain publication.
@@ -738,7 +800,7 @@ Remaining source-audit candidates include progression/story append and enclosing
 LiveTurnPreparation cleanup, browser rollback staging, and canonical snapshot initialization wrappers;
 these are not closed by this Prepared unit. F16/F18 remain open.
 
-## Current F10 bounded cleanup checkpoint — 2026-10-09
+## Исторический checkpoint: Current F10 bounded cleanup checkpoint — 2026-10-09
 
 Original engine cleanup/staging, nested/final QTE cleanup, browser atomic cleanup/release and
 Prepared explicit-Uncertain continuation are corrected through runtime102d. Passing evidence is
@@ -750,7 +812,7 @@ has111 artifacts/98 historical pins verified; final independent carrier and pare
 No remote main ACK, injected secondary close, full browser-QTE UI, native or whole-turn guarantee.
 Progression's three catches are separately corrected at2a372 with final5 PASS; other T062 tails and F16/F18 remain open.
 
-## Current treatment outcome checkpoint — 2026-10-08
+## Исторический checkpoint: Current treatment outcome checkpoint — 2026-10-08
 
 Bounded source and independent raw gates PASS through runtime522293: original normalizer
 settlement, exact Compensate/Dispose, original engine mirror and pre-canonical terminal
@@ -763,7 +825,7 @@ Final saved-carrier and parent GitHub-only restore PASScf58; native Windows, inj
 failure and whole-turn atomicity remain unqualified. F10 progression, F16 and
 F18 remain open; F13/F14/F17 bounded acceptance below is not full migration closure.
 
-## Current F14 bounded runtime checkpoint — 2026-10-08
+## Исторический checkpoint: Current F14 bounded runtime checkpoint — 2026-10-08
 
 The daemon now obtains canonical decision reads through its retained original A03
 connection, with short generation-bound snapshot leases, exact dynamic-cohort witnesses,
@@ -777,7 +839,7 @@ atd376 remain preserved. Two local loss controls have no remote receipt; the sep
 A03 caught-loss neighbor retains logical Unresolved. Native Windows and full migration
 remain open.
 
-## Current F13 bounded runtime checkpoint — 2026-10-08
+## Исторический checkpoint: Current F13 bounded runtime checkpoint — 2026-10-08
 
 Dedicated generation-bound helper role, full policy/read/witness scope, chunked
 owned transport, actual publication outcomes and original close are implemented.
@@ -791,7 +853,7 @@ neighbor retains logical Unresolved; physical cleanup is not blanket owner retir
 Native Windows/PowerShell5.1, PowerShell keyboard cancellation and full migration
 remain open. F14 bounded Linux delivery is recorded above; native execution and remaining families stay open.
 
-## Current F04/F05 checkpoint — 2026-10-08
+## Исторический checkpoint: Current F04/F05 checkpoint — 2026-10-08
 
 Corrected runtimec8d independently source/fixture/selection and raw evidence PASS;
 actual57 Linux PASS (browser23, Daren23, whole-protocol5, signed direct-gacha6),
@@ -807,7 +869,7 @@ Exact grants and signed adoption remain unchanged, sequential restoration remain
 partial on later conflict. Historical census rows below describe their frozen prior
 source. Current R05/R06 decisions reflect the runtime and native qualification gap.
 
-## Current A01 adapter and owner gates
+## Исторический checkpoint: Current A01 adapter and owner gates
 
 Bootfed43297 independent source/evidence PASS16 Linux controlled cases; metadata
 76d8d83a/carrier63bb independent bounded PASS7 Linux baseline+7 GREEN/native32
@@ -854,9 +916,9 @@ complete archive/remaining cohort validation and typed unknown propagation. Inde
 evidence/carrier PASS2f373; native Windows is unexecuted.
 [Exact evidence](recovery/storage-migration-inactive-evidence-20261008/manifest.json).
 
-# Storage migration inventory — 2026-10-08, review candidate
+## Исторический заголовок: Storage migration inventory — 2026-10-08, review candidate
 
-## Current migration delta (baseline index below remains pinned to d024)
+## Исторический checkpoint: Current migration delta (baseline index below remains pinned to d024)
 
 F08/F11 bounded delta at83f6e9a7: reached facade uncertainty and warning-logger
 REDs corrected; actual failed browser rollback no longer replaces runtime with a
@@ -912,7 +974,7 @@ are separately accepted, watcher events remain hints, and native/full-client qua
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), approved spec FR-001–011/015 and the owner's explicit request to find and migrate all remaining old write, recovery and notification mechanisms. Branch `1553-storage-migration-cloud-20261008`; source `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`; comparison `1fc5e59` (full resolved SHA in manifest). #1536 B2–B5 stays paused on its separate branch. This is an inventory/design milestone, not runtime acceptance.
 
-## Reproducible scope and confidence
+## Исторический checkpoint: Reproducible scope and confidence
 
 [Manifest and scan rules](recovery/storage-migration-20261008/manifest.json), [generator](recovery/storage-migration-20261008/scan.py), [compressed occurrence index](recovery/storage-migration-20261008/callsites.jsonl.gz), [pinned corpus](recovery/storage-migration-20261008/corpus.json), and [named route/caller index](recovery/storage-migration-20261008/routes.json) make the scan reviewable. Run `python3 specs/1553-portable-local-storage/recovery/storage-migration-20261008/scan.py` from this checkout; no build/test or live operation is involved. Every read source must match its pinned Git blob. Corpus SHA-256 is recorded once per file; the compressed JSONL is deterministic. The named route index is regenerated by the same checked script from `route-symbols.json`. To reproduce after implementation, use a separate clean checkout at the source SHA, make the inventory script/config available at the same relative paths, and fetch the full old comparison commit named in manifest; a shallow current branch alone may lack that object. The generator deliberately refuses changed pinned source rather than skipping it. This baseline tool is not the future current-source regression guard.
 
@@ -922,7 +984,7 @@ The rules index common leased file/byte/snapshot/existence/enumeration/generatio
 
 At this baseline inventory milestone no current tests or native probes had run; subsequent bounded execution is recorded above. No live GM, HOME-PC or desktop execution has run. Linux observations cannot qualify native Windows; old Linux test guards that return early are not PASS for the guarded capability.
 
-## Current crosswalk to the independent changeset audit
+## Исторический checkpoint: Current crosswalk to the independent changeset audit
 
 The [final audit468e2436](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/468e2436760b6a3a90510353257b93cd59032f04/specs/1553-portable-local-storage/changeset-audit-20261008/README.md)
 and its [R01–R28 registry](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/468e2436760b6a3a90510353257b93cd59032f04/specs/1553-portable-local-storage/changeset-audit-20261008/boundary-registry.md)
@@ -951,7 +1013,7 @@ counts, not defect counts. Existing F/T owners below are the single executable b
 | R22/R23/R24 | F15/F16/F19, T065 | Relay Unicode, single clipboard read and audio lifecycle callers source-reconciled; no additional concrete disconnect found. Preserve owner/debt/result/preview contracts and historical evidence limits. Do not run native desktop/provider work or claim Linux fixtures qualify Windows services. |
 | R27 | All, T064/T065 | Each bounded slice uses exact category PlanOnly/build → actual reached tests → discovery-only catalog → independent review → remote hashes/restore. No aggregate/CI changes and no acceptance from source strings, skip/early-return or counts alone. |
 
-## Baseline reviewed family map (d024)
+## Исторический checkpoint: Baseline reviewed family map (d024)
 
 Classes: **M** migrated to current intended contract; **R** remaining migration or causal assessment; **I** intentional native adapter or explicitly scoped old-evidence handler; **T** allowed technical write outside a game transaction. Conditional classes below deliberately distinguish a new operation from handling an existing journal.
 
@@ -977,7 +1039,7 @@ Classes: **M** migrated to current intended contract; **R** remaining migration 
 | F18 R/I/M | Old publication fault hooks and before-mutation hooks throughout tests/support. All selected-hook occurrences and a broader callback declaration/boundary census are indexed; FileSystemManagerHooks load, lease-open, read/existence and runtime hooks plus every ILoadTransactionOperations method are named in F18 routes. See cut table below. | Ordinary hooks must use actual current phase; explicitly legacy primitive tests may retain old hooks and historical identity semantics. Assert positive reachability for injected cuts and zero-event negatives. No async-void observer, nested canonical lease or MemberPublished-as-committed assumption. |
 | F19 T/R | Frontend localStorage/sessionStorage/events, browser HTTP command results, settings/audio UI state and snapshot invalidation; source corpus includes frontend and bundled JS. | Presentation/local preferences are T; result settlement and committed-state visibility are R consumer checks linked to F08/F11. Do not introduce cross-browser storage transactions or UI feature work. |
 
-## Publication and fault-cut ledger
+## Исторический checkpoint: Publication and fault-cut ledger
 
 `AfterPhysicalFilePublishedAsync` fires after old physical name publication before that old publication's own commit. It is bypassed by ordinary current writes on both OSes, but retained recorder/recovery routes can still invoke it. Current `MemberPublished` is precommit; exception can roll back or become uncertain. `Committed` follows the durable decision; cleanup failure cannot undo it. `LocalPublicationRecoveryObserver` covers normal recovery admission, not every inline rollback invoked by `PublishWithOutcome`. `BeforeCanonicalMutationAsync` remains reachable, but is not an after-earlier-member cut in a current batch. Load-directory, canonical lease-open, runtime/read/existence and ILoadTransactionOperations hooks likewise need route-specific reachability review; an observer index limited to publication names cannot establish completeness.
 
@@ -990,7 +1052,7 @@ Classes: **M** migrated to current intended contract; **R** remaining migration 
 | Effects/resources/wounds/GuardianCorrection/treatment observers and OriginalSaveProfileRefresh | Exact assignment/fixture occurrences are indexed. Decide phase, expected member and observer reachability per test, including callbacks supplied through probe helpers. Do not call an entire cohort broken from one stale assertion. |
 | PortableCoordinatedPublication and ordinary/backup routing controls | Existing patterns count the actual `MemberPublished` cut, verify full before-set/absence, committed cleanup debt and callback-route exclusion. Use these as controls; preserve dedicated legacy-route tests. |
 
-## Engineering order and acceptance gates
+## Исторический checkpoint: Engineering order and acceptance gates
 
 1. **Inventory gate (current):** independent Astra XHigh reviews corpus/rules, omissions, source-backed family decisions, all named callers and priority boundaries. Resolve missing families before implementation. No runtime acceptance from inventory. Candidate labels may be corrected without manufacturing evidence.
 2. **First connected slice:** console pending rollback F03 plus only its necessary current-path recognition/adoption/recovery. Add one real original console/incarnation-prep regression and failure/absence/cold continuation controls before minimal change. Independently examine F08 at its actual boundary first if it prevents trustworthy outcome tests. Avoid altering #1536 gameplay.
@@ -1003,7 +1065,7 @@ Selection is deferred until the first reviewed implementation slice: existing `p
 
 GM/Mortal rationale: no game rule, GM response field or new API is designed here. Existing helper/daemon operational instructions and storage test guidance must be synchronized if their actual protocol changes; no gameplay prompt rewrite is warranted by inventory alone. Existing approved FR-007 old-evidence handling is preserved. Independent completeness review and all implementation/verification remain open.
 
-## Inventory review corrections
+## Исторический checkpoint: Inventory review corrections
 
 The first independent source review required a fresh cross-platform versus retained-recovery split for F06, explicit native managed-wrapper/entrypoint indexing and fixture-only bundle scope, a broader callback census beyond selected publication names, and removal of broad media/mod/library technical exemptions. Each correction above was checked against the pinned source. The updated index is still lexical-only; independent completeness re-review remains required before migration. No runtime behavior, test, category or selection was changed.
 
