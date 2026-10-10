@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "314f6f8ee4e0f7823a4019117ae8384a8a2c587d",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category player-input-draft-preservation",
+  "Status": "FAIL",
+  "Scope": "12=10PASS2FAIL36.1872695s complete0skipduplicateTimeout cleanup complete; CtrlD ignored instead of ordinary EOF/partial-line result.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "29eb2a5e99d49aa2685906199475a7590ad590d028dbe59d13248dc6c909364a",
+      "RawBytes": 3180
+    },
+    {
+      "Path": "runner/player-input-draft-preservation-unit-001.trx.gz",
+      "RawSHA256": "9d8980bcae244cd835359dc89e0a04e314c896ac7d1872f3935e24b9c5bb8201",
+      "RawBytes": 24117
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "f77000484e034057a8fc32a4a2d135c479ddc8026108a26d5e2fb84715541b3a",
+      "RawBytes": 1470
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "e1fb5519af6a4b5a2d1d02ac71ce202dc0b91cbd3a8b470d95ae5da0f10524fc",
+      "RawBytes": 43429
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "b4ae57a3f888743f1ad6230c72d8eaf4bc233c49ad35cecf1ac4d7b21e2c4886",
+      "RawBytes": 1709309
+    }
+  ]
+}

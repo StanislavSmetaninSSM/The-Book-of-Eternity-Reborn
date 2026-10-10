@@ -1,10 +1,65 @@
 using BookOfEternityClient.Core;
+using System.Text;
+using System.Globalization;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed class PlayerInputDraftTests
 {
+    [Theory]
+    [InlineData("a\tb")]
+    [InlineData("界e\u0301abcdefgh")]
+    public void CooperativeCursorRedrawPreservesRenderedTextAcrossTabsWideCombiningAndWrap(string typed)
+    {
+        var source = new KeysOnlySource(typed);
+        foreach (var key in new[] { ConsoleKey.Home, ConsoleKey.Delete, ConsoleKey.End, ConsoleKey.Enter })
+            source.Keys.Enqueue(new ConsoleKeyInfo('\0', key, false, false, false));
+        var actual = new LayoutTerminal(12); actual.Write(" > ");
+        var expected = new LayoutTerminal(12); expected.Write(" > ");
+        var firstLength = char.IsHighSurrogate(typed[0]) ? 2 : 1;
+        var remaining = typed[firstLength..];
+        expected.Write(remaining + Environment.NewLine);
+        Assert.Equal(remaining, new CooperativePlayerInputSource(source, () => false, actual.Write).ReadLine());
+        Assert.Equal(expected.Cells.OrderBy(pair => pair.Key), actual.Cells.OrderBy(pair => pair.Key));
+        Assert.Equal(expected.Position, actual.Position);
+    }
+
+    // Independent terminal layout oracle: columns, not UTF-16/scalar counts.
+    private sealed class LayoutTerminal(int width)
+    {
+        public Dictionary<int, string> Cells { get; } = new();
+        public int Position { get; private set; }
+        private int _saved;
+        public void Write(string text)
+        {
+            for (var offset = 0; offset < text.Length;)
+            {
+                if (text[offset] == '\u001b')
+                {
+                    var command = text[offset..(offset + 3)]; offset += 3;
+                    if (command == "\u001b[s") _saved = Position;
+                    else if (command == "\u001b[u") Position = _saved;
+                    else if (command == "\u001b[J") foreach (var cell in Cells.Keys.Where(cell => cell >= Position).ToArray()) Cells.Remove(cell);
+                    else throw new InvalidOperationException("Unsupported terminal command: " + command);
+                    continue;
+                }
+                var rune = Rune.GetRuneAt(text, offset); offset += rune.Utf16SequenceLength;
+                if (rune.Value == '\r') { Position -= Position % width; continue; }
+                if (rune.Value == '\n') { Position += width - Position % width; continue; }
+                if (rune.Value == '\b') { if (Position % width > 0) Position--; continue; }
+                if (rune.Value == '\t') { Position += 8 - Position % width % 8; continue; }
+                if (Rune.GetUnicodeCategory(rune) is UnicodeCategory.NonSpacingMark or UnicodeCategory.EnclosingMark)
+                { Cells[Position - 1] = Cells.GetValueOrDefault(Position - 1, "") + rune; continue; }
+                var columns = rune.Value is >= 0x4e00 and <= 0x9fff ? 2 : 1;
+                if (Position % width + columns > width) Position += width - Position % width;
+                Cells[Position] = rune.ToString();
+                for (var column = 1; column < columns; column++) Cells[Position + column] = "";
+                Position += columns;
+            }
+        }
+    }
+
     [Theory]
     [InlineData("", null)]
     [InlineData("Исходный текст", "Исходный текст")]
