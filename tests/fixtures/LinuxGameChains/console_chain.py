@@ -236,7 +236,7 @@ def exit_client(client):
     assert client.process.returncode == 0
 
 
-def submit_browser_action(dll, action):
+def submit_browser_action(dll, action, ordinal):
     """Actual React action with original engine waiting, Bridge/daemon/relay ready.
 
     Requires real turn delivery after the browser write, not merely HTTP success.
@@ -247,7 +247,8 @@ def submit_browser_action(dll, action):
     with socket.socket() as available:
         available.bind(("127.0.0.1", 0))
         url = "http://127.0.0.1:" + str(available.getsockname()[1])
-    web = Peer("web-first", ["dotnet", str(dll), str(base), "--web", "--web-url", url], True)
+    name = "web-action-" + str(ordinal)
+    web = Peer(name, ["dotnet", str(dll), str(base), "--web", "--web-url", url], True)
     def ready():
         assert web.process.poll() is None, "Actual web host exited before browser action"
         try:
@@ -270,7 +271,8 @@ def submit_browser_action(dll, action):
             finally:
                 cdp.detach()
         pids = inventory()
-        result["Browser"] = {"RealChromiumPids": pids, "Closed": False}
+        owned = {"Name": name, "WebPid": web.process.pid, "RealChromiumPids": pids, "Closed": False}
+        result.setdefault("Browsers", []).append(owned)
         try:
             page.goto(url, wait_until="domcontentloaded")
             page.locator('button[data-launcher-mode="continue"]').click()
@@ -279,22 +281,24 @@ def submit_browser_action(dll, action):
                 page.get_by_role("button", name="Отправить", exact=True).click()
             reply = response.value
             body = reply.json()
-            result["BrowserSubmission"] = {"Status": reply.status, "Request": reply.request.post_data_json,
-                                           "Response": body}
+            submission = {"Name": name, "Status": reply.status, "Request": reply.request.post_data_json,
+                          "Response": body}
+            result.setdefault("BrowserSubmissions", []).append(submission)
             assert reply.status == 200 and body["success"], body
             pending_path = session / "input/pending_player_action.json"
             pending = read_json(pending_path)
             assert pending["playerAction"] == action and pending["source"] == "browser-composer", pending
-            (out / "browser-pending-action.json").write_bytes(pending_path.read_bytes())
-            result["BrowserSubmission"]["AuthoritativePending"] = pending
-            result["BrowserSubmission"]["OriginalDerivedReady"] = rpc({"command": "status"})["status"]["ready"]
-            page.screenshot(path=str(out / "browser-submitted.png"))
-            (out / "browser-submitted.html").write_text(page.content())
+            pending_artifact = out / (name + "-pending-action.json")
+            pending_artifact.write_bytes(pending_path.read_bytes())
+            submission["AuthoritativePending"] = pending
+            submission["OriginalDerivedReady"] = rpc({"command": "status"})["status"]["ready"]
+            page.screenshot(path=str(out / (name + "-submitted.png")))
+            (out / (name + "-submitted.html")).write_text(page.content())
             try:
                 wait(lambda: (session / "input/turn_request.json").exists(), "browser action becomes actual engine turn request", 20)
             except Exception:
-                result["BrowserHandoff"] = {"TurnRequestCreated": False,
-                    "PendingExactBytesPreserved": pending_path.read_bytes() == (out / "browser-pending-action.json").read_bytes(),
+                submission["BrowserHandoff"] = {"TurnRequestCreated": False,
+                    "PendingExactBytesPreserved": pending_path.read_bytes() == pending_artifact.read_bytes(),
                     "RelayRequestCount": len(list(queue.glob("request-*"))),
                     "ConsoleStillAtPlayerInput": "Ваш ход" in client.text(),
                     "EngineAlive": client.process.poll() is None,
@@ -302,6 +306,13 @@ def submit_browser_action(dll, action):
                     "DaemonAlive": daemon.process.poll() is None,
                     "AcceptedContinuationColdRestart": "UNRUN: browser action never reached actual turn request"}
                 raise
+        except Exception:
+            try:
+                page.screenshot(path=str(out / (name + "-failure.png")))
+                (out / (name + "-failure.html")).write_text(page.content())
+            except Exception:
+                owned["FailureCapture"] = traceback.format_exc()
+            raise
         finally:
             pids = sorted(set(pids + inventory()))
             browser.close()
@@ -312,7 +323,13 @@ def submit_browser_action(dll, action):
                         return False
                 return True
             wait(all_exited, "actual C5 browser process exit")
-            result["Browser"] = {"RealChromiumPids": pids, "Closed": True}
+            owned.update(RealChromiumPids=pids, Closed=True)
+            assert web.process.poll() is None, "Actual web host unexpectedly exited"
+            web.send("\x03")
+            wait(lambda: web.process.poll() is not None, name + " normal foreground exit")
+            assert web.process.returncode == 0
+            wait(lambda: len(web.closed) == len(web.streams), name + " EOF barrier")
+            owned.update(WebExitCode=web.process.returncode, WebEOF=True)
 
 
 client = bridge = daemon = None
@@ -410,7 +427,7 @@ try:
         action = "Осматриваюсь и запоминаю берег, проверочный ход " + str(ordinal) + "."
         offset = len(client.raw)
         if scenario == "browser-relay":
-            submit_browser_action(dll, action)
+            submit_browser_action(dll, action, ordinal)
         else:
             client.send(action + "\r")
         wait(lambda: (session / "input/turn_request.json").exists(), "actual player request " + str(ordinal), 30)

@@ -216,13 +216,15 @@ def post_click(page, path, click, expect_success=True):
 def command(page, kind, quantity=None):
     composer = page.get_by_label("Команда или действие", exact=True)
     composer.fill("/inventory_" + kind + " gc_stack")
-    post_click(page, "/api/explorer/command", lambda: page.get_by_role("button", name="Отправить", exact=True).click())
+    started_command = post_click(page, "/api/explorer/command", lambda: page.get_by_role("button", name="Отправить", exact=True).click())
+    assert started_command["status"] == "RequiresInput", started_command
     page.locator("#prompt-item_identity").select_option("gc_stack")
     if quantity is not None:
         page.locator("#prompt-split_quantity").fill(str(quantity))
     page.locator("#prompt-confirm_inventory_" + kind).check()
     body = post_click(page, "/api/explorer/prompt-sessions/submit",
                       lambda: page.get_by_role("button", name="Отправить форму", exact=True).click())
+    assert body["status"] == "Completed", body
     page.locator(".prompt-form").wait_for(state="detached")
     return body
 
@@ -241,11 +243,17 @@ def assert_split(original_receipt):
     assert child["materializationReceipt"]["parentItemIds"] == ["gc_stack"]
     index = read_json(session / paths[1])["entries"]
     assert len(index) == 2
-    assert next(e for e in index if e["itemId"] == child["itemId"])["transitions"][-1]["kind"] == "split"
+    root_entry = next(e for e in index if e["itemId"] == "gc_stack")
+    child_entry = next(e for e in index if e["itemId"] == child["itemId"])
+    prefix = initial_index[0]["transitions"]
+    assert root_entry["transitions"][:-1] == prefix and root_entry["transitions"][-1]["kind"] == "split"
+    assert len(child_entry["transitions"]) == 1 and child_entry["transitions"][0]["kind"] == "split"
+    assert root_entry["receiptId"] == initial_index[0]["receiptId"]
 
 
 try:
     initial = snapshot("initial")
+    initial_index = read_json(session / paths[1])["entries"]
     original_receipt = items()[0]["materializationReceipt"]
     with owned_playwright() as playwright:
         first_host = start_host("host-first")
@@ -267,25 +275,24 @@ try:
         expected = changed
         if mode in ["saves", "saves-diagnostic"]:
             page.get_by_role("tab", name="Настройки (4)", exact=True).click()
-            with page.expect_response(lambda r: r.request.method == "POST" and r.url == url + "/api/saves/load-complete") as completion:
-                loaded = post_click(page, "/api/saves/load", lambda: page.get_by_role("button", name="Загрузить сохранение", exact=True).click())
+            loaded = post_click(page, "/api/saves/load", lambda: page.get_by_role("button", name="Загрузить сохранение", exact=True).click())
             assert loaded["success"] and loaded["disposition"] == "Committed"
             assert not loaded["continuationBlocked"] and not loaded["needsFollowUp"]
-            completed = completion.value
-            assert completed.status == 200 and completed.json()["success"], completed.json()
-            assert completed.request.post_data_json["operationId"] == loaded["lifecycleOperationId"]
-            assert completed.request.post_data_json["establishedGeneration"] == loaded["establishedGeneration"]
-            assert completed.request.post_data_json["refreshConfirmed"] is True
+            assert not loaded["freshLaunchRequired"] and loaded["mainSessionState"] == "NoActiveSession", loaded
+            assert loaded["state"] is not None and loaded["establishedGeneration"], loaded
+            wait(lambda: page.get_by_role("tab", name="Сцена (1)", exact=True).get_attribute("aria-selected") == "true", "React navigated to refreshed scene")
             page.get_by_label("Команда или действие", exact=True).wait_for(state="visible")
+            assert page.get_by_label("Команда или действие", exact=True).is_enabled()
+            assert not any(row["URL"] == "/api/saves/load-complete" for row in http), "No-main Load must not await/send fresh GM launch ACK"
             assert len(items()) == 1 and items()[0]["count"] == 5 and items()[0]["materializationReceipt"] == original_receipt
             expected = snapshot("after-load")
             assert all(expected[p] == initial[p] for p in paths), "Load did not restore exact saved inventory/resources/authority"
             assert expected["generation"] != initial["generation"]
+            assert expected["generation"] == loaded["establishedGeneration"]
             result["LoadedSave"] = loaded
             result["RollbackScope"] = "UNRUN; happy-path save/load does not qualify injected rollback"
         elif mode == "load-rollback":
             page.get_by_role("tab", name="Настройки (4)", exact=True).click()
-            archive = Path(result["CreatedSave"]["createdSaveId"].split(":", 1)[-1])
             archives = list((session / "saves/manual_saves").glob("*.zip"))
             assert len(archives) == 1, archives
             archive_bytes = archives[0].read_bytes()
@@ -293,7 +300,9 @@ try:
             rolled_back = post_click(page, "/api/saves/load",
                 lambda: page.get_by_role("button", name="Загрузить сохранение", exact=True).click(), expect_success=False)
             assert not rolled_back["success"] and rolled_back["disposition"] == "RolledBack", rolled_back
-            assert rolled_back["continuationBlocked"] and not rolled_back["freshLaunchRequired"], rolled_back
+            assert rolled_back["needsFollowUp"] and not rolled_back["continuationBlocked"], rolled_back
+            assert not rolled_back["freshLaunchRequired"] and rolled_back["mainSessionState"] == "NoActiveSession", rolled_back
+            assert rolled_back["establishedGeneration"] == changed["generation"], rolled_back
             assert read_json(out / "load-fault.json")["Cuts"] == 1
             assert snapshot("after-load-rollback") == changed, "Failed Load did not restore exact prior inventory/resources/generation"
             assert archives[0].read_bytes() == archive_bytes, "Failed Load changed its source archive"
@@ -310,10 +319,18 @@ try:
         page = cold_browser["Page"]
         if mode in ["inventory", "load-rollback"]:
             assert_split(original_receipt)
+            before_merge = read_json(session / paths[1])["entries"]
             command(page, "merge")
             assert len(items()) == 1 and items()[0]["count"] == 5 and items()[0]["itemId"] == "gc_stack"
+            assert items()[0]["materializationReceipt"] == original_receipt
             index = read_json(session / paths[1])["entries"]
-            assert next(e for e in index if e["itemId"] == "gc_stack")["transitions"][-1]["kind"] == "merge"
+            assert len(index) == len(before_merge) == 2
+            for prior in before_merge:
+                current = next(e for e in index if e["itemId"] == prior["itemId"])
+                assert current["receiptId"] == prior["receiptId"]
+                assert current["transitions"][:-1] == prior["transitions"] and current["transitions"][-1]["kind"] == "merge"
+                if current["itemId"] != "gc_stack":
+                    assert current["state"] == "merged" and current["mergedIntoItemId"] == "gc_stack" and current["currentCarrier"] is None
         else:
             command(page, "split", 2)
             assert_split(original_receipt)

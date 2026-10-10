@@ -22057,7 +22057,7 @@
     },
     {
       "id": "linux-game-chain-browser-saves",
-      "responsibility": "#1553 T066 C4 happy save/load: real React manual archive, actual split, typed load+refresh+complete, exact saved inventory/index/resources/new generation, full host+Chromium cold restart and new split. Injected rollback is excluded. Real shipped Program --web, LocalWebUiHost, built React and Linux Chromium; own neutral current-schema initial item fixture.",
+      "responsibility": "#1553 T066 C4 happy save/load: real React manual archive, actual split, typed no-active-main load+full React refresh/navigation (no fresh-launch completion ACK), exact saved inventory/index/resources/new generation, full host+Chromium cold restart and new split. Injected rollback is excluded. Real shipped Program --web, LocalWebUiHost, built React and Linux Chromium; own neutral current-schema initial item fixture.",
       "excludes": "No accepted GM turn/item materialization, Bridge/relay/model/provider, wound or engine rollback qualification, native Windows or whole migration acceptance. No route interception/service replacement.",
       "changeHints": [
         "BookOfEternityClient.Tests/LinuxBrowserGameChainTests.cs",

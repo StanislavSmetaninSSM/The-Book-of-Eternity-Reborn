@@ -18,13 +18,15 @@ internal static class BrowserGameFaultHost
         var phases = new List<string>();
         EventHandler<FirstChanceExceptionEventArgs> observe = (_, args) =>
         {
-            if (_writing || !File.Exists(Path.Combine(evidence, "arm-save-diagnostic")) ||
+            if (_writing || args.Exception is FileNotFoundException or DirectoryNotFoundException ||
+                !File.Exists(Path.Combine(evidence, "arm-save-diagnostic")) ||
                 Interlocked.Increment(ref exceptions) > 32) return;
             try
             {
                 _writing = true;
                 File.AppendAllText(Path.Combine(evidence, "save-diagnostic.jsonl"),
-                    JsonSerializer.Serialize(new { Type = args.Exception.GetType().FullName, Failure = args.Exception.ToString() }) + Environment.NewLine);
+                    JsonSerializer.Serialize(new { Type = args.Exception.GetType().FullName,
+                        Failure = args.Exception.ToString(), Caller = new System.Diagnostics.StackTrace().ToString() }) + Environment.NewLine);
             }
             finally { _writing = false; }
         };

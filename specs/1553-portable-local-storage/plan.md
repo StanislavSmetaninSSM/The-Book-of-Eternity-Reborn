@@ -1,3 +1,23 @@
+## C4/C5 fixture review corrections and diagnostic WIP — 2026-10-10
+
+Independent Astra/xhigh review at a746 accepted the bounded recorded C1/C3;
+three Important fixture findings corrected in source, new execution UNRUN:
+no-active-main Load must not wait/send fresh-launch ACK, confirmed single-cut
+rollback reports follow-up without an invented blocked continuation, and every
+C5 browser/action/web host now has a unique identity and normal exit/EOF barrier
+before the next restart. C3 executable DTO/history/retired-child assertions now
+match its already verified raw evidence. Browser integration prerequisites are
+existing Python3.12/Playwright1.62 and /usr/bin/chromium plus frontend build;
+current disabled CI is not provisioned or changed by this stage.
+
+Diagnostic a746 actual same-handler wrapper Save still returned409/Blocked,
+FAIL1/1,31.4865658s, all owned exits/guardian clean. Its first32 exceptions were
+only benign missing-path probes and exhausted the capture, not a causal stack.
+[Preserved raw](recovery/linux-game-chains-20261010/c4-diagnostic-benign-cap-fail/manifest.json).
+Capture now excludes those exact probes and retains caller stacks; no production
+change until the swallowed Save refusal is established. C2/C5/read-close/Load
+fault remain UNRUN. Corrected fresh build and bounded diagnostic are next.
+
 ## C3 qualified; C4 real Save blocked; targeted faults source WIP
 
 Source `ca599cd4c55906c533b9f3f4adf470de5b8710ae`: fresh selected PlanOnly
