@@ -1,3 +1,5 @@
+Added original Process publication-conflict control via existing canonical mutation hook (test-only competing write at authority publication), and actual ordinary cancel/error rollback slot-release test-first cases; UNRUN. Existing recovery negatives now require typed InvalidDataException.
+
 C5 boundary causal RED at04277932: integration10=9PASS/1FAIL,
 62.6275845s, planned16/executed10 because runner stops after failing integration;
 0skip/duplicate/timeout/cleanupcomplete. Original Process deletes competing request

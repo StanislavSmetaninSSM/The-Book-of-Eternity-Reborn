@@ -11,6 +11,53 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Fact]
+    public async Task BrowserInput_ConflictBeforePublicationPreservesCompetingRequestAndOriginalSlot()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        var binding = await QueueBrowserInputAsync();
+        const string other = "{\"requestId\":\"competing-at-staging-publication\"}";
+        var injected = false;
+        _consoleMutationObserver = path =>
+        {
+            if (injected || path != PendingTurnSnapshotAuthority.AuthorityPath) return;
+            injected = true;
+            File.WriteAllText(_fs.ResolvePath("input/turn_request.json"), other);
+        };
+        await Assert.ThrowsAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(),
+            "ProcessPlayerTurn", binding.Action, null, null, null, true, binding));
+        Assert.True(injected);
+        Assert.Equal(other, await _fs.ReadFileAsync("input/turn_request.json"));
+        Assert.Equal("preparing", JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!["status"]!.GetValue<string>());
+        Assert.True(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+    }
+
+    [Theory]
+    [InlineData("cancel")]
+    [InlineData("error")]
+    public async Task BrowserInput_KnownRestoredTerminalDispositionReleasesOriginalSlot(string disposition)
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        var binding = await QueueBrowserInputAsync();
+        var input = new QueuedConsoleInputSource([Key(disposition == "cancel" ? ConsoleKey.Escape : ConsoleKey.Enter)]);
+        var engine = CreateGameEngine(input);
+        var error = disposition == "error" ? Task.Run(async () =>
+        {
+            var request = await WaitForTurnRequestAsync();
+            await _fs.WriteFileAtomicAsync("ready/turn_error.json", JsonSerializer.Serialize(new
+            {
+                sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+                timestamp = DateTime.UtcNow.ToString("O"), status = "error", error = "Controlled original GM terminal error."
+            }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        }) : Task.CompletedTask;
+        await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", binding.Action, null, null, null, true, binding);
+        await error.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.False(_fs.FileExists(PendingPlayerActionService.PendingPath));
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+        Assert.False(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+        Assert.Empty(Directory.EnumerateFiles(_fs.ResolvePath("stories"), "*.jsonl", SearchOption.AllDirectories));
+    }
+
+    [Fact]
     public async Task BrowserInput_ProcessRefusesCompetingRequestBeforeMutatingValidation()
     {
         var binding = await QueueBrowserInputAsync();
@@ -103,7 +150,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await _fs.WriteFileAtomicAsync(PendingPlayerActionService.PendingPath, pending.ToJsonString());
         }
         var before = BrowserRecoveryTree();
-        await Assert.ThrowsAnyAsync<Exception>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
+        await Assert.ThrowsAsync<InvalidDataException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
         AssertBrowserRecoveryTree(before);
     }
 
