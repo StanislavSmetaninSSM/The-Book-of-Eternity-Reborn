@@ -119,7 +119,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             return true;
         });
         var before = BrowserRecoveryTree();
-        await Assert.ThrowsAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
+        var refusal = await Assert.ThrowsAnyAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
+        Assert.True(_fs.IsOriginalBrowserPhaseRefusal(refusal));
         AssertBrowserRecoveryTree(before);
     }
 
@@ -172,8 +173,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotEqual(Environment.ProcessId, probe.RootElement.GetProperty("ProcessId").GetInt32());
         Assert.Equal(phase is "terminalProcessing" or "stale-generation", probe.RootElement.GetProperty("Blocked").GetBoolean());
         Assert.Equal(phase is "queued" or "staged" ? phase : null, probe.RootElement.GetProperty("ClassifiedPhase").GetString());
-        Assert.Equal(phase == "terminalProcessing" ? typeof(InvalidOperationException).FullName :
-            phase == "stale-generation" ? typeof(InvalidDataException).FullName : null, probe.RootElement.GetProperty("ErrorType").GetString());
+        Assert.Equal(phase == "terminalProcessing", probe.RootElement.GetProperty("OriginalBrowserPhaseRefusal").GetBoolean());
+        if (phase != "terminalProcessing")
+            Assert.Equal(phase == "stale-generation" ? typeof(InvalidDataException).FullName : null,
+                probe.RootElement.GetProperty("ErrorType").GetString());
+        else Assert.NotNull(probe.RootElement.GetProperty("ErrorType").GetString());
         if (phase is "accepted" or "settled")
             Assert.True(before.Remove(Path.GetRelativePath(_fs.BasePath, _fs.ResolvePath(PendingPlayerActionService.PendingPath)).Replace('\\', '/')));
         AssertBrowserRecoveryTree(before);
@@ -197,7 +201,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
         {
             ProcessId = Environment.ProcessId, Blocked = refusal != null, ErrorType = refusal?.GetType().FullName,
-            ClassifiedPhase = classified?.Phase,
+            ClassifiedPhase = classified?.Phase, OriginalBrowserPhaseRefusal = refusal != null && files.IsOriginalBrowserPhaseRefusal(refusal),
             Before = before, After = Snapshot(), Scope = "actual GameEngine classification factory; no gameplay/relay/model"
         }));
     }
@@ -315,7 +319,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(File.Exists(_fs.ResolvePath(PendingPlayerActionService.PendingPath)));
             Assert.Equal("terminalProcessing", JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(PendingPlayerActionService.PendingPath)))!["status"]!.GetValue<string>());
             var before = BrowserRecoveryTree();
-            await Assert.ThrowsAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
+            var refusal = await Assert.ThrowsAnyAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
+            Assert.True(_fs.IsOriginalBrowserPhaseRefusal(refusal));
             AssertBrowserRecoveryTree(before);
         }
         else Assert.False(_fs.FileExists(PendingPlayerActionService.PendingPath));
@@ -384,7 +389,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         await InvokePrivateTaskAsync(engine, "ClaimBrowserTerminalAsync", staged);
         var before = BrowserRecoveryTree();
         var restarted = CreateGameEngine();
-        await Assert.ThrowsAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(restarted, "ClassifyBrowserRecoveryAsync"));
+        var refusal = await Assert.ThrowsAnyAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(restarted, "ClassifyBrowserRecoveryAsync"));
+        Assert.True(_fs.IsOriginalBrowserPhaseRefusal(refusal));
         AssertBrowserRecoveryTree(before);
     }
 

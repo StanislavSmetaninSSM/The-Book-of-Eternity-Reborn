@@ -2,6 +2,15 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "browser-original-phase-refusal",
+            "reason": "Directly affected existing exact-type oracles after issuer-bound refusal subtype; exact raw evidence and once-only/no-replay assertions preserved. Three existing methods, no new matrix.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5 known pre-publication diagnostic refusal"
+            ]
+        },
+        {
             "category": "c5-original-status-phase",
             "reason": "Reproduce actual original diagnostic publisher becoming Uncertain from known preparing refusal; narrow fix must defer before mutation and later publish under same original owner.",
             "contracts": [
