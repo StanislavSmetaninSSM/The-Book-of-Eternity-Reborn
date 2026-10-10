@@ -5,6 +5,7 @@ No HTTP route interception, service replacement, model or provider is used.
 Every save/load/command mutation below is initiated through actual React controls.
 """
 import fcntl
+from contextlib import contextmanager
 import hashlib
 import json
 import os
@@ -151,14 +152,15 @@ def open_browser(playwright, name):
     page.set_default_timeout(12000)
     page.on("response", record)
     page.on("pageerror", lambda error: events.append({"PageError": str(error)}))
-    page.goto(url, wait_until="domcontentloaded")
-    page.get_by_role("button", name="Продолжить главу", exact=True).first.click()
-    page.get_by_label("Команда или действие", exact=True).wait_for(state="visible")
     pids = chromium_pids()
     assert pids, "No real Chromium process observed"
     owned = {"Name": name, "Browser": browser, "Page": page, "Pids": pids, "Closed": False}
     browsers.append(owned)
     events.append({"Browser": name, "ChromiumPids": pids})
+    page.goto(url, wait_until="domcontentloaded")
+    # The real launcher button's accessible name includes its descriptive copy.
+    page.locator('button[data-launcher-mode="continue"]').click()
+    page.get_by_label("Команда или действие", exact=True).wait_for(state="visible")
     return owned
 
 
@@ -166,6 +168,26 @@ def close_browser(owned):
     owned["Browser"].close()
     wait(lambda: all(exited(pid) for pid in owned["Pids"]), owned["Name"] + " all recorded Chromium exited")
     owned["Closed"] = True
+
+
+@contextmanager
+def owned_playwright():
+    with sync_playwright() as playwright:
+        try:
+            yield playwright
+        except Exception:
+            for owned in browsers:
+                if not owned["Closed"]:
+                    try:
+                        owned["Page"].screenshot(path=str(out / (owned["Name"] + "-failure.png")))
+                        (out / (owned["Name"] + "-failure.html")).write_text(owned["Page"].content())
+                    except Exception:
+                        result["FailureCapture"] = traceback.format_exc()
+            raise
+        finally:
+            for owned in browsers:
+                if not owned["Closed"]:
+                    close_browser(owned)
 
 
 def post_click(page, path, click):
@@ -211,7 +233,7 @@ def assert_split(original_receipt):
 try:
     initial = snapshot("initial")
     original_receipt = items()[0]["materializationReceipt"]
-    with sync_playwright() as playwright:
+    with owned_playwright() as playwright:
         first_host = start_host("host-first")
         first_browser = open_browser(playwright, "browser-first")
         page = first_browser["Page"]

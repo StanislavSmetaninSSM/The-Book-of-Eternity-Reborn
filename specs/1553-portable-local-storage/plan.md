@@ -1,3 +1,20 @@
+## C3 first actual browser attempt — fixture selector FAIL / WIP
+
+Source `f8311c451e57584be6c25f458d0a8fb226ecc910`: fresh selected PlanOnly
+PASS81.7388273s,2descriptors/2planned/0executed. C3 actual **FAIL1/1**,
+26.7062730s,0skip/duplicate/timeout; no command/mutation or cold continuation.
+Actual shipped Program --web started and real Chromium loaded React. Fixture
+looked for exact accessible name «Продолжить главу», but existing launcher button
+includes descriptive copy in its name. [Raw](recovery/linux-game-chains-20261010/c3-launcher-selector-fixture-fail/manifest.json).
+This is not a product RED. Test selector now uses existing data-launcher-mode;
+owned browser is registered before navigation and failure DOM/screens capture
+and normal close occur before Playwright driver shutdown. First owned host exit0,
+guardian ECHILD/0emergency/0failures/no deadline. Browser record absence in first
+fixture is disclosed; subsequent cleanup assertions not qualified by that run.
+Only Python changed; fresh selected C# assemblies unchanged. Corrected C3 UNRUN;
+C4 UNRUN. Wrong initial comma argument rejected before any workload, then proper
+PowerShell array selected exact2 categories; not a test failure.
+
 ## C1 per-original stop proof PASS; C3/C4 executable fixtures WIP
 
 Source `4419c875d31e143040e0932b730cfd459cd8ed9b`: repeated only corrected
