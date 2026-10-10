@@ -511,6 +511,8 @@ public partial class GameEngine
 
     private async Task<int> DetectCurrentSessionTurnNumberAsync()
     {
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        {
         var maxTurn = 0;
         foreach (var story in _storyService.GetAvailableStories())
         {
@@ -523,6 +525,7 @@ public partial class GameEngine
         }
 
         return Math.Max(0, maxTurn);
+        });
     }
 
     private async Task ContinueCurrentSessionFlow()

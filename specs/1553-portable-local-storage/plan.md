@@ -1,3 +1,26 @@
+## C1 causal admission RED → minimal fix WIP, 2026-10-10
+
+Source `325ba9ba4c77440068ad9823d96b73f724173d49`: свежая PlanOnly
+PASS83.9613176s,1descriptor/1planned/0executed; фактическая C1 `-NoBuild`
+**FAIL1/1**,44.7030015s, без timeout/skip/duplicate, accepted0/modelCalls0.
+[Diagnostic packet](recovery/linux-game-chains-20261010/diagnostic-c1/manifest.json)
+сохраняет actual Program client stack: `MainAdmission.AcquireAsync:73` →
+`StoryService.GetAvailableStoriesAsync:130` →
+`GameEngine.DetectCurrentSessionTurnNumberAsync:515` →
+`BuildContinueDescriptionAsync:488`. Этот storage read вызван вне participating
+operation при original Running. Он же вызывается непосредственно Continue flow.
+Очистка новой fixture PASS: original relay/Bridge Stopped, actual Ctrl+C daemon,
+all owned EOF, guardian ECHILD=true/emergencySignals0/failures0/deadline=false.
+
+Minimal runtime fix: только `DetectCurrentSessionTurnNumberAsync` получает
+короткий `RunParticipatingCurrentSessionAsync` вокруг original story enumeration/
+read. Нет fabricated owner, bypass/refusal relaxation или pin вокруг игрового
+ввода/GM ожидания. Existing assertion history prefix/full-chain remains intact.
+Это client-owned read-only operation; game/GM authored fields, capabilities,
+prompts/docs/examples contracts не меняются, поэтому GM-facing updates не нужны.
+GREEN ещё UNRUN; следующий шаг — fresh build и тот же real C1. Frontend fresh
+build PASS (Vite560ms; warning chunk size), не gameplay/web qualification.
+
 ## C1 первая фактическая попытка — FAIL / WIP, 2026-10-10
 
 Source/test SHA `1c2bc24e4b4b1d8eb49ed0882bb1596d3b6e2431`, чистое дерево.
