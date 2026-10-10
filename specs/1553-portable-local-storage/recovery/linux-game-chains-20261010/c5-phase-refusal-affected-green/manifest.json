@@ -1,0 +1,300 @@
+{
+  "SourceSHA": "98f4d00e20f49c406a122d285260797fe4e58b05",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"browser-original-phase-refusal\", \"browser-player-terminal-disposition\")'",
+  "Status": "12/12 PASS",
+  "Scope": "Existing affected refusal and terminal-disposition oracles only; no new matrix, gameplay or model.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "a41758ba680a4e3e26b492e5d1d10d1763638a12caa4c3cb6bedc23efa77ec8d",
+      "RawBytes": 2748
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "78842216d462a630427813a039c160a1a5914a783e80c7ecadd64ffaa86fcf92",
+      "RawBytes": 1767
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "b14f7bd5a00bbc1c306a0a4f7104f1b988c6dd50cd479fbe3cc9b8348e5ad4a6",
+      "RawBytes": 51409
+    },
+    {
+      "Path": "runner/browser-original-phase-refusal-integration-001.trx.gz",
+      "RawSHA256": "22738b7a013307f78f06fc9c4cb4c66c93de5e7ab45f8fb972b4d1b748f987d3",
+      "RawBytes": 15391
+    },
+    {
+      "Path": "runner/browser-player-terminal-disposition-integration-002.trx.gz",
+      "RawSHA256": "6d1c7af11d3674a2842b24f0f982ba2d7e1798744e5323c056deab7212b9fa7d",
+      "RawBytes": 9187
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "f51b9cb781b20141acc4b20a9d7cf959a6d35faeb59558c4384293ca49a48469",
+      "RawBytes": 1671986
+    },
+    {
+      "Path": "cold-1/cold.json.gz",
+      "RawSHA256": "72a8acea5073896607c394c1630f1407befea5eabc40e8bff62e26702b741887",
+      "RawBytes": 2318
+    },
+    {
+      "Path": "cold-1/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cold-1/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "cold-1/native.log.gz",
+      "RawSHA256": "be62f46dee8d5658228af12e5bc5381f2943bb9f9f1b42e5e89577abfd572583",
+      "RawBytes": 51
+    },
+    {
+      "Path": "cold-1/package/build-provenance.json.gz",
+      "RawSHA256": "f6f975808e32da44aea5443ab42de21818d0940230c77d3999e32ded19783e33",
+      "RawBytes": 1153
+    },
+    {
+      "Path": "cold-1/package/package-manifest.json.gz",
+      "RawSHA256": "60adf558d6c55266dc28809fa317189cec35bafcce74ef9f1e3a3a851e1de9d7",
+      "RawBytes": 968
+    },
+    {
+      "Path": "cold-2/cold.json.gz",
+      "RawSHA256": "d1309486567a7577afa2000adf1ae748e52af37a5e0a5f854a4e8936cf231862",
+      "RawBytes": 698
+    },
+    {
+      "Path": "cold-2/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cold-2/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "cold-2/native.log.gz",
+      "RawSHA256": "813e4e49c9e152b28a875f67c34f6bed921224b41537c298f6b53fe289775c5d",
+      "RawBytes": 51
+    },
+    {
+      "Path": "cold-2/package/build-provenance.json.gz",
+      "RawSHA256": "f6f975808e32da44aea5443ab42de21818d0940230c77d3999e32ded19783e33",
+      "RawBytes": 1153
+    },
+    {
+      "Path": "cold-2/package/package-manifest.json.gz",
+      "RawSHA256": "60adf558d6c55266dc28809fa317189cec35bafcce74ef9f1e3a3a851e1de9d7",
+      "RawBytes": 968
+    },
+    {
+      "Path": "cold-3/cold.json.gz",
+      "RawSHA256": "54885e36a0f7a332d068f731f6db94d82b34103a0f9e20eaca6b3a99f9b6acc6",
+      "RawBytes": 2386
+    },
+    {
+      "Path": "cold-3/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cold-3/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "cold-3/native.log.gz",
+      "RawSHA256": "410778f32d399c50718f218e51ce5688619815eec03bc1a2b4e3fd5d90366600",
+      "RawBytes": 51
+    },
+    {
+      "Path": "cold-3/package/build-provenance.json.gz",
+      "RawSHA256": "f6f975808e32da44aea5443ab42de21818d0940230c77d3999e32ded19783e33",
+      "RawBytes": 1153
+    },
+    {
+      "Path": "cold-3/package/package-manifest.json.gz",
+      "RawSHA256": "60adf558d6c55266dc28809fa317189cec35bafcce74ef9f1e3a3a851e1de9d7",
+      "RawBytes": 968
+    },
+    {
+      "Path": "cold-4/cold.json.gz",
+      "RawSHA256": "1a09a1bba8eb1382e0e23d0f1a7240444e169a3dcbe5bfd614e12fab527d050f",
+      "RawBytes": 807
+    },
+    {
+      "Path": "cold-4/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cold-4/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "cold-4/native.log.gz",
+      "RawSHA256": "b21cc6c380b00f94206c81f67b678061423d35ab6434022b3d68521dcdb3840a",
+      "RawBytes": 51
+    },
+    {
+      "Path": "cold-4/package/build-provenance.json.gz",
+      "RawSHA256": "f6f975808e32da44aea5443ab42de21818d0940230c77d3999e32ded19783e33",
+      "RawBytes": 1153
+    },
+    {
+      "Path": "cold-4/package/package-manifest.json.gz",
+      "RawSHA256": "60adf558d6c55266dc28809fa317189cec35bafcce74ef9f1e3a3a851e1de9d7",
+      "RawBytes": 968
+    },
+    {
+      "Path": "cold-5/cold.json.gz",
+      "RawSHA256": "b6a152ebc59ae1089aae2a3bc504ba9b8c534a159398b59e41268bf34de95320",
+      "RawBytes": 2341
+    },
+    {
+      "Path": "cold-5/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cold-5/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "cold-5/native.log.gz",
+      "RawSHA256": "b86025ff9e2e70fd603c2578431a9ad9b0ec2a9bb32c9d2296f5700d947f6f74",
+      "RawBytes": 51
+    },
+    {
+      "Path": "cold-5/package/build-provenance.json.gz",
+      "RawSHA256": "f6f975808e32da44aea5443ab42de21818d0940230c77d3999e32ded19783e33",
+      "RawBytes": 1153
+    },
+    {
+      "Path": "cold-5/package/package-manifest.json.gz",
+      "RawSHA256": "60adf558d6c55266dc28809fa317189cec35bafcce74ef9f1e3a3a851e1de9d7",
+      "RawBytes": 968
+    },
+    {
+      "Path": "cold-6/cold.json.gz",
+      "RawSHA256": "423ab35e4f4505ff73a376d76e865c4b376d41a1f62092ca8d5531452ce07435",
+      "RawBytes": 1019
+    },
+    {
+      "Path": "cold-6/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cold-6/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "cold-6/native.log.gz",
+      "RawSHA256": "9a0947d10d3531c5a409a8cc1720ef48438eff91da6e791c93afe96af65f08b2",
+      "RawBytes": 51
+    },
+    {
+      "Path": "cold-6/package/build-provenance.json.gz",
+      "RawSHA256": "f6f975808e32da44aea5443ab42de21818d0940230c77d3999e32ded19783e33",
+      "RawBytes": 1153
+    },
+    {
+      "Path": "cold-6/package/package-manifest.json.gz",
+      "RawSHA256": "60adf558d6c55266dc28809fa317189cec35bafcce74ef9f1e3a3a851e1de9d7",
+      "RawBytes": 968
+    }
+  ],
+  "RunnerSummary": {
+    "Categories": [
+      "browser-original-phase-refusal",
+      "browser-player-terminal-disposition"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "98f4d00e20f49c406a122d285260797fe4e58b05",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "browser-original-phase-refusal",
+        "Seconds": 13.7044053,
+        "BudgetMinutes": 2,
+        "Completed": true
+      },
+      {
+        "Category": "browser-player-terminal-disposition",
+        "Seconds": 33.7222535,
+        "BudgetMinutes": 3,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0426779,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0398246,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1274319,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 63.9589038,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0038735,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:01:55.1879660",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 2,
+      "PlannedCases": 12,
+      "CompletedCases": 12,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 12,
+      "Executed": 12,
+      "Passed": 12,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "ColdProcessCount": 6
+}
