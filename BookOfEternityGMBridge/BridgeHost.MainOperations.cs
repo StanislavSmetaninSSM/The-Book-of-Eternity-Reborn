@@ -7,7 +7,7 @@ internal sealed partial class BridgeHost
         GmSessionRunCoordinator.RemotePin? pin=null;
         try {
             var owner=_mainRun??throw new InvalidDataException("No original main owner.");
-            pin=owner.BeginRemoteOperation(request.RootKey,request.OperationId);
+            pin=owner.BeginRemoteOperation(request.RootKey,request.OperationId,request.ExpectedMainIdentity);
             using(var bounded=CancellationTokenSource.CreateLinkedTokenSource(token)) {
                 bounded.CancelAfter(TimeSpan.FromSeconds(3));await MainOperationReader.WriteAsync(stream,pin.Reply,bounded.Token);
                 var activate=await reader.ReadAsync<MainOperationFrame>(bounded.Token)??throw new IOException("Grant connection lost.");

@@ -50,10 +50,11 @@ internal sealed partial class GmSessionRunCoordinator
             }
         }
     }
-    internal RemotePin BeginRemoteOperation(string? root,string? operation)
+    internal RemotePin BeginRemoteOperation(string? root,string? operation,GmSessionRunIdentity? expectedIdentity=null)
     {
         lock(_sync) {
-            if(root==null || !GmSessionRunValidation.AdmissionRootMatches(root,Identity.RootKey,_backend) || !Guid.TryParseExact(operation,"N",out _) ||
+            if((expectedIdentity!=null && !GmSessionRunValidation.IdentityMatches(Identity,expectedIdentity)) ||
+                root==null || !GmSessionRunValidation.AdmissionRootMatches(root,Identity.RootKey,_backend) || !Guid.TryParseExact(operation,"N",out _) ||
                 _remotePins.Values.Any(p=>p.OperationId==operation) || _remotePins.Values.Count(p=>p.State!=MainOperationState.ClosedObserved)>=32)
                 throw GmSessionRunPersistence.Invalid();
             var pin=CreateOperationPin();var remote=new RemotePin(this,pin,operation!);_remotePins.Add(remote.PinId,remote);return remote;
