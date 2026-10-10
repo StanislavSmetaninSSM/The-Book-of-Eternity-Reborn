@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "f025d2c53932a12e5bc002e07f13eebe5edec4b0",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category c5-browser-active-poll-crash -PlanOnly -TimeoutMinutes 8",
+  "Status": "PREPARATION PASS; zero tests executed",
+  "Scope": "Fresh selected integration/support/Bridge build; one planned descriptor/case, zero executed, matching source f025d2c5, owned cleanup complete.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "8839f9ed979654ed9ffbda7d3cab61f3dbaf9ffb1f41e074111f70759ee67f79",
+      "RawBytes": 1169
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "92651e3cb9aa478e5a048d1029be1c225ff93e557e42f2a4e8f4257e0f75b59f",
+      "RawBytes": 1479
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "c4bbfacc481b9a0fdb29108eb057f909159b895513bc64dd3c07e7589754958e",
+      "RawBytes": 57769
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "ed2e5520b1f41a25962f5056b3a93e9261f0a3373eda54e44088b34b2949d158",
+      "RawBytes": 1677381
+    }
+  ]
+}

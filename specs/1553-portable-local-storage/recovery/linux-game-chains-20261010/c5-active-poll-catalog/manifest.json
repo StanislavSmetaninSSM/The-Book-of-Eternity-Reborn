@@ -1,0 +1,24 @@
+{
+  "SourceSHA": "f025d2c53932a12e5bc002e07f13eebe5edec4b0",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild -TimeoutMinutes 8",
+  "Status": "DISCOVERY PASS; zero tests executed",
+  "Scope": "Discovery-only catalog, matching fresh assemblies, zero runtime tests, complete owned cleanup.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "7527a67e225a6f0eaa30f724f55314dbc6dac43ef6a37ae08794014635b6f429",
+      "RawBytes": 1403
+    },
+    {
+      "Path": "runner/catalog-audit.json.gz",
+      "RawSHA256": "63c931c40bf32592bd1e9d9d5f58509c280656b944acf194ee8aedc69a28aebf",
+      "RawBytes": 103
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "b243cee96cb4a38d99f09dc8f55e68927905bbccfe7bf4be7c4dd5054af35cf1",
+      "RawBytes": 3282490
+    }
+  ]
+}
