@@ -34,27 +34,38 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData("cancel")]
     [InlineData("error")]
-    public async Task BrowserInput_KnownRestoredTerminalDispositionReleasesOriginalSlot(string disposition)
+    public async Task BrowserInput_RestoredTerminalDispositionSettlesOrBlocksBeforeContinuation(string disposition)
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
         var binding = await QueueBrowserInputAsync();
-        var input = new QueuedConsoleInputSource([Key(disposition == "cancel" ? ConsoleKey.Escape : ConsoleKey.Enter)]);
-        var engine = CreateGameEngine(input);
-        var error = disposition == "error" ? Task.Run(async () =>
+        var input = new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]);
+        var engine = CreateGameEngine(input, finalizationHooks: new GameEngineSessionFinalizationHooks
         {
-            var request = await WaitForTurnRequestAsync();
-            await _fs.WriteFileAtomicAsync("ready/turn_error.json", JsonSerializer.Serialize(new
+            AtCheckpointAsync = async checkpoint =>
             {
-                sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
-                timestamp = DateTime.UtcNow.ToString("O"), status = "error", error = "Controlled original GM terminal error."
-            }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        }) : Task.CompletedTask;
+                if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted) return;
+                if (disposition == "cancel") { input.Enqueue(Key(ConsoleKey.Escape)); return; }
+                var request = await WaitForTurnRequestAsync();
+                await _fs.WriteFileAtomicAsync("ready/turn_error.json", JsonSerializer.Serialize(new
+                {
+                    sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+                    timestamp = DateTime.UtcNow.ToString("O"), status = "error", error = "Controlled original GM terminal error."
+                }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            }
+        });
         await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", binding.Action, null, null, null, true, binding);
-        await error.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.False(_fs.FileExists(PendingPlayerActionService.PendingPath));
+        if (disposition == "cancel")
+        {
+            // Local waiter completion proves no external worker stop or late-output fence.
+            Assert.Equal("terminalProcessing", JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!["status"]!.GetValue<string>());
+            var before = BrowserRecoveryTree();
+            await Assert.ThrowsAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
+            AssertBrowserRecoveryTree(before);
+        }
+        else Assert.False(_fs.FileExists(PendingPlayerActionService.PendingPath));
         Assert.False(_fs.FileExists("input/turn_request.json"));
         Assert.False(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
-        Assert.Empty(Directory.EnumerateFiles(_fs.ResolvePath("stories"), "*.jsonl", SearchOption.AllDirectories));
+        Assert.Equal(0, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
     }
 
     [Fact]

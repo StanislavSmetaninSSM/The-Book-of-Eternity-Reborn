@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "f55c4dac5ca601bea8bf1ae626a7c45496dfbc73",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category player-input-draft-preservation,clipboard-affected-managed -NoBuild",
+  "Status": "PASS",
+  "Scope": "18/18,8.5829878s,complete2descriptors,0skip/duplicate/timeout/cleanupcomplete; fresh sourcef55 units built in prior fresh selected run. Components only.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "ff98790d569ea268375b6fcb0239c131373b76f8f73ce9fb0572f48b0a1fcdfc",
+      "RawBytes": 6618
+    },
+    {
+      "Path": "runner/clipboard-affected-managed-unit-001.trx.gz",
+      "RawSHA256": "7f4103d249c49716c8c479b609c6b2ed48b031885ded947fa0e31c92499c2cba",
+      "RawBytes": 18726
+    },
+    {
+      "Path": "runner/player-input-draft-preservation-unit-002.trx.gz",
+      "RawSHA256": "c62fdc7835934cd35a7023de229a99fd904d6191f3894c27586b41058e14e2e7",
+      "RawBytes": 10146
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "6b9869e970158e8d4a225f62e035f06091c5ed457248f839de15b9f1c47f837e",
+      "RawBytes": 1647
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "913c77d087befc67ca010832ad881f7899a9208a37972b16a80a0a23c5bf2eea",
+      "RawBytes": 1663098
+    }
+  ]
+}

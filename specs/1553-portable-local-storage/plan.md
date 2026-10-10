@@ -1,3 +1,13 @@
+Actual f55 fixture timeout236.1209475s/0formalcompleted/noTRX/cleanupcomplete;
+stdout cancellation reached retained slot, background error writer stalled. Not
+behavior GREEN/completeRED. Deterministic original TerminalWaitStarted callback now
+supplies error/escape, no orphan background writer. Cancel must persist processing
+before rollback and remain blocked because local waiter does not prove external
+GM stop/late delivery fence; no automatic dequeue from Cancelled. Original explicit
+error plus exact restored state/history/cleanup may produce typed settled receipt.
+Actual separate draft+clipboard GREEN18/18 atf55,8.5829878s,complete2descriptors,
+0skip/duplicate/timeout/cleanupcomplete, already fresh-built current units.
+
 Atc1f054d0 actual recovery10/10PASS; affectedclipboard11/12PASS, one obsolete source-literal guard fails because shared multiline choice moved to cooperative helper; draft6unrun after runnerstop. Total21PASS1FAIL/22executed, planned28,63.5590806s/0skip/duplicate/timeout/cleanupcomplete. Guard now requires actual multiline helper call and shared TextComposer mode choice. Independent Astra source delta PASS for bounded refusal; fullT069 stillopen. New publication conflict/cancel/error tests at a8 remain UNRUN.
 
 Added original Process publication-conflict control via existing canonical mutation hook (test-only competing write at authority publication), and actual ordinary cancel/error rollback slot-release test-first cases; UNRUN. Existing recovery negatives now require typed InvalidDataException.
