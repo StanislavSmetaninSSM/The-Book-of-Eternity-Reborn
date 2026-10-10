@@ -174,10 +174,15 @@ public sealed partial class GuardianSystemRegressionTests
         }).ToArray())
     });
 
-    private Task<AcceptedTurnCanonicalStateRefresh.Result> RefreshMusingsPublicationAsync(ValidationService validator) =>
-        AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(_fs,
+    private async Task<AcceptedTurnCanonicalStateRefresh.Result> RefreshMusingsPublicationAsync(ValidationService validator)
+    {
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(_fs,
             new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance), validator,
             new Dictionary<string, string>());
+        Assert.True(!result.Issues.Any(issue => issue.Severity == IssueSeverity.Error),
+            string.Join("; ", result.Issues.Select(issue => issue.Code + ": " + issue.Actual)));
+        return result;
+    }
 
     private static Task<List<ValidationIssue>> ValidateMusingsStateAsync(ValidationService validator) =>
         validator.ValidateGameStateAsync(new GameStateValidationSelection(GameStateValidationPhase.MetaMiscStateFiles, [MusingsRootPath]));
