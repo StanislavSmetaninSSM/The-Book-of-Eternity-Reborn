@@ -125,7 +125,7 @@ Standalone browser-owned bootstrap остаётся отдельным topology/
 | Граница предлагаемой правки | Приёмка / минимальная проверка следующего прохода |
 |---|---|
 | Новый общий PendingPlayerAction service/contract; оба existing producers BrowserPlayerActionService и BrowserMortalWorldWriteService; BrowserLocalWriteCoordinator gates | Exact current generation + уникальная client action identity; один pending/inflight слот, повторная отправка не перезаписывает уже принятое действие. Malformed/slash/stale generation/active GM/Load/foreign owner блокируются существующими правилами. DTO frontend меняется только при нужной identity/status, без новой игровой команды. |
-| GameEngine.TurnLifecycle GetPlayerInput/ProcessPlayerTurn и input adapter (Core/ITextComposerConsole/StandardTextComposerConsole — только необходимый cancel/wake boundary) | Действие, пришедшее уже во время ожидания, порождает ровно один настоящий turn_request; console/browser race выбирает одного, второй не теряется/не исполняется тем же turn. Ни canonical lease, ни main admission pin не удерживаются вокруг ожидания игрока/GM. |
+| GameEngine.TurnLifecycle GetPlayerInput/ProcessPlayerTurn и input adapter (Core/ITextComposerConsole/StandardTextComposerConsole — только необходимый cancel/wake boundary) | Действие, пришедшее уже во время ожидания, порождает ровно один настоящий turn_request; console/browser race выбирает одного, второй не теряется/не исполняется тем же turn. Новый consumer/input watcher не держит свою canonical lease или новый main admission pin вокруг ожидания. Существующий ProcessPlayerTurn1345 сохраняет participating admission через GM wait1488; этот accepted-turn lifecycle не меняется без отдельного scope/review. Cancel/wake покрывает блокирующий TextComposer.ReadLine145–146 и ReadKey, multiline/paste; незавершённый console draft сохраняется при победе browser action. |
 | GameEngine.SessionAndSnapshots/PrivateImplementation + существующая signed pending-turn authority/terminal cleanup, trusted publisher | Claim→sealed request и удаление pending связаны одним исходным generation/request/action identity. Сбой до staging сохраняет queued; после staging cold continuation распознаёт тот же inflight request, не отправляет новый. Accepted+cleanup debt не replay; rollback/Uncertain требуют существующего terminal disposition, без автоматического повторного исполнения. Load/new generation инвалидирует старую очередь. Нельзя удалять pending заранее или повторно принимать тот же JSON после accepted-before-cleanup crash; не вводить второй publication journal. |
 | Actual C5 fixture console_chain.py + узкие новые consumer/race/recovery cases; существующие browser generation fencing cases | Сохранённый C5 RED становится GREEN: настоящий React composer→actualengine request→realrelay/helper→accepted state/story,0models. Затем client-only и полный client/web/Bridge/daemon/relay restart с новым действием, distinct PIDs/full previous substantive history prefix/exact original stop proofs. Отдельные холодные cuts до claim, после signed staging, после acceptance до dequeue и при Load/generation replacement доказывают отсутствие duplicate turn/потери accepted history. |
 
@@ -168,17 +168,30 @@ activeGuardian mirror совпадает. Первый проход может �
 не глобальное разрешение raw guardian edits и не retention всех UpdateGuardians.
 После raw validation, до нормализации захватить immutable разрешённый delta,
 привязанный к исходным validated pending snapshot/request/turn/generation и
-original lease. Поздний kernel сравнивает canonical результат с pre-turn +
+проверенному original publication owner. Физическая lease ограничивает capture/
+publication; она не должна оставаться живой до поздней validation.
+AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync
+([MortalItems1741+](../../BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs))
+закрывает её прежде GameEngine.ValidationAndRepair945. Нужен detached validated
+handoff (immutable delta + original binding/output proof) в результате этого
+owner, с повторной проверкой request/generation/canonical output у позднего
+validation owner; mutable current root не заменяет исходный proof. Поздний kernel сравнивает canonical результат с pre-turn +
 **тем же** delta; current mutated root не создаёт новую authority. Canonical
 command по-прежнему consumed и не проигрывается повторно. Repair заново получает
 authority только после полной проверки fresh original-bound resubmission;
-accepted/rejected/rollback/stale generation/close очищают scope. Для interruption
+Intermediate physical lease close не является terminal disposition и не очищает
+этот handoff. Terminal accepted/rejected/confirmed rollback и stale generation
+завершают authority scope; Uncertain/close failure сохраняют необходимое original-
+bound recovery evidence за существующим blocker, не дают автоматическую authority
+или replay. Для interruption
 между normalize и terminal нужно либо восстановить original-bound capability
 из existing sealed per-turn recovery evidence, либо точный rollback/block;
 нельзя восстановить его из произвольных canonical musings.
 
 Предлагаемые файлы: GameEngine.ValidationAndRepair/SessionAndSnapshots и existing
-pending-turn authority (capture/recovery/settlement); ValidationService.GuardianPolicyKernel
+pending-turn authority (capture/recovery/settlement); AcceptedTurnCanonicalStateRefresh
+in CanonicalStateNormalizer.MortalItems.cs (original publication owner/Result handoff/
+intermediate close); ValidationService.GuardianPolicyKernel
 (original-bound scope); CanonicalStateNormalizer.GuardiansAndProjects +
 SharedAndSoulHelpers (применить delta единожды/consume); узкие kernel/normalizer/
 accepted-turn tests и отдельная actual C1 addMusings fixture. Не менять общую
