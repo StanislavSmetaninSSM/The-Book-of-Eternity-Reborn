@@ -84,6 +84,20 @@
         "FR-013",
         "T067-LINUX-GAME-FAULTS"
       ]
+    },
+    {
+      "category": "portable-browser-save-creation",
+      "reason": "Affected bound dashboard read fix: existing six established Save outcomes (commit/rollback/uncertain/cleanup/refresh/debt) plus generation fencing source guard preserve decision identity and failure invariants; C4 browser chain separately qualifies actual Program/React cold continuation.",
+      "contracts": [
+        "#1553",
+        "US3",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-011",
+        "FR-013",
+        "T067-LINUX-GAME-FAULTS"
+      ]
     }
   ]
 }

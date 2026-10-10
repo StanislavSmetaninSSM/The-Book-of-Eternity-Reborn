@@ -1,3 +1,26 @@
+## C2 exact fresh-entry boundary — source finding, execution UNRUN
+
+Read-only production reference search at8d0ffde0 shows harmful occurrence
+IMortalWoundOccurrenceProducerDraft lacks a concrete registered runtime producer.
+This is creation wiring, not a claim that physical recovery services are absent.
+Separate fresh treatment wiring is also missing: PrepareProcedureRequest,
+PrepareCourseMilestoneRequest, PrepareGuaranteedRequest and
+ComposeMortalWoundTreatmentCommandRoot have definitions but no production call.
+GameEngine finalized wound_commands consumer rehydrates existing finalized
+attempts; current CommandProtocol/Explorer registrations expose /effects rather
+than a physical /treat or /wounds command. Initial valid existing-wound fixture
+alone cannot supply the missing original fresh request/authority.
+C2 whole-game creation/treatment/cold continuation stays **UNRUN** with these
+source-backed wiring gaps; no fabricated GM authority or added game mechanic.
+B2 force_binding is afterlife-only and is not asserted to block every Mortal path.
+Independent reviewer is checking exact sources/prerequisites, not tests-as-PASS.
+
+Affected bounded Save outcome category is selected in addition to actual C4:
+portable-browser-save-creation preserves original6commit/rollback/uncertain/
+cleanup/refresh/debt witnesses and generation fencing guard. Fresh build/PlanOnly
+includes these and the five exact pending/changed integration categories; no
+complete suite, CI change or live model call.
+
 ## Actual C4 nested-acquisition RED and bounded correction WIP
 
 Source8d0ffde0 diagnostic same-handler wrapper **FAIL1/1**,30.9482745s:
