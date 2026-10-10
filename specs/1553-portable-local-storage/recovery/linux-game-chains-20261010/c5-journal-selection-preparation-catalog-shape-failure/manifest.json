@@ -1,0 +1,18 @@
+{
+  "SourceSHA": "eb0d807cc7c91046023780097e867b8b3294adad",
+  "Command": "pwsh ./scripts/test-csharp.ps1 -Category journal-selection-race,pending-recovery,review-refusals -PlanOnly -TimeoutMinutes 6",
+  "ModelCalls": 0,
+  "ArchiveScope": "Complete runner and owned runtime diagnostics, game/relay state, screenshot/HTML, snapshots/rollback and ZIPs; immutable published ship is retained by complete byte/hash inventory with native/runtime binaries. Browser/cache/config/data/tmp ephemeral files are excluded. No node_modules/local Git objects.",
+  "Files": [
+    {
+      "Path": "runner/failure.json.gz",
+      "RawSHA256": "39c83b55f9b62ae8b6fd6c9932fe203edbc1dde6b76bedd5b9b24166101949bb",
+      "RawBytes": 541
+    },
+    {
+      "Path": "runner/preparation.log.gz",
+      "RawSHA256": "6122de6d7bf2ed5581a50327badf0215e7b4304f275d241b221f1e9296b621a8",
+      "RawBytes": 362
+    }
+  ]
+}
