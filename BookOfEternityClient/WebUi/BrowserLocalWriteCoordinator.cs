@@ -87,7 +87,9 @@ public sealed partial class BrowserLocalWriteCoordinator
         try
         {
             await mainAdmission.AcquireAsync(quiescentOnly: true);
-            await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? admissionFailure = null;
+            try
             {
                 if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
                     return new(LoadReplacementDisposition.NotLoaded, null, null, false,
@@ -102,6 +104,8 @@ public sealed partial class BrowserLocalWriteCoordinator
                         new InvalidOperationException("Load admission refused another UI owner."));
                 replacementGuard = acquisition.Lease;
             }
+            catch (CoordinatedStatePublicationUncertainException failure) { admissionFailure = failure; throw; }
+            finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, admissionFailure); }
 
             dispatched = true;
             retained = await replacementOperation(async writeLease =>
@@ -130,9 +134,15 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             try
             {
-                await using var releaseLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                if (string.Equals(_fs.ReadExistingSessionGeneration(releaseLease), replacementGuard.SessionGeneration, StringComparison.Ordinal))
-                    await _lockService.ReleaseAsync(releaseLease, replacementGuard);
+                var releaseLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                CoordinatedStatePublicationUncertainException? releaseFailure = null;
+                try
+                {
+                    if (string.Equals(_fs.ReadExistingSessionGeneration(releaseLease), replacementGuard.SessionGeneration, StringComparison.Ordinal))
+                        await _lockService.ReleaseAsync(releaseLease, replacementGuard);
+                }
+                catch (CoordinatedStatePublicationUncertainException failure) { releaseFailure = failure; throw; }
+                finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, releaseLease, false, releaseFailure); }
             }
             catch (Exception failure) { retained = retained.WithFollowUp(failure, blocksContinuation: true); }
         }

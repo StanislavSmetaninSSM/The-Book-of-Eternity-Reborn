@@ -1,3 +1,13 @@
+## Browser replacement original-owner uncertainty guards — WIP, 2026-10-10
+
+Original causal packet eeb52593 preserved/pushed/ref/raw19 before runtime change.
+Two original lexical owners capture and rethrow SAME CSP; existing release helper
+receives false plus SAME exception. Original bodies, UI token/generation checks,
+callback dispatch, decision mapping and WithFollowUp unchanged. No ordinary
+known-close suppression introduced. Runtime UNBUILT/UNRUN; combined independent
+causal/source/exact4 gate before fresh discovery-only both-project catalog and
+changed GREEN4. No accepted group replay; T061–T065/B2–B5/native stay open.
+
 ## Browser replacement original-owner causal result — WIP, 2026-10-10
 
 Fresh Plan235729 at f2a1af60 built the selected integration project: exact4/1,
