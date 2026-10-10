@@ -47,6 +47,11 @@ Original C5 full-chain FAIL remains untouched; consumer/recovery/input still UNR
 - [ ] RED/GREEN isolated separate-process queued/staged/accepted cold cuts plus generation replacement and negative original identity; actual C5 through same React endpoint to real relay/helper/accepted history.
 - [ ] Publish/review C5 and affected accepted console/browser/storage selections before T070.
 
+Input component RED prepared: PlayerInputDraftTests exercises actual TextComposer
+with interrupted current line after a completed multiline line and while confirming
+a preserved draft. Expected full draft; no native reader/process substitute claim.
+Runtime RED execution UNRUN. Existing clipboard tests remain separate affected controls.
+
 ### T070 execution steps (all UNRUN)
 
 - [ ] Reproduce addMusings raw→normalizer→late full-validation mismatch with original binding and exact old musings; original actual FAIL remains.

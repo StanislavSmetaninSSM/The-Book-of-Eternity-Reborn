@@ -22183,6 +22183,34 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": "player-input-draft-preservation",
+            "responsibility": "T069 interrupted player input retains completed multiline and partial/current clipboard draft; TextComposer behavior only.",
+            "excludes": "Native key arbitration, browser consumer, signed staging and cold terminal recovery have separate owning tests.",
+            "changeHints": [
+                "BookOfEternityClient/Core/TextComposer.cs"
+            ],
+            "related": [
+                {
+                    "id": "clipboard-affected-managed",
+                    "when": "Shared TextComposer line/paste semantics change."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.PlayerInputDraftTests.*"
+                    ]
+                }
+            ]
         }
     ]
 }

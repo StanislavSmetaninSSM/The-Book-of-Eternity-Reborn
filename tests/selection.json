@@ -2,6 +2,14 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "player-input-draft-preservation",
+      "reason": "T069 native browser wake must preserve full multiline/clipboard draft; causal RED first against existing TextComposer interruption behavior.",
+      "contracts": [
+        "#1553",
+        "T069-C5-ORDINARY-CONSUMER"
+      ]
+    },
+    {
       "category": "browser-pending-action-admission",
       "reason": "T069 initial causal RED/GREEN through current producer entrypoint: existing single slot silently overwritten and lacks generation/action identity. No process/model or broad category.",
       "contracts": [
