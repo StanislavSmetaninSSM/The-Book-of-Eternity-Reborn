@@ -12,6 +12,9 @@ import re
 import subprocess
 import sys
 
+if not __debug__:
+    raise RuntimeError("Checkpoint verification requires Python assertions; do not use -O or PYTHONOPTIMIZE")
+
 root = Path(sys.argv[1]).resolve()
 expected = sys.argv[2]
 assert re.fullmatch(r"[0-9a-f]{40}", expected)

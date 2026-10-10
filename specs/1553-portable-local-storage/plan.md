@@ -1,4 +1,4 @@
-## Итог текущего ограниченного этапа C1–C5 — 2026-10-10 (review/restore WIP)
+## Итог текущего ограниченного этапа C1–C5 — 2026-10-10 (final restore WIP)
 
 Source issue[#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553),
 разрешённый cloud stage T066–T068. Branch `1553-storage-migration-cloud-20261008`,
@@ -52,9 +52,14 @@ Every actual category above planned=completed,0skip/duplicate/timeout and owned
 cleanupcomplete. No Full/Fast/PreMerge/all-category sequence. Browser integration
 requires built React, actual Python3.12/Playwright1.62 identified by
 BOE_GAME_CHAIN_BROWSER_PYTHON, /usr/bin/chromium, DOTNET_ROOT runtime/PowerShell7;
-CI currently disabled and not provisioned by this stage. Discovery-only catalog
-is running once after final category changes; independent final Astra/xhigh and
-exact-tip fresh restoration still pending at this metadata checkpoint.
+CI currently disabled and not provisioned by this stage. Final discovery-only
+catalog **PASS**,617categories/11391methods-or-files,32.2761444s,0tests executed:
+[actual receipt](recovery/linux-game-chains-20261010/final-catalog-discovery/manifest.json).
+Independent Astra/xhigh final review at14391239 accepted C4/fault runtime and
+112new rawhash/length entries; no Critical/Important findings. Its Minor verifier
+optimization bypass is corrected by an explicit non-assert refusal; actual
+python -O exits1 before reading any repository. Narrow amended review and exact-tip
+fresh GitHub restoration are pending at this metadata checkpoint.
 
 Reproduce recovery with ordinary GitHub clone (no local alternates):
 `git clone --single-branch --no-tags --branch 1553-storage-migration-cloud-20261008 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git <new-empty-dir>`,
@@ -64,12 +69,137 @@ and every packetgzip rawhash/length; it executes no build/test/game/model and
 cannot replace semantic runtime review. Original broader storage recovery pins
 are separately verified by the existing parent restore receipt.
 
-Следующий шаг после доставки: выбрать цельный отдельный feature stage по
-существующей спецификации: C5 pending action→engine wiring либо #1536 fresh
-physical treatment player→sealed request (followed by real harmful producers).
-These are implemented-product gaps rather than questions the spec already answers.
-No feature implementation starts in this finite storage verification stage.
-T066–T068 stay unchecked until parent acceptance; T061–T065 retain actual limits.
+### Следующий ограниченный проход: C5, затем addMusings
+
+Указание владельца через родителя: сохранить текущие доказательства/ревью и
+подготовить конкретное продолжение C5 + addMusings. Ниже план, **реализация ещё
+не начата**. Приоритет C5 устраняет отсутствующий delivery path; второй отдельный
+блок возвращает валидный альтернативный Guardian memory route. Они независимы
+по продуктовой причине, поэтому каждый получает свой RED/GREEN и checkpoint;
+C5 можно сначала проверить через уже рабочий journal route. C2 fresh wound/
+treatment wiring остаётся отдельной feature-задачей B2–B5, не добавляется к этому
+infrastructure pass. Полный B2–B5 по-прежнему paused. T066–T068 не отмечаются
+готовыми до принятия родителем; T061–T065 сохраняют фактические ограничения.
+
+**C5 — уже обещанное действие не достигает движка.** Конституция требует parity
+для одинаковых действий обоих клиентов; существующий
+[BrowserPlayerActionService24–124](../../BookOfEternityClient/WebUi/BrowserPlayerActionService.cs)
+обещает обработку при следующем ходе. Поддерживаемые входы сейчас:
+React→POST `/api/explorer/player-action`→canonical/UI-coordinated pending file;
+console `GameEngine.GetPlayerInput`→`ProcessPlayerTurn`→original sealed snapshot/
+turn_request; отдельный authenticated AgentConsole live input имеет свои input
+mode/screen gates и не является browser consumer. `Program --web` запускает
+только LocalWebUiHost и возвращается; обычный Program запускает GameEngine.
+Воспроизведённый C5 уже имел **реальный отдельный console engine**, поэтому
+пробел нельзя объяснить только web-only startup.
+
+История: [4ace3b502795bec05090d606f694a5128d1bd7f5](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/4ace3b502795bec05090d606f694a5128d1bd7f5)
+(#776, Refs#754/#755/#764) добавил endpoint/payload/success UI, без consumer;
+`git log --all -S pending_player_action.json` на доступной полной GitHub-истории
+показывает лишь этот producer и второй producer в
+[b37dcc08a4c1f98339ef73e0f98c0d51e8218c39](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/b37dcc08a4c1f98339ef73e0f98c0d51e8218c39)
+(BrowserMortalWorldWriteService). Отдельный web-only startup существует с
+[7d0c50c00](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/7d0c50c00).
+Все эти изменения входят в d0241e71 main и предшествуют portable storage.
+Это доказательство происхождения producer/startup gap, **не утверждение, что
+раньше конкретный C5-тест запускался или проходил**.
+
+Предлагаемое исправление: один client-owned consumer в существующем ordinary
+player-turn boundary. При работающем GameEngine browser action будит ожидание
+ввода и проходит **тот же** ProcessPlayerTurn, исходные валидаторы/снимок/
+Bridge/relay/helper. Проверка pending только до блокирующего TextComposer.Read
+недостаточна: текущий C5 отправляет действие после появления «Ваш ход».
+Нужен отменяемый input arbitration с одним победителем console/browser;
+не оставлять фоновый Console.ReadKey, который позже съест ввод следующего хода.
+Web host не создаёт второй GameEngine/GM и не получает turn authority.
+Standalone browser-owned bootstrap остаётся отдельным topology/UX scope;
+для C5 достаточно уже поддерживаемого active-engine + web-sidecar.
+
+| Граница предлагаемой правки | Приёмка / минимальная проверка следующего прохода |
+|---|---|
+| Новый общий PendingPlayerAction service/contract; оба existing producers BrowserPlayerActionService и BrowserMortalWorldWriteService; BrowserLocalWriteCoordinator gates | Exact current generation + уникальная client action identity; один pending/inflight слот, повторная отправка не перезаписывает уже принятое действие. Malformed/slash/stale generation/active GM/Load/foreign owner блокируются существующими правилами. DTO frontend меняется только при нужной identity/status, без новой игровой команды. |
+| GameEngine.TurnLifecycle GetPlayerInput/ProcessPlayerTurn и input adapter (Core/ITextComposerConsole/StandardTextComposerConsole — только необходимый cancel/wake boundary) | Действие, пришедшее уже во время ожидания, порождает ровно один настоящий turn_request; console/browser race выбирает одного, второй не теряется/не исполняется тем же turn. Ни canonical lease, ни main admission pin не удерживаются вокруг ожидания игрока/GM. |
+| GameEngine.SessionAndSnapshots/PrivateImplementation + существующая signed pending-turn authority/terminal cleanup, trusted publisher | Claim→sealed request и удаление pending связаны одним исходным generation/request/action identity. Сбой до staging сохраняет queued; после staging cold continuation распознаёт тот же inflight request, не отправляет новый. Accepted+cleanup debt не replay; rollback/Uncertain требуют существующего terminal disposition, без автоматического повторного исполнения. Load/new generation инвалидирует старую очередь. Нельзя удалять pending заранее или повторно принимать тот же JSON после accepted-before-cleanup crash; не вводить второй publication journal. |
+| Actual C5 fixture console_chain.py + узкие новые consumer/race/recovery cases; существующие browser generation fencing cases | Сохранённый C5 RED становится GREEN: настоящий React composer→actualengine request→realrelay/helper→accepted state/story,0models. Затем client-only и полный client/web/Bridge/daemon/relay restart с новым действием, distinct PIDs/full previous substantive history prefix/exact original stop proofs. Отдельные холодные cuts до claim, после signed staging, после acceptance до dequeue и при Load/generation replacement доказывают отсутствие duplicate turn/потери accepted history. |
+
+Не менять relay транспорт, GM response schema, live provider, launcher topology,
+B2/раны или Save retry policy. Client-only input envelope требует обновления
+operational/browser docs и их guards; GM-facing prompts/examples менять лишь если
+реально меняется их request surface. Сейчас новую GM механику вводить не нужно.
+Блок привязан к открытому C5 в #1553/T066; конкретные contract/tasks/selection
+уточнить перед реализацией, не создавать постфактум отметки PASS.
+
+**addMusings — теряется валидная same-turn command authority.** Предусмотренный
+контракт уже однозначен: `UpdateGuardians` command=`addMusings`, exact guardianId,
+1–2 новых integer-turn/topic/mood/thought-or-text записей; прежний журнал неизменен,
+activeGuardian mirror совпадает. Первый проход может использовать этот маршрут
+**либо** guardianThoughtJournalUpdates, без дублирования одной реакции. Это прямо
+сохранено в [daemon1755](../../BookOfEternityClient/game_master_daemon.ps1) и
+[command validator630–725](../../BookOfEternityClient/Services/Validation/ValidationService.GuardiansAndAfterlife.cs).
+Текущий [normalizer429/564](../../BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardiansAndProjects.cs)
+применяет command, затем удаляет его; поздний
+[kernel331/572](../../BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs)
+строит expected state из pre-turn baseline + уже пустого current command list.
+Сохранённый actual RED accepted0/две authority mismatch подтверждает это на
+полной цепочке; journal PASS не исправляет этот путь.
+
+История: command apply+consume уже есть в
+[49692cabd1facdaa8cf5a8868ff9d52f12b41b93](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/49692cabd1facdaa8cf5a8868ff9d52f12b41b93)
+(2026-03-27); current-root command authorization —
+[f3c536a7f6879e347bde39c31ffc9c3fa8871184](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/f3c536a7f6879e347bde39c31ffc9c3fa8871184)
+(04-06), strict-baseline projection —
+[62e0cdb32ffb5c7c3926e977bb2c8364510e0f26](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/62e0cdb32ffb5c7c3926e977bb2c8364510e0f26)
+(04-08). #1543
+[095136b220b4c3ff8a94db3e76b5bbcebe202b5f](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/095136b220b4c3ff8a94db3e76b5bbcebe202b5f)
+(08-21) заменил прежнее безусловное consume на retention только processGacha;
+прежний parent также удалял addMusings. Все входят в main. Следовательно,
+**storage introduction не доказано; current line blame на #1543 не означает,
+что именно #1543 впервые вызвал весь дефект**. Исторические runtime commits
+не прогонялись, точный первый failing accepted-turn ещё не установлен.
+
+Предлагаемая граница: только validated addMusings capability lifecycle,
+не глобальное разрешение raw guardian edits и не retention всех UpdateGuardians.
+После raw validation, до нормализации захватить immutable разрешённый delta,
+привязанный к исходным validated pending snapshot/request/turn/generation и
+original lease. Поздний kernel сравнивает canonical результат с pre-turn +
+**тем же** delta; current mutated root не создаёт новую authority. Canonical
+command по-прежнему consumed и не проигрывается повторно. Repair заново получает
+authority только после полной проверки fresh original-bound resubmission;
+accepted/rejected/rollback/stale generation/close очищают scope. Для interruption
+между normalize и terminal нужно либо восстановить original-bound capability
+из existing sealed per-turn recovery evidence, либо точный rollback/block;
+нельзя восстановить его из произвольных canonical musings.
+
+Предлагаемые файлы: GameEngine.ValidationAndRepair/SessionAndSnapshots и existing
+pending-turn authority (capture/recovery/settlement); ValidationService.GuardianPolicyKernel
+(original-bound scope); CanonicalStateNormalizer.GuardiansAndProjects +
+SharedAndSoulHelpers (применить delta единожды/consume); узкие kernel/normalizer/
+accepted-turn tests и отдельная actual C1 addMusings fixture. Не менять общую
+resource authority, processGacha или journal route без выявленной зависимости.
+
+Приёмка следующего блока: сохранённый валидный RED→accepted GREEN; exact prior
+musings/history prefix + ровно1–2новые записи, matching activeGuardian;
+повторный normalize/validation/restart ничего не добавляет. Invalid command,
+wrong actor/turn, old/direct mutation, altered mirror, stale request/generation,
+missing original snapshot и чужой lease остаются refused. Cold cuts после capture,
+после normalize и после accepted-before-cleanup; затем настоящие client-only и
+полный process restart, следующая валидная команда и сохранение всей предыдущей
+содержательной истории. Проверять новый command scope, существующие Guardian
+policy negatives, affected processGacha retention и journal alternative;
+не запускать весь guardian-state или агрегаты без разбора точной membership.
+Промпты уже разрешают addMusings: нужен worked example текущего supported пути
+и guards/no-new-schema rationale, а не prompt-only обход потерянной authority.
+
+Оба исправления возвращают уже предусмотренные цепочки; новой продуктовой
+семантики для ограниченного active-engine scope не требуется. Отдельное решение
+владельца потребовалось бы лишь при расширении на standalone browser startup/
+automatic GM creation или на новую очередь нескольких действий — это не цель
+предлагаемого прохода. Рекомендация: начать с C5 bounded consumer, принять его
+cold/replay proof, затем отдельный addMusings lifecycle fix. C2 не включать.
+
+Все записи ниже — исторические checkpoints со статусом на указанном source SHA;
+актуальная матрица и причинные поправки находятся выше. Старые UNRUN/WIP/ошибочные
+объяснения не переобозначают текущий результат и сохраняются для provenance.
 
 ## C4 whole local chain PASS; read-owner close/cold PASS; persistent I/O correction
 
