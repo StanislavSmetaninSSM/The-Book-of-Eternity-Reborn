@@ -216,6 +216,38 @@
             ]
         },
         {
+            "id": "c5-continue-click-protocol-diagnostic",
+            "responsibility": "#1553 T069/T071 one actual normal Continue click using the existing full-C5 bootstrap, original Bridge/daemon and genuine queued-idle witness. Unchanged12s Locator.click(no_wait_after=True), passive API/CDP/network/trusted-input/composer observations, real Program HTTP DiagnosticListener startup observer. Stop before command fill/submission; normal-return oracle requires one trusted click, real visible composer and correlated successful browser/server state GETs. Work120/total180/guardian180/external190 seconds; once-only provider0 and complete owned cleanup.",
+            "excludes": "Full C5 acceptance, any synthetic/forced/repeated click, swallowed timeout, timer/performance/authority/product changes, helper-refusal repair, Windows/live provider or other chains. A passing diagnostic alone does not establish cause.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+                "BookOfEternityClient.TestSupport/ContinueClickHttpObserver.cs",
+                "tests/fixtures/LinuxGameChains/console_chain.py",
+                "tests/fixtures/LinuxGameChains/continue_observer.py"
+            ],
+            "related": [
+                {
+                    "id": "c5-browser-staged-idle-duration-diagnostic",
+                    "when": "Only after a causally proven oracle/chain fix, fresh unchanged full-C5 correctness must qualify the optimized production path; existing work660/total720/guardian750/external755/helper60/acceptance180 budgets remain."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": true,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 4,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.LinuxGameChainTests.Browser_ContinueClick_ProtocolDiagnostic"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-browser-staged-idle-duration-diagnostic",
             "responsibility": "#1553 T069 separate finite full-C5 semantic diagnostic of actual React/Program/Bridge/daemon/relay queued and witnessed staged-idle SIGKILL/EOF/cold continuation. Model-only authored packets; all original identity/once-only/full-prefix/Stop/guardian assertions retained. Read-only pre-packet snapshot inventory and concurrently observed helper/ready/narrative/prompt phases. One 180s absolute acceptance limit after helper completion; work660/total720/guardian750/external755 seconds. Diagnostic uses the existing --relay-turn fixture budget mode; native reaping algorithm unchanged.",
             "excludes": "No original40s GREEN, product SLA, regression closure, live provider, pre-lock deferral, production timeout/guard change, active-poll crash or remaining T070 interruption/repair qualification.",

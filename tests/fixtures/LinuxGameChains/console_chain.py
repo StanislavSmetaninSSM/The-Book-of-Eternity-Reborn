@@ -5,6 +5,7 @@ main ownership, relay/helper, validation, application and persistence are real.
 An outer host-guardian owns this driver and all of its descendant processes.
 """
 import errno
+from contextlib import nullcontext
 from datetime import datetime, timezone
 import fcntl
 import hashlib
@@ -28,9 +29,14 @@ repo, out, ship = map(lambda s: Path(s).resolve(), sys.argv[1:4])
 scenario = sys.argv[4] if len(sys.argv) > 4 else "console"
 assert scenario in ["console", "console-musings", "browser-relay"]
 duration_diagnostic = os.environ.get("BOE_TEST_C5_DURATION_DIAGNOSTIC") == "1"
+continue_diagnostic = os.environ.get("BOE_TEST_C5_CONTINUE_DIAGNOSTIC") == "1"
+if continue_diagnostic and (scenario != "browser-relay" or duration_diagnostic or not __debug__):
+    raise RuntimeError("Continue diagnostic requires only browser-relay with nonoptimized assertions")
 if duration_diagnostic and (scenario != "browser-relay" or not __debug__):
     raise RuntimeError("C5 diagnostic requires browser-relay and nonoptimized Python assertions")
 work_seconds, total_seconds = (660, 720) if duration_diagnostic else (240, 240)
+if continue_diagnostic:
+    work_seconds, total_seconds = 120, 180
 active_diagnostic_turn = None
 base = out / "play"
 session = base / "game_session"
@@ -48,6 +54,11 @@ if duration_diagnostic:
         "HelperProofSeconds": 60, "HelperToAcceptanceSeconds": 180,
         "GuardianSeconds": 750, "ExternalSeconds": 755,
         "Qualification": "Exploratory semantic diagnostic; original 40s mode and latency regression remain separate."})
+if continue_diagnostic:
+    result.update(DiagnosticOnly=True, ContinueOnly=True, DiagnosticBudgets={
+        "WorkSeconds": 120, "TotalSeconds": 180, "CleanupReserveSeconds": 60,
+        "ClickMilliseconds": 12000, "GuardianSeconds": 180, "ExternalSeconds": 190,
+        "Qualification": "One normal Continue observation; no action submission or full C5 qualification."})
 env = dict(os.environ)
 env.update(TERM="dumb", NO_COLOR="1")
 for key, name in [("TMPDIR", "tmp"), ("XDG_CONFIG_HOME", "config"),
@@ -86,7 +97,7 @@ class Peer:
         self.master, self.slave = pty.openpty()
         fcntl.ioctl(self.slave, termios.TIOCSWINSZ, struct.pack("HHHH", 25, 100, 0, 0))
         self.initial = termios.tcgetattr(self.slave)
-        self.raw, self.echo, self.closed = bytearray(), bytearray(), set()
+        self.raw, self.echo, self.stderr, self.closed = bytearray(), bytearray(), bytearray(), set()
 
         def own():
             os.setsid()
@@ -96,12 +107,20 @@ class Peer:
         peer_env = dict(env)
         if scenario == "browser-relay" and name.startswith("client-"):
             peer_env["BOE_TEST_GAME_LOOP_FAILURE_NONCE"] = failure_nonce
+        observed_web = continue_diagnostic and name.startswith("web-action-")
+        if observed_web:
+            hook = ship / "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.dll"
+            assert hook.is_file(), "Fresh matching HTTP observer assembly required"
+            peer_env["DOTNET_STARTUP_HOOKS"] = str(hook)
+            peer_env["BOE_TEST_CONTINUE_HTTP_OBSERVER_PATH"] = str(out / (name + "-server-http.jsonl"))
         self.process = subprocess.Popen(argv, cwd=ship, env=peer_env, stdin=self.slave,
                                         stdout=subprocess.PIPE if captured else self.slave,
-                                        stderr=subprocess.STDOUT if captured else self.slave, preexec_fn=own)
+                                        stderr=subprocess.PIPE if observed_web else subprocess.STDOUT if captured else self.slave, preexec_fn=own)
         self.streams = {self.master: "echo" if captured else "output"}
         if captured:
             self.streams[self.process.stdout.fileno()] = "output"
+        if observed_web:
+            self.streams[self.process.stderr.fileno()] = "stderr"
         peers.append(self)
         events.append({"Peer": name, "Argv": argv, "Pid": self.process.pid})
         os.close(self.slave)
@@ -133,7 +152,7 @@ def pump():
             if not data:
                 p.closed.add(fd)
             else:
-                target = p.echo if kind == "echo" else p.raw
+                target = p.echo if kind == "echo" else p.stderr if kind == "stderr" else p.raw
                 offset = len(target)
                 target.extend(data)
                 assert len(target) < 4194304, "Owned output exceeds 4MiB"
@@ -379,6 +398,11 @@ def submit_browser_action(dll, action, ordinal):
         available.bind(("127.0.0.1", 0))
         url = "http://127.0.0.1:" + str(available.getsockname()[1])
     name = "web-action-" + str(ordinal)
+    if continue_diagnostic:
+        from continue_observer import ContinueObserver
+        trace = ContinueObserver(out, name)
+    else:
+        trace = None
     web = Peer(name, ["dotnet", str(dll), str(base), "--web", "--web-url", url], True)
     def ready():
         assert web.process.poll() is None, "Actual web host exited before browser action"
@@ -396,11 +420,13 @@ def submit_browser_action(dll, action, ordinal):
         assert queued_ack == {"schemaVersion": 1, "nonce": queued_cut_nonce,
                               "pid": client.process.pid, "outsideParticipation": True}
         result["QueuedIdleWitness"] = queued_ack
-    with sync_playwright() as driver:
+    with trace.driver_logging() if trace else nullcontext(), sync_playwright() as driver:
         browser = driver.chromium.launch(executable_path="/usr/bin/chromium", headless=True,
                                          args=["--no-sandbox", "--disable-dev-shm-usage"], env=env)
         page = browser.new_page(reduced_motion="reduce")
         page.set_default_timeout(12000)
+        if trace:
+            trace.attach(page)
         def inventory():
             cdp = browser.new_browser_cdp_session()
             try:
@@ -416,8 +442,26 @@ def submit_browser_action(dll, action, ordinal):
             page.goto(url, wait_until="domcontentloaded")
             # The real click changes this SPA route. Assert the actual composer
             # rather than waiting for unrelated scheduled navigation completion.
-            page.locator('button[data-launcher-mode="continue"]').click(no_wait_after=True)
+            if trace:
+                trace.mark("NormalClickBegin", Selector='button[data-launcher-mode="continue"]', NoWaitAfter=True,
+                           TimeoutMilliseconds=12000)
+            try:
+                page.locator('button[data-launcher-mode="continue"]').click(no_wait_after=True)
+            except Exception:
+                if trace:
+                    trace.mark("NormalClickError", Error=traceback.format_exc())
+                raise
+            if trace:
+                trace.mark("NormalClickReturned")
             page.get_by_label("Команда или действие", exact=True).wait_for(state="visible")
+            if continue_diagnostic:
+                result["ContinueClickObservation"] = trace.returned_click_oracle(page, out / (name + "-server-http.jsonl"))
+                assert not (session / "input/pending_player_action.json").exists()
+                assert not (session / "input/turn_request.json").exists()
+                result["ContinueDiagnosticAssertionsPassed"] = True
+                page.screenshot(path=str(out / (name + "-continue-returned.png")))
+                (out / (name + "-continue-returned.html")).write_text(page.content())
+                return  # No fill, submission, cold cut or authored turn in this diagnostic.
             page.get_by_label("Команда или действие", exact=True).fill(action)
             with page.expect_response(lambda r: r.request.method == "POST" and r.url == url + "/api/explorer/player-action") as response:
                 page.get_by_role("button", name="Отправить", exact=True).click()
@@ -481,6 +525,11 @@ def submit_browser_action(dll, action, ordinal):
                 owned["FailureCapture"] = traceback.format_exc()
             raise
         finally:
+            if trace:
+                try:
+                    trace.stop(page)
+                except Exception:
+                    result["InstrumentationFailure"] = traceback.format_exc()
             pids = sorted(set(pids + inventory()))
             browser.close()
             def all_exited():
@@ -625,6 +674,8 @@ try:
         offset = len(client.raw)
         if scenario == "browser-relay":
             submit_browser_action(dll, action, ordinal)
+            if continue_diagnostic:
+                break
             offset = len(client.raw)
         else:
             client.send(action + "\r")
@@ -748,10 +799,11 @@ try:
                                          "PlayerAction": action, "Narrative": narrative, "StorySHA256": sha(story_bytes), "PreservedFullStoryPrefixSHA256": prefix_sha, "StoryEntries": len(entries), "Execution": execution})
         (out / ("story-after-" + str(ordinal) + ".jsonl")).write_bytes(story_bytes)
         exit_client(client)
-    assert len({t["SessionId"] for t in result["AcceptedTurns"]}) == 1
-    assert len({t["RequestId"] for t in result["AcceptedTurns"]}) == 3
-    assert len(result["OriginalRuns"]) == 2
-    result["ChainAssertionsPassed"] = True
+    if not continue_diagnostic:
+        assert len({t["SessionId"] for t in result["AcceptedTurns"]}) == 1
+        assert len({t["RequestId"] for t in result["AcceptedTurns"]}) == 3
+        assert len(result["OriginalRuns"]) == 2
+        result["ChainAssertionsPassed"] = True
 except Exception:
     result["Failure"] = traceback.format_exc()
     if client is not None and "Main run metadata or original owner admission is unavailable" in client.text():
@@ -797,12 +849,14 @@ finally:
     for p in peers:
         (out / (p.name + ".raw")).write_bytes(p.raw)
         (out / (p.name + "-echo.raw")).write_bytes(p.echo)
+        if continue_diagnostic and p.name.startswith("web-action-"):
+            (out / (p.name + "-stderr.raw")).write_bytes(p.stderr)
         result["Peers"][p.name] = {"ExitCode": p.process.poll(), "EOF": len(p.closed) == len(p.streams), "Pid": p.process.pid}
         for fd in [p.master, p.slave]:
             if fd >= 0:
                 os.close(fd)
     result["ElapsedSeconds"] = time.monotonic() - started
-    if duration_diagnostic:
+    if duration_diagnostic or continue_diagnostic:
         result["DiagnosticTotalBudgetExceeded"] = result["ElapsedSeconds"] >= total_seconds
         if result["DiagnosticTotalBudgetExceeded"]:
             result.setdefault("Failure", "Driver total diagnostic budget exceeded before final PASS")
@@ -810,7 +864,8 @@ finally:
         len(result.get("OriginalStops", [])) == len(result["OriginalRuns"]) and
         all(any(stop["Identity"] == identity and stop["RecordAfter"]["Disposition"] == "Stopped"
                 for stop in result["OriginalStops"]) for identity in result["OriginalRuns"]))
-    result["PASS"] = bool(result.get("ChainAssertionsPassed") and result["OriginalStopped"] and result.get("IoDrained") and not result.get("Failure") and not result.get("CleanupFailure"))
+    goal = result.get("ContinueDiagnosticAssertionsPassed") if continue_diagnostic else result.get("ChainAssertionsPassed")
+    result["PASS"] = bool(goal and result["OriginalStopped"] and result.get("IoDrained") and not result.get("Failure") and not result.get("CleanupFailure") and not result.get("InstrumentationFailure"))
     (out / "events.json").write_text(json.dumps(events, ensure_ascii=False, indent=2))
     (out / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
     print(json.dumps(result, ensure_ascii=False))
