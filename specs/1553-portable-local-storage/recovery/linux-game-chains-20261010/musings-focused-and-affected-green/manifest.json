@@ -1,0 +1,49 @@
+{
+  "SourceSHA": "da30ae869419d3125030010e25744ae998e7fe30",
+  "Command": "pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category @(\"guardian-musings-publication\", \"guardian-musings-original-consumers\", \"guardian-musings-affected-lifecycle\", \"portable-original-engine-repair-owning-close-linux\")'",
+  "Status": "45/45 PASS; 4 complete descriptors; 96.0075093s; cleanup complete",
+  "Scope": "Fresh integration build: component16, original consumers12 including specific signed Mortal rejection2, affected compensation/stale-session9, genuine original owning-close8. Scope excludes actual C1 and real cold-process chain; historical fail packets retained.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/guardian-musings-original-consumers-integration-002.trx.gz",
+      "RawSHA256": "a495048d4e660b4fb9f459bedcbf3f8328897cb366c01aac8c28bbf7947ec6cb",
+      "RawBytes": 21779
+    },
+    {
+      "Path": "runner/guardian-musings-affected-lifecycle-integration-001.trx.gz",
+      "RawSHA256": "8d5412175ef9392f8d0b287c202205332f8abf634c6203ada8c70997b0bb6f85",
+      "RawBytes": 19385
+    },
+    {
+      "Path": "runner/guardian-musings-publication-integration-003.trx.gz",
+      "RawSHA256": "6fda0fdda7b18baee9aee09dfa56cd5355de0607c50a1a3015c9bac4892347c1",
+      "RawBytes": 27015
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "3dddc049d1ee51cc1cdb7f4aa3ac1b070f5611162d9f4b26a1096e5f9a5ae9b8",
+      "RawBytes": 6450
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "b6d06bb91df99af8227f99613e39fb648880adcce1324430f2f84e48914aad2a",
+      "RawBytes": 2171
+    },
+    {
+      "Path": "runner/portable-original-engine-repair-owning-close-linux-integration-004.trx.gz",
+      "RawSHA256": "8d7a8f0b6b9786c801ad7c81015ca7b63e725331cf2b75839dd141d64de0313a",
+      "RawBytes": 94549
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "7796515277f1e5870052a3db9a533949b58520d8bd9207ad808bd1a53cb77ab8",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "ec9b0a8200e9643c42a725d32386632e9e8176e4d23afb811d6300ea64b2abb7",
+      "RawBytes": 1664034
+    }
+  ]
+}
