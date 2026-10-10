@@ -23,6 +23,11 @@ internal sealed class FileSystemManagerHooks
     internal Func<Task>? CanonicalWriteLockContendedAsync { get; init; }
     internal Func<Task>? BeforeMainBorrowRetainAsync { get; init; }
     internal Func<Task>? AfterBrowserOriginalPreflightAsync { get; init; }
+    /// <summary>
+    /// Test-only scheduling observation after browser recovery selects an existing
+    /// journal name and before its fresh validation. Null leaves preflight unchanged.
+    /// </summary>
+    internal Action<string>? BrowserRecoveryJournalSelectedObserver { get; init; }
     // Read-only timing observations for the original admission profile. A
     // missing callback allocates no timer and changes no admission decision.
     internal Action<string, TimeSpan>? BrowserOriginalAdmissionTimingObserver { get; init; }

@@ -766,6 +766,36 @@
             ]
         },
         {
+            "id": "c5-original-browser-journal-selection-race",
+            "responsibility": "#1553 T069/T071 deterministic actual browser prelock journal selection concurrent with one real physical-lease-owned publisher. Two cases: original IntentStage Move to Active and committed Active cleanup disappearance. Test-only instance-local selected-path latch; original codec/guards/recovery remain unchanged. Requires witnessed transaction/path/bytes/hash/intermediate phase and successful full publication/actual lease disposal before resuming preflight; successful oracle requires fresh physical held original proof and unchanged original tuple/manifest/signed authority/snapshots. Current-source causal RED must be exact selected-path FileNotFound at HasNamespaceJournalMagic; timeout/unreached seam is incomplete, not proof. Each case cancellation30s/latches and bounded joins10s; category2min, explicit overall6 with six existing pending-recovery/refusal controls.",
+            "excludes": "Historical responsible actor/transaction attribution, old helper causal linkage, product fix, fullC5 acceptance, live provider, Windows/B2/main/CI/merge/issues.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.cs",
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+                "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs"
+            ],
+            "related": [
+                "c5-original-browser-pending-recovery",
+                "c5-original-browser-review-refusals"
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_SelectedJournalSurvivesOwnedPublicationTransition"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-original-browser-pending-recovery",
             "responsibility": "Actual original owned interrupted publication remains byte-for-byte unchanged when original staged tuple changes after physical canonical lock; same proof permits ordinary recovery.",
             "excludes": "Actual Program/React staged-idle crash, active original owner native propagation, Windows and live model qualification.",

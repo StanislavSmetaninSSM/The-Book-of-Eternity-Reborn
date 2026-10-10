@@ -398,6 +398,7 @@ public partial class FileSystemManager
         new TrustedLocalFilePublication(this,new TrustedLocalFileScope([BasePath]))
             .RequireBrowserRecoveryPreservesOriginal(staged.Binding.Generation,paths,relative =>
                 settled && GameEngine.IsOriginalBrowserPhysicalInventoryPath(relative) ||
-                GameEngine.SelectOriginalStoryContinuityFiles([relative]).Any());
+                GameEngine.SelectOriginalStoryContinuityFiles([relative]).Any(),
+                _hooks?.BrowserRecoveryJournalSelectedObserver);
     }
 }

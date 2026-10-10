@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-original-browser-journal-selection-race",
+            "reason": "Two new actual held-publisher transitions interleaved with original browser prelock journal selection; exact selected-path FileNotFound RED before any repair, physical fresh proof oracle and all original bytes preserved. Source-pinned fresh selected preparation/catalog and independent source gate before sole8case run; no historical actor attribution.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "T071-C5-MUSINGS-CHECKPOINT",
+                "Original prelock projection and physically held fresh original authority"
+            ]
+        },
+        {
+            "category": "c5-original-browser-pending-recovery",
+            "reason": "Two existing original damaged-tuple-under-physical-lock/ordinary actual recovery cases must retain refusal before recovery and exact journal/tree; guards remain unchanged alongside journal causal repro.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "T071-C5-MUSINGS-CHECKPOINT",
+                "Original prelock projection and physically held fresh original authority"
+            ]
+        },
+        {
+            "category": "c5-original-browser-review-refusals",
+            "reason": "Four existing accepted/settled/escaped/missing proof cases preserve original pending publication refusal and exact evidence before mutating recovery; no weakened phase/tuple authority.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "T071-C5-MUSINGS-CHECKPOINT",
+                "Original prelock projection and physically held fresh original authority"
+            ]
+        },
+        {
             "category": "c5-helper-caught-exception-control",
             "reason": "Control-only continuation after frozen6ba77147a first2-fact outcome: prove actual completed original NULL/EOF before unchanged guard, original config-absence caught exception/nonce/managed childExit2/body false/joins/canonical release. Fix only invalid control requirement for a non-active object when actual terminalCloseNULL/no close attempted. New owner isolates1control; fresh matching preparation/catalog and sameAstra source gate precede sole NoBuild control. Passing queued-cold diagnostic is not repeated; active.json precleanup disappearance remains a separate acceptance blocker requiring owned-transition causal evidence before current fullC5.",
             "contracts": [

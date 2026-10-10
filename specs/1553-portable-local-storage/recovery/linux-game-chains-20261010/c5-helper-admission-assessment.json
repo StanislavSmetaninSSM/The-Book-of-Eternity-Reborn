@@ -842,7 +842,7 @@
       }
     },
     "JournalCausalProposal": {
-      "Status": "DESIGN ONLY; source/runtime unimplemented; same Astra design/source gate required",
+      "Status": "WIP source/test implemented; static/source gate/matching prep/catalog/sole RED pending",
       "Seam": "Optional instance-local selected-path callback after actual Active/IntentStage selection before unchanged HasNamespaceJournalMagic fresh validation",
       "Cases": [
         "Actual held publisher IntentStaged to Move/IntentPublished then full commit/lease release",
@@ -859,7 +859,21 @@
       "ExpectedRed": "Actual selected intent.tmp or active.json FileNotFound at HasNamespaceJournalMagic; timeout/unreached seam/build failures do not prove hypothesis",
       "Preserved": "Real canonical lease/current generation/unchanged original request/pending/manifest/authority/snapshots; no hand deletion/synthetic reply/prelock deferral/guard/timer/replay change",
       "HistoricalActorAttribution": "UNKNOWN; possible owned interleaving reproduction does not attribute historical6ba transaction or old helper relation",
-      "FullC5": "FAIL/UNQUALIFIED/WIP; no new fullC5 before proven minimal repair"
+      "FullC5": "FAIL/UNQUALIFIED/WIP; no new fullC5 before proven minimal repair",
+      "SourceFiles": [
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+        "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs"
+      ],
+      "Category": "c5-original-browser-journal-selection-race",
+      "CatalogExpected": {
+        "Categories": 659,
+        "Methods": 11459
+      },
+      "RawLocation": "Owned TestResults/journal-selection-race/<uniqueid>/observation.json plus exact before/after tree bytes",
+      "DesignGate": "Same Astra PASS3062; concrete source gate pending",
+      "StaticChecks": "PASS four changed C# sources Debug/Release syntax/JSON/diff whitespace; existing catalog objects and all other assessment fields unchanged; no compilation/runtime"
     }
   }
 }

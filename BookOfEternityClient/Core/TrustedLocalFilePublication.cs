@@ -344,7 +344,7 @@ internal sealed partial class TrustedLocalFilePublication
     // A read-only refusal projection through the original trusted codec. Visible
     // after-images never substitute for this publisher's committed decision.
     internal void RequireBrowserRecoveryPreservesOriginal(string generation, IEnumerable<string> originalPaths,
-        Func<string,bool>? protectsReceiptNamespace = null)
+        Func<string,bool>? protectsReceiptNamespace = null, Action<string>? selectedObserver = null)
     {
         if (!Directory.Exists(_journalRoot)) return;
         _journalScope.ValidateDirectory(_journalRoot, allowMissing: false);
@@ -357,6 +357,7 @@ internal sealed partial class TrustedLocalFilePublication
                 throw Conflict("Original browser publication has unresolved commit evidence.");
             return;
         }
+        selectedObserver?.Invoke(path);
         // Namespace recovery may replace the original session and its tuple.
         if (HasNamespaceJournalMagic(path))
             throw Conflict("Original browser session has pending namespace publication.");
