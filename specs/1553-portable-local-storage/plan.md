@@ -1,3 +1,5 @@
+Boundary fixture preparation at4124ba52: BUILD_FAIL38.3942363s,0tests/ownedcleanupcomplete (missing Configuration import); fixed import, behavior controls remain UNRUN. Catalog formatting restored to existing four-space convention.
+
 ### Current C5 result and boundary controls WIP — 2026-10-10
 
 Actual source56571073: selected **10/10 PASS**,218.1995007s,4/4 descriptors,

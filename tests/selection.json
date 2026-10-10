@@ -1,138 +1,138 @@
 {
-  "schemaVersion": 1,
-  "selections": [
-    {
-      "category": "browser-player-input-recovery",
-      "reason": "T069 original orchestration conflict RED and bounded classification/dequeue/evidence negatives. Cold new-engine-object component only, no process or gameplay acceptance claim.",
-      "contracts": [
-        "#1553",
-        "T069-C5-ORDINARY-CONSUMER"
-      ]
-    },
-    {
-      "category": "browser-pending-snapshot-roundtrip",
-      "reason": "Independent review found reader DTO drops newly hashed browser fields. Actual engine manifest/read authority browser vs ordinary RED before DTO fix.",
-      "contracts": [
-        "#1553",
-        "T069-C5-ORDINARY-CONSUMER"
-      ]
-    },
-    {
-      "category": "player-input-draft-preservation",
-      "reason": "T069 shared TextComposer draft plus player-only cooperative key arbitration; component proof only. Causal draft RED preserved; actual original C5 FAIL separately owns native web delivery.",
-      "contracts": [
-        "#1553",
-        "T069-C5-ORDINARY-CONSUMER"
-      ]
-    },
-    {
-      "category": "browser-pending-action-admission",
-      "reason": "T069 initial causal RED/GREEN through current producer entrypoint: existing single slot silently overwritten and lacks generation/action identity. No process/model or broad category.",
-      "contracts": [
-        "#1553",
-        "T069-C5-ORDINARY-CONSUMER",
-        "US3",
-        "FR-011",
-        "FR-013"
-      ]
-    },
-    {
-      "category": "linux-game-chain-console",
-      "reason": "T066 bounded Linux C1; real console entrypoint/relay/helper/acceptance, three independently correlated accepted turns, client-only restart then full client+Bridge+daemon+relay restart. Requires exact full history prefix and terminal stop proof for each original identity. Authored GM substitutes for model; no provider calls. Not guardian-command or whole-migration qualification.",
-      "contracts": [
-        "#1553",
-        "US3",
-        "FR-004",
-        "FR-005",
-        "FR-006",
-        "FR-011",
-        "FR-013",
-        "T066-LINUX-GAME-CHAINS"
-      ]
-    },
-    {
-      "category": "linux-game-chain-browser-inventory",
-      "reason": "T066 real React/host cold command inventory chain, not service or HTTP200-only evidence. Explicit current-schema initial item fixture; no model calls. Save/load happy path does not qualify injected rollback.",
-      "contracts": [
-        "#1553",
-        "US3",
-        "FR-004",
-        "FR-005",
-        "FR-006",
-        "FR-011",
-        "FR-013",
-        "T066-LINUX-GAME-CHAINS"
-      ]
-    },
-    {
-      "category": "linux-game-chain-browser-saves",
-      "reason": "T066 real React/host cold command saves chain, not service or HTTP200-only evidence. Explicit current-schema initial item fixture; no model calls. Save/load happy path does not qualify injected rollback.",
-      "contracts": [
-        "#1553",
-        "US3",
-        "FR-004",
-        "FR-005",
-        "FR-006",
-        "FR-011",
-        "FR-013",
-        "T066-LINUX-GAME-CHAINS"
-      ]
-    },
-    {
-      "category": "linux-game-chain-browser-relay",
-      "reason": "C5 actual bounded browser→engine→relay acceptance attempt; keeps expected full-chain assertion so disconnected queue/HTTP200 remains FAIL. Original engine/Bridge/daemon ready, no player input substitute/provider call.",
-      "contracts": [
-        "#1553",
-        "US3",
-        "FR-004",
-        "FR-005",
-        "FR-006",
-        "FR-011",
-        "FR-013",
-        "T066-LINUX-GAME-CHAINS"
-      ]
-    },
-    {
-      "category": "linux-inventory-context-read-close",
-      "reason": "T067 exact read-owner late-close or actual React Load late-write rollback, distinct from successful happy C3/C4. Finite actual boundary evidence only; no broad source-only qualification.",
-      "contracts": [
-        "#1553",
-        "US3",
-        "FR-004",
-        "FR-005",
-        "FR-006",
-        "FR-011",
-        "FR-013",
-        "T067-LINUX-GAME-FAULTS"
-      ]
-    },
-    {
-      "category": "linux-game-chain-browser-load-rollback",
-      "reason": "T067 exact read-owner late-close or actual React Load late-write rollback, distinct from successful happy C3/C4. Finite actual boundary evidence only; no broad source-only qualification.",
-      "contracts": [
-        "#1553",
-        "US3",
-        "FR-004",
-        "FR-005",
-        "FR-006",
-        "FR-011",
-        "FR-013",
-        "T067-LINUX-GAME-FAULTS"
-      ]
-    },
-    {
-      "category": "portable-browser-save-creation",
-      "reason": "Affected bound dashboard read fix: existing six established Save outcomes (commit/rollback/uncertain/cleanup/refresh/debt) plus generation fencing source guard preserve decision identity and failure invariants; C4 browser chain separately qualifies actual Program/React cold continuation.",
-      "contracts": [
-        "#1553",
-        "US3",
-        "FR-004",
-        "FR-005",
-        "FR-006",
-        "FR-011",
-        "FR-013",
-        "T067-LINUX-GAME-FAULTS"
-      ]
-    }
-  ]
+    "schemaVersion": 1,
+    "selections": [
+        {
+            "category": "browser-player-input-recovery",
+            "reason": "T069 original orchestration conflict RED and bounded classification/dequeue/evidence negatives. Cold new-engine-object component only, no process or gameplay acceptance claim.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER"
+            ]
+        },
+        {
+            "category": "browser-pending-snapshot-roundtrip",
+            "reason": "Independent review found reader DTO drops newly hashed browser fields. Actual engine manifest/read authority browser vs ordinary RED before DTO fix.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER"
+            ]
+        },
+        {
+            "category": "player-input-draft-preservation",
+            "reason": "T069 shared TextComposer draft plus player-only cooperative key arbitration; component proof only. Causal draft RED preserved; actual original C5 FAIL separately owns native web delivery.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER"
+            ]
+        },
+        {
+            "category": "browser-pending-action-admission",
+            "reason": "T069 initial causal RED/GREEN through current producer entrypoint: existing single slot silently overwritten and lacks generation/action identity. No process/model or broad category.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "US3",
+                "FR-011",
+                "FR-013"
+            ]
+        },
+        {
+            "category": "linux-game-chain-console",
+            "reason": "T066 bounded Linux C1; real console entrypoint/relay/helper/acceptance, three independently correlated accepted turns, client-only restart then full client+Bridge+daemon+relay restart. Requires exact full history prefix and terminal stop proof for each original identity. Authored GM substitutes for model; no provider calls. Not guardian-command or whole-migration qualification.",
+            "contracts": [
+                "#1553",
+                "US3",
+                "FR-004",
+                "FR-005",
+                "FR-006",
+                "FR-011",
+                "FR-013",
+                "T066-LINUX-GAME-CHAINS"
+            ]
+        },
+        {
+            "category": "linux-game-chain-browser-inventory",
+            "reason": "T066 real React/host cold command inventory chain, not service or HTTP200-only evidence. Explicit current-schema initial item fixture; no model calls. Save/load happy path does not qualify injected rollback.",
+            "contracts": [
+                "#1553",
+                "US3",
+                "FR-004",
+                "FR-005",
+                "FR-006",
+                "FR-011",
+                "FR-013",
+                "T066-LINUX-GAME-CHAINS"
+            ]
+        },
+        {
+            "category": "linux-game-chain-browser-saves",
+            "reason": "T066 real React/host cold command saves chain, not service or HTTP200-only evidence. Explicit current-schema initial item fixture; no model calls. Save/load happy path does not qualify injected rollback.",
+            "contracts": [
+                "#1553",
+                "US3",
+                "FR-004",
+                "FR-005",
+                "FR-006",
+                "FR-011",
+                "FR-013",
+                "T066-LINUX-GAME-CHAINS"
+            ]
+        },
+        {
+            "category": "linux-game-chain-browser-relay",
+            "reason": "C5 actual bounded browser→engine→relay acceptance attempt; keeps expected full-chain assertion so disconnected queue/HTTP200 remains FAIL. Original engine/Bridge/daemon ready, no player input substitute/provider call.",
+            "contracts": [
+                "#1553",
+                "US3",
+                "FR-004",
+                "FR-005",
+                "FR-006",
+                "FR-011",
+                "FR-013",
+                "T066-LINUX-GAME-CHAINS"
+            ]
+        },
+        {
+            "category": "linux-inventory-context-read-close",
+            "reason": "T067 exact read-owner late-close or actual React Load late-write rollback, distinct from successful happy C3/C4. Finite actual boundary evidence only; no broad source-only qualification.",
+            "contracts": [
+                "#1553",
+                "US3",
+                "FR-004",
+                "FR-005",
+                "FR-006",
+                "FR-011",
+                "FR-013",
+                "T067-LINUX-GAME-FAULTS"
+            ]
+        },
+        {
+            "category": "linux-game-chain-browser-load-rollback",
+            "reason": "T067 exact read-owner late-close or actual React Load late-write rollback, distinct from successful happy C3/C4. Finite actual boundary evidence only; no broad source-only qualification.",
+            "contracts": [
+                "#1553",
+                "US3",
+                "FR-004",
+                "FR-005",
+                "FR-006",
+                "FR-011",
+                "FR-013",
+                "T067-LINUX-GAME-FAULTS"
+            ]
+        },
+        {
+            "category": "portable-browser-save-creation",
+            "reason": "Affected bound dashboard read fix: existing six established Save outcomes (commit/rollback/uncertain/cleanup/refresh/debt) plus generation fencing source guard preserve decision identity and failure invariants; C4 browser chain separately qualifies actual Program/React cold continuation.",
+            "contracts": [
+                "#1553",
+                "US3",
+                "FR-004",
+                "FR-005",
+                "FR-006",
+                "FR-011",
+                "FR-013",
+                "T067-LINUX-GAME-FAULTS"
+            ]
+        }
+    ]
 }
