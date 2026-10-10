@@ -128,6 +128,11 @@ internal static class GmTurnHelperStorageScenario
                 await WaitForAsync(() => File.Exists(Path.Combine(folder, "initialized")), child, "actual helper initialization");
                 if (scenario is "read-held" or "realm-held" or "terminal-held") await StartWriterAsync();
                 if (scenario == "stale-load") await ReplaceAndLeaveRecoverableJournalAsync(files, evidence);
+                if (scenario == "catch-config-missing") {
+                    await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+                    files.DeleteFile(lease, "config.json");
+                    evidence["ControlConfigRemovedUnderCanonicalLease"] = !File.Exists(files.ResolvePath("config.json"));
+                }
                 if (scenario == "realm-link") {
                     var foreign = Path.Combine(root, "foreign-realm.json");
                     File.WriteAllBytes(foreign, Encoding.UTF8.GetBytes("{\"currentRealm\":\"Mortal World\"}"));
@@ -178,7 +183,24 @@ internal static class GmTurnHelperStorageScenario
                 }
             } finally { foreach (var document in children) document.Dispose(); }
 
-            if (scenario is "init-held" or "read-held") {
+            if (scenario == "catch-config-missing") {
+                Require(ps.GetProperty("Failure").ValueKind == JsonValueKind.String && !ps.GetProperty("ControlBodyEntered").GetBoolean(), "Original write admission did not refuse before its body.");
+                Require(Bytes(files.ResolvePath("config.json")) == null && Equal(originalGeneration, Bytes(files.SessionGenerationPath)), "Refused admission changed the missing config or generation.");
+                var joined = ps.GetProperty("JoinedHelperTransports").EnumerateArray().ToArray();
+                var target = joined.Single(item => item.GetProperty("ExitCode").GetInt32() == 2);
+                Require(target.GetProperty("ProcessId").GetInt32() == ps.GetProperty("ControlChildPid").GetInt32(), "Refused target child identity changed.");
+                var reply = ps.GetProperty("ControlSeq0Reply");
+                Require(reply.ValueKind == JsonValueKind.Object && reply.GetProperty("sequence").GetInt32() == 0 && reply.GetProperty("state").GetString() != "active", "Control did not retain its original non-active seq0 reply.");
+                var records = target.GetProperty("Diagnostic").GetString()!.Split('\n').Where(line => line.StartsWith('{')).Select(line => JsonDocument.Parse(line)).ToArray();
+                try {
+                    var captured = records.Single().RootElement;
+                    Require(captured.GetProperty("kind").GetString() == "boe-helper-fixture-failure" && captured.GetProperty("nonce").GetString() == ps.GetProperty("ControlNonce").GetString(), "Original caught-exception nonce capture missing.");
+                    Require(captured.GetProperty("pid").GetInt32() == target.GetProperty("ProcessId").GetInt32() && captured.GetProperty("phase").GetString() == "run-core-catch", "Caught exception is not the actual refused child/catch.");
+                    Require(!captured.GetProperty("captureIncomplete").GetBoolean() && !captured.GetProperty("state").GetProperty("becameActive").GetBoolean(), "Refusal capture incomplete or admission became active.");
+                    Require(captured.GetProperty("exceptions")[0].GetProperty("type").GetString() == typeof(InvalidDataException).FullName && captured.GetProperty("exceptions")[0].GetProperty("message").GetString() == "Initialized configuration is absent.", "Control lost the original missing-configuration exception.");
+                    evidence["CaughtExceptionControl"] = captured.Clone();
+                } finally { foreach (var document in records) document.Dispose(); }
+            } else if (scenario is "init-held" or "read-held") {
                 Require(ps.GetProperty("Failure").ValueKind == JsonValueKind.Null && ps.GetProperty("Value").GetString() == "A", "Causal RED: helper observed undecided bytes instead of settled A.");
                 Require(!(bool)evidence["HelperCompletedBeforeWriterSettlement"]!, "Helper completed while original publication remained undecided.");
             } else if (scenario == "realm-held" || scenario == "realm-link") {
@@ -227,6 +249,8 @@ internal static class GmTurnHelperStorageScenario
                 // they neither establish the tested decision nor turn RED green.
                 if (scenario.StartsWith("generation-", StringComparison.Ordinal) && originalGeneration != null)
                     File.WriteAllBytes(files.SessionGenerationPath, originalGeneration);
+                if (scenario == "catch-config-missing" && evidence.TryGetValue("ConfigAtInvocation", out var controlConfig))
+                    File.WriteAllBytes(files.ResolvePath("config.json"), (byte[])controlConfig!);
                 if (scenario == "realm-link" && fixtureSoulPath != null && File.Exists(fixtureSoulPath)) {
                     File.Delete(fixtureSoulPath); File.WriteAllBytes(fixtureSoulPath, Encoding.UTF8.GetBytes("{\"currentRealm\":\"Mortal World\"}"));
                 }

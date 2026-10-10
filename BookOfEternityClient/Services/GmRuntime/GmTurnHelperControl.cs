@@ -41,7 +41,14 @@ internal static class GmTurnHelperControl
             return await RunInterruptibleAsync(new FileSystemManager(args[2],NullLogger<FileSystemManager>.Instance),
                 Console.OpenStandardInput(),Console.OpenStandardOutput(),args[4]=="initialize"?null:args[4]);
         }
-        catch { Console.Error.WriteLine("Original GM helper admission or continuation refused; no replay."); return 2; }
+#if DEBUG
+        catch (Exception failure) {
+            EmitFixtureFailure(failure, "outer-catch", null);
+#else
+        catch {
+#endif
+            Console.Error.WriteLine("Original GM helper admission or continuation refused; no replay."); return 2;
+        }
     }
 
     internal static Task<int> RunAsync(FileSystemManager files,Stream input,Stream output,string? expectedGeneration) =>
@@ -207,11 +214,104 @@ internal static class GmTurnHelperControl
                 terminalClose,closeObserved=observed,effectiveOutcome=outcome},CancellationToken.None);
             throw;
         }
+#if DEBUG
+        catch (Exception failure)
+        {
+            // The participating/binding finalization has already run. Capture
+            // its retained original exception before this catch's close reply.
+            EmitFixtureFailure(failure, "run-core-catch", new {
+                mode=opening.Mode, expectedGeneration, generation, becameActive, explicitClose,
+                closeReplyAttempted, sequence, uncertain, outcome, terminalClose,
+                observed, remote, localCompleted
+            });
+#else
         catch
         {
+#endif
             if(becameActive&&!explicitClose)files.MarkMainOperationUnresolved();
             else if(terminalClose!=null&&!closeReplyAttempted){try{await CloseReply(true);}catch{/* preserve original continuation failure */}}
             throw;
         }
     }
+
+#if DEBUG
+    private static void EmitFixtureFailure(Exception failure, string phase, object? state)
+    {
+        string? nonce=null;
+        try
+        {
+            nonce=Environment.GetEnvironmentVariable("BOE_TEST_HELPER_FAILURE_NONCE");
+            if(!Guid.TryParseExact(nonce,"N",out var parsed)||parsed.ToString("N")!=nonce)return;
+            const int maxNodes=6, maxDepth=3, maxCharacters=12288, maxUtf8Bytes=49152;
+            var remaining=maxCharacters;var incomplete=false;
+            var omitted=new List<string>();
+            var pending=new List<(Exception Failure,int Depth)> { (failure,0) };
+            var nodes=new List<object>();
+            string Clip(string text)
+            {
+                var count=Math.Min(remaining,text.Length);remaining-=count;
+                if(count!=text.Length)incomplete=true;
+                return text[..count];
+            }
+            for(var index=0;index<pending.Count;index++)
+            {
+                var (current,depth)=pending[index];
+                string ReadText(Func<string?> read,string field)
+                {
+                    try{return Clip(read()??"");}
+                    catch{incomplete=true;omitted.Add(index+":"+field+":unreadable");return "";}
+                }
+                var message=ReadText(()=>current.Message,"Message");
+                var stackTrace=ReadText(()=>current.StackTrace,"StackTrace");
+                var links=new Dictionary<string,int>();
+                void Link(string name,Exception? linked)
+                {
+                    if(linked==null)return;
+                    var existing=pending.FindIndex(item=>ReferenceEquals(item.Failure,linked));
+                    if(existing>=0){links[name]=existing;return;}
+                    if(depth>=maxDepth||pending.Count>=maxNodes){incomplete=true;omitted.Add(index+":"+name);return;}
+                    links[name]=pending.Count;pending.Add((linked,depth+1));
+                }
+                Link("InnerException",current.InnerException);
+                // Only these original lifecycle exception links are inspected;
+                // no ToString, arbitrary Data enumeration or established result.
+                foreach(var key in new[]{"MainOperationCloseFailure","SessionFinalizationFailure","SessionOperationFailure"})
+                {
+                    try{if(current.Data.Contains(key)){if(current.Data[key] is Exception linked)Link(key,linked);else{incomplete=true;omitted.Add(index+":"+key+":not-exception");}}}
+                    catch{incomplete=true;omitted.Add(index+":"+key+":unreadable");}
+                }
+                nodes.Add(new { id=index, depth, type=current.GetType().FullName, message, stackTrace, links });
+            }
+            var ticks=System.Diagnostics.Stopwatch.GetTimestamp();
+            object record=new {
+                kind="boe-helper-fixture-failure",nonce,pid=Environment.ProcessId,phase,state,
+                stopwatchTicks=ticks,stopwatchFrequency=System.Diagnostics.Stopwatch.Frequency,
+                utc=DateTimeOffset.UtcNow.ToString("O"),exceptions=nodes,captureIncomplete=incomplete,
+                omittedLinks=omitted,limits=new { maxNodes,maxDepth,maxCharacters,maxUtf8Bytes },
+                boundary="Original caught exception after participating/binding finalization; before this catch's optional close serialization. BecameActive is the original flag, not transport acknowledgment."
+            };
+            var json=JsonSerializer.Serialize(record);
+            if(System.Text.Encoding.UTF8.GetByteCount(json)>maxUtf8Bytes)
+            {
+                // Keep a valid bounded record; an oversized diagnostic is missing
+                // causal evidence, never a reason to alter the original failure.
+                json=JsonSerializer.Serialize(new {kind="boe-helper-fixture-failure",nonce,pid=Environment.ProcessId,
+                    phase,stopwatchTicks=ticks,stopwatchFrequency=System.Diagnostics.Stopwatch.Frequency,
+                    captureIncomplete=true,serializationLimitExceeded=true,exceptionType=failure.GetType().FullName,
+                    limits=new { maxNodes,maxDepth,maxCharacters,maxUtf8Bytes }});
+            }
+            Console.Error.WriteLine(json);
+        }
+        catch
+        {
+            // Best-effort explicit observation failure; even this fallback must
+            // leave the original exception/close/exit untouched.
+            try {
+                if(Guid.TryParseExact(nonce,"N",out var parsed)&&parsed.ToString("N")==nonce)
+                    Console.Error.WriteLine(JsonSerializer.Serialize(new {kind="boe-helper-fixture-failure",nonce,
+                        pid=Environment.ProcessId,phase,captureIncomplete=true,captureError=true}));
+            } catch { }
+        }
+    }
+#endif
 }

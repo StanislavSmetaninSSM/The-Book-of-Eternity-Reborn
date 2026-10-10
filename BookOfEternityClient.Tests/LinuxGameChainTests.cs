@@ -93,6 +93,7 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
             Assert.True(result.RootElement.GetProperty("HelperAdmissionOnly").GetBoolean());
             var observation = result.RootElement.GetProperty("HelperAdmissionObservation");
             Assert.True(observation.GetProperty("ObservationComplete").GetBoolean());
+            Assert.True(observation.GetProperty("Summary").GetProperty("NonceConfigured").GetBoolean());
             Assert.False(observation.GetProperty("ReadOutcome").GetProperty("IsNull").GetBoolean());
             Assert.True(observation.GetProperty("ReadOutcome").GetProperty("Utf8Bytes").GetInt32() <= 65536);
             Assert.Empty(observation.GetProperty("IdentityGuardObservation").GetProperty("FailedPredicates").EnumerateArray());

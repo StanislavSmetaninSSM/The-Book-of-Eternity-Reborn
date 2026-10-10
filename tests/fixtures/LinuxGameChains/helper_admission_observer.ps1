@@ -35,12 +35,27 @@ function Begin-BoeAdmissionObservation {
         $stem = Join-Path $env:BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR "consumer-$PID"
         $script:BoeAdmissionProbe = [pscustomobject]@{ ScopeId=[Guid]::NewGuid().ToString('N');
             HelperPid=$null; LinuxStarttime=$null; BootId=$null; Attached=$false;
+            FailureNonce=[Guid]::NewGuid().ToString('N'); NonceConfigured=$false;
             EventPath="$stem.jsonl"; FramePath="$stem-seq0.txt"; StderrPath="$stem-stderr.txt";
             SummaryPath="$stem-summary.json"; Rows=0; Bytes=0; Dropped=0; Errors=0; Truncated=$false }
-        Write-BoeAdmissionObservation $null 'launch-begin' @{ Session=$SessionPath; ExpectedGeneration=$ExpectedGeneration;
+        Write-BoeAdmissionObservation $null 'launch-begin' @{ Session=$SessionPath; ExpectedGeneration=$ExpectedGeneration; FailureNonce=$script:BoeAdmissionProbe.FailureNonce;
             ConsumerScript=$env:BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT;
             CallStack=@($stack | ForEach-Object { @{ Function=$_.FunctionName; Script=$_.ScriptName; Line=$_.ScriptLineNumber } }) }
     } catch { if ($script:BoeAdmissionProbe) { $script:BoeAdmissionProbe.Errors++ } }
+}
+
+function Configure-BoeAdmissionFailureCapture {
+    param($Start)
+    try {
+        # Remove inherited test settings from every child. Only the actual selected
+        # write launch gets this valid nonce; no process-global setting is changed.
+        [void]$Start.Environment.Remove('BOE_TEST_HELPER_FAILURE_NONCE')
+        $probe=$script:BoeAdmissionProbe
+        if(-not $probe -or $probe.Attached -or $probe.NonceConfigured){return}
+        $Start.Environment['BOE_TEST_HELPER_FAILURE_NONCE']=$probe.FailureNonce
+        $probe.NonceConfigured=$true
+        Write-BoeAdmissionObservation $null 'managed-failure-capture-configured' @{ FailureNonce=$probe.FailureNonce; Scope='Only this selected ProcessStartInfo environment' }
+    } catch { if($script:BoeAdmissionProbe){$script:BoeAdmissionProbe.Errors++} }
 }
 
 function Attach-BoeAdmissionObservation {
@@ -134,6 +149,7 @@ function Complete-BoeAdmissionObservation {
         Write-BoeAdmissionObservation $Context 'dispose-return' @{}
         $summary=@{ ScopeId=$probe.ScopeId; ConsumerPid=$PID; HelperPid=$probe.HelperPid;
             LinuxStarttime=$probe.LinuxStarttime; BootId=$probe.BootId; Rows=$probe.Rows; Bytes=$probe.Bytes;
+            FailureNonce=$probe.FailureNonce; NonceConfigured=$probe.NonceConfigured;
             Dropped=$probe.Dropped; Errors=$probe.Errors; StderrTruncated=$probe.Truncated;
             CaptureIncomplete=($probe.Dropped -ne 0 -or $probe.Errors -ne 0 -or $probe.Truncated -or -not $probe.LinuxStarttime);
             DisposeReturned=$true; ExitCode=$Context.exitCode }

@@ -622,5 +622,59 @@
       "Qualification": "Current optimized fullC5 remains FAIL/UNQUALIFIED/WIP; no accepted absence/once-only proof from AcceptedTurns=[]",
       "MinimumNextProposal": "One narrowly bounded causal capture at the original managed preactivation catch/close-response boundary, retaining the actual caught exception before generic TryRun stderr, correlated with real seq0 frame/ExpectedGeneration/predicates/managed-child identity. If journal disappearance is involved, retain only the selected IntentStage/Active existence-to-fresh-validation transition and responsible owned transaction witness. New causal observation required; no generic identical repeat, timer/guard/replay change, exception swallow or guessed repair."
     }
+  },
+  "ManagedContinuation": {
+    "Status": "WIP: source gate/preparation/control/diagnostic UNRUN",
+    "BaseSHA": "d80534a18ec6b09ceb94bd3e8c2e1441a99e36b7",
+    "Target": "Original selected Complete-BoeTurn write helper caught exception before optional close serialization, after participating/binding finalization",
+    "Boundaries": [
+      "No original exception, guard, owner, uncertain, close, exit or timer decision changed",
+      "Only actual selected child receives valid-N nonce; no global setting",
+      "Message/StackTrace/InnerException and only MainOperationCloseFailure/SessionFinalizationFailure/SessionOperationFailure exception links; no ToString or arbitrary Data/result serialization",
+      "Old healthy read/write and all negative raw/outcomes preserved; no old cause closure, repair or fullC5 qualification"
+    ],
+    "CaptureLimits": {
+      "Nodes": 6,
+      "Depth": 3,
+      "AggregateTextCharacters": 12288,
+      "UTF8BytesPerValidJSONRecordAfterEscaping": 49152,
+      "OriginalCatchRecordsAtMost": 2,
+      "MissingExit2RecordIsIncomplete": true
+    },
+    "Control": "Real initialized current generation, owned canonical config deletion, original direct write scope, non-active actual seq0/original config exception/nonce+PID/exit2/body false/joins/canonical release; not the actual diagnostic action",
+    "Budgets": {
+      "Work": 180,
+      "Total": 240,
+      "Cleanup": 60,
+      "Guardian": 240,
+      "External": 250,
+      "Startup": 60,
+      "Click": 12,
+      "ControlGuardian": 15,
+      "ControlOuter": 20,
+      "CategoryMinutes": 5,
+      "OverallMinutes": 7
+    },
+    "Checks": "UNRUN; source WIP only",
+    "NoGMContractChange": true,
+    "StaticChecks": {
+      "PythonASTJSONExactShipAnchors": "PASS",
+      "ActualSubstitutedPowerShellAndControlParse": "PASS",
+      "ChangedCSharpDebugReleaseSyntaxWithPowerShellBundledRoslyn": "PASS",
+      "Compilation": "UNRUN until published fresh preparation",
+      "SetupFailures": [
+        {
+          "ExitCode": 134,
+          "Observed": "PowerShell configuration failed before parser due read-only /home/agent/.cache/powershell; preserved writable XDG paths omitted",
+          "Resolved": "Same parser run with preserved writable XDG paths; no helper/game/tests"
+        },
+        {
+          "ExitCode": 1,
+          "Observed": "SDK Roslyn Add-Type manifest conflict with PowerShell already loaded Microsoft.CodeAnalysis",
+          "Resolved": "Use installed PowerShell matching bundled Roslyn for syntax only; fresh SDK compilation still required"
+        }
+      ],
+      "NoRuntimeBuildHelperTestsLaunched": true
+    }
   }
 }

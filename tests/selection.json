@@ -3,7 +3,7 @@
     "selections": [
         {
             "category": "c5-queued-cold-helper-admission-diagnostic",
-            "reason": "Current personally authorized bounded helper continuation from4e8fd25a: only original queued-cold packet consumer Complete-BoeTurn write-scope seq0/frame/ExpectedGeneration/predicate/managed-child capture; fresh matching preparation/discovery then one source-gated NoBuild run. No older categories rerun or fullC5 before causal repair review.",
+            "reason": "Current personally authorized causal continuation fromd80534a1: bounded DEBUG original caught Message/StackTrace/InnerException plus three known lifecycle exception Data links, nonce exclusively actual queued-cold Complete-BoeTurn write child; existing seq0/frame/ExpectedGeneration/predicate/child capture preserved. Exactly one real missing-config write refusal control plus one queued-cold diagnostic; fresh matching preparation/new-fact discovery and published source gate precede the sole NoBuild category. No older category rerun or fullC5 before proven causal repair review.",
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",

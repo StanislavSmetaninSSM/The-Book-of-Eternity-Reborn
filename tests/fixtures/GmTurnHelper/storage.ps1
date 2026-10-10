@@ -7,6 +7,14 @@ $ErrorActionPreference='Stop'
 # call it on RED. A later production helper retains its actual framing, body,
 # scope/lease, close and Dispose functions; TestSupport injects original FS hooks.
 $script:JoinedHelperTransports=[Collections.Generic.List[object]]::new()
+$script:ControlChildPid=$null; $script:ControlSeq0Reply=$null
+$script:OriginalRead=${function:Read-BoeHelperFrame}
+function Read-BoeHelperFrame {
+    param($Context)
+    $reply=& $script:OriginalRead $Context
+    if($Scenario -ceq 'catch-config-missing' -and $Context.process.Id -eq $script:ControlChildPid -and $Context.sequence -eq 0){$script:ControlSeq0Reply=$reply}
+    return $reply
+}
 $script:OriginalDispose=${function:Dispose-GmOperationTransport}
 function Dispose-GmOperationTransport {
     param($Context)
@@ -16,7 +24,9 @@ function Dispose-GmOperationTransport {
     # production Dispose kill fallback is a fixture failure, not causal evidence.
     $exited=$Context.process.WaitForExit(3500)
     & $script:OriginalDispose $Context
-    $script:JoinedHelperTransports.Add([pscustomobject]@{ProcessId=$originalPid;ExitedBeforeDispose=$exited;Disposed=$Context.disposed;ExitCode=$Context.exitCode})
+    $joined=[ordered]@{ProcessId=$originalPid;ExitedBeforeDispose=$exited;Disposed=$Context.disposed;ExitCode=$Context.exitCode}
+    if($Scenario -ceq 'catch-config-missing'){$joined.Diagnostic=$Context.diagnostic}
+    $script:JoinedHelperTransports.Add([pscustomobject]$joined)
 }
 function Start-BoeHelperProcess {
     param([string]$Root,[AllowNull()][string]$ExpectedGeneration)
@@ -25,7 +35,12 @@ function Start-BoeHelperProcess {
     $start.RedirectStandardInput=$true; $start.RedirectStandardOutput=$true; $start.RedirectStandardError=$true
     $expected=if([string]::IsNullOrEmpty($ExpectedGeneration)){'initialize'}else{$ExpectedGeneration}
     foreach($arg in @($TestSupport,'helper-storage-bootstrap',$Root,$Folder,$expected)){[void]$start.ArgumentList.Add($arg)}
-    return [Diagnostics.Process]::Start($start)
+    $start.Environment.Remove('BOE_TEST_HELPER_FAILURE_NONCE')|Out-Null
+    $captured=$script:ControlCaptureNextChild
+    if($captured){$start.Environment['BOE_TEST_HELPER_FAILURE_NONCE']=$script:ControlNonce;$script:ControlCaptureNextChild=$false}
+    $process=[Diagnostics.Process]::Start($start)
+    if($captured){$script:ControlChildPid=$process.Id}
+    return $process
 }
 function Wait-FixtureRelease {
     $watch=[Diagnostics.Stopwatch]::StartNew()
@@ -34,12 +49,17 @@ function Wait-FixtureRelease {
 }
 
 $initialized=$false; $value=$null; $failure=$null
+$script:ControlBodyEntered=$false; $script:ControlCaptureNextChild=$false; $script:ControlNonce=$null
 try {
     Initialize-BoeGmTurnHelper -GameSessionPath $SessionPath
     $initialized=$true
     [IO.File]::WriteAllText((Join-Path $Folder 'initialized'),'actual public Init returned')
     if($Scenario -notin @('init-held','generation-missing','generation-malformed')){Wait-FixtureRelease}
     switch($Scenario) {
+        'catch-config-missing' {
+            $script:ControlNonce=[Guid]::NewGuid().ToString('N'); $script:ControlCaptureNextChild=$true
+            Invoke-BoeHelperScope -Mode 'write' -Body {$script:ControlBodyEntered=$true}
+        }
         {$_ -in @('init-held','read-held','stale-load','generation-missing','generation-malformed')} {
             $value=(Read-BoeJson -RelativePath 'output/helper-snapshot.json').value
         }
@@ -57,4 +77,5 @@ try {
     }
 } catch {$failure=$_.Exception.ToString()}
 $report=[ordered]@{Initialized=$initialized;Value=$value;Failure=$failure;JoinedHelperTransports=@($script:JoinedHelperTransports.ToArray())}
+if($Scenario -ceq 'catch-config-missing'){$report.ControlBodyEntered=$script:ControlBodyEntered;$report.ControlNonce=$script:ControlNonce;$report.ControlChildPid=$script:ControlChildPid;$report.ControlSeq0Reply=$script:ControlSeq0Reply}
 [IO.File]::WriteAllText((Join-Path $Folder 'powershell.json'),($report|ConvertTo-Json -Depth 12 -Compress))

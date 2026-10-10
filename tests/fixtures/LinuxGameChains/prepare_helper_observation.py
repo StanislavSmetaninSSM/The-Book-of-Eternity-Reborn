@@ -20,6 +20,8 @@ def prepare(repo, out, ship):
     (retained / observer.name).write_bytes(copied.read_bytes())
     substitutions = {
         "gm_turn_helper_transport.ps1": [
+            ("    return [Diagnostics.Process]::Start($start)",
+             "    Configure-BoeAdmissionFailureCapture $start\n    return [Diagnostics.Process]::Start($start)"),
             ("$script:BoeHelperCodeRoot =", ". (Join-Path $PSScriptRoot 'helper_admission_observer.ps1')\n$script:BoeHelperCodeRoot ="),
             ("        $Context.pendingRead=$Context.process.StandardOutput.ReadLineAsync()",
              "        Write-BoeAdmissionObservation $Context 'read-begin' @{}\n        $Context.pendingRead=$Context.process.StandardOutput.ReadLineAsync()"),
@@ -92,6 +94,26 @@ def collect(out, consumer_pid):
         problems.append("Actual distinct dedicated managed child Linux identity incomplete")
     if not summary.get("DisposeReturned") or summary.get("CaptureIncomplete", True):
         problems.append("Original disposal did not return or observer capped/truncated/failed")
+    if not summary.get("NonceConfigured") or not summary.get("FailureNonce"):
+        problems.append("Selected actual child failure-capture nonce was not configured")
+    managed_failures = []
+    stderr_path = Path(str(stem) + "-stderr.txt")
+    try:
+        for line in stderr_path.read_text().splitlines():
+            if 'boe-helper-fixture-failure' not in line:
+                continue
+            captured = json.loads(line)
+            if captured.get("nonce") != summary.get("FailureNonce") or captured.get("pid") != summary.get("HelperPid"):
+                problems.append("Managed exception nonce/PID does not match selected actual child")
+            if captured.get("captureIncomplete", True):
+                problems.append("Managed exception capture capped/truncated/incomplete")
+            managed_failures.append(captured)
+        if len(managed_failures) > 2:
+            problems.append("Unexpected more than two original managed catch records")
+        if summary.get("ExitCode") == 2 and not managed_failures:
+            problems.append("Actual managed refusal exit2 without required caught-exception record: capture unavailable, not no exception")
+    except Exception as error:
+        problems.append("Managed caught-exception parse unavailable: " + repr(error))
     if not any(row["Phase"] == "dispose-joined" and row["Data"]["StderrReadCompleted"] and
                row["Data"]["PendingReadCompleted"] for row in events):
         problems.append("Already-owned stdout/stderr joins not observed complete")
@@ -112,6 +134,8 @@ def collect(out, consumer_pid):
         if isinstance(parsed_reply, dict) and not (parsed_reply.get("state") == "admission-cancelled" and parsed_reply.get("effectiveOutcome") == 2) and len(identities) != 1:
             problems.append("Original parseable write reply retained but guard predicate row missing; this does not prove guard reached")
     return {"Summary": summary, "Events": events, "ObservationComplete": not problems,
+            "ManagedCaughtExceptions": managed_failures,
+            "ManagedExceptionLimit": "No caught record on a healthy admission is expected; absence on a refusal is a causal gap, not proof that no exception occurred. Only original caught/InnerException and three known lifecycle Data links are retained within explicit caps.",
             "MissingObservations": problems, "IdentityGuardObservation": identities[0]["Data"] if len(identities) == 1 else None,
             "ActualExpectedGeneration": launches[0]["Data"].get("ExpectedGeneration") if len(launches) == 1 else None,
             "ReadOutcome": reads[0]["Data"] if len(reads) == 1 else None, "ConsumerPid": consumer_pid,

@@ -20,6 +20,9 @@ public sealed class GmTurnHelperStorageTests
     [Fact]
     public Task OriginalHelperRejectsRealmLinkBeforePolicyWrite() => RunScenarioAsync("realm-link");
 
+    [Fact]
+    public Task OriginalWriteAdmissionFailureRetainsCaughtException() => RunScenarioAsync("catch-config-missing");
+
     private static async Task RunScenarioAsync(string scenario)
     {
         string? folder = null;
