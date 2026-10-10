@@ -27,6 +27,10 @@ import uuid
 repo, out, ship = map(lambda s: Path(s).resolve(), sys.argv[1:4])
 scenario = sys.argv[4] if len(sys.argv) > 4 else "console"
 assert scenario in ["console", "console-musings", "browser-relay"]
+duration_diagnostic = os.environ.get("BOE_TEST_C5_DURATION_DIAGNOSTIC") == "1"
+assert not duration_diagnostic or (scenario == "browser-relay" and __debug__)
+work_seconds, total_seconds = (840, 900) if duration_diagnostic else (240, 240)
+active_diagnostic_turn = None
 base = out / "play"
 session = base / "game_session"
 session.mkdir(parents=True)
@@ -37,6 +41,12 @@ peers, events = [], []
 result = {"Scenario": "C5" if scenario == "browser-relay" else "C1", "GuardianRoute": "addMusings" if scenario == "console-musings" else "thoughtJournal", "Model": "deterministic-authored-fixture",
           "ModelCalls": 0, "AcceptedTurns": [], "ClientColdRestart": False,
           "ProductionEntrypoint": "BookOfEternityClient/Program.cs → GameEngine.RunAsync"}
+if duration_diagnostic:
+    result.update(DiagnosticOnly=True, TurnDurations=[], DiagnosticBudgets={
+        "WorkSeconds": work_seconds, "TotalSeconds": total_seconds, "CleanupReserveSeconds": 60,
+        "HelperProofSeconds": 60, "HelperToAcceptanceSeconds": 180,
+        "GuardianSeconds": 930, "ExternalSeconds": 935,
+        "Qualification": "Exploratory semantic diagnostic; original 40s mode and latency regression remain separate."})
 env = dict(os.environ)
 env.update(TERM="dumb", NO_COLOR="1")
 for key, name in [("TMPDIR", "tmp"), ("XDG_CONFIG_HOME", "config"),
@@ -134,11 +144,17 @@ def pump():
                         result["OriginalGameLoopFailure"] = failure
                         result["OriginalGameLoopFailureObservedAtSeconds"] = time.monotonic() - started
                         result["OriginalGameLoopFailureObservedDuringCleanup"] = "CleanupStartedAtSeconds" in result
-    assert time.monotonic() - started < 240, "Driver work/cleanup budget exceeded"
+    if active_diagnostic_turn is not None:
+        observe_diagnostic_turn()
+    limit = total_seconds if "CleanupStartedAtSeconds" in result else work_seconds
+    assert time.monotonic() - started < limit, "Driver work/cleanup budget exceeded"
 
 
 def wait(predicate, label, seconds=20):
     deadline = time.monotonic() + seconds
+    if duration_diagnostic:
+        limit = total_seconds if "CleanupStartedAtSeconds" in result else work_seconds
+        deadline = min(deadline, started + limit)
     while not predicate():
         assert time.monotonic() < deadline, "Timeout: " + label
         pump()
@@ -164,6 +180,72 @@ def fresh(peer, marker, offset=0, seconds=20):
             raise AssertionError("Original GameLoop exception: " + failure["exception"])
         return marker in peer.text(offset)
     wait(observed, peer.name + ": " + marker, seconds)
+
+
+def capture_staged_inventory(ordinal):
+    """Read existing authoritative artifacts before enabling the authored helper."""
+    def describe(relative):
+        data = (session / relative).read_bytes()
+        return {"Path": relative, "Bytes": len(data), "SHA256": sha(data)}
+    manifest_path = "game_state/control/pending_turn_snapshot.json"
+    authority_path = "game_state/control/pending_turn_snapshot.authority.json"
+    manifest = read_json(session / manifest_path)
+    for relative, name in [("input/turn_request.json", "request"), (manifest_path, "manifest"), (authority_path, "authority")]:
+        (out / ("turn-" + str(ordinal) + "-before-" + name + ".json")).write_bytes((session / relative).read_bytes())
+    snapshots = [dict(CanonicalPath=key, **describe(value)) for key, value in sorted(manifest["files"].items())]
+    rollback = [dict(CanonicalPath=key, **describe(value)) for key, value in sorted(manifest["rollbackBackups"].items())]
+    return {"Request": describe("input/turn_request.json"), "Manifest": describe(manifest_path),
+            "Authority": describe(authority_path), "SnapshotCount": len(snapshots), "RollbackCount": len(rollback),
+            "SnapshotBytes": sum(row["Bytes"] for row in snapshots), "RollbackBytes": sum(row["Bytes"] for row in rollback),
+            "Snapshots": snapshots, "Rollback": rollback}
+
+
+def observe_diagnostic_turn():
+    state = active_diagnostic_turn
+    peer, row = state["peer"], state["row"]
+    assert peer.process.poll() is None, peer.name + " exited during diagnostic acceptance"
+    failure = original_game_loop_failure(peer)
+    if failure is not None:
+        raise AssertionError("Original GameLoop exception: " + failure["exception"])
+    now = time.monotonic() - started
+    text = peer.text(state["offset"])
+    for marker, key in [(state["narrative"], "NarrativeObservedAtSeconds"), ("Ваш ход", "PromptObservedAtSeconds")]:
+        if key not in row and marker in text:
+            row[key] = now
+    ready_path = session / "ready/turn_complete.json"
+    if row["TerminalReadyObservation"] == "NotObserved":
+        try:
+            data = ready_path.read_bytes()
+        except FileNotFoundError:
+            data = None
+        if data is not None:
+            ready = json.loads(data.decode("utf-8-sig"))
+            assert all(ready[key] == state["request"][key] for key in ["sessionId", "requestId", "turnNumber"]), ready
+            row.update(TerminalReadyObservation="Observed", TerminalReadyObservedAtSeconds=now,
+                       TerminalReadySHA256=sha(data), TerminalReadyBytes=len(data))
+    execution_path = state["request_dir"] / "execution.json"
+    if "HelperCompleteObservedAtSeconds" not in row and execution_path.exists():
+        execution = read_json(execution_path)
+        if execution.get("Executed"):
+            assert execution.get("ExitCode") in [None, 0] and not execution.get("MetadataFailure"), execution
+            if execution.get("ExitCode") == 0 and execution.get("ChildExited") and execution.get("IoDrained"):
+                row.update(HelperCompleteObservedAtSeconds=now, Execution=execution)
+
+
+def await_diagnostic_acceptance():
+    row = active_diagnostic_turn["row"]
+    # Ready/client observations are latched concurrently with the helper proof.
+    observe_diagnostic_turn()
+    wait(lambda: "HelperCompleteObservedAtSeconds" in row, "actual helper exited and drained", 60)
+    deadline = min(started + row["HelperCompleteObservedAtSeconds"] + 180, started + work_seconds)
+    row["AcceptanceAbsoluteDeadlineAtSeconds"] = deadline - started
+    def accepted():
+        observe_diagnostic_turn()
+        assert time.monotonic() < deadline, "Timeout: diagnostic original acceptance"
+        return ("NarrativeObservedAtSeconds" in row and "PromptObservedAtSeconds" in row and
+                not (session / "input/turn_request.json").exists() and
+                not (session / "input/pending_player_action.json").exists())
+    wait(accepted, "diagnostic narrative, prompt and consumed original slot", max(0, deadline - time.monotonic()))
 
 
 def rpc(frame):
@@ -587,10 +669,21 @@ try:
                 "ActionId": staged["actionId"], "Generation": staged["sessionGeneration"], "RequestId": req["requestId"],
                 "OriginalPendingSHA256": sha(pending_bytes), "OriginalRequestSHA256": sha(request_bytes), "RelayRequests": 2,
                 "IdleCloseWitness": idle_ack, "SameOriginalRunBeforeCut": original_record})
+        if duration_diagnostic:
+            duration_row = {"Turn": ordinal, "RequestId": req["requestId"], "TerminalReadyObservation": "NotObserved",
+                            "Inventory": capture_staged_inventory(ordinal), "AuthoredPacketCallStartedAtSeconds": time.monotonic() - started}
+            result["TurnDurations"].append(duration_row)
+            active_diagnostic_turn = {"peer": client, "row": duration_row, "offset": offset, "request_dir": request_dir,
+                                      "request": req, "narrative": "Проверочный след " + str(ordinal) + ": Хранитель наблюдает за душой у берега."}
         captured, narrative = author_packet(request_dir, ordinal)
+        if duration_diagnostic:
+            duration_row["LegacyNarrativeWaitStartedAtSeconds"] = time.monotonic() - started
         assert captured == req, "relay/helper consumed a substituted original request"
-        fresh(client, narrative, offset, 40)
-        fresh(client, "Ваш ход", offset, 40)
+        if duration_diagnostic:
+            await_diagnostic_acceptance()
+        else:
+            fresh(client, narrative, offset, 40)
+            fresh(client, "Ваш ход", offset, 40)
         story_path = session / "stories/chaos_sea.jsonl"
         story_bytes = story_path.read_bytes()
         prefix_sha = sha(preserved_story) if preserved_story else None
@@ -629,6 +722,17 @@ try:
                 cut["RelayIdsAfterAcceptance"] = sorted(packet["requestId"] for packet in delivered)
         execution = read_json(request_dir / "execution.json")
         assert execution["Executed"] and execution["ExitCode"] == 0 and execution["ChildExited"] and execution["IoDrained"], execution
+        if duration_diagnostic:
+            now = time.monotonic() - started
+            assert now < duration_row["AcceptanceAbsoluteDeadlineAtSeconds"], "Diagnostic full acceptance assertions exceeded deadline"
+            duration_row.update(AcceptanceObservedAtSeconds=now,
+                HelperToAcceptanceSeconds=now - duration_row["HelperCompleteObservedAtSeconds"],
+                AuthoredPacketToAcceptanceSeconds=now - duration_row["LegacyNarrativeWaitStartedAtSeconds"],
+                LegacyNarrative40Exceeded=duration_row["NarrativeObservedAtSeconds"] - duration_row["LegacyNarrativeWaitStartedAtSeconds"] > 40,
+                LegacyPromptWaitStartedAtSeconds=duration_row["NarrativeObservedAtSeconds"],
+                LegacyPrompt40Exceeded=max(0, duration_row["PromptObservedAtSeconds"] - duration_row["NarrativeObservedAtSeconds"]) > 40,
+                SemanticAssertionsPassed=True)
+            active_diagnostic_turn = None
         result["AcceptedTurns"].append({"Turn": ordinal, "SessionId": req["sessionId"], "RequestId": req["requestId"],
                                          "PlayerAction": action, "Narrative": narrative, "StorySHA256": sha(story_bytes), "PreservedFullStoryPrefixSHA256": prefix_sha, "StoryEntries": len(entries), "Execution": execution})
         (out / ("story-after-" + str(ordinal) + ".jsonl")).write_bytes(story_bytes)
@@ -650,6 +754,7 @@ except Exception:
         except Exception:
             result["DiagnosticFailure"] = traceback.format_exc()
 finally:
+    active_diagnostic_turn = None
     result["CleanupStartedAtSeconds"] = time.monotonic() - started
     cleanup_errors = []
     # Release cooperative fixture gates before ordinary failed-client cleanup.

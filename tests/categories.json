@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-browser-staged-idle-duration-diagnostic",
+            "responsibility": "#1553 T069 separate finite full-C5 semantic diagnostic of actual React/Program/Bridge/daemon/relay queued and witnessed staged-idle SIGKILL/EOF/cold continuation. Model-only authored packets; all original identity/once-only/full-prefix/Stop/guardian assertions retained. Read-only pre-packet snapshot inventory and concurrently observed helper/ready/narrative/prompt phases. One 180s absolute acceptance limit after helper completion; work840/total900/guardian930/external935 seconds.",
+            "excludes": "No original40s GREEN, product SLA, regression closure, live provider, pre-lock deferral, production timeout/guard change, active-poll crash or remaining T070 interruption/repair qualification.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+                "tests/fixtures/LinuxGameChains/console_chain.py"
+            ],
+            "related": [
+                {
+                    "id": "linux-game-chain-browser-relay",
+                    "when": "Original40s mode and historical failure remain independent; this exploratory budget does not rewrite them."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": true,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 17,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.LinuxGameChainTests.Browser_StagedIdleCrash_BoundedDurationDiagnostic"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-original-post-validation-source",
             "responsibility": "Three existing directly affected accepted post-materialization/source/repair boundaries after browser-only reuse of actual validated original baseline. Preserve normalization-before-validation, physical lookup after repair invalidation and runtime refresh boundary.",
             "excludes": "Runtime repair/crash/C5 acceptance and unrelated documentation/source rules. Actual consumer profile and composed C5 selected separately.",

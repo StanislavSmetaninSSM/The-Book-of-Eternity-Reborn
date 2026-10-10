@@ -16,7 +16,10 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
     [Fact]
     public Task Browser_ActualRelayPlayerActionColdRestartContinuesExactlyOnce() => RunAsync("browser-relay");
 
-    private async Task RunAsync(string mode)
+    [Fact]
+    public Task Browser_StagedIdleCrash_BoundedDurationDiagnostic() => RunAsync("browser-relay", durationDiagnostic: true);
+
+    private async Task RunAsync(string mode, bool durationDiagnostic = false)
     {
         Assert.True(OperatingSystem.IsLinux(), "This scenario requires real Linux execution; Windows is not qualified.");
         var repo = TestRepoPaths.RepoRoot;
@@ -32,6 +35,9 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
                 UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true,
                 WorkingDirectory = repo
             };
+            info.Environment.Remove("BOE_TEST_C5_DURATION_DIAGNOSTIC");
+            if (durationDiagnostic && logName == "chain.log")
+                info.Environment["BOE_TEST_C5_DURATION_DIAGNOSTIC"] = "1";
             foreach (var argument in arguments) info.ArgumentList.Add(argument);
             using var process = Process.Start(info)!;
             var text = await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(
@@ -51,9 +57,9 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
                 "-p:BoeRequireNativePackage=true"], "publish-" + project + ".log", 20);
         var python = mode == "browser-relay" ? Environment.GetEnvironmentVariable("BOE_GAME_CHAIN_BROWSER_PYTHON") : "/usr/bin/python3";
         Assert.False(string.IsNullOrWhiteSpace(python), "Browser relay chain requires existing Python with Playwright.");
-        await Run(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), "300000",
+        await Run(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), durationDiagnostic ? "930000" : "300000",
             python!, Path.Combine(repo, "tests/fixtures/LinuxGameChains/console_chain.py"), repo, own, ship, mode],
-            "chain.log", 310);
+            "chain.log", durationDiagnostic ? 935 : 310);
         using var result = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "result.json")));
         Assert.True(result.RootElement.GetProperty("PASS").GetBoolean(), result.RootElement.ToString());
         Assert.Equal(0, result.RootElement.GetProperty("ModelCalls").GetInt32());
@@ -62,6 +68,17 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
         Assert.Equal(3, result.RootElement.GetProperty("AcceptedTurns").GetArrayLength());
         if (mode == "browser-relay")
         {
+            if (durationDiagnostic)
+            {
+                Assert.True(result.RootElement.GetProperty("DiagnosticOnly").GetBoolean());
+                Assert.Equal(3, result.RootElement.GetProperty("TurnDurations").GetArrayLength());
+                Assert.All(result.RootElement.GetProperty("TurnDurations").EnumerateArray(), turn =>
+                {
+                    Assert.True(turn.TryGetProperty("HelperCompleteObservedAtSeconds", out _));
+                    Assert.True(turn.TryGetProperty("AcceptanceObservedAtSeconds", out _));
+                    Assert.True(turn.GetProperty("HelperToAcceptanceSeconds").GetDouble() <= 180);
+                });
+            }
             var cuts = result.RootElement.GetProperty("InterruptedColdCuts").EnumerateArray().ToArray();
             Assert.Equal(new[] { "queued", "staged" }, cuts.Select(cut => cut.GetProperty("Phase").GetString()));
             Assert.All(cuts, cut =>
