@@ -2,6 +2,14 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "browser-player-terminal-provenance",
+            "reason": "Independent review found synthetic recovery and dual resolver mutations before browser refusal, including staged cold late entry. Actual four causal controls, separated from already qualified recovery27.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER"
+            ]
+        },
+        {
             "category": "browser-player-input-recovery",
             "reason": "T069 original conflicts and terminal negatives plus independent-process GameEngine classification, damaged settled receipts and failed rollback evidence retention. No live GM.",
             "contracts": [

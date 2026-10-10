@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "browser-player-terminal-provenance",
+            "responsibility": "T069 captured original warm/late terminal provenance must refuse diagnostic/recovery and dual signals before mutating resolver; actual original lifecycle methods, per-test independent state.",
+            "excludes": "No live GM, ordinary acceptance/cold process/repair/lifecycle settlement qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_OriginalTerminalProvenanceRefusesBeforeMutatingWarmOrLateResolver"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "browser-player-input-recovery",
             "responsibility": "T069 actual original ProcessPlayerTurn conflict/terminal disposition, exact recovery evidence and once-only receipt dequeue; real lifecycle factory classification in independently guardian-owned cold process plus per-test negative receipts.",
             "excludes": "Cold factory classification is component proof, not Program/relay gameplay. Accepted/settled component fixtures explicitly invoke actual original cleanup/restore; failed rollback component does not by itself qualify its warm caller. Typed lifecycle handoff and late error/rejection remain blocked, not auto-settled.",
@@ -21,7 +46,18 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_*"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_AcceptedRecordReentryOnlyDequeuesOriginalSlotAndKeepsHistory",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_CompetingRequestAfterSelectionCannotBeOverwrittenByClaim",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_ConflictBeforePublicationPreservesCompetingRequestAndOriginalSlot",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_DamagedAcceptedRecordRefusesAndPreservesAllRemainingEvidence",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_DamagedSettledReceiptRefusesAndPreservesEvidence",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_FailedOriginalRollbackRetainsSnapshotAndBlocksContinuation",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_PreparingMenuRefusesBeforeHealthMutationAndPreservesEvidence",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_ProcessingReentryRefusesBeforeReplayOrEvidenceCleanup",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_ProcessRefusesCompetingRequestBeforeMutatingValidation",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_SeparateProcessColdClassificationPreservesOrDequeuesOnlyOriginalSlot",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_StagedMenuDescriptionDoesNotInitializeOrRepairCanonicalState",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_TerminalDispositionSettlesOrBlocksBeforeContinuation"
                     ]
                 }
             ]
