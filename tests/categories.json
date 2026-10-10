@@ -2,6 +2,96 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "guardian-musings-capture-crash",
+            "responsibility": "#1553 T070 Actual returned original capture/active publication lease in pre-normalization before-image read; SIGKILL/EOF of ordinary engine with native Bridge alive and same pin Active->Unresolved; cold ordinary native admission must refuse before physical open/recovery/mutation, retaining exact original commands/prefix/evidence.",
+            "excludes": "Other two cut boundaries, automatic resume, Program/relay/browser whole chain, Windows/live models, performance acceptance, arbitrary tamper/storage fault matrix and whole T070.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+                "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs"
+            ],
+            "related": [
+                {
+                    "id": "guardian-musings-actual-repair",
+                    "when": "Original musings repair or fixture model-packet contract changes."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuardianMusingsPublication_ActualCaptureCrashBlocksColdConsoleWithoutReplay"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "guardian-musings-normalized-crash",
+            "responsibility": "#1553 T070 Actual returned normalization while original CompleteAsync is awaited, before sealing returns; exact old prefix+one/mirror/consumed command with same capture/held lease, genuine engine SIGKILL/EOF and original pin Unresolved; cold ordinary native admission refuses without replay or evidence mutation.",
+            "excludes": "Other two cut boundaries, automatic resume, Program/relay/browser whole chain, Windows/live models, performance acceptance, arbitrary tamper/storage fault matrix and whole T070.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+                "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs"
+            ],
+            "related": [
+                {
+                    "id": "guardian-musings-actual-repair",
+                    "when": "Original musings repair or fixture model-packet contract changes."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuardianMusingsPublication_ActualNormalizedCrashBlocksColdConsoleWithoutReplay"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "guardian-musings-accepted-cleanup-crash",
+            "responsibility": "#1553 T070 First actual CleanupBackup rollback deletion after exact one ordinary story append and observationally retained original completed proof; genuine engine SIGKILL/EOF leaves original native pin Unresolved and rollback retained; cold ordinary native admission refuses with exact story/request/snapshot/rollback bytes.",
+            "excludes": "Other two cut boundaries, automatic resume, Program/relay/browser whole chain, Windows/live models, performance acceptance, arbitrary tamper/storage fault matrix and whole T070.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+                "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs"
+            ],
+            "related": [
+                {
+                    "id": "guardian-musings-actual-repair",
+                    "when": "Original musings repair or fixture model-packet contract changes."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuardianMusingsPublication_ActualAcceptedCleanupCrashBlocksColdConsoleWithoutReplay"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "guardian-musings-actual-repair",
             "responsibility": "#1553 T070 actual ordinary console ProcessPlayerTurn under original NativeBridge: completed original scope invalidated before first repair mutation; correlated narrative-only repair must freshly validate original authorized musings without replay, preserve full prefix/mirror and accept once. Retain causal second repair before cleanup.",
             "excludes": "Program/relay/browser whole chain, three interrupted-process controls, Windows/live models, performance acceptance and general guardian commands.",
@@ -1825,7 +1915,7 @@
         {
             "id": "native-spiritual-staged-worker-publication",
             "responsibility": "Original Windows pwsh.exe staged worker A/B publication and original signed cold recovery; compile/discovery only on Linux.",
-            "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+            "excludes": "Other spiritual lifecycle cases, B2\u2013B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
                 "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
@@ -1850,7 +1940,7 @@
         {
             "id": "portable-spiritual-midpublication-recovery",
             "responsibility": "Original independent mixed cut between committed resource and wound publication, exact copied generation and signed authority, cold all-before/all-after recovery.",
-            "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+            "excludes": "Other spiritual lifecycle cases, B2\u2013B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
                 "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
@@ -1874,7 +1964,7 @@
         {
             "id": "portable-spiritual-staged-committed-recovery",
             "responsibility": "Original cold recovery after accepted A before Ready cleanup, requiring separately issued B Ready.",
-            "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+            "excludes": "Other spiritual lifecycle cases, B2\u2013B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
                 "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
@@ -1898,7 +1988,7 @@
         {
             "id": "portable-spiritual-staged-file-publication",
             "responsibility": "Original staged file A/B publication, stale Ready refusal and orphan Ready blocking with actual journal witnesses and settled actors.",
-            "excludes": "Other spiritual lifecycle cases, B2–B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
+            "excludes": "Other spiritual lifecycle cases, B2\u2013B5 development, live providers and whole-migration acceptance. Worker owner requires native Windows; file owners use controlled file responders.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.Spiritual*.cs",
                 "BookOfEternityClient.IntegrationTests/SpiritualLifecyclePublicationWitness.cs"
@@ -1948,7 +2038,7 @@
         },
         {
             "id": "portable-mods-original-ui-detail",
-            "responsibility": "Isolated original /моды detail-panel manual-opening-path oracle; exact current path label and single line are required, all other technical/error checks preserved.",
+            "responsibility": "Isolated original /\u043c\u043e\u0434\u044b detail-panel manual-opening-path oracle; exact current path label and single line are required, all other technical/error checks preserved.",
             "excludes": "Unchanged choices Fact already passed baseline; actual desktop launch, entire Explorer UI, runtime/settings mutation and native qualification.",
             "changeHints": [
                 "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
@@ -1972,7 +2062,7 @@
         },
         {
             "id": "portable-mods-original-ui",
-            "responsibility": "Two original /моды Explorer panels: detail loop and player-facing choices after canonical listing admission, preserving hidden-error checks and exact manual-opening path contract.",
+            "responsibility": "Two original /\u043c\u043e\u0434\u044b Explorer panels: detail loop and player-facing choices after canonical listing admission, preserving hidden-error checks and exact manual-opening path contract.",
             "excludes": "Actual desktop launch, complete Explorer UI, settings mutation, manifest atomicity and native qualification.",
             "changeHints": [
                 "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
@@ -4090,7 +4180,7 @@
         },
         {
             "id": "daren-standalone-browser-dispatch",
-            "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
+            "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
             "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
             "changeHints": [
                 "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
@@ -22468,7 +22558,7 @@
         },
         {
             "id": "portable-save-load-literal-names-linux",
-            "responsibility": "Exact native Linux payload spelling through held enumeration and actual Save→typed Load→Save; independent manifested Load commit/real rollback. Distinguish literal backslash from hierarchy, trailing backslash file, component backslash and arbitrary case pair; exact ZIP claims/hash/bytes, original generation/namespace/source/library/owned scratch.",
+            "responsibility": "Exact native Linux payload spelling through held enumeration and actual Save\u2192typed Load\u2192Save; independent manifested Load commit/real rollback. Distinguish literal backslash from hierarchy, trailing backslash file, component backslash and arbitrary case pair; exact ZIP claims/hash/bytes, original generation/namespace/source/library/owned scratch.",
             "excludes": "No signed pending producer acceptance, literal save destination names, Windows literal-name support, broad Save/Load suite or hostile owner races. Existing fixed-authority/path/hash/budget refusals remain.",
             "changeHints": [
                 "BookOfEternityClient/Core/FileSystemManager.cs",

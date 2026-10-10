@@ -295,7 +295,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Scope = "Actual ordinary console ProcessPlayerTurn with original NativeBridge; fixture authors model data only. Not Program/relay/browser/crash qualification." }));
         }
     }
-    private static void WriteMusingsRepairPacket(FileSystemManager files, TurnRequest request)
+    private static void WriteMusingsRepairPacket(FileSystemManager files, TurnRequest request, bool invalidNarrative = true)
     {
         var timestamp = DateTime.UtcNow.ToString("O");
         void Write(string path, object value) => File.WriteAllText(files.ResolvePath(path), JsonSerializer.Serialize(value));
@@ -322,7 +322,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             "- Rejected alternatives: Душа не просила совета.", "- Actions: Хранитель наблюдает и запоминает выбор души.",
             "- State changes: UpdateGuardians.addMusings в game_state/meta/guardians.json: одна новая first-person запись; полный старый префикс и activeGuardian сохраняются.",
             "- Детерминированная тестовая заготовка; провайдер не вызван.");
-        Write("output/narrative_response.json", new { response = 123, timestamp });
+        Write("output/narrative_response.json", new { response = invalidNarrative ? (object)123 : "Исходное письмо прочитано.", timestamp });
         Write("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
         Write("output/debug_logs.json", new { timestamp, gm_thoughts_markdown = reasoning });
         var c = request.ProgressionControl!;

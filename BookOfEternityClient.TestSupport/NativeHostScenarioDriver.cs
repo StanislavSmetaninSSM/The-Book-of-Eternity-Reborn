@@ -15,7 +15,7 @@ internal static class NativeHostScenarioDriver
     internal static async Task<int> Main(string[] args)
     {
         if ((args.Length == 4 && args[0] == "engine-browser-recovery-cold") ||
-            (args.Length == 6 && args[0] is "engine-browser-staging-cut" or "engine-browser-staging-publisher" or "engine-browser-quiescent-admission" or "engine-browser-status-phase" or "engine-browser-consumer-profile" or "engine-musings-repair"))
+            (args.Length == 6 && args[0] is "engine-browser-staging-cut" or "engine-browser-staging-publisher" or "engine-browser-quiescent-admission" or "engine-browser-status-phase" or "engine-browser-consumer-profile" or "engine-musings-repair" or "engine-musings-cut" or "engine-musings-original-cut" or "engine-musings-cold"))
         {
             // The integration fixture supplies the real lifecycle service factory.
             // Resolve its test-only dependencies in this isolated child, without a project cycle.
@@ -33,6 +33,9 @@ internal static class NativeHostScenarioDriver
                 "engine-browser-quiescent-admission" => "WriteBrowserQuiescentAdmissionProbeAsync",
                 "engine-browser-status-phase" => "WriteBrowserStatusPhaseProbeAsync",
                 "engine-musings-repair" => "WriteMusingsRepairProbeAsync",
+                "engine-musings-cut" => "WriteMusingsCutProbeAsync",
+                "engine-musings-original-cut" => "RunOriginalMusingsCutAsync",
+                "engine-musings-cold" => "WriteMusingsColdProbeAsync",
                 "engine-browser-consumer-profile" => "WriteBrowserConsumerProfileProbeAsync",
                 _ => "WriteBrowserRecoveryColdProbeAsync"
             };

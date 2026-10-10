@@ -2,6 +2,33 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "guardian-musings-capture-crash",
+            "reason": "Actual returned original capture/active publication lease in pre-normalization before-image read; SIGKILL/EOF of ordinary engine with native Bridge alive and same pin Active->Unresolved; cold ordinary native admission must refuse before physical open/recovery/mutation, retaining exact original commands/prefix/evidence. One isolated genuinely interrupted engine process; models replaced by author data only. Native240/external245/category5 each are protective, not latency evidence; three categories aggregate15 and explicit overall18.",
+            "contracts": [
+                "#1553",
+                "T070-GUARDIAN-MUSINGS-AUTHORITY",
+                "Original continuous console pin and fail-closed cold continuation"
+            ]
+        },
+        {
+            "category": "guardian-musings-normalized-crash",
+            "reason": "Actual returned normalization while original CompleteAsync is awaited, before sealing returns; exact old prefix+one/mirror/consumed command with same capture/held lease, genuine engine SIGKILL/EOF and original pin Unresolved; cold ordinary native admission refuses without replay or evidence mutation. One isolated genuinely interrupted engine process; models replaced by author data only. Native240/external245/category5 each are protective, not latency evidence; three categories aggregate15 and explicit overall18.",
+            "contracts": [
+                "#1553",
+                "T070-GUARDIAN-MUSINGS-AUTHORITY",
+                "Original continuous console pin and fail-closed cold continuation"
+            ]
+        },
+        {
+            "category": "guardian-musings-accepted-cleanup-crash",
+            "reason": "First actual CleanupBackup rollback deletion after exact one ordinary story append and observationally retained original completed proof; genuine engine SIGKILL/EOF leaves original native pin Unresolved and rollback retained; cold ordinary native admission refuses with exact story/request/snapshot/rollback bytes. One isolated genuinely interrupted engine process; models replaced by author data only. Native240/external245/category5 each are protective, not latency evidence; three categories aggregate15 and explicit overall18.",
+            "contracts": [
+                "#1553",
+                "T070-GUARDIAN-MUSINGS-AUTHORITY",
+                "Original continuous console pin and fail-closed cold continuation"
+            ]
+        },
+        {
             "category": "guardian-musings-repair-recheck-close",
             "reason": "New read-only original-completion recheck must not return authority when its genuinely held lease close fails; one focused existing owning-lease fault helper control, no expanded fault matrix.",
             "contracts": [
@@ -98,7 +125,7 @@
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",
-                "c5-wait-participation-plan.md steps1–4"
+                "c5-wait-participation-plan.md steps1\u20134"
             ]
         },
         {
@@ -107,7 +134,7 @@
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",
-                "c5-wait-participation-plan.md steps1–4"
+                "c5-wait-participation-plan.md steps1\u20134"
             ]
         },
         {
@@ -116,7 +143,7 @@
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",
-                "c5-wait-participation-plan.md steps2–3"
+                "c5-wait-participation-plan.md steps2\u20133"
             ]
         },
         {
@@ -371,7 +398,7 @@
         },
         {
             "category": "linux-game-chain-browser-relay",
-            "reason": "Approved lifetime C5 actual idle staging crash after original immutable close/disposal; real React→Program→Bridge/daemon/relay, exact retained request/action/generation and once-only history, normal original Stop/EOF/ECHILD.",
+            "reason": "Approved lifetime C5 actual idle staging crash after original immutable close/disposal; real React\u2192Program\u2192Bridge/daemon/relay, exact retained request/action/generation and once-only history, normal original Stop/EOF/ECHILD.",
             "contracts": [
                 "#1553",
                 "US3",
