@@ -7,13 +7,27 @@ $ErrorActionPreference='Stop'
 # call it on RED. A later production helper retains its actual framing, body,
 # scope/lease, close and Dispose functions; TestSupport injects original FS hooks.
 $script:JoinedHelperTransports=[Collections.Generic.List[object]]::new()
-$script:ControlChildPid=$null; $script:ControlSeq0Reply=$null
-$script:OriginalRead=${function:Read-BoeHelperFrame}
-function Read-BoeHelperFrame {
-    param($Context)
-    $reply=& $script:OriginalRead $Context
-    if($Scenario -ceq 'catch-config-missing' -and $Context.process.Id -eq $script:ControlChildPid -and $Context.sequence -eq 0){$script:ControlSeq0Reply=$reply}
-    return $reply
+$script:ControlChildPid=$null; $script:ControlSeq0Read=$null; $script:ControlObserverErrors=0
+$script:ControlReadProvenance=$null
+if($Scenario -ceq 'catch-config-missing'){
+    # This fixture copies the value returned by the SAME existing GetResult,
+    # before the unchanged NULL/size guard. No alternate/second read or wait.
+    $original=${function:Read-BoeHelperFrame}.ToString()
+    $anchor='        $line=$Context.pendingRead.GetAwaiter().GetResult()'
+    if(([regex]::Matches($original,[regex]::Escape($anchor))).Count -ne 1){throw 'Original control read anchor is not unique.'}
+    $observation=@'
+        try {
+            if($Context.process.Id -eq $script:ControlChildPid -and $Context.sequence -eq 0){
+                $isNull=$null -eq $line
+                $count=if($isNull){$null}else{[Text.Encoding]::UTF8.GetByteCount($line)}
+                $stored=if($isNull){$null}elseif($count -le 65536){$line}else{$line.Substring(0,[Math]::Min(4096,$line.Length))}
+                $script:ControlSeq0Read=[pscustomobject]@{HelperPid=$Context.process.Id;WaitCompleted=$true;IsNull=$isNull;Utf8Bytes=$count;Frame=$stored;PrefixOnly=(-not $isNull -and $count -gt 65536);StopwatchTicks=[Diagnostics.Stopwatch]::GetTimestamp();StopwatchFrequency=[Diagnostics.Stopwatch]::Frequency}
+            }
+        }catch{$script:ControlObserverErrors++}
+'@
+    $instrumented=$original.Replace($anchor,$anchor+"`n"+$observation)
+    $script:ControlReadProvenance=[pscustomobject]@{OriginalDefinition=$original;InstrumentedDefinition=$instrumented;OriginalSHA256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($original))).ToLowerInvariant();InstrumentedSHA256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($instrumented))).ToLowerInvariant();ExactSubstitutionCount=1;Limit='Control-only passive copy after original completed GetResult; original guard/timers/throw preserved.'}
+    ${function:Read-BoeHelperFrame}=[scriptblock]::Create($instrumented)
 }
 $script:OriginalDispose=${function:Dispose-GmOperationTransport}
 function Dispose-GmOperationTransport {
@@ -77,5 +91,5 @@ try {
     }
 } catch {$failure=$_.Exception.ToString()}
 $report=[ordered]@{Initialized=$initialized;Value=$value;Failure=$failure;JoinedHelperTransports=@($script:JoinedHelperTransports.ToArray())}
-if($Scenario -ceq 'catch-config-missing'){$report.ControlBodyEntered=$script:ControlBodyEntered;$report.ControlNonce=$script:ControlNonce;$report.ControlChildPid=$script:ControlChildPid;$report.ControlSeq0Reply=$script:ControlSeq0Reply}
+if($Scenario -ceq 'catch-config-missing'){$report.ControlBodyEntered=$script:ControlBodyEntered;$report.ControlNonce=$script:ControlNonce;$report.ControlChildPid=$script:ControlChildPid;$report.ControlSeq0Read=$script:ControlSeq0Read;$report.ControlObserverErrors=$script:ControlObserverErrors;$report.ControlReadProvenance=$script:ControlReadProvenance}
 [IO.File]::WriteAllText((Join-Path $Folder 'powershell.json'),($report|ConvertTo-Json -Depth 12 -Compress))

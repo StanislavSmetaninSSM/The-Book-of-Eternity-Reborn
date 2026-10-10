@@ -624,7 +624,7 @@
     }
   },
   "ManagedContinuation": {
-    "Status": "WIP: source gate and fresh preparation/catalog PASS; control/diagnostic UNRUN",
+    "Status": "WIP: first queued-cold helper healthy; original precleanup active.json disappearance is separate acceptance blocker; control-only actual NULL observation/oracle correction UNRUN",
     "BaseSHA": "d80534a18ec6b09ceb94bd3e8c2e1441a99e36b7",
     "Target": "Original selected Complete-BoeTurn write helper caught exception after participating call unwinds and before THIS catch optional close serialization; admission may fail before binding/finalization",
     "Boundaries": [
@@ -710,6 +710,85 @@
       "CleanSource": true,
       "CleanupComplete": true,
       "Manifest": "c5-helper-managed-catalog/manifest.json"
+    },
+    "FirstRawSHA": "6ba77147a90117fb66e94034589003d7bad11f44",
+    "FirstRawManifest": "c5-helper-managed-first-outcome/manifest.json",
+    "FirstCategoryOutcome": {
+      "Executed": 2,
+      "Completed": 2,
+      "Passed": 1,
+      "Failed": 1,
+      "WallSeconds": 126.4016713,
+      "ExitCode": 1,
+      "NoTimeoutUnderfillDuplicate": true,
+      "CleanupComplete": true,
+      "DiagnosticPASS": true,
+      "DiagnosticSeconds": 103.97028456899898,
+      "ControlFAILPreserved": true
+    },
+    "ActualHealthyTarget": {
+      "ConsumerPid": 46779,
+      "DedicatedManagedPid": 46993,
+      "LinuxStarttime": "1267303",
+      "Seq0UTF8Bytes": 544,
+      "State": "active",
+      "Generation": "fb57823f3de249bd8f5e1314e5c06b96",
+      "ExpectedGenerationSame": true,
+      "AllIdentityPredicatesFalse": true,
+      "ManagedExit": 0,
+      "JoinedStderrEmpty": true,
+      "ReadSeconds": 1.433034373,
+      "Rows": 14,
+      "Dropped": 0,
+      "Errors": 0,
+      "CaptureComplete": true,
+      "NonceConfigured": true,
+      "CaughtRecords": 0,
+      "Limit": "Healthy original scope only; no old failure reproduced/fixed or accepted/fullC5 qualification."
+    },
+    "ActualControlFailure": {
+      "ChildPid": 45696,
+      "Nonce": "9400694e5c3f41fbac19fc8f64865cfa",
+      "RunCoreCaughtException": "System.IO.InvalidDataException: Initialized configuration is absent.",
+      "CaptureIncomplete": false,
+      "KnownExceptionLinks": {},
+      "BecameActive": false,
+      "TerminalClose": null,
+      "CloseReplyAttempted": false,
+      "BodyEntered": false,
+      "ChildExit": 2,
+      "OriginalPowerShellExited": true,
+      "CanonicalReacquired": true,
+      "OriginalSeq0ReturnedToWrapper": null,
+      "ExactNULLVsOversize": "MISSING in first control because original NULL/size guard throws before function returns; do not infer from generic wrapper.",
+      "InvalidOracle": "Required returned non-active object even though actual terminalCloseNULL/no close attempted permits no emitted close reply.",
+      "CorrectionWIP": "Control-only passive copy immediately after SAME original completed GetResult, before unchanged original guard; require actual NULL/EOF plus all original exception/child/no-active/body/cleanup assertions. No second read or game diagnostic repeat."
+    },
+    "SeparateAcceptanceBlocker": {
+      "ExceptionType": "System.IO.FileNotFoundException",
+      "Path": "trusted-local-publication-v1/active.json",
+      "ObservedAtSeconds": 68.11086694899859,
+      "ObservedDuringCleanup": false,
+      "CleanupStartedAtSeconds": 102.13864760599972,
+      "ColdPid": 46529,
+      "Stack": "TrustedLocalFileScope.ValidateFileLeaf180→ValidateFile138→HasNamespaceJournalMagic22→RequireBrowserRecoveryPreservesOriginal361→BrowserOriginalAdmission398/382→MainAdmission.AcquireAsync58→RunParticipating124→WaitForTerminalSignal poll470/588/617→ProcessPlayerTurn1456→EnterGameLoop1328",
+      "Raw": "c5-helper-managed-first-outcome/owned0/result.json.gz",
+      "ExactThrowTimestamp": "UNOBSERVED; timestamp is retained output observation",
+      "ResponsibleProducerRenameDeleteTransaction": "UNOBSERVED",
+      "LinkToOldHelperRefusalOrHealthyLaterWrite": "UNESTABLISHED",
+      "NextPriority": "After validated control, independently gate actual owned publication transition/selected-path disappearance causal reproduction and minimum proven fix before current fullC5; no guessed producer, prelock deferral, guard removal or timer change."
+    },
+    "ControlOnlyNextSelection": {
+      "Category": "c5-helper-caught-exception-control",
+      "Facts": 1,
+      "CategoryMinutes": 2,
+      "OverallMinutes": 3,
+      "NativeBuildSeconds": 40,
+      "GuardianSeconds": 15,
+      "OuterSeconds": 20,
+      "PrepCatalogRuntime": "UNRUN at corrected-source WIP",
+      "Methods": 11458,
+      "CategoriesExpected": 658
     }
   }
 }

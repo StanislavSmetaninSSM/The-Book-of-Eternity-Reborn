@@ -217,7 +217,7 @@
         },
         {
             "id": "c5-queued-cold-helper-admission-diagnostic",
-            "responsibility": "#1553 T069/T071 ONE original first browser action/queued SIGKILL/cold replacement/real relay packet consumer, observing its actual Complete-BoeTurn write-scope seq0 helper admission. Selected-child nonce gates bounded DEBUG original caught Message/StackTrace/InnerException and three known lifecycle exception links before optional helper close serialization; no arbitrary Data/ToString/result capture. Fixture-only shipped PowerShell insertions retain original launch/write/completed read/NULL-vs-UTF8 length/full frame/actual ExpectedGeneration/exact identity predicate copies/Linux child identity/already-joined stderr and exit/disposal. One separate native-owned real config-absence write refusal control verifies caught exception/non-active seq0/body-not-entered/exit2/joins/canonical release, not a synthetic response or full storage group. Exactly two facts. Diagnostic work180/total240/cleanup60/guardian240/external250/startup60/click12; control original guardian15/outer20; category5/explicit overall7; original read10000ms/frame65536/disposal4000ms unchanged.",
+            "responsibility": "#1553 T069/T071 ONE original first browser action/queued SIGKILL/cold replacement/real relay packet consumer, observing its actual Complete-BoeTurn write-scope seq0 helper admission. Selected-child nonce gates bounded DEBUG original caught Message/StackTrace/InnerException and three known lifecycle exception links before optional helper close serialization; no arbitrary Data/ToString/result capture. Fixture-only shipped PowerShell insertions retain original launch/write/completed read/NULL-vs-UTF8 length/full frame/actual ExpectedGeneration/exact identity predicate copies/Linux child identity/already-joined stderr and exit/disposal. One real queued-cold diagnostic fact; the separate config-absence refusal control is owned by c5-helper-caught-exception-control. Diagnostic work180/total240/cleanup60/guardian240/external250/startup60/click12; category5/explicit overall7; original read10000ms/frame65536/disposal4000ms unchanged.",
             "excludes": "No identical fullC5 rerun, later navigation, accepted/cold qualification, synthetic/repeated helper read or response, guard/authority/timer/replay change, guessed fix, performance hypothesis, older raw audit, live provider/Windows. Observer errors/caps/truncation/identity gaps are explicit incomplete evidence; exit observed during cleanup is not assigned as the earlier frame cause.",
             "changeHints": [
                 "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
@@ -246,7 +246,33 @@
                 {
                     "project": "unit",
                     "tests": [
-                        "BookOfEternityClient.Tests.LinuxGameChainTests.Browser_QueuedColdWriteHelper_AdmissionDiagnostic",
+                        "BookOfEternityClient.Tests.LinuxGameChainTests.Browser_QueuedColdWriteHelper_AdmissionDiagnostic"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "c5-helper-caught-exception-control",
+            "responsibility": "#1553 T069/T071 one native-owned real initialized current-generation write admission refused by actual canonical config absence. Copy original completed seq0 GetResult NULL/UTF8 length before unchanged guard, retain exact function substitutions/hashes, actual managed caught Message/StackTrace/known lifecycle links/nonce/PID, body-not-entered, childExit2/already joined stderr/no forced termination and fresh canonical reacquisition. Fix only proven control oracle: terminalCloseNULL means original helper emits no close frame, so require actual NULL/EOF instead of inventing a non-active object. One fact; native build40/guardian15/outer20/category2/explicit overall3.",
+            "excludes": "No queued-cold diagnostic repeat, synthetic response/exception, extra read/wait/replay, product guard/timer/owner/uncertain change, old product refusal cause closure, fullC5 qualification or broad storage group.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/GmTurnHelperStorageTests.cs",
+                "BookOfEternityClient.TestSupport/GmTurnHelperStorageScenario.cs",
+                "tests/fixtures/GmTurnHelper/storage.ps1",
+                "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
                         "BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalWriteAdmissionFailureRetainsCaughtException"
                     ]
                 }

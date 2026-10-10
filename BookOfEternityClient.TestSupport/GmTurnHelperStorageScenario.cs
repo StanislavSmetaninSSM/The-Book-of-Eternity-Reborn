@@ -189,14 +189,15 @@ internal static class GmTurnHelperStorageScenario
                 var joined = ps.GetProperty("JoinedHelperTransports").EnumerateArray().ToArray();
                 var target = joined.Single(item => item.GetProperty("ExitCode").GetInt32() == 2);
                 Require(target.GetProperty("ProcessId").GetInt32() == ps.GetProperty("ControlChildPid").GetInt32(), "Refused target child identity changed.");
-                var reply = ps.GetProperty("ControlSeq0Reply");
-                Require(reply.ValueKind == JsonValueKind.Object && reply.GetProperty("sequence").GetInt32() == 0 && reply.GetProperty("state").GetString() != "active", "Control did not retain its original non-active seq0 reply.");
+                var read = ps.GetProperty("ControlSeq0Read");
+                Require(ps.GetProperty("ControlObserverErrors").GetInt32() == 0 && read.GetProperty("HelperPid").GetInt32() == target.GetProperty("ProcessId").GetInt32() && read.GetProperty("WaitCompleted").GetBoolean() && read.GetProperty("IsNull").GetBoolean() && read.GetProperty("Utf8Bytes").ValueKind == JsonValueKind.Null && read.GetProperty("Frame").ValueKind == JsonValueKind.Null, "Control did not retain its actual completed original NULL/EOF read.");
                 var records = target.GetProperty("Diagnostic").GetString()!.Split('\n').Where(line => line.StartsWith('{')).Select(line => JsonDocument.Parse(line)).ToArray();
                 try {
                     var captured = records.Single().RootElement;
                     Require(captured.GetProperty("kind").GetString() == "boe-helper-fixture-failure" && captured.GetProperty("nonce").GetString() == ps.GetProperty("ControlNonce").GetString(), "Original caught-exception nonce capture missing.");
                     Require(captured.GetProperty("pid").GetInt32() == target.GetProperty("ProcessId").GetInt32() && captured.GetProperty("phase").GetString() == "run-core-catch", "Caught exception is not the actual refused child/catch.");
                     Require(!captured.GetProperty("captureIncomplete").GetBoolean() && !captured.GetProperty("state").GetProperty("becameActive").GetBoolean(), "Refusal capture incomplete or admission became active.");
+                    Require(captured.GetProperty("state").GetProperty("terminalClose").ValueKind == JsonValueKind.Null && !captured.GetProperty("state").GetProperty("closeReplyAttempted").GetBoolean(), "Original absent-close refusal boundary changed.");
                     Require(captured.GetProperty("exceptions")[0].GetProperty("type").GetString() == typeof(InvalidDataException).FullName && captured.GetProperty("exceptions")[0].GetProperty("message").GetString() == "Initialized configuration is absent.", "Control lost the original missing-configuration exception.");
                     evidence["CaughtExceptionControl"] = captured.Clone();
                 } finally { foreach (var document in records) document.Dispose(); }
