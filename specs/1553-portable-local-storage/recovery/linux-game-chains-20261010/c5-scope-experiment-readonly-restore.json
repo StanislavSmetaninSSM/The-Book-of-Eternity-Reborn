@@ -1,0 +1,2684 @@
+{
+  "Status": "PASS GitHub-only source and complete NEW experiment evidence restore; full C5 correctness remains UNQUALIFIED",
+  "VerifiedAtUtc": "2026-10-10T19:31:55.368691+00:00",
+  "ExperimentBaseSHA": "b34613736fb90c68ad9d947272c4fc9e6889cd1a",
+  "RestoredSourceSHA": "a5d35a3b406de4c48af2eecfa1624324d42ef835",
+  "RestoredSourceTree": "25063d71ea6796cf4a6e6069d80ad83cc34f753a",
+  "Directory": "/workspace/.boe-1553-readonly-restores/boe-held-proof-scope-restore-a5d35a3b4",
+  "Command": "git clone --depth 1 --single-branch --branch 1553-storage-migration-cloud-20261008 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git /workspace/.boe-1553-readonly-restores/boe-held-proof-scope-restore-a5d35a3b4",
+  "OriginURL": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "FetchedBranchSHA": "a5d35a3b406de4c48af2eecfa1624324d42ef835",
+  "EmptyDestinationBeforeClone": true,
+  "LocalRepoObjectsOrFilesCopied": false,
+  "ObjectAlternatesPresent": false,
+  "ShallowClone": true,
+  "CleanWorktreeBeforeAndAfter": true,
+  "BuildOrRuntimeExecuted": false,
+  "HistoricalArchivedPayloadsAudited": false,
+  "GitFsckFullStrictExitCode": 0,
+  "GitFsckStdout": "",
+  "GitFsckStderr": "",
+  "ChangedPathsVerifiedCount": 381,
+  "CriticalPathsVerifiedCount": 45,
+  "UniqueChangedAndCriticalFilesVerifiedCount": 422,
+  "Files": [
+    {
+      "Path": ".agents/skills/speckit-git-commit/SKILL.md",
+      "GitBlobOID": "6d1f29a271289da58624180bfcfa06e9a4c617f8",
+      "Bytes": 1972,
+      "SHA256": "5c7bf976944f5ab6d6dbc143c160aa8742d2f303abdf1453688535d5ceffa1c4"
+    },
+    {
+      "Path": ".agents/skills/speckit-git-remote/SKILL.md",
+      "GitBlobOID": "50bfc3d88f1182a64a1dd7ce6ef16c47df78a461",
+      "Bytes": 1575,
+      "SHA256": "045d34977a70cae585b8bc0adbfd378374498f1a6c59c77615923e64f8d1b3f0"
+    },
+    {
+      "Path": ".agents/skills/speckit-implement/SKILL.md",
+      "GitBlobOID": "2d919eaea7ec1c3c9e6ca865b4e031e3135c5ca0",
+      "Bytes": 11370,
+      "SHA256": "0f4c3643a2bf364c57c824f614b3f601e5b06265e6f52d3adacd4f50f6fe6e00"
+    },
+    {
+      "Path": ".specify/memory/constitution.md",
+      "GitBlobOID": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "Bytes": 14081,
+      "SHA256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "Path": "AGENTS.md",
+      "GitBlobOID": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "Bytes": 11662,
+      "SHA256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserConsumerProfile.cs",
+      "GitBlobOID": "308f3a7885dfa62fd05c588e29ff7200c0507e02",
+      "Bytes": 26355,
+      "SHA256": "019c42341f1bb6288a89e464de9ecf05f4087128871487196a9714f7433e96da"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserProofScopeBudget.cs",
+      "GitBlobOID": "d1d753a72e765032c8473a111e6c7170f846f93d",
+      "Bytes": 4383,
+      "SHA256": "41114a12b2ef9e5209ac349a4fd835ba738c0b2e50f69a71bc159f1da9ae6846"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxBrowserGameChainTests.cs",
+      "GitBlobOID": "d717b22f91ec1ee815a61b56a657414d16d40dfd",
+      "Bytes": 8258,
+      "SHA256": "f26e61ff5722188ec92281f90082782cf8ae9c3066835ce77e887683b25013ba"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+      "GitBlobOID": "da6dbc15961761470835e3734a1ab21316f516c0",
+      "Bytes": 7047,
+      "SHA256": "1748834e246d799a801bcd5865d75b77affe0956dd90458126493915b684d352"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "GitBlobOID": "eaa988979b4e709a2a5b4abdd3e24b65d7aa4f84",
+      "Bytes": 7681,
+      "SHA256": "71954c0c0e0b73c989208d870470ea9ab7906c9e28aea8d42c06923db90a507f"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+      "GitBlobOID": "902a0c93e8ceb503bf5467a4bc1638b6cff20259",
+      "Bytes": 6476,
+      "SHA256": "1e1bca8520a3e65d2177a9819af87f10adbcef65a7fb77fb2628a0bcb322abb7"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "GitBlobOID": "a5d61315851898fa241f017babc14582bcb12d20",
+      "Bytes": 25361,
+      "SHA256": "3b7e6900f483601455b0d7b74fbd3de55ddec922d3326050282ad788b0b70a71"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+      "GitBlobOID": "23a1188abe10f636c0133417f38984c0838a8daf",
+      "Bytes": 5364,
+      "SHA256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+      "GitBlobOID": "a2a68f54385ca2dd751518b40805494efd68388c",
+      "Bytes": 1751,
+      "SHA256": "2345923f3a46e23e4c997a3107a5ca2b3a446d402ac05f698a489fc9277e32cb"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
+      "GitBlobOID": "1efab2372c6bd6bfc886aec2c9de3ffd81241231",
+      "Bytes": 4313,
+      "SHA256": "299be7845bef06b7d819c90036292aa000fff51a0e462569a3260d4028a6587e"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "GitBlobOID": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+      "Bytes": 3337,
+      "SHA256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
+      "GitBlobOID": "a8fe1ec081a6fcbf5a05170a8386e9fb7ee5a273",
+      "Bytes": 3886,
+      "SHA256": "ae147b09feb7152aa7a7dfed8b0fc801119f5f7d366524bf1bdccd6825e55a94"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+      "GitBlobOID": "64a8cf5fb7b1d4d040fd9678eeb1f5ac6c1ce8a2",
+      "Bytes": 15169,
+      "SHA256": "228cb24f1ebbce770a328c0ab21b203980d7b7b0039895ec0571bad04d0fa82a"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "GitBlobOID": "f55330f7d0b68f17585c8912c90054520e8e5b7c",
+      "Bytes": 6154,
+      "SHA256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "GitBlobOID": "2757065d70a2424a91039e0a3123daa712ef16ad",
+      "Bytes": 17660,
+      "SHA256": "30bb24e47d6751c09c00c9ebc9d4c63ff7776b362d7d247ed44f27eea152f4af"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs",
+      "GitBlobOID": "982b17545fa2e83e78627c54ac607a9abd87dbef",
+      "Bytes": 6166,
+      "SHA256": "323d61e2ef12ff77662712d5ce199a2ca0dfe6211544ff8e19cd60e984b93cd1"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "GitBlobOID": "34ce9c9a829e3367d78fc174559d6a3859074909",
+      "Bytes": 8847,
+      "SHA256": "4a738f91985c2dd42a9117e22f0d9e0b824495b3594798a9b5579095fb0db6d4"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+      "GitBlobOID": "d940d9846796cd05589d1a9142e4bb29f7bc9d9a",
+      "Bytes": 9987,
+      "SHA256": "beac7a4733bc8de2816c3acedc365b69be19a048efff513cb47ee60c82ef1d21"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.SyntheticBundlePublication.cs",
+      "GitBlobOID": "aad6dc977adf6a04486fe7cc751aba545fdf0cbc",
+      "Bytes": 4882,
+      "SHA256": "f5ee6627f47e9c5503b6cf8bc1c7903c3413debc4496717375f153c74700b142"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "GitBlobOID": "eee8e7b5b93213671e1cf9afc8d765090ed7b4e7",
+      "Bytes": 19071,
+      "SHA256": "a97a457256a092745d1a60d45f50972eb70d953fd4b106f7d01d2179ead83870"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "GitBlobOID": "1acfdd100a4cf566fb55ffadf3ac4014a9fbe8f7",
+      "Bytes": 3583,
+      "SHA256": "d372ecf78ecde37d351272d0e0c9b2476bb4a54f494d48762c1579e13885ab8b"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs",
+      "GitBlobOID": "37056261a566bc46f963bdb92aef7b98ac29f4f3",
+      "Bytes": 3431,
+      "SHA256": "5f5d1c7e810fd1a82a7dd786800506ebeb97435663c114baa5486f6bcab9a9dc"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "GitBlobOID": "81835ee929e36a6c9e0f17d789e239989fb91535",
+      "Bytes": 235466,
+      "SHA256": "393d5b9d5923ba3ec032eca6716538a3c313c516b7e70a40da02360a80b6408e"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "GitBlobOID": "27fa1c9f45502fc5ef92ef4b9a68ea79559115a0",
+      "Bytes": 22597,
+      "SHA256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "GitBlobOID": "c4c9d46904efd9361c02e690d6d142c799e9d672",
+      "Bytes": 17671,
+      "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+    },
+    {
+      "Path": "docs/development-workflow.md",
+      "GitBlobOID": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "Bytes": 66432,
+      "SHA256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "Path": "docs/testing.md",
+      "GitBlobOID": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "Bytes": 18979,
+      "SHA256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "Path": "scripts/test-csharp-worker-runtime-cleanup.ps1",
+      "GitBlobOID": "eedb745f2183ee4b4ba961569a9306ad7058bdb1",
+      "Bytes": 2944,
+      "SHA256": "162535bff92435251336866b54dc16a00f1317f74d700f1b0186938a39708a9f"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "GitBlobOID": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+      "Bytes": 81688,
+      "SHA256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    {
+      "Path": "scripts/testing/TestCategoryAdapters.ps1",
+      "GitBlobOID": "b8810e823e0100e417a9c9a044f34bad4d21dfd8",
+      "Bytes": 7006,
+      "SHA256": "18520f6270236360a7f9088347ed6f611ae7c763ee0ad711c3857760ba466fe1"
+    },
+    {
+      "Path": "scripts/testing/TestCategoryCatalog.psm1",
+      "GitBlobOID": "82dead716f8604c10aa17636c313d46a49fa307b",
+      "Bytes": 13349,
+      "SHA256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d"
+    },
+    {
+      "Path": "scripts/testing/TestCategoryExecution.ps1",
+      "GitBlobOID": "02867549fd55db86f32e765164d65c8eb921ebdd",
+      "Bytes": 11710,
+      "SHA256": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "GitBlobOID": "e9bc23af353a6cea37f6ec36dbb8a4b0cb53ad3e",
+      "Bytes": 1694820,
+      "SHA256": "847cb5e04a319bb1666a80e2869e3c0f8925d7f16c536fa78d1a71d9ac9f19c2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-active-poll-checkpoint.md",
+      "GitBlobOID": "09741f71142485b14e645630dafe1df135f93530",
+      "Bytes": 8153,
+      "SHA256": "1724089a3769e17e664f40d0f1324a661a45a0359516c7852ea512733ab45d31"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-after-preparation/manifest.json",
+      "GitBlobOID": "2b285459e0b1d0393bb25f063957c73844c9f0b3",
+      "Bytes": 1571,
+      "SHA256": "7769b3416eac72c33a4626ba97f2c536f47fc77a505d238b9a5410cbaed1ad1b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-after-preparation/owned0/boe-scope-frontend-dependencies-retry.log.gz",
+      "GitBlobOID": "bc348e52d0a1de287de7009cad1144ecac8ccb46",
+      "Bytes": 173,
+      "SHA256": "559e0577420a719e781d6712e13d11cd56c28e77388cb83f93bea670c32497af"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-after-preparation/owned0/boe-scope-frontend-dependencies.log.gz",
+      "GitBlobOID": "cc6923d8e850ba8beb35b72d7f4b6266641f4a3b",
+      "Bytes": 7469,
+      "SHA256": "79da5509131d65006f221aa5122fdab33688837c47863c8a4cb513d4cbe0b738"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-after-preparation/runner/Build-integration.log.gz",
+      "GitBlobOID": "72ae962dbb87e7bd15a2b3e542230cd073480364",
+      "Bytes": 3096,
+      "SHA256": "b9c8f3a1c58f19a29da6e52423a23918a7166b3482f64818888ed8d0385485d6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-after-preparation/runner/Build-unit.log.gz",
+      "GitBlobOID": "10e26484c2581c70fda60bffa9e11c1f24ac39ba",
+      "Bytes": 1559,
+      "SHA256": "b3432c9e2ae2f20ea10233e8418dcfc5ce843d58aea3a50636b08332cc93b805"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-after-preparation/runner/dotnet-test.log.gz",
+      "GitBlobOID": "6f095bec9cf39dbf635ebb290e089f55e0f7c7db",
+      "Bytes": 368671,
+      "SHA256": "1ffb1fe727e32b45901dbff1f7b88ddcac72eec76c0c23e424625b11834b2ee1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-after-preparation/runner/plan.json.gz",
+      "GitBlobOID": "aaa49a9c2c253aa32ea9c5464bbe9f71cb002ca0",
+      "Bytes": 938,
+      "SHA256": "b7b248897c73e2f71f4ab7e479717ba6b8392b2e8192618a9dc2f4cb23839adf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-after-preparation/runner/summary.json.gz",
+      "GitBlobOID": "4fdc5c9d699ab2502a57903d3a82dd8a1946b448",
+      "Bytes": 718,
+      "SHA256": "dce55abdacbba73b364e20d1e941cf76dd6e8475b885fea683ea01b3046afbf5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-catalog/manifest.json",
+      "GitBlobOID": "b15894c4ea9c0890bbd83dfc311f856f7d374cb3",
+      "Bytes": 714,
+      "SHA256": "201a620972a8b6e03954ae330d0b9d762b53481e9793a2874ef5dd53e26cc28f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-catalog/runner/catalog-audit.json.gz",
+      "GitBlobOID": "eda8c0e5737873861efb423504853d06a889af45",
+      "Bytes": 101,
+      "SHA256": "8a8427b74b9c2d2bacc7954c989057c7eb62715938b3206ca8607c3c12ccfa67"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-catalog/runner/dotnet-test.log.gz",
+      "GitBlobOID": "6641f83a52bb2d0f7be39f9a3700dcf9d1cbc19e",
+      "Bytes": 363939,
+      "SHA256": "f46ee26fdfbf95fd98291ad2ee85838a550d1fc5aa0f91171d9d29a9e586ba1c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-catalog/runner/summary.json.gz",
+      "GitBlobOID": "8c4cbcc3557ad5206ee859b51fa10c998639cc70",
+      "Bytes": 603,
+      "SHA256": "c468b0698857ebfcba2d5cc3f79b2ddb257af9cf4b9977da90518fd27f0e5b34"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-preparation/manifest.json",
+      "GitBlobOID": "c683f512e4847c5b2032cf1ff365e08f796a323e",
+      "Bytes": 1351,
+      "SHA256": "921a1ee207023d73ec679cc275f6565708bf753b4ea94e846560c20e7be35dbf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-preparation/runner/Build-integration.log.gz",
+      "GitBlobOID": "d4c52d1bd9d46d61ecef11e0d0ebf34cc773c2d9",
+      "Bytes": 3592,
+      "SHA256": "a6a2a579ecdd4d7772c873f5d8f787f9c81f1f3c01c9293f1def6a32cd5087c7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-preparation/runner/Build-unit.log.gz",
+      "GitBlobOID": "18b96b36a355688d6f69f1126349ecf0b0ec9ba2",
+      "Bytes": 1590,
+      "SHA256": "76fe8b590b914223045159e1111e10e1a4db9dabc2ec10f57f6ffcb4092d06ba"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-preparation/runner/dotnet-test.log.gz",
+      "GitBlobOID": "57052d8938b8b08455011b4fb055940c0c6ff89d",
+      "Bytes": 369217,
+      "SHA256": "82e9ed6d539f1841bbcb8cd0834d6c9450e2791bef0dde77dec0ebf3f2e5b24a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-preparation/runner/plan.json.gz",
+      "GitBlobOID": "0970dbaa354af2c25b204d46583bf791c6124dbd",
+      "Bytes": 940,
+      "SHA256": "ea59b04164b62157b9b7ff08a69848261b54f15b3e57be6d91bf270d9cef3dc8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-preparation/runner/summary.json.gz",
+      "GitBlobOID": "cc7346041509abbe3cdbd4accc138104a8633712",
+      "Bytes": 718,
+      "SHA256": "8ecc31bc43e7a68c381bb0a97fbef30ffbdd691126c200e198cd79896fa19822"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-baseline-preparation/toolchain.json.gz",
+      "GitBlobOID": "4dbe722d2d923aa222494d6a0d903469165d8016",
+      "Bytes": 1509,
+      "SHA256": "09abcbf11f8f6c0ad3acaa86986d2b8e96e3d8d3e71508f5ef26380a5f612f76"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/manifest.json",
+      "GitBlobOID": "72e3e669893748aa458327665b36bf3bf8706b03",
+      "Bytes": 13933,
+      "SHA256": "8a311ed7aa303eab34916b764153dabceb0f7921e814e08021cc1be2156c50c5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/matched-comparison.json",
+      "GitBlobOID": "0e1efddee1b5ae41e343fd3a55ed7a62229572c7",
+      "Bytes": 29985,
+      "SHA256": "5d8f2a11dee56d331c773bdfc1d771eda9748b11084da0f3ac3e6d02760eec42"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0-binary-provenance.json.gz",
+      "GitBlobOID": "65b466db6ab8066806cf4252f7256391265b0f05",
+      "Bytes": 146,
+      "SHA256": "9aaa43f570727fe3bccd61ff6a680934b7ff40b99d325c7ae56fabf3fc4cfaa2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/accepted-story.jsonl.gz",
+      "GitBlobOID": "b4f89b4566369f8bd34be1104c974fedf1128cfc",
+      "Bytes": 260,
+      "SHA256": "e1f62d2bf110f915099f2e9a7afba918e8cc739065710c56b23516cdc85ecb96"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/guardian.json.gz",
+      "GitBlobOID": "6ad5935cad383bdbf1b5d116826eabdf1b4e3e53",
+      "Bytes": 105,
+      "SHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/initial-authority.json.gz",
+      "GitBlobOID": "ec4c288b9e33dd8567a89d6a88b012762941a821",
+      "Bytes": 4687,
+      "SHA256": "6abaaf0b2ea06b28e4860c7b12d091dd64ac1fc3904a840c1fcb9b95f9afb10e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/initial-manifest.json.gz",
+      "GitBlobOID": "761a535ced2bf2c740929f158dddbbe01aa0bd16",
+      "Bytes": 3240,
+      "SHA256": "d799a70008dc278b397f63edf0e6426ed4f4b1b1fcce04863c8c924a782be937"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/initial-request.json.gz",
+      "GitBlobOID": "a2894f02e1b51127114e903fae33a280f387b247",
+      "Bytes": 17868,
+      "SHA256": "64487c024d6f5589c428809266bcf341bc31622afb466f58bb4a00086fec9883"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/native.log.gz",
+      "GitBlobOID": "ef63dfe6df30bab7aad1212832a50e61419f0e4a",
+      "Bytes": 71,
+      "SHA256": "fc120a9831ebc8302c749d8dcf6851280fff9f98a3a292915866080121aed8af"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/.boe_runtime/gm-runs/main.json.gz",
+      "GitBlobOID": "4ef1c9eae8ae58365e7faa78c219b1f32dce72f9",
+      "Bytes": 333,
+      "SHA256": "33a04c9bfa2aeae2e4d3c7320563228d31d6f84c4f58b2a8b44021bbcb4917c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/.boe_runtime/locks/canonical-write.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/.boe_runtime/locks/session-lifecycle.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/.boe_runtime/session-generation/current.json.gz",
+      "GitBlobOID": "82c198f7c50ef59c7d083887312f9c299bed9596",
+      "Bytes": 87,
+      "SHA256": "e18217ed6f5a508c02bb6c845c1a18f0e70b9e4b5cb5c4055f484207cac2b893"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/config.json.gz",
+      "GitBlobOID": "74366730ba99ecfa3e005f702b09e997dcd6d09e",
+      "Bytes": 147,
+      "SHA256": "0e0636650ce817a81bb28bc63514f53ed7501086f4f12cadfe1c4e1cb2a480f1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/control/gm_bridge_status.json.gz",
+      "GitBlobOID": "7970716851b43ed0eee1ca56f0d78b059f6f1a9d",
+      "Bytes": 456,
+      "SHA256": "20bde19e8663f5453d4250c7f9e1d5224483dfac7b072d786f5f2bd84b090b5f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/control/pending_dice_state.json.gz",
+      "GitBlobOID": "9d5f2a3d0dc750d867579a6f68fe6466d0f49c0f",
+      "Bytes": 285,
+      "SHA256": "6578ebed6edbb1e6c86eadf28a7ae3d18c0cb5958a8b84de9111017fa35fbc76"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/control/progression_schedule.json.gz",
+      "GitBlobOID": "07fa3990db68c3d4aa6558eda9dcfa4ca36a0d89",
+      "Bytes": 371,
+      "SHA256": "95aeba580a1e383f538e694272ea5a94fcfc9f1980fcb4f5649d1ed119764354"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/core/game_settings.json.gz",
+      "GitBlobOID": "faaf7964ab5145ef6be2662c921df6ec49243934",
+      "Bytes": 163,
+      "SHA256": "0452924fbdaa6f62a59e92a7ced5c341f183b56044c4e532b65f81dd5cff93b2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/core/system_mods.json.gz",
+      "GitBlobOID": "048e8edbb088908287484d32bcc33dbc52281d5a",
+      "Bytes": 148,
+      "SHA256": "e02d6ef3bdf464ca3712790dd347532a0101bbb0311836ea4890497ef616356f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/effects/effect_identity_index.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/history/chat_log.json.gz",
+      "GitBlobOID": "8c81fdbd87a5507a7b763168021cc5a892933835",
+      "Bytes": 109,
+      "SHA256": "045b55bc3ef1cf9e19e15a9cbb5484882e791dd98234b93ad97259ea63ab84bb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/inventory/item_identity_index.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/meta/achievements.json.gz",
+      "GitBlobOID": "2c193e01d41e719be423a74d3dabf94acb9a377b",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "GitBlobOID": "52480bbfb88e8b7ccb74574533dec3c7c74e9e3b",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "GitBlobOID": "e5a894f475620da73a898c03563adbace313e7b3",
+      "Bytes": 1887,
+      "SHA256": "e3ceacc6a36636dbda98a77588fdc5735c3d21e0db0feaf60d31d6ae1e8f7853"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "GitBlobOID": "f91f0291b973673b64989f6fbaedd121def945bc",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "GitBlobOID": "8a32410e7b1139b8b6aaae8406bffac29a9cfbb9",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/meta/character_chronicle.json.gz",
+      "GitBlobOID": "ab798eb45abe42598bd585c74cf06eb5e41c490f",
+      "Bytes": 465,
+      "SHA256": "d85b98533bfeb54f598ccf0ac35dd799795a8c82bc4d7fdf0ee6b79c68adc3c7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/meta/guardian_projects.json.gz",
+      "GitBlobOID": "ffe2844c5d2fe2136f5d224caee9972e4605b094",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/meta/guardian_thought_journal.json.gz",
+      "GitBlobOID": "e9a63983ff60bed16d8de8c01edd6df0581d76cb",
+      "Bytes": 430,
+      "SHA256": "f6a4cb6ad87816152087286a1d059279a44c1d58949222fc1997715ee50e8722"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/meta/guardians.json.gz",
+      "GitBlobOID": "d8cc31ea645be8305d1d2e486711d53c328c1e1a",
+      "Bytes": 2558,
+      "SHA256": "3ed0bb34f937d8accbd17f29f41d74e0617c06ba84e723e3fa80e91ee6b393ca"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/meta/soul_state.json.gz",
+      "GitBlobOID": "b820dd1869f6fba419f808d46a8ee9b81fc561fa",
+      "Bytes": 454,
+      "SHA256": "e04028a8c036bdd433c9b3a4d8794879201d9620b7744a0a8418fde5a7001e91"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/resources/resource_definitions.json.gz",
+      "GitBlobOID": "f9d7af775dc22bb7c1d06f486e1c85791231a71e",
+      "Bytes": 998,
+      "SHA256": "adf39880e4c46ecba3c570c364a21887bcdd55187b879579018b4f02e46f2aa0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/resources/resource_history.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "GitBlobOID": "605460ca479957e4c94f1d545a4ae0d2f3470d43",
+      "Bytes": 85,
+      "SHA256": "118d5e71ce819587a1ee88e28573c89e50105606d2c920d2e7b3425bf69e9807"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/resources/resource_state.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/wounds/wound_history.json.gz",
+      "GitBlobOID": "9faef76a0cb44ce240fe3e460db9ebc7e3c187ff",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/lore/chaos_sea/cosmology.json.gz",
+      "GitBlobOID": "88f68329dff80715d27eebe943c42b9f975d01c9",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "GitBlobOID": "9cf1f9c1a2f3e0861a7912b319232eb02d12746c",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "GitBlobOID": "679554d282e78191e2954083cb69ee06054b3c45",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "GitBlobOID": "8b24aaed0c0466a707d16d146570f40097dcaf15",
+      "Bytes": 508,
+      "SHA256": "fc4a72b49919ba4385c48ee2cbc51d83087152d49a65e1a50110829b042e351b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/lore/codex_entries.json.gz",
+      "GitBlobOID": "524c04aa865a4a96cd71215c6ed99abcca24f571",
+      "Bytes": 861,
+      "SHA256": "3a50975b5b7378708360784640e6dfed009a7328a0f80e9e6079ceea6dc1ac9f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/output/debug_logs.json.gz",
+      "GitBlobOID": "277786238dbb279230e69ab90c46027fc61fe4ab",
+      "Bytes": 994,
+      "SHA256": "06287ac1db899edc6d2867d966d1528e5b2036f7f3053769fa87bd189053b774"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/output/interface_updates.json.gz",
+      "GitBlobOID": "a3ca96d947744efc8e055c4c7304b04ce2ee32dc",
+      "Bytes": 83,
+      "SHA256": "9cb222858ffc83e27286b370430b7a4d3ced7caba3e771e84ca63f5f97d1612e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/output/narrative_response.json.gz",
+      "GitBlobOID": "0fdd5e3646b171187b952435cffd4f41dc6084c5",
+      "Bytes": 130,
+      "SHA256": "92ffe41b9e8472682d02499d4d6b0fca2aeec76f930cdfb31a6659c4ec7f4dff"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/saves/autosaves/autosave_turn1_20261010_191703.zip.gz",
+      "GitBlobOID": "a0fe678d535a21ee1758b0ae82481bf94bbb3add",
+      "Bytes": 24982,
+      "SHA256": "4c0018490343be9498b6d5dde38ea5280d245fbbb430d0fc3d3f3e1d754c5caa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/neutral-session-cce29fd46d4d45f58ce8079043e65984/game_session/stories/chaos_sea.jsonl.gz",
+      "GitBlobOID": "b4f89b4566369f8bd34be1104c974fedf1128cfc",
+      "Bytes": 260,
+      "SHA256": "e1f62d2bf110f915099f2e9a7afba918e8cc739065710c56b23516cdc85ecb96"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/original-request.json.gz",
+      "GitBlobOID": "b159c497898f3ee368fbc770b6299d1b253cd6ac",
+      "Bytes": 17911,
+      "SHA256": "125aa613e5010135f737705600cb42842e100bf475722babcac583a560448cc9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/package/boe-lineage-supervisor.gz",
+      "GitBlobOID": "903b419346ccd92816ab09acd0333f2bf7d8f296",
+      "Bytes": 36345,
+      "SHA256": "c9c0dd9fdb36d3ffb8cfa4ee69425985e3bc5724eee81c71b0803379516c778c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/package/build-provenance.json.gz",
+      "GitBlobOID": "3a950af78f4ed5d62e9f0e58c643933eb02d2090",
+      "Bytes": 799,
+      "SHA256": "fcdddf50dcea458684e393b2bda094adea2d2c245f7e3aac66c00dc9a67efe79"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/package/neutral-cli.gz",
+      "GitBlobOID": "c4302edf7e2beee95dfc0af71e9b2b29fa2572e3",
+      "Bytes": 10421,
+      "SHA256": "331c5e0c8198f53ac58fbe238388ed6cfb859200d0e7001a6fce7dd5f72e9b9d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/package/neutral-terminal-manifest.json.gz",
+      "GitBlobOID": "f9851e92732436a006c6e1f806b7cdd15ca2a112",
+      "Bytes": 238,
+      "SHA256": "08c3cf866da7c070e01feea8cd9ad1eccf31adcb72aaac810b5f95e318115a00"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/package/package-manifest.json.gz",
+      "GitBlobOID": "fabed6db27770429ddbdde4acbf44d7e2d2e9f51",
+      "Bytes": 629,
+      "SHA256": "a262cbc44b0e659fb346574b27b7efdd4dbf4fa16811807fb816179d89ba9e9c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/probe.log.gz",
+      "GitBlobOID": "48f92dcbfe1e51971107f0be3371cd568f8050fb",
+      "Bytes": 325,
+      "SHA256": "7bdf2a1d24708d83fec132a92501ddc6771b089f045565fd1450a89b60c2c72a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/profile-before-stop.json.gz",
+      "GitBlobOID": "ca3e06b4c977e22f50b2e74814f6058b8627ac7c",
+      "Bytes": 45424,
+      "SHA256": "a0f4d4cbe3b9b6afa143b44d492b5830ea5edf5a3b374f97c28f561b25b72a31"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/result.json.gz",
+      "GitBlobOID": "5920497dac8e1f01f16fc05dfffd1060bad40739",
+      "Bytes": 86188,
+      "SHA256": "7cfead47c02ffa648280b438c37685b159b5644b767952ea39f2e32f776d2d21"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/owned0/runtime-provenance.json.gz",
+      "GitBlobOID": "d099c677668767bc5c59776d1a07d48382913f0b",
+      "Bytes": 410,
+      "SHA256": "748c2ef21ea12b95b3748490c10c8425ff65a526821ab32f47d12c4a30a036f6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/runner/c5-original-consumer-duration-diagnostic-integration-001.trx.gz",
+      "GitBlobOID": "beac7495312af7b4e94f4c921be0634b5d4f317d",
+      "Bytes": 1288,
+      "SHA256": "3e58032c64dfde3c8637456c8495662dc35dcc5163a59c07fae6068156cfedb0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/runner/dotnet-test.log.gz",
+      "GitBlobOID": "d481bd851bb18c482c78994f58068d88a948dc65",
+      "Bytes": 181155,
+      "SHA256": "5518ade83c40b8854f7a8a81798bc591501eb394339f43de34adba97b6b5715c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/runner/plan.json.gz",
+      "GitBlobOID": "d77476be8fcd1ba50b42f2efe341187e3ee251b4",
+      "Bytes": 526,
+      "SHA256": "62c63e303991074819c8ade17f2837c7acd56bebcfd840b2925a18353fb930ce"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-after/runner/summary.json.gz",
+      "GitBlobOID": "1a7b95f70d2143019722121ed86e48aebf1f6c41",
+      "Bytes": 616,
+      "SHA256": "6de95d688c565803374065b4c6b12f1bfc2616d3fadb1f610880064cc9917fa4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/manifest.json",
+      "GitBlobOID": "31edb8eed2432300ca48d7a177fda7631380fa59",
+      "Bytes": 13774,
+      "SHA256": "efb7f99a28d9eb7b1baf2805225d0b07f65e017835d920a19c67a033601524c3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0-binary-provenance.json.gz",
+      "GitBlobOID": "65b466db6ab8066806cf4252f7256391265b0f05",
+      "Bytes": 146,
+      "SHA256": "9aaa43f570727fe3bccd61ff6a680934b7ff40b99d325c7ae56fabf3fc4cfaa2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/accepted-story.jsonl.gz",
+      "GitBlobOID": "b92a4a410ec7fd6650424c4d9c1a027842398750",
+      "Bytes": 258,
+      "SHA256": "ced29380de349222377aca9f29caa3f10bc9df3610de413f80e435f3654d9a58"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/guardian.json.gz",
+      "GitBlobOID": "6ad5935cad383bdbf1b5d116826eabdf1b4e3e53",
+      "Bytes": 105,
+      "SHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/initial-authority.json.gz",
+      "GitBlobOID": "71cfc4f954261474dd0973d338b068bf47ce6147",
+      "Bytes": 4675,
+      "SHA256": "c1103026ff5b19cc3c5e7e5f316571da228dc34352fe4bad77f05b6f2e446ead"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/initial-manifest.json.gz",
+      "GitBlobOID": "a9d601cf252397322448232706b5cd52432b61cb",
+      "Bytes": 3233,
+      "SHA256": "8e4ba02694f335711c8463ff0c5c7affa114db488b5cc69b8053c223402e9986"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/initial-request.json.gz",
+      "GitBlobOID": "6ef517ef626ae56cd0b2dcd2cd1edb4f0be2f4e3",
+      "Bytes": 17868,
+      "SHA256": "380f7b5f2517d5d70208ae26715f01d2c29a22277777d57de1ad5f5e8636c206"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/native.log.gz",
+      "GitBlobOID": "5581e76116640849684b38ebfec6de434bd73f8b",
+      "Bytes": 71,
+      "SHA256": "ad44a090f6de2a42022b16dc1a185e17e39e295437e1c07502ea5e4a74851480"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/.boe_runtime/gm-runs/main.json.gz",
+      "GitBlobOID": "4adf2063b78fff0f7fb258e0f3090966554d8581",
+      "Bytes": 332,
+      "SHA256": "28fdd63194fa4d62a35fafb909bf2d5266fef410c2f70a33a531523fb2aa9817"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/.boe_runtime/locks/canonical-write.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/.boe_runtime/locks/session-lifecycle.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/.boe_runtime/session-generation/current.json.gz",
+      "GitBlobOID": "d18ae55827b1248a30f51399132c5af42df597de",
+      "Bytes": 86,
+      "SHA256": "644066fd69172393627f2214eeedc97ff488456ab2ce8223c62097786c21c9d5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/config.json.gz",
+      "GitBlobOID": "74366730ba99ecfa3e005f702b09e997dcd6d09e",
+      "Bytes": 147,
+      "SHA256": "0e0636650ce817a81bb28bc63514f53ed7501086f4f12cadfe1c4e1cb2a480f1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/control/gm_bridge_status.json.gz",
+      "GitBlobOID": "e5804063843d6dcb07115a73d79d42622de9b25a",
+      "Bytes": 458,
+      "SHA256": "b3d09ac288890a93c78eb209150a209d4a795bcdd6392b2e4b41aee70c8d4182"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/control/pending_dice_state.json.gz",
+      "GitBlobOID": "3259cfd33a310405071eb20c76ab36eb5dc6ddb1",
+      "Bytes": 284,
+      "SHA256": "f565df0666136c470ada57d641fd5de54f7db61a467ff9d8f0067906475f9a24"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/control/progression_schedule.json.gz",
+      "GitBlobOID": "617aa173ed7697f74821a1eb8b6b82768302c992",
+      "Bytes": 371,
+      "SHA256": "b55590e042fa088f42b05bb34cdeb2fb9d507d3cf7932e1b8ffa6e10d5109432"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/core/game_settings.json.gz",
+      "GitBlobOID": "47f38fedb5eb645751ab586e590cec8e8229aa02",
+      "Bytes": 163,
+      "SHA256": "b36989c4d16d5eca665d17b0579ed20e7062f6b48e0dd672b15e2c93656bfd90"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/core/system_mods.json.gz",
+      "GitBlobOID": "919e98a3d5842f704e559e48ccd4d46b39bfae25",
+      "Bytes": 148,
+      "SHA256": "724758ad282e1f0b74744563494e174359e70d3778d643d5e078c82968577f6b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/effects/effect_identity_index.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/history/chat_log.json.gz",
+      "GitBlobOID": "715e4a1a141a62af0bd2fbcfcb5d7a5eb3ad2675",
+      "Bytes": 110,
+      "SHA256": "043c8a8ab84dd4017ad80855cdf79c7368d692093467e80dce9c46dc0795add7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/inventory/item_identity_index.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/meta/achievements.json.gz",
+      "GitBlobOID": "2c193e01d41e719be423a74d3dabf94acb9a377b",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "GitBlobOID": "52480bbfb88e8b7ccb74574533dec3c7c74e9e3b",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "GitBlobOID": "82f60c478320738ecdd29dee78001bd0eac47949",
+      "Bytes": 1887,
+      "SHA256": "f6d61e156756d593f563a684d12765d43299cc35bf4abd5c4953e289ca4eb0bd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "GitBlobOID": "f91f0291b973673b64989f6fbaedd121def945bc",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "GitBlobOID": "8a32410e7b1139b8b6aaae8406bffac29a9cfbb9",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/meta/character_chronicle.json.gz",
+      "GitBlobOID": "ab798eb45abe42598bd585c74cf06eb5e41c490f",
+      "Bytes": 465,
+      "SHA256": "d85b98533bfeb54f598ccf0ac35dd799795a8c82bc4d7fdf0ee6b79c68adc3c7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/meta/guardian_projects.json.gz",
+      "GitBlobOID": "ffe2844c5d2fe2136f5d224caee9972e4605b094",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/meta/guardian_thought_journal.json.gz",
+      "GitBlobOID": "a66be27b6b8984e48c0b52f759db6fae3209bcbd",
+      "Bytes": 429,
+      "SHA256": "a869066bff0208fe6fd9e13b2778612f91bb3311398054eb3b2fbd75e60a03db"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/meta/guardians.json.gz",
+      "GitBlobOID": "3cf94e1514b331c11d7f8f8be3bab8e1249ae7da",
+      "Bytes": 2558,
+      "SHA256": "57b3a4f7b4d7dcf4b143a5c572e987f19f81975733881f6f8803217384cdd004"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/meta/soul_state.json.gz",
+      "GitBlobOID": "b820dd1869f6fba419f808d46a8ee9b81fc561fa",
+      "Bytes": 454,
+      "SHA256": "e04028a8c036bdd433c9b3a4d8794879201d9620b7744a0a8418fde5a7001e91"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/resources/resource_definitions.json.gz",
+      "GitBlobOID": "f9d7af775dc22bb7c1d06f486e1c85791231a71e",
+      "Bytes": 998,
+      "SHA256": "adf39880e4c46ecba3c570c364a21887bcdd55187b879579018b4f02e46f2aa0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/resources/resource_history.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "GitBlobOID": "605460ca479957e4c94f1d545a4ae0d2f3470d43",
+      "Bytes": 85,
+      "SHA256": "118d5e71ce819587a1ee88e28573c89e50105606d2c920d2e7b3425bf69e9807"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/resources/resource_state.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/wounds/wound_history.json.gz",
+      "GitBlobOID": "9faef76a0cb44ce240fe3e460db9ebc7e3c187ff",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/lore/chaos_sea/cosmology.json.gz",
+      "GitBlobOID": "88f68329dff80715d27eebe943c42b9f975d01c9",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "GitBlobOID": "9cf1f9c1a2f3e0861a7912b319232eb02d12746c",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "GitBlobOID": "679554d282e78191e2954083cb69ee06054b3c45",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "GitBlobOID": "8b24aaed0c0466a707d16d146570f40097dcaf15",
+      "Bytes": 508,
+      "SHA256": "fc4a72b49919ba4385c48ee2cbc51d83087152d49a65e1a50110829b042e351b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/lore/codex_entries.json.gz",
+      "GitBlobOID": "6df7c950df336276bb0d6d8e3eadaa7f36d562a7",
+      "Bytes": 860,
+      "SHA256": "6a799b6e95a4d9170d9ab90018c3d12bb65bb249326a2515ddf7971952f83769"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/output/debug_logs.json.gz",
+      "GitBlobOID": "c7b504fd04797dfd857e5536b10f26b58a34fd9d",
+      "Bytes": 994,
+      "SHA256": "ebe94763ed8b22ab08e5e2a28386e5d194d51253984a081a3f72033545240b0b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/output/interface_updates.json.gz",
+      "GitBlobOID": "85c02246827fc12d46ab4a2bceb0dc49dda51692",
+      "Bytes": 83,
+      "SHA256": "b8e7a6361f4997f531427ae2d6ba14908a5f999402033bede03f33406825ba6d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/output/narrative_response.json.gz",
+      "GitBlobOID": "12579675a11b68e5999afd0d5693f7cbb22934e4",
+      "Bytes": 130,
+      "SHA256": "e2bd5ba1bb7fc303c722728c74e77d64666e8273275bfbd01104c4f7f215b958"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/saves/autosaves/autosave_turn1_20261010_191159.zip.gz",
+      "GitBlobOID": "ec0fa720045b73deec08a8b1990c35cc6101d2e1",
+      "Bytes": 25025,
+      "SHA256": "c98e7cdbfbcd92ad3a1c0a6fc1960c70fe0e542494229fa382d4d8417750a25f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/neutral-session-6b4d98e905df4f00a9d05671e2b6fca9/game_session/stories/chaos_sea.jsonl.gz",
+      "GitBlobOID": "b92a4a410ec7fd6650424c4d9c1a027842398750",
+      "Bytes": 258,
+      "SHA256": "ced29380de349222377aca9f29caa3f10bc9df3610de413f80e435f3654d9a58"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/original-request.json.gz",
+      "GitBlobOID": "e98b7178e7854748257774e1ee310aba1eb8ea97",
+      "Bytes": 17912,
+      "SHA256": "7fc587cd2dc62d3100dc646728a686e3f1519ff2f9a0d2ab7fa58ab860fc2d6d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/package/boe-lineage-supervisor.gz",
+      "GitBlobOID": "903b419346ccd92816ab09acd0333f2bf7d8f296",
+      "Bytes": 36345,
+      "SHA256": "c9c0dd9fdb36d3ffb8cfa4ee69425985e3bc5724eee81c71b0803379516c778c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/package/build-provenance.json.gz",
+      "GitBlobOID": "3a950af78f4ed5d62e9f0e58c643933eb02d2090",
+      "Bytes": 799,
+      "SHA256": "fcdddf50dcea458684e393b2bda094adea2d2c245f7e3aac66c00dc9a67efe79"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/package/neutral-cli.gz",
+      "GitBlobOID": "c4302edf7e2beee95dfc0af71e9b2b29fa2572e3",
+      "Bytes": 10421,
+      "SHA256": "331c5e0c8198f53ac58fbe238388ed6cfb859200d0e7001a6fce7dd5f72e9b9d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/package/neutral-terminal-manifest.json.gz",
+      "GitBlobOID": "f9851e92732436a006c6e1f806b7cdd15ca2a112",
+      "Bytes": 238,
+      "SHA256": "08c3cf866da7c070e01feea8cd9ad1eccf31adcb72aaac810b5f95e318115a00"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/package/package-manifest.json.gz",
+      "GitBlobOID": "c2345b34dfe3590e0c6f0d38da3cb0b6f5593c20",
+      "Bytes": 631,
+      "SHA256": "b4d6fd3186b43a4d57822d3db627896d89e61b64589ee19913cf91bfe58bd91f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/probe.log.gz",
+      "GitBlobOID": "7d176dc3c1ab7af2ea69ea67ef906f141ec55b0b",
+      "Bytes": 324,
+      "SHA256": "9fe4168092374cd5d7edd2eac546440da2c800744f78505bb8799cab86c41cac"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/profile-before-stop.json.gz",
+      "GitBlobOID": "54c01245190b5b167a848249453aae7e14f4f622",
+      "Bytes": 45214,
+      "SHA256": "ed98051baf522010c5a253ea4bc0b8e1bddd58051e9370f1f21da9da0b7eadbc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/result.json.gz",
+      "GitBlobOID": "9d65b9f3eec0cce7f87ad4d108fbfe83ca060e0c",
+      "Bytes": 85758,
+      "SHA256": "24281dde008229a464bf3c224f81a6eaf1f7085a6e0bff6a4fc0c77d993b808c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/owned0/runtime-provenance.json.gz",
+      "GitBlobOID": "69a33d47500ecb4de495905ea76d424659fc5a74",
+      "Bytes": 410,
+      "SHA256": "1ed27b312bba5c6b1a88694754a9e78a46c66746512273b1012fef3f491be425"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/runner/c5-original-consumer-duration-diagnostic-integration-001.trx.gz",
+      "GitBlobOID": "fd976b403158c54199bf7e80672059311ee26cd8",
+      "Bytes": 1292,
+      "SHA256": "12542cb0c713c4ed6a322796b46d6cb5938e336ccf931f1027e2efec569b1c5a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/runner/dotnet-test.log.gz",
+      "GitBlobOID": "0eeb3af987087ff122018cf6845f438557b7ca9a",
+      "Bytes": 181154,
+      "SHA256": "b0051f52258bb50bfe2397665b1a7eb703ac92125015aeb043f52a412158e5e3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/runner/plan.json.gz",
+      "GitBlobOID": "d40befac058a6d81220d2890ddcb7db4ac2b9bd5",
+      "Bytes": 524,
+      "SHA256": "39cd28fa7f2d29f2fa0c13d486813fef401a086695988cf0a230068751a37ddf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-duration-before/runner/summary.json.gz",
+      "GitBlobOID": "1e8ed729218124604aae9312236dc3c147f2aa89",
+      "Bytes": 614,
+      "SHA256": "5be7b5a220d066134b6c6df6d50b0830b3b06f3d4d76d9fe953c6e7e3d5ef6fa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-existing-controls-green/manifest.json",
+      "GitBlobOID": "460f48b9460a5e6b477ead278dc674842923ccfe",
+      "Bytes": 940,
+      "SHA256": "09195c8a6e58f8fa41198903c35f59e5ad37c19a79f91af5ed1e0d90cbef802e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-existing-controls-green/runner/c5-original-decoded-state-controls-integration-001.trx.gz",
+      "GitBlobOID": "83efc16eafa39fa0fd475b06792061cd8843d8e8",
+      "Bytes": 2228,
+      "SHA256": "9c112148088461ebc08d1237bbed6d8de040ba36ae28762834fdac3bb6d21d0f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-existing-controls-green/runner/dotnet-test.log.gz",
+      "GitBlobOID": "b359fe9b78b5fb75c11a62f64da3bdc3d8c5aea8",
+      "Bytes": 181154,
+      "SHA256": "3b6b3109dd4424825a09e30b55577c75178a799e43b2dec8c79b0e7874b9d348"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-existing-controls-green/runner/plan.json.gz",
+      "GitBlobOID": "3e9378925526063c95065d84e9464f9c53a3b33b",
+      "Bytes": 647,
+      "SHA256": "7ba499e01bc26b27921480659bbe8529f2975560f1badade11b01e7229e57b8a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-existing-controls-green/runner/summary.json.gz",
+      "GitBlobOID": "385e726431ca09ab05a3dd7861ce5dc6a275bc88",
+      "Bytes": 611,
+      "SHA256": "05c8bc8dd6c529aacf291e0021035df7dfb4d37395499a4f58153f155ad7f6bb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-experiment-persistence-correction.json",
+      "GitBlobOID": "466ab2c6b8997b8d85b62cc5b5990b1962290d87",
+      "Bytes": 17587,
+      "SHA256": "893b25c84a3057bbaccb13036f83030d79d33398fc71d26a83b2362140f1b05f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/browser-provenance.json.gz",
+      "GitBlobOID": "891176c040e6b4e1c440035b8218dd43a31b1ad1",
+      "Bytes": 482,
+      "SHA256": "1626464dc74dea03e14f1bfff7546ddf5c6552e9dae5ba6b97a75365d1efd90a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/manifest.json",
+      "GitBlobOID": "999e6b1875e1c83524e3972ac621c69fb3198ff6",
+      "Bytes": 22642,
+      "SHA256": "e1d6bc845f9b2d930c3f1b3abe4bb22dc4df06991632c07374ed1c46560e06fa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0-binary-provenance.json.gz",
+      "GitBlobOID": "aff5c5c697f8c3499baba4df2820ef661c35be33",
+      "Bytes": 37959,
+      "SHA256": "ab028e0f87843e87c809aed1503eea9993dccde41f89a1701bed528ddd01b41d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/bridge-first-echo.raw.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/bridge-first.raw.gz",
+      "GitBlobOID": "2b9be752ed5fabd59336411a559f87deef37f2dd",
+      "Bytes": 293,
+      "SHA256": "5882245bc7c7608de172366b0f215068c7b7dd2a39e46f30e4c436aef24890f4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/browser-queued-idle-ack.json.gz",
+      "GitBlobOID": "0da106c938638dc49bd56947e70653a421e7cde8",
+      "Bytes": 109,
+      "SHA256": "37423fca6d81497bbb339f0e7afb08e0c092d7d66c2730355cd99d9515a0c271"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/browser-queued-idle-ack.json.release.gz",
+      "GitBlobOID": "524a99dfabc7ba377af529fec35d82153de2fe20",
+      "Bytes": 52,
+      "SHA256": "94616d8b7b6747ec5c34676323e960003455a9cc99deaf48798d8f43e640ecef"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/chain.log.gz",
+      "GitBlobOID": "3042fa786197bc4bb726a692831eba6ac143099b",
+      "Bytes": 2419,
+      "SHA256": "ba25faa3a07c769aecbd944501c9209cda3c4df82b42ace6f319835d64f14fd0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/client-first-echo.raw.gz",
+      "GitBlobOID": "17bfd42bd66f82d07deabc1eb5e10c242de61988",
+      "Bytes": 22,
+      "SHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/client-first.raw.gz",
+      "GitBlobOID": "971ede4d5fb4e411cf12e33bc0b72b84fa4d12c3",
+      "Bytes": 1430,
+      "SHA256": "d3c774645cedde975222022a65714341b1bca2a06f8f6f827d3c7a924b7c9615"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/daemon-first-echo.raw.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/daemon-first.log.gz",
+      "GitBlobOID": "175333393a8897fd1bb8bf13a1c1d636467a211a",
+      "Bytes": 302,
+      "SHA256": "af3b5ddd164bb3c9ae76f5af9a970b09ba4df4fb14d179c9b4d64abb11a358e7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/daemon-first.raw.gz",
+      "GitBlobOID": "8b144cda2a9e1d2d737974f88c5e20e413e6cb68",
+      "Bytes": 353,
+      "SHA256": "d5d99e6cf9b9987e20691892108084d8fde17b7139b4c6bc6444e25aded17de3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/events.json.gz",
+      "GitBlobOID": "b166e1e93ce7589044ed95ccecc2c1e566d9b747",
+      "Bytes": 3323,
+      "SHA256": "430340b61c0f2f5c4fb6890223d907cd7244d782d2f815b26be51ca9c8aaf2a7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/guardian.json.gz",
+      "GitBlobOID": "d8d42178eb8fe41cfe9ca14aa18317e013cfdb36",
+      "Bytes": 107,
+      "SHA256": "c79221bc516333c36183c88ead0101d7e269fb0f873b80fec06d91a0ce6f33c4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/native-preparation.log.gz",
+      "GitBlobOID": "fecee351eca89bb4813673fa098bff4b2caeb86c",
+      "Bytes": 71,
+      "SHA256": "6bb42da620bef5cbcdf5ddd6be1aec9d72de1d598e06ead8a571a26b77225b60"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/package/boe-lineage-supervisor.gz",
+      "GitBlobOID": "903b419346ccd92816ab09acd0333f2bf7d8f296",
+      "Bytes": 36345,
+      "SHA256": "c9c0dd9fdb36d3ffb8cfa4ee69425985e3bc5724eee81c71b0803379516c778c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/package/build-provenance.json.gz",
+      "GitBlobOID": "247a83d224788671d6976f3930b28192389c372b",
+      "Bytes": 685,
+      "SHA256": "09210576f1b468bb005ce26eae4668413f741659ba2c1bcbb1c1b7cbc3276546"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/package/package-manifest.json.gz",
+      "GitBlobOID": "c4c3f3e5e5daee0a3176cfb7ba632c3cc2f9c41e",
+      "Bytes": 630,
+      "SHA256": "b8296b2ab38c0b2667f1a3644e795671bb5854109f7ea63b800cff57dcb8e10c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/.boe_runtime/gm-runs/main.json.gz",
+      "GitBlobOID": "069e75a4999aa246032ae8ea194d80da2416c3d1",
+      "Bytes": 306,
+      "SHA256": "30a6f65ab4277b2be612d0e3bfba28ade9dfa22233bc0eb70b5e92eed9c6e76c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/.boe_runtime/locks/canonical-write.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/.boe_runtime/locks/session-lifecycle.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/.boe_runtime/session-generation/current.json.gz",
+      "GitBlobOID": "5c7745d62320cd25c9f09fa58d60d62db8a0dcd4",
+      "Bytes": 87,
+      "SHA256": "b1e6257a47ca4a4ac00ea0a2287e388fca8c684081dca0caf913b46ca60d3b0b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/.boe_runtime/worker-runs-v1/journal.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/.boe_runtime/worker-runs-v1/mode.json.gz",
+      "GitBlobOID": "2cd5a5f4ba53f6380366c721379b55148a9679ff",
+      "Bytes": 102,
+      "SHA256": "1d437192d741277b9197eeb85df9fa40774e853ef2ad63079f4410033c13a262"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/.boe_runtime/worker-runs-v1/owner.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/.boe_runtime/worker-runs-v1/state.json.gz",
+      "GitBlobOID": "0c78211e7275470579ca493e93546029f73cb470",
+      "Bytes": 129,
+      "SHA256": "59196c92e8ba798d738886de5534f09c2b7501780417796c9f174b4bc233c8c9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/config.json.gz",
+      "GitBlobOID": "619b70bdae6bc2652938ad58430ea3f28cbd1411",
+      "Bytes": 523,
+      "SHA256": "2f8075a4b181f7e74ca98a3da3019f917b93327198eb79f535defa078be4c79d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_bridge_status.json.gz",
+      "GitBlobOID": "8c0c219e8306aab8c2ee34eb549362eaa3b127ec",
+      "Bytes": 708,
+      "SHA256": "31d7828c0d70776a94066f594c8509794939e0209dca507aa145fcca1e714d6e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.gz",
+      "GitBlobOID": "adfb53b2bb49cbff34c6a5b03d1d11ee3a1f1c1f",
+      "Bytes": 51237,
+      "SHA256": "af09ae2d32fd20d67203d7a5ec675bf2ff19d593ab1a19b57b2e1a33cbc59e0b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.gz",
+      "GitBlobOID": "baa04b474f9d4a896f188d8e0c226f58d21f5444",
+      "Bytes": 168812,
+      "SHA256": "59b912d2df7f121e5ca2b6d49f3757971338d687687a278e3a7be72818709336"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.gz",
+      "GitBlobOID": "5729f2dd5df3901d64f18d7c5cdd95fc7b9c1e3d",
+      "Bytes": 11099,
+      "SHA256": "17a314b4a73f152a4c689572b61b3a8044249e29c1033d456d63fc97757347ff"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.gz",
+      "GitBlobOID": "e2137f8621e6933421cef0e20d82053b08a3e056",
+      "Bytes": 4346,
+      "SHA256": "2289bf774fadb60f51a557eebddc8058dd6969515462c63530091b1c50b2952a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.gz",
+      "GitBlobOID": "84e2f952af5fd33b5c690169a8b6b290cd7cd7d3",
+      "Bytes": 3910,
+      "SHA256": "fd6accbf220abf4aebf94e6f038498fd7cfeec66a4b5990eb618ab6a2ac233a8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.gz",
+      "GitBlobOID": "587d16d6636aa2c6c88a3ea0212a168793f77972",
+      "Bytes": 3750,
+      "SHA256": "dd8214f1691819721873936a17aeb4f8b112f8cb2a99b57575dd27fbc382ac99"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.gz",
+      "GitBlobOID": "e5f3d7b6de64aaf9a02a7d23512ab57c54debedb",
+      "Bytes": 32863,
+      "SHA256": "ed2ceff145e6be16fd96fa32f49898250e3ecee1c551a3fbef5ce6abc6ae6904"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.gz",
+      "GitBlobOID": "a3fb2b9ad754745b60146d12a490d4887156ec8e",
+      "Bytes": 8557,
+      "SHA256": "4ecc9045d6194a0a8cac4848377c1ee662a77e5d349404fb4fc81768750ee855"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.gz",
+      "GitBlobOID": "aa1f007ea3cc58dd908b35603ca2f557d55806af",
+      "Bytes": 15177,
+      "SHA256": "e99fa15e1dfee08dbab05103c8e3f01ca08520b57aee73f6f2ea8114d26d4834"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.gz",
+      "GitBlobOID": "fe9fad143162472d43d8a845157beda9c68af5ef",
+      "Bytes": 313,
+      "SHA256": "6701b4c36d9f1c16593fbab41ce61472f36bd176ace1d1fd10c908e989212ff6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.gz",
+      "GitBlobOID": "bc1005eaa519587a67456aee237e1e7637bf2941",
+      "Bytes": 193,
+      "SHA256": "486c6f9bb5352fd6c0fa3d32373d8963952a133dfcbff789993d479c95ce2fab"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.gz",
+      "GitBlobOID": "b3872f8766895654f7eec41d62ddc6a0eb3f2a1c",
+      "Bytes": 17164,
+      "SHA256": "f597b796f7cacda91f05bb2cd4e78aa33e11964b18fdb63c21434ff0c7ca142d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.gz",
+      "GitBlobOID": "ced7494fe597c121bc2e3630bdf8379f484fe42f",
+      "Bytes": 80342,
+      "SHA256": "4493d8726a262ed891ad61108a40a935507d653ee432c83db09481e646f7ccd7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.gz",
+      "GitBlobOID": "d2842cb01e3ce6d6ce69ef151d7ab7642e643291",
+      "Bytes": 11098,
+      "SHA256": "fd40d5fb3e0d3b31987f568f73895f03cb7ada478f2780378a29b39d0591b6db"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.gz",
+      "GitBlobOID": "2b4b2f009c8256a91d4e48122f7dc44c7519cbe7",
+      "Bytes": 27879,
+      "SHA256": "f9acac83039b5774a4f415254028e9e5d2a66d9f7f94308db9cc744259870668"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.gz",
+      "GitBlobOID": "5918c0012ed62dc44bf0ebce583f4ed39771742f",
+      "Bytes": 1809,
+      "SHA256": "7f4875af8a0db464dc3bdc4d39cc2b4a9f018baa76e723b84c7ccddf029c4628"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.gz",
+      "GitBlobOID": "5ec9ee4ea13ad4c8c8375057939eae3287c9e59c",
+      "Bytes": 1253,
+      "SHA256": "d47e41c6a34b05095bf61a6af83addf254df3da31f8e3bfc5bb9b4c448f5df83"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/README.md.gz",
+      "GitBlobOID": "574cf3eaaf92812b5724042521d1e447b993690c",
+      "Bytes": 880,
+      "SHA256": "3e31b5063527f807413c9e2f84ae5564053ba643c5c4c3346daf0619653c1b9a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.gz",
+      "GitBlobOID": "63f2e1cee1162fe24abf7c8e09b9030fd8ef67ff",
+      "Bytes": 898,
+      "SHA256": "2fb9e2f71994680fe15ecd02c216a5364933a379952bba8c1856ddf6091f499a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.gz",
+      "GitBlobOID": "ab752f36682e8685bf410ba8321775feeec31328",
+      "Bytes": 1023,
+      "SHA256": "35cd1a2b35e791cbfd6864479cda76ef352ecb8b8a8985f0618a67146dac04de"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.gz",
+      "GitBlobOID": "b0dde0320bd8aa7ed898d0de0afe091e2a65e824",
+      "Bytes": 57847,
+      "SHA256": "35083a3d218b48e643b3f598ea155edbcb67891a5cc46d9b090c368c84e47f38"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.gz",
+      "GitBlobOID": "89a9fa000885b67bc142b5085afcb71a16543e94",
+      "Bytes": 1803,
+      "SHA256": "a5aeab08a06660a15d07d59360139a439a326e6eb8f6fdb8d5b42814792afaaa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.gz",
+      "GitBlobOID": "719f5c25b92ac53a6a212791872763daf3de3a0d",
+      "Bytes": 1695,
+      "SHA256": "c5cb2a8731e1ec47b910b7af29610f4766605f4086bc54c51b4b9d6e4fd0a7e4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.gz",
+      "GitBlobOID": "7b931e4a7404a9ee288e624aadf83c66e27af305",
+      "Bytes": 325,
+      "SHA256": "7c247d5af2cbaf92e3f1c25c31438201dccaabb6f3e46a7f29e1942c24d1f295"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.gz",
+      "GitBlobOID": "dc404cdd7e65d9b9bcb621636ee1c422b378d0b5",
+      "Bytes": 1544,
+      "SHA256": "daa0262c7b1e138ba869942bc17f00cd6c66d627132e78f5b7af30b7aa7339b1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.gz",
+      "GitBlobOID": "0093af0d06a79021a66634f53443996b4f3120c0",
+      "Bytes": 1472,
+      "SHA256": "2c4e2e541c5bf536785e6390238bb335202d4f2bbea4ad92edf30bc1f689db06"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.gz",
+      "GitBlobOID": "a1619c3347370b63ba3c89dce33aa6849433b920",
+      "Bytes": 2417,
+      "SHA256": "949255e6e50dc6192c4a53e2c451cbfa40092316da460cb36a3fdf92cd0726ad"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.gz",
+      "GitBlobOID": "1d5ecd5662451c6e733f45df4c61f9bdbaa29348",
+      "Bytes": 1808,
+      "SHA256": "3c6615ddda684b4ceba9f0e49397a2fd6ccb2da51c708a15a2ddc279638e0b81"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.gz",
+      "GitBlobOID": "3c868a4b57997698c4c84daf4c5b6dbf62b3349a",
+      "Bytes": 2382,
+      "SHA256": "220e486984ad67a147373263711d637a44c91bc76508d784d97fba1c1b821b61"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+      "GitBlobOID": "e21291da3d97209617c9e0a007587f4381a81eab",
+      "Bytes": 4878,
+      "SHA256": "98c0a8b3d50cd1d74d272e05c7f7e652bf8a2dc78cb5c2af6e01dde48744bd95"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.gz",
+      "GitBlobOID": "5ff74488a4430e69ad67ee0a74e1c514883428ed",
+      "Bytes": 3016,
+      "SHA256": "3bee293f5a4ee0880511becae051180033feb4fa9cbfacc7b14fc178855d6e2d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.gz",
+      "GitBlobOID": "d8118366b60a27cb8ff29f2de9b4bf82424e4b11",
+      "Bytes": 2274,
+      "SHA256": "3ebbbc1d841a5c2ab6605c8e94767ef9e6d8e949fbb82e9ca8fd299fae938efc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.gz",
+      "GitBlobOID": "58f347350ad797723650a02f83a28bcebf930d9b",
+      "Bytes": 309,
+      "SHA256": "ac50790050ff92064158076c1267333bb732f5ccb5fa7bbaaddd53ac43f7d724"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.gz",
+      "GitBlobOID": "66fe849f51dbb95d74124accc7821145888ef888",
+      "Bytes": 3237,
+      "SHA256": "c357322707d2b3abf8d3e2105aa16bc1604f3fe6e5726922eaad779e6018ed19"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.gz",
+      "GitBlobOID": "5d770e5eb3dc60df3eb19482862b8835b00daa82",
+      "Bytes": 3907,
+      "SHA256": "45e581937215ac0e8f4f55d83db3a8ea9c94bb5ad5873c5ab51eac0e0886c880"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_context_pack/context_pack_manifest.json.gz",
+      "GitBlobOID": "2bfedd0e6193009438462d78581faaff99a973cc",
+      "Bytes": 2069,
+      "SHA256": "12edb436672495e605cabe3e9a9bc2be449c1f5178c5f182a79d4193e36325d4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_daemon_status.json.gz",
+      "GitBlobOID": "da4ec08f9e760cec3776fa927ad656bc14d887e7",
+      "Bytes": 349,
+      "SHA256": "9772a865353b630bd7c7db7edc0231542b9e94e3eac68c839b5f0425df3bf24d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.gz",
+      "GitBlobOID": "e036037ca5053274231e504aac25f953d4b46878",
+      "Bytes": 279,
+      "SHA256": "bf8364a69d7446777994829f89496b30c03efdb48d428e948a26bf54486a3003"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/control/progression_schedule.json.gz",
+      "GitBlobOID": "7be887d291828057a7b5f052dfef737cc559c7d4",
+      "Bytes": 369,
+      "SHA256": "eea92fb1da1d93a0fb323c96df1b3dfd7d7499933fcee4afd9c9ece5c6c3e1fc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/core/game_settings.json.gz",
+      "GitBlobOID": "77e7fd54c6361822dfff8417888e0abec2c79cc1",
+      "Bytes": 161,
+      "SHA256": "ac8731e0df962e7fd262afd967b63895bc912a54d4423e12776a345014db0d1c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/core/system_mods.json.gz",
+      "GitBlobOID": "f832f07a9d4f7cd3d404cf0622cfcc269a2dbb38",
+      "Bytes": 146,
+      "SHA256": "def282bfdb5e626d2ca69ec059d06da7b8e32c7761c7bf53b9071adf532a57da"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/history/chat_log.json.gz",
+      "GitBlobOID": "c66b76241cf478b09a2635daf351fec961495f89",
+      "Bytes": 110,
+      "SHA256": "72e03bcbc4ea9ae75711b9dfa0a149aba350c93c96f58f8d6727ab213dbd2118"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/inventory/item_identity_index.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/meta/achievements.json.gz",
+      "GitBlobOID": "2c193e01d41e719be423a74d3dabf94acb9a377b",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "GitBlobOID": "52480bbfb88e8b7ccb74574533dec3c7c74e9e3b",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "GitBlobOID": "9efd4b7e25142a90190f45f0b7fe98a6ff330331",
+      "Bytes": 1868,
+      "SHA256": "6e1524f4b3055f122e57d3fd692dd304dd0754b482c4de10dfaf7fcd67f505a5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "GitBlobOID": "f91f0291b973673b64989f6fbaedd121def945bc",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "GitBlobOID": "8a32410e7b1139b8b6aaae8406bffac29a9cfbb9",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/meta/character_chronicle.json.gz",
+      "GitBlobOID": "26eb1c420788855c7fd62da7f93373a8c2c97c26",
+      "Bytes": 476,
+      "SHA256": "20828e59cdcb2a51fd13d369f692bd2061fee01cb697a1732fbe6c8f730970e8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/meta/guardian_projects.json.gz",
+      "GitBlobOID": "ffe2844c5d2fe2136f5d224caee9972e4605b094",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/meta/guardians.json.gz",
+      "GitBlobOID": "f38b81c5921f76745b8136fa22364ef0ae07bc03",
+      "Bytes": 2561,
+      "SHA256": "8362300b165fd0125e7050b6544f1c79c55cacaf31475f981d64486f7937223a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/meta/soul_state.json.gz",
+      "GitBlobOID": "ea8700eac00141b57f842bca5055aa4421f8fb06",
+      "Bytes": 457,
+      "SHA256": "04a13e2f4cc80158da68bbc0e59628f6ad458b4e65d68a10c6cf631155065103"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/resources/resource_definitions.json.gz",
+      "GitBlobOID": "3a0d18ceb1a098f6b4bbe615fc91a747d2b57fca",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/resources/resource_history.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "GitBlobOID": "ce2b12f8b7cc9317206651a12c2eeab1e7f4668d",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/resources/resource_state.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/wounds/wound_history.json.gz",
+      "GitBlobOID": "9faef76a0cb44ce240fe3e460db9ebc7e3c187ff",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/lore/chaos_sea/cosmology.json.gz",
+      "GitBlobOID": "88f68329dff80715d27eebe943c42b9f975d01c9",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "GitBlobOID": "9cf1f9c1a2f3e0861a7912b319232eb02d12746c",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "GitBlobOID": "679554d282e78191e2954083cb69ee06054b3c45",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "GitBlobOID": "95763fa35eb27d8740d04d68bcc013f0306555b0",
+      "Bytes": 513,
+      "SHA256": "699ed1e48c6592d9db280773be98e47e7371ea44dbb736e60409198acbca13d0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/play/game_session/lore/codex_entries.json.gz",
+      "GitBlobOID": "e786f669c405f43b505e9a1b49184226177022a1",
+      "Bytes": 860,
+      "SHA256": "2d033314cf656970aee40c4fb04447aa08c44e222dd566b8114af4c82737dcbf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/publish-BookOfEternityClient.log.gz",
+      "GitBlobOID": "84a5f57c4c9dc6653d0717484250a720cdd4bcef",
+      "Bytes": 76,
+      "SHA256": "ff253626654667d1697bdccbd2ae21714fceb74a1c6fd9e2c6daa66e4f7b988f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/publish-BookOfEternityGMBridge.log.gz",
+      "GitBlobOID": "e2977d45b005f08ae987eb571ce98b3b80d57beb",
+      "Bytes": 78,
+      "SHA256": "e6139c163cb4939a770fa1e7eff9e7fa9d5369f0405e4d07a956b2827071449c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/queue-1/.execution.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/queue-1/close-request.json.gz",
+      "GitBlobOID": "74f47b786f18f7b810a465a713f35b517175d7ce",
+      "Bytes": 23,
+      "SHA256": "37a641f5b71f361a83c4bb5aae7e62bb31dff4340708786bd20df2313b0f1173"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/queue-1/closed.json.gz",
+      "GitBlobOID": "b68cdec3ee9c7387d4ea441fb6182f2ff8555ae3",
+      "Bytes": 87,
+      "SHA256": "55e0d42c7b450877a4ba70b644b08bed2bb6500175e0f582276765096490df78"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/result.json.gz",
+      "GitBlobOID": "617ac17099267d293a097d636a84cacddccab266",
+      "Bytes": 2639,
+      "SHA256": "0cff695250f2e1538fa1976567a0b161597fd250aaccdf6c2a3ac348dbe52167"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/web-action-1-echo.raw.gz",
+      "GitBlobOID": "f0db77f04de6c990fe5cbb8eac9e629f36006807",
+      "Bytes": 22,
+      "SHA256": "d898b9a41b916259772322fde2a2f9e0190a468477d5d067d3541e8c7a833489"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/web-action-1-failure.html.gz",
+      "GitBlobOID": "106c2663e6a63c4c86518dd6b2141ff98cd6c7dc",
+      "Bytes": 2471,
+      "SHA256": "d7186a25f9033c3d5f33e4d0f14b46ce5e5b9366e3bca33f12c607f13e3c6d4d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/web-action-1-failure.png.gz",
+      "GitBlobOID": "c973c2c0890fe23c0b23ce7c1bb328bf3ea1e03d",
+      "Bytes": 940893,
+      "SHA256": "0777f38c7534a22327d04cc1ec8ce7067d61c5fb3067a718b4d2f504157dc387"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/web-action-1.raw.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/owned0/worker.log.gz",
+      "GitBlobOID": "6266558ae06e5e02f44f881cf6ababff4f8a7e8a",
+      "Bytes": 62,
+      "SHA256": "ef7c923b7cac2ed3e5d0cfcbbf61a8cb3aae9d4065cd68ead9d55ce2e26520fe"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/runner/c5-browser-staged-idle-duration-diagnostic-unit-001.trx.gz",
+      "GitBlobOID": "c2bf2203e8035ec102d6f070c756742d7d09dacd",
+      "Bytes": 4930,
+      "SHA256": "2197332d448d29adaf50de338e62f1eb368d41b687543bece797248c2746bbf8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/runner/dotnet-test.log.gz",
+      "GitBlobOID": "10ba65f27a9002cbad322a22900ea29dcbbb75a5",
+      "Bytes": 189152,
+      "SHA256": "6233939beae78a49a07ffe08e0b6f422b8c72e958271885efd0754cd6bee80cc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/runner/plan.json.gz",
+      "GitBlobOID": "4089e6719c4b7b27c52b7eb998141f18e7d90dff",
+      "Bytes": 508,
+      "SHA256": "a180282f696841d5a80158a3c1560a0c88eadbce47b269bfbefe7eda500bfff5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-failure/runner/summary.json.gz",
+      "GitBlobOID": "5830d320820588a5fba0ba6fd016c143a8148807",
+      "Bytes": 621,
+      "SHA256": "064f3f3f12a21e160b788ac156c7a91014d83467088c23361146dfc33fc72f43"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/manifest.json",
+      "GitBlobOID": "bd419115b34e831d38bfe5092bfbcb6de4d45e30",
+      "Bytes": 22477,
+      "SHA256": "9267dfc0cb21642518f18cfa81506377982ec949ea4e99511fa9519067525cf4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0-binary-provenance.json.gz",
+      "GitBlobOID": "2f286853596a6bccfc5e7946d346ffd4f1758a7d",
+      "Bytes": 37961,
+      "SHA256": "f6c3e6e586616c25d07c6c7e1d56bb99c7e91cfcbb5d45e30509664a9e7a1d38"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/bridge-first-echo.raw.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/bridge-first.raw.gz",
+      "GitBlobOID": "42ca437d0b130a252601a78d050f36f7824fdc4e",
+      "Bytes": 294,
+      "SHA256": "5f9649789dfbeb020a6e32f253d63e6e6424cfd9f330c9f6540114581537d15f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/browser-queued-idle-ack.json.gz",
+      "GitBlobOID": "2112ef934c52cc763edf7e399ffa4f3c5da2467c",
+      "Bytes": 111,
+      "SHA256": "7d7ee815c32f5eb0ae46009cf7d5c53cbe40c4c0040472d90c980b6b8b27d738"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/browser-queued-idle-ack.json.release.gz",
+      "GitBlobOID": "baa89d2918776dceecc15ad87ab7eef079672bfd",
+      "Bytes": 52,
+      "SHA256": "9b8016902b9eb830312c15a74b542836251a838e27f0b89d98e0f46471ea2379"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/chain.log.gz",
+      "GitBlobOID": "08c32ecf65740ca7717138346083e9b937352125",
+      "Bytes": 2465,
+      "SHA256": "2caa6917237ee10a12822153ba34a32b6e2536771811cef339e9c54f6efceb6c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/client-first-echo.raw.gz",
+      "GitBlobOID": "17bfd42bd66f82d07deabc1eb5e10c242de61988",
+      "Bytes": 22,
+      "SHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/client-first.raw.gz",
+      "GitBlobOID": "971ede4d5fb4e411cf12e33bc0b72b84fa4d12c3",
+      "Bytes": 1430,
+      "SHA256": "d3c774645cedde975222022a65714341b1bca2a06f8f6f827d3c7a924b7c9615"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/daemon-first-echo.raw.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/daemon-first.log.gz",
+      "GitBlobOID": "3c735776e8461f24a92e8ad5381beae66aa20c90",
+      "Bytes": 362,
+      "SHA256": "b7355db52a420dc91618f2342f9d61ce25aa12ccaa654d42919af4a3ddf96e94"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/daemon-first.raw.gz",
+      "GitBlobOID": "a78be8f15c5dd4c4811deeb92705ab35dad4c691",
+      "Bytes": 416,
+      "SHA256": "4e93ec148c020e8ab2723d1ec2e01362d540c3cc2ace67a94c56f598d2933094"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/events.json.gz",
+      "GitBlobOID": "b621d092ab8e318390086ca9e08d3a3265499a87",
+      "Bytes": 3250,
+      "SHA256": "fa26ca97e82b9f4d51ad6e3df8cbf21a8eb26886bdf4606d7e93669c0183c992"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/guardian.json.gz",
+      "GitBlobOID": "d8d42178eb8fe41cfe9ca14aa18317e013cfdb36",
+      "Bytes": 107,
+      "SHA256": "c79221bc516333c36183c88ead0101d7e269fb0f873b80fec06d91a0ce6f33c4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/native-preparation.log.gz",
+      "GitBlobOID": "c35932fc804454b40726b1df4f3d10f2aab1135a",
+      "Bytes": 71,
+      "SHA256": "6d9a77d64aadb37e17faf030c13353b26059f4a71226f00864554cbb94560daf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/package/boe-lineage-supervisor.gz",
+      "GitBlobOID": "903b419346ccd92816ab09acd0333f2bf7d8f296",
+      "Bytes": 36345,
+      "SHA256": "c9c0dd9fdb36d3ffb8cfa4ee69425985e3bc5724eee81c71b0803379516c778c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/package/build-provenance.json.gz",
+      "GitBlobOID": "247a83d224788671d6976f3930b28192389c372b",
+      "Bytes": 685,
+      "SHA256": "09210576f1b468bb005ce26eae4668413f741659ba2c1bcbb1c1b7cbc3276546"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/package/package-manifest.json.gz",
+      "GitBlobOID": "75610c2a4b8ee302ff09c08afdf0d34d291abb16",
+      "Bytes": 629,
+      "SHA256": "a61844c89b03be4e9106553ecf409c9e4b75a24f3c1c012e8b728a72d947fcb8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/.boe_runtime/gm-runs/main.json.gz",
+      "GitBlobOID": "2c5ee55fd5111e4941c024cf8cd495b0fa372c2c",
+      "Bytes": 306,
+      "SHA256": "a4e3e50a247740a8273d3373ec0fdb2b104377fe50b4694a21e2781bd1748a8b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/.boe_runtime/locks/canonical-write.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/.boe_runtime/locks/session-lifecycle.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/.boe_runtime/session-generation/current.json.gz",
+      "GitBlobOID": "d1ca267ea6debc0716a8003b9dd799bfb57492db",
+      "Bytes": 86,
+      "SHA256": "2c25cacdeade6e33c1889c7139e5844665ca1265724f29339242e0835115d6b4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/.boe_runtime/worker-runs-v1/journal.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/.boe_runtime/worker-runs-v1/mode.json.gz",
+      "GitBlobOID": "8b34a88bba7bb54c56b3fd0a4d57b27c05ca8a00",
+      "Bytes": 102,
+      "SHA256": "f3044976b044ad66e6738529d417c21e2aa8ebe9b5668a780435c2631554e163"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/.boe_runtime/worker-runs-v1/owner.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/.boe_runtime/worker-runs-v1/state.json.gz",
+      "GitBlobOID": "aa2d12bcdafa3f46850f67b5aaf2d4dce18afcb9",
+      "Bytes": 128,
+      "SHA256": "3c8d5addd6d8f66d4459356eda27f2edc39d6d0f0122c263648906f8723bfb43"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/config.json.gz",
+      "GitBlobOID": "016ee9bd080ad8637d1cee129a0870851b10cd9a",
+      "Bytes": 524,
+      "SHA256": "4961854e9e3401543a00704b64b5cf4619018a2bc504c6304b523ecd65040e52"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_bridge_status.json.gz",
+      "GitBlobOID": "b7ab2e036939cd779a5a56ccacbc2b27d7f3a7ab",
+      "Bytes": 706,
+      "SHA256": "b0c3a98f10834f002f99504d748b465520a04fd06a271659dc5dc2e9beda77fc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.gz",
+      "GitBlobOID": "adfb53b2bb49cbff34c6a5b03d1d11ee3a1f1c1f",
+      "Bytes": 51237,
+      "SHA256": "af09ae2d32fd20d67203d7a5ec675bf2ff19d593ab1a19b57b2e1a33cbc59e0b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.gz",
+      "GitBlobOID": "baa04b474f9d4a896f188d8e0c226f58d21f5444",
+      "Bytes": 168812,
+      "SHA256": "59b912d2df7f121e5ca2b6d49f3757971338d687687a278e3a7be72818709336"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.gz",
+      "GitBlobOID": "5729f2dd5df3901d64f18d7c5cdd95fc7b9c1e3d",
+      "Bytes": 11099,
+      "SHA256": "17a314b4a73f152a4c689572b61b3a8044249e29c1033d456d63fc97757347ff"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.gz",
+      "GitBlobOID": "e2137f8621e6933421cef0e20d82053b08a3e056",
+      "Bytes": 4346,
+      "SHA256": "2289bf774fadb60f51a557eebddc8058dd6969515462c63530091b1c50b2952a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.gz",
+      "GitBlobOID": "84e2f952af5fd33b5c690169a8b6b290cd7cd7d3",
+      "Bytes": 3910,
+      "SHA256": "fd6accbf220abf4aebf94e6f038498fd7cfeec66a4b5990eb618ab6a2ac233a8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.gz",
+      "GitBlobOID": "587d16d6636aa2c6c88a3ea0212a168793f77972",
+      "Bytes": 3750,
+      "SHA256": "dd8214f1691819721873936a17aeb4f8b112f8cb2a99b57575dd27fbc382ac99"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.gz",
+      "GitBlobOID": "e5f3d7b6de64aaf9a02a7d23512ab57c54debedb",
+      "Bytes": 32863,
+      "SHA256": "ed2ceff145e6be16fd96fa32f49898250e3ecee1c551a3fbef5ce6abc6ae6904"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.gz",
+      "GitBlobOID": "a3fb2b9ad754745b60146d12a490d4887156ec8e",
+      "Bytes": 8557,
+      "SHA256": "4ecc9045d6194a0a8cac4848377c1ee662a77e5d349404fb4fc81768750ee855"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.gz",
+      "GitBlobOID": "aa1f007ea3cc58dd908b35603ca2f557d55806af",
+      "Bytes": 15177,
+      "SHA256": "e99fa15e1dfee08dbab05103c8e3f01ca08520b57aee73f6f2ea8114d26d4834"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.gz",
+      "GitBlobOID": "11be025aadec513b66b28218005071c8a243a4fe",
+      "Bytes": 314,
+      "SHA256": "b1d1b77916ca8298fc88c002a9080e659a6b842fe6b804e94c358759f71362ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.gz",
+      "GitBlobOID": "bc1005eaa519587a67456aee237e1e7637bf2941",
+      "Bytes": 193,
+      "SHA256": "486c6f9bb5352fd6c0fa3d32373d8963952a133dfcbff789993d479c95ce2fab"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.gz",
+      "GitBlobOID": "b3872f8766895654f7eec41d62ddc6a0eb3f2a1c",
+      "Bytes": 17164,
+      "SHA256": "f597b796f7cacda91f05bb2cd4e78aa33e11964b18fdb63c21434ff0c7ca142d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.gz",
+      "GitBlobOID": "ced7494fe597c121bc2e3630bdf8379f484fe42f",
+      "Bytes": 80342,
+      "SHA256": "4493d8726a262ed891ad61108a40a935507d653ee432c83db09481e646f7ccd7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.gz",
+      "GitBlobOID": "d2842cb01e3ce6d6ce69ef151d7ab7642e643291",
+      "Bytes": 11098,
+      "SHA256": "fd40d5fb3e0d3b31987f568f73895f03cb7ada478f2780378a29b39d0591b6db"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.gz",
+      "GitBlobOID": "2b4b2f009c8256a91d4e48122f7dc44c7519cbe7",
+      "Bytes": 27879,
+      "SHA256": "f9acac83039b5774a4f415254028e9e5d2a66d9f7f94308db9cc744259870668"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.gz",
+      "GitBlobOID": "76c08b8dbe24f8e6cc3773d35a28ae772b0feebd",
+      "Bytes": 1807,
+      "SHA256": "00bc592af268689a4c8d3bb621d1ab363c413269be0167f4a403a294ee55ab25"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.gz",
+      "GitBlobOID": "5ec9ee4ea13ad4c8c8375057939eae3287c9e59c",
+      "Bytes": 1253,
+      "SHA256": "d47e41c6a34b05095bf61a6af83addf254df3da31f8e3bfc5bb9b4c448f5df83"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/README.md.gz",
+      "GitBlobOID": "53883d0bf59869cb1cd764961a746e4dfebbd67b",
+      "Bytes": 878,
+      "SHA256": "1e31bbbce04d816e8a30359c4b44d95a3276c11ba5aa69e1a2a9fcef8538b205"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.gz",
+      "GitBlobOID": "72bf1f1eb1173aa3f705cab62144f853f1350378",
+      "Bytes": 899,
+      "SHA256": "dbf7f41ef4e6c153a22e758e4ebb90786f68683fa70ae2fab61cdcb1c72e7095"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.gz",
+      "GitBlobOID": "ab752f36682e8685bf410ba8321775feeec31328",
+      "Bytes": 1023,
+      "SHA256": "35cd1a2b35e791cbfd6864479cda76ef352ecb8b8a8985f0618a67146dac04de"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.gz",
+      "GitBlobOID": "b0dde0320bd8aa7ed898d0de0afe091e2a65e824",
+      "Bytes": 57847,
+      "SHA256": "35083a3d218b48e643b3f598ea155edbcb67891a5cc46d9b090c368c84e47f38"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.gz",
+      "GitBlobOID": "89a9fa000885b67bc142b5085afcb71a16543e94",
+      "Bytes": 1803,
+      "SHA256": "a5aeab08a06660a15d07d59360139a439a326e6eb8f6fdb8d5b42814792afaaa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.gz",
+      "GitBlobOID": "719f5c25b92ac53a6a212791872763daf3de3a0d",
+      "Bytes": 1695,
+      "SHA256": "c5cb2a8731e1ec47b910b7af29610f4766605f4086bc54c51b4b9d6e4fd0a7e4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.gz",
+      "GitBlobOID": "7b931e4a7404a9ee288e624aadf83c66e27af305",
+      "Bytes": 325,
+      "SHA256": "7c247d5af2cbaf92e3f1c25c31438201dccaabb6f3e46a7f29e1942c24d1f295"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.gz",
+      "GitBlobOID": "dc404cdd7e65d9b9bcb621636ee1c422b378d0b5",
+      "Bytes": 1544,
+      "SHA256": "daa0262c7b1e138ba869942bc17f00cd6c66d627132e78f5b7af30b7aa7339b1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.gz",
+      "GitBlobOID": "0093af0d06a79021a66634f53443996b4f3120c0",
+      "Bytes": 1472,
+      "SHA256": "2c4e2e541c5bf536785e6390238bb335202d4f2bbea4ad92edf30bc1f689db06"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.gz",
+      "GitBlobOID": "a1619c3347370b63ba3c89dce33aa6849433b920",
+      "Bytes": 2417,
+      "SHA256": "949255e6e50dc6192c4a53e2c451cbfa40092316da460cb36a3fdf92cd0726ad"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.gz",
+      "GitBlobOID": "1d5ecd5662451c6e733f45df4c61f9bdbaa29348",
+      "Bytes": 1808,
+      "SHA256": "3c6615ddda684b4ceba9f0e49397a2fd6ccb2da51c708a15a2ddc279638e0b81"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.gz",
+      "GitBlobOID": "3c868a4b57997698c4c84daf4c5b6dbf62b3349a",
+      "Bytes": 2382,
+      "SHA256": "220e486984ad67a147373263711d637a44c91bc76508d784d97fba1c1b821b61"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+      "GitBlobOID": "e21291da3d97209617c9e0a007587f4381a81eab",
+      "Bytes": 4878,
+      "SHA256": "98c0a8b3d50cd1d74d272e05c7f7e652bf8a2dc78cb5c2af6e01dde48744bd95"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.gz",
+      "GitBlobOID": "5ff74488a4430e69ad67ee0a74e1c514883428ed",
+      "Bytes": 3016,
+      "SHA256": "3bee293f5a4ee0880511becae051180033feb4fa9cbfacc7b14fc178855d6e2d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.gz",
+      "GitBlobOID": "d8118366b60a27cb8ff29f2de9b4bf82424e4b11",
+      "Bytes": 2274,
+      "SHA256": "3ebbbc1d841a5c2ab6605c8e94767ef9e6d8e949fbb82e9ca8fd299fae938efc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.gz",
+      "GitBlobOID": "58f347350ad797723650a02f83a28bcebf930d9b",
+      "Bytes": 309,
+      "SHA256": "ac50790050ff92064158076c1267333bb732f5ccb5fa7bbaaddd53ac43f7d724"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.gz",
+      "GitBlobOID": "66fe849f51dbb95d74124accc7821145888ef888",
+      "Bytes": 3237,
+      "SHA256": "c357322707d2b3abf8d3e2105aa16bc1604f3fe6e5726922eaad779e6018ed19"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.gz",
+      "GitBlobOID": "5d770e5eb3dc60df3eb19482862b8835b00daa82",
+      "Bytes": 3907,
+      "SHA256": "45e581937215ac0e8f4f55d83db3a8ea9c94bb5ad5873c5ab51eac0e0886c880"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_context_pack/context_pack_manifest.json.gz",
+      "GitBlobOID": "d2be5d273aa85d0846ac0460d07702273e201016",
+      "Bytes": 2070,
+      "SHA256": "70d9f9acc8250c94ba648bcdb2d439fae19e012f1ada83623c13166cfc00ad38"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_daemon_status.json.gz",
+      "GitBlobOID": "caba712534696cedaaac5e51927a3b5fd304dbd8",
+      "Bytes": 349,
+      "SHA256": "fb4f9639229c675856e4b44b7371842c2f53b8ca1d9288c55ec9f9bef6e73b3d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.gz",
+      "GitBlobOID": "87340d57089016f63b8273dd7653937422665924",
+      "Bytes": 277,
+      "SHA256": "b925d877858b29b74d7bc4b98101ee31d93b32e747024be1cef0461007e96adf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/control/progression_schedule.json.gz",
+      "GitBlobOID": "4f5d1fc4ee1f7faf458e24d93ec97fd303251901",
+      "Bytes": 370,
+      "SHA256": "179378305efa7b56be5adcd04b1108969a4abd972617642565d29b1a60faf7c8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/core/game_settings.json.gz",
+      "GitBlobOID": "f83741068ddd3d5c79046150045f33b6177ce1d6",
+      "Bytes": 163,
+      "SHA256": "a81ce57433a6866ef82e85c2f3e2c42ea326f90163e9d8a43471535985497385"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/core/system_mods.json.gz",
+      "GitBlobOID": "27a5125b50b0348a00b19ab7e9f741c3725152c0",
+      "Bytes": 148,
+      "SHA256": "8a577c52b3a3828c3d6157b604a29b14a9da8c666ca3088a07851224be2d1373"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/history/chat_log.json.gz",
+      "GitBlobOID": "1112cea5c21e6053ebd1722d23d30eacf8d53cc3",
+      "Bytes": 110,
+      "SHA256": "a9fe21830c286131207ec5e2988cf8e5ed0acbd63b7c8df06779d386b4975ba9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/inventory/item_identity_index.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/meta/achievements.json.gz",
+      "GitBlobOID": "2c193e01d41e719be423a74d3dabf94acb9a377b",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "GitBlobOID": "52480bbfb88e8b7ccb74574533dec3c7c74e9e3b",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "GitBlobOID": "bdba8614dbef49813110ff91537f51919f111bb3",
+      "Bytes": 1870,
+      "SHA256": "b6ced87c4f4d8a4b505d1b9c772db5cee89f97c2b74b657e92aeec9d9e828457"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "GitBlobOID": "f91f0291b973673b64989f6fbaedd121def945bc",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "GitBlobOID": "8a32410e7b1139b8b6aaae8406bffac29a9cfbb9",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/meta/character_chronicle.json.gz",
+      "GitBlobOID": "26eb1c420788855c7fd62da7f93373a8c2c97c26",
+      "Bytes": 476,
+      "SHA256": "20828e59cdcb2a51fd13d369f692bd2061fee01cb697a1732fbe6c8f730970e8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/meta/guardian_projects.json.gz",
+      "GitBlobOID": "ffe2844c5d2fe2136f5d224caee9972e4605b094",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/meta/guardians.json.gz",
+      "GitBlobOID": "249363c60651740f3fa0a2dc7ba312560267abce",
+      "Bytes": 2564,
+      "SHA256": "58269f0643c51dd47b17d3075d38a20f860083bccf3b54867ec470352b999fbf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/meta/soul_state.json.gz",
+      "GitBlobOID": "ea8700eac00141b57f842bca5055aa4421f8fb06",
+      "Bytes": 457,
+      "SHA256": "04a13e2f4cc80158da68bbc0e59628f6ad458b4e65d68a10c6cf631155065103"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/resources/resource_definitions.json.gz",
+      "GitBlobOID": "3a0d18ceb1a098f6b4bbe615fc91a747d2b57fca",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/resources/resource_history.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "GitBlobOID": "ce2b12f8b7cc9317206651a12c2eeab1e7f4668d",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/resources/resource_state.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/wounds/wound_history.json.gz",
+      "GitBlobOID": "9faef76a0cb44ce240fe3e460db9ebc7e3c187ff",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/lore/chaos_sea/cosmology.json.gz",
+      "GitBlobOID": "88f68329dff80715d27eebe943c42b9f975d01c9",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "GitBlobOID": "9cf1f9c1a2f3e0861a7912b319232eb02d12746c",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "GitBlobOID": "679554d282e78191e2954083cb69ee06054b3c45",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "GitBlobOID": "95763fa35eb27d8740d04d68bcc013f0306555b0",
+      "Bytes": 513,
+      "SHA256": "699ed1e48c6592d9db280773be98e47e7371ea44dbb736e60409198acbca13d0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/play/game_session/lore/codex_entries.json.gz",
+      "GitBlobOID": "aa1c9935af58781060dd6cf8f628c3e3278313b6",
+      "Bytes": 861,
+      "SHA256": "10c44756d41477af8fd324cf018d16539cfbea0e6947f077a93be3db4484a996"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/publish-BookOfEternityClient.log.gz",
+      "GitBlobOID": "c00756111f105b9a424a2caf17ad3af400492c4c",
+      "Bytes": 76,
+      "SHA256": "535f06c804cc0707b0dbe37c720083d275fbc6eb5059b6e5bb82f4082b82a84f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/publish-BookOfEternityGMBridge.log.gz",
+      "GitBlobOID": "07a77d71b474f1c856dcfd0ae7c8a0755269d0d9",
+      "Bytes": 78,
+      "SHA256": "fcc71edf1c9f798267be67113b63f59000b3c5a6183b3696106f244238eb8b94"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/queue-1/.execution.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/queue-1/close-request.json.gz",
+      "GitBlobOID": "74f47b786f18f7b810a465a713f35b517175d7ce",
+      "Bytes": 23,
+      "SHA256": "37a641f5b71f361a83c4bb5aae7e62bb31dff4340708786bd20df2313b0f1173"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/queue-1/closed.json.gz",
+      "GitBlobOID": "55b31116a61166afb227b598fc28715c44d57ce1",
+      "Bytes": 87,
+      "SHA256": "1244cf7d7c597101634280044e409af35b78a68ad03e83327e80efc81c4a8e11"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/result.json.gz",
+      "GitBlobOID": "d26d79c0cc03126618785c40de16f7ff9f4031c1",
+      "Bytes": 2681,
+      "SHA256": "eb247980faba106a9a54d643aff0af6fb84c63255dc4b46cdcd9b47f4ccaea61"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/web-action-1-echo.raw.gz",
+      "GitBlobOID": "f0db77f04de6c990fe5cbb8eac9e629f36006807",
+      "Bytes": 22,
+      "SHA256": "d898b9a41b916259772322fde2a2f9e0190a468477d5d067d3541e8c7a833489"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/web-action-1-failure.html.gz",
+      "GitBlobOID": "d1ad78316b9170901b0992ae4eaf7a5484bf4254",
+      "Bytes": 2425,
+      "SHA256": "db122e724f6712c9c57890b8797723b4dc126bef5a7dd27b300ecd58ba9e5bc8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/web-action-1-failure.png.gz",
+      "GitBlobOID": "6edd8870f46c8ebe9d398b30acbcfbc2a9f85879",
+      "Bytes": 659034,
+      "SHA256": "80bcd5a2e4ae2cae4dbc633acdbfe95c90318c19053e762f8f31edbf9e1ca9e5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/web-action-1.raw.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/owned0/worker.log.gz",
+      "GitBlobOID": "6266558ae06e5e02f44f881cf6ababff4f8a7e8a",
+      "Bytes": 62,
+      "SHA256": "ef7c923b7cac2ed3e5d0cfcbbf61a8cb3aae9d4065cd68ead9d55ce2e26520fe"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/runner/c5-browser-staged-idle-duration-diagnostic-unit-001.trx.gz",
+      "GitBlobOID": "c54df8bbd607544ff980f7b0c3d48870fde0900b",
+      "Bytes": 4994,
+      "SHA256": "1210c4cba90544fce09ab47f8084d4e8eb52e1409dfa35a247012df3a9da9bd5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/runner/dotnet-test.log.gz",
+      "GitBlobOID": "6a05c833bf686f3e3e6b317956f836df44e5604f",
+      "Bytes": 189192,
+      "SHA256": "8bcae962cd84165cd88572edddd48af51c64a313accc4073b05287d2218b7f6c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/runner/plan.json.gz",
+      "GitBlobOID": "0647c965d728a88d9d49b122b23522b237531a21",
+      "Bytes": 507,
+      "SHA256": "b5c88f7dd63347b11b085cb7db3d32a631ea54b126e18a616b1bdd070b2281d2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-full-chain-launcher-retry-failure/runner/summary.json.gz",
+      "GitBlobOID": "fa152b56138c020ea6d4186b6d8088e3f6b6c50e",
+      "Bytes": 622,
+      "SHA256": "c5acc9fb00f95880ae00f2687c1aaa8f5bb86dab5f36459d406cf175c3b6731c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-resource-green/manifest.json",
+      "GitBlobOID": "18330c80885309f8f81735a5445b6c2cfc7d797e",
+      "Bytes": 923,
+      "SHA256": "9a71fac40b56d0d723b690a4e2544bdb45655f72695209bbe75dbd980d62d339"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-resource-green/runner/c5-held-proof-scope-budget-integration-001.trx.gz",
+      "GitBlobOID": "cc4aa00b0f53bf663bff5524a9ca2ad57a91d0dc",
+      "Bytes": 1527,
+      "SHA256": "6797171e0a5c7ec80e2017febbb8c6cd7b986885615aceb1ee287cc0f17939d0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-resource-green/runner/dotnet-test.log.gz",
+      "GitBlobOID": "6c737b368265ac0e7e86b7f5f1272de3f513801b",
+      "Bytes": 181159,
+      "SHA256": "2c3ddd43f6df0e110122075703495eb5bce329482ae36c42b5935df15c6e1d57"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-resource-green/runner/plan.json.gz",
+      "GitBlobOID": "cadbf4e6293f32f08f77ace1a0de174622b796ba",
+      "Bytes": 585,
+      "SHA256": "225458cf2a494838958b1d9ab5b67e903dc52b86f0ae1883b47522466f629e30"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-resource-green/runner/summary.json.gz",
+      "GitBlobOID": "5ddb966b68591e35c1cac9e738aa8fdb49994770",
+      "Bytes": 607,
+      "SHA256": "023d95faaa94285b33bb324d8cde11ec53d9ca0f4c803acba15af2593608c11b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-resource-red/manifest.json",
+      "GitBlobOID": "466d743b73f8e9da419ecc0e1c73c16422a1217f",
+      "Bytes": 924,
+      "SHA256": "ccf5d57bd53ed1caf166ace86d08fe6688a40cbc1697916d893645111657ff60"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-resource-red/runner/c5-held-proof-scope-budget-integration-001.trx.gz",
+      "GitBlobOID": "87e8f06f867f998f7fb03014f03559b1b44bc731",
+      "Bytes": 2398,
+      "SHA256": "2c238e1fe2364b49f27a0ed841eddb90b63bb776c4ca6bff1eb403a83c3b3466"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-resource-red/runner/dotnet-test.log.gz",
+      "GitBlobOID": "1b9596c9b24e05244303381d502c802538cc7c10",
+      "Bytes": 181947,
+      "SHA256": "82e604995b253ab52f3816dd56c4e6319da65041910de08963e4a47e119ff0aa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-resource-red/runner/plan.json.gz",
+      "GitBlobOID": "c9eed08c47a99901dc0894358f1124453f6c9dfa",
+      "Bytes": 585,
+      "SHA256": "81a2786b8c54d3c8e43b35b401d80c1f194c2a05e59befad0827b9960c6bc1f5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-scope-resource-red/runner/summary.json.gz",
+      "GitBlobOID": "1914f319781bafc7d1723c0df0c5a6524068d29d",
+      "Bytes": 592,
+      "SHA256": "39eb13d00082670604e96dea8410f6f2200f9a56af9de1e88e75149a34e53f70"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-coherent-checkpoint.md",
+      "GitBlobOID": "dbdebdf5f1aade96fba1c860f22d664324d30b1a",
+      "Bytes": 10701,
+      "SHA256": "f465f4cb648cc31d847718eb57ebc01639ac2c6f24320991aa22fda9a08c2757"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/spec.md",
+      "GitBlobOID": "7aedf78e683894b2552bacea50669f13b04f6be9",
+      "Bytes": 75881,
+      "SHA256": "4dbae3433722c7ca46ffe840eb1b95cf9e14e883c92de4dc4a42c7184ed5e026"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/tasks.md",
+      "GitBlobOID": "fbe02527c44289c75f7cfd3b55cf2f126b10829b",
+      "Bytes": 126266,
+      "SHA256": "ceef9b63d25f3ed2a76bc29562dd6e442c6018c430bbfcdfcdea0f4e073e0f91"
+    },
+    {
+      "Path": "tests/categories.json",
+      "GitBlobOID": "c6fd9e746db5257561738a5b5a25f695ffff2ac2",
+      "Bytes": 1699843,
+      "SHA256": "11fa899bb21042f36ea6dceb1c96ecbdbddc0f723fe63b80cfaebcef9a2930db"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/browser_chain.py",
+      "GitBlobOID": "255e2b576787210e3ce2677f533afcd917724771",
+      "Bytes": 21223,
+      "SHA256": "bc455f2195e0dcdfb93f5a0615afbd49fa2538be176223cf65789086518d5b16"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/console_chain.py",
+      "GitBlobOID": "c48c36bed608542c89a766db9acfd6e7bf3e56cc",
+      "Bytes": 51383,
+      "SHA256": "7c92ddf264369cc55ac96945d0d33510a7b1df679dc0203f5d175bfdda74d4ed"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/prepare_historical_consumer.py",
+      "GitBlobOID": "2037fc8359578336b03ced63943da84d2ec8ec64",
+      "Bytes": 5845,
+      "SHA256": "21052ed84ebfcf3641c50bf9977750b2452a5235520a2ac8ffb22fb67fb45e0b"
+    },
+    {
+      "Path": "tests/selection.json",
+      "GitBlobOID": "5149a1932d463e199b0802de452fc0c9e443c20c",
+      "Bytes": 1968,
+      "SHA256": "b814ebb6bccef584cef3f15c62cd1bd7010eeec929ce28b8a1999ad950f49dc1"
+    }
+  ],
+  "Archives": [
+    {
+      "Archive": "c5-scope-after-preparation",
+      "SourceSHA": "864a7fc341d9a3c4c1cc05cd8aa21e2f80d4bc84",
+      "ManifestBlobOID": "2b285459e0b1d0393bb25f063957c73844c9f0b3",
+      "ManifestEntries": 7,
+      "CompressedRawPayloadsVerified": 7,
+      "PlainPayloadsVerified": 0,
+      "ExpandedBytesVerified": 3509622,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "AllRecordedSizesAndSHA256Match": true
+    },
+    {
+      "Archive": "c5-scope-baseline-catalog",
+      "SourceSHA": "619eb16f6c9ceaf83090e1f66b8d178144f6f93c",
+      "ManifestBlobOID": "b15894c4ea9c0890bbd83dfc311f856f7d374cb3",
+      "ManifestEntries": 3,
+      "CompressedRawPayloadsVerified": 3,
+      "PlainPayloadsVerified": 0,
+      "ExpandedBytesVerified": 3285116,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "AllRecordedSizesAndSHA256Match": true
+    },
+    {
+      "Archive": "c5-scope-baseline-preparation",
+      "SourceSHA": "619eb16f6c9ceaf83090e1f66b8d178144f6f93c",
+      "ManifestBlobOID": "c683f512e4847c5b2032cf1ff365e08f796a323e",
+      "ManifestEntries": 6,
+      "CompressedRawPayloadsVerified": 6,
+      "PlainPayloadsVerified": 0,
+      "ExpandedBytesVerified": 3464100,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "AllRecordedSizesAndSHA256Match": true
+    },
+    {
+      "Archive": "c5-scope-duration-after",
+      "SourceSHA": "357b2aa7c6fd35b929f0750f53b22904077758f6",
+      "ManifestBlobOID": "72e3e669893748aa458327665b36bf3bf8706b03",
+      "ManifestEntries": 62,
+      "CompressedRawPayloadsVerified": 61,
+      "PlainPayloadsVerified": 1,
+      "ExpandedBytesVerified": 3377485,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "AllRecordedSizesAndSHA256Match": true
+    },
+    {
+      "Archive": "c5-scope-duration-before",
+      "SourceSHA": "db9368b2927856cb158673f186fa5d45da119283",
+      "ManifestBlobOID": "31edb8eed2432300ca48d7a177fda7631380fa59",
+      "ManifestEntries": 61,
+      "CompressedRawPayloadsVerified": 61,
+      "PlainPayloadsVerified": 0,
+      "ExpandedBytesVerified": 3347365,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "AllRecordedSizesAndSHA256Match": true
+    },
+    {
+      "Archive": "c5-scope-existing-controls-green",
+      "SourceSHA": "357b2aa7c6fd35b929f0750f53b22904077758f6",
+      "ManifestBlobOID": "460f48b9460a5e6b477ead278dc674842923ccfe",
+      "ManifestEntries": 4,
+      "CompressedRawPayloadsVerified": 4,
+      "PlainPayloadsVerified": 0,
+      "ExpandedBytesVerified": 1638393,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "AllRecordedSizesAndSHA256Match": true
+    },
+    {
+      "Archive": "c5-scope-full-chain-launcher-failure",
+      "SourceSHA": "2593393c49665d5d69ce23a0d2f5c4c58e4f8dc8",
+      "ManifestBlobOID": "999e6b1875e1c83524e3972ac621c69fb3198ff6",
+      "ManifestEntries": 107,
+      "CompressedRawPayloadsVerified": 107,
+      "PlainPayloadsVerified": 0,
+      "ExpandedBytesVerified": 4854358,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "AllRecordedSizesAndSHA256Match": true
+    },
+    {
+      "Archive": "c5-scope-full-chain-launcher-retry-failure",
+      "SourceSHA": "a4b8c8ec5a1861a7801c863ae6dd094842ae382c",
+      "ManifestBlobOID": "bd419115b34e831d38bfe5092bfbcb6de4d45e30",
+      "ManifestEntries": 106,
+      "CompressedRawPayloadsVerified": 106,
+      "PlainPayloadsVerified": 0,
+      "ExpandedBytesVerified": 4571300,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "AllRecordedSizesAndSHA256Match": true
+    },
+    {
+      "Archive": "c5-scope-resource-green",
+      "SourceSHA": "357b2aa7c6fd35b929f0750f53b22904077758f6",
+      "ManifestBlobOID": "18330c80885309f8f81735a5445b6c2cfc7d797e",
+      "ManifestEntries": 4,
+      "CompressedRawPayloadsVerified": 4,
+      "PlainPayloadsVerified": 0,
+      "ExpandedBytesVerified": 1628433,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "AllRecordedSizesAndSHA256Match": true
+    },
+    {
+      "Archive": "c5-scope-resource-red",
+      "SourceSHA": "db9368b2927856cb158673f186fa5d45da119283",
+      "ManifestBlobOID": "466d743b73f8e9da419ecc0e1c73c16422a1217f",
+      "ManifestEntries": 4,
+      "CompressedRawPayloadsVerified": 4,
+      "PlainPayloadsVerified": 0,
+      "ExpandedBytesVerified": 1644752,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "AllRecordedSizesAndSHA256Match": true
+    }
+  ],
+  "TotalNewManifestEntriesVerified": 364,
+  "TotalNewCompressedRawPayloadsVerified": 363,
+  "TotalNewPlainPayloadsVerified": 1,
+  "EarlierIncompleteCandidateSHA": "911972f2dd6dfdb6877540ad13042798d0ffc9b9",
+  "EarlierIncompleteRestoreReceipt": "c5-scope-experiment-persistence-correction.json",
+  "AcceptanceLimit": "Delivery verified only; source/pair/eight controls scoped review accepted, full affected C5 blocked by two existing click-completion failures. No final affected-path or whole-task acceptance.",
+  "CriticalFixtureSupplement": {
+    "Paths": [
+      "tests/fixtures/LinuxGameChains/browser_chain.py",
+      "tests/fixtures/LinuxGameChains/console_chain.py",
+      "tests/fixtures/LinuxGameChains/prepare_historical_consumer.py"
+    ],
+    "Method": "Same clean restored source checkout bytes hashed against exact restored HEAD Git blob; source-pinned fixture metadata only, no runtime/build or historical raw scan"
+  }
+}
