@@ -12,6 +12,9 @@ from pathlib import Path
 import subprocess
 import urllib.request
 
+if not __debug__:
+    raise RuntimeError("Historical integrity verification requires Python assertions; optimization is forbidden.")
+
 REPOSITORY = "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git"
 BASELINE = "5657107343a0dcb58f09212f7de48f478dea45d3"
 PROFILE = "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserConsumerProfile.cs"
@@ -76,10 +79,10 @@ assert len(owners) == 2 and not any(entry["id"] in ids for entry in catalog["cat
 catalog["categories"] = owners + catalog["categories"]
 catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=4) + "\n")
 
-changed = git(directory, "diff", "--name-only", "HEAD").splitlines()
-untracked = git(directory, "ls-files", "--others", "--exclude-standard").splitlines()
+changed = list(filter(None, git(directory, "diff", "--name-only", "-z", "HEAD").split("\0")))
+untracked = list(filter(None, git(directory, "ls-files", "--others", "--exclude-standard", "-z").split("\0")))
 assert set(changed + untracked) == {PROFILE, DRIVER, CATALOG}, (changed, untracked)
-production = git(directory, "ls-files", "BookOfEternityClient", "BookOfEternityGMBridge", "native", "scripts").splitlines()
+production = list(filter(None, git(directory, "ls-files", "-z", "BookOfEternityClient", "BookOfEternityGMBridge", "native", "scripts").split("\0")))
 assert not any(path in changed for path in production)
 production_manifest = []
 for path in production:

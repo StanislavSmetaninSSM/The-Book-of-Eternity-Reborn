@@ -1,3 +1,7 @@
+### C5 comparison preparation prerequisite WIP — 2026-10-10
+
+63567 diagnostic source independent Astra review: no Critical/Importantblocker. Minor requires explicit nonoptimized Python. Current selected diagnostic PlanOnly fresh integration build/discovery succeeds with1plannedcase; no gameplay executed. Historical firstGitHub-only snapshot565 prepared/fsckpasses but loader stops before receipt because default gitls-files quotedUnicode filename was treatedasliteral path. No falseProductionUnchanged/PASSreceipt. Correct loader lists to -z/NUL (spaces/Unicode safe) and refuse not__debug__; no production/testprofile/category change. Existingfailed snapshot/log retained; retry one newempty historicalsnapshot, then sequential current/historicaldiagnostics usingfreshrespectivebinaries and explicitly reboundBOE_REPO_ROOT. Original40sFAIL/fullC5 statusesunchanged.
+
 ### C5 bounded duration comparison WIP — 2026-10-10
 
 Latest parent instruction supersedes further performance architecture work: fixture40s has no confirmed productSLA/same-environment baseline. Current safe db93 checkpoint controls8/8GREEN; prelockdeferral candidate NOT implemented. Historical40sFAILs remain FAIL. Before any further optimization compare one identical valid original NativeLineage/ProcessPlayerTurn finalization against current production and historical5657107343a0dcb58f09212f7de48f478dea45d3 (historical fullC5GREEN before sharedpreflight and environment restoration).
