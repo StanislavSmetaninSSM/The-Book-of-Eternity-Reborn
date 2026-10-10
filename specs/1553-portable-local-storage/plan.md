@@ -1,9 +1,26 @@
+## Browser replacement source gate accepted; final verification preparation — WIP, 2026-10-10
+
+Independent Astra/xhigh causal/source/exact4 PASS at4b304141: original known2PASS,
+uncertainty2 causalFAIL; 17 artifacts/15 source pins, raw/TRX, four strict roots,
+settlement/noLater and remote ref/raw verified. Both failures occur at secondary
+retention assertions; later assertions did not run, so only raw observations
+support the recorded loss of CSP and wrong admission NotLoaded. No blanket RED
+assertion acceptance. Reviewer performed no builds/tests/writes.
+Read-only all-evidence preliminary verifier PASS: 90 manifests/7654 artifact
+references/10270 commit-bound pin references/9447 unique pinned blobs, zero errors;
+existing855/170/164 census sources verified. Reproducible verifier now preserved;
+this is source/evidence integrity, not runtime/platform acceptance. Fresh both-
+project discovery-only catalog then NoBuildPlan4/actualGREEN4 next; production
+4b304141 currently UNBUILT/UNRUN. Earlier accepted selections not replayed.
+T061–T065/B2–B5/native/ordinary known-close exclusions stay open.
+
 ## Browser replacement admission lexical scope correction — WIP, 2026-10-10
 
-Independent source review found the newly widened admission local would shadow
-the existing callback writeLease parameter (CS0136). Restore an explicit admission
-lexical block; original callback and two uncertainty guards unchanged. Superseded
-1ca71cde was never built/executed, so no failed-build or PASS claim. Continue the
+Independent source review requested preservation of the original admission local
+scope before the callback. Restore its explicit lexical block; original callback
+and two uncertainty guards unchanged. The initial CS0136 hypothesis was withdrawn:
+C#8 permits lambda parameter shadowing. Superseded 1ca71cde was never built or
+executed; there is no demonstrated compile failure or build/PASS claim. Continue the
 combined causal/source/exact4 review before fresh both-project catalog/GREEN4.
 
 ## Browser replacement original-owner uncertainty guards — WIP, 2026-10-10
