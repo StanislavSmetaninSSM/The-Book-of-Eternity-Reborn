@@ -1,3 +1,15 @@
+## Final restore verifier hardening — WIP, 2026-10-10
+
+Independent GREEN/raw/catalog/census checks currently PASS c6369ae7:38 Browser
+artifacts/45pins, exactTRX↔8rows,4absentroots;855sourceblobs/170sites/164declarations/
+70paths, only intended85 stale wording and161/162 semantic changes. Reviewer
+finishing raw/header reconciliation, no fullrestorePASS yet. Optional safeguards
+applied: assert actual170 Invocations/855 uniqueSourceBlobs+FilesRead/70ownerPaths;
+close git cat-file pipe only AFTER finalSourceBlobs validation, eliminating cache
+prepopulation reliance. No production/test/catalog mutation; runtime GREEN4 stays
+at clean ac3783c1. New exact-tip source/evidence preflight and reviewer delta check
+before final published metadata/new empty GitHub clone.
+
 ## Browser replacement GREEN4 and refreshed final census — WIP, 2026-10-10
 
 Source ac3783c1 (runtime4b304141 unchanged), clean actual selection. Fresh both-

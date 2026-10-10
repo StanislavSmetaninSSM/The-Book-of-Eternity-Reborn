@@ -16,7 +16,7 @@
     },
     {
       "path": "verify-restored-checkpoint.py",
-      "sha256": "1512bf0972082f54f2527af57431b64b2801994d7a55fdb29a03d4b4769c70a6"
+      "sha256": "067126c824f5b244f379407b3bfec251f1eefa35a9eb3253fb01d87531d65fcd"
     }
   ],
   "sourcePins": [

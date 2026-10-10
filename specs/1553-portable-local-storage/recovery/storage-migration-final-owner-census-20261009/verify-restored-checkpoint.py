@@ -54,8 +54,7 @@ for m in sorted((root/'specs/1553-portable-local-storage/recovery').glob('storag
  if doc.get('sourceRevision') and (m.parent/'corpus.json').exists():
   for r in json.loads((m.parent/'corpus.json').read_text()):
    rev=doc['sourceRevision'];require(blob(rev,r['path'])==r['sha256'],'historical corpus hash '+r['path']);require(cache[(rev,r['path'])][1]==r['gitBlob'],'historical corpus git object '+r['path']);receipt['commitBoundPins']+=1
-cat.stdin.close();cat.wait();receipt['uniquePinnedBlobs']=len(cache)
-cpath=root/'specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/owning-candidates.json';c=json.loads(cpath.read_text());sem=json.loads(cpath.with_name('semantic-classification.json').read_text());require(c['InvocationCount']==170 and len(sem['records'])==170,'170 records missing');require(len({(r['Path'],r['MethodSpanStart']) for r in c['Invocations']})==164,'164 full declarations missing')
+cpath=root/'specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/owning-candidates.json';c=json.loads(cpath.read_text());sem=json.loads(cpath.with_name('semantic-classification.json').read_text());require(c['InvocationCount']==170 and len(c['Invocations'])==170 and len(sem['records'])==170,'170 records missing');require(c['FilesRead']==855 and len(c['SourceBlobs'])==855 and len({x['Path'] for x in c['SourceBlobs']})==855,'855 source files missing');require(len({x['Path'] for x in c['Invocations']})==70,'70 owning source paths missing');require(len({(r['Path'],r['MethodSpanStart']) for r in c['Invocations']})==164,'164 full declarations missing')
 require(sem['source']==c['Source'],'semantic census source differs')
 syntax_fields=['Path','Line','Method','InvocationSpanStart','InvocationSpanLength','MethodSpanLength','MethodBodySha256','MethodSpanStart','MethodStartLine','MethodEndLine','MethodSignature','Classes','Invocation','NestedLambda','SourceSha256']
 for index,(syntax,record) in enumerate(zip(c['Invocations'],sem['records']),1):
@@ -67,4 +66,5 @@ counts={}
 for record in sem['records']:counts[record['qualification']]=counts.get(record['qualification'],0)+1
 require(counts==sem['counts'],'semantic classification totals differ')
 for x in c['SourceBlobs']:require(blob(c['Source'],x['Path'])==x['Sha256'],'current census source hash '+x['Path'])
+cat.stdin.close();cat.wait();receipt['uniquePinnedBlobs']=len(cache)
 receipt['censusSourceFiles']=len(c['SourceBlobs']);receipt['censusAcquisitions']=170;receipt['censusDeclarations']=164;receipt['wallSeconds']=round(time.monotonic()-started,3);receipt['result']='PASS' if not receipt['errors'] else 'FAIL';pathlib.Path(a.receipt).write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\n');print(json.dumps({k:v for k,v in receipt.items() if k not in ['fsckOutput','remoteRefs','errors']},ensure_ascii=False));print('errors',len(receipt['errors']));sys.exit(0 if not receipt['errors'] else 1)
