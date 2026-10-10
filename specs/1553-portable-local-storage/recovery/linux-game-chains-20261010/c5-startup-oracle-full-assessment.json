@@ -1,0 +1,384 @@
+{
+  "Status": "STOP: first fresh fullC5 FAIL; correctness UNQUALIFIED and optimized implementation WIP",
+  "SavedAtUtc": "2026-10-10T20:51:38.199931+00:00",
+  "SourceAssemblySHA": "437f7941f0a45eed3e56c6fe3c3aa1fff8c2a7c1",
+  "RuntimePreparationCarrierSHA": "d132a7a0a36558de8e1f33d25a7708cedc71f483",
+  "FrozenFirstRawCarrierSHA": "9d5796adfd9120cba321d789e062b9d179a22971",
+  "EvidenceManifest": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-startup-oracle-full-first-failure/manifest.json",
+  "PreparationManifest": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-startup-oracle-full-preparation/manifest.json",
+  "FirstRawPayloads": 254,
+  "FirstRawExpandedBytes": 9447849,
+  "Runner": {
+    "Revision": {
+      "Head": "d132a7a0a36558de8e1f33d25a7708cedc71f483",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "WallTime": "00:01:42.4704853",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  },
+  "DriverElapsedSeconds": 83.73441217500022,
+  "Budgets": {
+    "WorkSeconds": 660,
+    "TotalSeconds": 720,
+    "CleanupReserveSeconds": 60,
+    "HelperProofSeconds": 60,
+    "HelperToAcceptanceSeconds": 180,
+    "GuardianSeconds": 750,
+    "ExternalSeconds": 755,
+    "Qualification": "Exploratory semantic diagnostic; original 40s mode and latency regression remain separate."
+  },
+  "TotalBudgetExceeded": false,
+  "ModelCalls": 0,
+  "ActualFirstNavigation": {
+    "Name": "web-action-1",
+    "Ordinal": 1,
+    "StartupSeconds": 60,
+    "ClickMilliseconds": 12000,
+    "Anchor": "before initial page.goto",
+    "BeginMonotonic": 6250.335611867,
+    "NormalClickInvoked": true,
+    "NormalClickAPIReturned": true,
+    "SixInitialGETs": [
+      {
+        "Path": "/api/main-menu",
+        "Url": "http://127.0.0.1:55733/api/main-menu",
+        "Method": "GET",
+        "ObserverRequestSequence": 1,
+        "BeginMonotonic": 6250.903256803,
+        "Status": 200,
+        "Terminal": "requestfinished",
+        "ResponseMonotonic": 6257.357716332,
+        "EndMonotonic": 6257.357825706,
+        "Failure": null
+      },
+      {
+        "Path": "/api/session",
+        "Url": "http://127.0.0.1:55733/api/session",
+        "Method": "GET",
+        "ObserverRequestSequence": 2,
+        "BeginMonotonic": 6250.903550422,
+        "Status": 200,
+        "Terminal": "requestfinished",
+        "ResponseMonotonic": 6257.376264025,
+        "EndMonotonic": 6257.376453121,
+        "Failure": null
+      },
+      {
+        "Path": "/api/game-screen",
+        "Url": "http://127.0.0.1:55733/api/game-screen",
+        "Method": "GET",
+        "ObserverRequestSequence": 3,
+        "BeginMonotonic": 6250.903761591,
+        "Status": 200,
+        "Terminal": "requestfinished",
+        "ResponseMonotonic": 6261.645948292,
+        "EndMonotonic": 6261.646311456,
+        "Failure": null
+      },
+      {
+        "Path": "/api/audio/settings",
+        "Url": "http://127.0.0.1:55733/api/audio/settings",
+        "Method": "GET",
+        "ObserverRequestSequence": 4,
+        "BeginMonotonic": 6250.903956026,
+        "Status": 200,
+        "Terminal": "requestfinished",
+        "ResponseMonotonic": 6257.441506026,
+        "EndMonotonic": 6257.441654088,
+        "Failure": null
+      },
+      {
+        "Path": "/api/client/settings",
+        "Url": "http://127.0.0.1:55733/api/client/settings",
+        "Method": "GET",
+        "ObserverRequestSequence": 5,
+        "BeginMonotonic": 6250.904278125,
+        "Status": 200,
+        "Terminal": "requestfinished",
+        "ResponseMonotonic": 6257.481241006,
+        "EndMonotonic": 6257.482152361,
+        "Failure": null
+      },
+      {
+        "Path": "/api/explorer/command-coverage",
+        "Url": "http://127.0.0.1:55733/api/explorer/command-coverage",
+        "Method": "GET",
+        "ObserverRequestSequence": 6,
+        "BeginMonotonic": 6250.904475643,
+        "Status": 200,
+        "Terminal": "requestfinished",
+        "ResponseMonotonic": 6251.028648946,
+        "EndMonotonic": 6251.058652062,
+        "Failure": null
+      }
+    ],
+    "TrustedContinueEvents": [
+      {
+        "isTrusted": true,
+        "disabled": false,
+        "browserNow": 13289.799999999814,
+        "browserTimeOrigin": 1791664972569.5,
+        "wallMilliseconds": 1791664985859
+      }
+    ],
+    "ReadyLauncher": true,
+    "ContinueVisible": true,
+    "ContinueEnabled": true,
+    "StartupElapsedSeconds": 12.029332695000448,
+    "ReadyMonotonic": 6262.364949005,
+    "ClickBeginMonotonic": 6262.364956408,
+    "ClickReturnMonotonic": 6263.660635024,
+    "ComposerVisible": true,
+    "TrustedContinueClicks": 1
+  },
+  "NormalClickElapsedSeconds": 1.2956786160002594,
+  "StartupConclusion": "First actual ready launcher/all six GET requestfinished200 achieved within separate60s; unchanged12s normal API returned with exactly1trustedContinue and real composer. Real browser POST200 and authoritative queued action followed.",
+  "BrowserSubmissions": [
+    {
+      "Name": "web-action-1",
+      "Status": 200,
+      "Request": {
+        "text": "\u041e\u0441\u043c\u0430\u0442\u0440\u0438\u0432\u0430\u044e\u0441\u044c \u0438 \u0437\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u044e \u0431\u0435\u0440\u0435\u0433, \u043f\u0440\u043e\u0432\u0435\u0440\u043e\u0447\u043d\u044b\u0439 \u0445\u043e\u0434 1."
+      },
+      "Response": {
+        "success": true,
+        "playerMessage": "\u0414\u0435\u0439\u0441\u0442\u0432\u0438\u0435 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u043e. \u041c\u0430\u0441\u0442\u0435\u0440 \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0435\u0433\u043e \u043f\u0440\u0438 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0435\u043c \u0445\u043e\u0434\u0435.",
+        "technicalDetail": null
+      },
+      "AuthoritativePending": {
+        "schemaVersion": 1,
+        "actionId": "4e5e9e460c3e4ccd85d87a9c4f3364f8",
+        "sessionGeneration": "1fdc11fb42d648149eac38a07cc4e003",
+        "status": "queued",
+        "playerAction": "\u041e\u0441\u043c\u0430\u0442\u0440\u0438\u0432\u0430\u044e\u0441\u044c \u0438 \u0437\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u044e \u0431\u0435\u0440\u0435\u0433, \u043f\u0440\u043e\u0432\u0435\u0440\u043e\u0447\u043d\u044b\u0439 \u0445\u043e\u0434 1.",
+        "submittedAtUtc": "2026-10-10T20:43:07.2549349Z",
+        "source": "browser-composer"
+      },
+      "OriginalDerivedReady": true
+    }
+  ],
+  "InterruptedColdCuts": [
+    {
+      "Phase": "queued",
+      "OriginalPid": 23250,
+      "ColdPid": 24041,
+      "OriginalExitCode": -9,
+      "OriginalEOF": true,
+      "ActionId": "4e5e9e460c3e4ccd85d87a9c4f3364f8",
+      "Generation": "1fdc11fb42d648149eac38a07cc4e003",
+      "OriginalPendingSHA256": "e2054b671a91df9aa14d27d4a4dc2c3369baa3be4878ca72adbe0e8b8610ffdf",
+      "NoRequestBeforeCrash": true
+    }
+  ],
+  "ColdQualificationLimit": "Queued original SIGKILL/EOF and actual cold replacement occurred; no accepted turn or OriginalIdentityConsumedOnce qualification. No staged cut, second/third navigation or complete cold continuation.",
+  "AcceptedTurns": [],
+  "TerminalReadyObservation": "NotObserved",
+  "OriginalEvidenceInventory": {
+    "Request": {
+      "Path": "input/turn_request.json",
+      "Bytes": 59099,
+      "SHA256": "04e8d5116123ab698368dc4dddd1b3e0eb849f602e350ce03b8fa2641b04a0b9"
+    },
+    "Manifest": {
+      "Path": "game_state/control/pending_turn_snapshot.json",
+      "Bytes": 37515,
+      "SHA256": "ce1098b5aa7dc080c6fc0106ca5132867be2b3c1272e90fefff10103b82693d7"
+    },
+    "Authority": {
+      "Path": "game_state/control/pending_turn_snapshot.authority.json",
+      "Bytes": 53575,
+      "SHA256": "647d730701ad8365868a67af627791ecc013ad556ff30a8652fa226adc5bd6d4"
+    },
+    "SnapshotCount": 63,
+    "RollbackCount": 62,
+    "SnapshotBytes": 1904316,
+    "RollbackBytes": 1903845
+  },
+  "ExactCurrentRequestManifestAuthorityStillMatchBeforeInventory": [
+    "Request",
+    "Manifest",
+    "Authority"
+  ],
+  "HelperFailure": {
+    "RelayConsumer": {
+      "Identity": {
+        "ChildPid": 24317,
+        "ResponseSHA256": "9fe6eac1b2914e5b1e991d65b3949bdf7328f5c078861c6c4c4e1c454e295ece",
+        "AgentTask": "deterministic-authored-game-chain-v1",
+        "Model": "deterministic-no-provider"
+      },
+      "Execution": {
+        "Executed": true,
+        "ExitCode": 1,
+        "ChildExited": true,
+        "IoDrained": true
+      },
+      "Role": "relay-owned PowerShell packet consumer running tools/gm-relay/relay-apply-response.ps1; not the dedicated managed helper child"
+    },
+    "RetainedExceptionAndScriptStack": "System.InvalidOperationException: Original initialized helper admission refused.\n ---> System.InvalidOperationException: Original helper transport unavailable; no replay.\n ---> System.Management.Automation.RuntimeException: Original helper reply lost or oversized.\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\nat Open-BoeHelperScope, /tmp/gc-ee899930e779/ship/BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1: line 114\nat Invoke-BoeHelperScope, /tmp/gc-ee899930e779/ship/BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1: line 123\nat Resolve-BoeSessionPath, /tmp/gc-ee899930e779/ship/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1: line 35\nat <ScriptBlock>, /workspace/The-Book-of-Eternity-Reborn/tools/gm-relay/relay-apply-response.ps1: line 30\nOperationStopped: /tmp/gc-ee899930e779/ship/BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1:114\nLine |\n 114 |  \u2026 rt $context;throw (New-BoeStorageFailure 'Original initialized helper \u2026\n     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n     | Original initialized helper admission refused.\n",
+    "ActualFailingScope": "Resolve-BoeSessionPath -> Invoke-BoeHelperScope default read -> Open-BoeHelperScope seq0 open; bootstrap Initialize-BoeGmTurnHelper already returned before relay script line30.",
+    "ProvenReadBranch": "ReadLineAsync.Wait(10000) completed and GetResult returned; retained inner message is produced only when line is NULL OR UTF8 byte count exceeds65536 (shipped gm_turn_helper_transport.ps1 line56). No JSON frame or admission identity was observed after this branch.",
+    "UnresolvedAlternatives": [
+      "NULL line (EOF)",
+      "non-NULL line with UTF8 byte count>65536"
+    ],
+    "MissingObservations": [
+      "Actual seq0 read result/NULL discriminator and byte count/frame outcome",
+      "Dedicated managed helper child PID/Linux starttime",
+      "Dedicated managed helper child exit code and stderr",
+      "Monotonic write/read/child-exit/disposal bounds"
+    ],
+    "QueueReplyIsHelperSeq0": false,
+    "QueueReplyRole": "relay packet provenance metadata, not the dedicated helper seq0 reply",
+    "DisposalSource": "gm_main_operation.ps1 lines110-120 stores context.exitCode and context.diagnostic after joining actual reads; those values are not retained in this archive.",
+    "AuthoredPacketCallStartedAtSeconds": 78.77034128300056,
+    "CleanupStartedAtSeconds": 82.54187109099985,
+    "AuthoredStartToCleanupSeconds": 3.7715298079992863,
+    "TimingLimit": "3.771529808s is authored-start to cleanup entry, not exact read/child duration. This current completed-read branch is not the older generic incident or a10s timeout.",
+    "DaemonLog": "[20:42:42][INFO] Game Session : /tmp/gc-ee899930e779/play/game_session\n[20:42:45][INFO] GM Backend   : OwnedTerminal\n[20:42:45][INFO] Bridge Status: '/tmp/gc-ee899930e779/play/game_session/game_state/control/gm_bridge_status.json'\n[20:42:45][INFO] Auto-Paste   : True\n[20:42:45][INFO] Paste Mode   : RightClick\n[20:42:45][INFO] Timeout      : 150s\n[20:42:46][INFO] Watching: /tmp/gc-ee899930e779/play/game_session/input\n[20:42:48][INFO] Waiting for turns... (Ctrl+C to stop)\n[20:43:16][ERROR] Main loop error recovered: Original daemon read admission or completion was refused.\n[20:43:17][ERROR] Main loop error recovered: Original daemon read admission or completion was refused.\n[20:43:19][ERROR] Main loop error recovered: Original daemon read admission or completion was refused.\n[20:43:20][ERROR] Main loop error recovered: Original daemon read admission or completion was refused.\n[20:43:22][ERROR] Main loop error recovered: Original daemon read admission or completion was refused.\n[20:43:23][ERROR] Main loop error recovered: Original daemon read admission or completion was refused.\n[20:43:34][TURN] Turn #1: \u041e\u0441\u043c\u0430\u0442\u0440\u0438\u0432\u0430\u044e\u0441\u044c \u0438 \u0437\u0430\u043f\u043e\u043c\u0438\u043d\u0430\u044e \u0431\u0435\u0440\u0435\u0433, \u043f\u0440\u043e\u0432\u0435\u0440\u043e\u0447\u043d\u044b\u0439 \u0445\u043e\u0434 1.\n[20:43:52][ERROR] Main loop error recovered: Original admitted daemon read refused.\n[20:43:52][SHUTDOWN] Daemon stopped. Turns: 1, Errors: 7\n",
+    "DaemonLimit": "Generic read admission/completion refusals and later admitted-read refusal retained; no inner cause or causal connection to the seq0 result is established."
+  },
+  "SourceReferences": [
+    {
+      "Path": "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+      "SourceSHA": "437f7941f0a45eed3e56c6fe3c3aa1fff8c2a7c1",
+      "GitBlobOID": "bf8a7a74001461c28e4bd86f7750152c8a14b7b1",
+      "Bytes": 14265,
+      "SHA256": "89b5201abfe16160b9c1b5465cf331a81ef5976120936aedee141442405007d9",
+      "ActualExecutionLocation": "owned ship/BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+      "ShippedByteIdentityVerified": true
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "SourceSHA": "437f7941f0a45eed3e56c6fe3c3aa1fff8c2a7c1",
+      "GitBlobOID": "1d935b485cc252904be6ce23b197c65d1b56cd72",
+      "Bytes": 121313,
+      "SHA256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+      "ActualExecutionLocation": "owned ship/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "ShippedByteIdentityVerified": true
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+      "SourceSHA": "437f7941f0a45eed3e56c6fe3c3aa1fff8c2a7c1",
+      "GitBlobOID": "a175c87e3d3fd71144c100c7afcb6c9a473c0653",
+      "Bytes": 25591,
+      "SHA256": "9ec146965c358bf28424154c1d9fa1fa5e626cb0b5568911a12b130dfb6ab97d",
+      "ActualExecutionLocation": "owned ship/BookOfEternityClient/Launcher/gm_main_operation.ps1",
+      "ShippedByteIdentityVerified": true
+    },
+    {
+      "Path": "tools/gm-relay/relay-apply-response.ps1",
+      "SourceSHA": "437f7941f0a45eed3e56c6fe3c3aa1fff8c2a7c1",
+      "GitBlobOID": "835eb772fd61937e0df87d88209b0af4b275e006",
+      "Bytes": 2353,
+      "SHA256": "228e0691c127f959128382766aaff173807cb384d562a26ff0b402f12915e859",
+      "ActualExecutionLocation": "source repository path retained in consumer stack",
+      "ShippedByteIdentityVerified": false
+    }
+  ],
+  "Cleanup": {
+    "OriginalStopped": true,
+    "IoDrained": true,
+    "Peers": {
+      "client-first": {
+        "ExitCode": -9,
+        "EOF": true,
+        "Pid": 23250
+      },
+      "bridge-first": {
+        "ExitCode": 0,
+        "EOF": true,
+        "Pid": 23270
+      },
+      "daemon-first": {
+        "ExitCode": 0,
+        "EOF": true,
+        "Pid": 23327
+      },
+      "web-action-1": {
+        "ExitCode": 0,
+        "EOF": true,
+        "Pid": 23636
+      },
+      "client-queued-cold": {
+        "ExitCode": -2,
+        "EOF": true,
+        "Pid": 24041
+      }
+    },
+    "Browsers": [
+      {
+        "Name": "web-action-1",
+        "WebPid": 23636,
+        "RealChromiumPids": [
+          23694,
+          23737,
+          23766,
+          23776,
+          23798,
+          23807,
+          23809
+        ],
+        "Closed": true,
+        "WebExitCode": 0,
+        "WebEOF": true
+      }
+    ],
+    "RelayCloses": [
+      {
+        "ExecutionDisabled": true,
+        "ChildExited": true,
+        "IoDrained": true,
+        "RelayPid": 23326
+      }
+    ],
+    "BackendTerminalStop": {
+      "identity": {
+        "runId": "091ed318eaae467aba068316db1b20f9",
+        "backend": "native-lineage",
+        "guarantee": "ordinary-same-namespace-lineage",
+        "rootPid": 23305
+      },
+      "state": "stopped-within-scope",
+      "reason": "stop-requested",
+      "cleanupComplete": true,
+      "authorityRetained": false
+    },
+    "RunDisposition": "Stopped",
+    "StopEvidenceKind": "OwnedScopeEmpty"
+  },
+  "IndependentReview": {
+    "Reviewer": "same read-only Astra xhigh",
+    "RawSourceSHA": "9d5796adfd9120cba321d789e062b9d179a22971",
+    "Verdict": "PASS/no blocking findings for first raw/provenance/assessment boundary; fullC5FAIL remains UNQUALIFIED",
+    "VerifiedScope": "254failure payloads,5fresh preparation payloads,681 shipped-file hashes; exact consumer/helper distinction and completed-read branch independently confirmed"
+  },
+  "PreservedLimits": [
+    "Earlier post-performing Continue completion cause UNKNOWN",
+    "Earlier generic helper refusal cause UNESTABLISHED, not reinterpreted from current richer raw",
+    "Startup TPL capture explicitly INCOMPLETE; no complete async graph or endpoint-duration attribution",
+    "One measured constructor pair ~6% reduction/resource7->1/drift/eightcontrols stays frozen; no full latency closure"
+  ],
+  "NextScopeRecommendationOnly": "One original failing default-read helper admission: passively retain seq0open write/read result NULL vs UTF8 byte count/frame outcome, dedicated managed child PID/starttime/exit/stderr and monotonic bounds through owned cleanup. Keep original guard/timer/no replay; no retry, protocol replacement, fix or extra run is authorized by this recommendation.",
+  "FurtherRuntimeOrFixPerformed": false,
+  "DeliveryStatus": "Fresh GitHub-only selected-file recovery pending; raw already exact manifest-vs-tree-vs-checkout and remote verified."
+}
