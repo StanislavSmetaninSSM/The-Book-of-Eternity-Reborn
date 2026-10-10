@@ -1,0 +1,816 @@
+{
+  "SHA": "ef38e4c4018e23e553ad0343bec04eca0f1f0720",
+  "Base": "3edef9b695913f13a80c7d8d35d9df89e9b1ef83",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1649563,
+      "SHA256": "2b1752591f6d1b5e1e37444d220d562322bff97313c4ace5af30160097e2fa8b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/manifest.json",
+      "Bytes": 75181,
+      "SHA256": "5273f46264b05019db1443622fc967556e8737179fa56ece2bf61d40a57daa76",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/at-cut/game_state/control/pending_dice_state.json.gz",
+      "Bytes": 281,
+      "SHA256": "a7fc78d2aa07c73d6390b4faa2551314a17861b7853f13ab281721f2e74c392f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/at-cut/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "Bytes": 4674,
+      "SHA256": "dbc1a4044c0d185c5f54027628441796f436bf59a981e4c7c19678fb6ef46bc2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/at-cut/game_state/control/pending_turn_snapshot.json.gz",
+      "Bytes": 2959,
+      "SHA256": "9fba8e5fa3a03dc708d4bd54c674d2fe553f0149e178ead093b63cc61e8ecf00",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/at-cut/game_state/meta/guardians.json.gz",
+      "Bytes": 2368,
+      "SHA256": "248aee7ad11ee4c1d2c8d03f0afa7ab45a1352b9e2befe3cecad4229d8d2922b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/at-cut/input/turn_request.json.gz",
+      "Bytes": 17869,
+      "SHA256": "5ae26b7150bdfd9125f89cbba782eaae84579a04fa8beb2a8e3f394c8b8fad04",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/at-cut/inventory.json.gz",
+      "Bytes": 2303,
+      "SHA256": "32405f68265dcf7d3a4f67add5c8efd03e66ba160052d6536c9fafd28d7e6044",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/at-cut/original-generation.json.gz",
+      "Bytes": 87,
+      "SHA256": "ef7da9397c7df667198d604751573085464cca17015c3655bb155c70077ba017",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/cold.json.gz",
+      "Bytes": 862,
+      "SHA256": "ed4e1d5c9974d84f549e52261971a2dfbb5c83b576df67958b60d62289e4d873",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/cold.log.gz",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/cut-control.json.gz",
+      "Bytes": 187,
+      "SHA256": "0aecb32b56e7a67e0e114e7e7e2754368788ce60efd391410d80b72a7f392475",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/failure-before-cleanup.txt.gz",
+      "Bytes": 24,
+      "SHA256": "9c57b5c8538b38c9d91558514f246b803636d6e5eb8c640dbfbaae64d115ae91",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/guardian.json.gz",
+      "Bytes": 105,
+      "SHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/initial-authority.json.gz",
+      "Bytes": 4674,
+      "SHA256": "dbc1a4044c0d185c5f54027628441796f436bf59a981e4c7c19678fb6ef46bc2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/initial-manifest.json.gz",
+      "Bytes": 2959,
+      "SHA256": "9fba8e5fa3a03dc708d4bd54c674d2fe553f0149e178ead093b63cc61e8ecf00",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/initial-request.json.gz",
+      "Bytes": 17869,
+      "SHA256": "5ae26b7150bdfd9125f89cbba782eaae84579a04fa8beb2a8e3f394c8b8fad04",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/native.log.gz",
+      "Bytes": 71,
+      "SHA256": "9858bb2d701219fcae5f7a4fb109b4e76d6016929d1b4579849af4bcc4133de5",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/.boe_runtime/gm-runs/main.json.gz",
+      "Bytes": 305,
+      "SHA256": "56a2c8f8a8be006c04b32267b09b996ee746621362b3dff71fd33179aebd5541",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/.boe_runtime/session-generation/current.json.gz",
+      "Bytes": 87,
+      "SHA256": "ef7da9397c7df667198d604751573085464cca17015c3655bb155c70077ba017",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/config.json.gz",
+      "Bytes": 147,
+      "SHA256": "0e0636650ce817a81bb28bc63514f53ed7501086f4f12cadfe1c4e1cb2a480f1",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/gm_bridge_status.json.gz",
+      "Bytes": 458,
+      "SHA256": "a5ecc3278ec459ac8f37e37af7e1ded3fdc0da735baf9655874393436d4bac61",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_dice_state.json.gz",
+      "Bytes": 281,
+      "SHA256": "a7fc78d2aa07c73d6390b4faa2551314a17861b7853f13ab281721f2e74c392f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "Bytes": 4674,
+      "SHA256": "dbc1a4044c0d185c5f54027628441796f436bf59a981e4c7c19678fb6ef46bc2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot.json.gz",
+      "Bytes": 2959,
+      "SHA256": "9fba8e5fa3a03dc708d4bd54c674d2fe553f0149e178ead093b63cc61e8ecf00",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json.gz",
+      "Bytes": 281,
+      "SHA256": "a7fc78d2aa07c73d6390b4faa2551314a17861b7853f13ab281721f2e74c392f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json.gz",
+      "Bytes": 370,
+      "SHA256": "8b1043bfeea609d01382e38235eff05e336c4b144154892443fc1ac753f9c47a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/core/game_settings.json.gz",
+      "Bytes": 163,
+      "SHA256": "8d6f196cd96e15fe44b92b5bef177a119b4156f1439efecd42e982e8045d4879",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/core/system_mods.json.gz",
+      "Bytes": 148,
+      "SHA256": "0160ff80c507b49408ab52e8406a67949e8d0a16a218a439f94e6486b63a5426",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json.gz",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/meta/achievements.json.gz",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json.gz",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json.gz",
+      "Bytes": 1870,
+      "SHA256": "65fe8faeeab4cbe381c52b9c41f51083f88a07600fd20bd74f38c5d9c079391b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json.gz",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json.gz",
+      "Bytes": 465,
+      "SHA256": "d85b98533bfeb54f598ccf0ac35dd799795a8c82bc4d7fdf0ee6b79c68adc3c7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json.gz",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.gz",
+      "Bytes": 2559,
+      "SHA256": "1437bc426bab54428faae7da44526c6b02a95159f06d209442caebf43031376a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json.gz",
+      "Bytes": 454,
+      "SHA256": "e04028a8c036bdd433c9b3a4d8794879201d9620b7744a0a8418fde5a7001e91",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json.gz",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json.gz",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json.gz",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json.gz",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json.gz",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json.gz",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json.gz",
+      "Bytes": 508,
+      "SHA256": "fc4a72b49919ba4385c48ee2cbc51d83087152d49a65e1a50110829b042e351b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/pending_turn_snapshot/lore/codex_entries.json.gz",
+      "Bytes": 861,
+      "SHA256": "bf06c328ed265a2a8e76b6438da0eb9c2376a551d26a2263ad0efdb21e40d91b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/progression_report.json.gz",
+      "Bytes": 330,
+      "SHA256": "c81b9f1347d944cebba984156134727d9af959ffe74569aaadada82601feab5c",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/progression_schedule.json.gz",
+      "Bytes": 370,
+      "SHA256": "d947305405c47b58dac9fa136fe932088f7a02dc9adf8917b68eec86a88014b6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/control/progression_schedule.json.rollback.639272509035214213.gz",
+      "Bytes": 370,
+      "SHA256": "8b1043bfeea609d01382e38235eff05e336c4b144154892443fc1ac753f9c47a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/core/game_settings.json.gz",
+      "Bytes": 163,
+      "SHA256": "8d6f196cd96e15fe44b92b5bef177a119b4156f1439efecd42e982e8045d4879",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/core/game_settings.json.rollback.639272509035214213.gz",
+      "Bytes": 163,
+      "SHA256": "8d6f196cd96e15fe44b92b5bef177a119b4156f1439efecd42e982e8045d4879",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/core/system_mods.json.gz",
+      "Bytes": 148,
+      "SHA256": "0160ff80c507b49408ab52e8406a67949e8d0a16a218a439f94e6486b63a5426",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/core/system_mods.json.rollback.639272509035214213.gz",
+      "Bytes": 148,
+      "SHA256": "0160ff80c507b49408ab52e8406a67949e8d0a16a218a439f94e6486b63a5426",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/history/chat_log.json.gz",
+      "Bytes": 110,
+      "SHA256": "8d15ff6fbff19b1975711f870e09ccc98323f18acc8b77cd9b81508f7a37a68b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/inventory/item_identity_index.json.gz",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/inventory/item_identity_index.json.rollback.639272509035214213.gz",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/achievements.json.gz",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/achievements.json.rollback.639272509035214213.gz",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/afterlife_chronicles.json.rollback.639272509035214213.gz",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "Bytes": 1870,
+      "SHA256": "65fe8faeeab4cbe381c52b9c41f51083f88a07600fd20bd74f38c5d9c079391b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/afterlife_entity_profiles.json.rollback.639272509035214213.gz",
+      "Bytes": 1870,
+      "SHA256": "65fe8faeeab4cbe381c52b9c41f51083f88a07600fd20bd74f38c5d9c079391b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/afterlife_global_flags.json.rollback.639272509035214213.gz",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272509035214213.gz",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/character_chronicle.json.gz",
+      "Bytes": 465,
+      "SHA256": "d85b98533bfeb54f598ccf0ac35dd799795a8c82bc4d7fdf0ee6b79c68adc3c7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/character_chronicle.json.rollback.639272509035214213.gz",
+      "Bytes": 465,
+      "SHA256": "d85b98533bfeb54f598ccf0ac35dd799795a8c82bc4d7fdf0ee6b79c68adc3c7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/guardian_projects.json.gz",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/guardian_projects.json.rollback.639272509035214213.gz",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/guardians.json.gz",
+      "Bytes": 2368,
+      "SHA256": "248aee7ad11ee4c1d2c8d03f0afa7ab45a1352b9e2befe3cecad4229d8d2922b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/guardians.json.rollback.639272509035214213.gz",
+      "Bytes": 2559,
+      "SHA256": "1437bc426bab54428faae7da44526c6b02a95159f06d209442caebf43031376a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/soul_state.json.gz",
+      "Bytes": 454,
+      "SHA256": "e04028a8c036bdd433c9b3a4d8794879201d9620b7744a0a8418fde5a7001e91",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/meta/soul_state.json.rollback.639272509035214213.gz",
+      "Bytes": 454,
+      "SHA256": "e04028a8c036bdd433c9b3a4d8794879201d9620b7744a0a8418fde5a7001e91",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/resources/resource_definitions.json.gz",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/resources/resource_definitions.json.rollback.639272509035214213.gz",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/resources/resource_history.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/resources/resource_history.json.rollback.639272509035214213.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/resources/resource_owner_authority.json.rollback.639272509035214213.gz",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/resources/resource_state.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/resources/resource_state.json.rollback.639272509035214213.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/wounds/wound_history.json.gz",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/wounds/wound_history.json.rollback.639272509035214213.gz",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/game_state/wounds/wound_identity_index.json.rollback.639272509035214213.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/input/turn_request.json.gz",
+      "Bytes": 17869,
+      "SHA256": "5ae26b7150bdfd9125f89cbba782eaae84579a04fa8beb2a8e3f394c8b8fad04",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/lore/chaos_sea/cosmology.json.gz",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/lore/chaos_sea/cosmology.json.rollback.639272509035214213.gz",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/lore/chaos_sea/guardians_lore.json.rollback.639272509035214213.gz",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/lore/chaos_sea/player_chronicle.json.rollback.639272509035214213.gz",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "Bytes": 508,
+      "SHA256": "fc4a72b49919ba4385c48ee2cbc51d83087152d49a65e1a50110829b042e351b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/lore/chaos_sea/soul_system_lore.json.rollback.639272509035214213.gz",
+      "Bytes": 508,
+      "SHA256": "fc4a72b49919ba4385c48ee2cbc51d83087152d49a65e1a50110829b042e351b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/lore/codex_entries.json.gz",
+      "Bytes": 861,
+      "SHA256": "bf06c328ed265a2a8e76b6438da0eb9c2376a551d26a2263ad0efdb21e40d91b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/lore/codex_entries.json.rollback.639272509035214213.gz",
+      "Bytes": 861,
+      "SHA256": "bf06c328ed265a2a8e76b6438da0eb9c2376a551d26a2263ad0efdb21e40d91b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/output/debug_logs.json.gz",
+      "Bytes": 1004,
+      "SHA256": "d31be79e139d11cb6541ab002cc721dd612e09354b325997bc72c868738b5fac",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/output/interface_updates.json.gz",
+      "Bytes": 83,
+      "SHA256": "a9688efeffb357e110c64d02131779c53cfd94dfef2c7a60333a6ff230cdfc1f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/output/narrative_response.json.gz",
+      "Bytes": 130,
+      "SHA256": "d17884a050d60d40a148e6c3c3d1d7bcac510c1124cd7a625a622128047f6525",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/neutral-session-8d5c5394079948a48ddadc9349e36909/game_session/ready/turn_complete.json.gz",
+      "Bytes": 262,
+      "SHA256": "edca3e787f01c512c30d1fcfb9bf264fd8e674a9308f4d1c2749a6aa2e29a469",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/original-cut.json.gz",
+      "Bytes": 3066,
+      "SHA256": "81ec29e65f2bfb321153cb9adcd57cf4fb1802d1b4410fe5d8431d1db24fb095",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/original-packet-guardians.bin.gz",
+      "Bytes": 2368,
+      "SHA256": "248aee7ad11ee4c1d2c8d03f0afa7ab45a1352b9e2befe3cecad4229d8d2922b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/original.log.gz",
+      "Bytes": 74,
+      "SHA256": "78ccd68a0a08d13db972ba3ee777da0e85acfbaa5c437318372d68ce53cf4dc9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/package/build-provenance.json.gz",
+      "Bytes": 797,
+      "SHA256": "828ab51ee6273fef4b9a7e26becb897deb1701a689696fc23514486ba9310936",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/package/neutral-terminal-manifest.json.gz",
+      "Bytes": 237,
+      "SHA256": "353b6a7949e87e854a4146b56320459490867d668b76ef93c5b9f6c5f2567b45",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/package/package-manifest.json.gz",
+      "Bytes": 630,
+      "SHA256": "5f6cdcc31ff11e3726072e9a9d1dc91dd91dc24b9ce31f3ed333065d7657ac25",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/pin-after-eof.json.gz",
+      "Bytes": 353,
+      "SHA256": "debe2ff509c826cd7caa1f160aca13a9c3f524c724f709dd993168b3a04e98dd",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/pin-before-kill.json.gz",
+      "Bytes": 352,
+      "SHA256": "8e408c409b69472bce64014efed03ecbff08a83d9d2ec8cd227106e7730d4a4f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/pre-cold/game_state/control/pending_dice_state.json.gz",
+      "Bytes": 281,
+      "SHA256": "a7fc78d2aa07c73d6390b4faa2551314a17861b7853f13ab281721f2e74c392f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/pre-cold/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "Bytes": 4674,
+      "SHA256": "dbc1a4044c0d185c5f54027628441796f436bf59a981e4c7c19678fb6ef46bc2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/pre-cold/game_state/control/pending_turn_snapshot.json.gz",
+      "Bytes": 2959,
+      "SHA256": "9fba8e5fa3a03dc708d4bd54c674d2fe553f0149e178ead093b63cc61e8ecf00",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/pre-cold/game_state/meta/guardians.json.gz",
+      "Bytes": 2368,
+      "SHA256": "248aee7ad11ee4c1d2c8d03f0afa7ab45a1352b9e2befe3cecad4229d8d2922b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/pre-cold/input/turn_request.json.gz",
+      "Bytes": 17869,
+      "SHA256": "5ae26b7150bdfd9125f89cbba782eaae84579a04fa8beb2a8e3f394c8b8fad04",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/pre-cold/inventory.json.gz",
+      "Bytes": 2303,
+      "SHA256": "32405f68265dcf7d3a4f67add5c8efd03e66ba160052d6536c9fafd28d7e6044",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/pre-cold/original-generation.json.gz",
+      "Bytes": 87,
+      "SHA256": "ef7da9397c7df667198d604751573085464cca17015c3655bb155c70077ba017",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/pre-turn-guardians.json.gz",
+      "Bytes": 2282,
+      "SHA256": "66fbd28883caafb5cf9a4aa20832b78d0b85ccf2cb7b622de21f6b53ce2740ea",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/probe.log.gz",
+      "Bytes": 323,
+      "SHA256": "35c7ce9a19d0eeb055ad08c2bac6a7f7a105444d6f02989628831f366ab99fe7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/read-gate-001.json.gz",
+      "Bytes": 8055,
+      "SHA256": "0199eab76998ee99bff550ce091b7c65aecddf562d32da0b1b32cd5bbdaa5bf9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/read-gate-002.json.gz",
+      "Bytes": 7301,
+      "SHA256": "7421a9068e6a681d0475ea6c3049144aafd1fb3b560aa5efe29e3153d854b0e6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/read-gate-003.json.gz",
+      "Bytes": 8809,
+      "SHA256": "9e1f69e588b0577876ac30153f935424d3db827ab26a049beeafdd36b45a5794",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/read-gate-004.json.gz",
+      "Bytes": 9286,
+      "SHA256": "7be20c63536a66904e23bcb673c595b218860a08172d5884c6b6e7596be0e3dc",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/read-gate-005.json.gz",
+      "Bytes": 8246,
+      "SHA256": "e7f85a56ce62740648119187c82c63a5c5835819d0cc2700ab6f80847c31ea84",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/read-gate-006.json.gz",
+      "Bytes": 7822,
+      "SHA256": "2ff97bdfe60a3afe7e24e97e53724cc3a541f0fe1715c0b8ec8c5db646716f93",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/result.json.gz",
+      "Bytes": 4959,
+      "SHA256": "0d0cb174a2a5fdbb936600381922a9492432662198684861c7eb008bb3dcda57",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/owned/runtime-binary-inventory.json.gz",
+      "Bytes": 814,
+      "SHA256": "9ec55ef3b16dae715d5543a90bcb0c46f018a555df3d5354dd2e6872530e5aaa",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/runner/dotnet-test.log.gz",
+      "Bytes": 181087,
+      "SHA256": "e9ab039a937d81ab16b175a1a2a4ff0ddbd0546d085fe56caebaa00ef2839ca7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/runner/guardian-musings-capture-crash-integration-001.trx.gz",
+      "Bytes": 1296,
+      "SHA256": "7a75c0b714655020641fa17f6f0ba6709ebfe37b2f5d5de23320e1d5ebcbb73e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/runner/plan.json.gz",
+      "Bytes": 537,
+      "SHA256": "af84660f15644b919b0c5c1ff6e9cbf161c9abb5abfb072a8f083756962b1e9b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-actual-crash-green/runner/summary.json.gz",
+      "Bytes": 607,
+      "SHA256": "403f7613d32f1023542b2453fbb25fde39e35220777a96055c8954947fe08a55",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cut-observer-ready-remote.json",
+      "Bytes": 2021,
+      "SHA256": "f106427cf9c96d2abd82370717260b6acfc63541e7e80a21871fc476d4cf6f8a",
+      "RemoteExact": true
+    }
+  ]
+}
