@@ -1,3 +1,13 @@
+## Новый разрешённый этап сквозной приёмки — 2026-10-10
+
+Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+Base `e7d88d002858287ef19ee97213f7934f43e3023f`; [матрица/план/evidence](plan.md).
+Прежняя metadata-only остановка историческая; T061–T065 остаются открытыми.
+
+- [ ] T066-LINUX-GAME-CHAINS Execute finite C1–C5 actual command/handler/save/cold-process-restart/continuation chains; declare real/replaced components, exact before/after canonical/history/receipt identity, PASS/FAIL/UNRUN and reproducible evidence. Authored deterministic GM fixture is not a live model; service-only/HTTP200 is not whole-client acceptance.
+- [ ] T067-LINUX-GAME-FAULTS Select high-risk source-only boundaries reached by C1–C5; prove late write/close behavior in actual chain, preserve primary/secondary, noLater and cold state. Fix only reproduced in-scope regressions with causal RED→GREEN. Preserve approved force_binding and leave full B2–B5 for later.
+- [ ] T068-LINUX-GAME-CHECKPOINT Publish source/evidence/checkpoints with exact remote SHA/bytes, mandatory independent Astra/xhigh review at control points, actual clean GitHub-only restore at final delivery, and explicit Windows/external/default-worker limits. No main/CI/merge/issue changes or aggregate tests.
+
 ## Актуальная конечная сверка миграции — 2026-10-10
 
 Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).

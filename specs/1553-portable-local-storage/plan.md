@@ -1,3 +1,74 @@
+## T066–T068: сквозные Linux-цепочки — WIP, 2026-10-10
+
+Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+Владелец после завершённой metadata-сверки разрешил этот следующий этап:
+реальные ограниченные игровые цепочки на существующей облачной ветке
+`1553-storage-migration-cloud-20261008`; проверенный base/remote
+`e7d88d002858287ef19ee97213f7934f43e3023f`. Main остаётся
+`d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. Прежняя metadata-only остановка
+ниже историческая. Основной исполнитель Sol6.1; отдельный Astra/xhigh только
+на контрольных точках. HOME-PC/desktop не используются.
+
+**Цель:** команда → настоящий обработчик → сохранённое игровое состояние →
+полный перезапуск процесса → продолжение без потери/повтора результата.
+Проверяются существующие механики; этот этап не продолжает полный B2–B5.
+Реальный внешний модельный сервис без согласованного бюджета не вызывается.
+Обычный GM-response seam допускает детерминированные authored fixtures, которые
+маркируются заменой модели, а не live GM. Relay/Bridge/validator/storage/handler
+не подменяются там, где строка заявляет их настоящими. HTTP200, discovery и
+отдельный service test не являются whole-chain PASS. Native Windows и
+неисполненные default/native worker/durable ACK остаются UNRUN.
+
+| ID / цепочка | Production entry point | Проверяемое состояние до → после холодного запуска | Статус / фактические замены |
+|---|---|---|---|
+| C1 обычный консольный ход | `Program.cs` → `GameEngine.RunAsync` → `ProcessPlayerTurn` → actual terminal/acceptance pipeline | Новый request/action → принятый narrative/history/current turn; после остановки клиент читает тот же accepted state и принимает следующий ход без повторной записи | UNRUN; планируется authored GM packet через maintained relay, без model call |
+| C2 раны/лечение в реализованных границах | Actual console/Explorer player action → original accepted-turn wound/treatment publication | Current-schema физическая рана и полный доступный route → доказанное изменение carrier/history/resources; после cold restart та же identity/receipt и безопасное продолжение | UNRUN; отсутствующий UI/неподдерживаемая механика не заменяется resolver-only PASS |
+| C3 инвентарь | Console Explorer либо actual browser command/prompt handler → `InventoryManagementService` | Current sealed items/counts → ожидаемые stack/receipt/resource изменения; cold read и следующая команда подтверждают результат ровно один раз | UNRUN; независимый disposable current-schema inventory fixture |
+| C4 сохранение, загрузка, откат | Actual main-menu/browser save/load handlers → typed `SaveLoadService` и original engine rollback | Manifested save с известным logical state → реальный replacement либо отказ с exact rollback; новый процесс читает ожидаемые bytes/absence/generation и продолжает | UNRUN; no provider; faults только на конкретной production boundary |
+| C5 web-клиент с реле | Real React action/command where runnable → `LocalWebUiHost` actual API/handler → pending action → console engine/Bridge/relay | Отображённая/отправленная команда → authoritative pending и accepted state → после cold restart тот же state и следующий prompt | UNRUN; authored GM response; host-only результат маркируется отдельно, не web-client PASS |
+
+### Ограниченный порядок исполнения и доказательства
+
+- [ ] T066: прочитать фактические entry points/fixtures, уточнить строки матрицы
+  настоящими параметрами; сначала выполнить C1, затем независимые C2/C3/C4/C5.
+  Добавлять test-only probes/fixtures в `BookOfEternityClient.TestSupport/`,
+  process assertions в `BookOfEternityClient.IntegrationTests/` и отдельные
+  coherent category IDs в `tests/categories.json`; записать actual selection
+  в `tests/selection.json`. Не добавлять test-only seams в runtime без причины.
+- [ ] Для каждой строки сохранить actual source SHA/tree, точную команду,
+  planned/completed counts, timestamps, stdout/stderr/TRX, before/after hashes,
+  request/receipt/history identity и owned cleanup. Проверить outcome до
+  повторного запуска, чтобы cold recovery не скрыла частичный результат.
+- [ ] T067: после happy chains выбрать риски по final semantic map, первоначальные
+  кандидаты #26/#27 original engine rollback, #104 inventory context и #110
+  treatment Probe. Выбор уточнить по фактически достигнутым boundaries.
+  Доказать поздний write/close fault в настоящей цепочке, primary/secondary,
+  noLater, exact state и холодное продолжение/честный блок. Не считать81 строку
+  очередью дефектов. Воспроизведённая регрессия — причинный RED перед minimal
+  fix и адресный GREEN/negative neighbors; после двух неудач пересмотреть
+  гипотезу. Утверждённый force_binding не удалять ради зелёного результата.
+- [ ] T068: сохранить безопасные исходники/evidence через обычные commit/push
+  перед длинной проверкой/ревью; проверить exact remote ref/bytes. Один
+  законченный блок — независимый Astra/xhigh review. На сдаче проверить
+  GitHub-only восстановление в новом пустом каталоге по workflow; не выдавать
+  старый bbf restore за новый checkpoint. Main/CI/protection/merge/issues не
+  менять, полный/Fast/PreMerge и all-category sequence не запускать.
+
+### Preflight этого этапа
+
+Checkout/remote e7d88d00 подтверждены; дерево чистое. Read-only Spec Kit
+prerequisites PASS, существующие `.agents/skills/speckit-analyze`/`implement`
+и governance прочитаны, scaffolding не переинициализируется. Все extension
+hooks анализа/реализации optional; automatic hooks не требуются. Сверка
+US2/US3, FR004–006/010–015 и T061–065 показывает требуемый новый whole-chain
+coverage gap; существующие component packets не принимаются за C1–C5.
+Среда: Linux x64, SDK10.0.401, .NET8.0.31, PowerShell7.5.4, Node24.19.0.
+Бюджет внешних model calls не согласован:0 вызовов. До этого WIP runtime
+проверок нового этапа нет. Для места удалены только39 старых untracked
+`TestResults/production-main/<owned-id>/ship` копий: active owners0, source/
+recovery/TRX/logs сохранены; свободно4924231680 bytes. Local cleanup receipt
+вне репозитория, не игровая приёмка. Следующий шаг: C1 real client+relay.
+
 ## Конечная metadata-сверка миграции #1553 — 2026-10-10
 
 По отдельному поручению согласованы [tasks.md](tasks.md) и
