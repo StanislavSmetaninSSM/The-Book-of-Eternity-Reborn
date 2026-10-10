@@ -1,3 +1,13 @@
+## Разрешённый следующий runtime проход — 2026-10-10
+
+Source #1553; accepted baseline `a7a662571ec070a433da6b9cd6a1ecc3dda5a232`;
+[approved design and execution ledger](plan.md). Cloud-only, same isolated branch,
+Sol6.1/xhigh inline writer, independent Astra/xhigh checkpoints; no live model.
+
+- [ ] T069-C5-ORDINARY-CONSUMER Restore existing active GameEngine + web-sidecar ordinary action delivery: one pending slot/shared producer schema, generation/action/original sealed request identity, interruptible input with console draft, one winner, cold before staging/after staging/after acceptance without replay. Keep existing admission, original transport/storage/outcome guards. Preserve original FAIL; causal RED/GREEN plus affected accepted C1/C3/C4.
+- [ ] T070-GUARDIAN-MUSINGS-AUTHORITY Restore valid addMusings via immutable authorized original-bound delta, detached handoff across publication lease close and late full validation; retain strict negatives/old musings/mirror/once-only normalizer/repair/cold continuation. No broad raw authority or all-command retention. Preserve original FAIL and uncertain recovery blockers.
+- [ ] T071-C5-MUSINGS-CHECKPOINT Preserve actual source/results/selection/substitutions, independent review and exact remote/cold GitHub restoration. Standalone browser startup/multi-action queue/B2-B5 excluded; no main/CI/issues/merge changes. Checkboxes remain open until evidence and parent acceptance.
+
 ## Новый разрешённый этап сквозной приёмки — 2026-10-10
 
 Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).

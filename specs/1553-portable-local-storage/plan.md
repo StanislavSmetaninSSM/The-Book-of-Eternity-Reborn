@@ -1,3 +1,55 @@
+## C5/addMusings implementation ledger — 2026-10-10 (WIP)
+
+Source #1553, approved prior written plan at a7a66257; T069–T071 in tasks.md.
+Implementation inline under executing-plans/TDD/systematic-debugging, same clean
+isolated worktree `/workspace/boe-1553-storage-migration`, remote branch already
+published. No new scaffolding/tools initialization. Parent explicitly accepted
+scope and execution; repeated permission is unnecessary. This ledger updates
+existing mandatory artifacts rather than creating a parallel plan.
+
+**Goal:** restore queued browser prose into one ordinary GameEngine turn, then
+preserve valid addMusings authority through its existing publication lifecycle.
+**Architecture:** one generation/action-bound pending slot shared by both browser
+producers; main engine exclusively claims/stages through original signed snapshot
+and ProcessPlayerTurn. Cooperative native player-input boundary adds no reader
+thread or new admission across waits. Terminal disposition governs dequeue and
+cold handling. addMusings uses an immutable original-bound proof returned by the
+existing canonical publication owner and revalidated after physical lease close.
+**Tech:** C#/.NET8 runtime+existing .NET10 SDK, PowerShell7 category runner, actual
+Linux Program/React/Chromium/Bridge/relay/helper; authored GM replaces model only.
+**Spec:** spec.md accepted continuation + preserved a7 approved design below.
+
+Global constraints: main d0241e71 unchanged; trusted-local publisher/single journal,
+original guards/outcomes; no external paid calls/CI/merge/issues/B2-B5. No aggregate
+runs. Mandatory WIP push before long checks; exact remote and clean GitHub restore.
+Review focus: simultaneous console/browser; partial/multiline/paste draft; crash
+before signed staging; original request after staging; accepted-before-cleanup;
+late authority after physical close; stale/invalid/mirror edits and duplicate append.
+
+### T069 execution steps (all UNRUN at this planned checkpoint)
+
+- [ ] RED actual BrowserPlayerActionService Submit twice must not overwrite the single pending slot; exact generation/action identity present. Existing actual C5 RED packet remains unchanged.
+- [ ] Implement shared PendingPlayerActionService envelope/strict read+claim+terminal settlement, both browser producers, ordinary GameEngine input/staging/late terminal consumers. Keep signed original request authoritative; no queue-derived domain permission.
+- [ ] RED/GREEN cooperative native input cancellation/draft and console/browser winner tests; no orphan blocking reader. Original non-player/menu/script/agent-console input contracts preserved.
+- [ ] RED/GREEN isolated separate-process queued/staged/accepted cold cuts plus generation replacement and negative original identity; actual C5 through same React endpoint to real relay/helper/accepted history.
+- [ ] Publish/review C5 and affected accepted console/browser/storage selections before T070.
+
+### T070 execution steps (all UNRUN)
+
+- [ ] Reproduce addMusings raw→normalizer→late full-validation mismatch with original binding and exact old musings; original actual FAIL remains.
+- [ ] Add bounded immutable authorized addMusings handoff in AcceptedTurnCanonicalStateRefresh/Result and GuardianPolicyKernel, retaining original request/gen/output revalidation. Physical lease disposal does not destroy proof or keep lease alive.
+- [ ] GREEN same route + invalid/stale/direct/mirror negatives, repeated normalize/repair and separate-process cold cuts; actual C1 addMusings variant then affected journal/resource consumers.
+- [ ] Independent review/results/current source pins, final category discovery only, publish/exact remote/full GitHub-only restore. Do not mark whole-stage or B2–B5 PASS.
+
+Pre-flight: both tasks share existing signed pending-turn/generation/terminal
+lifecycle. Neither can create a second owner/journal or infer authority from mutable
+canonical state. Runtime design must account for existing participating admission
+covering GM wait; the new input watcher owns no such wait pin. Native TextComposer
+currently blocks through ReadLine; async cancellation alone is not presumed valid.
+Ruling: preserve existing engine/sidecar topology and existing current-schema
+contracts; enrich client-owned input/recovery identity only as required. GM request
+already has requestId; any GM-facing change requires same-block docs/example guard.
+
 ## Итог ограниченного checkpoint C1–C5 — 2026-10-10 (C2/C5/addMusings открыты)
 
 Source issue[#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553),
