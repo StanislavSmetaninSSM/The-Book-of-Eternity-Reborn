@@ -55,6 +55,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                     var boundGeneration = SessionOperationContext.TryGetExpectedGeneration(files.BasePath, out var generation);
                     observer = Task.Run(async () =>
                     {
+                        object? rootGraph = null, pollGraph = null;
+                        Task? waitTask = null;
+                        string? waiterState = null, waiterField = null;
                         try
                         {
                             Assert.NotNull(remote); Assert.NotNull(scope); Assert.NotNull(registration);
@@ -85,18 +88,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                             // UI polls waitTask; it does not yet await it. Prove the actual owned Task.Run
                             // waiter separately, then the exact gate's registered continuation to it.
                             var watch = Stopwatch.StartNew();
-                            object? rootGraph = null, pollGraph = null;
                             FileSystemManager.CanonicalWriteLease? lease = null;
-                            Task? waitTask = null;
-                            string? waiterState = null, waiterField = null;
                             while (watch.Elapsed < TimeSpan.FromSeconds(10))
                             {
                                 if (operation is not null)
                                 {
                                     var rootWalk = ReadActualMusingsStateMachines(operation, gate.Task);
                                     rootGraph = rootWalk.Diagnostic;
-                                    var waiters = rootWalk.States.Where(state => state.GetType().FullName!
-                                        .Contains("<WaitForTerminalSignalWithParticipationAsync>", StringComparison.Ordinal)).ToArray();
+                                    var waiters = rootWalk.States.Where(state => state.GetType().Name
+                                        .StartsWith("<WaitForTerminalSignalWithParticipationAsync>d__", StringComparison.Ordinal)).ToArray();
                                     if (waiters.Length > 1) throw new InvalidOperationException("PREPARATION: ambiguous original waiter.");
                                     if (waiters.Length == 1)
                                     {
@@ -157,6 +157,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                         }
                         catch (Exception failure)
                         {
+                            File.WriteAllText(Path.Combine(own, "active-poll-preparation-graph.json"), JsonSerializer.Serialize(new
+                            { OriginalOperationTaskId = operation?.Id, WaiterState = waiterState, WaitTaskField = waiterField,
+                                ActualWaitTaskId = waitTask?.Id, RootGraph = rootGraph, PollGraph = pollGraph, Failure = failure.ToString() }));
                             File.WriteAllText(Path.Combine(own, "fixture-preparation-failure.txt"), failure.ToString());
                             // Do not release the actual inspection or allow rollback before parent kill.
                         }
