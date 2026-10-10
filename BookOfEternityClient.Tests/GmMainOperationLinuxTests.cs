@@ -3,6 +3,18 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmMainOperationLinuxTests
 {
     [Theory]
+    [InlineData("same")]
+    [InlineData("run")]
+    [InlineData("generation")]
+    [InlineData("epoch")]
+    [InlineData("host")]
+    [InlineData("boot")]
+    [InlineData("backend")]
+    [InlineData("root")]
+    public Task OriginalOwner_ExpectedRunIdentityRefusesBeforeMint(string coordinate) =>
+        GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-expected-run-" + coordinate);
+
+    [Theory]
     [InlineData("terminal-main-operation-explicit-failed-finalization")]
     [InlineData("terminal-main-operation-explicit-cancelled-finalization")]
     public async Task ActualAdapter_ExplicitOutcomeSurvivesFinalization(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);

@@ -2,6 +2,15 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-original-run-admission",
+            "reason": "C5 original run expectation must refuse before replacement pin mint; actual NativeLineage/Bridge pipe controls compare all7 identity coordinates and preserve real owning close/stop even on causal RED.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
             "category": "guardian-musings-documentation",
             "reason": "T070 plan requires an explicit musings-only worked example and guard; authoring/realm/schema unchanged, no internal proof authored by GM.",
             "contracts": [

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
-internal static class MainOperationScenarioDriver
+internal static partial class MainOperationScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode,string package,string folder)
     {
@@ -73,6 +73,16 @@ internal static class MainOperationScenarioDriver
                 }
             }
             if(running==null)server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
+            if(mode.StartsWith("terminal-main-operation-expected-run-",StringComparison.Ordinal))
+            {
+                await VerifyOriginalRunExpectationAsync(mode["terminal-main-operation-expected-run-".Length..], root, pipeName, host!, type, result);
+                await Call("StopShellAsync");
+                result["OriginalStopped"] = GmSessionRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root,".boe_runtime/gm-runs/main.json"))).Disposition == GmSessionRunDisposition.Stopped;
+                if(!(bool)result["OriginalStopped"]!)throw new InvalidOperationException("Original owner did not stop after expectation control.");
+                if(!(bool)result["ExpectationMatchedBehavior"]!)throw new InvalidOperationException("Original main pipe minted a grant for a different expected run identity.");
+                result["Success"] = true;
+                return 0;
+            }
             async Task<JsonElement> Rpc(object message) {
                 using var bounded=new CancellationTokenSource(TimeSpan.FromSeconds(7));
                 using var request=new NamedPipeClientStream(".",pipeName,PipeDirection.InOut,PipeOptions.Asynchronous);await request.ConnectAsync(bounded.Token);

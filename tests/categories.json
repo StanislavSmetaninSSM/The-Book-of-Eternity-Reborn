@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-original-run-admission",
+            "responsibility": "Actual original Bridge/NativeLineage participating grant matches the complete retained expected run identity before mint/activation.",
+            "excludes": "Full Program/React staged-idle crash, original manifest capture, storage recovery and unrelated GM helper/shutdown behavior; no model or Windows qualification.",
+            "changeHints": [
+                "BookOfEternityGMBridge/BridgeHost.MainOperations.cs",
+                "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+                "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ExpectedRunIdentityRefusesBeforeMint"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "guardian-musings-original-consumers",
             "responsibility": "Original completed guardian musings comparison failures, exact accepted quest cleanup, and Mortal treatment rejection of afterlife-only musings authority.",
             "excludes": "Whole Program/relay/cold game acceptance, remote main shutdown and unrelated treatment/resource mechanics; no C5/B2-B5/Windows/live model.",
