@@ -232,7 +232,7 @@
     "MinimumNextProposal": "One newly scoped original failing Complete-BoeTurn write-scope seq0 capture, retaining its actual returned frame/ok/state/sequence/generation/ExpectedGeneration/structured refusal-close fields, dedicated managed child identity/exit/joined stderr and original monotonic bounds. Passive existing-boundary observations only; unchanged10000ms/65536/4000, authority/owner/uncertain/no replay. No retry, timer, guard or repair is inferred from this result."
   },
   "WriteContinuation": {
-    "Status": "Source gate and matching preparation/catalog PASS; sole write observation UNRUN",
+    "Status": "STOP: complete healthy write admission; prior refusal not reproduced, original failing cause remains UNKNOWN",
     "AuthorizedBaseSHA": "4e8fd25a605bbb6cee5fd8959662e276428016f9",
     "Target": "Actual Complete-BoeTurn write-scope seq0 in original relay packet consumer, excluding earlier read/Write-BoeJson scopes",
     "PlannedCapture": [
@@ -285,6 +285,342 @@
       "Methods": 11457,
       "Executed": 0,
       "Manifest": "c5-helper-write-catalog/manifest.json"
+    },
+    "RuntimeCarrierSHA": "256d2fa048186215ebfed1fbef29c24d9c9ceeb9",
+    "FrozenFirstRawSHA": "fc0eda06ebce59a08a473edca08283a192b1193d",
+    "RawManifest": "c5-helper-write-first-pass/manifest.json",
+    "IndependentRawGate": "same Astra PASS at fc0eda06/no blocking findings;270run+7preparation/catalog payloads and682runtime inventory files verified",
+    "Runner": {
+      "Passed": 1,
+      "Failed": 0,
+      "PlannedExecutedCompletedCases": 1,
+      "ExitCode": 0,
+      "WallSeconds": 128.5030427,
+      "NoTimeoutUnderfillDuplicate": true,
+      "OwnedRuntimeCleanupComplete": true
+    },
+    "Driver": {
+      "ElapsedSeconds": 107.80460047700035,
+      "TotalBudgetExceeded": false,
+      "OriginalStopped": true,
+      "IoDrained": true,
+      "FivePeersEOF": true
+    },
+    "ActualWriteTarget": {
+      "ConsumerPid": 39715,
+      "DedicatedManagedPid": 39930,
+      "LinuxStarttime": "1074006",
+      "BootId": "a447dd74-2561-437d-9196-437acf6efd60",
+      "ScopeId": "6598e9e6fb7a4416b091fc56fc41ec41",
+      "Method": "actual Complete-BoeTurn Open-BoeHelperScope write seq0 at original relay consumer line42",
+      "ObservationComplete": true,
+      "Summary": {
+        "BootId": "a447dd74-2561-437d-9196-437acf6efd60",
+        "Rows": 13,
+        "StderrTruncated": false,
+        "ScopeId": "6598e9e6fb7a4416b091fc56fc41ec41",
+        "CaptureIncomplete": false,
+        "Bytes": 7163,
+        "Errors": 0,
+        "LinuxStarttime": "1074006",
+        "DisposeReturned": true,
+        "ConsumerPid": 39715,
+        "HelperPid": 39930,
+        "ExitCode": 0,
+        "Dropped": 0
+      },
+      "ReadOutcome": {
+        "WaitCompleted": true,
+        "FrameOutcome": "within-frame-bound",
+        "Utf8Bytes": 544,
+        "IsNull": false
+      },
+      "ReadDurationSeconds": 0.798265285,
+      "IdentityGuardObservation": {
+        "Predicates": {
+          "ReplyNotOk": false,
+          "StateNotActive": false,
+          "SequenceNotZero": false,
+          "GenerationFormatInvalid": false,
+          "ExpectedGenerationMismatch": false
+        },
+        "Limit": "Immediately before original guard; all predicate copies, not original short-circuit evaluation order.",
+        "Generation": "2155aab0ee414cb0ac80941089b0ea25",
+        "Sequence": 0,
+        "Ok": true,
+        "State": "active",
+        "ExpectedGeneration": "2155aab0ee414cb0ac80941089b0ea25",
+        "FailedPredicates": []
+      },
+      "ActualExpectedGeneration": "2155aab0ee414cb0ac80941089b0ea25",
+      "FullOriginalFrame": {
+        "ok": true,
+        "state": "active",
+        "sequence": 0,
+        "generation": "2155aab0ee414cb0ac80941089b0ea25",
+        "originalClose": {
+          "pinId": "2fa17ff2a5ce42fb950cfac691601c94",
+          "closeId": "5023c4974b6d49b59691ef89b43051cb",
+          "operationId": "b4fb3b93ea94454bbb53cab6b79141a2",
+          "identity": {
+            "rootKey": "/tmp/gc-5372f643e169/play",
+            "runId": "a83385d23caf4d7e8d92720f50688eb6",
+            "generationId": "2155aab0ee414cb0ac80941089b0ea25",
+            "epoch": 1,
+            "backend": 2,
+            "hostInstanceId": "1cf8e1c3f9c8470a90250cde01fe12c5",
+            "bootId": "a447dd74-2561-437d-9196-437acf6efd60"
+          },
+          "outcome": 0,
+          "closingFailed": false
+        }
+      },
+      "RetainedFrameBytes": 544,
+      "RetainedFrameSHA256": "c194e1cc4b64dea8644f55fae293a3eb5eca4c122db6737190bd3eb88f458696",
+      "JoinedStderrBytes": 0,
+      "CleanupKillIntentObserved": false,
+      "MonotonicBounds": [
+        {
+          "Phase": "launch-begin",
+          "Ticks": 10740056711794,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:42.2745918+00:00"
+        },
+        {
+          "Phase": "launch-return",
+          "Ticks": 10740102475513,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:42.3203536+00:00"
+        },
+        {
+          "Phase": "write-begin",
+          "Ticks": 10740102875168,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:42.3207526+00:00"
+        },
+        {
+          "Phase": "write-return",
+          "Ticks": 10740103139883,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:42.3210168+00:00"
+        },
+        {
+          "Phase": "read-begin",
+          "Ticks": 10740103325212,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:42.3212021+00:00"
+        },
+        {
+          "Phase": "read-return",
+          "Ticks": 10740901590497,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:43.1194696+00:00"
+        },
+        {
+          "Phase": "read-frame-retained",
+          "Ticks": 10740905425277,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:43.1233029+00:00"
+        },
+        {
+          "Phase": "identity-guard-observed",
+          "Ticks": 10740910000189,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:43.1278775+00:00"
+        },
+        {
+          "Phase": "admission-return",
+          "Ticks": 10740910496372,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:43.1283733+00:00"
+        },
+        {
+          "Phase": "dispose-begin",
+          "Ticks": 10741772672383,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:43.9905505+00:00"
+        },
+        {
+          "Phase": "dispose-exit-observed",
+          "Ticks": 10741786252314,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:44.0041302+00:00"
+        },
+        {
+          "Phase": "dispose-joined",
+          "Ticks": 10741799172919,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:44.0170811+00:00"
+        },
+        {
+          "Phase": "dispose-return",
+          "Ticks": 10741800572837,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:44.0184503+00:00"
+        }
+      ],
+      "Limit": "Exact actual healthy write scope, not the earlier failing write child. Exit observation bounds are not OS exit timestamps. All predicate copies do not reproduce original short-circuit evaluation order."
+    },
+    "Consumer": {
+      "Started": {
+        "ChildPid": 39715,
+        "ResponseSHA256": "c99b9a636865005694adea76f8f4b910e68e0ec78f022ebf24a389d25afa52a7",
+        "AgentTask": "deterministic-authored-game-chain-v1",
+        "Model": "deterministic-no-provider"
+      },
+      "Execution": {
+        "Executed": true,
+        "ExitCode": 0,
+        "ChildExited": true,
+        "IoDrained": true
+      },
+      "ObservedAtSeconds": 106.83686495000075
+    },
+    "FirstNavigation": {
+      "StartupSeconds": 15.289254575000086,
+      "ClickSeconds": 2.809643208000125,
+      "SixRequestsFinished200": true,
+      "TrustedContinueClicks": 1,
+      "ActionPOSTStatus": 200,
+      "QueuedSIGKILLAndEOF": {
+        "Phase": "queued",
+        "OriginalPid": 38584,
+        "ColdPid": 39408,
+        "OriginalExitCode": -9,
+        "OriginalEOF": true,
+        "ActionId": "3c9a9127024c4d0a9f74c966d35032bf",
+        "Generation": "2155aab0ee414cb0ac80941089b0ea25",
+        "OriginalPendingSHA256": "83c5b66ed80eaf778b373ffcc808bcdcb67c27ef8da3eee6005ab207a8340601",
+        "NoRequestBeforeCrash": true
+      },
+      "LaterNavigationCount": 0,
+      "Limit": "First real action and queued replacement only; no accepted/cold/fullC5 qualification."
+    },
+    "SequentialStopState": {
+      "BeginMonotonic": 10741.853894746,
+      "Files": [
+        {
+          "Path": "input/turn_request.json",
+          "ObservedMonotonic": 10741.853910036,
+          "Exists": true,
+          "Bytes": 59098,
+          "SHA256": "9c2082486fe38c994f4f7a7eb8ba2a7031f0bdd823014e8a0fdac7acfba3fc24"
+        },
+        {
+          "Path": "input/pending_player_action.json",
+          "ObservedMonotonic": 10741.854271369,
+          "Exists": true,
+          "Bytes": 165093,
+          "SHA256": "57643d203f377e7837c2ec55ff2b907282e80fdebd97b831c6794f5b70fd8982"
+        },
+        {
+          "Path": "ready/turn_complete.json",
+          "ObservedMonotonic": 10741.854606685,
+          "Exists": true,
+          "Bytes": 436,
+          "SHA256": "907117397b1f381e54fd0f0372070d46e551939fc861b801de90d8a6fbff05d7"
+        },
+        {
+          "Path": "ready/turn_error.json",
+          "ObservedMonotonic": 10741.854660825,
+          "Exists": false
+        },
+        {
+          "Path": "stories/chaos_sea.jsonl",
+          "ObservedMonotonic": 10741.854706428,
+          "Exists": false
+        }
+      ],
+      "Limit": "Read-only sequential observations, not an atomic state snapshot or accepted/cold qualification. Empty test AcceptedTurns is not physical absence proof.",
+      "EndMonotonic": 10741.854723086
+    },
+    "CleanupExceptionObservation": {
+      "ExceptionType": "System.IO.IOException",
+      "Message": "Main run metadata or original owner admission is unavailable.",
+      "Pid": 39408,
+      "ConsumerSettledObservedSeconds": 106.83686495000075,
+      "CleanupStartedSeconds": 106.83817250399989,
+      "OriginalShutdownRequestedSeconds": 106.89935791700009,
+      "GameFailureObservedSeconds": 107.08100983099939,
+      "ObservedDuringCleanup": true,
+      "RecordAfter": {
+        "SchemaVersion": 1,
+        "Identity": {
+          "RootKey": "/tmp/gc-5372f643e169/play",
+          "RunId": "a83385d23caf4d7e8d92720f50688eb6",
+          "GenerationId": "2155aab0ee414cb0ac80941089b0ea25",
+          "Epoch": 1,
+          "Backend": "LinuxSupervisor",
+          "HostInstanceId": "1cf8e1c3f9c8470a90250cde01fe12c5",
+          "BootId": "a447dd74-2561-437d-9196-437acf6efd60"
+        },
+        "Disposition": "Stopped",
+        "StopEvidence": {
+          "Identity": {
+            "RootKey": "/tmp/gc-5372f643e169/play",
+            "RunId": "a83385d23caf4d7e8d92720f50688eb6",
+            "GenerationId": "2155aab0ee414cb0ac80941089b0ea25",
+            "Epoch": 1,
+            "Backend": "LinuxSupervisor",
+            "HostInstanceId": "1cf8e1c3f9c8470a90250cde01fe12c5",
+            "BootId": "a447dd74-2561-437d-9196-437acf6efd60"
+          },
+          "Kind": "OwnedScopeEmpty",
+          "ObservedBootId": "a447dd74-2561-437d-9196-437acf6efd60"
+        }
+      },
+      "RelayClose": {
+        "ExecutionDisabled": true,
+        "ChildExited": true,
+        "IoDrained": true,
+        "RelayPid": 38660
+      },
+      "TerminalStop": {
+        "identity": {
+          "runId": "a83385d23caf4d7e8d92720f50688eb6",
+          "backend": "native-lineage",
+          "guarantee": "ordinary-same-namespace-lineage",
+          "rootPid": 38639
+        },
+        "state": "stopped-within-scope",
+        "reason": "stop-requested",
+        "cleanupComplete": true,
+        "authorityRetained": false
+      },
+      "Guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 5,
+        "failures": 0,
+        "deadline": false
+      },
+      "Limit": "Exception first observed while pump drains original cold-client output after cleanup/shutdown request. Observation time is not exact throw time or cause proof; distinguish from earlier precleanup intent.tmp FileNotFound. No current intent.tmp exception witness retained, not proof the old issue was fixed."
+    },
+    "ComparedPriorFailure": {
+      "PriorFrozenRawSHA": "d6319b854a4428da4b0db67fe3c2280a38b1d52e",
+      "PriorConsumerPid": 32535,
+      "PriorConsumerExitCode": 1,
+      "PriorBoundary": "Complete-BoeTurn write admission identity guard refused",
+      "PriorOriginalWriteFrameAndFailedPredicatesAndDedicatedChild": "UNKNOWN/not retained",
+      "CurrentOutcome": "active544B/gen matches Expected/all5false/dedicated39930Exit0/consumer39715Exit0",
+      "CausalLimit": "Fresh passing frame does not supply the historical failed frame or prove earlier EOF/write refusal/journal transition fixed. Fixture-only observation can perturb timing; no matched performance claim."
+    },
+    "SourceOnlyAlternative": {
+      "ActualSource": "GmTurnHelperControl.RunCore catch can emit CloseReply(true) before active when original terminalClose exists and close reply not attempted; states closed-observed/close-unconfirmed with continuationFailed and seq0 but without generation",
+      "Limit": "Possible source branch, not observed earlier failing write frame. Do not infer generation drift, managed crash or inner caught exception from generic identity guard."
+    },
+    "RemainingExactGap": [
+      "original failing write-scope managed preactivation caught exception and actual returned close/refusal frame",
+      "responsible original journal transaction/producer/rename/delete between selected path existence and fresh validation, if that exception involves intent.tmp",
+      "demonstrated causal link between historical precleanup journal exception and later write admission refusal"
+    ],
+    "Decision": {
+      "ProductOrOracleRepair": false,
+      "AdditionalRuntimeOrIdenticalRetry": false,
+      "FullC5Rerun": false,
+      "Qualification": "Current optimized fullC5 remains FAIL/UNQUALIFIED/WIP; no accepted absence/once-only proof from AcceptedTurns=[]",
+      "MinimumNextProposal": "One narrowly bounded causal capture at the original managed preactivation catch/close-response boundary, retaining the actual caught exception before generic TryRun stderr, correlated with real seq0 frame/ExpectedGeneration/predicates/managed-child identity. If journal disappearance is involved, retain only the selected IntentStage/Active existence-to-fresh-validation transition and responsible owned transaction witness. New causal observation required; no generic identical repeat, timer/guard/replay change, exception swallow or guessed repair."
     }
   }
 }
