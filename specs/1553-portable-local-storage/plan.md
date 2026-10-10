@@ -1,3 +1,23 @@
+## Browser replacement GREEN4 and refreshed final census — WIP, 2026-10-10
+
+Source ac3783c1 (runtime4b304141 unchanged), clean actual selection. Fresh both-
+project ValidateCatalog000436:611 categories/11385 methods-files,0 execution,
+72.0873323s, no timeout, both cleanup complete. NoBuildPlan000601 exact4/1,
+0 execution3.9764006s. Separate actual000609:4/4PASS7.7666428s,1/1 complete,
+0 skipped/duplicates/timeout,both cleanup,four strict emitted roots absent.
+Admission now retains Uncertain/SAME CSP+secondary; release retains original
+refusal plus SAME CSP+secondary. Ordinary known controls pass; no full Load,
+archive/native/provider/GM/B2 or ordinary known-close qualification.
+[Original RED / changed GREEN / ONE catalog packet](recovery/storage-migration-original-browser-replacement-close-20261009/manifest.json).
+Updated pinned source census at same source ac3783c1:855 product C# files/170
+acquisition sites/164 full declarations/70 files. Manual classifications:
+81 source-only/84 finite-packet-associated/3 retained-legacy/2 prohibited-native.
+All170 acquisition identities retained; refreshed spans/body/source hashes/links.
+[Final census and reproducible restore verifier](recovery/storage-migration-final-owner-census-20261009/manifest.json).
+Independent final GREEN/semantic/checker/carrier review and NEW EMPTY GitHub-only
+full-history restoration still pending. Earlier accepted categories not rerun;
+T061–T065/B2–B5/native/other ordinary known-close exclusions remain open.
+
 ## Browser replacement source gate accepted; final verification preparation — WIP, 2026-10-10
 
 Independent Astra/xhigh causal/source/exact4 PASS at4b304141: original known2PASS,

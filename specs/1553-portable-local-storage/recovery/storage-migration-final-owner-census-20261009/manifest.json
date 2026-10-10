@@ -1,6 +1,6 @@
 {
-  "scope": "Final reproducible product owning-acquisition source census and manual per-acquisition semantic adjudication; independent review pending, zero test execution. Not complete consumer acceptance. Product source b02339db unchanged after runtime guards; native/recovery/legacy/read-only/ordinary known-close limits explicit.",
-  "source": "b02339db19b8253f15a5e957f7be075a3dd57c8b",
+  "scope": "Final product acquisition census: pinned855 C# sources/170 distinct sites/164 full declarations/70 files; explicit manual semantic classification, finite packet scope, source-only/legacy/native limits. Source/evidence integrity and GitHub restoration do not constitute runtime/all-platform/whole-consumer acceptance.",
+  "source": "ac3783c12ee31b12e57f73c5fc360916b97efdc8",
   "artifacts": [
     {
       "path": "collect-owning-candidates.ps1",
@@ -8,11 +8,15 @@
     },
     {
       "path": "owning-candidates.json",
-      "sha256": "bee9bc0b6d26abb7bb18382f2f0ad0c1d5243fef58ad24391b18a062f4984527"
+      "sha256": "393873f43c203d3fb3b774ff5d4385f5d8bd06e1f6cbb420c6d99d7d6d278638"
     },
     {
       "path": "semantic-classification.json",
-      "sha256": "39aa3d80f90310a63ab6d164e4920dc04137c396d288c80508ee120d72303fe3"
+      "sha256": "4c0d1898bcba3bce8b1fdec631e0e0a6f387d4247b37c7f1f4a46dc1e1e2741e"
+    },
+    {
+      "path": "verify-restored-checkpoint.py",
+      "sha256": "1512bf0972082f54f2527af57431b64b2801994d7a55fdb29a03d4b4769c70a6"
     }
   ],
   "sourcePins": [
@@ -3366,7 +3370,7 @@
     },
     {
       "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
-      "sha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2"
+      "sha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450"
     },
     {
       "path": "BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs",

@@ -1,10 +1,10 @@
 {
-  "source": "b02339db19b8253f15a5e957f7be075a3dd57c8b",
+  "source": "ac3783c12ee31b12e57f73c5fc360916b97efdc8",
   "inventory": "170 acquisition sites / 164 distinct full declarations / 70 files; no overload or multiple-site collapse",
-  "classificationMethod": "Root manual source/control-flow adjudication per acquisition; syntax CSP/helper flags do not select a classification. Independent structural/hash PASS atdab; consolidated semantic corrections applied, re-review pending. Browser replacement hypothesis awaits bounded original-owner qualification. Non-lease entrypoints, physical raw-name producers and caller boundaries remain in existing inventory. This scope is not whole-consumer completion.",
+  "classificationMethod": "Root manual source/control-flow adjudication per acquisition; syntax CSP/helper flags do not select a classification. Prior consolidated semantic review PASS49e6122; two original Browser replacement owners now have causal RED and fresh GREEN4. Final semantic/source/evidence review pending. Non-lease entrypoints, raw-name producers and caller boundaries remain in existing inventory; acquisition classifications do not qualify whole consumers or all platforms.",
   "counts": {
-    "source-only": 83,
-    "finite-packet-only": 82,
+    "source-only": 81,
+    "finite-packet-only": 84,
     "retained-legacy-source-only": 3,
     "prohibited-native-unrun": 2
   },
@@ -33,7 +33,7 @@
       "qualification": "source-only",
       "reason": "Open/ReadMods read existing generation/settings/mods. TryAccept compares exact prepared bytes then applies runtime draft only. Reload reads baseline; actual OptionsAndSettings callers use preview.ApplyAsync (runtime/audio), not canonical publication. Prepared-nested packet does not qualify every read-owner secondary close.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-prepared-nested-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/ConsoleSettingsSession.cs#L40",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/ConsoleSettingsSession.cs#L40",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -61,7 +61,7 @@
       "qualification": "source-only",
       "reason": "Open/ReadMods read existing generation/settings/mods. TryAccept compares exact prepared bytes then applies runtime draft only. Reload reads baseline; actual OptionsAndSettings callers use preview.ApplyAsync (runtime/audio), not canonical publication. Prepared-nested packet does not qualify every read-owner secondary close.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-prepared-nested-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/ConsoleSettingsSession.cs#L56",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/ConsoleSettingsSession.cs#L56",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -89,7 +89,7 @@
       "qualification": "source-only",
       "reason": "Open/ReadMods read existing generation/settings/mods. TryAccept compares exact prepared bytes then applies runtime draft only. Reload reads baseline; actual OptionsAndSettings callers use preview.ApplyAsync (runtime/audio), not canonical publication. Prepared-nested packet does not qualify every read-owner secondary close.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-prepared-nested-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/ConsoleSettingsSession.cs#L79",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/ConsoleSettingsSession.cs#L79",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -117,7 +117,7 @@
       "qualification": "source-only",
       "reason": "Open/ReadMods read existing generation/settings/mods. TryAccept compares exact prepared bytes then applies runtime draft only. Reload reads baseline; actual OptionsAndSettings callers use preview.ApplyAsync (runtime/audio), not canonical publication. Prepared-nested packet does not qualify every read-owner secondary close.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-prepared-nested-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/ConsoleSettingsSession.cs#L97",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/ConsoleSettingsSession.cs#L97",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -145,7 +145,7 @@
       "qualification": "source-only",
       "reason": "Existing original backup helper retains primary failure/completed outcome; bounded Engine backup and shared-helper packets apply only to their tested routes. Referenced packet is shared-helper/caller context only: direct late-close proof for THIS acquisition is not established; source policy is inspected without new execution.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-engine-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs#L15",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs#L15",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -173,7 +173,7 @@
       "qualification": "source-only",
       "reason": "EnsureDirectoryStructure holds LOAD recovery/directory setup. This is not an ordinary coordinated cohort publisher; a synthetic current-journal cut would substitute a different route. Secondary close during load recovery remains unqualified.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/FileSystemManager.cs#L606",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/FileSystemManager.cs#L606",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -201,7 +201,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original FSM byte write/append/current-session append/CAS/delete/lore-clearing scopes retain uncertainty through their existing owner release policy. Only explicit FSM/helper controls are runtime evidence; conditional late-close combinations remain source-only.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-owned-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/FileSystemManager.cs#L827",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/FileSystemManager.cs#L827",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -229,7 +229,7 @@
       "qualification": "source-only",
       "reason": "Original FSM byte write/append/current-session append/CAS/delete/lore-clearing scopes retain uncertainty through their existing owner release policy. Only explicit FSM/helper controls are runtime evidence; conditional late-close combinations remain source-only. Referenced packet is shared-helper/caller context only: direct late-close proof for THIS acquisition is not established; source policy is inspected without new execution.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-owned-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/FileSystemManager.cs#L874",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/FileSystemManager.cs#L874",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -257,7 +257,7 @@
       "qualification": "source-only",
       "reason": "Original FSM byte write/append/current-session append/CAS/delete/lore-clearing scopes retain uncertainty through their existing owner release policy. Only explicit FSM/helper controls are runtime evidence; conditional late-close combinations remain source-only. Referenced packet is shared-helper/caller context only: direct late-close proof for THIS acquisition is not established; source policy is inspected without new execution.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-owned-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/FileSystemManager.cs#L961",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/FileSystemManager.cs#L961",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -285,7 +285,7 @@
       "qualification": "source-only",
       "reason": "Original FSM byte write/append/current-session append/CAS/delete/lore-clearing scopes retain uncertainty through their existing owner release policy. Only explicit FSM/helper controls are runtime evidence; conditional late-close combinations remain source-only. Referenced packet is shared-helper/caller context only: direct late-close proof for THIS acquisition is not established; source policy is inspected without new execution.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-owned-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/FileSystemManager.cs#L993",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/FileSystemManager.cs#L993",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -313,7 +313,7 @@
       "qualification": "source-only",
       "reason": "Original FSM byte write/append/current-session append/CAS/delete/lore-clearing scopes retain uncertainty through their existing owner release policy. Only explicit FSM/helper controls are runtime evidence; conditional late-close combinations remain source-only. Referenced packet is shared-helper/caller context only: direct late-close proof for THIS acquisition is not established; source policy is inspected without new execution.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-owned-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/FileSystemManager.cs#L3393",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/FileSystemManager.cs#L3393",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -341,7 +341,7 @@
       "qualification": "source-only",
       "reason": "VerifyCurrentSessionOperation and TryAcquireSessionLifecycle read/check current generation. Uncertainty raised by acquisition recovery occurs before this owner exists; no later own canonical publisher in the body.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/FileSystemManager.cs#L3816",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/FileSystemManager.cs#L3816",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -369,7 +369,7 @@
       "qualification": "source-only",
       "reason": "VerifyCurrentSessionOperation and TryAcquireSessionLifecycle read/check current generation. Uncertainty raised by acquisition recovery occurs before this owner exists; no later own canonical publisher in the body.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/FileSystemManager.cs#L3910",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/FileSystemManager.cs#L3910",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -397,7 +397,7 @@
       "qualification": "source-only",
       "reason": "Original FSM byte write/append/current-session append/CAS/delete/lore-clearing scopes retain uncertainty through their existing owner release policy. Only explicit FSM/helper controls are runtime evidence; conditional late-close combinations remain source-only. Referenced packet is shared-helper/caller context only: direct late-close proof for THIS acquisition is not established; source policy is inspected without new execution.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-owned-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/FileSystemManager.cs#L5968",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/FileSystemManager.cs#L5968",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -425,7 +425,7 @@
       "qualification": "finite-packet-only",
       "reason": "Archive original RED unknown returned false after masked close; current finite GREEN preserves SAME CSP and secondary failure, settles and blocks later admission. Known archive index/hash/retirement and ordinary-error false contract retained.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-snapshot-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs#L22",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs#L22",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -453,7 +453,7 @@
       "qualification": "source-only",
       "reason": "SoulRealm transition already captures actual CSP before release. This is not the EngineMedia6 owner set; known late close and full realm journey remain unqualified.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs#L127",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs#L127",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -481,7 +481,7 @@
       "qualification": "finite-packet-only",
       "reason": "Incarnation enumeration admits exact raw physical names before IgnoreCase collapse. Producer packet qualifies finite Unicode/exclusion/collision scenarios; does not qualify ordinary late close of this read scope.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-explorer-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L1907",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L1907",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -509,7 +509,7 @@
       "qualification": "source-only",
       "reason": "HandleReenterShiningAbode owning scope only builds a plan; commit occurs after this scope releases. Do not attribute the later publisher to this acquisition.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L2306",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L2306",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -537,7 +537,7 @@
       "qualification": "source-only",
       "reason": "Ordinary return transition already preserves CSP in its original owner. Full return journey and known late close are not newly executed here.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L2655",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L2655",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -565,7 +565,7 @@
       "qualification": "source-only",
       "reason": "RunBound caller already captured replacement generation; GetOrCreate inside rebind therefore uses an existing accepted generation. This is not the first cold generation publisher. Runtime render/cache work is outside storage qualification.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L215",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L215",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -593,7 +593,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original baseline/backup/cleanup preflight precedes deletion, copying and name collapse. Twenty-five producer cases prove only listed original-route raw-name/byte/exclusion/cleanup boundaries.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-engine-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L391",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L391",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -621,7 +621,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original baseline/backup/cleanup preflight precedes deletion, copying and name collapse. Twenty-five producer cases prove only listed original-route raw-name/byte/exclusion/cleanup boundaries.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-engine-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L1030",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L1030",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -649,7 +649,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original stall promotion/correlated input cleanup/repair restore owners qualify current actual error/delete/restore routes; repair restore uses null checkpoint only. Known controls lack a late closer.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-snapshot-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L1299",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L1299",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -677,7 +677,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original stall promotion/correlated input cleanup/repair restore owners qualify current actual error/delete/restore routes; repair restore uses null checkpoint only. Known controls lack a late closer.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-snapshot-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L1764",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L1764",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -705,7 +705,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original baseline/backup/cleanup preflight precedes deletion, copying and name collapse. Twenty-five producer cases prove only listed original-route raw-name/byte/exclusion/cleanup boundaries.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-engine-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L1924",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L1924",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -733,7 +733,7 @@
       "qualification": "source-only",
       "reason": "Original rollback/restore semantic contract and shared helper remain; method-specific secondary-close behavior and all preservation combinations are not covered by the null-checkpoint repair fixture.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-engine-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2022",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2022",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -761,7 +761,7 @@
       "qualification": "source-only",
       "reason": "Original rollback/restore semantic contract and shared helper remain; method-specific secondary-close behavior and all preservation combinations are not covered by the null-checkpoint repair fixture.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-engine-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2034",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2034",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -789,7 +789,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original stall promotion/correlated input cleanup/repair restore owners qualify current actual error/delete/restore routes; repair restore uses null checkpoint only. Known controls lack a late closer.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-snapshot-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2061",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2061",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -817,7 +817,7 @@
       "qualification": "source-only",
       "reason": "CaptureChanged/AreResubmitted enumerate and compare rollback byte/path evidence; they do not publish in this owner. Existing raw path contract still applies.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2089",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2089",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -845,7 +845,7 @@
       "qualification": "source-only",
       "reason": "CaptureChanged/AreResubmitted enumerate and compare rollback byte/path evidence; they do not publish in this owner. Existing raw path contract still applies.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2183",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2183",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -873,7 +873,7 @@
       "qualification": "source-only",
       "reason": "Original baseline/backup/cleanup preflight precedes deletion, copying and name collapse. Twenty-five producer cases prove only listed original-route raw-name/byte/exclusion/cleanup boundaries. Referenced packet is shared-helper/caller context only: direct late-close proof for THIS acquisition is not established; source policy is inspected without new execution.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-engine-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2370",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L2370",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -901,7 +901,7 @@
       "qualification": "source-only",
       "reason": "Upstream raw item validation registers/invalidates in-memory advisory owners after actual authority checks; no own canonical write. Read admission may fail before an owner exists.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs#L60",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs#L60",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -929,7 +929,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original continuation direct/captured intake raw names, borrowed owner and current evidence are tested by the finite spiritual producer packet. Full GM continuation and ordinary known late close remain unqualified.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs#L122",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs#L122",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -957,7 +957,7 @@
       "qualification": "source-only",
       "reason": "WaitForSpiritualContinuation first owner verifies original request/generation and publishes exact repair request; release preserves its actual CSP. No live GM/input/whole wait loop execution authorized.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs#L539",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs#L539",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -985,7 +985,7 @@
       "qualification": "source-only",
       "reason": "Distinct cancellation acquisition in the same full method removes only exact original request. Full interactive cancellation/native behavior is not executed.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs#L617",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs#L617",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1013,7 +1013,7 @@
       "qualification": "source-only",
       "reason": "Distinct Ready owner in the same full method verifies issued frontier then evaluates/commits exact dependent response; owner policy is inspected statically. No full live loop qualification.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs#L642",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs#L642",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1041,7 +1041,7 @@
       "qualification": "source-only",
       "reason": "Terminal signal capture uses bound read evidence. Existing terminal lifecycle controls do not prove every owning read-scope late close.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs#L457",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs#L457",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1069,7 +1069,7 @@
       "qualification": "source-only",
       "reason": "Terminal signal capture uses bound read evidence. Existing terminal lifecycle controls do not prove every owning read-scope late close.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs#L610",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs#L610",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1097,7 +1097,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual ascension GREEN2 after original knownPASS/causalFAIL proves current maximal ChaosSoul Shining/Soul/resource handoff and no later admission after CSP+secondary. No full game or known late closer.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-final-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs#L3852",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs#L3852",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1125,7 +1125,7 @@
       "qualification": "finite-packet-only",
       "reason": "Corrected fixture proves actual history-owned Finalized/ExactReplay prerequisite after restaging exact real submitted raw bytes. Original knownPASS/uncertainFAIL masks CSP by closeIO. Initial two pre-arm preparation failures stay distinct; no fabricated receipt. Fresh catalog234520 atdab builds both projects610/11384/0execution130.3386603s, Plan2347476/2; separate actual234801 replayGREEN2/2PASS18.7800525s. Current genuine sameCSP+secondary/noLater/fullsettlement/strictroots; initial prepFAIL and corrected causalRED remain immutable.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-final-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L1061",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L1061",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1153,7 +1153,7 @@
       "qualification": "finite-packet-only",
       "reason": "Four original repair deletion/control owners qualify exact delete scopes, current generation, same uncertainty+secondary/full settlement/no later acquisition. Full repair loop excluded.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-repair-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L2409",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L2409",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1181,7 +1181,7 @@
       "qualification": "finite-packet-only",
       "reason": "Real original Engine CaptureCurrentSessionGeneration cold publisher qualifies first authority, exact canonical quartet and strict roots; EngineMedia does not cover soul transitions.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-media-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L2952",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L2952",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1209,7 +1209,7 @@
       "qualification": "source-only",
       "reason": "Repair current-session/read-for-session scopes check existing generation/read bytes. No own canonical mutation; arbitrary read-owner late close not qualified.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L3497",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L3497",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1237,7 +1237,7 @@
       "qualification": "finite-packet-only",
       "reason": "Four original repair deletion/control owners qualify exact delete scopes, current generation, same uncertainty+secondary/full settlement/no later acquisition. Full repair loop excluded.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-repair-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8012",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8012",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1265,7 +1265,7 @@
       "qualification": "source-only",
       "reason": "Session-scoped delete/write repair routes already protect actual CSP statically. Latest EngineRepair8 qualifies four other explicit scopes, not these methods.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8032",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8032",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1293,7 +1293,7 @@
       "qualification": "finite-packet-only",
       "reason": "Four original repair deletion/control owners qualify exact delete scopes, current generation, same uncertainty+secondary/full settlement/no later acquisition. Full repair loop excluded.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-repair-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8079",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8079",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1321,7 +1321,7 @@
       "qualification": "finite-packet-only",
       "reason": "Four original repair deletion/control owners qualify exact delete scopes, current generation, same uncertainty+secondary/full settlement/no later acquisition. Full repair loop excluded.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-repair-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8099",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8099",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1349,7 +1349,7 @@
       "qualification": "source-only",
       "reason": "Session-scoped delete/write repair routes already protect actual CSP statically. Latest EngineRepair8 qualifies four other explicit scopes, not these methods.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8123",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8123",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1377,7 +1377,7 @@
       "qualification": "source-only",
       "reason": "Repair current-session/read-for-session scopes check existing generation/read bytes. No own canonical mutation; arbitrary read-owner late close not qualified.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8138",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs#L8138",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1405,7 +1405,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual cold generation publisher is RunParticipating first acquisition; accepted generation2 prevents later callback admission after uncertainty. Do not attribute that cold write to nested web command owners.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-generation-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/SessionOperationContext.cs#L130",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/SessionOperationContext.cs#L130",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1433,7 +1433,7 @@
       "qualification": "finite-packet-only",
       "reason": "Distinct RunBoundBody finalization lease uses SessionFinalization read scope; specialized typed result retains main-operation continuation. Original composed9 and separate5 apply only to those lifecycle obligations, not native/HTTP.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/SessionOperationContext.cs#L257",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/SessionOperationContext.cs#L257",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1461,7 +1461,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual original BootstrapLocalStorageCore first owner protects its own original publication/uncertainty; part of six finite owners12, not full game boot.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-remaining-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/StateManager.cs#L54",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/StateManager.cs#L54",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1489,7 +1489,7 @@
       "qualification": "finite-packet-only",
       "reason": "Public RefreshGameState can repair client-owned profile mirrors and owns an actual hoisted lease; original two-case CSP+secondary evidence applies.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-owned-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/StateManager.cs#L136",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/StateManager.cs#L136",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1517,7 +1517,7 @@
       "qualification": "source-only",
       "reason": "Calls RefreshGameStateCore without RepairClientOwnedProfileMirrors. This differs from the public publishing Refresh and cannot inherit that owner double-fault qualification.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Core/StateManager.cs#L179",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Core/StateManager.cs#L179",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1545,7 +1545,7 @@
       "qualification": "source-only",
       "reason": "DistributeWithOwnedLease already passes actual exception/completed outcome to helper. Its sequential partial/compensation contract is not whole-flow atomicity; all method-specific close cuts not rerun.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/IO/StateDistributor.cs#L73",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/IO/StateDistributor.cs#L73",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1573,7 +1573,7 @@
       "qualification": "finite-packet-only",
       "reason": "Real TryCommit owner/allocation/current validators qualify finite known and uncertain cases; known late closer absent.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-afterlife-state-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs#L114",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs#L114",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1601,7 +1601,7 @@
       "qualification": "source-only",
       "reason": "Spiritual conflict preview builds read-derived runtime evidence under quiescence, no canonical publication in this owner.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs#L23",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs#L23",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1629,7 +1629,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original common/plan/bootstrap/accepted-item owning wrappers qualify actual handoff/plans/journal/current validators and same uncertainty+secondary. Borrowed/nested normalization is separate.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-normalizer-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/CanonicalStateNormalizer.cs#L264",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/CanonicalStateNormalizer.cs#L264",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1657,7 +1657,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original common/plan/bootstrap/accepted-item owning wrappers qualify actual handoff/plans/journal/current validators and same uncertainty+secondary. Borrowed/nested normalization is separate.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-normalizer-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/CanonicalStateNormalizer.cs#L296",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/CanonicalStateNormalizer.cs#L296",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1685,7 +1685,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original common/plan/bootstrap/accepted-item owning wrappers qualify actual handoff/plans/journal/current validators and same uncertainty+secondary. Borrowed/nested normalization is separate.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-normalizer-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/CanonicalStateNormalizer.cs#L379",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/CanonicalStateNormalizer.cs#L379",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1713,7 +1713,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original common/plan/bootstrap/accepted-item owning wrappers qualify actual handoff/plans/journal/current validators and same uncertainty+secondary. Borrowed/nested normalization is separate.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-normalizer-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs#L51",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs#L51",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1741,7 +1741,7 @@
       "qualification": "source-only",
       "reason": "ReleaseValidatedTreatmentPublicationBeforeCanonicalRefresh and NormalizeAndValidateWithPlan preserve original publication/latch. Not silently included in latest Normalizer4 execution; prior treatment evidence is finite.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs#L1526",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs#L1526",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1769,7 +1769,7 @@
       "qualification": "source-only",
       "reason": "ReleaseValidatedTreatmentPublicationBeforeCanonicalRefresh and NormalizeAndValidateWithPlan preserve original publication/latch. Not silently included in latest Normalizer4 execution; prior treatment evidence is finite.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs#L1752",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs#L1752",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1797,7 +1797,7 @@
       "qualification": "source-only",
       "reason": "Central owning helper preserves confirmed cohort outcome or actual CSP plus close diagnostics; this is a helper boundary, not automatic proof for all callers. Referenced packet is shared-helper/caller context only: direct late-close proof for THIS acquisition is not established; source policy is inspected without new execution.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-owned-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs#L79",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs#L79",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1825,7 +1825,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Daren profile owner is one of six remaining12; no whole Daren scene/game/native.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-remaining-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/DarenQteRewardProfileService.cs#L299",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/DarenQteRewardProfileService.cs#L299",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1853,7 +1853,7 @@
       "qualification": "source-only",
       "reason": "Load/LoadCurrentSkillScopeAuthority select existing effect and skill detail authorities and build read snapshots. No own canonical publisher.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/EffectMechanicsSnapshot.cs#L212",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/EffectMechanicsSnapshot.cs#L212",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1881,7 +1881,7 @@
       "qualification": "source-only",
       "reason": "Load/LoadCurrentSkillScopeAuthority select existing effect and skill detail authorities and build read snapshots. No own canonical publisher.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/EffectMechanicsSnapshot.cs#L221",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/EffectMechanicsSnapshot.cs#L221",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1909,7 +1909,7 @@
       "qualification": "retained-legacy-source-only",
       "reason": "Actual root game_state/control/explorer_local_turn_rollback is excluded from ordinary trusted-cohort writer (except separately explicit local direct gacha/browser artifact routes). Do not manufacture ordinary current-journal uncertainty for this original StageFile owner.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs#L325",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs#L325",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1937,7 +1937,7 @@
       "qualification": "retained-legacy-source-only",
       "reason": "Actual caller supplies Stage-generated legacy rollback path. Arbitrary path hypothetical is not an observed alternative route. Original deletion qualification remains source-only.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs#L2046",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs#L2046",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1965,7 +1965,7 @@
       "qualification": "retained-legacy-source-only",
       "reason": "Only empty legacy Root/ConsoleRoot directories are deleted. This is not current coordinated file publication; source-only cleanup/secondary-close limits remain.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs#L2072",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs#L2072",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -1993,7 +1993,7 @@
       "qualification": "source-only",
       "reason": "Load ValidateGeneration, daemon Snapshot and worker repair IsCurrent only read/check existing authority. Acquisition recovery before owner exists is distinct from own publication.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs#L85",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs#L85",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2022,7 +2022,7 @@
       "qualification": "source-only",
       "reason": "Load ValidateGeneration, daemon Snapshot and worker repair IsCurrent only read/check existing authority. Acquisition recovery before owner exists is distinct from own publication.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs#L84",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs#L84",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2051,7 +2051,7 @@
       "qualification": "source-only",
       "reason": "Conditional/Mutate retain actual disposition/committed follow-up or absorbing uncertainty before await-using exits. Await-using syntax alone does not show lost publication decision; no live daemon/protocol execution.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs#L125",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs#L125",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2079,7 +2079,7 @@
       "qualification": "source-only",
       "reason": "Conditional/Mutate retain actual disposition/committed follow-up or absorbing uncertainty before await-using exits. Await-using syntax alone does not show lost publication decision; no live daemon/protocol execution.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs#L157",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs#L157",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2107,7 +2107,7 @@
       "qualification": "finite-packet-only",
       "reason": "Real cold coordinator Launch finite2 stops before Prepared/native: zero prepare/recordnull/retired guard, actual initial generation owner. Does not qualify launch process/durable native lifecycle.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-cold-main-launch-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs#L216",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs#L216",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2135,7 +2135,7 @@
       "qualification": "source-only",
       "reason": "Original RunCore request.Action=publish calls scope.PublishAsync. Actual publication disposition/uncertainty is retained before response/close and prevents the next command. This is the specialized helper protocol, not a replacement game journal; no live helper execution.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs#L89",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs#L89",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2163,7 +2163,7 @@
       "qualification": "source-only",
       "reason": "Existing ApplyReserved/audit/reserve/BuildTask/latest-task/ready owners already capture genuine CSP statically. Conditional known close and worker/native combinations are not runtime-qualified; do not set completed=true mechanically.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs#L58",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs#L58",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2191,7 +2191,7 @@
       "qualification": "source-only",
       "reason": "Existing ApplyReserved/audit/reserve/BuildTask/latest-task/ready owners already capture genuine CSP statically. Conditional known close and worker/native combinations are not runtime-qualified; do not set completed=true mechanically.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs#L64",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs#L64",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2219,7 +2219,7 @@
       "qualification": "source-only",
       "reason": "Existing ApplyReserved/audit/reserve/BuildTask/latest-task/ready owners already capture genuine CSP statically. Conditional known close and worker/native combinations are not runtime-qualified; do not set completed=true mechanically.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs#L97",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs#L97",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2247,7 +2247,7 @@
       "qualification": "source-only",
       "reason": "RunTask cold admission checks generation/task before prepared/launch ownership. It does not itself publish canonical state; native owner behavior excluded.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs#L414",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs#L414",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2275,7 +2275,7 @@
       "qualification": "prohibited-native-unrun",
       "reason": "Distinct Prepared acquisition uses real rootExecutionLease, durableExecution.Prepare/EnsurePrepared and retention for cleanup. Current task forbids native owner/ledger/worker launch; secondary-close qualification remains open.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs#L808",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs#L808",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2303,7 +2303,7 @@
       "qualification": "prohibited-native-unrun",
       "reason": "Distinct Release acquisition calls PlanRelease, actual processHostLaunch.Release and AcknowledgeRelease. Cannot substitute a synthetic game cohort; real native/durable ACK test is prohibited in this block.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs#L864",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs#L864",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2331,7 +2331,7 @@
       "qualification": "source-only",
       "reason": "Existing ApplyReserved/audit/reserve/BuildTask/latest-task/ready owners already capture genuine CSP statically. Conditional known close and worker/native combinations are not runtime-qualified; do not set completed=true mechanically.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs#L1277",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs#L1277",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2359,7 +2359,7 @@
       "qualification": "source-only",
       "reason": "Existing ApplyReserved/audit/reserve/BuildTask/latest-task/ready owners already capture genuine CSP statically. Conditional known close and worker/native combinations are not runtime-qualified; do not set completed=true mechanically.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs#L203",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs#L203",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2385,9 +2385,9 @@
       "role": "canonical proposal bundle with derived inbox/audit",
       "closePolicy": "confirmed actual PublishedWithWarning flag plus same CSP helper; actual GREEN4",
       "qualification": "finite-packet-only",
-      "reason": "Existing isolated synthetic local rename adapter qualifies original Store only, no default native backend. Original4=3PASS/known_closeFAIL despite actual bundle/inbox/audit; fixed flag after actual typed result. Original CSP and task-refusal already PASS. Fresh GREEN4 pending. Separate actual234854GREEN4/4PASS7.2277514s preserves real result/warning and bytes after known_close; genuine CSP/refusal controls remain PASS. No defaultnative/durable ACK claim.",
+      "reason": "Existing isolated synthetic local rename adapter qualifies original Store only, no default native backend. Original4=3PASS/known_closeFAIL despite actual bundle/inbox/audit; fixed flag after actual typed result. Original CSP and task-refusal already PASS. Separate actual234854GREEN4/4PASS7.2277514s preserves real result/warning and bytes after known_close; genuine CSP/refusal controls remain PASS. No defaultnative/durable ACK claim.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-proposal-store-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs#L73",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs#L73",
       "ordinaryKnownCloseQualified": true,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution.",
       "ordinaryKnownCloseScenario": "Actual PublishedWithWarning after bundle/inbox/audit; known_close originalowner, isolated rename adapter only."
@@ -2416,7 +2416,7 @@
       "qualification": "source-only",
       "reason": "Load ValidateGeneration, daemon Snapshot and worker repair IsCurrent only read/check existing authority. Acquisition recovery before owner exists is distinct from own publication.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs#L291",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs#L291",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2444,7 +2444,7 @@
       "qualification": "source-only",
       "reason": "Existing ApplyReserved/audit/reserve/BuildTask/latest-task/ready owners already capture genuine CSP statically. Conditional known close and worker/native combinations are not runtime-qualified; do not set completed=true mechanically.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs#L329",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs#L329",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2472,7 +2472,7 @@
       "qualification": "source-only",
       "reason": "Existing ApplyReserved/audit/reserve/BuildTask/latest-task/ready owners already capture genuine CSP statically. Conditional known close and worker/native combinations are not runtime-qualified; do not set completed=true mechanically.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs#L414",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs#L414",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2500,7 +2500,7 @@
       "qualification": "source-only",
       "reason": "Existing ApplyReserved/audit/reserve/BuildTask/latest-task/ready owners already capture genuine CSP statically. Conditional known close and worker/native combinations are not runtime-qualified; do not set completed=true mechanically.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs#L499",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs#L499",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2528,7 +2528,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual ApplyForNewLife receipts/power owner passes known/uncertain current routes; no whole guardian UI or late known closer.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-interaction-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GuardianCorrectionService.cs#L346",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GuardianCorrectionService.cs#L346",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2556,7 +2556,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GuardianPowerEventState.cs#L118",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GuardianPowerEventState.cs#L118",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2584,7 +2584,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GuardianPowerEventState.cs#L158",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GuardianPowerEventState.cs#L158",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2612,7 +2612,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GuardianTradeRequestState.cs#L103",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GuardianTradeRequestState.cs#L103",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2640,7 +2640,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GuardianTradeRequestState.cs#L139",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GuardianTradeRequestState.cs#L139",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2668,7 +2668,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GuardianTradeRequestState.cs#L265",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GuardianTradeRequestState.cs#L265",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2696,7 +2696,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/GuardianTradeRequestState.cs#L504",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/GuardianTradeRequestState.cs#L504",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2724,7 +2724,7 @@
       "qualification": "finite-packet-only",
       "reason": "Image source/export finite28 preserves exact selected Unicode bytes and native host cohort semantics; no provider/full media/read-owner late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-image-source-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ImageService.cs#L183",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ImageService.cs#L183",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2752,7 +2752,7 @@
       "qualification": "finite-packet-only",
       "reason": "Image source/export finite28 preserves exact selected Unicode bytes and native host cohort semantics; no provider/full media/read-owner late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-image-source-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ImageService.cs#L343",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ImageService.cs#L343",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2780,7 +2780,7 @@
       "qualification": "finite-packet-only",
       "reason": "Image source/export finite28 preserves exact selected Unicode bytes and native host cohort semantics; no provider/full media/read-owner late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-image-source-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ImageService.cs#L386",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ImageService.cs#L386",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2808,7 +2808,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original cleanup admits physical exact names before destructive selection. Current image controls apply to their finite actual mutation paths.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-image-storage-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ImageService.cs#L477",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ImageService.cs#L477",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2836,7 +2836,7 @@
       "qualification": "source-only",
       "reason": "GenerateImage first acquisition calls real GetOrCreateSessionGeneration when no expected generation exists. It can publish cold authority; protection is statically explicit. Provider work starts afterwards; ordinary known-close and full generation pipeline remain unqualified.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ImageService.cs#L562",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ImageService.cs#L562",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2864,7 +2864,7 @@
       "qualification": "finite-packet-only",
       "reason": "Second acquisition in the SAME GenerateImage method is a distinct actual publisher. Bounded image fixture qualifies local staged publication only, not provider generation/whole media.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-image-storage-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ImageService.cs#L588",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ImageService.cs#L588",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2892,7 +2892,7 @@
       "qualification": "finite-packet-only",
       "reason": "PrepareGalleryDirectory creates an admitted directory within GameSessionPath after worker/current generation/pending decision checks. This is canonical directory initialization, not outside export. Finite gallery-directory evidence does not qualify arbitrary native creation or ordinary known close.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-image-directory-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ImageService.cs#L806",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ImageService.cs#L806",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2920,7 +2920,7 @@
       "qualification": "source-only",
       "reason": "ReadContext composes read-derived inventory authority; no own write. Read-context source integrity is distinct from Drop/Split/Merge publication owners.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/InventoryManagementService.cs#L12",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/InventoryManagementService.cs#L12",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2948,7 +2948,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original Drop/Split/Merge use real current resource-free stacks, receipts/history; finite6 proves known/uncertain owners and strict roots, not full inventory UI.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-inventory-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/InventoryManagementService.cs#L185",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/InventoryManagementService.cs#L185",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -2976,7 +2976,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original Drop/Split/Merge use real current resource-free stacks, receipts/history; finite6 proves known/uncertain owners and strict roots, not full inventory UI.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-inventory-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/InventoryManagementService.cs#L280",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/InventoryManagementService.cs#L280",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3004,7 +3004,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original Drop/Split/Merge use real current resource-free stacks, receipts/history; finite6 proves known/uncertain owners and strict roots, not full inventory UI.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-inventory-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/InventoryManagementService.cs#L380",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/InventoryManagementService.cs#L380",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3032,7 +3032,7 @@
       "qualification": "finite-packet-only",
       "reason": "First signer admits physical raw names before information-losing maps. Signed38 + ZIP4 were ONE actual42, no doubled execution. No arbitrary other producer coverage.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-signed-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/LiveTurnPreparationService.cs#L79",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/LiveTurnPreparationService.cs#L79",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3060,7 +3060,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual RunCanonical lock owner is one of six remaining12; caller/session replacement semantics are separate.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-remaining-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/LocalUiSessionLockService.cs#L295",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/LocalUiSessionLockService.cs#L295",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3088,7 +3088,7 @@
       "qualification": "source-only",
       "reason": "Probe/Filter read exact held/issued receipt/item evidence. After actual uncertainty latch they throw the SAME primary before new lease. Ordinary read-scope late close unqualified.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-treatment-advance-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L337",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L337",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3116,7 +3116,7 @@
       "qualification": "source-only",
       "reason": "Probe/Filter read exact held/issued receipt/item evidence. After actual uncertainty latch they throw the SAME primary before new lease. Ordinary read-scope late close unqualified.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-treatment-advance-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L373",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L373",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3144,7 +3144,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual AdvanceGREEN3 preserves normal/known-close schedule result and same-active Probe then CompleteFinalized. ClosesReceipt/ObserveClosure unchanged; genuine CSP+TreatmentPublicationLeaseCloseFailure/full settlement/no later also PASS.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-treatment-advance-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L494",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L494",
       "ordinaryKnownCloseQualified": true,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution.",
       "ordinaryKnownCloseScenario": "Actual PublishedAgreementAdvanced remains active and Probe->CompleteFinalized after late close; no all-variant claim."
@@ -3173,7 +3173,7 @@
       "qualification": "source-only",
       "reason": "Complete reads agreement/actual history and finalizes in-memory terminal registry; existing terminal disposal protection remains. Known Advance test subsequently completes a real active receipt; not all Complete cuts.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L630",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L630",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3201,7 +3201,7 @@
       "qualification": "source-only",
       "reason": "Actual Compensate/ReleaseTerminal restore/quarantine paths retain CSP latch/secondary marker and receipt closure protections. Prior treatment packet is finite; no all-known-close or native claim.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L697",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L697",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3229,7 +3229,7 @@
       "qualification": "source-only",
       "reason": "Actual Compensate/ReleaseTerminal restore/quarantine paths retain CSP latch/secondary marker and receipt closure protections. Prior treatment packet is finite; no all-known-close or native claim.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L731",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs#L731",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3257,7 +3257,7 @@
       "qualification": "finite-packet-only",
       "reason": "Real current resource-free Buy/Sell/BuyBack and actual prior Sell history qualify six cases of trade14; initial preparation failures distinct.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-trade-transport-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/NpcTradeService.cs#L290",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/NpcTradeService.cs#L290",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3285,7 +3285,7 @@
       "qualification": "finite-packet-only",
       "reason": "Real current resource-free Buy/Sell/BuyBack and actual prior Sell history qualify six cases of trade14; initial preparation failures distinct.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-trade-transport-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/NpcTradeService.cs#L487",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/NpcTradeService.cs#L487",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3313,7 +3313,7 @@
       "qualification": "finite-packet-only",
       "reason": "Real current resource-free Buy/Sell/BuyBack and actual prior Sell history qualify six cases of trade14; initial preparation failures distinct.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-trade-transport-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/NpcTradeService.cs#L656",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/NpcTradeService.cs#L656",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3341,7 +3341,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual accepted Progression Apply outcome qualifies known+uncertain as one of Afterlife4; this differs from Treatment Advance active receipt.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-afterlife-state-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ProgressionScheduleService.cs#L629",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ProgressionScheduleService.cs#L629",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3369,7 +3369,7 @@
       "qualification": "source-only",
       "reason": "DeleteTransientReport checks exact generation before removing current report. Latest Afterlife8 qualifies Apply, not all transient cleanup/known late-close variants.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ProgressionScheduleService.cs#L914",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ProgressionScheduleService.cs#L914",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3397,7 +3397,7 @@
       "qualification": "source-only",
       "reason": "Actual Daren resolution has original guarded publisher semantics; profile/terminal helper packets do not imply full Daren interactive flow or known late-close qualification.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/QteSceneService.Daren.cs#L89",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/QteSceneService.Daren.cs#L89",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3425,7 +3425,7 @@
       "qualification": "finite-packet-only",
       "reason": "Real BranchChoice accepted scene/routes/runtime/deferred capture validates corrected original QTE owner; initial two preparation failures retained. No full UI/input/game.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-interaction-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/QteSceneService.cs#L668",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/QteSceneService.cs#L668",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3453,7 +3453,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original terminal WithOwnedQteLease owner is one of six remaining12; do not infer complete QTE lifecycle.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-remaining-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/QteSceneService.cs#L2492",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/QteSceneService.cs#L2492",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3481,7 +3481,7 @@
       "qualification": "source-only",
       "reason": "Canonical/ShiningGacha/BlessingAllocation build projections from existing canonical owner bindings. No own publisher; downstream spend/receipt is separate.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ResourceProjectionService.cs#L178",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ResourceProjectionService.cs#L178",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3509,7 +3509,7 @@
       "qualification": "source-only",
       "reason": "Canonical/ShiningGacha/BlessingAllocation build projections from existing canonical owner bindings. No own publisher; downstream spend/receipt is separate.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ResourceProjectionService.cs#L268",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ResourceProjectionService.cs#L268",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3537,7 +3537,7 @@
       "qualification": "source-only",
       "reason": "Canonical/ShiningGacha/BlessingAllocation build projections from existing canonical owner bindings. No own publisher; downstream spend/receipt is separate.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ResourceProjectionService.cs#L324",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ResourceProjectionService.cs#L324",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3565,7 +3565,7 @@
       "qualification": "finite-packet-only",
       "reason": "CreateSave retains Committed/NotCreated decision and diagnostic after owner close. Current Save optional-rootGREEN2 validates default typed manifested archive and exact normal/linked optional images only; not full Save/Load or arbitrary late close.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-save-images-root-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/SaveLoadService.Creation.cs#L255",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/SaveLoadService.Creation.cs#L255",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3593,7 +3593,7 @@
       "qualification": "finite-packet-only",
       "reason": "GetAvailableSaves/CleanupOldSaves exact ZIP names/order/metadata/bytes qualified by ZIP4 in single signed+ZIP42. Whole autosave rotation/native Windows remains unqualified.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-archive-listing-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/SaveLoadService.cs#L388",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/SaveLoadService.cs#L388",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3621,7 +3621,7 @@
       "qualification": "finite-packet-only",
       "reason": "GetAvailableSaves/CleanupOldSaves exact ZIP names/order/metadata/bytes qualified by ZIP4 in single signed+ZIP42. Whole autosave rotation/native Windows remains unqualified.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-archive-listing-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/SaveLoadService.cs#L1598",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/SaveLoadService.cs#L1598",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3649,7 +3649,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual BootstrapMaterialize/ConsumeMemory selection qualify current allocation1to0, known/uncertain and current validators as two of Afterlife4.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-afterlife-state-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ShiningBlessingEffectState.cs#L239",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ShiningBlessingEffectState.cs#L239",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3677,7 +3677,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual BootstrapMaterialize/ConsumeMemory selection qualify current allocation1to0, known/uncertain and current validators as two of Afterlife4.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-afterlife-state-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ShiningBlessingEffectState.cs#L520",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ShiningBlessingEffectState.cs#L520",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3705,7 +3705,7 @@
       "qualification": "source-only",
       "reason": "BlessingReroll BuildBootstrap and ShiningReturn Build produce plans; no TryCommit in these owners. Acquisition recovery uncertainty is not their own publisher.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ShiningBlessingRerollResourceService.cs#L82",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ShiningBlessingRerollResourceService.cs#L82",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3733,7 +3733,7 @@
       "qualification": "source-only",
       "reason": "BlessingReroll BuildBootstrap and ShiningReturn Build produce plans; no TryCommit in these owners. Acquisition recovery uncertainty is not their own publisher.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs#L87",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs#L87",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3761,7 +3761,7 @@
       "qualification": "source-only",
       "reason": "TryCommit protects its actual resource cohort statically; latest EngineMedia6 excludes this owner. Full return/known late-close behavior not newly qualified.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs#L320",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs#L320",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3789,7 +3789,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ShiningTradeRequestState.cs#L164",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ShiningTradeRequestState.cs#L164",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3817,7 +3817,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ShiningTradeRequestState.cs#L198",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ShiningTradeRequestState.cs#L198",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3845,7 +3845,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ShiningTradeRequestState.cs#L260",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ShiningTradeRequestState.cs#L260",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3873,7 +3873,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ShiningTradeRequestState.cs#L294",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ShiningTradeRequestState.cs#L294",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3901,7 +3901,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual Guardian4/Shining5/GuardianPower2 original owners qualify finite22; initial22 preparation failures and corrected11PASS/11causalFAIL retained. No aggregate game/conditional known late-close qualification.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-pending-control-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/ShiningTradeRequestState.cs#L587",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/ShiningTradeRequestState.cs#L587",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3929,7 +3929,7 @@
       "qualification": "source-only",
       "reason": "RequireCurrent reads output and verifies actual bound authority. No own canonical publication; downstream player output/turn finalization separate.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/SpiritualWoundPublishedOutput.cs#L116",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/SpiritualWoundPublishedOutput.cs#L116",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3957,7 +3957,7 @@
       "qualification": "finite-packet-only",
       "reason": "Four actual original move routes (two same method entries selected by direction) qualify current complete items/resource-free validators in Storage8 of trade14; no full transport world flow.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-trade-transport-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/StorageTransportMoveService.cs#L190",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/StorageTransportMoveService.cs#L190",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -3985,7 +3985,7 @@
       "qualification": "finite-packet-only",
       "reason": "Four actual original move routes (two same method entries selected by direction) qualify current complete items/resource-free validators in Storage8 of trade14; no full transport world flow.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-trade-transport-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/StorageTransportMoveService.cs#L321",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/StorageTransportMoveService.cs#L321",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4013,7 +4013,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original Story source listing/read and actual TXT export are finite12; timestamp collisions/rotation/ordinary close remain source-only.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/StoryService.cs#L130",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/StoryService.cs#L130",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4041,7 +4041,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original Story source listing/read and actual TXT export are finite12; timestamp collisions/rotation/ordinary close remain source-only.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/StoryService.cs#L179",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/StoryService.cs#L179",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4069,7 +4069,7 @@
       "qualification": "finite-packet-only",
       "reason": "GetAvailableMods reads actual selected mod definitions; finite source controls do not qualify every read late-close or whole settings Save.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-mod-folder-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/SystemModService.cs#L64",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/SystemModService.cs#L64",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4097,7 +4097,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual WriteManifest/Gm publication and cache ordering qualify Mod8 plus unit neighbors; incomplete original planned11/completed8 and separate causal1 stay visible.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-mod-folder-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/SystemModService.cs#L71",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/SystemModService.cs#L71",
       "ordinaryKnownCloseQualified": true,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution.",
       "ordinaryKnownCloseScenario": "Finite actual committed_close SystemMod WriteManifest green row7 (one attachment/disposal, resulttrue/fullsettlement), not no-op/all variants."
@@ -4126,7 +4126,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual SpiritFocus900 spend/receipt/current validators qualify known/uncertain owner as one of Interaction4; no full training UI/native.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-interaction-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/TrainingService.cs#L607",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/TrainingService.cs#L607",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4154,7 +4154,7 @@
       "qualification": "source-only",
       "reason": "Raw effect/item/resource validators validate current canonical authority and prepare in-memory advisory owners. Registration/invalidation is not canonical publication and no fake publisher is injected.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs#L40",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs#L40",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4182,7 +4182,7 @@
       "qualification": "source-only",
       "reason": "Raw effect/item/resource validators validate current canonical authority and prepare in-memory advisory owners. Registration/invalidation is not canonical publication and no fake publisher is injected.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs#L21",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs#L21",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4210,7 +4210,7 @@
       "qualification": "source-only",
       "reason": "Raw effect/item/resource validators validate current canonical authority and prepare in-memory advisory owners. Registration/invalidation is not canonical publication and no fake publisher is injected.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs#L14",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs#L14",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4238,7 +4238,7 @@
       "qualification": "finite-packet-only",
       "reason": "Current profile listing preserves physical names/extension-selection semantics and canonical fences; read-owner close/native directory enumeration is not fully qualified.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-canonical-listings-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/Services/WorldDirectiveService.cs#L120",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/Services/WorldDirectiveService.cs#L120",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4266,7 +4266,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual projected Tier2 roots/history/current validator owner qualifies Interaction known/uncertain, not entire Explorer or B2 gameplay.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-interaction-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs#L804",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs#L804",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4294,7 +4294,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original single/all Story exports use admitted exact source, current export artifact/raw maps in finite12. Timestamp overwrite/collisions/rotation/secondary close not qualified.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs#L652",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs#L652",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4322,7 +4322,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original single/all Story exports use admitted exact source, current export artifact/raw maps in finite12. Timestamp overwrite/collisions/rotation/secondary close not qualified.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs#L700",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs#L700",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4350,7 +4350,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original mark/stage raw physical preflight proves finite producer negatives/exact Unicode/old full byte maps. Caller-specific restore/discard remain separate.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-explorer-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L712",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L712",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4378,7 +4378,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original mark/stage raw physical preflight proves finite producer negatives/exact Unicode/old full byte maps. Caller-specific restore/discard remain separate.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-explorer-snapshot-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L759",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L759",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4406,7 +4406,7 @@
       "qualification": "source-only",
       "reason": "Actual local pending rollback restore/discard existing guarded semantics; producer20 does not qualify every restore/deletion/known-close variant.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L839",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L839",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4434,7 +4434,7 @@
       "qualification": "source-only",
       "reason": "Actual local pending rollback restore/discard existing guarded semantics; producer20 does not qualify every restore/deletion/known-close variant.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L903",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L903",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4462,7 +4462,7 @@
       "qualification": "source-only",
       "reason": "Build first owner is read-derived browser bundle; nested runtime builders can acquire separate owners. No inheritance of whole client/storage qualification.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/BrowserLoadStateService.cs#L24",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/BrowserLoadStateService.cs#L24",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4484,97 +4484,97 @@
       ],
       "Invocation": "_fs.AcquireCanonicalWriteLeaseAsync()",
       "NestedLambda": false,
-      "SourceSha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2",
+      "SourceSha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450",
       "role": "read/browser write status",
       "closePolicy": "ordinary read admission",
       "qualification": "source-only",
       "reason": "BuildStatus only reads current pending/session/UI-owner status. Uncertainty during Acquire recovery precedes this owner; no own canonical publication.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs#L28",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs#L28",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
     {
       "acquisition": 161,
       "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
-      "Line": 90,
+      "Line": 91,
       "Method": "ExecuteSessionReplacementAsync",
-      "InvocationSpanStart": 3487,
+      "InvocationSpanStart": 3492,
       "InvocationSpanLength": 37,
-      "MethodSpanLength": 3937,
-      "MethodBodySha256": "9055ed35f1e0dbe84d2ea8f11866fa194adbe257b31fafdff0b64bcf1b000695",
+      "MethodSpanLength": 4746,
+      "MethodBodySha256": "667e0f2b5854b9365dc6ad6f5a0b377a4601482d36f84d684534219d9335210d",
       "MethodSpanStart": 2799,
       "MethodStartLine": 77,
-      "MethodEndLine": 140,
+      "MethodEndLine": 152,
       "MethodSignature": "internal async Task<LoadReplacementResult> ExecuteSessionReplacementAsync(\n        BrowserLocalWriteRequest request,\n        Func<Func<FileSystemManager.CanonicalWriteLease, Task>, Task<LoadReplacementResult>> replacementOperation)",
       "Classes": [
         "BrowserLocalWriteCoordinator"
       ],
       "Invocation": "_fs.AcquireCanonicalWriteLeaseAsync()",
       "NestedLambda": false,
-      "SourceSha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2",
+      "SourceSha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450",
       "role": "canonical session-replacement UI-lock admission",
-      "closePolicy": "original await-using; unresolved CSP+secondary masking hypothesis, fixture pending",
-      "qualification": "source-only",
-      "reason": "First ExecuteSessionReplacement acquisition publishes only exact UI guard and checks current generation before replacement dispatch. Failure stored as NotLoaded/Uncertain blocked decision; full Load/native and known guard-close qualifications remain open. SOURCE-GROUNDED OPEN HYPOTHESIS: original await-using can replace genuine CSP from actual UI-lock publication with secondary IO before outer catch/WithFollowUp. Admission dispatched=false can map NotLoaded instead of Uncertain (blocked remains true); release can retain refusal while losing actual CSP. Existing typed retention does not prove cause preservation. Safe exact4 original-owner fixture pending; no Load/native qualification.",
-      "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs#L90",
+      "closePolicy": "same genuine CSP capture/rethrow plus existing release(false,same); exact original owners GREEN4",
+      "qualification": "finite-packet-only",
+      "reason": "Actual warm bootstrap/generation, real UI-lock publication at selected original owner and disclosed ordinary NotLoaded callback; no loader/archive/native. Original known2PASS/uncertainty2 causalFAIL on SAME secondary retention; raw independently confirms lost CSP and wrong admission NotLoaded. Fresh actual000609GREEN4/4PASS7.7666428s: admission retains Uncertain/SAME CSP+secondary/callback0; release retains original refusal first plus SAME CSP+secondary second/callback1. Full settlement/generation/non-target byte maps/noLater/Closing0/strictroots. Ordinary known-close faults and full Load are unqualified.",
+      "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-browser-replacement-close-20261009/manifest.json",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs#L91",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
     {
       "acquisition": 162,
       "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
-      "Line": 133,
+      "Line": 139,
       "Method": "ExecuteSessionReplacementAsync",
-      "InvocationSpanStart": 6301,
+      "InvocationSpanStart": 6717,
       "InvocationSpanLength": 37,
-      "MethodSpanLength": 3937,
-      "MethodBodySha256": "9055ed35f1e0dbe84d2ea8f11866fa194adbe257b31fafdff0b64bcf1b000695",
+      "MethodSpanLength": 4746,
+      "MethodBodySha256": "667e0f2b5854b9365dc6ad6f5a0b377a4601482d36f84d684534219d9335210d",
       "MethodSpanStart": 2799,
       "MethodStartLine": 77,
-      "MethodEndLine": 140,
+      "MethodEndLine": 152,
       "MethodSignature": "internal async Task<LoadReplacementResult> ExecuteSessionReplacementAsync(\n        BrowserLocalWriteRequest request,\n        Func<Func<FileSystemManager.CanonicalWriteLease, Task>, Task<LoadReplacementResult>> replacementOperation)",
       "Classes": [
         "BrowserLocalWriteCoordinator"
       ],
       "Invocation": "_fs.AcquireCanonicalWriteLeaseAsync()",
       "NestedLambda": false,
-      "SourceSha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2",
+      "SourceSha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450",
       "role": "canonical session-replacement UI-lock release",
-      "closePolicy": "original await-using; unresolved CSP+secondary masking hypothesis, fixture pending",
-      "qualification": "source-only",
-      "reason": "Second acquisition in SAME full method releases exact old token only after NotLoaded/RolledBack without blocked continuation. Any failure attaches to retained result and blocks; no recovery/release after uncertainty. SOURCE-GROUNDED OPEN HYPOTHESIS: original await-using can replace genuine CSP from actual UI-lock publication with secondary IO before outer catch/WithFollowUp. Admission dispatched=false can map NotLoaded instead of Uncertain (blocked remains true); release can retain refusal while losing actual CSP. Existing typed retention does not prove cause preservation. Safe exact4 original-owner fixture pending; no Load/native qualification.",
-      "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs#L133",
+      "closePolicy": "same genuine CSP capture/rethrow plus existing release(false,same); exact original owners GREEN4",
+      "qualification": "finite-packet-only",
+      "reason": "Actual warm bootstrap/generation, real UI-lock publication at selected original owner and disclosed ordinary NotLoaded callback; no loader/archive/native. Original known2PASS/uncertainty2 causalFAIL on SAME secondary retention; raw independently confirms lost CSP and wrong admission NotLoaded. Fresh actual000609GREEN4/4PASS7.7666428s: admission retains Uncertain/SAME CSP+secondary/callback0; release retains original refusal first plus SAME CSP+secondary second/callback1. Full settlement/generation/non-target byte maps/noLater/Closing0/strictroots. Ordinary known-close faults and full Load are unqualified.",
+      "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-browser-replacement-close-20261009/manifest.json",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs#L139",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
     {
       "acquisition": 163,
       "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
-      "Line": 245,
+      "Line": 257,
       "Method": "RunBoundTransactionAsync",
-      "InvocationSpanStart": 11094,
+      "InvocationSpanStart": 11903,
       "InvocationSpanLength": 37,
       "MethodSpanLength": 2744,
       "MethodBodySha256": "3b456b1d355b98ff0b4f6afc3113ba86cf7ff1f1b8fbfb67200a675e856b22c5",
-      "MethodSpanStart": 10587,
-      "MethodStartLine": 235,
-      "MethodEndLine": 283,
+      "MethodSpanStart": 11396,
+      "MethodStartLine": 247,
+      "MethodEndLine": 295,
       "MethodSignature": "internal async Task<T> RunBoundTransactionAsync<T>(Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)",
       "Classes": [
         "BrowserLocalWriteCoordinator"
       ],
       "Invocation": "_fs.AcquireCanonicalWriteLeaseAsync()",
       "NestedLambda": true,
-      "SourceSha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2",
+      "SourceSha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450",
       "role": "canonical browser transaction/result owner",
       "closePolicy": "retains actual generic/browser result and typed continuation/primary failure",
       "qualification": "finite-packet-only",
       "reason": "Actual RunBoundTransaction finite12 validates committed/rollback/uncertain/generic/nested binding/Prepared/incomplete callback decisions; no native HTTP or whole web application.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-browser-result-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs#L245",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs#L257",
       "ordinaryKnownCloseQualified": true,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution.",
       "ordinaryKnownCloseScenario": "Finite original typed Browser/generic established result retention under actual late close, including committed/rollback/uncertain/projection/settings/incomplete routes; retention, not suppression of every error."
@@ -4603,7 +4603,7 @@
       "qualification": "finite-packet-only",
       "reason": "Original cold Generate owner qualifies actual first generation as one of EngineMedia3; provider/HTTP/full generation pipeline not executed.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-media-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs#L71",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs#L71",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4631,7 +4631,7 @@
       "qualification": "source-only",
       "reason": "TryGetExistingReference reads canonical published reference, no own staged commit or provider call.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs#L148",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs#L148",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4659,7 +4659,7 @@
       "qualification": "finite-packet-only",
       "reason": "Actual CommitStagedImage owner qualifies real staged asset/index and known/uncertain as one of EngineMedia3; provider/native Windows excluded.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-engine-media-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs#L163",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs#L163",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4687,7 +4687,7 @@
       "qualification": "source-only",
       "reason": "Build reads pending snapshot/status only; no own canonical mutation.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/BrowserPendingTurnInspector.cs#L16",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/BrowserPendingTurnInspector.cs#L16",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4715,7 +4715,7 @@
       "qualification": "source-only",
       "reason": "GetOrCreate uses generation already initialized by RunParticipating first owner. Actual cold publication belongs row50; nested web command owner cannot be treated as a second cold publisher.",
       "evidence": null,
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/ExplorerWebCommandService.cs#L66",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/ExplorerWebCommandService.cs#L66",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4743,7 +4743,7 @@
       "qualification": "finite-packet-only",
       "reason": "First AttachSession acquisition is actual cold-generation owner; finite remaining12 qualifies generation and lock separately, no full GM/browser prompt.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-remaining-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs#L69",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs#L69",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     },
@@ -4771,7 +4771,7 @@
       "qualification": "finite-packet-only",
       "reason": "Three-argument AttachSessionIfNeededAsync OVERLOAD owns actual UI-lock publication; it is a separate full declaration from row169. Both full signatures/spans remain distinct. Finite remaining12 qualifies original lock; no full browser prompt/GM claim.",
       "evidence": "specs/1553-portable-local-storage/recovery/storage-migration-original-remaining-close-20261009/manifest.json",
-      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/b02339db19b8253f15a5e957f7be075a3dd57c8b/BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs#L103",
+      "sourceLink": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/ac3783c12ee31b12e57f73c5fc360916b97efdc8/BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs#L103",
       "ordinaryKnownCloseQualified": false,
       "scopeLimit": "Finite evidence never qualifies the whole method/caller/game/native platform; source classification is not test execution."
     }

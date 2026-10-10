@@ -1,5 +1,5 @@
 {
-  "Source": "b02339db19b8253f15a5e957f7be075a3dd57c8b",
+  "Source": "ac3783c12ee31b12e57f73c5fc360916b97efdc8",
   "Parser": "Microsoft.CodeAnalysis.CSharp, Version=4.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
   "ParserPath": "/workspace/.onboarding/tools/pwsh/Microsoft.CodeAnalysis.CSharp.dll",
   "Scope": "Product BookOfEternityClient tracked C# syntax only. Acquisition candidates and nearest method/using/lambda, not a semantic publisher/defect/acceptance classification.",
@@ -4193,8 +4193,8 @@
     },
     {
       "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
-      "Sha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2",
-      "Bytes": 29527
+      "Sha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450",
+      "Bytes": 30336
     },
     {
       "Path": "BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs",
@@ -7803,63 +7803,63 @@
       "NestedLambda": false,
       "MethodMentionsCsp": false,
       "MethodMentionsReleaseHelper": false,
-      "SourceSha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2"
+      "SourceSha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450"
     },
     {
       "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
-      "Line": 90,
+      "Line": 91,
       "Method": "ExecuteSessionReplacementAsync",
-      "InvocationSpanStart": 3487,
+      "InvocationSpanStart": 3492,
       "InvocationSpanLength": 37,
-      "MethodSpanLength": 3937,
-      "MethodBodySha256": "9055ed35f1e0dbe84d2ea8f11866fa194adbe257b31fafdff0b64bcf1b000695",
+      "MethodSpanLength": 4746,
+      "MethodBodySha256": "667e0f2b5854b9365dc6ad6f5a0b377a4601482d36f84d684534219d9335210d",
       "MethodSpanStart": 2799,
       "MethodStartLine": 77,
-      "MethodEndLine": 140,
+      "MethodEndLine": 152,
       "MethodSignature": "internal async Task<LoadReplacementResult> ExecuteSessionReplacementAsync(\n        BrowserLocalWriteRequest request,\n        Func<Func<FileSystemManager.CanonicalWriteLease, Task>, Task<LoadReplacementResult>> replacementOperation)",
       "Classes": [
         "BrowserLocalWriteCoordinator"
       ],
       "Invocation": "_fs.AcquireCanonicalWriteLeaseAsync()",
-      "UsingSyntax": "await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())\n            {\n                if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)\n                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,\n                        new InvalidOperationException(\"Load admission refused an active turn.\"));\n                if (_fs.ReadExistingSessionGeneration(writeLease) == null)\n                    return new(LoadReplacementDisposition.NotL",
+      "UsingSyntax": null,
       "NestedLambda": false,
       "MethodMentionsCsp": true,
-      "MethodMentionsReleaseHelper": false,
-      "SourceSha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2"
+      "MethodMentionsReleaseHelper": true,
+      "SourceSha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450"
     },
     {
       "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
-      "Line": 133,
+      "Line": 139,
       "Method": "ExecuteSessionReplacementAsync",
-      "InvocationSpanStart": 6301,
+      "InvocationSpanStart": 6717,
       "InvocationSpanLength": 37,
-      "MethodSpanLength": 3937,
-      "MethodBodySha256": "9055ed35f1e0dbe84d2ea8f11866fa194adbe257b31fafdff0b64bcf1b000695",
+      "MethodSpanLength": 4746,
+      "MethodBodySha256": "667e0f2b5854b9365dc6ad6f5a0b377a4601482d36f84d684534219d9335210d",
       "MethodSpanStart": 2799,
       "MethodStartLine": 77,
-      "MethodEndLine": 140,
+      "MethodEndLine": 152,
       "MethodSignature": "internal async Task<LoadReplacementResult> ExecuteSessionReplacementAsync(\n        BrowserLocalWriteRequest request,\n        Func<Func<FileSystemManager.CanonicalWriteLease, Task>, Task<LoadReplacementResult>> replacementOperation)",
       "Classes": [
         "BrowserLocalWriteCoordinator"
       ],
       "Invocation": "_fs.AcquireCanonicalWriteLeaseAsync()",
-      "UsingSyntax": "await using var releaseLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "UsingSyntax": null,
       "NestedLambda": false,
       "MethodMentionsCsp": true,
-      "MethodMentionsReleaseHelper": false,
-      "SourceSha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2"
+      "MethodMentionsReleaseHelper": true,
+      "SourceSha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450"
     },
     {
       "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
-      "Line": 245,
+      "Line": 257,
       "Method": "RunBoundTransactionAsync",
-      "InvocationSpanStart": 11094,
+      "InvocationSpanStart": 11903,
       "InvocationSpanLength": 37,
       "MethodSpanLength": 2744,
       "MethodBodySha256": "3b456b1d355b98ff0b4f6afc3113ba86cf7ff1f1b8fbfb67200a675e856b22c5",
-      "MethodSpanStart": 10587,
-      "MethodStartLine": 235,
-      "MethodEndLine": 283,
+      "MethodSpanStart": 11396,
+      "MethodStartLine": 247,
+      "MethodEndLine": 295,
       "MethodSignature": "internal async Task<T> RunBoundTransactionAsync<T>(Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)",
       "Classes": [
         "BrowserLocalWriteCoordinator"
@@ -7869,7 +7869,7 @@
       "NestedLambda": true,
       "MethodMentionsCsp": false,
       "MethodMentionsReleaseHelper": true,
-      "SourceSha256": "7aa8bf7022387c6625080178b61a262e348f2bdf5ad37b8ae8ad708be68f46a2"
+      "SourceSha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450"
     },
     {
       "Path": "BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs",
