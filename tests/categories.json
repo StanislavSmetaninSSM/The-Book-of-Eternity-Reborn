@@ -2,6 +2,44 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-accepted-terminal-cleanup-order",
+            "responsibility": "#1553 reproduced cold late-terminal self-deletion failure: common accepted cleanup must establish authenticated actual-owner/full physical proof/inventory before deleting the original request. Reuse four existing warm cleanup artifact-integrity negatives and one accepted-receipt dequeue/no-replay control; actual fullC5 owns causal RED and cold success acceptance.",
+            "excludes": "No extra negative matrix, synthetic direct-cleanup positive, live model, product timeout/guard weakening or performance closure. Existing component controls do not qualify wholeProgramC5 or console repair.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-browser-staged-idle-duration-diagnostic",
+                    "when": "Actual original cold Program late-terminal consumer supplied causal RED and must supply success with crash/once-only/full-prefix/Stop proofs."
+                },
+                {
+                    "id": "c5-original-decoded-state-controls",
+                    "when": "Existing warm cleanup integrity method reused here without broadening its four cases."
+                },
+                {
+                    "id": "browser-player-input-recovery",
+                    "when": "Existing accepted-receipt dequeue control reused here to retain no-replay behavior."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_WarmCleanupCannotDeleteSubstitutedOrUnownedArtifact",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_AcceptedRecordReentryOnlyDequeuesOriginalSlotAndKeepsHistory"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-browser-staged-idle-duration-diagnostic",
             "responsibility": "#1553 T069 separate finite full-C5 semantic diagnostic of actual React/Program/Bridge/daemon/relay queued and witnessed staged-idle SIGKILL/EOF/cold continuation. Model-only authored packets; all original identity/once-only/full-prefix/Stop/guardian assertions retained. Read-only pre-packet snapshot inventory and concurrently observed helper/ready/narrative/prompt phases. One 180s absolute acceptance limit after helper completion; work660/total720/guardian750/external755 seconds. Diagnostic uses the existing --relay-turn fixture budget mode; native reaping algorithm unchanged.",
             "excludes": "No original40s GREEN, product SLA, regression closure, live provider, pre-lock deferral, production timeout/guard change, active-poll crash or remaining T070 interruption/repair qualification.",

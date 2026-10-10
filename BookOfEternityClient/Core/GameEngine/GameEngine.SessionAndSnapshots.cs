@@ -1523,6 +1523,8 @@ public partial class GameEngine
 
     private async Task CleanupAcceptedTurnTerminalArtifactsAsync()
     {
+        // Capture original cleanup evidence before deleting its required request.
+        _fs.AllowBrowserOriginalCleanup();
         var hasIncarnationTrigger = _fs.FileExists("game_state/control/incarnation_trigger.json");
         _fs.DeleteFile("ready/turn_complete.json");
         _fs.DeleteFile("ready/turn_error.json");

@@ -2,6 +2,15 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-accepted-terminal-cleanup-order",
+            "reason": "Actual staged-idle cold Program produced originating missing-request guard refusal after self-deletion; establish authenticated cleanup before deletes. Preserve four existing warm integrity negatives and accepted-receipt no-replay dequeue, then actual fullC5 diagnostic.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "Original cleanup authority before terminal evidence deletion"
+            ]
+        },
+        {
             "category": "c5-browser-staged-idle-duration-diagnostic",
             "reason": "Parent approved actual fullC5 correctness before further performance work, with predeclared exploratory finite budget appropriate to63/62file inventory. Preserve old40s failures and exact actual crash/identity/prefix/Stop/EOF assertions; no production edits.",
             "contracts": [
