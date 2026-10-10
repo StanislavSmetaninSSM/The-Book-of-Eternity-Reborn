@@ -67,7 +67,8 @@ public sealed partial class OriginalOwnedLeaseCloseTests
             });
         var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
         var refresh = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files,
-            new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance), validator, new Dictionary<string, string>());
+            new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance), validator,
+            await GuardianSystemRegressionTests.ReadOriginalMusingsPublicationBackupsAsync(files));
         Assert.True(!refresh.Issues.Any(issue => issue.Severity == IssueSeverity.Error),
             string.Join("; ", refresh.Issues.Select(issue => issue.Code + ": " + issue.Actual)));
         Assert.NotNull(refresh.GuardianMusingsValidation);

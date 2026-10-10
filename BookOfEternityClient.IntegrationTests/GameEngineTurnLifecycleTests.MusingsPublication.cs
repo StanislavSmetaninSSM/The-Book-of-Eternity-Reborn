@@ -70,7 +70,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
         var refresh = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files,
             new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance), validator,
-            new Dictionary<string, string>());
+            await GuardianSystemRegressionTests.ReadOriginalMusingsPublicationBackupsAsync(files));
         Assert.True(!refresh.Issues.Any(issue => issue.Severity == IssueSeverity.Error), DescribeValidationIssues(refresh.Issues));
         Assert.NotNull(refresh.GuardianMusingsValidation);
         if (substituted)

@@ -132,6 +132,22 @@ public sealed partial class GuardianSystemRegressionTests
 
     internal FileSystemManager MusingsPublicationFiles => _fs;
 
+    internal static async Task<Dictionary<string, string>> ReadOriginalMusingsPublicationBackupsAsync(FileSystemManager files)
+    {
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        var manifest = JsonNode.Parse((await files.ReadFileAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!)!.AsObject();
+        var backups = manifest["files"]!.AsObject().ToDictionary(
+            pair => pair.Key, pair => pair.Value!.GetValue<string>(), StringComparer.Ordinal);
+        var original = PendingTurnSnapshotReader.ReadCurrent(files, lease, backups.Keys.ToArray());
+        Assert.True(original.Success, string.Join("; ", original.Issues.Select(issue => issue.Code + ": " + issue.Actual)));
+        Assert.NotNull(original.Snapshot);
+        Assert.Contains(MusingsRootPath, backups.Keys);
+        Assert.Contains(GuardianProjectState.TrackerPath, backups.Keys);
+        foreach (var backup in backups)
+            Assert.Equal(original.Snapshot.ReadRequiredBytes(backup.Key), await files.ReadFileBytesAsync(lease, backup.Value));
+        return backups;
+    }
+
     internal async Task PrepareMusingsPublicationAsync(int count)
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
@@ -190,7 +206,7 @@ public sealed partial class GuardianSystemRegressionTests
     {
         var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(_fs,
             new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance), validator,
-            new Dictionary<string, string>());
+            await ReadOriginalMusingsPublicationBackupsAsync(_fs));
         Assert.True(!result.Issues.Any(issue => issue.Severity == IssueSeverity.Error),
             string.Join("; ", result.Issues.Select(issue => issue.Code + ": " + issue.Actual)));
         return result;
