@@ -40,7 +40,7 @@ public sealed class BrowserPendingPlayerActionTests : IDisposable
             lease => Task.FromResult(_fs.GetOrCreateSessionGeneration(lease)));
         var result = await _service.SubmitAsync(new("Я читаю письмо."));
         Assert.True(result.Success, result.PlayerMessage);
-        using var pending = JsonDocument.Parse(File.ReadAllBytes(_fs.ResolvePath("input/pending_player_action.json")));
+        using var pending = JsonDocument.Parse(File.ReadAllText(_fs.ResolvePath("input/pending_player_action.json")));
         Assert.Equal(generation, pending.RootElement.GetProperty("sessionGeneration").GetString());
         Assert.True(Guid.TryParseExact(pending.RootElement.GetProperty("actionId").GetString(), "N", out _));
         Assert.Equal("browser-composer", pending.RootElement.GetProperty("source").GetString());
