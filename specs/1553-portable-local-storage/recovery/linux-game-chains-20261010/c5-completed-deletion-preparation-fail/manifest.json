@@ -1,0 +1,39 @@
+{
+  "SourceSHA": "e11c30d3b8ff22cd9a404df5c0f6af2425cdc10b",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-browser-completed-recovery\",\"c5-original-browser-quiescent-opening\",\"c5-original-client-admission\")'",
+  "Status": "PREPARATION_FAIL",
+  "Scope": "Original publisher refuses extra file while settled receipt visible before intent; no behavioral RED,13others UNRUN",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/c5-original-browser-completed-recovery-integration-001.trx.gz",
+      "RawSHA256": "65913e17ecb37291b5377d60ce400abeba9d57b1ec09ba3a67d4e8b9aec8c6f9",
+      "RawBytes": 32352
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "6dab87a706f0e89daa1714179e5d920052103767aaba7ddfbf559351cb721096",
+      "RawBytes": 2924
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "0c49fd81285ba7ce6d0813461fde9f795d0833c7c536e48c79bc7437a143b01e",
+      "RawBytes": 1778
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "df9b2c08d1573c0b1e46e57d821baba3879a47c0b32add62b974b266e30fa51b",
+      "RawBytes": 50345
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "f3c444debc2f95a07a0543c57fa87b05254a4bc0a79edfe5aa74eeb5f292ce1b",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "3f63a4d9b984bf48f084b5b05078420d685380ec68122107ab5af12327617b2d",
+      "RawBytes": 3369536
+    }
+  ]
+}

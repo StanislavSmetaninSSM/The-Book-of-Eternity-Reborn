@@ -71,9 +71,23 @@ public sealed partial class GameEngineTurnLifecycleTests
                 {
                     if(hookReached)return;
                     hookReached=true;
-                    if(mode is 0 or 1)await Call("StartShellAsync");
-                    else if(mode==2)File.Delete(Path.Combine(root,".boe_runtime/gm-runs/main.json"));
-                    else if(mode==3){await Call("StartShellAsync");await Call("StopShellAsync");}
+                    if(mode==2)File.Delete(Path.Combine(root,".boe_runtime/gm-runs/main.json"));
+                    else if(mode is 0 or 1 or 3)
+                    {
+                        // Explicit fixture combination: produce a genuine later
+                        // run/stop while preserving exact old signed artifacts.
+                        // This setup is not a production recovery permission.
+                        var paths=new[]{PendingPlayerActionService.PendingPath,"game_state/control/pending_turn_snapshot.json"};
+                        var retained=paths.ToDictionary(path=>path,path=>File.ReadAllBytes(files.ResolvePath(path)));
+                        foreach(var path in paths)File.Delete(files.ResolvePath(path));
+                        try
+                        {
+                            await Call("StartShellAsync");
+                            await ((TaskCompletionSource)type.GetField("_firstStatus",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!).Task.WaitAsync(TimeSpan.FromSeconds(3));
+                            if(mode==3)await Call("StopShellAsync");
+                        }
+                        finally {foreach(var pair in retained)File.WriteAllBytes(files.ResolvePath(pair.Key),pair.Value);}
+                    }
                 }});
             await using(var admission=cold.BeginParticipatingMainAdmission())
             {
@@ -91,10 +105,17 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         finally
         {
-            if(Owner()?.Record?.Disposition==GmSessionRunDisposition.Running)await Call("StopShellAsync");
+            if(Owner()?.Record?.Disposition==GmSessionRunDisposition.Running)
+            {
+                var paths=new[]{PendingPlayerActionService.PendingPath,"game_state/control/pending_turn_snapshot.json"};
+                var retained=paths.ToDictionary(path=>path,path=>File.ReadAllBytes(files.ResolvePath(path)));
+                foreach(var path in paths)File.Delete(files.ResolvePath(path));
+                try{await Call("StopShellAsync");}
+                finally{foreach(var pair in retained)File.WriteAllBytes(files.ResolvePath(pair.Key),pair.Value);}
+            }
             await control.CancelAsync();
             await server.WaitAsync(TimeSpan.FromSeconds(5));
-            await ((IAsyncDisposable)host).DisposeAsync();
+            ((IDisposable)host).Dispose();
         }
         await File.WriteAllTextAsync(output,JsonSerializer.Serialize(new{Mode=mode,BehaviorMatched=matched,Blocked=blocked,MintedRemotePin=minted,
             HookReached=hookReached,OriginalStopped=originalStopped,OriginalUncertain=Owner()?.IsUncertain,Scope="genuine NativeLineage original owner and guarded original browser staging; no Program/relay/model"}));

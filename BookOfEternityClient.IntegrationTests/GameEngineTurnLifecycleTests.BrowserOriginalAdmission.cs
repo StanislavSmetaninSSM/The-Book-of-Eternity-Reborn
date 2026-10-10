@@ -25,6 +25,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             // A genuine original deletion publication leaves the visible receipt
             // valid but retains the before image in its uncommitted journal.
             var physical = _fs.ResolvePath(path);
+            var receiptPath = _fs.ResolvePath(PendingPlayerActionService.PendingPath);
+            var originalReceipt = File.ReadAllBytes(receiptPath);
+            File.Delete(receiptPath);
             Directory.CreateDirectory(Path.GetDirectoryName(physical)!);
             File.WriteAllText(physical,"{\"originalPendingWork\":true}");
             var publisher = new TrustedLocalFilePublication(_fs,new TrustedLocalFileScope([_fs.BasePath]));
@@ -32,6 +35,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                 [new(physical,File.ReadAllBytes(physical),null)],
                 (phase,_)=>{if(phase==TrustedLocalPublicationPhase.MemberPublished)throw new C5RecoveryInterruption();}));
             Assert.False(File.Exists(physical));
+            File.WriteAllBytes(receiptPath,originalReceipt);
+            var state = PendingPlayerActionService.Parse(File.ReadAllText(receiptPath),generation);
+            var staged = PendingPlayerActionService.ReadStaged(state);
+            GameEngine.ValidateCompletedBrowserReceipt(state,GameEngine.ValidateDetachedBrowserBinding(staged),
+                relative=>File.Exists(_fs.ResolvePath(relative))?File.ReadAllBytes(_fs.ResolvePath(relative)):null,
+                relative=>File.Exists(_fs.ResolvePath(relative)),OriginalAdmissionTree().Keys.ToArray());
         }
         var before = OriginalAdmissionTree();
         var callbacks = 0;
