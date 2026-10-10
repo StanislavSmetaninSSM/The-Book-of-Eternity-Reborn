@@ -435,6 +435,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         var binding = await QueueBrowserInputAsync();
         var engine = CreateGameEngine(new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]));
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession("browser-recovery-session", 0);
+        return await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, binding.Generation, async () =>
+        {
+            using var original = _fs.BeginBrowserOriginalOperation(binding);
         await InvokePrivateTaskAsync(engine, "ClaimBrowserPreparationAsync", binding);
         var request = new TurnRequest
         {
@@ -445,7 +448,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         await InvokePrivateTaskAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollback, "обработки хода", binding);
         var staged = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "PublishBrowserStagingAsync", binding,
             JsonSerializer.Serialize(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        return (engine, staged);
+            return (engine, staged);
+        });
     }
 
     private async Task PrepareAcceptedBrowserRecordAsync()

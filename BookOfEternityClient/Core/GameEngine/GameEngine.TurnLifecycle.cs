@@ -83,6 +83,7 @@ public partial class GameEngine
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
@@ -133,7 +134,8 @@ public partial class GameEngine
                 {
                     return false;
                 }
-                _fs.DeleteFile("input/turn_request.json");
+                _fs.AllowBrowserOriginalCleanup();
+            _fs.DeleteFile("input/turn_request.json");
                 _fs.DeleteFile("ready/turn_complete.json");
                 _fs.DeleteFile("ready/turn_error.json");
                 ClearTransientOutputFiles();
@@ -235,7 +237,8 @@ public partial class GameEngine
 
         _pendingMemoryLegacyAwaitingConsumption = false;
         ShowTurnErrorMessage(terminalSignals.ErrorJson);
-        _fs.DeleteFile("input/turn_request.json");
+        _fs.AllowBrowserOriginalCleanup();
+            _fs.DeleteFile("input/turn_request.json");
         _fs.DeleteFile("ready/turn_error.json");
 
         if (HasRollbackCapability(rollbackSnapshot))
@@ -269,6 +272,7 @@ public partial class GameEngine
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
@@ -298,6 +302,7 @@ public partial class GameEngine
         if (terminalOutcome.Kind == "error")
         {
             ShowTurnErrorMessage(terminalSignals.ErrorJson);
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_error.json");
 
@@ -855,6 +860,8 @@ public partial class GameEngine
             await Task.Delay(250);
             return true;
         }
+        using var browserOriginalScope = pendingBrowserState?.Phase == "staged"
+            ? _fs.BeginBrowserOriginalOperation(pendingBrowserState.Binding, PendingPlayerActionService.ReadStaged(pendingBrowserState)) : null;
         var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
             await InvokeSessionFinalizationCheckpointAsync(
                 SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound);
@@ -1388,6 +1395,7 @@ public partial class GameEngine
         await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
         var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        using var browserOriginalScope = browserAction == null ? null : _fs.BeginBrowserOriginalOperation(browserAction);
         // Reserve/refuse before health validation can remove an unrelated request.
         if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
@@ -1487,7 +1495,8 @@ public partial class GameEngine
             _logger.LogDebug(ex, "Не удалось безопасно поставить ход в очередь; выполняется rollback локальной подготовки.");
             try
             {
-                _fs.DeleteFile("input/turn_request.json");
+                _fs.AllowBrowserOriginalCleanup();
+            _fs.DeleteFile("input/turn_request.json");
             }
             catch (CoordinatedStatePublicationUncertainException uncertainty)
             {
@@ -1550,6 +1559,7 @@ public partial class GameEngine
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
             if (browserStaged != null) browserStaged = await ClaimBrowserTerminalAsync(browserStaged);
             // Delete the turn request, clean ready signals, and rollback game state
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
@@ -1582,6 +1592,7 @@ public partial class GameEngine
         if (terminalOutcome.Kind == "error")
         {
             ShowTurnErrorMessage(terminalSignals.ErrorJson);
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
@@ -1617,6 +1628,7 @@ public partial class GameEngine
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             var restored = await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
@@ -1646,6 +1658,7 @@ public partial class GameEngine
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             var restored = await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,

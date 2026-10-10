@@ -20,12 +20,13 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
     internal MainOperationClose? TerminalClose {get;private set;}
     internal bool CloseObserved=>_closedReply.Task.IsCompletedSuccessfully;
     private GmMainOperationClient(NamedPipeClientStream pipe,MainOperationReader reader,MainOperationReply grant){_pipe=pipe;_reader=reader;_grant=grant;}
-    internal static async Task<GmMainOperationClient> OpenAsync(FileSystemManager files,CancellationToken token)
+    internal static async Task<GmMainOperationClient> OpenAsync(FileSystemManager files,CancellationToken token,GmSessionRunIdentity? originalExpectation=null)
     {
         GmSessionRunRecord expected;
         try {
             var bytes=GmSessionRunPersistence.Read(files.BasePath)??throw GmSessionRunPersistence.Invalid();
             expected=GmSessionRunRecordCodec.Decode(bytes);
+            if(originalExpectation!=null && !GmSessionRunValidation.IdentityMatches(originalExpectation,expected.Identity))throw GmSessionRunPersistence.Invalid();
             if(expected.Disposition!=GmSessionRunDisposition.Running)throw GmSessionRunPersistence.Invalid();
         } catch(Exception failure){failure.Data["ParticipatingAdmissionPhase"]="read-record";throw;}
         string status;
@@ -38,7 +39,7 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
         try {
             using var bounded=CancellationTokenSource.CreateLinkedTokenSource(token);bounded.CancelAfter(TimeSpan.FromSeconds(3));
             await pipe.ConnectAsync(bounded.Token);var reader=new MainOperationReader(pipe);var operation=Guid.NewGuid().ToString("N");
-            await MainOperationReader.WriteAsync(pipe,new{command="beginMainOperation",rootKey=files.BasePath,operationId=operation},bounded.Token);
+            await MainOperationReader.WriteAsync(pipe,new{command="beginMainOperation",rootKey=files.BasePath,operationId=operation,expectedMainIdentity=originalExpectation??expected.Identity},bounded.Token);
             var grant=await reader.ReadAsync<MainOperationReply>(bounded.Token)??throw GmSessionRunPersistence.Invalid();
             if(!grant.Ok || grant.State!=MainOperationState.PreparedGrant || grant.OperationId!=operation ||
                 !Guid.TryParseExact(grant.PinId,"N",out _) || !Guid.TryParseExact(grant.CloseId,"N",out _) || grant.Identity==null ||

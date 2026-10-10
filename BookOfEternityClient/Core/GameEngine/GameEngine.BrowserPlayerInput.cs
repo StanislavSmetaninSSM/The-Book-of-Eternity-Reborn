@@ -153,7 +153,7 @@ public partial class GameEngine
         });
     }
 
-    private PendingTurnSnapshotManifest ValidateDetachedBrowserBinding(PendingPlayerActionService.Staged staged)
+    internal static PendingTurnSnapshotManifest ValidateDetachedBrowserBinding(PendingPlayerActionService.Staged staged)
     {
         var manifest = StrictJsonAuthority.Deserialize<PendingTurnSnapshotManifest>(staged.ManifestJson, JsonOpts, "original browser snapshot")
             ?? throw new InvalidDataException(BrowserRecoveryMessage);
@@ -167,7 +167,7 @@ public partial class GameEngine
             manifest.RequestId != staged.Binding.ActionId || request.RequestId != manifest.RequestId ||
             request.SessionId != manifest.SessionId || request.TurnNumber != manifest.TurnNumber ||
             request.Timestamp != manifest.RequestTimestamp || request.PlayerAction != staged.Binding.Action ||
-            manifest.PlayerAction != staged.Binding.Action || manifest.SourceLabel != OrdinaryPlayerTurnSourceLabel)
+            manifest.PlayerAction != staged.Binding.Action || manifest.SourceLabel != OrdinaryPlayerTurnSourceLabel || manifest.BrowserOriginalMainCondition == null)
             throw new InvalidDataException(BrowserRecoveryMessage);
         return manifest;
     }
@@ -175,6 +175,7 @@ public partial class GameEngine
     private Task<bool> ClaimBrowserPreparationAsync(PendingPlayerActionService.Binding binding) =>
         WithPendingActionLeaseAsync(async lease =>
         {
+            using var original = _fs.HasBrowserOriginalOperation ? null : _fs.BeginBrowserOriginalOperation(binding);
             var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
             if (state?.Phase != "queued" || state.Json != binding.Json)
                 throw new InvalidOperationException(BrowserRecoveryMessage);
@@ -207,16 +208,20 @@ public partial class GameEngine
         await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, stagedJson,
             new CoordinatedStateWriteHelper.PlannedWrite("input/turn_request.json",
                 PreviousJson: null, requestJson, RequireCurrentBaseline: true));
-        return captured with { Json = stagedJson };
+        var staged = captured with { Json = stagedJson };
+        _fs.SealBrowserOriginalPreparation(staged);
+        return staged;
     });
 
     private Task<PendingPlayerActionService.Staged> ClaimBrowserTerminalAsync(PendingPlayerActionService.Staged staged) =>
         WithPendingActionLeaseAsync(async lease =>
         {
+            using var original = _fs.HasBrowserOriginalOperation ? null : _fs.BeginBrowserOriginalOperation(staged.Binding, staged);
             var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
             if (state?.Phase != "staged" || state.Json != staged.Json)
                 throw new InvalidOperationException(BrowserRecoveryMessage);
             ValidateDetachedBrowserBinding(staged);
+            _fs.BeginBrowserOriginalProcessing(staged);
             var processingJson = PendingPlayerActionService.CreatePhase(state, "terminalProcessing", PendingPlayerActionService.StagingProof(staged));
             await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, processingJson);
             return staged with { Json = processingJson };

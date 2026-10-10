@@ -55,6 +55,7 @@ public partial class FileSystemManager
             // Finalization borrows an actual original closing frame. The purpose
             // value alone cannot bypass admission or acquire recovery authority.
             if(closing && !BoundClosing)throw GmSessionRunPersistence.Invalid();
+            var browserOriginal=closing?null:_files.PreflightBrowserOriginalAdmission(this);
             if(quiescentOnly && _requested?.Pin!=null)throw GmSessionRunPersistence.Invalid();
             if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);
             for(var p=_parent;p!=null;p=p._parent)
@@ -73,7 +74,7 @@ public partial class FileSystemManager
                 if(!_participating || closing)throw GmSessionRunPersistence.Invalid();
                 if(OperatingSystem.IsWindows())_files.RequireAbsentMainWorkerInventory();
                 var knownWorkers=!OperatingSystem.IsWindows() && _files.HasKnownMainWorkerInventory();
-                var remote=await GmMainOperationClient.OpenAsync(_files,token);
+                var remote=await GmMainOperationClient.OpenAsync(_files,token,browserOriginal?.ActiveIdentity);
                 _access=new(null,null,remote,workerObservationRequired:knownWorkers);_retainedRemote=remote;_ownsRemote=true;WasRemote=true;return;
             }
             _access=new(await GmMainOwnerGuard.AcquireAsync(_files.BasePath,token,
@@ -88,6 +89,24 @@ public partial class FileSystemManager
                 }
                 Validate(null);
             }catch{Dispose();throw;}
+        }
+        internal bool Acquired=>_access!=null && !_closed;
+        internal bool SharesAccess(MainAdmission other)=>_access!=null && ReferenceEquals(_access,other._access);
+        internal BrowserOriginalMainCondition CaptureBrowserCondition(string generation)
+        {
+            Validate(null);
+            if(MetadataOnly)throw BrowserOriginalMainCondition.Invalid();
+            var active=_access?.Remote?.Identity ?? (_access?.Original?.Pin!=null?_access.Original.Owner.Identity:null);
+            BrowserOriginalMainCondition condition;
+            if(active!=null)condition=new("active",_files.BasePath,generation,active);
+            else {
+                if(_access?.Guard==null)throw BrowserOriginalMainCondition.Invalid();
+                _access.Guard.Validate();
+                var bytes=GmSessionRunPersistence.Read(_files.BasePath);
+                var stopped=bytes==null?null:GmSessionRunRecordCodec.Decode(bytes);
+                condition=stopped==null?new("quiescentAbsent",_files.BasePath,generation):new("quiescentStopped",_files.BasePath,generation,StoppedRecord:stopped);
+            }
+            condition.RequireCurrent(_files);return condition;
         }
         internal GmSessionRunCoordinator.Access? Original=>_access?.Original;
         internal bool MetadataOnly=>_requested?.MetadataOnly==true;
@@ -233,6 +252,7 @@ public partial class FileSystemManager
     {
         lease.MainAdmission!.Validate(lease);
         if(lease.MainAdmission.MetadataOnly)throw GmSessionRunPersistence.Invalid();
+        _ = PreflightBrowserOriginalAdmission(lease.MainAdmission);
         // Original active recovery must inspect generation-changing intent before
         // effects. The typed trusted-local reader handles in-generation journals.
         if(lease.MainAdmission.ActiveGeneration!=null)

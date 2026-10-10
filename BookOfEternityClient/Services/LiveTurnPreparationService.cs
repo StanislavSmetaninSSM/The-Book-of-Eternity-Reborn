@@ -446,4 +446,6 @@ internal sealed class LiveTurnPendingSnapshotManifest
     public string? BrowserActionId { get; set; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public string? BrowserSessionGeneration { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public BookOfEternityClient.Core.BrowserOriginalMainCondition? BrowserOriginalMainCondition { get; set; }
 }

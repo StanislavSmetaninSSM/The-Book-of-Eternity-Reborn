@@ -534,7 +534,8 @@ public partial class GameEngine
                 .ToList(),
             SourceLabel = sourceLabel,
             BrowserActionId = browserAction?.ActionId,
-            BrowserSessionGeneration = browserAction?.Generation
+            BrowserSessionGeneration = browserAction?.Generation,
+            BrowserOriginalMainCondition = browserAction == null ? null : _fs.CaptureBrowserOriginalCondition(writeLease, browserAction.Generation)
         };
         manifest.ManifestPayloadHash = ComputePendingTurnManifestPayloadHash(manifest);
         var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
@@ -975,7 +976,7 @@ public partial class GameEngine
         return PendingTurnSnapshotAuthority.DoesPendingTurnContextIdMatch(manifest.RequestId, context.RequestId);
     }
 
-    private string ComputePendingTurnManifestPayloadHash(PendingTurnSnapshotManifest manifest)
+    private static string ComputePendingTurnManifestPayloadHash(PendingTurnSnapshotManifest manifest)
     {
         return PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(
             manifest,
@@ -1041,6 +1042,7 @@ public partial class GameEngine
 
     private async Task CleanupPendingTurnSnapshotAsync(IEnumerable<string>? preservedRollbackPaths = null)
     {
+        _fs.AllowBrowserOriginalCleanup();
         var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         CoordinatedStatePublicationUncertainException? uncertainty = null;
         try { CleanupPendingTurnSnapshot(writeLease, preservedRollbackPaths); }
@@ -2381,6 +2383,7 @@ public partial class GameEngine
     /// </summary>
     private void CleanupBackup(RollbackSnapshot snapshot)
     {
+        _fs.AllowBrowserOriginalCleanup();
         var writeLease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
         CoordinatedStatePublicationUncertainException? uncertainty = null;
         try { CleanupBackup(writeLease, snapshot); }

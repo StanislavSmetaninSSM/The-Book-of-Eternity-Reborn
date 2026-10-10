@@ -21,7 +21,7 @@ public partial class GameEngine
     private sealed record MenuChoiceItem(string Key, string Label, string? Description = null, string AccentColor = "cyan1");
     private enum MainMenuLayoutMode { VeryCompact, Compact, Medium, Wide }
 
-    private sealed class PendingTurnSnapshotManifest
+    internal sealed class PendingTurnSnapshotManifest
     {
         public string SessionId { get; set; } = "";
         public string RequestId { get; set; } = "";
@@ -43,6 +43,8 @@ public partial class GameEngine
         public string? BrowserActionId { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? BrowserSessionGeneration { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public BookOfEternityClient.Core.BrowserOriginalMainCondition? BrowserOriginalMainCondition { get; set; }
     }
 
     private sealed class RollbackSnapshot
