@@ -1,4 +1,4 @@
-## Итог текущего ограниченного этапа C1–C5 — 2026-10-10 (final restore WIP)
+## Итог ограниченного checkpoint C1–C5 — 2026-10-10 (C2/C5/addMusings открыты)
 
 Source issue[#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553),
 разрешённый cloud stage T066–T068. Branch `1553-storage-migration-cloud-20261008`,
@@ -58,11 +58,27 @@ catalog **PASS**,617categories/11391methods-or-files,32.2761444s,0tests executed
 Actual runnerHead3cb165df,ChangedFiles1/fingerprintA6B925...024944: the changed
 path was not recorded; no clean-tree execution claim. Archive checkpoint14391239
 is distinct from execution SourceSHA, now corrected to match preserved runner.
-Independent Astra/xhigh final review at14391239 accepted C4/fault runtime and
-112new rawhash/length entries; no Critical/Important findings. Its Minor verifier
-optimization bypass is corrected by an explicit non-assert refusal; actual
-python -O exits1 before reading any repository. Narrow amended review and exact-tip
-fresh GitHub restoration are pending at this metadata checkpoint.
+Independent Astra/xhigh final runtime review at14391239 accepted C4/fault and
+112new rawhash/length entries. Final amended review **accepted808e6786**, no
+remaining Critical/Important/Minor findings; [archived actual gate](recovery/linux-game-chains-20261010/independent-final-gate-808.json).
+Verifier optimization/schema and catalog provenance corrections are applied;
+C5 existing admission/input draft and addMusings intermediate physical-close
+handoff boundaries are explicit below. No gameplay/category repeats for these
+metadata corrections.
+
+Actual fresh GitHub-only scratch clone (ordinary clone20317cad, then only GitHub
+fetch/clean detached checkout) restored b605633b and808e6786. At808: **PASS**,33768
+trackedblobs/32manifests/939rawartifacts (3plain), fullstrictfsck0, exacttaskremote
+and unchanged main, no shallow/alternates; allboundsourcecommit objects present.
+[Preserved b605 raw receipts](recovery/linux-game-chains-20261010/github-restoration-b605/manifest.json)
+prove33764blobs/31manifests/936raw, plus independent historical storage recovery:
+90manifests/7676artifacts/10300commit-boundpins/9453unique pinnedblobs/855sourcefiles,
+existing170acquisitions/164declarations rechecked without new census; errors0.
+The final carrier adds only this metadata/gate. Its exact current remote tip/bytes
+and restored integrity are the final delivery gate, executed without modifying
+source or evidence; full carrier SHA is obtained from Git, not a self-referential
+runtime SourceSHA. Restoration is source/artifact integrity, never build/runtime
+acceptance. Whole-migration and user acceptance remain distinct.
 
 Reproduce recovery with ordinary GitHub clone (no local alternates):
 `git clone --single-branch --no-tags --branch 1553-storage-migration-cloud-20261008 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git <new-empty-dir>`,
@@ -73,8 +89,8 @@ preflight has only an explicit uncommitted-source annotation, not a fabricated
 commit binding. First fresh20317cad integrity attempt stopped with KeyError on that
 early manifest schema; verifier now checks both actual packet shapes without
 skipping its bytes. This is a verifier correction, not a gameplay retest; it executes no build/test/game/model and
-cannot replace semantic runtime review. Original broader storage recovery pins
-are separately verified by the existing parent restore receipt.
+cannot replace semantic runtime review. Broader historical storage pins were also
+actually reverified in this same GitHub-only scratch clone; receipt linked above.
 
 ### Следующий ограниченный проход: C5, затем addMusings
 
