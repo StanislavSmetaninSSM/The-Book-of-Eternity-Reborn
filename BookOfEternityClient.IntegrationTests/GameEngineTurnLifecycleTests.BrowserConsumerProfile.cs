@@ -120,7 +120,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(soul["sessionId"]!.GetValue<string>(), 0);
             operation = InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", binding.Action, null, null, null, true, binding);
             await Task.WhenAny(published.Task, operation).WaitAsync(TimeSpan.FromSeconds(30));
-            if (!published.Task.IsCompleted) await operation;
+            if (!published.Task.IsCompleted)
+            {
+                await operation;
+                throw new InvalidOperationException("Original operation returned before authored terminal publication.");
+            }
             await published.Task;
             var completed = await Task.WhenAny(operation, Task.Delay(TimeSpan.FromSeconds(40)));
             deadline = completed != operation;

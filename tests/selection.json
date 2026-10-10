@@ -2,6 +2,15 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-original-consumer-profile",
+            "reason": "C5 first acceptance timeout: one actual original NativeLineage success consumer with before-Stop timing separates active work from cleanup; no speculative guard fix or budget increase.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "Original browser success finalization and bounded consumer profile"
+            ]
+        },
+        {
             "category": "browser-original-phase-refusal",
             "reason": "Directly affected existing exact-type oracles after issuer-bound refusal subtype; exact raw evidence and once-only/no-replay assertions preserved. Three existing methods, no new matrix.",
             "contracts": [
