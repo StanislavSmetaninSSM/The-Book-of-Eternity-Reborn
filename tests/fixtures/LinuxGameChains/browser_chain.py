@@ -67,7 +67,16 @@ def snapshot(label):
             target.write_bytes(data)
         else:
             saved[name] = "absent"
-    saved["generation"] = read_json(base / ".boe_runtime/session-generation/current.json")["generationId"]
+    generation_path = base / ".boe_runtime/session-generation/current.json"
+    generation_bytes = generation_path.read_bytes()
+    generation_document = read_json(generation_path)
+    # Both actual current writers emit this contract; the production document
+    # reader is case-insensitive (bootstrap camelCase, replacement PascalCase).
+    members = [value for key, value in generation_document.items() if key.lower() == "generationid"]
+    assert len(members) == 1 and len(members[0]) == 32, generation_document
+    saved["generation"] = members[0]
+    saved["generationDocumentSHA256"] = hashlib.sha256(generation_bytes).hexdigest()
+    (directory / "generation-document.json").write_bytes(generation_bytes)
     (directory / "snapshot.json").write_text(json.dumps(saved, indent=2))
     result.setdefault("Snapshots", {})[label] = saved
     return saved
@@ -272,6 +281,7 @@ try:
         assert_split(original_receipt)
         changed = snapshot("after-split")
         assert changed[paths[0]] != initial[paths[0]] and changed[paths[1]] != initial[paths[1]]
+        assert all(changed[p] == initial[p] for p in paths[2:]), "Inventory command changed resource authorities/history"
         expected = changed
         if mode in ["saves", "saves-diagnostic"]:
             page.get_by_role("tab", name="Настройки (4)", exact=True).click()
@@ -334,7 +344,8 @@ try:
         else:
             command(page, "split", 2)
             assert_split(original_receipt)
-        snapshot("cold-after-next-command")
+        final = snapshot("cold-after-next-command")
+        assert all(final[p] == initial[p] for p in paths[2:]), "Cold continuation changed resource authorities/history"
         page.screenshot(path=str(out / "accepted-ui.png"))
         close_browser(cold_browser)
         stop_host(cold_host)

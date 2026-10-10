@@ -1,3 +1,15 @@
+## Actual Program C4 Save+Load committed; generation fixture miss
+
+Sourcea8d692df actual **FAIL1/1**,25.8609849s. Production Save is now
+Committed/no debt, full React split and no-main Load Committed/full state/new
+generation/navigation succeeded; subsequent test snapshot assumed bootstrap's
+camelCase generationId while real replacement writer emitted current PascalCase
+GenerationId. [Raw](recovery/linux-game-chains-20261010/c4-generation-casing-fixture-fail/manifest.json).
+No whole C4/cold PASS yet. Correct fixture follows actual case-insensitive current
+SessionGenerationDocument contract, preserves raw generation bytes/hash on cold
+comparisons, and additionally asserts resource authority/history unchanged.
+C# runtime remains unchanged e8a38743; corrected actual chains/faults next.
+
 ## C2 exact fresh-entry boundary — source finding, execution UNRUN
 
 Read-only production reference search at8d0ffde0 shows harmful occurrence
