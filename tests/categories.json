@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-original-consumer-profile",
+            "responsibility": "One actual NativeLineage original Bridge and real ProcessPlayerTurn success consumer from ordinary cancelled Chaos Sea bootstrap. Existing hooks count reads/acquisitions/admission preflights and monotonic checkpoints; preserve 40s profile before original Stop, distinguish teardown exception. Exact accepted request/story/slot cleanup required for PASS.",
+            "excludes": "No model, Program/relay/browser C5 acceptance, widened deadlines, guard bypass or additional negative matrix. Count excludes other recovery scans.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserConsumerProfile.cs"
+            ],
+            "related": [
+                {
+                    "id": "linux-game-chain-browser-relay",
+                    "when": "Composed C5 times out before first acceptance; qualify cause before repeating."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_ActualSuccessConsumerProfilesBeforeOriginalStop"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "browser-original-phase-refusal",
             "responsibility": "Existing original failed rollback and terminalProcessing recovery refusal plus six independently guardian-owned cold classifications; exact issuer-bound pre-publication refusal, raw ErrorType retained, unchanged evidence and no replay.",
             "excludes": "No new negative matrix, Program/relay gameplay, arbitrary owner or general admission tests. Existing terminal disposition controls selected separately.",
