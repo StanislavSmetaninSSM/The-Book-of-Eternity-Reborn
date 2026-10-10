@@ -1,0 +1,27 @@
+{
+  "SourceSHA": "db9368b2927856cb158673f186fa5d45da119283",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category c5-held-proof-scope-budget -NoBuild -TimeoutMinutes 5",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/c5-held-proof-scope-budget-integration-001.trx.gz",
+      "RawSHA256": "180a0dc55c1a6020ed5582aed48574326711cccbe35e1409ec665db693269b7e",
+      "RawBytes": 15913
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "eba20d96d4619f81b971c3e0475374390e516866f6dec8c1d847d1575a0e99fe",
+      "RawBytes": 1625989
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "ad37e9bc18e0829009f4f0209885366001fe302102b5e2ede0b3dfa3afed7d2b",
+      "RawBytes": 1488
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "40625cdb643354a0195671fe3ce437201ed3948d5517cdc497bc11c6203f15af",
+      "RawBytes": 1362
+    }
+  ]
+}
