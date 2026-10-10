@@ -2,6 +2,14 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "guardian-musings-original-consumers",
+            "reason": "Three Important review findings require actual treatment/cleanup original consumers and same physical comparison lease fault propagation before fixes; components and whole chain remain distinct.",
+            "contracts": [
+                "#1553",
+                "T070-GUARDIAN-MUSINGS-AUTHORITY"
+            ]
+        },
+        {
             "category": "guardian-musings-publication",
             "reason": "T070 detached original delta lifecycle crosses physical refresh close into exact late kernel comparison. Focused positive+drift/raw negatives/repair/cold, actual whole-chain separate.",
             "contracts": [

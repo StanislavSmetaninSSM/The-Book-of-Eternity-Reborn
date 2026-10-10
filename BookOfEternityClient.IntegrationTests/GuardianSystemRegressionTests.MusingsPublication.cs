@@ -130,8 +130,11 @@ public sealed partial class GuardianSystemRegressionTests
         Assert.Null((await RefreshMusingsPublicationAsync(validator)).GuardianMusingsValidation);
     }
 
-    private async Task PrepareMusingsPublicationAsync(int count)
+    internal FileSystemManager MusingsPublicationFiles => _fs;
+
+    internal async Task PrepareMusingsPublicationAsync(int count)
     {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
         await PrepareGuardianDialogueActorBrainFixtureAsync(OldMusings, OldMusings);
         await _fs.WriteFileAtomicAsync(MusingsRootPath, BuildCurrentMusingsPublicationBaseline());
         // This boundary requires the exact reader contract; the older actor-brain

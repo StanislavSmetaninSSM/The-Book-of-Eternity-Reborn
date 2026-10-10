@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "guardian-musings-original-consumers",
+            "responsibility": "#1553 T070 original treatment Accepted-to-post-validation handoff, exact owned quest-command cleanup without resealing substituted guardian state, original comparison lease acquisition/read/close/dual failure propagation with unchanged and unauthorized state. Independent per-case original snapshots and owned leases.",
+            "excludes": "Whole Program/relay/cold game acceptance, remote main shutdown and unrelated treatment/resource mechanics; no C5/B2-B5/Windows/live model.",
+            "changeHints": [
+                "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsPublication.cs",
+                "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.MusingsPublication.cs"
+            ],
+            "related": [
+                "guardian-musings-publication"
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuardianMusingsPublication_TreatmentAcceptedHandoffReachesOriginalPostValidation",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuardianMusingsPublication_OriginalQuestCleanupAdvancesOnlyExactCompletedOutput",
+                        "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.GuardianMusingsPublication_OriginalComparisonStorageFailureCannotEnterDomainRepair"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "guardian-musings-publication",
             "responsibility": "#1553 T070 original authorized addMusings capture under actual accepted refresh physical lease, detached late authority/full prefix/active mirror/count1-2/nested scope/once-only repeat; typed raw negatives and request/generation/signed snapshot/output drift; scope invalidation before repair and cold validator refusal.",
             "excludes": "Whole Program/relay game qualification is a separate linux-game-chain-guardian-musings category; no broad guardian commands, active-crash/C5/Windows/live models.",

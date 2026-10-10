@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "79990e844617e677e9641bd2246b26a1b9ba0704",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category guardian-musings-publication",
+  "Status": "FAIL",
+  "Scope": "16=6specificRawPASS/10FAIL53.6227992s; original accepted refresh refuses missing item identity and resource definition/state/history roots in old subset fixture, original command authorization now succeeds. Complete0skip/dup/timeout/cleanupcomplete.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "842dbcf694aa046707e17c5436f284bbc2630153e11e922a13f9a8d9b21355b7",
+      "RawBytes": 2193
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "b71490798c22bc56b3d45d6827c1421ae26969f8490a3f8daa7911907d6ae2ea",
+      "RawBytes": 1473
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "24e2553fa0ef281280dca184979ea05a4b922db7218ed283dccf8c7552b4f073",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "bfc1002c2e7dc221a6cace86583040cc3eb63b7df9158b6b7b650919d07e6a59",
+      "RawBytes": 1670566
+    },
+    {
+      "Path": "runner/guardian-musings-publication-integration-001.trx.gz",
+      "RawSHA256": "fac14a545ed5f175dc47ab8f591a165031f51dcee72fcbc28dd6df2e0cd032fd",
+      "RawBytes": 49236
+    }
+  ]
+}
