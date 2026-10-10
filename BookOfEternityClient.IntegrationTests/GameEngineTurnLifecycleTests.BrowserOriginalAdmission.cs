@@ -133,6 +133,70 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
     }
 
+    [Theory]
+    [InlineData("accepted")]
+    [InlineData("settled")]
+    [InlineData("missing-escaped")]
+    [InlineData("downgraded-escaped")]
+    public async Task BrowserOriginalAdmission_PhaseOrEscapedPropertyCannotBypassPendingRecovery(string damage)
+    {
+        var (_, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+        var probe = _fs.ResolvePath("game_state/control/c5_recovery_probe.json");
+        await using(var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var publisher = new TrustedLocalFilePublication(_fs, new TrustedLocalFileScope([_fs.BasePath]));
+            Assert.Throws<C5RecoveryInterruption>(() => publisher.Publish(lease,
+                TrustedLocalGeneration.Existing(staged.Binding.Generation), [new(probe, null, [1, 2, 3])],
+                (phase, _) => { if(phase == TrustedLocalPublicationPhase.MemberPublished) throw new C5RecoveryInterruption(); }));
+        }
+        Assert.Equal(new byte[] { 1, 2, 3 }, File.ReadAllBytes(probe));
+        var pending = _fs.ResolvePath(PendingPlayerActionService.PendingPath);
+        if(damage is "accepted" or "settled")
+            File.WriteAllText(pending, PendingPlayerActionService.CreatePhase(
+                PendingPlayerActionService.Parse(staged.Json, staged.Binding.Generation), damage, PendingPlayerActionService.StagingProof(staged)));
+        else
+        {
+            var escaped = staged.ManifestJson;
+            foreach(var name in new[]{"browserActionId","browserSessionGeneration","browserOriginalMainCondition"})
+                escaped = escaped.Replace("\"" + name + "\"", "\"\\u0062" + name[1..] + "\"", StringComparison.Ordinal);
+            Assert.DoesNotContain("\"browserActionId\"", escaped);
+            // JSON semantics and signed typed hash remain original; only spelling changes.
+            Assert.True(JsonNode.DeepEquals(JsonNode.Parse(staged.ManifestJson), JsonNode.Parse(escaped)));
+            File.WriteAllText(_fs.ResolvePath("game_state/control/pending_turn_snapshot.json"), escaped);
+            if(damage == "missing-escaped") File.Delete(pending);
+            else File.WriteAllText(pending, staged.Binding.Json);
+        }
+        var before = OriginalAdmissionTree();
+        var recoveries = 0;
+        var cold = new FileSystemManager(_fs.BasePath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            { LocalPublicationRecoveryObserver = (_, _) => recoveries++ });
+        await Assert.ThrowsAsync<InvalidDataException>(async () => { await using var lease = await cold.AcquireCanonicalWriteLeaseAsync(); });
+        Assert.Equal(0, recoveries);
+        AssertOriginalAdmissionTree(before);
+    }
+
+    [Theory]
+    [InlineData("backup")]
+    [InlineData("unrelated-rollback")]
+    public async Task BrowserOriginalAdmission_WarmCleanupCannotDeleteSubstitutedOrUnownedArtifact(string damage)
+    {
+        var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+        await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, staged.Binding.Generation, async () =>
+        {
+            using var original = _fs.BeginBrowserOriginalOperation(staged.Binding, staged);
+            _ = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "ClaimBrowserTerminalAsync", staged);
+            var path = damage == "backup"
+                ? JsonNode.Parse(staged.ManifestJson)!["rollbackBackups"]!.AsObject().First().Value!.GetValue<string>()
+                : "game_state/core/unrelated.rollback.another-owner";
+            File.WriteAllText(_fs.ResolvePath(path), "Changed bytes belong to a different cleanup authority.");
+            var before = OriginalAdmissionTree();
+            await Assert.ThrowsAsync<InvalidDataException>(() => InvokePrivateTaskAsync(engine, "CleanupPendingTurnSnapshotAsync"));
+            AssertOriginalAdmissionTree(before);
+            return true;
+        });
+    }
+
     private sealed class C5RecoveryInterruption : Exception { }
 
     private Dictionary<string, byte[]> OriginalAdmissionTree() => Directory.EnumerateFiles(_fs.BasePath, "*", SearchOption.AllDirectories)

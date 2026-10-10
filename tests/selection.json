@@ -2,6 +2,15 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-original-browser-review-refusals",
+            "reason": "Independent Astra Important findings at566: status strings and raw marker matching must not bypass original recovery; private warm cleanup must retain exact bytes/inventory instead of deleting substituted/unowned artifacts.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
             "category": "c5-original-browser-recovery-admission",
             "reason": "Actual original signed staging must bind actual guarded original condition and refuse changed/missing/downgraded proof before cold admission and locked recovery.",
             "contracts": [

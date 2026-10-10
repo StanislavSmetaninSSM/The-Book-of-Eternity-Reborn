@@ -1,0 +1,39 @@
+{
+  "SourceSHA": "5661dc5cbc2d93a0348dc3e653575cfffaa1d356",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-browser-recovery-admission\",\"c5-original-browser-pending-recovery\")'",
+  "Status": "11/11 PASS55.0595734s,complete0skip/duplicate/timeout/cleanupcomplete; Important review gaps open",
+  "Scope": "Only initial original quiescent/exact staged tuple/snapshot/pending unrelated recovery witness; completedphase/escapedJSON/cleanup stillunqualified",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "1683cdfbfdd2937a1ceaa5343573ab5aa9885c8b2e23c41c45587e656f1a6750",
+      "RawBytes": 3134
+    },
+    {
+      "Path": "runner/c5-original-browser-pending-recovery-integration-001.trx.gz",
+      "RawSHA256": "759fbacdbc0450dae36710b6cc5f90f933686426e2d6d07e04280275b43eea5a",
+      "RawBytes": 4784
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "3ed59444afc28c869d3899ddd62364faad83970714e35463842a022990410817",
+      "RawBytes": 1783
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "6b099ece2fbc2949413da7528d9600ad7716dd8db02438663a913f12de6f5c94",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/c5-original-browser-recovery-admission-integration-002.trx.gz",
+      "RawSHA256": "ef4c08e0f0b4829fd90fba50f1f8c8899fb206dc1e2212fde40d192559c38219",
+      "RawBytes": 15906
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "18256b61f537e2ed4c6334e619cf458c0719eeee4cc825f5bcbd25de806435b8",
+      "RawBytes": 1663578
+    }
+  ]
+}

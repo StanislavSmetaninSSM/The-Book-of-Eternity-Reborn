@@ -2,6 +2,33 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-original-browser-review-refusals",
+            "responsibility": "Original actual pending publication refuses forged completed phases/escaped browser proof classification; warm owning cleanup refuses changed backup or unrelated wildcard artifact.",
+            "excludes": "Actual Program/React staged-idle crash, active original owner native propagation, Windows and live model qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 4,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_PhaseOrEscapedPropertyCannotBypassPendingRecovery",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_WarmCleanupCannotDeleteSubstitutedOrUnownedArtifact"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-original-browser-pending-recovery",
             "responsibility": "Actual original owned interrupted publication remains byte-for-byte unchanged when original staged tuple changes after physical canonical lock; same proof permits ordinary recovery.",
             "excludes": "Actual Program/React staged-idle crash, active original owner native propagation, Windows and live model qualification.",
