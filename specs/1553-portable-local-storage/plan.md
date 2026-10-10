@@ -1,3 +1,7 @@
+### C5 component preparation correction — 2026-10-10
+
+bf3cb850 category0tests39.8389320s: fresh integration compile fails because new hook fixture omitted existing physical load operations constructor argument. Not behavioral RED. Correct explicit existing constructor argument; shared production remains unchanged; new9 UNRUN. [Raw preparation](recovery/linux-game-chains-20261010/c5-browser-admission-build-preparation-fail/manifest.json).
+
 ### C5 original owner bounded GREEN; shared recovery test-first — 2026-10-10
 
 8a7ddd60 freshunit14/14PASS83.9903312s,complete2descriptors0skip/duplicate/timeout/ownedcleanupcomplete. Newexpected8 plus existing original6 including omitted-expectation caller, clientpositive/query/shutdown and lostactivation/close guards. [Raw GREEN](recovery/linux-game-chains-20261010/c5-original-run-admission-green/manifest.json). Independent Astra noCritical/Important in owner boundary; sharedclient/recovery/lifetime not accepted. Newactual staging9 componentcontrols test-firstUNRUN: manifestmustcapture real guarded quiescence; missing/downgradedslot, changedrequest/manifest/authority/snapshot; absent→stopped; originaltuple changed at actual physical lock. Uses genuine old engine staging and independent freshFS; no decoded proof becomes owner, no storage write expected on refusal. Scope client-owned refusal witness, no GM-authoring contract.

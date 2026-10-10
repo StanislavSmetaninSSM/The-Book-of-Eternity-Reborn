@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.IO;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmRuntime;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -69,7 +70,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         var (_, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
         var invoked = false;
-        var cold = new FileSystemManager(_fs.BasePath, NullLogger<FileSystemManager>.Instance, hooks: new FileSystemManagerHooks
+        var cold = new FileSystemManager(_fs.BasePath, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, hooks: new FileSystemManagerHooks
         {
             AfterCanonicalWriteLockOpenedAsync = () =>
             {
