@@ -180,11 +180,9 @@ def author_packet(request_dir, ordinal):
     guardian = guardians["guardians"][0]
     actor = guardian["canonicalName"]
     thought = "Я запомню самостоятельный выбор души осмотреть берег, проверочный след " + str(ordinal) + "."
-    musing = {"turn": ordinal, "topic": "soul_assessment", "mood": "calm", "thought": thought}
-    guardian.setdefault("musings", []).append(musing)
-    active = guardians.get("activeGuardian")
-    if isinstance(active, dict) and active.get("guardianId") == guardian["guardianId"]:
-        active.setdefault("musings", []).append(musing.copy())
+    # Submit the documented command; the kernel owns the canonical after-image.
+    musing = {"turn": ordinal, "topic": "soul_assessment", "mood": "intrigued", "text": thought}
+    guardians["UpdateGuardians"] = [{"command": "addMusings", "guardianId": guardian["guardianId"], "musings": [musing]}]
     thoughts = "\n".join(["## NPC Scope", "- Mode: Scene-local", "- Relevant actors: " + actor,
                            "- Why relevant: Хранитель наблюдает за выбором души и сохраняет свою реакцию.",
                            "- Actors outside scope: нет", "- Why outside scope: Самостоятельные акторы не участвуют.",
@@ -201,7 +199,7 @@ def author_packet(request_dir, ordinal):
                            "- Chosen strategy: Наблюдать.",
                            "- Rejected alternatives: Душа не просила совета.",
                            "- Actions: Хранитель наблюдает и запоминает выбор души.",
-                           "- State changes: game_state/meta/guardians.json guardians[].musings и activeGuardian.musings: новая first-person запись, старые записи сохранены.",
+                           "- State changes: UpdateGuardians.addMusings в game_state/meta/guardians.json: одна новая first-person запись, старые записи сохраняет kernel.",
                            "- Детерминированная тестовая заготовка; провайдер не вызван."])
     writes = {"game_state/meta/guardians.json": guardians,
               "game_state/control/progression_report.json": {"progressionProcessingReport": report},

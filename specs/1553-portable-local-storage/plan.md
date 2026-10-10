@@ -1,3 +1,17 @@
+## C1 Guardian command authority fixture correction — WIP
+
+Source `81d159cefd22733507cf4ea5d3d931b004acf30f`: C1 **FAIL1/1**,
+70.9840251s,0skip/duplicate/timeout; helperExecuted/exit0/I-Otrue,
+accepted0/modelCalls0; [raw packet](recovery/linux-game-chains-20261010/c1-guardian-authority-fixture-fail/manifest.json).
+Actual validator отказал direct canonical musings mutation:
+`guardian_materialized_state_outside_authority`, а fixture mood `calm` не входит
+в canonical enum. Runtime/validator correctly refused; this is not storage RED.
+Автор исправлен через существующий `UpdateGuardians`/`addMusings` с одним новым
+turn/topic/mood/text, mood `intrigued`; original canonical поля сохраняются, after-image
+формирует kernel. Полный addMusings validator и mood enum прочитаны. Никаких
+relaxed guards/new game rules. Exact initial helper/profile/authority errors
+сохранены; не считаются accepted game turns. GREEN ещё UNRUN.
+
 ## C1 actual helper execution / actor contract FAIL — WIP
 
 Source `f95da76f91ea960ce2f9a3ad2a63aff5d10d106e`: actual C1
