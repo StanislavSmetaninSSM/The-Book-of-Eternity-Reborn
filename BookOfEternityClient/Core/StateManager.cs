@@ -180,6 +180,12 @@ public partial class StateManager
         await RefreshGameStateCoreAsync(writeLease);
     }
 
+    internal Task RefreshGameStateReadOnlyAsync(FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        _fs.VerifyCurrentSessionOperation(writeLease);
+        return RefreshGameStateCoreAsync(writeLease);
+    }
+
     private async Task RefreshGameStateCoreAsync(
         FileSystemManager.CanonicalWriteLease writeLease)
     {

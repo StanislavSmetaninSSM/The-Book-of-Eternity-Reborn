@@ -39,6 +39,10 @@ public partial class GameEngine
         public List<string> RollbackBaselineFiles { get; set; } = new();
         public string? SourceLabel { get; set; }
         public string ManifestPayloadHash { get; set; } = "";
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? BrowserActionId { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? BrowserSessionGeneration { get; set; }
     }
 
     private sealed class RollbackSnapshot

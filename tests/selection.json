@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "player-input-draft-preservation",
-      "reason": "T069 native browser wake must preserve full multiline/clipboard draft; causal RED first against existing TextComposer interruption behavior.",
+      "reason": "T069 shared TextComposer draft plus player-only cooperative key arbitration; component proof only. Causal draft RED preserved; actual original C5 FAIL separately owns native web delivery.",
       "contracts": [
         "#1553",
         "T069-C5-ORDINARY-CONSUMER"

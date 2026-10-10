@@ -67,6 +67,40 @@ public class StoryService
         }
     }
 
+    internal async Task<PendingPlayerActionService.StoryProof> AppendOriginalBrowserTurnAsync(
+        FileSystemManager.CanonicalWriteLease lease, PendingPlayerActionService.Binding binding,
+        int turnNumber, string realm, int incarnation, string? narrative, string? location,
+        IReadOnlyCollection<StoryEntityRef>? entityRefs)
+    {
+        _fs.VerifyCurrentSessionOperation(lease);
+        if (_fs.GetOrCreateSessionGeneration(lease) != binding.Generation)
+            throw new SessionReplacedException("Сессия браузерного хода изменилась.", binding.Generation,
+                _fs.GetOrCreateSessionGeneration(lease));
+        var path = GetStoryPath(realm, incarnation);
+        var before = await _fs.ReadFileBytesAsync(lease, path) ?? Encoding.UTF8.GetPreamble();
+        var previousText = Encoding.UTF8.GetString(before).TrimStart('\uFEFF');
+        foreach (var line in previousText.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var previous = StrictJsonAuthority.Deserialize<StoryEntry>(line, JsonOpts, "story entry")!;
+            if (previous.RequestId == binding.ActionId && previous.SessionGeneration == binding.Generation)
+                throw new InvalidDataException("Исходный браузерный ход уже записан; повтор остановлен.");
+        }
+        var row = JsonSerializer.Serialize(new StoryEntry
+        {
+            Turn = turnNumber, Timestamp = DateTime.UtcNow.ToString("o"), Realm = realm,
+            Player = binding.Action, Narrative = narrative ?? "", Location = location,
+            EntityRefs = entityRefs?.ToList(), RequestId = binding.ActionId,
+            SessionGeneration = binding.Generation
+        }, JsonOpts);
+        await _fs.AppendFileAtomicAsync(lease, path, row + "\n");
+        var actual = await _fs.ReadFileBytesAsync(lease, path)
+            ?? throw new IOException("Accepted story readback is absent.");
+        var expected = before.Concat(Encoding.UTF8.GetBytes(row + "\n")).ToArray();
+        if (!actual.AsSpan().SequenceEqual(expected))
+            throw new IOException("Accepted story readback did not preserve the original prefix and exact row.");
+        return new(path, actual.Length, PendingPlayerActionService.Hash(actual), row);
+    }
+
     /// <summary>
     /// Appends a special marker entry (death, incarnation, transition).
     /// </summary>
@@ -257,6 +291,12 @@ public class StoryService
 
 public class StoryEntry
 {
+    [JsonPropertyName("requestId")]
+    public string? RequestId { get; set; }
+
+    [JsonPropertyName("sessionGeneration")]
+    public string? SessionGeneration { get; set; }
+
     [JsonPropertyName("turn")]
     public int Turn { get; set; }
 

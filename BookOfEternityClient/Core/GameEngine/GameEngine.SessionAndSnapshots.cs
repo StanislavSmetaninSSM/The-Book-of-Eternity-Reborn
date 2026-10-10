@@ -386,11 +386,12 @@ public partial class GameEngine
 
     private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(TurnRequest request,
         RollbackSnapshot? rollbackSnapshot = null,
-        string? sourceLabel = null)
+        string? sourceLabel = null,
+        PendingPlayerActionService.Binding? browserAction = null)
     {
         var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         CoordinatedStatePublicationUncertainException? uncertainty = null;
-        try { return await CreateCanonicalBaselineSnapshotAsync(writeLease, request, rollbackSnapshot, sourceLabel); }
+        try { return await CreateCanonicalBaselineSnapshotAsync(writeLease, request, rollbackSnapshot, sourceLabel, browserAction); }
         catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
         finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
     }
@@ -399,7 +400,8 @@ public partial class GameEngine
         FileSystemManager.CanonicalWriteLease writeLease,
         TurnRequest request,
         RollbackSnapshot? rollbackSnapshot = null,
-        string? sourceLabel = null)
+        string? sourceLabel = null,
+        PendingPlayerActionService.Binding? browserAction = null)
     {
         RequireExactEngineSnapshotInventory(writeLease, rollbackSnapshot);
         await DeleteTerminalProtocolFailureRequestAsync(writeLease);
@@ -520,7 +522,9 @@ public partial class GameEngine
             RollbackBaselineFiles = rollbackBaselineFiles
                 .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
                 .ToList(),
-            SourceLabel = sourceLabel
+            SourceLabel = sourceLabel,
+            BrowserActionId = browserAction?.ActionId,
+            BrowserSessionGeneration = browserAction?.Generation
         };
         manifest.ManifestPayloadHash = ComputePendingTurnManifestPayloadHash(manifest);
         var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(

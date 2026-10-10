@@ -194,11 +194,19 @@ public partial class GameEngine
         else
             Console.InputEncoding = System.Text.Encoding.UTF8;
 
+        var stagedBrowserRecovery = false;
+        try { stagedBrowserRecovery = (await ClassifyBrowserRecoveryAsync())?.Phase == "staged"; }
+        catch (Exception failure) when (failure is InvalidOperationException or InvalidDataException or JsonException)
+        {
+            AnsiConsole.MarkupLine($"[yellow]{BrowserRecoveryMessage}[/]");
+            return;
+        }
         await _stateManager.BootstrapLocalStorageAsync();
         _loc.CurrentLanguage = _stateManager.Settings.Language;
         _consoleAppearance.ApplyConfiguredFontSize();
         await _audioService.ApplySettingsAsync();
-        await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
+        if (!stagedBrowserRecovery)
+            await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
 
         while (_isRunning)
         {

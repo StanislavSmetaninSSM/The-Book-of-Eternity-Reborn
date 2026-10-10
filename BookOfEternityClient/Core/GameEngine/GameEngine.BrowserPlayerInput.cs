@@ -1,0 +1,249 @@
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+using Spectre.Console;
+
+namespace BookOfEternityClient.Core;
+
+public partial class GameEngine
+{
+    private PendingPlayerActionService.Binding? _selectedBrowserAction;
+    private string? _preservedPlayerDraft;
+    private bool _preservedPlayerDraftMultiline;
+
+    private const string BrowserRecoveryMessage =
+        "Предыдущее действие требует восстановления. Повторная отправка остановлена; исходные данные сохранены.";
+
+    private async Task<T> WithPendingActionLeaseAsync<T>(Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)
+    {
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        {
+            var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            Exception? failure = null;
+            try { return await operation(lease); }
+            catch (Exception caught) { failure = caught; throw; }
+            finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, failure); }
+        });
+    }
+
+    // Presence only: it does not read state, recover publications or grant permission.
+    private bool HasBrowserInputWakeHint() => File.Exists(_fs.ResolvePath(PendingPlayerActionService.PendingPath));
+
+    private async Task<string> ReadCooperativePlayerDraftAsync(bool multiline)
+    {
+        var selected = await SelectQueuedBrowserActionAsync();
+        if (selected != null)
+        {
+            _selectedBrowserAction = selected;
+            return selected.Action;
+        }
+        var preserved = _preservedPlayerDraft;
+        if (!string.IsNullOrEmpty(preserved))
+            AnsiConsole.MarkupLine($"[dim]Сохранённый черновик (Enter = подтвердить):[/] {Markup.Escape(preserved)}");
+        var console = ReferenceEquals(_inputSource, SystemConsoleInputSource.Instance) && !Console.IsInputRedirected
+            ? new StandardTextComposerConsole(new CooperativePlayerInputSource(_inputSource, HasBrowserInputWakeHint, Console.Write))
+            : _textComposerConsole;
+        string value;
+        try
+        {
+            value = TextComposer.Read(console, _clipboardService, new TextComposerOptions
+            {
+                PromptMarkup = multiline ? "[cyan]│[/]" : "[bold green3] > [/]",
+                PreserveNewlines = true, DefaultValue = preserved,
+                Mode = multiline ? TextComposerMode.MultilineEditor : TextComposerMode.Immediate,
+                HelpMarkup = multiline ? "[dim]Две пустые строки подряд = отправить. \\p = вставка из буфера.[/]" : null
+            });
+        }
+        catch (TextComposerInputClosedException interrupted) when (interrupted.Interrupted)
+        {
+            _preservedPlayerDraft = interrupted.Draft;
+            _preservedPlayerDraftMultiline = multiline;
+            selected = await SelectQueuedBrowserActionAsync();
+            if (selected == null) throw new InvalidOperationException(BrowserRecoveryMessage);
+            _selectedBrowserAction = selected;
+            return selected.Action;
+        }
+        // Re-arbitrate after the bounded paste drain. If browser wins, keep all
+        // completed console text as a draft for the next ordinary prompt.
+        _preservedPlayerDraft = value;
+        _preservedPlayerDraftMultiline = multiline;
+        selected = await SelectQueuedBrowserActionAsync();
+        if (selected != null)
+        {
+            _selectedBrowserAction = selected;
+            return selected.Action;
+        }
+        _preservedPlayerDraft = null;
+        _preservedPlayerDraftMultiline = false;
+        return value;
+    }
+
+    private async Task<PendingPlayerActionService.Binding?> SelectQueuedBrowserActionAsync()
+    {
+        if (!HasBrowserInputWakeHint()) return null;
+        return await WithPendingActionLeaseAsync(async lease =>
+        {
+            var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
+            if (state == null) return null;
+            if (state.Phase != "queued") throw new InvalidOperationException(BrowserRecoveryMessage);
+            if (_fs.FileExists(lease, "input/turn_request.json"))
+                throw new InvalidOperationException(BrowserRecoveryMessage);
+            return state.Binding;
+        });
+    }
+
+    private async Task<PendingPlayerActionService.State?> ClassifyBrowserRecoveryAsync()
+    {
+        if (!HasBrowserInputWakeHint()) return null;
+        return await WithPendingActionLeaseAsync(async lease =>
+        {
+            var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
+            if (state == null || state.Phase == "queued") return state;
+            if (state.Phase is "preparing" or "terminalProcessing")
+                throw new InvalidOperationException(BrowserRecoveryMessage);
+            var staged = PendingPlayerActionService.ReadStaged(state);
+            var manifest = ValidateDetachedBrowserBinding(staged);
+            if (state.Phase == "accepted")
+            {
+                await ValidateAcceptedBrowserRecordAsync(lease, state, manifest);
+                await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, null);
+                return null;
+            }
+            if (await _fs.ReadFileAsync(lease, "input/turn_request.json") != staged.RequestJson ||
+                await _fs.ReadFileAsync(lease, PendingTurnSnapshotManifestPath) != staged.ManifestJson ||
+                await _fs.ReadFileAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath) != staged.AuthorityJson ||
+                await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false) == null)
+                throw new InvalidOperationException(BrowserRecoveryMessage);
+            return state;
+        });
+    }
+
+    private PendingTurnSnapshotManifest ValidateDetachedBrowserBinding(PendingPlayerActionService.Staged staged)
+    {
+        var manifest = StrictJsonAuthority.Deserialize<PendingTurnSnapshotManifest>(staged.ManifestJson, JsonOpts, "original browser snapshot")
+            ?? throw new InvalidDataException(BrowserRecoveryMessage);
+        var request = StrictJsonAuthority.Deserialize<TurnRequest>(staged.RequestJson, JsonOpts, "original browser request")
+            ?? throw new InvalidDataException(BrowserRecoveryMessage);
+        if (!PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(staged.AuthorityJson, out var authority) ||
+            authority == null || ComputePendingTurnManifestPayloadHash(manifest) != manifest.ManifestPayloadHash ||
+            authority.ManifestPayloadHash != manifest.ManifestPayloadHash || authority.RequestId != manifest.RequestId ||
+            authority.SessionId != manifest.SessionId || authority.TurnNumber != manifest.TurnNumber ||
+            manifest.BrowserActionId != staged.Binding.ActionId || manifest.BrowserSessionGeneration != staged.Binding.Generation ||
+            manifest.RequestId != staged.Binding.ActionId || request.RequestId != manifest.RequestId ||
+            request.SessionId != manifest.SessionId || request.TurnNumber != manifest.TurnNumber ||
+            request.Timestamp != manifest.RequestTimestamp || request.PlayerAction != staged.Binding.Action ||
+            manifest.PlayerAction != staged.Binding.Action || manifest.SourceLabel != OrdinaryPlayerTurnSourceLabel)
+            throw new InvalidDataException(BrowserRecoveryMessage);
+        return manifest;
+    }
+
+    private Task<bool> ClaimBrowserPreparationAsync(PendingPlayerActionService.Binding binding) =>
+        WithPendingActionLeaseAsync(async lease =>
+        {
+            var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
+            if (state?.Phase != "queued" || state.Json != binding.Json)
+                throw new InvalidOperationException(BrowserRecoveryMessage);
+            await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json,
+                PendingPlayerActionService.CreatePhase(state, "preparing"));
+            return true;
+        });
+
+    private Task<PendingPlayerActionService.Staged> PublishBrowserStagingAsync(
+        PendingPlayerActionService.Binding binding, string requestJson) => WithPendingActionLeaseAsync(async lease =>
+    {
+        var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
+        if (state?.Phase != "preparing" || state.Binding.ActionId != binding.ActionId)
+            throw new InvalidOperationException(BrowserRecoveryMessage);
+        var captured = new PendingPlayerActionService.Staged(binding, requestJson,
+            await _fs.ReadFileAsync(lease, PendingTurnSnapshotManifestPath) ?? throw new InvalidDataException(BrowserRecoveryMessage),
+            await _fs.ReadFileAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath) ?? throw new InvalidDataException(BrowserRecoveryMessage), "");
+        ValidateDetachedBrowserBinding(captured);
+        var stagedJson = PendingPlayerActionService.CreatePhase(state, "staged", PendingPlayerActionService.StagingProof(captured));
+        await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, stagedJson,
+            new("input/turn_request.json", await _fs.ReadFileAsync(lease, "input/turn_request.json"), requestJson, RequireCurrentBaseline: true));
+        return captured with { Json = stagedJson };
+    });
+
+    private Task<PendingPlayerActionService.Staged> ClaimBrowserTerminalAsync(PendingPlayerActionService.Staged staged) =>
+        WithPendingActionLeaseAsync(async lease =>
+        {
+            var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
+            if (state?.Phase != "staged" || state.Json != staged.Json)
+                throw new InvalidOperationException(BrowserRecoveryMessage);
+            ValidateDetachedBrowserBinding(staged);
+            var processingJson = PendingPlayerActionService.CreatePhase(state, "terminalProcessing", PendingPlayerActionService.StagingProof(staged));
+            await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, processingJson);
+            return staged with { Json = processingJson };
+        });
+
+    private Task<PendingPlayerActionService.StoryProof> AppendBrowserStoryAsync(
+        PendingPlayerActionService.Staged staged, GameResponse? response, string? location,
+        IReadOnlyCollection<StoryEntityRef>? refs) => WithPendingActionLeaseAsync(lease =>
+            _storyService.AppendOriginalBrowserTurnAsync(lease, staged.Binding,
+                ValidateDetachedBrowserBinding(staged).TurnNumber,
+                _stateManager.CurrentState.CurrentRealm ?? "Chaos Sea", _stateManager.CurrentState.Incarnation,
+                response?.Response, location, refs));
+
+    private static IEnumerable<string> OriginalBrowserArtifactInventory(PendingTurnSnapshotManifest manifest) =>
+        manifest.Files.Values.Concat(manifest.RollbackBackups.Values).Concat([
+            PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,
+            "input/turn_request.json", "ready/turn_complete.json", "ready/turn_error.json"])
+            .Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal);
+
+    private Task<bool> FinishAcceptedBrowserActionAsync(PendingPlayerActionService.Staged staged,
+        PendingPlayerActionService.StoryProof story) => WithPendingActionLeaseAsync(async lease =>
+    {
+        var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
+        if (state?.Phase != "terminalProcessing" || state.Json != staged.Json)
+            throw new InvalidOperationException(BrowserRecoveryMessage);
+        var manifest = ValidateDetachedBrowserBinding(staged);
+        var inventory = new JsonObject();
+        foreach (var path in OriginalBrowserArtifactInventory(manifest))
+        {
+            // Completed ordinary tail must have removed only its original artifacts.
+            // A child/current request or partial cleanup cannot certify completion.
+            if (_fs.FileExists(lease, path)) throw new InvalidOperationException(BrowserRecoveryMessage);
+            inventory[path] = false;
+        }
+        var proof = PendingPlayerActionService.StagingProof(staged);
+        proof["terminalDisposition"] = "ordinaryAcceptedAndCleanupComplete";
+        proof["cleanupInventory"] = inventory;
+        proof["story"] = JsonSerializer.SerializeToNode(story, JsonOpts);
+        var acceptedJson = PendingPlayerActionService.CreatePhase(state, "accepted", proof);
+        await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, acceptedJson);
+        return true;
+    });
+
+    private async Task ValidateAcceptedBrowserRecordAsync(FileSystemManager.CanonicalWriteLease lease,
+        PendingPlayerActionService.State state, PendingTurnSnapshotManifest manifest)
+    {
+        var proof = JsonNode.Parse(state.ProofJson!)!.AsObject();
+        if (proof["terminalDisposition"]?.GetValue<string>() != "ordinaryAcceptedAndCleanupComplete")
+            throw new InvalidDataException(BrowserRecoveryMessage);
+        var inventory = proof["cleanupInventory"]?.AsObject() ?? throw new InvalidDataException(BrowserRecoveryMessage);
+        var expectedInventory = OriginalBrowserArtifactInventory(manifest).ToArray();
+        if (inventory.Count != expectedInventory.Length) throw new InvalidDataException(BrowserRecoveryMessage);
+        foreach (var path in expectedInventory)
+            if (inventory[path]?.GetValue<bool>() != false || _fs.FileExists(lease, path))
+                throw new InvalidDataException(BrowserRecoveryMessage);
+        var story = proof["story"]?.Deserialize<PendingPlayerActionService.StoryProof>(JsonOpts)
+            ?? throw new InvalidDataException(BrowserRecoveryMessage);
+        if (!story.Path.StartsWith("stories/", StringComparison.Ordinal) || story.Path.Contains("..") ||
+            story.Path.Contains('\\') || !story.Path.EndsWith(".jsonl", StringComparison.Ordinal) || story.PrefixBytes <= 0)
+            throw new InvalidDataException(BrowserRecoveryMessage);
+        var bytes = await _fs.ReadFileBytesAsync(lease, story.Path);
+        if (bytes == null || bytes.Length < story.PrefixBytes ||
+            PendingPlayerActionService.Hash(bytes[..story.PrefixBytes]) != story.PrefixHash)
+            throw new InvalidDataException(BrowserRecoveryMessage);
+        var row = StrictJsonAuthority.Deserialize<StoryEntry>(story.RowJson, JsonOpts, "accepted browser row")!;
+        var lines = Encoding.UTF8.GetString(bytes).TrimStart('\uFEFF').Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        if (row.RequestId != state.Binding.ActionId || row.SessionGeneration != state.Binding.Generation ||
+            row.Player != state.Binding.Action || row.Turn != manifest.TurnNumber ||
+            lines.Count(line => line == story.RowJson) != 1 ||
+            lines.Select(line => StrictJsonAuthority.Deserialize<StoryEntry>(line, JsonOpts, "browser story history")!)
+                .Count(entry => entry.RequestId == row.RequestId && entry.SessionGeneration == row.SessionGeneration) != 1)
+            throw new InvalidDataException(BrowserRecoveryMessage);
+    }
+}

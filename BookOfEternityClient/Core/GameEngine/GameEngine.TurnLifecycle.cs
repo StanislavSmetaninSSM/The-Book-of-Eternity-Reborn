@@ -847,6 +847,14 @@ public partial class GameEngine
     {
         return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var pendingBrowserState = await ClassifyBrowserRecoveryAsync();
+        PendingPlayerActionService.Staged? lateBrowserStaged = null;
+        PendingPlayerActionService.StoryProof? lateBrowserStory = null;
+        if (pendingBrowserState?.Phase == "staged" && !HasTerminalReadySignal())
+        {
+            await Task.Delay(250);
+            return true;
+        }
         var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
             await InvokeSessionFinalizationCheckpointAsync(
                 SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound);
@@ -864,6 +872,15 @@ public partial class GameEngine
             var errorSignal = ParseReadySignalMetadata(
                 terminalSignals.ErrorJson,
                 "ready/turn_error.json");
+            if (pendingBrowserState?.Phase == "staged")
+            {
+                var signal = completionSignal ?? errorSignal;
+                if (snapshotContext == null || signal == null ||
+                    signal.RequestId != snapshotContext.RequestId || signal.SessionId != snapshotContext.SessionId ||
+                    signal.TurnNumber != snapshotContext.TurnNumber)
+                    throw new InvalidOperationException(BrowserRecoveryMessage);
+                lateBrowserStaged = await ClaimBrowserTerminalAsync(PendingPlayerActionService.ReadStaged(pendingBrowserState));
+            }
             var concurrentResolution = await ResolveConcurrentActiveTerminalSignalsAsync(
                 terminalSignals,
                 completionSignal,
@@ -978,14 +995,13 @@ public partial class GameEngine
                     _gameLoop.IncrementTurn();
 
                     var state = _stateManager.CurrentState;
-                    await _storyService.AppendTurnAsync(
-                        _gameLoop.TurnNumber,
-                        state.CurrentRealm ?? "Chaos Sea",
-                        state.Incarnation,
-                        lateAction,
-                        lateResponse?.Response,
-                        state.CurrentLocation,
-                        await ExtractStoryEntityRefsAsync(lateAction));
+                    var lateStoryRefs = await ExtractStoryEntityRefsAsync(lateAction);
+                    if (lateBrowserStaged != null)
+                        lateBrowserStory = await AppendBrowserStoryAsync(lateBrowserStaged, lateResponse, state.CurrentLocation, lateStoryRefs);
+                    else
+                        await _storyService.AppendTurnAsync(
+                            _gameLoop.TurnNumber, state.CurrentRealm ?? "Chaos Sea", state.Incarnation,
+                            lateAction, lateResponse?.Response, state.CurrentLocation, lateStoryRefs);
 
                     await ProcessMortalProgressionAfterAcceptedTurnAsync();
                     if (await CheckLifeTransitions(snapshotContext))
@@ -1029,7 +1045,14 @@ public partial class GameEngine
                 if (acceptedLateResponse)
                 {
                     if (!await CheckGmIncarnationTrigger(snapshotContext))
+                    {
                         await CleanupAcceptedTurnTerminalArtifactsAsync();
+                        if (lateBrowserStaged != null && lateBrowserStory != null)
+                        {
+                            await FinishAcceptedBrowserActionAsync(lateBrowserStaged, lateBrowserStory);
+                            await ClassifyBrowserRecoveryAsync();
+                        }
+                    }
                 }
                 else
                 {
@@ -1093,15 +1116,19 @@ public partial class GameEngine
     private async Task EnterGameLoop()
     {
         if (_blockedLoadContinuation != null) return;
+        var stagedBrowserRecovery = (await ClassifyBrowserRecoveryAsync())?.Phase == "staged";
         _inGame = true;
         await _audioService.PlayInGameMusicAsync();
-        await NormalizePendingRepairArtifactsAsync();
-        await NormalizePendingTerminalProtocolFailureArtifactsAsync();
+        if (!stagedBrowserRecovery)
+        {
+            await NormalizePendingRepairArtifactsAsync();
+            await NormalizePendingTerminalProtocolFailureArtifactsAsync();
+        }
 
         // Check if there's already a correlated completion signal waiting
         if (_fs.FileExists("ready/turn_complete.json"))
         {
-            await RefreshRuntimeStateAsync();
+            if (!stagedBrowserRecovery) await RefreshRuntimeStateAsync();
         }
 
         while (_inGame && _blockedLoadContinuation == null)
@@ -1259,7 +1286,9 @@ public partial class GameEngine
             }
 
             // Send to GM
-            await ProcessPlayerTurn(input);
+            var browserAction = _selectedBrowserAction;
+            _selectedBrowserAction = null;
+            await ProcessPlayerTurn(input, browserAction: browserAction);
 
             }
             catch (SessionReplacedException ex)
@@ -1340,7 +1369,8 @@ public partial class GameEngine
         string? extraSystemReminder = null,
         string? waitingTitle = null,
         string? waitingText = null,
-        bool playerFacingTurn = true)
+        bool playerFacingTurn = true,
+        PendingPlayerActionService.Binding? browserAction = null)
     {
         await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
@@ -1348,10 +1378,14 @@ public partial class GameEngine
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
             return;
 
+        if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);
+
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
         RollbackSnapshot? backedUpFiles = null;
         TurnRequest? request = null;
         ValidatedPendingTurnSnapshotContext? activeSnapshotContext = null;
+        PendingPlayerActionService.Staged? browserStaged = null;
+        PendingPlayerActionService.StoryProof? browserStory = null;
 
         try
         {
@@ -1370,6 +1404,7 @@ public partial class GameEngine
                 GameMode = _stateManager.Settings.AllowHistoryManipulation ? "debug" : "normal",
                 SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)
             };
+            if (browserAction != null) request.RequestId = browserAction.ActionId;
             request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
             await AttachPendingDiceAndGachaAsync(request);
             request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
@@ -1381,7 +1416,7 @@ public partial class GameEngine
                 .CreateGmCatalog()
                 .DeepClone()
                 .AsObject();
-            var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
+            var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel, browserAction);
 
             // Attach computed characteristics for GM reference
             try
@@ -1410,8 +1445,11 @@ public partial class GameEngine
             }
 
             ClearTransientOutputFiles();
-            await _fs.WriteFileAtomicAsync("input/turn_request.json",
-                JsonSerializer.Serialize(request, JsonOpts));
+            var requestJson = JsonSerializer.Serialize(request, JsonOpts);
+            if (browserAction != null)
+                browserStaged = await PublishBrowserStagingAsync(browserAction, requestJson);
+            else
+                await _fs.WriteFileAtomicAsync("input/turn_request.json", requestJson);
 
             var activeManifest = await LoadPendingTurnSnapshotManifestAsync();
             activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
@@ -1505,6 +1543,7 @@ public partial class GameEngine
         var terminalSignals = await CaptureBoundTerminalSignalSnapshotAsync();
         await InvokeSessionFinalizationCheckpointAsync(
             SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution);
+        if (browserStaged != null) browserStaged = await ClaimBrowserTerminalAsync(browserStaged);
         var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(
             activeSnapshotContext,
             backedUpFiles,
@@ -1584,14 +1623,13 @@ public partial class GameEngine
 
             // Persist turn to story file
             var state = _stateManager.CurrentState;
-            await _storyService.AppendTurnAsync(
-                _gameLoop.TurnNumber,
-                state.CurrentRealm ?? "Chaos Sea",
-                state.Incarnation,
-                action,
-                response?.Response,
-                state.CurrentLocation,
-                await ExtractStoryEntityRefsAsync(action));
+            var storyRefs = await ExtractStoryEntityRefsAsync(action);
+            if (browserStaged != null)
+                browserStory = await AppendBrowserStoryAsync(browserStaged, response, state.CurrentLocation, storyRefs);
+            else
+                await _storyService.AppendTurnAsync(
+                    _gameLoop.TurnNumber, state.CurrentRealm ?? "Chaos Sea", state.Incarnation,
+                    action, response?.Response, state.CurrentLocation, storyRefs);
 
             await ProcessMortalProgressionAfterAcceptedTurnAsync();
 
@@ -1631,6 +1669,11 @@ public partial class GameEngine
 
         CleanupBackup(backedUpFiles);
         await CleanupAcceptedTurnTerminalArtifactsAsync();
+        if (browserStaged != null && browserStory != null)
+        {
+            await FinishAcceptedBrowserActionAsync(browserStaged, browserStory);
+            await ClassifyBrowserRecoveryAsync();
+        }
         });
     }
 
@@ -4082,14 +4125,8 @@ public partial class GameEngine
 
         // Single-line mode by default: Enter sends immediately
         var promptChar = isChaosSea ? "🌊" : "⚔️";
-        var firstLine = TextComposer.Read(
-            _textComposerConsole,
-            _clipboardService,
-            new TextComposerOptions
-            {
-                PromptMarkup = $"[bold {accentColor}] {promptChar} > [/]",
-                PreserveNewlines = true
-            });
+        var firstLine = await ReadCooperativePlayerDraftAsync(_preservedPlayerDraftMultiline);
+        if (_selectedBrowserAction != null) return firstLine;
 
         // Check for slash commands — always single-line, send immediately
         if (!firstLine.Contains('\n') && firstLine.TrimStart().StartsWith('/'))
@@ -4129,18 +4166,7 @@ public partial class GameEngine
     /// </summary>
     private Task<string> GetMultilineInput()
     {
-        var value = TextComposer.Read(
-            _textComposerConsole,
-            _clipboardService,
-            new TextComposerOptions
-            {
-                PromptMarkup = "[cyan]│[/]",
-                PreserveNewlines = true,
-                Mode = TextComposerMode.MultilineEditor,
-                HelpMarkup = "[dim](Многострочный режим. Вставка из буфера работает напрямую. Две пустые строки подряд = отправить. \\p = fallback из буфера.)[/]"
-            });
-
-        return Task.FromResult(value);
+        return ReadCooperativePlayerDraftAsync(multiline: true);
     }
 
     private static int[] GenerateSecureDice() => GameLoop.GenerateSecureRandomDice();

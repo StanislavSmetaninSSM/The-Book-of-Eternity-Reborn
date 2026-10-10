@@ -22186,10 +22186,11 @@
         },
         {
             "id": "player-input-draft-preservation",
-            "responsibility": "T069 interrupted player input retains completed multiline and partial/current clipboard draft; TextComposer behavior only.",
-            "excludes": "Native key arbitration, browser consumer, signed staging and cold terminal recovery have separate owning tests.",
+            "responsibility": "T069 TextComposer interrupted draft plus cooperative player-key arbitration: full multiline/clipboard/partial preservation, one owning reader thread, no blocking ReadLine/background reader.",
+            "excludes": "Actual native PTY/React-to-engine delivery and signed cold recovery belong to linux-game-chain-browser-relay and dedicated recovery controls.",
             "changeHints": [
-                "BookOfEternityClient/Core/TextComposer.cs"
+                "BookOfEternityClient/Core/TextComposer.cs",
+                "BookOfEternityClient/Core/CooperativePlayerInputSource.cs"
             ],
             "related": [
                 {

@@ -52,6 +52,25 @@ with interrupted current line after a completed multiline line and while confirm
 a preserved draft. Expected full draft; no native reader/process substitute claim.
 Actual RED at21edae15:2/2FAIL,87.4108207s; complete1descriptor/2cases,0skip/duplicate/timeout and ownedcleanupcomplete. [Archived RED](recovery/linux-game-chains-20261010/c5-input-draft-red/manifest.json). Minimal draft preservation actual GREEN atbaf47739:14/14PASS (draft2 +clipboard12),43.6599270s,complete2descriptors/14cases,0skip/duplicate/timeout/ownedcleanupcomplete. [Archived GREEN](recovery/linux-game-chains-20261010/c5-input-draft-green/manifest.json). Existing clipboard tests remain separate affected controls.
 
+C5 consumer/input/recovery source WIP (UNBUILT/UNRUN): one existing pending slot
+has queued→preparing→staged→terminalProcessing→accepted phases, original actionId
+becomes ordinary requestId, optional browser generation/action are included in the
+original hashed manifest. Staging publishes request+slot through existing publisher.
+Player-only native key polling owns no background ReadLine and no wait admission;
+raw file presence is solely a wake hint, selected under original bound lease.
+Captured original request/manifest/authority strings are immutable across nested calls.
+New browser story path requires exact one mandatory request/generation row and full
+byte-prefix readback. Accepted tuple is published only after ordinary terminal tail
+completed domain work and exact original artifact cleanup; then validates and deletes
+only original slot. Cold pristine staged waits for original signal, never replacement
+input/idle dispatch; preparing or terminalProcessing remains explicitly blocked
+before startup/menu/late normalization, including pre-story canonical publication.
+Early/nested lifecycle exits remain unresolved rather than inferring terminal success
+from existing bools; no child artifact cleanup is authorized by cold receipt.
+This bounded refusal is recovery debt, not successful automatic continuation.
+Independent Astra design findings incorporated; source/result review still pending.
+Original C5 FAIL and all accepted stage packets remain untouched.
+
 ### T070 execution steps (all UNRUN)
 
 - [ ] Reproduce addMusings raw→normalizer→late full-validation mismatch with original binding and exact old musings; original actual FAIL remains.

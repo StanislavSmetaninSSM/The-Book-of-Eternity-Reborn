@@ -430,6 +430,16 @@ public partial class GameEngine
 
     private async Task<bool> HasCurrentSessionCoreAsync()
     {
+        try
+        {
+            var browserRecovery = await ClassifyBrowserRecoveryAsync();
+            if (browserRecovery?.Phase == "staged") return true;
+        }
+        catch (Exception failure) when (failure is InvalidOperationException or InvalidDataException or JsonException)
+        {
+            _mainMenuSessionWarning = BrowserRecoveryMessage;
+            return false;
+        }
         await NormalizeRuntimeUiArtifactsAsync();
         await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
         var sessionHealth = await _criticalStateHealth.AssessCurrentSessionHealthAsync();
@@ -538,9 +548,18 @@ public partial class GameEngine
             return;
         }
 
-        await NormalizeRuntimeUiArtifactsAsync();
-
-        await RefreshRuntimeStateAsync();
+        var stagedBrowserRecovery = (await ClassifyBrowserRecoveryAsync())?.Phase == "staged";
+        if (!stagedBrowserRecovery)
+        {
+            await NormalizeRuntimeUiArtifactsAsync();
+            await RefreshRuntimeStateAsync();
+        }
+        else
+            await WithPendingActionLeaseAsync(async lease =>
+            {
+                await _stateManager.RefreshGameStateReadOnlyAsync(lease);
+                return true;
+            });
         var state = _stateManager.CurrentState;
         var sessionId = !string.IsNullOrWhiteSpace(state.SessionId)
             ? state.SessionId
