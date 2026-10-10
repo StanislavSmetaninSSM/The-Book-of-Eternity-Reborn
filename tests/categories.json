@@ -216,6 +216,38 @@
             ]
         },
         {
+            "id": "c5-queued-cold-helper-admission-diagnostic",
+            "responsibility": "#1553 T069/T071 ONE original first browser action/queued SIGKILL/cold replacement/real relay packet consumer, observing its first default-read seq0 helper admission. Fixture-only shipped PowerShell insertions retain original launch/write/completed read/NULL-vs-UTF8 length/frame outcome/Linux child identity/already-joined stderr and exit/disposal. Stop after first settled consumer, no acceptance wait. Work180/total240/cleanup60/guardian240/external250/startup60/click12; original read10000ms/frame65536/disposal4000ms unchanged.",
+            "excludes": "No identical fullC5 rerun, later navigation, accepted/cold qualification, synthetic/repeated helper read or response, guard/authority/timer/replay change, guessed fix, performance hypothesis, older raw audit, live provider/Windows. Observer errors/caps/truncation/identity gaps are explicit incomplete evidence; exit observed during cleanup is not assigned as the earlier frame cause.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+                "tests/fixtures/LinuxGameChains/console_chain.py",
+                "tests/fixtures/LinuxGameChains/prepare_helper_observation.py",
+                "tests/fixtures/LinuxGameChains/helper_admission_observer.ps1"
+            ],
+            "related": [
+                {
+                    "id": "c5-browser-staged-idle-duration-diagnostic",
+                    "when": "Only after an independently reviewed causal minimal repair; one fresh current optimized fullC5 retains existing660/720/750/755/helper60/acceptance180/category15/overall20 budgets."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": true,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.LinuxGameChainTests.Browser_QueuedColdDefaultReadHelper_AdmissionDiagnostic"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-startup-ready-continue-protocol-diagnostic",
             "responsibility": "#1553 T069/T071 ONE owned startup observation,60s from before initial navigation, separate unchanged12s normal Continue click only after the actual visible launcher/enabled Continue and all six initial GETs finish200. Reuse actual Program/Bridge/daemon/queued-idle; passive API/CDP/trusted-input/HTTP evidence plus capped real task-wait registration stacks and one15s owned EventPipe thread-stack report at30s only if game-screen remains pending. Stop before command submission; work120/total180/guardian180/external190/provider0/owned cleanup.",
             "excludes": "Full C5 acceptance, HTTP-ready/loading-composer shortcuts, synthetic/forced/repeated action, swallowed normal click timeout, inferred absence of asynchronous waits, broad heap/task diagnosis, new performance/product/authority/timer changes, older helper repair or live provider/Windows. Capped/incomplete/ambiguous observer evidence is not exact route/wait proof. A passing click alone cannot explain the prior completion failure.",

@@ -25,7 +25,10 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
     [Fact]
     public Task Browser_StartupReadyContinue_ProtocolDiagnostic() => RunAsync("browser-relay", startupDiagnostic: true);
 
-    private async Task RunAsync(string mode, bool durationDiagnostic = false, bool continueDiagnostic = false, bool startupDiagnostic = false)
+    [Fact]
+    public Task Browser_QueuedColdDefaultReadHelper_AdmissionDiagnostic() => RunAsync("browser-relay", helperAdmissionDiagnostic: true);
+
+    private async Task RunAsync(string mode, bool durationDiagnostic = false, bool continueDiagnostic = false, bool startupDiagnostic = false, bool helperAdmissionDiagnostic = false)
     {
         var observeContinue = continueDiagnostic || startupDiagnostic;
         Assert.True(OperatingSystem.IsLinux(), "This scenario requires real Linux execution; Windows is not qualified.");
@@ -45,12 +48,17 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
             info.Environment.Remove("BOE_TEST_C5_DURATION_DIAGNOSTIC");
             info.Environment.Remove("BOE_TEST_C5_CONTINUE_DIAGNOSTIC");
             info.Environment.Remove("BOE_TEST_C5_STARTUP_DIAGNOSTIC");
+            info.Environment.Remove("BOE_TEST_C5_HELPER_ADMISSION_DIAGNOSTIC");
+            info.Environment.Remove("BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR");
+            info.Environment.Remove("BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT");
             if (durationDiagnostic && logName == "chain.log")
                 info.Environment["BOE_TEST_C5_DURATION_DIAGNOSTIC"] = "1";
             if (continueDiagnostic && logName == "chain.log")
                 info.Environment["BOE_TEST_C5_CONTINUE_DIAGNOSTIC"] = "1";
             if (startupDiagnostic && logName == "chain.log")
                 info.Environment["BOE_TEST_C5_STARTUP_DIAGNOSTIC"] = "1";
+            if (helperAdmissionDiagnostic && logName == "chain.log")
+                info.Environment["BOE_TEST_C5_HELPER_ADMISSION_DIAGNOSTIC"] = "1";
             foreach (var argument in arguments) info.ArgumentList.Add(argument);
             using var process = Process.Start(info)!;
             var text = await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(
@@ -74,13 +82,28 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
                 "-p:BoeNativePackageDirectory=" + package, "-p:BoeRequireNativePackage=true"], "publish-observer.log", 20);
         var python = mode == "browser-relay" ? Environment.GetEnvironmentVariable("BOE_GAME_CHAIN_BROWSER_PYTHON") : "/usr/bin/python3";
         Assert.False(string.IsNullOrWhiteSpace(python), "Browser relay chain requires existing Python with Playwright.");
-        await Run(Path.Combine(package, "host-guardian"), [durationDiagnostic ? "--relay-turn" : "--live-turn", Path.Combine(own, "guardian.json"), durationDiagnostic ? "750000" : observeContinue ? "180000" : "300000",
+        await Run(Path.Combine(package, "host-guardian"), [durationDiagnostic || helperAdmissionDiagnostic ? "--relay-turn" : "--live-turn", Path.Combine(own, "guardian.json"), durationDiagnostic ? "750000" : helperAdmissionDiagnostic ? "240000" : observeContinue ? "180000" : "300000",
             python!, Path.Combine(repo, "tests/fixtures/LinuxGameChains/console_chain.py"), repo, own, ship, mode],
-            "chain.log", durationDiagnostic ? 755 : observeContinue ? 190 : 310);
+            "chain.log", durationDiagnostic ? 755 : helperAdmissionDiagnostic ? 250 : observeContinue ? 190 : 310);
         using var result = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "result.json")));
         Assert.True(result.RootElement.GetProperty("PASS").GetBoolean(), result.RootElement.ToString());
         Assert.Equal(0, result.RootElement.GetProperty("ModelCalls").GetInt32());
-        if (observeContinue)
+        if (helperAdmissionDiagnostic)
+        {
+            Assert.True(result.RootElement.GetProperty("HelperAdmissionOnly").GetBoolean());
+            var observation = result.RootElement.GetProperty("HelperAdmissionObservation");
+            Assert.True(observation.GetProperty("ObservationComplete").GetBoolean());
+            Assert.False(observation.GetProperty("ReadOutcome").GetProperty("IsNull").GetBoolean());
+            Assert.True(observation.GetProperty("ReadOutcome").GetProperty("Utf8Bytes").GetInt32() <= 65536);
+            Assert.Equal(0, observation.GetProperty("Summary").GetProperty("ExitCode").GetInt32());
+            Assert.Single(result.RootElement.GetProperty("BrowserStartupPrerequisites").EnumerateArray());
+            Assert.Single(result.RootElement.GetProperty("InterruptedColdCuts").EnumerateArray());
+            Assert.Equal("queued", result.RootElement.GetProperty("InterruptedColdCuts")[0].GetProperty("Phase").GetString());
+            Assert.True(result.RootElement.TryGetProperty("HelperAdmissionStopState", out _));
+            // This fact records no acceptance; canonical stop observations retain any race.
+            Assert.Empty(result.RootElement.GetProperty("AcceptedTurns").EnumerateArray());
+        }
+        else if (observeContinue)
         {
             if (startupDiagnostic)
             {

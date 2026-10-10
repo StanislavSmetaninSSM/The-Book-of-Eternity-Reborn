@@ -28,7 +28,8 @@ import uuid
 repo, out, ship = map(lambda s: Path(s).resolve(), sys.argv[1:4])
 scenario = sys.argv[4] if len(sys.argv) > 4 else "console"
 assert scenario in ["console", "console-musings", "browser-relay"]
-duration_diagnostic = os.environ.get("BOE_TEST_C5_DURATION_DIAGNOSTIC") == "1"
+helper_admission_diagnostic = os.environ.get("BOE_TEST_C5_HELPER_ADMISSION_DIAGNOSTIC") == "1"
+duration_diagnostic = os.environ.get("BOE_TEST_C5_DURATION_DIAGNOSTIC") == "1" or helper_admission_diagnostic
 startup_diagnostic = os.environ.get("BOE_TEST_C5_STARTUP_DIAGNOSTIC") == "1"
 continue_diagnostic = os.environ.get("BOE_TEST_C5_CONTINUE_DIAGNOSTIC") == "1" or startup_diagnostic
 if continue_diagnostic and (scenario != "browser-relay" or duration_diagnostic or not __debug__):
@@ -38,6 +39,8 @@ if duration_diagnostic and (scenario != "browser-relay" or not __debug__):
 work_seconds, total_seconds = (660, 720) if duration_diagnostic else (240, 240)
 if continue_diagnostic:
     work_seconds, total_seconds = 120, 180
+if helper_admission_diagnostic:
+    work_seconds, total_seconds = 180, 240
 active_diagnostic_turn = None
 base = out / "play"
 session = base / "game_session"
@@ -64,7 +67,16 @@ if startup_diagnostic:
     result.update(StartupOnly=True, StartupBudgets={"ObservationSeconds": 60, "ClickMilliseconds": 12000,
                   "StackAtSeconds": 30, "StackChildSeconds": 15, "StackChildJoinSeconds": 2,
                   "Anchor": "before initial page.goto; stack collection remains inside startup observation"})
+if helper_admission_diagnostic:
+    result.update(HelperAdmissionOnly=True, DiagnosticBudgets={
+        "WorkSeconds": 180, "TotalSeconds": 240, "CleanupReserveSeconds": 60,
+        "HelperProofSeconds": 60, "StartupSeconds": 60, "ClickMilliseconds": 12000,
+        "GuardianSeconds": 240, "ExternalSeconds": 250,
+        "Qualification": "One actual queued-cold relay consumer/default-read seq0; no acceptance or full C5 qualification."})
 env = dict(os.environ)
+if helper_admission_diagnostic:
+    from prepare_helper_observation import prepare, collect
+    env.update(prepare(repo, out, ship))
 env.update(TERM="dumb", NO_COLOR="1")
 for key, name in [("TMPDIR", "tmp"), ("XDG_CONFIG_HOME", "config"),
                   ("XDG_DATA_HOME", "data"), ("XDG_CACHE_HOME", "cache")]:
@@ -766,12 +778,44 @@ try:
             duration_row = {"Turn": ordinal, "RequestId": req["requestId"], "TerminalReadyObservation": "NotObserved",
                             "Inventory": capture_staged_inventory(ordinal), "AuthoredPacketCallStartedAtSeconds": time.monotonic() - started}
             result["TurnDurations"].append(duration_row)
-            active_diagnostic_turn = {"peer": client, "row": duration_row, "offset": offset, "request_dir": request_dir,
-                                      "request": req, "narrative": "Проверочный след " + str(ordinal) + ": Хранитель наблюдает за душой у берега."}
+            if not helper_admission_diagnostic:
+                active_diagnostic_turn = {"peer": client, "row": duration_row, "offset": offset, "request_dir": request_dir,
+                                          "request": req, "narrative": "Проверочный след " + str(ordinal) + ": Хранитель наблюдает за душой у берега."}
         captured, narrative = author_packet(request_dir, ordinal)
         if duration_diagnostic:
             duration_row["LegacyNarrativeWaitStartedAtSeconds"] = time.monotonic() - started
         assert captured == req, "relay/helper consumed a substituted original request"
+        if helper_admission_diagnostic:
+            wait(lambda: (request_dir / "execution.json").exists(), "actual first relay consumer exited and drained", 60)
+            execution = read_json(request_dir / "execution.json")
+            duration_row["Execution"] = execution
+            result["HelperAdmissionConsumer"] = {"Started": read_json(request_dir / "started.json"),
+                                                "Execution": execution, "ObservedAtSeconds": time.monotonic() - started}
+            stop_state = {"BeginMonotonic": time.monotonic(), "Files": [],
+                          "Limit": "Read-only sequential observations, not an atomic state snapshot or accepted/cold qualification. Empty test AcceptedTurns is not physical absence proof."}
+            for relative in ["input/turn_request.json", "input/pending_player_action.json", "ready/turn_complete.json",
+                             "ready/turn_error.json", "stories/chaos_sea.jsonl"]:
+                row = {"Path": relative, "ObservedMonotonic": time.monotonic()}
+                try:
+                    data = (session / relative).read_bytes()
+                except FileNotFoundError:
+                    row["Exists"] = False
+                else:
+                    row.update(Exists=True, Bytes=len(data), SHA256=sha(data))
+                    (out / ("helper-stop-" + relative.replace("/", "_"))).write_bytes(data)
+                stop_state["Files"].append(row)
+            stop_state["EndMonotonic"] = time.monotonic()
+            result["HelperAdmissionStopState"] = stop_state
+            result["HelperAdmissionObservation"] = collect(out, result["HelperAdmissionConsumer"]["Started"]["ChildPid"])
+            observation = result["HelperAdmissionObservation"]
+            assert observation["ObservationComplete"], observation
+            assert execution.get("Executed") and execution.get("ExitCode") == 0 and execution.get("ChildExited") and execution.get("IoDrained") and not execution.get("MetadataFailure"), execution
+            assert observation["ReadOutcome"]["FrameOutcome"] == "within-frame-bound", observation["ReadOutcome"]
+            assert any(row["Phase"] == "admission-return" and row["Data"]["Ok"] and row["Data"]["State"] == "active"
+                       for row in observation["Events"]), "Original read-scope admission did not return active"
+            assert observation["Summary"]["ExitCode"] == 0, observation["Summary"]
+            result["HelperAdmissionDiagnosticAssertionsPassed"] = True
+            break
         if duration_diagnostic:
             await_diagnostic_acceptance()
         else:
@@ -830,14 +874,14 @@ try:
                                          "PlayerAction": action, "Narrative": narrative, "StorySHA256": sha(story_bytes), "PreservedFullStoryPrefixSHA256": prefix_sha, "StoryEntries": len(entries), "Execution": execution})
         (out / ("story-after-" + str(ordinal) + ".jsonl")).write_bytes(story_bytes)
         exit_client(client)
-    if not continue_diagnostic:
+    if not continue_diagnostic and not helper_admission_diagnostic:
         assert len({t["SessionId"] for t in result["AcceptedTurns"]}) == 1
         assert len({t["RequestId"] for t in result["AcceptedTurns"]}) == 3
         assert len(result["OriginalRuns"]) == 2
         result["ChainAssertionsPassed"] = True
 except Exception:
     result["Failure"] = traceback.format_exc()
-    if client is not None and "Main run metadata or original owner admission is unavailable" in client.text():
+    if not helper_admission_diagnostic and client is not None and "Main run metadata or original owner admission is unavailable" in client.text():
         # Existing diagnostic entry point records the actual production stack.
         # It is diagnostic only and does not qualify an interactive game chain.
         try:
@@ -895,7 +939,8 @@ finally:
         len(result.get("OriginalStops", [])) == len(result["OriginalRuns"]) and
         all(any(stop["Identity"] == identity and stop["RecordAfter"]["Disposition"] == "Stopped"
                 for stop in result["OriginalStops"]) for identity in result["OriginalRuns"]))
-    goal = result.get("ContinueDiagnosticAssertionsPassed") if continue_diagnostic else result.get("ChainAssertionsPassed")
+    goal = (result.get("HelperAdmissionDiagnosticAssertionsPassed") if helper_admission_diagnostic else
+            result.get("ContinueDiagnosticAssertionsPassed") if continue_diagnostic else result.get("ChainAssertionsPassed"))
     result["PASS"] = bool(goal and result["OriginalStopped"] and result.get("IoDrained") and not result.get("Failure") and not result.get("CleanupFailure") and not result.get("InstrumentationFailure"))
     (out / "events.json").write_text(json.dumps(events, ensure_ascii=False, indent=2))
     (out / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
