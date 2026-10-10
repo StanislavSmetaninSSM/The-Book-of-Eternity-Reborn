@@ -1,6 +1,6 @@
 {
   "SourceSHA": "de7c76ecebd06698d20a5b846fad7e35863f3cbd",
-  "Command": "pwsh -NoLogo -NoProfile -Command & ./scripts/test-csharp.ps1 -Category \"c5-original-post-validation-source\" -NoBuild",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category \"c5-original-post-validation-source\" -NoBuild'",
   "Status": "3/3PASS6.3040830s",
   "Scope": "Three existing source guards only; fresh successful unit build from98b unchanged production. Actual consumer still FAIL; no C5/repair/interruption claim.",
   "ModelCalls": 0,

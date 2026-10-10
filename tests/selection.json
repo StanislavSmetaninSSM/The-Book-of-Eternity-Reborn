@@ -377,6 +377,19 @@
                 "FR-013",
                 "T067-LINUX-GAME-FAULTS"
             ]
+        },
+        {
+            "category": "c5-original-decoded-state-controls",
+            "reason": "Private original scope parses exact expected State/Staged once and advances only after genuine invariant publication; selected existing borrowed/disposed/escaped, conflict and warm cleanup controls preserve owner/current-byte failure behavior. Eight existing cases; no new anti-tamper matrix.",
+            "contracts": [
+                "#1553",
+                "T069",
+                "C5-WAIT-PARTICIPATION",
+                "FR-005",
+                "FR-006",
+                "FR-011",
+                "FR-013"
+            ]
         }
     ]
 }

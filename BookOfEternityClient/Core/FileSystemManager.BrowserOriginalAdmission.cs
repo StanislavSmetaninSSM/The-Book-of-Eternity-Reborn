@@ -44,16 +44,26 @@ public partial class FileSystemManager
         internal bool Cleanup { get; private set; }
         private bool _disposed;
         internal string? ExpectedPendingJson { get; private set; }
+        internal PendingPlayerActionService.State? ExpectedState { get; private set; }
+        internal PendingPlayerActionService.Staged? ExpectedStaged { get; private set; }
+        private readonly string _submittedAtUtc;
         private Dictionary<string,string>? _cleanupInventory;
         internal BrowserOriginalOperationScope(FileSystemManager files, MainAdmission owner,
             PendingPlayerActionService.Binding binding, PendingPlayerActionService.Staged? staged,
             BrowserOriginalOperationScope? parent)
         {
             _files=files;_owner=owner;Binding=binding;_parent=parent;
-            ExpectedPendingJson=staged?.Json??binding.Json;
+            var expectedJson=staged?.Json??binding.Json;
+            ExpectedPendingJson=expectedJson;
+            _submittedAtUtc=JsonNode.Parse(binding.Json)!["submittedAtUtc"]!.GetValue<string>();
+            var expectedState=PendingPlayerActionService.Parse(expectedJson,binding.Generation);
+            RequireInvariantBinding(expectedState);
+            ExpectedState=expectedState;
+            ExpectedStaged=ReadExpectedStaged(expectedState);
             Condition=owner.CaptureBrowserCondition(binding.Generation);
             if(staged != null)
             {
+                RequireOriginalTuple(ExpectedStaged??throw BrowserOriginalMainCondition.Invalid(),staged);
                 var manifest=files.ValidateOriginalBrowserAdmission(staged, verifyPhysical: true);
                 if(manifest.BrowserOriginalMainCondition != Condition) throw BrowserOriginalMainCondition.Invalid();
                 Staged=staged;
@@ -70,6 +80,7 @@ public partial class FileSystemManager
         {
             ValidateOwner(MainAdmissions.Value);
             if(Staged != null || staged.Binding.ActionId != Binding.ActionId) throw BrowserOriginalMainCondition.Invalid();
+            RequireOriginalTuple(ExpectedStaged??throw BrowserOriginalMainCondition.Invalid(),staged);
             var manifest=_files.ValidateOriginalBrowserAdmission(staged, verifyPhysical:true);
             if(manifest.BrowserOriginalMainCondition != Condition) throw BrowserOriginalMainCondition.Invalid();
             Staged=staged;
@@ -118,7 +129,7 @@ public partial class FileSystemManager
             ValidateOwner(MainAdmissions.Value);
             if(ExpectedPendingJson!=previous || _files.ReadOriginalBrowserText(PendingPlayerActionService.PendingPath)!=next)
                 throw BrowserOriginalMainCondition.Invalid();
-            var before=PendingPlayerActionService.Parse(previous,Binding.Generation);
+            var before=ExpectedState??throw BrowserOriginalMainCondition.Invalid();
             var after=next==null?null:PendingPlayerActionService.Parse(next,Binding.Generation);
             var allowed=before.Phase switch
             {
@@ -130,7 +141,28 @@ public partial class FileSystemManager
                 _=>false
             };
             if(!allowed)throw BrowserOriginalMainCondition.Invalid();
+            if(after!=null)RequireInvariantBinding(after);
+            var afterStaged=after==null?null:ReadExpectedStaged(after);
+            if(Staged!=null && afterStaged!=null)RequireOriginalTuple(afterStaged,Staged);
+            ExpectedState=after;
+            ExpectedStaged=afterStaged;
             ExpectedPendingJson=next;
+        }
+        private void RequireInvariantBinding(PendingPlayerActionService.State state)
+        {
+            if(state.Binding.ActionId!=Binding.ActionId || state.Binding.Generation!=Binding.Generation ||
+                state.Binding.Action!=Binding.Action || state.Binding.Source!=Binding.Source ||
+                JsonNode.Parse(state.Json)!["submittedAtUtc"]!.GetValue<string>()!=_submittedAtUtc)
+                throw BrowserOriginalMainCondition.Invalid();
+        }
+        private static PendingPlayerActionService.Staged? ReadExpectedStaged(PendingPlayerActionService.State state) =>
+            state.Phase is "staged" or "terminalProcessing" or "accepted" or "settled"
+                ? PendingPlayerActionService.ReadStaged(state) : null;
+        private static void RequireOriginalTuple(PendingPlayerActionService.Staged current,PendingPlayerActionService.Staged original)
+        {
+            if(current.RequestJson!=original.RequestJson || current.ManifestJson!=original.ManifestJson ||
+                current.AuthorityJson!=original.AuthorityJson || current.HistoryJson!=original.HistoryJson)
+                throw BrowserOriginalMainCondition.Invalid();
         }
         public void Dispose()
         {
@@ -280,7 +312,7 @@ public partial class FileSystemManager
         if(scope!=null)scope.ValidateOwner(admission);
         var pendingJson=ReadOriginalBrowserText(PendingPlayerActionService.PendingPath);
         var manifestJson=ReadOriginalBrowserText(BrowserManifestPath);
-        var raw=manifestJson==null?null:StrictJsonAuthority.Deserialize<JsonObject>(manifestJson,
+        var raw=manifestJson==null || scope!=null && pendingJson!=null?null:StrictJsonAuthority.Deserialize<JsonObject>(manifestJson,
             new System.Text.Json.JsonSerializerOptions(),"original admission manifest classification");
         var marked=raw!=null && (raw.ContainsKey("browserActionId") || raw.ContainsKey("browserSessionGeneration") ||
             raw.ContainsKey("browserOriginalMainCondition"));
@@ -291,13 +323,13 @@ public partial class FileSystemManager
             scope?.ValidateCleanupInventory();
             return scope?.Condition;
         }
-        var state=PendingPlayerActionService.Parse(pendingJson,ObserveExistingHelperGeneration());
+        // The private scope advances only after actual publication and checks
+        // its complete immutable tuple. Exact current bytes and actual owner
+        // checks above still precede reuse; physical verification below remains.
+        var state=scope==null?PendingPlayerActionService.Parse(pendingJson,ObserveExistingHelperGeneration())
+            :scope.ExpectedState??throw BrowserOriginalMainCondition.Invalid();
         if(scope!=null)
         {
-            if(state.Binding.ActionId!=scope.Binding.ActionId || state.Binding.Generation!=scope.Binding.Generation ||
-                state.Binding.Action!=scope.Binding.Action || state.Binding.Source!=scope.Binding.Source ||
-                JsonNode.Parse(state.Json)!["submittedAtUtc"]!.GetValue<string>()!=JsonNode.Parse(scope.Binding.Json)!["submittedAtUtc"]!.GetValue<string>())
-                throw BrowserOriginalMainCondition.Invalid();
             if(scope.Staged==null)
             {
                 if(state.Phase is not ("queued" or "preparing"))throw BrowserOriginalMainCondition.Invalid();
@@ -305,7 +337,7 @@ public partial class FileSystemManager
             }
             if(state.Phase is not ("staged" or "terminalProcessing" or "accepted" or "settled") ||
                 state.Phase=="terminalProcessing" && !scope.Processing)throw BrowserOriginalMainCondition.Invalid();
-            var retained=PendingPlayerActionService.ReadStaged(state);
+            var retained=scope.ExpectedStaged??throw BrowserOriginalMainCondition.Invalid();
             if(retained.RequestJson!=scope.Staged.RequestJson || retained.ManifestJson!=scope.Staged.ManifestJson ||
                 retained.AuthorityJson!=scope.Staged.AuthorityJson || retained.HistoryJson!=scope.Staged.HistoryJson)
                 throw BrowserOriginalMainCondition.Invalid();

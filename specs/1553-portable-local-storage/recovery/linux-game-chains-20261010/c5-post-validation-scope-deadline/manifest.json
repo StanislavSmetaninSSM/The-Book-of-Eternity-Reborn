@@ -1,6 +1,6 @@
 {
   "SourceSHA": "98b3b398feed6444d35edf5a7fca0e4713b92313",
-  "Command": "pwsh -NoLogo -NoProfile -Command & ./scripts/test-csharp.ps1 -Category @(\"c5-original-consumer-profile\", \"c5-original-post-validation-source\")",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-consumer-profile\", \"c5-original-post-validation-source\")'",
   "ModelCalls": 0,
   "Files": [
     {

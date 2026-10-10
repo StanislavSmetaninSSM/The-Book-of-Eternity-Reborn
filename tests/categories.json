@@ -232,7 +232,7 @@
         },
         {
             "id": "c5-original-browser-frame-lifetime",
-            "responsibility": "Actual original private browser scope permits borrowing, refuses disposed/escaped owner, and actual committed original journal cleanup debt preserves exact staged tuple.",
+            "responsibility": "Actual committed original journal cleanup debt preserves the exact staged tuple; private original-frame lifetime now belongs to c5-original-decoded-state-controls.",
             "excludes": "Actual Program/React staged-idle crash, active original owner native propagation, Windows and live model qualification.",
             "changeHints": [
                 "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
@@ -251,7 +251,6 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_PrivateFrameRequiresActualOriginalOwner",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_CommittedOriginalJournalDebtAllowsExactStage"
                     ]
                 }
@@ -340,7 +339,7 @@
         },
         {
             "id": "c5-original-browser-review-refusals",
-            "responsibility": "Original actual pending publication refuses forged completed phases/escaped browser proof classification; warm owning cleanup refuses changed backup or unrelated wildcard artifact.",
+            "responsibility": "Original actual pending publication refuses forged completed phases or escaped browser proof classification; warm cleanup now belongs to c5-original-decoded-state-controls.",
             "excludes": "Actual Program/React staged-idle crash, active original owner native propagation, Windows and live model qualification.",
             "changeHints": [
                 "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
@@ -359,8 +358,7 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_PhaseOrEscapedPropertyCannotBypassPendingRecovery",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_WarmCleanupCannotDeleteSubstitutedOrUnownedArtifact"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_PhaseOrEscapedPropertyCannotBypassPendingRecovery"
                     ]
                 }
             ]
@@ -607,7 +605,7 @@
         },
         {
             "id": "browser-player-input-recovery",
-            "responsibility": "T069 actual original ProcessPlayerTurn conflict/terminal disposition, exact recovery evidence and once-only receipt dequeue; real lifecycle factory classification in independently guardian-owned cold process plus per-test negative receipts.",
+            "responsibility": "T069 actual original ProcessPlayerTurn terminal disposition, exact recovery evidence and once-only receipt dequeue; real lifecycle factory classification in independently guardian-owned cold process plus per-test negative receipts.",
             "excludes": "Cold factory classification is component proof, not Program/relay gameplay. Accepted/settled component fixtures explicitly invoke actual original cleanup/restore; failed rollback component does not by itself qualify its warm caller. Typed lifecycle handoff and late error/rejection remain blocked, not auto-settled.",
             "changeHints": [
                 "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
@@ -627,7 +625,6 @@
                     "tests": [
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_AcceptedRecordReentryOnlyDequeuesOriginalSlotAndKeepsHistory",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_CompetingRequestAfterSelectionCannotBeOverwrittenByClaim",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_ConflictBeforePublicationPreservesCompetingRequestAndOriginalSlot",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_DamagedAcceptedRecordRefusesAndPreservesAllRemainingEvidence",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_DamagedSettledReceiptRefusesAndPreservesEvidence",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_PreparingMenuRefusesBeforeHealthMutationAndPreservesEvidence",
@@ -22874,6 +22871,36 @@
                     "project": "integration",
                     "tests": [
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "c5-original-decoded-state-controls",
+            "responsibility": "Existing original private frame borrowed/disposed/escaped lifetime3, warm actual cleanup artifact integrity4 and prepublication conflict preservation1. Controls private decoded immutable State/Staged reuse under an actual original owner; no prior physical-success cache.",
+            "excludes": "No new negative matrix, cold/unscoped classification, Program/relay C5 or actual repair/interruption qualification; measured consumer is separate.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-original-consumer-profile",
+                    "when": "Change private original scoped decoded-state reuse; existing bounded deadline supplies causal control."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_PrivateFrameRequiresActualOriginalOwner",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_WarmCleanupCannotDeleteSubstitutedOrUnownedArtifact",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_ConflictBeforePublicationPreservesCompetingRequestAndOriginalSlot"
                     ]
                 }
             ]

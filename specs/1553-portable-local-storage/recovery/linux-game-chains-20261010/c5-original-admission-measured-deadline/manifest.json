@@ -1,6 +1,6 @@
 {
   "SourceSHA": "19e8107cd35f0eae829f3e7c34ef4f2f09fd200d",
-  "Command": "pwsh -NoLogo -NoProfile -Command & ./scripts/test-csharp.ps1 -Category \"c5-original-consumer-profile\"",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category \"c5-original-consumer-profile\"'",
   "ModelCalls": 0,
   "Files": [
     {
