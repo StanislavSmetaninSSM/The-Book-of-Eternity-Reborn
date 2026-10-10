@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "10ef280a3d69bfe864be147cc824f18041092568",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-player-terminal-provenance",
+  "Status": "FAIL",
+  "Scope": "4/4FAIL50.8450779s complete0skipduplicateTimeout cleanup complete. Actual warm recovery swaps original error for synthetic completion; warm/late dual clears artifacts; late synthetic cleans snapshot. No provider.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "f9ba18289972ac204ca48e57f3402d4ac087cbd17c69536fc7e512525f16e796",
+      "RawBytes": 1206
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "3c6b1f5f55759587fe9125822c3821195afee51059060f57c1427c2225f74334",
+      "RawBytes": 1476
+    },
+    {
+      "Path": "runner/browser-player-terminal-provenance-integration-001.trx.gz",
+      "RawSHA256": "ebc6cba38aefa2d720cd467f9595d283864e382037a8b824d87531f577f1e3a0",
+      "RawBytes": 21276
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "3f5d50c1d274d9d375bfa6a6d3d9c60aeaff68580b83e1b541ace1b9669e188a",
+      "RawBytes": 43489
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "80ba923d7f155a02b7d381d78426de9dc49e56522e6939a5a9bca89d9ee85c19",
+      "RawBytes": 1658923
+    }
+  ]
+}

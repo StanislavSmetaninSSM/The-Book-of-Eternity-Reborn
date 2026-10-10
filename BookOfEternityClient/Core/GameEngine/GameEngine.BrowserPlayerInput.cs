@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
@@ -15,6 +16,29 @@ public partial class GameEngine
 
     private const string BrowserRecoveryMessage =
         "Предыдущее действие требует восстановления. Повторная отправка остановлена; исходные данные сохранены.";
+
+    private bool HasOriginalBrowserTerminalProvenance(PendingPlayerActionService.Staged staged, TerminalSignalSnapshot captured)
+    {
+        // Decide against immutable captured originals before ordinary resolvers can
+        // synthesize recovery, discard competing signals or perform rollback.
+        if (captured.CompletionExists == captured.ErrorExists) return false;
+        var json = captured.CompletionExists ? captured.CompletionJson : captured.ErrorJson;
+        if (string.IsNullOrWhiteSpace(json)) return false;
+        try { _ = StrictJsonAuthority.Deserialize<JsonObject>(json, JsonOpts, "original browser terminal signal"); }
+        catch (JsonException) { return false; }
+        catch (InvalidDataException) { return false; }
+        var signal = ParseReadySignalMetadata(json, "original browser terminal signal");
+        var manifest = ValidateDetachedBrowserBinding(staged);
+        return signal != null && string.IsNullOrWhiteSpace(signal.HarnessSource) &&
+            signal.SessionId == manifest.SessionId && signal.RequestId == manifest.RequestId && signal.TurnNumber == manifest.TurnNumber &&
+            HasValidTerminalSignalContract(captured.CompletionExists ? "turn_complete" : "turn_error", signal);
+    }
+
+    private void StopBrowserTerminalRecovery()
+    {
+        _inGame = false;
+        AnsiConsole.MarkupLine($"[yellow]{BrowserRecoveryMessage}[/]");
+    }
 
     private async Task<T> WithPendingActionLeaseAsync<T>(Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)
     {

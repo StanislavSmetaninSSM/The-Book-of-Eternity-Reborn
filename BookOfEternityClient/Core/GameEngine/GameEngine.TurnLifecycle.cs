@@ -880,6 +880,11 @@ public partial class GameEngine
                     signal.TurnNumber != snapshotContext.TurnNumber)
                     throw new InvalidOperationException(BrowserRecoveryMessage);
                 lateBrowserStaged = await ClaimBrowserTerminalAsync(PendingPlayerActionService.ReadStaged(pendingBrowserState));
+                if (!HasOriginalBrowserTerminalProvenance(lateBrowserStaged, terminalSignals))
+                {
+                    StopBrowserTerminalRecovery();
+                    return true;
+                }
             }
             var concurrentResolution = await ResolveConcurrentActiveTerminalSignalsAsync(
                 terminalSignals,
@@ -1562,21 +1567,17 @@ public partial class GameEngine
         await InvokeSessionFinalizationCheckpointAsync(
             SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution);
         if (browserStaged != null) browserStaged = await ClaimBrowserTerminalAsync(browserStaged);
+        if (browserStaged != null && !HasOriginalBrowserTerminalProvenance(browserStaged, terminalSignals))
+        {
+            StopBrowserTerminalRecovery();
+            return;
+        }
         var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(
             activeSnapshotContext,
             backedUpFiles,
             terminalSignals);
         if (terminalOutcome.Kind == "failure")
             return;
-
-        if (browserStaged != null && !string.IsNullOrWhiteSpace(terminalOutcome.Signal?.HarnessSource))
-        {
-            // A client diagnostic/recovered signal is not original GM completion.
-            // Keep its provenance and every original artifact behind processing.
-            _inGame = false;
-            AnsiConsole.MarkupLine($"[yellow]{BrowserRecoveryMessage}[/]");
-            return;
-        }
 
         if (terminalOutcome.Kind == "error")
         {
