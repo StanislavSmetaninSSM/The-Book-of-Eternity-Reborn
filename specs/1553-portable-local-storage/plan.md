@@ -1,3 +1,22 @@
+## C1 executable fixture — WIP, 2026-10-10
+
+T066 C1 first source checkpoint: `tests/fixtures/LinuxGameChains/console_chain.py`
+plus `BookOfEternityClient.Tests/LinuxGameChainTests.cs`; exact category
+`linux-game-chain-console`, explicit current `tests/selection.json`. Fixture runs
+ordinary NewGame preparation with explicit cancellation of bootstrap GM wait,
+then actual continued console player action, actual Bridge/daemon/maintained
+relay/fixed helper, authored progression/narrative outputs, real acceptance,
+normal client exit, new cold client PID and another distinct accepted action.
+It requires same session/different request, story1→2, no pending request, actual
+consumer exit/I-O, original main Stopped identity and outer guardian ECHILD/no
+emergency. This is UNRUN; preparation/fixture errors are not causal product RED.
+Fresh pre-fixture PlanOnly `gm-relay-reusable-main` at9e9ce475 succeeded with
+both runtime/Bridge/TestSupport/unit builds,1planned descriptor/3cases/0executed,
+89.783059s; no gameplay or transport PASS inferred. Minimal native packaging
+preparation succeeded; no runtime implementation changed. Next: fresh PlanOnly
+new category, then actual C1. Category-owner discovery will run once after final
+new categories exist; no repetition of the completed source-only owner census.
+
 ## T066–T068: сквозные Linux-цепочки — WIP, 2026-10-10
 
 Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
@@ -32,7 +51,7 @@ Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eterni
 - [ ] T066: прочитать фактические entry points/fixtures, уточнить строки матрицы
   настоящими параметрами; сначала выполнить C1, затем независимые C2/C3/C4/C5.
   Добавлять test-only probes/fixtures в `BookOfEternityClient.TestSupport/`,
-  process assertions в `BookOfEternityClient.IntegrationTests/` и отдельные
+  process assertions в existing unit-process infrastructure `BookOfEternityClient.Tests/` и отдельные
   coherent category IDs в `tests/categories.json`; записать actual selection
   в `tests/selection.json`. Не добавлять test-only seams в runtime без причины.
 - [ ] Для каждой строки сохранить actual source SHA/tree, точную команду,

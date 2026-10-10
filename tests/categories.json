@@ -22002,6 +22002,32 @@
           ]
         }
       ]
+    },
+    {
+      "id": "linux-game-chain-console",
+      "responsibility": "#1553 T066 C1 real Linux Program/GameEngine new-game preparation, controlled authored no-provider GM through actual persistent relay/Bridge/daemon/helper, accepted turn, full client-process exit/cold restart and distinct next turn with exact story/request correlation and owned original stop/EOF/ECHILD.",
+      "excludes": "No real model/provider, native Windows/default worker/durable ACK, browser chain, new wound mechanics or broad lifecycle acceptance. Bootstrap GM wait is explicitly cancelled before the ordinary continued gameplay turn.",
+      "changeHints": [
+        "tests/fixtures/LinuxGameChains/console_chain.py",
+        "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+        "BookOfEternityClient/Core/GameEngine/"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 6,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxGameChainTests.Console_ActualRelayTurnColdRestartContinuesExactlyOnce"
+          ]
+        }
+      ]
     }
   ]
 }
