@@ -1,3 +1,11 @@
+## Browser replacement admission lexical scope correction — WIP, 2026-10-10
+
+Independent source review found the newly widened admission local would shadow
+the existing callback writeLease parameter (CS0136). Restore an explicit admission
+lexical block; original callback and two uncertainty guards unchanged. Superseded
+1ca71cde was never built/executed, so no failed-build or PASS claim. Continue the
+combined causal/source/exact4 review before fresh both-project catalog/GREEN4.
+
 ## Browser replacement original-owner uncertainty guards — WIP, 2026-10-10
 
 Original causal packet eeb52593 preserved/pushed/ref/raw19 before runtime change.

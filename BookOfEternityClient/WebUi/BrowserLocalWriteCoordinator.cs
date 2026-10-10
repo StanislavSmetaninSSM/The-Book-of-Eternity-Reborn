@@ -87,25 +87,27 @@ public sealed partial class BrowserLocalWriteCoordinator
         try
         {
             await mainAdmission.AcquireAsync(quiescentOnly: true);
-            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            CoordinatedStatePublicationUncertainException? admissionFailure = null;
-            try
             {
-                if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
-                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
-                        new InvalidOperationException("Load admission refused an active turn."));
-                if (_fs.ReadExistingSessionGeneration(writeLease) == null)
-                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
-                        new InvalidOperationException("Load admission requires existing browser session authority."));
-                var acquisition = await _lockService.AcquireOrRefreshAsync(writeLease,
-                    BuildOwner(request), request.OperationLabel);
-                if (!acquisition.Acquired || acquisition.Lease == null)
-                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
-                        new InvalidOperationException("Load admission refused another UI owner."));
-                replacementGuard = acquisition.Lease;
+                var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                CoordinatedStatePublicationUncertainException? admissionFailure = null;
+                try
+                {
+                    if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
+                        return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                            new InvalidOperationException("Load admission refused an active turn."));
+                    if (_fs.ReadExistingSessionGeneration(writeLease) == null)
+                        return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                            new InvalidOperationException("Load admission requires existing browser session authority."));
+                    var acquisition = await _lockService.AcquireOrRefreshAsync(writeLease,
+                        BuildOwner(request), request.OperationLabel);
+                    if (!acquisition.Acquired || acquisition.Lease == null)
+                        return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                            new InvalidOperationException("Load admission refused another UI owner."));
+                    replacementGuard = acquisition.Lease;
+                }
+                catch (CoordinatedStatePublicationUncertainException failure) { admissionFailure = failure; throw; }
+                finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, admissionFailure); }
             }
-            catch (CoordinatedStatePublicationUncertainException failure) { admissionFailure = failure; throw; }
-            finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, admissionFailure); }
 
             dispatched = true;
             retained = await replacementOperation(async writeLease =>
