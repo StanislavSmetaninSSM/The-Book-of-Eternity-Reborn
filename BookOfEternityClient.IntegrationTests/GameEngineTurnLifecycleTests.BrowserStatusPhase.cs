@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
@@ -67,6 +68,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var stopped = false;
         var physical = false;
         Exception? publisherFailure = null;
+        Exception? operationFailure = null;
         Exception? cleanupFailure = null;
         GmSessionRunCoordinator? owner = null;
         try
@@ -122,7 +124,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 return true;
             });
         }
-        catch (Exception failure) { publisherFailure ??= failure; }
+        catch (Exception failure) { operationFailure = failure; }
         finally
         {
             release.TrySetResult();
@@ -145,11 +147,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             await server.WaitAsync(TimeSpan.FromSeconds(5));
             try { ((IDisposable)host).Dispose(); }
             catch (Exception failure) { cleanupFailure ??= failure; }
+            var settledPublisher = (Task)type.GetField("_statusPublisher", flags)!.GetValue(host)!;
+            if (settledPublisher.IsFaulted) publisherFailure = settledPublisher.Exception!.GetBaseException();
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
                 Deferred = deferred, EvidenceRetained = retained, RepublishedAfterStage = republished, OriginalStopped = stopped,
                 PhysicalCleanup = physical, OriginalUncertain = owner?.IsUncertain, PublisherFailure = publisherFailure?.ToString(),
-                CleanupFailure = cleanupFailure?.ToString(), Attempts = attempts,
+                OperationFailure = operationFailure?.ToString(), CleanupFailure = cleanupFailure?.ToString(), Attempts = attempts,
                 Scope = "Actual GameEngine preparing claim and original NativeLineage Bridge status publisher; controlled pause, no Program/relay/model"
             }));
         }

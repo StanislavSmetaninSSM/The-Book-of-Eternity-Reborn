@@ -1,3 +1,7 @@
+### C5 status-phase preparation correction WIP — 2026-10-10
+
+PlanOnly at source c194f704 plus the recorded catalog/schema WIP reaches fresh integration build but fails CS0103: new fixture omitted BookOfEternityClient.Configuration using for SharedJsonOptions. Actual total128.8826237s, zero planned/executed tests, no timeout and runner cleanup complete. [Raw build preparation](recovery/linux-game-chains-20261010/c5-status-phase-build-preparation-fail/manifest.json). Add established using only. Independently reported Minor diagnostic race corrected: after original publisher settlement preserve its actual fault separately from an operation failure, even when local pin disposal precedes the outer publisher catch. Production unchanged; causal runtime RED remains UNRUN. Next one-case original NativeLineage status/preparing test, then only a reproduced prerequisite fix plus existing two genuine status-failure controls. Main/CI/task checkboxes unchanged.
+
 C194f704 causal command stopped in catalog preparation before build/execution: related was mistakenly a string, current schema requires {id,when}. Corrected to established shape; zero tests, no behavioral RED inferred. PlanOnly will validate this exact one-case selection before fresh causal run.
 
 ### C5 original status/preparing causal control WIP — 2026-10-10

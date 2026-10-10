@@ -1,0 +1,19 @@
+{
+  "SourceSHA": "c194f704687c1675195be4c4dccc37e97c6a0638",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-status-phase\") -PlanOnly'",
+  "Status": "BuildFAIL; zero tests",
+  "Scope": "Catalog schema modified during pre-run preparation: source HEAD c194 plus catalog/plan WIP. Build CS0103 missing Configuration using; not behavioral RED.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "75e5e651477cd129039be309f97582aaa91f102269eea761a3dc9c55e04f0551",
+      "RawBytes": 1321
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "8c154434768039476329c7e39232674c0d7b9a0eaddae257cfaa4b0c2a6b957a",
+      "RawBytes": 53000
+    }
+  ]
+}
