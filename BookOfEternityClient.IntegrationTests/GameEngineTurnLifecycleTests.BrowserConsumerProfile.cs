@@ -53,6 +53,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         var watch = Stopwatch.StartNew();
         var observations = new ConcurrentQueue<object>();
         var reads = new ConcurrentDictionary<string, int>(StringComparer.Ordinal);
+        var timings = new ConcurrentDictionary<string, (int Count, long Ticks)>(StringComparer.Ordinal);
+        object[] CaptureTimings() => timings.OrderBy(pair => pair.Key).Select(pair => (object)new
+        {
+            Stage = pair.Key, pair.Value.Count, Seconds = TimeSpan.FromTicks(pair.Value.Ticks).TotalSeconds
+        }).ToArray();
         var preflights = 0;
         var acquisitions = 0;
         var contention = 0;
@@ -60,6 +65,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
+                BrowserOriginalAdmissionTimingObserver = (stage, elapsed) => timings.AddOrUpdate(stage,
+                    (1, elapsed.Ticks), (_, previous) => (previous.Count + 1, previous.Ticks + elapsed.Ticks)),
                 AfterBrowserOriginalPreflightAsync = () => { Interlocked.Increment(ref preflights); Observe("admission-preflight-completed"); return Task.CompletedTask; },
                 AfterCanonicalWriteLockOpenedAsync = () => { Interlocked.Increment(ref acquisitions); return Task.CompletedTask; },
                 CanonicalWriteLockContendedAsync = () => { Interlocked.Increment(ref contention); return Task.CompletedTask; },
@@ -94,6 +101,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         GmSessionRunCoordinator? owner = null;
         TurnRequest? originalRequest = null;
         object? beforeStop = null;
+        object[]? timingsAtPublication = null;
         try
         {
             await Call("StartShellAsync");
@@ -113,6 +121,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                             File.WriteAllText(Path.Combine(own, "original-request.json"), JsonSerializer.Serialize(originalRequest));
                             WriteBrowserProfileSuccess(files, originalRequest);
                             Observe("authored-success-published");
+                            timingsAtPublication = CaptureTimings();
                             published.TrySetResult();
                         }
                         return Task.CompletedTask;
@@ -136,7 +145,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Record = owner.Record, Preflights = preflights, Acquisitions = acquisitions, Contention = contention,
                 Reads = reads.ToArray(), Phase = File.Exists(files.ResolvePath(PendingPlayerActionService.PendingPath))
                     ? JsonNode.Parse(File.ReadAllText(files.ResolvePath(PendingPlayerActionService.PendingPath)))!["status"]!.GetValue<string>() : null,
-                Observations = observations.ToArray(), OperationSettled = operation.IsCompleted, Deadline = deadline
+                Observations = observations.ToArray(), OperationSettled = operation.IsCompleted, Deadline = deadline,
+                AdmissionTimings = CaptureTimings(), AdmissionTimingsAtPublication = timingsAtPublication
             };
             await File.WriteAllTextAsync(Path.Combine(own, "profile-before-stop.json"), JsonSerializer.Serialize(beforeStop));
             if (!deadline)
@@ -171,6 +181,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 OperationSettled = operation?.IsCompleted == true, StopTaskSettled = stop.IsCompleted,
                 BeforeStop = beforeStop, OperationFailure = operationFailure?.ToString(), CleanupFailure = cleanupFailure?.ToString(),
                 Observations = observations.ToArray(), ModelCalls = 0,
+                AdmissionTimings = CaptureTimings(),
                 Scope = "Actual ordinary cancelled bootstrap, NativeLineage original Bridge and real ProcessPlayerTurn success consumer; fixture authors correlated response through existing checkpoint. Not Program/relay C5. Preflight count excludes additional recovery scans."
             }));
         }

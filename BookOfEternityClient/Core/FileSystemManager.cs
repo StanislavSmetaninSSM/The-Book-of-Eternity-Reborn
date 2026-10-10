@@ -23,6 +23,9 @@ internal sealed class FileSystemManagerHooks
     internal Func<Task>? CanonicalWriteLockContendedAsync { get; init; }
     internal Func<Task>? BeforeMainBorrowRetainAsync { get; init; }
     internal Func<Task>? AfterBrowserOriginalPreflightAsync { get; init; }
+    // Read-only timing observations for the original admission profile. A
+    // missing callback allocates no timer and changes no admission decision.
+    internal Action<string, TimeSpan>? BrowserOriginalAdmissionTimingObserver { get; init; }
     internal Func<Task>? MainOwnerLockContendedAsync { get; init; }
     internal Func<Task>? SessionLifecycleLockContendedAsync { get; init; }
     internal Func<Task>? BeforeCanonicalWriteLockOpenAsync { get; init; }

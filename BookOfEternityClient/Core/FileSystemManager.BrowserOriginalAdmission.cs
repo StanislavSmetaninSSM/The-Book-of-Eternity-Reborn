@@ -10,6 +10,16 @@ public partial class FileSystemManager
     private const string BrowserManifestPath = "game_state/control/pending_turn_snapshot.json";
     private static readonly AsyncLocal<BrowserOriginalOperationScope?> BrowserOriginalOperations = new();
 
+    private IDisposable? MeasureOriginalBrowserAdmission(string stage) =>
+        _hooks?.BrowserOriginalAdmissionTimingObserver is { } observer
+            ? new OriginalBrowserAdmissionTiming(observer, stage) : null;
+
+    private sealed class OriginalBrowserAdmissionTiming(Action<string, TimeSpan> observer, string stage) : IDisposable
+    {
+        private readonly long _started = System.Diagnostics.Stopwatch.GetTimestamp();
+        public void Dispose() => observer(stage, System.Diagnostics.Stopwatch.GetElapsedTime(_started));
+    }
+
     // An original pre-publication refusal, not a grant to bypass the browser
     // fence. Only this issuing filesystem can identify it for diagnostics.
     private sealed class BrowserOriginalPhaseRefusal(FileSystemManager files)
@@ -194,20 +204,28 @@ public partial class FileSystemManager
     }
     private GameEngine.PendingTurnSnapshotManifest ValidateOriginalBrowserAdmission(PendingPlayerActionService.Staged staged,bool verifyPhysical)
     {
-        var manifest=GameEngine.ValidateDetachedBrowserBinding(staged);
-        manifest.BrowserOriginalMainCondition!.Validate(BasePath,staged.Binding.Generation);
+        GameEngine.PendingTurnSnapshotManifest manifest;
+        using(MeasureOriginalBrowserAdmission("detached-proof-decoding"))
+        {
+            manifest=GameEngine.ValidateDetachedBrowserBinding(staged);
+            manifest.BrowserOriginalMainCondition!.Validate(BasePath,staged.Binding.Generation);
+        }
         if(!verifyPhysical)return manifest;
+        using var physicalTiming=MeasureOriginalBrowserAdmission("physical-verification");
         if(ReadOriginalBrowserText("input/turn_request.json")!=staged.RequestJson ||
             ReadOriginalBrowserText(BrowserManifestPath)!=staged.ManifestJson ||
             ReadOriginalBrowserText(PendingTurnSnapshotAuthority.AuthorityPath)!=staged.AuthorityJson)
             throw BrowserOriginalMainCondition.Invalid();
-        var payload=GameEngine.ValidateOriginalBrowserAuthority(manifest,staged.AuthorityJson,ReadOriginalBrowserBytes);
+        PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload;
+        using(MeasureOriginalBrowserAdmission("authority-and-rollback-verification"))
+            payload=GameEngine.ValidateOriginalBrowserAuthority(manifest,staged.AuthorityJson,ReadOriginalBrowserBytes);
         if(payload.SnapshotHashMode!=PendingTurnSnapshotAuthority.ExactSnapshotHashMode ||
             payload.RollbackHashMode!=PendingTurnSnapshotAuthority.ExactRollbackHashMode ||
             !manifest.Files.Keys.ToHashSet(StringComparer.Ordinal).SetEquals(manifest.SnapshotFileHashes.Keys))
             throw BrowserOriginalMainCondition.Invalid();
         PendingTurnSnapshotAuthority.RequireExactSignedPaths(manifest.Files.Keys.Concat(manifest.Files.Values));
-        foreach(var (logical,path) in manifest.Files)RequireOriginalSnapshotHash(path,manifest.SnapshotFileHashes[logical]);
+        using(MeasureOriginalBrowserAdmission("snapshot-hash-verification"))
+            foreach(var (logical,path) in manifest.Files)RequireOriginalSnapshotHash(path,manifest.SnapshotFileHashes[logical]);
         return manifest;
     }
 
@@ -256,6 +274,7 @@ public partial class FileSystemManager
 
     private BrowserOriginalMainCondition? PreflightBrowserOriginalAdmission(MainAdmission admission)
     {
+        using var preflightTiming=MeasureOriginalBrowserAdmission("inclusive-preflight");
         if(admission.MetadataOnly)return null; // existing typed stop/diagnostic contract
         var scope=CurrentBrowserOriginalScope();
         if(scope!=null)scope.ValidateOwner(admission);
