@@ -232,6 +232,7 @@ public partial class FileSystemManager
         if(lease.MainAdmission.MetadataOnly || lease.Purpose==CanonicalWritePurpose.SessionFinalization)
             throw GmSessionRunPersistence.Invalid();
         lease.MainAdmission.Validate(lease);
+        _ = PreflightBrowserOriginalAdmission(lease.MainAdmission);
     }
     internal MainOperationClose? DescribeMainOperationClose(MainOperationOutcome outcome,bool closingFailed)
     {

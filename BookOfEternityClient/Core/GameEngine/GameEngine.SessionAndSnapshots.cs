@@ -1220,7 +1220,7 @@ public partial class GameEngine
     private static string NormalizeArtifactRelativePath(string relativePath) =>
         relativePath.Replace('\\', '/').TrimStart('/');
 
-    private static bool IsExplorerLocalTurnRollbackArtifactPath(string relativePath)
+    internal static bool IsExplorerLocalTurnRollbackArtifactPath(string relativePath)
     {
         var normalized = NormalizeArtifactRelativePath(relativePath);
         return ConsoleLocalTurnRollbackArtifacts.IsArtifact(normalized) || normalized.StartsWith(
@@ -1601,8 +1601,13 @@ public partial class GameEngine
         return ParseReadySignalMetadata(await _fs.ReadFileAsync(relativePath), relativePath);
     }
 
-    private ReadySignalMetadata? ParseReadySignalMetadata(string? json, string relativePath)
+    private ReadySignalMetadata? ParseReadySignalMetadata(string? json,string relativePath)
     {
+        try { return ParseReadySignalMetadataCore(json); }
+        catch(Exception ex) { _logger.LogDebug(ex,"Не удалось прочитать ready signal {RelativePath}.",relativePath);return null; }
+    }
+    private static ReadySignalMetadata? ParseReadySignalMetadataCore(string? json)
+{
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -1657,10 +1662,7 @@ public partial class GameEngine
                 };
             }
         }
-        catch (Exception ex)
-        {
-            _logger.LogDebug(ex, "Не удалось прочитать ready signal {RelativePath}.", relativePath);
-        }
+        catch (JsonException) { return null; }
 
         return null;
     }
@@ -1839,10 +1841,12 @@ public partial class GameEngine
 
     // Producer admission must see raw physical spellings before the shared repair/
     // restoration enumerator folds keys or filters optional fixed paths by FileExists.
-    private void RequireExactEngineSnapshotInventory(
-        FileSystemManager.CanonicalWriteLease writeLease,
-        RollbackSnapshot? rollbackSnapshot = null)
-    {
+    private void RequireExactEngineSnapshotInventory(FileSystemManager.CanonicalWriteLease writeLease,RollbackSnapshot? rollbackSnapshot=null) =>
+        RequireExactEngineSnapshotInventoryCore(_fs.EnumerateFiles(writeLease,"*").ToArray(),rollbackSnapshot);
+    internal static void RequireExactBrowserPhysicalInventory(string[] physicalInventory) =>
+        RequireExactEngineSnapshotInventoryCore(physicalInventory,null);
+    private static void RequireExactEngineSnapshotInventoryCore(string[] physicalInventory,RollbackSnapshot? rollbackSnapshot)
+{
         var fixedPaths = PendingTurnSnapshotPathPresenceV1.LogicalPaths
             .Concat(GuardianPolicySnapshotRequestFiles)
             .Concat(WoundAcceptedTurnSnapshotContract.OutputPaths)
@@ -1866,12 +1870,12 @@ public partial class GameEngine
                 SourceOfLightCapstoneState.PendingRequestPath,
                 SarefMainStoryState.PendingWingsInfiltrationPath, SarefMainStoryState.StatePath
             }).ToArray();
-        var rawPaths = _fs.EnumerateFiles(writeLease, "*")
+        var rawPaths = physicalInventory
             .Where(path => path.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("lore/", StringComparison.OrdinalIgnoreCase) ||
                 fixedPaths.Contains(path, StringComparer.OrdinalIgnoreCase));
         PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPaths
-            .Concat(EnumerateStoryContinuityFiles(writeLease)).Concat(fixedPaths)
+            .Concat(physicalInventory.Where(path=>path.StartsWith("stories/",StringComparison.Ordinal) && path.EndsWith(".jsonl",StringComparison.Ordinal))).Concat(fixedPaths)
             .Concat(rollbackSnapshot?.BaselineFiles ?? [])
             .Concat(rollbackSnapshot?.ValidationSnapshotFiles ?? [])
             .Concat(rollbackSnapshot?.BackupFiles.Keys.AsEnumerable() ?? [])
@@ -1879,12 +1883,13 @@ public partial class GameEngine
             .Concat(rollbackSnapshot?.BackupHashes.Keys.AsEnumerable() ?? []));
     }
 
-    private IEnumerable<string> EnumerateRollbackTrackedFiles(
-        FileSystemManager.CanonicalWriteLease writeLease)
-    {
+    private IEnumerable<string> EnumerateRollbackTrackedFiles(FileSystemManager.CanonicalWriteLease writeLease) =>
+        EnumerateOriginalBrowserRollbackTrackedFiles(_fs.EnumerateFiles(writeLease,"*").ToArray());
+    internal static IEnumerable<string> EnumerateOriginalBrowserRollbackTrackedFiles(string[] physicalInventory)
+{
         var files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var relative in _fs.EnumerateFiles(writeLease, "*"))
+        foreach (var relative in physicalInventory)
         {
             if (ConsoleLocalTurnRollbackArtifacts.IsArtifact(relative)) continue;
             if (relative.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase))
@@ -1928,7 +1933,7 @@ public partial class GameEngine
         foreach (var outputFile in WoundAcceptedTurnSnapshotContract.OutputPaths
                      .Append(QteSceneService.QteOfferPath))
         {
-            if (_fs.FileExists(writeLease, outputFile))
+            if (physicalInventory.Contains(outputFile,StringComparer.OrdinalIgnoreCase))
                 files.Add(outputFile);
         }
 

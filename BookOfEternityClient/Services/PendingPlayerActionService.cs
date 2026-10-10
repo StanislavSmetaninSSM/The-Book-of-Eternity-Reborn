@@ -99,6 +99,7 @@ internal static class PendingPlayerActionService
             PendingPath, previous, next, RequireCurrentBaseline: true)).ToArray();
         if (!await CoordinatedStateWriteHelper.TryCommitAsync(fs, lease, writes))
             throw new InvalidOperationException("Ожидающее действие изменилось; повторная отправка остановлена.");
+        fs.ObserveBrowserOriginalPhasePublication(previous,next);
     }
 
     internal static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));

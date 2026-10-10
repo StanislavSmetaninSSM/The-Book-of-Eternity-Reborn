@@ -282,11 +282,14 @@ public partial class GameEngine
         return witness.ToJsonString();
     }
 
-    private async Task ValidateBrowserHistoryAsync(FileSystemManager.CanonicalWriteLease lease, string json, bool exact)
-    {
+    private Task ValidateBrowserHistoryAsync(FileSystemManager.CanonicalWriteLease lease,string json,bool exact) =>
+        ValidateBrowserHistoryCoreAsync(json,exact,path=>_fs.ReadFileBytesAsync(lease,path),_fs.EnumerateFiles(lease,"*").ToArray());
+
+    private static async Task ValidateBrowserHistoryCoreAsync(string json,bool exact,Func<string,Task<byte[]?>> read,string[] physicalInventory)
+{
         var expected = StrictJsonAuthority.Deserialize<JsonObject>(json, JsonOpts, "original browser history")
             ?? throw new InvalidDataException(BrowserRecoveryMessage);
-        var currentPaths = EnumerateStoryContinuityFiles(lease).Append("game_state/history/chat_log.json").ToArray();
+        var currentPaths = physicalInventory.Where(path=>path.StartsWith("stories/",StringComparison.Ordinal) && path.EndsWith(".jsonl",StringComparison.Ordinal)).Append("game_state/history/chat_log.json").ToArray();
         PendingTurnSnapshotAuthority.RequireExactSignedPaths(currentPaths.Concat(expected.Select(pair => pair.Key)));
         if (exact && !currentPaths.Order(StringComparer.Ordinal).SequenceEqual(expected.Select(pair => pair.Key).Order(StringComparer.Ordinal)))
             throw new InvalidDataException(BrowserRecoveryMessage);
@@ -296,7 +299,7 @@ public partial class GameEngine
             if (path != "game_state/history/chat_log.json" &&
                 (!path.StartsWith("stories/", StringComparison.Ordinal) || !path.EndsWith(".jsonl", StringComparison.Ordinal)))
                 throw new InvalidDataException(BrowserRecoveryMessage);
-            var bytes = await _fs.ReadFileBytesAsync(lease, path);
+            var bytes = await read(path);
             if (witness == null) { if (bytes != null) throw new InvalidDataException(BrowserRecoveryMessage); continue; }
             var count = witness["bytes"]!.GetValue<int>();
             if (bytes == null || count < 0 || bytes.Length < count || (exact && bytes.Length != count) ||
@@ -325,15 +328,20 @@ public partial class GameEngine
             return true;
         });
 
-    private async Task ValidateRestoredBrowserSettlementAsync(FileSystemManager.CanonicalWriteLease lease,
-        PendingPlayerActionService.Staged staged, PendingTurnSnapshotManifest manifest)
-    {
+    private Task ValidateRestoredBrowserSettlementAsync(FileSystemManager.CanonicalWriteLease lease,
+        PendingPlayerActionService.Staged staged,PendingTurnSnapshotManifest manifest) =>
+        ValidateRestoredBrowserSettlementCoreAsync(staged,manifest,path=>_fs.ReadFileBytesAsync(lease,path),
+            path=>_fs.FileExists(lease,path),_fs.EnumerateFiles(lease,"*").ToArray());
+
+    private static async Task ValidateRestoredBrowserSettlementCoreAsync(PendingPlayerActionService.Staged staged,
+        PendingTurnSnapshotManifest manifest,Func<string,Task<byte[]?>> read,Func<string,bool> exists,string[] physicalInventory)
+{
         var state = PendingPlayerActionService.Parse(staged.Json, staged.Binding.Generation);
         var disposition = JsonNode.Parse(state.ProofJson!)!["terminalDisposition"]?.GetValue<string>();
         var terminalJson = JsonNode.Parse(state.ProofJson!)!["terminalSignalJson"]?.GetValue<string>()
             ?? throw new InvalidDataException(BrowserRecoveryMessage);
         _ = StrictJsonAuthority.Deserialize<JsonObject>(terminalJson, JsonOpts, "original browser terminal disposition");
-        var signal = ParseReadySignalMetadata(terminalJson, "original browser terminal disposition");
+        var signal = ParseReadySignalMetadataCore(terminalJson);
         var terminalKind = disposition == "originalTerminalErrorRestored" ? "turn_error" : "turn_complete";
         if (disposition is not ("originalTerminalErrorRestored" or "originalTerminalRejectedRestored") ||
             signal == null || !string.IsNullOrWhiteSpace(signal.HarnessSource) ||
@@ -342,30 +350,35 @@ public partial class GameEngine
             !PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(staged.AuthorityJson, out var original) ||
             original == null || original.RollbackHashMode != PendingTurnSnapshotAuthority.ExactRollbackHashMode)
             throw new InvalidDataException(BrowserRecoveryMessage);
-        RequireExactEngineSnapshotInventory(lease);
+        RequireExactBrowserPhysicalInventory(physicalInventory);
         PendingTurnSnapshotAuthority.RequireExactSignedPaths(original.RollbackBaselineFiles
             .Concat(original.RollbackBackups.Keys).Concat(original.RollbackBackupHashes.Keys));
         var expected = original.RollbackBackupHashes.Keys.Order(StringComparer.Ordinal).ToArray();
         if (expected.Length == 0 ||
             !expected.SequenceEqual(original.RollbackBackups.Keys.Order(StringComparer.Ordinal)) ||
             !expected.SequenceEqual(original.RollbackBaselineFiles.Order(StringComparer.Ordinal)) ||
-            !expected.SequenceEqual(EnumerateRollbackTrackedFiles(lease).Order(StringComparer.Ordinal)))
+            !expected.SequenceEqual(EnumerateOriginalBrowserRollbackTrackedFiles(physicalInventory).Order(StringComparer.Ordinal)))
             throw new InvalidDataException(BrowserRecoveryMessage);
         foreach (var path in expected)
         {
-            var bytes = await _fs.ReadFileBytesAsync(lease, path);
+            var bytes = await read(path);
             if (bytes == null || PendingPlayerActionService.Hash(bytes) != original.RollbackBackupHashes[path])
                 throw new InvalidDataException(BrowserRecoveryMessage);
         }
         foreach (var path in OriginalBrowserArtifactInventory(manifest).Concat(BrowserSettlementWorkPaths))
-            if (_fs.FileExists(lease, path)) throw new InvalidDataException(BrowserRecoveryMessage);
-        await ValidateBrowserHistoryAsync(lease, staged.HistoryJson, exact: true);
+            if (exists(path)) throw new InvalidDataException(BrowserRecoveryMessage);
+        await ValidateBrowserHistoryCoreAsync(staged.HistoryJson,true,read,physicalInventory);
     }
 
-    private async Task ValidateAcceptedBrowserRecordAsync(FileSystemManager.CanonicalWriteLease lease,
-        PendingPlayerActionService.State state, PendingTurnSnapshotManifest manifest)
-    {
-        await ValidateBrowserHistoryAsync(lease, PendingPlayerActionService.ReadStaged(state).HistoryJson, exact: false);
+    private Task ValidateAcceptedBrowserRecordAsync(FileSystemManager.CanonicalWriteLease lease,
+        PendingPlayerActionService.State state,PendingTurnSnapshotManifest manifest) =>
+        ValidateAcceptedBrowserRecordCoreAsync(state,manifest,path=>_fs.ReadFileBytesAsync(lease,path),
+            path=>_fs.FileExists(lease,path),_fs.EnumerateFiles(lease,"*").ToArray());
+
+    private static async Task ValidateAcceptedBrowserRecordCoreAsync(PendingPlayerActionService.State state,
+        PendingTurnSnapshotManifest manifest,Func<string,Task<byte[]?>> read,Func<string,bool> exists,string[] physicalInventory)
+{
+        await ValidateBrowserHistoryCoreAsync(PendingPlayerActionService.ReadStaged(state).HistoryJson,false,read,physicalInventory);
         var proof = JsonNode.Parse(state.ProofJson!)!.AsObject();
         if (proof["terminalDisposition"]?.GetValue<string>() != "ordinaryAcceptedAndCleanupComplete")
             throw new InvalidDataException(BrowserRecoveryMessage);
@@ -373,14 +386,14 @@ public partial class GameEngine
         var expectedInventory = OriginalBrowserArtifactInventory(manifest).ToArray();
         if (inventory.Count != expectedInventory.Length) throw new InvalidDataException(BrowserRecoveryMessage);
         foreach (var path in expectedInventory)
-            if (inventory[path]?.GetValue<bool>() != false || _fs.FileExists(lease, path))
+            if (inventory[path]?.GetValue<bool>() != false || exists(path))
                 throw new InvalidDataException(BrowserRecoveryMessage);
         var story = proof["story"]?.Deserialize<PendingPlayerActionService.StoryProof>(JsonOpts)
             ?? throw new InvalidDataException(BrowserRecoveryMessage);
         if (!story.Path.StartsWith("stories/", StringComparison.Ordinal) || story.Path.Contains("..") ||
             story.Path.Contains('\\') || !story.Path.EndsWith(".jsonl", StringComparison.Ordinal) || story.PrefixBytes <= 0)
             throw new InvalidDataException(BrowserRecoveryMessage);
-        var bytes = await _fs.ReadFileBytesAsync(lease, story.Path);
+        var bytes = await read(story.Path);
         if (bytes == null || bytes.Length < story.PrefixBytes ||
             PendingPlayerActionService.Hash(bytes[..story.PrefixBytes]) != story.PrefixHash)
             throw new InvalidDataException(BrowserRecoveryMessage);

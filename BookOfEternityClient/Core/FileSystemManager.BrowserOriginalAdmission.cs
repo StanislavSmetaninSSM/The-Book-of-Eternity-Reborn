@@ -23,11 +23,14 @@ public partial class FileSystemManager
         internal bool Processing { get; private set; }
         internal bool Cleanup { get; private set; }
         private bool _disposed;
+        internal string? ExpectedPendingJson { get; private set; }
+        private Dictionary<string,string>? _cleanupInventory;
         internal BrowserOriginalOperationScope(FileSystemManager files, MainAdmission owner,
             PendingPlayerActionService.Binding binding, PendingPlayerActionService.Staged? staged,
             BrowserOriginalOperationScope? parent)
         {
             _files=files;_owner=owner;Binding=binding;_parent=parent;
+            ExpectedPendingJson=staged?.Json??binding.Json;
             Condition=owner.CaptureBrowserCondition(binding.Generation);
             if(staged != null)
             {
@@ -61,7 +64,53 @@ public partial class FileSystemManager
         {
             ValidateOwner(MainAdmissions.Value);
             if(!Processing || Staged == null) throw BrowserOriginalMainCondition.Invalid();
-            Cleanup=true;
+            if(!Cleanup)
+            {
+                var manifest=_files.ValidateOriginalBrowserAdmission(Staged,verifyPhysical:true);
+                var payload=GameEngine.ValidateOriginalBrowserAuthority(manifest,Staged.AuthorityJson,_files.ReadOriginalBrowserBytes);
+                var inventory=new Dictionary<string,string>(StringComparer.Ordinal);
+                foreach(var (logical,path) in manifest.Files)inventory.Add(path,manifest.SnapshotFileHashes[logical]);
+                foreach(var (logical,path) in payload.RollbackBackups)inventory.Add(path,payload.RollbackBackupHashes[logical]);
+                foreach(var path in new[]{"input/turn_request.json",BrowserManifestPath,PendingTurnSnapshotAuthority.AuthorityPath})
+                    inventory.Add(path,Convert.ToHexString(SHA256.HashData(_files.ReadOriginalBrowserBytes(path)??throw BrowserOriginalMainCondition.Invalid())));
+                _cleanupInventory=inventory;
+                ValidateCleanupInventory();
+                Cleanup=true;
+            }
+            else ValidateCleanupInventory();
+        }
+        internal void ValidateCleanupInventory()
+        {
+            var inventory=_cleanupInventory??throw BrowserOriginalMainCondition.Invalid();
+            foreach(var path in _files.EnumerateOriginalBrowserPhysicalFiles())
+            {
+                if(path.StartsWith("game_state/control/pending_turn_snapshot/",StringComparison.OrdinalIgnoreCase) ||
+                    path.Contains(".rollback.",StringComparison.OrdinalIgnoreCase) && !GameEngine.IsExplorerLocalTurnRollbackArtifactPath(path))
+                    if(!inventory.ContainsKey(path))throw BrowserOriginalMainCondition.Invalid();
+            }
+            foreach(var (path,hash) in inventory)
+                if(_files.ReadOriginalBrowserBytes(path) is { } remaining &&
+                    !string.Equals(Convert.ToHexString(SHA256.HashData(remaining)),hash,StringComparison.OrdinalIgnoreCase))
+                    throw BrowserOriginalMainCondition.Invalid();
+        }
+        internal void ObservePublishedPhase(string previous,string? next)
+        {
+            ValidateOwner(MainAdmissions.Value);
+            if(ExpectedPendingJson!=previous || _files.ReadOriginalBrowserText(PendingPlayerActionService.PendingPath)!=next)
+                throw BrowserOriginalMainCondition.Invalid();
+            var before=PendingPlayerActionService.Parse(previous,Binding.Generation);
+            var after=next==null?null:PendingPlayerActionService.Parse(next,Binding.Generation);
+            var allowed=before.Phase switch
+            {
+                "queued"=>after?.Phase=="preparing",
+                "preparing"=>after?.Phase=="staged",
+                "staged"=>Processing && after?.Phase=="terminalProcessing",
+                "terminalProcessing"=>Cleanup && after?.Phase is "accepted" or "settled",
+                "accepted" or "settled"=>Cleanup && after==null,
+                _=>false
+            };
+            if(!allowed)throw BrowserOriginalMainCondition.Invalid();
+            ExpectedPendingJson=next;
         }
         public void Dispose()
         {
@@ -93,6 +142,8 @@ public partial class FileSystemManager
     internal void BeginBrowserOriginalProcessing(PendingPlayerActionService.Staged staged) =>
         (CurrentBrowserOriginalScope()??throw BrowserOriginalMainCondition.Invalid()).BeginProcessing(staged);
     internal void AllowBrowserOriginalCleanup() => CurrentBrowserOriginalScope()?.BeginCleanup();
+    internal void ObserveBrowserOriginalPhasePublication(string previous,string? next) =>
+        CurrentBrowserOriginalScope()?.ObservePublishedPhase(previous,next);
     private BrowserOriginalOperationScope? CurrentBrowserOriginalScope()
     {
         for(var p=BrowserOriginalOperations.Value;p!=null;p=p._parent)
@@ -150,6 +201,30 @@ public partial class FileSystemManager
         return manifest;
     }
 
+    private bool OriginalBrowserFileExists(string relative)
+    {
+        if(!PendingTurnSnapshotAuthority.IsSafeRelativePath(relative))throw BrowserOriginalMainCondition.Invalid();
+        var scope=new TrustedLocalFileScope([BasePath]);
+        return File.Exists(scope.ValidateFile(ResolvePath(relative)));
+    }
+    private string[] EnumerateOriginalBrowserPhysicalFiles()
+    {
+        var scope=new TrustedLocalFileScope([BasePath]);var result=new List<string>();
+        void Walk(string directory)
+        {
+            foreach(var path in Directory.EnumerateFileSystemEntries(scope.ValidateDirectory(directory,false)))
+            {
+                var observed=scope.ObserveNamespace(path);
+                if(observed.BlockingFileAncestor!=null)throw BrowserOriginalMainCondition.Invalid();
+                if(observed.Kind==TrustedLocalNamespaceKind.Directory)Walk(path);
+                else if(observed.Kind==TrustedLocalNamespaceKind.File)
+                    result.Add(Path.GetRelativePath(GameSessionPath,scope.ValidateFile(path,false)).Replace('\\','/'));
+                else throw BrowserOriginalMainCondition.Invalid();
+            }
+        }
+        Walk(GameSessionPath);return result.ToArray();
+    }
+
     private BrowserOriginalMainCondition? PreflightBrowserOriginalAdmission(MainAdmission admission)
     {
         if(admission.MetadataOnly)return null; // existing typed stop/diagnostic contract
@@ -157,13 +232,16 @@ public partial class FileSystemManager
         if(scope!=null)scope.ValidateOwner(admission);
         var pendingJson=ReadOriginalBrowserText(PendingPlayerActionService.PendingPath);
         var manifestJson=ReadOriginalBrowserText(BrowserManifestPath);
-        var marked=manifestJson!=null && (manifestJson.Contains("\"browserActionId\"",StringComparison.Ordinal) ||
-            manifestJson.Contains("\"browserSessionGeneration\"",StringComparison.Ordinal) ||
-            manifestJson.Contains("\"browserOriginalMainCondition\"",StringComparison.Ordinal));
+        var raw=manifestJson==null?null:StrictJsonAuthority.Deserialize<JsonObject>(manifestJson,
+            new System.Text.Json.JsonSerializerOptions(),"original admission manifest classification");
+        var marked=raw!=null && (raw.ContainsKey("browserActionId") || raw.ContainsKey("browserSessionGeneration") ||
+            raw.ContainsKey("browserOriginalMainCondition"));
+        if(scope!=null && pendingJson!=scope.ExpectedPendingJson)throw BrowserOriginalMainCondition.Invalid();
         if(pendingJson==null)
         {
-            if(marked || scope!=null)throw BrowserOriginalMainCondition.Invalid();
-            return null;
+            if(marked || scope!=null && !scope.Cleanup)throw BrowserOriginalMainCondition.Invalid();
+            scope?.ValidateCleanupInventory();
+            return scope?.Condition;
         }
         var state=PendingPlayerActionService.Parse(pendingJson,ObserveExistingHelperGeneration());
         if(scope!=null)
@@ -184,9 +262,7 @@ public partial class FileSystemManager
                 retained.AuthorityJson!=scope.Staged.AuthorityJson || retained.HistoryJson!=scope.Staged.HistoryJson)
                 throw BrowserOriginalMainCondition.Invalid();
             if(!scope.Cleanup)ValidateOriginalBrowserAdmission(retained,verifyPhysical:true);
-            else foreach(var (path,expected) in new[]{("input/turn_request.json",retained.RequestJson),
-                (BrowserManifestPath,retained.ManifestJson),(PendingTurnSnapshotAuthority.AuthorityPath,retained.AuthorityJson)})
-                if(ReadOriginalBrowserText(path) is { } present && present!=expected)throw BrowserOriginalMainCondition.Invalid();
+            else scope.ValidateCleanupInventory();
             return scope.Condition;
         }
         if(state.Phase=="queued")
@@ -199,7 +275,12 @@ public partial class FileSystemManager
         var original=ValidateOriginalBrowserAdmission(staged,verifyPhysical:state.Phase=="staged");
         // Completed receipts retain their existing cleanup-only contract. Their
         // old run need not remain live; the original receipt validator still runs.
-        if(state.Phase is "accepted" or "settled")return null;
+        if(state.Phase is "accepted" or "settled")
+        {
+            GameEngine.ValidateCompletedBrowserReceipt(state,original,ReadOriginalBrowserBytes,
+                OriginalBrowserFileExists,EnumerateOriginalBrowserPhysicalFiles());
+            return null;
+        }
         original.BrowserOriginalMainCondition!.RequireCurrent(this);
         return original.BrowserOriginalMainCondition;
     }
