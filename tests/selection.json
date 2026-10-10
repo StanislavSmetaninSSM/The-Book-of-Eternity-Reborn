@@ -2,6 +2,15 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-original-browser-staging-crash",
+            "reason": "Astra identifies complete visible staged after-images in uncommitted original journal can roll back to preparing then return mutable lease; real process cuts avoid ordinary outcome wrapper automatic rollback.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
             "category": "c5-original-browser-story-inventory",
             "reason": "Astra found Ordinal story prefix filtering loses raw case aliases before exact signed paths; actual producer and actual cold receipt causal controls.",
             "contracts": [

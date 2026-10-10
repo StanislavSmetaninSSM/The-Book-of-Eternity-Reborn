@@ -430,26 +430,28 @@ public sealed partial class GameEngineTurnLifecycleTests
         AssertBrowserRecoveryTree(before);
     }
 
-    private Task<PendingPlayerActionService.Binding> QueueBrowserInputAsync() =>
-        SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+    private Task<PendingPlayerActionService.Binding> QueueBrowserInputAsync(FileSystemManager? files = null) =>
+        SessionOperationContext.RunParticipatingCurrentSessionAsync(files ?? _fs, async () =>
         {
-            await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            var root = PendingPlayerActionService.PrepareQueued(_fs, lease, "Я читаю исходное письмо.", "browser-composer", DateTime.UtcNow.ToString("O"));
+            files ??= _fs;
+            await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+            var root = PendingPlayerActionService.PrepareQueued(files, lease, "Я читаю исходное письмо.", "browser-composer", DateTime.UtcNow.ToString("O"));
             var json = root.ToJsonString();
-            await _fs.WriteFileAtomicAsync(lease, PendingPlayerActionService.PendingPath, json);
-            return PendingPlayerActionService.Parse(json, _fs.GetOrCreateSessionGeneration(lease)).Binding;
+            await files.WriteFileAtomicAsync(lease, PendingPlayerActionService.PendingPath, json);
+            return PendingPlayerActionService.Parse(json, files.GetOrCreateSessionGeneration(lease)).Binding;
         });
 
-    private async Task<(GameEngine Engine, PendingPlayerActionService.Staged Staged)> PrepareBrowserInputStagingAsync(bool withRollback = false)
+    private async Task<(GameEngine Engine, PendingPlayerActionService.Staged Staged)> PrepareBrowserInputStagingAsync(bool withRollback = false, FileSystemManager? files = null)
     {
-        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json",
+        files ??= _fs;
+        await files.WriteFileAtomicAsync("game_state/meta/soul_state.json",
             "{\"soulName\":\"Проверочная душа\",\"sessionId\":\"browser-recovery-session\",\"currentRealm\":\"Mortal World\",\"currentIncarnation\":1}");
-        var binding = await QueueBrowserInputAsync();
-        var engine = CreateGameEngine(new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]));
+        var binding = await QueueBrowserInputAsync(files);
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]), fileSystem: files);
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession("browser-recovery-session", 0);
-        return await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, binding.Generation, async () =>
+        return await SessionOperationContext.RunParticipatingExpectedSessionAsync(files, binding.Generation, async () =>
         {
-            using var original = _fs.BeginBrowserOriginalOperation(binding);
+            using var original = files.BeginBrowserOriginalOperation(binding);
         await InvokePrivateTaskAsync(engine, "ClaimBrowserPreparationAsync", binding);
         var request = new TurnRequest
         {

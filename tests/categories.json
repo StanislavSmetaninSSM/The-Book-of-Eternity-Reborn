@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-original-browser-staging-crash",
+            "responsibility": "Actual original GameEngine staging publisher SIGKILL at each of its two member publication boundaries under independently guardian-owned driver; no wrapper rollback before cut. Uncommitted original journal must refuse before replay, including journal inserted after preflight at physical lock.",
+            "excludes": "Guarded quiescent component only; no actual Program/relay gameplay, active-owner uncertainty recovery, model, arbitrary crash recovery or new journal.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+                "BookOfEternityClient/Core/TrustedLocalFilePublication.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-original-browser-pending-recovery",
+                    "when": "Permitted unrelated journal recovery must remain functional."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_ActualStagingProcessCrashRefusesBeforeRecovery"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-original-browser-story-inventory",
             "responsibility": "Independent C5 review: preserve raw case aliases in ordinary original snapshot producer and cold completed browser receipt history before exact signed-path validation.",
             "excludes": "No live model, browser lifetime or full gameplay qualification.",

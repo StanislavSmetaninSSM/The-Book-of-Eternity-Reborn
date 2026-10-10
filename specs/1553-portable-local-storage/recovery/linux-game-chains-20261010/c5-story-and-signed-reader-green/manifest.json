@@ -1,0 +1,49 @@
+{
+  "SourceSHA": "325126c8eafc3034a291ff2c517ad5abad7e38e0",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"browser-pending-snapshot-roundtrip\",\"c5-original-browser-story-inventory\")'",
+  "Status": "4/4 PASS;65.4541923s;fresh unit/integration; complete0skip/duplicate/timeout;cleanup complete",
+  "Scope": "Ordinary reader1, genuine browser all6 DTOs+sharedreader1, causal storyalias2 nowGREEN; not lifetime acceptance",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "eb9fd2f5de518b8ead37ec5dac8495b7246329298964c38503efa47014ea2b81",
+      "RawBytes": 3226
+    },
+    {
+      "Path": "runner/browser-pending-snapshot-roundtrip-integration-001.trx.gz",
+      "RawSHA256": "c3059fae7aeeeae7c7da0f60671b9494e69737344f0b9cc60d45607a1e57e05f",
+      "RawBytes": 3139
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "aee3682bf7de5e781133fb2cc3dae8b67d6187349ed75b816389824450b1c454",
+      "RawBytes": 1860
+    },
+    {
+      "Path": "runner/c5-original-browser-story-inventory-integration-003.trx.gz",
+      "RawSHA256": "5c112dd526ada2124072f7c7788942fa95d040d4ccfb186db1995672edb1cb11",
+      "RawBytes": 4656
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "721cbd1f67565d986ecb3b66061276979fd0ecb8b71b59f1b16fab804d992a46",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "85e25db128e280524ea23b4a07b5971130dac1e10ded70da755cbe2bc4c11ec7",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/browser-pending-snapshot-roundtrip-unit-002.trx.gz",
+      "RawSHA256": "08b38956f9651f92d5c3f791d4711dcc773255e08a846c8c17c0ef378fcea60d",
+      "RawBytes": 3083
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "31394e6d96e134b04486003b1bd838e30c2462b780b8189e67229ea5e924929e",
+      "RawBytes": 3352066
+    }
+  ]
+}

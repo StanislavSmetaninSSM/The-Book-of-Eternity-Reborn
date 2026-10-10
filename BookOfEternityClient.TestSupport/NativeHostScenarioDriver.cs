@@ -14,7 +14,8 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
-        if (args.Length == 4 && args[0] == "engine-browser-recovery-cold")
+        if ((args.Length == 4 && args[0] == "engine-browser-recovery-cold") ||
+            (args.Length == 6 && args[0] is "engine-browser-staging-cut" or "engine-browser-staging-publisher"))
         {
             // The integration fixture supplies the real lifecycle service factory.
             // Resolve its test-only dependencies in this isolated child, without a project cycle.
@@ -25,9 +26,16 @@ internal static class NativeHostScenarioDriver
                 return path == null ? null : AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
             };
             var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(args[1]);
+            var name = args[0] switch
+            {
+                "engine-browser-staging-cut" => "WriteBrowserStagingCutProbeAsync",
+                "engine-browser-staging-publisher" => "RunOriginalBrowserStagingPublisherAsync",
+                _ => "WriteBrowserRecoveryColdProbeAsync"
+            };
             var method = assembly.GetType("BookOfEternityClient.Tests.GameEngineTurnLifecycleTests", true)!
-                .GetMethod("WriteBrowserRecoveryColdProbeAsync", BindingFlags.Public | BindingFlags.Static)!;
-            await (Task)method.Invoke(null, [args[2], args[3]])!;
+                .GetMethod(name, BindingFlags.Public | BindingFlags.Static)!;
+            object[] values = args.Length == 4 ? [args[2], args[3]] : [args[2], args[3], int.Parse(args[4]), args[5]];
+            await (Task)method.Invoke(null, values)!;
             return 0;
         }
         if(args.Length==5 && args[0]=="browser-game-fault-host")return await BrowserGameFaultHost.RunAsync(args[1],args[2],args[3],args[4]);
