@@ -1,5 +1,5 @@
 {
-  "SourceSHA": "14391239c37b60ef52c5b86979079987afa640c7",
+  "SourceSHA": "3cb165dffd1b806932a100b65830d5275c669de1",
   "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
   "Status": "PASS",
   "Scope": "Discovery-only catalog617categories11391methods/files;0tests/0modelcalls;32.2761444s;no runtime qualification",
@@ -30,5 +30,12 @@
       "RawSHA256": "34a4c3ab608c482f011d44fd7266e135a21f31d90e4e056294b3f50ca9aaed2c",
       "RawBytes": 3286521
     }
-  ]
+  ],
+  "ArchiveCheckpoint": "14391239c37b60ef52c5b86979079987afa640c7",
+  "ExecutionRevision": {
+    "Head": "3cb165dffd1b806932a100b65830d5275c669de1",
+    "WorkingTreeFingerprint": "A6B925ABD9C56BD9005D9A89B628E920B3A511C922F8DA9E85D8F0C98A024944",
+    "ChangedFiles": 1,
+    "Limitation": "Runner records one changed file but not its path. This is actual discovery evidence, not a clean-tree execution claim."
+  }
 }

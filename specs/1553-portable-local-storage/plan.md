@@ -55,6 +55,9 @@ BOE_GAME_CHAIN_BROWSER_PYTHON, /usr/bin/chromium, DOTNET_ROOT runtime/PowerShell
 CI currently disabled and not provisioned by this stage. Final discovery-only
 catalog **PASS**,617categories/11391methods-or-files,32.2761444s,0tests executed:
 [actual receipt](recovery/linux-game-chains-20261010/final-catalog-discovery/manifest.json).
+Actual runnerHead3cb165df,ChangedFiles1/fingerprintA6B925...024944: the changed
+path was not recorded; no clean-tree execution claim. Archive checkpoint14391239
+is distinct from execution SourceSHA, now corrected to match preserved runner.
 Independent Astra/xhigh final review at14391239 accepted C4/fault runtime and
 112new rawhash/length entries; no Critical/Important findings. Its Minor verifier
 optimization bypass is corrected by an explicit non-assert refusal; actual
