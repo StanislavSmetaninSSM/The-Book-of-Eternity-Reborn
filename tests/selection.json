@@ -125,7 +125,7 @@
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",
-                "c5-wait-participation-plan.md steps1\u20134"
+                "c5-wait-participation-plan.md steps1–4"
             ]
         },
         {
@@ -134,7 +134,7 @@
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",
-                "c5-wait-participation-plan.md steps1\u20134"
+                "c5-wait-participation-plan.md steps1–4"
             ]
         },
         {
@@ -143,7 +143,7 @@
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",
-                "c5-wait-participation-plan.md steps2\u20133"
+                "c5-wait-participation-plan.md steps2–3"
             ]
         },
         {
@@ -398,7 +398,7 @@
         },
         {
             "category": "linux-game-chain-browser-relay",
-            "reason": "Approved lifetime C5 actual idle staging crash after original immutable close/disposal; real React\u2192Program\u2192Bridge/daemon/relay, exact retained request/action/generation and once-only history, normal original Stop/EOF/ECHILD.",
+            "reason": "Approved lifetime C5 actual idle staging crash after original immutable close/disposal; real React→Program→Bridge/daemon/relay, exact retained request/action/generation and once-only history, normal original Stop/EOF/ECHILD.",
             "contracts": [
                 "#1553",
                 "US3",

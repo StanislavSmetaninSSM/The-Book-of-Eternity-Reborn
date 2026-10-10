@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "bc24c80f2cc24446d646856c5bd8c88da93bf791",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"guardian-musings-capture-crash\", \"guardian-musings-normalized-crash\", \"guardian-musings-accepted-cleanup-crash\") -PlanOnly -TimeoutMinutes 8'",
+  "Status": "PREPARATION PASS169.0478480s/3descriptors3cases0runtime",
+  "Scope": "Fresh integration/support/Bridge; independent fixture review found qualifiers requiring correction before runtime. No tests executed.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "fd0a15025ed26573cb81746211a945b1510593463ec299c203ce76cb0217f809",
+      "RawBytes": 3027
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "e30e80b563c9892d882a5cd64adb817fbdf1c861ee6717201bde8817e5323d2a",
+      "RawBytes": 1696
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "b92d3e5847d5d205b2e9a1306f25eb26cb092e492ee1accbb9a4a3653254cbba",
+      "RawBytes": 56697
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "14f9fa382aa7e09df7c08a571fa161c48270c6c1a138970bd6bf2781a941e84b",
+      "RawBytes": 1676255
+    }
+  ]
+}

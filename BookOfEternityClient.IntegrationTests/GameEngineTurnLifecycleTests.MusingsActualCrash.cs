@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -57,6 +58,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(result["OriginalPinUnresolved"]!.GetValue<bool>());
         Assert.True(result["LogicalUncertainRetained"]!.GetValue<bool>());
         Assert.True(result["ExactEvidenceRetained"]!.GetValue<bool>());
+        Assert.True(result["ExactCutEvidenceRetained"]!.GetValue<bool>());
         Assert.True(result["ColdNativeAdmissionRefused"]!.GetValue<bool>());
         Assert.Null(result["Failure"]);
     }
@@ -106,7 +108,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Exception? failure = null, cleanupFailure = null;
         string? logicalStopFailure = null;
         MainOperationClose? identity = null;
-        bool success = false, originalEof = false, unresolved = false, exact = false, coldRefused = false, physical = false;
+        bool success = false, originalEof = false, unresolved = false, exact = false, exactCut = false, coldRefused = false, physical = false;
         JsonNode? cutEvidence = null, coldEvidence = null;
         Dictionary<string, string>? before = null, after = null;
         try
@@ -120,6 +122,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             using var cutDeadline = new CancellationTokenSource(TimeSpan.FromSeconds(120));
             while (!File.Exists(Path.Combine(own, "original-cut.json")))
             {
+                if (File.Exists(Path.Combine(own, "fixture-preparation-failure.txt")))
+                    throw new InvalidOperationException("PREPARATION: " + File.ReadAllText(Path.Combine(own, "fixture-preparation-failure.txt")));
                 if (original.HasExited) throw new InvalidOperationException("PREPARATION: original engine exited before intended cut: " + await originalError);
                 await Task.Delay(10, cutDeadline.Token);
             }
@@ -128,6 +132,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(nonce, cutEvidence["Nonce"]!.GetValue<string>());
             Assert.Equal(cut, cutEvidence["Cut"]!.GetValue<int>());
             Assert.True(cutEvidence["QualifiedBoundary"]!.GetValue<bool>());
+            Assert.Equal(loop.SessionId, cutEvidence["SessionId"]!.GetValue<string>());
+            Assert.Equal(loop.TurnNumber + 1, cutEvidence["TurnNumber"]!.GetValue<int>());
+            Assert.Equal(owner.Identity.GenerationId, cutEvidence["Generation"]!.GetValue<string>());
             identity = cutEvidence["PinIdentity"]!.Deserialize<MainOperationClose>()!;
             var active = owner.QueryRemoteOperation(identity);
             Assert.Equal(MainOperationState.Active, active.State);
@@ -149,6 +156,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             // Ownership metadata may change after EOF. Freeze the canonical inventory
             // now, separately from the original cut-time ACK and before cold execution.
             before = MusingsCutInventory(files);
+            var atCut = cutEvidence["Inventory"]!.Deserialize<Dictionary<string, string>>()!;
+            exactCut = atCut.Count == before.Count && atCut.All(pair => before.TryGetValue(pair.Key, out var value) && pair.Value == value);
+            Assert.True(exactCut);
             RetainMusingsCutFiles(files, own, "pre-cold");
             cold = StartMusingsCutChild("engine-musings-cold", files.BasePath, Path.Combine(own, "cold.json"), cut, own);
             coldOut = cold.StandardOutput.ReadToEndAsync(); coldError = cold.StandardError.ReadToEndAsync();
@@ -209,7 +219,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ChildrenSettled = (original is null || original.HasExited) && (cold is null || cold.HasExited) &&
                     new[] { originalOut, originalError, coldOut, coldError }.All(task => task is null || task.IsCompleted),
                 StopTaskSettled = stop.IsCompleted, ServerSettled = server.IsCompleted, DisposeTaskSettled = dispose.IsCompleted,
-                ColdNativeAdmissionRefused = coldRefused, ExactEvidenceRetained = exact, BeforeCold = before, AfterCold = after,
+                ColdNativeAdmissionRefused = coldRefused, ExactEvidenceRetained = exact, ExactCutEvidenceRetained = exactCut,
+                BeforeCold = before, AfterCold = after,
                 CutEvidence = cutEvidence, ColdEvidence = coldEvidence, OriginalRecordAfterStop = owner?.Record, ModelCalls = 0,
                 Scope = "Actual ordinary console engine process SIGKILL with original NativeBridge alive; same original pin Active -> Unresolved, cold ordinary native-admission refusal. No automatic resume, Program/relay/browser/Windows/live-model or whole T070 acceptance."
             }));
@@ -229,6 +240,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         FileSystemManager? files = null;
         bool packetWritten = false, gateClaimed = false;
         TurnRequest? request = null;
+        Dictionary<string, byte[]>? originalRollbackBytes = null;
         MainOperationClose DescribeOriginalPin()
         {
             var admissions = (AsyncLocal<FileSystemManager.MainAdmission?>)typeof(FileSystemManager).GetField("MainAdmissions", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
@@ -239,7 +251,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Null(frame.TerminalClose);
             return frame.DescribeClose(MainOperationOutcome.Completed, false)!;
         }
-        async Task HoldBoundaryAsync(string path, object capture, FileSystemManager.CanonicalWriteLease? lease, string stateType)
+        async Task HoldBoundaryAsync(string path, object capture, FileSystemManager.CanonicalWriteLease? lease, string stateType, string? stack = null)
         {
             Assert.NotNull(request);
             var snapshot = (PendingTurnSnapshotReadAuthority)capture.GetType().GetField("_snapshot", flags)!.GetValue(capture)!;
@@ -250,7 +262,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (lease is not null) { Assert.True(lease.IsActive); Assert.Same(files, lease.Owner); }
             var before = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "pre-turn-guardians.json")))!;
             var currentBytes = File.ReadAllBytes(files.ResolvePath("game_state/meta/guardians.json"));
-            var current = JsonNode.Parse(currentBytes)!;
+            var current = JsonNode.Parse(Encoding.UTF8.GetString(currentBytes).TrimStart('\uFEFF'))!;
             var old = before["guardians"]![0]!["musings"]!.AsArray();
             var actual = current["guardians"]![0]!["musings"]!.AsArray();
             Assert.Equal(old.Count + (cut == 0 ? 0 : 1), actual.Count);
@@ -276,12 +288,18 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(request.PlayerAction, entry["player"]!.GetValue<string>());
                 Assert.Equal("Исходное письмо прочитано.", entry["narrative"]!.GetValue<string>());
                 Assert.True(File.Exists(files.ResolvePath(path)));
+                Assert.NotNull(originalRollbackBytes);
+                foreach (var pair in originalRollbackBytes)
+                {
+                    Assert.True(File.Exists(files.ResolvePath(pair.Key)), "Original rollback path disappeared before first cleanup mutation: " + pair.Key);
+                    Assert.Equal(pair.Value, File.ReadAllBytes(files.ResolvePath(pair.Key)));
+                }
             }
             RetainMusingsCutFiles(files, own, "at-cut");
             File.WriteAllText(ack + ".tmp", JsonSerializer.Serialize(new
             {
                 Pid = Environment.ProcessId, Nonce = control["Nonce"]!.GetValue<string>(), Cut = cut,
-                Path = path, StateType = stateType, QualifiedBoundary = true,
+                Path = path, StateType = stateType, StackDiagnosticOnly = stack, QualifiedBoundary = true,
                 CaptureReturned = cut == 0, NormalizationReturned = cut == 1,
                 OriginalCompletedProofObserved = cut == 2, BeforeFirstCleanupMutation = cut == 2,
                 HeldOriginalPublicationLease = lease?.IsActive == true, SessionId = snapshot.SessionId,
@@ -309,9 +327,17 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 try
                 {
-                    // The original caller must first register its real await chain.
-                    await Task.Delay(10);
-                    var states = operation is null ? [] : ReadActualMusingsStateMachines(operation);
+                    // Observe this exact gate in the original task's actual await
+                    // chain before reading state or releasing an irrelevant read.
+                    var registration = Stopwatch.StartNew();
+                    (List<object> States, bool GateReachable) actualChain;
+                    do
+                    {
+                        actualChain = operation is null ? ([], false) : ReadActualMusingsStateMachines(operation, gate.Task);
+                        if (!actualChain.GateReachable) await Task.Delay(1);
+                    } while (!actualChain.GateReachable && registration.Elapsed < TimeSpan.FromSeconds(2));
+                    if (!actualChain.GateReachable) throw new InvalidOperationException("PREPARATION: exact read gate registration was not observed in the original engine await chain.");
+                    var states = actualChain.States;
                     var normal = states.SingleOrDefault(state => state.GetType().FullName!.Contains("AcceptedTurnCanonicalStateRefresh+<NormalizeAndValidateWithPlanAsync>", StringComparison.Ordinal));
                     var capture = normal?.GetType().GetFields(flags).Where(field => field.FieldType == typeof(ValidationService.GuardianMusingsPublicationCapture))
                         .Select(field => field.GetValue(normal)).SingleOrDefault(value => value is not null);
@@ -326,22 +352,43 @@ public sealed partial class GameEngineTurnLifecycleTests
                     gateClaimed = true;
                     await HoldBoundaryAsync(path, capture!, lease, normal!.GetType().FullName! + "/" + (cut == 0 ? "CaptureBeforeImagesAsync" : "CompleteAsync"));
                 }
-                catch (Exception preparation) { gate.TrySetException(preparation); }
+                catch (Exception preparation)
+                {
+                    gateClaimed = true;
+                    File.WriteAllText(Path.Combine(own, "fixture-preparation-failure.txt"), preparation.ToString());
+                    // Preserve the boundary; the parent notices this preparation
+                    // failure and kills only its child before any rollback/mutation.
+                    await Task.Delay(TimeSpan.FromSeconds(180));
+                    gate.TrySetException(preparation);
+                }
             });
             return gate.Task;
+        }
+        async Task ObserveMutationAsync(string path)
+        {
+            if (cut != 2 || gateClaimed || !packetWritten || originalRollbackBytes?.ContainsKey(path) != true) return;
+            // Latch the FIRST exact original backup mutation independently of
+            // completion/story validity; a later deletion cannot stand in for it.
+            gateClaimed = true;
+            try
+            {
+                Assert.NotNull(observedCompletion);
+                var capture = observedCompletion.GetType().GetField("_capture", flags)!.GetValue(observedCompletion)!;
+                await HoldBoundaryAsync(path, capture, null, "first exact original rollback mutation after ordinary story",
+                    new StackTrace().ToString());
+            }
+            catch (Exception preparation)
+            {
+                File.WriteAllText(Path.Combine(own, "fixture-preparation-failure.txt"), preparation.ToString());
+                await Task.Delay(TimeSpan.FromSeconds(180));
+                throw;
+            }
         }
         files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
                 BeforeCanonicalReadOpenAsync = ObserveReadAsync,
-                BeforeCanonicalMutationAsync = path =>
-                {
-                    if (cut != 2 || gateClaimed || observedCompletion is null || !path.Contains(".rollback.", StringComparison.Ordinal) ||
-                        !new StackTrace().ToString().Contains("GameEngine.CleanupBackup", StringComparison.Ordinal)) return Task.CompletedTask;
-                    gateClaimed = true;
-                    var capture = observedCompletion.GetType().GetField("_capture", flags)!.GetValue(observedCompletion)!;
-                    return HoldBoundaryAsync(path, capture, null, "GameEngine.CleanupBackup/first rollback delete");
-                }
+                BeforeCanonicalMutationAsync = ObserveMutationAsync
             });
         var engine = factory.CreateGameEngine(new QueuedConsoleInputSource([]), fileSystem: files, configureSettings: settings =>
         { settings.MusicEnabled = false; settings.SoundEnabled = false; }, finalizationHooks: new GameEngineSessionFinalizationHooks
@@ -352,6 +399,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 {
                     request = JsonSerializer.Deserialize<TurnRequest>(File.ReadAllText(files.ResolvePath("input/turn_request.json")), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
                     CaptureBrowserProfileFixture(files, own);
+                    var manifest = JsonNode.Parse(File.ReadAllText(files.ResolvePath("game_state/control/pending_turn_snapshot.json")))!;
+                    originalRollbackBytes = manifest["rollbackBackups"]!.AsObject().ToDictionary(
+                        pair => pair.Value!.GetValue<string>(), pair => File.ReadAllBytes(files.ResolvePath(pair.Value!.GetValue<string>())));
                     WriteMusingsRepairPacket(files, request, invalidNarrative: false);
                     File.WriteAllBytes(Path.Combine(own, "original-packet-guardians.bin"), File.ReadAllBytes(files.ResolvePath("game_state/meta/guardians.json")));
                     packetWritten = true;
@@ -410,15 +460,17 @@ public sealed partial class GameEngineTurnLifecycleTests
         return Process.Start(start)!;
     }
 
-    private static List<object> ReadActualMusingsStateMachines(Task operation)
+    private static (List<object> States, bool GateReachable) ReadActualMusingsStateMachines(Task operation, Task gate)
     {
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         var queue = new Queue<Task>(); queue.Enqueue(operation);
         var seen = new HashSet<Task>(ReferenceEqualityComparer.Instance);
         var states = new List<object>();
+        bool gateReachable = false;
         while (queue.TryDequeue(out var task))
         {
             if (task.IsCompleted || !seen.Add(task)) continue;
+            if (ReferenceEquals(task, gate)) gateReachable = true;
             var state = task.GetType().GetField("StateMachine", flags)?.GetValue(task);
             if (state is null) continue;
             states.Add(state);
@@ -431,7 +483,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         if (awaited.GetValue(value) is Task pending) queue.Enqueue(pending);
             }
         }
-        return states;
+        return (states, gateReachable);
     }
 
     private static Dictionary<string, string> MusingsCutInventory(FileSystemManager files)
