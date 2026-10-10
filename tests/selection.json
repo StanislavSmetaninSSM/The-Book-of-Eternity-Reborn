@@ -2,6 +2,14 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "guardian-musings-documentation",
+            "reason": "T070 plan requires an explicit musings-only worked example and guard; authoring/realm/schema unchanged, no internal proof authored by GM.",
+            "contracts": [
+                "#1553",
+                "T070-GUARDIAN-MUSINGS-AUTHORITY"
+            ]
+        },
+        {
             "category": "guardian-musings-affected-lifecycle",
             "reason": "Exact cleanup proof carrier changes shared accepted-tail syntax; stale generation refusal and existing treatment compensation/finalization source guards are affected.",
             "contracts": [

@@ -31,6 +31,29 @@
             ]
         },
         {
+            "id": "guardian-musings-documentation",
+            "responsibility": "GM-readable musings-only worked example, existing fields/realm limits and original client-bound materialization without duplicate actor memory.",
+            "excludes": "Full afterlife examples, behavior or cold-process qualification; existing broader example remains separate.",
+            "changeHints": [
+                "Examples/E_CLI_Afterlife_Turns.txt"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.GuardianMusingsWorkedExampleKeepsSingleMemorySurfaceAndOriginalClientBinding"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "guardian-musings-affected-lifecycle",
             "responsibility": "Stale-session quest cleanup refusal and original Mortal treatment compensation/finalization fences affected by the exact cleanup proof carrier.",
             "excludes": "Unrelated turn lifecycle, new gameplay, live GM and native platform qualification.",

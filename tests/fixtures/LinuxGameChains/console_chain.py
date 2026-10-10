@@ -461,6 +461,14 @@ try:
         offset = len(client.raw)
         client.send("\r")
         fresh(client, "Ваш ход", offset)
+        if scenario == "console-musings":
+            before_guardians = read_json(session / "game_state/meta/guardians.json")
+            before_musings = before_guardians["guardians"][0]["musings"]
+            if ordinal == 1:
+                preserved_musings = before_musings
+            assert before_musings == preserved_musings, "Ordinary entry changed the old musings before submission"
+            assert before_guardians["activeGuardian"]["musings"] == preserved_musings
+            (out / ("guardians-before-" + str(ordinal) + ".json")).write_bytes((session / "game_state/meta/guardians.json").read_bytes())
         action = "Осматриваюсь и запоминаю берег, проверочный ход " + str(ordinal) + "."
         offset = len(client.raw)
         if scenario == "browser-relay":
@@ -523,13 +531,13 @@ try:
             accepted_guardians = read_json(session / "game_state/meta/guardians.json")
             musings = accepted_guardians["guardians"][0]["musings"]
             assert musings[:len(preserved_musings)] == preserved_musings, "Accepted musings rewrote the full old prefix"
-            assert len(musings) == ordinal and musings[-1]["turn"] == ordinal, "Original command appended other than once"
+            assert len(musings) == len(preserved_musings) + 1 and musings[-1]["turn"] == ordinal, "Original command appended other than once"
             assert accepted_guardians["activeGuardian"]["musings"] == musings, "Active Guardian mirror drifted"
             assert not any(command.get("command") == "addMusings" for command in accepted_guardians.get("UpdateGuardians", []))
             preserved_musings = musings
             (out / ("guardians-after-" + str(ordinal) + ".json")).write_bytes((session / "game_state/meta/guardians.json").read_bytes())
             result.setdefault("GuardianMusings", []).append({"Turn": ordinal, "RequestId": req["requestId"],
-                "FullPrefixPreserved": True, "CanonicalMirrorEqual": True, "Count": len(musings)})
+                "FullPrefixPreserved": True, "CanonicalMirrorEqual": True, "BeforeCount": len(before_musings), "Count": len(musings)})
         if scenario == "browser-relay":
             row = entries[-1]
             assert row["requestId"] == req["requestId"] == submitted["actionId"], row

@@ -4878,6 +4878,45 @@ Correct reasoning for a freeform Guardian scene:
 
 Correct `UpdateGuardians` fragment:
 
+Worked single-surface memory example (`guardian_musings_original_bound_v1`):
+the original turn is 326 in Chaos Sea, and its validated pre-turn snapshot already
+contains `guard_social_azalia_001` with one earlier musing from turn 325. Keep that
+entire earlier entry unchanged. The Guardian chooses a cautious answer to the
+soul's request for memory guidance; record the complete Actor Brain audit as
+described in section 1, with `Изменения состояния:` naming `UpdateGuardians.addMusings`.
+Author only this memory command for that reaction, without a matching
+`guardianThoughtJournalUpdates` entry or direct writes to `guardians[]`/`activeGuardian`:
+
+```json
+{
+  "UpdateGuardians": [
+    {
+      "command": "addMusings",
+      "guardianId": "guard_social_azalia_001",
+      "musings": [
+        {
+          "turn": 326,
+          "topic": "soul_assessment",
+          "mood": "hopeful",
+          "text": "Я запомню, что душа попросила память ради осторожного решения, а не ради новой власти."
+        }
+      ]
+    }
+  ]
+}
+```
+
+The accepted client result has the unchanged earlier entry followed by this one
+new musing (two entries total), the same list in `activeGuardian.musings`, and no
+remaining `addMusings` command. Revalidation and cold continuation preserve that
+result without appending again. The client binds this comparison to the original
+signed request/turn/generation; the GM authors no internal proof or handoff fields.
+The existing limit is one or two new musings per Guardian per turn. A Mortal World
+treatment turn cannot use this afterlife-only command. This example changes no
+command fields, realm rules, or GM response schema.
+
+The broader fragment below illustrates separate supported non-memory mutations too:
+
 ```json
 {
   "UpdateGuardians": [
