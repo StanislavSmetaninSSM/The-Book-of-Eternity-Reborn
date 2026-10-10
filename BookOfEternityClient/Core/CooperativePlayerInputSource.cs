@@ -19,21 +19,29 @@ internal sealed class CooperativePlayerInputSource(
         var cursor = 0;
         int ScalarLength(int at) => at + 1 < draft.Length && char.IsHighSurrogate(draft[at]) && char.IsLowSurrogate(draft[at + 1]) ? 2 : 1;
         int PreviousLength() => cursor > 1 && char.IsLowSurrogate(draft[cursor - 1]) && char.IsHighSurrogate(draft[cursor - 2]) ? 2 : 1;
-        static int Scalars(string value) => value.EnumerateRunes().Count();
-        void Back(int count) { if (count > 0) echo(new string('\b', count)); }
-        void Remove(int at, int count)
+        // Let the terminal place tabs, wide/combining characters and wrapped rows.
+        // No cursor query reads keys or introduces another input owner.
+        echo("\u001b[s");
+        void Render(bool atEnd = false)
         {
-            draft.Remove(at, count);
-            var tail = draft.ToString(at, draft.Length - at);
-            echo(tail + " ");
-            Back(Scalars(tail) + 1);
+            echo("\u001b[u\u001b[J");
+            echo(draft.ToString());
+            if (!atEnd)
+            {
+                echo("\u001b[u");
+                echo(draft.ToString(0, cursor));
+            }
         }
         while (true)
         {
             // This is a wake-up hint only. Selection and generation validation happen
             // later under the original current-session operation and physical lease.
             if (pendingInputHint())
+            {
+                Render(atEnd: true);
+                echo(Environment.NewLine);
                 throw new TextComposerInputClosedException(draft.ToString(), interrupted: true);
+            }
             if (!source.KeyAvailable)
             {
                 Thread.Sleep(20);
@@ -41,34 +49,41 @@ internal sealed class CooperativePlayerInputSource(
             }
 
             var key = source.ReadKey(intercept: true);
+            if (key.KeyChar == '\u0004' && key.Modifiers.HasFlag(ConsoleModifiers.Control))
+            {
+                Render(atEnd: true);
+                echo(Environment.NewLine);
+                return draft.Length == 0 ? null : draft.ToString();
+            }
             if (key.Key == ConsoleKey.Enter)
             {
+                Render(atEnd: true);
                 echo(Environment.NewLine);
                 return draft.ToString();
             }
             if (key.Key == ConsoleKey.LeftArrow)
             {
-                if (cursor > 0) { cursor -= PreviousLength(); Back(1); }
+                if (cursor > 0) { cursor -= PreviousLength(); Render(); }
                 continue;
             }
             if (key.Key == ConsoleKey.RightArrow)
             {
-                if (cursor < draft.Length) { var count = ScalarLength(cursor); echo(draft.ToString(cursor, count)); cursor += count; }
+                if (cursor < draft.Length) { cursor += ScalarLength(cursor); Render(); }
                 continue;
             }
             if (key.Key == ConsoleKey.Home)
             {
-                Back(Scalars(draft.ToString(0, cursor))); cursor = 0;
+                cursor = 0; Render();
                 continue;
             }
             if (key.Key == ConsoleKey.End)
             {
-                echo(draft.ToString(cursor, draft.Length - cursor)); cursor = draft.Length;
+                cursor = draft.Length; Render();
                 continue;
             }
             if (key.Key == ConsoleKey.Delete)
             {
-                if (cursor < draft.Length) Remove(cursor, ScalarLength(cursor));
+                if (cursor < draft.Length) { draft.Remove(cursor, ScalarLength(cursor)); Render(); }
                 continue;
             }
             if (key.Key == ConsoleKey.Backspace)
@@ -77,7 +92,7 @@ internal sealed class CooperativePlayerInputSource(
                 {
                     // Remove a full Unicode scalar rather than half a surrogate pair.
                     var count = PreviousLength();
-                    cursor -= count; Back(1); Remove(cursor, count);
+                    cursor -= count; draft.Remove(cursor, count); Render();
                 }
                 continue;
             }
@@ -85,9 +100,7 @@ internal sealed class CooperativePlayerInputSource(
             {
                 draft.Insert(cursor, key.KeyChar);
                 cursor++;
-                var tail = draft.ToString(cursor, draft.Length - cursor);
-                echo(key.KeyChar + tail);
-                Back(Scalars(tail));
+                if (!char.IsHighSurrogate(key.KeyChar)) Render();
             }
         }
     }

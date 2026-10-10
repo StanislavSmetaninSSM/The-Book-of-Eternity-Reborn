@@ -1,0 +1,129 @@
+{
+  "SourceSHA": "76180728afa8df9db3874eed2814ecfc319e14bb",
+  "Status": "PASS",
+  "Scope": "6 independently guardian-owned actual GameEngine factory classification cases, not Program/relay gameplay. Qualified as part of original41 GREEN.",
+  "Command": "pwsh category selected original41; child mode engine-browser-recovery-cold",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "0/cold.json.gz",
+      "RawSHA256": "a6a7dd18163abb1e20c75aa85716fc7aef6663dac62695c007ca69b34cdc49db",
+      "RawBytes": 2283
+    },
+    {
+      "Path": "0/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "0/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "0/native.log.gz",
+      "RawSHA256": "a40cd2802625a5ea93693b0a6abdf52c8b115fc56ea7f2553c955216abacbbf7",
+      "RawBytes": 51
+    },
+    {
+      "Path": "1/cold.json.gz",
+      "RawSHA256": "c6f47a5b87f6763d119147fd8c1f64514c8f5d88a1376b7d14fecac3a820e16b",
+      "RawBytes": 2308
+    },
+    {
+      "Path": "1/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "1/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "1/native.log.gz",
+      "RawSHA256": "6fcc68d1867a9816111700bc68a4d405233324b21c84d315b77f3388a9d86d06",
+      "RawBytes": 51
+    },
+    {
+      "Path": "2/cold.json.gz",
+      "RawSHA256": "4486ba77c73195f26d87a938c7c9913b3415253cfff67c0a4c48c665e892f8e8",
+      "RawBytes": 2306
+    },
+    {
+      "Path": "2/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "2/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "2/native.log.gz",
+      "RawSHA256": "ce237e0f7a6e8bd4266aaece05e0128bf7bb4776ab172f63f2abe4c61e37efc9",
+      "RawBytes": 51
+    },
+    {
+      "Path": "3/cold.json.gz",
+      "RawSHA256": "4131de976690d42e7ccb6ae99bf18f984f1f8e38e88c38789f7260532a1e6150",
+      "RawBytes": 772
+    },
+    {
+      "Path": "3/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "3/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "3/native.log.gz",
+      "RawSHA256": "3b374b263ed22c4d4df478479307df9aa04ccf6d17cc24e6004886850421e61a",
+      "RawBytes": 51
+    },
+    {
+      "Path": "4/cold.json.gz",
+      "RawSHA256": "79f56f1c9027e45b9f9cd3b5047c80c5b7310aea44423f02ea7ae4490ba208b2",
+      "RawBytes": 984
+    },
+    {
+      "Path": "4/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "4/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "4/native.log.gz",
+      "RawSHA256": "521479591630dd7ce860faa0b5b045f06722b01af55b6d5171b482b3bbcf560c",
+      "RawBytes": 51
+    },
+    {
+      "Path": "5/cold.json.gz",
+      "RawSHA256": "408756692fbf1ac87f431394fe868e74c2bcb9f357e787e57508f00955e95ae0",
+      "RawBytes": 663
+    },
+    {
+      "Path": "5/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "5/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "5/native.log.gz",
+      "RawSHA256": "0cb736c2b7d9a4ba52b9d5e1becb13ef8c669f67c9b2835e13cfff95d7fa7648",
+      "RawBytes": 51
+    }
+  ]
+}
