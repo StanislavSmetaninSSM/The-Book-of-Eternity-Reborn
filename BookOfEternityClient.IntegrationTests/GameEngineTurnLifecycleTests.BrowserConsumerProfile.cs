@@ -39,6 +39,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(result["Accepted"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["OriginalStopped"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["PhysicalCleanup"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["OperationSettled"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["StopTaskSettled"]!.GetValue<bool>(), result.ToJsonString());
         Assert.Null(result["OperationFailure"]);
         Assert.Null(result["CleanupFailure"]);
     }
@@ -166,6 +168,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
                 Accepted = accepted, OriginalStopped = stopped, PhysicalCleanup = physical, Deadline = deadline,
+                OperationSettled = operation?.IsCompleted == true, StopTaskSettled = stop.IsCompleted,
                 BeforeStop = beforeStop, OperationFailure = operationFailure?.ToString(), CleanupFailure = cleanupFailure?.ToString(),
                 Observations = observations.ToArray(), ModelCalls = 0,
                 Scope = "Actual ordinary cancelled bootstrap, NativeLineage original Bridge and real ProcessPlayerTurn success consumer; fixture authors correlated response through existing checkpoint. Not Program/relay C5. Preflight count excludes additional recovery scans."

@@ -1,3 +1,7 @@
+### C5 profile task-settlement observation WIP — 2026-10-10
+
+Independent review of4a68 accepts narrow actualconsumer/beforeStop profile and205archivedraw. WaitAsync timeout alone does not prove underlying tasks joined: result now explicitly records original OperationSettled/StopTaskSettled and requires both for PASS; actual faults/timeout stay visible. Actual-session fixture correction is a separate forward commit. No production change or increased deadline. Profile after correctionsUNRUN; source/ref/raw readback before freshrun.
+
 ### C5 profile actual-session preparation correction WIP — 2026-10-10
 
 Source4a68e5b1 fresh integration **1fixtureFAIL167.6552379s**, complete1/1,no skip/duplicate/timeout, runnercleanupcomplete. Actual bootstrap succeeds, then fixture NullReference at120 before ProcessPlayerTurn: sessionId was incorrectly expected in soul_state instead of the actual bootstrap GameLoop. Original normalStop/physicalcleanup/guardianECHILD0failure/emergency/no deadline pass. [42 raw payloads](recovery/linux-game-chains-20261010/c5-consumer-profile-session-preparation-fail/manifest.json). Correct fixture to retain actual bootstrap GameLoop.SessionId/TurnNumber, without inventing a session. Production unchanged; consumer profile remains UNRUN, no causal RED. Next same single fresh profile; no budget/guard change.
