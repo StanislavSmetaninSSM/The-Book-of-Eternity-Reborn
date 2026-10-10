@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "218ceec62b3f0a476c2719b60f06c7498f935008",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category guardian-musings-original-consumers",
+  "Status": "10PASS/2FAIL; complete; 70.0736700s; cleanup complete",
+  "Scope": "Fresh build: exact original storage propagation8 and quest cleanup2 pass. Two treatment fixtures rejected by original Realm Segregation auto-rollback before Accepted; not handoff RED. Afterlife addMusings in Mortal World must not be authorized to qualify a combined positive.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "b9fd658246de5e44043604e57c61c484f57fc3f92f7deb9669a0a1251bb7dc3a",
+      "RawBytes": 1929
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "3adc9b1307f1d93d58d9dcf24c8715d975dd7ec8f1db16d0f11ee47be31a306b",
+      "RawBytes": 1487
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "ab31c17b80cf45353ab21b75fb541a2f827bcf14152102a9bf36a990f716008e",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/guardian-musings-original-consumers-integration-001.trx.gz",
+      "RawSHA256": "dfb7ed92057fb3594d82407663677a374bf93a49671506600b84434c36a0507c",
+      "RawBytes": 27184
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "6aa2889686fed376c9621cb448818f7d6b99e830aba4b584340534752f0d54e2",
+      "RawBytes": 1663707
+    }
+  ]
+}

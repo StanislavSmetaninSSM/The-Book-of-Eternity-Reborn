@@ -12,11 +12,19 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task GuardianMusingsPublication_TreatmentAcceptedHandoffReachesOriginalPostValidation(bool questSurface)
+    public async Task GuardianMusingsPublication_MortalTreatmentCannotBorrowAfterlifeMusingsAuthority(bool questSurface)
     {
         const string path = "game_state/meta/guardians.json";
         await using var context = await CreateHeldTreatmentPipelineContextAsync(null, composePublication: false,
             configureBeforePreparation: GuardianSystemRegressionTests.PrepareCurrentMusingsPublicationBaselineAsync);
+        var original = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, context.Lease,
+            [path, "game_state/meta/soul_state.json"]);
+        Assert.True(original.Success, string.Join("; ", original.Issues.Select(issue => issue.Code)));
+        Assert.NotNull(original.Snapshot);
+        var originalGuardians = original.Snapshot.ReadRequiredBytes(path);
+        var originalSoul = JsonNode.Parse(System.Text.Encoding.UTF8.GetString(
+            original.Snapshot.ReadRequiredBytes("game_state/meta/soul_state.json")).TrimStart('\uFEFF'))!;
+        Assert.True(RealmSemantics.IsMortalRealm(originalSoul["currentRealm"]!.GetValue<string>()));
         var root = JsonNode.Parse((await context.FileSystem.ReadFileAsync(context.Lease, path))!)!.AsObject();
         var prefix = root["guardians"]![0]!["musings"]!.DeepClone();
         root["UpdateGuardians"] = new JsonArray(new JsonObject
@@ -40,20 +48,26 @@ public sealed partial class GameEngineTurnLifecycleTests
         var disposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync", "guardian original treatment handoff", snapshot, null,
             HeldTreatmentPipelineContext.Turn, null);
-        Assert.True(disposition == AcceptedTurnValidationDisposition.Accepted,
+        Assert.True(disposition == AcceptedTurnValidationDisposition.TerminalRejected,
             disposition + ": " + await context.FileSystem.ReadFileAsync("game_state/control/validation_repair_request.json") + "\n" + logger.Describe());
-        Assert.Equal(spendsBefore + 1, CountHeldTreatmentEnergySpends(await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+        var rollback = JsonNode.Parse((await context.FileSystem.ReadFileAsync(RealmSegregationAutoRollbackService.ReportPath))!)!;
+        Assert.True(RealmSemantics.IsMortalRealm(rollback["sourceRealm"]!.GetValue<string>()));
+        Assert.Equal(original.Snapshot.SessionId, rollback["sessionId"]!.GetValue<string>());
+        Assert.Equal(original.Snapshot.RequestId, rollback["requestId"]!.GetValue<string>());
+        Assert.Equal(HeldTreatmentPipelineContext.Turn, rollback["turnNumber"]!.GetValue<int>());
+        var action = Assert.Single(rollback["actions"]!.AsArray());
+        Assert.Equal(path, action!["path"]!.GetValue<string>());
+        Assert.Equal(originalGuardians, await context.FileSystem.ReadFileBytesAsync(path));
+        Assert.Equal(spendsBefore, CountHeldTreatmentEnergySpends(await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
         var handoff = typeof(GameEngine).GetField("_acceptedTurnGuardianMusingsValidation", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(engine);
-        Assert.NotNull(handoff);
-        Assert.True(await InvokePrivateAsync<bool>(engine, "ValidatePostAcceptedMaterializedStateWithRepairLoopAsync", (object?)null));
+        Assert.Null(handoff);
         var published = JsonNode.Parse((await context.FileSystem.ReadFileAsync(path))!)!;
         var musings = published["guardians"]![0]!["musings"]!.AsArray();
-        Assert.Equal(prefix.AsArray().Count + 1, musings.Count);
+        Assert.Equal(prefix.AsArray().Count, musings.Count);
         for (var i = 0; i < prefix.AsArray().Count; i++) Assert.True(JsonNode.DeepEquals(prefix[i], musings[i]));
         Assert.True(JsonNode.DeepEquals(musings, published["activeGuardian"]!["musings"]));
         Assert.Null(published["UpdateGuardians"]);
         Assert.Null(published[GuardianProjectState.QuestProgressUpdatesProperty]);
-        Assert.Equal(spendsBefore + 1, CountHeldTreatmentEnergySpends(await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
     }
 
     [Theory]

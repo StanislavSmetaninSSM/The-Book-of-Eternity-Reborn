@@ -94,7 +94,8 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         try
         {
             launchArmed = true;
-            var arguments = mode is "repair_ready_session" or "guardian_command" ? new object?[] { generation } : null;
+            var arguments = mode == "guardian_command" ? new object?[] { generation, null }
+                : mode == "repair_ready_session" ? new object?[] { generation } : null;
             operation = (Task)typeof(GameEngine).GetMethod(method, BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(engine, arguments)!;
             Assert.Same(acquireEntered.Task, await Task.WhenAny(acquireEntered.Task, operation).WaitAsync(TimeSpan.FromSeconds(12)));
             allowAcquire.TrySetResult();

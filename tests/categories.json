@@ -3,7 +3,7 @@
     "categories": [
         {
             "id": "guardian-musings-original-consumers",
-            "responsibility": "#1553 T070 original treatment Accepted-to-post-validation handoff, exact owned quest-command cleanup without resealing substituted guardian state, original comparison lease acquisition/read/close/dual failure propagation with unchanged and unauthorized state. Independent per-case original snapshots and owned leases.",
+            "responsibility": "Original completed guardian musings comparison failures, exact accepted quest cleanup, and Mortal treatment rejection of afterlife-only musings authority.",
             "excludes": "Whole Program/relay/cold game acceptance, remote main shutdown and unrelated treatment/resource mechanics; no C5/B2-B5/Windows/live model.",
             "changeHints": [
                 "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
@@ -23,9 +23,34 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuardianMusingsPublication_TreatmentAcceptedHandoffReachesOriginalPostValidation",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuardianMusingsPublication_MortalTreatmentCannotBorrowAfterlifeMusingsAuthority",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuardianMusingsPublication_OriginalQuestCleanupAdvancesOnlyExactCompletedOutput",
                         "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.GuardianMusingsPublication_OriginalComparisonStorageFailureCannotEnterDomainRepair"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "guardian-musings-affected-lifecycle",
+            "responsibility": "Stale-session quest cleanup refusal and original Mortal treatment compensation/finalization fences affected by the exact cleanup proof carrier.",
+            "excludes": "Unrelated turn lifecycle, new gameplay, live GM and native platform qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync_StaleSession_DoesNotRewriteReplacementState",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_FullPipelineOwnsCompensationScopeAndCompletesAfterFinalRefresh",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostHelperFailureBoundaryRemainsInsideCompensationFence"
                     ]
                 }
             ]
