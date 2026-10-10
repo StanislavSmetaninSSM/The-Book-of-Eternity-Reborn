@@ -1,5 +1,14 @@
 param([Parameter(Mandatory)][string]$SessionPath,[Parameter(Mandatory)][string]$RequestPath,[Parameter(Mandatory)][string]$ResponsePath)
 $ErrorActionPreference = 'Stop'
+trap {
+    $relayOriginalFailure = $_
+    try {
+        # Retain the existing causal exception; diagnostics cannot replace it.
+        [Console]::Error.WriteLine($relayOriginalFailure.Exception.ToString())
+        [Console]::Error.WriteLine($relayOriginalFailure.ScriptStackTrace)
+    } catch {}
+    break
+}
 # Fixed developer packet consumer, no dynamic script evaluation, jobs or spawned commands.
 . (Join-Path $SessionPath 'game_state/control/gm_turn_helper.bootstrap.ps1')
 $request = Get-Content -LiteralPath $RequestPath -Raw -Encoding utf8 | ConvertFrom-Json -AsHashtable

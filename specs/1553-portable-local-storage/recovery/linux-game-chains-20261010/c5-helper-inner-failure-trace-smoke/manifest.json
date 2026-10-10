@@ -1,0 +1,38 @@
+{
+  "Status": "PASS",
+  "Scope": "Isolated synthetic retained-innerexception at bootstrap, no game/native/helper/model started; original error exit1 preserved; does not prove real helper cause or C5 success",
+  "Source": "760d before vs WIP retained-innerexception diagnostic; source commit is containing carrier",
+  "Files": [
+    {
+      "Path": "summary.json.gz",
+      "RawBytes": 845,
+      "RawSHA256": "c6479aa065681215fc89d3d53dbdf7d7a0059d2c83cde425534f9d23310ef99b"
+    },
+    {
+      "Path": "before.log.gz",
+      "RawBytes": 331,
+      "RawSHA256": "326dafdba9cc06dd8eef0b3d116bebe875b0c07063b1be2d09c71fbdeb1fa07e"
+    },
+    {
+      "Path": "after.log.gz",
+      "RawBytes": 743,
+      "RawSHA256": "dcd4e5711f315762e909406f4f953e905e28f06979b8acc0ea94d6d42e390dcf"
+    }
+  ],
+  "Checks": [
+    {
+      "Label": "before",
+      "ExitCode": 1,
+      "CausalInnerTracePresent": false,
+      "RawSHA256": "326dafdba9cc06dd8eef0b3d116bebe875b0c07063b1be2d09c71fbdeb1fa07e",
+      "Log": "/tmp/boe-c5-inner-error-smoke-mubdpx2w/before.log"
+    },
+    {
+      "Label": "after",
+      "ExitCode": 1,
+      "CausalInnerTracePresent": true,
+      "RawSHA256": "dcd4e5711f315762e909406f4f953e905e28f06979b8acc0ea94d6d42e390dcf",
+      "Log": "/tmp/boe-c5-inner-error-smoke-mubdpx2w/after.log"
+    }
+  ]
+}
