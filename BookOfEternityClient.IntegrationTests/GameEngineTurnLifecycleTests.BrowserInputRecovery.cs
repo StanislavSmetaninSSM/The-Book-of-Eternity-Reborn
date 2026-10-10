@@ -66,7 +66,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotNull(original);
         var after = BrowserRecoveryTree();
         var pendingKey = Path.GetRelativePath(_fs.BasePath, _fs.ResolvePath(PendingPlayerActionService.PendingPath)).Replace('\\', '/');
-        Assert.Equal("terminalProcessing", JsonNode.Parse(after[pendingKey])!["status"]!.GetValue<string>());
+        Assert.Equal("terminalProcessing", JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!["status"]!.GetValue<string>());
         after.Remove(pendingKey);
         Assert.Equal(original.Keys.Order(), after.Keys.Order());
         foreach (var entry in original) Assert.Equal(entry.Value, after[entry.Key]);
@@ -433,7 +433,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json",
             "{\"soulName\":\"Проверочная душа\",\"sessionId\":\"browser-recovery-session\",\"currentRealm\":\"Mortal World\",\"currentIncarnation\":1}");
         var binding = await QueueBrowserInputAsync();
-        var engine = CreateGameEngine();
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]));
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession("browser-recovery-session", 0);
         await InvokePrivateTaskAsync(engine, "ClaimBrowserPreparationAsync", binding);
         var request = new TurnRequest

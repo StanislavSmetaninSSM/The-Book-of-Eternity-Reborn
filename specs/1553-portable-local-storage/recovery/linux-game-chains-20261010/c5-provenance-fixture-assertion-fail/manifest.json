@@ -1,0 +1,35 @@
+{
+  "SourceSHA": "63779573f318bffd4a25f8fddc492ef34ffaa079",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-player-input-recovery",
+  "Status": "FAIL",
+  "Scope": "31=27PASS4FAIL48.2620799s complete0skipduplicateTimeout cleanup complete. Original27incl6cold/5damagedsettled/failedrollback PASS. New4reach mutating resolver then fail fixture BOM/native console; not causal complete behavioral RED.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "524a835446bda0f727dce2a73d4edbd414568caea1ac0089454d2f8953c2c4c1",
+      "RawBytes": 5239
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "9afe36ff3ef1715aa775b634d24c5302008f1bc355e8d082923db294e823c58d",
+      "RawBytes": 1474
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "09553216bda9079c4d5cc7d3e1b27364be0ebdaa4d61af5e9222fec945e9012f",
+      "RawBytes": 24267
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "a51c3388468a000e3b11bd26907b7a9237aca27bfbeb4aa2dddb55913189833b",
+      "RawBytes": 1644371
+    },
+    {
+      "Path": "runner/browser-player-input-recovery-integration-001.trx.gz",
+      "RawSHA256": "c30f50e78c1c7a498942f6011b427b806efd766c711f834bd7ee162cb38cafb4",
+      "RawBytes": 76215
+    }
+  ],
+  "WorkingTreeAnnotation": "docs/web-ui/local-web-host.md WIP only; compiled source/tests identical to SourceSHA"
+}

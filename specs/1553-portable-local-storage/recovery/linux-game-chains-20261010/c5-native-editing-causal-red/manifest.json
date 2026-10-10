@@ -1,0 +1,35 @@
+{
+  "SourceSHA": "63779573f318bffd4a25f8fddc492ef34ffaa079",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category player-input-draft-preservation",
+  "Status": "FAIL",
+  "Scope": "10=6PASS4FAIL38.8371486s complete0skipduplicateTimeout cleanup complete; actual cursor/Delete native adapter regressions.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "fa5fc1fc91c5d016e6ddc7d8e231094ee7f2efe9203a4c7565744fc7e248f703",
+      "RawBytes": 2890
+    },
+    {
+      "Path": "runner/player-input-draft-preservation-unit-001.trx.gz",
+      "RawSHA256": "4cf21af305b6f279ce9cab2dabaec53e325f23f850296242b49ee32335796329",
+      "RawBytes": 24579
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "f29307e1437118af4039a44ca8ba5bf42418e20f895207871d79d5fd8de3d4ea",
+      "RawBytes": 1470
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "29fed2ac703910f83b826c042c13a28c53fe7031d66310c2b1385b994c882f53",
+      "RawBytes": 42829
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "2875c3823a0e1c6699c9b102062fa7b20daeee8c3e46a51fab8a88888b8025c7",
+      "RawBytes": 1710081
+    }
+  ],
+  "WorkingTreeAnnotation": "docs/web-ui/local-web-host.md WIP only; compiled source/tests identical to SourceSHA"
+}

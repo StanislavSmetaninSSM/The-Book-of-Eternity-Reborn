@@ -7,6 +7,33 @@ Parent epic: #559
 
 The browser UI is a local shell over the same C# game client and the same `game_session` data. It is not a cloud service, does not require an account, and binds to loopback addresses only.
 
+### Ordinary actions with the active console engine (#1553, T069)
+
+An ordinary browser action requires the existing console game engine to be active
+for the same session root, with the web host running as its sidecar. The standalone
+`--web` host exposes the UI and queues the action; it does not own a second gameplay
+engine. Start and continue the console session before using ordinary browser actions.
+
+The console and browser share one pending action slot. The current session generation
+and action identity follow that action into the original signed turn request. A busy
+slot refuses another submission. Browser input can wake the console player prompt;
+unfinished console text remains a draft for the next prompt, including multiline text.
+Queued actions can resume after restart. A staged action waits for the original turn's
+terminal signal rather than creating a replacement request.
+
+Interrupted preparation or terminal processing stops further actions and preserves
+the original evidence. Diagnostic or conflicting terminal signals cannot certify
+completion. An accepted receipt is dequeued only after checking original history and
+artifact cleanup; a restored receipt also requires exact rollback bytes and the
+original GM terminal signal. Do not delete the pending action, snapshot, or ready files
+to force a retry. Local cancellation alone does not prove that an external GM worker
+has stopped, so it leaves further processing blocked until recovery is established.
+
+This handoff and its receipt are client-owned bookkeeping. The GM's existing original
+request, output and terminal contracts remain unchanged; no new GM field or command
+is introduced by T069. Lifecycle handoffs such as incarnation and QTE are retained
+behind recovery rather than certified through their untyped return values.
+
 Console mode and browser mode are two frontends over one local save/session root. If both modes are launched with the same base path, they read and write the same files under:
 
 ```text
