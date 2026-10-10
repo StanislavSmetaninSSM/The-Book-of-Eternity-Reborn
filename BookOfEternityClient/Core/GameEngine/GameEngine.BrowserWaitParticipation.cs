@@ -23,6 +23,35 @@ public partial class GameEngine
     }
 
 #if DEBUG
+    private async Task HoldQueuedBrowserIdleCutAsync()
+    {
+        var path = Environment.GetEnvironmentVariable("BOE_TEST_BROWSER_QUEUED_CUT_PATH");
+        if (string.IsNullOrWhiteSpace(path)) return;
+        var nonce = Environment.GetEnvironmentVariable("BOE_TEST_BROWSER_QUEUED_CUT_NONCE");
+        if (!Guid.TryParseExact(nonce, "N", out var parsed) || parsed.ToString("N") != nonce)
+            throw new InvalidDataException("Queued browser idle test nonce is invalid.");
+        Environment.SetEnvironmentVariable("BOE_TEST_BROWSER_QUEUED_CUT_PATH", null);
+        _fs.RequireLoadIpcOutsideFileScopes();
+        var ackPath = Path.GetFullPath(path);
+        var scope = new TrustedLocalFileScope([Path.GetDirectoryName(ackPath)!]);
+        var temporaryAckPath = ackPath + "." + nonce + ".tmp";
+        await File.WriteAllTextAsync(scope.ValidateFile(temporaryAckPath), JsonSerializer.Serialize(new
+        {
+            schemaVersion = 1, nonce, pid = Environment.ProcessId, outsideParticipation = true
+        }, MainOperationReader.Json));
+        File.Move(scope.ValidateFile(temporaryAckPath, false), scope.ValidateFile(ackPath));
+        var watch = Stopwatch.StartNew();
+        var releasePath = ackPath + ".release";
+        while (!File.Exists(scope.ValidateFile(releasePath)))
+        {
+            if (watch.Elapsed > TimeSpan.FromSeconds(60))
+                throw new TimeoutException("Queued browser idle test cut was not completed.");
+            await Task.Delay(25);
+        }
+        if (File.ReadAllText(scope.ValidateFile(releasePath, false)) != nonce)
+            throw new InvalidDataException("Queued browser idle test release does not match its nonce.");
+    }
+
     private async Task HoldOriginalBrowserIdleCutAsync(PendingPlayerActionService.Staged staged,
         MainOperationClose? close, bool observed, bool remote)
     {

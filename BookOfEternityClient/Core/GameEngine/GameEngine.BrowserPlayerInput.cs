@@ -57,6 +57,9 @@ public partial class GameEngine
 
     private async Task<string> ReadCooperativePlayerDraftAsync(bool multiline)
     {
+#if DEBUG
+        await HoldQueuedBrowserIdleCutAsync();
+#endif
         var selected = await SelectQueuedBrowserActionAsync();
         if (selected != null)
         {

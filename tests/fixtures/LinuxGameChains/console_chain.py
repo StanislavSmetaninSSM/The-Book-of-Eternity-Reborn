@@ -269,9 +269,13 @@ def submit_browser_action(dll, action, ordinal):
             return False
     wait(ready, "actual web host startup")
     if ordinal == 1:
-        # Hold the real input owner before the React producer publishes, so the
-        # queued-before-staging crash cut is deterministic, not a racing assertion.
-        os.kill(client.process.pid, signal.SIGSTOP)
+        # Cooperatively hold only this original input consumer outside ownership.
+        # SIGSTOP can freeze unrelated in-flight work needed by the real sidecar.
+        wait(lambda: queued_cut_path.exists(), "original queued input idle ACK")
+        queued_ack = read_json(queued_cut_path)
+        assert queued_ack == {"schemaVersion": 1, "nonce": queued_cut_nonce,
+                              "pid": client.process.pid, "outsideParticipation": True}
+        result["QueuedIdleWitness"] = queued_ack
     with sync_playwright() as driver:
         browser = driver.chromium.launch(executable_path="/usr/bin/chromium", headless=True,
                                          args=["--no-sandbox", "--disable-dev-shm-usage"], env=env)
@@ -424,7 +428,14 @@ def start_chain(suffix):
 
 try:
     dll = ship / "BookOfEternityClient/BookOfEternityClient.dll"
+    if scenario == "browser-relay":
+        queued_cut_nonce = uuid.uuid4().hex
+        queued_cut_path = out / "browser-queued-idle-ack.json"
+        env["BOE_TEST_BROWSER_QUEUED_CUT_PATH"] = str(queued_cut_path)
+        env["BOE_TEST_BROWSER_QUEUED_CUT_NONCE"] = queued_cut_nonce
     client = Peer("client-first", ["dotnet", str(dll), str(base), "--plain-output"], True)
+    env.pop("BOE_TEST_BROWSER_QUEUED_CUT_PATH", None)
+    env.pop("BOE_TEST_BROWSER_QUEUED_CUT_NONCE", None)
     fresh(client, "Тренировка QTE")
     offset = len(client.raw)
     client.send("\r")
@@ -609,6 +620,13 @@ except Exception:
             result["DiagnosticFailure"] = traceback.format_exc()
 finally:
     cleanup_errors = []
+    # Release cooperative fixture gates before ordinary failed-client cleanup.
+    for path_name, nonce_name in [("queued_cut_path", "queued_cut_nonce"), ("idle_cut_path", "idle_cut_nonce")]:
+        if path_name in globals():
+            release_path = Path(str(globals()[path_name]) + ".release")
+            temporary_release = Path(str(release_path) + ".tmp")
+            temporary_release.write_text(globals()[nonce_name])
+            os.replace(temporary_release, release_path)
     try:
         stop_chain()
     except Exception:
