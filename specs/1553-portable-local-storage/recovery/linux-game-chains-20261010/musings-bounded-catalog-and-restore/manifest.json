@@ -39,8 +39,19 @@
       "Path": "restore/boe-gamechain-ignored-evidence-paths.json.gz",
       "RawSHA256": "d547bebf2211c3352c7efb6b91f82ea32c590c2d9c320bf609154121ffa25035",
       "RawBytes": 1134
+    },
+    {
+      "Path": "restore/boe-1553-t070-complete-evidence-github-restore-20261010-1023.json.gz",
+      "RawSHA256": "968ff6f14120246cf13146bf3e9799fe7a90bc7e73aa787840367ab1a91ef332",
+      "RawBytes": 851
+    },
+    {
+      "Path": "restore/boe-1553-t070-complete-gamechain-restore-20261010-1023.json.gz",
+      "RawSHA256": "601f8be82ec76f95d6046faf33397afe3c07cdc80ed50890e0c84668c7b35478",
+      "RawBytes": 18935
     }
   ],
   "RestoreCommand": "Fresh empty GitHub-only clone, exact tree/full fsck/tracked blobs/storage-migration manifests. Original a78 tracked tree PASS did not include ignored gamechain files; new full carrier restore pending.",
-  "ArchivePreparationCorrection": "Supplemental raw check initially assumed uniform SourceSHA schema, then found7 .boe_runtime files listed by historical/current gamechain manifests but ignored by Git. All7 exact gzip/local raw hashes and lengths verify; preserve those exact files without rewriting any test result. a78 raw gamechain coverage is incomplete; final fresh carrier restore required."
+  "ArchivePreparationCorrection": "Supplemental raw check initially assumed uniform SourceSHA schema, then found7 .boe_runtime files listed by historical/current gamechain manifests but ignored by Git. All7 exact gzip/local raw hashes and lengths verify; preserve those exact files without rewriting any test result. a78 raw gamechain coverage is incomplete; final fresh carrier restore required.",
+  "RestoreCorrectionResult": "At a07cbf5c fresh empty GitHub-only clone verifies all34450tracked blobs/fullstrictfsck,90storage manifests7676artifacts10300commitpins, and all79gamechain manifests1561 raw hashes/lengths. One historical uncommitted preflight remains explicitly unqualified. Independent reviewer verifies7 omitted exact pinned Git blobs and catalog packet; final carrier restore follows publication."
 }
