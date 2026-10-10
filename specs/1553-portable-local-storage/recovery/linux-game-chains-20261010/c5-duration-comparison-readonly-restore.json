@@ -1,0 +1,107 @@
+{
+  "SHA": "9b0ae6a67e3a39c27e474390379692cdc698458d",
+  "Tree": "5e7d65ba4f11ff58fed8e3ba846ad076de282e46",
+  "RemoteSHA": "9b0ae6a67e3a39c27e474390379692cdc698458d",
+  "Directory": "/tmp/boe-c5-restore-9b0ae6a6",
+  "Method": "Independent GitHub-only depth1 single-branch clone in new empty directory of same saved cloud; no local objects/cache copied, read-only source/evidence verification, no build/test/second writer. fsck --full --strict exit0 for fetchedobjects; earlierfullhistory not fetched.",
+  "Clean": true,
+  "FsckExit": 0,
+  "RawManifestPayloadsVerified": 309,
+  "ManifestCounts": {
+    "c5-duration-comparison-current-plan": 4,
+    "c5-duration-comparison-preparation": 6,
+    "c5-duration-current-semantic-diagnostic": 54,
+    "c5-duration-comparison-historical-plan": 5,
+    "c5-duration-historical-semantic-diagnostic": 54,
+    "c5-private-decoded-state-controls-green": 4,
+    "c5-private-state-reuse-deadline": 79,
+    "c5-original-admission-measured-deadline": 103
+  },
+  "Files": [
+    {
+      "Path": "AGENTS.md",
+      "Bytes": 11662,
+      "SHA256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "Path": "docs/development-workflow.md",
+      "Bytes": 66432,
+      "SHA256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "Path": "docs/testing.md",
+      "Bytes": 18979,
+      "SHA256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "Path": ".specify/memory/constitution.md",
+      "Bytes": 14081,
+      "SHA256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/spec.md",
+      "Bytes": 75881,
+      "SHA256": "4dbae3433722c7ca46ffe840eb1b95cf9e14e883c92de4dc4a42c7184ed5e026"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/tasks.md",
+      "Bytes": 126266,
+      "SHA256": "ceef9b63d25f3ed2a76bc29562dd6e442c6018c430bbfcdfcdea0f4e073e0f91"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1590255,
+      "SHA256": "e1fb2b764305f0529938db4fa3bcb7eb1ffc634ff2aa67007dd23849897f5be5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/c5-wait-participation-plan.md",
+      "Bytes": 7059,
+      "SHA256": "2f48a32f131d1f362cd28c3d2ea5d888e42ed52158069a538489286970461986"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "Bytes": 23938,
+      "SHA256": "e08a1b480805949c23dde6bfa30256693d2a69740eac812da9794fdb100084a8"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "Bytes": 17654,
+      "SHA256": "04c992af2a19544dd8c410732b3bf7287e4b27145bb06912c542973784962dda"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "Bytes": 490644,
+      "SHA256": "00bb7e554773a8cfc4b34b0ffd2af97825384fffd81e3bf93a10e8383b1c4776"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "Bytes": 278761,
+      "SHA256": "fbb72eb049db9f75dca5032891a540ffed47919422c869dc674d43ac11a2cad1"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserConsumerProfile.cs",
+      "Bytes": 26355,
+      "SHA256": "019c42341f1bb6288a89e464de9ecf05f4087128871487196a9714f7433e96da"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/prepare_historical_consumer.py",
+      "Bytes": 5845,
+      "SHA256": "21052ed84ebfcf3641c50bf9977750b2452a5235520a2ac8ffb22fb67fb45e0b"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1683634,
+      "SHA256": "65f827c6949f4e3c538820e0b43c428281a931bd30f44a3a6ef651f2c4552da0"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 18841,
+      "SHA256": "f3e590f4bc16e0aa585bb2504bb367b285f64b82c8562f0995e652e536013683"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-duration-comparison.json",
+      "Bytes": 7150,
+      "SHA256": "289f4b641b5b3753fc6b2aa951db84d8d6b58b83e9fd44c5dfcc2356ea223b38"
+    }
+  ]
+}
