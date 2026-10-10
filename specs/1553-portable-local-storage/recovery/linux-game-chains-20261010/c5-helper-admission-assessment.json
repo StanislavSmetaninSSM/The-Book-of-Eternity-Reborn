@@ -624,7 +624,7 @@
     }
   },
   "ManagedContinuation": {
-    "Status": "WIP: source gate/preparation/control/diagnostic UNRUN",
+    "Status": "WIP: source gate and fresh preparation/catalog PASS; control/diagnostic UNRUN",
     "BaseSHA": "d80534a18ec6b09ceb94bd3e8c2e1441a99e36b7",
     "Target": "Original selected Complete-BoeTurn write helper caught exception after participating call unwinds and before THIS catch optional close serialization; admission may fail before binding/finalization",
     "Boundaries": [
@@ -686,6 +686,30 @@
       "CleanupComplete": true,
       "Archive": "c5-helper-managed-preparation-before-boundary-correction/manifest.json",
       "Limit": "Source diagnostic wording corrected after this completed preparation; not preparation of the next source."
+    },
+    "SourceAssemblySHA": "86c4ea1f13043cc6b4145e77cdf5f55de079a52e",
+    "SourceGate": "Same Astra PASS86c4ea1f; no blocking findings",
+    "MatchingPreparation": {
+      "WallSeconds": 58.7200054,
+      "UnitBuildSeconds": 53.1903857,
+      "PlannedCases": 2,
+      "ExecutedCases": 0,
+      "ExitCode": 0,
+      "CleanSource": true,
+      "CleanupComplete": true,
+      "Manifest": "c5-helper-managed-preparation/manifest.json"
+    },
+    "Catalog": {
+      "WallSeconds": 10.9708941,
+      "Valid": true,
+      "Methods": 11458,
+      "Categories": 657,
+      "Unmapped": [],
+      "StaleSelectors": [],
+      "Executed": 0,
+      "CleanSource": true,
+      "CleanupComplete": true,
+      "Manifest": "c5-helper-managed-catalog/manifest.json"
     }
   }
 }
