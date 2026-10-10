@@ -1,0 +1,7 @@
+BookOfEternityClient.Services.AcceptedTurnCanonicalStateRefresh+<>c__DisplayClass8_0
+fs: BookOfEternityClient.Core.FileSystemManager; public=True
+BookOfEternityClient.Services.AcceptedTurnCanonicalStateRefresh+<>c__DisplayClass8_1
+writeLease: BookOfEternityClient.Core.FileSystemManager+CanonicalWriteLease; public=True
+CS$<>8__locals1: BookOfEternityClient.Services.AcceptedTurnCanonicalStateRefresh+<>c__DisplayClass8_0; public=True
+BookOfEternityClient.Services.ValidationService+GuardianMusingsPublicationCapture+<CompleteAsync>d__9
+<>4__this: BookOfEternityClient.Services.ValidationService+GuardianMusingsPublicationCapture; public=True

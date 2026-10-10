@@ -239,6 +239,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation? observedCompletion = null;
         FileSystemManager? files = null;
         bool packetWritten = false, gateClaimed = false;
+        int gateObservations = 0;
         TurnRequest? request = null;
         Dictionary<string, byte[]>? originalRollbackBytes = null;
         MainOperationClose DescribeOriginalPin()
@@ -323,6 +324,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             if (!packetWritten || cut == 2 || gateClaimed || path != "game_state/meta/guardians.json") return Task.CompletedTask;
             var gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var observation = Interlocked.Increment(ref gateObservations);
+            var hookStack = new StackTrace().ToString();
             _ = Task.Run(async () =>
             {
                 try
@@ -330,25 +333,32 @@ public sealed partial class GameEngineTurnLifecycleTests
                     // Observe this exact gate in the original task's actual await
                     // chain before reading state or releasing an irrelevant read.
                     var registration = Stopwatch.StartNew();
-                    (List<object> States, bool GateReachable) actualChain;
+                    (List<object> States, bool GateReachable, object Diagnostic) actualChain;
                     do
                     {
-                        actualChain = operation is null ? ([], false) : ReadActualMusingsStateMachines(operation, gate.Task);
+                        actualChain = operation is null ? ([], false, new { OperationAssigned = false }) : ReadActualMusingsStateMachines(operation, gate.Task);
                         if (!actualChain.GateReachable) await Task.Delay(1);
                     } while (!actualChain.GateReachable && registration.Elapsed < TimeSpan.FromSeconds(2));
-                    if (!actualChain.GateReachable) throw new InvalidOperationException("PREPARATION: exact read gate registration was not observed in the original engine await chain.");
                     var states = actualChain.States;
                     var normal = states.SingleOrDefault(state => state.GetType().FullName!.Contains("AcceptedTurnCanonicalStateRefresh+<NormalizeAndValidateWithPlanAsync>", StringComparison.Ordinal));
                     var capture = normal?.GetType().GetFields(flags).Where(field => field.FieldType == typeof(ValidationService.GuardianMusingsPublicationCapture))
                         .Select(field => field.GetValue(normal)).SingleOrDefault(value => value is not null);
-                    var lease = normal?.GetType().GetFields(flags).Where(field => field.FieldType == typeof(FileSystemManager.CanonicalWriteLease))
-                        .Select(field => field.GetValue(normal)).OfType<FileSystemManager.CanonicalWriteLease>().SingleOrDefault(value => value.IsActive);
+                    var lease = FindActualMusingsPublicationLease(normal);
                     var complete = states.SingleOrDefault(state => state.GetType().FullName!.Contains("GuardianMusingsPublicationCapture+<CompleteAsync>", StringComparison.Ordinal));
                     var beforeImages = states.Any(state => state.GetType().FullName!.Contains("AcceptedTurnCanonicalStateRefresh+<CaptureBeforeImagesAsync>", StringComparison.Ordinal));
                     var intended = capture is not null && lease is not null && (cut == 0 ? beforeImages && complete is null : complete is not null);
+                    File.WriteAllText(Path.Combine(own, $"read-gate-{observation:D3}.json"), JsonSerializer.Serialize(new
+                    {
+                        Path = path, HookStack = hookStack, Cut = cut, actualChain.GateReachable, Intended = intended,
+                        CaptureType = capture?.GetType().FullName, LeaseActive = lease?.IsActive == true,
+                        SameFileSystem = lease is not null && ReferenceEquals(lease.Owner, files), BeforeImages = beforeImages,
+                        CompleteState = complete?.GetType().FullName, RegistrationMilliseconds = registration.Elapsed.TotalMilliseconds,
+                        actualChain.Diagnostic
+                    }));
+                    if (!actualChain.GateReachable) throw new InvalidOperationException("PREPARATION: exact read gate registration was not observed in the original engine await chain.");
                     if (!intended) { gate.TrySetResult(); return; }
                     if (cut == 0) Assert.DoesNotContain(states, state => state.GetType().FullName!.Contains("<NormalizeAccumulatedState", StringComparison.Ordinal));
-                    else Assert.Same(capture, complete!.GetType().GetFields(flags).Single(field => field.Name == "<>4__this").GetValue(complete));
+                    else Assert.Same(capture, complete!.GetType().GetField("<>4__this", flags | BindingFlags.Public)!.GetValue(complete));
                     gateClaimed = true;
                     await HoldBoundaryAsync(path, capture!, lease, normal!.GetType().FullName! + "/" + (cut == 0 ? "CaptureBeforeImagesAsync" : "CompleteAsync"));
                 }
@@ -460,30 +470,121 @@ public sealed partial class GameEngineTurnLifecycleTests
         return Process.Start(start)!;
     }
 
-    private static (List<object> States, bool GateReachable) ReadActualMusingsStateMachines(Task operation, Task gate)
+    private static FileSystemManager.CanonicalWriteLease? FindActualMusingsPublicationLease(object? state)
     {
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        var owners = new HashSet<FileSystemManager.CanonicalWriteLease>(ReferenceEqualityComparer.Instance);
+        var seen = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        void Inspect(object? value)
+        {
+            if (value is FileSystemManager.CanonicalWriteLease { IsActive: true } lease) { owners.Add(lease); return; }
+            if (value is null || !seen.Add(value)) return;
+            var type = value.GetType();
+            if (!type.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false) ||
+                !type.Name.Contains("DisplayClass", StringComparison.Ordinal)) return;
+            foreach (var field in type.GetFields(flags)) Inspect(field.GetValue(value));
+        }
+        if (state is not null) foreach (var field in state.GetType().GetFields(flags)) Inspect(field.GetValue(state));
+        return owners.SingleOrDefault();
+    }
+
+    private static (List<object> States, bool GateReachable, object Diagnostic) ReadActualMusingsStateMachines(Task operation, Task gate)
+    {
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        const int maximumNodes = 256;
+        var ids = new Dictionary<object, int>(ReferenceEqualityComparer.Instance);
+        int Id(object value) { if (!ids.TryGetValue(value, out var id)) ids.Add(value, id = ids.Count + 1); return id; }
+        var nodes = new List<object>();
+        var edges = new List<object>();
+        var recorded = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        object? Record(object value)
+        {
+            var state = value is Task task ? task.GetType().GetField("StateMachine", flags)?.GetValue(task) : null;
+            if (recorded.Add(value)) nodes.Add(new
+            {
+                Id = Id(value), Type = value.GetType().FullName, State = state?.GetType().FullName,
+                TaskId = (value as Task)?.Id, Completed = (value as Task)?.IsCompleted,
+                Fields = state?.GetType().GetFields(flags).Select(field => new
+                { field.Name, Type = field.FieldType.FullName, ActualType = field.GetValue(state)?.GetType().FullName }).ToArray()
+            });
+            return state;
+        }
         var queue = new Queue<Task>(); queue.Enqueue(operation);
         var seen = new HashSet<Task>(ReferenceEqualityComparer.Instance);
         var states = new List<object>();
-        bool gateReachable = false;
-        while (queue.TryDequeue(out var task))
+        bool forwardReachable = false;
+        void Forward(Task from, Task to, string kind)
+        { edges.Add(new { From = Id(from), To = Id(to), Kind = kind, Direction = "forward-await" }); queue.Enqueue(to); }
+        while (queue.TryDequeue(out var task) && seen.Count < maximumNodes)
         {
             if (task.IsCompleted || !seen.Add(task)) continue;
-            if (ReferenceEquals(task, gate)) gateReachable = true;
-            var state = task.GetType().GetField("StateMachine", flags)?.GetValue(task);
+            if (ReferenceEquals(task, gate)) forwardReachable = true;
+            var state = Record(task);
             if (state is null) continue;
             states.Add(state);
             foreach (var field in state.GetType().GetFields(flags))
             {
                 var value = field.GetValue(state);
-                if (value is Task child) queue.Enqueue(child);
+                if (value is Task child) Forward(task, child, field.Name);
                 else if (value is not null && field.Name.StartsWith("<>u__", StringComparison.Ordinal))
                     foreach (var awaited in value.GetType().GetFields(flags))
-                        if (awaited.GetValue(value) is Task pending) queue.Enqueue(pending);
+                        if (awaited.GetValue(value) is Task pending) Forward(task, pending, field.Name + "/" + awaited.Name);
             }
         }
-        return (states, gateReachable);
+        // Runtime wrappers do not all expose an async state machine. Follow only
+        // real registered continuation links from this gate to the SAME original
+        // operation, never arbitrary service/FS captures or matching method names.
+        var reverse = new Queue<object>(); reverse.Enqueue(gate);
+        var reverseSeen = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        var reverseStates = new List<object>();
+        var parent = new Dictionary<object, (object From, string Kind)>(ReferenceEqualityComparer.Instance);
+        bool reverseReachable = false;
+        void Reverse(object from, object to, string kind)
+        {
+            edges.Add(new { From = Id(from), To = Id(to), Kind = kind, Direction = "reverse-continuation" });
+            parent.TryAdd(to, (from, kind)); reverse.Enqueue(to);
+        }
+        while (reverse.TryDequeue(out var value) && reverseSeen.Count < maximumNodes)
+        {
+            if (!reverseSeen.Add(value)) continue;
+            var state = Record(value);
+            if (state is not null) reverseStates.Add(state);
+            if (ReferenceEquals(value, operation)) { reverseReachable = true; break; }
+            if (value is Task task)
+            {
+                var continuation = typeof(Task).GetField("m_continuationObject", flags)!.GetValue(task);
+                if (continuation is not null) Reverse(value, continuation, "m_continuationObject");
+            }
+            else if (value is Delegate action)
+            {
+                foreach (var item in action.GetInvocationList()) if (item.Target is not null) Reverse(value, item.Target, "delegate-target");
+            }
+            else if (value is System.Collections.IEnumerable list)
+            {
+                foreach (var item in list) if (item is not null) Reverse(value, item, "continuation-list-item");
+            }
+            else if (value.GetType().Namespace is { } ns &&
+                (ns.StartsWith("System.Threading.Tasks", StringComparison.Ordinal) || ns == "System.Runtime.CompilerServices"))
+            {
+                for (var type = value.GetType(); type is not null; type = type.BaseType)
+                    foreach (var field in type.GetFields(flags | BindingFlags.DeclaredOnly))
+                        if (field.GetValue(value) is { } next && (next is Task or Delegate || field.Name.Contains("continuation", StringComparison.OrdinalIgnoreCase)))
+                            Reverse(value, next, field.Name);
+            }
+        }
+        var connecting = new List<object>();
+        if (reverseReachable)
+        {
+            object current = operation;
+            while (!ReferenceEquals(current, gate) && parent.TryGetValue(current, out var edge))
+            { connecting.Add(new { From = Id(edge.From), To = Id(current), edge.Kind }); current = edge.From; }
+            connecting.Reverse();
+            states.AddRange(reverseStates);
+        }
+        var diagnostic = new { Operation = Id(operation), Gate = Id(gate), ForwardReachable = forwardReachable,
+            ReverseReachable = reverseReachable, ConnectingReversePath = connecting, Nodes = nodes, Edges = edges,
+            ForwardTruncated = queue.Count != 0, ReverseTruncated = reverse.Count != 0 && !reverseReachable };
+        return (states.Distinct(ReferenceEqualityComparer.Instance).ToList(), forwardReachable || reverseReachable, diagnostic);
     }
 
     private static Dictionary<string, string> MusingsCutInventory(FileSystemManager files)
