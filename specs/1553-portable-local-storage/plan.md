@@ -15,7 +15,7 @@ Treatment known-close/Ascension/replay/Save images/census очереди явн�
 source/evidence links/counts, historical body preservation, git diff/whitespace,
 обязательное независимое Astra/xhigh metadata review и обычное commit/push/exact
 remote byte/SHA readback. Статическая сверка PASS: original task/inventory bodies сохранены (кроме history
-heading labels/перемещения старых task notes),5 открытых current task IDs,22 новых
+heading labels/перемещения старых task notes),5 открытых current task IDs,23 новых
 source/evidence links,неизменные170 semantic records и6 archived GREEN summaries.
 Review/publication — WIP до фактических gate результатов.
 Нет новых runtime/test/spec/selection/GM-contract изменений; сборки, test runner,
@@ -9136,7 +9136,7 @@ Independent Astra XHigh source gate PASS; evidence review pending. These are
 actual publisher/public Prepare/closing and cleanup-helper-to-notice checks,
 not native Windows/full command-loop or stronger atomicity qualification.
 
-[Current unified audit crosswalk](storage-migration-inventory.md#current-crosswalk-to-the-independent-changeset-audit)
+[Current unified audit crosswalk](storage-migration-inventory.md#исторический-checkpoint-current-crosswalk-to-the-independent-changeset-audit)
 reconciles all R01–R28 and A01–A04 with existing F/T owners, accepted evidence and
 concrete remaining consumer checks. Final audit468 source maps are linked, not
 copied/merged; counts are not defect totals. Frozen baseline classifications stay
