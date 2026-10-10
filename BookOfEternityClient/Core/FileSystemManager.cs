@@ -3764,6 +3764,9 @@ public partial class FileSystemManager
                     throw new CoordinatedStatePublicationUncertainException(failure);
                 }
                 }
+                // Permitted unrelated recovery cannot leave a different browser
+                // tuple or main condition behind and still return a mutable lease.
+                EnsureMainBeforeRecovery(writeLease);
                 AdmitConsoleRollbackEvidence(writeLease);
                 if (purpose == CanonicalWritePurpose.SessionMutation)
                     EnsureBoundSessionOperationCanWrite(writeLease);

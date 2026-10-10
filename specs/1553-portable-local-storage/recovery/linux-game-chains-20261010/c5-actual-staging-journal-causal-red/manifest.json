@@ -1,0 +1,124 @@
+{
+  "SourceSHA": "9327010dbb63f1fcee2b8679736cd8b009a381b9",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-browser-staging-crash\")'",
+  "Status": "3complete;1PASS2causalFAIL;54.3430928s; no skip/duplicate/timeout;cleanup complete",
+  "Scope": "Actual original GameEngine staging SIGKILL0/1 and exact original journal at physical lock; guarded quiescent component, not active-owner/live game qualification",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "a0e29f83bbe2b0f3bd10fdfc1fe0dc3e2435c19dd5aa8fc7d03dfe0faac2888e",
+      "RawBytes": 1188
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "60c73c51f89f482d8901f28053bc05bc577fb5650d9bb5aa5dd8b3c5a0a81ea0",
+      "RawBytes": 1477
+    },
+    {
+      "Path": "runner/c5-original-browser-staging-crash-integration-001.trx.gz",
+      "RawSHA256": "e4ce9f615d784ecadf31802a9a20b9d0dce9f3fcb59d42783e556dd3fe865048",
+      "RawBytes": 23755
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "c980d95b387943a3c0d368ec6980af8b1d049166b9df6e3a1c586365f04e60cb",
+      "RawBytes": 49253
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "86283e8062a93249bcbe9d0688b6ef65e1d5382f693063380386655b44494471",
+      "RawBytes": 1675683
+    },
+    {
+      "Path": "owned/0/probe.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/0/result.json.gz",
+      "RawSHA256": "e167ca428e3a7412a356bfe6b7781f3f93a2518a4e696b57cc61b68d7c7ba6bc",
+      "RawBytes": 3512
+    },
+    {
+      "Path": "owned/0/result.json.original.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/0/result.json.8282ef8a7c52459291278289bc654b77.cut.json.gz",
+      "RawSHA256": "94eb7d401d78026d6dd5403cd514ad2877d9c3ba9edf1010ec6d1bd4253fe946",
+      "RawBytes": 140
+    },
+    {
+      "Path": "owned/0/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/0/native.log.gz",
+      "RawSHA256": "a787a641df007e4e4e7af0a152bd7f0dbb83476ee74718b263940bfd25e9a214",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/1/probe.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/1/result.json.gz",
+      "RawSHA256": "70c62ea728b75c169eb890947e24f2c689726e30d0c0c93aa1e49a025f9b9313",
+      "RawBytes": 3770
+    },
+    {
+      "Path": "owned/1/result.json.original.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/1/result.json.e40c652ec9bd44c5a6c3afab69e679cb.cut.json.gz",
+      "RawSHA256": "25b64cbe6fb774ebe0fba775f02f386d1f75d85e11590dfc874daa01820c4ee5",
+      "RawBytes": 140
+    },
+    {
+      "Path": "owned/1/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/1/native.log.gz",
+      "RawSHA256": "0eb049c96649b29819fff1cd93ac0ab32cbf97325bf4bafe029f5a20b97629b9",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/2/probe.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/2/result.json.gz",
+      "RawSHA256": "ecb31d850e1df96e88be4155b70533100ea90df94f933babe88ddeec75d11031",
+      "RawBytes": 3512
+    },
+    {
+      "Path": "owned/2/result.json.original.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/2/result.json.91b553ae62eb4035a5883890eec13592.cut.json.gz",
+      "RawSHA256": "74aa89d8f40838d2208568c4aa10e9fb72c3232aac791bc68290ce93aa8fec3d",
+      "RawBytes": 140
+    },
+    {
+      "Path": "owned/2/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/2/native.log.gz",
+      "RawSHA256": "88dec0d293b687cd4f4c1d926119793b5927f87995a6409a0e68a38730de8862",
+      "RawBytes": 51
+    }
+  ]
+}

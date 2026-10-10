@@ -279,9 +279,26 @@ public partial class FileSystemManager
         {
             GameEngine.ValidateCompletedBrowserReceipt(state,original,ReadOriginalBrowserBytes,
                 OriginalBrowserFileExists,EnumerateOriginalBrowserPhysicalFiles());
+            RequireOriginalBrowserRecoverySafe(staged,original);
             return null;
         }
         original.BrowserOriginalMainCondition!.RequireCurrent(this);
+        RequireOriginalBrowserRecoverySafe(staged,original);
         return original.BrowserOriginalMainCondition;
+    }
+
+    private void RequireOriginalBrowserRecoverySafe(PendingPlayerActionService.Staged staged,
+        GameEngine.PendingTurnSnapshotManifest manifest)
+    {
+        var history=StrictJsonAuthority.Deserialize<JsonObject>(staged.HistoryJson,
+            new System.Text.Json.JsonSerializerOptions(),"original browser history inventory")
+            ??throw BrowserOriginalMainCondition.Invalid();
+        var paths=manifest.Files.Keys.Concat(manifest.Files.Values).Concat(manifest.RollbackBackups.Values)
+            .Concat(history.Select(pair=>pair.Key))
+            .Concat(GameEngine.SelectOriginalStoryContinuityFiles(EnumerateOriginalBrowserPhysicalFiles()))
+            .Concat(new[]{PendingPlayerActionService.PendingPath,"input/turn_request.json",BrowserManifestPath,
+                PendingTurnSnapshotAuthority.AuthorityPath,"ready/turn_complete.json","ready/turn_error.json"});
+        new TrustedLocalFilePublication(this,new TrustedLocalFileScope([BasePath]))
+            .RequireBrowserRecoveryPreservesOriginal(staged.Binding.Generation,paths);
     }
 }

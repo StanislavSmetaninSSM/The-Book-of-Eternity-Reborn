@@ -82,11 +82,23 @@ public sealed partial class GameEngineTurnLifecycleTests
             await File.WriteAllTextAsync(output + ".original.log", await stdout + await stderr);
             var journalPath = Path.Combine(root, ".boe_runtime/trusted-local-publication-v1/active.json");
             var journalBytes = File.ReadAllBytes(journalPath);
+            await File.WriteAllBytesAsync(output + ".original-journal.json", journalBytes);
             var journal = JsonNode.Parse(journalBytes)!;
             Assert.False(journal["Committed"]!.GetValue<bool>());
             Assert.Equal(2, journal["Members"]!.AsArray().Count);
+            Assert.False(File.Exists(Path.Combine(Path.GetDirectoryName(journalPath)!, "commit.tmp")));
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             var slot = JsonNode.Parse(File.ReadAllText(files.ResolvePath(PendingPlayerActionService.PendingPath)))!;
+            foreach(var (name,path) in new[]{("slot",PendingPlayerActionService.PendingPath),("request","input/turn_request.json"),
+                ("manifest","game_state/control/pending_turn_snapshot.json"),("authority",PendingTurnSnapshotAuthority.AuthorityPath)})
+                await File.WriteAllBytesAsync(output + ".original-" + name + ".json",File.ReadAllBytes(files.ResolvePath(path)));
+            Assert.Equal(new[] { files.ResolvePath("input/turn_request.json"), files.ResolvePath(PendingPlayerActionService.PendingPath) },
+                journal["Members"]!.AsArray().Select(value => value!["Path"]!.GetValue<string>()).ToArray());
+            var request = JsonNode.Parse(File.ReadAllText(files.ResolvePath("input/turn_request.json")))!;
+            var manifest = JsonNode.Parse(File.ReadAllText(files.ResolvePath("game_state/control/pending_turn_snapshot.json")))!;
+            Assert.Equal(cut["ActionId"]!.GetValue<string>(), request["requestId"]!.GetValue<string>());
+            Assert.Equal(cut["ActionId"]!.GetValue<string>(), manifest["browserActionId"]!.GetValue<string>());
+            Assert.Equal(slot["sessionGeneration"]!.GetValue<string>(), manifest["browserSessionGeneration"]!.GetValue<string>());
             Assert.Equal(member == 0 ? "preparing" : "staged", slot["status"]!.GetValue<string>());
             Dictionary<string, string> Snapshot() => Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
                 .Where(path => !Path.GetRelativePath(root, path).Replace('\\', '/').StartsWith(".boe_runtime/locks/", StringComparison.Ordinal))
