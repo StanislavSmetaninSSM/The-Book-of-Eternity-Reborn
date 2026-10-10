@@ -78,7 +78,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
             var result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, ["game_state/meta/soul_state.json"]);
-            Assert.True(result.Success, string.Join(";", result.Issues));
+            Assert.True(result.Success, string.Join(";", result.Issues.Select(issue => issue.Code + ":" + issue.Actual)));
             Assert.Equal(File.ReadAllBytes(_fs.ResolvePath(originalManifest.Files["game_state/meta/soul_state.json"])),
                 result.Snapshot!.ReadRequiredBytes("game_state/meta/soul_state.json"));
         }

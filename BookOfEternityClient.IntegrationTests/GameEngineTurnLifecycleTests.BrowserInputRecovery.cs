@@ -454,7 +454,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var request = new TurnRequest
         {
             SessionId = "browser-recovery-session", RequestId = binding.ActionId, TurnNumber = 1,
-            PlayerAction = binding.Action, Timestamp = DateTime.UtcNow.ToString("O"), PreGeneratedDices1d20 = [3, 17]
+            PlayerAction = binding.Action, Timestamp = DateTime.UtcNow.ToString("O"), PreGeneratedDices1d20 = [3, 17],
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" }
         };
         var rollback = withRollback ? await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", binding.ActionId) : null;
         await InvokePrivateTaskAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollback, "обработки хода", binding);

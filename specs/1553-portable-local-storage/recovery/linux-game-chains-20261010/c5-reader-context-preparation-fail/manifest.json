@@ -1,0 +1,44 @@
+{
+  "SourceSHA": "d5fef1f4580e41ec44e9eb14673ab78217fc08d5",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"browser-player-input-recovery\",\"browser-player-terminal-provenance\",\"browser-pending-snapshot-roundtrip\",\"c5-original-browser-review-refusals\",\"c5-original-browser-story-inventory\")'",
+  "Status": "2 executed of43 planned; ordinary reader PASS; browser reader FAIL; 65.4028145s; missing fixture progression realm; no timeout; cleanup complete",
+  "Scope": "All six DTO hash/condition assertions pass; actual shared reader refuses fixture missing ProgressionControl.CurrentRealm; other descriptors unrun",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "973c5c37fa468321429106421538190d3ca5855ce68c991ef106aa362737c978",
+      "RawBytes": 9974
+    },
+    {
+      "Path": "runner/browser-pending-snapshot-roundtrip-integration-001.trx.gz",
+      "RawSHA256": "09f4408490664a80c476cbaccac1397d83d0f75f5cb0d46ad5528e643122b2e8",
+      "RawBytes": 5302
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "f31102c356a1aa73bda835e45283313890b16530bd7e05525857b01fe47a8cae",
+      "RawBytes": 1982
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "3467ea40b736a7e7fad7986566a1a7b137146c037cc3ef6d999a1865e19a3e17",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "6f55899a10f63e4212a9323f9ec2e9efd4f5a78670d50ae58f21e3cc84ecf284",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/browser-pending-snapshot-roundtrip-unit-002.trx.gz",
+      "RawSHA256": "22f1776714e13bf2cc3c6087a73807623886d44bef9778f0d9b970337a754c23",
+      "RawBytes": 3083
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "90f636ab178d8cc2f987e60112dd0f498c364cf368d1a5cbd142728274826bae",
+      "RawBytes": 3352366
+    }
+  ]
+}

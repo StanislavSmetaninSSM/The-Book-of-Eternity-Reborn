@@ -707,9 +707,13 @@ public partial class GameEngine
 
     private IEnumerable<string> EnumerateStoryContinuityFiles(
         FileSystemManager.CanonicalWriteLease writeLease) =>
-        _fs.EnumerateFiles(writeLease, "*.jsonl")
-            .Where(path =>
-                path.StartsWith("stories/", StringComparison.OrdinalIgnoreCase));
+        SelectOriginalStoryContinuityFiles(_fs.EnumerateFiles(writeLease, "*"));
+
+    // Preserve every physical spelling before exact-path/alias validation. The
+    // same raw selector serves producer hashes and cold completed receipts.
+    internal static IEnumerable<string> SelectOriginalStoryContinuityFiles(IEnumerable<string> paths) =>
+        paths.Where(path => path.StartsWith("stories/", StringComparison.OrdinalIgnoreCase) &&
+            path.EndsWith(".jsonl", StringComparison.OrdinalIgnoreCase));
 
     private async Task<Dictionary<string, string>?> LoadCanonicalBaselineSnapshotAsync(
         int expectedTurnNumber,
@@ -1875,7 +1879,7 @@ public partial class GameEngine
                 path.StartsWith("lore/", StringComparison.OrdinalIgnoreCase) ||
                 fixedPaths.Contains(path, StringComparer.OrdinalIgnoreCase));
         PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPaths
-            .Concat(physicalInventory.Where(path=>path.StartsWith("stories/",StringComparison.Ordinal) && path.EndsWith(".jsonl",StringComparison.Ordinal))).Concat(fixedPaths)
+            .Concat(SelectOriginalStoryContinuityFiles(physicalInventory)).Concat(fixedPaths)
             .Concat(rollbackSnapshot?.BaselineFiles ?? [])
             .Concat(rollbackSnapshot?.ValidationSnapshotFiles ?? [])
             .Concat(rollbackSnapshot?.BackupFiles.Keys.AsEnumerable() ?? [])

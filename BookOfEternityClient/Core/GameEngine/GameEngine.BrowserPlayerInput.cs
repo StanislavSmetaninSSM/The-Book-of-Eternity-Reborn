@@ -289,7 +289,7 @@ public partial class GameEngine
 {
         var expected = StrictJsonAuthority.Deserialize<JsonObject>(json, JsonOpts, "original browser history")
             ?? throw new InvalidDataException(BrowserRecoveryMessage);
-        var currentPaths = physicalInventory.Where(path=>path.StartsWith("stories/",StringComparison.Ordinal) && path.EndsWith(".jsonl",StringComparison.Ordinal)).Append("game_state/history/chat_log.json").ToArray();
+        var currentPaths = SelectOriginalStoryContinuityFiles(physicalInventory).Append("game_state/history/chat_log.json").ToArray();
         PendingTurnSnapshotAuthority.RequireExactSignedPaths(currentPaths.Concat(expected.Select(pair => pair.Key)));
         if (exact && !currentPaths.Order(StringComparer.Ordinal).SequenceEqual(expected.Select(pair => pair.Key).Order(StringComparer.Ordinal)))
             throw new InvalidDataException(BrowserRecoveryMessage);

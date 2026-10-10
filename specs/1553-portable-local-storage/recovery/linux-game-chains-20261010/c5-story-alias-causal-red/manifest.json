@@ -1,0 +1,44 @@
+{
+  "SourceSHA": "d5fef1f4580e41ec44e9eb14673ab78217fc08d5",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"browser-player-input-recovery\",\"browser-player-terminal-provenance\",\"c5-original-browser-review-refusals\",\"c5-original-browser-story-inventory\") -NoBuild'",
+  "Status": "41 executed;39PASS2causalFAIL;62.1932043s; complete; no skip/duplicate/timeout; cleanup complete",
+  "Scope": "Original recovery27/provenance4/review8 including incremental cleanup PASS; two raw story alias consumers fail to refuse",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "18e3faa5bb6166bcc9e173b1398d2b83bade399b3d6b5617d2e83026e7f02f7b",
+      "RawBytes": 8266
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "03894eac674ca7cb3a2c7ae2303595fd9ddfb1e091f57c75d020fc4cd62a5f30",
+      "RawBytes": 1947
+    },
+    {
+      "Path": "runner/browser-player-terminal-provenance-integration-002.trx.gz",
+      "RawSHA256": "77f9143cb78a7bf08539573f0371eb255bdb7734b94877e61cabdea32b681477",
+      "RawBytes": 9098
+    },
+    {
+      "Path": "runner/c5-original-browser-review-refusals-integration-003.trx.gz",
+      "RawSHA256": "97d53e2cc9c32b3e20f15712ed74c3d3ab8e4f44ea40206da6585fccf338ccc5",
+      "RawBytes": 14624
+    },
+    {
+      "Path": "runner/c5-original-browser-story-inventory-integration-004.trx.gz",
+      "RawSHA256": "f23fdc8f7a9f617fde2460392932460b0bef0c9c9ec91387691b36126edaed9e",
+      "RawBytes": 7618
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "fdd4fc619daf02043a317e9def475e263d12d9233e3a3d08feb33731f8eef5be",
+      "RawBytes": 1621524
+    },
+    {
+      "Path": "runner/browser-player-input-recovery-integration-001.trx.gz",
+      "RawSHA256": "8c69b6b9db1e2075adcb474254c7c197e40e13a45072e608801d3466762a61ef",
+      "RawBytes": 46502
+    }
+  ]
+}
