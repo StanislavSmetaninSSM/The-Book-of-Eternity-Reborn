@@ -1,4 +1,6 @@
-### C5 guard publication boundary consistency — 2026-10-10
+### C5 actual staging journal refusal bounded GREEN — 2026-10-10
+
+Fresh source5603151f integration **5/5PASS**,56.9517143s,complete2/2descriptors,no skip/duplicate/timeout,ownedcleanupcomplete. Genuine SIGKILL cuts at original publisher members0/1 and exact journal reinsertion at physical lock all refuse with zero recovery and unchanged original tree; permitted unrelated journal2 remain GREEN. Strengthened oracle verifies exact ordered request/slot paths, action/generation and no commitstage. [Raw GREEN39payloads](recovery/linux-game-chains-20261010/c5-actual-staging-journal-refusal-green/manifest.json). Read-only original trusted journal interpretation and post-recovery tuple recheck now bounded verified; shared prerequisite still WIP pending independent review and remaining active-client/quiescent/warm controls. No lifetime/C5/T070 completion.
 
 ### C5 actual original staging journal causal RED and refusal WIP — 2026-10-10
 
