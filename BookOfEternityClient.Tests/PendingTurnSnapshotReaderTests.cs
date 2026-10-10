@@ -11,6 +11,46 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class PendingTurnSnapshotReaderTests : IDisposable
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ReadCurrent_RoundTripsActualEngineManifestWithOptionalBrowserBinding(bool browser)
+    {
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        var manifestType = typeof(GameEngine).GetNestedType("PendingTurnSnapshotManifest", BindingFlags.NonPublic)!;
+        var manifest = JsonSerializer.Deserialize(File.ReadAllText(_fs.ResolvePath(
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath)), manifestType,
+            LiveTurnPreparationService.ManifestJsonOptions)!;
+        if (browser)
+        {
+            manifestType.GetProperty("BrowserActionId")!.SetValue(manifest, "snapshot-request-71");
+            manifestType.GetProperty("BrowserSessionGeneration")!.SetValue(manifest, "original-browser-generation");
+        }
+        var hashProperty = manifestType.GetProperty("ManifestPayloadHash")!;
+        var hash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest,
+            LiveTurnPreparationService.ManifestHashJsonOptions,
+            value => (string)hashProperty.GetValue(value)!,
+            (value, text) => hashProperty.SetValue(value, text));
+        hashProperty.SetValue(manifest, hash);
+        var envelope = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)))!.AsObject();
+        var payload = JsonNode.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(
+            envelope["payloadJsonBase64"]!.GetValue<string>())))!.AsObject();
+        payload["manifestPayloadHash"] = hash;
+        var bytes = Encoding.UTF8.GetBytes(payload.ToJsonString(LiveTurnPreparationService.ManifestHashJsonOptions));
+        envelope["payloadJsonBase64"] = Convert.ToBase64String(bytes);
+        envelope["payloadSha256"] = PendingTurnSnapshotAuthority.ComputeSha256(bytes);
+        await _fs.WriteFileAtomicAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+            JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions));
+        await _fs.WriteFileAtomicAsync(PendingTurnSnapshotAuthority.AuthorityPath, envelope.ToJsonString());
+        var before = SnapshotTree();
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, [RequiredPath]);
+        Assert.True(result.Success, Describe(result.Issues));
+        AssertTreeEqual(before, SnapshotTree());
+    }
+
     private const string RequiredPath =
         "game_state/control/pending_mortal_wound_occurrences.json";
 

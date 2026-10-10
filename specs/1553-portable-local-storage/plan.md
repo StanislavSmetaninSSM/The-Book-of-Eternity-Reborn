@@ -71,6 +71,15 @@ This bounded refusal is recovery debt, not successful automatic continuation.
 Independent Astra design findings incorporated; source/result review still pending.
 Original C5 FAIL and all accepted stage packets remain untouched.
 
+Actual first consumer9d4df298: producer2/2PASS; actualC5 1FAIL,81s test,
+133.1895339s runner,8planned/3executed (stop on failure),0skip/duplicate/timeout,
+ownedcleanupcomplete. Actual request reached relay/helper but accepted0; original
+same correlated narrative not displayed, preserved original stop/EOF evidence.
+Independent review identifies shared reader manifest DTO dropping new hashed optional
+browser fields; new two-case actual-engine-manifest/shared-reader RED prepared,UNRUN.
+Also found staged menu description mutating refresh and late QTE certification bypass;
+these source findings are open until fixed and verified. C5 acceptance not claimed.
+
 ### T070 execution steps (all UNRUN)
 
 - [ ] Reproduce addMusings raw→normalizer→late full-validation mismatch with original binding and exact old musings; original actual FAIL remains.
