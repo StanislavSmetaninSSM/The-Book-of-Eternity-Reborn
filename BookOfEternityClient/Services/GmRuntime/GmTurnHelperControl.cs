@@ -288,17 +288,23 @@ internal static class GmTurnHelperControl
                 stopwatchTicks=ticks,stopwatchFrequency=System.Diagnostics.Stopwatch.Frequency,
                 utc=DateTimeOffset.UtcNow.ToString("O"),exceptions=nodes,captureIncomplete=incomplete,
                 omittedLinks=omitted,limits=new { maxNodes,maxDepth,maxCharacters,maxUtf8Bytes },
-                boundary="Original caught exception after participating/binding finalization; before this catch's optional close serialization. BecameActive is the original flag, not transport acknowledgment."
+                boundary=phase=="run-core-catch"
+                    ?"Original caught exception after participating/binding finalization; before this catch's optional close serialization. BecameActive is the original flag, not transport acknowledgment."
+                    :"Outer catch can precede RunCore/participating admission or follow a propagated failure; no finalization occurrence is inferred."
             };
             var json=JsonSerializer.Serialize(record);
             if(System.Text.Encoding.UTF8.GetByteCount(json)>maxUtf8Bytes)
             {
                 // Keep a valid bounded record; an oversized diagnostic is missing
                 // causal evidence, never a reason to alter the original failure.
+                var type=failure.GetType().FullName??"";type=type[..Math.Min(256,type.Length)];
                 json=JsonSerializer.Serialize(new {kind="boe-helper-fixture-failure",nonce,pid=Environment.ProcessId,
                     phase,stopwatchTicks=ticks,stopwatchFrequency=System.Diagnostics.Stopwatch.Frequency,
-                    captureIncomplete=true,serializationLimitExceeded=true,exceptionType=failure.GetType().FullName,
+                    captureIncomplete=true,serializationLimitExceeded=true,exceptionType=type,
                     limits=new { maxNodes,maxDepth,maxCharacters,maxUtf8Bytes }});
+                if(System.Text.Encoding.UTF8.GetByteCount(json)>maxUtf8Bytes)
+                    json=JsonSerializer.Serialize(new {kind="boe-helper-fixture-failure",nonce,pid=Environment.ProcessId,
+                        phase,captureIncomplete=true,serializationLimitExceeded=true});
             }
             Console.Error.WriteLine(json);
         }
