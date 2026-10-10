@@ -1,3 +1,62 @@
+## Итог облачного storage-блока #1553 — 2026-10-10
+
+Ветка: `1553-storage-migration-cloud-20261008`, основание main
+`d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. Разрешение владельца на все оставшиеся
+доступные #1553 consumers записано ниже; основной исполнитель — root Sol6.1/xhigh,
+обязательный независимый reviewer — отдельный Astra/xhigh. Только сохранённое
+облако; B2–B5, HOME-PC, desktop, live GM/provider/game/native worker не запускались.
+Main, issues/PR, CI и настройки защиты не менялись.
+
+**Сделано в доказанных пределах:** исправлены выявленные доступные original-owner
+границы и producers; исходные причинные сбои и preparation failures сохранены.
+Предыдущие принятые группы не повторялись без затрагивающих изменений. Последняя
+правка сохраняет SAME publication uncertainty при закрытии двух настоящих
+Browser replacement lease; UI token, refusal/result mapping и callback сохранены.
+
+| Последняя проверка | Источник и фактический результат | Граница доказательства |
+|---|---|---|
+| Исходный Browser replacement | f2a1af60: known2 PASS / uncertainty2 causal FAIL; 4/4 complete | Fail occurs on secondary-retention assertion; последующие assertions не исполнились. Потеря CSP и неверный admission NotLoaded подтверждены raw. |
+| Исправленный Browser replacement | ac3783c1, runtime4b304141: 4/4 PASS, 7.7666428s; clean actual tree, 1/1 complete, 0 skip/duplicate/timeout, both cleanup, 4 roots absent | Настоящие UI-lock admission/release и раскрытый ordinary NotLoaded callback; full Load/archive/native/ordinary known-close faults не квалифицированы. |
+| Финальный catalog | ac3783c1: свежая сборка обоих C# проектов, 611 categories/11385 methods-files, 72.0873323s, zero execution | Обнаружение принадлежности тестов, не запуск каталога. |
+| Финальная карта исходников | ac3783c1: 855 product C# files/170 acquisitions/164 full declarations/70 files; byte-exact regeneration 343716 bytes | 81 source-only / 84 finite-packet-associated / 3 legacy / 2 prohibited-native; классификация места получения lease не равна приёмке целого consumer. |
+| Целостность сохранённых доказательств | c6369ae7: 90 manifests/7676 artifact references/10300 commit-bound pin references/9453 unique pinned blobs; 0 errors | Контроль файлов и привязок включает исторические FAIL/UNRUN; не превращает их в PASS. |
+
+[Последний causal/GREEN/catalog packet](recovery/storage-migration-original-browser-replacement-close-20261009/manifest.json)
+содержит RED17/15 pins, GREEN16/15 и ONEcatalog5/15. Предыдущие самостоятельные
+packet-свидетельства остаются под `recovery/storage-migration-*/manifest.json`;
+полные raw/TRX, bytes/absence, cleanup и source pins доступны по их путям.
+[Карта требований/ролей → точный код → ограниченное evidence](recovery/storage-migration-final-owner-census-20261009/semantic-classification.json)
+сохраняет отдельные overloads/owners и прямые immutable source links.
+[Воспроизводимый collector и read-only restore verifier](recovery/storage-migration-final-owner-census-20261009/manifest.json).
+
+**Осталось:** T061–T065 не отмечены завершёнными; whole migration/whole game,
+native Windows и default Linux worker/Prepared durable owner ACK не приняты.
+Read-only/legacy и ordinary known-close, не имеющие прямого finite packet,
+сохраняют указанные в карте ограничения. Последний Browser packet не доказывает
+полную замену игровой сессии или архивный Load. Исторический lifecycle16 включает
+14 PASS, preexisting cold-binding FAIL и native UNRUN; это не 16 GREEN.
+
+**Следующий продуктовый блок:** после отдельного поручения вернуться к #1536
+B2–B5 на этом облачном основании. Cold force_binding — существующее расхождение
+кода/fixture с утверждённым spec, а не новый вопрос владельцу. Сначала привести
+fixture/implementation к approved authority/rank/expense rules и доказать реальные
+original cut, затем ровно нужные binding continuation/publication/rollback checks.
+Физические adapters/direct heal/death, духовные consumers/healing, общий UI и
+целители остаются в последующей очереди #1536.
+[Неизменяемый исходный аудит и requirements→code→gaps/план #1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/13c820294df2bf7e824b06eb41ddc73bd18b87c0/specs/1536-complete-wound-materialization/audit-2026-10-08.md).
+Старая1fc5e59b уже входит в main через PR1554; 0 old-only/28 main-new, возвращаться
+к старой ветке не требуется. Пункты audit о первоначально отсутствующем tool PATH
+исторические: текущая облачная среда имеет pwsh7.5.4/SDK10.0.401/runtime8.0.31.
+
+Финальное независимое GREEN/semantic/checker/carrier review: PASS c6369ae7 (GREEN/raw/catalog/full semantic census/header); optional checker hardening is a separate final metadata delta reviewed before clone.
+Последний шаг после публикации этого metadata tip — NEW EMPTY GitHub-only
+full-history clone в `/workspace/boe-1553-final-restore-20261010`, без local
+references/hardlinks/alternates/shallow. Проверить точный HEAD/ref, неизменный main,
+clean tree, каждый tracked blob, fsck и все manifests/pins/source census только
+read-only verifier. Receipt сохраняется вне checkout, чтобы проверенный tip не
+сдвинулся после восстановления; фактический результат сообщается при передаче.
+Этот контроль восстановления не запускает сборку, тесты, GM или native процессы.
+
 ## Final restore verifier hardening — WIP, 2026-10-10
 
 Independent GREEN/raw/catalog/census checks currently PASS c6369ae7:38 Browser

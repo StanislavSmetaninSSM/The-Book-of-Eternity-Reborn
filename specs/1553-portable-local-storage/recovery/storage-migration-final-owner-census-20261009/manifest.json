@@ -12,7 +12,7 @@
     },
     {
       "path": "semantic-classification.json",
-      "sha256": "4c0d1898bcba3bce8b1fdec631e0e0a6f387d4247b37c7f1f4a46dc1e1e2741e"
+      "sha256": "6e27433813b625366e8c486b77a27ccda8501ce76b7b3a2a98302cc5c09ad8c9"
     },
     {
       "path": "verify-restored-checkpoint.py",

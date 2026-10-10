@@ -1,7 +1,7 @@
 {
   "source": "ac3783c12ee31b12e57f73c5fc360916b97efdc8",
   "inventory": "170 acquisition sites / 164 distinct full declarations / 70 files; no overload or multiple-site collapse",
-  "classificationMethod": "Root manual source/control-flow adjudication per acquisition; syntax CSP/helper flags do not select a classification. Prior consolidated semantic review PASS49e6122; two original Browser replacement owners now have causal RED and fresh GREEN4. Final semantic/source/evidence review pending. Non-lease entrypoints, raw-name producers and caller boundaries remain in existing inventory; acquisition classifications do not qualify whole consumers or all platforms.",
+  "classificationMethod": "Root manual source/control-flow adjudication per acquisition; syntax CSP/helper flags do not select a classification. Prior consolidated semantic review PASS49e6122; two original Browser replacement owners now have causal RED and fresh GREEN4. Final independent Astra/xhigh semantic/source/evidence review PASS c6369ae739bb1ea22a22dcd4c7494adeb1283837; scope exclusions retained. Non-lease entrypoints, raw-name producers and caller boundaries remain in existing inventory; acquisition classifications do not qualify whole consumers or all platforms.",
   "counts": {
     "source-only": 81,
     "finite-packet-only": 84,
