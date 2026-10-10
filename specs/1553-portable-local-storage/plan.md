@@ -1,3 +1,17 @@
+## C3 exact invalid initial item identified — fixture correction WIP
+
+Read-only actual dashboard preflight on previous isolated root and unchanged
+shipped runtime identified exactly1error: item_fate_cards_forbidden_for_non_rare_quality.
+Shared full MortalItemTestFixture root contains fateCards:[], while Common
+quality forbids the field. [Actual diagnostic](recovery/linux-game-chains-20261010/c3-world-validation-preflight/manifest.json),
+normal hostexit0/guardian ECHILD/0emergency/0failures. Not a gameplay PASS.
+Current isolated initial stack now uses Rare quality/rarity, which permits the
+existing empty field; all full materialization fields retained and receipt/index
+created after that choice. No validation relaxation, direct HTTP mutation,
+obsolete snapshot or added mechanic. Actual browser preflight reads full
+validation before command and requires errorCount0. This C# fixture change
+requires fresh selected build. C3/C4 corrected execution and C5 remain UNRUN.
+
 ## C3 full-state fixture validation; C5 executable handoff attempt WIP
 
 Source `267d071c0b175058eaeb6ddab03f9bab4a2bcd9a`: C3 **FAIL1/1**,

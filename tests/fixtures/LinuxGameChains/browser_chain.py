@@ -157,6 +157,12 @@ def open_browser(playwright, name):
     owned["Pids"] = pids
     events.append({"Browser": name, "ChromiumPids": pids})
     page.goto(url, wait_until="domcontentloaded")
+    # Read-only actual full validator preflight, never a route override or bypass.
+    diagnostic = page.request.get(url + "/api/lifecycle/dashboard")
+    assert diagnostic.status == 200
+    validation = diagnostic.json()["validation"]
+    result.setdefault("InitialValidation", []).append(validation)
+    assert validation["errorCount"] == 0, validation
     # The real launcher button's accessible name includes its descriptive copy.
     page.locator('button[data-launcher-mode="continue"]').click()
     page.get_by_label("Команда или действие", exact=True).wait_for(state="visible")

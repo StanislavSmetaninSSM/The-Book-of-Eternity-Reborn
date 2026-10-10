@@ -43,8 +43,10 @@ public sealed class LinuxBrowserGameChainTests(ITestOutputHelper output)
         item["name"] = "Лунная трава";
         item["description"] = "Изолированный текущий тестовый предмет для сквозной проверки инвентаря.";
         item["type"] = "material";
-        item["quality"] = "Common";
-        item["rarity"] = "Common";
+        // The shared full root contains fateCards, which the current full-state
+        // validator permits only at Rare+. Keep the root complete and legal.
+        item["quality"] = "Rare";
+        item["rarity"] = "Rare";
         item["count"] = 5;
         var receipt = MortalItemIdentityState.CreateRootReceipt(item, "gc_stack", acceptedTurn: 42);
         item["itemId"] = "gc_stack";
@@ -63,6 +65,7 @@ public sealed class LinuxBrowserGameChainTests(ITestOutputHelper output)
         {
             Kind = "current-schema neutral Mortal/item fixture, before production startup",
             InitialItemReceiptTurn = 42, AcceptedGameTurns = 0, ModelCalls = 0,
+            Quality = "Rare", FateCards = "empty; existing Rare+ field contract",
             NoBridgeRequiredForLocalCommands = true
         }));
         var package = Path.Combine(own, "package");
