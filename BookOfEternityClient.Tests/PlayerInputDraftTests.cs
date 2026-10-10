@@ -5,6 +5,28 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class PlayerInputDraftTests
 {
+    [Theory]
+    [InlineData("left-insert", "abXc")]
+    [InlineData("home-delete", "bc")]
+    [InlineData("left-backspace", "ac")]
+    [InlineData("home-right-end", "XabcY")]
+    public void CooperativeLineEditingPreservesOrdinaryCursorAndDeleteBehavior(string edit, string expected)
+    {
+        var source = new KeysOnlySource("abc");
+        void Key(ConsoleKey key) => source.Keys.Enqueue(new ConsoleKeyInfo('\0', key, false, false, false));
+        void Character(char value) => source.Keys.Enqueue(new ConsoleKeyInfo(value, ConsoleKey.NoName, false, false, false));
+        switch (edit)
+        {
+            case "left-insert": Key(ConsoleKey.LeftArrow); Character('X'); break;
+            case "home-delete": Key(ConsoleKey.Home); Key(ConsoleKey.Delete); break;
+            case "left-backspace": Key(ConsoleKey.LeftArrow); Key(ConsoleKey.Backspace); break;
+            case "home-right-end": Key(ConsoleKey.Home); Character('X'); Key(ConsoleKey.RightArrow); Key(ConsoleKey.End); Character('Y'); break;
+        }
+        Key(ConsoleKey.Enter);
+        Assert.Equal(expected, new CooperativePlayerInputSource(source, () => false, _ => { }).ReadLine());
+        Assert.Equal(0, source.LineReads);
+    }
+
     [Fact]
     public void EndOfInputDoesNotDuplicateCompletedMultilineDraft()
     {

@@ -14,6 +14,65 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Theory]
+    [InlineData(false, "recoverable")]
+    [InlineData(false, "dual")]
+    [InlineData(true, "synthetic")]
+    [InlineData(true, "dual")]
+    public async Task BrowserInput_OriginalTerminalProvenanceRefusesBeforeMutatingWarmOrLateResolver(bool late, string signalKind)
+    {
+        Dictionary<string, byte[]>? original = null;
+        async Task WriteSignalsAsync(TurnRequest request)
+        {
+            var timestamp = DateTime.UtcNow.ToString("O");
+            if (signalKind == "recoverable")
+            {
+                await _fs.WriteFileAtomicAsync("output/narrative_response.json", JsonSerializer.Serialize(new { response = "Fresh recoverable original output", timestamp }));
+                await _fs.WriteFileAtomicAsync("output/debug_logs.json", JsonSerializer.Serialize(new { gm_thoughts_markdown = "Fresh recoverable original debug", timestamp }));
+            }
+            await _fs.WriteFileAtomicAsync("ready/turn_error.json", JsonSerializer.Serialize(new
+            {
+                sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber, timestamp,
+                status = "error", error = "Original retained signal",
+                harnessSource = signalKind == "dual" ? null : signalKind == "recoverable" ? "gm_output_without_terminal_signal" : "gm_runtime_unavailable"
+            }));
+            if (signalKind == "dual")
+                await _fs.WriteFileAtomicAsync("ready/turn_complete.json", JsonSerializer.Serialize(new
+                {
+                    sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+                    timestamp, status = "success", filesModified = new[] { "output/narrative_response.json" }
+                }));
+            original = BrowserRecoveryTree();
+            original.Remove(Path.GetRelativePath(_fs.BasePath, _fs.ResolvePath(PendingPlayerActionService.PendingPath)).Replace('\\', '/'));
+        }
+        if (late)
+        {
+            var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+            await WriteSignalsAsync(JsonSerializer.Deserialize<TurnRequest>(staged.RequestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!);
+            await InvokePrivateTaskAsync(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+        }
+        else
+        {
+            CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+            var binding = await QueueBrowserInputAsync();
+            var engine = CreateGameEngine(new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]), finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    if (checkpoint == SessionFinalizationCheckpoint.TerminalWaitStarted) await WriteSignalsAsync(await WaitForTurnRequestAsync());
+                }
+            });
+            await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", binding.Action, null, null, null, true, binding);
+        }
+        Assert.NotNull(original);
+        var after = BrowserRecoveryTree();
+        var pendingKey = Path.GetRelativePath(_fs.BasePath, _fs.ResolvePath(PendingPlayerActionService.PendingPath)).Replace('\\', '/');
+        Assert.Equal("terminalProcessing", JsonNode.Parse(after[pendingKey])!["status"]!.GetValue<string>());
+        after.Remove(pendingKey);
+        Assert.Equal(original.Keys.Order(), after.Keys.Order());
+        foreach (var entry in original) Assert.Equal(entry.Value, after[entry.Key]);
+    }
+
+    [Theory]
     [InlineData("state")]
     [InlineData("history")]
     [InlineData("generation")]
@@ -43,7 +102,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
         await InvokePrivateTaskAsync(engine, "ClaimBrowserTerminalAsync", staged);
-        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", (object?)null);
+        var originalManifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", originalManifest);
         var original = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
         // Corrupt an original retained backup: the actual rollback must refuse before any restore.
         var manifest = JsonNode.Parse(staged.ManifestJson)!;
@@ -105,6 +165,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var probe = JsonDocument.Parse(File.ReadAllBytes(probePath));
         Assert.NotEqual(Environment.ProcessId, probe.RootElement.GetProperty("ProcessId").GetInt32());
         Assert.Equal(phase is "terminalProcessing" or "stale-generation", probe.RootElement.GetProperty("Blocked").GetBoolean());
+        Assert.Equal(phase is "queued" or "staged" ? phase : null, probe.RootElement.GetProperty("ClassifiedPhase").GetString());
+        Assert.Equal(phase == "terminalProcessing" ? typeof(InvalidOperationException).FullName :
+            phase == "stale-generation" ? typeof(InvalidDataException).FullName : null, probe.RootElement.GetProperty("ErrorType").GetString());
         if (phase is "accepted" or "settled")
             Assert.True(before.Remove(Path.GetRelativePath(_fs.BasePath, _fs.ResolvePath(PendingPlayerActionService.PendingPath)).Replace('\\', '/')));
         AssertBrowserRecoveryTree(before);
@@ -122,11 +185,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                 path => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant(), StringComparer.Ordinal);
         var before = Snapshot();
         Exception? refusal = null;
-        try { await InvokePrivateTaskAsync(factory.CreateGameEngine(fileSystem: files), "ClassifyBrowserRecoveryAsync"); }
+        PendingPlayerActionService.State? classified = null;
+        try { classified = await InvokePrivateAsync<PendingPlayerActionService.State?>(factory.CreateGameEngine(fileSystem: files), "ClassifyBrowserRecoveryAsync"); }
         catch (Exception exception) when (exception is InvalidOperationException or InvalidDataException) { refusal = exception; }
         await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
         {
             ProcessId = Environment.ProcessId, Blocked = refusal != null, ErrorType = refusal?.GetType().FullName,
+            ClassifiedPhase = classified?.Phase,
             Before = before, After = Snapshot(), Scope = "actual GameEngine classification factory; no gameplay/relay/model"
         }));
     }
@@ -139,11 +204,25 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var process = Process.Start(info)!;
         var stdout = process.StandardOutput.ReadToEndAsync();
         var stderr = process.StandardError.ReadToEndAsync();
-        try { await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(seconds)); }
-        catch
+        try
         {
-            if (!process.HasExited) process.Kill(entireProcessTree: true);
-            await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(seconds));
+            await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(5));
+        }
+        catch (Exception failure)
+        {
+            try
+            {
+                if (!process.HasExited) process.Kill(entireProcessTree: true);
+                await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+                await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(5));
+            }
+            finally
+            {
+                await File.WriteAllTextAsync(log, failure + Environment.NewLine +
+                    (stdout.IsCompletedSuccessfully ? stdout.Result : "stdout EOF unobserved") + Environment.NewLine +
+                    (stderr.IsCompletedSuccessfully ? stderr.Result : "stderr EOF unobserved"));
+            }
             throw;
         }
         var text = await stdout + await stderr;
@@ -155,7 +234,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
         staged = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "ClaimBrowserTerminalAsync", staged);
-        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", (object?)null);
+        var originalManifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", originalManifest);
         await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", snapshot);
         InvokePrivate(engine, "CleanupBackup", snapshot);
         _fs.DeleteFile("input/turn_request.json");
