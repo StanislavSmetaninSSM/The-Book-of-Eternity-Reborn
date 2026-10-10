@@ -143,7 +143,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             else physical = stopped;
             await control.CancelAsync();
             await server.WaitAsync(TimeSpan.FromSeconds(5));
-            ((IDisposable)host).Dispose();
+            try { ((IDisposable)host).Dispose(); }
+            catch (Exception failure) { cleanupFailure ??= failure; }
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
                 Deferred = deferred, EvidenceRetained = retained, RepublishedAfterStage = republished, OriginalStopped = stopped,

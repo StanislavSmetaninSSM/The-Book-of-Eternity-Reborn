@@ -2,6 +2,23 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-original-status-phase",
+            "reason": "Reproduce actual original diagnostic publisher becoming Uncertain from known preparing refusal; narrow fix must defer before mutation and later publish under same original owner.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md admission prerequisite"
+            ]
+        },
+        {
+            "category": "gm-main-status-retirement-linux",
+            "reason": "Directly affected original publisher: preserve real I/O fault uncertainty and original stop/status drain discipline; two existing native controls, no general owner matrix.",
+            "contracts": [
+                "#1553",
+                "original diagnostic status publication and retirement"
+            ]
+        },
+        {
             "category": "portable-terminal-wait-storage-linux",
             "reason": "Common waiter extraction preserves seven original storage/UI/key-task ownership outcomes and affected harness guard; fresh source compilation required.",
             "contracts": [
