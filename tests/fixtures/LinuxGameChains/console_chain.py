@@ -29,7 +29,8 @@ repo, out, ship = map(lambda s: Path(s).resolve(), sys.argv[1:4])
 scenario = sys.argv[4] if len(sys.argv) > 4 else "console"
 assert scenario in ["console", "console-musings", "browser-relay"]
 duration_diagnostic = os.environ.get("BOE_TEST_C5_DURATION_DIAGNOSTIC") == "1"
-continue_diagnostic = os.environ.get("BOE_TEST_C5_CONTINUE_DIAGNOSTIC") == "1"
+startup_diagnostic = os.environ.get("BOE_TEST_C5_STARTUP_DIAGNOSTIC") == "1"
+continue_diagnostic = os.environ.get("BOE_TEST_C5_CONTINUE_DIAGNOSTIC") == "1" or startup_diagnostic
 if continue_diagnostic and (scenario != "browser-relay" or duration_diagnostic or not __debug__):
     raise RuntimeError("Continue diagnostic requires only browser-relay with nonoptimized assertions")
 if duration_diagnostic and (scenario != "browser-relay" or not __debug__):
@@ -59,6 +60,10 @@ if continue_diagnostic:
         "WorkSeconds": 120, "TotalSeconds": 180, "CleanupReserveSeconds": 60,
         "ClickMilliseconds": 12000, "GuardianSeconds": 180, "ExternalSeconds": 190,
         "Qualification": "One normal Continue observation; no action submission or full C5 qualification."})
+if startup_diagnostic:
+    result.update(StartupOnly=True, StartupBudgets={"ObservationSeconds": 60, "ClickMilliseconds": 12000,
+                  "StackAtSeconds": 30, "StackChildSeconds": 15, "StackChildJoinSeconds": 2,
+                  "Anchor": "before initial page.goto; stack collection remains inside startup observation"})
 env = dict(os.environ)
 env.update(TERM="dumb", NO_COLOR="1")
 for key, name in [("TMPDIR", "tmp"), ("XDG_CONFIG_HOME", "config"),
@@ -113,6 +118,8 @@ class Peer:
             assert hook.is_file(), "Fresh matching HTTP observer assembly required"
             peer_env["DOTNET_STARTUP_HOOKS"] = str(hook)
             peer_env["BOE_TEST_CONTINUE_HTTP_OBSERVER_PATH"] = str(out / (name + "-server-http.jsonl"))
+            if startup_diagnostic:
+                peer_env["BOE_TEST_STARTUP_TASK_OBSERVER_PATH"] = str(out / (name + "-server-tasks.jsonl"))
         self.process = subprocess.Popen(argv, cwd=ship, env=peer_env, stdin=self.slave,
                                         stdout=subprocess.PIPE if captured else self.slave,
                                         stderr=subprocess.PIPE if observed_web else subprocess.STDOUT if captured else self.slave, preexec_fn=own)
@@ -403,6 +410,7 @@ def submit_browser_action(dll, action, ordinal):
         trace = ContinueObserver(out, name)
     else:
         trace = None
+    startup = None
     web = Peer(name, ["dotnet", str(dll), str(base), "--web", "--web-url", url], True)
     def ready():
         assert web.process.poll() is None, "Actual web host exited before browser action"
@@ -439,7 +447,13 @@ def submit_browser_action(dll, action, ordinal):
         owned = {"Name": name, "WebPid": web.process.pid, "RealChromiumPids": pids, "Closed": False}
         result.setdefault("Browsers", []).append(owned)
         try:
+            if startup_diagnostic:
+                from startup_observer import StartupProbe
+                startup = StartupProbe(trace, web, env, os.environ["BOE_GAME_CHAIN_DOTNET_STACK"])
             page.goto(url, wait_until="domcontentloaded")
+            if startup is not None:
+                result["StartupObservation"] = startup.wait_ready(page)
+                result["StartupObservationPassed"] = True
             # The real click changes this SPA route. Assert the actual composer
             # rather than waiting for unrelated scheduled navigation completion.
             if trace:
@@ -525,6 +539,11 @@ def submit_browser_action(dll, action, ordinal):
                 owned["FailureCapture"] = traceback.format_exc()
             raise
         finally:
+            if startup is not None:
+                try:
+                    startup.close()
+                except Exception:
+                    result["InstrumentationFailure"] = traceback.format_exc()
             if trace:
                 try:
                     trace.stop(page)

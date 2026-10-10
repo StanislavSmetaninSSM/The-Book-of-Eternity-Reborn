@@ -216,6 +216,39 @@
             ]
         },
         {
+            "id": "c5-startup-ready-continue-protocol-diagnostic",
+            "responsibility": "#1553 T069/T071 ONE owned startup observation,60s from before initial navigation, separate unchanged12s normal Continue click only after the actual visible launcher/enabled Continue and all six initial GETs finish200. Reuse actual Program/Bridge/daemon/queued-idle; passive API/CDP/trusted-input/HTTP evidence plus capped real task-wait registration stacks and one15s owned EventPipe thread-stack report at30s only if game-screen remains pending. Stop before command submission; work120/total180/guardian180/external190/provider0/owned cleanup.",
+            "excludes": "Full C5 acceptance, HTTP-ready/loading-composer shortcuts, synthetic/forced/repeated action, swallowed normal click timeout, inferred absence of asynchronous waits, broad heap/task diagnosis, new performance/product/authority/timer changes, older helper repair or live provider/Windows. Capped/incomplete/ambiguous observer evidence is not exact route/wait proof. A passing click alone cannot explain the prior completion failure.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+                "BookOfEternityClient.TestSupport/ContinueTaskWaitObserver.cs",
+                "BookOfEternityClient.TestSupport/ContinueClickHttpObserver.cs",
+                "tests/fixtures/LinuxGameChains/console_chain.py",
+                "tests/fixtures/LinuxGameChains/startup_observer.py"
+            ],
+            "related": [
+                {
+                    "id": "c5-browser-staged-idle-duration-diagnostic",
+                    "when": "Only after reviewed causal resolution/minimal oracle fix; fresh correctness must qualify CURRENT optimized runtime with unchanged work660/total720/guardian750/external755/helper60/acceptance180/category15/overall20 budgets."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": true,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 4,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.LinuxGameChainTests.Browser_StartupReadyContinue_ProtocolDiagnostic"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-continue-click-protocol-diagnostic",
             "responsibility": "#1553 T069/T071 one actual normal Continue click using the existing full-C5 bootstrap, original Bridge/daemon and genuine queued-idle witness. Unchanged12s Locator.click(no_wait_after=True), passive API/CDP/network/trusted-input/composer observations, real Program HTTP DiagnosticListener startup observer. Stop before command fill/submission; normal-return oracle requires one trusted click, real visible composer and correlated successful browser/server state GETs. Work120/total180/guardian180/external190 seconds; once-only provider0 and complete owned cleanup.",
             "excludes": "Full C5 acceptance, any synthetic/forced/repeated click, swallowed timeout, timer/performance/authority/product changes, helper-refusal repair, Windows/live provider or other chains. A passing diagnostic alone does not establish cause.",

@@ -8,6 +8,7 @@ public static class StartupHook
 {
     private static readonly object Gate = new();
     private static string? _path;
+    private static ContinueTaskWaitObserver? _tasks;
     private static readonly List<IDisposable> Subscriptions = [];
 
     public static void Initialize()
@@ -17,6 +18,8 @@ public static class StartupHook
         if (!Path.IsPathFullyQualified(_path) || File.Exists(_path))
             throw new InvalidOperationException("Continue observer requires a fresh owned absolute output path.");
         Write("ObserverStarted", null);
+        var taskPath = Environment.GetEnvironmentVariable("BOE_TEST_STARTUP_TASK_OBSERVER_PATH");
+        if (!string.IsNullOrEmpty(taskPath)) _tasks = new(taskPath);
         Subscriptions.Add(DiagnosticListener.AllListeners.Subscribe(new ListenerObserver()));
     }
 
@@ -31,6 +34,7 @@ public static class StartupHook
             UserAgent = context?.Request.Headers.UserAgent.ToString(),
             Endpoint = context?.GetEndpoint()?.DisplayName, Status = context?.Response.StatusCode,
             ConnectionId = context?.Connection.Id, RemotePort = context?.Connection.RemotePort,
+            ActivityTraceId = Activity.Current?.TraceId.ToString(),
             Error = error
         };
         lock (Gate) File.AppendAllText(_path!, JsonSerializer.Serialize(row) + Environment.NewLine);
@@ -56,7 +60,11 @@ public static class StartupHook
                 var context = item.Value as HttpContext
                     ?? item.Value?.GetType().GetProperty("HttpContext")?.GetValue(item.Value) as HttpContext
                     ?? item.Value?.GetType().GetProperty("httpContext")?.GetValue(item.Value) as HttpContext;
-                if (context is not null) Write(item.Key, context);
+                if (context is not null)
+                {
+                    _tasks?.ObserveRequest(item.Key, context);
+                    Write(item.Key, context);
+                }
             }
             catch (Exception error)
             {

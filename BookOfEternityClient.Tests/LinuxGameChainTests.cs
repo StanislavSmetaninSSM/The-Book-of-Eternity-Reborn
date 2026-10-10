@@ -22,8 +22,12 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
     [Fact]
     public Task Browser_ContinueClick_ProtocolDiagnostic() => RunAsync("browser-relay", continueDiagnostic: true);
 
-    private async Task RunAsync(string mode, bool durationDiagnostic = false, bool continueDiagnostic = false)
+    [Fact]
+    public Task Browser_StartupReadyContinue_ProtocolDiagnostic() => RunAsync("browser-relay", startupDiagnostic: true);
+
+    private async Task RunAsync(string mode, bool durationDiagnostic = false, bool continueDiagnostic = false, bool startupDiagnostic = false)
     {
+        var observeContinue = continueDiagnostic || startupDiagnostic;
         Assert.True(OperatingSystem.IsLinux(), "This scenario requires real Linux execution; Windows is not qualified.");
         var repo = TestRepoPaths.RepoRoot;
         var own = Path.Combine("/tmp", "gc-" + Guid.NewGuid().ToString("N")[..12]);
@@ -40,10 +44,13 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
             };
             info.Environment.Remove("BOE_TEST_C5_DURATION_DIAGNOSTIC");
             info.Environment.Remove("BOE_TEST_C5_CONTINUE_DIAGNOSTIC");
+            info.Environment.Remove("BOE_TEST_C5_STARTUP_DIAGNOSTIC");
             if (durationDiagnostic && logName == "chain.log")
                 info.Environment["BOE_TEST_C5_DURATION_DIAGNOSTIC"] = "1";
             if (continueDiagnostic && logName == "chain.log")
                 info.Environment["BOE_TEST_C5_CONTINUE_DIAGNOSTIC"] = "1";
+            if (startupDiagnostic && logName == "chain.log")
+                info.Environment["BOE_TEST_C5_STARTUP_DIAGNOSTIC"] = "1";
             foreach (var argument in arguments) info.ArgumentList.Add(argument);
             using var process = Process.Start(info)!;
             var text = await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(
@@ -61,20 +68,31 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
             await Run("dotnet", ["publish", Path.Combine(repo, project, project + ".csproj"), "--no-build", "--no-restore",
                 "-c", configuration, "-o", Path.Combine(ship, project), "-p:BoeNativePackageDirectory=" + package,
                 "-p:BoeRequireNativePackage=true"], "publish-" + project + ".log", 20);
-        if (continueDiagnostic)
+        if (observeContinue)
             await Run("dotnet", ["publish", Path.Combine(repo, "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj"),
                 "--no-build", "--no-restore", "-c", configuration, "-o", Path.Combine(ship, "BookOfEternityClient.TestSupport"),
                 "-p:BoeNativePackageDirectory=" + package, "-p:BoeRequireNativePackage=true"], "publish-observer.log", 20);
         var python = mode == "browser-relay" ? Environment.GetEnvironmentVariable("BOE_GAME_CHAIN_BROWSER_PYTHON") : "/usr/bin/python3";
         Assert.False(string.IsNullOrWhiteSpace(python), "Browser relay chain requires existing Python with Playwright.");
-        await Run(Path.Combine(package, "host-guardian"), [durationDiagnostic ? "--relay-turn" : "--live-turn", Path.Combine(own, "guardian.json"), durationDiagnostic ? "750000" : continueDiagnostic ? "180000" : "300000",
+        await Run(Path.Combine(package, "host-guardian"), [durationDiagnostic ? "--relay-turn" : "--live-turn", Path.Combine(own, "guardian.json"), durationDiagnostic ? "750000" : observeContinue ? "180000" : "300000",
             python!, Path.Combine(repo, "tests/fixtures/LinuxGameChains/console_chain.py"), repo, own, ship, mode],
-            "chain.log", durationDiagnostic ? 755 : continueDiagnostic ? 190 : 310);
+            "chain.log", durationDiagnostic ? 755 : observeContinue ? 190 : 310);
         using var result = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "result.json")));
         Assert.True(result.RootElement.GetProperty("PASS").GetBoolean(), result.RootElement.ToString());
         Assert.Equal(0, result.RootElement.GetProperty("ModelCalls").GetInt32());
-        if (continueDiagnostic)
+        if (observeContinue)
         {
+            if (startupDiagnostic)
+            {
+                Assert.True(result.RootElement.GetProperty("StartupOnly").GetBoolean());
+                Assert.True(result.RootElement.GetProperty("StartupObservationPassed").GetBoolean());
+                var startup = result.RootElement.GetProperty("StartupObservation");
+                Assert.True(startup.GetProperty("ReadyLauncher").GetBoolean());
+                Assert.True(startup.GetProperty("ContinueVisible").GetBoolean());
+                Assert.True(startup.GetProperty("ContinueEnabled").GetBoolean());
+                Assert.Equal(6, startup.GetProperty("SixInitialGETs").GetArrayLength());
+                Assert.True(startup.GetProperty("StartupElapsedSeconds").GetDouble() <= 60);
+            }
             Assert.True(result.RootElement.GetProperty("ContinueOnly").GetBoolean());
             Assert.True(result.RootElement.GetProperty("ContinueDiagnosticAssertionsPassed").GetBoolean());
             Assert.True(result.RootElement.GetProperty("ContinueClickObservation").GetProperty("NormalClickAPIReturned").GetBoolean());

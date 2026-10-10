@@ -1,0 +1,268 @@
+{
+  "Package": "dotnet-stack",
+  "Version": "10.0.750501",
+  "ActualVersion": "10.0.750501+ad724c4b85e7ae775e42f393c6e95a7557a57954",
+  "OfficialNuGetIndex": "https://api.nuget.org/v3-flatcontainer/dotnet-stack/index.json",
+  "OfficialPackageURL": "https://api.nuget.org/v3-flatcontainer/dotnet-stack/10.0.750501/dotnet-stack.10.0.750501.nupkg",
+  "InstallCommand": "dotnet tool install dotnet-stack --version 10.0.750501 --tool-path /workspace/boe-toolchain/diagnostics",
+  "NuGetSHA512": "dJKqlIgtXF5ff3s+hFyXVEOFXaN1VHN+/D/nZsneD5QxHA9EFnhB5hGbrS90N84OlX/uaD9mn+Q5sXsBFPs0+w==",
+  "PrimaryDocumentation": "https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-stack",
+  "RuntimeMetadataURL": "https://raw.githubusercontent.com/dotnet/runtime/v8.0.31/src/libraries/System.Private.CoreLib/src/System/Threading/Tasks/TplEventSource.cs",
+  "RuntimeMetadataSHA256": "cc6a8a8ecea82c81ffdf6c401b079cf1839b2d069829e6fcad106a5f87226969",
+  "ReusedSDK": "10.0.401",
+  "ReusedTargetRuntime": "8.0.31",
+  "ReusedPowerShell": "7.5.3",
+  "ReusedPlaywright": "1.62.0",
+  "OSRelease": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+  "Kernel": "Linux d6cacfad1439 6.18.44 #1 SMP Sat Sep 26 20:02:31 UTC 2026 x86_64 GNU/Linux",
+  "DiagnosticReportExecuted": false,
+  "ToolFiles": [
+    {
+      "Path": "/workspace/boe-toolchain/diagnostics/dotnet-stack",
+      "Bytes": 78256,
+      "SHA256": "d25c6899aef9589b61ced64118c3c3f0ba2e458b8f606d7ee08401a96d7a8585"
+    },
+    {
+      "Path": "/workspace/boe-toolchain/diagnostics/.store/dotnet-stack/10.0.750501/dotnet-stack/10.0.750501/tools/net8.0/any/dotnet-stack.dll",
+      "Bytes": 57184,
+      "SHA256": "d796f6c9298f2c024a12648a7a27a2a6208d6f0cc2d820f733e592e78d3f6533"
+    },
+    {
+      "Path": "/workspace/boe-toolchain/diagnostics/.store/dotnet-stack/10.0.750501/dotnet-stack/10.0.750501/dotnet-stack.10.0.750501.nupkg.sha512",
+      "Bytes": 88,
+      "SHA256": "76722d84305175737fa93ca002289888a9dcaa8b4764ec287e44cd2ae1b1301e"
+    }
+  ],
+  "InstalledPackageFiles": [
+    {
+      "Path": ".nupkg.metadata",
+      "Bytes": 127,
+      "SHA256": "f4e44650aefe566f28a441b5c56d7eaa6d01b58d6315f58f1268a6e90e186e9c"
+    },
+    {
+      "Path": ".signature.p7s",
+      "Bytes": 26009,
+      "SHA256": "f7b76113bdff16820bba5abb4faad843edd9b3d1352ba021cbc022f959cfbbd8"
+    },
+    {
+      "Path": "Icon.png",
+      "Bytes": 2140,
+      "SHA256": "8fcf6f6cd575c0f8c643691765a7db2a4b3b104bfbff34646555f5ccffdb2895"
+    },
+    {
+      "Path": "THIRD-PARTY-NOTICES.txt",
+      "Bytes": 97956,
+      "SHA256": "72eeb5d7e25f8f68ca435ee50b02c54b554aaaa0cef1af9928c55875809a2a75"
+    },
+    {
+      "Path": "dotnet-stack.10.0.750501.nupkg",
+      "Bytes": 6025361,
+      "SHA256": "cd35f399fe023f1793b528590a4d723a1f2f1d9b25696386d926a697bd24c0ca"
+    },
+    {
+      "Path": "dotnet-stack.10.0.750501.nupkg.sha512",
+      "Bytes": 88,
+      "SHA256": "76722d84305175737fa93ca002289888a9dcaa8b4764ec287e44cd2ae1b1301e"
+    },
+    {
+      "Path": "dotnet-stack.nupkg",
+      "Bytes": 6025361,
+      "SHA256": "cd35f399fe023f1793b528590a4d723a1f2f1d9b25696386d926a697bd24c0ca"
+    },
+    {
+      "Path": "dotnet-stack.nuspec",
+      "Bytes": 1055,
+      "SHA256": "9ce0ab2205118b0dbf71053188d4dd0bd082c2a98c19390151f3259a7a684bea"
+    },
+    {
+      "Path": "tools/net8.0/any/Dia2Lib.dll",
+      "Bytes": 59024,
+      "SHA256": "6c4cac68010fe032218efe5e9fcf46eef9f77bfaa5f3bd33f03c5ff77d5a8fac"
+    },
+    {
+      "Path": "tools/net8.0/any/DotnetToolSettings.xml",
+      "Bytes": 200,
+      "SHA256": "afdd3d6cdec6aedc51ae74d714097f2606f6b3a0cc2cb211038e566fc5e90bac"
+    },
+    {
+      "Path": "tools/net8.0/any/Microsoft.Diagnostics.FastSerialization.dll",
+      "Bytes": 76320,
+      "SHA256": "4cce4b44f8e2dcfda8a67bc4e8131d22c63d06e38c23793728906bed51d34523"
+    },
+    {
+      "Path": "tools/net8.0/any/Microsoft.Diagnostics.NETCore.Client.dll",
+      "Bytes": 154424,
+      "SHA256": "ba7a29d7747a73a7687fe092d65659a3e8e44d69938319422df3e729bac75725"
+    },
+    {
+      "Path": "tools/net8.0/any/Microsoft.Diagnostics.NETCore.Client.pdb",
+      "Bytes": 51236,
+      "SHA256": "ede7f644bde7f7083b08d791ce92d3be721430f777a197f2aa187136486e72fe"
+    },
+    {
+      "Path": "tools/net8.0/any/Microsoft.Diagnostics.NETCore.Client.xml",
+      "Bytes": 55164,
+      "SHA256": "1e904e9da0c4fa535b9ca9947a210d7a3e6172eb39d65d8bbf743343681c13ec"
+    },
+    {
+      "Path": "tools/net8.0/any/Microsoft.Diagnostics.Tracing.TraceEvent.dll",
+      "Bytes": 3218504,
+      "SHA256": "7ad04f5abbd704e8bd9c7b29f9aeab951f20cdc5d5c8e701f256be52a6e8543e"
+    },
+    {
+      "Path": "tools/net8.0/any/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "Bytes": 63768,
+      "SHA256": "67fa4325000db017dc0c35829b416f024f042d24efb868bcf17a895ee6500a93"
+    },
+    {
+      "Path": "tools/net8.0/any/Microsoft.Extensions.Logging.Abstractions.dll",
+      "Bytes": 65288,
+      "SHA256": "bb853130f5afaf335be7858d661f8212ec653835100f5a4e3aa2c66a4d4f685d"
+    },
+    {
+      "Path": "tools/net8.0/any/System.CommandLine.dll",
+      "Bytes": 146456,
+      "SHA256": "81cb3482fc1bf35aff15d0135168726a72fa640ec87b7f4a3db49eb6360dbbc3"
+    },
+    {
+      "Path": "tools/net8.0/any/TraceReloggerLib.dll",
+      "Bytes": 23216,
+      "SHA256": "6830c0f1d3f3c17719181e73dd5cfa8ccbb3f3c575329d2120576545103467b5"
+    },
+    {
+      "Path": "tools/net8.0/any/amd64/KernelTraceControl.dll",
+      "Bytes": 266696,
+      "SHA256": "98de2f1de4fb1711688c04e2cb0187bf8c47e627771e8f51329671f296bfc688"
+    },
+    {
+      "Path": "tools/net8.0/any/amd64/msdia140.dll",
+      "Bytes": 2255920,
+      "SHA256": "7341081feac7a2cebcc796c9c2bc5041a295df0673244f2595294e06a0bd7ee8"
+    },
+    {
+      "Path": "tools/net8.0/any/arm64/KernelTraceControl.dll",
+      "Bytes": 258504,
+      "SHA256": "45b6d97a6c64229976b71a0fe709617190267fd02147a5c7e1e4fb9b17fa2956"
+    },
+    {
+      "Path": "tools/net8.0/any/arm64/msdia140.dll",
+      "Bytes": 5185968,
+      "SHA256": "149f8d131a9d664014cafdfc3b77935b13472c250743dd669341ef0d1d4ef0fd"
+    },
+    {
+      "Path": "tools/net8.0/any/cs/System.CommandLine.resources.dll",
+      "Bytes": 18976,
+      "SHA256": "e9b790a1f3cf204147e188be0f513b85dfc0c63f21af5074e6e93f10bf66de6a"
+    },
+    {
+      "Path": "tools/net8.0/any/de/System.CommandLine.resources.dll",
+      "Bytes": 19000,
+      "SHA256": "00380fcc39a400e692807fe4a0fbf2aff99d2e92d7e9cfc397b9a6b57d6a0d47"
+    },
+    {
+      "Path": "tools/net8.0/any/dotnet-stack.deps.json",
+      "Bytes": 5925,
+      "SHA256": "22ee915c163b8cbf0e30c0810a52d1020c509fd9d0e86c18c43b0d657295877b"
+    },
+    {
+      "Path": "tools/net8.0/any/dotnet-stack.dll",
+      "Bytes": 57184,
+      "SHA256": "d796f6c9298f2c024a12648a7a27a2a6208d6f0cc2d820f733e592e78d3f6533"
+    },
+    {
+      "Path": "tools/net8.0/any/dotnet-stack.pdb",
+      "Bytes": 30276,
+      "SHA256": "d5a92252933c95e29827b3f4b0d362751e29ee22d49ac10a11ff2ae1a2c05ba2"
+    },
+    {
+      "Path": "tools/net8.0/any/dotnet-stack.runtimeconfig.json",
+      "Bytes": 476,
+      "SHA256": "f76f8bc6c55ab52e1999c09d4d7ef32654a051c8517d53d90b6deb2fa0b334cf"
+    },
+    {
+      "Path": "tools/net8.0/any/es/System.CommandLine.resources.dll",
+      "Bytes": 18976,
+      "SHA256": "6482720e2106f766b762a2e15e40de18e3edc1d4258b93737aad36dd43d673cd"
+    },
+    {
+      "Path": "tools/net8.0/any/fr/System.CommandLine.resources.dll",
+      "Bytes": 19000,
+      "SHA256": "bbc06fc6d8c240a3e326373e53ca24d8044cce82280e6a1fa97600910e8aa35d"
+    },
+    {
+      "Path": "tools/net8.0/any/it/System.CommandLine.resources.dll",
+      "Bytes": 19000,
+      "SHA256": "578488d1d73bd64feef1bc0a0209e2ab2cd01aae45c99c65ea58b02f467e8a43"
+    },
+    {
+      "Path": "tools/net8.0/any/ja/System.CommandLine.resources.dll",
+      "Bytes": 19000,
+      "SHA256": "c4ffc80025eee886ca8cfec77921b1d2a8da07345d26f1a9f446ea41e9b66646"
+    },
+    {
+      "Path": "tools/net8.0/any/ko/System.CommandLine.resources.dll",
+      "Bytes": 18976,
+      "SHA256": "4bd319beeabf261972ad0997e5353499d08ea49dda5c73f2638fdb886222f5fc"
+    },
+    {
+      "Path": "tools/net8.0/any/pl/System.CommandLine.resources.dll",
+      "Bytes": 19000,
+      "SHA256": "c9001b6353ef7ac13677f5f41c3af9d63ea1db28acf081edee32c814b34f6b80"
+    },
+    {
+      "Path": "tools/net8.0/any/pt-BR/System.CommandLine.resources.dll",
+      "Bytes": 19000,
+      "SHA256": "ecd8f8f2f8e9af9071e9687832d7154eaee31b69c9b0356335d421b40bbca3b2"
+    },
+    {
+      "Path": "tools/net8.0/any/ru/System.CommandLine.resources.dll",
+      "Bytes": 19512,
+      "SHA256": "7cb7aff6ec316e61aef9428fb220c2be7e056220c892f7d6126953db57567c14"
+    },
+    {
+      "Path": "tools/net8.0/any/shims/osx-x64/dotnet-stack",
+      "Bytes": 82048,
+      "SHA256": "f9ab59187479b71465efc17a7a53cd21b19de26181f3c63c3f52252ed3485516"
+    },
+    {
+      "Path": "tools/net8.0/any/shims/win-x64/dotnet-stack.exe",
+      "Bytes": 162112,
+      "SHA256": "2b9a51461d4214ff0a2b64045467f59e5f97eca63d28069a1f753251b015165f"
+    },
+    {
+      "Path": "tools/net8.0/any/shims/win-x86/dotnet-stack.exe",
+      "Bytes": 131392,
+      "SHA256": "2e2f7088834f2f0695ce5fa56739515dde9e11904ee416b9928caf9635916b2f"
+    },
+    {
+      "Path": "tools/net8.0/any/tr/System.CommandLine.resources.dll",
+      "Bytes": 19000,
+      "SHA256": "9fa3a240d6bbf9394b73b94ff423381dfdf1132a10243ab1ca2488b331b5e0f7"
+    },
+    {
+      "Path": "tools/net8.0/any/x86/KernelTraceControl.Win61.dll",
+      "Bytes": 159952,
+      "SHA256": "b7a83f51eae2824e9259ffe567f0fb42177d7b02674be760eb88df270459d8bf"
+    },
+    {
+      "Path": "tools/net8.0/any/x86/KernelTraceControl.dll",
+      "Bytes": 185800,
+      "SHA256": "7a4b8319f36304a7686576ea130a351818f73fabf90c511e243b957fdfa8cbb0"
+    },
+    {
+      "Path": "tools/net8.0/any/x86/msdia140.dll",
+      "Bytes": 2191912,
+      "SHA256": "db546904a0824c78134a75b366a45434ed7745e4a4782628414e37fd0254c30b"
+    },
+    {
+      "Path": "tools/net8.0/any/zh-Hans/System.CommandLine.resources.dll",
+      "Bytes": 19000,
+      "SHA256": "addef90c22953c30286cc31b7b415ee71e531600c6433d998fec0ff6d02cb32d"
+    },
+    {
+      "Path": "tools/net8.0/any/zh-Hant/System.CommandLine.resources.dll",
+      "Bytes": 18976,
+      "SHA256": "2598a4bb7d86504d4c271ba9e7b0cfd69602d68c6a33045b9e75b464f08ba6f1"
+    }
+  ]
+}

@@ -50,6 +50,16 @@
                 "T071-C5-MUSINGS-CHECKPOINT",
                 "Actual natural Continue completion; full affected C5 remains unqualified"
             ]
+        },
+        {
+            "category": "c5-startup-ready-continue-protocol-diagnostic",
+            "reason": "ONE newly authorized startup readiness observation with concrete owned route/task/thread evidence; separate60s startup and unchanged sole12s natural click, no submission. Prior constructor pair/controls/failures stay preserved; fresh fullC5 follows only reviewed causal resolution.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "T071-C5-MUSINGS-CHECKPOINT",
+                "Actual ready launcher and correlated server wait; full affected C5 remains unqualified"
+            ]
         }
     ]
 }
