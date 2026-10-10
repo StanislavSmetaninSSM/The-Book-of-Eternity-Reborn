@@ -1,6 +1,6 @@
 {
   "SourceSHA": "a78ce8ab833b0ceb990e3acbb437486f4dce28ad",
-  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category discovery-only -NoBuild",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
   "Status": "CATALOG_VALID",
   "Scope": "Fresh unit/integration discovery:627 categories11425methods/files;0 tests. Separate empty GitHub-only restore verifies exact a78 tracked tree and retained original evidence; bounded T070 only.",
   "ModelCalls": 0,
@@ -29,6 +29,18 @@
       "Path": "runner/dotnet-test.log.gz",
       "RawSHA256": "4b1f1e724645d89edf1a1f6ee5abb218eb79c69892a33dc2144c182267790d0a",
       "RawBytes": 3344801
+    },
+    {
+      "Path": "restore/boe-1553-t070-github-restore-20261010-1018.json.gz",
+      "RawSHA256": "513038a4c5d6beea3e89ec6a91a27a2b86d3e95a87a3522777997d7a8c9b1284",
+      "RawBytes": 832
+    },
+    {
+      "Path": "restore/boe-gamechain-ignored-evidence-paths.json.gz",
+      "RawSHA256": "d547bebf2211c3352c7efb6b91f82ea32c590c2d9c320bf609154121ffa25035",
+      "RawBytes": 1134
     }
-  ]
+  ],
+  "RestoreCommand": "Fresh empty GitHub-only clone, exact tree/full fsck/tracked blobs/storage-migration manifests. Original a78 tracked tree PASS did not include ignored gamechain files; new full carrier restore pending.",
+  "ArchivePreparationCorrection": "Supplemental raw check initially assumed uniform SourceSHA schema, then found7 .boe_runtime files listed by historical/current gamechain manifests but ignored by Git. All7 exact gzip/local raw hashes and lengths verify; preserve those exact files without rewriting any test result. a78 raw gamechain coverage is incomplete; final fresh carrier restore required."
 }
