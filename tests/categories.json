@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-original-browser-recovery-admission",
+            "responsibility": "Original browser signed staging and explicitly captured quiescent condition must refuse before admission and physically locked mutating recovery; exact bytes preserved.",
+            "excludes": "Actual Program/React staged-idle crash, active original owner native propagation, Windows and live model qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 4,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_ManifestCapturesGuardedQuiescentCondition",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_ColdAcquisitionRefusesChangedOriginalBeforeRecovery",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_AbsentCannotBecomeStoppedBetweenIdleOperations",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_PhysicalLockRechecksOriginalTupleBeforeRecovery"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-original-run-admission",
             "responsibility": "Actual original Bridge/NativeLineage participating grant matches the complete retained expected run identity before mint/activation.",
             "excludes": "Full Program/React staged-idle crash, original manifest capture, storage recovery and unrelated GM helper/shutdown behavior; no model or Windows qualification.",
