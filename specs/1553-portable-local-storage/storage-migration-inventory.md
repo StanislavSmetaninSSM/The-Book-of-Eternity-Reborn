@@ -47,8 +47,10 @@ Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eterni
   Mod committed-close и typed Browser result/continuation-retention scenarios,
   согласно полям `ordinaryKnownCloseQualified`/`ordinaryKnownCloseScenario` карты.
   Browser replacement GREEN4 не расширяет эту квалификацию.
-- Для этого заключительного поручения осталось только независимое metadata review,
-  обычное commit/push и exact remote bytes/SHA verification. Runtime/GM/provider/
+- Заключительная metadata-сверка получила независимый Astra/xhigh **PASS** на
+  `5d80e40e4d19e6ca60070b65853a42fcf716aac4`; reviewed candidate опубликован
+  обычным commit/push с3/3 exact remote Markdown bytes и точным branch ref.
+  Финальный verdict carrier/readback указывается в handoff. Runtime/GM/provider/
   game/desktop/HOME-PC, CI/main/merge/issues и новый full clone не выполняются.
   После передачи нет запущенной фоновой реализации или тестовой очереди.
 

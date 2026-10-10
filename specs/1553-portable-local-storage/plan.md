@@ -17,7 +17,15 @@ source/evidence links/counts, historical body preservation, git diff/whitespace,
 remote byte/SHA readback. Статическая сверка PASS: original task/inventory bodies сохранены (кроме history
 heading labels/перемещения старых task notes),5 открытых current task IDs,23 новых
 source/evidence links,неизменные170 semantic records и6 archived GREEN summaries.
-Review/publication — WIP до фактических gate результатов.
+Обязательное независимое Astra/xhigh metadata review — **PASS** на
+`5d80e40e4d19e6ca60070b65853a42fcf716aac4`, без оставшихся actionable findings.
+Два initial findings исправлены: исторический crosswalk anchor и точный Save
+`Committed` при пропуске linked optional root. Reviewed candidate опубликован
+обычным commit/push;3/3 remote Markdown bytes и точный branch ref подтверждены,
+main остаётся `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. Эта запись verdict
+получает свой обычный commit/push/readback; финальный carrier SHA и проверка
+указываются в handoff без самоссылочного SHA. Metadata-блок завершён в этих
+границах; незакрытые runtime задачи не выдаются за PASS.
 Нет новых runtime/test/spec/selection/GM-contract изменений; сборки, test runner,
 discovery, GM/game/desktop/native процессы и full clone не запускаются. Прежний
 restorePASS относится ровно кbbf896fe; эта metadata редакция проверяется remote
