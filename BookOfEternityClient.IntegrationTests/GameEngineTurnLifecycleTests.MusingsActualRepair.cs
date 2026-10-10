@@ -72,8 +72,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                 // This callback is observational: no lease, waits, writes or manual invalidation.
                 var scope = CurrentScope();
                 var stack = new StackTrace().ToString();
-                if (mutationWitness is null && originalScope is not null &&
-                    stack.Contains("ValidateCurrentGameStateOrShowErrorsAsync", StringComparison.Ordinal))
+                if (mutationWitness is null && originalScope is not null && (path is
+                    "game_state/control/validation_repair_ready.json" or
+                    "game_state/control/validation_repair_request.json" or
+                    "game_state/control/gm_validation_repair_artifact_stall_report.json"))
                 {
                     // Select the first repair-owned mutation independently of Enabled.
                     // A still-enabled/missing/replaced scope is retained and fails the oracle.

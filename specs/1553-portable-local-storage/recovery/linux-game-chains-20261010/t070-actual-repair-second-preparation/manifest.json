@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "d9fb4ede6d08415aca317f0dbea838834dbd8c88",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"guardian-musings-actual-repair\", \"c5-original-post-validation-source\") -PlanOnly -TimeoutMinutes 10'",
+  "Status": "PASS_PREPARATION_ONLY",
+  "Scope": "Fresh integration+unit/references91.2747345s exit0;2planneddescriptors/4cases0executed; completecleanup. Final stack-based firstmutation gate corrected after build; runtime UNRUN.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "0f82fd82542c62e47d3e58cd1f07213d02e31288e73a07c525737216a03eda6c",
+      "RawBytes": 2739
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "a35494c26584d8c501bf6cc27448a6c9e2ab9a01457b7d383040e6336f0ba3b6",
+      "RawBytes": 1673
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "33b245beda27fa252e9abe9f98f7b0ab8212b00cbb994c0bdd83006b8a18d999",
+      "RawBytes": 53545
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "06e9996d7cd4640171091cf87341a63b32703c0fb17820b6b556cef2a31f5cfc",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "b4e8954c0c4bfdbe97be6fba91b363d60322e62198b9104ae406556cda08d44f",
+      "RawBytes": 3359582
+    }
+  ]
+}
