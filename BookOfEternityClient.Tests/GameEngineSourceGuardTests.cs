@@ -1876,6 +1876,7 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEngineSource();
 
         Assert.DoesNotContain("::paste", source, StringComparison.Ordinal);
-        Assert.Contains("Mode = TextComposerMode.MultilineEditor", source, StringComparison.Ordinal);
+        Assert.Contains("ReadCooperativePlayerDraftAsync(multiline: true)", source, StringComparison.Ordinal);
+        Assert.Contains("Mode = multiline ? TextComposerMode.MultilineEditor : TextComposerMode.Immediate", source, StringComparison.Ordinal);
     }
 }

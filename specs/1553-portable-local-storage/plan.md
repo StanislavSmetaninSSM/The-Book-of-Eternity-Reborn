@@ -1,3 +1,5 @@
+Atc1f054d0 actual recovery10/10PASS; affectedclipboard11/12PASS, one obsolete source-literal guard fails because shared multiline choice moved to cooperative helper; draft6unrun after runnerstop. Total21PASS1FAIL/22executed, planned28,63.5590806s/0skip/duplicate/timeout/cleanupcomplete. Guard now requires actual multiline helper call and shared TextComposer mode choice. Independent Astra source delta PASS for bounded refusal; fullT069 stillopen. New publication conflict/cancel/error tests at a8 remain UNRUN.
+
 Added original Process publication-conflict control via existing canonical mutation hook (test-only competing write at authority publication), and actual ordinary cancel/error rollback slot-release test-first cases; UNRUN. Existing recovery negatives now require typed InvalidDataException.
 
 C5 boundary causal RED at04277932: integration10=9PASS/1FAIL,
