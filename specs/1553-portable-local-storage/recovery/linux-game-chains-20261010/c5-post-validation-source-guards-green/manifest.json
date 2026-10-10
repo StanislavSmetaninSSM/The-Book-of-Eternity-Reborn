@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "de7c76ecebd06698d20a5b846fad7e35863f3cbd",
+  "Command": "pwsh -NoLogo -NoProfile -Command & ./scripts/test-csharp.ps1 -Category \"c5-original-post-validation-source\" -NoBuild",
+  "Status": "3/3PASS6.3040830s",
+  "Scope": "Three existing source guards only; fresh successful unit build from98b unchanged production. Actual consumer still FAIL; no C5/repair/interruption claim.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "0ca13403450e53db6d970b4673b4d1914e8563a8e173339d8073ff729941f42f",
+      "RawBytes": 1850
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "92c0a2fd3a8c7426b855c2cc7401d1ef2864387aea60f6975fca5dacd50f6f19",
+      "RawBytes": 1475
+    },
+    {
+      "Path": "runner/c5-original-post-validation-source-unit-001.trx.gz",
+      "RawSHA256": "03be6c85de8b6d66775a12486e93987e89e24a0e329a821eda07c13aab0e5ed5",
+      "RawBytes": 6069
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "43c7b2ffeedaebbc9ea457ef4335c053ee0af195f18b024f3c61db7fd59bd80e",
+      "RawBytes": 1665666
+    }
+  ]
+}
