@@ -36,18 +36,23 @@ internal static class BrowserGameFaultHost
             {
                 if (!File.Exists(Path.Combine(evidence, "arm-load-fault"))) return;
                 phases.Add(phase + ":" + index);
-                if (phase != TrustedLocalPublicationPhase.CommitStaged || cuts != 0) return;
+                // The frozen isolated namespace's last published member is45.
+                // CommitStaged already supplies a durable committed candidate;
+                // cut the preceding real member publication for known rollback.
+                if (phase != TrustedLocalPublicationPhase.MemberPublished || index != 45 || cuts != 0) return;
                 var journal = Path.Combine(root, ".boe_runtime/trusted-local-publication-v1/active.json");
                 using var actual = File.OpenRead(journal);
                 Span<byte> prefix = stackalloc byte[8]; actual.ReadExactly(prefix);
                 if (!prefix.SequenceEqual("BOELP3\r\n"u8)) return;
+                if (File.Exists(Path.Combine(root, ".boe_runtime/trusted-local-publication-v1/commit.tmp")))
+                    throw new InvalidDataException("The rollback cut must precede durable commit staging.");
                 cuts++;
                 File.WriteAllText(Path.Combine(evidence, "load-fault.json"), JsonSerializer.Serialize(new
                 {
-                    Scope = "actual replacement journal BOELP3 and real CommitStaged late write cut",
+                    Scope = "actual replacement journal BOELP3 and late MemberPublished45 before commit.tmp",
                     Cuts = cuts, Phases = phases.ToArray(), ModelCalls = 0
                 }));
-                throw new IOException("controlled actual browser Load CommitStaged failure");
+                throw new IOException("controlled actual browser Load late member45 publication failure");
             }
         };
         AppDomain.CurrentDomain.FirstChanceException += observe;

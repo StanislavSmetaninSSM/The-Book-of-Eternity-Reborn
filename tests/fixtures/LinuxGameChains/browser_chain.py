@@ -18,6 +18,7 @@ import termios
 import time
 import traceback
 import urllib.request
+import zipfile
 from playwright.sync_api import sync_playwright
 
 mode = sys.argv[1]
@@ -277,6 +278,16 @@ try:
             assert not created["continuationBlocked"] and not created["needsFollowUp"]
             page.get_by_text("Игра сохранена.", exact=True).wait_for(state="visible")
             result["CreatedSave"] = created
+            archives = list((session / "saves/manual_saves").glob("*.zip"))
+            assert len(archives) == 1
+            archive_bytes = archives[0].read_bytes()
+            with zipfile.ZipFile(archives[0]) as archive:
+                saved_payload = {p: hashlib.sha256(archive.read(p)).hexdigest() for p in paths}
+                for p in paths:
+                    before = (session / p).read_text(encoding="utf-8-sig")
+                    assert json.loads(archive.read(p).decode("utf-8-sig")) == json.loads(before), p
+            result["SavedPayloadSHA256"] = saved_payload
+            result["SourceArchiveSHA256"] = hashlib.sha256(archive_bytes).hexdigest()
         command(page, "split", 2)
         assert_split(original_receipt)
         changed = snapshot("after-split")
@@ -296,7 +307,8 @@ try:
             assert not any(row["URL"] == "/api/saves/load-complete" for row in http), "No-main Load must not await/send fresh GM launch ACK"
             assert len(items()) == 1 and items()[0]["count"] == 5 and items()[0]["materializationReceipt"] == original_receipt
             expected = snapshot("after-load")
-            assert all(expected[p] == initial[p] for p in paths), "Load did not restore exact saved inventory/resources/authority"
+            assert all(expected[p] == saved_payload[p] for p in paths), "Load did not restore exact committed archive payload"
+            assert archives[0].read_bytes() == archive_bytes, "Load changed source archive"
             assert expected["generation"] != initial["generation"]
             assert expected["generation"] == loaded["establishedGeneration"]
             result["LoadedSave"] = loaded
@@ -345,7 +357,7 @@ try:
             command(page, "split", 2)
             assert_split(original_receipt)
         final = snapshot("cold-after-next-command")
-        assert all(final[p] == initial[p] for p in paths[2:]), "Cold continuation changed resource authorities/history"
+        assert all(final[p] == expected[p] for p in paths[2:]), "Cold continuation changed resource authorities/history"
         page.screenshot(path=str(out / "accepted-ui.png"))
         close_browser(cold_browser)
         stop_host(cold_host)

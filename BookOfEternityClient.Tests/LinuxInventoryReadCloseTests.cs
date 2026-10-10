@@ -108,16 +108,20 @@ public sealed class LinuxInventoryReadCloseTests(ITestOutputHelper output)
 #else
         const string configuration = "Release";
 #endif
+        var dotnet = Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")
+            ?? throw new InvalidOperationException("DOTNET_ROOT must identify the actual Linux runtime"), "dotnet");
+        Assert.True(File.Exists(dotnet));
         await Run(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), "12000",
-            "dotnet", Path.Combine(repo, "BookOfEternityClient.TestSupport/bin", configuration, "net8.0/BookOfEternityClient.TestSupport.dll"),
+            dotnet, Path.Combine(repo, "BookOfEternityClient.TestSupport/bin", configuration, "net8.0/BookOfEternityClient.TestSupport.dll"),
             "inventory-read-cold", files.BasePath, Path.Combine(own, "cold-read.json")], "cold.log", 18);
+        using var guardian = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "guardian.json")));
+        Assert.Equal(0, guardian.RootElement.GetProperty("driverExitCode").GetInt32());
         using var cold = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "cold-read.json")));
         Assert.NotEqual(Environment.ProcessId, cold.RootElement.GetProperty("ProcessId").GetInt32());
         var coldItem = Assert.Single(cold.RootElement.GetProperty("Items").EnumerateArray());
         Assert.Equal("gc_stack", coldItem.GetProperty("Identity").GetString()); Assert.Equal(5, coldItem.GetProperty("Count").GetInt32());
         Assert.Equal(generation, cold.RootElement.GetProperty("Generation").GetString());
         Assert.Equal(before, JsonSerializer.Deserialize<Dictionary<string, string>>(cold.RootElement.GetProperty("State")));
-        using var guardian = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "guardian.json")));
         Assert.True(guardian.RootElement.GetProperty("echild").GetBoolean()); Assert.Equal(0, guardian.RootElement.GetProperty("emergencySignals").GetInt32());
         Assert.Equal(0, guardian.RootElement.GetProperty("failures").GetInt32()); Assert.False(guardian.RootElement.GetProperty("deadline").GetBoolean());
     }

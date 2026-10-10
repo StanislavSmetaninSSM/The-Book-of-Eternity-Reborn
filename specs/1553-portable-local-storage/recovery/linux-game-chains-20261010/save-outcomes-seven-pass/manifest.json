@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "49fc22e845464153b0c4378067f4c527dfe949e8",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-browser-save-creation -NoBuild",
+  "Status": "PASS",
+  "Scope": "Actual six established Save publication/outcomes plus generation source guard7/7; component negatives, not whole game chain.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "8e98ffbfd1e83ee6481bf88205ed174a8c62d6c3ec35348c9b7c983e5687e93d",
+      "RawBytes": 1475
+    },
+    {
+      "Path": "runner/portable-browser-save-creation-unit-001.trx.gz",
+      "RawSHA256": "45ba5b63869954df2f490177b3a070a25148b6ee26e1e5e8f400c0078679d11f",
+      "RawBytes": 12316
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "89d737243af6926215309920e71786b26f46709b4fc0f71945f0faf356cc8873",
+      "RawBytes": 1468
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "0bd9c6cb14baca4f1ddd869ef04f17db092eb2baea1964d7dea8104cd1ba78bf",
+      "RawBytes": 1660952
+    }
+  ]
+}

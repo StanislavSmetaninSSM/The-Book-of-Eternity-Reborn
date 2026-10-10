@@ -1,3 +1,48 @@
+## Final finite attempt49fc: C3 PASS, C5 real handoff FAIL, fixture corrections WIP
+
+Each category ran once from fresh e8 build + metadata49fc; no skip/duplicate/
+timeout, runner-owned cleanup complete. Current C3 strict DTO/full-history/
+retired-child/resource/generation-byte guards **PASS1/1**,28.0522491s
+([raw](recovery/linux-game-chains-20261010/c3-final-strict-guards-pass/manifest.json)).
+Affected Save6outcomes+fencing guard **PASS7/7**,7.2287107s
+([raw](recovery/linux-game-chains-20261010/save-outcomes-seven-pass/manifest.json)).
+
+Actual C5 **FAIL1/1**,58.3348185s
+([raw](recovery/linux-game-chains-20261010/c5-actual-handoff-fail/manifest.json)):
+real React200/Success queued exact browser-composer pending bytes; original
+engine at player input and Bridge/daemon/derived ready alive;20s no turn_request,
+relay requests0/accepted0. No production pending_player_action reader found.
+Web+all observed Chrome exited normally, original identity Stopped, all EOF;
+console cancelled by foreground Ctrl+C on failure(exit-2), guardianECHILD,
+0emergency/0failure/deadlinefalse. Cold accepted continuation UNRUN. Existing
+browser→engine architecture gap, storage introduction not established; not fixed
+by substituting console input or by adding new architecture in this stage.
+
+C4 **FAIL1/1**,24.3378352s
+([raw](recovery/linux-game-chains-20261010/c4-presave-bom-oracle-fail/manifest.json)):
+Save+Load Committed/full refreshed scene, but oracle compared pre-save authority
+BOM against canonical committed archive without BOM. All six loaded paths exactly
+match actual ZIP payload; only authority encoding differs from pre-Save, parsed
+JSON equal. SaveLoadService recomposes canonical owner authority by contract.
+Correct oracle preserves exact committed archive hashes and unchanged source ZIP,
+not weaker JSON-only cold acceptance. Cold still exact full path+generation bytes.
+
+Loadfault **FAIL1/1**,26.2387226s
+([raw](recovery/linux-game-chains-20261010/c4-commit-staged-fault-oracle-fail/manifest.json)):
+actual BOELP3 CommitStaged cut1 yields Committed (durable commit candidate already
+staged); not proof of rollback. Correct finite fault cuts last actual namespace
+MemberPublished45 before commit.tmp and requires exact known RolledBack/cold bytes.
+Readclose **FAIL1/1**,6.7868182s
+([raw](recovery/linux-game-chains-20261010/read-close-relative-exec-fixture-fail/manifest.json)):
+actual public read-owner late-close identity/release/mutations0/full bytes checks
+passed, but guardian execve with relative dotnet did not PATH-resolve (driver127),
+so cold output absent. Correct source uses actual DOTNET_ROOT absolute runtime and
+asserts guardian driver0 before reading. No current whole-case fault PASS yet.
+
+Only corrected C4/read-close/fault execution remains; C2 whole-game missing fresh
+request wiring remains UNRUN. Two bounded production fixes are original menu read
+participation(c72) and held dashboard lease(e8), not gameplay additions.
+
 ## Actual Program C4 Save+Load committed; generation fixture miss
 
 Sourcea8d692df actual **FAIL1/1**,25.8609849s. Production Save is now

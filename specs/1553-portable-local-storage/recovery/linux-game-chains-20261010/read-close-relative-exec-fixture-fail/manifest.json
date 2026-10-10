@@ -1,0 +1,49 @@
+{
+  "SourceSHA": "49fc22e845464153b0c4378067f4c527dfe949e8",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category linux-inventory-context-read-close -NoBuild",
+  "Status": "FAIL",
+  "Scope": "Actual public read-owner close/exception/bytes/release assertions passed; cold component probe UNRUN because guardian child exec dotnet relative name exited127. Whole case FAIL.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "owned/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/guardian.json.gz",
+      "RawSHA256": "6d8a96140e1a0a34d4eb6744fab74844670c0b82d8ac3610e428e0826da30da7",
+      "RawBytes": 99
+    },
+    {
+      "Path": "owned/native.log.gz",
+      "RawSHA256": "d222413c56a4586c962a5a495fba384c1d9be06bc75989d0b887f700863c8137",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/read-close.json.gz",
+      "RawSHA256": "d173bec6ee5661ba2b3125afd0953100819501f631f9414043552c58698cda9d",
+      "RawBytes": 3234
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "f6185b6c6799f055c9c2edada4f13537fd56c723374ba3c74dad5027972c603b",
+      "RawBytes": 1121
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "6929fbc76a5f77d3426800b5c91c6dac81976df5d9c6fbfc06ced35b2feb5f0d",
+      "RawBytes": 1378
+    },
+    {
+      "Path": "runner/linux-inventory-context-read-close-unit-001.trx.gz",
+      "RawSHA256": "7a7099c1c78849bc293d0beb7d81865dadbc065b70a77d179070d6130cc26768",
+      "RawBytes": 6276
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "b0e6c83b385a1bf31beaa25ac9640e06593022bbaf812309ef3ad84118fd3277",
+      "RawBytes": 1662596
+    }
+  ]
+}
