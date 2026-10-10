@@ -1,0 +1,94 @@
+{
+  "SourceSHA": "c8cb25063420af4f4e9cfb9fc7b604f488458203",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-browser-staging-crash\")'",
+  "Status": "3 fixtureFAIL;54.1415164s;complete0skip/duplicate/timeout;cleanup complete",
+  "Scope": "Actual SIGKILL observed through .NET exit137, fixture wrongly expected Python negative9; cold admission assertions unrun",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "001dc74a7f0d3563be9cdf18c90a5478d2f6e120e57b0c10546113df8b50d3bf",
+      "RawBytes": 1187
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "c04b1ea67f926583ee94d970cc6038d7dcabaef4961ff28821a38a42e7b9270a",
+      "RawBytes": 1477
+    },
+    {
+      "Path": "runner/c5-original-browser-staging-crash-integration-001.trx.gz",
+      "RawSHA256": "900987c4d33cab7b7228e226845b18cc7340066f1e1d144d99a2c98421957818",
+      "RawBytes": 11694
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "bdf64f3f4a16fc26690832e268b12d3fc363c98173b8efcc166f048424b73084",
+      "RawBytes": 49253
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "81a325f84a76c2e8637628ebe4265707768f0d45c368e4a48f968a7e405d3385",
+      "RawBytes": 1669711
+    },
+    {
+      "Path": "owned/0/probe.log.gz",
+      "RawSHA256": "43d85ef79870edcd07d57b80fda3ee50130ec89314ba6ed748a6269ed0a0cd15",
+      "RawBytes": 1206
+    },
+    {
+      "Path": "owned/0/result.json.16738989402e40149e6617e446b11b0d.cut.json.gz",
+      "RawSHA256": "81832ef82475639f8414629e94cd39512fcff5b09d9cb9b417f852ac83d37c4c",
+      "RawBytes": 140
+    },
+    {
+      "Path": "owned/0/guardian.json.gz",
+      "RawSHA256": "0021c61e6e37130c67fa442238812eb82d489f74ea5e3fb5b13eeab2a19649e1",
+      "RawBytes": 99
+    },
+    {
+      "Path": "owned/0/native.log.gz",
+      "RawSHA256": "6fc8025084637305ea118ab7f894909675dc0f36f7b57e19e512f1dab910b6d0",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/1/probe.log.gz",
+      "RawSHA256": "43d85ef79870edcd07d57b80fda3ee50130ec89314ba6ed748a6269ed0a0cd15",
+      "RawBytes": 1206
+    },
+    {
+      "Path": "owned/1/result.json.e6bbb6ddeb914deb8030d297183c0062.cut.json.gz",
+      "RawSHA256": "5928a4bf43825a59c6f6263efab8f589c9fbaedcd1249c94cfebaf795657c5b8",
+      "RawBytes": 140
+    },
+    {
+      "Path": "owned/1/guardian.json.gz",
+      "RawSHA256": "0021c61e6e37130c67fa442238812eb82d489f74ea5e3fb5b13eeab2a19649e1",
+      "RawBytes": 99
+    },
+    {
+      "Path": "owned/1/native.log.gz",
+      "RawSHA256": "2b93cb9a78f85a5cabf948ca53f627ee2d2f5a8fc63f0b1c2c0a79479826f864",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/2/probe.log.gz",
+      "RawSHA256": "43d85ef79870edcd07d57b80fda3ee50130ec89314ba6ed748a6269ed0a0cd15",
+      "RawBytes": 1206
+    },
+    {
+      "Path": "owned/2/result.json.4db8ebc10d7d43449df39c2df2c7506b.cut.json.gz",
+      "RawSHA256": "2cbad1a45f03e061b07b103a1a04a7b1d6ef3ac054c53c62074e16ff096357f9",
+      "RawBytes": 140
+    },
+    {
+      "Path": "owned/2/guardian.json.gz",
+      "RawSHA256": "0021c61e6e37130c67fa442238812eb82d489f74ea5e3fb5b13eeab2a19649e1",
+      "RawBytes": 99
+    },
+    {
+      "Path": "owned/2/native.log.gz",
+      "RawSHA256": "d92b29ce3e02f53f56d6161ea990a85792a42ca03be4120934f64e8bcd87875d",
+      "RawBytes": 51
+    }
+  ]
+}

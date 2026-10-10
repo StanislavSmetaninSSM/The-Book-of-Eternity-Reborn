@@ -1,5 +1,9 @@
 ### C5 guard publication boundary consistency — 2026-10-10
 
+### C5 actual cut exit representation preparation correction — 2026-10-10
+
+Atc8cb2506 freshintegration3 fixtureFAIL54.1415164s,complete0skip/duplicate/timeout/cleanupcomplete: original actual publisher was SIGKILLed and original pipes reached EOF, but .NET Process.ExitCode reports137 whereas the new fixture expected Python negative9. Guardian driver aborted134 at that prerequisite; cold admission was not executed, not causal RED. Exact .NET137 assertion corrected; all original logs/guardian/cut ACKs retained in [preparation packet](recovery/linux-game-chains-20261010/c5-staging-crash-exit-preparation-fail/manifest.json). Shared production unchanged; three real cut behavioral controls remain UNRUN.
+
 ### C5 actual staging crash qualification WIP — 2026-10-10
 
 Fresh source325126c8 signedreader2/storyalias2 **4/4 PASS**,65.4541923s,complete0skip/duplicate/timeout/cleanupcomplete. [Raw GREEN](recovery/linux-game-chains-20261010/c5-story-and-signed-reader-green/manifest.json). New three controls are UNRUN/test-first: independently guardian-owned driver SIGKILLs its actual fresh GameEngine staging publisher at MemberPublished0/1, witnesses genuine uncommitted two-member original journal and EOF, then cold admission must refuse zero recovery/exact bytes. Third retains exact original index1 journal and introduces it at physical lock after preflight. This is guarded quiescent component qualification, not live Program/relay or active-owner recovery. Outcome wrapper cannot unwind before original process death; no exception-only faux crash. Shared source unchanged from325; narrow original publication projection and post-recovery recheck pending causal RED.

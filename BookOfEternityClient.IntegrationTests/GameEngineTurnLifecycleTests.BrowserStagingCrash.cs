@@ -38,7 +38,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(0, g["emergencySignals"]!.GetValue<int>());
         Assert.False(g["deadline"]!.GetValue<bool>());
         var actual = JsonNode.Parse(File.ReadAllText(result))!;
-        Assert.Equal(-9, actual["OriginalExitCode"]!.GetValue<int>());
+        Assert.Equal(137, actual["OriginalExitCode"]!.GetValue<int>());
         Assert.True(actual["OriginalEOF"]!.GetValue<bool>());
         Assert.NotEqual(Environment.ProcessId, actual["OriginalPid"]!.GetValue<int>());
         Assert.True(actual["UncommittedOriginalJournal"]!.GetValue<bool>());
@@ -78,7 +78,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             original.Kill();
             await original.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
             await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(5));
-            Assert.Equal(-9, original.ExitCode);
+            Assert.Equal(137, original.ExitCode);
             await File.WriteAllTextAsync(output + ".original.log", await stdout + await stderr);
             var journalPath = Path.Combine(root, ".boe_runtime/trusted-local-publication-v1/active.json");
             var journalBytes = File.ReadAllBytes(journalPath);
