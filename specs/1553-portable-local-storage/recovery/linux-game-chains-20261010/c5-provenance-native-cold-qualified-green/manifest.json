@@ -1,0 +1,49 @@
+{
+  "SourceSHA": "76180728afa8df9db3874eed2814ecfc319e14bb",
+  "Command": "pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category @(\"player-input-draft-preservation\",\"browser-player-terminal-provenance\",\"browser-player-input-recovery\")'",
+  "Status": "PASS",
+  "Scope": "41/41PASS88.9321743s descriptors3complete0skipduplicateTimeout cleanup complete. Actual native10+provenance4+recovery27 incl independentprocess6/damagedsettled5/failedrollback1. Actual Program crashcut chain separate/unrun.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "26c1da0770d392193ac960c21210bb39f0c3a9de8a940857f4bad63dd0de0bd4",
+      "RawBytes": 8387
+    },
+    {
+      "Path": "runner/player-input-draft-preservation-unit-003.trx.gz",
+      "RawSHA256": "e2d639d02960ace59af2571f857e7d8b0445a178581284730ac5a09390c28cc5",
+      "RawBytes": 16411
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "e72a732388980877fe999742f4a71ecb6a7c2885c15732d7d4ee165565869a7a",
+      "RawBytes": 2037
+    },
+    {
+      "Path": "runner/browser-player-terminal-provenance-integration-002.trx.gz",
+      "RawSHA256": "b8887d454e01efd8dcff89e0ea742924d41d84a5adbd525d90a2907b75297e54",
+      "RawBytes": 9098
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "33c144b33decb3242908b923cd9a2cfcdbcde6056e39b65c0d901844581669e9",
+      "RawBytes": 44089
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "a273c86778c89bf38e8cdadc967417e764d51d7eb0894bc4e2ca68fd1a0d29d9",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "51a7b7edf6071aa06961534f7d15dc6cf3982afd9315f079b4b69a4b1903ba91",
+      "RawBytes": 3339435
+    },
+    {
+      "Path": "runner/browser-player-input-recovery-integration-001.trx.gz",
+      "RawSHA256": "c01947b4946fd410603a09f8301209221360dce78d538affb1fd9e8a59dd37df",
+      "RawBytes": 46502
+    }
+  ]
+}

@@ -451,11 +451,15 @@ try:
         offset = len(client.raw)
         if scenario == "browser-relay":
             submit_browser_action(dll, action, ordinal)
+            offset = len(client.raw)
         else:
             client.send(action + "\r")
         wait(lambda: (session / "input/turn_request.json").exists(), "actual player request " + str(ordinal), 30)
         req = read_json(session / "input/turn_request.json")
         assert req["playerAction"] == action and req["turnNumber"] == ordinal, req
+        if scenario == "browser-relay":
+            submitted = result["BrowserSubmissions"][-1]["AuthoritativePending"]
+            assert req["requestId"] == submitted["actionId"], "consumer replaced original browser action identity"
         wait(lambda: len([p for p in queue.glob("request-*") if (p / "game-request.json").exists()]) == (ordinal if ordinal < 3 else 1),
              "real daemon/relay delivery " + str(ordinal), 30)
         request_dir = sorted(queue.glob("request-*"), key=lambda p: p.stat().st_mtime)[-1]
@@ -489,7 +493,7 @@ try:
                 "ActionId": staged["actionId"], "Generation": staged["sessionGeneration"], "RequestId": req["requestId"],
                 "OriginalPendingSHA256": sha(pending_bytes), "OriginalRequestSHA256": sha(request_bytes), "RelayRequests": 2})
         captured, narrative = author_packet(request_dir, ordinal)
-        assert captured["requestId"] == req["requestId"]
+        assert captured == req, "relay/helper consumed a substituted original request"
         fresh(client, narrative, offset, 40)
         fresh(client, "Ваш ход", offset, 40)
         story_path = session / "stories/chaos_sea.jsonl"
@@ -501,6 +505,22 @@ try:
         assert not (session / "input/turn_request.json").exists(), "Acceptance still pending"
         entries = [json.loads(line) for line in story_bytes.decode("utf-8-sig").splitlines() if line.strip()]
         assert len(entries) == ordinal, entries
+        if scenario == "browser-relay":
+            row = entries[-1]
+            assert row["requestId"] == req["requestId"] == submitted["actionId"], row
+            assert row["sessionGeneration"] == submitted["sessionGeneration"], row
+            assert not (session / "input/pending_player_action.json").exists(), "accepted action still queued"
+            delivered = [read_json(path / "game-request.json") for path in queue.glob("request-*") if (path / "game-request.json").exists()]
+            expected_ids = [turn["RequestId"] for turn in result["AcceptedTurns"]] + [req["requestId"]] if ordinal < 3 else [req["requestId"]]
+            assert sorted(packet["requestId"] for packet in delivered) == sorted(expected_ids), "duplicate or substituted relay dispatch after acceptance"
+            if ordinal in [1, 2]:
+                cut = result["InterruptedColdCuts"][-1]
+                assert req["requestId"] == cut["ActionId"]
+                if ordinal == 2:
+                    assert cut["RequestId"] == req["requestId"]
+                assert cut["Generation"] == row["sessionGeneration"]
+                cut["OriginalIdentityConsumedOnce"] = True
+                cut["RelayIdsAfterAcceptance"] = sorted(packet["requestId"] for packet in delivered)
         execution = read_json(request_dir / "execution.json")
         assert execution["Executed"] and execution["ExitCode"] == 0 and execution["ChildExited"] and execution["IoDrained"], execution
         result["AcceptedTurns"].append({"Turn": ordinal, "SessionId": req["sessionId"], "RequestId": req["requestId"],

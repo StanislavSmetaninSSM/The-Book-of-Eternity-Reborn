@@ -6,6 +6,18 @@ namespace BookOfEternityClient.Tests;
 public sealed class PlayerInputDraftTests
 {
     [Theory]
+    [InlineData("", null)]
+    [InlineData("Исходный текст", "Исходный текст")]
+    public void CooperativeNativeEndOfInputKeepsOrdinaryCtrlDSemantics(string typed, string? expected)
+    {
+        var source = new KeysOnlySource(typed);
+        source.Keys.Enqueue(new ConsoleKeyInfo('\u0004', ConsoleKey.D, false, false, true));
+        var input = new CooperativePlayerInputSource(source, () => source.Keys.Count == 0, _ => { });
+        Assert.Equal(expected, input.ReadLine());
+        Assert.Equal(0, source.LineReads);
+    }
+
+    [Theory]
     [InlineData("left-insert", "abXc")]
     [InlineData("home-delete", "bc")]
     [InlineData("left-backspace", "ac")]
