@@ -30,7 +30,7 @@ assert scenario in ["console", "console-musings", "browser-relay"]
 duration_diagnostic = os.environ.get("BOE_TEST_C5_DURATION_DIAGNOSTIC") == "1"
 if duration_diagnostic and (scenario != "browser-relay" or not __debug__):
     raise RuntimeError("C5 diagnostic requires browser-relay and nonoptimized Python assertions")
-work_seconds, total_seconds = (720, 780) if duration_diagnostic else (240, 240)
+work_seconds, total_seconds = (660, 720) if duration_diagnostic else (240, 240)
 active_diagnostic_turn = None
 base = out / "play"
 session = base / "game_session"
@@ -46,7 +46,7 @@ if duration_diagnostic:
     result.update(DiagnosticOnly=True, TurnDurations=[], DiagnosticBudgets={
         "WorkSeconds": work_seconds, "TotalSeconds": total_seconds, "CleanupReserveSeconds": 60,
         "HelperProofSeconds": 60, "HelperToAcceptanceSeconds": 180,
-        "GuardianSeconds": 810, "ExternalSeconds": 815,
+        "GuardianSeconds": 750, "ExternalSeconds": 755,
         "Qualification": "Exploratory semantic diagnostic; original 40s mode and latency regression remain separate."})
 env = dict(os.environ)
 env.update(TERM="dumb", NO_COLOR="1")

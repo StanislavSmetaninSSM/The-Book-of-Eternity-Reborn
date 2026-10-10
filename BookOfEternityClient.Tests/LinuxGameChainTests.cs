@@ -57,9 +57,9 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
                 "-p:BoeRequireNativePackage=true"], "publish-" + project + ".log", 20);
         var python = mode == "browser-relay" ? Environment.GetEnvironmentVariable("BOE_GAME_CHAIN_BROWSER_PYTHON") : "/usr/bin/python3";
         Assert.False(string.IsNullOrWhiteSpace(python), "Browser relay chain requires existing Python with Playwright.");
-        await Run(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), durationDiagnostic ? "810000" : "300000",
+        await Run(Path.Combine(package, "host-guardian"), [durationDiagnostic ? "--relay-turn" : "--live-turn", Path.Combine(own, "guardian.json"), durationDiagnostic ? "750000" : "300000",
             python!, Path.Combine(repo, "tests/fixtures/LinuxGameChains/console_chain.py"), repo, own, ship, mode],
-            "chain.log", durationDiagnostic ? 815 : 310);
+            "chain.log", durationDiagnostic ? 755 : 310);
         using var result = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "result.json")));
         Assert.True(result.RootElement.GetProperty("PASS").GetBoolean(), result.RootElement.ToString());
         Assert.Equal(0, result.RootElement.GetProperty("ModelCalls").GetInt32());
