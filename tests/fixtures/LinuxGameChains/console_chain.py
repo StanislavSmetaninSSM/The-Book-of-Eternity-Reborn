@@ -31,7 +31,7 @@ queue.mkdir()
 started = time.monotonic()
 peers, events = [], []
 result = {"Scenario": "C1", "Model": "deterministic-authored-fixture",
-          "ModelCalls": 0, "AcceptedTurns": [], "ColdRestart": False,
+          "ModelCalls": 0, "AcceptedTurns": [], "ClientColdRestart": False,
           "ProductionEntrypoint": "BookOfEternityClient/Program.cs → GameEngine.RunAsync"}
 env = dict(os.environ)
 env.update(TERM="dumb", NO_COLOR="1")
@@ -42,7 +42,8 @@ for key, name in [("TMPDIR", "tmp"), ("XDG_CONFIG_HOME", "config"),
     env[key] = str(directory)
 pipe = "gc-" + uuid.uuid4().hex[:12]
 relay = repo / "tools/gm-relay"
-command = "& '/usr/bin/python3' '" + str(relay / "relay_cli.py") + "' --session '" + str(session) + "' --queue '" + str(queue) + "' --model 'deterministic-no-provider'"
+env["BOE_TEST_GAME_CHAIN_QUEUE"] = str(queue)
+command = "& '/usr/bin/python3' '" + str(relay / "relay_cli.py") + "' --session '" + str(session) + "' --queue $env:BOE_TEST_GAME_CHAIN_QUEUE --model 'deterministic-no-provider'"
 config = {"Language": "ru", "MusicEnabled": False, "SoundEnabled": False,
           "GenerateSceneImages": False, "ShowImagesInConsole": False,
           "GmBridgeEnabled": True, "GmBridgeBackend": "OwnedTerminal",
@@ -84,6 +85,8 @@ class Peer:
             self.streams[self.process.stdout.fileno()] = "output"
         peers.append(self)
         events.append({"Peer": name, "Argv": argv, "Pid": self.process.pid})
+        os.close(self.slave)
+        self.slave = -1
 
     def text(self, offset=0):
         return re.sub(r"\x1b\[[0-9;? ]*[A-Za-z~]", "", self.raw[offset:].decode("utf-8", "replace"))
@@ -200,6 +203,46 @@ def exit_client(client):
 client = bridge = daemon = None
 original = original_record = None
 record_path = base / ".boe_runtime/gm-runs/main.json"
+
+
+def stop_chain():
+    if bridge is not None and bridge.process.poll() is None:
+        worker("close", queue)
+        wait(lambda: (queue / "closed.json").exists(), "relay actual close", 20)
+        closed = read_json(queue / "closed.json")
+        assert all(closed[k] for k in ["ExecutionDisabled", "ChildExited", "IoDrained"]), closed
+        result.setdefault("RelayCloses", []).append(closed)
+        if original is not None:
+            stop = rpc({"command": "shutdown", "rootKey": original["rootKey"], "expectedMainIdentity": original})
+            assert stop["ok"] and stop["status"]["terminalStop"]["cleanupComplete"], stop
+            wait(lambda: bridge.process.poll() is not None, "original Bridge stopped")
+            assert read_json(record_path)["Disposition"] == "Stopped"
+            assert read_json(record_path)["Identity"] == original_record
+            result["OriginalStopped"] = True
+    if daemon is not None and daemon.process.poll() is None:
+        daemon.send("\x03")
+        wait(lambda: daemon.process.poll() is not None, "original daemon foreground exit", 12)
+
+
+def start_chain(suffix):
+    global bridge, daemon, original, original_record
+    previous = original_record
+    bridge = Peer("bridge-" + suffix, ["pwsh", "-NoLogo", "-NoProfile", "-File", launcher, "start-bridge", "visible", "-SessionPath", str(session)])
+    wait(lambda: record_path.exists() and (out / "tmp" / ("CoreFxPipe_" + pipe)).exists(), "original Bridge owner")
+    wait(lambda: read_json(record_path)["Disposition"] == "Running" and
+         (previous is None or read_json(record_path)["Identity"]["RunId"] != previous["RunId"]), "new original Running owner")
+    record = read_json(record_path)
+    original_record = record["Identity"]
+    if previous is not None:
+        assert original_record["GenerationId"] == previous["GenerationId"]
+        assert original_record["Epoch"] == previous["Epoch"] + 1
+    original = {k[0].lower() + k[1:]: v for k, v in original_record.items()}
+    original["backend"] = 2
+    wait(lambda: rpc({"command": "status"})["status"]["ready"], "derived relay readiness")
+    daemon = Peer("daemon-" + suffix, ["pwsh", "-NoLogo", "-NoProfile", "-File", launcher, "start-daemon", "visible", "--timeout", "150", "--log", str(out / ("daemon-" + suffix + ".log")), "-SessionPath", str(session)])
+    fresh(daemon, "Waiting for turns...")
+    result.setdefault("OriginalRuns", []).append(original_record)
+
 try:
     dll = ship / "BookOfEternityClient/BookOfEternityClient.dll"
     client = Peer("client-first", ["dotnet", str(dll), str(base), "--plain-output"], True)
@@ -221,24 +264,24 @@ try:
     fresh(client, "Продолжить", offset)
     assert not (session / "input/turn_request.json").exists()
     launcher = str(ship / "BookOfEternityClient/Launcher/bookofeternity.ps1")
-    bridge = Peer("bridge", ["pwsh", "-NoLogo", "-NoProfile", "-File", launcher, "start-bridge", "visible", "-SessionPath", str(session)])
-    wait(lambda: record_path.exists() and (out / "tmp" / ("CoreFxPipe_" + pipe)).exists(), "original Bridge owner")
-    wait(lambda: read_json(record_path)["Disposition"] in ["Running", "Uncertain"], "owner settled startup")
-    record = read_json(record_path)
-    assert record["Disposition"] == "Running", record
-    original_record = record["Identity"]
-    original = {k[0].lower() + k[1:]: v for k, v in original_record.items()}
-    original["backend"] = 2
-    wait(lambda: rpc({"command": "status"})["status"]["ready"], "derived relay readiness")
-    daemon = Peer("daemon", ["pwsh", "-NoLogo", "-NoProfile", "-File", launcher, "start-daemon", "visible", "--timeout", "150", "--log", str(out / "daemon.log"), "-SessionPath", str(session)])
-    fresh(daemon, "Waiting for turns...")
+    start_chain("first")
+    preserved_story = b""
 
-    for ordinal in [1, 2]:
-        if ordinal == 2:
+    for ordinal in [1, 2, 3]:
+        if ordinal > 1:
             assert client.process.poll() == 0, "First client still active"
-            client = Peer("client-cold", ["dotnet", str(dll), str(base), "--plain-output"], True)
+            if ordinal == 3:
+                old_pids = {p.name: p.process.pid for p in [client, bridge, daemon]}
+                stop_chain()
+                queue = out / "queue-2"
+                queue.mkdir()
+                env["BOE_TEST_GAME_CHAIN_QUEUE"] = str(queue)
+                start_chain("whole-cold")
+                result["WholeChainColdRestart"] = {"PreviousPids": old_pids, "BridgePid": bridge.process.pid, "DaemonPid": daemon.process.pid}
+            client = Peer("client-cold-" + str(ordinal), ["dotnet", str(dll), str(base), "--plain-output"], True)
             fresh(client, "Продолжить")
-            result["ColdRestart"] = True
+            assert (session / "stories/chaos_sea.jsonl").read_bytes() == preserved_story, "Cold startup changed prior full story"
+            result["ClientColdRestart"] = True
         offset = len(client.raw)
         client.send("\r")
         fresh(client, "Ваш ход", offset)
@@ -248,7 +291,7 @@ try:
         wait(lambda: (session / "input/turn_request.json").exists(), "actual player request " + str(ordinal), 30)
         req = read_json(session / "input/turn_request.json")
         assert req["playerAction"] == action and req["turnNumber"] == ordinal, req
-        wait(lambda: len([p for p in queue.glob("request-*") if (p / "game-request.json").exists()]) == ordinal,
+        wait(lambda: len([p for p in queue.glob("request-*") if (p / "game-request.json").exists()]) == (ordinal if ordinal < 3 else 1),
              "real daemon/relay delivery " + str(ordinal), 30)
         request_dir = sorted(queue.glob("request-*"), key=lambda p: p.stat().st_mtime)[-1]
         captured, narrative = author_packet(request_dir, ordinal)
@@ -257,6 +300,9 @@ try:
         fresh(client, "Ваш ход", offset, 40)
         story_path = session / "stories/chaos_sea.jsonl"
         story_bytes = story_path.read_bytes()
+        prefix_sha = sha(preserved_story) if preserved_story else None
+        assert story_bytes.startswith(preserved_story), "Previous full history bytes were changed or lost"
+        preserved_story = story_bytes
         assert narrative in story_bytes.decode("utf-8-sig") and action in story_bytes.decode("utf-8-sig")
         assert not (session / "input/turn_request.json").exists(), "Acceptance still pending"
         entries = [json.loads(line) for line in story_bytes.decode("utf-8-sig").splitlines() if line.strip()]
@@ -264,42 +310,45 @@ try:
         execution = read_json(request_dir / "execution.json")
         assert execution["Executed"] and execution["ExitCode"] == 0 and execution["ChildExited"] and execution["IoDrained"], execution
         result["AcceptedTurns"].append({"Turn": ordinal, "SessionId": req["sessionId"], "RequestId": req["requestId"],
-                                         "PlayerAction": action, "Narrative": narrative, "StorySHA256": sha(story_bytes), "StoryEntries": len(entries), "Execution": execution})
+                                         "PlayerAction": action, "Narrative": narrative, "StorySHA256": sha(story_bytes), "PreservedFullStoryPrefixSHA256": prefix_sha, "StoryEntries": len(entries), "Execution": execution})
         (out / ("story-after-" + str(ordinal) + ".jsonl")).write_bytes(story_bytes)
         exit_client(client)
-    assert result["AcceptedTurns"][0]["SessionId"] == result["AcceptedTurns"][1]["SessionId"]
-    assert result["AcceptedTurns"][0]["RequestId"] != result["AcceptedTurns"][1]["RequestId"]
+    assert len({t["SessionId"] for t in result["AcceptedTurns"]}) == 1
+    assert len({t["RequestId"] for t in result["AcceptedTurns"]}) == 3
+    assert len(result["OriginalRuns"]) == 2
     result["ChainAssertionsPassed"] = True
 except Exception:
     result["Failure"] = traceback.format_exc()
+    if client is not None and "Main run metadata or original owner admission is unavailable" in client.text():
+        # Existing diagnostic entry point records the actual production stack.
+        # It is diagnostic only and does not qualify an interactive game chain.
+        try:
+            script = out / "diagnostic-script.json"
+            script.write_text('{"steps":[]}')
+            diagnostic = Peer("client-diagnostic", ["dotnet", str(dll), str(base), "--plain-output", "--e2e-script", str(script), "--e2e-artifacts", str(out / "diagnostic")], True)
+            wait(lambda: diagnostic.process.poll() is not None, "diagnostic actual client exit", 15)
+        except Exception:
+            result["DiagnosticFailure"] = traceback.format_exc()
 finally:
+    cleanup_errors = []
     try:
-        if bridge is not None and bridge.process.poll() is None:
-            worker("close", queue)
-            wait(lambda: (queue / "closed.json").exists(), "relay actual close", 20)
-            closed = read_json(queue / "closed.json")
-            assert all(closed[k] for k in ["ExecutionDisabled", "ChildExited", "IoDrained"]), closed
-            result["RelayClose"] = closed
-            if original is not None:
-                stop = rpc({"command": "shutdown", "rootKey": original["rootKey"], "expectedMainIdentity": original})
-                assert stop["ok"] and stop["status"]["terminalStop"]["cleanupComplete"], stop
-                wait(lambda: bridge.process.poll() is not None, "original Bridge stopped")
-                assert read_json(record_path)["Disposition"] == "Stopped"
-                assert read_json(record_path)["Identity"] == original_record
-                result["OriginalStopped"] = True
-        if daemon is not None:
-            wait(lambda: daemon.process.poll() is not None, "original daemon exit", 20)
-        if client is not None and client.process.poll() is None:
-            # Failure cleanup targets only this driver's original foreground.
-            client.send("\x03")
-            wait(lambda: client.process.poll() is not None, "failed client foreground exit", 8)
-        for p in peers:
-            os.close(p.slave)
-            p.slave = -1
+        stop_chain()
+    except Exception:
+        cleanup_errors.append(traceback.format_exc())
+    for p in peers:
+        if p.process.poll() is None:
+            try:
+                p.send("\x03")
+                wait(lambda: p.process.poll() is not None, p.name + " failed foreground exit", 8)
+            except Exception:
+                cleanup_errors.append(traceback.format_exc())
+    try:
         wait(lambda: all(len(p.closed) == len(p.streams) for p in peers), "all owned EOF", 8)
         result["IoDrained"] = True
     except Exception:
-        result["CleanupFailure"] = traceback.format_exc()
+        cleanup_errors.append(traceback.format_exc())
+    if cleanup_errors:
+        result["CleanupFailure"] = cleanup_errors
     result["Peers"] = {}
     for p in peers:
         (out / (p.name + ".raw")).write_bytes(p.raw)

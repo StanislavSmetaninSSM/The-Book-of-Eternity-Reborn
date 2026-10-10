@@ -47,8 +47,9 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
         using var result = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "result.json")));
         Assert.True(result.RootElement.GetProperty("PASS").GetBoolean(), result.RootElement.ToString());
         Assert.Equal(0, result.RootElement.GetProperty("ModelCalls").GetInt32());
-        Assert.True(result.RootElement.GetProperty("ColdRestart").GetBoolean());
-        Assert.Equal(2, result.RootElement.GetProperty("AcceptedTurns").GetArrayLength());
+        Assert.True(result.RootElement.GetProperty("ClientColdRestart").GetBoolean());
+        Assert.True(result.RootElement.TryGetProperty("WholeChainColdRestart", out _));
+        Assert.Equal(3, result.RootElement.GetProperty("AcceptedTurns").GetArrayLength());
         using var guardian = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "guardian.json")));
         Assert.True(guardian.RootElement.GetProperty("echild").GetBoolean());
         Assert.Equal(0, guardian.RootElement.GetProperty("emergencySignals").GetInt32());

@@ -1,3 +1,37 @@
+## C1 первая фактическая попытка — FAIL / WIP, 2026-10-10
+
+Source/test SHA `1c2bc24e4b4b1d8eb49ed0882bb1596d3b6e2431`, чистое дерево.
+`pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category linux-game-chain-console -PlanOnly`
+PASS подготовки:1descriptor/1planned case/0executed,42.5116243s.
+Затем та же категория `-NoBuild`: **FAIL1/1**,0PASS,0skip,1descriptor завершён,
+63.0281117s. Actual NewGame bootstrap/cancel, original Bridge Running и daemon
+Waiting выполнены. Actual console Continue получил отказ
+`Main run metadata or original owner admission is unavailable` до обычного
+player action: accepted turns0, model calls0, оба restart варианта UNRUN.
+Причина продукта ещё не доказана. Сырые runner/TRX/PTY/state и shipped hashes:
+[initial C1 manifest](recovery/linux-game-chains-20261010/initial-c1/manifest.json).
+Original relay close и Bridge Stopped подтверждены; fixture ошибочно ждала exit
+idle daemon без Ctrl+C, guardian завершил дерево:ECHILD=true, emergencySignals2,
+failures0,deadline=false. Это не normal-cleanup PASS.
+
+Следующий test-only checkpoint: независимые cleanup попытки, foreground Ctrl+C
+своему daemon, закрытие parent PTY slave сразу после spawn; actual admission
+refusal собирается существующим `--e2e-script` diagnostic client entry point,
+без runtime seam/bypass/metadata forgery. Diagnostic не квалифицирует обычный
+интерактивный ход. До minimal runtime fix требуется фактический stack/cause.
+
+Уточнение владельца: **C1a — только restart клиента при живых Bridge/daemon**;
+**C1b — остановка/новые PID всей цепочки client+Bridge+daemon+relay**. Fixture
+теперь планирует3 accepted actions:до рестартов,после C1a,после C1b. На обоих
+cold startup story bytes обязаны быть точно прежними; после следующих ходов
+весь прошлый JSONL prefix обязан сохраняться byte-for-byte, включая полное
+содержимое первого history entry, а не только count1→2. Для C1b новый relay queue
+передаётся fixture-owned env через неизменный config command; generation/session
+сохраняются, original RunId меняется, epoch+1. Все новые assertions UNRUN.
+Authored GM packets остаются заменой модели. Frontend npm initial FAIL из-за
+недоступного home cache; bounded retry с workspace cache PASS64packages, без
+credential/lockfile изменений. Это подготовка, не C5.
+
 ## C1 executable fixture — WIP, 2026-10-10
 
 T066 C1 first source checkpoint: `tests/fixtures/LinuxGameChains/console_chain.py`
