@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "6b75c48e82e16c0502ec7682de9381fe1629d4c9",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category \"c5-original-decoded-state-controls\" -NoBuild'",
+  "Status": "8/8PASS13.2021124s",
+  "Scope": "Eight existing component controls; fresh successful integration build efca with unchanged production. No actual Program C5, model or additional negative matrix.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "d6be06af5d132cf8158136b7cf8ce7a6efd91059da3a76530b56b65c0c60f0fc",
+      "RawBytes": 1878
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "fa2b229bddba7f59a8e38bae235662a043afd7a42df9bd4c2932d7e25e275498",
+      "RawBytes": 1474
+    },
+    {
+      "Path": "runner/c5-original-decoded-state-controls-integration-001.trx.gz",
+      "RawSHA256": "0c203d9fbf523ce0d0e1e050140e94fee15b69e1c06cbe46e0203cf60ae005fe",
+      "RawBytes": 14440
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "2999f988b38dd9832554f0dce7a27810a1c380c2de9c606909f639ada6cbe781",
+      "RawBytes": 1619390
+    }
+  ]
+}
