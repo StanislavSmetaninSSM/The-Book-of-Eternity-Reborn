@@ -833,7 +833,33 @@
         "ControlBodyEntered": false,
         "NoActiveOrClose": true,
         "Qualification": "Capture control only; no product repair, old cause or fullC5 qualification"
+      },
+      "EvidenceGate": {
+        "SHA": "a4aaacdac543fbf3779c1a976fa25c54d98c2b65",
+        "Verdict": "Same Astra local control evidence/provenance PASS, no blockers",
+        "Publication": "Writer actual remote/ref/fetched exact manifest/tree/hashes PASS; root independently confirmed via authorized GitHub connector after transient shell auth read failure",
+        "Qualification": "Capture control only; old strict-object control FAIL retained; no product repair or fullC5 qualification"
       }
+    },
+    "JournalCausalProposal": {
+      "Status": "DESIGN ONLY; source/runtime unimplemented; same Astra design/source gate required",
+      "Seam": "Optional instance-local selected-path callback after actual Active/IntentStage selection before unchanged HasNamespaceJournalMagic fresh validation",
+      "Cases": [
+        "Actual held publisher IntentStaged to Move/IntentPublished then full commit/lease release",
+        "Actual held publisher Committed to Cleanup/CleanupComplete then lease release"
+      ],
+      "Selection": "2 new regression cases + existing pending-recovery2 + phase/escaped-refusal4 =8",
+      "Bounds": {
+        "CallbackWaitSeconds": 10,
+        "CaseCancellationSeconds": 30,
+        "NewCategoryMinutes": 2,
+        "ExistingCategoryMinutes": 4,
+        "OverallMinutes": 6
+      },
+      "ExpectedRed": "Actual selected intent.tmp or active.json FileNotFound at HasNamespaceJournalMagic; timeout/unreached seam/build failures do not prove hypothesis",
+      "Preserved": "Real canonical lease/current generation/unchanged original request/pending/manifest/authority/snapshots; no hand deletion/synthetic reply/prelock deferral/guard/timer/replay change",
+      "HistoricalActorAttribution": "UNKNOWN; possible owned interleaving reproduction does not attribute historical6ba transaction or old helper relation",
+      "FullC5": "FAIL/UNQUALIFIED/WIP; no new fullC5 before proven minimal repair"
     }
   }
 }
