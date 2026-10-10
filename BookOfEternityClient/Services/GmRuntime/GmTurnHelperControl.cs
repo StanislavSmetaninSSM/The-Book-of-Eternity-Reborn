@@ -217,8 +217,8 @@ internal static class GmTurnHelperControl
 #if DEBUG
         catch (Exception failure)
         {
-            // The participating/binding finalization has already run. Capture
-            // its retained original exception before this catch's close reply.
+            // The participating call has unwound; admission can fail before
+            // binding/finalization. Capture before THIS catch's close reply.
             EmitFixtureFailure(failure, "run-core-catch", new {
                 mode=opening.Mode, expectedGeneration, generation, becameActive, explicitClose,
                 closeReplyAttempted, sequence, uncertain, outcome, terminalClose,
@@ -289,7 +289,7 @@ internal static class GmTurnHelperControl
                 utc=DateTimeOffset.UtcNow.ToString("O"),exceptions=nodes,captureIncomplete=incomplete,
                 omittedLinks=omitted,limits=new { maxNodes,maxDepth,maxCharacters,maxUtf8Bytes },
                 boundary=phase=="run-core-catch"
-                    ?"Original caught exception after participating/binding finalization; before this catch's optional close serialization. BecameActive is the original flag, not transport acknowledgment."
+                    ?"Original caught exception after the participating call unwound; binding/finalization may not have run. Before this catch's optional close serialization. BecameActive is the original flag, not transport acknowledgment."
                     :"Outer catch can precede RunCore/participating admission or follow a propagated failure; no finalization occurrence is inferred."
             };
             var json=JsonSerializer.Serialize(record);

@@ -1,0 +1,28 @@
+{
+  "SourceSHA": "16a4f191463dd7fa2fc234beb2981abea7415661",
+  "Command": "pwsh ./scripts/test-csharp.ps1 -Category c5-queued-cold-helper-admission-diagnostic -PlanOnly -TimeoutMinutes 7",
+  "ModelCalls": 0,
+  "ArchiveScope": "Complete runner and owned runtime diagnostics, game/relay state, screenshot/HTML, snapshots/rollback and ZIPs; immutable published ship is retained by complete byte/hash inventory with native/runtime binaries. Browser/cache/config/data/tmp ephemeral files are excluded. No node_modules/local Git objects.",
+  "Files": [
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "83a77ad1aef3f54e813f2a9101b08b71574ec0c973bfa3151097de9d12654a3b",
+      "RawBytes": 46714
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "ac696c41a60e1f6eaee1d8019cb4552eb2c2079489cb0c67a7207c3228538364",
+      "RawBytes": 1712224
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "7f20c25adce40c0d7711f430452e9893585d423194ddd860a523e62e5a1956e5",
+      "RawBytes": 1416
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "a7e850cae1193b890b3bcda9a55b6f8a9c8d1aa37a2aa5619e0d528a947b81c8",
+      "RawBytes": 1494
+    }
+  ]
+}

@@ -626,7 +626,7 @@
   "ManagedContinuation": {
     "Status": "WIP: source gate/preparation/control/diagnostic UNRUN",
     "BaseSHA": "d80534a18ec6b09ceb94bd3e8c2e1441a99e36b7",
-    "Target": "Original selected Complete-BoeTurn write helper caught exception before optional close serialization, after participating/binding finalization",
+    "Target": "Original selected Complete-BoeTurn write helper caught exception after participating call unwinds and before THIS catch optional close serialization; admission may fail before binding/finalization",
     "Boundaries": [
       "No original exception, guard, owner, uncertain, close, exit or timer decision changed",
       "Only actual selected child receives valid-N nonce; no global setting",
@@ -675,6 +675,17 @@
         }
       ],
       "NoRuntimeBuildHelperTestsLaunched": true
+    },
+    "PreservedSupersededPreparation": {
+      "SourceSHA": "16a4f191463dd7fa2fc234beb2981abea7415661",
+      "WallSeconds": 129.0604533,
+      "UnitBuildSeconds": 121.3352172,
+      "PlannedCases": 2,
+      "ExecutedCases": 0,
+      "ExitCode": 0,
+      "CleanupComplete": true,
+      "Archive": "c5-helper-managed-preparation-before-boundary-correction/manifest.json",
+      "Limit": "Source diagnostic wording corrected after this completed preparation; not preparation of the next source."
     }
   }
 }
