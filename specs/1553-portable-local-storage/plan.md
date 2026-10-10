@@ -1,3 +1,15 @@
+## Browser replacement original-owner causal result — WIP, 2026-10-10
+
+Fresh Plan235729 at f2a1af60 built the selected integration project: exact4/1,
+0 execution, 103.4523456s, both cleanup complete. Actual000134 on unchanged
+production: known2PASS / uncertainty2 causalFAIL, 4/4 complete, 7.2616563s,
+0 skipped/duplicates/timeout, both cleanup, strict emitted roots absent.
+Admission genuine CSP became NotLoaded with secondary close failure; release
+retained original refusal but lost SAME CSP to close failure. Original actual
+packet retained before the two original lexical guards; no loader/archive/native/
+GM/game/provider or whole-flow qualification. Accepted earlier groups not replayed.
+T061–T065 and B2–B5 remain open.
+
 ## Browser replacement original fixture installed — test-first WIP, 2026-10-09
 
 Independentfixture/design/exact4PASS760e7ca4/cd99addb. Onlyrawoutput added explicit
