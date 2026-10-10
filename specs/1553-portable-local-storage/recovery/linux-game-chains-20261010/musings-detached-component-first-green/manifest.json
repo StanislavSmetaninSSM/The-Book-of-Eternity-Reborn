@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "9c2151a0b7287e5a19c36c99d901be2249b76691",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category guardian-musings-publication",
+  "Status": "16/16 PASS; complete; 58.3377152s; cleanup complete",
+  "Scope": "Actual signed original baseline; detached original delta after physical close; prefix/mirror/once-only, seven drift negatives, six specific raw rejection codes and manual repair invalidation. Component only; original consumer12 and actual chain remain unrun after current correction.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "1ac15921ebe0ecce03bf9031cb6619b97c282424e5e8a4c708cbd3c7b06b3d6a",
+      "RawBytes": 2193
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "d7721f1df12650ce91c79a18893290f97a8343bbe1556706c8ee77ccfe271c35",
+      "RawBytes": 1571
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "191960f7cad9f83d888234235da4367fa398e315d6720607d4d837a87f181446",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "d999d56fdb1784d97e1a433d8c05f8e11f1af55e5aa0141f535acfdb1b4f26dc",
+      "RawBytes": 1660813
+    },
+    {
+      "Path": "runner/guardian-musings-publication-integration-001.trx.gz",
+      "RawSHA256": "2e52584f47833691e17ed061d491f6a2cbfd5d06732d3d1fb7099372a6755daf",
+      "RawBytes": 27015
+    }
+  ]
+}
