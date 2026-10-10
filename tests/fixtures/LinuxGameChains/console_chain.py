@@ -28,8 +28,9 @@ repo, out, ship = map(lambda s: Path(s).resolve(), sys.argv[1:4])
 scenario = sys.argv[4] if len(sys.argv) > 4 else "console"
 assert scenario in ["console", "console-musings", "browser-relay"]
 duration_diagnostic = os.environ.get("BOE_TEST_C5_DURATION_DIAGNOSTIC") == "1"
-assert not duration_diagnostic or (scenario == "browser-relay" and __debug__)
-work_seconds, total_seconds = (840, 900) if duration_diagnostic else (240, 240)
+if duration_diagnostic and (scenario != "browser-relay" or not __debug__):
+    raise RuntimeError("C5 diagnostic requires browser-relay and nonoptimized Python assertions")
+work_seconds, total_seconds = (720, 780) if duration_diagnostic else (240, 240)
 active_diagnostic_turn = None
 base = out / "play"
 session = base / "game_session"
@@ -45,7 +46,7 @@ if duration_diagnostic:
     result.update(DiagnosticOnly=True, TurnDurations=[], DiagnosticBudgets={
         "WorkSeconds": work_seconds, "TotalSeconds": total_seconds, "CleanupReserveSeconds": 60,
         "HelperProofSeconds": 60, "HelperToAcceptanceSeconds": 180,
-        "GuardianSeconds": 930, "ExternalSeconds": 935,
+        "GuardianSeconds": 810, "ExternalSeconds": 815,
         "Qualification": "Exploratory semantic diagnostic; original 40s mode and latency regression remain separate."})
 env = dict(os.environ)
 env.update(TERM="dumb", NO_COLOR="1")
@@ -226,10 +227,13 @@ def observe_diagnostic_turn():
     execution_path = state["request_dir"] / "execution.json"
     if "HelperCompleteObservedAtSeconds" not in row and execution_path.exists():
         execution = read_json(execution_path)
-        if execution.get("Executed"):
-            assert execution.get("ExitCode") in [None, 0] and not execution.get("MetadataFailure"), execution
-            if execution.get("ExitCode") == 0 and execution.get("ChildExited") and execution.get("IoDrained"):
-                row.update(HelperCompleteObservedAtSeconds=now, Execution=execution)
+        # Relay publishes execution.json only as a settled outcome, including
+        # Executed=false/Failure. Preserve it and fail now instead of timing out.
+        row["Execution"] = execution
+        assert (execution.get("Executed") and execution.get("ExitCode") == 0 and
+                execution.get("ChildExited") and execution.get("IoDrained") and
+                not execution.get("MetadataFailure")), execution
+        row["HelperCompleteObservedAtSeconds"] = now
 
 
 def await_diagnostic_acceptance():

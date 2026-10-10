@@ -3,7 +3,7 @@
     "categories": [
         {
             "id": "c5-browser-staged-idle-duration-diagnostic",
-            "responsibility": "#1553 T069 separate finite full-C5 semantic diagnostic of actual React/Program/Bridge/daemon/relay queued and witnessed staged-idle SIGKILL/EOF/cold continuation. Model-only authored packets; all original identity/once-only/full-prefix/Stop/guardian assertions retained. Read-only pre-packet snapshot inventory and concurrently observed helper/ready/narrative/prompt phases. One 180s absolute acceptance limit after helper completion; work840/total900/guardian930/external935 seconds.",
+            "responsibility": "#1553 T069 separate finite full-C5 semantic diagnostic of actual React/Program/Bridge/daemon/relay queued and witnessed staged-idle SIGKILL/EOF/cold continuation. Model-only authored packets; all original identity/once-only/full-prefix/Stop/guardian assertions retained. Read-only pre-packet snapshot inventory and concurrently observed helper/ready/narrative/prompt phases. One 180s absolute acceptance limit after helper completion; work720/total780/guardian810/external815 seconds.",
             "excludes": "No original40s GREEN, product SLA, regression closure, live provider, pre-lock deferral, production timeout/guard change, active-poll crash or remaining T070 interruption/repair qualification.",
             "changeHints": [
                 "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
@@ -20,7 +20,7 @@
                 "exclusive": true,
                 "ciRunner": "ubuntu-24.04"
             },
-            "timeoutMinutes": 17,
+            "timeoutMinutes": 15,
             "expectedSeconds": null,
             "selectors": [
                 {
