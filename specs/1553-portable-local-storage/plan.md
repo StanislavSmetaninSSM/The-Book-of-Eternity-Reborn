@@ -52,7 +52,7 @@ with interrupted current line after a completed multiline line and while confirm
 a preserved draft. Expected full draft; no native reader/process substitute claim.
 Actual RED at21edae15:2/2FAIL,87.4108207s; complete1descriptor/2cases,0skip/duplicate/timeout and ownedcleanupcomplete. [Archived RED](recovery/linux-game-chains-20261010/c5-input-draft-red/manifest.json). Minimal draft preservation actual GREEN atbaf47739:14/14PASS (draft2 +clipboard12),43.6599270s,complete2descriptors/14cases,0skip/duplicate/timeout/ownedcleanupcomplete. [Archived GREEN](recovery/linux-game-chains-20261010/c5-input-draft-green/manifest.json). Existing clipboard tests remain separate affected controls.
 
-C5 consumer/input/recovery source WIP (UNBUILT/UNRUN): one existing pending slot
+C5 consumer/input/recovery source WIP (runtime UNRUN): initial49b229fa selected preparation BUILD_FAIL52.1638876s/0tests/ownedcleanupcomplete (CS8752 target-typed params new); corrected explicit PlannedWrite type. Uncertain remains excluded from forgiving entry catches. Remote49b readback14/14exact. one existing pending slot
 has queued→preparing→staged→terminalProcessing→accepted phases, original actionId
 becomes ordinary requestId, optional browser generation/action are included in the
 original hashed manifest. Staging publishes request+slot through existing publisher.

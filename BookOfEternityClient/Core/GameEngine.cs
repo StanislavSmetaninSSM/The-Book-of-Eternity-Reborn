@@ -196,7 +196,8 @@ public partial class GameEngine
 
         var stagedBrowserRecovery = false;
         try { stagedBrowserRecovery = (await ClassifyBrowserRecoveryAsync())?.Phase == "staged"; }
-        catch (Exception failure) when (failure is InvalidOperationException or InvalidDataException or JsonException)
+        catch (Exception failure) when (failure is (InvalidOperationException or InvalidDataException or JsonException)
+            && failure is not CoordinatedStatePublicationUncertainException)
         {
             AnsiConsole.MarkupLine($"[yellow]{BrowserRecoveryMessage}[/]");
             return;

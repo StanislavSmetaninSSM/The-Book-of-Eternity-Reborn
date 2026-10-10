@@ -1,0 +1,19 @@
+{
+  "SourceSHA": "49b229fa64a488fcf830f9a4fded6a32fd0a86d8",
+  "Command": "pwsh -NoLogo -NoProfile -Command ./scripts/test-csharp.ps1 -Category @(player-input-draft-preservation, browser-pending-action-admission)",
+  "Status": "BUILD_FAIL",
+  "Scope": "CS8752 target-typed new params preparation failure; 0 tests executed, not behavioral RED.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "a2c4c0e4228d7c68f3d65af859dc4f7b0dd572845ff0cfc2827becfd29f1b120",
+      "RawBytes": 1361
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "4902e6501cacc32e20e05c7e34fcd039ebf969471c54ef103222edf26d180af6",
+      "RawBytes": 4125
+    }
+  ]
+}

@@ -435,7 +435,8 @@ public partial class GameEngine
             var browserRecovery = await ClassifyBrowserRecoveryAsync();
             if (browserRecovery?.Phase == "staged") return true;
         }
-        catch (Exception failure) when (failure is InvalidOperationException or InvalidDataException or JsonException)
+        catch (Exception failure) when (failure is (InvalidOperationException or InvalidDataException or JsonException)
+            && failure is not CoordinatedStatePublicationUncertainException)
         {
             _mainMenuSessionWarning = BrowserRecoveryMessage;
             return false;

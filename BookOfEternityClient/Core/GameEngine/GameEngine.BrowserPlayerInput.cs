@@ -162,7 +162,8 @@ public partial class GameEngine
         ValidateDetachedBrowserBinding(captured);
         var stagedJson = PendingPlayerActionService.CreatePhase(state, "staged", PendingPlayerActionService.StagingProof(captured));
         await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, stagedJson,
-            new("input/turn_request.json", await _fs.ReadFileAsync(lease, "input/turn_request.json"), requestJson, RequireCurrentBaseline: true));
+            new CoordinatedStateWriteHelper.PlannedWrite("input/turn_request.json",
+                await _fs.ReadFileAsync(lease, "input/turn_request.json"), requestJson, RequireCurrentBaseline: true));
         return captured with { Json = stagedJson };
     });
 
