@@ -307,6 +307,11 @@
       "Path": "owned0-binary-provenance.json.gz",
       "RawSHA256": "1076951f8e407633868abf021110e9eb144fede9949d40d5ebab7d5fe4b2f588",
       "RawBytes": 149
+    },
+    {
+      "Path": "matched-comparison.json",
+      "Bytes": 29985,
+      "SHA256": "5d8f2a11dee56d331c773bdfc1d771eda9748b11084da0f3ac3e6d02760eec42"
     }
   ]
 }
