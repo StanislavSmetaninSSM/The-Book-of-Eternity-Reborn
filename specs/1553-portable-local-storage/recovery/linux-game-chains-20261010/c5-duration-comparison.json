@@ -1,0 +1,185 @@
+{
+  "CurrentRuntimeSourceSHA": "aa8c48da0348e0a9010f502f740e69ae99a49619",
+  "HistoricalProductionSHA": "5657107343a0dcb58f09212f7de48f478dea45d3",
+  "CommonFixtureSourceSHA": "1be03a0d274ca092011576f8adf0792e441a5f3d",
+  "SameSavedCloud": true,
+  "Sequential": true,
+  "DiagnosticsOnly": true,
+  "Results": {
+    "Current": {
+      "ConsumerDurationSeconds": 45.8251197,
+      "Legacy40SecondsExceeded": true,
+      "Accepted": true,
+      "Deadline": false,
+      "OriginalStopped": true,
+      "PhysicalCleanup": true,
+      "OperationSettled": true,
+      "StopTaskSettled": true,
+      "OperationFailure": null,
+      "CleanupFailure": null,
+      "TimingSupported": true,
+      "PreflightSupported": true,
+      "Provenance": {
+        "ResolvedRepoRoot": "/workspace/boe-1553-storage-migration",
+        "Core": {
+          "Name": "BookOfEternityClient",
+          "Location": "/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "Sha256": "3AD955B9854C777840670DEB775DD581F450186368A9A8467C11B6281E1FC47F"
+        },
+        "Bridge": {
+          "Name": "BookOfEternityGMBridge",
+          "Location": "/workspace/boe-1553-storage-migration/BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+          "Sha256": "89A69E0E6D80C091C4113721CA0F35629AE1C2EE418E398238B70132E67B8B3E"
+        },
+        "Tests": {
+          "Name": "BookOfEternityClient.IntegrationTests",
+          "Location": "/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "Sha256": "E648F4FB7E2FCB0FC6BCEDF5570E43D7ED76D7611987CDC75844B49A986307B1"
+        },
+        "Support": {
+          "Name": "BookOfEternityClient.TestSupport",
+          "Location": "/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "Sha256": "CD12093790370B97B87A2553DCF950B79E78CBB8BC5A3DB6BDBCD4570FA66300"
+        }
+      },
+      "SnapshotCount": 25,
+      "RollbackCount": 24,
+      "SnapshotBytes": 43804,
+      "RollbackBytes": 43330,
+      "RequestBytes": 59055,
+      "ManifestBytes": 14639,
+      "AuthorityBytes": 17035,
+      "Preflights": 1610,
+      "Acquisitions": 1668,
+      "Contention": 0,
+      "ReadAttempts": 3504,
+      "Guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "Checkpoints": [
+        {
+          "Label": "engine:TerminalWaitStarted",
+          "Seconds": 8.3475131
+        },
+        {
+          "Label": "authored-success-published",
+          "Seconds": 8.3688805
+        },
+        {
+          "Label": "engine:TerminalSignalInspectionLeaseAcquired",
+          "Seconds": 8.4650823
+        },
+        {
+          "Label": "engine:TerminalSignalSnapshotCapturedBeforeResolution",
+          "Seconds": 9.4636528
+        },
+        {
+          "Label": "engine:AcceptedOutcomeValidatedBeforeMaterialization",
+          "Seconds": 34.56765
+        },
+        {
+          "Label": "operation-settled-before-stop",
+          "Seconds": 54.1941486
+        },
+        {
+          "Label": "original-stop-requested",
+          "Seconds": 54.2155179
+        }
+      ]
+    },
+    "Historical": {
+      "ConsumerDurationSeconds": 9.480454799999999,
+      "Legacy40SecondsExceeded": false,
+      "Accepted": true,
+      "Deadline": false,
+      "OriginalStopped": true,
+      "PhysicalCleanup": true,
+      "OperationSettled": true,
+      "StopTaskSettled": true,
+      "OperationFailure": null,
+      "CleanupFailure": null,
+      "TimingSupported": false,
+      "PreflightSupported": false,
+      "Provenance": {
+        "ResolvedRepoRoot": "/tmp/boe-c5-duration-baseline-1be03a0d",
+        "Core": {
+          "Name": "BookOfEternityClient",
+          "Location": "/tmp/boe-c5-duration-baseline-1be03a0d/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "Sha256": "3F76FF10E3C14C265F730038E70D1135741F736461D6F28EFC57FEF492B30D3C"
+        },
+        "Bridge": {
+          "Name": "BookOfEternityGMBridge",
+          "Location": "/tmp/boe-c5-duration-baseline-1be03a0d/BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+          "Sha256": "E2CCF3889CCE3C32198B7B0D78E1CDA53F957DEF7D27F9ECE9F0CEAAD4505356"
+        },
+        "Tests": {
+          "Name": "BookOfEternityClient.IntegrationTests",
+          "Location": "/tmp/boe-c5-duration-baseline-1be03a0d/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "Sha256": "BEBEBE12575BA82DA5BF87C7CCC525F53CF47D414466FF58E1F7DA05B3771B07"
+        },
+        "Support": {
+          "Name": "BookOfEternityClient.TestSupport",
+          "Location": "/tmp/boe-c5-duration-baseline-1be03a0d/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "Sha256": "1B9597336FC875CFC14641702738AD61C18EC99A1E7169D182115399E4214B64"
+        }
+      },
+      "SnapshotCount": 25,
+      "RollbackCount": 24,
+      "SnapshotBytes": 43801,
+      "RollbackBytes": 43330,
+      "RequestBytes": 59052,
+      "ManifestBytes": 14049,
+      "AuthorityBytes": 17035,
+      "Preflights": null,
+      "Acquisitions": 1767,
+      "Contention": 0,
+      "ReadAttempts": 6371,
+      "Guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "Checkpoints": [
+        {
+          "Label": "engine:TerminalWaitStarted",
+          "Seconds": 7.4060391
+        },
+        {
+          "Label": "authored-success-published",
+          "Seconds": 7.4249743
+        },
+        {
+          "Label": "engine:TerminalSignalInspectionLeaseAcquired",
+          "Seconds": 7.4370796
+        },
+        {
+          "Label": "engine:TerminalSignalSnapshotCapturedBeforeResolution",
+          "Seconds": 8.4446881
+        },
+        {
+          "Label": "engine:AcceptedOutcomeValidatedBeforeMaterialization",
+          "Seconds": 11.8743094
+        },
+        {
+          "Label": "operation-settled-before-stop",
+          "Seconds": 16.9055996
+        },
+        {
+          "Label": "original-stop-requested",
+          "Seconds": 16.9259868
+        }
+      ]
+    }
+  },
+  "CurrentToHistoricalWallRatio": 4.833641493654926,
+  "CurrentMinusHistoricalSeconds": 36.344664900000005,
+  "Limits": "One sequential pair; fresh actual sessions/random dice/baseScore/baseRarity differ, same action/authored response/checkpoints and snapshot+rollback maps. Current-only optional observer overhead; no SLA/single-commit attribution/fullC5/no-replay qualification."
+}
