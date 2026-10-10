@@ -217,14 +217,14 @@ def command(page, kind, quantity=None):
     composer = page.get_by_label("Команда или действие", exact=True)
     composer.fill("/inventory_" + kind + " gc_stack")
     started_command = post_click(page, "/api/explorer/command", lambda: page.get_by_role("button", name="Отправить", exact=True).click())
-    assert started_command["status"] == "RequiresInput", started_command
+    assert started_command["state"] == "RequiresInput", started_command
     page.locator("#prompt-item_identity").select_option("gc_stack")
     if quantity is not None:
         page.locator("#prompt-split_quantity").fill(str(quantity))
     page.locator("#prompt-confirm_inventory_" + kind).check()
     body = post_click(page, "/api/explorer/prompt-sessions/submit",
                       lambda: page.get_by_role("button", name="Отправить форму", exact=True).click())
-    assert body["status"] == "Completed", body
+    assert body["state"] == "Completed", body
     page.locator(".prompt-form").wait_for(state="detached")
     return body
 
