@@ -198,7 +198,9 @@ public partial class GameEngine
         Func<Task>? beforeTerminalRepairReturn = null,
         bool applyProgressionOnSuccess = true,
         MortalWoundTreatmentResourcePublicationTransaction?
-            treatmentResourcePublicationTransaction = null)
+            treatmentResourcePublicationTransaction = null,
+        ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
+            guardianMusingsForRepair = null)
     {
         var repairAttempt = 0;
         List<ValidationIssue>? lastRepairErrors = null;
@@ -208,10 +210,18 @@ public partial class GameEngine
         DateTime? lastCanonicalRepairStartedAtUtc = initialCanonicalRepairStartedAtUtc;
         string? lastRepairSessionGeneration = null;
         var repairMutationPrepared = false;
+        var repairResubmissionCompleted = false;
 
         while (true)
         {
             await EnsureClientOwnedSystemFilesHealthyAsync();
+            // Install in this flow after the fresh read-only lease has closed.
+            // Each genuine repair completion permits exactly one validation iteration.
+            using var repairedMusingsScope = repairResubmissionCompleted && guardianMusingsForRepair is not null
+                ? _validator.UseCompletedGuardianMusingsValidationScope(
+                    await _validator.RecheckOriginalGuardianMusingsAfterRepairAsync(guardianMusingsForRepair))
+                : null;
+            repairResubmissionCompleted = false;
             var issues = await _validator.ValidateGameStateAsync();
             if (RequiresAcceptedTurnPayloadValidation(source))
             {
@@ -254,6 +264,9 @@ public partial class GameEngine
 
             if (allowRepairLoop)
                 errors = await FilterRestoredForbiddenRealmBaselineErrorsAsync(source, errors);
+
+            if (errors.Count != 0)
+                repairedMusingsScope?.Invalidate();
 
             if (errors.Any(static issue => issue.Code == "spiritual_completed_conflict_validation_mismatch"))
             {
@@ -335,6 +348,7 @@ public partial class GameEngine
                     await beforeTerminalRepairReturn();
                 return false;
             }
+            repairResubmissionCompleted = true;
             var canonicalRepairErrors = errors
                 .Where(issue => IsCanonicalStateRepairIssue(issue) &&
                                 !IsPlayerFacingNeutralActorMemoryRepairIssue(issue))
@@ -971,7 +985,8 @@ public partial class GameEngine
                         applyProgressionOnSuccess:
                             treatmentResourcePublicationTransaction is null,
                         treatmentResourcePublicationTransaction:
-                            treatmentResourcePublicationTransaction);
+                            treatmentResourcePublicationTransaction,
+                        guardianMusingsForRepair: canonicalRefresh.GuardianMusingsValidation);
                 if (!currentStateValid)
                 {
                     return AcceptedTurnValidationDisposition.TerminalRejected;
@@ -2078,7 +2093,8 @@ public partial class GameEngine
                 originalBrowserSnapshotScope?.Dispose();
                 guardianMusingsScope.Invalidate();
                 return Task.CompletedTask;
-            });
+            },
+            guardianMusingsForRepair: guardianMusings);
 
         originalBrowserSnapshotScope?.Dispose();
 

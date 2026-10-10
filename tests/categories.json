@@ -32,6 +32,36 @@
             ]
         },
         {
+            "id": "guardian-musings-repair-recheck-close",
+            "responsibility": "#1553 T070 exact original read-only repair recheck lease: actual held lease close failure propagates before completion can return; invalid original logical scope remains disabled, canonical bytes unchanged and original operation joined.",
+            "excludes": "Whole game/repair protocol acceptance, other storage fault matrix, native Windows/live models and three interruption cuts.",
+            "changeHints": [
+                "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+                "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.MusingsPublication.cs"
+            ],
+            "related": [
+                {
+                    "id": "guardian-musings-publication",
+                    "when": "Original repair recheck return or lease-close behavior changes."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.GuardianMusingsPublication_RepairRecheckCloseFailureCannotReturnCompletion"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-accepted-terminal-cleanup-order",
             "responsibility": "#1553 reproduced cold late-terminal self-deletion failure: common accepted cleanup must establish authenticated actual-owner/full physical proof/inventory before deleting the original request. Reuse four existing warm cleanup artifact-integrity negatives and one accepted-receipt dequeue/no-replay control; actual fullC5 owns causal RED and cold success acceptance.",
             "excludes": "No extra negative matrix, synthetic direct-cleanup positive, live model, product timeout/guard weakening or performance closure. Existing component controls do not qualify wholeProgramC5 or console repair.",

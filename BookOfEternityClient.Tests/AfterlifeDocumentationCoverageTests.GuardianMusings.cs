@@ -15,6 +15,9 @@ public sealed partial class AfterlifeDocumentationCoverageTests
         Assert.Contains("`activeGuardian.guardianId` is `guard_social_azalia_001`", section, StringComparison.Ordinal);
         Assert.Contains("without a matching", section, StringComparison.Ordinal);
         Assert.Contains("without appending again", section, StringComparison.Ordinal);
+        Assert.Contains("only the current listed outputs", section, StringComparison.Ordinal);
+        Assert.Contains("before one fresh validation iteration", section, StringComparison.Ordinal);
+        Assert.Contains("cannot borrow that completion", section, StringComparison.Ordinal);
         Assert.Contains("afterlife-only command", section, StringComparison.Ordinal);
         Assert.Contains("no internal proof or handoff fields", section, StringComparison.Ordinal);
         var snippet = Assert.Single(ExampleSnippetExtractor.ExtractAll(), candidate =>

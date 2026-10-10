@@ -4912,6 +4912,14 @@ new musing (two entries total), the same list in `activeGuardian.musings`, and n
 remaining `addMusings` command. Revalidation and cold continuation preserve that
 result without appending again. The client binds this comparison to the original
 signed request/turn/generation; the GM authors no internal proof or handoff fields.
+If a correlated validation repair lists only a narrative or interface error, repair
+only the current listed outputs and publish the matching repair-ready signal. Do
+not reinsert the consumed `addMusings` command or duplicate its thought in the
+journal. The client rechecks the unchanged original binding and sealed Guardian
+state before one fresh validation iteration; changed Guardian state or original
+evidence cannot borrow that completion. A subsequent repair invalidates the fresh
+comparison before any mutation. An output-only repair accepts the same two musings
+without appending again.
 The existing limit is one or two new musings per Guardian per turn. A Mortal World
 treatment turn cannot use this afterlife-only command. This example changes no
 command fields, realm rules, or GM response schema.

@@ -35,6 +35,17 @@ public sealed partial class GuardianSystemRegressionTests
                 Assert.Contains(await ValidateMusingsStateAsync(validator), issue => issue.Code == "guardian_materialized_state_outside_authority");
             Assert.DoesNotContain(await ValidateMusingsStateAsync(validator), issue => issue.Severity == IssueSeverity.Error);
         }
+        using (var originalScope = validator.UseCompletedGuardianMusingsValidationScope(refresh.GuardianMusingsValidation))
+        {
+            originalScope.Invalidate();
+            var rechecked = await validator.RecheckOriginalGuardianMusingsAfterRepairAsync(refresh.GuardianMusingsValidation);
+            Assert.Same(refresh.GuardianMusingsValidation, rechecked);
+            Assert.False(originalScope.Enabled);
+            using (validator.UseCompletedGuardianMusingsValidationScope(rechecked))
+                Assert.DoesNotContain(await ValidateMusingsStateAsync(validator), issue => issue.Severity == IssueSeverity.Error);
+            Assert.False(originalScope.Enabled);
+            Assert.Contains(await ValidateMusingsStateAsync(validator), issue => issue.Code == "guardian_materialized_state_outside_authority");
+        }
         Assert.Equal(published, await _fs.ReadFileBytesAsync(MusingsRootPath));
         var repeated = await RefreshMusingsPublicationAsync(validator);
         Assert.Null(repeated.GuardianMusingsValidation);
@@ -77,6 +88,7 @@ public sealed partial class GuardianSystemRegressionTests
             await _fs.WriteFileAtomicAsync(path, root.ToJsonString());
         }
         var afterDamage = Directory.GetFiles(_rootPath, "*", SearchOption.AllDirectories).ToDictionary(path => path, File.ReadAllBytes);
+        Assert.Null(await validator.RecheckOriginalGuardianMusingsAfterRepairAsync(refresh.GuardianMusingsValidation));
         using (validator.UseCompletedGuardianMusingsValidationScope(refresh.GuardianMusingsValidation))
             Assert.Contains(await ValidateMusingsStateAsync(validator), issue => issue.Severity == IssueSeverity.Error);
         foreach (var pair in afterDamage) Assert.Equal(pair.Value, File.ReadAllBytes(pair.Key));

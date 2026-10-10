@@ -209,6 +209,36 @@ public partial class ValidationService
         return scope;
     }
 
+    /// <summary>Rechecks an already sealed original delta after a correlated repair; never reseals current state.</summary>
+    internal async Task<GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?>
+        RecheckOriginalGuardianMusingsAfterRepairAsync(
+            GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation original)
+    {
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? failure = null;
+        GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation? checkedOriginal = null;
+        try
+        {
+            var json = await _fs.ReadFileAsync(lease, GuardianMusingsPath);
+            if (!string.IsNullOrWhiteSpace(json))
+            {
+                JsonDocument? document;
+                try { document = JsonDocument.Parse(json); }
+                catch (JsonException) { document = null; }
+                using (document)
+                {
+                    if (document is not null &&
+                        await original.ReadForComparisonAsync(_fs, lease, document.RootElement) is not null)
+                        checkedOriginal = original;
+                }
+            }
+        }
+        catch (Exception caught) { failure = caught; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, failure); }
+        // A failed physical close cannot return comparison authority to the caller.
+        return checkedOriginal;
+    }
+
     private JsonObject[] ReadCompletedGuardianMusingsForComparison(JsonElement currentRoot)
     {
         if (_guardianMusingsPublication.Value is not { Enabled: true, Completion: { } completion }) return [];

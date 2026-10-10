@@ -27,7 +27,17 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         finally { if (originalOperation is null || originalOperation.IsCompleted) fixture.Dispose(); }
     }
 
-    private async Task RunMusingsComparisonFaultAsync(GuardianSystemRegressionTests fixture, string mode, bool unauthorized, Action<Task> track)
+    [Fact]
+    public async Task GuardianMusingsPublication_RepairRecheckCloseFailureCannotReturnCompletion()
+    {
+        var fixture = new GuardianSystemRegressionTests();
+        Task? originalOperation = null;
+        try { await RunMusingsComparisonFaultAsync(fixture, "close", false, task => originalOperation = task, repairRecheck: true); }
+        finally { if (originalOperation is null || originalOperation.IsCompleted) fixture.Dispose(); }
+    }
+
+    private async Task RunMusingsComparisonFaultAsync(GuardianSystemRegressionTests fixture, string mode, bool unauthorized,
+        Action<Task> track, bool repairRecheck = false)
     {
         await fixture.PrepareMusingsPublicationAsync(1);
         const string path = "game_state/meta/guardians.json";
@@ -83,9 +93,17 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         using var scope = validator.UseCompletedGuardianMusingsValidationScope(refresh.GuardianMusingsValidation);
         var prerequisite = await validator.ValidateGameStateAsync(new GameStateValidationSelection(GameStateValidationPhase.MetaMiscStateFiles, [path]));
         Assert.Equal(unauthorized, prerequisite.Any(issue => issue.Severity == IssueSeverity.Error));
+        if (repairRecheck) scope.Invalidate();
         armed = true;
-        var operation = Task.Run(() => validator.ValidateGameStateAsync(new GameStateValidationSelection(
-            GameStateValidationPhase.MetaMiscStateFiles, [path])));
+        bool completionReturned = false;
+        Task operation = repairRecheck
+            ? Task.Run(async () =>
+            {
+                var completion = await validator.RecheckOriginalGuardianMusingsAfterRepairAsync(refresh.GuardianMusingsValidation);
+                completionReturned = completion is not null;
+            })
+            : Task.Run(() => validator.ValidateGameStateAsync(new GameStateValidationSelection(
+                GameStateValidationPhase.MetaMiscStateFiles, [path])));
         track(operation);
         FileSystemManager.CanonicalWriteLease? original = null;
         Exception? failure;
@@ -122,6 +140,11 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         Assert.Same(mode == "close" ? closeFailure : primary, failure);
         if (mode == "read_close") Assert.Same(closeFailure, failure!.Data["CoordinatedLeaseReleaseFailure"]);
         Assert.Equal(mode is "close" or "read_close" ? 1 : 0, closer.Calls);
+        if (repairRecheck)
+        {
+            Assert.False(completionReturned);
+            Assert.False(scope.Enabled);
+        }
         if (original is not null)
         {
             Assert.False(original.IsActive);

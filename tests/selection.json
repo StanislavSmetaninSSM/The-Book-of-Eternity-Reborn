@@ -2,8 +2,17 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "guardian-musings-repair-recheck-close",
+            "reason": "New read-only original-completion recheck must not return authority when its genuinely held lease close fails; one focused existing owning-lease fault helper control, no expanded fault matrix.",
+            "contracts": [
+                "#1553",
+                "T070-GUARDIAN-MUSINGS-AUTHORITY",
+                "Original physical close before comparison completion return"
+            ]
+        },
+        {
             "category": "guardian-musings-actual-repair",
-            "reason": "First actual T070 repair causal oracle after accepted bounded full C5 correctness. Test-only author packet and same-flow first mutation witness; no production renewal until actual RED. Sole finite native console operation, no repeated C5/performance/whole suite.",
+            "reason": "Compliant single-musings actual console/original NativeBridge causal RED after narrative-only repair; verify fresh original completion recheck and one iteration renewed scope, exact prefix/mirror/once-only story and full cleanup. Three interrupted-process cuts remain separate; no repeated C5/performance/whole suite.",
             "contracts": [
                 "#1553",
                 "T070-GUARDIAN-MUSINGS-AUTHORITY",
@@ -41,7 +50,7 @@
         },
         {
             "category": "c5-original-post-validation-source",
-            "reason": "Direct existing post-materialization validator/source/repair guards after browser-only reuse of authenticated original baseline. No whole documentation suite.",
+            "reason": "Direct existing post-materialization validator/source/repair guards after browser-only reuse of authenticated original baseline. No whole documentation suite. T070 direct shared-loop/both-owner source guards after original completion recheck; no broader documentation suite.",
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",
