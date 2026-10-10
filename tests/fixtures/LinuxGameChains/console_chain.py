@@ -72,7 +72,7 @@ if helper_admission_diagnostic:
         "WorkSeconds": 180, "TotalSeconds": 240, "CleanupReserveSeconds": 60,
         "HelperProofSeconds": 60, "StartupSeconds": 60, "ClickMilliseconds": 12000,
         "GuardianSeconds": 240, "ExternalSeconds": 250,
-        "Qualification": "One actual queued-cold relay consumer/default-read seq0; no acceptance or full C5 qualification."})
+        "Qualification": "One actual queued-cold relay consumer/Complete-BoeTurn write seq0; no acceptance or full C5 qualification."})
 env = dict(os.environ)
 if helper_admission_diagnostic:
     from prepare_helper_observation import prepare, collect
@@ -812,7 +812,8 @@ try:
             assert execution.get("Executed") and execution.get("ExitCode") == 0 and execution.get("ChildExited") and execution.get("IoDrained") and not execution.get("MetadataFailure"), execution
             assert observation["ReadOutcome"]["FrameOutcome"] == "within-frame-bound", observation["ReadOutcome"]
             assert any(row["Phase"] == "admission-return" and row["Data"]["Ok"] and row["Data"]["State"] == "active"
-                       for row in observation["Events"]), "Original read-scope admission did not return active"
+                       for row in observation["Events"]), "Original Complete-BoeTurn write-scope admission did not return active"
+            assert observation["IdentityGuardObservation"] is not None and not observation["IdentityGuardObservation"]["FailedPredicates"], observation["IdentityGuardObservation"]
             assert observation["Summary"]["ExitCode"] == 0, observation["Summary"]
             result["HelperAdmissionDiagnosticAssertionsPassed"] = True
             break

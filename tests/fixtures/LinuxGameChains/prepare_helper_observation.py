@@ -26,9 +26,11 @@ def prepare(repo, out, ship):
             ("        $line=$Context.pendingRead.GetAwaiter().GetResult()",
              "        $line=$Context.pendingRead.GetAwaiter().GetResult()\n        Observe-BoeAdmissionRead $Context $line"),
             ("    $process=Start-BoeHelperProcess ([IO.Path]::GetDirectoryName($session)) $ExpectedGeneration",
-             "    Begin-BoeAdmissionObservation $Mode $session\n    $process=Start-BoeHelperProcess ([IO.Path]::GetDirectoryName($session)) $ExpectedGeneration"),
+             "    Begin-BoeAdmissionObservation $Mode $session $ExpectedGeneration\n    $process=Start-BoeHelperProcess ([IO.Path]::GetDirectoryName($session)) $ExpectedGeneration"),
             ("    try {\n        $process.StandardInput.WriteLine((@{sequence=0L;action='open';mode=$Mode}|ConvertTo-Json -Compress));$process.StandardInput.Flush()",
              "    Attach-BoeAdmissionObservation $context\n    try {\n        Write-BoeAdmissionObservation $context 'write-begin' @{}\n        $process.StandardInput.WriteLine((@{sequence=0L;action='open';mode=$Mode}|ConvertTo-Json -Compress));$process.StandardInput.Flush()\n        Write-BoeAdmissionObservation $context 'write-return' @{}"),
+            ("        if(-not $reply.ok -or $reply.state -cne 'active' -or $reply.sequence -ne 0 -or $reply.generation -cnotmatch '^[0-9a-f]{32}$' -or ($ExpectedGeneration -and $reply.generation -cne $ExpectedGeneration))",
+             "        Observe-BoeAdmissionIdentity $context $reply $ExpectedGeneration\n        if(-not $reply.ok -or $reply.state -cne 'active' -or $reply.sequence -ne 0 -or $reply.generation -cnotmatch '^[0-9a-f]{32}$' -or ($ExpectedGeneration -and $reply.generation -cne $ExpectedGeneration))"),
             ("        $context.originalClose=$reply.originalClose;$context.generation=$reply.generation\n        return $context",
              "        $context.originalClose=$reply.originalClose;$context.generation=$reply.generation\n        Write-BoeAdmissionObservation $context 'admission-return' @{ Ok=$reply.ok; State=$reply.state; Sequence=$reply.sequence; Generation=$reply.generation }\n        return $context"),
         ],
@@ -58,7 +60,7 @@ def prepare(repo, out, ship):
                         "OriginalSHA256": hashlib.sha256(original).hexdigest(), "InstrumentedBytes": len(instrumented),
                         "InstrumentedSHA256": hashlib.sha256(instrumented).hexdigest(),
                         "ExactSubstitutions": [{"Before": a, "After": b} for a, b in replacements]})
-    provenance = {"Scope": "Fixture-only first relay consumer default-read seq0 observation; production source unchanged",
+    provenance = {"Scope": "Fixture-only actual relay consumer Complete-BoeTurn write-scope seq0 observation; production source unchanged",
                   "ObserverSHA256": hashlib.sha256(observer.read_bytes()).hexdigest(), "Sources": sources,
                   "Caps": {"EventRows": 32, "EventBytes": 1048576, "FullFrameUtf8Bytes": 65536,
                            "OversizePrefixCharacters": 4096, "StderrStoredUtf8BytesMaximum": 262144},
@@ -83,7 +85,7 @@ def collect(out, consumer_pid):
         problems.append("Actual joined/disposal summary unavailable: " + repr(error))
     reads = [row for row in events if row["Phase"] == "read-return"]
     if len(reads) != 1:
-        problems.append("Expected exactly one actual first default-read seq0 completed read")
+        problems.append("Expected exactly one actual Complete-BoeTurn write-scope seq0 completed read")
     if not events or not all(row["ConsumerPid"] == consumer_pid and row["ScopeId"] == summary.get("ScopeId") for row in events):
         problems.append("Actual consumer/scope correlation incomplete")
     if not summary.get("HelperPid") or summary.get("HelperPid") == consumer_pid or not summary.get("LinuxStarttime") or not summary.get("BootId"):
@@ -93,6 +95,24 @@ def collect(out, consumer_pid):
     if not any(row["Phase"] == "dispose-joined" and row["Data"]["StderrReadCompleted"] and
                row["Data"]["PendingReadCompleted"] for row in events):
         problems.append("Already-owned stdout/stderr joins not observed complete")
+    launches = [row for row in events if row["Phase"] == "launch-begin"]
+    identities = [row for row in events if row["Phase"] == "identity-guard-observed"]
+    if len(launches) != 1 or "ExpectedGeneration" not in launches[0]["Data"]:
+        problems.append("Actual write-scope ExpectedGeneration unavailable")
+    if len(identities) > 1:
+        problems.append("Ambiguous original write-scope identity observation")
+    # NULL/oversize/parse failure/cancellation can exit before the identity guard.
+    # Retained actual frame explains whether a missing guard row is expected.
+    parsed_reply = None
+    if len(reads) == 1 and reads[0]["Data"]["FrameOutcome"] == "within-frame-bound":
+        try:
+            parsed_reply = json.loads(Path(str(stem) + "-seq0.txt").read_text())
+        except Exception:
+            pass
+        if isinstance(parsed_reply, dict) and not (parsed_reply.get("state") == "admission-cancelled" and parsed_reply.get("effectiveOutcome") == 2) and len(identities) != 1:
+            problems.append("Original parseable write reply retained but guard predicate row missing; this does not prove guard reached")
     return {"Summary": summary, "Events": events, "ObservationComplete": not problems,
-            "MissingObservations": problems, "ReadOutcome": reads[0]["Data"] if len(reads) == 1 else None, "ConsumerPid": consumer_pid,
+            "MissingObservations": problems, "IdentityGuardObservation": identities[0]["Data"] if len(identities) == 1 else None,
+            "ActualExpectedGeneration": launches[0]["Data"].get("ExpectedGeneration") if len(launches) == 1 else None,
+            "ReadOutcome": reads[0]["Data"] if len(reads) == 1 else None, "ConsumerPid": consumer_pid,
             "Limit": "Dedicated managed exit code is separate from relay consumer exit. Dispose kill intent, when present, is cleanup; observations do not assign it as the preceding read cause."}

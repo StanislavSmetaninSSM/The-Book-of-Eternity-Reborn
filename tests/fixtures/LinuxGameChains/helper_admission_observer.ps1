@@ -9,8 +9,8 @@ function Write-BoeAdmissionObservation {
         $probe = if ($Context) { $Context.BoeAdmissionObservation } else { $script:BoeAdmissionProbe }
         if (-not $probe) { return }
         if ($Phase.StartsWith('read-') -and $Context.sequence -ne 0) { return }
-        $row = [ordered]@{ Phase=$Phase; ScopeId=$probe.ScopeId; ConsumerPid=$PID; Mode='read';
-            Method='Open-BoeHelperScope default-read seq0'; Sequence=$(if ($Context) { $Context.sequence } else { $null });
+        $row = [ordered]@{ Phase=$Phase; ScopeId=$probe.ScopeId; ConsumerPid=$PID; Mode='write';
+            Method='Complete-BoeTurn Open-BoeHelperScope write seq0'; Sequence=$(if ($Context) { $Context.sequence } else { $null });
             HelperPid=$probe.HelperPid; LinuxStarttime=$probe.LinuxStarttime; BootId=$probe.BootId;
             StopwatchTicks=[Diagnostics.Stopwatch]::GetTimestamp(); StopwatchFrequency=[Diagnostics.Stopwatch]::Frequency;
             Utc=[DateTimeOffset]::UtcNow.ToString('O'); Data=$Data }
@@ -23,19 +23,21 @@ function Write-BoeAdmissionObservation {
 }
 
 function Begin-BoeAdmissionObservation {
-    param([string]$Mode, [string]$SessionPath)
+    param([string]$Mode, [string]$SessionPath, [AllowNull()][string]$ExpectedGeneration)
     try {
-        if ($Mode -cne 'read' -or $script:BoeAdmissionObserverTargetClaimed -or
+        if ($Mode -cne 'write' -or $script:BoeAdmissionObserverTargetClaimed -or
             -not $env:BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR) { return }
         $stack = @(Get-PSCallStack)
         if (-not @($stack | Where-Object { $_.ScriptName -ceq $env:BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT }).Count) { return }
+        if (-not @($stack | Where-Object { $_.FunctionName -ceq 'Complete-BoeTurn' -and
+            $_.ScriptName -ceq (Join-Path $PSScriptRoot 'GM_Turn_Helper.ps1') }).Count) { return }
         $script:BoeAdmissionObserverTargetClaimed = $true
         $stem = Join-Path $env:BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR "consumer-$PID"
         $script:BoeAdmissionProbe = [pscustomobject]@{ ScopeId=[Guid]::NewGuid().ToString('N');
             HelperPid=$null; LinuxStarttime=$null; BootId=$null; Attached=$false;
             EventPath="$stem.jsonl"; FramePath="$stem-seq0.txt"; StderrPath="$stem-stderr.txt";
             SummaryPath="$stem-summary.json"; Rows=0; Bytes=0; Dropped=0; Errors=0; Truncated=$false }
-        Write-BoeAdmissionObservation $null 'launch-begin' @{ Session=$SessionPath;
+        Write-BoeAdmissionObservation $null 'launch-begin' @{ Session=$SessionPath; ExpectedGeneration=$ExpectedGeneration;
             ConsumerScript=$env:BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT;
             CallStack=@($stack | ForEach-Object { @{ Function=$_.FunctionName; Script=$_.ScriptName; Line=$_.ScriptLineNumber } }) }
     } catch { if ($script:BoeAdmissionProbe) { $script:BoeAdmissionProbe.Errors++ } }
@@ -45,7 +47,7 @@ function Attach-BoeAdmissionObservation {
     param($Context)
     try {
         $probe = $script:BoeAdmissionProbe
-        if (-not $probe -or $probe.Attached -or $Context.mode -cne 'read') { return }
+        if (-not $probe -or $probe.Attached -or $Context.mode -cne 'write') { return }
         $probe.Attached=$true; $probe.HelperPid=$Context.process.Id
         $Context | Add-Member -NotePropertyName BoeAdmissionObservation -NotePropertyValue $probe
         # Read only this actual newly launched managed child's Linux identity; no PID search.
@@ -71,6 +73,28 @@ function Observe-BoeAdmissionRead {
             [IO.File]::WriteAllText($Context.BoeAdmissionObservation.FramePath,$stored,[Text.UTF8Encoding]::new($false))
             Write-BoeAdmissionObservation $Context 'read-frame-retained' @{ Path=$Context.BoeAdmissionObservation.FramePath;
                 PrefixOnly=$count -gt 65536; StoredUtf8Bytes=[Text.Encoding]::UTF8.GetByteCount($stored) }
+        }
+    } catch { if ($script:BoeAdmissionProbe) { $script:BoeAdmissionProbe.Errors++ } }
+}
+
+function Observe-BoeAdmissionIdentity {
+    param($Context, $Reply, [AllowNull()][string]$ExpectedGeneration)
+    try {
+        if (-not $Context.BoeAdmissionObservation -or $Context.sequence -ne 0) { return }
+        # Copies the five literal predicates immediately before the unchanged original guard.
+        # This records all predicates; the product's short-circuit decision is not replaced.
+        $predicates=[ordered]@{
+            ReplyNotOk=(-not $Reply.ok)
+            StateNotActive=($Reply.state -cne 'active')
+            SequenceNotZero=($Reply.sequence -ne 0)
+            GenerationFormatInvalid=($Reply.generation -cnotmatch '^[0-9a-f]{32}$')
+            ExpectedGenerationMismatch=[bool]($ExpectedGeneration -and $Reply.generation -cne $ExpectedGeneration)
+        }
+        Write-BoeAdmissionObservation $Context 'identity-guard-observed' @{
+            Ok=$Reply.ok; State=$Reply.state; Sequence=$Reply.sequence; Generation=$Reply.generation;
+            ExpectedGeneration=$ExpectedGeneration; Predicates=$predicates;
+            FailedPredicates=@($predicates.Keys | Where-Object { $predicates[$_] });
+            Limit='Immediately before original guard; all predicate copies, not original short-circuit evaluation order.'
         }
     } catch { if ($script:BoeAdmissionProbe) { $script:BoeAdmissionProbe.Errors++ } }
 }

@@ -230,5 +230,43 @@
     "FullC5Qualification": "FAIL/UNQUALIFIED; optimized implementation remains WIP",
     "TaskCheckboxes": "T069/T070/T071 unchanged and unchecked",
     "MinimumNextProposal": "One newly scoped original failing Complete-BoeTurn write-scope seq0 capture, retaining its actual returned frame/ok/state/sequence/generation/ExpectedGeneration/structured refusal-close fields, dedicated managed child identity/exit/joined stderr and original monotonic bounds. Passive existing-boundary observations only; unchanged10000ms/65536/4000, authority/owner/uncertain/no replay. No retry, timer, guard or repair is inferred from this result."
+  },
+  "WriteContinuation": {
+    "Status": "WIP / source-gate and fresh preparation and sole write observation UNRUN",
+    "AuthorizedBaseSHA": "4e8fd25a605bbb6cee5fd8959662e276428016f9",
+    "Target": "Actual Complete-BoeTurn write-scope seq0 in original relay packet consumer, excluding earlier read/Write-BoeJson scopes",
+    "PlannedCapture": [
+      "original NULL/UTF8 byte count and full bounded seq0 frame",
+      "actual ExpectedGeneration and original returned identity fields",
+      "all five literal identity predicate copies immediately before unchanged guard",
+      "actual dedicated managed child Linux identity/exit/joined stderr and original monotonic bounds"
+    ],
+    "FixedBudgets": {
+      "Work": 180,
+      "Total": 240,
+      "Cleanup": 60,
+      "Guardian": 240,
+      "External": 250,
+      "CategoryMinutes": 5,
+      "OverallMinutes": 7,
+      "Startup": 60,
+      "ClickMilliseconds": 12000,
+      "ReadMilliseconds": 10000,
+      "FrameUtf8Bytes": 65536,
+      "DisposalMilliseconds": 4000
+    },
+    "Limits": "No product/authority/timer/replay change or attribution from prior healthy read. Preserve prior result; one first settled consumer then stop. Cause/repair decision only after first raw archived and independent evidence review.",
+    "SeparateJournalSourceMap": {
+      "Observer": "root independent read-only existing source/raw map; no writer duplicate runtime",
+      "InterruptedOperation": "WaitForTerminalSignalWithParticipationAsync poll -> SessionOperationContext AcquireAsync before ready callback/FinalizePlayerTurn",
+      "Window": "Preflight selects Active else IntentStage using File.Exists(ValidateFile), then HasNamespaceJournalMagic revalidates allowMissing:false before open, prior to that poll physical canonical lease",
+      "PossibleSourceTransitions": "Existing WriteJournal stage-to-active rename and existing pre-intent recovery/normal/namespace stage cleanup under canonical lease",
+      "ObservedTimesSeconds": {
+        "GameFailure": 64.56349738999961,
+        "AuthoredPacket": 78.399717239,
+        "LaterConsumerFailureObserved": 96.85019155900045
+      },
+      "Limit": "No actual transaction/producer/rename/delete witness identifies transition or links it to later write admission refusal. UNKNOWN; no extra journal instrumentation/fix/run selected."
+    }
   }
 }

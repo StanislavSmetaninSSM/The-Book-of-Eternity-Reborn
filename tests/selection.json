@@ -3,12 +3,12 @@
     "selections": [
         {
             "category": "c5-queued-cold-helper-admission-diagnostic",
-            "reason": "Current personally authorized bounded helper continuation from7144596: only first original queued-cold packet consumer default-read seq0 capture; fresh matching preparation/discovery then one source-gated NoBuild run. No older categories rerun or fullC5 before causal repair review.",
+            "reason": "Current personally authorized bounded helper continuation from4e8fd25a: only original queued-cold packet consumer Complete-BoeTurn write-scope seq0/frame/ExpectedGeneration/predicate/managed-child capture; fresh matching preparation/discovery then one source-gated NoBuild run. No older categories rerun or fullC5 before causal repair review.",
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",
                 "T071-C5-MUSINGS-CHECKPOINT",
-                "Original default-read helper seq0 and owned uncertain/no-replay boundary"
+                "Original Complete-BoeTurn write helper seq0 and owned uncertain/no-replay boundary"
             ]
         },
         {

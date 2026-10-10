@@ -217,7 +217,7 @@
         },
         {
             "id": "c5-queued-cold-helper-admission-diagnostic",
-            "responsibility": "#1553 T069/T071 ONE original first browser action/queued SIGKILL/cold replacement/real relay packet consumer, observing its first default-read seq0 helper admission. Fixture-only shipped PowerShell insertions retain original launch/write/completed read/NULL-vs-UTF8 length/frame outcome/Linux child identity/already-joined stderr and exit/disposal. Stop after first settled consumer, no acceptance wait. Work180/total240/cleanup60/guardian240/external250/startup60/click12; original read10000ms/frame65536/disposal4000ms unchanged.",
+            "responsibility": "#1553 T069/T071 ONE original first browser action/queued SIGKILL/cold replacement/real relay packet consumer, observing its actual Complete-BoeTurn write-scope seq0 helper admission. Fixture-only shipped PowerShell insertions retain original launch/write/completed read/NULL-vs-UTF8 length/full frame/actual ExpectedGeneration/exact identity predicate copies/Linux child identity/already-joined stderr and exit/disposal. Stop after first settled consumer, no acceptance wait. Work180/total240/cleanup60/guardian240/external250/startup60/click12; original read10000ms/frame65536/disposal4000ms unchanged.",
             "excludes": "No identical fullC5 rerun, later navigation, accepted/cold qualification, synthetic/repeated helper read or response, guard/authority/timer/replay change, guessed fix, performance hypothesis, older raw audit, live provider/Windows. Observer errors/caps/truncation/identity gaps are explicit incomplete evidence; exit observed during cleanup is not assigned as the earlier frame cause.",
             "changeHints": [
                 "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
@@ -242,7 +242,7 @@
                 {
                     "project": "unit",
                     "tests": [
-                        "BookOfEternityClient.Tests.LinuxGameChainTests.Browser_QueuedColdDefaultReadHelper_AdmissionDiagnostic"
+                        "BookOfEternityClient.Tests.LinuxGameChainTests.Browser_QueuedColdWriteHelper_AdmissionDiagnostic"
                     ]
                 }
             ]
