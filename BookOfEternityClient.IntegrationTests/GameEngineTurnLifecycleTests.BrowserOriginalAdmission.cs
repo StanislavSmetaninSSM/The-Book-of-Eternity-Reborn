@@ -12,6 +12,37 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Theory]
+    [InlineData("game_state/control/validation_repair_request.json")]
+    [InlineData("game_state/core/extra_original.json")]
+    [InlineData("lore/extra_original.json")]
+    public async Task BrowserOriginalAdmission_SettledAbsentConstraintsRefuseDeletionRecovery(string path)
+    {
+        await PrepareSettledBrowserRecordAsync();
+        var generation = PendingPlayerActionService.Parse(File.ReadAllText(_fs.ResolvePath(PendingPlayerActionService.PendingPath)),
+            _fs.ObserveExistingHelperGeneration()).Binding.Generation;
+        await using(var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            // A genuine original deletion publication leaves the visible receipt
+            // valid but retains the before image in its uncommitted journal.
+            var physical = _fs.ResolvePath(path);
+            Directory.CreateDirectory(Path.GetDirectoryName(physical)!);
+            File.WriteAllText(physical,"{\"originalPendingWork\":true}");
+            var publisher = new TrustedLocalFilePublication(_fs,new TrustedLocalFileScope([_fs.BasePath]));
+            Assert.Throws<C5RecoveryInterruption>(()=>publisher.Publish(lease,TrustedLocalGeneration.Existing(generation),
+                [new(physical,File.ReadAllBytes(physical),null)],
+                (phase,_)=>{if(phase==TrustedLocalPublicationPhase.MemberPublished)throw new C5RecoveryInterruption();}));
+            Assert.False(File.Exists(physical));
+        }
+        var before = OriginalAdmissionTree();
+        var callbacks = 0;
+        var cold = new FileSystemManager(_fs.BasePath,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks{LocalPublicationRecoveryObserver=(_,_)=>callbacks++});
+        await Assert.ThrowsAnyAsync<Exception>(async()=>{await using var lease=await cold.AcquireCanonicalWriteLeaseAsync();});
+        Assert.Equal(0,callbacks);
+        AssertOriginalAdmissionTree(before);
+    }
+
+    [Theory]
     [InlineData("borrowed")]
     [InlineData("disposed")]
     [InlineData("escaped")]

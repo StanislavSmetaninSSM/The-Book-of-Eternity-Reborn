@@ -56,6 +56,8 @@ public partial class FileSystemManager
             // value alone cannot bypass admission or acquire recovery authority.
             if(closing && !BoundClosing)throw GmSessionRunPersistence.Invalid();
             var browserOriginal=closing?null:_files.PreflightBrowserOriginalAdmission(this);
+            if(browserOriginal!=null && _files._hooks?.AfterBrowserOriginalPreflightAsync is { } originalHook)
+                await originalHook();
             if(quiescentOnly && _requested?.Pin!=null)throw GmSessionRunPersistence.Invalid();
             if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);
             for(var p=_parent;p!=null;p=p._parent)

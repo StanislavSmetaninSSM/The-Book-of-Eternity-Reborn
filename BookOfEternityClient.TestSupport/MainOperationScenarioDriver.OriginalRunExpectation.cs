@@ -36,7 +36,7 @@ internal static partial class MainOperationScenarioDriver
             GmMainOperationClient? client = null;
             try { client = await GmMainOperationClient.OpenAsync(new FileSystemManager(root,
                 NullLogger<FileSystemManager>.Instance), deadline.Token, expected); }
-            catch(InvalidDataException failure) { refusal = failure; }
+            catch(IOException failure) { refusal = failure; }
             if(client != null)
             {
                 await using(client)
@@ -46,6 +46,8 @@ internal static partial class MainOperationScenarioDriver
                     result["CloseObserved"] = client.CloseObserved;
                 }
             }
+            while(pins.Count != before && !owner.IsUncertain)
+                await Task.Delay(5, deadline.Token);
             result["OriginalIdentity"] = original;
             result["ExpectedIdentity"] = expected;
             result["RefusalPhase"] = refusal?.Data["ParticipatingAdmissionPhase"];

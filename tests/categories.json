@@ -2,6 +2,62 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-original-browser-quiescent-opening",
+            "responsibility": "Genuine NativeLineage original stopped and absent browser staging: refuse main record change at actual opening before pin mint or guard adoption; matching stopped positive.",
+            "excludes": "Guarded quiescent component only; no actual Program/relay gameplay, active-owner uncertainty recovery, model, arbitrary crash recovery or new journal.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+                "BookOfEternityClient/Core/TrustedLocalFilePublication.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-original-browser-pending-recovery",
+                    "when": "Permitted unrelated journal recovery must remain functional."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_ActualQuiescentEvidenceMustRemainExactBeforeOpening"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "c5-original-browser-completed-recovery",
+            "responsibility": "Actual original settled receipt absence constraints must refuse genuine uncommitted deletion journal before replay or evidence mutation.",
+            "excludes": "Actual Program/React staged-idle crash, active original owner native propagation, Windows and live model qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 4,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_SettledAbsentConstraintsRefuseDeletionRecovery"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-original-browser-frame-lifetime",
             "responsibility": "Actual original private browser scope permits borrowing, refuses disposed/escaped owner, and actual committed original journal cleanup debt preserves exact staged tuple.",
             "excludes": "Actual Program/React staged-idle crash, active original owner native propagation, Windows and live model qualification.",
