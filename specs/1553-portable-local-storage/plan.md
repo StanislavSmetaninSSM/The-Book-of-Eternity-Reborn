@@ -1,3 +1,7 @@
+### C5 actual recovery prerequisite path corrected — 2026-10-10
+
+426c74b2 pending2 preparationFAIL49.1293870s,complete0timeout/cleanupcomplete. Actualpublisherjournal exists under existing trusted-local-publication-v1; newtest incorrectly asserted olderfile-publication-transactions. Correctexact currentjournalpath from actualpublisher123/150 andexistingpublicationfixture19. NotbehavioralRED; actualpendingmatching/refusal stillUNRUN. [Raw preparation](recovery/linux-game-chains-20261010/c5-browser-pending-recovery-preparation-fail/manifest.json).
+
 ### C5 actual initial9 RED; pending recovery controls test-first — 2026-10-10
 
 47ec7e34 freshintegration9/9causalFAIL49.9857306s,complete0skip/duplicate/timeout/cleanupcomplete. Originalpreparedstagevalid; cold acquisition fails to refuse exactproof damage/absent→stopped/physical lock substitution, conditionabsent. [Raw RED](recovery/linux-game-chains-20261010/c5-browser-admission-initial-causal-red/manifest.json). Astra Important: destructiveauthority validator copies snapshot hashes, so additionally require actualsafeexactsnapshot bytes; locktestwithoutpendingwork onlyproves refusal, not recovery prevention. Newactualinterrupted publication matching/refusal2UNRUN, completefilesystemcomparisonnowincludesjournal/generationexceptlockbookkeeping, explicitselectionreason. No coldonlysmallcap on growinghistory; no producerbyteceilingfound. Warm/sourceimplementation stillunchanged.

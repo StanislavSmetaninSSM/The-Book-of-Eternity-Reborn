@@ -113,7 +113,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 {
                     if(substitute) DamageOriginalBrowserAdmission(staged, "request");
                     captured = OriginalAdmissionTree();
-                    Assert.Contains(captured.Keys, path => path.StartsWith(".boe_runtime/file-publication-transactions/", StringComparison.Ordinal));
+                    Assert.Contains(captured.Keys, path => path.StartsWith(".boe_runtime/trusted-local-publication-v1/", StringComparison.Ordinal));
                     return Task.CompletedTask;
                 },
                 LocalPublicationRecoveryObserver = (_, _) => recoveryBoundaries++
