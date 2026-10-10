@@ -1,0 +1,2532 @@
+{
+  "SourceSHA": "a13fb95e282ea5d3fa3588e71338b8cacdd89567",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category c5-browser-active-poll-crash -NoBuild -TimeoutMinutes 7",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/c5-browser-active-poll-crash-integration-001.trx.gz",
+      "RawSHA256": "b29710a153682d78faeae777a1f2b5069c1e3b8d183af4911496fc0d5b97337d",
+      "RawBytes": 3274
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "3590f6c308ec93b56dd0145c9456e79367ffea864616175fc4d85c7e1615ecc8",
+      "RawBytes": 1620289
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "dd98c12a18c6edd5b76bbce31b0bd1fe76759a4c378cdcbf8496b2800bd8646c",
+      "RawBytes": 1167
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "50ea02cfd328db284011fd989905238ba26f5ca4edaf70ac5014cf3336ead536",
+      "RawBytes": 1464
+    },
+    {
+      "Path": "owned/active-poll-task-graph.json.gz",
+      "RawSHA256": "47feb02df614ad20c5df88c2c37203b7f059ecdd7644b27ce5ac0ae5cd466196",
+      "RawBytes": 118738
+    },
+    {
+      "Path": "owned/cold.json.gz",
+      "RawSHA256": "bf2d42b29b2dd8b272d9532acfd4e45e52c7f214ba05e791e0eab70b52d7bc93",
+      "RawBytes": 2681
+    },
+    {
+      "Path": "owned/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/cut-all/config.json.bin.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_dice_state.json.bin.gz",
+      "RawSHA256": "7f7fe4d882754313234cb889b251e94dfe8df39c04b3c12938f570ab54f6bab1",
+      "RawBytes": 468
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json.bin.gz",
+      "RawSHA256": "7f7fe4d882754313234cb889b251e94dfe8df39c04b3c12938f570ab54f6bab1",
+      "RawBytes": 468
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json.bin.gz",
+      "RawSHA256": "78424587c714626e785e954fb47d20dfd81d8605e071c170031225b1f26a6f3a",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/core/game_settings.json.bin.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/core/system_mods.json.bin.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json.bin.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/meta/achievements.json.bin.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json.bin.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json.bin.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json.bin.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json.bin.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json.bin.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json.bin.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.bin.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json.bin.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json.bin.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json.bin.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json.bin.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json.bin.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json.bin.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json.bin.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json.bin.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot/lore/codex_entries.json.bin.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot.authority.json.bin.gz",
+      "RawSHA256": "7e6db74bcc798c6c05e06794ff4b0874703c46a38dc3c5dfb2d61d63b308f80a",
+      "RawBytes": 17035
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/pending_turn_snapshot.json.bin.gz",
+      "RawSHA256": "ae9b6a853bff82285a842b66b65ba4868a179b3f2e8c372eefc3a97ed68bbb41",
+      "RawBytes": 14633
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/progression_schedule.json.bin.gz",
+      "RawSHA256": "ea4b6755f91a8321365901127d97da37db31a710be96e4a7bc48b3efe88951e7",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/cut-all/game_state/control/progression_schedule.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "78424587c714626e785e954fb47d20dfd81d8605e071c170031225b1f26a6f3a",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/cut-all/game_state/core/game_settings.json.bin.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/cut-all/game_state/core/game_settings.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/cut-all/game_state/core/system_mods.json.bin.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/cut-all/game_state/core/system_mods.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/cut-all/game_state/history/chat_log.json.bin.gz",
+      "RawSHA256": "0bb93d17d3b84b0155718572bcb5b9e625162198b225d6ffa7ab6569d4f101a5",
+      "RawBytes": 100
+    },
+    {
+      "Path": "owned/cut-all/game_state/inventory/item_identity_index.json.bin.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/cut-all/game_state/inventory/item_identity_index.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/achievements.json.bin.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/achievements.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/afterlife_chronicles.json.bin.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/afterlife_chronicles.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/afterlife_entity_profiles.json.bin.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/afterlife_entity_profiles.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/afterlife_global_flags.json.bin.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/afterlife_global_flags.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/afterlife_spiritual_conflict_state.json.bin.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/character_chronicle.json.bin.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/character_chronicle.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/guardian_projects.json.bin.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/guardian_projects.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/guardians.json.bin.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/guardians.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/soul_state.json.bin.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/cut-all/game_state/meta/soul_state.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/cut-all/game_state/resources/resource_definitions.json.bin.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/cut-all/game_state/resources/resource_definitions.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/cut-all/game_state/resources/resource_history.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/cut-all/game_state/resources/resource_history.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/cut-all/game_state/resources/resource_owner_authority.json.bin.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/cut-all/game_state/resources/resource_owner_authority.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/cut-all/game_state/resources/resource_state.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/cut-all/game_state/resources/resource_state.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/cut-all/game_state/wounds/wound_history.json.bin.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/cut-all/game_state/wounds/wound_history.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/cut-all/game_state/wounds/wound_identity_index.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/cut-all/game_state/wounds/wound_identity_index.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/cut-all/input/pending_player_action.json.bin.gz",
+      "RawSHA256": "15e704d1c6c7bf292e7049ab6e0d517b2ff6ba653ceb2a8cafbb71e1d526479c",
+      "RawBytes": 101634
+    },
+    {
+      "Path": "owned/cut-all/input/turn_request.json.bin.gz",
+      "RawSHA256": "09b034cc4fe9decd1fa3423a751d710e648c92c3272b5abd22e081de3f209b0a",
+      "RawBytes": 59049
+    },
+    {
+      "Path": "owned/cut-all/inventory.json.gz",
+      "RawSHA256": "69802b00922d72945b1628ecdb84e099cd8636e8e7df250b8c52f621fed7e401",
+      "RawBytes": 10458
+    },
+    {
+      "Path": "owned/cut-all/lore/chaos_sea/cosmology.json.bin.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/cut-all/lore/chaos_sea/cosmology.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/cut-all/lore/chaos_sea/guardians_lore.json.bin.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/cut-all/lore/chaos_sea/guardians_lore.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/cut-all/lore/chaos_sea/player_chronicle.json.bin.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/cut-all/lore/chaos_sea/player_chronicle.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/cut-all/lore/chaos_sea/soul_system_lore.json.bin.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/cut-all/lore/chaos_sea/soul_system_lore.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/cut-all/lore/codex_entries.json.bin.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/cut-all/lore/codex_entries.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/cut-all/original-runtime-generation.bin.gz",
+      "RawSHA256": "b4fa31c9e59b9fef9860f1e65d77a505a7482ceb3c529fc284e7ec04b5d9bb55",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned/cut-control.json.gz",
+      "RawSHA256": "042bf6a82455f142af5699f21284698036b1e65b2db17c1176c753cd6924d6f8",
+      "RawBytes": 215
+    },
+    {
+      "Path": "owned/failure-before-cleanup.txt.gz",
+      "RawSHA256": "140bedbf9c3f6d56a9846d2ba7088798683f4da0c248231336e6a05679e4fdfe",
+      "RawBytes": 4
+    },
+    {
+      "Path": "owned/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/initial-authority.json.gz",
+      "RawSHA256": "7e6db74bcc798c6c05e06794ff4b0874703c46a38dc3c5dfb2d61d63b308f80a",
+      "RawBytes": 17035
+    },
+    {
+      "Path": "owned/initial-manifest.json.gz",
+      "RawSHA256": "ae9b6a853bff82285a842b66b65ba4868a179b3f2e8c372eefc3a97ed68bbb41",
+      "RawBytes": 14633
+    },
+    {
+      "Path": "owned/initial-request.json.gz",
+      "RawSHA256": "09b034cc4fe9decd1fa3423a751d710e648c92c3272b5abd22e081de3f209b0a",
+      "RawBytes": 59049
+    },
+    {
+      "Path": "owned/native.log.gz",
+      "RawSHA256": "fc05d7bd41a835c7a7b7338a9523588963dfeb8025ef4cf9df3d2bde913f1e11",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "dbc7b19f6bc7a10e96bef01123fcee0fe1195fba0c4f843ac1dc7a59bc6ce6b4",
+      "RawBytes": 391
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/.boe_runtime/session-generation/current.json.gz",
+      "RawSHA256": "b4fa31c9e59b9fef9860f1e65d77a505a7482ceb3c529fc284e7ec04b5d9bb55",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/config.json.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/gm_bridge_status.json.gz",
+      "RawSHA256": "2c71ed054a15401ceeba6133f9f8c3f3b91211064d0f9d21a959f54c3c2bcc21",
+      "RawBytes": 761
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_dice_state.json.gz",
+      "RawSHA256": "7f7fe4d882754313234cb889b251e94dfe8df39c04b3c12938f570ab54f6bab1",
+      "RawBytes": 468
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json.gz",
+      "RawSHA256": "7f7fe4d882754313234cb889b251e94dfe8df39c04b3c12938f570ab54f6bab1",
+      "RawBytes": 468
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json.gz",
+      "RawSHA256": "78424587c714626e785e954fb47d20dfd81d8605e071c170031225b1f26a6f3a",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/core/game_settings.json.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/core/system_mods.json.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/meta/achievements.json.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot/lore/codex_entries.json.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "RawSHA256": "7e6db74bcc798c6c05e06794ff4b0874703c46a38dc3c5dfb2d61d63b308f80a",
+      "RawBytes": 17035
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/pending_turn_snapshot.json.gz",
+      "RawSHA256": "ae9b6a853bff82285a842b66b65ba4868a179b3f2e8c372eefc3a97ed68bbb41",
+      "RawBytes": 14633
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/progression_schedule.json.gz",
+      "RawSHA256": "ea4b6755f91a8321365901127d97da37db31a710be96e4a7bc48b3efe88951e7",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/control/progression_schedule.json.rollback.639272533020092323.gz",
+      "RawSHA256": "78424587c714626e785e954fb47d20dfd81d8605e071c170031225b1f26a6f3a",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/core/game_settings.json.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/core/game_settings.json.rollback.639272533020092323.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/core/system_mods.json.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/core/system_mods.json.rollback.639272533020092323.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/history/chat_log.json.gz",
+      "RawSHA256": "0bb93d17d3b84b0155718572bcb5b9e625162198b225d6ffa7ab6569d4f101a5",
+      "RawBytes": 100
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/inventory/item_identity_index.json.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/inventory/item_identity_index.json.rollback.639272533020092323.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/achievements.json.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/achievements.json.rollback.639272533020092323.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/afterlife_chronicles.json.rollback.639272533020092323.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/afterlife_entity_profiles.json.rollback.639272533020092323.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/afterlife_global_flags.json.rollback.639272533020092323.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272533020092323.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/character_chronicle.json.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/character_chronicle.json.rollback.639272533020092323.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/guardian_projects.json.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/guardian_projects.json.rollback.639272533020092323.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/guardians.json.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/guardians.json.rollback.639272533020092323.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/meta/soul_state.json.rollback.639272533020092323.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/resources/resource_definitions.json.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/resources/resource_definitions.json.rollback.639272533020092323.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/resources/resource_history.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/resources/resource_history.json.rollback.639272533020092323.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/resources/resource_owner_authority.json.rollback.639272533020092323.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/resources/resource_state.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/resources/resource_state.json.rollback.639272533020092323.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/wounds/wound_history.json.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/wounds/wound_history.json.rollback.639272533020092323.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/game_state/wounds/wound_identity_index.json.rollback.639272533020092323.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/input/pending_player_action.json.gz",
+      "RawSHA256": "15e704d1c6c7bf292e7049ab6e0d517b2ff6ba653ceb2a8cafbb71e1d526479c",
+      "RawBytes": 101634
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/input/turn_request.json.gz",
+      "RawSHA256": "09b034cc4fe9decd1fa3423a751d710e648c92c3272b5abd22e081de3f209b0a",
+      "RawBytes": 59049
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/lore/chaos_sea/cosmology.json.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/lore/chaos_sea/cosmology.json.rollback.639272533020092323.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/lore/chaos_sea/guardians_lore.json.rollback.639272533020092323.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/lore/chaos_sea/player_chronicle.json.rollback.639272533020092323.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/lore/chaos_sea/soul_system_lore.json.rollback.639272533020092323.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/lore/codex_entries.json.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/neutral-session-a82ef480c42841698bf537059d4b2924/game_session/lore/codex_entries.json.rollback.639272533020092323.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/original-cut.json.gz",
+      "RawSHA256": "edc9a2646d9d9a6ccff16538c4f78a49ec2905ecb8d70dddd812700dd15907fa",
+      "RawBytes": 21108
+    },
+    {
+      "Path": "owned/original.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/package/build-provenance.json.gz",
+      "RawSHA256": "9f3928d8a1c3f28372e4ace750d5226bda0af2adfcfa4a8e90ab9ba5224a98d7",
+      "RawBytes": 1485
+    },
+    {
+      "Path": "owned/package/neutral-terminal-manifest.json.gz",
+      "RawSHA256": "651b3b253396896f531ae82632ebf049f1f5bfa1cd730a1f1385588d24e25def",
+      "RawBytes": 324
+    },
+    {
+      "Path": "owned/package/package-manifest.json.gz",
+      "RawSHA256": "0751e37652f408aa4b7aea2fd9c2e227a10dd53df5f60511deb2cbfebec96092",
+      "RawBytes": 1015
+    },
+    {
+      "Path": "owned/pin-after-eof.json.gz",
+      "RawSHA256": "be6ca1be7c30ee9a4d3d159a43c62dea98f7e570af22720b7dbc496b0fe039a1",
+      "RawBytes": 481
+    },
+    {
+      "Path": "owned/pin-before-kill.json.gz",
+      "RawSHA256": "4d16ee304d04b8abe0db3dc08ae31c14a158967dde86afba7f5a30158789246b",
+      "RawBytes": 481
+    },
+    {
+      "Path": "owned/post-cold-all/config.json.bin.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_dice_state.json.bin.gz",
+      "RawSHA256": "7f7fe4d882754313234cb889b251e94dfe8df39c04b3c12938f570ab54f6bab1",
+      "RawBytes": 468
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json.bin.gz",
+      "RawSHA256": "7f7fe4d882754313234cb889b251e94dfe8df39c04b3c12938f570ab54f6bab1",
+      "RawBytes": 468
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json.bin.gz",
+      "RawSHA256": "78424587c714626e785e954fb47d20dfd81d8605e071c170031225b1f26a6f3a",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/core/game_settings.json.bin.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/core/system_mods.json.bin.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json.bin.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/achievements.json.bin.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json.bin.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json.bin.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json.bin.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json.bin.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json.bin.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json.bin.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.bin.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json.bin.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json.bin.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json.bin.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json.bin.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json.bin.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json.bin.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json.bin.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json.bin.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot/lore/codex_entries.json.bin.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot.authority.json.bin.gz",
+      "RawSHA256": "7e6db74bcc798c6c05e06794ff4b0874703c46a38dc3c5dfb2d61d63b308f80a",
+      "RawBytes": 17035
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/pending_turn_snapshot.json.bin.gz",
+      "RawSHA256": "ae9b6a853bff82285a842b66b65ba4868a179b3f2e8c372eefc3a97ed68bbb41",
+      "RawBytes": 14633
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/progression_schedule.json.bin.gz",
+      "RawSHA256": "ea4b6755f91a8321365901127d97da37db31a710be96e4a7bc48b3efe88951e7",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/control/progression_schedule.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "78424587c714626e785e954fb47d20dfd81d8605e071c170031225b1f26a6f3a",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/core/game_settings.json.bin.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/core/game_settings.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/core/system_mods.json.bin.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/core/system_mods.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/history/chat_log.json.bin.gz",
+      "RawSHA256": "0bb93d17d3b84b0155718572bcb5b9e625162198b225d6ffa7ab6569d4f101a5",
+      "RawBytes": 100
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/inventory/item_identity_index.json.bin.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/inventory/item_identity_index.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/achievements.json.bin.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/achievements.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/afterlife_chronicles.json.bin.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/afterlife_chronicles.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/afterlife_entity_profiles.json.bin.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/afterlife_entity_profiles.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/afterlife_global_flags.json.bin.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/afterlife_global_flags.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/afterlife_spiritual_conflict_state.json.bin.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/character_chronicle.json.bin.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/character_chronicle.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/guardian_projects.json.bin.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/guardian_projects.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/guardians.json.bin.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/guardians.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/soul_state.json.bin.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/meta/soul_state.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/resources/resource_definitions.json.bin.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/resources/resource_definitions.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/resources/resource_history.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/resources/resource_history.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/resources/resource_owner_authority.json.bin.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/resources/resource_owner_authority.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/resources/resource_state.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/resources/resource_state.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/wounds/wound_history.json.bin.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/wounds/wound_history.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/wounds/wound_identity_index.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/post-cold-all/game_state/wounds/wound_identity_index.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/post-cold-all/input/pending_player_action.json.bin.gz",
+      "RawSHA256": "15e704d1c6c7bf292e7049ab6e0d517b2ff6ba653ceb2a8cafbb71e1d526479c",
+      "RawBytes": 101634
+    },
+    {
+      "Path": "owned/post-cold-all/input/turn_request.json.bin.gz",
+      "RawSHA256": "09b034cc4fe9decd1fa3423a751d710e648c92c3272b5abd22e081de3f209b0a",
+      "RawBytes": 59049
+    },
+    {
+      "Path": "owned/post-cold-all/inventory.json.gz",
+      "RawSHA256": "69802b00922d72945b1628ecdb84e099cd8636e8e7df250b8c52f621fed7e401",
+      "RawBytes": 10458
+    },
+    {
+      "Path": "owned/post-cold-all/lore/chaos_sea/cosmology.json.bin.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/post-cold-all/lore/chaos_sea/cosmology.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/post-cold-all/lore/chaos_sea/guardians_lore.json.bin.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/post-cold-all/lore/chaos_sea/guardians_lore.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/post-cold-all/lore/chaos_sea/player_chronicle.json.bin.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/post-cold-all/lore/chaos_sea/player_chronicle.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/post-cold-all/lore/chaos_sea/soul_system_lore.json.bin.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/post-cold-all/lore/chaos_sea/soul_system_lore.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/post-cold-all/lore/codex_entries.json.bin.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/post-cold-all/lore/codex_entries.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/post-cold-all/original-runtime-generation.bin.gz",
+      "RawSHA256": "b4fa31c9e59b9fef9860f1e65d77a505a7482ceb3c529fc284e7ec04b5d9bb55",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned/pre-cold/game_state/control/pending_dice_state.json.gz",
+      "RawSHA256": "7f7fe4d882754313234cb889b251e94dfe8df39c04b3c12938f570ab54f6bab1",
+      "RawBytes": 468
+    },
+    {
+      "Path": "owned/pre-cold/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "RawSHA256": "7e6db74bcc798c6c05e06794ff4b0874703c46a38dc3c5dfb2d61d63b308f80a",
+      "RawBytes": 17035
+    },
+    {
+      "Path": "owned/pre-cold/game_state/control/pending_turn_snapshot.json.gz",
+      "RawSHA256": "ae9b6a853bff82285a842b66b65ba4868a179b3f2e8c372eefc3a97ed68bbb41",
+      "RawBytes": 14633
+    },
+    {
+      "Path": "owned/pre-cold/game_state/meta/guardians.json.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/pre-cold/input/turn_request.json.gz",
+      "RawSHA256": "09b034cc4fe9decd1fa3423a751d710e648c92c3272b5abd22e081de3f209b0a",
+      "RawBytes": 59049
+    },
+    {
+      "Path": "owned/pre-cold/inventory.json.gz",
+      "RawSHA256": "69802b00922d72945b1628ecdb84e099cd8636e8e7df250b8c52f621fed7e401",
+      "RawBytes": 10458
+    },
+    {
+      "Path": "owned/pre-cold/original-generation.json.gz",
+      "RawSHA256": "b4fa31c9e59b9fef9860f1e65d77a505a7482ceb3c529fc284e7ec04b5d9bb55",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned/pre-cold-all/config.json.bin.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_dice_state.json.bin.gz",
+      "RawSHA256": "7f7fe4d882754313234cb889b251e94dfe8df39c04b3c12938f570ab54f6bab1",
+      "RawBytes": 468
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json.bin.gz",
+      "RawSHA256": "7f7fe4d882754313234cb889b251e94dfe8df39c04b3c12938f570ab54f6bab1",
+      "RawBytes": 468
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json.bin.gz",
+      "RawSHA256": "78424587c714626e785e954fb47d20dfd81d8605e071c170031225b1f26a6f3a",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/core/game_settings.json.bin.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/core/system_mods.json.bin.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json.bin.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/achievements.json.bin.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json.bin.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json.bin.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json.bin.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json.bin.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json.bin.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json.bin.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.bin.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json.bin.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json.bin.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json.bin.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json.bin.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json.bin.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json.bin.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json.bin.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json.bin.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot/lore/codex_entries.json.bin.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot.authority.json.bin.gz",
+      "RawSHA256": "7e6db74bcc798c6c05e06794ff4b0874703c46a38dc3c5dfb2d61d63b308f80a",
+      "RawBytes": 17035
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/pending_turn_snapshot.json.bin.gz",
+      "RawSHA256": "ae9b6a853bff82285a842b66b65ba4868a179b3f2e8c372eefc3a97ed68bbb41",
+      "RawBytes": 14633
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/progression_schedule.json.bin.gz",
+      "RawSHA256": "ea4b6755f91a8321365901127d97da37db31a710be96e4a7bc48b3efe88951e7",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/control/progression_schedule.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "78424587c714626e785e954fb47d20dfd81d8605e071c170031225b1f26a6f3a",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/core/game_settings.json.bin.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/core/game_settings.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "fa20edc9269940754396f41d2a2e6bf51cfe0831177c121e23e4dfc7be467249",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/core/system_mods.json.bin.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/core/system_mods.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "3cc3d21ff0eff8542339745cc8804bbdd45eeb020e36192015c288a9aecdc869",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/history/chat_log.json.bin.gz",
+      "RawSHA256": "0bb93d17d3b84b0155718572bcb5b9e625162198b225d6ffa7ab6569d4f101a5",
+      "RawBytes": 100
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/inventory/item_identity_index.json.bin.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/inventory/item_identity_index.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/achievements.json.bin.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/achievements.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/afterlife_chronicles.json.bin.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/afterlife_chronicles.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/afterlife_entity_profiles.json.bin.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/afterlife_entity_profiles.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "0f0669aa51a464c2394ce4a2fe8dd7ae10beecc075152d54579194e31062e27e",
+      "RawBytes": 6642
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/afterlife_global_flags.json.bin.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/afterlife_global_flags.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/afterlife_spiritual_conflict_state.json.bin.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/character_chronicle.json.bin.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/character_chronicle.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/guardian_projects.json.bin.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/guardian_projects.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/guardians.json.bin.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/guardians.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "d0c14c94c8da0b0709706b9796ab8bf6a31624b9f0121b2fcceb01ed03c3a3b2",
+      "RawBytes": 19558
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/soul_state.json.bin.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/meta/soul_state.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/resources/resource_definitions.json.bin.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/resources/resource_definitions.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/resources/resource_history.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/resources/resource_history.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/resources/resource_owner_authority.json.bin.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/resources/resource_owner_authority.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/resources/resource_state.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/resources/resource_state.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/wounds/wound_history.json.bin.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/wounds/wound_history.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/wounds/wound_identity_index.json.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/pre-cold-all/game_state/wounds/wound_identity_index.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/pre-cold-all/input/pending_player_action.json.bin.gz",
+      "RawSHA256": "15e704d1c6c7bf292e7049ab6e0d517b2ff6ba653ceb2a8cafbb71e1d526479c",
+      "RawBytes": 101634
+    },
+    {
+      "Path": "owned/pre-cold-all/input/turn_request.json.bin.gz",
+      "RawSHA256": "09b034cc4fe9decd1fa3423a751d710e648c92c3272b5abd22e081de3f209b0a",
+      "RawBytes": 59049
+    },
+    {
+      "Path": "owned/pre-cold-all/inventory.json.gz",
+      "RawSHA256": "69802b00922d72945b1628ecdb84e099cd8636e8e7df250b8c52f621fed7e401",
+      "RawBytes": 10458
+    },
+    {
+      "Path": "owned/pre-cold-all/lore/chaos_sea/cosmology.json.bin.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/pre-cold-all/lore/chaos_sea/cosmology.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/pre-cold-all/lore/chaos_sea/guardians_lore.json.bin.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/pre-cold-all/lore/chaos_sea/guardians_lore.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/pre-cold-all/lore/chaos_sea/player_chronicle.json.bin.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/pre-cold-all/lore/chaos_sea/player_chronicle.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/pre-cold-all/lore/chaos_sea/soul_system_lore.json.bin.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/pre-cold-all/lore/chaos_sea/soul_system_lore.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/pre-cold-all/lore/codex_entries.json.bin.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/pre-cold-all/lore/codex_entries.json.rollback.639272533020092323.bin.gz",
+      "RawSHA256": "e79c6ff5d36c458ce9ec48953806478bf9f1bad4dec26428d21dbc6907999971",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/pre-cold-all/original-runtime-generation.bin.gz",
+      "RawSHA256": "b4fa31c9e59b9fef9860f1e65d77a505a7482ceb3c529fc284e7ec04b5d9bb55",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned/pre-turn-guardians.json.gz",
+      "RawSHA256": "9c49a6a976e9f386ee7b680e30ff67d63eb78b2a22d4c28649989f7c7a68c509",
+      "RawBytes": 32245
+    },
+    {
+      "Path": "owned/probe.log.gz",
+      "RawSHA256": "0905169b909fe01f687a30b763cfbf1c581dfda5333a3544ead705d82d8e1328",
+      "RawBytes": 487
+    },
+    {
+      "Path": "owned/result.json.gz",
+      "RawSHA256": "38f95abc627f749fecf9133123f123cae2fcc85971784a9a7d5b6e2c6d1a0f9b",
+      "RawBytes": 47401
+    },
+    {
+      "Path": "owned/runtime-binary-inventory.json.gz",
+      "RawSHA256": "c77ed17d21a0a1bc23b15642c41a069e18fe4d15e5129d3a7ed79cd32a2e28a5",
+      "RawBytes": 2080
+    },
+    {
+      "Path": "owned/terminal-before-cleanup.json.gz",
+      "RawSHA256": "0305366585dfa2409d9cf8a302f8d7b1e127004fac5a6166b6118efc50bb0edc",
+      "RawBytes": 236
+    },
+    {
+      "Path": "owned/terminal-before-kill.json.gz",
+      "RawSHA256": "2340383ce93581db0e0ee7e7ee1de93d982882c05c8f85c293717cfccdb6a536",
+      "RawBytes": 236
+    },
+    {
+      "Path": "raw-qualification.json",
+      "RawSHA256": "165baf69fa399c5c927aa5982af021b00d3009d0c9cd6d6d5c788246cf7a0d07",
+      "RawBytes": 1391
+    },
+    {
+      "Path": "verify-retained-raw.py",
+      "RawSHA256": "18bcc446defa3ad722dbb74b4b3f791bffbdcf43054b3cb413a44f6ecff54f8f",
+      "RawBytes": 5715
+    },
+    {
+      "Path": "raw-verifier-qualifications.txt",
+      "RawSHA256": "34e0937eefbdaad12aed544213ee85d119e5f0823f6f32b28293eace816bf0e2",
+      "RawBytes": 1174
+    }
+  ],
+  "Result": {
+    "Success": true,
+    "Cut": 3,
+    "Failure": null,
+    "CleanupFailure": null,
+    "OriginalPid": 82401,
+    "OriginalExitCode": 137,
+    "OriginalEOF": true,
+    "OriginalPinUnresolved": true,
+    "LogicalUncertainRetained": true,
+    "LogicalStopFailure": "System.IO.IOException: Main run metadata or original owner admission is unavailable.\n   at BookOfEternityClient.Services.GmRuntime.GmSessionRunCoordinator.ConfirmSettledStopAsync(IOwnedTerminalSession original, TerminalStopEvidence proof) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs:line 321\n   at BookOfEternityGMBridge.BridgeHost.RetireTerminalHandlesAsync(IOwnedTerminalSession session) in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/Program.cs:line 711\n   at BookOfEternityGMBridge.BridgeHost.StopShellCoreAsync() in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/Program.cs:line 662\n   at BookOfEternityGMBridge.BridgeHost.StopShellAsync() in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/Program.cs:line 588\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass425_0.<<WriteMusingsCutProbeAsync>g__Call|1>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs:line 102\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMusingsCutProbeAsync(String package, String output, Int32 cut, String own) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs:line 224",
+    "PhysicalCleanup": true,
+    "ChildrenSettled": true,
+    "StopTaskSettled": true,
+    "ServerSettled": true,
+    "DisposeTaskSettled": true,
+    "ColdNativeAdmissionRefused": true,
+    "ExactEvidenceRetained": true,
+    "ExactCutEvidenceRetained": true,
+    "BeforeCold": {
+      "config.json": "75B22699DCC26EB51EA5BF8AC8AE1CB5A4EE3B97CC577D1FF2AD1650BD04E64E",
+      "lore/codex_entries.json.rollback.639272533020092323": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971",
+      "lore/codex_entries.json": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971",
+      "input/pending_player_action.json": "15E704D1C6C7BF292E7049AB6E0D517B2FF6BA653CEB2A8CAFBB71E1D526479C",
+      "input/turn_request.json": "09B034CC4FE9DECD1FA3423A751D710E648C92C3272B5ABD22E081DE3F209B0A",
+      "lore/chaos_sea/player_chronicle.json.rollback.639272533020092323": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132",
+      "lore/chaos_sea/guardians_lore.json.rollback.639272533020092323": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0",
+      "lore/chaos_sea/soul_system_lore.json.rollback.639272533020092323": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E",
+      "lore/chaos_sea/cosmology.json.rollback.639272533020092323": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5",
+      "lore/chaos_sea/cosmology.json": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5",
+      "lore/chaos_sea/soul_system_lore.json": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E",
+      "lore/chaos_sea/guardians_lore.json": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0",
+      "lore/chaos_sea/player_chronicle.json": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132",
+      "game_state/resources/resource_owner_authority.json.rollback.639272533020092323": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803",
+      "game_state/resources/resource_history.json.rollback.639272533020092323": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/resources/resource_state.json.rollback.639272533020092323": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/resources/resource_definitions.json.rollback.639272533020092323": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603",
+      "game_state/resources/resource_definitions.json": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603",
+      "game_state/resources/resource_state.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/resources/resource_history.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/resources/resource_owner_authority.json": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803",
+      "game_state/wounds/wound_history.json.rollback.639272533020092323": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF",
+      "game_state/wounds/wound_identity_index.json.rollback.639272533020092323": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/wounds/wound_identity_index.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/wounds/wound_history.json": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF",
+      "game_state/history/chat_log.json": "0BB93D17D3B84B0155718572BCB5B9E625162198B225D6FFA7AB6569D4F101A5",
+      "game_state/control/pending_turn_snapshot.authority.json": "7E6DB74BCC798C6C05E06794FF4B0874703C46A38DC3C5DFB2D61D63B308F80A",
+      "game_state/control/pending_turn_snapshot.json": "AE9B6A853BFF82285A842B66B65BA4868A179B3F2E8C372EEFC3A97ED68BBB41",
+      "game_state/control/pending_dice_state.json": "7F7FE4D882754313234CB889B251E94DFE8DF39C04B3C12938F570AB54F6BAB1",
+      "game_state/control/progression_schedule.json": "EA4B6755F91A8321365901127D97DA37DB31A710BE96E4A7BC48B3EFE88951E7",
+      "game_state/control/progression_schedule.json.rollback.639272533020092323": "78424587C714626E785E954FB47D20DFD81D8605E071C170031225B1F26A6F3A",
+      "game_state/meta/guardians.json.rollback.639272533020092323": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2",
+      "game_state/meta/soul_state.json.rollback.639272533020092323": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605",
+      "game_state/meta/afterlife_entity_profiles.json.rollback.639272533020092323": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E",
+      "game_state/meta/character_chronicle.json.rollback.639272533020092323": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322",
+      "game_state/meta/achievements.json.rollback.639272533020092323": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F",
+      "game_state/meta/guardian_projects.json.rollback.639272533020092323": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB",
+      "game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272533020092323": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9",
+      "game_state/meta/afterlife_chronicles.json.rollback.639272533020092323": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791",
+      "game_state/meta/afterlife_global_flags.json.rollback.639272533020092323": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E",
+      "game_state/meta/afterlife_global_flags.json": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E",
+      "game_state/meta/afterlife_chronicles.json": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791",
+      "game_state/meta/afterlife_spiritual_conflict_state.json": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9",
+      "game_state/meta/guardian_projects.json": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB",
+      "game_state/meta/achievements.json": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F",
+      "game_state/meta/character_chronicle.json": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322",
+      "game_state/meta/afterlife_entity_profiles.json": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E",
+      "game_state/meta/soul_state.json": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605",
+      "game_state/meta/guardians.json": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2",
+      "game_state/inventory/item_identity_index.json.rollback.639272533020092323": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385",
+      "game_state/inventory/item_identity_index.json": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385",
+      "game_state/core/system_mods.json.rollback.639272533020092323": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869",
+      "game_state/core/game_settings.json.rollback.639272533020092323": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249",
+      "game_state/core/game_settings.json": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249",
+      "game_state/core/system_mods.json": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869",
+      "game_state/control/pending_turn_snapshot/lore/codex_entries.json": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971",
+      "game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E",
+      "game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132",
+      "game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0",
+      "game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5",
+      "game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF",
+      "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803",
+      "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603",
+      "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605",
+      "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB",
+      "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2",
+      "game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322",
+      "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9",
+      "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E",
+      "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E",
+      "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791",
+      "game_state/control/pending_turn_snapshot/game_state/meta/achievements.json": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F",
+      "game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385",
+      "game_state/control/pending_turn_snapshot/game_state/core/system_mods.json": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869",
+      "game_state/control/pending_turn_snapshot/game_state/core/game_settings.json": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249",
+      "game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json": "78424587C714626E785E954FB47D20DFD81D8605E071C170031225B1F26A6F3A",
+      "game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json": "7F7FE4D882754313234CB889B251E94DFE8DF39C04B3C12938F570AB54F6BAB1",
+      "original-runtime-generation": "B4FA31C9E59B9FEF9860F1E65D77A505A7482CEB3C529FC284E7EC04B5D9BB55"
+    },
+    "AfterCold": {
+      "config.json": "75B22699DCC26EB51EA5BF8AC8AE1CB5A4EE3B97CC577D1FF2AD1650BD04E64E",
+      "lore/codex_entries.json.rollback.639272533020092323": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971",
+      "lore/codex_entries.json": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971",
+      "input/pending_player_action.json": "15E704D1C6C7BF292E7049AB6E0D517B2FF6BA653CEB2A8CAFBB71E1D526479C",
+      "input/turn_request.json": "09B034CC4FE9DECD1FA3423A751D710E648C92C3272B5ABD22E081DE3F209B0A",
+      "lore/chaos_sea/player_chronicle.json.rollback.639272533020092323": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132",
+      "lore/chaos_sea/guardians_lore.json.rollback.639272533020092323": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0",
+      "lore/chaos_sea/soul_system_lore.json.rollback.639272533020092323": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E",
+      "lore/chaos_sea/cosmology.json.rollback.639272533020092323": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5",
+      "lore/chaos_sea/cosmology.json": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5",
+      "lore/chaos_sea/soul_system_lore.json": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E",
+      "lore/chaos_sea/guardians_lore.json": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0",
+      "lore/chaos_sea/player_chronicle.json": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132",
+      "game_state/resources/resource_owner_authority.json.rollback.639272533020092323": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803",
+      "game_state/resources/resource_history.json.rollback.639272533020092323": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/resources/resource_state.json.rollback.639272533020092323": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/resources/resource_definitions.json.rollback.639272533020092323": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603",
+      "game_state/resources/resource_definitions.json": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603",
+      "game_state/resources/resource_state.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/resources/resource_history.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/resources/resource_owner_authority.json": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803",
+      "game_state/wounds/wound_history.json.rollback.639272533020092323": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF",
+      "game_state/wounds/wound_identity_index.json.rollback.639272533020092323": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/wounds/wound_identity_index.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/wounds/wound_history.json": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF",
+      "game_state/history/chat_log.json": "0BB93D17D3B84B0155718572BCB5B9E625162198B225D6FFA7AB6569D4F101A5",
+      "game_state/control/pending_turn_snapshot.authority.json": "7E6DB74BCC798C6C05E06794FF4B0874703C46A38DC3C5DFB2D61D63B308F80A",
+      "game_state/control/pending_turn_snapshot.json": "AE9B6A853BFF82285A842B66B65BA4868A179B3F2E8C372EEFC3A97ED68BBB41",
+      "game_state/control/pending_dice_state.json": "7F7FE4D882754313234CB889B251E94DFE8DF39C04B3C12938F570AB54F6BAB1",
+      "game_state/control/progression_schedule.json": "EA4B6755F91A8321365901127D97DA37DB31A710BE96E4A7BC48B3EFE88951E7",
+      "game_state/control/progression_schedule.json.rollback.639272533020092323": "78424587C714626E785E954FB47D20DFD81D8605E071C170031225B1F26A6F3A",
+      "game_state/meta/guardians.json.rollback.639272533020092323": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2",
+      "game_state/meta/soul_state.json.rollback.639272533020092323": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605",
+      "game_state/meta/afterlife_entity_profiles.json.rollback.639272533020092323": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E",
+      "game_state/meta/character_chronicle.json.rollback.639272533020092323": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322",
+      "game_state/meta/achievements.json.rollback.639272533020092323": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F",
+      "game_state/meta/guardian_projects.json.rollback.639272533020092323": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB",
+      "game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272533020092323": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9",
+      "game_state/meta/afterlife_chronicles.json.rollback.639272533020092323": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791",
+      "game_state/meta/afterlife_global_flags.json.rollback.639272533020092323": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E",
+      "game_state/meta/afterlife_global_flags.json": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E",
+      "game_state/meta/afterlife_chronicles.json": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791",
+      "game_state/meta/afterlife_spiritual_conflict_state.json": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9",
+      "game_state/meta/guardian_projects.json": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB",
+      "game_state/meta/achievements.json": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F",
+      "game_state/meta/character_chronicle.json": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322",
+      "game_state/meta/afterlife_entity_profiles.json": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E",
+      "game_state/meta/soul_state.json": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605",
+      "game_state/meta/guardians.json": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2",
+      "game_state/inventory/item_identity_index.json.rollback.639272533020092323": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385",
+      "game_state/inventory/item_identity_index.json": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385",
+      "game_state/core/system_mods.json.rollback.639272533020092323": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869",
+      "game_state/core/game_settings.json.rollback.639272533020092323": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249",
+      "game_state/core/game_settings.json": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249",
+      "game_state/core/system_mods.json": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869",
+      "game_state/control/pending_turn_snapshot/lore/codex_entries.json": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971",
+      "game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E",
+      "game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132",
+      "game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0",
+      "game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5",
+      "game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF",
+      "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803",
+      "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+      "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603",
+      "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605",
+      "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB",
+      "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2",
+      "game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322",
+      "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9",
+      "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E",
+      "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E",
+      "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791",
+      "game_state/control/pending_turn_snapshot/game_state/meta/achievements.json": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F",
+      "game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385",
+      "game_state/control/pending_turn_snapshot/game_state/core/system_mods.json": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869",
+      "game_state/control/pending_turn_snapshot/game_state/core/game_settings.json": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249",
+      "game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json": "78424587C714626E785E954FB47D20DFD81D8605E071C170031225B1F26A6F3A",
+      "game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json": "7F7FE4D882754313234CB889B251E94DFE8DF39C04B3C12938F570AB54F6BAB1",
+      "original-runtime-generation": "B4FA31C9E59B9FEF9860F1E65D77A505A7482CEB3C529FC284E7EC04B5D9BB55"
+    },
+    "CutEvidence": {
+      "Pid": 82401,
+      "Nonce": "a1e87fbfd6c94e7880b737abeb227758",
+      "Cut": 3,
+      "QualifiedBoundary": true,
+      "ActiveInspectionLease": true,
+      "ActualWaitTaskGateReachable": true,
+      "PhysicalHandleOpen": true,
+      "ActiveRegistrationSameLease": true,
+      "OriginalAdmissionShared": true,
+      "SessionId": "71a230ce-7cbf-438c-a852-4005df71c2e6",
+      "TurnNumber": 1,
+      "Generation": "20b3eb834f8c4fa99d2343c884b9f03a",
+      "ActionId": "b1e36a699da64bde875f15ce5b6bbfe6",
+      "RequestId": "b1e36a699da64bde875f15ce5b6bbfe6",
+      "PendingPhase": "staged",
+      "Processing": false,
+      "Cleanup": false,
+      "OriginalRun": {
+        "RootKey": "/tmp/gc-4e85de465ffc/neutral-session-a82ef480c42841698bf537059d4b2924",
+        "RunId": "46e04f4a9b994a288a43e21b509c900f",
+        "GenerationId": "20b3eb834f8c4fa99d2343c884b9f03a",
+        "Epoch": 1,
+        "Backend": 2,
+        "HostInstanceId": "61b320c11b1f4f7e8dc8f75a6c82b835",
+        "BootId": "a3d9e3c8-0f9e-46d3-96aa-bf800ee674d0"
+      },
+      "PinIdentity": {
+        "PinId": "eae4b373172c47a8abf3068caa90195b",
+        "CloseId": "5d336189b32446e8a9f78eb86a7ad916",
+        "OperationId": "71bb1afaf67b41c985e378936eda7ac8",
+        "Identity": {
+          "RootKey": "/tmp/gc-4e85de465ffc/neutral-session-a82ef480c42841698bf537059d4b2924",
+          "RunId": "46e04f4a9b994a288a43e21b509c900f",
+          "GenerationId": "20b3eb834f8c4fa99d2343c884b9f03a",
+          "Epoch": 1,
+          "Backend": 2,
+          "HostInstanceId": "61b320c11b1f4f7e8dc8f75a6c82b835",
+          "BootId": "a3d9e3c8-0f9e-46d3-96aa-bf800ee674d0"
+        },
+        "Outcome": 0,
+        "ClosingFailed": false
+      },
+      "PinIdentityOnlyNotObservedClose": true,
+      "CloseObserved": false,
+      "StoryEntries": 0,
+      "ModelCalls": 0,
+      "Fixture": {
+        "Request": {
+          "Path": "input/turn_request.json",
+          "Bytes": 59049,
+          "Sha256": "09B034CC4FE9DECD1FA3423A751D710E648C92C3272B5ABD22E081DE3F209B0A"
+        },
+        "Manifest": {
+          "Path": "game_state/control/pending_turn_snapshot.json",
+          "Bytes": 14633,
+          "Sha256": "AE9B6A853BFF82285A842B66B65BA4868A179B3F2E8C372EEFC3A97ED68BBB41"
+        },
+        "Authority": {
+          "Path": "game_state/control/pending_turn_snapshot.authority.json",
+          "Bytes": 17035,
+          "Sha256": "7E6DB74BCC798C6C05E06794FF4B0874703C46A38DC3C5DFB2D61D63B308F80A"
+        },
+        "SnapshotCount": 25,
+        "RollbackCount": 24,
+        "Snapshots": [
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json",
+            "Bytes": 468,
+            "Sha256": "7F7FE4D882754313234CB889B251E94DFE8DF39C04B3C12938F570AB54F6BAB1"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json",
+            "Bytes": 1022,
+            "Sha256": "78424587C714626E785E954FB47D20DFD81D8605E071C170031225B1F26A6F3A"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/core/game_settings.json",
+            "Bytes": 184,
+            "Sha256": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/core/system_mods.json",
+            "Bytes": 191,
+            "Sha256": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json",
+            "Bytes": 44,
+            "Sha256": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/meta/achievements.json",
+            "Bytes": 402,
+            "Sha256": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json",
+            "Bytes": 47,
+            "Sha256": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json",
+            "Bytes": 6642,
+            "Sha256": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json",
+            "Bytes": 42,
+            "Sha256": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json",
+            "Bytes": 78,
+            "Sha256": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json",
+            "Bytes": 1005,
+            "Sha256": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json",
+            "Bytes": 91,
+            "Sha256": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+            "Bytes": 19558,
+            "Sha256": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            "Bytes": 838,
+            "Sha256": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json",
+            "Bytes": 6885,
+            "Sha256": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json",
+            "Bytes": 35,
+            "Sha256": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json",
+            "Bytes": 64,
+            "Sha256": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json",
+            "Bytes": 35,
+            "Sha256": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json",
+            "Bytes": 55,
+            "Sha256": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json",
+            "Bytes": 35,
+            "Sha256": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json",
+            "Bytes": 1114,
+            "Sha256": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json",
+            "Bytes": 1047,
+            "Sha256": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json",
+            "Bytes": 22,
+            "Sha256": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json",
+            "Bytes": 860,
+            "Sha256": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E"
+          },
+          {
+            "Path": "game_state/control/pending_turn_snapshot/lore/codex_entries.json",
+            "Bytes": 3034,
+            "Sha256": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971"
+          }
+        ],
+        "Rollback": [
+          {
+            "Path": "game_state/control/progression_schedule.json.rollback.639272533020092323",
+            "Bytes": 1022,
+            "Sha256": "78424587C714626E785E954FB47D20DFD81D8605E071C170031225B1F26A6F3A"
+          },
+          {
+            "Path": "game_state/core/game_settings.json.rollback.639272533020092323",
+            "Bytes": 184,
+            "Sha256": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249"
+          },
+          {
+            "Path": "game_state/core/system_mods.json.rollback.639272533020092323",
+            "Bytes": 191,
+            "Sha256": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869"
+          },
+          {
+            "Path": "game_state/inventory/item_identity_index.json.rollback.639272533020092323",
+            "Bytes": 44,
+            "Sha256": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385"
+          },
+          {
+            "Path": "game_state/meta/achievements.json.rollback.639272533020092323",
+            "Bytes": 402,
+            "Sha256": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F"
+          },
+          {
+            "Path": "game_state/meta/afterlife_chronicles.json.rollback.639272533020092323",
+            "Bytes": 47,
+            "Sha256": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791"
+          },
+          {
+            "Path": "game_state/meta/afterlife_entity_profiles.json.rollback.639272533020092323",
+            "Bytes": 6642,
+            "Sha256": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E"
+          },
+          {
+            "Path": "game_state/meta/afterlife_global_flags.json.rollback.639272533020092323",
+            "Bytes": 42,
+            "Sha256": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E"
+          },
+          {
+            "Path": "game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272533020092323",
+            "Bytes": 78,
+            "Sha256": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9"
+          },
+          {
+            "Path": "game_state/meta/character_chronicle.json.rollback.639272533020092323",
+            "Bytes": 1005,
+            "Sha256": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322"
+          },
+          {
+            "Path": "game_state/meta/guardian_projects.json.rollback.639272533020092323",
+            "Bytes": 91,
+            "Sha256": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB"
+          },
+          {
+            "Path": "game_state/meta/guardians.json.rollback.639272533020092323",
+            "Bytes": 19558,
+            "Sha256": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json.rollback.639272533020092323",
+            "Bytes": 838,
+            "Sha256": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605"
+          },
+          {
+            "Path": "game_state/resources/resource_definitions.json.rollback.639272533020092323",
+            "Bytes": 6885,
+            "Sha256": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603"
+          },
+          {
+            "Path": "game_state/resources/resource_history.json.rollback.639272533020092323",
+            "Bytes": 35,
+            "Sha256": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E"
+          },
+          {
+            "Path": "game_state/resources/resource_owner_authority.json.rollback.639272533020092323",
+            "Bytes": 64,
+            "Sha256": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803"
+          },
+          {
+            "Path": "game_state/resources/resource_state.json.rollback.639272533020092323",
+            "Bytes": 35,
+            "Sha256": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E"
+          },
+          {
+            "Path": "game_state/wounds/wound_history.json.rollback.639272533020092323",
+            "Bytes": 55,
+            "Sha256": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF"
+          },
+          {
+            "Path": "game_state/wounds/wound_identity_index.json.rollback.639272533020092323",
+            "Bytes": 35,
+            "Sha256": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E"
+          },
+          {
+            "Path": "lore/chaos_sea/cosmology.json.rollback.639272533020092323",
+            "Bytes": 1114,
+            "Sha256": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5"
+          },
+          {
+            "Path": "lore/chaos_sea/guardians_lore.json.rollback.639272533020092323",
+            "Bytes": 1047,
+            "Sha256": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0"
+          },
+          {
+            "Path": "lore/chaos_sea/player_chronicle.json.rollback.639272533020092323",
+            "Bytes": 22,
+            "Sha256": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132"
+          },
+          {
+            "Path": "lore/chaos_sea/soul_system_lore.json.rollback.639272533020092323",
+            "Bytes": 860,
+            "Sha256": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E"
+          },
+          {
+            "Path": "lore/codex_entries.json.rollback.639272533020092323",
+            "Bytes": 3034,
+            "Sha256": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971"
+          }
+        ]
+      },
+      "Inventory": {
+        "config.json": "75B22699DCC26EB51EA5BF8AC8AE1CB5A4EE3B97CC577D1FF2AD1650BD04E64E",
+        "lore/codex_entries.json.rollback.639272533020092323": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971",
+        "lore/codex_entries.json": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971",
+        "input/pending_player_action.json": "15E704D1C6C7BF292E7049AB6E0D517B2FF6BA653CEB2A8CAFBB71E1D526479C",
+        "input/turn_request.json": "09B034CC4FE9DECD1FA3423A751D710E648C92C3272B5ABD22E081DE3F209B0A",
+        "lore/chaos_sea/player_chronicle.json.rollback.639272533020092323": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132",
+        "lore/chaos_sea/guardians_lore.json.rollback.639272533020092323": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0",
+        "lore/chaos_sea/soul_system_lore.json.rollback.639272533020092323": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E",
+        "lore/chaos_sea/cosmology.json.rollback.639272533020092323": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5",
+        "lore/chaos_sea/cosmology.json": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5",
+        "lore/chaos_sea/soul_system_lore.json": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E",
+        "lore/chaos_sea/guardians_lore.json": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0",
+        "lore/chaos_sea/player_chronicle.json": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132",
+        "game_state/resources/resource_owner_authority.json.rollback.639272533020092323": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803",
+        "game_state/resources/resource_history.json.rollback.639272533020092323": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+        "game_state/resources/resource_state.json.rollback.639272533020092323": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+        "game_state/resources/resource_definitions.json.rollback.639272533020092323": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603",
+        "game_state/resources/resource_definitions.json": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603",
+        "game_state/resources/resource_state.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+        "game_state/resources/resource_history.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+        "game_state/resources/resource_owner_authority.json": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803",
+        "game_state/wounds/wound_history.json.rollback.639272533020092323": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF",
+        "game_state/wounds/wound_identity_index.json.rollback.639272533020092323": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+        "game_state/wounds/wound_identity_index.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+        "game_state/wounds/wound_history.json": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF",
+        "game_state/history/chat_log.json": "0BB93D17D3B84B0155718572BCB5B9E625162198B225D6FFA7AB6569D4F101A5",
+        "game_state/control/pending_turn_snapshot.authority.json": "7E6DB74BCC798C6C05E06794FF4B0874703C46A38DC3C5DFB2D61D63B308F80A",
+        "game_state/control/pending_turn_snapshot.json": "AE9B6A853BFF82285A842B66B65BA4868A179B3F2E8C372EEFC3A97ED68BBB41",
+        "game_state/control/pending_dice_state.json": "7F7FE4D882754313234CB889B251E94DFE8DF39C04B3C12938F570AB54F6BAB1",
+        "game_state/control/progression_schedule.json": "EA4B6755F91A8321365901127D97DA37DB31A710BE96E4A7BC48B3EFE88951E7",
+        "game_state/control/progression_schedule.json.rollback.639272533020092323": "78424587C714626E785E954FB47D20DFD81D8605E071C170031225B1F26A6F3A",
+        "game_state/meta/guardians.json.rollback.639272533020092323": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2",
+        "game_state/meta/soul_state.json.rollback.639272533020092323": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605",
+        "game_state/meta/afterlife_entity_profiles.json.rollback.639272533020092323": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E",
+        "game_state/meta/character_chronicle.json.rollback.639272533020092323": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322",
+        "game_state/meta/achievements.json.rollback.639272533020092323": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F",
+        "game_state/meta/guardian_projects.json.rollback.639272533020092323": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB",
+        "game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272533020092323": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9",
+        "game_state/meta/afterlife_chronicles.json.rollback.639272533020092323": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791",
+        "game_state/meta/afterlife_global_flags.json.rollback.639272533020092323": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E",
+        "game_state/meta/afterlife_global_flags.json": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E",
+        "game_state/meta/afterlife_chronicles.json": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791",
+        "game_state/meta/afterlife_spiritual_conflict_state.json": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9",
+        "game_state/meta/guardian_projects.json": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB",
+        "game_state/meta/achievements.json": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F",
+        "game_state/meta/character_chronicle.json": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322",
+        "game_state/meta/afterlife_entity_profiles.json": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E",
+        "game_state/meta/soul_state.json": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605",
+        "game_state/meta/guardians.json": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2",
+        "game_state/inventory/item_identity_index.json.rollback.639272533020092323": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385",
+        "game_state/inventory/item_identity_index.json": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385",
+        "game_state/core/system_mods.json.rollback.639272533020092323": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869",
+        "game_state/core/game_settings.json.rollback.639272533020092323": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249",
+        "game_state/core/game_settings.json": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249",
+        "game_state/core/system_mods.json": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869",
+        "game_state/control/pending_turn_snapshot/lore/codex_entries.json": "E79C6FF5D36C458CE9EC48953806478BF9F1BAD4DEC26428D21DBC6907999971",
+        "game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json": "04C1ADA2EA26279132AEFB3957B4953E2CE73FC0E63729DC6AB3EB49935FB85E",
+        "game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json": "C37AAF78F13D191C192FD97F4A0E42C09CF1307E9F39AFA79F2780C031A2C132",
+        "game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json": "51FA9220946A1D40943B2B0ADA2300E4E1FD05C8758F67F56660D52E182222B0",
+        "game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json": "A9A3B52FDF2FEB06FCE6BB0DC0EF4A075A1A5064044335E96B3D1D22A8E573E5",
+        "game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+        "game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json": "2433334F79A6F28BF38227AC36F20026C82DB6AB88DC4A515A7F96512848C3AF",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json": "74EFB1AD089D66FD51F8023664D1C924454E0AA11582776EF85AC7446F380803",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json": "F92483D6D4C5F622EED810288944638E1C7EB7F8F82DB64F37D623293422F83E",
+        "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json": "6A17704C0439D2C2868D6F829DC2A50A3FA1D4AC1DDFE230785A71F5BC6B6603",
+        "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json": "D25BF6E584145A4F2CF96E2A7371A4A6DACD441D0315D7873F2029B3585B0605",
+        "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json": "893496EC415E4B8E7B288B0ADC72DB1472B63D4CFE38A4A75A9CCC21103041FB",
+        "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json": "D0C14C94C8DA0B0709706B9796AB8BF6A31624B9F0121B2FCCEB01ED03C3A3B2",
+        "game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json": "6AB02B8419488FE573B49D6690FFE7FEBBFABE029B4D11C211A25EBDB252E322",
+        "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json": "201ADBD5B04DF3A485BCB067B6B657B4A0B1D55CB3430419BE8B6863EBF113B9",
+        "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json": "8263B6207B1E579D2CB76281A9DCF67EE856682DB11877CB849C4A3DEEBFCE9E",
+        "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json": "0F0669AA51A464C2394CE4A2FE8DD7AE10BEECC075152D54579194E31062E27E",
+        "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json": "D30E6B1688F4006EF850FD8848CFC266AF4E678FB94747A568A7003090D54791",
+        "game_state/control/pending_turn_snapshot/game_state/meta/achievements.json": "2230C61FC010AA600563109D32F3B6B78365FEEBD55007FF45C72026442AAC1F",
+        "game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385",
+        "game_state/control/pending_turn_snapshot/game_state/core/system_mods.json": "3CC3D21FF0EFF8542339745CC8804BBDD45EEB020E36192015C288A9AECDC869",
+        "game_state/control/pending_turn_snapshot/game_state/core/game_settings.json": "FA20EDC9269940754396F41D2A2E6BF51CFE0831177C121E23E4DFC7BE467249",
+        "game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json": "78424587C714626E785E954FB47D20DFD81D8605E071C170031225B1F26A6F3A",
+        "game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json": "7F7FE4D882754313234CB889B251E94DFE8DF39C04B3C12938F570AB54F6BAB1",
+        "original-runtime-generation": "B4FA31C9E59B9FEF9860F1E65D77A505A7482CEB3C529FC284E7EC04B5D9BB55"
+      },
+      "OriginalOperationTaskId": 1,
+      "ActualWaitTaskId": 20,
+      "GateTaskId": 11,
+      "Scope": "First actual browser signal inspection after real staging; same original active physical lease/pin before signal read."
+    },
+    "ColdEvidence": {
+      "Pid": 82420,
+      "Cut": 3,
+      "OperationStarted": true,
+      "NativeAdmissionRefused": true,
+      "AdmissionPhase": "original-connection",
+      "Failure": "System.IO.IOException: Main run metadata or original owner admission is unavailable.\n   at BookOfEternityClient.Services.GmRuntime.GmMainOperationClient.OpenAsync(FileSystemManager files, CancellationToken token, GmSessionRunIdentity originalExpectation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs:line 46\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 82\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 124\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 151\n   at BookOfEternityClient.Core.GameEngine.WithPendingActionLeaseAsync[T](Func`2 operation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs:line 45\n   at BookOfEternityClient.Core.GameEngine.ClassifyBrowserRecoveryAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs:line 130\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateAsync[T](Object instance, String methodName, Object[] args) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11353\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMusingsColdProbeAsync(String root, String output, Int32 cut, String own) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs:line 480",
+      "CanonicalOpens": 0,
+      "RecoveryCallbacks": 0,
+      "Mutations": 0,
+      "Scope": "Cold actual ClassifyBrowserRecoveryAsync, no bootstrap/Ensure/menu/normalization; all retained-root setup instrumented."
+    },
+    "OriginalRecordAfterStop": {
+      "SchemaVersion": 1,
+      "Identity": {
+        "RootKey": "/tmp/gc-4e85de465ffc/neutral-session-a82ef480c42841698bf537059d4b2924",
+        "RunId": "46e04f4a9b994a288a43e21b509c900f",
+        "GenerationId": "20b3eb834f8c4fa99d2343c884b9f03a",
+        "Epoch": 1,
+        "Backend": 2,
+        "HostInstanceId": "61b320c11b1f4f7e8dc8f75a6c82b835",
+        "BootId": "a3d9e3c8-0f9e-46d3-96aa-bf800ee674d0"
+      },
+      "Disposition": 4,
+      "StopEvidence": null
+    },
+    "ModelCalls": 0,
+    "Scope": "Actual queued browser ProcessPlayerTurn short active signal inspection/held original lease SIGKILL with NativeBridge alive; same pin Active -> Unresolved; cold actual browser classifier native refusal before physical open/recovery/mutation. No idle continuation, Program/relay/Windows/live-model/performance/whole T069 acceptance."
+  },
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "RunnerSummary": {
+    "Categories": [
+      "c5-browser-active-poll-crash"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "a13fb95e282ea5d3fa3588e71338b8cacdd89567",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "c5-browser-active-poll-crash",
+        "Seconds": 22.7131317,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0406978,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0385087,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1312641,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0041079,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 7,
+    "WallTime": "00:00:26.3518274",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "Scope": "One actual T069 C5 browser short active-poll negative, actual original waitTask/inspection lease, SIGKILL137/EOF, same Active->Unresolved pin, actual cold classifier refuses before physical open/recovery/mutation; no idle/T070 substitution/performance/whole-task/Windows/live-model acceptance.",
+  "RuntimeAssemblySource": "944c6b5e788e6b97abf5ba1a659772807b7a946c"
+}
