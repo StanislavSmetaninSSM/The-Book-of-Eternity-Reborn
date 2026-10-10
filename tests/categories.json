@@ -10,7 +10,10 @@
                 "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs"
             ],
             "related": [
-                "gm-main-status-retirement-linux"
+                {
+                    "id": "gm-main-status-retirement-linux",
+                    "when": "A narrow diagnostic deferral must preserve genuine publication/retirement uncertainty."
+                }
             ],
             "requirements": {
                 "frontendBuild": false,
