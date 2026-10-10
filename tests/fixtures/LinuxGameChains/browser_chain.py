@@ -70,18 +70,16 @@ def snapshot(label):
     return saved
 
 
-def children(pid):
-    path = Path("/proc") / str(pid) / "task" / str(pid) / "children"
-    if not path.exists():
-        return []
-    direct = [int(x) for x in path.read_text().split()]
-    return direct + [c for p in direct for c in children(p)]
-
-
-def chromium_pids():
-    return [pid for pid in children(os.getpid())
-            if (Path("/proc") / str(pid) / "comm").exists()
-            and "chromium" in (Path("/proc") / str(pid) / "comm").read_text()]
+def chromium_pids(browser):
+    # This cloud kernel omits /proc/<pid>/task/<tid>/children. Query the real
+    # browser's own CDP process inventory; retain its browser PID and workers.
+    cdp = browser.new_browser_cdp_session()
+    try:
+        rows = cdp.send("SystemInfo.getProcessInfo")["processInfo"]
+        assert any(row["type"] == "browser" for row in rows), rows
+        return [int(row["id"]) for row in rows]
+    finally:
+        cdp.detach()
 
 
 def exited(pid):
@@ -152,10 +150,11 @@ def open_browser(playwright, name):
     page.set_default_timeout(12000)
     page.on("response", record)
     page.on("pageerror", lambda error: events.append({"PageError": str(error)}))
-    pids = chromium_pids()
-    assert pids, "No real Chromium process observed"
-    owned = {"Name": name, "Browser": browser, "Page": page, "Pids": pids, "Closed": False}
+    owned = {"Name": name, "Browser": browser, "Page": page, "Pids": [], "Closed": False}
     browsers.append(owned)
+    pids = chromium_pids(browser)
+    assert pids, "No real Chromium process observed"
+    owned["Pids"] = pids
     events.append({"Browser": name, "ChromiumPids": pids})
     page.goto(url, wait_until="domcontentloaded")
     # The real launcher button's accessible name includes its descriptive copy.
@@ -165,6 +164,7 @@ def open_browser(playwright, name):
 
 
 def close_browser(owned):
+    owned["Pids"] = sorted(set(owned["Pids"] + chromium_pids(owned["Browser"])))
     owned["Browser"].close()
     wait(lambda: all(exited(pid) for pid in owned["Pids"]), owned["Name"] + " all recorded Chromium exited")
     owned["Closed"] = True

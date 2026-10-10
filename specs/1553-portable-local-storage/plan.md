@@ -1,3 +1,20 @@
+## C3 browser PID preflight — preparation PASS; game chain WIP
+
+Source `60ca2104610865b0a11f1c970f551bc68c2c1b41`: C3 **FAIL1/1**,
+12.9876169s,0skip/duplicate/timeout, before any player command. Driver used
+Linux proc children inventory, but this cloud kernel does not expose the children
+files. [Raw](recovery/linux-game-chains-20261010/c3-browser-pid-fixture-fail/manifest.json).
+No product RED. After two fixture failures, paused game execution and performed
+isolated browser ownership preflight: real Chromium CDP process inventory gives
+7 actual live PIDs, all exited after browser.close; guardian ECHILD/0emergency/
+0failures/no deadline. [Preflight](recovery/linux-game-chains-20261010/browser-ownership-preflight/manifest.json).
+Earlier data-URL probe was blocked by Chromium administrator policy; thread-child
+probe also failed; neither is gameplay/qualification. Final probe uses default
+about:blank and exact source helper functions. Corrected fixture records browser
+before navigation, refreshes owned CDP PID inventory before close, verifies all
+recorded PIDs exited, and requires distinct cold browser/host PIDs. Source AST
+PASS, actual corrected C3 and C4 remain UNRUN; no category budget increased.
+
 ## C3 first actual browser attempt — fixture selector FAIL / WIP
 
 Source `f8311c451e57584be6c25f458d0a8fb226ecc910`: fresh selected PlanOnly

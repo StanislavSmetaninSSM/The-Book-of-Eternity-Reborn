@@ -1,0 +1,1 @@
+{"Scope": "fixture browser ownership only; no game process/command/GM", "Inventory": "real Chromium CDP SystemInfo.getProcessInfo; proc PID existence before/exit after", "Pids": [517015, 517109, 517111, 517100, 517053, 517068, 517069], "AllExited": true, "PASS": true}
