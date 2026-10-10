@@ -4880,8 +4880,9 @@ Correct `UpdateGuardians` fragment:
 
 Worked single-surface memory example (`guardian_musings_original_bound_v1`):
 the original turn is 326 in Chaos Sea, and its validated pre-turn snapshot already
-contains `guard_social_azalia_001` with one earlier musing from turn 325. Keep that
-entire earlier entry unchanged. The Guardian chooses a cautious answer to the
+contains `guard_social_azalia_001` with one earlier musing from turn 325, and
+`activeGuardian.guardianId` is `guard_social_azalia_001`. Keep that entire earlier
+entry unchanged. The Guardian chooses a cautious answer to the
 soul's request for memory guidance; record the complete Actor Brain audit as
 described in section 1, with `Изменения состояния:` naming `UpdateGuardians.addMusings`.
 Author only this memory command for that reaction, without a matching

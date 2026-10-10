@@ -12,6 +12,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
         var section = text.Split("guardian_musings_original_bound_v1", StringSplitOptions.None)[1]
             .Split("The broader fragment below", StringSplitOptions.None)[0];
         Assert.Contains("validated pre-turn snapshot", section, StringComparison.Ordinal);
+        Assert.Contains("`activeGuardian.guardianId` is `guard_social_azalia_001`", section, StringComparison.Ordinal);
         Assert.Contains("without a matching", section, StringComparison.Ordinal);
         Assert.Contains("without appending again", section, StringComparison.Ordinal);
         Assert.Contains("afterlife-only command", section, StringComparison.Ordinal);
