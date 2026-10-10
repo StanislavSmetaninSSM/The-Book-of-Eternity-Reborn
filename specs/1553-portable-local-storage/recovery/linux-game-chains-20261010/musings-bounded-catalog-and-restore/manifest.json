@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "a78ce8ab833b0ceb990e3acbb437486f4dce28ad",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category discovery-only -NoBuild",
+  "Status": "CATALOG_VALID",
+  "Scope": "Fresh unit/integration discovery:627 categories11425methods/files;0 tests. Separate empty GitHub-only restore verifies exact a78 tracked tree and retained original evidence; bounded T070 only.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/catalog-audit.json.gz",
+      "RawSHA256": "bf489bb6266bade589177c1b69f1265d9d5a6bcc5b19d639a83ffc2d0a959802",
+      "RawBytes": 103
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "25c82a749023c40ccc05c33a9181124446abbf47e901393983f08e9db04520a1",
+      "RawBytes": 1600
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "a6508e28f6d55702e6aa6c85b8d0c745248b7fd8bb24298c3910f94ddceab1cc",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "9fe9c1e0e2113142642a487ca058c7ac7c6ab3c9ae510facfb43f88a508378c0",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "4b1f1e724645d89edf1a1f6ee5abb218eb79c69892a33dc2144c182267790d0a",
+      "RawBytes": 3344801
+    }
+  ]
+}
