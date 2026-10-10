@@ -1,0 +1,224 @@
+{
+  "SourceSHA": "56f13a5816aefacf3dd2309358d85f79693760d0",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category linux-game-chain-guardian-musings (fresh selected builds; /usr/bin/python3)",
+  "ModelCalls": 0,
+  "AcceptedTurns": 0,
+  "PASS": false,
+  "ClientColdRestart": false,
+  "WholeChainColdRestart": "UNRUN",
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 1,
+    "emergencySignals": 0,
+    "reaped": 2,
+    "failures": 0,
+    "deadline": false
+  },
+  "Files": [
+    {
+      "Path": "owned/result.json.gz",
+      "RawSHA256": "b09255536a60d124e9cf39e9fb368dd80e2ee8ac8347603dd5ba58c597e5889a",
+      "RawBytes": 8198
+    },
+    {
+      "Path": "owned/events.json.gz",
+      "RawSHA256": "959e6035f63da9ebc5a65d8f0b3fe0477afc12e2d28c5aabc44088f25d515099",
+      "RawBytes": 22521
+    },
+    {
+      "Path": "owned/request-1.json.gz",
+      "RawSHA256": "537c7117b0124dc282f358d34bd6033f680f543ff15857cb9e54325a013a7337",
+      "RawBytes": 59094
+    },
+    {
+      "Path": "owned/authored-1.json.gz",
+      "RawSHA256": "67a1ce9ec0fc1cbd68d8a5be815a86f2f770b0b2a34a9d690953359e5b021326",
+      "RawBytes": 26656
+    },
+    {
+      "Path": "owned/guardian.json.gz",
+      "RawSHA256": "7772f373dbe1af682939b4d98787768b3642b4c9ba62ace6dd9185ad464bd1ac",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/daemon-first-echo.raw.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/daemon-first.raw.gz",
+      "RawSHA256": "5f753ac56a9ff025c1e2c57edcb8782865f415eb6fc5bbb07f0d5af21a66a2a7",
+      "RawBytes": 1058
+    },
+    {
+      "Path": "owned/bridge-first-echo.raw.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/bridge-first.raw.gz",
+      "RawSHA256": "2368527fc9bf4e090c0954c237aa1bdf96635748b7ae50fcc65e5ebcbda53894",
+      "RawBytes": 79149
+    },
+    {
+      "Path": "owned/client-first-echo.raw.gz",
+      "RawSHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "RawBytes": 2
+    },
+    {
+      "Path": "owned/client-first.raw.gz",
+      "RawSHA256": "8b2cc2ba47a4dc4cacf43324a0608ef9787b7b8c4c50ca87465889f28f62b4b8",
+      "RawBytes": 14850
+    },
+    {
+      "Path": "owned/chain.log.gz",
+      "RawSHA256": "bb1c49a234f47285b558120dd3c9a6bf1e159637c9a2a495a5f1d1f7733b0b10",
+      "RawBytes": 6183
+    },
+    {
+      "Path": "owned/worker.log.gz",
+      "RawSHA256": "2d28a9b419939ceb6f993b8c181dd250c6a25daaec6bb9b697a5d932e4a71fe2",
+      "RawBytes": 108
+    },
+    {
+      "Path": "owned/daemon-first.log.gz",
+      "RawSHA256": "52e9389967803c39a32d73ad9d8edf8ef6f34e410bf84e4f9a52085dde2ff340",
+      "RawBytes": 868
+    },
+    {
+      "Path": "owned/publish-BookOfEternityGMBridge.log.gz",
+      "RawSHA256": "c26f2cd5a37bdc72b7824a3155528cd3f8515aeb508d4e0bb02f3c453d757837",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/publish-BookOfEternityClient.log.gz",
+      "RawSHA256": "b33fca7a138887299354423992f814952b13496fde43f5164216c701ed19fd2b",
+      "RawBytes": 74
+    },
+    {
+      "Path": "owned/native-preparation.log.gz",
+      "RawSHA256": "7b482f9f5eec53e053530c5a0360a63d05edc28cd075d4d9aceb3b09872ce8a2",
+      "RawBytes": 51
+    },
+    {
+      "Path": "relay/queue-1/request-2-8a2d0c95ff8847348ff23868d58bf28d/request.json.gz",
+      "RawSHA256": "c35cbcf655451c8d06bc49e269194ed8f8788e4beaa13da0b6fc83608658eee5",
+      "RawBytes": 1239
+    },
+    {
+      "Path": "relay/queue-1/request-2-8a2d0c95ff8847348ff23868d58bf28d/game-request.json.gz",
+      "RawSHA256": "5cdd364d0857c22f692041cd73d270f3f7c7cdc7fbef8b522bfe087fe1afbd5a",
+      "RawBytes": 7797
+    },
+    {
+      "Path": "relay/queue-1/request-1-188f1f0d38b941a98af6ed723e0a5375/request.json.gz",
+      "RawSHA256": "3062b3e371dfc8204fde5cc0d3c6f35f7f32e7720777cf5fd5217311a736885a",
+      "RawBytes": 1086
+    },
+    {
+      "Path": "relay/queue-1/request-1-188f1f0d38b941a98af6ed723e0a5375/game-request.json.gz",
+      "RawSHA256": "537c7117b0124dc282f358d34bd6033f680f543ff15857cb9e54325a013a7337",
+      "RawBytes": 59094
+    },
+    {
+      "Path": "relay/queue-1/request-1-188f1f0d38b941a98af6ed723e0a5375/response.json.gz",
+      "RawSHA256": "67a1ce9ec0fc1cbd68d8a5be815a86f2f770b0b2a34a9d690953359e5b021326",
+      "RawBytes": 26656
+    },
+    {
+      "Path": "relay/queue-1/request-1-188f1f0d38b941a98af6ed723e0a5375/reply.json.gz",
+      "RawSHA256": "7242dbbe20696df7faad86db27ac138fb8f1b157cd3a56dd4054daa8c025a2c3",
+      "RawBytes": 509
+    },
+    {
+      "Path": "relay/queue-1/request-1-188f1f0d38b941a98af6ed723e0a5375/execution.json.gz",
+      "RawSHA256": "7e426ad6fda5819bdf65828970877d427d034d5ea707750c4d4cf65ba9358820",
+      "RawBytes": 84
+    },
+    {
+      "Path": "relay/queue-1/request-1-188f1f0d38b941a98af6ed723e0a5375/started.json.gz",
+      "RawSHA256": "1bc4609cef9858f8a31aeb6bc2a399cd48dd83d8d126a5624e08cf86cae521bd",
+      "RawBytes": 208
+    },
+    {
+      "Path": "relay/queue-1/request-1-188f1f0d38b941a98af6ed723e0a5375/consumer.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "6b239587054bc3abd7a8c1d8e9eb3de8878419f1ad56a5fbadeb6af582991c88",
+      "RawBytes": 1134
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "0e50b012fcde6ac95667332fcb4a1721d1c2fd3b697cb73263012ae31f2d3884",
+      "RawBytes": 1472
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "359fc23d956c0895acf41912aaa4ccbef98153243568c9e43a1f6344021858a3",
+      "RawBytes": 43429
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "5bc0a5f447ee82879e061bd30215466cb8d85e5a8cd1bc452c02f6d27bc0c7a4",
+      "RawBytes": 1716159
+    },
+    {
+      "Path": "runner/linux-game-chain-guardian-musings-unit-001.trx.gz",
+      "RawSHA256": "398e2b7a76bea3011017d31f620b3bc97d59b557790c6df3913f1b15690bb34a",
+      "RawBytes": 26902
+    },
+    {
+      "Path": "state/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "1956b0a3f23e8bce70a122e5b911e9670e25b5eac7cdc4ebe8c220c23d9ce9b4",
+      "RawBytes": 705
+    },
+    {
+      "Path": "state/game_session/config.json.gz",
+      "RawSHA256": "4908f0e76c5186a39b21ae3cf66811831c8a6096fea3b70b9eadb1f42cdb4e19",
+      "RawBytes": 903
+    },
+    {
+      "Path": "state/game_session/input/turn_request.json.gz",
+      "RawSHA256": "537c7117b0124dc282f358d34bd6033f680f543ff15857cb9e54325a013a7337",
+      "RawBytes": 59094
+    },
+    {
+      "Path": "state/game_session/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "687b539dd9a524523f493168ac2b29dad02cbecc50f818bfb9c07db137eb44ae",
+      "RawBytes": 848
+    },
+    {
+      "Path": "state/game_session/game_state/history/chat_log.json.gz",
+      "RawSHA256": "b3e8d3e1143bec62b5641a30039e1913869aea83eca3e6fde63feaa29d535ae6",
+      "RawBytes": 100
+    },
+    {
+      "Path": "state/game_session/game_state/control/validation_repair_request.json.gz",
+      "RawSHA256": "5cdd364d0857c22f692041cd73d270f3f7c7cdc7fbef8b522bfe087fe1afbd5a",
+      "RawBytes": 7797
+    },
+    {
+      "Path": "state/game_session/game_state/meta/guardians.json.gz",
+      "RawSHA256": "170057cceb8278d53ec589f3dea80e15d70bd483f6aac46a867401815307ffc3",
+      "RawBytes": 20434
+    },
+    {
+      "Path": "state/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "RawSHA256": "28671d49a3c544365c45643be43371ca52f01bf73cbb1057e712e7837dec13cb",
+      "RawBytes": 6705
+    }
+  ],
+  "ShippedSHA256": {
+    "BookOfEternityClient": "4134640985b2a64b141606281534861d1e60614716bbaaebffe23efee2af296a",
+    "BookOfEternityGMBridge": "7826d877605996afb44936dd37396547fadab2b3e2154427e20ceb2d30a11133"
+  },
+  "Status": "FAIL",
+  "Executed": 1,
+  "Passed": 0,
+  "Failed": 1,
+  "RunnerElapsedSeconds": 158.0453715,
+  "Scope": "Qualified actual causal RED: original authorized addMusings applied+consumed, late full validator reports guardian_canonical_field_authority_mismatch and guardian_active_mirror_field_authority_mismatch for musings. Accepted0; original stopped and fullEOF proof true; client failure cleanup CtrlC -2 honest, independent C guardian ECHILD/no emergency/failure/deadline. No production authority changes in tested source."
+}
