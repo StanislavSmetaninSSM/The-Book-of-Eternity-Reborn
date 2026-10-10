@@ -1,0 +1,693 @@
+{
+  "SourceCarrierSHA": "c8e51582c30640e712ca5b96bb242e8f3d338553",
+  "RuntimeSourceSHA": "0f1167bc6b9fa7457e96cef476e2054a4dd3aeb1",
+  "FrozenRawCarrierSHA": "bbb00d0082da01b5f59e1d3c0ab0181b0bdf8e13",
+  "Runs": 1,
+  "DiagnosticOutcome": "PASS: actual ready launcher plus six complete successful GETs, then one original normal trusted Continue API success",
+  "ProvenOracleBoundary": "Old fixture starts its12s locator click immediately after DOMContentLoaded. Actual launcher is unavailable until the six initial state GETs settle and React publishes ready/menu. In this run the readiness wait ended14.210885s after goto completion. The action timer therefore also bounded startup eligibility in the original sequence. Separating an explicit finite real readiness prerequisite is warranted; no product endpoint defect is established.",
+  "PriorPostPerformingClickCompletionCause": "UNKNOWN; this passing after-ready click does not explain or reproduce the earlier performing-click timeout",
+  "PriorPendingGameScreenCause": "UNKNOWN; current request completed, and capped TPL evidence is not a complete prior/current async graph",
+  "ClockSemantics": "Node trace relative milliseconds are compared only within the same trace; Python monotonic, CDP monotonic timestamps, browser performance/timeOrigin/wall, driver UTC, server Stopwatch/UTC are preserved separately. Callback reception can lag. Instrumentation may perturb timings; no exact cross-clock equality or variance/latency-closure claim.",
+  "StartupAnchor": {
+    "Event": "StartupObservationBegin",
+    "PythonMonotonic": 5399.073358684,
+    "Utc": "2026-10-10T20:28:41.291237+00:00",
+    "StartupSeconds": 60,
+    "ClickMilliseconds": 12000,
+    "StackAtSeconds": 30,
+    "StackChildSeconds": 15,
+    "Anchor": "before initial page.goto",
+    "WebPid": 20357,
+    "WebLinuxStartTime": "539602",
+    "Tool": "/workspace/boe-toolchain/diagnostics/dotnet-stack",
+    "ToolSHA256": "d25c6899aef9589b61ced64118c3c3f0ba2e458b8f606d7ee08401a96d7a8585"
+  },
+  "ActualReadyLauncher": {
+    "Event": "ActualReadyLauncher",
+    "PythonMonotonic": 5414.357382049,
+    "Utc": "2026-10-10T20:28:56.575258+00:00",
+    "Observation": {
+      "ReadyLauncher": true,
+      "ContinueVisible": true,
+      "ContinueEnabled": true,
+      "StartupElapsedSeconds": 15.284612932999153,
+      "SixInitialGETs": [
+        {
+          "Path": "/api/main-menu",
+          "CDPRequestId": "20522.116",
+          "CDPRequestTimestamp": 5399.80142,
+          "CDPResponseTimestamp": 5408.220643,
+          "BrowserStatus": 200,
+          "BrowserTerminal": "Network.loadingFinished",
+          "CDPTerminalTimestamp": 5408.222954,
+          "TraceIdentifier": "0HNP71K8LOQ1G:00000002",
+          "ActivityTraceId": "a37ea1a904f59e142b9e5cb1d9e56de2",
+          "ServerStatus": 200,
+          "ServerElapsedSeconds": 8.40980078
+        },
+        {
+          "Path": "/api/session",
+          "CDPRequestId": "20522.117",
+          "CDPRequestTimestamp": 5399.805228,
+          "CDPResponseTimestamp": 5408.235937,
+          "BrowserStatus": 200,
+          "BrowserTerminal": "Network.loadingFinished",
+          "CDPTerminalTimestamp": 5408.235596,
+          "TraceIdentifier": "0HNP71K8LOQ1F:00000002",
+          "ActivityTraceId": "f8309a18d12a8d4cf5863ef9f25a930b",
+          "ServerStatus": 200,
+          "ServerElapsedSeconds": 8.398139614
+        },
+        {
+          "Path": "/api/game-screen",
+          "CDPRequestId": "20522.118",
+          "CDPRequestTimestamp": 5399.807007,
+          "CDPResponseTimestamp": 5413.607831,
+          "BrowserStatus": 200,
+          "BrowserTerminal": "Network.loadingFinished",
+          "CDPTerminalTimestamp": 5413.610067,
+          "TraceIdentifier": "0HNP71K8LOQ1E:00000002",
+          "ActivityTraceId": "65409ec788207f3efd77eb5d4f7e0056",
+          "ServerStatus": 200,
+          "ServerElapsedSeconds": 13.770872681
+        },
+        {
+          "Path": "/api/audio/settings",
+          "CDPRequestId": "20522.119",
+          "CDPRequestTimestamp": 5399.807365,
+          "CDPResponseTimestamp": 5408.397741,
+          "BrowserStatus": 200,
+          "BrowserTerminal": "Network.loadingFinished",
+          "CDPTerminalTimestamp": 5408.396738,
+          "TraceIdentifier": "0HNP71K8LOQ1D:00000002",
+          "ActivityTraceId": "5f3297e5045030defd24ffd1c6f524d5",
+          "ServerStatus": 200,
+          "ServerElapsedSeconds": 8.542248741
+        },
+        {
+          "Path": "/api/client/settings",
+          "CDPRequestId": "20522.120",
+          "CDPRequestTimestamp": 5399.808573,
+          "CDPResponseTimestamp": 5408.35458,
+          "BrowserStatus": 200,
+          "BrowserTerminal": "Network.loadingFinished",
+          "CDPTerminalTimestamp": 5408.354279,
+          "TraceIdentifier": "0HNP71K8LOQ1B:00000004",
+          "ActivityTraceId": "56a9ae9bdccb095fae1f72635a124ee2",
+          "ServerStatus": 200,
+          "ServerElapsedSeconds": 8.498054229
+        },
+        {
+          "Path": "/api/explorer/command-coverage",
+          "CDPRequestId": "20522.121",
+          "CDPRequestTimestamp": 5399.809145,
+          "CDPResponseTimestamp": 5399.968816,
+          "BrowserStatus": 200,
+          "BrowserTerminal": "Network.loadingFinished",
+          "CDPTerminalTimestamp": 5399.984225,
+          "TraceIdentifier": "0HNP71K8LOQ1C:00000006",
+          "ActivityTraceId": "90e5af17e0cef8f06ecc3343b7cd9bca",
+          "ServerStatus": 200,
+          "ServerElapsedSeconds": 0.1235933
+        }
+      ],
+      "ManagedStackReportAttempted": false,
+      "ClickMilliseconds": 12000
+    }
+  },
+  "SixGETOutcomes": [
+    {
+      "Path": "/api/main-menu",
+      "CDPRequestId": "20522.116",
+      "CDPRequestTimestamp": 5399.80142,
+      "CDPResponseTimestamp": 5408.220643,
+      "BrowserStatus": 200,
+      "BrowserTerminal": "Network.loadingFinished",
+      "CDPTerminalTimestamp": 5408.222954,
+      "TraceIdentifier": "0HNP71K8LOQ1G:00000002",
+      "ActivityTraceId": "a37ea1a904f59e142b9e5cb1d9e56de2",
+      "ServerStatus": 200,
+      "ServerElapsedSeconds": 8.40980078
+    },
+    {
+      "Path": "/api/session",
+      "CDPRequestId": "20522.117",
+      "CDPRequestTimestamp": 5399.805228,
+      "CDPResponseTimestamp": 5408.235937,
+      "BrowserStatus": 200,
+      "BrowserTerminal": "Network.loadingFinished",
+      "CDPTerminalTimestamp": 5408.235596,
+      "TraceIdentifier": "0HNP71K8LOQ1F:00000002",
+      "ActivityTraceId": "f8309a18d12a8d4cf5863ef9f25a930b",
+      "ServerStatus": 200,
+      "ServerElapsedSeconds": 8.398139614
+    },
+    {
+      "Path": "/api/game-screen",
+      "CDPRequestId": "20522.118",
+      "CDPRequestTimestamp": 5399.807007,
+      "CDPResponseTimestamp": 5413.607831,
+      "BrowserStatus": 200,
+      "BrowserTerminal": "Network.loadingFinished",
+      "CDPTerminalTimestamp": 5413.610067,
+      "TraceIdentifier": "0HNP71K8LOQ1E:00000002",
+      "ActivityTraceId": "65409ec788207f3efd77eb5d4f7e0056",
+      "ServerStatus": 200,
+      "ServerElapsedSeconds": 13.770872681
+    },
+    {
+      "Path": "/api/audio/settings",
+      "CDPRequestId": "20522.119",
+      "CDPRequestTimestamp": 5399.807365,
+      "CDPResponseTimestamp": 5408.397741,
+      "BrowserStatus": 200,
+      "BrowserTerminal": "Network.loadingFinished",
+      "CDPTerminalTimestamp": 5408.396738,
+      "TraceIdentifier": "0HNP71K8LOQ1D:00000002",
+      "ActivityTraceId": "5f3297e5045030defd24ffd1c6f524d5",
+      "ServerStatus": 200,
+      "ServerElapsedSeconds": 8.542248741
+    },
+    {
+      "Path": "/api/client/settings",
+      "CDPRequestId": "20522.120",
+      "CDPRequestTimestamp": 5399.808573,
+      "CDPResponseTimestamp": 5408.35458,
+      "BrowserStatus": 200,
+      "BrowserTerminal": "Network.loadingFinished",
+      "CDPTerminalTimestamp": 5408.354279,
+      "TraceIdentifier": "0HNP71K8LOQ1B:00000004",
+      "ActivityTraceId": "56a9ae9bdccb095fae1f72635a124ee2",
+      "ServerStatus": 200,
+      "ServerElapsedSeconds": 8.498054229
+    },
+    {
+      "Path": "/api/explorer/command-coverage",
+      "CDPRequestId": "20522.121",
+      "CDPRequestTimestamp": 5399.809145,
+      "CDPResponseTimestamp": 5399.968816,
+      "BrowserStatus": 200,
+      "BrowserTerminal": "Network.loadingFinished",
+      "CDPTerminalTimestamp": 5399.984225,
+      "TraceIdentifier": "0HNP71K8LOQ1C:00000006",
+      "ActivityTraceId": "90e5af17e0cef8f06ecc3343b7cd9bca",
+      "ServerStatus": 200,
+      "ServerElapsedSeconds": 0.1235933
+    }
+  ],
+  "GotoTraceBefore": {
+    "type": "before",
+    "callId": "call@32",
+    "startTime": 2058.417,
+    "class": "Frame",
+    "method": "goto",
+    "params": {
+      "url": "http://127.0.0.1:60081",
+      "waitUntil": "domcontentloaded",
+      "timeout": 12000
+    },
+    "pageId": "page@0cb99a4fc80d24500d6b54f54ea7227e",
+    "beforeSnapshot": "before@call@32"
+  },
+  "GotoTraceAfter": {
+    "type": "after",
+    "callId": "call@32",
+    "endTime": 2489.532,
+    "result": {
+      "response": "<Response>"
+    },
+    "afterSnapshot": "after@call@32"
+  },
+  "ReadinessTraceBefore": {
+    "type": "before",
+    "callId": "call@34",
+    "startTime": 2769.997,
+    "class": "Frame",
+    "method": "waitForFunction",
+    "params": {
+      "expression": "() => {\n  const shell = document.querySelector('main.browser-shell.is-launcher-route');\n  const button = shell?.querySelector('button[data-launcher-mode=\"continue\"]');\n  return Boolean(button && !button.disabled && button.getClientRects().length &&\n    getComputedStyle(button).visibility !== 'hidden' && !shell.querySelector('.loading-shimmer'));\n}",
+      "polling": 100,
+      "arg": {
+        "value": {
+          "v": "null"
+        },
+        "handles": []
+      },
+      "pollingInterval": 100,
+      "timeout": 29284.029589000056
+    },
+    "pageId": "page@0cb99a4fc80d24500d6b54f54ea7227e",
+    "beforeSnapshot": "before@call@34"
+  },
+  "ReadinessTraceAfter": {
+    "type": "after",
+    "callId": "call@34",
+    "endTime": 16700.417,
+    "result": {
+      "handle": "<JSHandle>"
+    },
+    "afterSnapshot": "after@call@34"
+  },
+  "ReadyWaitEndMinusGotoEndSeconds": 14.210885000000003,
+  "ClickTraceBefore": {
+    "type": "before",
+    "callId": "call@36",
+    "startTime": 17338.608,
+    "class": "Frame",
+    "method": "click",
+    "params": {
+      "selector": "button[data-launcher-mode=\"continue\"]",
+      "noWaitAfter": true,
+      "strict": true,
+      "timeout": 12000
+    },
+    "pageId": "page@0cb99a4fc80d24500d6b54f54ea7227e",
+    "beforeSnapshot": "before@call@36"
+  },
+  "ClickTraceAfter": {
+    "type": "after",
+    "callId": "call@36",
+    "endTime": 18798.911,
+    "afterSnapshot": "after@call@36"
+  },
+  "ClickTraceSeconds": 1.460303,
+  "NormalClickBegin": {
+    "Event": "NormalClickBegin",
+    "PythonMonotonic": 5414.357673681,
+    "Utc": "2026-10-10T20:28:56.575550+00:00",
+    "Selector": "button[data-launcher-mode=\"continue\"]",
+    "NoWaitAfter": true,
+    "TimeoutMilliseconds": 12000
+  },
+  "NormalClickReturned": {
+    "Event": "NormalClickReturned",
+    "PythonMonotonic": 5415.854232855,
+    "Utc": "2026-10-10T20:28:58.072110+00:00"
+  },
+  "NormalClickPythonSeconds": 1.49655917400014,
+  "InputProtocolSendAndACK": [
+    {
+      "UTC": "2026-10-10T20:28:57.981Z",
+      "Direction": "SEND",
+      "Message": {
+        "id": 111,
+        "method": "Input.dispatchMouseEvent",
+        "params": {
+          "type": "mouseMoved",
+          "button": "none",
+          "buttons": 0,
+          "x": 640,
+          "y": 380.31,
+          "modifiers": 0,
+          "force": 0
+        },
+        "sessionId": "3ECE606335CDA5645FF22618A076C6D5"
+      }
+    },
+    {
+      "UTC": "2026-10-10T20:28:57.983Z",
+      "Direction": "SEND",
+      "Message": {
+        "id": 112,
+        "method": "Input.dispatchMouseEvent",
+        "params": {
+          "type": "mousePressed",
+          "button": "left",
+          "buttons": 1,
+          "x": 640,
+          "y": 380.31,
+          "modifiers": 0,
+          "clickCount": 1,
+          "force": 0.5
+        },
+        "sessionId": "3ECE606335CDA5645FF22618A076C6D5"
+      }
+    },
+    {
+      "UTC": "2026-10-10T20:28:57.983Z",
+      "Direction": "SEND",
+      "Message": {
+        "id": 113,
+        "method": "Input.dispatchMouseEvent",
+        "params": {
+          "type": "mouseReleased",
+          "button": "left",
+          "buttons": 0,
+          "x": 640,
+          "y": 380.31,
+          "modifiers": 0,
+          "clickCount": 1
+        },
+        "sessionId": "3ECE606335CDA5645FF22618A076C6D5"
+      }
+    },
+    {
+      "UTC": "2026-10-10T20:28:58.006Z",
+      "Direction": "ACK",
+      "Message": {
+        "id": 111,
+        "result": {},
+        "sessionId": "3ECE606335CDA5645FF22618A076C6D5"
+      }
+    },
+    {
+      "UTC": "2026-10-10T20:28:58.011Z",
+      "Direction": "ACK",
+      "Message": {
+        "id": 112,
+        "result": {},
+        "sessionId": "3ECE606335CDA5645FF22618A076C6D5"
+      }
+    },
+    {
+      "UTC": "2026-10-10T20:28:58.035Z",
+      "Direction": "ACK",
+      "Message": {
+        "id": 113,
+        "result": {},
+        "sessionId": "3ECE606335CDA5645FF22618A076C6D5"
+      }
+    }
+  ],
+  "TrustedDOMEvents": [
+    {
+      "browserNow": 502.90000000037253,
+      "browserTimeOrigin": 1791664121323.4,
+      "wallMilliseconds": 1791664121826,
+      "event": "composer-dom-change",
+      "composer": true,
+      "activeTab": "scene"
+    },
+    {
+      "browserNow": 14529.099999999627,
+      "browserTimeOrigin": 1791664121323.4,
+      "wallMilliseconds": 1791664135852,
+      "event": "composer-dom-change",
+      "composer": false,
+      "activeTab": null
+    },
+    {
+      "browserNow": 16684.099999999627,
+      "browserTimeOrigin": 1791664121323.4,
+      "wallMilliseconds": 1791664138007,
+      "event": "pointerdown",
+      "isTrusted": true,
+      "button": 0,
+      "detail": 0,
+      "disabled": false
+    },
+    {
+      "browserNow": 16684.5,
+      "browserTimeOrigin": 1791664121323.4,
+      "wallMilliseconds": 1791664138007,
+      "event": "mousedown",
+      "isTrusted": true,
+      "button": 0,
+      "detail": 1,
+      "disabled": false
+    },
+    {
+      "browserNow": 16686.200000000186,
+      "browserTimeOrigin": 1791664121323.4,
+      "wallMilliseconds": 1791664138009,
+      "event": "pointerup",
+      "isTrusted": true,
+      "button": 0,
+      "detail": 0,
+      "disabled": false
+    },
+    {
+      "browserNow": 16686.400000000373,
+      "browserTimeOrigin": 1791664121323.4,
+      "wallMilliseconds": 1791664138009,
+      "event": "mouseup",
+      "isTrusted": true,
+      "button": 0,
+      "detail": 1,
+      "disabled": false
+    },
+    {
+      "browserNow": 16686.700000000186,
+      "browserTimeOrigin": 1791664121323.4,
+      "wallMilliseconds": 1791664138010,
+      "event": "click",
+      "isTrusted": true,
+      "button": 0,
+      "detail": 1,
+      "disabled": false
+    },
+    {
+      "browserNow": 16701.599999999627,
+      "browserTimeOrigin": 1791664121323.4,
+      "wallMilliseconds": 1791664138024,
+      "event": "composer-dom-change",
+      "composer": true,
+      "activeTab": "scene"
+    }
+  ],
+  "NormalActionOracle": {
+    "NormalClickAPIReturned": true,
+    "TrustedContinueClicks": 1,
+    "ComposerVisible": true,
+    "BrowserStateResponses": {
+      "/api/main-menu": 1,
+      "/api/session": 1,
+      "/api/game-screen": 1
+    },
+    "CorrelatedServerStateStops": {
+      "/api/main-menu": [
+        "0HNP71K8LOQ1G:00000002"
+      ],
+      "/api/session": [
+        "0HNP71K8LOQ1F:00000002"
+      ],
+      "/api/game-screen": [
+        "0HNP71K8LOQ1E:00000002"
+      ]
+    },
+    "ServerObserverErrors": 0,
+    "CauseEstablishedByPassingDiagnostic": false
+  },
+  "TaskObserverRouteSummaries": [
+    {
+      "Event": "TaskObserverRouteSummary",
+      "Pid": 20357,
+      "Utc": "2026-10-10T20:28:42.1997073+00:00",
+      "StopwatchTicks": 5399981831045,
+      "TraceIdentifier": "0HNP71K8LOQ1C:00000006",
+      "Path": "/api/explorer/command-coverage",
+      "ActivityTraceId": "90e5af17e0cef8f06ecc3343b7cd9bca",
+      "Rows": 58,
+      "Bytes": 143937,
+      "DroppedRows": 0,
+      "TruncatedStacks": 0,
+      "Errors": 0,
+      "CaptureIncomplete": false
+    },
+    {
+      "Event": "TaskObserverRouteSummary",
+      "Pid": 20357,
+      "Utc": "2026-10-10T20:28:50.4376729+00:00",
+      "StopwatchTicks": 5408219796575,
+      "TraceIdentifier": "0HNP71K8LOQ1G:00000002",
+      "Path": "/api/main-menu",
+      "ActivityTraceId": "a37ea1a904f59e142b9e5cb1d9e56de2",
+      "Rows": 1323,
+      "Bytes": 4194289,
+      "DroppedRows": 360,
+      "TruncatedStacks": 610,
+      "Errors": 0,
+      "CaptureIncomplete": true
+    },
+    {
+      "Event": "TaskObserverRouteSummary",
+      "Pid": 20357,
+      "Utc": "2026-10-10T20:28:50.4525403+00:00",
+      "StopwatchTicks": 5408234664005,
+      "TraceIdentifier": "0HNP71K8LOQ1F:00000002",
+      "Path": "/api/session",
+      "ActivityTraceId": "f8309a18d12a8d4cf5863ef9f25a930b",
+      "Rows": 1323,
+      "Bytes": 4194289,
+      "DroppedRows": 395,
+      "TruncatedStacks": 613,
+      "Errors": 0,
+      "CaptureIncomplete": true
+    },
+    {
+      "Event": "TaskObserverRouteSummary",
+      "Pid": 20357,
+      "Utc": "2026-10-10T20:28:50.5709187+00:00",
+      "StopwatchTicks": 5408353042395,
+      "TraceIdentifier": "0HNP71K8LOQ1B:00000004",
+      "Path": "/api/client/settings",
+      "ActivityTraceId": "56a9ae9bdccb095fae1f72635a124ee2",
+      "Rows": 1323,
+      "Bytes": 4194289,
+      "DroppedRows": 468,
+      "TruncatedStacks": 629,
+      "Errors": 0,
+      "CaptureIncomplete": true
+    },
+    {
+      "Event": "TaskObserverRouteSummary",
+      "Pid": 20357,
+      "Utc": "2026-10-10T20:28:50.6141362+00:00",
+      "StopwatchTicks": 5408396259951,
+      "TraceIdentifier": "0HNP71K8LOQ1D:00000002",
+      "Path": "/api/audio/settings",
+      "ActivityTraceId": "5f3297e5045030defd24ffd1c6f524d5",
+      "Rows": 1323,
+      "Bytes": 4194289,
+      "DroppedRows": 523,
+      "TruncatedStacks": 647,
+      "Errors": 0,
+      "CaptureIncomplete": true
+    },
+    {
+      "Event": "TaskObserverRouteSummary",
+      "Pid": 20357,
+      "Utc": "2026-10-10T20:28:55.8274259+00:00",
+      "StopwatchTicks": 5413609549608,
+      "TraceIdentifier": "0HNP71K8LOQ1E:00000002",
+      "Path": "/api/game-screen",
+      "ActivityTraceId": "65409ec788207f3efd77eb5d4f7e0056",
+      "Rows": 1323,
+      "Bytes": 4194289,
+      "DroppedRows": 1979,
+      "TruncatedStacks": 1232,
+      "Errors": 0,
+      "CaptureIncomplete": true
+    }
+  ],
+  "TaskCaptureQualification": "INCOMPLETE: game-screen final Rows1323/Bytes4194289/Dropped1979/Truncated1232/Errors0. Registration frames are partial; no complete async-chain/wait-duration/endpoint-cause attribution. No extra diagnostic to repair this capture. HTTP/body-terminal/readiness/trusted-action observations are independently complete.",
+  "ManagedStackReportAttempted": false,
+  "ManagedStackReason": "Real ready launcher observed at15.284612933s, before conditional30s threshold; no pending-at30s reporter activation or cleanup is claimed.",
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 5,
+    "failures": 0,
+    "deadline": false
+  },
+  "RunnerSummary": {
+    "Categories": [
+      "c5-startup-ready-continue-protocol-diagnostic"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "c8e51582c30640e712ca5b96bb242e8f3d338553",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "c5-startup-ready-continue-protocol-diagnostic",
+        "Seconds": 54.6851266,
+        "BudgetMinutes": 4,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0833204,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0605895,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.147473,
+        "Completed": true
+      },
+      {
+        "Name": "Frontend-build",
+        "Seconds": 6.922401,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0029999,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 6,
+    "WallTime": "00:01:07.3845583",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "WebStderrBytes": 0,
+  "MinimalOracleProposal": {
+    "AffectedPath": "ONLY existing duration_diagnostic full-C5 actual browser navigations; frozen earlier Continue diagnostic/original legacy40-mode behavior unchanged",
+    "Before": "DOMContentLoaded -> original12s locator click (includes waiting for nonexistent launcher during initial state load)",
+    "After": "Separate60s startup anchored before same navigation, six actual requestfinished GET200 outcomes plus real visible/enabled launcher/no loading; then original unchanged12s normal click and actual API return/trusted click1/real composer before submission. Record per-navigation readiness/action timestamps and refuse incomplete/failed state.",
+    "Implementation": "Small fixture-only passive readiness helper using existing actual requestfinished/requestfailed events and DOM condition; no service/handler/HTTP/TPL replacement or force/synthetic/retry. Add explicit assertions to existing full-C5 diagnostic fact; no extra runtime matrix.",
+    "Budgets": "Startup60 separateclick12 within unchanged fullC5work660/total720/guardian750/external755/helper60/single180/category15/overall20; no old timer or product change",
+    "Acceptance": "SameAstra incremental causal/oracle source gate before ONE fresh fullC5 on CURRENT optimized runtime. No old FAIL rewritten; fullC5 remains UNQUALIFIED pending exact fresh result."
+  },
+  "ProductionFix": null,
+  "AdditionalPerformanceHypothesis": null,
+  "FurtherDiagnostic": "None; sole authorized startup observation is complete",
+  "SourceReferences": [
+    {
+      "Path": "tests/fixtures/LinuxGameChains/console_chain.py",
+      "GitBlob": "98af00ebf91f93f768894736bfddefddea019c83"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/startup_observer.py",
+      "GitBlob": "34e0dcf7c729a6d172ef6aeec33783e2773d74e2"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/hooks/loadShellState.ts",
+      "GitBlob": "4dc3cdefb7cf8db43e55ed1d468a2aaea2fa691e"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/context/ShellContext.tsx",
+      "GitBlob": "77be884bba60a866574abc14de7bf3d27a4a1aee"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/App.tsx",
+      "GitBlob": "e9a573a3b5c53b7353478ccb1d3e50a7fcf95d42"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+      "GitBlob": "60daa8d88b23991d0021f0f3950655cb2dbfc0c6"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "GitBlob": "d53830e80bd6352ec43c06e23c06d8509cc5f560"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs",
+      "GitBlob": "e877134aabf7ad99e25ef079e121f4d82316e0ca"
+    }
+  ]
+}
