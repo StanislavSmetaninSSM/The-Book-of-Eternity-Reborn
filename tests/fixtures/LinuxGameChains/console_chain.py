@@ -180,9 +180,14 @@ def author_packet(request_dir, ordinal):
     guardian = guardians["guardians"][0]
     actor = guardian["canonicalName"]
     thought = "Я запомню самостоятельный выбор души осмотреть берег, проверочный след " + str(ordinal) + "."
-    # Submit the documented command; the kernel owns the canonical after-image.
-    musing = {"turn": ordinal, "topic": "soul_assessment", "mood": "intrigued", "text": thought}
-    guardians["UpdateGuardians"] = [{"command": "addMusings", "guardianId": guardian["guardianId"], "musings": [musing]}]
+    # The documented separate thought-journal route avoids direct Guardian mutations.
+    journal_path = session / "game_state/meta/guardian_thought_journal.json"
+    journal = read_json(journal_path) if journal_path.exists() else {"entries": []}
+    journal["guardianThoughtJournalUpdates"] = [{"entryId": "gc_thought_" + str(ordinal),
+        "guardianId": guardian["guardianId"], "turn": ordinal, "timestamp": timestamp,
+        "title": "Наблюдение у берега", "summary": thought, "eventType": "soul_assessment",
+        "consequence": "Душа сохраняет самостоятельность.", "attitude": "intrigued",
+        "intent": "Остаться рядом без вмешательства."}]
     thoughts = "\n".join(["## NPC Scope", "- Mode: Scene-local", "- Relevant actors: " + actor,
                            "- Why relevant: Хранитель наблюдает за выбором души и сохраняет свою реакцию.",
                            "- Actors outside scope: нет", "- Why outside scope: Самостоятельные акторы не участвуют.",
@@ -199,9 +204,9 @@ def author_packet(request_dir, ordinal):
                            "- Chosen strategy: Наблюдать.",
                            "- Rejected alternatives: Душа не просила совета.",
                            "- Actions: Хранитель наблюдает и запоминает выбор души.",
-                           "- State changes: UpdateGuardians.addMusings в game_state/meta/guardians.json: одна новая first-person запись, старые записи сохраняет kernel.",
+                           "- State changes: guardianThoughtJournalUpdates в game_state/meta/guardian_thought_journal.json: одна новая first-person запись, предыдущие entries сохраняются.",
                            "- Детерминированная тестовая заготовка; провайдер не вызван."])
-    writes = {"game_state/meta/guardians.json": guardians,
+    writes = {"game_state/meta/guardian_thought_journal.json": journal,
               "game_state/control/progression_report.json": {"progressionProcessingReport": report},
               "output/narrative_response.json": {"response": narrative, "timestamp": timestamp},
               "output/interface_updates.json": {"dialogueOptions": [], "timestamp": timestamp},

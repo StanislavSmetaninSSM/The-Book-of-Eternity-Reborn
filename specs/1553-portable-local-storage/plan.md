@@ -1,3 +1,27 @@
+## C1 command route refusal retained / alternate documented journal WIP
+
+Source `489fea4a3cc9ba259d9a7a0856d02e235c5f50b0`: actual C1
+**FAIL1/1**,70.9611699s,0skip/duplicate/timeout; actual helper exit0,
+accepted0/modelCalls0/cleanup ECHILD0emergency.
+[Packet](recovery/linux-game-chains-20261010/c1-guardian-command-fail/manifest.json).
+Valid addMusings command теперь оставляет2 kernel authority mismatches после
+нормализации. Current canonical musings получили новую запись; NormalizeGuardians
+удаляет `UpdateGuardians`, а subsequent GuardianPolicyContext реконструирует
+same-turn authority из current commands. Возможный consumer contract defect
+требует отдельной причинной сверки; **не объявлен доказанной storage регрессией**.
+Ни один failing assertion/authority guard не удаляется; этот маршрут остаётся FAIL.
+
+Для отдельного ordinary C1 используется другой прямо предусмотренный existing
+memory route — `guardianThoughtJournalUpdates` в `guardian_thought_journal.json`,
+без mutation canonical Guardian. Author сохраняет предыдущие journal entries и
+добавляет одну first-person запись с actual guardianId; full Actor Brain явно
+называет этот journal. ActorJournalState shape/normalization прочитаны. Это
+осуществимый existing route, не фиктивная authority или новая игровая механика;
+не квалифицирует failing addMusings. Новый route GREEN UNRUN. Source checkpoint
+выносится на независимый Astra/xhigh review; C3/C4 независимы от GM-response
+семантики и будут продолжены отдельно. Ни C2,ни C5,ни source-only fault stages
+не объявляются исполненными по этому C1 packet.
+
 ## C1 Guardian command authority fixture correction — WIP
 
 Source `81d159cefd22733507cf4ea5d3d931b004acf30f`: C1 **FAIL1/1**,
