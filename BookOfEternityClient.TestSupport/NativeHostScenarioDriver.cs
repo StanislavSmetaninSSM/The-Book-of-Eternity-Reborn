@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.IO.Pipes;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Win32.SafeHandles;
@@ -13,6 +14,22 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
+        if (args.Length == 4 && args[0] == "engine-browser-recovery-cold")
+        {
+            // The integration fixture supplies the real lifecycle service factory.
+            // Resolve its test-only dependencies in this isolated child, without a project cycle.
+            var resolver = new AssemblyDependencyResolver(args[1]);
+            AssemblyLoadContext.Default.Resolving += (_, name) =>
+            {
+                var path = resolver.ResolveAssemblyToPath(name);
+                return path == null ? null : AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+            };
+            var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(args[1]);
+            var method = assembly.GetType("BookOfEternityClient.Tests.GameEngineTurnLifecycleTests", true)!
+                .GetMethod("WriteBrowserRecoveryColdProbeAsync", BindingFlags.Public | BindingFlags.Static)!;
+            await (Task)method.Invoke(null, [args[2], args[3]])!;
+            return 0;
+        }
         if(args.Length==5 && args[0]=="browser-game-fault-host")return await BrowserGameFaultHost.RunAsync(args[1],args[2],args[3],args[4]);
         if(args.Length==3 && args[0]=="inventory-read-cold")return await InventoryReadContextColdProbe.RunAsync(args[1],args[2]);
         if(args.Length==3 && args[0]=="daemon-storage-bootstrap")return await GmDaemonStorageScenario.RunChildAsync(args[1],args[2]);

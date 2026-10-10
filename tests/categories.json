@@ -3,8 +3,8 @@
     "categories": [
         {
             "id": "browser-player-input-recovery",
-            "responsibility": "T069 original ProcessPlayerTurn competing-request refusal plus existing owner queued/preparing/staged/processing/accepted classification, exact evidence preservation and once-only receipt dequeue. Per-test independent real lifecycle services.",
-            "excludes": "Component new-engine-object reentry only: no separate-process cold cut, real GM acceptance or typed lifecycle handoff/cancel settlement qualification. Accepted fixture establishes original artifact cleanup explicitly.",
+            "responsibility": "T069 actual original ProcessPlayerTurn conflict/terminal disposition, exact recovery evidence and once-only receipt dequeue; real lifecycle factory classification in independently guardian-owned cold process plus per-test negative receipts.",
+            "excludes": "Cold factory classification is component proof, not Program/relay gameplay. Accepted/settled component fixtures explicitly invoke actual original cleanup/restore; failed rollback component does not by itself qualify its warm caller. Typed lifecycle handoff and late error/rejection remain blocked, not auto-settled.",
             "changeHints": [
                 "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
                 "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"

@@ -1,15 +1,170 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Diagnostics;
+using System.Security.Cryptography;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    [Theory]
+    [InlineData("state")]
+    [InlineData("history")]
+    [InlineData("generation")]
+    [InlineData("repair-work")]
+    [InlineData("original-artifact")]
+    public async Task BrowserInput_DamagedSettledReceiptRefusesAndPreservesEvidence(string damage)
+    {
+        await PrepareSettledBrowserRecordAsync();
+        switch (damage)
+        {
+            case "state": await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"changed\":true}"); break;
+            case "history": await _fs.WriteFileAtomicAsync("stories/competing.jsonl", "{\"late\":true}\n"); break;
+            case "generation":
+                var root = JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!;
+                root["sessionGeneration"] = Guid.NewGuid().ToString("N");
+                await _fs.WriteFileAtomicAsync(PendingPlayerActionService.PendingPath, root.ToJsonString()); break;
+            case "repair-work": await _fs.WriteFileAtomicAsync("game_state/control/validation_repair_request.json", "{\"remaining\":true}"); break;
+            case "original-artifact": await _fs.WriteFileAtomicAsync("input/turn_request.json", "{\"late\":true}"); break;
+        }
+        var before = BrowserRecoveryTree();
+        await Assert.ThrowsAsync<InvalidDataException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
+        AssertBrowserRecoveryTree(before);
+    }
+
+    [Fact]
+    public async Task BrowserInput_FailedOriginalRollbackRetainsSnapshotAndBlocksContinuation()
+    {
+        var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+        await InvokePrivateTaskAsync(engine, "ClaimBrowserTerminalAsync", staged);
+        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", null);
+        var original = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
+        // Corrupt an original retained backup: the actual rollback must refuse before any restore.
+        var manifest = JsonNode.Parse(staged.ManifestJson)!;
+        var backup = manifest["rollbackBackups"]!.AsObject().First().Value!.GetValue<string>();
+        await _fs.WriteFileAtomicAsync(backup, "damaged original rollback evidence");
+        Assert.False(await InvokePrivateAsync<bool>(engine, "RollbackRejectedAcceptedTurnAsync", snapshot, ""));
+        Assert.Equal(original, await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath));
+        Assert.True(_fs.FileExists(backup));
+        var before = BrowserRecoveryTree();
+        await Assert.ThrowsAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
+        AssertBrowserRecoveryTree(before);
+    }
+
+    [Theory]
+    [InlineData("queued")]
+    [InlineData("staged")]
+    [InlineData("terminalProcessing")]
+    [InlineData("accepted")]
+    [InlineData("settled")]
+    [InlineData("stale-generation")]
+    public async Task BrowserInput_SeparateProcessColdClassificationPreservesOrDequeuesOnlyOriginalSlot(string phase)
+    {
+        if (phase == "queued") await QueueBrowserInputAsync();
+        else if (phase == "accepted") await PrepareAcceptedBrowserRecordAsync();
+        else if (phase == "settled") await PrepareSettledBrowserRecordAsync();
+        else
+        {
+            var (engine, staged) = await PrepareBrowserInputStagingAsync();
+            if (phase == "terminalProcessing") await InvokePrivateTaskAsync(engine, "ClaimBrowserTerminalAsync", staged);
+            if (phase == "stale-generation")
+            {
+                var root = JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!;
+                root["sessionGeneration"] = Guid.NewGuid().ToString("N");
+                await _fs.WriteFileAtomicAsync(PendingPlayerActionService.PendingPath, root.ToJsonString());
+            }
+        }
+        var before = BrowserRecoveryTree();
+        var own = Path.Combine("/tmp", "gc-" + Guid.NewGuid().ToString("N")[..12]);
+        Directory.CreateDirectory(own);
+        _directGachaOutput?.WriteLine("Owned browser cold evidence: " + own);
+        var package = Path.Combine(own, "package");
+        var repo = TestRepoPaths.RepoRoot;
+        await RunBrowserColdChildAsync("pwsh", ["-NoLogo", "-NoProfile", "-File", Path.Combine(repo, "scripts/build-linux-supervisor.ps1"),
+            "-OutputDirectory", package, "-IncludeHostGuardian"], Path.Combine(own, "native.log"), 25);
+        var probePath = Path.Combine(own, "cold.json");
+        var guardianPath = Path.Combine(own, "guardian.json");
+        var dotnet = Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT") ?? throw new InvalidOperationException("DOTNET_ROOT required"), "dotnet");
+        // Use the freshly copied support binary plus its runtime config from the selected build.
+        var support = Path.Combine(Path.GetDirectoryName(typeof(GameEngineTurnLifecycleTests).Assembly.Location)!, "BookOfEternityClient.TestSupport.dll");
+        await RunBrowserColdChildAsync(Path.Combine(package, "host-guardian"), ["--live-turn", guardianPath, "15000", dotnet,
+            support, "engine-browser-recovery-cold", typeof(GameEngineTurnLifecycleTests).Assembly.Location, _fs.BasePath, probePath],
+            Path.Combine(own, "cold.log"), 20);
+        using var guardian = JsonDocument.Parse(File.ReadAllBytes(guardianPath));
+        Assert.True(guardian.RootElement.GetProperty("echild").GetBoolean());
+        Assert.Equal(0, guardian.RootElement.GetProperty("driverExitCode").GetInt32());
+        Assert.Equal(0, guardian.RootElement.GetProperty("failures").GetInt32());
+        Assert.Equal(0, guardian.RootElement.GetProperty("emergencySignals").GetInt32());
+        Assert.False(guardian.RootElement.GetProperty("deadline").GetBoolean());
+        using var probe = JsonDocument.Parse(File.ReadAllBytes(probePath));
+        Assert.NotEqual(Environment.ProcessId, probe.RootElement.GetProperty("ProcessId").GetInt32());
+        Assert.Equal(phase is "terminalProcessing" or "stale-generation", probe.RootElement.GetProperty("Blocked").GetBoolean());
+        if (phase is "accepted" or "settled")
+            Assert.True(before.Remove(Path.GetRelativePath(_fs.BasePath, _fs.ResolvePath(PendingPlayerActionService.PendingPath)).Replace('\\', '/')));
+        AssertBrowserRecoveryTree(before);
+    }
+
+    // Called only in an independently owned process by NativeHostScenarioDriver.
+    // This qualifies actual GameEngine recovery classification, not Program/relay gameplay.
+    public static async Task WriteBrowserRecoveryColdProbeAsync(string root, string output)
+    {
+        using var factory = new GameEngineTurnLifecycleTests();
+        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        Dictionary<string, string> Snapshot() => Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
+            .Where(path => !Path.GetRelativePath(root, path).StartsWith(".boe_runtime", StringComparison.Ordinal))
+            .ToDictionary(path => Path.GetRelativePath(root, path).Replace('\\', '/'),
+                path => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant(), StringComparer.Ordinal);
+        var before = Snapshot();
+        Exception? refusal = null;
+        try { await InvokePrivateTaskAsync(factory.CreateGameEngine(fileSystem: files), "ClassifyBrowserRecoveryAsync"); }
+        catch (Exception exception) when (exception is InvalidOperationException or InvalidDataException) { refusal = exception; }
+        await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
+        {
+            ProcessId = Environment.ProcessId, Blocked = refusal != null, ErrorType = refusal?.GetType().FullName,
+            Before = before, After = Snapshot(), Scope = "actual GameEngine classification factory; no gameplay/relay/model"
+        }));
+    }
+
+    private static async Task RunBrowserColdChildAsync(string executable, string[] args, string log, int seconds)
+    {
+        var info = new ProcessStartInfo(executable)
+        { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true, WorkingDirectory = TestRepoPaths.RepoRoot };
+        foreach (var arg in args) info.ArgumentList.Add(arg);
+        using var process = Process.Start(info)!;
+        var stdout = process.StandardOutput.ReadToEndAsync();
+        var stderr = process.StandardError.ReadToEndAsync();
+        try { await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(seconds)); }
+        catch
+        {
+            if (!process.HasExited) process.Kill(entireProcessTree: true);
+            await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            throw;
+        }
+        var text = await stdout + await stderr;
+        await File.WriteAllTextAsync(log, text);
+        Assert.True(process.ExitCode == 0, log + Environment.NewLine + text);
+    }
+
+    private async Task PrepareSettledBrowserRecordAsync()
+    {
+        var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+        staged = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "ClaimBrowserTerminalAsync", staged);
+        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", null);
+        await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", snapshot);
+        InvokePrivate(engine, "CleanupBackup", snapshot);
+        _fs.DeleteFile("input/turn_request.json");
+        await InvokePrivateTaskAsync(engine, "CleanupPendingTurnSnapshotAsync");
+        var request = JsonSerializer.Deserialize<TurnRequest>(staged.RequestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        var signal = JsonSerializer.Serialize(new { sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+            timestamp = DateTime.UtcNow.ToString("O"), status = "error", error = "Original controlled terminal error." });
+        await InvokePrivateTaskAsync(engine, "FinishRestoredBrowserActionAsync", staged, "originalTerminalErrorRestored", signal);
+    }
     [Fact]
     public async Task BrowserInput_ConflictBeforePublicationPreservesCompetingRequestAndOriginalSlot()
     {
@@ -193,7 +348,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             return PendingPlayerActionService.Parse(json, _fs.GetOrCreateSessionGeneration(lease)).Binding;
         });
 
-    private async Task<(GameEngine Engine, PendingPlayerActionService.Staged Staged)> PrepareBrowserInputStagingAsync()
+    private async Task<(GameEngine Engine, PendingPlayerActionService.Staged Staged)> PrepareBrowserInputStagingAsync(bool withRollback = false)
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json",
             "{\"soulName\":\"Проверочная душа\",\"sessionId\":\"browser-recovery-session\",\"currentRealm\":\"Mortal World\",\"currentIncarnation\":1}");
@@ -206,7 +361,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             SessionId = "browser-recovery-session", RequestId = binding.ActionId, TurnNumber = 1,
             PlayerAction = binding.Action, Timestamp = DateTime.UtcNow.ToString("O"), PreGeneratedDices1d20 = [3, 17]
         };
-        await InvokePrivateTaskAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, null, "обработки хода", binding);
+        var rollback = withRollback ? await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", binding.ActionId) : null;
+        await InvokePrivateTaskAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollback, "обработки хода", binding);
         var staged = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "PublishBrowserStagingAsync", binding,
             JsonSerializer.Serialize(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         return (engine, staged);
