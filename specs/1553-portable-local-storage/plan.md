@@ -1,5 +1,9 @@
 ### C5 guard publication boundary consistency — 2026-10-10
 
+### C5 reviewed guard bounded GREEN — 2026-10-10
+
+Fresh integration at c87fef66: **17/17 PASS**, 57.3152771s, complete 3/3 descriptors, no skips/duplicates/timeout, owned cleanup complete. The 6 qualified causal RED controls now pass alongside the original 11 tuple/recovery controls. [Raw packet](recovery/linux-game-chains-20261010/c5-browser-review-bounded-green/manifest.json). Full shared admission acceptance remains pending valid receipt/ordinary signed-reader/active-client/warm/partial-staging qualification and independent review. Lifetime still continuous; actual staged-idle recovery and remaining T070 interruption/repair controls remain open. No task completion marking.
+
 BeforefirstGREEN, narrowper-mutationcheck to actualowner+finitecleanupinventory. Fullprivatephasecomparison remainsbeforeadmission/recovery; actualslotCAS necessarily changes its bytes before post-success privateExpectedPendingJson advance. No broadskip/warmgrant. b017sharedguard remainsUNRUN; new17 runsnextwithmatchingfreshintegration.
 
 ### C5 three Important causal RED and exact guard WIP — 2026-10-10
