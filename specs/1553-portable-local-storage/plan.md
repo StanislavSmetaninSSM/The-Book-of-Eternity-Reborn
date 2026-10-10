@@ -1,6 +1,8 @@
 ### Cold accepted-cleanup integrity controls GREEN; full C5 next — 2026-10-10
 
-### T069 C5 active-poll negative — bounded WIP plan, 2026-10-10
+### T069 C5 active-poll negative — bounded plan and accepted proof, 2026-10-10
+
+Latest bounded verdict: actual1/1PASS26.3518274s and delivery accepted by Astra for restored`034889ce` plus carrier`e2b0122a2088ad3ea9c040d4c3d967063a764110`, no remaining findings. Reviewer independently verified cloneHEAD/tree/fetchedref/all1400filehashes/all6carrierblobs/safe-replayfix; inspected but didnotrepeat writer5520rawscan/fsck. [Complete checkpoint](recovery/linux-game-chains-20261010/c5-active-poll-checkpoint.md). This closes only the selected active-poll boundary/delivery. Allthreewhole-taskcheckboxes remainopen; helperrefusalunexplained, platform/wholeacceptance/performance separate. No further implementation or performance experiment selected. Earlier WIP/UNRUN entries below record their respective historical source/preparation stages.
 
 Parent accepted the bounded T070/C5 checkpoint at `524054c96e99cfe072c2ef10f7f973923334337f` and selected only the remaining C5 active-poll negative. Existing T069-C5-ORDINARY-CONSUMER and approved [wait-participation plan](c5-wait-participation-plan.md) authorize this case; no whole-task/latency/Windows acceptance. No performance experiment, new audit matrix, production guard/timer changes, main/CI/issues or live provider work.
 
