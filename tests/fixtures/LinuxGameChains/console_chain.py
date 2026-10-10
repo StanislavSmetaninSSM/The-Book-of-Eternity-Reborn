@@ -123,8 +123,17 @@ def pump():
                 p.closed.add(fd)
             else:
                 target = p.echo if kind == "echo" else p.raw
+                offset = len(target)
                 target.extend(data)
                 assert len(target) < 4194304, "Owned output exceeds 4MiB"
+                if kind == "output" and scenario == "browser-relay" and p.name.startswith("client-"):
+                    events.append({"OutputPeer": p.name, "RawStart": offset, "RawEnd": len(target),
+                                   "AtSeconds": time.monotonic() - started})
+                    failure = original_game_loop_failure(p)
+                    if failure is not None and "OriginalGameLoopFailure" not in result:
+                        result["OriginalGameLoopFailure"] = failure
+                        result["OriginalGameLoopFailureObservedAtSeconds"] = time.monotonic() - started
+                        result["OriginalGameLoopFailureObservedDuringCleanup"] = "CleanupStartedAtSeconds" in result
     assert time.monotonic() - started < 240, "Driver work/cleanup budget exceeded"
 
 
@@ -136,16 +145,22 @@ def wait(predicate, label, seconds=20):
     events.append({"Observed": label, "AtSeconds": time.monotonic() - started})
 
 
+def original_game_loop_failure(peer):
+    complete_lines = [line for line in peer.text().splitlines(keepends=True) if line.endswith(("\r", "\n"))]
+    diagnostic = next((line.strip() for line in complete_lines
+                       if line.strip().startswith('{"kind":"boe-game-loop-fixture-failure",')), None)
+    if diagnostic is None:
+        return None
+    failure = json.loads(diagnostic)
+    assert failure["nonce"] == failure_nonce and failure["pid"] == peer.process.pid
+    return failure
+
+
 def fresh(peer, marker, offset=0, seconds=20):
     def observed():
         assert peer.process.poll() is None, peer.name + " exited before " + marker
-        complete_lines = [line for line in peer.text().splitlines(keepends=True) if line.endswith(("\r", "\n"))]
-        diagnostic = next((line.strip() for line in complete_lines
-                           if line.strip().startswith('{"kind":"boe-game-loop-fixture-failure",')), None)
-        if diagnostic is not None:
-            failure = json.loads(diagnostic)
-            assert failure["nonce"] == failure_nonce and failure["pid"] == peer.process.pid
-            result["OriginalGameLoopFailure"] = failure
+        failure = original_game_loop_failure(peer)
+        if failure is not None:
             raise AssertionError("Original GameLoop exception: " + failure["exception"])
         return marker in peer.text(offset)
     wait(observed, peer.name + ": " + marker, seconds)
@@ -407,6 +422,7 @@ def stop_chain():
         assert all(closed[k] for k in ["ExecutionDisabled", "ChildExited", "IoDrained"]), closed
         result.setdefault("RelayCloses", []).append(closed)
         if original is not None:
+            events.append({"OriginalShutdownRequested": original_record, "AtSeconds": time.monotonic() - started})
             stop = rpc({"command": "shutdown", "rootKey": original["rootKey"], "expectedMainIdentity": original})
             assert stop["ok"] and stop["status"]["terminalStop"]["cleanupComplete"], stop
             wait(lambda: bridge.process.poll() is not None, "original Bridge stopped")
@@ -634,6 +650,7 @@ except Exception:
         except Exception:
             result["DiagnosticFailure"] = traceback.format_exc()
 finally:
+    result["CleanupStartedAtSeconds"] = time.monotonic() - started
     cleanup_errors = []
     # Release cooperative fixture gates before ordinary failed-client cleanup.
     for path_name, nonce_name in [("queued_cut_path", "queued_cut_nonce"), ("idle_cut_path", "idle_cut_nonce")]:
