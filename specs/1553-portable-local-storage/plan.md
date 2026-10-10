@@ -1,3 +1,9 @@
+### Cold cleanup one-line fix fresh preparation — 2026-10-10
+
+Independent Astra accepts9cff source/selection and genuinefullC5RED reuse; all246 failurecarrier blobs/243raw and4sourcecarrier files verified. Four warmintegrity +accepteddequeue selection sufficient, no newtests/matrix needed. Minor stale “no production edits” diagnostic reason corrected to name the one cleanup ordering change; no performance/timeout/guard-weakening edits.
+
+Fresh9cff integration+unit/project references [PlanOnlyraw](recovery/linux-game-chains-20261010/c5-cold-cleanup-order-fresh-plan/manifest.json) **234.7096661s/exit0**, clean fingerprint,2planneddescriptors/6cases (fiveexistingcontrols+oneC5),0runtime/duplicates, owned/runtimecleanup complete. Source unchanged through build. Next five controls-NoBuild then sole fullC5-NoBuild, fresh frontend build in actualC5runner. Runtime GREEN UNRUN; firsttrueC5stagedcold attempt remainsFAIL and latencystatusopen. T069/T070/T071 unchecked.
+
 ### WIP reproduced cold accepted-cleanup ordering fix — 2026-10-10
 
 Astra independently confirms causal ordering defect and narrow correction; originating exception at330.7542s precedes cleanup start330.7551s. Genuine fullC5 RED already uses freshlystarted actualProgram41245/newengine+FS after actualstageclose/SIGKILL/EOF under sameoriginalNativeBridgeowner, actual late-terminal consumer and exactmissingrequeststack; this is stronger than a componentrestart and supplies test-firstRED without redundant new fixture/run. Reuse proposal is under final reviewer selection check; no synthetic directcleanup positive added.

@@ -12,7 +12,7 @@
         },
         {
             "category": "c5-browser-staged-idle-duration-diagnostic",
-            "reason": "Parent approved actual fullC5 correctness before further performance work, with predeclared exploratory finite budget appropriate to63/62file inventory. Preserve old40s failures and exact actual crash/identity/prefix/Stop/EOF assertions; no production edits.",
+            "reason": "Parent approved actual fullC5 correctness before further performance work, with predeclared exploratory finite budget appropriate to63/62file inventory. Preserve old40s failures and exact actual crash/identity/prefix/Stop/EOF assertions; one reproduced accepted-cleanup ordering correction; no performance/timeout/guard-weakening edits.",
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",

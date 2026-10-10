@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "9cff87fe34c52562bc83c6c4f2fc1aa8a9ee7b7b",
+  "Command": "pwsh -NoLogo -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @(c5-accepted-terminal-cleanup-order,c5-browser-staged-idle-duration-diagnostic) -PlanOnly\"",
+  "Status": "PREPARATION PASS / six planned cases / zero runtime",
+  "Scope": "Fresh integration+unit/project-reference builds; five existing cleanup/receipt controls then one realfullC5; frontend actual-run prep remains.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "4be44a900fadbcd4ad4cd0365f12751508e4570c7b060e808169e90cfc7fc5da",
+      "RawBytes": 2374
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "a306adc6a19f8b22bd7244c6f01c1145cfd83bdae367a0908923056139918590",
+      "RawBytes": 1697
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "32981d241448afae6541df37b805934d300b4273324aa16738eb19285f2d9a48",
+      "RawBytes": 52489
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "b50ab5a75d5a1eb171454cb9a352058164b20139ea27e11045e71797bf7bbbcb",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "e63ed9e9b112c9556c626228c6e393b9e35000758b1098654adfc38fb2269251",
+      "RawBytes": 3358401
+    }
+  ]
+}
