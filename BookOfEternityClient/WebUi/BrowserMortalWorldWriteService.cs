@@ -158,12 +158,10 @@ public sealed class BrowserMortalWorldWriteService
             $"Противодействовать эффекту «{effect.Name}»: {action.Label}. " +
             "Разреши действие только по текущей принятой механике эффекта; " +
             "снятие последствия само по себе не лечит связанную рану.";
-        var pending = new JsonObject
-        {
-            ["playerAction"] = playerAction,
-            ["submittedAtUtc"] = NowText(),
-            ["source"] = "browser-effect-action"
-        };
+        if (_fs.FileExists(writeLease, PendingPlayerActionPath))
+            return BrowserPromptWriteResult.ValidationError("Предыдущее действие ещё ожидает обработки.");
+        var pending = PendingPlayerActionService.PrepareQueued(
+            _fs, writeLease, playerAction, "browser-effect-action", NowText());
 
         return await ExecuteAtomicAsync(
             writeLease,

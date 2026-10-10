@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "5d21b32d13a1419e05481c9fa4348b2ea5da8458",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-pending-action-admission -NoBuild",
+  "Status": "FAIL",
+  "Scope": "Actual producer RED2/2: overwritten single pending slot and missing generation identity; not whole C5 or model/game execution",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "e3e439aa2335906b621ed598019c1e5b4c825da40baa25c23ea8197220f128f1",
+      "RawBytes": 1459
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "0596b5345fb27ce4fa74b9c5839994bf08a053bc746a76457571a8c8e975eb44",
+      "RawBytes": 1467
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "a59c3f903c846d586074af73f75a5ecd742a8cbd07839afb95fbcf20a69e2298",
+      "RawBytes": 42829
+    },
+    {
+      "Path": "runner/browser-pending-action-admission-unit-001.trx.gz",
+      "RawSHA256": "991ba70b824801e953b837a8f52bc2210b31889d661925c942f9ebf6990776dc",
+      "RawBytes": 7424
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "529eb7807a4dde11f78c0a9e4314f47e62cc557916c34a249ec6f82c302df16a",
+      "RawBytes": 1705874
+    }
+  ]
+}

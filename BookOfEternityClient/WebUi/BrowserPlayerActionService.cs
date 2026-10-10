@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.WebUi;
 
@@ -88,17 +89,17 @@ public sealed class BrowserPlayerActionService
         if (_hooks?.AfterPreflightAsync != null)
             await _hooks.AfterPreflightAsync();
 
+        if (_fs.FileExists(writeLease, PendingPlayerActionPath))
+            return new BrowserPlayerActionResult(false, "Предыдущее действие ещё ожидает обработки.");
+
         var writeRequest = new BrowserLocalWriteRequest(
             request?.OwnerId,
             request?.OwnerLabel ?? "Композитор действий",
             "Запись действия игрока");
 
-        var payload = new JsonObject
-        {
-            ["playerAction"] = text,
-            ["submittedAtUtc"] = _timeProvider.GetUtcNow().UtcDateTime.ToString("O"),
-            ["source"] = "browser-composer"
-        };
+        var payload = PendingPlayerActionService.PrepareQueued(
+            _fs, writeLease, text, "browser-composer",
+            _timeProvider.GetUtcNow().UtcDateTime.ToString("O"));
 
         var writeResult = await _coordinator.ExecuteAtomicWithinTransactionAsync(
             writeLease,

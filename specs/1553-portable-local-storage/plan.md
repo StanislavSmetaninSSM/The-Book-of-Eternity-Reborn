@@ -26,7 +26,17 @@ Review focus: simultaneous console/browser; partial/multiline/paste draft; crash
 before signed staging; original request after staging; accepted-before-cleanup;
 late authority after physical close; stale/invalid/mirror edits and duplicate append.
 
-### T069 execution steps (all UNRUN at this planned checkpoint)
+### T069 execution steps (current producer component WIP)
+
+Actual corrected producer RED source5d21b32d:2/2FAIL,36.7890415s,1descriptor/2cases
+planned=completed/0skip/duplicates/timeouts/ownedcleanupcomplete. First original
+Submit returns success; second also returns success and overwrites first bytes.
+Generation assertion now reaches absent `sessionGeneration` (KeyNotFound), after
+fixing fixture BOM decoding. Earlier import buildFAIL0tests and BOM fixtureFAIL
+were preparation failures, not missing-identity proof. Current minimal producers
+use one schema shared by composer/effect and refuse occupied slot; GREEN UNRUN.
+[Actual causal RED](recovery/linux-game-chains-20261010/c5-admission-causal-red/manifest.json).
+Original C5 full-chain FAIL remains untouched; consumer/recovery/input still UNRUN.
 
 - [ ] RED actual BrowserPlayerActionService Submit twice must not overwrite the single pending slot; exact generation/action identity present. Existing actual C5 RED packet remains unchanged.
 - [ ] Implement shared PendingPlayerActionService envelope/strict read+claim+terminal settlement, both browser producers, ordinary GameEngine input/staging/late terminal consumers. Keep signed original request authoritative; no queue-derived domain permission.
