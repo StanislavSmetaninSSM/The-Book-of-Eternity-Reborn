@@ -2,6 +2,16 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-browser-active-poll-crash",
+            "reason": "Parent selected only remaining T069 active-poll negative. One actual ProcessPlayerTurn(browser binding) with no response/model calls; observe actual waitTask/gate/held inspection lease/original scope, then SIGKILL+EOF, same Active->Unresolved native pin, cold ClassifyBrowserRecoveryAsync refusal before all opens/recovery/mutations and exact complete bytes. Reuse existing finite180s neutral terminal option; native240/external245/category5 protective only, explicit overall7. Existing three T070 cut branches/defaults unchanged; no idle/T070/C5-positive rerun required for this test-only addition.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "C5-WAIT-PARTICIPATION",
+                "Active operation loss retains original unresolved authority"
+            ]
+        },
+        {
             "category": "guardian-musings-capture-crash",
             "reason": "Actual returned original capture/active publication lease in pre-normalization before-image read; SIGKILL/EOF of ordinary engine with native Bridge alive and same pin Active->Unresolved; cold ordinary native admission must refuse before physical open/recovery/mutation, retaining exact original commands/prefix/evidence. One isolated genuinely interrupted engine process; models replaced by author data only. Native240/external245/category5 each are protective, not latency evidence; three categories aggregate15 and explicit overall18.",
             "contracts": [

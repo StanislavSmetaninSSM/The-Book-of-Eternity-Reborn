@@ -34,7 +34,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var nativeBuildArguments = new List<string> { "-NoLogo", "-NoProfile", "-File",
             Path.Combine(TestRepoPaths.RepoRoot, "scripts/build-linux-supervisor.ps1"), "-OutputDirectory", package,
             "-IncludeHostGuardian", "-IncludeTerminalFixture" };
-        if (cut == 2) nativeBuildArguments.AddRange(["-TerminalFixtureLifetimeSeconds", "180"]);
+        if (cut is 2 or BrowserActivePollCut) nativeBuildArguments.AddRange(["-TerminalFixtureLifetimeSeconds", "180"]);
         await RunBrowserProfileChildAsync("pwsh", nativeBuildArguments.ToArray(), Path.Combine(own, "native.log"), 25);
         var support = Path.Combine(Path.GetDirectoryName(typeof(GameEngineTurnLifecycleTests).Assembly.Location)!, "BookOfEternityClient.TestSupport.dll");
         await RunBrowserProfileChildAsync(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), "240000",
@@ -82,7 +82,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await InvokePrivateAsync<string>(bootstrap, "InitializeChaosSea", "Пробная Душа", "Человеческий силуэт синего света.", pending, null);
         Assert.False(await InvokePrivateAsync<bool>(bootstrap, "WaitForGmResponse").WaitAsync(TimeSpan.FromSeconds(8)));
         var initial = JsonNode.Parse(File.ReadAllText(files.ResolvePath("game_state/meta/guardians.json")))!;
-        if (initial["guardians"]![0]!["musings"] is not JsonArray { Count: > 0 })
+        if (cut != BrowserActivePollCut && initial["guardians"]![0]!["musings"] is not JsonArray { Count: > 0 })
         {
             initial["guardians"]![0]!["musings"] = new JsonArray(new JsonObject { ["turn"] = 0, ["topic"] = "soul_assessment",
                 ["mood"] = "intrigued", ["thought"] = "Я сохраню память о первой встрече с душой у берега." });
@@ -119,7 +119,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             await ((TaskCompletionSource)type.GetField("_firstStatus", flags)!.GetValue(host)!).Task.WaitAsync(TimeSpan.FromSeconds(3));
             owner = (GmSessionRunCoordinator)type.GetField("_mainRun", flags)!.GetValue(host)!;
             terminal = (IOwnedTerminalSession)type.GetField("_pty", flags)!.GetValue(host)!;
-            original = StartMusingsCutChild("engine-musings-original-cut", files.BasePath, Path.Combine(own, "original-cut.json"), cut, own);
+            original = StartMusingsCutChild(cut == BrowserActivePollCut ? "engine-browser-active-poll-original" : "engine-musings-original-cut",
+                files.BasePath, Path.Combine(own, "original-cut.json"), cut, own);
             originalOut = original.StandardOutput.ReadToEndAsync(); originalError = original.StandardError.ReadToEndAsync();
             using var cutDeadline = new CancellationTokenSource(TimeSpan.FromSeconds(120));
             while (!File.Exists(Path.Combine(own, "original-cut.json")))
@@ -138,6 +139,18 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(loop.TurnNumber + 1, cutEvidence["TurnNumber"]!.GetValue<int>());
             Assert.Equal(owner.Identity.GenerationId, cutEvidence["Generation"]!.GetValue<string>());
             identity = cutEvidence["PinIdentity"]!.Deserialize<MainOperationClose>()!;
+            if (cut == BrowserActivePollCut)
+            {
+                Assert.True(cutEvidence["ActiveInspectionLease"]!.GetValue<bool>());
+                Assert.True(cutEvidence["ActualWaitTaskGateReachable"]!.GetValue<bool>());
+                Assert.Equal("staged", cutEvidence["PendingPhase"]!.GetValue<string>());
+                Assert.Equal(cutEvidence["ActionId"]!.GetValue<string>(), cutEvidence["RequestId"]!.GetValue<string>());
+                Assert.Equal(owner.Identity, cutEvidence["OriginalRun"]!.Deserialize<GmSessionRunIdentity>());
+                Assert.Equal(owner.Identity, identity.Identity);
+                Assert.False(cutEvidence["Processing"]!.GetValue<bool>());
+                Assert.False(cutEvidence["Cleanup"]!.GetValue<bool>());
+                Assert.Equal(0, cutEvidence["StoryEntries"]!.GetValue<int>());
+            }
             var active = owner.QueryRemoteOperation(identity);
             Assert.Equal(MainOperationState.Active, active.State);
             File.WriteAllText(Path.Combine(own, "terminal-before-kill.json"), JsonSerializer.Serialize(new
@@ -167,6 +180,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             exactCut = atCut.Count == before.Count && atCut.All(pair => before.TryGetValue(pair.Key, out var value) && pair.Value == value);
             Assert.True(exactCut);
             RetainMusingsCutFiles(files, own, "pre-cold");
+            if (cut == BrowserActivePollCut) RetainBrowserActivePollFiles(files, own, "pre-cold-all");
             cold = StartMusingsCutChild("engine-musings-cold", files.BasePath, Path.Combine(own, "cold.json"), cut, own);
             coldOut = cold.StandardOutput.ReadToEndAsync(); coldError = cold.StandardError.ReadToEndAsync();
             await cold.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(20));
@@ -182,6 +196,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(0, coldEvidence["Mutations"]!.GetValue<int>());
             coldRefused = true;
             after = MusingsCutInventory(files);
+            if (cut == BrowserActivePollCut) RetainBrowserActivePollFiles(files, own, "post-cold-all");
             exact = before.Count == after.Count && before.All(pair => after.TryGetValue(pair.Key, out var value) && pair.Value == value);
             Assert.True(exact);
             Assert.Equal(MainOperationState.Unresolved, owner.QueryRemoteOperation(identity).State);
@@ -234,7 +249,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ColdNativeAdmissionRefused = coldRefused, ExactEvidenceRetained = exact, ExactCutEvidenceRetained = exactCut,
                 BeforeCold = before, AfterCold = after,
                 CutEvidence = cutEvidence, ColdEvidence = coldEvidence, OriginalRecordAfterStop = owner?.Record, ModelCalls = 0,
-                Scope = "Actual ordinary console engine process SIGKILL with original NativeBridge alive; same original pin Active -> Unresolved, cold ordinary native-admission refusal. No automatic resume, Program/relay/browser/Windows/live-model or whole T070 acceptance."
+                Scope = cut == BrowserActivePollCut
+                    ? "Actual queued browser ProcessPlayerTurn short active signal inspection/held original lease SIGKILL with NativeBridge alive; same pin Active -> Unresolved; cold actual browser classifier native refusal before physical open/recovery/mutation. No idle continuation, Program/relay/Windows/live-model/performance/whole T069 acceptance."
+                    : "Actual ordinary console engine process SIGKILL with original NativeBridge alive; same original pin Active -> Unresolved, cold ordinary native-admission refusal. No automatic resume, Program/relay/browser/Windows/live-model or whole T070 acceptance."
             }));
             original?.Dispose(); cold?.Dispose();
         }
@@ -459,7 +476,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             var control = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "cut-control.json")))!;
             GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(control["SessionId"]!.GetValue<string>(), control["TurnNumber"]!.GetValue<int>());
             operationStarted = true;
-            await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Этот новый ход должен быть заблокирован.", null).WaitAsync(TimeSpan.FromSeconds(12));
+            if (cut == BrowserActivePollCut)
+                await InvokePrivateAsync<PendingPlayerActionService.State?>(engine, "ClassifyBrowserRecoveryAsync").WaitAsync(TimeSpan.FromSeconds(12));
+            else
+                await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Этот новый ход должен быть заблокирован.", null).WaitAsync(TimeSpan.FromSeconds(12));
         }
         catch (Exception failure) { refusal = failure; }
         var phase = refusal?.Data["ParticipatingAdmissionPhase"]?.ToString();
@@ -469,7 +489,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             NativeAdmissionRefused = operationStarted && refusal is not null && phase is "original-connection" or "read-record" &&
                 refusal.ToString().Contains("GmMainOperationClient.OpenAsync", StringComparison.Ordinal),
             AdmissionPhase = phase, Failure = refusal?.ToString(), CanonicalOpens = opens, RecoveryCallbacks = callbacks, Mutations = mutations,
-            Scope = "Cold ordinary ProcessPlayerTurn, no bootstrap/Ensure/menu/normalization; all retained-root setup instrumented."
+            Scope = cut == BrowserActivePollCut
+                ? "Cold actual ClassifyBrowserRecoveryAsync, no bootstrap/Ensure/menu/normalization; all retained-root setup instrumented."
+                : "Cold ordinary ProcessPlayerTurn, no bootstrap/Ensure/menu/normalization; all retained-root setup instrumented."
         }));
     }
 

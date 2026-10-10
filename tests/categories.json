@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-browser-active-poll-crash",
+            "responsibility": "#1553 T069 Genuine original browser short signal inspection after real queued producer/staging, held original physical lease/pin; actual engine SIGKILL137/EOF makes exactly that pin Unresolved while NativeBridge survives; cold actual browser classifier refuses native admission before physical open/recovery/mutation with exact staged bytes/inventory.",
+            "excludes": "Idle continuation, T070 cuts, full Program/React/relay chain, Windows/live models, performance or whole T069 acceptance, broad fault or tamper matrices.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserActivePollCrash.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+                "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_ActualActivePollCrashRefusesColdBeforeRecovery"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "guardian-musings-capture-crash",
             "responsibility": "#1553 T070 Actual returned original capture/active publication lease in pre-normalization before-image read; SIGKILL/EOF of ordinary engine with native Bridge alive and same pin Active->Unresolved; cold ordinary native admission must refuse before physical open/recovery/mutation, retaining exact original commands/prefix/evidence.",
             "excludes": "Other two cut boundaries, automatic resume, Program/relay/browser whole chain, Windows/live models, performance acceptance, arbitrary tamper/storage fault matrix and whole T070.",
