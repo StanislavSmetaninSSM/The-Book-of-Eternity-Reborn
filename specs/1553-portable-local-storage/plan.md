@@ -1,3 +1,14 @@
+C5 boundary causal RED at04277932: integration10=9PASS/1FAIL,
+62.6275845s, planned16/executed10 because runner stops after failing integration;
+0skip/duplicate/timeout/cleanupcomplete. Original Process deletes competing request
+and initializes system_mods before claim; exact tree assertion proves both.
+Separate already-fresh-built unit EOF RED6=5PASS/1FAIL,5.9828445s/complete:
+full completed multiline draft duplicated. Both raw packets preserved. Minimal
+source fixes now reserve before validation; browser staging failures preserve
+all evidence/block rather than use unbound generic cleanup; EOF supplies empty
+partial once. Draft preview bounded/controls escaped, accepted receipt requires
+its row at original proven prefix end. GREEN/independent recheck UNRUN.
+
 Boundary fixture preparation at4124ba52: BUILD_FAIL38.3942363s,0tests/ownedcleanupcomplete (missing Configuration import); fixed import, behavior controls remain UNRUN. Catalog formatting restored to existing four-space convention.
 
 ### Current C5 result and boundary controls WIP — 2026-10-10

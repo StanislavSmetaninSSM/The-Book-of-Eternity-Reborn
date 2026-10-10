@@ -147,7 +147,9 @@ internal static class TextComposer
     {
         try
         {
-            return console.ReadLine() ?? throw new TextComposerInputClosedException(draft);
+            // An EOF has no partial current line. The catch supplies completed
+            // lines/default once, exactly as an interrupted empty line does.
+            return console.ReadLine() ?? throw new TextComposerInputClosedException(string.Empty);
         }
         catch (TextComposerInputClosedException interrupted)
         {

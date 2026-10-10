@@ -1383,10 +1383,10 @@ public partial class GameEngine
         await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
         var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+        // Reserve/refuse before health validation can remove an unrelated request.
+        if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
             return;
-
-        if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);
 
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
         RollbackSnapshot? backedUpFiles = null;
@@ -1470,6 +1470,15 @@ public partial class GameEngine
         }
         catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
+            if (browserAction != null)
+            {
+                // Staging never establishes a successful rollback disposition.
+                // Preserve the original slot, backup and any competing request;
+                // cold preparing/staged classification blocks replay before repair.
+                _inGame = false;
+                _logger.LogError(ex, "Browser turn staging stopped; original recovery evidence is retained.");
+                throw;
+            }
             _logger.LogDebug(ex, "Не удалось безопасно поставить ход в очередь; выполняется rollback локальной подготовки.");
             try
             {

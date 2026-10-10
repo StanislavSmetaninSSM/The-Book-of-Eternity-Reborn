@@ -41,7 +41,10 @@ public partial class GameEngine
         }
         var preserved = _preservedPlayerDraft;
         if (!string.IsNullOrEmpty(preserved))
-            AnsiConsole.MarkupLine($"[dim]Сохранённый черновик (Enter = подтвердить):[/] {Markup.Escape(preserved)}");
+        {
+            var preview = new string(preserved.Take(512).Select(c => char.IsControl(c) && c != '\n' && c != '\t' ? '�' : c).ToArray());
+            AnsiConsole.MarkupLine($"[dim]Сохранённый черновик (Enter = подтвердить):[/] {Markup.Escape(preview)}");
+        }
         var console = ReferenceEquals(_inputSource, SystemConsoleInputSource.Instance) && !Console.IsInputRedirected
             ? new StandardTextComposerConsole(new CooperativePlayerInputSource(_inputSource, HasBrowserInputWakeHint, Console.Write))
             : _textComposerConsole;
@@ -245,9 +248,12 @@ public partial class GameEngine
             PendingPlayerActionService.Hash(bytes[..story.PrefixBytes]) != story.PrefixHash)
             throw new InvalidDataException(BrowserRecoveryMessage);
         var row = StrictJsonAuthority.Deserialize<StoryEntry>(story.RowJson, JsonOpts, "accepted browser row")!;
+        var prefixLines = Encoding.UTF8.GetString(bytes[..story.PrefixBytes]).TrimStart('\uFEFF')
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         var lines = Encoding.UTF8.GetString(bytes).TrimStart('\uFEFF').Split('\n', StringSplitOptions.RemoveEmptyEntries);
         if (row.RequestId != state.Binding.ActionId || row.SessionGeneration != state.Binding.Generation ||
             row.Player != state.Binding.Action || row.Turn != manifest.TurnNumber ||
+            prefixLines.LastOrDefault() != story.RowJson ||
             lines.Count(line => line == story.RowJson) != 1 ||
             lines.Select(line => StrictJsonAuthority.Deserialize<StoryEntry>(line, JsonOpts, "browser story history")!)
                 .Count(entry => entry.RequestId == row.RequestId && entry.SessionGeneration == row.SessionGeneration) != 1)
