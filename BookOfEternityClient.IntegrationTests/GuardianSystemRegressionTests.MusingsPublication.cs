@@ -103,7 +103,8 @@ public sealed partial class GuardianSystemRegressionTests
         else command["guardianId"] = "unknown_original_guardian";
         await _fs.WriteFileAtomicAsync(MusingsRootPath, root.ToJsonString());
         var original = await _fs.ReadFileBytesAsync(MusingsRootPath);
-        await Assert.ThrowsAsync<InvalidDataException>(() => RefreshMusingsPublicationAsync(new ValidationService(_fs, NullLogger<ValidationService>.Instance)));
+        var refusal = await Assert.ThrowsAsync<InvalidDataException>(() => RefreshMusingsPublicationAsync(new ValidationService(_fs, NullLogger<ValidationService>.Instance)));
+        Assert.Contains("Original addMusings authorization failed", refusal.Message);
         Assert.Equal(original, await _fs.ReadFileBytesAsync(MusingsRootPath));
     }
 
@@ -123,6 +124,20 @@ public sealed partial class GuardianSystemRegressionTests
     private async Task PrepareMusingsPublicationAsync(int count)
     {
         await PrepareGuardianDialogueActorBrainFixtureAsync(OldMusings, OldMusings);
+        // This boundary requires the exact reader contract; the older actor-brain
+        // fixture's legacy text-hash snapshot is not publication authority.
+        await new LiveTurnPreparationService(_fs).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "test-session", RequestId = "test-request", TurnNumber = 12,
+            CurrentRealm = "Chaos Sea", PlayerAction = "Спросить Элиару, как защитить память.",
+            PreGeneratedDices1d20 = [3, 17]
+        });
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            _fs.GetOrCreateSessionGeneration(lease);
+            var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, [MusingsRootPath, "game_state/meta/soul_state.json"]);
+            Assert.True(read.Success, string.Join("; ", read.Issues.Select(issue => issue.Code + ": " + issue.Actual)));
+        }
         var root = JsonNode.Parse((await _fs.ReadFileAsync(MusingsRootPath))!)!;
         root["UpdateGuardians"] = MusingsCommands(count);
         await _fs.WriteFileAtomicAsync(MusingsRootPath, root.ToJsonString());
