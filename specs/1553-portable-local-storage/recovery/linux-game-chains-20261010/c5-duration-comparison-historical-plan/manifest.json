@@ -1,0 +1,36 @@
+{
+  "SourceSHA": "5657107343a0dcb58f09212f7de48f478dea45d3",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category c5-original-consumer-duration-diagnostic -PlanOnly'",
+  "Status": "PREPARATION_ONLY",
+  "Scope": "Historical production565 with exact1be profile +dispatcher/catalog test overlays; fresh build, one planned diagnostic, zero runtime cases.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "cf3a5295ed8e1037283b7a62ffe9fb21ad9957f1520cb318f1126afab73d340e",
+      "RawBytes": 1504
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "d93951ac1d6b0804682415e582bdc23c92fdb0a08f056f903a78900a0b47479d",
+      "RawBytes": 1174
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "327fcb6babb94be75ff29a01b0637b3655ac2298dc15b48fa44166d0769e27f8",
+      "RawBytes": 44016
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "85206dddc47d15f10578fed77f8ba2b5b317ce1558bfd40ddf0d16d3c5f033a2",
+      "RawBytes": 1648013
+    },
+    {
+      "Path": "Build-bridge.log.gz",
+      "RawBytes": 10285,
+      "RawSHA256": "6ad15857b9cb53a7dce2af329c92f905b84575246a9e6e7b82b10c0c8aaa0c30"
+    }
+  ],
+  "FixtureSourceSHA": "1be03a0d274ca092011576f8adf0792e441a5f3d",
+  "HistoricalTestOnlyOverlayFiles": 3
+}
