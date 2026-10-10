@@ -1,3 +1,18 @@
+### Current C5 result and boundary controls WIP — 2026-10-10
+
+Actual source56571073: selected **10/10 PASS**,218.1995007s,4/4 descriptors,
+10/10 planned/completed,0skip/duplicate/timeout and owned cleanup complete.
+Actual C5 three ordinary browser accepted turns, real React/Program/relay/helper,
+client-only then whole-chain cold restart, distinct original owners/requests,
+full story prefixes and original stop/I-O proofs, ModelCalls0. Shared reader2,
+producer2 and native-key/draft5 are components distinct from actual C5 1.
+[Raw packet](recovery/linux-game-chains-20261010/c5-actual-consumer-first-green/manifest.json).
+Original C5 FAIL remains unchanged. This does not qualify interrupted staged/
+accepted-before-dequeue/cancel or lifecycle handoffs. Independent Astra found
+validation-before-claim and generic staging-failure cleanup may delete a competing
+request. New original Process conflict/EOF draft tests and recovery component
+controls are UNRUN/test-first; no claim of C5 task completion. T070 not started.
+
 ## C5/addMusings implementation ledger — 2026-10-10 (WIP)
 
 Source #1553, approved prior written plan at a7a66257; T069–T071 in tasks.md.

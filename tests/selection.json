@@ -2,6 +2,14 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "browser-player-input-recovery",
+      "reason": "T069 original orchestration conflict RED and bounded classification/dequeue/evidence negatives. Cold new-engine-object component only, no process or gameplay acceptance claim.",
+      "contracts": [
+        "#1553",
+        "T069-C5-ORDINARY-CONSUMER"
+      ]
+    },
+    {
       "category": "browser-pending-snapshot-roundtrip",
       "reason": "Independent review found reader DTO drops newly hashed browser fields. Actual engine manifest/read authority browser vs ordinary RED before DTO fix.",
       "contracts": [

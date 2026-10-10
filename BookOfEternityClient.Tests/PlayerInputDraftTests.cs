@@ -6,6 +6,26 @@ namespace BookOfEternityClient.Tests;
 public sealed class PlayerInputDraftTests
 {
     [Fact]
+    public void EndOfInputDoesNotDuplicateCompletedMultilineDraft()
+    {
+        var console = new EndOfInputConsole();
+        var interruption = Assert.Throws<TextComposerInputClosedException>(() => TextComposer.Read(console, null,
+            new TextComposerOptions { PromptMarkup = ">", PreserveNewlines = true, Mode = TextComposerMode.MultilineEditor }));
+        Assert.Equal("Завершённая строка", interruption.Draft);
+    }
+
+    private sealed class EndOfInputConsole : ITextComposerConsole
+    {
+        private bool _read;
+        public string? ReadLine() { if (_read) return null; _read = true; return "Завершённая строка"; }
+        public bool KeyAvailable => false;
+        public ConsoleKeyInfo ReadKey() => throw new InvalidOperationException();
+        public void Markup(string markup) { }
+        public void MarkupLine(string markup) { }
+        public void WriteLine() { }
+    }
+
+    [Fact]
     public void CooperativeWakePreservesNativePartialAndNeverStartsReadLine()
     {
         var source = new KeysOnlySource("черновик");
