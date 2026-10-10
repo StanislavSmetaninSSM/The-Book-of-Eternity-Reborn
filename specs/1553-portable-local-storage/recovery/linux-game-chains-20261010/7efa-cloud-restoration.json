@@ -1,0 +1,71 @@
+{
+  "SHA": "7efa566ff3c6e8da118e5bef45b27f4691d86b7c",
+  "Tree": "9f2d045c8c48529449773b447057ebefd3b234c4",
+  "RemoteSHA": "7efa566ff3c6e8da118e5bef45b27f4691d86b7c",
+  "Method": "Independent GitHub shallow depth1 single-branch clone into new empty directory, no local objects or source caches copied. Read-only inspection only, no build/test or second writer. fsck --full --strict all fetched objects; full earlier history not fetched.",
+  "Clean": true,
+  "FsckExit": 0,
+  "RawManifestPayloadsVerified": 108,
+  "Files": [
+    {
+      "Path": "AGENTS.md",
+      "Bytes": 11662,
+      "SHA256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "Path": "docs/development-workflow.md",
+      "Bytes": 66432,
+      "SHA256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "Path": ".specify/memory/constitution.md",
+      "Bytes": 14081,
+      "SHA256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1569495,
+      "SHA256": "f8ee6424a7dace701d8de8dfef608d4955e955bfa9ed968af467845a3ebff4aa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/c5-wait-participation-plan.md",
+      "Bytes": 7059,
+      "SHA256": "2f48a32f131d1f362cd28c3d2ea5d888e42ed52158069a538489286970461986"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "Bytes": 21697,
+      "SHA256": "aa5059aa9e1edb21677db51f12e296766326e29a380046de8f8781f3f5b3d661"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "Bytes": 235466,
+      "SHA256": "393d5b9d5923ba3ec032eca6716538a3c313c516b7e70a40da02360a80b6408e"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "Bytes": 490644,
+      "SHA256": "00bb7e554773a8cfc4b34b0ffd2af97825384fffd81e3bf93a10e8383b1c4776"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "Bytes": 278761,
+      "SHA256": "fbb72eb049db9f75dca5032891a540ffed47919422c869dc674d43ac11a2cad1"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserConsumerProfile.cs",
+      "Bytes": 18914,
+      "SHA256": "e97eedd3be7ea4f949dd1a71b7fc063d83b22bde71dcfd21e628c1a8a5c90082"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1680626,
+      "SHA256": "5412c0b2073f61cacb4bd8a88d7443ed3a038dfe8154fd42ad8641c91b53b6e7"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 17694,
+      "SHA256": "a556e83d67d13042620356892388b2709ae492b89b494480e06ac639643d0f0d"
+    }
+  ]
+}
