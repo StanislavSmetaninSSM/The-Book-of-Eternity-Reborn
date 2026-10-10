@@ -1,0 +1,22 @@
+{
+  "SourceSHA": "619eb16f6c9ceaf83090e1f66b8d178144f6f93c",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild -TimeoutMinutes 4",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/catalog-audit.json.gz",
+      "RawSHA256": "7d85541bcfa35d14731614a47d0e4075ba59f788d3b5ccc84b61129bcc255b71",
+      "RawBytes": 103
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "26f41518b61c3c71ef31f6b5c6948eef278339644ea527401e5e449488295ac9",
+      "RawBytes": 3283609
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "e7c88eb1b885bf786c8acf5b2cba1b8bf932dacc72412de09ca4eb7091a7ebf0",
+      "RawBytes": 1404
+    }
+  ]
+}

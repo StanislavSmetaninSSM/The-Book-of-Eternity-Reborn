@@ -1,0 +1,37 @@
+{
+  "SourceSHA": "619eb16f6c9ceaf83090e1f66b8d178144f6f93c",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category c5-held-proof-scope-budget,c5-original-consumer-duration-diagnostic,c5-original-decoded-state-controls,c5-browser-staged-idle-duration-diagnostic -PlanOnly -TimeoutMinutes 12'",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "086aca27b7c803cb2d8f18bd61d4ee20ea66c26c93a6e17c5f834083f0c75abd",
+      "RawBytes": 60401
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "b29a3a079dc049786ec29259a96761f8a555bbb281b5b70a06d01f2a126696dd",
+      "RawBytes": 24118
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "b4c66a32ed2636c4fd2c7fda7abb05c240a0c03896c3a396e8112a2c6adbf900",
+      "RawBytes": 3367979
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "0bac76b2cb8320a79b631382991ac065285d2efd3640d80ecb0c3c238a53fbb5",
+      "RawBytes": 4775
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "ea84485f80fc33388bd6a1069c3c7d7355af0a23fada62e57891102bdbb7d7bb",
+      "RawBytes": 1898
+    },
+    {
+      "Path": "toolchain.json.gz",
+      "RawSHA256": "ea4f23968b31edb0e04dcdbb182512fe0961c4fc9731dca93c05b619bc858e40",
+      "RawBytes": 4929
+    }
+  ]
+}
