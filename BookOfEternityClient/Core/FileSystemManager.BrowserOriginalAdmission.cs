@@ -10,6 +10,16 @@ public partial class FileSystemManager
     private const string BrowserManifestPath = "game_state/control/pending_turn_snapshot.json";
     private static readonly AsyncLocal<BrowserOriginalOperationScope?> BrowserOriginalOperations = new();
 
+    // An original pre-publication refusal, not a grant to bypass the browser
+    // fence. Only this issuing filesystem can identify it for diagnostics.
+    private sealed class BrowserOriginalPhaseRefusal(FileSystemManager files)
+        : InvalidOperationException("Original browser operation is incomplete; recovery retained.")
+    {
+        internal readonly FileSystemManager Files = files;
+    }
+    internal bool IsOriginalBrowserPhaseRefusal(Exception failure) =>
+        failure is BrowserOriginalPhaseRefusal refusal && ReferenceEquals(refusal.Files, this);
+
     // Privately issued under the actual acquired owner, never deserialized. It
     // narrows that owner while original preparation/cleanup changes its layout.
     internal sealed class BrowserOriginalOperationScope : IDisposable
@@ -289,7 +299,7 @@ public partial class FileSystemManager
             if(marked)throw BrowserOriginalMainCondition.Invalid();
             return null;
         }
-        if(state.Phase is "preparing" or "terminalProcessing")throw new InvalidOperationException("Original browser operation is incomplete; recovery retained.");
+        if(state.Phase is "preparing" or "terminalProcessing")throw new BrowserOriginalPhaseRefusal(this);
         var staged=PendingPlayerActionService.ReadStaged(state);
         var original=ValidateOriginalBrowserAdmission(staged,verifyPhysical:state.Phase=="staged");
         // Completed receipts retain their existing cleanup-only contract. Their

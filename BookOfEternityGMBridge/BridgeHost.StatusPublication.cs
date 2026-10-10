@@ -70,6 +70,12 @@ internal sealed partial class BridgeHost
                     return true;
                 });
                 }
+                catch (Exception failure) when (_neutralFiles!.IsOriginalBrowserPhaseRefusal(failure))
+                {
+                    // The original browser phase refused before this diagnostic
+                    // write. Its real pin/lease has closed; a later snapshot can
+                    // publish under the same owner after the phase advances.
+                }
                 catch (Exception failure) when (publication.Owner.IsOriginalRootExitRefusal(failure) ||
                     (GmSessionRunPersistence.IsAdmissionRefusal(failure) && publication.Owner.AdmissionClosed && !publication.Owner.IsUncertain))
                 {

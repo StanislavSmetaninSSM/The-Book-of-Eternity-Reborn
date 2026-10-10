@@ -1,0 +1,191 @@
+{
+  "SourceSHA": "b003550dcfa540fc83156881293b7e06cb9fb272",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-status-phase\")'",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "09b5bedb2a38ff2fdaec8ec871b183db4c4cdea3808dd278e11575f13805047e",
+      "RawBytes": 51409
+    },
+    {
+      "Path": "runner/c5-original-status-phase-integration-001.trx.gz",
+      "RawSHA256": "8a7f0a1f059ea19f03ac8558d5e50896abb6aa8004bad5ca80eeef7c1a8367ba",
+      "RawBytes": 14416
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "9febf0fd263bce228831dbba4d845cf09bf39bc1446fd9cd0370d0dbd6f78a71",
+      "RawBytes": 1676637
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "46b8924d3d73467fead0d62404f6c67afaae3782dfd2c01808ee19e9b2fa4b44",
+      "RawBytes": 1168
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "da7230dbe601ad4c9cb5249a77cf0839e1d6ec30b7ebef8f7b3b3eda5039708d",
+      "RawBytes": 1459
+    },
+    {
+      "Path": "owned/actual-preparing.json.gz",
+      "RawSHA256": "b23dafcec2dcaa4cdf58a9d85b79186139a310e170a079b15394451759b73dd0",
+      "RawBytes": 950
+    },
+    {
+      "Path": "owned/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/native.log.gz",
+      "RawSHA256": "90cc0c23c325f58eb036a10dd7537656ef6c2ed064d431b6edacd20a7e999386",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/neutral-session-b1df4f519ae64be4beae54916d3658a6/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "b34e5beb4315628edecf550ed2a557076e254c4199ea11047b43e3e0c52e2a46",
+      "RawBytes": 391
+    },
+    {
+      "Path": "owned/neutral-session-b1df4f519ae64be4beae54916d3658a6/.boe_runtime/session-generation/current.json.gz",
+      "RawSHA256": "2232a460aa5d04e81ba399c144013318f3997b1ada34654bd5bdab9a3b4a5406",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned/neutral-session-b1df4f519ae64be4beae54916d3658a6/game_session/config.json.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "owned/neutral-session-b1df4f519ae64be4beae54916d3658a6/game_session/game_state/control/gm_bridge_status.json.gz",
+      "RawSHA256": "051d51bbeeb771d158e890211a0de62158d86b48fd2754017ff139787674fd09",
+      "RawBytes": 757
+    },
+    {
+      "Path": "owned/neutral-session-b1df4f519ae64be4beae54916d3658a6/game_session/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "a20a690dea7f0087dd45be1c6ed7004869d09e6b9c65bc44da2a51c3074c8a84",
+      "RawBytes": 141
+    },
+    {
+      "Path": "owned/neutral-session-b1df4f519ae64be4beae54916d3658a6/game_session/input/pending_player_action.json.gz",
+      "RawSHA256": "b23dafcec2dcaa4cdf58a9d85b79186139a310e170a079b15394451759b73dd0",
+      "RawBytes": 950
+    },
+    {
+      "Path": "owned/package/build-provenance.json.gz",
+      "RawSHA256": "bce8401cde75e2fcedaed5ea5b01e41079ec21c3212ab5ebe4655f2c5ff5d02b",
+      "RawBytes": 1438
+    },
+    {
+      "Path": "owned/package/neutral-terminal-manifest.json.gz",
+      "RawSHA256": "6399236bd88d5fdfe17789af37a3570080b0e9d919c113ffae205c09be56ceb7",
+      "RawBytes": 324
+    },
+    {
+      "Path": "owned/package/package-manifest.json.gz",
+      "RawSHA256": "9a1959e018017cc9b3f69accb0fd956e63b917599f2752ea98b65dd359f2c853",
+      "RawBytes": 968
+    },
+    {
+      "Path": "owned/probe.log.gz",
+      "RawSHA256": "51deceafc5986168f0f52fee42939421fa2c23fcc09fa89b4f9b42a8a20449fd",
+      "RawBytes": 63
+    },
+    {
+      "Path": "owned/result.json.gz",
+      "RawSHA256": "16c4d822841eb7b292914bd9f3fd5604fbbd55ba5de27452957777ead9b445b7",
+      "RawBytes": 4874
+    }
+  ],
+  "Result": {
+    "Deferred": false,
+    "EvidenceRetained": true,
+    "RepublishedAfterStage": false,
+    "OriginalStopped": false,
+    "PhysicalCleanup": true,
+    "OriginalUncertain": true,
+    "PublisherFailure": "System.InvalidOperationException: Original browser operation is incomplete; recovery retained.\n   at BookOfEternityClient.Core.FileSystemManager.PreflightBrowserOriginalAdmission(MainAdmission admission) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs:line 292\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 58\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 3611\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 828\n   at BookOfEternityGMBridge.BridgeHost.<>c__DisplayClass73_0.<<PublishOriginalStatusAsync>b__0>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/BridgeHost.StatusPublication.cs:line 69\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Services.GmRuntime.GmSessionRunCoordinator.RunOperationAsync[T](Func`1 operation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs:line 129\n   at BookOfEternityGMBridge.BridgeHost.PublishOriginalStatusAsync(SemaphoreSlim signal) in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/BridgeHost.StatusPublication.cs:line 66\n   at BookOfEternityGMBridge.BridgeHost.SealOriginalStatusPublicationAsync() in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/BridgeHost.StatusPublication.cs:line 105\n   at BookOfEternityGMBridge.BridgeHost.StopShellCoreAsync() in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/Program.cs:line 607",
+    "OperationFailure": null,
+    "CleanupFailure": "System.InvalidOperationException: Original browser operation is incomplete; recovery retained.\n   at BookOfEternityClient.Core.FileSystemManager.PreflightBrowserOriginalAdmission(MainAdmission admission) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs:line 292\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 58\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 3611\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 828\n   at BookOfEternityGMBridge.BridgeHost.<>c__DisplayClass73_0.<<PublishOriginalStatusAsync>b__0>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/BridgeHost.StatusPublication.cs:line 69\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Services.GmRuntime.GmSessionRunCoordinator.RunOperationAsync[T](Func`1 operation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs:line 129\n   at BookOfEternityGMBridge.BridgeHost.PublishOriginalStatusAsync(SemaphoreSlim signal) in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/BridgeHost.StatusPublication.cs:line 66\n   at BookOfEternityGMBridge.BridgeHost.SealOriginalStatusPublicationAsync() in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/BridgeHost.StatusPublication.cs:line 105\n   at BookOfEternityGMBridge.BridgeHost.StopShellCoreAsync() in /workspace/boe-1553-storage-migration/BookOfEternityGMBridge/Program.cs:line 607",
+    "Attempts": 1,
+    "Scope": "Actual GameEngine preparing claim and original NativeLineage Bridge status publisher; controlled pause, no Program/relay/model"
+  },
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "RunnerSummary": {
+    "Categories": [
+      "c5-original-status-phase"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "b003550dcfa540fc83156881293b7e06cb9fb272",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "c5-original-status-phase",
+        "Seconds": 5.4811716,
+        "BudgetMinutes": 2,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0437031,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0464173,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1413165,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 86.0265861,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 7,
+    "WallTime": "00:01:35.6718506",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}
