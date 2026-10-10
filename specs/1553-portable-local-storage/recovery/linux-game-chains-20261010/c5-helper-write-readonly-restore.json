@@ -1,0 +1,2530 @@
+{
+  "Status": "PASS for bounded selected-file recovery only",
+  "VerifiedAtUtc": "2026-10-10T22:03:26.064157+00:00",
+  "BaseSHA": "4e8fd25a605bbb6cee5fd8959662e276428016f9",
+  "RestoredSourceSHA": "048a9b9ec1f0f91ab06786456e8562f6a1aeb267",
+  "RestoredSourceTree": "cd9a634929fbaf8883c02e93756d2605f58cde33",
+  "Directory": "/workspace/.boe-1553-readonly-restores/boe-helper-write-restore-048a9b9ec",
+  "OriginURL": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "CloneCommand": "git clone --depth 1 --single-branch --branch 1553-storage-migration-cloud-20261008 --filter=blob:none --no-checkout https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git /workspace/.boe-1553-readonly-restores/boe-helper-write-restore-048a9b9ec",
+  "CheckoutCommand": "git sparse-checkout init --no-cone; git sparse-checkout set --no-cone --stdin (exact SelectedPaths below); git checkout --detach 048a9b9ec1f0f91ab06786456e8562f6a1aeb267",
+  "DestinationNewToThisScope": true,
+  "LocalRepoObjectsOrFilesCopied": false,
+  "ObjectAlternatesPresent": false,
+  "Shallow": true,
+  "PartialCloneFilter": "blob:none",
+  "SparseSelectedFileRestore": true,
+  "AllRepositoryFilesMaterialized": false,
+  "SelectionRationale": "All288 changed files since accepted4e8 plus69 critical source/instruction/fixture files (352unique, overlap5), including unchanged optimized full-proof, actual helper transport/managed entrypoint, journal transition source and current cleanup-associated admission stack. Only three NEW write continuation archives (277payloads) expanded/hash-audited; no prior269/older383/120/364 or historical raw audit.",
+  "ActualRemoteAndFetchedBranchSHA": "048a9b9ec1f0f91ab06786456e8562f6a1aeb267",
+  "CleanWriterAndRestoreBeforeAndAfter": true,
+  "BuildOrRuntimeExecuted": false,
+  "HistoricalArchivedPayloadsAudited": false,
+  "ChangedPathsVerifiedCount": 288,
+  "CriticalPathsVerifiedCount": 69,
+  "UniqueSelectedFilesVerifiedCount": 352,
+  "ExactCheckoutFileMembershipMatchesSelectionAndGitTree": true,
+  "TotalNewGzipPayloadsVerified": 277,
+  "Archives": [
+    {
+      "Archive": "c5-helper-write-preparation",
+      "ManifestBlobOID": "5ff160bb77531b5f757a58ad0c1d58858ba63a15",
+      "SourceSHA": "2d29d5af8602b92d499fdb8cae09e82f27d8db46",
+      "Payloads": 4,
+      "ExpandedBytes": 1761450,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "EveryRecordedRawSizeAndSHA256Exact": true
+    },
+    {
+      "Archive": "c5-helper-write-catalog",
+      "ManifestBlobOID": "291fa0f7470d4e3ef53629fa1a0fb340d045487d",
+      "SourceSHA": "2d29d5af8602b92d499fdb8cae09e82f27d8db46",
+      "Payloads": 3,
+      "ExpandedBytes": 3284552,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "EveryRecordedRawSizeAndSHA256Exact": true
+    },
+    {
+      "Archive": "c5-helper-write-first-pass",
+      "ManifestBlobOID": "d90d271ce9fec7f554900b1b035c6bcbf5fa64f0",
+      "SourceSHA": "256d2fa048186215ebfed1fbef29c24d9c9ceeb9",
+      "Payloads": 270,
+      "ExpandedBytes": 9513279,
+      "ExactManifestVsGitTreeVsCheckoutMembership": true,
+      "EveryRecordedRawSizeAndSHA256Exact": true
+    }
+  ],
+  "Files": [
+    {
+      "Path": ".agents/skills/speckit-git-commit/SKILL.md",
+      "GitBlobOID": "6d1f29a271289da58624180bfcfa06e9a4c617f8",
+      "Bytes": 1972,
+      "SHA256": "5c7bf976944f5ab6d6dbc143c160aa8742d2f303abdf1453688535d5ceffa1c4"
+    },
+    {
+      "Path": ".agents/skills/speckit-git-remote/SKILL.md",
+      "GitBlobOID": "50bfc3d88f1182a64a1dd7ce6ef16c47df78a461",
+      "Bytes": 1575,
+      "SHA256": "045d34977a70cae585b8bc0adbfd378374498f1a6c59c77615923e64f8d1b3f0"
+    },
+    {
+      "Path": ".agents/skills/speckit-implement/SKILL.md",
+      "GitBlobOID": "2d919eaea7ec1c3c9e6ca865b4e031e3135c5ca0",
+      "Bytes": 11370,
+      "SHA256": "0f4c3643a2bf364c57c824f614b3f601e5b06265e6f52d3adacd4f50f6fe6e00"
+    },
+    {
+      "Path": ".specify/memory/constitution.md",
+      "GitBlobOID": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "Bytes": 14081,
+      "SHA256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "Path": "AGENTS.md",
+      "GitBlobOID": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "Bytes": 11662,
+      "SHA256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserConsumerProfile.cs",
+      "GitBlobOID": "308f3a7885dfa62fd05c588e29ff7200c0507e02",
+      "Bytes": 26355,
+      "SHA256": "019c42341f1bb6288a89e464de9ecf05f4087128871487196a9714f7433e96da"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserProofScopeBudget.cs",
+      "GitBlobOID": "d1d753a72e765032c8473a111e6c7170f846f93d",
+      "Bytes": 4383,
+      "SHA256": "41114a12b2ef9e5209ac349a4fd835ba738c0b2e50f69a71bc159f1da9ae6846"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/ContinueClickHttpObserver.cs",
+      "GitBlobOID": "cfb9186dcb4308fdc35dc4a56bc4e89cb74911e2",
+      "Bytes": 3739,
+      "SHA256": "0a4802947bea5dd52fdbfc284919d1fae21921008cd45cfa3034cd00002014ae"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxBrowserGameChainTests.cs",
+      "GitBlobOID": "d717b22f91ec1ee815a61b56a657414d16d40dfd",
+      "Bytes": 8258,
+      "SHA256": "f26e61ff5722188ec92281f90082782cf8ae9c3066835ce77e887683b25013ba"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+      "GitBlobOID": "e88d4e37aba197bd5cee507c6e25351076bc3413",
+      "Bytes": 13583,
+      "SHA256": "20a52643655fd361dbfce2416bc9806eda811439f9023a4c1265fe250915e6f7"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/App.tsx",
+      "GitBlobOID": "e9a573a3b5c53b7353478ccb1d3e50a7fcf95d42",
+      "Bytes": 7457,
+      "SHA256": "564f3bd490ff5b677154863ca979a210b33f151681ecbc1d84e5980dbe244545"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+      "GitBlobOID": "60daa8d88b23991d0021f0f3950655cb2dbfc0c6",
+      "Bytes": 26430,
+      "SHA256": "5a6eca1136f9713726012104a0c97b01f5f4834e5affd069938d8d68324085f5"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/context/ShellContext.tsx",
+      "GitBlobOID": "77be884bba60a866574abc14de7bf3d27a4a1aee",
+      "Bytes": 16793,
+      "SHA256": "8fcec153cddcf8517f85cadebfe7ba3c7280b4ae2021458873f13c449cf8497c"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/hooks/loadShellState.ts",
+      "GitBlobOID": "4dc3cdefb7cf8db43e55ed1d468a2aaea2fa691e",
+      "Bytes": 2555,
+      "SHA256": "17fe929c361bab2baf05ced70ad410af161c5a4dc58df4a559d9dd96c8004c5d"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "GitBlobOID": "eaa988979b4e709a2a5b4abdd3e24b65d7aa4f84",
+      "Bytes": 7681,
+      "SHA256": "71954c0c0e0b73c989208d870470ea9ab7906c9e28aea8d42c06923db90a507f"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+      "GitBlobOID": "902a0c93e8ceb503bf5467a4bc1638b6cff20259",
+      "Bytes": 6476,
+      "SHA256": "1e1bca8520a3e65d2177a9819af87f10adbcef65a7fb77fb2628a0bcb322abb7"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "GitBlobOID": "a5d61315851898fa241f017babc14582bcb12d20",
+      "Bytes": 25361,
+      "SHA256": "3b7e6900f483601455b0d7b74fbd3de55ddec922d3326050282ad788b0b70a71"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+      "GitBlobOID": "23a1188abe10f636c0133417f38984c0838a8daf",
+      "Bytes": 5364,
+      "SHA256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+      "GitBlobOID": "a2a68f54385ca2dd751518b40805494efd68388c",
+      "Bytes": 1751,
+      "SHA256": "2345923f3a46e23e4c997a3107a5ca2b3a446d402ac05f698a489fc9277e32cb"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
+      "GitBlobOID": "1efab2372c6bd6bfc886aec2c9de3ffd81241231",
+      "Bytes": 4313,
+      "SHA256": "299be7845bef06b7d819c90036292aa000fff51a0e462569a3260d4028a6587e"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "GitBlobOID": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+      "Bytes": 3337,
+      "SHA256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
+      "GitBlobOID": "a8fe1ec081a6fcbf5a05170a8386e9fb7ee5a273",
+      "Bytes": 3886,
+      "SHA256": "ae147b09feb7152aa7a7dfed8b0fc801119f5f7d366524bf1bdccd6825e55a94"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+      "GitBlobOID": "64a8cf5fb7b1d4d040fd9678eeb1f5ac6c1ce8a2",
+      "Bytes": 15169,
+      "SHA256": "228cb24f1ebbce770a328c0ab21b203980d7b7b0039895ec0571bad04d0fa82a"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "GitBlobOID": "f55330f7d0b68f17585c8912c90054520e8e5b7c",
+      "Bytes": 6154,
+      "SHA256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "GitBlobOID": "2757065d70a2424a91039e0a3123daa712ef16ad",
+      "Bytes": 17660,
+      "SHA256": "30bb24e47d6751c09c00c9ebc9d4c63ff7776b362d7d247ed44f27eea152f4af"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs",
+      "GitBlobOID": "982b17545fa2e83e78627c54ac607a9abd87dbef",
+      "Bytes": 6166,
+      "SHA256": "323d61e2ef12ff77662712d5ce199a2ca0dfe6211544ff8e19cd60e984b93cd1"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "GitBlobOID": "34ce9c9a829e3367d78fc174559d6a3859074909",
+      "Bytes": 8847,
+      "SHA256": "4a738f91985c2dd42a9117e22f0d9e0b824495b3594798a9b5579095fb0db6d4"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+      "GitBlobOID": "d940d9846796cd05589d1a9142e4bb29f7bc9d9a",
+      "Bytes": 9987,
+      "SHA256": "beac7a4733bc8de2816c3acedc365b69be19a048efff513cb47ee60c82ef1d21"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.SyntheticBundlePublication.cs",
+      "GitBlobOID": "aad6dc977adf6a04486fe7cc751aba545fdf0cbc",
+      "Bytes": 4882,
+      "SHA256": "f5ee6627f47e9c5503b6cf8bc1c7903c3413debc4496717375f153c74700b142"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "GitBlobOID": "eee8e7b5b93213671e1cf9afc8d765090ed7b4e7",
+      "Bytes": 19071,
+      "SHA256": "a97a457256a092745d1a60d45f50972eb70d953fd4b106f7d01d2179ead83870"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "GitBlobOID": "1acfdd100a4cf566fb55ffadf3ac4014a9fbe8f7",
+      "Bytes": 3583,
+      "SHA256": "d372ecf78ecde37d351272d0e0c9b2476bb4a54f494d48762c1579e13885ab8b"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs",
+      "GitBlobOID": "37056261a566bc46f963bdb92aef7b98ac29f4f3",
+      "Bytes": 3431,
+      "SHA256": "5f5d1c7e810fd1a82a7dd786800506ebeb97435663c114baa5486f6bcab9a9dc"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "GitBlobOID": "81835ee929e36a6c9e0f17d789e239989fb91535",
+      "Bytes": 235466,
+      "SHA256": "393d5b9d5923ba3ec032eca6716538a3c313c516b7e70a40da02360a80b6408e"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserWaitParticipation.cs",
+      "GitBlobOID": "673fe8ff83e1e5804c9369d5fc415348673c782d",
+      "Bytes": 6519,
+      "SHA256": "8d56ab99f8707fcf9c43fb5938250ef786a87ab69c343425195077d786d5b00c"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "GitBlobOID": "c6888e6bfdc4924d1a892d41d3910dcb5eae1bc8",
+      "Bytes": 278761,
+      "SHA256": "fbb72eb049db9f75dca5032891a540ffed47919422c869dc674d43ac11a2cad1"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+      "GitBlobOID": "64d8caddb198b86e7a4d43dd1b2540d2606c34b8",
+      "Bytes": 5624,
+      "SHA256": "558999c2b6ca8da75e9518b4ef70a73674a251d4ba3933fe2be6751ef2e3593f"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "GitBlobOID": "27fa1c9f45502fc5ef92ef4b9a68ea79559115a0",
+      "Bytes": 22597,
+      "SHA256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+      "GitBlobOID": "abf75da3edb325af039deb1fdbc9a65f0e5ac97b",
+      "Bytes": 36016,
+      "SHA256": "78ee3c6b545622fd200985596372137bda29d4d7398ca508eda7da5b7874ab64"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs",
+      "GitBlobOID": "f8a990edc821b0758b03145a4cacbf27710d1b93",
+      "Bytes": 25187,
+      "SHA256": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "GitBlobOID": "1ed8bfd815e9b4134d3b5a2ce113b03827c9991c",
+      "Bytes": 32754,
+      "SHA256": "b037a8332eb1eee94c06e1258dd46d60cb5aa774d66dd3b56eeb4fde97ae10e1"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "GitBlobOID": "c4c9d46904efd9361c02e690d6d142c799e9d672",
+      "Bytes": 17671,
+      "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "GitBlobOID": "1d935b485cc252904be6ce23b197c65d1b56cd72",
+      "Bytes": 121313,
+      "SHA256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+      "GitBlobOID": "a175c87e3d3fd71144c100c7afcb6c9a473c0653",
+      "Bytes": 25591,
+      "SHA256": "9ec146965c358bf28424154c1d9fa1fa5e626cb0b5568911a12b130dfb6ab97d"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+      "GitBlobOID": "bf8a7a74001461c28e4bd86f7750152c8a14b7b1",
+      "Bytes": 14265,
+      "SHA256": "89b5201abfe16160b9c1b5465cf331a81ef5976120936aedee141442405007d9"
+    },
+    {
+      "Path": "BookOfEternityClient/Program.cs",
+      "GitBlobOID": "4e10660f99b759b9454c4f59c5e643cbef7b0319",
+      "Bytes": 16911,
+      "SHA256": "f6d7cf1a39f22717cf4da64becf7dd73f78deb2a50ed85203160e586152fd8b3"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+      "GitBlobOID": "3f6d32096396ef7841074660f5774cabfb45ad59",
+      "Bytes": 6978,
+      "SHA256": "b3e58253d7e7b285fa8dad42775ee230a17cd3875c34891da6f52bfd3aded2c3"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+      "GitBlobOID": "a5cf16a60dc570a792e424f96a84a9230357de69",
+      "Bytes": 14922,
+      "SHA256": "d95af2322418dec67deaae1c0bd793ecdfd6130f933ccff6b74b0985626e8ade"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserGameScreenService.cs",
+      "GitBlobOID": "a8ab842c2ee40491d1b83ddce327f04ce58bbf83",
+      "Bytes": 32305,
+      "SHA256": "27d85725e3879ac801066e78bf64c6bb21cabccdd764eb58958875c231a677f6"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs",
+      "GitBlobOID": "e877134aabf7ad99e25ef079e121f4d82316e0ca",
+      "Bytes": 941,
+      "SHA256": "55c639dc2977647cdb54b922fb1081d9931c33a117fba4a0deab2d674bf76ff7"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "GitBlobOID": "d53830e80bd6352ec43c06e23c06d8509cc5f560",
+      "Bytes": 17677,
+      "SHA256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6"
+    },
+    {
+      "Path": "docs/development-workflow.md",
+      "GitBlobOID": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "Bytes": 66432,
+      "SHA256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "Path": "docs/testing.md",
+      "GitBlobOID": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "Bytes": 18979,
+      "SHA256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "Path": "scripts/test-csharp-worker-runtime-cleanup.ps1",
+      "GitBlobOID": "eedb745f2183ee4b4ba961569a9306ad7058bdb1",
+      "Bytes": 2944,
+      "SHA256": "162535bff92435251336866b54dc16a00f1317f74d700f1b0186938a39708a9f"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "GitBlobOID": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+      "Bytes": 81688,
+      "SHA256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    {
+      "Path": "scripts/testing/TestCategoryAdapters.ps1",
+      "GitBlobOID": "b8810e823e0100e417a9c9a044f34bad4d21dfd8",
+      "Bytes": 7006,
+      "SHA256": "18520f6270236360a7f9088347ed6f611ae7c763ee0ad711c3857760ba466fe1"
+    },
+    {
+      "Path": "scripts/testing/TestCategoryCatalog.psm1",
+      "GitBlobOID": "82dead716f8604c10aa17636c313d46a49fa307b",
+      "Bytes": 13349,
+      "SHA256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d"
+    },
+    {
+      "Path": "scripts/testing/TestCategoryExecution.ps1",
+      "GitBlobOID": "02867549fd55db86f32e765164d65c8eb921ebdd",
+      "Bytes": 11710,
+      "SHA256": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "GitBlobOID": "18cfe8a7c8457c4dd9cf5c0b1cfcc5e7001add7c",
+      "Bytes": 1749620,
+      "SHA256": "58a44484911e99b61a1b790d358561ef8041b8d27f2ffcc15493bf3b1d08d982"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-active-poll-checkpoint.md",
+      "GitBlobOID": "09741f71142485b14e645630dafe1df135f93530",
+      "Bytes": 8153,
+      "SHA256": "1724089a3769e17e664f40d0f1324a661a45a0359516c7852ea512733ab45d31"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-admission-assessment.json",
+      "GitBlobOID": "30b579bbbe607cfc7529efb7a689be4c5d9c8ed3",
+      "Bytes": 26655,
+      "SHA256": "b13158e349fb351a7d2b8e83cc966f87ca190e8f7d7ca395a4f6516cf705c536"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-catalog/manifest.json",
+      "GitBlobOID": "291fa0f7470d4e3ef53629fa1a0fb340d045487d",
+      "Bytes": 1015,
+      "SHA256": "ce679023f0331ae8e02583de01330ef2785054ff33e8c77678587b3d3abe7a09"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-catalog/runner/catalog-audit.json.gz",
+      "GitBlobOID": "8be6ec847c1d4fe15da41b5eaa341e6e6de024f4",
+      "Bytes": 101,
+      "SHA256": "c557ecb248c728b23f668aca0959e92abdafb68f5b9a0afd9954e8335ba21ef5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-catalog/runner/dotnet-test.log.gz",
+      "GitBlobOID": "6b876192ef0da0c9f5cfa128050bff0ea0bbbcfe",
+      "Bytes": 363837,
+      "SHA256": "1a9d8e5fbd92e691c82f890e6f47a2e039b6faf4cb1e6101553925d0e95ec131"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-catalog/runner/summary.json.gz",
+      "GitBlobOID": "f19f40ae39a73e5310ab252707ca6062536c1a02",
+      "Bytes": 601,
+      "SHA256": "47c1138e7f8e938a0fdae944ae1bddc0229a8ac617ea68f9e85024efe9dde604"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/manifest.json",
+      "GitBlobOID": "d90d271ce9fec7f554900b1b035c6bcbf5fa64f0",
+      "Bytes": 62924,
+      "SHA256": "6b93a38922e2ad7a5590623407da467e43ac3ddd54066a5e110980e7f31a5228"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0-binary-provenance.json.gz",
+      "GitBlobOID": "719d6d50236ddea57b976fc2cff1d1889cc5c596",
+      "Bytes": 38016,
+      "SHA256": "44d7ec4d481f2d97d21c7837dd4a742e05b4394ad9712003181d38c9f3eef974"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/authored-1.json.gz",
+      "GitBlobOID": "1efc5ad2144ba58d99069fe99da496e010223d0f",
+      "Bytes": 1659,
+      "SHA256": "f3f631fbe7457c1a550caedb19e2d8790280ba46661dbd0d34cff00d9ddd1196"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/bridge-first-echo.raw.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/bridge-first.raw.gz",
+      "GitBlobOID": "087a15a6a91b76b7d181474e5b4df00252864928",
+      "Bytes": 12829,
+      "SHA256": "8cf867c640d642ff99240675bcd4aabc1776bbc0afc7910c854177a22c7ae64c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/browser-queued-idle-ack.json.gz",
+      "GitBlobOID": "1ff6a3753e69c739af4d09627d7142a276089ff8",
+      "Bytes": 113,
+      "SHA256": "f8b9092c74eb6706e56e4bb5407cd80412bc76a2d4307ec68482718874b2fda4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/browser-queued-idle-ack.json.release.gz",
+      "GitBlobOID": "3c6d7be2da439c9a7c8483e772992931113f0562",
+      "Bytes": 52,
+      "SHA256": "a40b6102644dd348a6ae99ef765a1172a0609bce2de74c6e86eb20a86e3f7cf9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/chain.log.gz",
+      "GitBlobOID": "0d843072d84670b4b5b119458c0b190908a463b7",
+      "Bytes": 11001,
+      "SHA256": "9ce32380168aec19b1d63cfa173c3a9d9f4d77b316a2ca32b5452ced020a22fc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/client-first-echo.raw.gz",
+      "GitBlobOID": "17bfd42bd66f82d07deabc1eb5e10c242de61988",
+      "Bytes": 22,
+      "SHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/client-first.raw.gz",
+      "GitBlobOID": "d90d8873d6d6be51e43e03db2c195d32c03a08e5",
+      "Bytes": 1422,
+      "SHA256": "a4e0472bad5f4b750a9a6d05c976fb9f4a84762822ed3205c4f02a6c181046f8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/client-queued-cold-echo.raw.gz",
+      "GitBlobOID": "17bfd42bd66f82d07deabc1eb5e10c242de61988",
+      "Bytes": 22,
+      "SHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/client-queued-cold.raw.gz",
+      "GitBlobOID": "130f70aa30270bb681abbdc64a892c08dd0574fc",
+      "Bytes": 2493,
+      "SHA256": "0ccaaf991f525e832f20406ac5122e9cf173d689b6b1d5701c2011d2da4ce542"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/daemon-first-echo.raw.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/daemon-first.log.gz",
+      "GitBlobOID": "dffcefc538d4adb065d575c54b4c0a21b713e8b1",
+      "Bytes": 500,
+      "SHA256": "12b6a27f59300a4355e2fa6375bdd6603f2f6fbac1d9ed9343b8714c312c653f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/daemon-first.raw.gz",
+      "GitBlobOID": "1671cdd96535434c6ed2c980e042bd4e6a17516a",
+      "Bytes": 552,
+      "SHA256": "5e8ab9e708196ae89a0a1b1d51df7e8cfe37b3e0eaac0e4b31fd25d18345790d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/events.json.gz",
+      "GitBlobOID": "97fb225fb7f98c21aa0d8f748adc1c4a7d64897d",
+      "Bytes": 5669,
+      "SHA256": "34aa1dc9c32fff4d934de64b26dd533e4fdabb19da6da497330ea9e5d712ccfe"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/guardian.json.gz",
+      "GitBlobOID": "b652408540662fbeb8c6a7b686e995db055abb59",
+      "Bytes": 105,
+      "SHA256": "a409f3eddaa574650d30de81a64a0d182e5d3bb658e07416e7affc18b14f6075"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-admission-observation/consumer-39715-seq0.txt.gz",
+      "GitBlobOID": "20d2d304fd142f5e010fce7939dd01dfd0dd89e5",
+      "Bytes": 363,
+      "SHA256": "fbb76f9b8e1ca7238c29cafbe6b74c34f76d19e3d983889879a8e733666ed80e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-admission-observation/consumer-39715-stderr.txt.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-admission-observation/consumer-39715-summary.json.gz",
+      "GitBlobOID": "3a66afa1cf8e1195365e365f197b8e6e08d609c9",
+      "Bytes": 246,
+      "SHA256": "98d080dcb630592ca96235af67ca18cdf8e5de688ad999f83b33489278611f9e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-admission-observation/consumer-39715.jsonl.gz",
+      "GitBlobOID": "ab0081dff7a5c0396db50677c8f92700ddf0a01b",
+      "Bytes": 1349,
+      "SHA256": "b0a56205c424c012cfbaecc1b04bf67793e2a750f4e350d667d03340f691655e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-observer-provenance.json.gz",
+      "GitBlobOID": "8c086173cb397ac1d3ab0b94be0aae2774da4219",
+      "Bytes": 1602,
+      "SHA256": "1dea3c21153628e36d59377c118bc9c23d647c9550afcb47ccc866edb25b1721"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-observer-source/gm_main_operation.ps1.gz",
+      "GitBlobOID": "269556c98885df07235be8a9af218a1dc5822fb2",
+      "Bytes": 6665,
+      "SHA256": "876cb93d3b7d8e6786474ad53b1ea251219fb86590b519a1f508e76809134de4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-observer-source/gm_turn_helper_transport.ps1.gz",
+      "GitBlobOID": "1793af5d295d94bbf4229dfaeda821be04082be2",
+      "Bytes": 4274,
+      "SHA256": "e517d48c5ab45ba3f180f1b9f36b17605f2849697945e22923b3a05a6276cc0d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-observer-source/helper_admission_observer.ps1.gz",
+      "GitBlobOID": "ecd3dbd112b8441e764cf5f690817deacdc4d93b",
+      "Bytes": 2705,
+      "SHA256": "932cb8b4e2a41c59e8740820f3dafa60c63e64ae2016caeed975f0fbb8753fd9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-stop-input_pending_player_action.json.gz",
+      "GitBlobOID": "a91a03180133521854f6d007f22d7ef79940c9ce",
+      "Bytes": 36242,
+      "SHA256": "0f0a21018286ae53b77c68884fb5843f2c80fdb9478829ed8c34f0772edfbc83"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-stop-input_turn_request.json.gz",
+      "GitBlobOID": "15f58d6a754e6234086f920930f988e543a16160",
+      "Bytes": 17899,
+      "SHA256": "29d844d42a15784d1a528414c920c54f27a3b8cd575aecb0c159e78596dad3f5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-stop-ready_turn_complete.json.gz",
+      "GitBlobOID": "6d1e38325455c4c594174dd6095eb6305cd220cc",
+      "Bytes": 294,
+      "SHA256": "1d2fb2b27a13c6ed95b78db84d90d695048b42c81574c4406e25e99067881061"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/native-preparation.log.gz",
+      "GitBlobOID": "7dce53a7ee1225ad08f7f654d9619c28463244a2",
+      "Bytes": 71,
+      "SHA256": "9b62e8b573c13645f1a884dccf009415f9afc89899bfcd36f85c7c00f9293b3e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/package/boe-lineage-supervisor.gz",
+      "GitBlobOID": "903b419346ccd92816ab09acd0333f2bf7d8f296",
+      "Bytes": 36345,
+      "SHA256": "c9c0dd9fdb36d3ffb8cfa4ee69425985e3bc5724eee81c71b0803379516c778c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/package/build-provenance.json.gz",
+      "GitBlobOID": "247a83d224788671d6976f3930b28192389c372b",
+      "Bytes": 685,
+      "SHA256": "09210576f1b468bb005ce26eae4668413f741659ba2c1bcbb1c1b7cbc3276546"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/package/package-manifest.json.gz",
+      "GitBlobOID": "a4d2861e7e0ced5b29ddfb3d5561afe545fb9793",
+      "Bytes": 629,
+      "SHA256": "7015fcc757a7f09bf753be5ceafd3f6f9987496c7c457cc0d08a6c96e9490e5e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/gm-runs/main.json.gz",
+      "GitBlobOID": "44f84c185e02230394f948db39104578c1e41a9d",
+      "Bytes": 306,
+      "SHA256": "6c1a53c5764bbee75f54c7923aeb0dfe8a5cf6082a4ff9d52019e4c1ef9e1ca2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/locks/canonical-write.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/locks/session-lifecycle.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/session-generation/current.json.gz",
+      "GitBlobOID": "7d1485942604150384b5fa58e58808a87574b25b",
+      "Bytes": 86,
+      "SHA256": "8d0d97d621a4889f72447bb3a1c591c7754854232d2cc69d11b4c0c4856e2bb0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/worker-runs-v1/journal.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/worker-runs-v1/mode.json.gz",
+      "GitBlobOID": "f50b6b7918a377c3a1abb114043febee72fa480c",
+      "Bytes": 102,
+      "SHA256": "db43f8840beea0e420389cf5c596f70a33a1a8552b0572a3d47ccbdc299967d6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/worker-runs-v1/owner.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/worker-runs-v1/state.json.gz",
+      "GitBlobOID": "589d3b99ffa5dd0064bb3d68ec24c8769f4b8387",
+      "Bytes": 130,
+      "SHA256": "ba64e274fac51060b5628af8996e2909ee268e5df2aeb55a040467ce30b9435a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/config.json.gz",
+      "GitBlobOID": "e7a738658a1d322ff8efeea21567622589604b25",
+      "Bytes": 525,
+      "SHA256": "2264340bb9b348d8482a939ec80d33a24253dbb1e5825c05ac028ef7d62570e0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_bridge_status.json.gz",
+      "GitBlobOID": "4d0a2d3454030eb8ac33916f51c9b6bb1da55548",
+      "Bytes": 932,
+      "SHA256": "f6f4bacf846fd0d96c46ef340006b79244a2343e8776a3b83241bae321293bda"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.gz",
+      "GitBlobOID": "adfb53b2bb49cbff34c6a5b03d1d11ee3a1f1c1f",
+      "Bytes": 51237,
+      "SHA256": "af09ae2d32fd20d67203d7a5ec675bf2ff19d593ab1a19b57b2e1a33cbc59e0b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "adfb53b2bb49cbff34c6a5b03d1d11ee3a1f1c1f",
+      "Bytes": 51237,
+      "SHA256": "af09ae2d32fd20d67203d7a5ec675bf2ff19d593ab1a19b57b2e1a33cbc59e0b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.gz",
+      "GitBlobOID": "baa04b474f9d4a896f188d8e0c226f58d21f5444",
+      "Bytes": 168812,
+      "SHA256": "59b912d2df7f121e5ca2b6d49f3757971338d687687a278e3a7be72818709336"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.rollback.639272662195325547.gz",
+      "GitBlobOID": "baa04b474f9d4a896f188d8e0c226f58d21f5444",
+      "Bytes": 168812,
+      "SHA256": "59b912d2df7f121e5ca2b6d49f3757971338d687687a278e3a7be72818709336"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.gz",
+      "GitBlobOID": "5729f2dd5df3901d64f18d7c5cdd95fc7b9c1e3d",
+      "Bytes": 11099,
+      "SHA256": "17a314b4a73f152a4c689572b61b3a8044249e29c1033d456d63fc97757347ff"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.rollback.639272662195325547.gz",
+      "GitBlobOID": "5729f2dd5df3901d64f18d7c5cdd95fc7b9c1e3d",
+      "Bytes": 11099,
+      "SHA256": "17a314b4a73f152a4c689572b61b3a8044249e29c1033d456d63fc97757347ff"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.gz",
+      "GitBlobOID": "e2137f8621e6933421cef0e20d82053b08a3e056",
+      "Bytes": 4346,
+      "SHA256": "2289bf774fadb60f51a557eebddc8058dd6969515462c63530091b1c50b2952a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.rollback.639272662195325547.gz",
+      "GitBlobOID": "e2137f8621e6933421cef0e20d82053b08a3e056",
+      "Bytes": 4346,
+      "SHA256": "2289bf774fadb60f51a557eebddc8058dd6969515462c63530091b1c50b2952a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.gz",
+      "GitBlobOID": "84e2f952af5fd33b5c690169a8b6b290cd7cd7d3",
+      "Bytes": 3910,
+      "SHA256": "fd6accbf220abf4aebf94e6f038498fd7cfeec66a4b5990eb618ab6a2ac233a8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.rollback.639272662195325547.gz",
+      "GitBlobOID": "84e2f952af5fd33b5c690169a8b6b290cd7cd7d3",
+      "Bytes": 3910,
+      "SHA256": "fd6accbf220abf4aebf94e6f038498fd7cfeec66a4b5990eb618ab6a2ac233a8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.gz",
+      "GitBlobOID": "587d16d6636aa2c6c88a3ea0212a168793f77972",
+      "Bytes": 3750,
+      "SHA256": "dd8214f1691819721873936a17aeb4f8b112f8cb2a99b57575dd27fbc382ac99"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.rollback.639272662195325547.gz",
+      "GitBlobOID": "587d16d6636aa2c6c88a3ea0212a168793f77972",
+      "Bytes": 3750,
+      "SHA256": "dd8214f1691819721873936a17aeb4f8b112f8cb2a99b57575dd27fbc382ac99"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.gz",
+      "GitBlobOID": "e5f3d7b6de64aaf9a02a7d23512ab57c54debedb",
+      "Bytes": 32863,
+      "SHA256": "ed2ceff145e6be16fd96fa32f49898250e3ecee1c551a3fbef5ce6abc6ae6904"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.rollback.639272662195325547.gz",
+      "GitBlobOID": "e5f3d7b6de64aaf9a02a7d23512ab57c54debedb",
+      "Bytes": 32863,
+      "SHA256": "ed2ceff145e6be16fd96fa32f49898250e3ecee1c551a3fbef5ce6abc6ae6904"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.gz",
+      "GitBlobOID": "a3fb2b9ad754745b60146d12a490d4887156ec8e",
+      "Bytes": 8557,
+      "SHA256": "4ecc9045d6194a0a8cac4848377c1ee662a77e5d349404fb4fc81768750ee855"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.rollback.639272662195325547.gz",
+      "GitBlobOID": "a3fb2b9ad754745b60146d12a490d4887156ec8e",
+      "Bytes": 8557,
+      "SHA256": "4ecc9045d6194a0a8cac4848377c1ee662a77e5d349404fb4fc81768750ee855"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.gz",
+      "GitBlobOID": "aa1f007ea3cc58dd908b35603ca2f557d55806af",
+      "Bytes": 15177,
+      "SHA256": "e99fa15e1dfee08dbab05103c8e3f01ca08520b57aee73f6f2ea8114d26d4834"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.rollback.639272662195325547.gz",
+      "GitBlobOID": "aa1f007ea3cc58dd908b35603ca2f557d55806af",
+      "Bytes": 15177,
+      "SHA256": "e99fa15e1dfee08dbab05103c8e3f01ca08520b57aee73f6f2ea8114d26d4834"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.gz",
+      "GitBlobOID": "b813b1bac42a3eabaf0b5d7c03dfa90c723db2ea",
+      "Bytes": 312,
+      "SHA256": "8b8ff8da3e26786251df05f1ea599d2f44070f5a61be3017ab31bae835eefc0e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "aac5583e8f42a1ba1b0587ab98195877e2e66bfd",
+      "Bytes": 314,
+      "SHA256": "1b2b3eee89890c03a9951c6982a59afaab635be5adb79950a9e72305ad3b6efd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.gz",
+      "GitBlobOID": "bc1005eaa519587a67456aee237e1e7637bf2941",
+      "Bytes": 193,
+      "SHA256": "486c6f9bb5352fd6c0fa3d32373d8963952a133dfcbff789993d479c95ce2fab"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "bc1005eaa519587a67456aee237e1e7637bf2941",
+      "Bytes": 193,
+      "SHA256": "486c6f9bb5352fd6c0fa3d32373d8963952a133dfcbff789993d479c95ce2fab"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.gz",
+      "GitBlobOID": "b3872f8766895654f7eec41d62ddc6a0eb3f2a1c",
+      "Bytes": 17164,
+      "SHA256": "f597b796f7cacda91f05bb2cd4e78aa33e11964b18fdb63c21434ff0c7ca142d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "b3872f8766895654f7eec41d62ddc6a0eb3f2a1c",
+      "Bytes": 17164,
+      "SHA256": "f597b796f7cacda91f05bb2cd4e78aa33e11964b18fdb63c21434ff0c7ca142d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.gz",
+      "GitBlobOID": "ced7494fe597c121bc2e3630bdf8379f484fe42f",
+      "Bytes": 80342,
+      "SHA256": "4493d8726a262ed891ad61108a40a935507d653ee432c83db09481e646f7ccd7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "ced7494fe597c121bc2e3630bdf8379f484fe42f",
+      "Bytes": 80342,
+      "SHA256": "4493d8726a262ed891ad61108a40a935507d653ee432c83db09481e646f7ccd7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.gz",
+      "GitBlobOID": "d2842cb01e3ce6d6ce69ef151d7ab7642e643291",
+      "Bytes": 11098,
+      "SHA256": "fd40d5fb3e0d3b31987f568f73895f03cb7ada478f2780378a29b39d0591b6db"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "d2842cb01e3ce6d6ce69ef151d7ab7642e643291",
+      "Bytes": 11098,
+      "SHA256": "fd40d5fb3e0d3b31987f568f73895f03cb7ada478f2780378a29b39d0591b6db"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.gz",
+      "GitBlobOID": "2b4b2f009c8256a91d4e48122f7dc44c7519cbe7",
+      "Bytes": 27879,
+      "SHA256": "f9acac83039b5774a4f415254028e9e5d2a66d9f7f94308db9cc744259870668"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "2b4b2f009c8256a91d4e48122f7dc44c7519cbe7",
+      "Bytes": 27879,
+      "SHA256": "f9acac83039b5774a4f415254028e9e5d2a66d9f7f94308db9cc744259870668"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.gz",
+      "GitBlobOID": "7e24ade7b101f16b2b981a135737ecde2fc7ee45",
+      "Bytes": 1808,
+      "SHA256": "375dbb6db97ea2e0298dc6a948cdef514a79e8cbc093fc1af84520ad7a16e05b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "7e24ade7b101f16b2b981a135737ecde2fc7ee45",
+      "Bytes": 1808,
+      "SHA256": "375dbb6db97ea2e0298dc6a948cdef514a79e8cbc093fc1af84520ad7a16e05b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.gz",
+      "GitBlobOID": "5ec9ee4ea13ad4c8c8375057939eae3287c9e59c",
+      "Bytes": 1253,
+      "SHA256": "d47e41c6a34b05095bf61a6af83addf254df3da31f8e3bfc5bb9b4c448f5df83"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "5ec9ee4ea13ad4c8c8375057939eae3287c9e59c",
+      "Bytes": 1253,
+      "SHA256": "d47e41c6a34b05095bf61a6af83addf254df3da31f8e3bfc5bb9b4c448f5df83"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/README.md.gz",
+      "GitBlobOID": "02789b07365d149440ed9f50c7f2117b6b978064",
+      "Bytes": 883,
+      "SHA256": "6200a842595c915de923527c1627f7e39c27ed2a47650b684c735f1492483cc8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/README.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "02789b07365d149440ed9f50c7f2117b6b978064",
+      "Bytes": 883,
+      "SHA256": "6200a842595c915de923527c1627f7e39c27ed2a47650b684c735f1492483cc8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.gz",
+      "GitBlobOID": "930b3bf1f848e5d426f94cc2bd0f2b6b6cdc6005",
+      "Bytes": 899,
+      "SHA256": "7dbc3c775d9fc721a996823108ea035ac642ef549caeeff2d41aa9ec34c22a76"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "930b3bf1f848e5d426f94cc2bd0f2b6b6cdc6005",
+      "Bytes": 899,
+      "SHA256": "7dbc3c775d9fc721a996823108ea035ac642ef549caeeff2d41aa9ec34c22a76"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.gz",
+      "GitBlobOID": "ab752f36682e8685bf410ba8321775feeec31328",
+      "Bytes": 1023,
+      "SHA256": "35cd1a2b35e791cbfd6864479cda76ef352ecb8b8a8985f0618a67146dac04de"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "ab752f36682e8685bf410ba8321775feeec31328",
+      "Bytes": 1023,
+      "SHA256": "35cd1a2b35e791cbfd6864479cda76ef352ecb8b8a8985f0618a67146dac04de"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.gz",
+      "GitBlobOID": "b0dde0320bd8aa7ed898d0de0afe091e2a65e824",
+      "Bytes": 57847,
+      "SHA256": "35083a3d218b48e643b3f598ea155edbcb67891a5cc46d9b090c368c84e47f38"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.rollback.639272662195325547.gz",
+      "GitBlobOID": "b0dde0320bd8aa7ed898d0de0afe091e2a65e824",
+      "Bytes": 57847,
+      "SHA256": "35083a3d218b48e643b3f598ea155edbcb67891a5cc46d9b090c368c84e47f38"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.gz",
+      "GitBlobOID": "89a9fa000885b67bc142b5085afcb71a16543e94",
+      "Bytes": 1803,
+      "SHA256": "a5aeab08a06660a15d07d59360139a439a326e6eb8f6fdb8d5b42814792afaaa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "89a9fa000885b67bc142b5085afcb71a16543e94",
+      "Bytes": 1803,
+      "SHA256": "a5aeab08a06660a15d07d59360139a439a326e6eb8f6fdb8d5b42814792afaaa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.gz",
+      "GitBlobOID": "719f5c25b92ac53a6a212791872763daf3de3a0d",
+      "Bytes": 1695,
+      "SHA256": "c5cb2a8731e1ec47b910b7af29610f4766605f4086bc54c51b4b9d6e4fd0a7e4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "719f5c25b92ac53a6a212791872763daf3de3a0d",
+      "Bytes": 1695,
+      "SHA256": "c5cb2a8731e1ec47b910b7af29610f4766605f4086bc54c51b4b9d6e4fd0a7e4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.gz",
+      "GitBlobOID": "7b931e4a7404a9ee288e624aadf83c66e27af305",
+      "Bytes": 325,
+      "SHA256": "7c247d5af2cbaf92e3f1c25c31438201dccaabb6f3e46a7f29e1942c24d1f295"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "7b931e4a7404a9ee288e624aadf83c66e27af305",
+      "Bytes": 325,
+      "SHA256": "7c247d5af2cbaf92e3f1c25c31438201dccaabb6f3e46a7f29e1942c24d1f295"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.gz",
+      "GitBlobOID": "dc404cdd7e65d9b9bcb621636ee1c422b378d0b5",
+      "Bytes": 1544,
+      "SHA256": "daa0262c7b1e138ba869942bc17f00cd6c66d627132e78f5b7af30b7aa7339b1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "dc404cdd7e65d9b9bcb621636ee1c422b378d0b5",
+      "Bytes": 1544,
+      "SHA256": "daa0262c7b1e138ba869942bc17f00cd6c66d627132e78f5b7af30b7aa7339b1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.gz",
+      "GitBlobOID": "0093af0d06a79021a66634f53443996b4f3120c0",
+      "Bytes": 1472,
+      "SHA256": "2c4e2e541c5bf536785e6390238bb335202d4f2bbea4ad92edf30bc1f689db06"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "0093af0d06a79021a66634f53443996b4f3120c0",
+      "Bytes": 1472,
+      "SHA256": "2c4e2e541c5bf536785e6390238bb335202d4f2bbea4ad92edf30bc1f689db06"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.gz",
+      "GitBlobOID": "a1619c3347370b63ba3c89dce33aa6849433b920",
+      "Bytes": 2417,
+      "SHA256": "949255e6e50dc6192c4a53e2c451cbfa40092316da460cb36a3fdf92cd0726ad"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "a1619c3347370b63ba3c89dce33aa6849433b920",
+      "Bytes": 2417,
+      "SHA256": "949255e6e50dc6192c4a53e2c451cbfa40092316da460cb36a3fdf92cd0726ad"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.gz",
+      "GitBlobOID": "1d5ecd5662451c6e733f45df4c61f9bdbaa29348",
+      "Bytes": 1808,
+      "SHA256": "3c6615ddda684b4ceba9f0e49397a2fd6ccb2da51c708a15a2ddc279638e0b81"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "1d5ecd5662451c6e733f45df4c61f9bdbaa29348",
+      "Bytes": 1808,
+      "SHA256": "3c6615ddda684b4ceba9f0e49397a2fd6ccb2da51c708a15a2ddc279638e0b81"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.gz",
+      "GitBlobOID": "3c868a4b57997698c4c84daf4c5b6dbf62b3349a",
+      "Bytes": 2382,
+      "SHA256": "220e486984ad67a147373263711d637a44c91bc76508d784d97fba1c1b821b61"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "3c868a4b57997698c4c84daf4c5b6dbf62b3349a",
+      "Bytes": 2382,
+      "SHA256": "220e486984ad67a147373263711d637a44c91bc76508d784d97fba1c1b821b61"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+      "GitBlobOID": "e21291da3d97209617c9e0a007587f4381a81eab",
+      "Bytes": 4878,
+      "SHA256": "98c0a8b3d50cd1d74d272e05c7f7e652bf8a2dc78cb5c2af6e01dde48744bd95"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "e21291da3d97209617c9e0a007587f4381a81eab",
+      "Bytes": 4878,
+      "SHA256": "98c0a8b3d50cd1d74d272e05c7f7e652bf8a2dc78cb5c2af6e01dde48744bd95"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.gz",
+      "GitBlobOID": "5ff74488a4430e69ad67ee0a74e1c514883428ed",
+      "Bytes": 3016,
+      "SHA256": "3bee293f5a4ee0880511becae051180033feb4fa9cbfacc7b14fc178855d6e2d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "5ff74488a4430e69ad67ee0a74e1c514883428ed",
+      "Bytes": 3016,
+      "SHA256": "3bee293f5a4ee0880511becae051180033feb4fa9cbfacc7b14fc178855d6e2d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.gz",
+      "GitBlobOID": "d8118366b60a27cb8ff29f2de9b4bf82424e4b11",
+      "Bytes": 2274,
+      "SHA256": "3ebbbc1d841a5c2ab6605c8e94767ef9e6d8e949fbb82e9ca8fd299fae938efc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "d8118366b60a27cb8ff29f2de9b4bf82424e4b11",
+      "Bytes": 2274,
+      "SHA256": "3ebbbc1d841a5c2ab6605c8e94767ef9e6d8e949fbb82e9ca8fd299fae938efc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.gz",
+      "GitBlobOID": "58f347350ad797723650a02f83a28bcebf930d9b",
+      "Bytes": 309,
+      "SHA256": "ac50790050ff92064158076c1267333bb732f5ccb5fa7bbaaddd53ac43f7d724"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "58f347350ad797723650a02f83a28bcebf930d9b",
+      "Bytes": 309,
+      "SHA256": "ac50790050ff92064158076c1267333bb732f5ccb5fa7bbaaddd53ac43f7d724"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.gz",
+      "GitBlobOID": "66fe849f51dbb95d74124accc7821145888ef888",
+      "Bytes": 3237,
+      "SHA256": "c357322707d2b3abf8d3e2105aa16bc1604f3fe6e5726922eaad779e6018ed19"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "66fe849f51dbb95d74124accc7821145888ef888",
+      "Bytes": 3237,
+      "SHA256": "c357322707d2b3abf8d3e2105aa16bc1604f3fe6e5726922eaad779e6018ed19"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.gz",
+      "GitBlobOID": "5d770e5eb3dc60df3eb19482862b8835b00daa82",
+      "Bytes": 3907,
+      "SHA256": "45e581937215ac0e8f4f55d83db3a8ea9c94bb5ad5873c5ab51eac0e0886c880"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.rollback.639272662195325547.gz",
+      "GitBlobOID": "5d770e5eb3dc60df3eb19482862b8835b00daa82",
+      "Bytes": 3907,
+      "SHA256": "45e581937215ac0e8f4f55d83db3a8ea9c94bb5ad5873c5ab51eac0e0886c880"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/context_pack_manifest.json.gz",
+      "GitBlobOID": "6abf236bdbb310bf7457e3a1aadc257441c73ddc",
+      "Bytes": 2072,
+      "SHA256": "310aa84fd6ef85de79074106e60498e52d5e56f1d27256bb6ba77db28cff64da"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/context_pack_manifest.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "6abf236bdbb310bf7457e3a1aadc257441c73ddc",
+      "Bytes": 2072,
+      "SHA256": "310aa84fd6ef85de79074106e60498e52d5e56f1d27256bb6ba77db28cff64da"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_daemon_status.json.gz",
+      "GitBlobOID": "44b451ef9dbf5c469ba731740896f213e10a1996",
+      "Bytes": 711,
+      "SHA256": "b1773231c62554e5827218146e04116d99b3da607ec91dbd29d7eea90e8ca826"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_daemon_status.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "7aeb172244abae19a5c4712dcd17b86e51bab6a4",
+      "Bytes": 348,
+      "SHA256": "5d3781517069a3823c182dc038b27fe9d9cf97a88adf810c5fe189530bc28f6e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.gz",
+      "GitBlobOID": "5e3adbf4064543a6c9740d339b8cd2df30fa8dda",
+      "Bytes": 280,
+      "SHA256": "e68264fd0836fb83bd655a9a29a84fffe7d6745f930a07e3caa93bc20022b9fc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.rollback.639272662195325547.gz",
+      "GitBlobOID": "5e3adbf4064543a6c9740d339b8cd2df30fa8dda",
+      "Bytes": 280,
+      "SHA256": "e68264fd0836fb83bd655a9a29a84fffe7d6745f930a07e3caa93bc20022b9fc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_dice_state.json.gz",
+      "GitBlobOID": "e0c1006ab632d6bc4c348f2e68551cafffb910af",
+      "Bytes": 282,
+      "SHA256": "3d12098c16d6ce5a51468c51a8d8991dabdfcb24542640042aad8de1aea958a7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "GitBlobOID": "23bcd7694da77e5650d82fc0f41f5e2f8af19cea",
+      "Bytes": 11128,
+      "SHA256": "9990b864b2d2b308490d7235949892e67794cf1019b2da82e31e1349a382da94"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot.json.gz",
+      "GitBlobOID": "77e029b971614d382af619572f083573f8f9062e",
+      "Bytes": 6229,
+      "SHA256": "f225285ccbe1b1f00b28abb14b7dd372fb1c5b14d4162503be5b8f06aea145b5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.gz",
+      "GitBlobOID": "adfb53b2bb49cbff34c6a5b03d1d11ee3a1f1c1f",
+      "Bytes": 51237,
+      "SHA256": "af09ae2d32fd20d67203d7a5ec675bf2ff19d593ab1a19b57b2e1a33cbc59e0b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.gz",
+      "GitBlobOID": "baa04b474f9d4a896f188d8e0c226f58d21f5444",
+      "Bytes": 168812,
+      "SHA256": "59b912d2df7f121e5ca2b6d49f3757971338d687687a278e3a7be72818709336"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.gz",
+      "GitBlobOID": "5729f2dd5df3901d64f18d7c5cdd95fc7b9c1e3d",
+      "Bytes": 11099,
+      "SHA256": "17a314b4a73f152a4c689572b61b3a8044249e29c1033d456d63fc97757347ff"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.gz",
+      "GitBlobOID": "e2137f8621e6933421cef0e20d82053b08a3e056",
+      "Bytes": 4346,
+      "SHA256": "2289bf774fadb60f51a557eebddc8058dd6969515462c63530091b1c50b2952a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.gz",
+      "GitBlobOID": "84e2f952af5fd33b5c690169a8b6b290cd7cd7d3",
+      "Bytes": 3910,
+      "SHA256": "fd6accbf220abf4aebf94e6f038498fd7cfeec66a4b5990eb618ab6a2ac233a8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.gz",
+      "GitBlobOID": "587d16d6636aa2c6c88a3ea0212a168793f77972",
+      "Bytes": 3750,
+      "SHA256": "dd8214f1691819721873936a17aeb4f8b112f8cb2a99b57575dd27fbc382ac99"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.gz",
+      "GitBlobOID": "e5f3d7b6de64aaf9a02a7d23512ab57c54debedb",
+      "Bytes": 32863,
+      "SHA256": "ed2ceff145e6be16fd96fa32f49898250e3ecee1c551a3fbef5ce6abc6ae6904"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.gz",
+      "GitBlobOID": "a3fb2b9ad754745b60146d12a490d4887156ec8e",
+      "Bytes": 8557,
+      "SHA256": "4ecc9045d6194a0a8cac4848377c1ee662a77e5d349404fb4fc81768750ee855"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.gz",
+      "GitBlobOID": "aa1f007ea3cc58dd908b35603ca2f557d55806af",
+      "Bytes": 15177,
+      "SHA256": "e99fa15e1dfee08dbab05103c8e3f01ca08520b57aee73f6f2ea8114d26d4834"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.gz",
+      "GitBlobOID": "aac5583e8f42a1ba1b0587ab98195877e2e66bfd",
+      "Bytes": 314,
+      "SHA256": "1b2b3eee89890c03a9951c6982a59afaab635be5adb79950a9e72305ad3b6efd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.gz",
+      "GitBlobOID": "bc1005eaa519587a67456aee237e1e7637bf2941",
+      "Bytes": 193,
+      "SHA256": "486c6f9bb5352fd6c0fa3d32373d8963952a133dfcbff789993d479c95ce2fab"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.gz",
+      "GitBlobOID": "b3872f8766895654f7eec41d62ddc6a0eb3f2a1c",
+      "Bytes": 17164,
+      "SHA256": "f597b796f7cacda91f05bb2cd4e78aa33e11964b18fdb63c21434ff0c7ca142d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.gz",
+      "GitBlobOID": "ced7494fe597c121bc2e3630bdf8379f484fe42f",
+      "Bytes": 80342,
+      "SHA256": "4493d8726a262ed891ad61108a40a935507d653ee432c83db09481e646f7ccd7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.gz",
+      "GitBlobOID": "d2842cb01e3ce6d6ce69ef151d7ab7642e643291",
+      "Bytes": 11098,
+      "SHA256": "fd40d5fb3e0d3b31987f568f73895f03cb7ada478f2780378a29b39d0591b6db"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.gz",
+      "GitBlobOID": "2b4b2f009c8256a91d4e48122f7dc44c7519cbe7",
+      "Bytes": 27879,
+      "SHA256": "f9acac83039b5774a4f415254028e9e5d2a66d9f7f94308db9cc744259870668"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.gz",
+      "GitBlobOID": "7e24ade7b101f16b2b981a135737ecde2fc7ee45",
+      "Bytes": 1808,
+      "SHA256": "375dbb6db97ea2e0298dc6a948cdef514a79e8cbc093fc1af84520ad7a16e05b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.gz",
+      "GitBlobOID": "5ec9ee4ea13ad4c8c8375057939eae3287c9e59c",
+      "Bytes": 1253,
+      "SHA256": "d47e41c6a34b05095bf61a6af83addf254df3da31f8e3bfc5bb9b4c448f5df83"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/README.md.gz",
+      "GitBlobOID": "02789b07365d149440ed9f50c7f2117b6b978064",
+      "Bytes": 883,
+      "SHA256": "6200a842595c915de923527c1627f7e39c27ed2a47650b684c735f1492483cc8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.gz",
+      "GitBlobOID": "930b3bf1f848e5d426f94cc2bd0f2b6b6cdc6005",
+      "Bytes": 899,
+      "SHA256": "7dbc3c775d9fc721a996823108ea035ac642ef549caeeff2d41aa9ec34c22a76"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.gz",
+      "GitBlobOID": "ab752f36682e8685bf410ba8321775feeec31328",
+      "Bytes": 1023,
+      "SHA256": "35cd1a2b35e791cbfd6864479cda76ef352ecb8b8a8985f0618a67146dac04de"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.gz",
+      "GitBlobOID": "b0dde0320bd8aa7ed898d0de0afe091e2a65e824",
+      "Bytes": 57847,
+      "SHA256": "35083a3d218b48e643b3f598ea155edbcb67891a5cc46d9b090c368c84e47f38"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.gz",
+      "GitBlobOID": "89a9fa000885b67bc142b5085afcb71a16543e94",
+      "Bytes": 1803,
+      "SHA256": "a5aeab08a06660a15d07d59360139a439a326e6eb8f6fdb8d5b42814792afaaa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.gz",
+      "GitBlobOID": "719f5c25b92ac53a6a212791872763daf3de3a0d",
+      "Bytes": 1695,
+      "SHA256": "c5cb2a8731e1ec47b910b7af29610f4766605f4086bc54c51b4b9d6e4fd0a7e4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.gz",
+      "GitBlobOID": "7b931e4a7404a9ee288e624aadf83c66e27af305",
+      "Bytes": 325,
+      "SHA256": "7c247d5af2cbaf92e3f1c25c31438201dccaabb6f3e46a7f29e1942c24d1f295"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.gz",
+      "GitBlobOID": "dc404cdd7e65d9b9bcb621636ee1c422b378d0b5",
+      "Bytes": 1544,
+      "SHA256": "daa0262c7b1e138ba869942bc17f00cd6c66d627132e78f5b7af30b7aa7339b1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.gz",
+      "GitBlobOID": "0093af0d06a79021a66634f53443996b4f3120c0",
+      "Bytes": 1472,
+      "SHA256": "2c4e2e541c5bf536785e6390238bb335202d4f2bbea4ad92edf30bc1f689db06"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.gz",
+      "GitBlobOID": "a1619c3347370b63ba3c89dce33aa6849433b920",
+      "Bytes": 2417,
+      "SHA256": "949255e6e50dc6192c4a53e2c451cbfa40092316da460cb36a3fdf92cd0726ad"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.gz",
+      "GitBlobOID": "1d5ecd5662451c6e733f45df4c61f9bdbaa29348",
+      "Bytes": 1808,
+      "SHA256": "3c6615ddda684b4ceba9f0e49397a2fd6ccb2da51c708a15a2ddc279638e0b81"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.gz",
+      "GitBlobOID": "3c868a4b57997698c4c84daf4c5b6dbf62b3349a",
+      "Bytes": 2382,
+      "SHA256": "220e486984ad67a147373263711d637a44c91bc76508d784d97fba1c1b821b61"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+      "GitBlobOID": "e21291da3d97209617c9e0a007587f4381a81eab",
+      "Bytes": 4878,
+      "SHA256": "98c0a8b3d50cd1d74d272e05c7f7e652bf8a2dc78cb5c2af6e01dde48744bd95"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.gz",
+      "GitBlobOID": "5ff74488a4430e69ad67ee0a74e1c514883428ed",
+      "Bytes": 3016,
+      "SHA256": "3bee293f5a4ee0880511becae051180033feb4fa9cbfacc7b14fc178855d6e2d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.gz",
+      "GitBlobOID": "d8118366b60a27cb8ff29f2de9b4bf82424e4b11",
+      "Bytes": 2274,
+      "SHA256": "3ebbbc1d841a5c2ab6605c8e94767ef9e6d8e949fbb82e9ca8fd299fae938efc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.gz",
+      "GitBlobOID": "58f347350ad797723650a02f83a28bcebf930d9b",
+      "Bytes": 309,
+      "SHA256": "ac50790050ff92064158076c1267333bb732f5ccb5fa7bbaaddd53ac43f7d724"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.gz",
+      "GitBlobOID": "66fe849f51dbb95d74124accc7821145888ef888",
+      "Bytes": 3237,
+      "SHA256": "c357322707d2b3abf8d3e2105aa16bc1604f3fe6e5726922eaad779e6018ed19"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.gz",
+      "GitBlobOID": "5d770e5eb3dc60df3eb19482862b8835b00daa82",
+      "Bytes": 3907,
+      "SHA256": "45e581937215ac0e8f4f55d83db3a8ea9c94bb5ad5873c5ab51eac0e0886c880"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/context_pack_manifest.json.gz",
+      "GitBlobOID": "6abf236bdbb310bf7457e3a1aadc257441c73ddc",
+      "Bytes": 2072,
+      "SHA256": "310aa84fd6ef85de79074106e60498e52d5e56f1d27256bb6ba77db28cff64da"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_daemon_status.json.gz",
+      "GitBlobOID": "7aeb172244abae19a5c4712dcd17b86e51bab6a4",
+      "Bytes": 348,
+      "SHA256": "5d3781517069a3823c182dc038b27fe9d9cf97a88adf810c5fe189530bc28f6e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_turn_helper.bootstrap.ps1.gz",
+      "GitBlobOID": "5e3adbf4064543a6c9740d339b8cd2df30fa8dda",
+      "Bytes": 280,
+      "SHA256": "e68264fd0836fb83bd655a9a29a84fffe7d6745f930a07e3caa93bc20022b9fc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json.gz",
+      "GitBlobOID": "e0c1006ab632d6bc4c348f2e68551cafffb910af",
+      "Bytes": 282,
+      "SHA256": "3d12098c16d6ce5a51468c51a8d8991dabdfcb24542640042aad8de1aea958a7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json.gz",
+      "GitBlobOID": "d730f5ef3775997fa416f457daed0cea1ac6dddd",
+      "Bytes": 370,
+      "SHA256": "00f1e92da614b52295e2f001cc984de5abb3d973d2902390685d046d400526b5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/core/game_settings.json.gz",
+      "GitBlobOID": "1da42f1471c0cdbfe6f0a2ed795c66e2beba7e61",
+      "Bytes": 163,
+      "SHA256": "4bbd20865421135b792c8ecc61c2ccc7969728771ab29c31965db2f05decaf80"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/core/system_mods.json.gz",
+      "GitBlobOID": "732d0b31b02dd955ff2b4dbf1f9bc854c4508c6b",
+      "Bytes": 148,
+      "SHA256": "bdad671ef3aa3fbc2b3b13adfd8aa2f107d4c09c72343ba34b85b6baf42f3642"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/achievements.json.gz",
+      "GitBlobOID": "2c193e01d41e719be423a74d3dabf94acb9a377b",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json.gz",
+      "GitBlobOID": "52480bbfb88e8b7ccb74574533dec3c7c74e9e3b",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json.gz",
+      "GitBlobOID": "8d479a46acb6d17977097fff29d3f18c48ecfaae",
+      "Bytes": 1870,
+      "SHA256": "fabddcc9ca09c495226bae960a29b1777b43db83ab72638281a9c83d2a41e4e6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json.gz",
+      "GitBlobOID": "f91f0291b973673b64989f6fbaedd121def945bc",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "GitBlobOID": "8a32410e7b1139b8b6aaae8406bffac29a9cfbb9",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json.gz",
+      "GitBlobOID": "26eb1c420788855c7fd62da7f93373a8c2c97c26",
+      "Bytes": 476,
+      "SHA256": "20828e59cdcb2a51fd13d369f692bd2061fee01cb697a1732fbe6c8f730970e8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json.gz",
+      "GitBlobOID": "ffe2844c5d2fe2136f5d224caee9972e4605b094",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.gz",
+      "GitBlobOID": "94b6b3ecfac46f8d7a839ede8314a9717357eb13",
+      "Bytes": 2562,
+      "SHA256": "7b6ce4e06687c59f89f14b3dafd8d4392403dd20c224329c01e73f2aab014f0c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json.gz",
+      "GitBlobOID": "ea8700eac00141b57f842bca5055aa4421f8fb06",
+      "Bytes": 457,
+      "SHA256": "04a13e2f4cc80158da68bbc0e59628f6ad458b4e65d68a10c6cf631155065103"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json.gz",
+      "GitBlobOID": "3a0d18ceb1a098f6b4bbe615fc91a747d2b57fca",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json.gz",
+      "GitBlobOID": "ce2b12f8b7cc9317206651a12c2eeab1e7f4668d",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json.gz",
+      "GitBlobOID": "9faef76a0cb44ce240fe3e460db9ebc7e3c187ff",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json.gz",
+      "GitBlobOID": "88f68329dff80715d27eebe943c42b9f975d01c9",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json.gz",
+      "GitBlobOID": "9cf1f9c1a2f3e0861a7912b319232eb02d12746c",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json.gz",
+      "GitBlobOID": "679554d282e78191e2954083cb69ee06054b3c45",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json.gz",
+      "GitBlobOID": "95763fa35eb27d8740d04d68bcc013f0306555b0",
+      "Bytes": 513,
+      "SHA256": "699ed1e48c6592d9db280773be98e47e7371ea44dbb736e60409198acbca13d0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/codex_entries.json.gz",
+      "GitBlobOID": "c38b793e83737900a255fd37c258a12aef96db16",
+      "Bytes": 861,
+      "SHA256": "e12458b3fc2787381328be24a2e3707a3225f04e308bb4c1b673a7391201c127"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/progression_report.json.gz",
+      "GitBlobOID": "8b98c4fdfb8568f6ad50b169190ab39517333e61",
+      "Bytes": 342,
+      "SHA256": "c594eace73a51b84bce90688c55d98650a0601383f3d156a42f48f08e1b09e4d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/progression_schedule.json.gz",
+      "GitBlobOID": "b9a33cd6e0f7c9fa1e612da16701af00df1bab55",
+      "Bytes": 370,
+      "SHA256": "7c3936595e1dd7e88ce9135a148955612b50b1c59f7051223d46978fdb9de32a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/progression_schedule.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "d730f5ef3775997fa416f457daed0cea1ac6dddd",
+      "Bytes": 370,
+      "SHA256": "00f1e92da614b52295e2f001cc984de5abb3d973d2902390685d046d400526b5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/core/game_settings.json.gz",
+      "GitBlobOID": "1da42f1471c0cdbfe6f0a2ed795c66e2beba7e61",
+      "Bytes": 163,
+      "SHA256": "4bbd20865421135b792c8ecc61c2ccc7969728771ab29c31965db2f05decaf80"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/core/game_settings.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "1da42f1471c0cdbfe6f0a2ed795c66e2beba7e61",
+      "Bytes": 163,
+      "SHA256": "4bbd20865421135b792c8ecc61c2ccc7969728771ab29c31965db2f05decaf80"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/core/system_mods.json.gz",
+      "GitBlobOID": "732d0b31b02dd955ff2b4dbf1f9bc854c4508c6b",
+      "Bytes": 148,
+      "SHA256": "bdad671ef3aa3fbc2b3b13adfd8aa2f107d4c09c72343ba34b85b6baf42f3642"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/core/system_mods.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "732d0b31b02dd955ff2b4dbf1f9bc854c4508c6b",
+      "Bytes": 148,
+      "SHA256": "bdad671ef3aa3fbc2b3b13adfd8aa2f107d4c09c72343ba34b85b6baf42f3642"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/history/chat_log.json.gz",
+      "GitBlobOID": "954f2a4bb4fa599d6f45785a6170121643bbf28c",
+      "Bytes": 110,
+      "SHA256": "69b6cf104b83d989067f0f16babcad9274f66a86e49404834ca06a8f0a6e8f15"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/inventory/item_identity_index.json.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/inventory/item_identity_index.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "c6b0a27336887245e7213412470c0c65b4955383",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/achievements.json.gz",
+      "GitBlobOID": "2c193e01d41e719be423a74d3dabf94acb9a377b",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/achievements.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "2c193e01d41e719be423a74d3dabf94acb9a377b",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "GitBlobOID": "52480bbfb88e8b7ccb74574533dec3c7c74e9e3b",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_chronicles.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "52480bbfb88e8b7ccb74574533dec3c7c74e9e3b",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "GitBlobOID": "8d479a46acb6d17977097fff29d3f18c48ecfaae",
+      "Bytes": 1870,
+      "SHA256": "fabddcc9ca09c495226bae960a29b1777b43db83ab72638281a9c83d2a41e4e6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_entity_profiles.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "8d479a46acb6d17977097fff29d3f18c48ecfaae",
+      "Bytes": 1870,
+      "SHA256": "fabddcc9ca09c495226bae960a29b1777b43db83ab72638281a9c83d2a41e4e6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "GitBlobOID": "f91f0291b973673b64989f6fbaedd121def945bc",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_global_flags.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "f91f0291b973673b64989f6fbaedd121def945bc",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "GitBlobOID": "8a32410e7b1139b8b6aaae8406bffac29a9cfbb9",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "8a32410e7b1139b8b6aaae8406bffac29a9cfbb9",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/character_chronicle.json.gz",
+      "GitBlobOID": "26eb1c420788855c7fd62da7f93373a8c2c97c26",
+      "Bytes": 476,
+      "SHA256": "20828e59cdcb2a51fd13d369f692bd2061fee01cb697a1732fbe6c8f730970e8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/character_chronicle.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "26eb1c420788855c7fd62da7f93373a8c2c97c26",
+      "Bytes": 476,
+      "SHA256": "20828e59cdcb2a51fd13d369f692bd2061fee01cb697a1732fbe6c8f730970e8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/guardian_projects.json.gz",
+      "GitBlobOID": "ffe2844c5d2fe2136f5d224caee9972e4605b094",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/guardian_projects.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "ffe2844c5d2fe2136f5d224caee9972e4605b094",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/guardian_thought_journal.json.gz",
+      "GitBlobOID": "68b8cceb4f36141213a659b02859082336768b9a",
+      "Bytes": 418,
+      "SHA256": "627127895380192f09f485d03f96f757a6a9b5821da1696a6f45e5fb1affb744"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/guardians.json.gz",
+      "GitBlobOID": "94b6b3ecfac46f8d7a839ede8314a9717357eb13",
+      "Bytes": 2562,
+      "SHA256": "7b6ce4e06687c59f89f14b3dafd8d4392403dd20c224329c01e73f2aab014f0c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/guardians.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "94b6b3ecfac46f8d7a839ede8314a9717357eb13",
+      "Bytes": 2562,
+      "SHA256": "7b6ce4e06687c59f89f14b3dafd8d4392403dd20c224329c01e73f2aab014f0c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/soul_state.json.gz",
+      "GitBlobOID": "ea8700eac00141b57f842bca5055aa4421f8fb06",
+      "Bytes": 457,
+      "SHA256": "04a13e2f4cc80158da68bbc0e59628f6ad458b4e65d68a10c6cf631155065103"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/soul_state.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "ea8700eac00141b57f842bca5055aa4421f8fb06",
+      "Bytes": 457,
+      "SHA256": "04a13e2f4cc80158da68bbc0e59628f6ad458b4e65d68a10c6cf631155065103"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_definitions.json.gz",
+      "GitBlobOID": "3a0d18ceb1a098f6b4bbe615fc91a747d2b57fca",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_definitions.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "3a0d18ceb1a098f6b4bbe615fc91a747d2b57fca",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_history.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_history.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "GitBlobOID": "ce2b12f8b7cc9317206651a12c2eeab1e7f4668d",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_owner_authority.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "ce2b12f8b7cc9317206651a12c2eeab1e7f4668d",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_state.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_state.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/wounds/wound_history.json.gz",
+      "GitBlobOID": "9faef76a0cb44ce240fe3e460db9ebc7e3c187ff",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/wounds/wound_history.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "9faef76a0cb44ce240fe3e460db9ebc7e3c187ff",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/wounds/wound_identity_index.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "b2a7a8be08466d561659e3e402fbe790f0819c4b",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/input/pending_player_action.json.gz",
+      "GitBlobOID": "a91a03180133521854f6d007f22d7ef79940c9ce",
+      "Bytes": 36242,
+      "SHA256": "0f0a21018286ae53b77c68884fb5843f2c80fdb9478829ed8c34f0772edfbc83"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/input/turn_request.json.gz",
+      "GitBlobOID": "15f58d6a754e6234086f920930f988e543a16160",
+      "Bytes": 17899,
+      "SHA256": "29d844d42a15784d1a528414c920c54f27a3b8cd575aecb0c159e78596dad3f5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/cosmology.json.gz",
+      "GitBlobOID": "88f68329dff80715d27eebe943c42b9f975d01c9",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/cosmology.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "88f68329dff80715d27eebe943c42b9f975d01c9",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "GitBlobOID": "9cf1f9c1a2f3e0861a7912b319232eb02d12746c",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/guardians_lore.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "9cf1f9c1a2f3e0861a7912b319232eb02d12746c",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "GitBlobOID": "679554d282e78191e2954083cb69ee06054b3c45",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/player_chronicle.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "679554d282e78191e2954083cb69ee06054b3c45",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "GitBlobOID": "95763fa35eb27d8740d04d68bcc013f0306555b0",
+      "Bytes": 513,
+      "SHA256": "699ed1e48c6592d9db280773be98e47e7371ea44dbb736e60409198acbca13d0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/soul_system_lore.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "95763fa35eb27d8740d04d68bcc013f0306555b0",
+      "Bytes": 513,
+      "SHA256": "699ed1e48c6592d9db280773be98e47e7371ea44dbb736e60409198acbca13d0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/codex_entries.json.gz",
+      "GitBlobOID": "c38b793e83737900a255fd37c258a12aef96db16",
+      "Bytes": 861,
+      "SHA256": "e12458b3fc2787381328be24a2e3707a3225f04e308bb4c1b673a7391201c127"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/codex_entries.json.rollback.639272662195325547.gz",
+      "GitBlobOID": "c38b793e83737900a255fd37c258a12aef96db16",
+      "Bytes": 861,
+      "SHA256": "e12458b3fc2787381328be24a2e3707a3225f04e308bb4c1b673a7391201c127"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/output/debug_logs.json.gz",
+      "GitBlobOID": "1dbcbb13989c356a952643e82eed6140c8651633",
+      "Bytes": 953,
+      "SHA256": "f8800122310d899d5908984152d5ffc5e9fafb355842a12bfc447ccd3cb9f158"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/output/interface_updates.json.gz",
+      "GitBlobOID": "f6bef40e3d172366d2ca8080e102372fd53cf9a5",
+      "Bytes": 94,
+      "SHA256": "60f4b751099eeb0ee91cede112450e6268d72aa73be8c7b32c5094f5f9a8dc0a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/output/narrative_response.json.gz",
+      "GitBlobOID": "ef60d63f41d4735b18c44cc030d1624eff4ffad4",
+      "Bytes": 177,
+      "SHA256": "efcb905b4b0a15f26a5e5876e9fd1823af42f49386ace978cd3f9429ab67a159"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/ready/turn_complete.json.gz",
+      "GitBlobOID": "6d1e38325455c4c594174dd6095eb6305cd220cc",
+      "Bytes": 294,
+      "SHA256": "1d2fb2b27a13c6ed95b78db84d90d695048b42c81574c4406e25e99067881061"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/publish-BookOfEternityClient.log.gz",
+      "GitBlobOID": "e7409c4df088762268a42ac5ff09600a637ce535",
+      "Bytes": 76,
+      "SHA256": "4933c1c7c2dee44649eb439f0816dc7b82a8fb55e4b950f65c612c4c66d9ef24"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/publish-BookOfEternityGMBridge.log.gz",
+      "GitBlobOID": "ed6b92827a5981a7bbe1b60b963ba02a5570bda3",
+      "Bytes": 78,
+      "SHA256": "4b571d9697a5c8748013170ce4b7b2929393a108196ff10602eb91a81079f808"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/.execution.lock.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/close-request.json.gz",
+      "GitBlobOID": "74f47b786f18f7b810a465a713f35b517175d7ce",
+      "Bytes": 23,
+      "SHA256": "37a641f5b71f361a83c4bb5aae7e62bb31dff4340708786bd20df2313b0f1173"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/closed.json.gz",
+      "GitBlobOID": "73663778652d4b4e241e4185174f9e8d1a466e5e",
+      "Bytes": 88,
+      "SHA256": "312a50a69da3f6fce964e1f63b553eadaa5c1c747eeac44e0dc70f9571e8944f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/consumer.log.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/executing-response.json.gz",
+      "GitBlobOID": "1efc5ad2144ba58d99069fe99da496e010223d0f",
+      "Bytes": 1659,
+      "SHA256": "f3f631fbe7457c1a550caedb19e2d8790280ba46661dbd0d34cff00d9ddd1196"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/execution.json.gz",
+      "GitBlobOID": "55dda112db06be99c893227974a7a3ece9f5505a",
+      "Bytes": 74,
+      "SHA256": "ea6b039d916390dfeefc736f4aabc3170b9f00cf70e3f9448bfa2c8798bc7322"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/game-request.json.gz",
+      "GitBlobOID": "15f58d6a754e6234086f920930f988e543a16160",
+      "Bytes": 17899,
+      "SHA256": "29d844d42a15784d1a528414c920c54f27a3b8cd575aecb0c159e78596dad3f5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/prompt.txt.gz",
+      "GitBlobOID": "fffe439bf1b27bbbf2fabd0f406493cfb97afdf3",
+      "Bytes": 12562,
+      "SHA256": "e1f75fc5ba12caa4886beee0955b0c6793b2e9db734881ebe590e467376b6471"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/reply.json.gz",
+      "GitBlobOID": "2221867861847d88409519c57db8aa1203ea40c9",
+      "Bytes": 300,
+      "SHA256": "7f3b350e49038ea814daf4667ea9711c542ffb1d98c89f339f47263606ef2f8a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/request.json.gz",
+      "GitBlobOID": "1f0803971321c58df0dd15a281028101b4097c7e",
+      "Bytes": 558,
+      "SHA256": "256e42dd7344a0693dbbe43c143fac987c1957bcade6f113c44ceb0a7a6833aa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/response.json.gz",
+      "GitBlobOID": "1efc5ad2144ba58d99069fe99da496e010223d0f",
+      "Bytes": 1659,
+      "SHA256": "f3f631fbe7457c1a550caedb19e2d8790280ba46661dbd0d34cff00d9ddd1196"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/started.json.gz",
+      "GitBlobOID": "76f031572baf42a6fef677d954f44e3d72614a2a",
+      "Bytes": 179,
+      "SHA256": "fbae2f0ca11ba0cc72cc79c05fb79f3fa5d3768a07dc9d191e14c31b94209530"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/request-1.json.gz",
+      "GitBlobOID": "15f58d6a754e6234086f920930f988e543a16160",
+      "Bytes": 17899,
+      "SHA256": "29d844d42a15784d1a528414c920c54f27a3b8cd575aecb0c159e78596dad3f5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/result.json.gz",
+      "GitBlobOID": "4fc3fce1fd7d072cc656e20c517499daa1dba9d4",
+      "Bytes": 11538,
+      "SHA256": "11c170f0e72ef89becf273ffebf87a81538b013cfcee5da8475d6b263f80bcf5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/turn-1-before-authority.json.gz",
+      "GitBlobOID": "23bcd7694da77e5650d82fc0f41f5e2f8af19cea",
+      "Bytes": 11128,
+      "SHA256": "9990b864b2d2b308490d7235949892e67794cf1019b2da82e31e1349a382da94"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/turn-1-before-manifest.json.gz",
+      "GitBlobOID": "77e029b971614d382af619572f083573f8f9062e",
+      "Bytes": 6229,
+      "SHA256": "f225285ccbe1b1f00b28abb14b7dd372fb1c5b14d4162503be5b8f06aea145b5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/turn-1-before-request.json.gz",
+      "GitBlobOID": "15f58d6a754e6234086f920930f988e543a16160",
+      "Bytes": 17899,
+      "SHA256": "29d844d42a15784d1a528414c920c54f27a3b8cd575aecb0c159e78596dad3f5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/web-action-1-echo.raw.gz",
+      "GitBlobOID": "f0db77f04de6c990fe5cbb8eac9e629f36006807",
+      "Bytes": 22,
+      "SHA256": "d898b9a41b916259772322fde2a2f9e0190a468477d5d067d3541e8c7a833489"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/web-action-1-pending-action.json.gz",
+      "GitBlobOID": "90467754e725ce2bb73504bad5eede721b9fd5f0",
+      "Bytes": 299,
+      "SHA256": "0492e7c2c3b2d21752586d44e8eb2d8c1ab49deb505462d87f0606e64c0e8a25"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/web-action-1-submitted.html.gz",
+      "GitBlobOID": "e19273a2096c235c3b1a1b247964ee3687014b1d",
+      "Bytes": 2452,
+      "SHA256": "d40ce4c5bf316992601f4c240d1478d3b944a9fca352495c90258b2eae87f015"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/web-action-1-submitted.png.gz",
+      "GitBlobOID": "5f9a2ab67f0e3d8d4ec5b38681aa81e2827e271e",
+      "Bytes": 693420,
+      "SHA256": "744d09159bc11b4aa3d89ec236d4269ff314f29ad361070a6e07cb5a2a945e92"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/web-action-1.raw.gz",
+      "GitBlobOID": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/worker.log.gz",
+      "GitBlobOID": "56f319e18979e584c8733507d023a072421669cd",
+      "Bytes": 91,
+      "SHA256": "8c8d2aa57b391ff3d68f94617f63b52abcd59de5b62cf61b4d7c3344e8022b66"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/runner/c5-queued-cold-helper-admission-diagnostic-unit-001.trx.gz",
+      "GitBlobOID": "4f8c27e6969688daa0ff4b039abb7e1689f2749f",
+      "Bytes": 1265,
+      "SHA256": "dc3bd52d4de9325a9dc85fe7393a82853f97f915ab407711279c281c254ced28"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/runner/dotnet-test.log.gz",
+      "GitBlobOID": "b6de5dd526d0ea989c3635e047e140c4e17d050a",
+      "Bytes": 186513,
+      "SHA256": "aefd4fb143734231ecbf31b9ac3f78634ad5d769a7fcd60a841bb79296d1a5ee"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/runner/plan.json.gz",
+      "GitBlobOID": "0ebb9f5dba29737d1c4cb31dc8cb7355aa7cc484",
+      "Bytes": 511,
+      "SHA256": "b2287074775fb2e102afdf83a694e07d1b20de5c70dcfd7a0c4c3024ccbca09c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/runner/summary.json.gz",
+      "GitBlobOID": "4a365842ec6b35637a133e0da182718d557c562b",
+      "Bytes": 635,
+      "SHA256": "2bead3b6ad64f953695d1fb4040f035ddff1a6b221a435d775e18e18457abb5f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-preparation/manifest.json",
+      "GitBlobOID": "5ff160bb77531b5f757a58ad0c1d58858ba63a15",
+      "Bytes": 1210,
+      "SHA256": "97e46f83e6f220c7fcff174244ece5d473d8c3b0486655fdba2d1840aab99de0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-preparation/runner/Build-unit.log.gz",
+      "GitBlobOID": "ab8d315b6cb333f25a44387aed017034add6178e",
+      "Bytes": 2844,
+      "SHA256": "3346ea8a27ce904a3bc571195f0d7deda609d6be113f08d4527fb69089565d5e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-preparation/runner/dotnet-test.log.gz",
+      "GitBlobOID": "1044ffab2e1b69226874e09f14c4a849e9a448e9",
+      "Bytes": 186864,
+      "SHA256": "0f23318afcfcd24ec4b096aa438b7f390d7b3732f2fcc113bd9363956466bbeb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-preparation/runner/plan.json.gz",
+      "GitBlobOID": "ebb2cb9ed074eb14e5c52d18eabcadcaf4646580",
+      "Bytes": 512,
+      "SHA256": "7c014660d7c6c743cf0f26a036f93dd09c2dcd305d85ce88c3d6607f1e648e49"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-preparation/runner/summary.json.gz",
+      "GitBlobOID": "2a1c9af7acf37858ff9ac456a425014a8fcea758",
+      "Bytes": 622,
+      "SHA256": "3a24efe1e19d449d10a939dfb11b94171882a096de0bbf65f15afd2524d48d5f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-coherent-checkpoint.md",
+      "GitBlobOID": "dbdebdf5f1aade96fba1c860f22d664324d30b1a",
+      "Bytes": 10701,
+      "SHA256": "f465f4cb648cc31d847718eb57ebc01639ac2c6f24320991aa22fda9a08c2757"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/spec.md",
+      "GitBlobOID": "7aedf78e683894b2552bacea50669f13b04f6be9",
+      "Bytes": 75881,
+      "SHA256": "4dbae3433722c7ca46ffe840eb1b95cf9e14e883c92de4dc4a42c7184ed5e026"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/tasks.md",
+      "GitBlobOID": "fbe02527c44289c75f7cfd3b55cf2f126b10829b",
+      "Bytes": 126266,
+      "SHA256": "ceef9b63d25f3ed2a76bc29562dd6e442c6018c430bbfcdfcdea0f4e073e0f91"
+    },
+    {
+      "Path": "tests/categories.json",
+      "GitBlobOID": "249076cbf55c55a9ed8e4857fed3bdbe9f48822d",
+      "Bytes": 1707102,
+      "SHA256": "452bcd9923d6cf20954e6dd952d947cda7f641c3a68099bd1ad1db97c60dfef4"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/browser_chain.py",
+      "GitBlobOID": "255e2b576787210e3ce2677f533afcd917724771",
+      "Bytes": 21223,
+      "SHA256": "bc455f2195e0dcdfb93f5a0615afbd49fa2538be176223cf65789086518d5b16"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/console_chain.py",
+      "GitBlobOID": "41f07b6d08f1bf9ef6ab88b86ffb7e16478546f7",
+      "Bytes": 60187,
+      "SHA256": "80310bc91934157910b0f2e1a2a845266b2c0657e95b5567e2dff4a7c352ca4e"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/continue_observer.py",
+      "GitBlobOID": "43b6700a6ef87906731a733b28976d6e6cf8b1a7",
+      "Bytes": 7267,
+      "SHA256": "00a9793d1853d4cb63b93d92b418b5a461fd824ffc259660e450e10ce78e5d2e"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/helper_admission_observer.ps1",
+      "GitBlobOID": "0c47c089cb53d0e871322a9160932470edab9ac5",
+      "Bytes": 9343,
+      "SHA256": "4628a19b09878a766bde95fe90073f89b731a1eb5121e98310d21189074ad1ac"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/prepare_helper_observation.py",
+      "GitBlobOID": "7e4b767f2c668dd8460f334f3a6dc8466083a02b",
+      "Bytes": 10048,
+      "SHA256": "350e3f06f54b083cb75b0dccae444a342b63555e3a1b7af96ac401496ce4421a"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/prepare_historical_consumer.py",
+      "GitBlobOID": "2037fc8359578336b03ced63943da84d2ec8ec64",
+      "Bytes": 5845,
+      "SHA256": "21052ed84ebfcf3641c50bf9977750b2452a5235520a2ac8ffb22fb67fb45e0b"
+    },
+    {
+      "Path": "tests/selection.json",
+      "GitBlobOID": "41c9158dc0a3e5c35d96eb8a17740c62cf0c38d4",
+      "Bytes": 4198,
+      "SHA256": "1293dcadcd7b557f5ace69930fd2f2b4cb1a483618dc642459dc758095a93024"
+    },
+    {
+      "Path": "tools/gm-relay/relay-apply-response.ps1",
+      "GitBlobOID": "835eb772fd61937e0df87d88209b0af4b275e006",
+      "Bytes": 2353,
+      "SHA256": "228e0691c127f959128382766aaff173807cb384d562a26ff0b402f12915e859"
+    }
+  ],
+  "SelectedPaths": [
+    ".agents/skills/speckit-git-commit/SKILL.md",
+    ".agents/skills/speckit-git-remote/SKILL.md",
+    ".agents/skills/speckit-implement/SKILL.md",
+    ".specify/memory/constitution.md",
+    "AGENTS.md",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserConsumerProfile.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserProofScopeBudget.cs",
+    "BookOfEternityClient.TestSupport/ContinueClickHttpObserver.cs",
+    "BookOfEternityClient.Tests/LinuxBrowserGameChainTests.cs",
+    "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+    "BookOfEternityClient.WebFrontend/src/App.tsx",
+    "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+    "BookOfEternityClient.WebFrontend/src/context/ShellContext.tsx",
+    "BookOfEternityClient.WebFrontend/src/hooks/loadShellState.ts",
+    "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+    "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+    "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+    "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+    "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+    "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
+    "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+    "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
+    "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+    "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+    "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+    "BookOfEternityClient/Core/FileSystemManager.SyntheticBundlePublication.cs",
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+    "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+    "BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs",
+    "BookOfEternityClient/Core/FileSystemManager.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserWaitParticipation.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+    "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+    "BookOfEternityClient/Core/SessionOperationContext.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+    "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+    "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+    "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+    "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+    "BookOfEternityClient/Program.cs",
+    "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+    "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+    "BookOfEternityClient/WebUi/BrowserGameScreenService.cs",
+    "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs",
+    "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+    "docs/development-workflow.md",
+    "docs/testing.md",
+    "scripts/test-csharp-worker-runtime-cleanup.ps1",
+    "scripts/test-csharp.ps1",
+    "scripts/testing/TestCategoryAdapters.ps1",
+    "scripts/testing/TestCategoryCatalog.psm1",
+    "scripts/testing/TestCategoryExecution.ps1",
+    "specs/1553-portable-local-storage/plan.md",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-active-poll-checkpoint.md",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-admission-assessment.json",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-catalog/manifest.json",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-catalog/runner/catalog-audit.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-catalog/runner/dotnet-test.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-catalog/runner/summary.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/manifest.json",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0-binary-provenance.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/authored-1.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/bridge-first-echo.raw.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/bridge-first.raw.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/browser-queued-idle-ack.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/browser-queued-idle-ack.json.release.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/chain.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/client-first-echo.raw.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/client-first.raw.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/client-queued-cold-echo.raw.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/client-queued-cold.raw.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/daemon-first-echo.raw.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/daemon-first.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/daemon-first.raw.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/events.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/guardian.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-admission-observation/consumer-39715-seq0.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-admission-observation/consumer-39715-stderr.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-admission-observation/consumer-39715-summary.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-admission-observation/consumer-39715.jsonl.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-observer-provenance.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-observer-source/gm_main_operation.ps1.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-observer-source/gm_turn_helper_transport.ps1.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-observer-source/helper_admission_observer.ps1.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-stop-input_pending_player_action.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-stop-input_turn_request.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/helper-stop-ready_turn_complete.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/native-preparation.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/package/boe-lineage-supervisor.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/package/build-provenance.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/package/package-manifest.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/gm-runs/main.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/locks/canonical-write.lock.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/locks/gm-main-owner.lock.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/locks/session-lifecycle.lock.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/session-generation/current.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/worker-runs-v1/journal.lock.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/worker-runs-v1/mode.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/worker-runs-v1/owner.lock.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/.boe_runtime/worker-runs-v1/state.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/config.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_bridge_status.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/README.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/README.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/context_pack_manifest.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_context_pack/context_pack_manifest.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_daemon_status.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_daemon_status.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_dice_state.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot.authority.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/README.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/context_pack_manifest.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_daemon_status.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_turn_helper.bootstrap.ps1.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/core/game_settings.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/core/system_mods.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/achievements.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/codex_entries.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/progression_report.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/progression_schedule.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/control/progression_schedule.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/core/game_settings.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/core/game_settings.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/core/system_mods.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/core/system_mods.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/history/chat_log.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/inventory/item_identity_index.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/inventory/item_identity_index.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/achievements.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/achievements.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_chronicles.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_chronicles.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_entity_profiles.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_global_flags.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_global_flags.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/character_chronicle.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/character_chronicle.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/guardian_projects.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/guardian_projects.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/guardian_thought_journal.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/guardians.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/guardians.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/soul_state.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/meta/soul_state.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_definitions.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_definitions.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_history.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_history.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_owner_authority.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_owner_authority.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_state.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/resources/resource_state.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/wounds/wound_history.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/wounds/wound_history.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/wounds/wound_identity_index.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/game_state/wounds/wound_identity_index.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/input/pending_player_action.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/input/turn_request.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/cosmology.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/cosmology.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/guardians_lore.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/guardians_lore.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/player_chronicle.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/player_chronicle.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/chaos_sea/soul_system_lore.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/codex_entries.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/lore/codex_entries.json.rollback.639272662195325547.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/output/debug_logs.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/output/interface_updates.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/output/narrative_response.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/play/game_session/ready/turn_complete.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/publish-BookOfEternityClient.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/publish-BookOfEternityGMBridge.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/.execution.lock.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/close-request.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/closed.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/consumer.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/executing-response.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/execution.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/game-request.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/prompt.txt.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/reply.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/request.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/response.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/queue-1/request-1-cd003eee6e9a4cc3a981d36de2aa8228/started.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/request-1.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/result.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/turn-1-before-authority.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/turn-1-before-manifest.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/turn-1-before-request.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/web-action-1-echo.raw.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/web-action-1-pending-action.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/web-action-1-submitted.html.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/web-action-1-submitted.png.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/web-action-1.raw.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/owned0/worker.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/runner/c5-queued-cold-helper-admission-diagnostic-unit-001.trx.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/runner/dotnet-test.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/runner/plan.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-first-pass/runner/summary.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-preparation/manifest.json",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-preparation/runner/Build-unit.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-preparation/runner/dotnet-test.log.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-preparation/runner/plan.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-write-preparation/runner/summary.json.gz",
+    "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-coherent-checkpoint.md",
+    "specs/1553-portable-local-storage/spec.md",
+    "specs/1553-portable-local-storage/tasks.md",
+    "tests/categories.json",
+    "tests/fixtures/LinuxGameChains/browser_chain.py",
+    "tests/fixtures/LinuxGameChains/console_chain.py",
+    "tests/fixtures/LinuxGameChains/continue_observer.py",
+    "tests/fixtures/LinuxGameChains/helper_admission_observer.ps1",
+    "tests/fixtures/LinuxGameChains/prepare_helper_observation.py",
+    "tests/fixtures/LinuxGameChains/prepare_historical_consumer.py",
+    "tests/selection.json",
+    "tools/gm-relay/relay-apply-response.ps1"
+  ],
+  "GitFsckFullStrictExitCode": 0,
+  "GitFsckStdout": "",
+  "GitFsckStderr": "",
+  "GitFsckLimit": "Promisor-aware filtered-clone fsck verifies available objects/links. Historical unmaterialized blobs are not claimed downloaded/audited. All selected file blobs explicitly materialized and compared.",
+  "AcceptanceLimit": "Selected-file source/evidence recovery only. Sole write diagnostic PASS with complete healthy NONNULL544B/ExpectedGeneration exact/all five predicatesfalse/managed39930Exit0/consumer39715Exit0. Historical write refusal and older read/journal causes remain UNKNOWN; different current original-owner admission exception observed during cleanup is not a causal proof. Sequential ready436B is not accepted/once-only/fullC5 qualification. No repair or rerun; current fullC5 FAIL/UNQUALIFIED/optimized implementation WIP. No build/runtime performed."
+}
