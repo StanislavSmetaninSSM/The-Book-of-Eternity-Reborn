@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "794d9350361ac8407299e194a73b83ad23571d9e",
+  "Command": "source cloud env; pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-pending-action-admission",
+  "Status": "PASS",
+  "Scope": "Actual producer component GREEN2/2; fresh unit build,36.9481640s,complete selection,zero skips/duplicates/timeouts,owned cleanup. Consumer/input/cold remains UNRUN.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "b417b20f930f3b743e63a35f8209743f6ddbdb97ae6f1a6702a609813239d3bd",
+      "RawBytes": 1459
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "2bfa7ff25d54b6f3753e8c071112bfc3b8b98cf07f5e848d1d1b3147e816034f",
+      "RawBytes": 1565
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "3f3537a82059a5627fb460aa8c53534f6b925fd15a464f7bc7a4e12e3c81df84",
+      "RawBytes": 42829
+    },
+    {
+      "Path": "runner/browser-pending-action-admission-unit-001.trx.gz",
+      "RawSHA256": "49c5d0bd0d666173de862fa8d438bd02f2533ede78eb507c79c17d750c342707",
+      "RawBytes": 4506
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "2bcab102d7929a57cd05bfef87d598a89939c5db278b0283913eb9b53e888b59",
+      "RawBytes": 1704309
+    }
+  ]
+}

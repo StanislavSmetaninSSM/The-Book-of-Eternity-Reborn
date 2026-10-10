@@ -34,7 +34,10 @@ Submit returns success; second also returns success and overwrites first bytes.
 Generation assertion now reaches absent `sessionGeneration` (KeyNotFound), after
 fixing fixture BOM decoding. Earlier import buildFAIL0tests and BOM fixtureFAIL
 were preparation failures, not missing-identity proof. Current minimal producers
-use one schema shared by composer/effect and refuse occupied slot; GREEN UNRUN.
+use one schema shared by composer/effect and refuse occupied slot; actual producer
+GREEN2/2 at794d9350,36.9481640s,complete1descriptor/2cases,0skip/duplicate/timeout
+and ownedcleanupcomplete. [Archived GREEN](recovery/linux-game-chains-20261010/c5-admission-producer-green/manifest.json).
+This qualifies only the producer component; consumer/input/cold remains open.
 [Actual causal RED](recovery/linux-game-chains-20261010/c5-admission-causal-red/manifest.json).
 Original C5 full-chain FAIL remains untouched; consumer/recovery/input still UNRUN.
 
