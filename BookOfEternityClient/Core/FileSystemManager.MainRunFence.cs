@@ -263,7 +263,7 @@ public partial class FileSystemManager
     {
         lease.MainAdmission!.Validate(lease);
         if(lease.MainAdmission.MetadataOnly)throw GmSessionRunPersistence.Invalid();
-        _ = PreflightBrowserOriginalAdmission(lease.MainAdmission);
+        _ = PreflightBrowserOriginalAdmission(lease.MainAdmission,lease);
         // Original active recovery must inspect generation-changing intent before
         // effects. The typed trusted-local reader handles in-generation journals.
         if(lease.MainAdmission.ActiveGeneration!=null)

@@ -204,10 +204,17 @@ public partial class FileSystemManager
     }
 
     // No recovery-capable FileSystemManager reader is allowed below this fence.
-    private byte[]? ReadOriginalBrowserBytes(string relative)
+    private TrustedLocalFileScope CreateOriginalBrowserFileScope(bool? held = null)
+    {
+        using var timing=MeasureOriginalBrowserAdmission((held??HasAmbientCanonicalLease())
+            ? "trusted-scope-construction-held" : "trusted-scope-construction-unheld");
+        return new TrustedLocalFileScope([BasePath]);
+    }
+    private byte[]? ReadOriginalBrowserBytes(string relative) => ReadOriginalBrowserBytes(relative,null,null);
+    private byte[]? ReadOriginalBrowserBytes(string relative,TrustedLocalFileScope? scope,bool? held)
     {
         if(!PendingTurnSnapshotAuthority.IsSafeRelativePath(relative))throw BrowserOriginalMainCondition.Invalid();
-        var scope=new TrustedLocalFileScope([BasePath]);var path=scope.ValidateFile(ResolvePath(relative));
+        scope??=CreateOriginalBrowserFileScope(held);var path=scope.ValidateFile(ResolvePath(relative));
         if(!File.Exists(path))return null;
         using var stream=new FileStream(scope.ValidateFile(path,false),FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
         var length=stream.Length;
@@ -218,23 +225,25 @@ public partial class FileSystemManager
         if(stream.ReadByte()!=-1)throw BrowserOriginalMainCondition.Invalid();
         scope.ValidateFile(path,false);return bytes;
     }
-    private string? ReadOriginalBrowserText(string relative)
+    private string? ReadOriginalBrowserText(string relative) => ReadOriginalBrowserText(relative,null,null);
+    private string? ReadOriginalBrowserText(string relative,TrustedLocalFileScope? scope,bool? held)
     {
-        var bytes=ReadOriginalBrowserBytes(relative);if(bytes==null)return null;
+        var bytes=ReadOriginalBrowserBytes(relative,scope,held);if(bytes==null)return null;
         using var stream=new MemoryStream(bytes,false);
         using var reader=new StreamReader(stream,Encoding.UTF8,detectEncodingFromByteOrderMarks:true);
         return reader.ReadToEnd();
     }
-    private void RequireOriginalSnapshotHash(string relative,string expected)
+    private void RequireOriginalSnapshotHash(string relative,string expected,TrustedLocalFileScope? scope,bool held)
     {
         if(!PendingTurnSnapshotAuthority.IsSafeRelativePath(relative) ||
             !relative.StartsWith("game_state/control/pending_turn_snapshot/",StringComparison.Ordinal))throw BrowserOriginalMainCondition.Invalid();
-        var scope=new TrustedLocalFileScope([BasePath]);var path=scope.ValidateFile(ResolvePath(relative),false);
+        scope??=CreateOriginalBrowserFileScope(held);var path=scope.ValidateFile(ResolvePath(relative),false);
         using var stream=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
         if(Convert.ToHexString(SHA256.HashData(stream))!=expected)throw BrowserOriginalMainCondition.Invalid();
         scope.ValidateFile(path,false);
     }
-    private GameEngine.PendingTurnSnapshotManifest ValidateOriginalBrowserAdmission(PendingPlayerActionService.Staged staged,bool verifyPhysical)
+    private GameEngine.PendingTurnSnapshotManifest ValidateOriginalBrowserAdmission(PendingPlayerActionService.Staged staged,bool verifyPhysical,
+        CanonicalWriteLease? physicalLease=null)
     {
         GameEngine.PendingTurnSnapshotManifest manifest;
         using(MeasureOriginalBrowserAdmission("detached-proof-decoding"))
@@ -243,21 +252,25 @@ public partial class FileSystemManager
             manifest.BrowserOriginalMainCondition!.Validate(BasePath,staged.Binding.Generation);
         }
         if(!verifyPhysical)return manifest;
+        if(physicalLease!=null)EnsurePhysicalCanonicalWriteLease(physicalLease);
+        // The post-lock preflight runs before ambient activation. Its actual
+        // same-filesystem physical lease is the diagnostic witness at that call.
+        var held=physicalLease!=null || HasAmbientCanonicalLease();
         using var physicalTiming=MeasureOriginalBrowserAdmission("physical-verification");
-        if(ReadOriginalBrowserText("input/turn_request.json")!=staged.RequestJson ||
-            ReadOriginalBrowserText(BrowserManifestPath)!=staged.ManifestJson ||
-            ReadOriginalBrowserText(PendingTurnSnapshotAuthority.AuthorityPath)!=staged.AuthorityJson)
+        if(ReadOriginalBrowserText("input/turn_request.json",null,held)!=staged.RequestJson ||
+            ReadOriginalBrowserText(BrowserManifestPath,null,held)!=staged.ManifestJson ||
+            ReadOriginalBrowserText(PendingTurnSnapshotAuthority.AuthorityPath,null,held)!=staged.AuthorityJson)
             throw BrowserOriginalMainCondition.Invalid();
         PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload;
         using(MeasureOriginalBrowserAdmission("authority-and-rollback-verification"))
-            payload=GameEngine.ValidateOriginalBrowserAuthority(manifest,staged.AuthorityJson,ReadOriginalBrowserBytes);
+            payload=GameEngine.ValidateOriginalBrowserAuthority(manifest,staged.AuthorityJson,relative=>ReadOriginalBrowserBytes(relative,null,held));
         if(payload.SnapshotHashMode!=PendingTurnSnapshotAuthority.ExactSnapshotHashMode ||
             payload.RollbackHashMode!=PendingTurnSnapshotAuthority.ExactRollbackHashMode ||
             !manifest.Files.Keys.ToHashSet(StringComparer.Ordinal).SetEquals(manifest.SnapshotFileHashes.Keys))
             throw BrowserOriginalMainCondition.Invalid();
         PendingTurnSnapshotAuthority.RequireExactSignedPaths(manifest.Files.Keys.Concat(manifest.Files.Values));
         using(MeasureOriginalBrowserAdmission("snapshot-hash-verification"))
-            foreach(var (logical,path) in manifest.Files)RequireOriginalSnapshotHash(path,manifest.SnapshotFileHashes[logical]);
+            foreach(var (logical,path) in manifest.Files)RequireOriginalSnapshotHash(path,manifest.SnapshotFileHashes[logical],null,held);
         return manifest;
     }
 
@@ -304,7 +317,7 @@ public partial class FileSystemManager
         Walk(GameSessionPath);return result.ToArray();
     }
 
-    private BrowserOriginalMainCondition? PreflightBrowserOriginalAdmission(MainAdmission admission)
+    private BrowserOriginalMainCondition? PreflightBrowserOriginalAdmission(MainAdmission admission,CanonicalWriteLease? physicalLease=null)
     {
         using var preflightTiming=MeasureOriginalBrowserAdmission("inclusive-preflight");
         if(admission.MetadataOnly)return null; // existing typed stop/diagnostic contract
@@ -341,7 +354,7 @@ public partial class FileSystemManager
             if(retained.RequestJson!=scope.Staged.RequestJson || retained.ManifestJson!=scope.Staged.ManifestJson ||
                 retained.AuthorityJson!=scope.Staged.AuthorityJson || retained.HistoryJson!=scope.Staged.HistoryJson)
                 throw BrowserOriginalMainCondition.Invalid();
-            if(!scope.Cleanup)ValidateOriginalBrowserAdmission(retained,verifyPhysical:true);
+            if(!scope.Cleanup)ValidateOriginalBrowserAdmission(retained,verifyPhysical:true,physicalLease);
             else scope.ValidateCleanupInventory();
             return scope.Condition;
         }
@@ -352,7 +365,7 @@ public partial class FileSystemManager
         }
         if(state.Phase is "preparing" or "terminalProcessing")throw new BrowserOriginalPhaseRefusal(this);
         var staged=PendingPlayerActionService.ReadStaged(state);
-        var original=ValidateOriginalBrowserAdmission(staged,verifyPhysical:state.Phase=="staged");
+        var original=ValidateOriginalBrowserAdmission(staged,verifyPhysical:state.Phase=="staged",physicalLease);
         // Completed receipts retain their existing cleanup-only contract. Their
         // old run need not remain live; the original receipt validator still runs.
         if(state.Phase is "accepted" or "settled")

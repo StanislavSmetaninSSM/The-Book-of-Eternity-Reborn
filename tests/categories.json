@@ -23177,6 +23177,44 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": "c5-held-proof-scope-budget",
+            "responsibility": "One complete existing original browser proof under an actual same-filesystem held canonical lease constructs one lexical file scope; a separate proof under that same held lease must refuse physical snapshot drift after success. Counts actual constructors through the existing read-only timing observer.",
+            "excludes": "No persistent/cross-call/cross-lease cache, prelock deferral, timer change, new admission authority, Program/relay proof or broad negative matrix.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+                "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-original-decoded-state-controls",
+                    "when": "Change original full-proof file scope lifetime; retain all eight existing owner and integrity cases."
+                },
+                {
+                    "id": "c5-original-consumer-duration-diagnostic",
+                    "when": "Measure before/after with unchanged actual NativeBridge mode1 fixture."
+                },
+                {
+                    "id": "c5-browser-staged-idle-duration-diagnostic",
+                    "when": "Original proof path changes affect ordinary Program/React/relay consumer; rerun full bounded C5 correctness diagnostic."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_HeldFullProofUsesOneLexicalFileScope",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_SnapshotDriftRefusedAfterSuccessWithinSameHeldLease"
+                    ]
+                }
+            ]
         }
     ]
 }
