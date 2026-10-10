@@ -282,11 +282,12 @@
         },
         {
             "id": "c5-browser-staged-idle-duration-diagnostic",
-            "responsibility": "#1553 T069 separate finite full-C5 semantic diagnostic of actual React/Program/Bridge/daemon/relay queued and witnessed staged-idle SIGKILL/EOF/cold continuation. Model-only authored packets; all original identity/once-only/full-prefix/Stop/guardian assertions retained. Read-only pre-packet snapshot inventory and concurrently observed helper/ready/narrative/prompt phases. One 180s absolute acceptance limit after helper completion; work660/total720/guardian750/external755 seconds. Diagnostic uses the existing --relay-turn fixture budget mode; native reaping algorithm unchanged.",
+            "responsibility": "#1553 T069 separate finite full-C5 semantic diagnostic of actual React/Program/Bridge/daemon/relay queued and witnessed staged-idle SIGKILL/EOF/cold continuation. Model-only authored packets; all original identity/once-only/full-prefix/Stop/guardian assertions retained. Read-only pre-packet snapshot inventory and concurrently observed helper/ready/narrative/prompt phases. Separate60s actual ready-launcher prerequisite with six finished200 state GETs before each unchanged12s normal trusted Continue click; this separates startup eligibility from the action budget. One 180s absolute acceptance limit after helper completion; work660/total720/guardian750/external755 seconds. Diagnostic uses the existing --relay-turn fixture budget mode; native reaping algorithm unchanged.",
             "excludes": "No original40s GREEN, product SLA, regression closure, live provider, pre-lock deferral, production timeout/guard change, active-poll crash or remaining T070 interruption/repair qualification.",
             "changeHints": [
                 "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
-                "tests/fixtures/LinuxGameChains/console_chain.py"
+                "tests/fixtures/LinuxGameChains/console_chain.py",
+                "tests/fixtures/LinuxGameChains/startup_observer.py"
             ],
             "related": [
                 {

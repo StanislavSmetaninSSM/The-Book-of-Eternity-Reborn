@@ -18,6 +18,90 @@ READY_LAUNCHER = """() => {
 }"""
 
 
+class FullC5LauncherPrerequisite:
+    """Only the full duration diagnostic: separate real startup from its normal click."""
+    def __init__(self, page, name, ordinal, result):
+        self.start = time.monotonic()
+        self.deadline = self.start + 60
+        self.requests, self.trusted = {}, []
+        self.collecting_initial = True
+        self.record = {"Name": name, "Ordinal": ordinal, "StartupSeconds": 60,
+                       "ClickMilliseconds": 12000, "Anchor": "before initial page.goto",
+                       "BeginMonotonic": self.start, "NormalClickInvoked": False, "NormalClickAPIReturned": False,
+                       "SixInitialGETs": [], "TrustedContinueEvents": self.trusted}
+        result.setdefault("BrowserStartupPrerequisites", []).append(self.record)
+
+        def request_started(request):
+            path = next((p for p in STATE_PATHS if request.url.endswith(p)), None)
+            if self.collecting_initial and path is not None and request.method == "GET":
+                row = {"Path": path, "Url": request.url, "Method": request.method,
+                       "ObserverRequestSequence": len(self.requests) + 1,
+                       "BeginMonotonic": time.monotonic(), "Status": None, "Terminal": None}
+                self.requests[request] = row
+                self.record["SixInitialGETs"].append(row)
+
+        def response_received(response):
+            if response.request in self.requests:
+                self.requests[response.request].update(Status=response.status, ResponseMonotonic=time.monotonic())
+
+        def request_ended(request, terminal):
+            if request in self.requests:
+                self.requests[request].update(Terminal=terminal, EndMonotonic=time.monotonic(),
+                                              Failure=request.failure if terminal == "requestfailed" else None)
+
+        def console(message):
+            prefix = "__boe_full_c5_continue__"
+            if message.text.startswith(prefix):
+                self.trusted.append(json.loads(message.text[len(prefix):]))
+
+        page.on("request", request_started)
+        page.on("response", response_received)  # Metadata only; no unfinished body reads.
+        page.on("requestfinished", lambda request: request_ended(request, "requestfinished"))
+        page.on("requestfailed", lambda request: request_ended(request, "requestfailed"))
+        page.on("console", console)
+        page.add_init_script("""document.addEventListener('click', event => {
+          const button = event.target instanceof Element
+            ? event.target.closest('button[data-launcher-mode="continue"]') : null;
+          if (button) console.debug('__boe_full_c5_continue__' + JSON.stringify({
+            isTrusted: event.isTrusted, disabled: button.disabled, browserNow: performance.now(),
+            browserTimeOrigin: performance.timeOrigin, wallMilliseconds: Date.now() }));
+        }, true);""")
+
+    def wait_ready(self, page):
+        while True:
+            remaining = self.deadline - time.monotonic()
+            if remaining <= 0:
+                self.record.update(StartupDeadlineReached=True, StartupElapsedSeconds=time.monotonic() - self.start)
+                raise RuntimeError("Full C5 actual ready launcher exceeded the separate60s startup prerequisite")
+            # Timeout is a refusal of readiness; it never counts as a completed click.
+            page.wait_for_function(READY_LAUNCHER, timeout=remaining * 1000, polling=100)
+            initial = [next((r for r in self.requests.values() if r["Path"] == path), None) for path in STATE_PATHS]
+            if all(row is not None and row["Terminal"] is not None for row in initial):
+                if any(row["Terminal"] != "requestfinished" or row["Status"] != 200 for row in initial):
+                    raise RuntimeError("Full C5 initial state GET failed; normal Continue was not invoked")
+                elapsed = time.monotonic() - self.start
+                if elapsed > 60:
+                    raise RuntimeError("Full C5 readiness proof exceeded its separate60s startup prerequisite")
+                self.collecting_initial = False
+                self.record["SixInitialGETs"] = initial
+                self.record.update(ReadyLauncher=True, ContinueVisible=True, ContinueEnabled=True,
+                                   StartupElapsedSeconds=elapsed, ReadyMonotonic=time.monotonic())
+                return
+            page.wait_for_timeout(max(1, min(100, (self.deadline - time.monotonic()) * 1000)))
+
+    def before_click(self):
+        self.record.update(NormalClickInvoked=True, ClickBeginMonotonic=time.monotonic())
+
+    def click_returned(self):
+        self.record.update(NormalClickAPIReturned=True, ClickReturnMonotonic=time.monotonic())
+
+    def assert_normal_action(self, page):
+        page.get_by_label("Команда или действие", exact=True).wait_for(state="visible")
+        trusted = [row for row in self.trusted if row["isTrusted"] and not row["disabled"]]
+        self.record.update(ComposerVisible=True, TrustedContinueClicks=len(trusted))
+        assert len(trusted) == 1, self.record
+
+
 class StartupProbe:
     def __init__(self, observer, web, environment, stack_tool):
         self.trace, self.web, self.environment = observer, web, environment

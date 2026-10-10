@@ -111,6 +111,25 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
                 if (durationDiagnostic)
                 {
                     Assert.True(result.RootElement.GetProperty("DiagnosticOnly").GetBoolean());
+                    var startups = result.RootElement.GetProperty("BrowserStartupPrerequisites").EnumerateArray().ToArray();
+                    Assert.Equal(new[] { 1, 2, 3 }, startups.Select(startup => startup.GetProperty("Ordinal").GetInt32()));
+                    Assert.All(startups, startup =>
+                    {
+                        Assert.True(startup.GetProperty("ReadyLauncher").GetBoolean());
+                        Assert.True(startup.GetProperty("ContinueVisible").GetBoolean());
+                        Assert.True(startup.GetProperty("ContinueEnabled").GetBoolean());
+                        Assert.True(startup.GetProperty("StartupElapsedSeconds").GetDouble() <= 60);
+                        Assert.True(startup.GetProperty("NormalClickAPIReturned").GetBoolean());
+                        Assert.Equal(1, startup.GetProperty("TrustedContinueClicks").GetInt32());
+                        Assert.True(startup.GetProperty("ComposerVisible").GetBoolean());
+                        var gets = startup.GetProperty("SixInitialGETs").EnumerateArray().ToArray();
+                        Assert.Equal(6, gets.Length);
+                        Assert.All(gets, get =>
+                        {
+                            Assert.Equal("requestfinished", get.GetProperty("Terminal").GetString());
+                            Assert.Equal(200, get.GetProperty("Status").GetInt32());
+                        });
+                    });
                     Assert.Equal(3, result.RootElement.GetProperty("TurnDurations").GetArrayLength());
                     Assert.All(result.RootElement.GetProperty("TurnDurations").EnumerateArray(), turn =>
                     {

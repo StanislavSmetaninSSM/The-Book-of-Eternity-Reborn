@@ -411,6 +411,7 @@ def submit_browser_action(dll, action, ordinal):
     else:
         trace = None
     startup = None
+    prerequisite = None
     web = Peer(name, ["dotnet", str(dll), str(base), "--web", "--web-url", url], True)
     def ready():
         assert web.process.poll() is None, "Actual web host exited before browser action"
@@ -450,16 +451,23 @@ def submit_browser_action(dll, action, ordinal):
             if startup_diagnostic:
                 from startup_observer import StartupProbe
                 startup = StartupProbe(trace, web, env, os.environ["BOE_GAME_CHAIN_DOTNET_STACK"])
+            if duration_diagnostic:
+                from startup_observer import FullC5LauncherPrerequisite
+                prerequisite = FullC5LauncherPrerequisite(page, name, ordinal, result)
             page.goto(url, wait_until="domcontentloaded")
             if startup is not None:
                 result["StartupObservation"] = startup.wait_ready(page)
                 result["StartupObservationPassed"] = True
+            if prerequisite is not None:
+                prerequisite.wait_ready(page)
             # The real click changes this SPA route. Assert the actual composer
             # rather than waiting for unrelated scheduled navigation completion.
             if trace:
                 trace.mark("NormalClickBegin", Selector='button[data-launcher-mode="continue"]', NoWaitAfter=True,
                            TimeoutMilliseconds=12000)
             try:
+                if prerequisite is not None:
+                    prerequisite.before_click()
                 page.locator('button[data-launcher-mode="continue"]').click(no_wait_after=True)
             except Exception:
                 if trace:
@@ -467,7 +475,11 @@ def submit_browser_action(dll, action, ordinal):
                 raise
             if trace:
                 trace.mark("NormalClickReturned")
-            page.get_by_label("Команда или действие", exact=True).wait_for(state="visible")
+            if prerequisite is not None:
+                prerequisite.click_returned()
+                prerequisite.assert_normal_action(page)
+            else:
+                page.get_by_label("Команда или действие", exact=True).wait_for(state="visible")
             if continue_diagnostic:
                 result["ContinueClickObservation"] = trace.returned_click_oracle(page, out / (name + "-server-http.jsonl"))
                 assert not (session / "input/pending_player_action.json").exists()

@@ -33,7 +33,7 @@
         },
         {
             "category": "c5-browser-staged-idle-duration-diagnostic",
-            "reason": "Changed original full-proof path affects ordinary Program/React/relay consumer; existing finite full C5 correctness diagnostic must requalify affected queued/staged-idle cold no-replay chain.",
+            "reason": "Changed original full-proof path affects ordinary Program/React/relay consumer; existing finite full C5 correctness diagnostic must requalify affected queued/staged-idle cold no-replay chain. Reviewed startup oracle prerequisite is fixture-only; fresh current optimized full C5 must retain real readiness, one trusted normal click per navigation and all original once-only/Stop/cold assertions under unchanged whole-chain budgets.",
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",
