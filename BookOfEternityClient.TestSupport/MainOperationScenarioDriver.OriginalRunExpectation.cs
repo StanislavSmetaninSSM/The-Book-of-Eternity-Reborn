@@ -46,17 +46,17 @@ internal static partial class MainOperationScenarioDriver
                     result["CloseObserved"] = client.CloseObserved;
                 }
             }
-            while(pins.Count != before && !owner.IsUncertain)
-                await Task.Delay(5, deadline.Token);
             result["OriginalIdentity"] = original;
             result["ExpectedIdentity"] = expected;
             result["RefusalPhase"] = refusal?.Data["ParticipatingAdmissionPhase"];
             result["PinsBefore"] = before;
             result["PinsAfter"] = pins.Count;
             result["OriginalUncertain"] = owner.IsUncertain;
-            result["ExpectationMatchedBehavior"] = !owner.IsUncertain && pins.Count == before &&
-                (coordinate == "same" ? client != null && client.CloseObserved :
-                    client == null && (string?)refusal?.Data["ParticipatingAdmissionPhase"] == "read-record");
+            // ClosedObserved entries deliberately retain immutable receipts in
+            // the original dictionary until owner retirement, rather than vanish.
+            result["ExpectationMatchedBehavior"] = !owner.IsUncertain &&
+                (coordinate == "same" ? client != null && client.CloseObserved && pins.Count == before + 1 :
+                    pins.Count == before && client == null && (string?)refusal?.Data["ParticipatingAdmissionPhase"] == "read-record");
             return;
         }
         using var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);

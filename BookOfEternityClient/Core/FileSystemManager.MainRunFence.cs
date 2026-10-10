@@ -58,6 +58,8 @@ public partial class FileSystemManager
             var browserOriginal=closing?null:_files.PreflightBrowserOriginalAdmission(this);
             if(browserOriginal!=null && _files._hooks?.AfterBrowserOriginalPreflightAsync is { } originalHook)
                 await originalHook();
+            // A quiescent witness cannot become a new active grant while opening.
+            browserOriginal?.RequireCurrent(_files);
             if(quiescentOnly && _requested?.Pin!=null)throw GmSessionRunPersistence.Invalid();
             if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);
             for(var p=_parent;p!=null;p=p._parent)
@@ -90,6 +92,7 @@ public partial class FileSystemManager
                     _access.Workers=workers;workers.ValidateMainAdmission(_files,_workerPurpose);
                 }
                 Validate(null);
+                browserOriginal?.RequireCurrent(_files);
             }catch{Dispose();throw;}
         }
         internal bool Acquired=>_access!=null && !_closed;

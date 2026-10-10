@@ -1851,7 +1851,24 @@ public partial class GameEngine
         RequireExactEngineSnapshotInventoryCore(physicalInventory,null);
     private static void RequireExactEngineSnapshotInventoryCore(string[] physicalInventory,RollbackSnapshot? rollbackSnapshot)
 {
-        var fixedPaths = PendingTurnSnapshotPathPresenceV1.LogicalPaths
+        var fixedPaths = OriginalBrowserInventoryFixedPaths();
+        var rawPaths = physicalInventory.Where(path=>path.StartsWith("game_state/",StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("lore/",StringComparison.OrdinalIgnoreCase) || fixedPaths.Contains(path,StringComparer.OrdinalIgnoreCase));
+        PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPaths
+            .Concat(SelectOriginalStoryContinuityFiles(physicalInventory)).Concat(fixedPaths)
+            .Concat(rollbackSnapshot?.BaselineFiles ?? [])
+            .Concat(rollbackSnapshot?.ValidationSnapshotFiles ?? [])
+            .Concat(rollbackSnapshot?.BackupFiles.Keys.AsEnumerable() ?? [])
+            .Concat(rollbackSnapshot?.BackupFiles.Values.AsEnumerable() ?? [])
+            .Concat(rollbackSnapshot?.BackupHashes.Keys.AsEnumerable() ?? []));
+    }
+
+    internal static bool IsOriginalBrowserPhysicalInventoryPath(string path) =>
+        path.StartsWith("game_state/",StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("lore/",StringComparison.OrdinalIgnoreCase) ||
+        OriginalBrowserInventoryFixedPaths().Contains(path,StringComparer.OrdinalIgnoreCase);
+
+    private static string[] OriginalBrowserInventoryFixedPaths() => PendingTurnSnapshotPathPresenceV1.LogicalPaths
             .Concat(GuardianPolicySnapshotRequestFiles)
             .Concat(WoundAcceptedTurnSnapshotContract.OutputPaths)
             .Append(QteSceneService.QteOfferPath)
@@ -1874,18 +1891,6 @@ public partial class GameEngine
                 SourceOfLightCapstoneState.PendingRequestPath,
                 SarefMainStoryState.PendingWingsInfiltrationPath, SarefMainStoryState.StatePath
             }).ToArray();
-        var rawPaths = physicalInventory
-            .Where(path => path.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase) ||
-                path.StartsWith("lore/", StringComparison.OrdinalIgnoreCase) ||
-                fixedPaths.Contains(path, StringComparer.OrdinalIgnoreCase));
-        PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPaths
-            .Concat(SelectOriginalStoryContinuityFiles(physicalInventory)).Concat(fixedPaths)
-            .Concat(rollbackSnapshot?.BaselineFiles ?? [])
-            .Concat(rollbackSnapshot?.ValidationSnapshotFiles ?? [])
-            .Concat(rollbackSnapshot?.BackupFiles.Keys.AsEnumerable() ?? [])
-            .Concat(rollbackSnapshot?.BackupFiles.Values.AsEnumerable() ?? [])
-            .Concat(rollbackSnapshot?.BackupHashes.Keys.AsEnumerable() ?? []));
-    }
 
     private IEnumerable<string> EnumerateRollbackTrackedFiles(FileSystemManager.CanonicalWriteLease writeLease) =>
         EnumerateOriginalBrowserRollbackTrackedFiles(_fs.EnumerateFiles(writeLease,"*").ToArray());

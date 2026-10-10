@@ -343,7 +343,8 @@ internal sealed partial class TrustedLocalFilePublication
 
     // A read-only refusal projection through the original trusted codec. Visible
     // after-images never substitute for this publisher's committed decision.
-    internal void RequireBrowserRecoveryPreservesOriginal(string generation, IEnumerable<string> originalPaths)
+    internal void RequireBrowserRecoveryPreservesOriginal(string generation, IEnumerable<string> originalPaths,
+        Func<string,bool>? protectsReceiptNamespace = null)
     {
         if (!Directory.Exists(_journalRoot)) return;
         _journalScope.ValidateDirectory(_journalRoot, allowMissing: false);
@@ -367,7 +368,8 @@ internal sealed partial class TrustedLocalFilePublication
         var paths = originalPaths.Select(relative => _scope.ValidateFile(_files.ResolvePath(relative)))
             .ToHashSet(MemberComparer);
         foreach (var member in journal.Members)
-            if (paths.Contains(member.Path) &&
+            if ((paths.Contains(member.Path) || protectsReceiptNamespace?.Invoke(
+                    Path.GetRelativePath(_files.GameSessionPath,member.Path).Replace('\\','/'))==true) &&
                 (member.Before.Exists != member.After.Exists || member.Before.Sha256 != member.After.Sha256))
                 throw Conflict("Uncommitted publication would alter original browser evidence; recovery refused.");
     }

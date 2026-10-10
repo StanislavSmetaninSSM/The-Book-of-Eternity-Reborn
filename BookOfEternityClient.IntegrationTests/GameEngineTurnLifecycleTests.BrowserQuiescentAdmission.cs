@@ -59,6 +59,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var blocked = false;
         var minted = false;
         var hookReached = false;
+        Exception? cleanupFailure = null;
         GmSessionRunRecord? originalStopped = null;
         try
         {
@@ -100,7 +101,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     // original connection before asserting or fixture stopping.
                     await admission.CompleteAsync(MainOperationOutcome.Completed,false);
                 }
-                catch(Exception failure) when(failure is IOException or InvalidOperationException) { blocked=true; }
+                catch(Exception failure) when(failure is IOException or InvalidDataException or InvalidOperationException) { blocked=true; }
             }
             matched=hookReached && (mode==4 ? !blocked && !minted : blocked && !minted);
         }
@@ -112,13 +113,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var retained=paths.ToDictionary(path=>path,path=>File.ReadAllBytes(files.ResolvePath(path)));
                 foreach(var path in paths)File.Delete(files.ResolvePath(path));
                 try{await Call("StopShellAsync");}
+                catch(Exception failure){cleanupFailure=failure;}
                 finally{foreach(var pair in retained)File.WriteAllBytes(files.ResolvePath(pair.Key),pair.Value);}
             }
             await control.CancelAsync();
             await server.WaitAsync(TimeSpan.FromSeconds(5));
             ((IDisposable)host).Dispose();
         }
-        await File.WriteAllTextAsync(output,JsonSerializer.Serialize(new{Mode=mode,BehaviorMatched=matched,Blocked=blocked,MintedRemotePin=minted,
-            HookReached=hookReached,OriginalStopped=originalStopped,OriginalUncertain=Owner()?.IsUncertain,Scope="genuine NativeLineage original owner and guarded original browser staging; no Program/relay/model"}));
+        await File.WriteAllTextAsync(output,JsonSerializer.Serialize(new{Mode=mode,BehaviorMatched=matched && cleanupFailure==null,Blocked=blocked,MintedRemotePin=minted,
+            HookReached=hookReached,OriginalStopped=originalStopped,OriginalUncertain=Owner()?.IsUncertain,CleanupFailure=cleanupFailure?.ToString(),Scope="genuine NativeLineage original owner and guarded original browser staging; no Program/relay/model"}));
     }
 }

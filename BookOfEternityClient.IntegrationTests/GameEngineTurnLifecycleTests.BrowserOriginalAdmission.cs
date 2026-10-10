@@ -40,7 +40,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             var staged = PendingPlayerActionService.ReadStaged(state);
             GameEngine.ValidateCompletedBrowserReceipt(state,GameEngine.ValidateDetachedBrowserBinding(staged),
                 relative=>File.Exists(_fs.ResolvePath(relative))?File.ReadAllBytes(_fs.ResolvePath(relative)):null,
-                relative=>File.Exists(_fs.ResolvePath(relative)),OriginalAdmissionTree().Keys.ToArray());
+                relative=>File.Exists(_fs.ResolvePath(relative)),Directory.EnumerateFiles(_fs.GameSessionPath,"*",SearchOption.AllDirectories)
+                    .Select(file=>Path.GetRelativePath(_fs.GameSessionPath,file).Replace('\\','/')).ToArray());
         }
         var before = OriginalAdmissionTree();
         var callbacks = 0;

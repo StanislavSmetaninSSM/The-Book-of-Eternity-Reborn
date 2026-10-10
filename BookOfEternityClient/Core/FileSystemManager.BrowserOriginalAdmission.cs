@@ -298,7 +298,10 @@ public partial class FileSystemManager
             .Concat(GameEngine.SelectOriginalStoryContinuityFiles(EnumerateOriginalBrowserPhysicalFiles()))
             .Concat(new[]{PendingPlayerActionService.PendingPath,"input/turn_request.json",BrowserManifestPath,
                 PendingTurnSnapshotAuthority.AuthorityPath,"ready/turn_complete.json","ready/turn_error.json"});
+        var settled=PendingPlayerActionService.Parse(staged.Json,staged.Binding.Generation).Phase=="settled";
         new TrustedLocalFilePublication(this,new TrustedLocalFileScope([BasePath]))
-            .RequireBrowserRecoveryPreservesOriginal(staged.Binding.Generation,paths);
+            .RequireBrowserRecoveryPreservesOriginal(staged.Binding.Generation,paths,relative =>
+                settled && GameEngine.IsOriginalBrowserPhysicalInventoryPath(relative) ||
+                GameEngine.SelectOriginalStoryContinuityFiles([relative]).Any());
     }
 }
