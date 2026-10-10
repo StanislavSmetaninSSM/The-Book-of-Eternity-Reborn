@@ -145,6 +145,43 @@ public partial class ValidationService
                     !JsonNode.DeepEquals(JsonNode.Parse(DecodePendingSnapshotText(bytes!)), JsonNode.Parse(currentRoot.GetRawText()))) return null;
                 return _capture.ReadCommands();
             }
+
+            /// <summary>Authorizes only removal of the existing accepted quest-command property from the sealed output.</summary>
+            internal async Task<GuardianMusingsQuestCleanup?> PrepareQuestCleanupAsync(FileSystemManager files,
+                FileSystemManager.CanonicalWriteLease lease, JsonElement currentRoot)
+            {
+                if (HasDuplicateGuardianMusingsProperties(currentRoot) ||
+                    await ReadForComparisonAsync(files, lease, currentRoot) is null)
+                    throw new InvalidDataException("Accepted guardian quest cleanup no longer matches the original completed output.");
+                var expected = JsonNode.Parse(currentRoot.GetRawText())!.AsObject();
+                if (!expected.Remove(GuardianProjectState.QuestProgressUpdatesProperty)) return null;
+                return new GuardianMusingsQuestCleanup(GuardianMusingsIssuanceKey, this, expected.ToJsonString());
+            }
+
+            /// <summary>Immutable expected output for one client-owned cleanup; cannot reseal arbitrary current state.</summary>
+            internal sealed class GuardianMusingsQuestCleanup
+            {
+                private readonly GuardianMusingsCompletedValidation _original;
+                private readonly string _expectedJson;
+                internal GuardianMusingsQuestCleanup(object key, GuardianMusingsCompletedValidation original, string expectedJson)
+                {
+                    if (!ReferenceEquals(key, GuardianMusingsIssuanceKey)) throw new InvalidOperationException("Original cleanup capture required.");
+                    _original = original; _expectedJson = expectedJson;
+                }
+
+                internal async Task<GuardianMusingsCompletedValidation> CompleteAsync(FileSystemManager files,
+                    FileSystemManager.CanonicalWriteLease lease)
+                {
+                    if (!await _original._capture.MatchesAsync(files, lease))
+                        throw new InvalidDataException("Original guardian binding changed during accepted quest cleanup.");
+                    var bytes = await files.ReadFileBytesAsync(lease, GuardianMusingsPath);
+                    using var document = JsonDocument.Parse(DecodePendingSnapshotText(bytes!));
+                    if (HasDuplicateGuardianMusingsProperties(document.RootElement) ||
+                        !JsonNode.DeepEquals(JsonNode.Parse(document.RootElement.GetRawText()), JsonNode.Parse(_expectedJson)))
+                        throw new InvalidDataException("Accepted guardian quest cleanup changed more than the owned command property.");
+                    return new GuardianMusingsCompletedValidation(GuardianMusingsIssuanceKey, _original._capture, HashRequired(bytes));
+                }
+            }
         }
     }
 

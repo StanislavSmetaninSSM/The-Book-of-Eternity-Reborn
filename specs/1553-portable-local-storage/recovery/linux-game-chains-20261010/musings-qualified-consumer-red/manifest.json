@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "ba8d37a8ab740d442c3dbc8b2656360b29b34e7a",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category guardian-musings-original-consumers -NoBuild",
+  "Status": "0PASS/12FAIL; complete; 28.9565265s; cleanup complete",
+  "Scope": "Matching fresh 9c integration build; docs-only ba8 carrier. Eight qualified original storage failure propagation RED and two qualified cleanup positive/substitution RED; two treatment TerminalRejected before Accepted remain unqualified for handoff. Distinct treatment-only and combined surface fixtures.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "ff64a56ae4481672c5c908d4028a769bff31c3beeb126afcbf8ec65d1f35e36b",
+      "RawBytes": 1928
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "0b5f32c3317dfca3009aac350d03713b56da921d53382cd991c7f10a07607afe",
+      "RawBytes": 1387
+    },
+    {
+      "Path": "runner/guardian-musings-original-consumers-integration-001.trx.gz",
+      "RawSHA256": "1aae9463d9b1fe3d2d89d7da8bb47e2386846b578a04db64eeedf33cd5dd2b1b",
+      "RawBytes": 85479
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "8d93eff19a2470f64306e36c85ed602f8d94a5aa13405fcb227e807f7764dae2",
+      "RawBytes": 1645279
+    }
+  ]
+}

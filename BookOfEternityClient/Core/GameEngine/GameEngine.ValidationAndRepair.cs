@@ -1009,12 +1009,22 @@ public partial class GameEngine
                         lastCriticalRepairErrors,
                         lastCriticalRepairAttempt,
                         lastCriticalRepairSessionGeneration!);
-                    await CleanupAcceptedTurnCommandSurfacesAsync(lastCriticalRepairSessionGeneration);
+                    canonicalRefresh = canonicalRefresh with
+                    {
+                        GuardianMusingsValidation = await CleanupAcceptedTurnCommandSurfacesAsync(
+                            lastCriticalRepairSessionGeneration, canonicalRefresh.GuardianMusingsValidation)
+                    };
                 }
                 else
                 {
-                    await CleanupAcceptedTurnCommandSurfacesAsync();
+                    canonicalRefresh = canonicalRefresh with
+                    {
+                        GuardianMusingsValidation = await CleanupAcceptedTurnCommandSurfacesAsync(
+                            guardianMusings: canonicalRefresh.GuardianMusingsValidation)
+                    };
                 }
+                using var cleanedGuardianMusingsValidationScope = _validator.UseCompletedGuardianMusingsValidationScope(
+                    canonicalRefresh.GuardianMusingsValidation);
                 await RefreshRuntimeStateAsync();
                 if (treatmentResourcePublicationTransaction is null)
                 {
@@ -2411,17 +2421,20 @@ public partial class GameEngine
             : FindCanonicalStateWriteException(exception.InnerException);
     }
 
-    private async Task CleanupAcceptedTurnCommandSurfacesAsync(string? expectedSessionGeneration = null)
+    private async Task<ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?>
+        CleanupAcceptedTurnCommandSurfacesAsync(string? expectedSessionGeneration = null,
+            ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation? guardianMusings = null)
     {
-        await RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync(expectedSessionGeneration);
+        return await RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync(expectedSessionGeneration, guardianMusings);
     }
 
-    private async Task RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync(
-        string? expectedSessionGeneration = null)
+    private async Task<ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?>
+        RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync(string? expectedSessionGeneration = null,
+            ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation? guardianMusings = null)
     {
         const string path = "game_state/meta/guardians.json";
         var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        Exception? failure = null;
         try
         {
             if (!string.IsNullOrWhiteSpace(expectedSessionGeneration))
@@ -2429,17 +2442,23 @@ public partial class GameEngine
 
             var json = await _fs.ReadFileAsync(writeLease, path);
             if (string.IsNullOrWhiteSpace(json))
-                return;
+            {
+                if (guardianMusings is not null) throw new InvalidDataException("Completed guardian output is missing before quest cleanup.");
+                return guardianMusings;
+            }
 
             try
             {
-                if (JsonNode.Parse(json) is not JsonObject root ||
-                    !root.Remove(GuardianProjectState.QuestProgressUpdatesProperty))
+                using var document = JsonDocument.Parse(json);
+                var cleanup = guardianMusings is null ? null : await guardianMusings.PrepareQuestCleanupAsync(
+                    _fs, writeLease, document.RootElement);
+                if (JsonNode.Parse(json) is not JsonObject root || !root.Remove(GuardianProjectState.QuestProgressUpdatesProperty))
                 {
-                    return;
+                    return guardianMusings;
                 }
 
                 await _fs.WriteFileAtomicAsync(writeLease, path, root.ToJsonString(JsonOpts));
+                return cleanup is null ? guardianMusings : await cleanup.CompleteAsync(_fs, writeLease);
             }
             catch (Exception ex)
             {
@@ -2447,14 +2466,14 @@ public partial class GameEngine
                 throw;
             }
         }
-        catch (CoordinatedStatePublicationUncertainException failure)
+        catch (Exception caught)
         {
-            uncertainty = failure;
+            failure = caught;
             throw;
         }
         finally
         {
-            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, failure);
         }
 
     }

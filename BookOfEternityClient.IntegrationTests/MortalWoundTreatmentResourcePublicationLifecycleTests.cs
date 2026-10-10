@@ -3620,11 +3620,12 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     private async Task<(GameEngine Engine, object SnapshotContext)>
-        CreateHeldTreatmentValidationEngineAsync(HeldTreatmentPipelineContext context)
+        CreateHeldTreatmentValidationEngineAsync(HeldTreatmentPipelineContext context,
+            Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null)
     {
         var engine = CreateGameEngine(
             new QueuedConsoleInputSource(new[] { Key(ConsoleKey.Escape) }),
-            fileSystem: context.FileSystem);
+            fileSystem: context.FileSystem, logger: logger);
         var manifest = await InvokePrivateTaskResultAsync(
             engine,
             "LoadPendingTurnSnapshotManifestAsync");

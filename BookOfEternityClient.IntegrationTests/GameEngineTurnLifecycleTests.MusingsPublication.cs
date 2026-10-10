@@ -34,13 +34,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         await context.FileSystem.WriteFileAtomicAsync(context.Lease, path, root.ToJsonString());
         await RestoreHeldTreatmentAndComposeSameSemanticPlanAsync(context);
         await context.ReleaseLeaseAsync();
-        var (engine, snapshot) = await CreateHeldTreatmentValidationEngineAsync(context);
+        var logger = new SpiritualLifecycleTestLogger();
+        var (engine, snapshot) = await CreateHeldTreatmentValidationEngineAsync(context, logger);
         var spendsBefore = CountHeldTreatmentEnergySpends(await ReadTreatmentResourceHistoryAsync(context.FileSystem));
         var disposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync", "guardian original treatment handoff", snapshot, null,
             HeldTreatmentPipelineContext.Turn, null);
         Assert.True(disposition == AcceptedTurnValidationDisposition.Accepted,
-            disposition + ": " + await context.FileSystem.ReadFileAsync("game_state/control/validation_repair_request.json"));
+            disposition + ": " + await context.FileSystem.ReadFileAsync("game_state/control/validation_repair_request.json") + "\n" + logger.Describe());
         Assert.Equal(spendsBefore + 1, CountHeldTreatmentEnergySpends(await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
         var handoff = typeof(GameEngine).GetField("_acceptedTurnGuardianMusingsValidation", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(engine);
         Assert.NotNull(handoff);

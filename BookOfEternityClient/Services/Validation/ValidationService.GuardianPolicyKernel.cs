@@ -269,6 +269,18 @@ public partial class ValidationService
                 }
 
                 context.CurrentRoot = currentDoc.RootElement.Clone();
+            }
+            catch (JsonException)
+            {
+                context.CurrentStateReadable = false;
+                return context;
+            }
+
+            // Storage admission, read and owned-close failures retain their original
+            // outcome instead of becoming an unreadable-domain repair candidate.
+            var completedMusings = ReadCompletedGuardianMusingsForComparison(context.CurrentRoot);
+            try
+            {
                 context.HasCurrentRoot = true;
                 context.HasCurrentGuardiansArray =
                     context.CurrentRoot.TryGetProperty("guardians", out var currentGuardians) &&
@@ -289,7 +301,7 @@ public partial class ValidationService
                 foreach (var (guardianId, guardian) in ReadGuardianStateMap(context.CurrentRoot))
                     context.CurrentGuardiansById[guardianId] = guardian;
 
-                BuildGuardianIdentityAuthority(context);
+                BuildGuardianIdentityAuthority(context, completedMusings);
                 BuildAuthorizedGuardianQuestProgressUpdatesForAuthority(context);
                 BuildGuardianAuthorityRoots(context);
                 BuildAuthorizedGuardianPowerEventsForAuthority(context);
@@ -313,7 +325,7 @@ public partial class ValidationService
         }
     }
 
-    private void BuildGuardianIdentityAuthority(GuardianPolicyContext context)
+    private void BuildGuardianIdentityAuthority(GuardianPolicyContext context, JsonObject[] completedMusings)
     {
         if (context.HasUsableValidatedPreTurnGuardiansSnapshot && context.HasPreTurnRoot)
         {
@@ -342,7 +354,7 @@ public partial class ValidationService
 
             context.AuthorizedSameTurnGuardianCommands.Clear();
             context.AuthorizedSameTurnGuardianCommands.AddRange(authorizationResult.AuthorizedCommands);
-            context.AuthorizedSameTurnGuardianCommands.AddRange(ReadCompletedGuardianMusingsForComparison(context.CurrentRoot));
+            context.AuthorizedSameTurnGuardianCommands.AddRange(completedMusings);
         }
     }
 
