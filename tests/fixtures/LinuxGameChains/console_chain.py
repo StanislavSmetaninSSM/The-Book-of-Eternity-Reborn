@@ -155,8 +155,15 @@ def wait(predicate, label, seconds=20):
     deadline = time.monotonic() + seconds
     if duration_diagnostic:
         limit = total_seconds if "CleanupStartedAtSeconds" in result else work_seconds
-        deadline = min(deadline, started + limit)
-    while not predicate():
+        absolute = started + limit
+        deadline = min(deadline, absolute)
+    while True:
+        if duration_diagnostic:
+            assert time.monotonic() < absolute, "Driver absolute work/cleanup budget exceeded before " + label
+        if predicate():
+            if duration_diagnostic:
+                assert time.monotonic() < absolute, "Driver absolute work/cleanup budget exceeded after " + label
+            break
         assert time.monotonic() < deadline, "Timeout: " + label
         pump()
     events.append({"Observed": label, "AtSeconds": time.monotonic() - started})
@@ -795,6 +802,10 @@ finally:
             if fd >= 0:
                 os.close(fd)
     result["ElapsedSeconds"] = time.monotonic() - started
+    if duration_diagnostic:
+        result["DiagnosticTotalBudgetExceeded"] = result["ElapsedSeconds"] >= total_seconds
+        if result["DiagnosticTotalBudgetExceeded"]:
+            result.setdefault("Failure", "Driver total diagnostic budget exceeded before final PASS")
     result["OriginalStopped"] = bool(result.get("OriginalRuns") and
         len(result.get("OriginalStops", [])) == len(result["OriginalRuns"]) and
         all(any(stop["Identity"] == identity and stop["RecordAfter"]["Disposition"] == "Stopped"
