@@ -22028,6 +22028,58 @@
           ]
         }
       ]
+    },
+    {
+      "id": "linux-game-chain-browser-inventory",
+      "responsibility": "#1553 T066 C3 actual sealed-stack split then full host+Chromium cold restart and actual merge; exact inventory/index/resource bytes, count conservation and receipt identity. Real shipped Program --web, LocalWebUiHost, built React and Linux Chromium; own neutral current-schema initial item fixture.",
+      "excludes": "No accepted GM turn/item materialization, Bridge/relay/model/provider, wound or engine rollback qualification, native Windows or whole migration acceptance. No route interception/service replacement.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/LinuxBrowserGameChainTests.cs",
+        "tests/fixtures/LinuxGameChains/browser_chain.py",
+        "BookOfEternityClient/WebUi/"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": true,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxBrowserGameChainTests.Inventory_ActualReactSplitColdRestartMerge"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "linux-game-chain-browser-saves",
+      "responsibility": "#1553 T066 C4 happy save/load: real React manual archive, actual split, typed load+refresh+complete, exact saved inventory/index/resources/new generation, full host+Chromium cold restart and new split. Injected rollback is excluded. Real shipped Program --web, LocalWebUiHost, built React and Linux Chromium; own neutral current-schema initial item fixture.",
+      "excludes": "No accepted GM turn/item materialization, Bridge/relay/model/provider, wound or engine rollback qualification, native Windows or whole migration acceptance. No route interception/service replacement.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/LinuxBrowserGameChainTests.cs",
+        "tests/fixtures/LinuxGameChains/browser_chain.py",
+        "BookOfEternityClient/WebUi/"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": true,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxBrowserGameChainTests.Saves_ActualReactSaveMutateLoadColdRestartContinue"
+          ]
+        }
+      ]
     }
   ]
 }

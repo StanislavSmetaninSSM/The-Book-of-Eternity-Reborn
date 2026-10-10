@@ -14,6 +14,34 @@
         "FR-013",
         "T066-LINUX-GAME-CHAINS"
       ]
+    },
+    {
+      "category": "linux-game-chain-browser-inventory",
+      "reason": "T066 real React/host cold command inventory chain, not service or HTTP200-only evidence. Explicit current-schema initial item fixture; no model calls. Save/load happy path does not qualify injected rollback.",
+      "contracts": [
+        "#1553",
+        "US3",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-011",
+        "FR-013",
+        "T066-LINUX-GAME-CHAINS"
+      ]
+    },
+    {
+      "category": "linux-game-chain-browser-saves",
+      "reason": "T066 real React/host cold command saves chain, not service or HTTP200-only evidence. Explicit current-schema initial item fixture; no model calls. Save/load happy path does not qualify injected rollback.",
+      "contracts": [
+        "#1553",
+        "US3",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-011",
+        "FR-013",
+        "T066-LINUX-GAME-CHAINS"
+      ]
     }
   ]
 }

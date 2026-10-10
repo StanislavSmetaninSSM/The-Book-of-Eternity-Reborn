@@ -1,3 +1,26 @@
+## C1 per-original stop proof PASS; C3/C4 executable fixtures WIP
+
+Source `4419c875d31e143040e0932b730cfd459cd8ed9b`: repeated only corrected
+C1 category, **PASS1/1**,141.4183056s,0skip/duplicate/timeout. Three accepted
+turns, full preceding story bytes preserved after both restart scopes. Both
+original identities have separate real relay-close/shutdown replies and exact
+Stopped records. Every client/Bridge/daemon exit0/EOF; guardian ECHILD/0emergency/
+0failures/no deadline. [Evidence](recovery/linux-game-chains-20261010/c1-qualified-per-run-stop/manifest.json).
+Bounded admission RED→GREEN is now actual; no live model/Windows/default-worker
+qualification. Independent review of corrected final delta remains pending.
+
+C3/C4 new distinct owned categories and process/browser fixtures are source WIP,
+**UNRUN**. Real Program --web/React/Chromium, no route interception or service
+replacement. Initial state uses existing current-schema neutral Mortal fixture
+and sealed material stack5, explicit fixture receipt turn42; this is not an
+accepted GM turn. C3 split3+2/immutable parent+derived child/index then full web
+host+Chromium exit/new PIDs, exact cold bytes, actual merge5. C4 React manual save,
+actual split, typed save load/required refresh/completion from React, exact saved
+inventory/index/resources/authority/new generation, full cold host/browser then
+new actual split. Rollback is excluded from happy-path qualification. Existing
+Python3.12/Playwright1.62 and /usr/bin/chromium are used, no new install. C# changes
+require fresh selected build; catalog discovery once after all new categories.
+
 ## C1 three accepted turns; cleanup review correction — WIP
 
 Source `d60f2f29712a64d5f1f813535e6a60e48e247046`: actual category
