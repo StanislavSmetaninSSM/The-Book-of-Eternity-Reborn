@@ -43,7 +43,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
         await InvokePrivateTaskAsync(engine, "ClaimBrowserTerminalAsync", staged);
-        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", null);
+        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", (object?)null);
         var original = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
         // Corrupt an original retained backup: the actual rollback must refuse before any restore.
         var manifest = JsonNode.Parse(staged.ManifestJson)!;
@@ -155,7 +155,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
         staged = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "ClaimBrowserTerminalAsync", staged);
-        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", null);
+        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", (object?)null);
         await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", snapshot);
         InvokePrivate(engine, "CleanupBackup", snapshot);
         _fs.DeleteFile("input/turn_request.json");

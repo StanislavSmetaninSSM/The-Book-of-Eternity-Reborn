@@ -57,6 +57,17 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
         Assert.True(result.RootElement.GetProperty("ClientColdRestart").GetBoolean());
         Assert.True(result.RootElement.TryGetProperty("WholeChainColdRestart", out _));
         Assert.Equal(3, result.RootElement.GetProperty("AcceptedTurns").GetArrayLength());
+        if (mode == "browser-relay")
+        {
+            var cuts = result.RootElement.GetProperty("InterruptedColdCuts").EnumerateArray().ToArray();
+            Assert.Equal(new[] { "queued", "staged" }, cuts.Select(cut => cut.GetProperty("Phase").GetString()));
+            Assert.All(cuts, cut =>
+            {
+                Assert.NotEqual(cut.GetProperty("OriginalPid").GetInt32(), cut.GetProperty("ColdPid").GetInt32());
+                Assert.Equal(-9, cut.GetProperty("OriginalExitCode").GetInt32());
+                Assert.True(cut.GetProperty("OriginalEOF").GetBoolean());
+            });
+        }
         using var guardian = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "guardian.json")));
         Assert.True(guardian.RootElement.GetProperty("echild").GetBoolean());
         Assert.Equal(0, guardian.RootElement.GetProperty("emergencySignals").GetInt32());

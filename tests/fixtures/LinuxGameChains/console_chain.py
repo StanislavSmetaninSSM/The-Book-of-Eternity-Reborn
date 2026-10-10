@@ -14,6 +14,7 @@ from pathlib import Path
 import pty
 import re
 import select
+import signal
 import socket
 import struct
 import subprocess
@@ -242,6 +243,7 @@ def submit_browser_action(dll, action, ordinal):
     Requires real turn delivery after the browser write, not merely HTTP success.
     Missing production handoff must remain FAIL; no console-input substitute.
     """
+    global client
     import urllib.request
     from playwright.sync_api import sync_playwright
     with socket.socket() as available:
@@ -257,6 +259,10 @@ def submit_browser_action(dll, action, ordinal):
         except (OSError, urllib.error.URLError):
             return False
     wait(ready, "actual web host startup")
+    if ordinal == 1:
+        # Hold the real input owner before the React producer publishes, so the
+        # queued-before-staging crash cut is deterministic, not a racing assertion.
+        os.kill(client.process.pid, signal.SIGSTOP)
     with sync_playwright() as driver:
         browser = driver.chromium.launch(executable_path="/usr/bin/chromium", headless=True,
                                          args=["--no-sandbox", "--disable-dev-shm-usage"], env=env)
@@ -292,6 +298,23 @@ def submit_browser_action(dll, action, ordinal):
             pending_artifact.write_bytes(pending_path.read_bytes())
             submission["AuthoritativePending"] = pending
             submission["OriginalDerivedReady"] = rpc({"command": "status"})["status"]["ready"]
+            if ordinal == 1:
+                assert pending["status"] == "queued", pending
+                assert not (session / "input/turn_request.json").exists()
+                previous = client
+                os.kill(previous.process.pid, signal.SIGKILL)
+                wait(lambda: previous.process.poll() is not None, "queued original input owner crash")
+                wait(lambda: len(previous.closed) == len(previous.streams), "queued input owner EOF")
+                assert previous.process.returncode == -signal.SIGKILL
+                assert pending_path.read_bytes() == pending_artifact.read_bytes()
+                client = Peer("client-queued-cold", ["dotnet", str(dll), str(base), "--plain-output"], True)
+                fresh(client, "Продолжить")
+                assert pending_path.read_bytes() == pending_artifact.read_bytes(), "queued cold startup rewrote original action"
+                client.send("\r")
+                result.setdefault("InterruptedColdCuts", []).append({"Phase": "queued", "OriginalPid": previous.process.pid,
+                    "ColdPid": client.process.pid, "OriginalExitCode": previous.process.returncode,
+                    "OriginalEOF": True, "ActionId": pending["actionId"], "Generation": pending["sessionGeneration"],
+                    "OriginalPendingSHA256": sha(pending_artifact.read_bytes()), "NoRequestBeforeCrash": True})
             page.screenshot(path=str(out / (name + "-submitted.png")))
             (out / (name + "-submitted.html")).write_text(page.content())
             try:
@@ -436,6 +459,35 @@ try:
         wait(lambda: len([p for p in queue.glob("request-*") if (p / "game-request.json").exists()]) == (ordinal if ordinal < 3 else 1),
              "real daemon/relay delivery " + str(ordinal), 30)
         request_dir = sorted(queue.glob("request-*"), key=lambda p: p.stat().st_mtime)[-1]
+        if scenario == "browser-relay" and ordinal == 2:
+            # Original request already delivered; no authored GM response exists.
+            # Replace only the real console client and recover its signed staged turn.
+            pending_path = session / "input/pending_player_action.json"
+            pending_bytes = pending_path.read_bytes()
+            staged = read_json(pending_path)
+            assert staged["status"] == "staged", staged
+            request_bytes = (session / "input/turn_request.json").read_bytes()
+            previous = client
+            os.kill(previous.process.pid, signal.SIGKILL)
+            wait(lambda: previous.process.poll() is not None, "staged original client crash")
+            wait(lambda: len(previous.closed) == len(previous.streams), "staged original client EOF")
+            assert previous.process.returncode == -signal.SIGKILL
+            client = Peer("client-staged-cold", ["dotnet", str(dll), str(base), "--plain-output"], True)
+            fresh(client, "Продолжить")
+            assert pending_path.read_bytes() == pending_bytes
+            assert (session / "input/turn_request.json").read_bytes() == request_bytes
+            assert (session / "stories/chaos_sea.jsonl").read_bytes() == preserved_story
+            offset = len(client.raw)
+            client.send("\r")
+            # The retained-stage idle path emits no prompt before completion.
+            # Its eventual original narrative/prompt below proves session entry.
+            assert pending_path.read_bytes() == pending_bytes
+            assert (session / "input/turn_request.json").read_bytes() == request_bytes
+            assert len(list(queue.glob("request-*"))) == 2, "cold recovery dispatched a second original request"
+            result.setdefault("InterruptedColdCuts", []).append({"Phase": "staged", "OriginalPid": previous.process.pid,
+                "ColdPid": client.process.pid, "OriginalExitCode": previous.process.returncode, "OriginalEOF": True,
+                "ActionId": staged["actionId"], "Generation": staged["sessionGeneration"], "RequestId": req["requestId"],
+                "OriginalPendingSHA256": sha(pending_bytes), "OriginalRequestSHA256": sha(request_bytes), "RelayRequests": 2})
         captured, narrative = author_packet(request_dir, ordinal)
         assert captured["requestId"] == req["requestId"]
         fresh(client, narrative, offset, 40)
