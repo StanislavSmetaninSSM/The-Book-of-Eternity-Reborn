@@ -41,6 +41,10 @@ internal static class GuardianPowerEventState
         public List<string> RollbackBaselineFiles { get; set; } = new();
         public string? SourceLabel { get; set; }
         public string ManifestPayloadHash { get; set; } = string.Empty;
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public string? BrowserActionId { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public string? BrowserSessionGeneration { get; set; }
     }
 
     private sealed record PendingTurnRequestContext(

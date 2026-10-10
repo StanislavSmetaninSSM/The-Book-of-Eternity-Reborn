@@ -511,6 +511,10 @@ public partial class ValidationService
         public List<string> RollbackBaselineFiles { get; set; } = new();
         public string? SourceLabel { get; set; }
         public string ManifestPayloadHash { get; set; } = "";
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public string? BrowserActionId { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public string? BrowserSessionGeneration { get; set; }
     }
 
     private sealed class GuardianSequentialState

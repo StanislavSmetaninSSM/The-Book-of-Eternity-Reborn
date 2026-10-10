@@ -187,6 +187,15 @@ public partial class GameEngine
 
     private async Task RefreshRuntimeStateCoreAsync()
     {
+        if (HasBrowserInputWakeHint() && await WithPendingActionLeaseAsync(async lease =>
+            {
+                var pending = await PendingPlayerActionService.ReadAsync(_fs, lease);
+                if (pending?.Phase != "staged") return false;
+                ValidateDetachedBrowserBinding(PendingPlayerActionService.ReadStaged(pending));
+                await _stateManager.RefreshGameStateReadOnlyAsync(lease);
+                return true;
+            }))
+            return;
         await _stateManager.RefreshGameStateAsync();
         await _progressionSchedule.EnsureInitializedAsync();
     }

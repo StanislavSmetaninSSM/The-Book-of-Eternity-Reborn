@@ -76,9 +76,9 @@ Actual first consumer9d4df298: producer2/2PASS; actualC5 1FAIL,81s test,
 ownedcleanupcomplete. Actual request reached relay/helper but accepted0; original
 same correlated narrative not displayed, preserved original stop/EOF evidence.
 Independent review identifies shared reader manifest DTO dropping new hashed optional
-browser fields; new two-case actual-engine-manifest/shared-reader RED prepared,UNRUN.
+browser fields; actual shared-reader causalRED at44696f56:2cases/1PASSordinary/1FAILbrowser,39.3452459s,complete/0skip/duplicate/timeout/cleanupcomplete. [RED](recovery/linux-game-chains-20261010/c5-shared-reader-causal-red/manifest.json).
 Also found staged menu description mutating refresh and late QTE certification bypass;
-these source findings are open until fixed and verified. C5 acceptance not claimed.
+source corrections now propagate identical optional/null-omitted/order-preserved binding through Live/Validation/GuardianPower/CanonicalSoul/BrowserQueue hash DTOs; raw JsonObject realm validator preserves fields already. Global engine staged refresh (including menu description) is read-only; late QTE and every potential life/ascension/incarnation handoff retain unresolved original status. Claim rechecks competing request/snapshot/terminal and publishes request with absent baseline; browser inspector reserves pending slot. Corrections UNRUN. Confirmed cancel/rollback settlement and bounded cold/interleaving negatives remain open. [First actual consumer FAIL](recovery/linux-game-chains-20261010/c5-first-consumer-reader-fail/manifest.json). C5 acceptance not claimed.
 
 ### T070 execution steps (all UNRUN)
 

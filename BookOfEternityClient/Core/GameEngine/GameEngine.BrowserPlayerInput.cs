@@ -145,6 +145,12 @@ public partial class GameEngine
             var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
             if (state?.Phase != "queued" || state.Json != binding.Json)
                 throw new InvalidOperationException(BrowserRecoveryMessage);
+            if (_fs.FileExists(lease, "input/turn_request.json") ||
+                _fs.FileExists(lease, PendingTurnSnapshotManifestPath) ||
+                _fs.FileExists(lease, PendingTurnSnapshotAuthority.AuthorityPath) ||
+                _fs.FileExists(lease, "ready/turn_complete.json") ||
+                _fs.FileExists(lease, "ready/turn_error.json"))
+                throw new InvalidOperationException(BrowserRecoveryMessage);
             await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json,
                 PendingPlayerActionService.CreatePhase(state, "preparing"));
             return true;
@@ -163,7 +169,7 @@ public partial class GameEngine
         var stagedJson = PendingPlayerActionService.CreatePhase(state, "staged", PendingPlayerActionService.StagingProof(captured));
         await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, stagedJson,
             new CoordinatedStateWriteHelper.PlannedWrite("input/turn_request.json",
-                await _fs.ReadFileAsync(lease, "input/turn_request.json"), requestJson, RequireCurrentBaseline: true));
+                PreviousJson: null, requestJson, RequireCurrentBaseline: true));
         return captured with { Json = stagedJson };
     });
 

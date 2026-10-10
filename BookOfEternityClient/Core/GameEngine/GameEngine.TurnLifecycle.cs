@@ -1004,6 +1004,7 @@ public partial class GameEngine
                             lateAction, lateResponse?.Response, state.CurrentLocation, lateStoryRefs);
 
                     await ProcessMortalProgressionAfterAcceptedTurnAsync();
+                    var browserLifeHandoff = lateBrowserStaged != null && _fs.FileExists("game_state/control/life_transitions.json");
                     if (await CheckLifeTransitions(snapshotContext))
                     {
                         acceptedLateResponse = true;
@@ -1012,11 +1013,17 @@ public partial class GameEngine
                         return true;
                     }
 
+                    if (browserLifeHandoff) return true;
+
+                    var browserAscensionHandoff = lateBrowserStaged != null && _fs.FileExists("game_state/control/ascension.json");
                     await CheckAscensionTrigger();
+                    if (browserAscensionHandoff) return true;
                     if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
                         await FinalizePendingMemoryLegacyConsumptionAsync();
 
+                    var browserQteHandoff = lateBrowserStaged != null && _fs.FileExists(QteSceneService.QteOfferPath);
                     var qteHandling = await HandleAcceptedQteOfferAsync(lateResponse, snapshotContext);
+                    if (lateBrowserStaged != null && (qteHandling.EarlyExit || browserQteHandoff)) return true;
                     if (!qteHandling.EarlyExit)
                     {
                         _lastResponse = qteHandling.Response;
@@ -1044,7 +1051,8 @@ public partial class GameEngine
 
                 if (acceptedLateResponse)
                 {
-                    if (!await CheckGmIncarnationTrigger(snapshotContext))
+                    var browserIncarnationHandoff = lateBrowserStaged != null && _fs.FileExists("game_state/control/incarnation_trigger.json");
+                    if (!await CheckGmIncarnationTrigger(snapshotContext) && !browserIncarnationHandoff)
                     {
                         await CleanupAcceptedTurnTerminalArtifactsAsync();
                         if (lateBrowserStaged != null && lateBrowserStory != null)
@@ -1634,21 +1642,27 @@ public partial class GameEngine
             await ProcessMortalProgressionAfterAcceptedTurnAsync();
 
             // Check for GM-triggered life transitions
+            var browserLifeHandoff = browserStaged != null && _fs.FileExists("game_state/control/life_transitions.json");
             if (await CheckLifeTransitions(activeSnapshotContext))
             {
                 CleanupBackup(backedUpFiles);
                 return;
             }
+            if (browserLifeHandoff) return;
+            var browserAscensionHandoff = browserStaged != null && _fs.FileExists("game_state/control/ascension.json");
             await CheckAscensionTrigger();
+            if (browserAscensionHandoff) return;
 
             await ConsumeAfterlifeReturnProtectionIfNeededAsync(activeSnapshotContext);
 
+            var browserQteHandoff = browserStaged != null && _fs.FileExists(QteSceneService.QteOfferPath);
             var qteHandling = await HandleAcceptedQteOfferAsync(response, activeSnapshotContext);
             if (qteHandling.EarlyExit)
             {
                 CleanupBackup(backedUpFiles);
                 return;
             }
+            if (browserQteHandoff) return;
 
             _lastResponse = qteHandling.Response;
             _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
@@ -1660,11 +1674,13 @@ public partial class GameEngine
                 await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
             }
 
+            var browserIncarnationHandoff = browserStaged != null && _fs.FileExists("game_state/control/incarnation_trigger.json");
             if (await CheckGmIncarnationTrigger(activeSnapshotContext))
             {
                 CleanupBackup(backedUpFiles);
                 return;
             }
+            if (browserIncarnationHandoff) return;
         }
 
         CleanupBackup(backedUpFiles);
