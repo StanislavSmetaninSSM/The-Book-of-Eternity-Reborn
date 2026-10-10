@@ -1,0 +1,44 @@
+{
+  "SourceSHA": "8dc401875363a6c0ec8412a79c5d9cd05ff91d99",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"guardian-musings-publication\", \"guardian-musings-repair-recheck-close\", \"c5-original-post-validation-source\", \"guardian-musings-documentation\") -NoBuild -TimeoutMinutes 8'",
+  "Status": "GREEN21/21PASS45.2644905s/4complete-descriptors0skip-duplicate-timeout/cleanupcomplete",
+  "Scope": "Positive/drift/invalid-original/invalidation16 + genuine repair-recheck ownedclose1 + source3 + GMworkedexampleguard1. Matchingfreshintegration1396/unit12dab.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "c4782b6850e02c4b2e8e09e254b364d9188c8b452ea3209d39b3467b494bb522",
+      "RawBytes": 5524
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "2d17c695858afe6a2cb3a1bc249d0943745240c836eb122cd7d32c38297931e7",
+      "RawBytes": 2033
+    },
+    {
+      "Path": "runner/c5-original-post-validation-source-unit-001.trx.gz",
+      "RawSHA256": "95160d6f057466f7eaf707951c79b3ec496027b77f6c1d62657b3fa87028d5fe",
+      "RawBytes": 6069
+    },
+    {
+      "Path": "runner/guardian-musings-documentation-unit-002.trx.gz",
+      "RawSHA256": "6093864dc0ac25a4712d3f45a70875ee3449fc1840fb0c08b8d2f58bbc5e921a",
+      "RawBytes": 3090
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "c63c916ebc1b22fd4466450709c720c3863458648b61210218e2be40b1094a3c",
+      "RawBytes": 3285913
+    },
+    {
+      "Path": "runner/guardian-musings-repair-recheck-close-integration-004.trx.gz",
+      "RawSHA256": "fd358b0626646001fcda3ac33db9eddfc45e9fdf057061ff848eeba940d3b7a1",
+      "RawBytes": 3151
+    },
+    {
+      "Path": "runner/guardian-musings-publication-integration-003.trx.gz",
+      "RawSHA256": "d4d020c159b6946c65c7b84ec2dac199b938575f60fae41f7a0b7b9ac84f2c22",
+      "RawBytes": 27015
+    }
+  ]
+}
