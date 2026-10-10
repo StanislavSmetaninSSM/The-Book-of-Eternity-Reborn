@@ -116,8 +116,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                         return Task.CompletedTask;
                     }
                 });
-            var soul = JsonNode.Parse(File.ReadAllText(files.ResolvePath("game_state/meta/soul_state.json")))!;
-            GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(soul["sessionId"]!.GetValue<string>(), 0);
+            var originalLoop = GetPrivateField<GameLoop>(bootstrap, "_gameLoop");
+            GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(originalLoop.SessionId, originalLoop.TurnNumber);
             operation = InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", binding.Action, null, null, null, true, binding);
             await Task.WhenAny(published.Task, operation).WaitAsync(TimeSpan.FromSeconds(30));
             if (!published.Task.IsCompleted)
