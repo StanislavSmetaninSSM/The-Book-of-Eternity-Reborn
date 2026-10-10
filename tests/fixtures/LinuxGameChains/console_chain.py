@@ -139,9 +139,11 @@ def wait(predicate, label, seconds=20):
 def fresh(peer, marker, offset=0, seconds=20):
     def observed():
         assert peer.process.poll() is None, peer.name + " exited before " + marker
-        diagnostic = re.search(r'\{"kind":"boe-game-loop-fixture-failure",[^\r\n]*\}', peer.text())
-        if diagnostic:
-            failure = json.loads(diagnostic.group())
+        complete_lines = [line for line in peer.text().splitlines(keepends=True) if line.endswith(("\r", "\n"))]
+        diagnostic = next((line.strip() for line in complete_lines
+                           if line.strip().startswith('{"kind":"boe-game-loop-fixture-failure",')), None)
+        if diagnostic is not None:
+            failure = json.loads(diagnostic)
             assert failure["nonce"] == failure_nonce and failure["pid"] == peer.process.pid
             result["OriginalGameLoopFailure"] = failure
             raise AssertionError("Original GameLoop exception: " + failure["exception"])
@@ -304,7 +306,10 @@ def submit_browser_action(dll, action, ordinal):
         result.setdefault("Browsers", []).append(owned)
         try:
             page.goto(url, wait_until="domcontentloaded")
-            page.locator('button[data-launcher-mode="continue"]').click()
+            # The real click changes this SPA route. Assert the actual composer
+            # rather than waiting for unrelated scheduled navigation completion.
+            page.locator('button[data-launcher-mode="continue"]').click(no_wait_after=True)
+            page.get_by_label("Команда или действие", exact=True).wait_for(state="visible")
             page.get_by_label("Команда или действие", exact=True).fill(action)
             with page.expect_response(lambda r: r.request.method == "POST" and r.url == url + "/api/explorer/player-action") as response:
                 page.get_by_role("button", name="Отправить", exact=True).click()
