@@ -1,0 +1,30 @@
+{
+  "SHA": "51f20579f3640842eeae090ce61d71fb5b0ee45a",
+  "Base": "fbcc1184923f9d2e400575dbbf2dfeabab9340f2",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1663744,
+      "SHA256": "f1db6c8d002859bb2effa9a72cffe04d499f6155e347d1f36b4e1d5d4ab758fe",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-coherent-checkpoint.md",
+      "Bytes": 10147,
+      "SHA256": "87b0ddadba6fc84f5c35f2848683706ea159210dfb1cdf8b57ce96982fdbdc33",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-final-correctness-readonly-restore.json",
+      "Bytes": 296663,
+      "SHA256": "9e308f52a127a717ec3da3d29b43112343a9b53f9e3f8112968d24117b8ceb06",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-supplemented-checkpoint-remote.json",
+      "Bytes": 2074,
+      "SHA256": "4f8d9748fd65678077deaefc76d3ef4d2ef31ac30812ee439779cc070d5349a1",
+      "RemoteExact": true
+    }
+  ]
+}
