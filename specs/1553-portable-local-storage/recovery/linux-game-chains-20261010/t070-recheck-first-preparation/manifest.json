@@ -1,6 +1,6 @@
 {
   "SourceSHA": "12dab76c86bc81b5b63ebdaf0d42ac0c764ae6b6",
-  "Command": "pwsh -Command selected5 -PlanOnly -TimeoutMinutes12",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"guardian-musings-actual-repair\", \"guardian-musings-publication\", \"guardian-musings-repair-recheck-close\", \"c5-original-post-validation-source\", \"guardian-musings-documentation\") -PlanOnly -TimeoutMinutes 12'",
   "Status": "PREPARATION PASS108.1561382s/5descriptors22cases0runtime",
   "Scope": "Fresh integration+unit/references; runtime not executed, fixture output compliance correction follows.",
   "ModelCalls": 0,

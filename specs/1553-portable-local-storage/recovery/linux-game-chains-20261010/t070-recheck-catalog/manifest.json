@@ -1,6 +1,6 @@
 {
   "SourceSHA": "12dab76c86bc81b5b63ebdaf0d42ac0c764ae6b6",
-  "Command": "pwsh -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild -TimeoutMinutes8",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild -TimeoutMinutes 8",
   "Status": "DISCOVERY PASS8.5505553s/649categories11448methods-files0runtime",
   "Scope": "Complete inventory discovery only; no tests executed.",
   "ModelCalls": 0,
