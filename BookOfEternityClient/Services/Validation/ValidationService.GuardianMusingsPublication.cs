@@ -47,7 +47,12 @@ public partial class ValidationService
             issues.Any(issue => issue.Severity == IssueSeverity.Error) || commands.Length != count ||
             commands.GroupBy(command => command["guardianId"]!.GetValue<string>(), StringComparer.OrdinalIgnoreCase)
                 .Any(group => group.Sum(command => command["musings"]!.AsArray().Count) is < 1 or > 2))
-            throw new InvalidDataException("Original addMusings authorization failed; no canonical authority is inferred.");
+            throw new InvalidDataException(
+                "Original addMusings authorization failed; no canonical authority is inferred. " +
+                $"Snapshot={original.ManifestStatus}/{original.FileStatus}; preTurn={context.HasPreTurnRoot}; " +
+                $"shared={context.GenericSharedStrictPreTurnGuardianAuthorityStatus}: {context.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription}; " +
+                $"strict={context.StrictPreTurnGuardianAuthorityStatus}: {context.StrictPreTurnGuardianAuthorityFailureDescription}; " +
+                $"commands={commands.Length}/{count}; issues={string.Join(", ", issues.Select(issue => issue.Code))}.");
         var generation = _fs.ReadExistingSessionGeneration(lease)
             ?? throw new InvalidDataException("Original addMusings generation is unavailable.");
         var hashes = new Dictionary<string, string>(StringComparer.Ordinal);

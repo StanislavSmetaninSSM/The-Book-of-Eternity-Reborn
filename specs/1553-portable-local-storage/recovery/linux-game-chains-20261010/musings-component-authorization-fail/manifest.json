@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "698517e9076a3d0d3e0cbae9415bbee751600cb4",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category guardian-musings-publication",
+  "Status": "FAIL",
+  "Scope": "16=6formalPASS/10FAIL50.6335752s; actual exact-byte reader prerequisite passes, but original command authorization rejects every positive; raw6 also same authorization refusal may be baseline issue. Complete0skip/duplicate/timeout/cleanupcomplete. No GREEN.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "88f23636b82988cd6462f6a1094e40b00e0fa592a6da2fdb50ffba7127b5a348",
+      "RawBytes": 2193
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "4997633f06119741b0f2a60012bb26e00bd4d1cfcd7780c50a293a5df427535e",
+      "RawBytes": 1472
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "9283abc5acc2ebf8e7ae075e333004c2cc04d715a8c37adf9baeaa826c1c8205",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "97c1ae114784fa8b3cbe5e914a3ca01640be5b8351b3256f122f7958104ced4c",
+      "RawBytes": 1677106
+    },
+    {
+      "Path": "runner/guardian-musings-publication-integration-001.trx.gz",
+      "RawSHA256": "793c95f9d76333d5bd9485f1758ddc67de88250e6cb99c1dbc8f2dc9c7fc99a9",
+      "RawBytes": 62816
+    }
+  ]
+}
