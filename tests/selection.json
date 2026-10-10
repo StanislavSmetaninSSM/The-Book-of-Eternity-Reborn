@@ -2,6 +2,14 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "guardian-musings-publication",
+            "reason": "T070 detached original delta lifecycle crosses physical refresh close into exact late kernel comparison. Focused positive+drift/raw negatives/repair/cold, actual whole-chain separate.",
+            "contracts": [
+                "#1553",
+                "T070-GUARDIAN-MUSINGS-AUTHORITY"
+            ]
+        },
+        {
             "category": "linux-game-chain-guardian-musings",
             "reason": "T070 true original addMusings causal RED before production handoff; existing journal PASS does not qualify this route. Same original physical owner and full late validator.",
             "contracts": [

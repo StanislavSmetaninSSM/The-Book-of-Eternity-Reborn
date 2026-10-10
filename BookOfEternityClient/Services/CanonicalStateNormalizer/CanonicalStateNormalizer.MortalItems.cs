@@ -1488,7 +1488,9 @@ internal static class AcceptedTurnCanonicalStateRefresh
             TreatmentResourcePublicationTransaction = null,
         SpiritualWoundPublishedOutput? SpiritualWoundOutput = null,
         ValidationService.SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation?
-            SpiritualConflictValidation = null);
+            SpiritualConflictValidation = null,
+        ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
+            GuardianMusingsValidation = null);
 
     private static Task<MortalWoundTreatmentPublicationProbeResult>
         ProbeTreatmentResourcePublicationTransactionAsync(
@@ -1754,6 +1756,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
         try
         {
             var boundNormalizer = normalizer.BindTo(writeLease);
+            var guardianMusings = await validator.CaptureGuardianMusingsPublicationAsync(writeLease);
             var spiritualPreflight = await boundNormalizer.PrevalidateSpiritualPublicationTransactionAsync();
             var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
             if (spiritualPreflight is not null)
@@ -1864,8 +1867,11 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 if (mechanicsPlan is not null && spiritualReceipt is not null &&
                     !AcceptedMechanicsPlanAuthority.CompleteSpiritualPublication(fs, writeLease, spiritualReceipt))
                     throw new InvalidDataException("Spiritual transaction ownership changed before acceptance.");
+                var guardianMusingsValidation = issues.Any(issue => issue.Severity == IssueSeverity.Error) || guardianMusings is null
+                    ? null : await guardianMusings.CompleteAsync(fs, writeLease);
                 return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
-                    mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation);
+                    mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation,
+                    guardianMusingsValidation);
             }
             catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException)
             {

@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "guardian-musings-publication",
+            "responsibility": "#1553 T070 original authorized addMusings capture under actual accepted refresh physical lease, detached late authority/full prefix/active mirror/count1-2/nested scope/once-only repeat; typed raw negatives and request/generation/signed snapshot/output drift; scope invalidation before repair and cold validator refusal.",
+            "excludes": "Whole Program/relay game qualification is a separate linux-game-chain-guardian-musings category; no broad guardian commands, active-crash/C5/Windows/live models.",
+            "changeHints": [
+                "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.GuardianPolicyKernel.cs",
+                "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+                "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.MusingsPublication.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GuardianSystemRegressionTests.GuardianMusingsPublication_OriginalDeltaSurvivesPhysicalCloseAndLateValidationOnce",
+                        "BookOfEternityClient.Tests.GuardianSystemRegressionTests.GuardianMusingsPublication_DriftNeverBorrowsCompletedOriginalAuthority",
+                        "BookOfEternityClient.Tests.GuardianSystemRegressionTests.GuardianMusingsPublication_InvalidOriginalCommandCannotIssueHandoff",
+                        "BookOfEternityClient.Tests.GuardianSystemRegressionTests.GuardianMusingsPublication_RepairInvalidatesDeltaBeforeAnyMutation"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "linux-game-chain-guardian-musings",
             "responsibility": "#1553 T070 actual original Program/GameEngine/Bridge/daemon/relay/helper three addMusings turns, detached publication-to-late-validation authority, full old musings prefix/active mirror/once-only command consumption/client and whole original cold restarts. Deterministic original GM author only, no provider.",
             "excludes": "C5 browser/crash ownership, B2-B5, paid/live GM, native Windows, general guardian command authority. Historic journal C1 remains distinct.",

@@ -46,6 +46,8 @@ public partial class GameEngine
     private SpiritualWoundPublishedOutput? _acceptedTurnSpiritualOutput;
     private ValidationService.SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation?
         _acceptedTurnSpiritualConflictValidation;
+    private ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
+        _acceptedTurnGuardianMusingsValidation;
 
     private sealed class CompensatedTreatmentPublicationException : Exception
     {
@@ -391,6 +393,7 @@ public partial class GameEngine
         _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
         _acceptedTurnSpiritualOutput = null;
         _acceptedTurnSpiritualConflictValidation = null;
+        _acceptedTurnGuardianMusingsValidation = null;
         var finalizedTreatmentReplayQuarantineFailure =
             await TryQuarantineFinalizedTreatmentReplayAsync(expectedTurn);
         if (finalizedTreatmentReplayQuarantineFailure.HasValue)
@@ -942,6 +945,8 @@ public partial class GameEngine
                 var treatmentPublicationCompensatedForRepair = false;
                 using var completedConflictValidationScope = _validator.UseCompletedSpiritualConflictValidationScope(
                     canonicalRefresh.SpiritualConflictValidation);
+                using var guardianMusingsValidationScope = _validator.UseCompletedGuardianMusingsValidationScope(
+                    canonicalRefresh.GuardianMusingsValidation);
                 var currentStateValid = await ValidateCurrentGameStateOrShowErrorsAsync(
                         source,
                         rollbackSnapshot,
@@ -953,6 +958,7 @@ public partial class GameEngine
                         pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint,
                         beforeRepairMutation: async () =>
                         {
+                            guardianMusingsValidationScope.Invalidate();
                             treatmentPublicationCompensatedForRepair =
                                 await CompensateTreatmentResourcePublicationBeforeRepairAsync(
                                     treatmentResourcePublicationTransaction);
@@ -1014,6 +1020,7 @@ public partial class GameEngine
                 {
                     _acceptedTurnSpiritualOutput = canonicalRefresh.SpiritualWoundOutput;
                     _acceptedTurnSpiritualConflictValidation = canonicalRefresh.SpiritualConflictValidation;
+                    _acceptedTurnGuardianMusingsValidation = canonicalRefresh.GuardianMusingsValidation;
                     _acceptedTurnWoundNotifications = canonicalRefresh.WoundNotifications
                         .Select(static value => value with
                         {
@@ -2043,11 +2050,14 @@ public partial class GameEngine
     {
         var spiritualValidation = Interlocked.Exchange(ref _acceptedTurnSpiritualConflictValidation, null);
         using var completedConflictScope = _validator.UseCompletedSpiritualConflictValidationScope(spiritualValidation);
+        var guardianMusings = Interlocked.Exchange(ref _acceptedTurnGuardianMusingsValidation, null);
+        using var guardianMusingsScope = _validator.UseCompletedGuardianMusingsValidationScope(guardianMusings);
         var accepted = await ValidateCurrentGameStateOrShowErrorsAsync(
             PostAcceptedMaterializedStateValidationSource,
             rollbackSnapshot,
             progressionControl: null,
-            allowRepairLoop: true);
+            allowRepairLoop: true,
+            beforeRepairMutation: () => { guardianMusingsScope.Invalidate(); return Task.CompletedTask; });
 
         if (accepted)
             await RefreshRuntimeStateAsync();
@@ -2095,7 +2105,8 @@ public partial class GameEngine
                     postSealIssues,
                     refresh.MechanicsPlan,
                     refresh.TreatmentResourcePublicationTransaction,
-                    woundNotifications);
+                    woundNotifications,
+                    GuardianMusingsValidation: refresh.GuardianMusingsValidation);
             }
             catch (CompensatedTreatmentPublicationException)
             {
@@ -2136,7 +2147,8 @@ public partial class GameEngine
             refresh.MechanicsPlan,
             AcceptedWoundNotifications: resourceFreeWoundNotifications,
             SpiritualWoundOutput: refresh.SpiritualWoundOutput,
-            SpiritualConflictValidation: refresh.SpiritualConflictValidation);
+            SpiritualConflictValidation: refresh.SpiritualConflictValidation,
+            GuardianMusingsValidation: refresh.GuardianMusingsValidation);
     }
 
     private async Task<WoundAcceptedTurnOutputBindingResult>
@@ -2260,7 +2272,9 @@ public partial class GameEngine
         IReadOnlyList<WoundPlayerNotification>? AcceptedWoundNotifications = null,
         SpiritualWoundPublishedOutput? SpiritualWoundOutput = null,
         ValidationService.SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation?
-            SpiritualConflictValidation = null)
+            SpiritualConflictValidation = null,
+        ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
+            GuardianMusingsValidation = null)
     {
         /// <summary>
         /// Gets the ordered accepted notifications, or an empty list when no presentation was supplied.

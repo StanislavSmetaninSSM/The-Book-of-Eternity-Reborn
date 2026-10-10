@@ -206,6 +206,7 @@ public partial class GameEngine
         _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
         _acceptedTurnSpiritualOutput = null;
         _acceptedTurnSpiritualConflictValidation = null;
+        _acceptedTurnGuardianMusingsValidation = null;
         _pendingImagePrompt = null;
         _pendingMemoryLegacyAwaitingConsumption = false;
         _mainMenuSessionWarning = null;

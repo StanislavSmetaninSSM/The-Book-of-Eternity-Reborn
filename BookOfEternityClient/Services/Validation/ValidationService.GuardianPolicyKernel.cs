@@ -342,6 +342,7 @@ public partial class ValidationService
 
             context.AuthorizedSameTurnGuardianCommands.Clear();
             context.AuthorizedSameTurnGuardianCommands.AddRange(authorizationResult.AuthorizedCommands);
+            context.AuthorizedSameTurnGuardianCommands.AddRange(ReadCompletedGuardianMusingsForComparison(context.CurrentRoot));
         }
     }
 
