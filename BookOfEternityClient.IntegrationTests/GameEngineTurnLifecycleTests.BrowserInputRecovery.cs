@@ -66,7 +66,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotNull(original);
         var after = BrowserRecoveryTree();
         var pendingKey = Path.GetRelativePath(_fs.BasePath, _fs.ResolvePath(PendingPlayerActionService.PendingPath)).Replace('\\', '/');
-        Assert.Equal("terminalProcessing", JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!["status"]!.GetValue<string>());
+        Assert.Equal("terminalProcessing", JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(PendingPlayerActionService.PendingPath)))!["status"]!.GetValue<string>());
         after.Remove(pendingKey);
         Assert.Equal(original.Keys.Order(), after.Keys.Order());
         foreach (var entry in original) Assert.Equal(entry.Value, after[entry.Key]);
@@ -86,7 +86,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             case "state": await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"changed\":true}"); break;
             case "history": await _fs.WriteFileAtomicAsync("stories/competing.jsonl", "{\"late\":true}\n"); break;
             case "generation":
-                var root = JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!;
+                var root = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(PendingPlayerActionService.PendingPath)))!;
                 root["sessionGeneration"] = Guid.NewGuid().ToString("N");
                 await _fs.WriteFileAtomicAsync(PendingPlayerActionService.PendingPath, root.ToJsonString()); break;
             case "repair-work": await _fs.WriteFileAtomicAsync("game_state/control/validation_repair_request.json", "{\"remaining\":true}"); break;
@@ -101,17 +101,23 @@ public sealed partial class GameEngineTurnLifecycleTests
     public async Task BrowserInput_FailedOriginalRollbackRetainsSnapshotAndBlocksContinuation()
     {
         var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
-        await InvokePrivateTaskAsync(engine, "ClaimBrowserTerminalAsync", staged);
-        var originalManifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
-        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", originalManifest);
-        var original = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
-        // Corrupt an original retained backup: the actual rollback must refuse before any restore.
-        var manifest = JsonNode.Parse(staged.ManifestJson)!;
-        var backup = manifest["rollbackBackups"]!.AsObject().First().Value!.GetValue<string>();
-        await _fs.WriteFileAtomicAsync(backup, "damaged original rollback evidence");
-        Assert.False(await InvokePrivateAsync<bool>(engine, "RollbackRejectedAcceptedTurnAsync", snapshot, ""));
-        Assert.Equal(original, await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath));
-        Assert.True(_fs.FileExists(backup));
+        await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, staged.Binding.Generation, async () =>
+        {
+            using var originalOwner = _fs.BeginBrowserOriginalOperation(staged.Binding, staged);
+            await InvokePrivateTaskAsync(engine, "ClaimBrowserTerminalAsync", staged);
+            var originalManifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+            var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", originalManifest);
+            var authority = File.ReadAllText(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath));
+            // Damage happens under the actual finalization owner; diagnostics read
+            // raw retained bytes because a subsequent canonical read must refuse.
+            var manifest = JsonNode.Parse(staged.ManifestJson)!;
+            var backup = manifest["rollbackBackups"]!.AsObject().First().Value!.GetValue<string>();
+            await _fs.WriteFileAtomicAsync(backup, "damaged original rollback evidence");
+            Assert.False(await InvokePrivateAsync<bool>(engine, "RollbackRejectedAcceptedTurnAsync", snapshot, ""));
+            Assert.Equal(authority, File.ReadAllText(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
+            Assert.True(File.Exists(_fs.ResolvePath(backup)));
+            return true;
+        });
         var before = BrowserRecoveryTree();
         await Assert.ThrowsAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
         AssertBrowserRecoveryTree(before);
@@ -135,7 +141,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (phase == "terminalProcessing") await InvokePrivateTaskAsync(engine, "ClaimBrowserTerminalAsync", staged);
             if (phase == "stale-generation")
             {
-                var root = JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!;
+                var root = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(PendingPlayerActionService.PendingPath)))!;
                 root["sessionGeneration"] = Guid.NewGuid().ToString("N");
                 await _fs.WriteFileAtomicAsync(PendingPlayerActionService.PendingPath, root.ToJsonString());
             }
@@ -233,17 +239,23 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task PrepareSettledBrowserRecordAsync()
     {
         var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
-        staged = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "ClaimBrowserTerminalAsync", staged);
-        var originalManifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
-        var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", originalManifest);
-        await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", snapshot);
-        InvokePrivate(engine, "CleanupBackup", snapshot);
-        _fs.DeleteFile("input/turn_request.json");
-        await InvokePrivateTaskAsync(engine, "CleanupPendingTurnSnapshotAsync");
-        var request = JsonSerializer.Deserialize<TurnRequest>(staged.RequestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
-        var signal = JsonSerializer.Serialize(new { sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
-            timestamp = DateTime.UtcNow.ToString("O"), status = "error", error = "Original controlled terminal error." });
-        await InvokePrivateTaskAsync(engine, "FinishRestoredBrowserActionAsync", staged, "originalTerminalErrorRestored", signal);
+        await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, staged.Binding.Generation, async () =>
+        {
+            using var originalOwner = _fs.BeginBrowserOriginalOperation(staged.Binding, staged);
+            staged = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "ClaimBrowserTerminalAsync", staged);
+            var originalManifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+            var snapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", originalManifest);
+            await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", snapshot);
+            InvokePrivate(engine, "CleanupBackup", snapshot);
+            _fs.AllowBrowserOriginalCleanup();
+            _fs.DeleteFile("input/turn_request.json");
+            await InvokePrivateTaskAsync(engine, "CleanupPendingTurnSnapshotAsync");
+            var request = JsonSerializer.Deserialize<TurnRequest>(staged.RequestJson, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+            var signal = JsonSerializer.Serialize(new { sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+                timestamp = DateTime.UtcNow.ToString("O"), status = "error", error = "Original controlled terminal error." });
+            await InvokePrivateTaskAsync(engine, "FinishRestoredBrowserActionAsync", staged, "originalTerminalErrorRestored", signal);
+            return true;
+        });
     }
     [Fact]
     public async Task BrowserInput_ConflictBeforePublicationPreservesCompetingRequestAndOriginalSlot()
@@ -261,9 +273,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         await Assert.ThrowsAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(),
             "ProcessPlayerTurn", binding.Action, null, null, null, true, binding));
         Assert.True(injected);
-        Assert.Equal(other, await _fs.ReadFileAsync("input/turn_request.json"));
-        Assert.Equal("preparing", JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!["status"]!.GetValue<string>());
-        Assert.True(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+        Assert.Equal(other, File.ReadAllText(_fs.ResolvePath("input/turn_request.json")));
+        Assert.Equal("preparing", JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(PendingPlayerActionService.PendingPath)))!["status"]!.GetValue<string>());
+        Assert.True(File.Exists(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
     }
 
     [Theory]
@@ -300,8 +312,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (disposition != "error")
         {
             // Local waiter completion proves no external worker stop or late-output fence.
-            Assert.NotNull(await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath));
-            Assert.Equal("terminalProcessing", JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!["status"]!.GetValue<string>());
+            Assert.True(File.Exists(_fs.ResolvePath(PendingPlayerActionService.PendingPath)));
+            Assert.Equal("terminalProcessing", JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(PendingPlayerActionService.PendingPath)))!["status"]!.GetValue<string>());
             var before = BrowserRecoveryTree();
             await Assert.ThrowsAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
             AssertBrowserRecoveryTree(before);
@@ -309,14 +321,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         else Assert.False(_fs.FileExists(PendingPlayerActionService.PendingPath));
         if (disposition is "cancel" or "error")
         {
-            Assert.False(_fs.FileExists("input/turn_request.json"));
-            Assert.False(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+            Assert.False(File.Exists(_fs.ResolvePath("input/turn_request.json")));
+            Assert.False(File.Exists(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
         }
         else
         {
-            Assert.True(_fs.FileExists("input/turn_request.json"));
-            Assert.True(_fs.FileExists("ready/turn_error.json"));
-            Assert.True(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+            Assert.True(File.Exists(_fs.ResolvePath("input/turn_request.json")));
+            Assert.True(File.Exists(_fs.ResolvePath("ready/turn_error.json")));
+            Assert.True(File.Exists(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
         }
         Assert.Equal(0, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
     }
@@ -455,16 +467,21 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task PrepareAcceptedBrowserRecordAsync()
     {
         var (engine, staged) = await PrepareBrowserInputStagingAsync();
-        staged = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "ClaimBrowserTerminalAsync", staged);
-        var story = await InvokePrivateAsync<PendingPlayerActionService.StoryProof>(engine, "AppendBrowserStoryAsync", staged,
-            new GameResponse { Response = "Исходное письмо прочитано." }, "Берег", null);
-        // Component fixture establishes completed original artifact inventory explicitly;
-        // it does not qualify gameplay's terminal branch, which has its own actual C5 chain.
-        _fs.DeleteFile("input/turn_request.json");
-        await InvokePrivateTaskAsync(engine, "CleanupPendingTurnSnapshotAsync");
-        await InvokePrivateTaskAsync(engine, "FinishAcceptedBrowserActionAsync", staged, story);
+        await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, staged.Binding.Generation, async () =>
+        {
+            using var originalOwner = _fs.BeginBrowserOriginalOperation(staged.Binding, staged);
+            staged = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "ClaimBrowserTerminalAsync", staged);
+            var story = await InvokePrivateAsync<PendingPlayerActionService.StoryProof>(engine, "AppendBrowserStoryAsync", staged,
+                new GameResponse { Response = "Исходное письмо прочитано." }, "Берег", null);
+            // Component fixture establishes completed original artifact inventory explicitly;
+            // it does not qualify gameplay's terminal branch, which has its own actual C5 chain.
+            _fs.AllowBrowserOriginalCleanup();
+            _fs.DeleteFile("input/turn_request.json");
+            await InvokePrivateTaskAsync(engine, "CleanupPendingTurnSnapshotAsync");
+            await InvokePrivateTaskAsync(engine, "FinishAcceptedBrowserActionAsync", staged, story);
+            return true;
+        });
     }
-
     private Dictionary<string, byte[]> BrowserRecoveryTree() => Directory.EnumerateFiles(_fs.BasePath, "*", SearchOption.AllDirectories)
         .Where(path => !Path.GetRelativePath(_fs.BasePath, path).StartsWith(".boe_runtime", StringComparison.Ordinal))
         .ToDictionary(path => Path.GetRelativePath(_fs.BasePath, path).Replace('\\', '/'), File.ReadAllBytes, StringComparer.Ordinal);

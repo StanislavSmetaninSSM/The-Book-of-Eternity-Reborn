@@ -22518,7 +22518,7 @@
         },
         {
             "id": "browser-pending-snapshot-roundtrip",
-            "responsibility": "T069 actual GameEngine manifest and shared PendingTurnSnapshotReader hash round-trip with optional browser identity present/absent; exact signed bytes unchanged. Test-owned original portable envelope updates disclosed.",
+            "responsibility": "T069 ordinary engine-DTO hash round-trip plus genuine GameEngine browser staging, all six hashed manifest readers retaining actual acquired original condition, and shared PendingTurnSnapshotReader exact signed bytes; no decoded metadata grants ownership.",
             "excludes": "No generic snapshot cohort, runtime dispatch or cold whole game qualification.",
             "changeHints": [
                 "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
@@ -22537,6 +22537,12 @@
                     "project": "unit",
                     "tests": [
                         "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RoundTripsActualEngineManifestWithOptionalBrowserBinding"
+                    ]
+                },
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition"
                     ]
                 }
             ]

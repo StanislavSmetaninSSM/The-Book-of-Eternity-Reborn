@@ -11,6 +11,44 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Fact]
+    public async Task BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition()
+    {
+        var (_, staged) = await PrepareBrowserInputStagingAsync();
+        var assembly = typeof(GameEngine).Assembly;
+        var types = new[]
+        {
+            typeof(GameEngine.PendingTurnSnapshotManifest),
+            typeof(LiveTurnPendingSnapshotManifest),
+            assembly.GetType("BookOfEternityClient.Services.CanonicalStateNormalizer+PendingTurnSnapshotAuthorityManifest")!,
+            assembly.GetType("BookOfEternityClient.Services.ValidationService+ValidationPendingTurnSnapshotManifest")!,
+            assembly.GetType("BookOfEternityClient.Services.GuardianPowerEventState+PendingTurnSnapshotManifest")!,
+            assembly.GetType("BookOfEternityClient.WebUi.BrowserAfterlifeTurnRequestQueue+BrowserPendingTurnSnapshotManifest")!
+        };
+        var originalManifest = GameEngine.ValidateDetachedBrowserBinding(staged);
+        foreach (var type in types)
+        {
+            Assert.NotNull(type);
+            var decoded = JsonSerializer.Deserialize(staged.ManifestJson, type, LiveTurnPreparationService.ManifestJsonOptions)!;
+            var hashProperty = type.GetProperty("ManifestPayloadHash")!;
+            var computed = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(decoded,
+                LiveTurnPreparationService.ManifestHashJsonOptions,
+                value => (string)hashProperty.GetValue(value)!, (value, hash) => hashProperty.SetValue(value, hash));
+            Assert.Equal(originalManifest.ManifestPayloadHash, computed);
+            Assert.Equal(originalManifest.BrowserOriginalMainCondition,
+                type.GetProperty("BrowserOriginalMainCondition")!.GetValue(decoded));
+        }
+        var before = OriginalAdmissionTree();
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, ["game_state/meta/soul_state.json"]);
+            Assert.True(result.Success, string.Join(";", result.Issues));
+            Assert.Equal(File.ReadAllBytes(_fs.ResolvePath(originalManifest.Files["game_state/meta/soul_state.json"])),
+                result.Snapshot!.ReadRequiredBytes("game_state/meta/soul_state.json"));
+        }
+        AssertOriginalAdmissionTree(before);
+    }
+
+    [Fact]
     public async Task BrowserOriginalAdmission_ManifestCapturesGuardedQuiescentCondition()
     {
         var (_, staged) = await PrepareBrowserInputStagingAsync();

@@ -13,7 +13,6 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
 {
     [Theory]
     [InlineData(false)]
-    [InlineData(true)]
     public async Task ReadCurrent_RoundTripsActualEngineManifestWithOptionalBrowserBinding(bool browser)
     {
         await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
@@ -22,11 +21,7 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
         var manifest = JsonSerializer.Deserialize(File.ReadAllText(_fs.ResolvePath(
             LiveTurnPreparationService.PendingTurnSnapshotManifestPath)), manifestType,
             LiveTurnPreparationService.ManifestJsonOptions)!;
-        if (browser)
-        {
-            manifestType.GetProperty("BrowserActionId")!.SetValue(manifest, "snapshot-request-71");
-            manifestType.GetProperty("BrowserSessionGeneration")!.SetValue(manifest, "original-browser-generation");
-        }
+        Assert.False(browser); // Browser counterpart uses genuine GameEngine staging in integration.
         var hashProperty = manifestType.GetProperty("ManifestPayloadHash")!;
         var hash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest,
             LiveTurnPreparationService.ManifestHashJsonOptions,

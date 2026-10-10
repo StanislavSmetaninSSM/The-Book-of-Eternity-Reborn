@@ -1,5 +1,9 @@
 ### C5 guard publication boundary consistency — 2026-10-10
 
+### C5 affected valid fixtures and signed reader qualification WIP — 2026-10-10
+
+Original accepted/settled and failed rollback component fixtures now hold one actual expected-generation original finalization scope through claim, history/restore, cleanup and receipt. Diagnostic assertions behind intentionally blocked phases inspect raw retained bytes only; production authority is unchanged. The former fabricated browser reader row is replaced by genuine GameEngine staging in integration, all six manifest DTO hash/condition round-trips and shared signed-byte reader; ordinary row remains. Selected affected recovery27/provenance4/reader2 are UNRUN, matching fresh unit and integration builds next.
+
 ### C5 reviewed guard bounded GREEN — 2026-10-10
 
 Fresh integration at c87fef66: **17/17 PASS**, 57.3152771s, complete 3/3 descriptors, no skips/duplicates/timeout, owned cleanup complete. The 6 qualified causal RED controls now pass alongside the original 11 tuple/recovery controls. [Raw packet](recovery/linux-game-chains-20261010/c5-browser-review-bounded-green/manifest.json). Full shared admission acceptance remains pending valid receipt/ordinary signed-reader/active-client/warm/partial-staging qualification and independent review. Lifetime still continuous; actual staged-idle recovery and remaining T070 interruption/repair controls remain open. No task completion marking.
