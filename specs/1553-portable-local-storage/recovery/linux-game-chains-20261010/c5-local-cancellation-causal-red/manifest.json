@@ -1,6 +1,6 @@
 {
   "SourceSHA": "1e715d27d5566205788b289e30e942260add4159",
-  "Command": "pwsh -NoLogo -NoProfile -Command & ./scripts/test-csharp.ps1 -Category @(browser-player-terminal-disposition)",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"browser-player-terminal-disposition\")'",
   "Status": "3PASS/1causalFAIL, complete4cases1descriptor,214.0928272s,0skip/duplicate/timeout,ownedcleanupcomplete",
   "Scope": "Actual original warm cancellation deletes input request, contrary to approved lifetime retention. Original GM error and two synthetic provenance controls pass. No live model; fresh restored integration build.",
   "ModelCalls": 0,

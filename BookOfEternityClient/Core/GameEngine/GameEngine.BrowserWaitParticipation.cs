@@ -67,12 +67,14 @@ public partial class GameEngine
             topLevelStagingAwaitReturned = true, outsideParticipation = true,
             artifactHashes = proof.Hashes
         }, MainOperationReader.Json);
-        await using (var output = new FileStream(scope.ValidateFile(ackPath), FileMode.CreateNew,
-                         FileAccess.Write, FileShare.Read))
+        var temporaryAckPath = ackPath + "." + nonce + ".tmp";
+        await using (var output = new FileStream(scope.ValidateFile(temporaryAckPath), FileMode.CreateNew,
+                         FileAccess.Write, FileShare.None))
         {
             await output.WriteAsync(Encoding.UTF8.GetBytes(ack));
             await output.FlushAsync();
         }
+        File.Move(scope.ValidateFile(temporaryAckPath, false), scope.ValidateFile(ackPath));
         watch.Restart();
         var releasePath = ackPath + ".release";
         while (!File.Exists(scope.ValidateFile(releasePath)))

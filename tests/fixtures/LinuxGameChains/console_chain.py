@@ -307,10 +307,13 @@ def submit_browser_action(dll, action, ordinal):
             pending_artifact.write_bytes(pending_path.read_bytes())
             submission["AuthoritativePending"] = pending
             if ordinal == 2:
-                Path(str(idle_cut_path) + ".request").write_text(json.dumps({
+                request_path = Path(str(idle_cut_path) + ".request")
+                temporary_request_path = Path(str(request_path) + "." + idle_cut_nonce + ".tmp")
+                temporary_request_path.write_text(json.dumps({
                     "schemaVersion": 1, "nonce": idle_cut_nonce, "pid": client.process.pid,
                     "actionId": pending["actionId"], "requestId": pending["actionId"],
                     "generation": pending["sessionGeneration"]}))
+                os.replace(temporary_request_path, request_path)
             submission["OriginalDerivedReady"] = rpc({"command": "status"})["status"]["ready"]
             if ordinal == 1:
                 assert pending["status"] == "queued", pending
