@@ -1,0 +1,24 @@
+{
+  "SourceSHA": "1956f4dae32a9256af45480cd420771360a6ad99",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild -TimeoutMinutes 8",
+  "Status": "CATALOG PASS; zero tests executed",
+  "Scope": "652 categories and 11451 methods/files valid; 8.4137259s; no build or runtime; cleanup complete.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "840ad8fe4a4cd6da7dc7f6f6c2ae0540639e1f2a2adf801395820d0765f8e46a",
+      "RawBytes": 1404
+    },
+    {
+      "Path": "runner/catalog-audit.json.gz",
+      "RawSHA256": "36e13848a3bf9cce5611988980e3d6b8cab5b56e7be9910f44b6cde818994064",
+      "RawBytes": 103
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "e350c8ec08551f5f4966fddc505152cfa6c8d4463c87af621f908ffaffa9fef7",
+      "RawBytes": 3282358
+    }
+  ]
+}

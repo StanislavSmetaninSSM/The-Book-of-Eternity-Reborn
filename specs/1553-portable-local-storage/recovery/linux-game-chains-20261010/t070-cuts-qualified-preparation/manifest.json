@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "1956f4dae32a9256af45480cd420771360a6ad99",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"guardian-musings-capture-crash\", \"guardian-musings-normalized-crash\", \"guardian-musings-accepted-cleanup-crash\") -PlanOnly -TimeoutMinutes 8'",
+  "Status": "PREPARATION PASS; zero tests executed",
+  "Scope": "Fresh selected integration/support/Bridge build, 3 descriptors/3 planned cases, 91.1781141s, source pinned, cleanup complete.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "0c4c0da29c080e2a7b55084c73338fd2caac944e24893ab5e250bf6df6faa7cb",
+      "RawBytes": 3026
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "8c4c5c483703e63afa6a2431ea4af6ae59044f272c886816da17c772bed53eaf",
+      "RawBytes": 1694
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "ec5e7a1e66d6c75932764b28ac34da668ca078cdc809b4c61bf5f58916be10fb",
+      "RawBytes": 56697
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "00b3808a3f7da0fa5c558e6233f2ed3edd98a8c42fa236ae54132bbf2cd95d71",
+      "RawBytes": 1676255
+    }
+  ]
+}
