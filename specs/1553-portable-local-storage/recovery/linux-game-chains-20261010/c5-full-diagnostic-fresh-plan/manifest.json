@@ -2,7 +2,7 @@
   "SourceSHA": "5d4bef64ac89449838c1ef6bfb4ef0fe5f7c62a4",
   "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category c5-browser-staged-idle-duration-diagnostic -PlanOnly",
   "Status": "PREPARATION PASS / PlanOnly one case / runtime UNRUN",
-  "Scope": "Fresh unit+project references+frontend build; zero runtime cases, sole fullC5 diagnostic pending.",
+  "Scope": "Fresh unit+project references build; frontend build belongs to actual runner preparation, not PlanOnly. Zero runtime cases, sole fullC5 diagnostic pending.",
   "ModelCalls": 0,
   "Files": [
     {
