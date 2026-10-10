@@ -181,5 +181,9 @@
   },
   "CurrentToHistoricalWallRatio": 4.833641493654926,
   "CurrentMinusHistoricalSeconds": 36.344664900000005,
-  "Limits": "One sequential pair; fresh actual sessions/random dice/baseScore/baseRarity differ, same action/authored response/checkpoints and snapshot+rollback maps. Current-only optional observer overhead; no SLA/single-commit attribution/fullC5/no-replay qualification."
+  "Limits": "One sequential pair; fresh actual sessions/random dice/baseScore/baseRarity differ, same action/authored response/checkpoints and snapshot map and canonical rollback keys (generated rollback artifact paths differ). Current-only optional observer overhead; no SLA/single-commit attribution/fullC5/no-replay qualification.",
+  "CounterScope": "Cumulative from probe bootstrap through immediately before original Stop; not a publication-to-settlement delta.",
+  "SnapshotMapEqual": true,
+  "RollbackCanonicalKeysEqual": true,
+  "RollbackArtifactPathsEqual": false
 }
