@@ -842,7 +842,7 @@
       }
     },
     "JournalCausalProposal": {
-      "Status": "WIP source/test implemented; static/source gate/matching prep/catalog/sole RED pending",
+      "Status": "Source gate and matching preparation PASS; ownership discovery/catalog carrier/readback and sole8caseRED pending",
       "Seam": "Optional instance-local selected-path callback after actual Active/IntentStage selection before unchanged HasNamespaceJournalMagic fresh validation",
       "Cases": [
         "Actual held publisher IntentStaged to Move/IntentPublished then full commit/lease release",
@@ -882,14 +882,36 @@
         "Exit": 1,
         "BuildsTests": 0,
         "Elapsed": "UNRECORDED; no timing claim",
-        "CausalRed": false
+        "CausalRed": false,
+        "CommandFieldQualification": "Abbreviated summary, not literal invocation; original full three-category PowerShell invocation retained in execution record and matching preparation manifest"
       },
       "SourceGateCorrections": [
         "Shared total10s callback deadline",
         "Case acquisition cancellation before bounded finally join, original primary preserved",
         "Exact FileNotFound.FileName in raw",
         "Related link objects{id,when}"
-      ]
+      ],
+      "SourceAssemblySHA": "29d03a4a68900b3b43366c2fac7c6ac9efb333a2",
+      "SourceGate": "Same Astra PASS29d; all four harness/catalog findings closed",
+      "MatchingPreparation": {
+        "Manifest": "c5-journal-selection-preparation/manifest.json",
+        "WallSeconds": 162.8483497,
+        "IntegrationBuildSeconds": 154.3681734,
+        "Exit": 0,
+        "PlannedDescriptors": 3,
+        "PlannedCases": 8,
+        "Executed": 0,
+        "CleanSource": true,
+        "OwnedRuntimeCleanup": true
+      },
+      "PlatformInterruption": {
+        "Notice": "Parent-relayed generic possible cybersecurity risk",
+        "NamedBlockedActionOrTool": "NONE IDENTIFIED",
+        "ApprovalReviewRejection": "NONE IDENTIFIED",
+        "ProductFailureOrCausalRed": false,
+        "ReadOnlyRecovery": "Existing session97848 completed exit0, clean29d/matching PlanOnly/cleanup confirmed; no new build/catalog/test/edit/archive during recovery",
+        "BypassOrPermissionCredentialChange": false
+      }
     }
   }
 }
