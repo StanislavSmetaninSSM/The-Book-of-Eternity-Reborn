@@ -1,0 +1,195 @@
+{
+  "RestoredSHA": "f815d336743c4c2bda134650b4bbec087169ee67",
+  "SourceSHA": "0d5997c591245774417174d6e2bd0ad38ba97d00",
+  "Status": "PASS 5/5 complete 1/1 descriptors, 58.2456062s, no timeout/skip/duplicates, owned cleanup complete",
+  "ModelCalls": 0,
+  "VerifiedPayloads": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/runner/plan.json.gz",
+      "RawSHA256": "cd77231d96e1294834eef2c940d6c6bd10fd223909d1a87930fa54464b2cd83e",
+      "RawBytes": 1214,
+      "CompressedBytes": 542,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/runner/summary.json.gz",
+      "RawSHA256": "c65586a54e6ee83859661f2c7314f215e47d5f9c8ce04f067141dec0f86351b0",
+      "RawBytes": 1583,
+      "CompressedBytes": 635,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/runner/c5-original-browser-quiescent-opening-integration-001.trx.gz",
+      "RawSHA256": "5d5561a34efce50bd73709811779835d05d9f96c0a93bffc11303d6172bfd674",
+      "RawBytes": 10119,
+      "CompressedBytes": 1823,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/runner/Build-integration.log.gz",
+      "RawSHA256": "ff2a1ec7d17b9264a3ab90dc3130de529dc6120bcabd653677e33bab5d6b2e99",
+      "RawBytes": 50345,
+      "CompressedBytes": 2906,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/runner/dotnet-test.log.gz",
+      "RawSHA256": "c47036513a2264e037ea08ea9d7bee3b9307218fa8969e1a8a907ea43dad1049",
+      "RawBytes": 1669776,
+      "CompressedBytes": 183913,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/0/probe.log.gz",
+      "RawSHA256": "7dd313b4c0932f3a6f316970be4d4b6958bd6d847010e8cf0d5c046b7771947e",
+      "RawBytes": 67,
+      "CompressedBytes": 76,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/0/result.json.gz",
+      "RawSHA256": "81d1c9051f215914fd003ca3b6963e113f6bbd35d84d7364d43a2ffc7361276a",
+      "RawBytes": 1003,
+      "CompressedBytes": 470,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/0/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97,
+      "CompressedBytes": 105,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/0/native.log.gz",
+      "RawSHA256": "d99bf705ba7f976872e60988735d965128b01f7a601b28c140408d502c6ec039",
+      "RawBytes": 51,
+      "CompressedBytes": 71,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/1/probe.log.gz",
+      "RawSHA256": "327ba86e475550802bf1b1dc6dff11b36f10d9b12c012b92daa2b4ff9c785da6",
+      "RawBytes": 134,
+      "CompressedBytes": 86,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/1/result.json.gz",
+      "RawSHA256": "4c91a09f90c7776e828337fe8bebfe52451fa1381cd350f7a8818efc33a4e38a",
+      "RawBytes": 1002,
+      "CompressedBytes": 468,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/1/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97,
+      "CompressedBytes": 105,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/1/native.log.gz",
+      "RawSHA256": "d39a648fe0f1eda8fd41bb5797de74ccc20662dd1d33a2a865530379d5452621",
+      "RawBytes": 51,
+      "CompressedBytes": 71,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/2/probe.log.gz",
+      "RawSHA256": "46d76a308cabf20e6d908110c7642076701081090bd22f8c56b7d6c8bd8afe48",
+      "RawBytes": 67,
+      "CompressedBytes": 76,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/2/result.json.gz",
+      "RawSHA256": "b42234dbdd12023039062dcbd7e0e5abf6169fdeacf4b27f88a5c2b4e5acbf71",
+      "RawBytes": 1002,
+      "CompressedBytes": 468,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/2/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97,
+      "CompressedBytes": 105,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/2/native.log.gz",
+      "RawSHA256": "657f7b4c3243049184b71e7009d923334a2fb6a40e4f4dd15d0fcf064e0239cb",
+      "RawBytes": 51,
+      "CompressedBytes": 71,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/3/probe.log.gz",
+      "RawSHA256": "b803376ba8771246c5965ebdcccf96465d40fe388778a25793277e4a8e618e93",
+      "RawBytes": 134,
+      "CompressedBytes": 88,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/3/result.json.gz",
+      "RawSHA256": "995899801e86f1acf0ba6b27f0dfa87d0df6549f48fd2b2e4cb0800508734dae",
+      "RawBytes": 1002,
+      "CompressedBytes": 466,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/3/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97,
+      "CompressedBytes": 105,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/3/native.log.gz",
+      "RawSHA256": "61847d712b8217eeb1de36f8201c684602974be4e4502771eb5638e7e3a1e58f",
+      "RawBytes": 51,
+      "CompressedBytes": 71,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/4/probe.log.gz",
+      "RawSHA256": "2453c751c3cdb1d2750dbf312821bdc6e331c9571638c9e10d75695459d0aeb3",
+      "RawBytes": 67,
+      "CompressedBytes": 76,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/4/result.json.gz",
+      "RawSHA256": "1fc54da3d1c42d9b1d2a6ee173b4947e75e95593fada86e3d30c7d57e53a8d7d",
+      "RawBytes": 269,
+      "CompressedBytes": 198,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/4/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97,
+      "CompressedBytes": 105,
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-final-opening-branch-bounded-green/quiescent/4/native.log.gz",
+      "RawSHA256": "2debd48a81cd8b30f08b857a9b2d6b959d2ca103e0a66f5faa951610e48c287d",
+      "RawBytes": 51,
+      "CompressedBytes": 71,
+      "RemoteExact": true
+    }
+  ],
+  "Method": "git clone --single-branch --branch 1553-storage-migration-cloud-20261008 from GitHub into absent original task directory inside same selected environment",
+  "CheckoutClean": true,
+  "FullStrictFsckExitCode": 0,
+  "MainSHA": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "EnvironmentID": "ccarenv_b64_Y2NhcmVudl9kOTNkNjU3Y2M0Y2M4MTkxYjY1MmU1ZGNmZTZlNjIzZA",
+  "RestoredPinnedTools": [
+    "SDK10.0.401",
+    "Microsoft.NETCore.App8.0.31",
+    "Microsoft.AspNetCore.App8.0.31",
+    "PowerShell7.5.4"
+  ],
+  "Limitations": "Original task checkout and temporary SDK/cache files absent after reconnect; restored only from GitHub. Source/evidence recovery does not rerun historical tests."
+}

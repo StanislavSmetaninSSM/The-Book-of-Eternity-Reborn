@@ -2,6 +2,15 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "browser-player-terminal-disposition",
+            "reason": "Approved C5 lifetime wait has no continuous owner; local cancellation cannot prove GM stop or delete the original signed recovery tuple. Original GM error settlement and harness refusal are affected controls.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md steps2–3"
+            ]
+        },
+        {
             "category": "gm-main-review-closing-linux",
             "reason": "Actual original immutable close/result and identity-specific original shutdown remain preserved.",
             "contracts": [

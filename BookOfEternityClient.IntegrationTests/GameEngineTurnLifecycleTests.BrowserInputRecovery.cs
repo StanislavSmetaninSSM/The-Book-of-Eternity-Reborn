@@ -319,7 +319,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             AssertBrowserRecoveryTree(before);
         }
         else Assert.False(_fs.FileExists(PendingPlayerActionService.PendingPath));
-        if (disposition is "cancel" or "error")
+        if (disposition == "error")
         {
             Assert.False(File.Exists(_fs.ResolvePath("input/turn_request.json")));
             Assert.False(File.Exists(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
@@ -327,7 +327,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         else
         {
             Assert.True(File.Exists(_fs.ResolvePath("input/turn_request.json")));
-            Assert.True(File.Exists(_fs.ResolvePath("ready/turn_error.json")));
+            Assert.Equal(disposition != "cancel", File.Exists(_fs.ResolvePath("ready/turn_error.json")));
             Assert.True(File.Exists(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
         }
         Assert.Equal(0, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);

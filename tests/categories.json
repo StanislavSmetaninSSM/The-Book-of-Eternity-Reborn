@@ -2,6 +2,30 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "browser-player-terminal-disposition",
+            "responsibility": "Original browser terminal error settles only its actual outcome; local cancellation and harness diagnostic keep terminalProcessing plus original request and signed recovery evidence.",
+            "excludes": "Game materialization, other recovery phases, external owner crash and transport qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserWaitParticipation.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_TerminalDispositionSettlesOrBlocksBeforeContinuation"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-original-browser-quiescent-opening",
             "responsibility": "Genuine NativeLineage original stopped and absent browser staging: refuse main record change at actual opening before pin mint or guard adoption; matching stopped positive.",
             "excludes": "Guarded quiescent component only; no actual Program/relay gameplay, active-owner uncertainty recovery, model, arbitrary crash recovery or new journal.",
@@ -462,8 +486,7 @@
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_ProcessingReentryRefusesBeforeReplayOrEvidenceCleanup",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_ProcessRefusesCompetingRequestBeforeMutatingValidation",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_SeparateProcessColdClassificationPreservesOrDequeuesOnlyOriginalSlot",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_StagedMenuDescriptionDoesNotInitializeOrRepairCanonicalState",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_TerminalDispositionSettlesOrBlocksBeforeContinuation"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_StagedMenuDescriptionDoesNotInitializeOrRepairCanonicalState"
                     ]
                 }
             ]
