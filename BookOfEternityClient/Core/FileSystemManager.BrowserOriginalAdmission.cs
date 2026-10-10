@@ -257,20 +257,23 @@ public partial class FileSystemManager
         // same-filesystem physical lease is the diagnostic witness at that call.
         var held=physicalLease!=null || HasAmbientCanonicalLease();
         using var physicalTiming=MeasureOriginalBrowserAdmission("physical-verification");
-        if(ReadOriginalBrowserText("input/turn_request.json",null,held)!=staged.RequestJson ||
-            ReadOriginalBrowserText(BrowserManifestPath,null,held)!=staged.ManifestJson ||
-            ReadOriginalBrowserText(PendingTurnSnapshotAuthority.AuthorityPath,null,held)!=staged.AuthorityJson)
+        // Grants live only in this one held proof. Each reader still freshly
+        // validates the complete ancestor/leaf path before and after its read.
+        var fileScope=held?CreateOriginalBrowserFileScope(held):null;
+        if(ReadOriginalBrowserText("input/turn_request.json",fileScope,held)!=staged.RequestJson ||
+            ReadOriginalBrowserText(BrowserManifestPath,fileScope,held)!=staged.ManifestJson ||
+            ReadOriginalBrowserText(PendingTurnSnapshotAuthority.AuthorityPath,fileScope,held)!=staged.AuthorityJson)
             throw BrowserOriginalMainCondition.Invalid();
         PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload;
         using(MeasureOriginalBrowserAdmission("authority-and-rollback-verification"))
-            payload=GameEngine.ValidateOriginalBrowserAuthority(manifest,staged.AuthorityJson,relative=>ReadOriginalBrowserBytes(relative,null,held));
+            payload=GameEngine.ValidateOriginalBrowserAuthority(manifest,staged.AuthorityJson,relative=>ReadOriginalBrowserBytes(relative,fileScope,held));
         if(payload.SnapshotHashMode!=PendingTurnSnapshotAuthority.ExactSnapshotHashMode ||
             payload.RollbackHashMode!=PendingTurnSnapshotAuthority.ExactRollbackHashMode ||
             !manifest.Files.Keys.ToHashSet(StringComparer.Ordinal).SetEquals(manifest.SnapshotFileHashes.Keys))
             throw BrowserOriginalMainCondition.Invalid();
         PendingTurnSnapshotAuthority.RequireExactSignedPaths(manifest.Files.Keys.Concat(manifest.Files.Values));
         using(MeasureOriginalBrowserAdmission("snapshot-hash-verification"))
-            foreach(var (logical,path) in manifest.Files)RequireOriginalSnapshotHash(path,manifest.SnapshotFileHashes[logical],null,held);
+            foreach(var (logical,path) in manifest.Files)RequireOriginalSnapshotHash(path,manifest.SnapshotFileHashes[logical],fileScope,held);
         return manifest;
     }
 
