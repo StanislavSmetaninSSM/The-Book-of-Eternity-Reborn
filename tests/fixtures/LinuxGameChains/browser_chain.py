@@ -21,7 +21,7 @@ import urllib.request
 from playwright.sync_api import sync_playwright
 
 mode = sys.argv[1]
-assert mode in ["inventory", "saves"]
+assert mode in ["inventory", "saves", "saves-diagnostic", "load-rollback"]
 repo, out, ship = [Path(s).resolve() for s in sys.argv[2:5]]
 base, session = out / "play", out / "play/game_session"
 started = time.monotonic()
@@ -31,6 +31,9 @@ result = {"Scenario": "C3" if mode == "inventory" else "C4-save-load",
           "InitialState": "explicit current-schema sealed item/Mortal fixture; not GM materialization",
           "Model": "none; local player commands only", "ModelCalls": 0,
           "WholeHostBrowserColdRestart": False}
+if mode in ["saves-diagnostic", "load-rollback"]:
+    result["ProductionEntrypoint"] = "test-only BrowserGameFaultHost → actual LocalWebUiHost/React; cold host actual Program --web"
+    result["Substitutions"] = "initial host wrapper enables existing controlled filesystem fault/exception diagnostic; handlers/services/React/storage remain real"
 env = dict(os.environ, TERM="dumb", NO_COLOR="1")
 for key, name in [("TMPDIR", "tmp"), ("XDG_CONFIG_HOME", "config"),
                   ("XDG_DATA_HOME", "data"), ("XDG_CACHE_HOME", "cache")]:
@@ -105,6 +108,10 @@ def start_host(name):
         os.tcsetpgrp(slave, os.getpid())
     args = ["dotnet", str(ship / "BookOfEternityClient/BookOfEternityClient.dll"),
             str(base), "--web", "--web-url", url]
+    if name == "host-first" and mode in ["saves-diagnostic", "load-rollback"]:
+        args = ["dotnet", str(ship / "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.dll"),
+                "browser-game-fault-host", str(base), str(out), url,
+                str(ship / "BookOfEternityClient/wwwroot/browser")]
     process = subprocess.Popen(args, cwd=ship, env=env, stdin=slave, stdout=log,
                                stderr=subprocess.STDOUT, preexec_fn=own)
     os.close(slave)
@@ -196,12 +203,13 @@ def owned_playwright():
                     close_browser(owned)
 
 
-def post_click(page, path, click):
+def post_click(page, path, click, expect_success=True):
     with page.expect_response(lambda r: r.request.method == "POST" and r.url == url + path) as pending:
         click()
     response = pending.value
     body = response.json()
-    assert response.status == 200, {"Path": path, "Status": response.status, "Body": body}
+    if expect_success:
+        assert response.status == 200, {"Path": path, "Status": response.status, "Body": body}
     return body
 
 
@@ -243,8 +251,10 @@ try:
         first_host = start_host("host-first")
         first_browser = open_browser(playwright, "browser-first")
         page = first_browser["Page"]
-        if mode == "saves":
+        if mode != "inventory":
             page.get_by_role("tab", name="Настройки (4)", exact=True).click()
+            if mode == "saves-diagnostic":
+                (out / "arm-save-diagnostic").write_text("owned exception capture only")
             created = post_click(page, "/api/saves/create", lambda: page.get_by_role("button", name="Сохранить игру", exact=True).click())
             assert created["success"] and created["disposition"] == "Committed" and created["createdSaveId"]
             assert not created["continuationBlocked"] and not created["needsFollowUp"]
@@ -255,7 +265,7 @@ try:
         changed = snapshot("after-split")
         assert changed[paths[0]] != initial[paths[0]] and changed[paths[1]] != initial[paths[1]]
         expected = changed
-        if mode == "saves":
+        if mode in ["saves", "saves-diagnostic"]:
             page.get_by_role("tab", name="Настройки (4)", exact=True).click()
             with page.expect_response(lambda r: r.request.method == "POST" and r.url == url + "/api/saves/load-complete") as completion:
                 loaded = post_click(page, "/api/saves/load", lambda: page.get_by_role("button", name="Загрузить сохранение", exact=True).click())
@@ -273,6 +283,22 @@ try:
             assert expected["generation"] != initial["generation"]
             result["LoadedSave"] = loaded
             result["RollbackScope"] = "UNRUN; happy-path save/load does not qualify injected rollback"
+        elif mode == "load-rollback":
+            page.get_by_role("tab", name="Настройки (4)", exact=True).click()
+            archive = Path(result["CreatedSave"]["createdSaveId"].split(":", 1)[-1])
+            archives = list((session / "saves/manual_saves").glob("*.zip"))
+            assert len(archives) == 1, archives
+            archive_bytes = archives[0].read_bytes()
+            (out / "arm-load-fault").write_text("single actual CommitStaged cut")
+            rolled_back = post_click(page, "/api/saves/load",
+                lambda: page.get_by_role("button", name="Загрузить сохранение", exact=True).click(), expect_success=False)
+            assert not rolled_back["success"] and rolled_back["disposition"] == "RolledBack", rolled_back
+            assert rolled_back["continuationBlocked"] and not rolled_back["freshLaunchRequired"], rolled_back
+            assert read_json(out / "load-fault.json")["Cuts"] == 1
+            assert snapshot("after-load-rollback") == changed, "Failed Load did not restore exact prior inventory/resources/generation"
+            assert archives[0].read_bytes() == archive_bytes, "Failed Load changed its source archive"
+            result["RolledBackLoad"] = rolled_back
+            result["SourceArchiveSHA256"] = hashlib.sha256(archive_bytes).hexdigest()
         close_browser(first_browser)
         stop_host(first_host)
         cold_host = start_host("host-cold")
@@ -282,7 +308,7 @@ try:
         assert snapshot("cold-before-command") == expected, "Whole host/browser restart changed previously saved bytes or generation"
         result["WholeHostBrowserColdRestart"] = True
         page = cold_browser["Page"]
-        if mode == "inventory":
+        if mode in ["inventory", "load-rollback"]:
             assert_split(original_receipt)
             command(page, "merge")
             assert len(items()) == 1 and items()[0]["count"] == 5 and items()[0]["itemId"] == "gc_stack"

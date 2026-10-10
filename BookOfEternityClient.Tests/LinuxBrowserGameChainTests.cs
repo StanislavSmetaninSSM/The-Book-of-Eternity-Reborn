@@ -17,8 +17,13 @@ public sealed class LinuxBrowserGameChainTests(ITestOutputHelper output)
     [Fact]
     public Task Saves_ActualReactSaveMutateLoadColdRestartContinue() => RunAsync("saves");
 
+    [Fact]
+    public Task Saves_ActualReactLateLoadWriteFaultRollsBackColdContinue() => RunAsync("load-rollback");
+
     private async Task RunAsync(string mode)
     {
+        if (mode == "saves" && Environment.GetEnvironmentVariable("BOE_GAME_CHAIN_BROWSER_DIAGNOSTIC") == "1")
+            mode = "saves-diagnostic"; // Explicit test-only host/first-chance diagnostic, never Program qualification.
         Assert.True(OperatingSystem.IsLinux(), "Real Linux browser/host chain; Windows is not qualified.");
         var repo = TestRepoPaths.RepoRoot;
         var own = Path.Combine("/tmp", "gc-" + Guid.NewGuid().ToString("N")[..12]);
@@ -91,6 +96,10 @@ public sealed class LinuxBrowserGameChainTests(ITestOutputHelper output)
         await Run("dotnet", ["publish", Path.Combine(repo, "BookOfEternityClient/BookOfEternityClient.csproj"), "--no-build", "--no-restore",
             "-c", configuration, "-o", Path.Combine(ship, "BookOfEternityClient"), "-p:BoeNativePackageDirectory=" + package,
             "-p:BoeRequireNativePackage=true"], "publish-client.log", 20);
+        if (mode is "saves-diagnostic" or "load-rollback")
+            await Run("dotnet", ["publish", Path.Combine(repo, "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj"), "--no-build", "--no-restore",
+                "-c", configuration, "-o", Path.Combine(ship, "BookOfEternityClient.TestSupport"), "-p:BoeNativePackageDirectory=" + package,
+                "-p:BoeRequireNativePackage=true"], "publish-support.log", 20);
         var python = Environment.GetEnvironmentVariable("BOE_GAME_CHAIN_BROWSER_PYTHON");
         Assert.False(string.IsNullOrWhiteSpace(python), "Set BOE_GAME_CHAIN_BROWSER_PYTHON to the existing Python with Playwright installed.");
         await Run(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), "180000",

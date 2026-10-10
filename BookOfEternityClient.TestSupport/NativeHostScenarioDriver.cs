@@ -13,6 +13,8 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
+        if(args.Length==5 && args[0]=="browser-game-fault-host")return await BrowserGameFaultHost.RunAsync(args[1],args[2],args[3],args[4]);
+        if(args.Length==3 && args[0]=="inventory-read-cold")return await InventoryReadContextColdProbe.RunAsync(args[1],args[2]);
         if(args.Length==3 && args[0]=="daemon-storage-bootstrap")return await GmDaemonStorageScenario.RunChildAsync(args[1],args[2]);
         if(args.Length==3 && args[0]=="terminal-main-helper-contract")return await GmHelperContractScenario.RunDriverAsync(args[2]);
         if(args.Length==5 && args[0]=="helper-current-bootstrap")return await GmHelperCurrentScenario.RunChildAsync(args[1],args[2],args[3],args[4]);

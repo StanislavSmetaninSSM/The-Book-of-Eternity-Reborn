@@ -56,6 +56,34 @@
         "FR-013",
         "T066-LINUX-GAME-CHAINS"
       ]
+    },
+    {
+      "category": "linux-inventory-context-read-close",
+      "reason": "T067 exact read-owner late-close or actual React Load late-write rollback, distinct from successful happy C3/C4. Finite actual boundary evidence only; no broad source-only qualification.",
+      "contracts": [
+        "#1553",
+        "US3",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-011",
+        "FR-013",
+        "T067-LINUX-GAME-FAULTS"
+      ]
+    },
+    {
+      "category": "linux-game-chain-browser-load-rollback",
+      "reason": "T067 exact read-owner late-close or actual React Load late-write rollback, distinct from successful happy C3/C4. Finite actual boundary evidence only; no broad source-only qualification.",
+      "contracts": [
+        "#1553",
+        "US3",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-011",
+        "FR-013",
+        "T067-LINUX-GAME-FAULTS"
+      ]
     }
   ]
 }

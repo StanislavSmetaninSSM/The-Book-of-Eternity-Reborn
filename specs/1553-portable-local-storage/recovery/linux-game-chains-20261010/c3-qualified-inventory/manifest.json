@@ -1,0 +1,235 @@
+{
+  "SourceSHA": "ca599cd4c55906c533b9f3f4adf470de5b8710ae",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category linux-game-chain-browser-inventory -NoBuild (BOE_GAME_CHAIN_BROWSER_PYTHON=existing agent Python3.12/Playwright1.62; /usr/bin/chromium)",
+  "ModelCalls": 0,
+  "PASS": true,
+  "WholeHostBrowserColdRestart": true,
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 9,
+    "failures": 0,
+    "deadline": false
+  },
+  "Files": [
+    {
+      "Path": "owned/result.json.gz",
+      "RawSHA256": "006b7224eb1e1e68e00a557f4d9c660173d516509d7e570ebdea5a17af05b0df",
+      "RawBytes": 4945
+    },
+    {
+      "Path": "owned/events.json.gz",
+      "RawSHA256": "ad5b5f469c409d15ca3e82b79d128249dce8b0a7d19ffaf4804637c4074b079d",
+      "RawBytes": 1456
+    },
+    {
+      "Path": "owned/http.json.gz",
+      "RawSHA256": "a93576432a0b54922ce0086458646e074719a0494a8e614867cf919770c25266",
+      "RawBytes": 32275
+    },
+    {
+      "Path": "owned/guardian.json.gz",
+      "RawSHA256": "55f52babf428f23cbcddbb1bb98dfe2128cdcb5c6ae70bd92677996db8f6c469",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/initial-fixture.json.gz",
+      "RawSHA256": "af67fd3178f0a40b82efccaac1e5cc76a0436d0c31929160094eb8d908bd2f0f",
+      "RawBytes": 258
+    },
+    {
+      "Path": "owned/chain.log.gz",
+      "RawSHA256": "2d2d399eea7dad80b7b0e8d9da036779bd5ae73b7fabb169a119987b2aca7a63",
+      "RawBytes": 4302
+    },
+    {
+      "Path": "owned/host-cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/host-first.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/publish-client.log.gz",
+      "RawSHA256": "02fa815d0cd895802d761c111c823cf3fe5faa657cd85a3c65d46540cf5114a2",
+      "RawBytes": 74
+    },
+    {
+      "Path": "owned/native-preparation.log.gz",
+      "RawSHA256": "75ec62f3822029e7a7e5c9bff16674dd1409be670a545a5174abb7cee94e2f09",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/accepted-ui.png.gz",
+      "RawSHA256": "569a8ab0f0513a9c01f8d9a9d6b74561bfb775b100b387d0cb0cf8aa84738a93",
+      "RawBytes": 930630
+    },
+    {
+      "Path": "owned/snapshots/cold-after-next-command/snapshot.json.gz",
+      "RawSHA256": "6983f36eb8df372e63282a0f6bd06b8ab8338fdf61afadfb621be335c3799da4",
+      "RawBytes": 752
+    },
+    {
+      "Path": "owned/snapshots/cold-before-command/snapshot.json.gz",
+      "RawSHA256": "6c1c35aa271ee974cfb63890de5873a26012a6f3a83575519f465d7d9de9aa49",
+      "RawBytes": 752
+    },
+    {
+      "Path": "owned/snapshots/after-split/snapshot.json.gz",
+      "RawSHA256": "6c1c35aa271ee974cfb63890de5873a26012a6f3a83575519f465d7d9de9aa49",
+      "RawBytes": 752
+    },
+    {
+      "Path": "owned/snapshots/initial/snapshot.json.gz",
+      "RawSHA256": "8e54c8f316eb487daaeda9a2bf531033c202d454c392dd48b99435444c2d3dc6",
+      "RawBytes": 752
+    },
+    {
+      "Path": "owned/snapshots/cold-after-next-command/game_state/resources/resource_owner_authority.json.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/snapshots/cold-after-next-command/game_state/resources/resource_history.json.gz",
+      "RawSHA256": "e13d010a6007fa2889ca3ee584f5259a09ff8f9bf5f3ab62ff2f264eef882047",
+      "RawBytes": 32
+    },
+    {
+      "Path": "owned/snapshots/cold-after-next-command/game_state/resources/resource_state.json.gz",
+      "RawSHA256": "e13d010a6007fa2889ca3ee584f5259a09ff8f9bf5f3ab62ff2f264eef882047",
+      "RawBytes": 32
+    },
+    {
+      "Path": "owned/snapshots/cold-after-next-command/game_state/resources/resource_definitions.json.gz",
+      "RawSHA256": "feb6941e60f84025549aa07ae5643ad72bc1e5ba6d85eeb96a7d0523d55c9f6b",
+      "RawBytes": 6882
+    },
+    {
+      "Path": "owned/snapshots/cold-after-next-command/game_state/inventory/item_identity_index.json.gz",
+      "RawSHA256": "e9185fcd0ca2ba14ac5b096f3398194851b67d4b4a4afe12b78a42b067918756",
+      "RawBytes": 4524
+    },
+    {
+      "Path": "owned/snapshots/cold-after-next-command/game_state/inventory/items.json.gz",
+      "RawSHA256": "983528a1302f798e106b0896b50c49c9004db2848f3d07e370aa2a15f1dfa6fa",
+      "RawBytes": 4193
+    },
+    {
+      "Path": "owned/snapshots/cold-before-command/game_state/resources/resource_owner_authority.json.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/snapshots/cold-before-command/game_state/resources/resource_history.json.gz",
+      "RawSHA256": "e13d010a6007fa2889ca3ee584f5259a09ff8f9bf5f3ab62ff2f264eef882047",
+      "RawBytes": 32
+    },
+    {
+      "Path": "owned/snapshots/cold-before-command/game_state/resources/resource_state.json.gz",
+      "RawSHA256": "e13d010a6007fa2889ca3ee584f5259a09ff8f9bf5f3ab62ff2f264eef882047",
+      "RawBytes": 32
+    },
+    {
+      "Path": "owned/snapshots/cold-before-command/game_state/resources/resource_definitions.json.gz",
+      "RawSHA256": "feb6941e60f84025549aa07ae5643ad72bc1e5ba6d85eeb96a7d0523d55c9f6b",
+      "RawBytes": 6882
+    },
+    {
+      "Path": "owned/snapshots/cold-before-command/game_state/inventory/item_identity_index.json.gz",
+      "RawSHA256": "f8a7ec6d88734ba263856e4acef30c9c9ede3125047bbdba6244103b708ada90",
+      "RawBytes": 3162
+    },
+    {
+      "Path": "owned/snapshots/cold-before-command/game_state/inventory/items.json.gz",
+      "RawSHA256": "6a7d47c426ff6bdf3bfa2fc4084e51ab83bcfaaa9f6f8982a2b82c88430ec1bd",
+      "RawBytes": 8464
+    },
+    {
+      "Path": "owned/snapshots/after-split/game_state/resources/resource_owner_authority.json.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/snapshots/after-split/game_state/resources/resource_history.json.gz",
+      "RawSHA256": "e13d010a6007fa2889ca3ee584f5259a09ff8f9bf5f3ab62ff2f264eef882047",
+      "RawBytes": 32
+    },
+    {
+      "Path": "owned/snapshots/after-split/game_state/resources/resource_state.json.gz",
+      "RawSHA256": "e13d010a6007fa2889ca3ee584f5259a09ff8f9bf5f3ab62ff2f264eef882047",
+      "RawBytes": 32
+    },
+    {
+      "Path": "owned/snapshots/after-split/game_state/resources/resource_definitions.json.gz",
+      "RawSHA256": "feb6941e60f84025549aa07ae5643ad72bc1e5ba6d85eeb96a7d0523d55c9f6b",
+      "RawBytes": 6882
+    },
+    {
+      "Path": "owned/snapshots/after-split/game_state/inventory/item_identity_index.json.gz",
+      "RawSHA256": "f8a7ec6d88734ba263856e4acef30c9c9ede3125047bbdba6244103b708ada90",
+      "RawBytes": 3162
+    },
+    {
+      "Path": "owned/snapshots/after-split/game_state/inventory/items.json.gz",
+      "RawSHA256": "6a7d47c426ff6bdf3bfa2fc4084e51ab83bcfaaa9f6f8982a2b82c88430ec1bd",
+      "RawBytes": 8464
+    },
+    {
+      "Path": "owned/snapshots/initial/game_state/resources/resource_owner_authority.json.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned/snapshots/initial/game_state/resources/resource_history.json.gz",
+      "RawSHA256": "e13d010a6007fa2889ca3ee584f5259a09ff8f9bf5f3ab62ff2f264eef882047",
+      "RawBytes": 32
+    },
+    {
+      "Path": "owned/snapshots/initial/game_state/resources/resource_state.json.gz",
+      "RawSHA256": "e13d010a6007fa2889ca3ee584f5259a09ff8f9bf5f3ab62ff2f264eef882047",
+      "RawBytes": 32
+    },
+    {
+      "Path": "owned/snapshots/initial/game_state/resources/resource_definitions.json.gz",
+      "RawSHA256": "feb6941e60f84025549aa07ae5643ad72bc1e5ba6d85eeb96a7d0523d55c9f6b",
+      "RawBytes": 6882
+    },
+    {
+      "Path": "owned/snapshots/initial/game_state/inventory/item_identity_index.json.gz",
+      "RawSHA256": "51613d1e3c0b43f84d79e4863ba8bd0eec9c1cc98c8f965824855a7fcf3ab0cb",
+      "RawBytes": 684
+    },
+    {
+      "Path": "owned/snapshots/initial/game_state/inventory/items.json.gz",
+      "RawSHA256": "f5f32458271d4aace6ae180931c158249c41cfd27b393d4e310d65534eeef376",
+      "RawBytes": 4519
+    },
+    {
+      "Path": "runner/linux-game-chain-browser-inventory-unit-001.trx.gz",
+      "RawSHA256": "2194b9837848be8f61443b1b747f42a85d1a932939da8138ab9d84f7d28de900",
+      "RawBytes": 3088
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "7d67be087a1a08ef1ff7c45085a5306be72355dcc655c0ecf1d035cdd7aa1840",
+      "RawBytes": 1092
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "39a248ed94f8359f82a4fc20132ed55f1789416fb309bcb5fec2689ab5fe2111",
+      "RawBytes": 1573
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "852eaa88a43dbeee826f857458a226ad1a21b0033550f8151c8b2e1857c5ab93",
+      "RawBytes": 1670635
+    }
+  ],
+  "ShippedSHA256": {
+    "BookOfEternityClient": "b8a6edf270ccc07b22c2018e208e3d67fd6fe7921014e3508917195e508852d7"
+  }
+}

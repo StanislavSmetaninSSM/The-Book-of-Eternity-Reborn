@@ -22106,6 +22106,58 @@
           ]
         }
       ]
+    },
+    {
+      "id": "linux-inventory-context-read-close",
+      "responsibility": "#1553 T067 finite former source-only104 actual InventoryManagementService.ReadContextAsync owning lease, controlled late IDisposable close after actual reads/projection, exact exception identity/no return/mutations0/full canonical bytes+generation preserved, physical lock available, independent TestSupport cold process read. Component owner evidence, not Program/browser/game chain.",
+      "excludes": "No source-only census rewrite or all81 defect claim, genuine mutation uncertainty/secondary close combinations outside this exact case, original engine rollback rows26/27, wounds110, B2-B5, native Windows/model/provider/default worker/durable ACK/whole-migration qualification. Test-only controlled seam is disclosed.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/LinuxInventoryReadCloseTests.cs",
+        "BookOfEternityClient.TestSupport/BrowserGameFaultHost.cs",
+        "BookOfEternityClient.TestSupport/InventoryReadContextColdProbe.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxInventoryReadCloseTests.ActualReadContextOwnedLateCloseRetainsBytesAndColdRead"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "linux-game-chain-browser-load-rollback",
+      "responsibility": "#1553 T067/C4 real React Save/split/Load via actual LocalWebUiHost with existing test-only filesystem hooks: single real BOELP3 CommitStaged write cut, typed RolledBack, exact prior inventory/index/resources/authority/generation/source ZIP preserved, full host/browser cold restart into actual Program --web, next actual merge without replay.",
+      "excludes": "No source-only census rewrite or all81 defect claim, genuine mutation uncertainty/secondary close combinations outside this exact case, original engine rollback rows26/27, wounds110, B2-B5, native Windows/model/provider/default worker/durable ACK/whole-migration qualification. Test-only controlled seam is disclosed.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/LinuxBrowserGameChainTests.cs",
+        "BookOfEternityClient.TestSupport/BrowserGameFaultHost.cs",
+        "BookOfEternityClient.TestSupport/InventoryReadContextColdProbe.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": true,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxBrowserGameChainTests.Saves_ActualReactLateLoadWriteFaultRollsBackColdContinue"
+          ]
+        }
+      ]
     }
   ]
 }

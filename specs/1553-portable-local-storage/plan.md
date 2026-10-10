@@ -1,3 +1,35 @@
+## C3 qualified; C4 real Save blocked; targeted faults source WIP
+
+Source `ca599cd4c55906c533b9f3f4adf470de5b8710ae`: fresh selected PlanOnly
+PASS40.1979812s,3planned/0executed. Actual C3 **PASS1/1**,30.2795379s,
+0skip/duplicate/timeout; real React split5→3+2 with original/derived receipts and
+index; full web host+Chromium normal exit/new PIDs/exact cold bytes; real merge5.
+Full validation errors0; all recorded Chrome exits, both hostexit0 and guardian
+ECHILD/0emergency/0failures/no deadline. [C3 evidence](recovery/linux-game-chains-20261010/c3-qualified-inventory/manifest.json).
+Initial current-schema sealed Rare item is an explicit fixture, not actual GM
+materialization/turn42. No Bridge/model needed for these local commands.
+
+Same source actual C4 **FAIL1/1**,30.5190612s,0skip/duplicate/timeout.
+Real React Save returned409/Blocked/continuationBlocked; no archive identity.
+[Raw](recovery/linux-game-chains-20261010/c4-create-save-blocked/manifest.json).
+Save/load/cold continuation/rollback remain unqualified. Full fixture validation
+was clean; diagnostic cause not yet established. A test-only host wrapping the
+same real LocalWebUiHost with first-chance capture will expose the swallowed
+failure; BOE_GAME_CHAIN_BROWSER_DIAGNOSTIC=1 explicitly substitutes initial host
+wrapper and is never Program C4 qualification. No production logging seam.
+
+T067 finite sources/categories **UNRUN**: actual former source-only104 public
+read-context own lease late IDisposable close (no publication, no invented CSP),
+exact unchanged canonical tree/generation/no mutation/physical lock release and
+separate cold TestSupport process read. This is component owner evidence only,
+not C3 gameplay. Separate actual React Load write fault uses existing filesystem
+hooks and real BOELP3 replacement journal CommitStaged; requires typed RolledBack,
+exact prior bytes/generation/source archive, cold actual Program host/browser,
+next merge without replay. Initial host wrapper is disclosed; handlers and
+storage real. Engine rollback26/27 and treatment110 are still not fault-qualified.
+C2 remains unsupported full-chain scope pending exact binding/producer gates;
+C5 remains unrun. No81-row rework, no guardian authority fix or B2–B5 restart.
+
 ## C3 exact invalid initial item identified — fixture correction WIP
 
 Read-only actual dashboard preflight on previous isolated root and unchanged
