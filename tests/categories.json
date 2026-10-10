@@ -11,9 +11,7 @@
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsPublication.cs",
                 "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.MusingsPublication.cs"
             ],
-            "related": [
-                "guardian-musings-publication"
-            ],
+            "related": [],
             "requirements": {
                 "frontendBuild": false,
                 "exclusive": true,
