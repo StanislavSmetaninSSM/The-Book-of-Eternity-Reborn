@@ -35,13 +35,13 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         var (_, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
         DamageOriginalBrowserAdmission(staged, damage);
-        var before = BrowserRecoveryTree();
+        var before = OriginalAdmissionTree();
         var cold = new FileSystemManager(_fs.BasePath, NullLogger<FileSystemManager>.Instance);
         await Assert.ThrowsAsync<InvalidDataException>(async () =>
         {
             await using var lease = await cold.AcquireCanonicalWriteLeaseAsync();
         });
-        AssertBrowserRecoveryTree(before);
+        AssertOriginalAdmissionTree(before);
     }
 
     [Fact]
@@ -55,13 +55,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         var directory = Path.Combine(_fs.BasePath, ".boe_runtime", "gm-runs");
         Directory.CreateDirectory(directory);
         File.WriteAllBytes(Path.Combine(directory, "main.json"), GmSessionRunRecordCodec.Encode(record));
-        var before = BrowserRecoveryTree();
+        var before = OriginalAdmissionTree();
         var cold = new FileSystemManager(_fs.BasePath, NullLogger<FileSystemManager>.Instance);
         await Assert.ThrowsAsync<InvalidDataException>(async () =>
         {
             await using var lease = await cold.AcquireCanonicalWriteLeaseAsync();
         });
-        AssertBrowserRecoveryTree(before);
+        AssertOriginalAdmissionTree(before);
         Assert.Equal(record, GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(_fs.BasePath)!));
     }
 
@@ -87,6 +87,63 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(staged.ManifestJson, File.ReadAllText(_fs.ResolvePath("game_state/control/pending_turn_snapshot.json")));
         Assert.Equal(staged.AuthorityJson, File.ReadAllText(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
         Assert.Equal(staged.Json, File.ReadAllText(_fs.ResolvePath(PendingPlayerActionService.PendingPath)));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BrowserOriginalAdmission_ActualPendingRecoveryRequiresOriginalTupleUnderLock(bool substitute)
+    {
+        var (_, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+        var probe = _fs.ResolvePath("game_state/control/c5_recovery_probe.json");
+        await using(var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var publisher = new TrustedLocalFilePublication(_fs, new TrustedLocalFileScope([_fs.BasePath]));
+            Assert.Throws<C5RecoveryInterruption>(() => publisher.Publish(lease,
+                TrustedLocalGeneration.Existing(staged.Binding.Generation), [new(probe, null, [1, 2, 3])],
+                (phase, _) => { if(phase == TrustedLocalPublicationPhase.MemberPublished) throw new C5RecoveryInterruption(); }));
+        }
+        Assert.Equal(new byte[] { 1, 2, 3 }, File.ReadAllBytes(probe));
+        Dictionary<string, byte[]>? captured = null;
+        var recoveryBoundaries = 0;
+        var cold = new FileSystemManager(_fs.BasePath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                AfterCanonicalWriteLockOpenedAsync = () =>
+                {
+                    if(substitute) DamageOriginalBrowserAdmission(staged, "request");
+                    captured = OriginalAdmissionTree();
+                    Assert.Contains(captured.Keys, path => path.StartsWith(".boe_runtime/file-publication-transactions/", StringComparison.Ordinal));
+                    return Task.CompletedTask;
+                },
+                LocalPublicationRecoveryObserver = (_, _) => recoveryBoundaries++
+            });
+        if(substitute)
+        {
+            await Assert.ThrowsAsync<InvalidDataException>(async () => { await using var lease = await cold.AcquireCanonicalWriteLeaseAsync(); });
+            Assert.Equal(0, recoveryBoundaries);
+            Assert.NotNull(captured);
+            AssertOriginalAdmissionTree(captured!);
+        }
+        else
+        {
+            await using var lease = await cold.AcquireCanonicalWriteLeaseAsync();
+            Assert.True(recoveryBoundaries > 0);
+            Assert.False(File.Exists(probe));
+        }
+    }
+
+    private sealed class C5RecoveryInterruption : Exception { }
+
+    private Dictionary<string, byte[]> OriginalAdmissionTree() => Directory.EnumerateFiles(_fs.BasePath, "*", SearchOption.AllDirectories)
+        .Where(path => !Path.GetRelativePath(_fs.BasePath, path).Replace('\\', '/').StartsWith(".boe_runtime/locks/", StringComparison.Ordinal))
+        .ToDictionary(path => Path.GetRelativePath(_fs.BasePath, path).Replace('\\', '/'), File.ReadAllBytes, StringComparer.Ordinal);
+
+    private void AssertOriginalAdmissionTree(Dictionary<string, byte[]> before)
+    {
+        var after = OriginalAdmissionTree();
+        Assert.Equal(before.Keys.Order(), after.Keys.Order());
+        foreach(var pair in before) Assert.Equal(pair.Value, after[pair.Key]);
     }
 
     private void DamageOriginalBrowserAdmission(PendingPlayerActionService.Staged staged, string damage)

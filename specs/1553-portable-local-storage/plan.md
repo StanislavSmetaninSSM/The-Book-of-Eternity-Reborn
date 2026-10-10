@@ -1,3 +1,7 @@
+### C5 actual initial9 RED; pending recovery controls test-first — 2026-10-10
+
+47ec7e34 freshintegration9/9causalFAIL49.9857306s,complete0skip/duplicate/timeout/cleanupcomplete. Originalpreparedstagevalid; cold acquisition fails to refuse exactproof damage/absent→stopped/physical lock substitution, conditionabsent. [Raw RED](recovery/linux-game-chains-20261010/c5-browser-admission-initial-causal-red/manifest.json). Astra Important: destructiveauthority validator copies snapshot hashes, so additionally require actualsafeexactsnapshot bytes; locktestwithoutpendingwork onlyproves refusal, not recovery prevention. Newactualinterrupted publication matching/refusal2UNRUN, completefilesystemcomparisonnowincludesjournal/generationexceptlockbookkeeping, explicitselectionreason. No coldonlysmallcap on growinghistory; no producerbyteceilingfound. Warm/sourceimplementation stillunchanged.
+
 ### C5 component preparation correction — 2026-10-10
 
 bf3cb850 category0tests39.8389320s: fresh integration compile fails because new hook fixture omitted existing physical load operations constructor argument. Not behavioral RED. Correct explicit existing constructor argument; shared production remains unchanged; new9 UNRUN. [Raw preparation](recovery/linux-game-chains-20261010/c5-browser-admission-build-preparation-fail/manifest.json).

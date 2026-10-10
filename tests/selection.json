@@ -2,6 +2,24 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-original-browser-recovery-admission",
+            "reason": "Actual original signed staging must bind actual guarded original condition and refuse changed/missing/downgraded proof before cold admission and locked recovery.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
+            "category": "c5-original-browser-pending-recovery",
+            "reason": "Actual interrupted same-generation publication must remain unmodified when original tuple is substituted at physical lock; matching control proves real recovery pending.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
             "category": "c5-original-run-admission",
             "reason": "C5 original run expectation must refuse before replacement pin mint; actual NativeLineage/Bridge pipe controls compare all7 identity coordinates and preserve real owning close/stop even on causal RED.",
             "contracts": [
