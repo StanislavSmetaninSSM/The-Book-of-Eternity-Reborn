@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "guardian-musings-actual-repair",
+            "responsibility": "#1553 T070 actual ordinary console ProcessPlayerTurn under original NativeBridge: completed original scope invalidated before first repair mutation; correlated narrative-only repair must freshly validate original authorized musings without replay, preserve full prefix/mirror and accept once. Retain causal second repair before cleanup.",
+            "excludes": "Program/relay/browser whole chain, three interrupted-process controls, Windows/live models, performance acceptance and general guardian commands.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualRepair.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"
+            ],
+            "related": [
+                {
+                    "id": "guardian-musings-publication",
+                    "when": "Production original musings comparison or repair renewal changes."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 4,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuardianMusingsPublication_ActualRepairRevalidatesOriginalDeltaWithoutReplay"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-accepted-terminal-cleanup-order",
             "responsibility": "#1553 reproduced cold late-terminal self-deletion failure: common accepted cleanup must establish authenticated actual-owner/full physical proof/inventory before deleting the original request. Reuse four existing warm cleanup artifact-integrity negatives and one accepted-receipt dequeue/no-replay control; actual fullC5 owns causal RED and cold success acceptance.",
             "excludes": "No extra negative matrix, synthetic direct-cleanup positive, live model, product timeout/guard weakening or performance closure. Existing component controls do not qualify wholeProgramC5 or console repair.",

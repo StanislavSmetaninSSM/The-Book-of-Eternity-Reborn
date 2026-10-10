@@ -1,0 +1,308 @@
+using System.Diagnostics;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmRuntime;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class GameEngineTurnLifecycleTests
+{
+    [Fact]
+    public async Task GuardianMusingsPublication_ActualRepairRevalidatesOriginalDeltaWithoutReplay()
+    {
+        var own = Path.Combine("/tmp", "gc-" + Guid.NewGuid().ToString("N")[..12]);
+        Directory.CreateDirectory(own);
+        _directGachaOutput?.WriteLine("Owned actual staging cut evidence: " + own);
+        var package = Path.Combine(own, "package");
+        await RunBrowserProfileChildAsync("pwsh", ["-NoLogo", "-NoProfile", "-File",
+            Path.Combine(TestRepoPaths.RepoRoot, "scripts/build-linux-supervisor.ps1"), "-OutputDirectory", package,
+            "-IncludeHostGuardian", "-IncludeTerminalFixture"], Path.Combine(own, "native.log"), 25);
+        var support = Path.Combine(Path.GetDirectoryName(typeof(GameEngineTurnLifecycleTests).Assembly.Location)!, "BookOfEternityClient.TestSupport.dll");
+        await RunBrowserProfileChildAsync(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), "220000",
+            Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"), support, "engine-musings-repair",
+            typeof(GameEngineTurnLifecycleTests).Assembly.Location, package, Path.Combine(own, "result.json"), "0", own], Path.Combine(own, "probe.log"), 225);
+        var guardian = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "guardian.json")))!;
+        Assert.True(guardian["echild"]!.GetValue<bool>());
+        Assert.Equal(0, guardian["driverExitCode"]!.GetValue<int>());
+        Assert.Equal(0, guardian["failures"]!.GetValue<int>());
+        Assert.Equal(0, guardian["emergencySignals"]!.GetValue<int>());
+        Assert.False(guardian["deadline"]!.GetValue<bool>());
+        var result = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "result.json")))!;
+        Assert.True(result["OriginalStopped"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["PhysicalCleanup"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["OperationSettled"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["ObserverSettled"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.Null(result["CleanupFailure"]);
+        Assert.True(result["Accepted"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["FirstMutationInvalidatedCompletedScope"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["FreshComparisonObserved"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.Null(result["OperationFailure"]);
+    }
+
+    public static async Task WriteMusingsRepairProbeAsync(string package, string output, int mode, string own)
+    {
+        if (mode != 0) throw new ArgumentOutOfRangeException(nameof(mode));
+        const string guardianPath = "game_state/meta/guardians.json";
+        const string repairPath = "game_state/control/validation_repair_request.json";
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+        using var factory = new GameEngineTurnLifecycleTests();
+        var launch = NeutralTerminalLaunch.Create(package, own);
+        ValidationService? validator = null;
+        ValidationService.GuardianMusingsValidationScope? originalScope = null;
+        object? mutationWitness = null;
+        bool repaired = false, freshComparison = false;
+        ValidationService.GuardianMusingsValidationScope? CurrentScope() => validator is null ? null :
+            ((AsyncLocal<ValidationService.GuardianMusingsValidationScope?>)typeof(ValidationService)
+                .GetField("_guardianMusingsPublication", flags)!.GetValue(validator)!).Value;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationAsync = path =>
+            {
+                // Read inside the original mutation flow, before even the first repair deletion.
+                // This callback is observational: no lease, waits, writes or manual invalidation.
+                var scope = CurrentScope();
+                if (mutationWitness is null && scope?.Completion is not null && !scope.Enabled)
+                {
+                    originalScope = scope;
+                    var capture = scope.Completion.GetType().GetField("_capture", flags)!.GetValue(scope.Completion)!;
+                    var snapshot = (PendingTurnSnapshotReadAuthority)capture.GetType().GetField("_snapshot", flags)!.GetValue(capture)!;
+                    mutationWitness = new { Path = path, CompletionPresent = true, Enabled = scope.Enabled,
+                        Generation = capture.GetType().GetField("_generation", flags)!.GetValue(capture),
+                        snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber,
+                        Stack = new StackTrace().ToString() };
+                }
+                return Task.CompletedTask;
+            },
+            AfterCanonicalReadAttemptAsync = path =>
+            {
+                var scope = CurrentScope();
+                if (repaired && path == guardianPath && scope?.Completion is not null && scope.Enabled &&
+                    !ReferenceEquals(scope, originalScope) && !originalScope!.Enabled &&
+                    new StackTrace().ToString().Contains("ReadForComparisonAsync", StringComparison.Ordinal))
+                    freshComparison = true;
+                return Task.CompletedTask;
+            }
+        };
+        var files = new FileSystemManager(Directory.GetParent(launch.Scratch)!.FullName,
+            NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, hooks);
+        files.EnsureDirectoryStructure();
+        var bootstrap = factory.CreateGameEngine(new NewGameCancelInput(), settings =>
+        { settings.MusicEnabled = false; settings.SoundEnabled = false; }, fileSystem: files);
+        await GetPrivateField<StateManager>(bootstrap, "_stateManager").BootstrapLocalStorageAsync();
+        var pendingGuardian = new SystemGuardianLibraryService(files, NullLogger<SystemGuardianLibraryService>.Instance)
+            .BuildFreeformPendingGuardianCreationNode("Спокойный Хранитель берега Моря Хаоса.", "Пробная Душа");
+        await InvokePrivateAsync<string>(bootstrap, "InitializeChaosSea", "Пробная Душа", "Человеческий силуэт синего света.", pendingGuardian, null);
+        Assert.False(await InvokePrivateAsync<bool>(bootstrap, "WaitForGmResponse").WaitAsync(TimeSpan.FromSeconds(8)));
+        var initial = JsonNode.Parse(File.ReadAllText(files.ResolvePath(guardianPath)))!.AsObject();
+        var currentGuardian = initial["guardians"]![0]!;
+        if (currentGuardian["musings"] is not JsonArray { Count: > 0 })
+        {
+            currentGuardian["musings"] = new JsonArray(new JsonObject { ["turn"] = 0, ["topic"] = "soul_assessment",
+                ["mood"] = "intrigued", ["thought"] = "Я сохраню память о первой встрече с душой у берега." });
+            initial["activeGuardian"]!["musings"] = currentGuardian["musings"]!.DeepClone();
+            File.WriteAllText(files.ResolvePath(guardianPath), initial.ToJsonString());
+        }
+        var prefix = currentGuardian["musings"]!.DeepClone();
+        File.WriteAllText(Path.Combine(own, "pre-turn-guardians.json"), initial.ToJsonString());
+        var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
+        var bridge = Assembly.LoadFrom(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityGMBridge", "bin", configuration, "net8.0", "BookOfEternityGMBridge.dll"));
+        var type = bridge.GetType("BookOfEternityGMBridge.BridgeHost", true)!;
+        var host = Activator.CreateInstance(type, [launch.Scratch, "musings-repair-" + Guid.NewGuid().ToString("N")])!;
+        type.GetMethod("ConfigureNeutral", flags)!.Invoke(host, [launch]);
+        async Task Call(string name) => await (Task)type.GetMethod(name, flags)!.Invoke(host, null)!;
+        using var control = new CancellationTokenSource();
+        using var observerCancellation = new CancellationTokenSource();
+        var server = (Task)type.GetMethod("RunServerLoopAsync", flags)!.Invoke(host, [control.Token])!;
+        var causalFailure = new TaskCompletionSource<Exception>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var input = new QueuedConsoleInputSource([]);
+        Task? operation = null, observer = null;
+        Exception? operationFailure = null, cleanupFailure = null;
+        GmSessionRunCoordinator? owner = null;
+        TurnRequest? originalRequest = null;
+        bool accepted = false, stopped = false, physical = false, firstInvalidated = false;
+        int repairCount = 0;
+        try
+        {
+            await Call("StartShellAsync");
+            await ((TaskCompletionSource)type.GetField("_firstStatus", flags)!.GetValue(host)!).Task.WaitAsync(TimeSpan.FromSeconds(3));
+            owner = (GmSessionRunCoordinator)type.GetField("_mainRun", flags)!.GetValue(host)!;
+            var engine = factory.CreateGameEngine(input, fileSystem: files,
+                configureSettings: settings => { settings.MusicEnabled = false; settings.SoundEnabled = false; },
+                finalizationHooks: new GameEngineSessionFinalizationHooks
+                {
+                    AtCheckpointAsync = checkpoint =>
+                    {
+                        if (checkpoint == SessionFinalizationCheckpoint.TerminalWaitStarted)
+                        {
+                            originalRequest = JsonSerializer.Deserialize<TurnRequest>(File.ReadAllText(files.ResolvePath("input/turn_request.json")), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                            CaptureBrowserProfileFixture(files, own);
+                            WriteMusingsRepairPacket(files, originalRequest);
+                        }
+                        return Task.CompletedTask;
+                    }
+                });
+            validator = GetPrivateField<ValidationService>(engine, "_validator");
+            var originalLoop = GetPrivateField<GameLoop>(bootstrap, "_gameLoop");
+            GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(originalLoop.SessionId, originalLoop.TurnNumber);
+            observer = Task.Run(async () =>
+            {
+                try
+                {
+                    int lastAttempt = 0;
+                    while (!observerCancellation.IsCancellationRequested)
+                    {
+                        if (File.Exists(files.ResolvePath(repairPath)))
+                        {
+                            var raw = File.ReadAllBytes(files.ResolvePath(repairPath));
+                            var request = JsonNode.Parse(raw)!;
+                            var attempt = request["revalidationAttempt"]!.GetValue<int>();
+                            if (attempt > lastAttempt)
+                            {
+                                lastAttempt = attempt; repairCount++;
+                                File.WriteAllBytes(Path.Combine(own, $"repair-request-{attempt}.json"), raw);
+                                File.WriteAllBytes(Path.Combine(own, $"guardians-before-repair-{attempt}.json"), File.ReadAllBytes(files.ResolvePath(guardianPath)));
+                                Assert.NotNull(originalRequest);
+                                Assert.Equal(originalRequest.SessionId, request["sessionId"]!.GetValue<string>());
+                                Assert.Equal(originalRequest.RequestId, request["requestId"]!.GetValue<string>());
+                                Assert.Equal(originalRequest.TurnNumber, request["turnNumber"]!.GetValue<int>());
+                                if (attempt != 1)
+                                    throw new InvalidOperationException("Actual second repair after completed original scope invalidation: " + request.ToJsonString());
+                                Assert.Contains("accepted_turn_empty_narrative_response", request.ToJsonString());
+                                Assert.DoesNotContain("guardian_materialized_state_outside_authority", request.ToJsonString());
+                                Assert.NotNull(mutationWitness);
+                                File.WriteAllText(Path.Combine(own, "first-repair-mutation.json"), JsonSerializer.Serialize(mutationWitness));
+                                firstInvalidated = originalScope?.Completion is not null && !originalScope.Enabled;
+                                Assert.True(firstInvalidated);
+                                var stamp = DateTime.UtcNow.ToString("O");
+                                File.WriteAllText(files.ResolvePath("output/narrative_response.json"), JsonSerializer.Serialize(new { response = "Исходное письмо прочитано.", timestamp = stamp }));
+                                foreach (var path in new[] { "output/interface_updates.json", "output/debug_logs.json" })
+                                {
+                                    var node = JsonNode.Parse(File.ReadAllText(files.ResolvePath(path)))!;
+                                    node["timestamp"] = stamp;
+                                    File.WriteAllText(files.ResolvePath(path), node.ToJsonString());
+                                }
+                                repaired = true;
+                                File.WriteAllText(files.ResolvePath("game_state/control/validation_repair_ready.json"), JsonSerializer.Serialize(new
+                                { sessionId = originalRequest.SessionId, requestId = originalRequest.RequestId, turnNumber = originalRequest.TurnNumber,
+                                    updatedAtUtc = stamp, status = "success", note = "Исправлен тип текста рассказа; состояние Хранителя не изменено." }));
+                            }
+                        }
+                        await Task.Delay(25, observerCancellation.Token);
+                    }
+                }
+                catch (OperationCanceledException) when (observerCancellation.IsCancellationRequested) { }
+                catch (Exception failure) { causalFailure.TrySetResult(failure); }
+            });
+            operation = InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Я читаю исходное письмо.", null);
+            var completed = await Task.WhenAny(operation, causalFailure.Task, Task.Delay(TimeSpan.FromSeconds(120)));
+            if (completed == causalFailure.Task) throw await causalFailure.Task;
+            if (completed != operation) throw new TimeoutException("Actual repair operation exceeded protective 120s bound; no causal authority result claimed.");
+            await operation;
+            var published = JsonNode.Parse(File.ReadAllText(files.ResolvePath(guardianPath)))!;
+            var after = published["guardians"]![0]!["musings"]!.AsArray();
+            Assert.Equal(prefix.AsArray().Count + 1, after.Count);
+            for (var i = 0; i < prefix.AsArray().Count; i++) Assert.True(JsonNode.DeepEquals(prefix[i], after[i]));
+            Assert.True(JsonNode.DeepEquals(after, published["activeGuardian"]!["musings"]));
+            Assert.False(published["UpdateGuardians"]?.AsArray().OfType<JsonObject>().Any(row => row["command"]?.GetValue<string>() == "addMusings") ?? false);
+            var story = File.ReadAllLines(files.ResolvePath("stories/chaos_sea.jsonl")).Where(line => !string.IsNullOrWhiteSpace(line)).ToArray();
+            File.WriteAllText(Path.Combine(own, "accepted-story.jsonl"), string.Join('\n', story));
+            Assert.Single(story);
+            Assert.Contains("Исходное письмо прочитано.", story[0]);
+            Assert.Equal(1, repairCount);
+            Assert.False(originalScope!.Enabled);
+            accepted = true;
+        }
+        catch (Exception failure) { operationFailure = failure; }
+        finally
+        {
+            // Retain the primary causal request/canonical bytes before actual cancellation/rollback.
+            await File.WriteAllTextAsync(Path.Combine(own, "failure-before-cleanup.txt"), operationFailure?.ToString() ?? "none");
+            await observerCancellation.CancelAsync();
+            if (observer is not null) try { await observer.WaitAsync(TimeSpan.FromSeconds(3)); } catch (Exception failure) { cleanupFailure = failure; }
+            if (operation is { IsCompleted: false }) input.Enqueue(Key(ConsoleKey.Escape));
+            if (operation is not null) try { await operation.WaitAsync(TimeSpan.FromSeconds(35)); } catch (Exception failure) { operationFailure ??= failure; }
+            var stop = Call("StopShellAsync");
+            try { await stop.WaitAsync(TimeSpan.FromSeconds(15)); stopped = owner?.Record?.Disposition == GmSessionRunDisposition.Stopped; }
+            catch (Exception failure) { cleanupFailure ??= failure; }
+            if (type.GetField("_pty", flags)!.GetValue(host) is IOwnedTerminalSession terminal)
+                physical = (await terminal.StopAndObserveAsync(CancellationToken.None)).CleanupComplete;
+            else physical = stopped;
+            await control.CancelAsync();
+            try { await server.WaitAsync(TimeSpan.FromSeconds(5)); ((IDisposable)host).Dispose(); }
+            catch (Exception failure) { cleanupFailure ??= failure; }
+            await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new { Accepted = accepted,
+                FirstMutationInvalidatedCompletedScope = firstInvalidated, FreshComparisonObserved = freshComparison,
+                RepairCount = repairCount, OriginalStopped = stopped, PhysicalCleanup = physical,
+                OperationSettled = operation?.IsCompleted == true, ObserverSettled = observer?.IsCompleted == true,
+                OperationFailure = operationFailure?.ToString(), CleanupFailure = cleanupFailure?.ToString(),
+                MutationWitness = mutationWitness, ModelCalls = 0,
+                Scope = "Actual ordinary console ProcessPlayerTurn with original NativeBridge; fixture authors model data only. Not Program/relay/browser/crash qualification." }));
+        }
+    }
+    private static void WriteMusingsRepairPacket(FileSystemManager files, TurnRequest request)
+    {
+        var timestamp = DateTime.UtcNow.ToString("O");
+        void Write(string path, object value) => File.WriteAllText(files.ResolvePath(path), JsonSerializer.Serialize(value));
+        var guardians = JsonNode.Parse(File.ReadAllText(files.ResolvePath("game_state/meta/guardians.json")))!;
+        var guardian = guardians["guardians"]![0]!;
+        var actor = guardian["canonicalName"]!.GetValue<string>();
+        guardians["UpdateGuardians"] = JsonSerializer.SerializeToNode(new[] { new
+        {
+            command = "addMusings", guardianId = guardian["guardianId"]!.GetValue<string>(),
+            musings = new[] { new { turn = request.TurnNumber, topic = "soul_assessment", mood = "intrigued",
+                text = "Я запомню самостоятельный выбор души прочитать письмо у берега." } }
+        }});
+        File.WriteAllText(files.ResolvePath("game_state/meta/guardians.json"), guardians.ToJsonString());
+        const string thought = "Я запомню самостоятельный выбор души прочитать письмо у берега.";
+        const string journalPath = "game_state/meta/guardian_thought_journal.json";
+        var journal = File.Exists(files.ResolvePath(journalPath))
+            ? JsonNode.Parse(File.ReadAllText(files.ResolvePath(journalPath)))!.AsObject() : new JsonObject { ["entries"] = new JsonArray() };
+        journal["guardianThoughtJournalUpdates"] = JsonSerializer.SerializeToNode(new[] { new
+        {
+            entryId = "profile_thought_" + request.RequestId, guardianId = guardian["guardianId"]!.GetValue<string>(),
+            turn = request.TurnNumber, timestamp, title = "Наблюдение у берега", summary = thought,
+            eventType = "soul_assessment", consequence = "Душа сохраняет самостоятельность.", attitude = "intrigued", intent = "Остаться рядом без вмешательства."
+        }});
+        File.WriteAllText(files.ResolvePath(journalPath), journal.ToJsonString());
+        var reasoning = string.Join("\n", "## NPC Scope", "- Mode: Scene-local", "- Relevant actors: " + actor,
+            "- Why relevant: Хранитель наблюдает за выбором души и сохраняет свою реакцию.", "- Actors outside scope: нет",
+            "- Why outside scope: Самостоятельные акторы не участвуют.", "", "## Reasoning", "### " + actor,
+            "- Current location: Море Хаоса; перемещения нет.", "- Situation: Душа читает письмо у берега, Хранитель наблюдает.",
+            "- Profile inputs: Существующий свободный Хранитель сопровождает душу; искусства не применяются.",
+            "- Motivation: Дать душе пространство для самостоятельного решения.", "- Constraints: Без новых сил, ресурсов, предметов или ран.",
+            "- Thoughts: " + thought, "- Strategy options:",
+            "1. Наблюдать. Benefit: сохранить самостоятельность. Risk: душа не попросит помощи.",
+            "2. Вмешаться. Benefit: дать совет. Risk: навязать направление.", "- Chosen strategy: Наблюдать.",
+            "- Rejected alternatives: Душа не просила совета.", "- Actions: Хранитель наблюдает и запоминает выбор души.",
+            "- State changes: UpdateGuardians.addMusings в game_state/meta/guardians.json: одна новая first-person запись; полный старый префикс и activeGuardian сохраняются. guardianThoughtJournalUpdates в game_state/meta/guardian_thought_journal.json: одна новая first-person запись, предыдущие entries сохраняются.",
+            "- Детерминированная тестовая заготовка; провайдер не вызван.");
+        Write("output/narrative_response.json", new { response = 123, timestamp });
+        Write("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
+        Write("output/debug_logs.json", new { timestamp, gm_thoughts_markdown = reasoning });
+        var c = request.ProgressionControl!;
+        Write(ProgressionScheduleService.ReportPath, new { progressionProcessingReport = new
+        {
+            sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+            worldCyclesProcessed = 0, factionCyclesProcessed = 0,
+            newLastWorldSimulationTimeInMinutes = c.LastWorldSimulationTimeInMinutes,
+            newLastFactionSimulationTimeInMinutes = c.LastFactionSimulationTimeInMinutes,
+            chaosSeaCyclesProcessed = c.ChaosSeaCyclesExpectedThisTurn, guardianProjectCyclesProcessed = c.GuardianProjectCyclesExpectedThisTurn,
+            residentAgencyCyclesProcessed = c.ResidentAgencyCyclesExpectedThisTurn, shiningAbodeCyclesProcessed = c.ShiningAbodeCyclesExpectedThisTurn,
+            shiningFactionCyclesProcessed = c.ShiningFactionCyclesExpectedThisTurn, shiningTradeCyclesProcessed = c.ShiningTradeCyclesExpectedThisTurn,
+            newLastChaosSeaSimulationOrdinal = c.NextChaosSeaTurnOrdinal, newLastGuardianProjectCycleOrdinal = c.NextGuardianProjectCycleOrdinal,
+            newLastResidentAgencyCycleOrdinal = c.NextResidentAgencyCycleOrdinal, newLastShiningAbodeCycleOrdinal = c.NextShiningAbodeCycleOrdinal,
+            newLastShiningFactionCycleOrdinal = c.NextShiningFactionCycleOrdinal, newLastShiningTradeCycleOrdinal = c.NextShiningTradeCycleOrdinal,
+            afterlifeCatchupProcessed = false, afterlifeCatchupSummaryEventsProcessed = 0
+        }});
+        Write("ready/turn_complete.json", new { sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+            timestamp, status = "success", filesModified = new[] { "game_state/meta/guardians.json", journalPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json", ProgressionScheduleService.ReportPath } });
+    }
+}

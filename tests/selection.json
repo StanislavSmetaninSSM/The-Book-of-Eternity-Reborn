@@ -2,6 +2,17 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "guardian-musings-actual-repair",
+            "reason": "First actual T070 repair causal oracle after accepted bounded full C5 correctness. Test-only author packet and same-flow first mutation witness; no production renewal until actual RED. Sole finite native console operation, no repeated C5/performance/whole suite.",
+            "contracts": [
+                "#1553",
+                "T070-GUARDIAN-MUSINGS-AUTHORITY",
+                "FR-005",
+                "FR-006",
+                "FR-011"
+            ]
+        },
+        {
             "category": "c5-accepted-terminal-cleanup-order",
             "reason": "Actual staged-idle cold Program produced originating missing-request guard refusal after self-deletion; establish authenticated cleanup before deletes. Preserve four existing warm integrity negatives and accepted-receipt no-replay dequeue, then actual fullC5 diagnostic.",
             "contracts": [
