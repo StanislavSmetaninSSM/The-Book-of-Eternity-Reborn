@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-original-post-validation-source",
+            "responsibility": "Three existing directly affected accepted post-materialization/source/repair boundaries after browser-only reuse of actual validated original baseline. Preserve normalization-before-validation, physical lookup after repair invalidation and runtime refresh boundary.",
+            "excludes": "Runtime repair/crash/C5 acceptance and unrelated documentation/source rules. Actual consumer profile and composed C5 selected separately.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-original-consumer-profile",
+                    "when": "Actual valid original browser finalization must complete within unchanged deadline."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnFlows_MustValidateMaterializedStateAfterRuntimeNormalization",
+                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnRepairLoop_MustUseSnapshotBackedCanonicalRefresh_AndRuntimeViewRefresh",
+                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnValidation_MustExposePreWaitPendingSnapshotContextToValidators"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-original-consumer-profile",
             "responsibility": "One actual NativeLineage original Bridge and real ProcessPlayerTurn success consumer from ordinary cancelled Chaos Sea bootstrap. Existing hooks count reads/acquisitions/admission preflights and monotonic checkpoints; preserve 40s profile before original Stop, distinguish teardown exception. Exact accepted request/story/slot cleanup required for PASS.",
             "excludes": "No model, Program/relay/browser C5 acceptance, widened deadlines, guard bypass or additional negative matrix. Count excludes other recovery scans.",
@@ -14365,14 +14396,11 @@
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnCanonicalBaselineRefresh_MustRequireRollbackBaselineCanonicalCoverage",
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnCanonicalBaselineRefresh_MustUseValidatedManifestStructureAndSnapshotHashes",
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnCleanup_MustClearSatisfiedMortalTrainingSkillEvolutionRequests",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnFlows_MustValidateMaterializedStateAfterRuntimeNormalization",
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustKeepPendingSnapshotAliveUntilLifeTransitionChecksFinish",
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustKeepRollbackBackupAliveUntilLifeTransitionChecksFinish",
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustNormalizeResolvedRuntimeArtifactsBeforePendingSnapshotCleanup",
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnHappyPath_MustPassValidatedSnapshotContextToLifeTransitionChecks",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnRepairLoop_MustUseSnapshotBackedCanonicalRefresh_AndRuntimeViewRefresh",
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnRuntimeAuthorityBranches_MustUseValidatedSnapshotContextInsteadOfRawManifestFields",
-                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnValidation_MustExposePreWaitPendingSnapshotContextToValidators",
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AcceptedTurnValidation_MustUsePreWaitPendingSnapshotContextForCanonicalBaseline",
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.AscensionToShiningAbode_MustPublishCommonReturnCycleResourcePlan",
                         "BookOfEternityClient.Tests.GameEngineSourceGuardTests.CheckLifeTransitions_DeathScreen_MustPublishAgentConsoleKeySnapshot",

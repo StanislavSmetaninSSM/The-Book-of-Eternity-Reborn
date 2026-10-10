@@ -2,6 +2,15 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-original-post-validation-source",
+            "reason": "Direct existing post-materialization validator/source/repair guards after browser-only reuse of authenticated original baseline. No whole documentation suite.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "Original post-materialization validation provenance and scope termination"
+            ]
+        },
+        {
             "category": "c5-original-consumer-profile",
             "reason": "C5 first acceptance timeout: one actual original NativeLineage success consumer with before-Stop timing separates active work from cleanup; no speculative guard fix or budget increase.",
             "contracts": [

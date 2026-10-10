@@ -1746,7 +1746,8 @@ public partial class GameEngine
 
         await _pendingTurnState.RotateAfterAcceptedTurnAsync();
         await NormalizeRuntimeUiArtifactsAsync();
-        if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(backedUpFiles))
+        if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(
+                backedUpFiles, browserStaged == null ? null : activeSnapshotContext))
         {
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");

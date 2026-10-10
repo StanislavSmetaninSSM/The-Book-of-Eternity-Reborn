@@ -2056,8 +2056,14 @@ public partial class GameEngine
     }
 
     private async Task<bool> ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(
-        RollbackSnapshot? rollbackSnapshot)
+        RollbackSnapshot? rollbackSnapshot,
+        ValidatedPendingTurnSnapshotContext? originalBrowserSnapshotContext = null)
     {
+        // The original browser finalizer has already authenticated this exact
+        // baseline. Reuse it only for the first read-only validation pass; repair
+        // and runtime refresh must return to their physical snapshot lookups.
+        using var originalBrowserSnapshotScope = originalBrowserSnapshotContext == null
+            ? null : _validator.UsePrevalidatedPendingTurnSnapshotScope(originalBrowserSnapshotContext.Manifest);
         var spiritualValidation = Interlocked.Exchange(ref _acceptedTurnSpiritualConflictValidation, null);
         using var completedConflictScope = _validator.UseCompletedSpiritualConflictValidationScope(spiritualValidation);
         var guardianMusings = Interlocked.Exchange(ref _acceptedTurnGuardianMusingsValidation, null);
@@ -2067,7 +2073,14 @@ public partial class GameEngine
             rollbackSnapshot,
             progressionControl: null,
             allowRepairLoop: true,
-            beforeRepairMutation: () => { guardianMusingsScope.Invalidate(); return Task.CompletedTask; });
+            beforeRepairMutation: () =>
+            {
+                originalBrowserSnapshotScope?.Dispose();
+                guardianMusingsScope.Invalidate();
+                return Task.CompletedTask;
+            });
+
+        originalBrowserSnapshotScope?.Dispose();
 
         if (accepted)
             await RefreshRuntimeStateAsync();
