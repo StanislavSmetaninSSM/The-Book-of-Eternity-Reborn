@@ -240,7 +240,10 @@ record_path = base / ".boe_runtime/gm-runs/main.json"
 
 
 def stop_chain():
-    if bridge is not None and bridge.process.poll() is None:
+    completed = result.setdefault("OriginalStops", [])
+    prior_stop = next((s for s in completed if s["Identity"] == original_record), None)
+    if bridge is not None and original_record is not None and prior_stop is None:
+        assert bridge.process.poll() is None, "Original Bridge exited without its own terminal stop proof"
         worker("close", queue)
         wait(lambda: (queue / "closed.json").exists(), "relay actual close", 20)
         closed = read_json(queue / "closed.json")
@@ -252,7 +255,11 @@ def stop_chain():
             wait(lambda: bridge.process.poll() is not None, "original Bridge stopped")
             assert read_json(record_path)["Disposition"] == "Stopped"
             assert read_json(record_path)["Identity"] == original_record
-            result["OriginalStopped"] = True
+            completed.append({"Identity": original_record, "BridgePid": bridge.process.pid,
+                              "RelayClose": closed, "ShutdownReply": stop,
+                              "RecordAfter": read_json(record_path)})
+    elif prior_stop is not None:
+        assert bridge.process.poll() == 0, "Previously stopped original Bridge is still alive or failed"
     if daemon is not None and daemon.process.poll() is None:
         daemon.send("\x03")
         wait(lambda: daemon.process.poll() is not None, "original daemon foreground exit", 12)
@@ -392,7 +399,11 @@ finally:
             if fd >= 0:
                 os.close(fd)
     result["ElapsedSeconds"] = time.monotonic() - started
-    result["PASS"] = bool(result.get("ChainAssertionsPassed") and result.get("OriginalStopped") and result.get("IoDrained") and not result.get("Failure") and not result.get("CleanupFailure"))
+    result["OriginalStopped"] = bool(result.get("OriginalRuns") and
+        len(result.get("OriginalStops", [])) == len(result["OriginalRuns"]) and
+        all(any(stop["Identity"] == identity and stop["RecordAfter"]["Disposition"] == "Stopped"
+                for stop in result["OriginalStops"]) for identity in result["OriginalRuns"]))
+    result["PASS"] = bool(result.get("ChainAssertionsPassed") and result["OriginalStopped"] and result.get("IoDrained") and not result.get("Failure") and not result.get("CleanupFailure"))
     (out / "events.json").write_text(json.dumps(events, ensure_ascii=False, indent=2))
     (out / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
     print(json.dumps(result, ensure_ascii=False))

@@ -1,3 +1,29 @@
+## C1 three accepted turns; cleanup review correction — WIP
+
+Source `d60f2f29712a64d5f1f813535e6a60e48e247046`: actual category
+`linux-game-chain-console -NoBuild` completed **PASS1/1**,137.6991024s,
+0skip/duplicate/timeout,3 accepted turns/modelCalls0. Exact full story prefix
+survived client-only restart (C1a), then full client+Bridge+daemon+relay restart
+(C1b); all owned peer exits0/EOF, guardian ECHILD/0emergency/0failures/no deadline.
+[Raw evidence](recovery/linux-game-chains-20261010/c1-three-turns-cleanup-review-pending/manifest.json).
+This execution proves the gameplay/history assertions. It remains **cleanup
+qualification pending**: independent Astra/xhigh review found the global sticky
+OriginalStopped flag could cover an unexpectedly exited second Bridge. Fixture
+now records and requires an actual terminal stop/relay reply and exact final
+record for **every original identity**; prior unexpected exit fails. Repeating
+this targeted category is justified by this newly corrected assertion. Metadata
+now states3 turns and both restart scopes. New assertion GREEN UNRUN.
+
+Reviewer confirmed saved valid addMusings failure is lost command authority:
+normalizer applies command then removes UpdateGuardians; later validation builds
+strict authority from pre-turn baseline plus now empty command list. Its storage
+migration origin is not established. No one-line command retention is safe
+(additive mutations can replay); separate lifecycle fix must bind validated
+same-turn authority to request/generation, consume on terminal completion and
+reject stale/direct edits, invalid commands and mirror mismatch. Existing
+addMusings route remains FAIL and is not qualified by journal C1. The bounded
+story admission fix was reviewed favorably; whole stage remains WIP.
+
 ## C1 command route refusal retained / alternate documented journal WIP
 
 Source `489fea4a3cc9ba259d9a7a0856d02e235c5f50b0`: actual C1

@@ -1,0 +1,351 @@
+{
+  "SourceSHA": "d60f2f29712a64d5f1f813535e6a60e48e247046",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category linux-game-chain-console -NoBuild",
+  "ModelCalls": 0,
+  "AcceptedTurns": 3,
+  "PASS": true,
+  "ClientColdRestart": true,
+  "WholeChainColdRestart": {
+    "PreviousPids": {
+      "client-cold-2": 509805,
+      "bridge-first": 508954,
+      "daemon-first": 509011
+    },
+    "BridgePid": 510382,
+    "DaemonPid": 510441
+  },
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 2,
+    "failures": 0,
+    "deadline": false
+  },
+  "Files": [
+    {
+      "Path": "owned/result.json.gz",
+      "RawSHA256": "1bbdec054d329fcd30ae3df4b040edeb2941c52741aafe3b43a7acb49a1095e2",
+      "RawBytes": 4353
+    },
+    {
+      "Path": "owned/events.json.gz",
+      "RawSHA256": "1465a3f2e7d6f21b16dd6c4254b9fd68c89e40d56a39aa3f163cbd98eae17bdd",
+      "RawBytes": 43009
+    },
+    {
+      "Path": "owned/request-3.json.gz",
+      "RawSHA256": "6a24d6945eb98bd9472874284fd97a8cb26936924f7ab656c882692e651e5fc2",
+      "RawBytes": 60517
+    },
+    {
+      "Path": "owned/authored-3.json.gz",
+      "RawSHA256": "f23c48f79fda003046eb262d50240e641ff36f804a6c2ebf522d1a6b5ec90ecb",
+      "RawBytes": 6482
+    },
+    {
+      "Path": "owned/request-2.json.gz",
+      "RawSHA256": "514dd6851292ecdfb0c1efbc33ef89f756c38b8ec2facfe8c1921fc56bbcef71",
+      "RawBytes": 60316
+    },
+    {
+      "Path": "owned/authored-2.json.gz",
+      "RawSHA256": "37be185140a7eb28c8fff2e8191ee975248ff2a31758646a61bf28c7adacd7bc",
+      "RawBytes": 5769
+    },
+    {
+      "Path": "owned/request-1.json.gz",
+      "RawSHA256": "6f8cd5407aa6e2486275c66a2c14697ce6ff87ff7f9f68aeb36ca25448cbed68",
+      "RawBytes": 59101
+    },
+    {
+      "Path": "owned/authored-1.json.gz",
+      "RawSHA256": "7fe7078ce056528ff88294b23d40ac6825e6914b0b4ec4746bf7a459fa1e85e0",
+      "RawBytes": 4992
+    },
+    {
+      "Path": "owned/guardian.json.gz",
+      "RawSHA256": "71848dbfe12a0c62dc84c2a321981832b5b0237727dafcf348d9b6bc90b103c4",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/client-cold-3-echo.raw.gz",
+      "RawSHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "RawBytes": 2
+    },
+    {
+      "Path": "owned/client-cold-3.raw.gz",
+      "RawSHA256": "f9cff9a04025fc36d8aabc009c236fc180fca4b38e440fe6cead70243a3803b5",
+      "RawBytes": 11832
+    },
+    {
+      "Path": "owned/daemon-whole-cold-echo.raw.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/daemon-whole-cold.raw.gz",
+      "RawSHA256": "d395367460e380b18d69fd78bdd8a12c5b277ab876a194a6967d9c6ae4ee0d4e",
+      "RawBytes": 971
+    },
+    {
+      "Path": "owned/bridge-whole-cold-echo.raw.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/bridge-whole-cold.raw.gz",
+      "RawSHA256": "efff1ceea12069035b2a5ff19b8b43bb94be6228742eb225699116c37e0ad88a",
+      "RawBytes": 40864
+    },
+    {
+      "Path": "owned/client-cold-2-echo.raw.gz",
+      "RawSHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "RawBytes": 2
+    },
+    {
+      "Path": "owned/client-cold-2.raw.gz",
+      "RawSHA256": "050e19353fa611ec34a4cc11cda885aade7dded972de3c00e5a060c4cb5587fa",
+      "RawBytes": 11832
+    },
+    {
+      "Path": "owned/daemon-first-echo.raw.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/daemon-first.raw.gz",
+      "RawSHA256": "96a89bb1156c4f3b4f04e183d1810663701e760c2eb6e088f1f3f5ed85d981e0",
+      "RawBytes": 1124
+    },
+    {
+      "Path": "owned/bridge-first-echo.raw.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/bridge-first.raw.gz",
+      "RawSHA256": "96f179dcfb87bced7a14e104be482142be9fd8991d72073d19158ab15d4f4d1a",
+      "RawBytes": 81228
+    },
+    {
+      "Path": "owned/client-first-echo.raw.gz",
+      "RawSHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "RawBytes": 2
+    },
+    {
+      "Path": "owned/client-first.raw.gz",
+      "RawSHA256": "08f65681fe1610b455cd65add97bfc37f20358f0c1807029d555a8dd02837cb7",
+      "RawBytes": 13832
+    },
+    {
+      "Path": "owned/chain.log.gz",
+      "RawSHA256": "3fe109f73bc1b34b964fe07c6022fecde0ce3ccfd7567b31e49376173a02bd2f",
+      "RawBytes": 3586
+    },
+    {
+      "Path": "owned/daemon-whole-cold.log.gz",
+      "RawSHA256": "9868c82a0e1fc019cc30f10e3932f696789f86f395a2f9556ff2d1a0930625a8",
+      "RawBytes": 784
+    },
+    {
+      "Path": "owned/worker.log.gz",
+      "RawSHA256": "26eeda089d8c7d341b0fbb00c62eb00d374fdbf9a159841361de6097233dae9e",
+      "RawBytes": 274
+    },
+    {
+      "Path": "owned/daemon-first.log.gz",
+      "RawSHA256": "aca413b6b00005bc21c611e7e0fdf0d47361b162d92fac52a3f43c7e64ba3a5a",
+      "RawBytes": 933
+    },
+    {
+      "Path": "owned/publish-BookOfEternityGMBridge.log.gz",
+      "RawSHA256": "fbd78cb16bb721e7b7a5577c4d3f513fd9ea1778ef03ae9686f946701dd0c195",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/publish-BookOfEternityClient.log.gz",
+      "RawSHA256": "2a45b74ae68e2a2d285451337f2c638f5185f821c731e9f072efbc4dfc9a4dae",
+      "RawBytes": 74
+    },
+    {
+      "Path": "owned/native-preparation.log.gz",
+      "RawSHA256": "76744015bd21916e2f5caafbe4cabf878051eb8a24ca010b560e237ffd3712c0",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/story-after-3.jsonl.gz",
+      "RawSHA256": "c7c05d8478fa7e38e6119040bd3bdd5bd8b139182074700a0b3ebf8c187d9b58",
+      "RawBytes": 936
+    },
+    {
+      "Path": "owned/story-after-2.jsonl.gz",
+      "RawSHA256": "b0366e8ecccd27611527dc2b509ae29b836f232dedd05ffe43359fcba025f503",
+      "RawBytes": 625
+    },
+    {
+      "Path": "owned/story-after-1.jsonl.gz",
+      "RawSHA256": "e6b6d97819112733d9f0b258e5cdecc8fed1eb89f6dadfc9f9d2262a8b791c34",
+      "RawBytes": 314
+    },
+    {
+      "Path": "relay/queue-2/request-1-675e12eb974e4936a5d16fabade21db4/request.json.gz",
+      "RawSHA256": "cf0f0ce4ceb1f7a2690e6a0ea5566fc9c31e337f50dcc4e82ecd6679b633d8c7",
+      "RawBytes": 1084
+    },
+    {
+      "Path": "relay/queue-2/request-1-675e12eb974e4936a5d16fabade21db4/game-request.json.gz",
+      "RawSHA256": "6a24d6945eb98bd9472874284fd97a8cb26936924f7ab656c882692e651e5fc2",
+      "RawBytes": 60517
+    },
+    {
+      "Path": "relay/queue-2/request-1-675e12eb974e4936a5d16fabade21db4/response.json.gz",
+      "RawSHA256": "f23c48f79fda003046eb262d50240e641ff36f804a6c2ebf522d1a6b5ec90ecb",
+      "RawBytes": 6482
+    },
+    {
+      "Path": "relay/queue-2/request-1-675e12eb974e4936a5d16fabade21db4/reply.json.gz",
+      "RawSHA256": "773fbc82b21fed6524eb8f11796482036d285706fd3590d3c0fed2bf1f28f74c",
+      "RawBytes": 509
+    },
+    {
+      "Path": "relay/queue-2/request-1-675e12eb974e4936a5d16fabade21db4/execution.json.gz",
+      "RawSHA256": "7e426ad6fda5819bdf65828970877d427d034d5ea707750c4d4cf65ba9358820",
+      "RawBytes": 84
+    },
+    {
+      "Path": "relay/queue-2/request-1-675e12eb974e4936a5d16fabade21db4/started.json.gz",
+      "RawSHA256": "ea52318177c8a0b5e79b1d78e4ecf7548261e26658e48c3e257eb14f9a231ee9",
+      "RawBytes": 208
+    },
+    {
+      "Path": "relay/queue-2/request-1-675e12eb974e4936a5d16fabade21db4/consumer.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "relay/queue-1/request-2-5e88ae861a8d4c9c9806a20e10b0fa81/request.json.gz",
+      "RawSHA256": "9cb2bb7efc2f812138fa59dae0c9c68c5a205fc0f4c98922186d2ed7c43bfa67",
+      "RawBytes": 1085
+    },
+    {
+      "Path": "relay/queue-1/request-2-5e88ae861a8d4c9c9806a20e10b0fa81/game-request.json.gz",
+      "RawSHA256": "514dd6851292ecdfb0c1efbc33ef89f756c38b8ec2facfe8c1921fc56bbcef71",
+      "RawBytes": 60316
+    },
+    {
+      "Path": "relay/queue-1/request-2-5e88ae861a8d4c9c9806a20e10b0fa81/response.json.gz",
+      "RawSHA256": "37be185140a7eb28c8fff2e8191ee975248ff2a31758646a61bf28c7adacd7bc",
+      "RawBytes": 5769
+    },
+    {
+      "Path": "relay/queue-1/request-2-5e88ae861a8d4c9c9806a20e10b0fa81/reply.json.gz",
+      "RawSHA256": "e2b911bdadaf85458cf40776d5640baa6501a084c9f64069664524a4392d0a36",
+      "RawBytes": 509
+    },
+    {
+      "Path": "relay/queue-1/request-2-5e88ae861a8d4c9c9806a20e10b0fa81/execution.json.gz",
+      "RawSHA256": "7e426ad6fda5819bdf65828970877d427d034d5ea707750c4d4cf65ba9358820",
+      "RawBytes": 84
+    },
+    {
+      "Path": "relay/queue-1/request-2-5e88ae861a8d4c9c9806a20e10b0fa81/started.json.gz",
+      "RawSHA256": "08c909a97b55d43f3b2e86e185ac6bc09795401ab6e6d3239761eb65349e937c",
+      "RawBytes": 208
+    },
+    {
+      "Path": "relay/queue-1/request-2-5e88ae861a8d4c9c9806a20e10b0fa81/consumer.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "relay/queue-1/request-1-f8ff3e5f17fb4937b9690429d77f1a8e/request.json.gz",
+      "RawSHA256": "89f47cad9840362d041ec76607c46c0ff772101d513753b5f41c20de8307316e",
+      "RawBytes": 1086
+    },
+    {
+      "Path": "relay/queue-1/request-1-f8ff3e5f17fb4937b9690429d77f1a8e/game-request.json.gz",
+      "RawSHA256": "6f8cd5407aa6e2486275c66a2c14697ce6ff87ff7f9f68aeb36ca25448cbed68",
+      "RawBytes": 59101
+    },
+    {
+      "Path": "relay/queue-1/request-1-f8ff3e5f17fb4937b9690429d77f1a8e/response.json.gz",
+      "RawSHA256": "7fe7078ce056528ff88294b23d40ac6825e6914b0b4ec4746bf7a459fa1e85e0",
+      "RawBytes": 4992
+    },
+    {
+      "Path": "relay/queue-1/request-1-f8ff3e5f17fb4937b9690429d77f1a8e/reply.json.gz",
+      "RawSHA256": "4344127ac055b5e1d088d948528f43f8d59a09c7eed235f9dd34ca810139a85d",
+      "RawBytes": 509
+    },
+    {
+      "Path": "relay/queue-1/request-1-f8ff3e5f17fb4937b9690429d77f1a8e/execution.json.gz",
+      "RawSHA256": "7e426ad6fda5819bdf65828970877d427d034d5ea707750c4d4cf65ba9358820",
+      "RawBytes": 84
+    },
+    {
+      "Path": "relay/queue-1/request-1-f8ff3e5f17fb4937b9690429d77f1a8e/started.json.gz",
+      "RawSHA256": "c208b8162c4f7963f17742db740a62155a16c3605fcacc868d2ec98b9ae34eda",
+      "RawBytes": 208
+    },
+    {
+      "Path": "relay/queue-1/request-1-f8ff3e5f17fb4937b9690429d77f1a8e/consumer.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "7c9b2d29fd6c6ee57c8c529f8f6432381e552ec75f74c851321633e7097f1cb3",
+      "RawBytes": 1063
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "51b83e52fce48d729f9c12f0ebc6d747fcd77c97ce53565a12be884ef016cda3",
+      "RawBytes": 1457
+    },
+    {
+      "Path": "runner/linux-game-chain-console-unit-001.trx.gz",
+      "RawSHA256": "8c7435735ec27e7e9a34195ac2afe9a1e3b360cdbc3add460a2f0a79c4edd299",
+      "RawBytes": 3095
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "9596a15519ea9c915e35f8b35151b06a6bcce9d3952f5b7fd177ac9e9d5469d2",
+      "RawBytes": 1660367
+    },
+    {
+      "Path": "state/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "1c24681990d703bb95c241cb20ae76f3cce434edfdeaad680502ce3e1dda4537",
+      "RawBytes": 705
+    },
+    {
+      "Path": "state/game_session/config.json.gz",
+      "RawSHA256": "872825a23f18a6efca88b8534b96413170f6e513c0ad6ce5f5e22e41d89a3bc3",
+      "RawBytes": 903
+    },
+    {
+      "Path": "state/game_session/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "687b539dd9a524523f493168ac2b29dad02cbecc50f818bfb9c07db137eb44ae",
+      "RawBytes": 848
+    },
+    {
+      "Path": "state/game_session/game_state/history/chat_log.json.gz",
+      "RawSHA256": "161c75da7f70548b1544d5c924513b080ee055080d397fe669dddf99d9a3480f",
+      "RawBytes": 100
+    },
+    {
+      "Path": "state/game_session/game_state/meta/guardians.json.gz",
+      "RawSHA256": "7d9bd0bd7fdd3150fb5d179a788301fe5db58449b5a8b4966578c4479e72009d",
+      "RawBytes": 19598
+    },
+    {
+      "Path": "state/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "RawSHA256": "11cd4660f36312e8d324ea3ec7985a7556d43eb262878b95cb1c5af4fd258bd4",
+      "RawBytes": 7928
+    }
+  ],
+  "ShippedSHA256": {
+    "BookOfEternityClient": "893956590732ef54a97c59683b226533c368fe56d14400606b8f601dde4954be",
+    "BookOfEternityGMBridge": "04165f69302f15ca946113e8c62b37c559cd831369ec2183ae3e69414d17b1dc"
+  }
+}

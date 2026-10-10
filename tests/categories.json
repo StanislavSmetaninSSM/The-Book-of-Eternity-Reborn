@@ -22005,7 +22005,7 @@
     },
     {
       "id": "linux-game-chain-console",
-      "responsibility": "#1553 T066 C1 real Linux Program/GameEngine new-game preparation, controlled authored no-provider GM through actual persistent relay/Bridge/daemon/helper, accepted turn, full client-process exit/cold restart and distinct next turn with exact story/request correlation and owned original stop/EOF/ECHILD.",
+      "responsibility": "#1553 T066 C1 real Linux Program/GameEngine new-game preparation, controlled authored no-provider GM through actual persistent relay/Bridge/daemon/helper, three accepted turns, client-only restart then full client+Bridge+daemon+relay restart, exact full history prefix/request correlation and separate terminal stop proof for each original identity, EOF/ECHILD.",
       "excludes": "No real model/provider, native Windows/default worker/durable ACK, browser chain, new wound mechanics or broad lifecycle acceptance. Bootstrap GM wait is explicitly cancelled before the ordinary continued gameplay turn.",
       "changeHints": [
         "tests/fixtures/LinuxGameChains/console_chain.py",
