@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -18,17 +19,28 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Fact]
     public async Task BrowserOriginalAdmission_ActualSuccessConsumerProfilesBeforeOriginalStop()
     {
+        await RunBrowserConsumerProfileAsync(mode: 0);
+    }
+
+    [Fact]
+    public async Task BrowserOriginalAdmission_BoundedDurationDiagnostic()
+    {
+        await RunBrowserConsumerProfileAsync(mode: 1);
+    }
+
+    private async Task RunBrowserConsumerProfileAsync(int mode)
+    {
         var own = Path.Combine("/tmp", "gc-" + Guid.NewGuid().ToString("N")[..12]);
         Directory.CreateDirectory(own);
         _directGachaOutput?.WriteLine("Owned actual staging cut evidence: " + own);
         var package = Path.Combine(own, "package");
-        await RunBrowserColdChildAsync("pwsh", ["-NoLogo", "-NoProfile", "-File",
+        await RunBrowserProfileChildAsync("pwsh", ["-NoLogo", "-NoProfile", "-File",
             Path.Combine(TestRepoPaths.RepoRoot, "scripts/build-linux-supervisor.ps1"), "-OutputDirectory", package,
             "-IncludeHostGuardian", "-IncludeTerminalFixture"], Path.Combine(own, "native.log"), 25);
         var support = Path.Combine(Path.GetDirectoryName(typeof(GameEngineTurnLifecycleTests).Assembly.Location)!, "BookOfEternityClient.TestSupport.dll");
-        await RunBrowserColdChildAsync(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), "110000",
+        await RunBrowserProfileChildAsync(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), (mode == 1 ? "260000" : "110000"),
             Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"), support, "engine-browser-consumer-profile",
-            typeof(GameEngineTurnLifecycleTests).Assembly.Location, package, Path.Combine(own, "result.json"), "0", own], Path.Combine(own, "probe.log"), 115);
+            typeof(GameEngineTurnLifecycleTests).Assembly.Location, package, Path.Combine(own, "result.json"), mode.ToString(), own], Path.Combine(own, "probe.log"), mode == 1 ? 265 : 115);
         var guardian = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "guardian.json")))!;
         Assert.True(guardian["echild"]!.GetValue<bool>());
         Assert.Equal(0, guardian["driverExitCode"]!.GetValue<int>());
@@ -47,6 +59,19 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     public static async Task WriteBrowserConsumerProfileProbeAsync(string package, string output, int mode, string own)
     {
+        if (mode is not (0 or 1)) throw new ArgumentOutOfRangeException(nameof(mode));
+        var consumerSafetySeconds = mode == 1 ? 180 : 40;
+        var resolvedRepoRoot = Path.GetFullPath(TestRepoPaths.RepoRoot);
+        object DescribeAssembly(Assembly assembly)
+        {
+            var location = Path.GetFullPath(assembly.Location);
+            Assert.StartsWith(resolvedRepoRoot + Path.DirectorySeparatorChar, location);
+            return new { Name = assembly.GetName().Name, Location = location,
+                Sha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(location))) };
+        }
+        var coreAssembly = DescribeAssembly(typeof(GameEngine).Assembly);
+        var testAssembly = DescribeAssembly(typeof(GameEngineTurnLifecycleTests).Assembly);
+        var supportAssembly = DescribeAssembly(Assembly.GetEntryAssembly()!);
         using var factory = new GameEngineTurnLifecycleTests();
         var launch = NeutralTerminalLaunch.Create(package, own);
         var root = Directory.GetParent(launch.Scratch)!.FullName;
@@ -62,16 +87,34 @@ public sealed partial class GameEngineTurnLifecycleTests
         var acquisitions = 0;
         var contention = 0;
         void Observe(string label) => observations.Enqueue(new { Label = label, Seconds = watch.Elapsed.TotalSeconds });
-        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterCanonicalWriteLockOpenedAsync = () => { Interlocked.Increment(ref acquisitions); return Task.CompletedTask; },
+            CanonicalWriteLockContendedAsync = () => { Interlocked.Increment(ref contention); return Task.CompletedTask; },
+            AfterCanonicalReadAttemptAsync = path => { reads.AddOrUpdate(path, 1, (_, n) => n + 1); Observe("read-attempt:" + path); return Task.CompletedTask; }
+        };
+        // The identical diagnostic fixture can be built against the historical
+        // runtime that predates these read-only observers. Missing instrumentation
+        // is reported; it never substitutes an admission or authority decision.
+        bool AttachObserver(string name, object callback)
+        {
+            var property = typeof(FileSystemManagerHooks).GetProperty(name, BindingFlags.Instance | BindingFlags.NonPublic);
+            if (property == null)
             {
-                BrowserOriginalAdmissionTimingObserver = (stage, elapsed) => timings.AddOrUpdate(stage,
-                    (1, elapsed.Ticks), (_, previous) => (previous.Count + 1, previous.Ticks + elapsed.Ticks)),
-                AfterBrowserOriginalPreflightAsync = () => { Interlocked.Increment(ref preflights); Observe("admission-preflight-completed"); return Task.CompletedTask; },
-                AfterCanonicalWriteLockOpenedAsync = () => { Interlocked.Increment(ref acquisitions); return Task.CompletedTask; },
-                CanonicalWriteLockContendedAsync = () => { Interlocked.Increment(ref contention); return Task.CompletedTask; },
-                AfterCanonicalReadAttemptAsync = path => { reads.AddOrUpdate(path, 1, (_, n) => n + 1); Observe("read-attempt:" + path); return Task.CompletedTask; }
-            });
+                if (mode == 0) throw new InvalidOperationException("Required profile observer is missing: " + name);
+                return false;
+            }
+            property.SetValue(hooks, callback);
+            return true;
+        }
+        var timingSupported = AttachObserver("BrowserOriginalAdmissionTimingObserver", (Action<string, TimeSpan>)((stage, elapsed) =>
+            timings.AddOrUpdate(stage, (1, elapsed.Ticks), (_, previous) => (previous.Count + 1, previous.Ticks + elapsed.Ticks))));
+        var preflightSupported = AttachObserver("AfterBrowserOriginalPreflightAsync", (Func<Task>)(() =>
+        {
+            Interlocked.Increment(ref preflights); Observe("admission-preflight-completed"); return Task.CompletedTask;
+        }));
+        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, hooks);
         files.EnsureDirectoryStructure();
         var bootstrap = factory.CreateGameEngine(new NewGameCancelInput(), settings =>
         {
@@ -87,6 +130,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
         var type = Assembly.LoadFrom(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityGMBridge/bin", configuration, "net8.0/BookOfEternityGMBridge.dll"))
             .GetType("BookOfEternityGMBridge.BridgeHost", true)!;
+        var bridgeAssembly = DescribeAssembly(type.Assembly);
+        var provenance = new { ResolvedRepoRoot = resolvedRepoRoot, Core = coreAssembly, Bridge = bridgeAssembly,
+            Tests = testAssembly, Support = supportAssembly };
+        await File.WriteAllTextAsync(Path.Combine(own, "runtime-provenance.json"), JsonSerializer.Serialize(provenance));
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
         var host = Activator.CreateInstance(type, [launch.Scratch, "c5-profile-" + Guid.NewGuid().ToString("N")])!;
         type.GetMethod("ConfigureNeutral", flags)!.Invoke(host, [launch]);
@@ -102,12 +149,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         TurnRequest? originalRequest = null;
         object? beforeStop = null;
         object[]? timingsAtPublication = null;
+        double? publicationSeconds = null, consumerDurationSeconds = null;
+        object? fixture = null;
         try
         {
             await Call("StartShellAsync");
             await ((TaskCompletionSource)type.GetField("_firstStatus", flags)!.GetValue(host)!).Task.WaitAsync(TimeSpan.FromSeconds(3));
             owner = (GmSessionRunCoordinator)type.GetField("_mainRun", flags)!.GetValue(host)!;
-            var binding = await factory.QueueBrowserInputAsync(files);
+            var binding = await QueueBrowserProfileInputAsync(files);
             var engine = factory.CreateGameEngine(new QueuedConsoleInputSource([]), fileSystem: files,
                 configureSettings: settings => { settings.MusicEnabled = false; settings.SoundEnabled = false; },
                 finalizationHooks: new GameEngineSessionFinalizationHooks
@@ -119,8 +168,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                         {
                             originalRequest = JsonSerializer.Deserialize<TurnRequest>(File.ReadAllText(files.ResolvePath("input/turn_request.json")), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
                             File.WriteAllText(Path.Combine(own, "original-request.json"), JsonSerializer.Serialize(originalRequest));
+                            if (mode == 1) fixture = CaptureBrowserProfileFixture(files, own);
                             WriteBrowserProfileSuccess(files, originalRequest);
                             Observe("authored-success-published");
+                            publicationSeconds = watch.Elapsed.TotalSeconds;
                             timingsAtPublication = CaptureTimings();
                             published.TrySetResult();
                         }
@@ -137,12 +188,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                 throw new InvalidOperationException("Original operation returned before authored terminal publication.");
             }
             await published.Task;
-            var completed = await Task.WhenAny(operation, Task.Delay(TimeSpan.FromSeconds(40)));
+            var completed = await Task.WhenAny(operation, Task.Delay(TimeSpan.FromSeconds(consumerSafetySeconds)));
+            consumerDurationSeconds = watch.Elapsed.TotalSeconds - publicationSeconds;
             deadline = completed != operation;
             Observe(deadline ? "profile-deadline-before-stop" : "operation-settled-before-stop");
             beforeStop = new
             {
-                Record = owner.Record, Preflights = preflights, Acquisitions = acquisitions, Contention = contention,
+                DiagnosticOnly = mode == 1, ConsumerSafetySeconds = consumerSafetySeconds, ConsumerDurationSeconds = consumerDurationSeconds,
+                Legacy40SecondsExceeded = consumerDurationSeconds > 40, TimingSupported = timingSupported, PreflightSupported = preflightSupported, Provenance = provenance, Fixture = fixture,
+                Record = owner.Record, Preflights = preflightSupported ? (int?)preflights : null, Acquisitions = acquisitions, Contention = contention,
                 Reads = reads.ToArray(), Phase = File.Exists(files.ResolvePath(PendingPlayerActionService.PendingPath))
                     ? JsonNode.Parse(File.ReadAllText(files.ResolvePath(PendingPlayerActionService.PendingPath)))!["status"]!.GetValue<string>() : null,
                 Observations = observations.ToArray(), OperationSettled = operation.IsCompleted, Deadline = deadline,
@@ -177,6 +231,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             catch (Exception failure) { cleanupFailure ??= failure; }
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
+                DiagnosticOnly = mode == 1, ConsumerSafetySeconds = consumerSafetySeconds, ConsumerDurationSeconds = consumerDurationSeconds,
+                Legacy40SecondsExceeded = consumerDurationSeconds > 40, TimingSupported = timingSupported, PreflightSupported = preflightSupported, Provenance = provenance, Fixture = fixture,
                 Accepted = accepted, OriginalStopped = stopped, PhysicalCleanup = physical, Deadline = deadline,
                 OperationSettled = operation?.IsCompleted == true, StopTaskSettled = stop.IsCompleted,
                 BeforeStop = beforeStop, OperationFailure = operationFailure?.ToString(), CleanupFailure = cleanupFailure?.ToString(),
@@ -185,6 +241,71 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Scope = "Actual ordinary cancelled bootstrap, NativeLineage original Bridge and real ProcessPlayerTurn success consumer; fixture authors correlated response through existing checkpoint. Not Program/relay C5. Preflight count excludes additional recovery scans."
             }));
         }
+    }
+
+    private static async Task RunBrowserProfileChildAsync(string executable, string[] args, string log, int seconds)
+    {
+        var info = new ProcessStartInfo(executable)
+        { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true, WorkingDirectory = TestRepoPaths.RepoRoot };
+        foreach (var arg in args) info.ArgumentList.Add(arg);
+        using var process = Process.Start(info)!;
+        var stdout = process.StandardOutput.ReadToEndAsync();
+        var stderr = process.StandardError.ReadToEndAsync();
+        try
+        {
+            await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(seconds));
+            await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(5));
+        }
+        catch (Exception failure)
+        {
+            try
+            {
+                if (!process.HasExited) process.Kill(entireProcessTree: true);
+                await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+                await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(5));
+            }
+            finally
+            {
+                await File.WriteAllTextAsync(log, failure + Environment.NewLine +
+                    (stdout.IsCompletedSuccessfully ? stdout.Result : "stdout EOF unobserved") + Environment.NewLine +
+                    (stderr.IsCompletedSuccessfully ? stderr.Result : "stderr EOF unobserved"));
+            }
+            throw;
+        }
+        var text = await stdout + await stderr;
+        await File.WriteAllTextAsync(log, text);
+        Assert.True(process.ExitCode == 0, log + Environment.NewLine + text);
+    }
+
+    private static Task<PendingPlayerActionService.Binding> QueueBrowserProfileInputAsync(FileSystemManager files) =>
+        SessionOperationContext.RunParticipatingCurrentSessionAsync(files, async () =>
+        {
+            await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+            var root = PendingPlayerActionService.PrepareQueued(files, lease, "Я читаю исходное письмо.", "browser-composer", DateTime.UtcNow.ToString("O"));
+            var json = root.ToJsonString();
+            await files.WriteFileAtomicAsync(lease, PendingPlayerActionService.PendingPath, json);
+            return PendingPlayerActionService.Parse(json, files.GetOrCreateSessionGeneration(lease)).Binding;
+        });
+
+    private static object CaptureBrowserProfileFixture(FileSystemManager files, string own)
+    {
+        object Describe(string relative)
+        {
+            var bytes = File.ReadAllBytes(files.ResolvePath(relative));
+            return new { Path = relative, Bytes = bytes.Length, Sha256 = Convert.ToHexString(SHA256.HashData(bytes)) };
+        }
+        var manifestPath = "game_state/control/pending_turn_snapshot.json";
+        var authorityPath = PendingTurnSnapshotAuthority.AuthorityPath;
+        var manifest = JsonNode.Parse(File.ReadAllText(files.ResolvePath(manifestPath)))!;
+        var snapshots = manifest["files"]!.AsObject().OrderBy(pair => pair.Key)
+            .Select(pair => Describe(pair.Value!.GetValue<string>())).ToArray();
+        var rollback = manifest["rollbackBackups"]!.AsObject().OrderBy(pair => pair.Key)
+            .Select(pair => Describe(pair.Value!.GetValue<string>())).ToArray();
+        foreach (var (relative, name) in new[] { ("input/turn_request.json", "initial-request.json"),
+            (manifestPath, "initial-manifest.json"), (authorityPath, "initial-authority.json") })
+            File.WriteAllBytes(Path.Combine(own, name), File.ReadAllBytes(files.ResolvePath(relative)));
+        return new { Request = Describe("input/turn_request.json"), Manifest = Describe(manifestPath), Authority = Describe(authorityPath),
+            SnapshotCount = snapshots.Length, RollbackCount = rollback.Length, Snapshots = snapshots, Rollback = rollback };
     }
 
     private static void WriteBrowserProfileSuccess(FileSystemManager files, TurnRequest request)

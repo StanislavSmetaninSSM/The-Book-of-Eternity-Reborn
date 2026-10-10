@@ -2,6 +2,15 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-original-consumer-duration-diagnostic",
+            "reason": "Parent explicitly requested bounded same-environment valid finalization duration comparison before further performance architecture changes; diagnostic safety limit180s does not reinterpret historical40sFAIL.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "Exploratory duration versus semantic correctness comparison"
+            ]
+        },
+        {
             "category": "c5-original-post-validation-source",
             "reason": "Direct existing post-materialization validator/source/repair guards after browser-only reuse of authenticated original baseline. No whole documentation suite.",
             "contracts": [

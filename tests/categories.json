@@ -62,6 +62,35 @@
             ]
         },
         {
+            "id": "c5-original-consumer-duration-diagnostic",
+            "responsibility": "Exploratory #1553 measurement of one valid original NativeLineage/ProcessPlayerTurn finalization with an explicit 180s post-publication finite safety limit; same semantic original request/story/slot and owned Stop/cleanup assertions. Records actual duration, progress and whether historical 40s would be exceeded. Identical test fixture may overlay historical production for same-environment comparison.",
+            "excludes": "Not a GREEN for the original unchanged 40s profile, product SLA, full Program/React C5 or interrupted/cold no-replay qualification. No admission bypass, production optimization, live model or additional negative matrix.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserConsumerProfile.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-original-consumer-profile",
+                    "when": "Preserve historical deadline outcome separately from finite duration measurement."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 6,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_BoundedDurationDiagnostic"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "browser-original-phase-refusal",
             "responsibility": "Existing original failed rollback and terminalProcessing recovery refusal plus six independently guardian-owned cold classifications; exact issuer-bound pre-publication refusal, raw ErrorType retained, unchanged evidence and no replay.",
             "excludes": "No new negative matrix, Program/relay gameplay, arbitrary owner or general admission tests. Existing terminal disposition controls selected separately.",
