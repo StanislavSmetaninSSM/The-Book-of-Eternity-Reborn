@@ -786,9 +786,33 @@
       "NativeBuildSeconds": 40,
       "GuardianSeconds": 15,
       "OuterSeconds": 20,
-      "PrepCatalogRuntime": "UNRUN at corrected-source WIP",
+      "PrepCatalogRuntime": "Source gate/prep/catalog PASS; sole control runtime UNRUN",
       "Methods": 11458,
-      "CategoriesExpected": 658
+      "CategoriesExpected": 658,
+      "SourceAssemblySHA": "4cbb67fc47221f3874ee79417280be3380262e18",
+      "SourceOracleGate": "Same Astra PASS4cbb; no blocking findings",
+      "Preparation": {
+        "WallSeconds": 142.9743802,
+        "UnitBuildSeconds": 133.9000018,
+        "Planned": 1,
+        "Executed": 0,
+        "Exit": 0,
+        "CleanSource": true,
+        "OwnedRuntimeCleanup": true,
+        "Manifest": "c5-helper-control-preparation/manifest.json"
+      },
+      "Catalog": {
+        "WallSeconds": 12.8299878,
+        "Valid": true,
+        "Categories": 658,
+        "Methods": 11458,
+        "Unmapped": [],
+        "Stale": [],
+        "Executed": 0,
+        "CleanSource": true,
+        "OwnedRuntimeCleanup": true,
+        "Manifest": "c5-helper-control-catalog/manifest.json"
+      }
     }
   }
 }
