@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "ecad1cfdc78f62cc9ef5174f8cf6f6da28d259c4",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category guardian-musings-actual-repair -PlanOnly -TimeoutMinutes 8",
+  "Status": "PASS_PREPARATION_ONLY",
+  "Scope": "Freshintegration+references165.7562089s exit0;1planneddescriptor/1case0executed;completecleanup; sourcepinned; mandatoryAstra singlememorysourceaccepted.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "4d71fc0e6b31b8894ba298883ef21cfd7d74409f6db45731a0d4c0bd1a05e544",
+      "RawBytes": 1187
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "b6710f9b6abed478b63a38b67de1a014fca2af7a5ddd6f3a7808ac73efde4dab",
+      "RawBytes": 1483
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "993b3573c467d826f31bf14c372ef5f12c8b2f4dde14a93a8a4553431399ee65",
+      "RawBytes": 53545
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "dbd02f05856feb18c88e58c6a5968863b34833cc88c5545784e30c550f60f864",
+      "RawBytes": 1672473
+    }
+  ]
+}

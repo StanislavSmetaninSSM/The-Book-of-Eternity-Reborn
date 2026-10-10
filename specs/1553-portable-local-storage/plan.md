@@ -8,6 +8,10 @@ IndependentAstra accepted ba4f0bfe boundedfullC5correctness evidence159carrier/1
 
 C5delivery nowreviewed/source-evidence-recoverable; correctnessPASS remainsdistinct fromall3oldnarrative40exceeded, componentlatencyregression andpriorhelperadmissionFAILunexplained. NextapprovedremainingT070: actualrepair/invalidation/resubmission causaloracle underNativeBridge ordinaryconsoleProcessPlayerTurn, then3originalenginecapture/normalization/accepted-beforecleanupSIGKILL/EOF/coldblock controls. Designreview beforetestsource; no productionrenewal/performanceimplementation yet. Allcheckboxesunchanged.
 
+### T070 single-surface fresh preparation — 2026-10-10
+
+MandatoryAstra accepts exactecad1cfd4blobs/singlememoryfixture and69restorehashes, nofindings; broader4256expandedraw scan performedbywriter, reviewerdidnotrepeatit. [Freshintegrationprep](recovery/linux-game-chains-20261010/t070-single-memory-preparation/manifest.json) **165.7562089s/exit0**,1planneddescriptor/1case0executed, completecleanup/sourcepinned. Productionunchanged. Savebefore same soleactualrepair-NoBuild rerun; compliantpacketREDUNRUN. No renewalimplementation/performancechange/newtestmatrix/taskcheckboxchange.
+
 ### T070 single-surface repair packet correction and RED restoration — 2026-10-10
 
 MandatoryAstra independentlyverified d93657blobs/54raw andqualified actualauthorityloss RED/cleanup. Later writer inspection identified identicaljournal+musings reaction violates existing workedexample; revieweragrees. Preserve d936 as **dualmemoryfixture authorityloss evidence**, unsuitableasfinalspec-compliantpacket. Test-only correction removesjournal authorwrite/FilesModified/statechangesmention; soleaddMusings and existingjournalbytes preserved, fullActorBrain audit maintained. Productionunchanged. Next same solecategory freshintegrationprep thenrealRED rerun on compliantpacket beforeminimalrenewalfix; no newmatrix/category.
