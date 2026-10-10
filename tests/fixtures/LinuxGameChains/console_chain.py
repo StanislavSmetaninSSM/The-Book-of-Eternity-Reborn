@@ -172,7 +172,8 @@ def author_packet(request_dir, ordinal):
     for contour in ["chaosSea", "guardianProject", "residentAgency", "shiningAbode", "shiningFaction", "shiningTrade"]:
         report[contour + "CyclesProcessed"] = control[contour + "CyclesExpectedThisTurn"]
         suffix = "SimulationOrdinal" if contour == "chaosSea" else "CycleOrdinal"
-        report["newLast" + contour[0].upper() + contour[1:] + suffix] = control["next" + contour[0].upper() + contour[1:] + suffix]
+        next_key = "nextChaosSeaTurnOrdinal" if contour == "chaosSea" else "next" + contour[0].upper() + contour[1:] + suffix
+        report["newLast" + contour[0].upper() + contour[1:] + suffix] = control[next_key]
     writes = {"game_state/control/progression_report.json": {"progressionProcessingReport": report},
               "output/narrative_response.json": {"response": narrative},
               "output/interface_updates.json": {"dialogueOptions": []},

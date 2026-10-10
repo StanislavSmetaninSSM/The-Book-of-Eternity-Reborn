@@ -1,3 +1,22 @@
+## C1 admission прошла; authored packet preparation FAIL / WIP
+
+Source `c72c2a9871315f17fd844f75e6466df61a3be712`: свежая PlanOnly
+PASS38.0557872s,1planned/0executed. Actual C1 FAIL1/1,41.9380011s,
+все1cases/descriptors завершены,0skip/duplicate,без timeout.
+[Packet](recovery/linux-game-chains-20261010/admitted-c1-fixture-fail/manifest.json).
+Console Continue теперь доходит до настоящего `Ваш ход`; действие создаёт
+request turn1 и доставляется actual daemon/relay в `game-request.json`.
+Следующий отказ — Python fixture `KeyError:nextChaosSeaSimulationOrdinal`
+при подготовке authored ответа, до его передачи. Это **не новый product RED**.
+Actual request контракт содержит `nextChaosSeaTurnOrdinal`; fixture mapping
+исправляется соответственно, без progression/GM/runtime contract изменения.
+Accepted0/modelCalls0, оба restart UNRUN. Cleanup ECHILD/no emergency PASS;
+daemon refusal during abort/stop сохранён, не объявлен отдельной регрессией.
+Изначальный admission дефект прошёл свою прежнюю failing boundary, но whole C1
+GREEN ещё не получен. Следующий run — та же1case категория `-NoBuild`:
+C# runtime/test assemblies свежие и после них не менялись; изменён Python packet
+author, сборка его не компилирует. Повторная PlanOnly без этого основания не нужна.
+
 ## C1 causal admission RED → minimal fix WIP, 2026-10-10
 
 Source `325ba9ba4c77440068ad9823d96b73f724173d49`: свежая PlanOnly
