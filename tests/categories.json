@@ -776,8 +776,14 @@
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs"
             ],
             "related": [
-                "c5-original-browser-pending-recovery",
-                "c5-original-browser-review-refusals"
+                {
+                    "id": "c5-original-browser-pending-recovery",
+                    "when": "Journal projection changes must preserve actual physical-lock damaged-tuple refusal before recovery and exact retained evidence."
+                },
+                {
+                    "id": "c5-original-browser-review-refusals",
+                    "when": "Journal projection changes must retain original pending phase and escaped-proof refusal before recovery."
+                }
             ],
             "requirements": {
                 "frontendBuild": false,

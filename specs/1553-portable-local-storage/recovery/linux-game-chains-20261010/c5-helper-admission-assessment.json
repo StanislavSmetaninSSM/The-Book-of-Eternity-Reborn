@@ -872,8 +872,24 @@
         "Methods": 11459
       },
       "RawLocation": "Owned TestResults/journal-selection-race/<uniqueid>/observation.json plus exact before/after tree bytes",
-      "DesignGate": "Same Astra PASS3062; concrete source gate pending",
-      "StaticChecks": "PASS four changed C# sources Debug/Release syntax/JSON/diff whitespace; existing catalog objects and all other assessment fields unchanged; no compilation/runtime"
+      "DesignGate": "Same Astra design PASS3062; eb0 source held for concrete test-harness/metadata corrections, correctedsource gate pending",
+      "StaticChecks": "PASS four changed C# sources Debug/Release syntax/JSON/diff whitespace; existing catalog objects and all other assessment fields unchanged; no compilation/runtime",
+      "PreservedPreparationFailure": {
+        "SourceSHA": "eb0d807cc7c91046023780097e867b8b3294adad",
+        "CarrierSHA": "a8853454e68c7e6eef9bd34f56ebfda884f3d28f",
+        "Manifest": "c5-journal-selection-preparation-catalog-shape-failure/manifest.json",
+        "Stage": "Catalog related{id,when} schema before runner/build/test",
+        "Exit": 1,
+        "BuildsTests": 0,
+        "Elapsed": "UNRECORDED; no timing claim",
+        "CausalRed": false
+      },
+      "SourceGateCorrections": [
+        "Shared total10s callback deadline",
+        "Case acquisition cancellation before bounded finally join, original primary preserved",
+        "Exact FileNotFound.FileName in raw",
+        "Related link objects{id,when}"
+      ]
     }
   }
 }

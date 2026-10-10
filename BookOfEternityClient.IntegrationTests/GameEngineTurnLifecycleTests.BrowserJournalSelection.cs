@@ -41,6 +41,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var joined = false;
         Exception? primary = null;
         Exception? joinFailure = null;
+        Exception? cancellationFailure = null;
         var freshPhysicalProof = false;
 
         void Record(string kind, object detail) => rows.Enqueue(new { kind, ticks = Stopwatch.GetTimestamp(), frequency = Stopwatch.Frequency, detail });
@@ -117,6 +118,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                 {
                     BrowserRecoveryJournalSelectedObserver = path =>
                     {
+                    var callbackStarted = Stopwatch.GetTimestamp();
+                    TimeSpan Remaining()
+                    {
+                        var remaining = TimeSpan.FromSeconds(10) - Stopwatch.GetElapsedTime(callbackStarted);
+                        if (remaining <= TimeSpan.Zero)
+                            throw new TimeoutException("Shared selected-path observation deadline expired; causal observation incomplete.");
+                        return remaining;
+                    }
                         Assert.Equal(1, Interlocked.Increment(ref selectedCount));
                         selectedPath = path;
                         Assert.Equal(transition == "intent-rename" ? intent : active, path);
@@ -124,15 +133,16 @@ public sealed partial class GameEngineTurnLifecycleTests
                             selectedTransaction = json.RootElement.GetProperty("TransactionId").GetString();
                         Record("browser-selected-before-fresh-validation", JournalImage(path));
                         advance.Set();
-                        Assert.True(transitioned.Wait(TimeSpan.FromSeconds(10)), "Actual publication transition was not observed; causal observation incomplete.");
+                    Assert.True(transitioned.Wait(Remaining()), "Actual publication transition was not observed; causal observation incomplete.");
                         // Observe full success and actual lease disposal, not merely
                         // a phase callback, before original preflight resumes.
-                        publication = publisher.WaitAsync(TimeSpan.FromSeconds(10)).GetAwaiter().GetResult();
+                    publication = publisher.WaitAsync(Remaining()).GetAwaiter().GetResult();
                         Assert.NotNull(publisherLease);
                         Assert.False(publisherLease!.IsActive);
                         Assert.Equal(selectedTransaction, publication.TransactionId);
                         Assert.False(File.Exists(path));
-                        Record("browser-resumes-after-publisher-disposal", new { selectedPath, selectedTransaction, publication.TransactionId, publisherLease.IsActive });
+                    Record("browser-resumes-after-publisher-disposal", new { selectedPath, selectedTransaction, publication.TransactionId, publisherLease.IsActive,
+                        callbackSeconds = Stopwatch.GetElapsedTime(callbackStarted).TotalSeconds });
                     }
                 });
             await paused.Task.WaitAsync(TimeSpan.FromSeconds(10));
@@ -158,6 +168,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         finally
         {
             advance.Set();
+            // A failed constructor/admission must not leave a still-waiting
+            // publisher acquisition behind when the deadline source is disposed.
+            try { deadline.Cancel(); }
+            catch (Exception failure)
+            {
+                cancellationFailure = failure;
+                if (primary != null) primary.Data["JournalRaceCancellationFailure"] = failure;
+            }
             try
             {
                 publication = await publisher.WaitAsync(TimeSpan.FromSeconds(10));
@@ -173,9 +191,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 transition, selectedPath, selectedTransaction, selectedCount, publication, publisherJoined = joined,
                 publisherSuccessful = publisher.IsCompletedSuccessfully,
+                publisherCanceled = publisher.IsCanceled, publisherStatus = publisher.Status.ToString(),
                 publisherLeaseDisposed = publisherLease != null && !publisherLease.IsActive, freshPhysicalProof,
-                primary = primary == null ? null : new { type = primary.GetType().FullName, primary.Message, primary.StackTrace },
+                primary = primary == null ? null : new { type = primary.GetType().FullName, primary.Message, primary.StackTrace,
+                    fileName = (primary as FileNotFoundException)?.FileName },
                 joinFailure = joinFailure == null ? null : new { type = joinFailure.GetType().FullName, joinFailure.Message },
+                cancellationFailure = cancellationFailure == null ? null : new { type = cancellationFailure.GetType().FullName, cancellationFailure.Message },
                 rows = rows.ToArray(), limits = new { latchSeconds = 10, caseCancellationSeconds = 30 },
                 attribution = "Owned deterministic interleaving only; historical actor/transaction and helper refusal relation remain unknown."
             };
@@ -192,6 +213,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 else throw;
             }
             if (primary == null && joinFailure != null) ExceptionDispatchInfo.Capture(joinFailure).Throw();
+            if (primary == null && cancellationFailure != null) ExceptionDispatchInfo.Capture(cancellationFailure).Throw();
         }
     }
 }
