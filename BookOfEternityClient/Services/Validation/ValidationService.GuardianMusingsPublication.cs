@@ -102,7 +102,7 @@ public partial class ValidationService
         {
             if (!await MatchesAsync(files, lease)) throw new InvalidDataException("Original addMusings binding changed before publication close.");
             var bytes = await files.ReadFileBytesAsync(lease, GuardianMusingsPath);
-            var published = JsonNode.Parse(bytes!)!.AsObject();
+            var published = JsonNode.Parse(DecodePendingSnapshotText(bytes!))!.AsObject();
             var commands = ReadCommands();
             if (published["UpdateGuardians"] is JsonArray updates && updates.OfType<JsonObject>()
                 .Any(command => command["command"]?.GetValue<string>() == "addMusings"))
@@ -142,7 +142,7 @@ public partial class ValidationService
                 if (!await _capture.MatchesAsync(files, lease)) return null;
                 var bytes = await files.ReadFileBytesAsync(lease, GuardianMusingsPath);
                 if (HashRequired(bytes) != _publishedHash ||
-                    !JsonNode.DeepEquals(JsonNode.Parse(bytes!), JsonNode.Parse(currentRoot.GetRawText()))) return null;
+                    !JsonNode.DeepEquals(JsonNode.Parse(DecodePendingSnapshotText(bytes!)), JsonNode.Parse(currentRoot.GetRawText()))) return null;
                 return _capture.ReadCommands();
             }
         }

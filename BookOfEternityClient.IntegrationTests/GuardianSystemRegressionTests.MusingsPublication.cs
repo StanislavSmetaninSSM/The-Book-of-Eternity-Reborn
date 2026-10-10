@@ -21,7 +21,7 @@ public sealed partial class GuardianSystemRegressionTests
         var refresh = await RefreshMusingsPublicationAsync(validator);
         Assert.NotNull(refresh.GuardianMusingsValidation);
         var published = await _fs.ReadFileBytesAsync(MusingsRootPath);
-        var root = JsonNode.Parse(published!)!;
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(MusingsRootPath))!)!;
         var musings = root["guardians"]![0]!["musings"]!.AsArray();
         Assert.Equal(count + 1, musings.Count);
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(OldMusings)![0], musings[0]));
