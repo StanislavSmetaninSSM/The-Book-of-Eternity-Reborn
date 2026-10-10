@@ -2,6 +2,69 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "gm-main-review-closing-linux",
+            "reason": "Actual original immutable close/result and identity-specific original shutdown remain preserved.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
+            "category": "gm-main-finalization-readonly-linux",
+            "reason": "Closing can read generation but cannot publish; recovery postcheck must remain below typed finalization early return.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
+            "category": "gm-main-finalization-capability-linux",
+            "reason": "Shared MainAdmission changes preserve real bound closing generation verification and purpose-alone refusal.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
+            "category": "c5-original-browser-frame-lifetime",
+            "reason": "Bound original private frame borrowing/disposal/escape and actual committed journal cleanup debt remain compatible with shared pre-recovery fence.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
+            "category": "c5-original-client-admission",
+            "reason": "Actual client full original identity refuses before connecting; matching actual original activation/immutable CloseObserved/disposal and normal stop.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
+            "category": "c5-original-browser-quiescent-opening",
+            "reason": "Captured quiescent browser original condition must remain exact across observed branch selection and physical guard; genuine NativeLineage owner/stop, no new remote pin.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
+            "category": "c5-original-browser-completed-recovery",
+            "reason": "Bounded correction for completed receipt absence constraints before existing uncommitted replay; constructed defensive evidence combination, no additional anti-tamper matrix.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
             "category": "c5-original-browser-staging-crash",
             "reason": "Astra identifies complete visible staged after-images in uncommitted original journal can roll back to preparing then return mutable lease; real process cuts avoid ordinary outcome wrapper automatic rollback.",
             "contracts": [

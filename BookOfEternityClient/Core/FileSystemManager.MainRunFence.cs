@@ -56,10 +56,10 @@ public partial class FileSystemManager
             // value alone cannot bypass admission or acquire recovery authority.
             if(closing && !BoundClosing)throw GmSessionRunPersistence.Invalid();
             var browserOriginal=closing?null:_files.PreflightBrowserOriginalAdmission(this);
-            if(browserOriginal!=null && _files._hooks?.AfterBrowserOriginalPreflightAsync is { } originalHook)
-                await originalHook();
             // A quiescent witness cannot become a new active grant while opening.
             browserOriginal?.RequireCurrent(_files);
+            if(browserOriginal!=null && _files._hooks?.AfterBrowserOriginalPreflightAsync is { } originalHook)
+                await originalHook();
             if(quiescentOnly && _requested?.Pin!=null)throw GmSessionRunPersistence.Invalid();
             if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);
             for(var p=_parent;p!=null;p=p._parent)
@@ -75,6 +75,7 @@ public partial class FileSystemManager
             // physical guard and validation below, including a pending Stopped ACK.
             var observed=GmSessionRunPersistence.Read(_files.BasePath);
             if(observed!=null && GmSessionRunRecordCodec.Decode(observed).Disposition!=GmSessionRunDisposition.Stopped) {
+                if(browserOriginal!=null && browserOriginal.ActiveIdentity==null)throw BrowserOriginalMainCondition.Invalid();
                 if(!_participating || closing)throw GmSessionRunPersistence.Invalid();
                 if(OperatingSystem.IsWindows())_files.RequireAbsentMainWorkerInventory();
                 var knownWorkers=!OperatingSystem.IsWindows() && _files.HasKnownMainWorkerInventory();

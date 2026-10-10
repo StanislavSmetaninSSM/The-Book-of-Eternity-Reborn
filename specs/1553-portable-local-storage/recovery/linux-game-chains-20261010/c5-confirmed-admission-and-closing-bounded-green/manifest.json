@@ -1,0 +1,439 @@
+{
+  "SourceSHA": "59fc46eff5158b6569b615971e7fa8958ac8b9d0",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-browser-completed-recovery\",\"c5-original-browser-quiescent-opening\",\"c5-original-client-admission\",\"gm-main-finalization-capability-linux\",\"gm-main-finalization-readonly-linux\",\"gm-main-review-closing-linux\")'",
+  "Status": "PASS",
+  "Scope": "21/21 bounded prerequisite+closing PASS; receipt combination defensive, not naturally reachable lifecycle; final observed-Running quiescent branchrace correction still pending, no lifetimeC5acceptance",
+  "ModelCalls": 0,
+  "NativeCases": [
+    "terminal-main-operation-expected-client-boot",
+    "terminal-main-finalization-purpose",
+    "terminal-main-operation-expected-client-same",
+    "terminal-main-finalization-bound-close",
+    "terminal-main-finalization-readonly",
+    "terminal-main-operation-expected-client-run",
+    "terminal-main-operation-expected-client-generation",
+    "terminal-main-operation-expected-client-root",
+    "terminal-main-operation-shutdown-identity",
+    "terminal-main-operation-expected-client-epoch",
+    "terminal-main-operation-expected-client-backend",
+    "terminal-main-operation-expected-client-host",
+    "terminal-main-operation-successful-finalization"
+  ],
+  "Files": [
+    {
+      "Path": "runner/c5-original-browser-completed-recovery-integration-001.trx.gz",
+      "RawSHA256": "66d5d781ba4edba7c2edf10dd9b144045e65d5b129b9080a63812eacf95cc3d2",
+      "RawBytes": 6554
+    },
+    {
+      "Path": "runner/gm-main-finalization-readonly-linux-unit-005.trx.gz",
+      "RawSHA256": "ae4c48ec1b5403066dabb108304fc77cb038ef119bd0d376ca43b692bc6b972b",
+      "RawBytes": 3039
+    },
+    {
+      "Path": "runner/c5-original-client-admission-unit-003.trx.gz",
+      "RawSHA256": "046f8431355bb97f7c4de6b9c9014b5cf983379dfe292f667a997dd0837d4095",
+      "RawBytes": 13602
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "55f8bcffcb25e6801614482f4d7c8c1abe80ffbbb9fe13daa5aab3956fbf143d",
+      "RawBytes": 5723
+    },
+    {
+      "Path": "runner/gm-main-finalization-capability-linux-unit-004.trx.gz",
+      "RawSHA256": "aa7891031b521b3310e4386711dcfbd8cb9cb8cfaedb45f8676ed9049e26c7e6",
+      "RawBytes": 4515
+    },
+    {
+      "Path": "runner/c5-original-browser-quiescent-opening-integration-002.trx.gz",
+      "RawSHA256": "459cd706255f95bb7c2ed15f8ab8469516541d0c36e297c81abb9d7f15aeae65",
+      "RawBytes": 10119
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "1e202d47cca5fbd45c1002a86d9e0394eb4798361e57d34a4249a0e809320575",
+      "RawBytes": 2621
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "ab2b9f969c04d8359fe206a24443a625243318caafe037b743ac20244ed2ef63",
+      "RawBytes": 50345
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "21cb11096bee3979082b37e01d54bca655becc3575bf5d3622d027dac441088d",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/gm-main-review-closing-linux-unit-006.trx.gz",
+      "RawSHA256": "73ae0da042d4db011efdb6b6f4e6ebf69d5126a57db50fcd6370bc25f34ca4d8",
+      "RawBytes": 4576
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "a14d14b5f69b0ed2c792675346ddf4266944aa974fb967e228258d8ce8cdd4e6",
+      "RawBytes": 3361643
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-boot/scenario.json.gz",
+      "RawSHA256": "d6acc953efb7757cf66664938563d0be96d889b8b727e6cc9b2c0d113269b0ee",
+      "RawBytes": 1014
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-boot/build.log.gz",
+      "RawSHA256": "89d06bb0c17d625a80f954d54e282896dac88acd066caa9f7d33c41547a274c3",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-boot/guardian.log.gz",
+      "RawSHA256": "7c9403f226fd7c7e37f163d23f9f91f75ebb6602c13aa10997c4aa9329f0d393",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-boot/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-finalization-purpose/scenario.json.gz",
+      "RawSHA256": "46ed5665aee679fe809bacaebf68bae05de2d99707bbdb2a65990a649d33a7ee",
+      "RawBytes": 1268
+    },
+    {
+      "Path": "owned/terminal-main-finalization-purpose/build.log.gz",
+      "RawSHA256": "0257a065fb770f4929fd9f46e30ccf5b34e43f9d9f1285ba1a2c31a23f196227",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-finalization-purpose/guardian.log.gz",
+      "RawSHA256": "d1d7216d1732b5716eff7c2eea06eba6db03fd324aebfa3a84f18161c6749b84",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-finalization-purpose/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-same/scenario.json.gz",
+      "RawSHA256": "8aedda79156251144778aa7adc844de11950a73b144cc9d8fbfeda2744a3542a",
+      "RawBytes": 1622
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-same/build.log.gz",
+      "RawSHA256": "84f35edacb73a35006fb2688b26802bafdf98564faaf59a96698c33912d611fe",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-same/guardian.log.gz",
+      "RawSHA256": "705b8b01cc397eaa7eb720848bb177584675f43a1b71526816859ebede1e49a0",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-same/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-finalization-bound-close/scenario.json.gz",
+      "RawSHA256": "4f02d0f1c2f022a09161505ff27807dd7ed70b20dd782f854ea883906294ec05",
+      "RawBytes": 120
+    },
+    {
+      "Path": "owned/terminal-main-finalization-bound-close/build.log.gz",
+      "RawSHA256": "51628288af4fae92beee3326219f3e33c1f77fbe6d7d0207aa8c00975a928b04",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-finalization-bound-close/guardian.log.gz",
+      "RawSHA256": "c38abd8f431943e3b3552cc09a6ca3dda0cfb6ddd608398f88dc41af5c59f1b0",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-finalization-bound-close/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-finalization-readonly/scenario.json.gz",
+      "RawSHA256": "46a3b1bab6ef49ac454b641f5b05644201d253eed4fa7a837940bb2104393001",
+      "RawBytes": 1592
+    },
+    {
+      "Path": "owned/terminal-main-finalization-readonly/build.log.gz",
+      "RawSHA256": "bbfcd2d33e1e4d202e777268542b98f0ba7f3a877fe48feccbb32e7a9cfbfa14",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-finalization-readonly/guardian.log.gz",
+      "RawSHA256": "c12e8193b47d55d7958f72a79eb7663a1ed8a44e5a62cbda7820700cfaf450ac",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-finalization-readonly/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-run/scenario.json.gz",
+      "RawSHA256": "d9b544b5dfa3426c5a62aaf98aec555578f1ab59a49052a51ca7b1a13f6c35aa",
+      "RawBytes": 1026
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-run/build.log.gz",
+      "RawSHA256": "8d8091a6d0df07823b1275432ac3eff3347c52e96f0a9ad504b00718987a0763",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-run/guardian.log.gz",
+      "RawSHA256": "df0bd902d2bbe6ee0ac6b0698f1d98e8338146380456f9f8935c2fbb5a624382",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-run/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-generation/scenario.json.gz",
+      "RawSHA256": "f7b8379933174c8b259617b83f21eeb607677c3c6af877fef52a7897b9479e67",
+      "RawBytes": 1033
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-generation/build.log.gz",
+      "RawSHA256": "ca8d520f631a1039c66ca7a23d741188b82766017f94e45a61cb75d7c2ee964e",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-generation/guardian.log.gz",
+      "RawSHA256": "97a0c89d90969fe535089a462007d07d7cca25673cdbb105584ea8c96f0142cd",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-generation/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-root/scenario.json.gz",
+      "RawSHA256": "a92e46e89fe5853aaed055f449a24b6f17ef6f29ca6e16a8a01522c8e585ab1d",
+      "RawBytes": 1037
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-root/build.log.gz",
+      "RawSHA256": "b1a910b5b4084742397883f4d08bb6571ae95e689f56c26b53a450233e7ba1af",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-root/guardian.log.gz",
+      "RawSHA256": "e9b206dc68e693ac5b4205cd10b96f0118753d75fa975b5e963046a33b93da2b",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-root/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-shutdown-identity/scenario.json.gz",
+      "RawSHA256": "abdbf4520c59056b31e170c0bd43cd5f92219f715c12020bf17b03b226924a83",
+      "RawBytes": 749
+    },
+    {
+      "Path": "owned/terminal-main-operation-shutdown-identity/build.log.gz",
+      "RawSHA256": "984cc3e46f15cefb088a0ed8b0c0eed0f88fdd8e071980142bbe1d5a982334ec",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-shutdown-identity/guardian.log.gz",
+      "RawSHA256": "d7b2e11519c38a80d5221ac93ce84906e02588137e667207fa18e270de929d9f",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-shutdown-identity/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-epoch/scenario.json.gz",
+      "RawSHA256": "5b723cf76ea6938da6bb4d8187ef73255ca73778ad7b37bff2e9e60d7c426a4e",
+      "RawBytes": 1028
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-epoch/build.log.gz",
+      "RawSHA256": "eb5c2e3bdd64a00fa73fe8d39517202e352a0925789751cf0afbe14875797ba7",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-epoch/guardian.log.gz",
+      "RawSHA256": "c2347fa7c5181a5e55305c399e0d761c2908ba736e76405267c8f4c2c81bdd3a",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-epoch/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-backend/scenario.json.gz",
+      "RawSHA256": "0e821d3bc17e015cd8c1d4fc415a6c3c2ba1f977054ee9d78c405fe5936f7a0a",
+      "RawBytes": 1030
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-backend/build.log.gz",
+      "RawSHA256": "fb922a49fc483db511d91925622ee976b0e8c7f2ca027e506e6e4c8f1424e7cb",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-backend/guardian.log.gz",
+      "RawSHA256": "a88900f4e95d30a8af84b8a1d46cd1a5f22506e7c7817f264d85c7607196c514",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-backend/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-host/scenario.json.gz",
+      "RawSHA256": "5be0503eb2b31cdc623c65cd76e78c17e2824f17353b2098b806bd65f50d533d",
+      "RawBytes": 1027
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-host/build.log.gz",
+      "RawSHA256": "e49f983096a0cddf7d1d85bd9c6f1f345faff9dceb708b61af77008d9652b08e",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-host/guardian.log.gz",
+      "RawSHA256": "beb9e3898a0449e0a1a5b34d6c9a9c53ddf6dbaa94d7b9a0582de9bc44adefa7",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-client-host/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-successful-finalization/scenario.json.gz",
+      "RawSHA256": "f0a320d42f11e3de5d63ed1b54bdc24ce22d08096df5db4586eaab169405770f",
+      "RawBytes": 772
+    },
+    {
+      "Path": "owned/terminal-main-operation-successful-finalization/build.log.gz",
+      "RawSHA256": "09a2df1682be5b783666498ab6a50aad693ec9d8592a8bb9739eb99cbbcb8780",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-successful-finalization/guardian.log.gz",
+      "RawSHA256": "536ba8a5703dd2d1176bfb568a3494b95441ab493f8a0221ca5a9f75d48b137a",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-successful-finalization/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "quiescent/0/probe.log.gz",
+      "RawSHA256": "4329ec5586b596618d02eb4c4e224204dc1dc75b0d530910bb08943beabb2724",
+      "RawBytes": 134
+    },
+    {
+      "Path": "quiescent/0/result.json.gz",
+      "RawSHA256": "1d4a83a66e81b03b66fe5871421b58c5cd5c98c7183a64488fbbb9e6efe1b79c",
+      "RawBytes": 1002
+    },
+    {
+      "Path": "quiescent/0/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "quiescent/0/native.log.gz",
+      "RawSHA256": "0d2fb2fc456dd9142fbdc316e4f89cb08f9e7b64f21f6f78a643484c0718678c",
+      "RawBytes": 51
+    },
+    {
+      "Path": "quiescent/1/probe.log.gz",
+      "RawSHA256": "a290f3df701d6bf03698e81416679372fa2f927c6c75a0b72281f4c8cb2ae0d7",
+      "RawBytes": 67
+    },
+    {
+      "Path": "quiescent/1/result.json.gz",
+      "RawSHA256": "a886c3a1377d6f55455b321d4bd773c672545ab9e6e1eae60be80a2c9a570da9",
+      "RawBytes": 1002
+    },
+    {
+      "Path": "quiescent/1/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "quiescent/1/native.log.gz",
+      "RawSHA256": "e506c5f7a23c41fb0301baea786ad677da963e6b9f544b769089a0acccf5311f",
+      "RawBytes": 51
+    },
+    {
+      "Path": "quiescent/2/probe.log.gz",
+      "RawSHA256": "e05953f7361b6a2899c62a89f565315c501cdab49012b74965f6d29802a49e0f",
+      "RawBytes": 67
+    },
+    {
+      "Path": "quiescent/2/result.json.gz",
+      "RawSHA256": "1fc54da3d1c42d9b1d2a6ee173b4947e75e95593fada86e3d30c7d57e53a8d7d",
+      "RawBytes": 269
+    },
+    {
+      "Path": "quiescent/2/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "quiescent/2/native.log.gz",
+      "RawSHA256": "e32683cca6dc5710f78b8ecab36cf599e52c75626d1939ab5d6d4faf5a719175",
+      "RawBytes": 51
+    },
+    {
+      "Path": "quiescent/3/probe.log.gz",
+      "RawSHA256": "7dfc9093da6b4b80ffff09235b334222f6ee4f7ad9a0a89c8958dcb9bbf0c835",
+      "RawBytes": 134
+    },
+    {
+      "Path": "quiescent/3/result.json.gz",
+      "RawSHA256": "c57d5feca6eb14b02bd15e9920f01bd1cf90d2f5c42c009fcbc8626e20d162fc",
+      "RawBytes": 1002
+    },
+    {
+      "Path": "quiescent/3/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "quiescent/3/native.log.gz",
+      "RawSHA256": "55b9aff5476ea3c448e83cae228b0de7e8f5dfa1146c3bcbc2505285f80489d8",
+      "RawBytes": 51
+    },
+    {
+      "Path": "quiescent/4/probe.log.gz",
+      "RawSHA256": "cda449508aa493146823ad49933084747b6290a01a83182555d39bd43eb3184c",
+      "RawBytes": 67
+    },
+    {
+      "Path": "quiescent/4/result.json.gz",
+      "RawSHA256": "560364ed7c35ff445c8f0551f53223e419c95823f90842d90da142cdf93b3fa8",
+      "RawBytes": 1003
+    },
+    {
+      "Path": "quiescent/4/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "quiescent/4/native.log.gz",
+      "RawSHA256": "12181645277f70fe13b62293fe02ca9a3fcd234cc31392bfc79a1dbc2b7bf0e4",
+      "RawBytes": 51
+    }
+  ]
+}
