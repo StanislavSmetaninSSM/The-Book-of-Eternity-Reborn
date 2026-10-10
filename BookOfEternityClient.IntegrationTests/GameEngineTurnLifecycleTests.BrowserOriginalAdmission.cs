@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
@@ -10,6 +11,42 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    [Fact]
+    public async Task BrowserOriginalAdmission_OrdinaryProducerRejectsRawStoryCaseAliases()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json",
+            "{\"sessionId\":\"story-alias-session\",\"currentRealm\":\"Mortal World\"}");
+        foreach (var path in new[] { "stories/a.jsonl", "Stories/a.jsonl" })
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(_fs.ResolvePath(path))!);
+            File.WriteAllText(_fs.ResolvePath(path), "{\"original\":true}\n");
+        }
+        var request = new BookOfEternityClient.Models.TurnRequest
+        {
+            SessionId = "story-alias-session", RequestId = Guid.NewGuid().ToString("N"), TurnNumber = 1,
+            PlayerAction = "Проверить исходную историю.", Timestamp = DateTime.UtcNow.ToString("O")
+        };
+        await Assert.ThrowsAsync<InvalidDataException>(() => InvokePrivateTaskAsync(CreateGameEngine(),
+            "CreateCanonicalBaselineSnapshotAsync", request, null, "обработки хода", null));
+        Assert.False(File.Exists(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
+    }
+
+    [Fact]
+    public async Task BrowserOriginalAdmission_CompletedReceiptRejectsRawStoryCaseAliases()
+    {
+        await PrepareAcceptedBrowserRecordAsync();
+        var slot = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(PendingPlayerActionService.PendingPath)))!;
+        var proof = JsonNode.Parse(slot["phaseProof"]!.GetValue<string>())!;
+        var path = proof["story"]!["path"]!.GetValue<string>();
+        Assert.StartsWith("stories/", path);
+        var alias = "Stories/" + path["stories/".Length..];
+        Directory.CreateDirectory(Path.GetDirectoryName(_fs.ResolvePath(alias))!);
+        File.WriteAllBytes(_fs.ResolvePath(alias), File.ReadAllBytes(_fs.ResolvePath(path)));
+        var before = OriginalAdmissionTree();
+        await Assert.ThrowsAsync<InvalidDataException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
+        AssertOriginalAdmissionTree(before);
+    }
+
     [Fact]
     public async Task BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition()
     {
@@ -217,6 +254,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData("backup")]
     [InlineData("unrelated-rollback")]
+    [InlineData("backup-after-first-delete")]
+    [InlineData("unrelated-rollback-after-first-delete")]
     public async Task BrowserOriginalAdmission_WarmCleanupCannotDeleteSubstitutedOrUnownedArtifact(string damage)
     {
         var (engine, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
@@ -224,7 +263,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             using var original = _fs.BeginBrowserOriginalOperation(staged.Binding, staged);
             _ = await InvokePrivateAsync<PendingPlayerActionService.Staged>(engine, "ClaimBrowserTerminalAsync", staged);
-            var path = damage == "backup"
+            if (damage.EndsWith("-after-first-delete", StringComparison.Ordinal))
+            {
+                _fs.AllowBrowserOriginalCleanup();
+                _fs.DeleteFile("input/turn_request.json");
+                Assert.False(File.Exists(_fs.ResolvePath("input/turn_request.json")));
+            }
+            var path = damage.StartsWith("backup", StringComparison.Ordinal)
                 ? JsonNode.Parse(staged.ManifestJson)!["rollbackBackups"]!.AsObject().First().Value!.GetValue<string>()
                 : "game_state/core/unrelated.rollback.another-owner";
             File.WriteAllText(_fs.ResolvePath(path), "Changed bytes belong to a different cleanup authority.");

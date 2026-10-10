@@ -2,6 +2,31 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-original-browser-story-inventory",
+            "responsibility": "Independent C5 review: preserve raw case aliases in ordinary original snapshot producer and cold completed browser receipt history before exact signed-path validation.",
+            "excludes": "No live model, browser lifetime or full gameplay qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_OrdinaryProducerRejectsRawStoryCaseAliases",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_CompletedReceiptRejectsRawStoryCaseAliases"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-original-browser-review-refusals",
             "responsibility": "Original actual pending publication refuses forged completed phases/escaped browser proof classification; warm owning cleanup refuses changed backup or unrelated wildcard artifact.",
             "excludes": "Actual Program/React staged-idle crash, active original owner native propagation, Windows and live model qualification.",

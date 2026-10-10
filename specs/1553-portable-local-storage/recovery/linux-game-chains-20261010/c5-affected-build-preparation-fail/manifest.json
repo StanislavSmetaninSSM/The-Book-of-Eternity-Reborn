@@ -1,0 +1,19 @@
+{
+  "SourceSHA": "6f61e17a86829f28580666700bdb576248d6e3c7",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"browser-player-input-recovery\",\"browser-player-terminal-provenance\",\"browser-pending-snapshot-roundtrip\")'",
+  "Status": "0 tests; BUILD_FAIL; missing System.Text.Json import; 37.8620103s; no timeout; cleanup complete",
+  "Scope": "Fixture compilation failure, no behavioral claim",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "e0221d0e5cb79c5cf5dfd5915c37ef6b0f2dce1a683d629e2ffaa5ea32c385c7",
+      "RawBytes": 1410
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "ae0bd45fcbb65447cc309a664567b528c6fa1e54bdb48784b14325f5e84b91a9",
+      "RawBytes": 48723
+    }
+  ]
+}

@@ -2,6 +2,15 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "c5-original-browser-story-inventory",
+            "reason": "Astra found Ordinal story prefix filtering loses raw case aliases before exact signed paths; actual producer and actual cold receipt causal controls.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md step0"
+            ]
+        },
+        {
             "category": "c5-original-browser-review-refusals",
             "reason": "Independent Astra Important findings at566: status strings and raw marker matching must not bypass original recovery; private warm cleanup must retain exact bytes/inventory instead of deleting substituted/unowned artifacts.",
             "contracts": [
