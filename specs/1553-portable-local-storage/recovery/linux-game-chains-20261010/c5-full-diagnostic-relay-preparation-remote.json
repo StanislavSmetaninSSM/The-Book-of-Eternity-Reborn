@@ -1,0 +1,54 @@
+{
+  "SHA": "cce3902ac6b7b60ee09e1b4be9e6854c476df087",
+  "Base": "77c08f7ba584e398765fd90afdc30b987d75e48c",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1600458,
+      "SHA256": "7c8f5c98bb68b216846c2deb2f4c05a68ec437cb6b6665ba4a31340a58698ef5",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-failure-remote.json",
+      "Bytes": 4286,
+      "SHA256": "25c7d034bcf67d6b40352742c1b65280dccf707ec26440fc547d0f5fb7a39fe1",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-relay-budget-remote.json",
+      "Bytes": 940,
+      "SHA256": "14370ee8b0351143b78dc326893226714ee759bc8b656343f23c9ec7b0a5b052",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-relay-fresh-plan/manifest.json",
+      "Bytes": 1090,
+      "SHA256": "2caedab66692720ffe968722c933f96544adf347301fbbed0a6e2d10d4dcb1c6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-relay-fresh-plan/runner/Build-unit.log.gz",
+      "Bytes": 2833,
+      "SHA256": "96517974a2b197d594a808989d34c6b28ac4d36fb4c4217950e544c9bf6cfad9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-relay-fresh-plan/runner/dotnet-test.log.gz",
+      "Bytes": 186814,
+      "SHA256": "ed2b95e0db1c92dd5a57f5c9fc8abf7097a3d476ec8edf7669267e787610eae4",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-relay-fresh-plan/runner/plan.json.gz",
+      "Bytes": 510,
+      "SHA256": "dc1d7087c0f063182aa6d6eebf347ae229482498bda37093f9b5f8369f22bfd8",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-relay-fresh-plan/runner/summary.json.gz",
+      "Bytes": 620,
+      "SHA256": "83cf5ace77b6a9abe3cb46774ea532263bb9be944fa12ec54e56d64db2b3c65b",
+      "RemoteExact": true
+    }
+  ]
+}
