@@ -180,9 +180,35 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         var timestamp = DateTime.UtcNow.ToString("O");
         void Write(string path, object value) => File.WriteAllText(files.ResolvePath(path), JsonSerializer.Serialize(value));
+        var guardians = JsonNode.Parse(File.ReadAllText(files.ResolvePath("game_state/meta/guardians.json")))!;
+        var guardian = guardians["guardians"]![0]!;
+        var actor = guardian["canonicalName"]!.GetValue<string>();
+        const string thought = "Я запомню самостоятельный выбор души прочитать письмо у берега.";
+        const string journalPath = "game_state/meta/guardian_thought_journal.json";
+        var journal = File.Exists(files.ResolvePath(journalPath))
+            ? JsonNode.Parse(File.ReadAllText(files.ResolvePath(journalPath)))!.AsObject() : new JsonObject { ["entries"] = new JsonArray() };
+        journal["guardianThoughtJournalUpdates"] = JsonSerializer.SerializeToNode(new[] { new
+        {
+            entryId = "profile_thought_" + request.RequestId, guardianId = guardian["guardianId"]!.GetValue<string>(),
+            turn = request.TurnNumber, timestamp, title = "Наблюдение у берега", summary = thought,
+            eventType = "soul_assessment", consequence = "Душа сохраняет самостоятельность.", attitude = "intrigued", intent = "Остаться рядом без вмешательства."
+        }});
+        File.WriteAllText(files.ResolvePath(journalPath), journal.ToJsonString());
+        var reasoning = string.Join("\n", "## NPC Scope", "- Mode: Scene-local", "- Relevant actors: " + actor,
+            "- Why relevant: Хранитель наблюдает за выбором души и сохраняет свою реакцию.", "- Actors outside scope: нет",
+            "- Why outside scope: Самостоятельные акторы не участвуют.", "", "## Reasoning", "### " + actor,
+            "- Current location: Море Хаоса; перемещения нет.", "- Situation: Душа читает письмо у берега, Хранитель наблюдает.",
+            "- Profile inputs: Существующий свободный Хранитель сопровождает душу; искусства не применяются.",
+            "- Motivation: Дать душе пространство для самостоятельного решения.", "- Constraints: Без новых сил, ресурсов, предметов или ран.",
+            "- Thoughts: " + thought, "- Strategy options:",
+            "1. Наблюдать. Benefit: сохранить самостоятельность. Risk: душа не попросит помощи.",
+            "2. Вмешаться. Benefit: дать совет. Risk: навязать направление.", "- Chosen strategy: Наблюдать.",
+            "- Rejected alternatives: Душа не просила совета.", "- Actions: Хранитель наблюдает и запоминает выбор души.",
+            "- State changes: guardianThoughtJournalUpdates в game_state/meta/guardian_thought_journal.json: одна новая first-person запись, предыдущие entries сохраняются.",
+            "- Детерминированная тестовая заготовка; провайдер не вызван.");
         Write("output/narrative_response.json", new { response = "Исходное письмо прочитано.", timestamp });
         Write("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
-        Write("output/debug_logs.json", new { timestamp, gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n- Why relevant: Системное напоминание без действий акторов.\n- Actors outside scope: нет\n- Why outside scope: Структурных изменений акторов нет.\n\n## Reasoning\n- Structured actor reasoning is not required for this actor-free explanatory turn." });
+        Write("output/debug_logs.json", new { timestamp, gm_thoughts_markdown = reasoning });
         var c = request.ProgressionControl!;
         Write(ProgressionScheduleService.ReportPath, new { progressionProcessingReport = new
         {
@@ -199,6 +225,6 @@ public sealed partial class GameEngineTurnLifecycleTests
             afterlifeCatchupProcessed = false, afterlifeCatchupSummaryEventsProcessed = 0
         }});
         Write("ready/turn_complete.json", new { sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
-            timestamp, status = "success", filesModified = new[] { "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json", ProgressionScheduleService.ReportPath } });
+            timestamp, status = "success", filesModified = new[] { journalPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json", ProgressionScheduleService.ReportPath } });
     }
 }
