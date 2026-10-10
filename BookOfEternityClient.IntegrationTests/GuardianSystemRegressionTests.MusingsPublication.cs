@@ -105,6 +105,15 @@ public sealed partial class GuardianSystemRegressionTests
         var original = await _fs.ReadFileBytesAsync(MusingsRootPath);
         var refusal = await Assert.ThrowsAsync<InvalidDataException>(() => RefreshMusingsPublicationAsync(new ValidationService(_fs, NullLogger<ValidationService>.Instance)));
         Assert.Contains("Original addMusings authorization failed", refusal.Message);
+        Assert.Contains(damage switch
+        {
+            "count" => "guardian_add_musings_invalid_count",
+            "turn" => "guardian_musing_missing_turn",
+            "topic" => "guardian_musing_invalid_topic",
+            "mood" => "guardian_musing_invalid_mood",
+            "text" => "guardian_musing_missing_text",
+            _ => "guardian_non_create_unknown_guardian"
+        }, refusal.Message);
         Assert.Equal(original, await _fs.ReadFileBytesAsync(MusingsRootPath));
     }
 
@@ -124,6 +133,7 @@ public sealed partial class GuardianSystemRegressionTests
     private async Task PrepareMusingsPublicationAsync(int count)
     {
         await PrepareGuardianDialogueActorBrainFixtureAsync(OldMusings, OldMusings);
+        await _fs.WriteFileAtomicAsync(MusingsRootPath, BuildCurrentMusingsPublicationBaseline());
         // This boundary requires the exact reader contract; the older actor-brain
         // fixture's legacy text-hash snapshot is not publication authority.
         await new LiveTurnPreparationService(_fs).PrepareAsync(new LiveTurnPreparationOptions
@@ -138,9 +148,21 @@ public sealed partial class GuardianSystemRegressionTests
             var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, [MusingsRootPath, "game_state/meta/soul_state.json"]);
             Assert.True(read.Success, string.Join("; ", read.Issues.Select(issue => issue.Code + ": " + issue.Actual)));
         }
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var baseline = await validator.DebugResolveGuardianPolicyContextAsync();
+        Assert.Equal("Resolved", baseline.GenericSharedStrictPreTurnGuardianAuthorityStatus);
+        Assert.DoesNotContain(await ValidateMusingsStateAsync(validator), issue => issue.Severity == IssueSeverity.Error);
         var root = JsonNode.Parse((await _fs.ReadFileAsync(MusingsRootPath))!)!;
         root["UpdateGuardians"] = MusingsCommands(count);
         await _fs.WriteFileAtomicAsync(MusingsRootPath, root.ToJsonString());
+    }
+
+    internal static string BuildCurrentMusingsPublicationBaseline()
+    {
+        var root = JsonNode.Parse(NormalizeGuardianStateJson(BuildActorBrainGuardianState(OldMusings)))!.AsObject();
+        foreach (var guardian in root["guardians"]!.AsArray().OfType<JsonObject>().Append(root["activeGuardian"]!.AsObject()))
+            guardian["gachaSystem"] = new JsonObject { ["currentReturnCycleId"] = "", ["gachaHistory"] = new JsonArray() };
+        return root.ToJsonString();
     }
 
     private static JsonArray MusingsCommands(int count) => new(new JsonObject
