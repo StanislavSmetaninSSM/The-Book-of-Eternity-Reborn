@@ -1,3 +1,38 @@
+## C4 whole local chain PASS; read-owner close/cold PASS; persistent I/O correction
+
+Source6ae39ef4, fresh3planned/0executed buildPASS40.2243562s.
+Actual Program C4 **PASS1/1**,32.6023840s: original Save+exact archive payload,
+actual split, actual Load/NoActiveSession/full React refresh/navigation/new
+generation, normal host+all Chrome exit, distinct full cold processes/exact loaded
+bytes+generation-document hash, actual new split. [Raw](recovery/linux-game-chains-20261010/c4-archive-cold-pass/manifest.json).
+Initial sealed current Mortal/item fixture and no active main are explicit.
+No-main Load is not original GM stop/fresh-launch handshake qualification.
+
+Actual source-only104 read-owner late-close **PASS1/1**,7.0408666s:
+original public own lease, exact exception identity, close1, inactivelease/all
+contexts cleared, mutations0, full canonical tree+generation unchanged, physical
+lock available; independent actual cold TestSupport process reads5 and same full
+state, guardian driver0/ECHILD/0emergency/0failure/deadlinefalse.
+[Raw](recovery/linux-game-chains-20261010/read-close-cold-qualified-pass/manifest.json).
+Component owner scope, not gameplay or primary+secondary fault combination.
+
+Single-I/O fault45 **FAIL1/1**,25.7639605s, actual final Committed.
+[Raw](recovery/linux-game-chains-20261010/c4-single-io-retried-oracle-fail/manifest.json).
+After two fault attempts, inspected causal retry loop before another execution:
+FileSystemManager.LoadNamespace249–256 retries only confirmed RolledBack+ordinary
+IOException, up to20attempts. One-shot cut then allows the second publication to
+commit. Prior inference that CommitStaged alone explained that DTO was incomplete;
+no captured terminal outcome of the first attempt in that earlier raw packet.
+New controlled ordinary I/O fault persists at real BOELP3 MemberPublished45 before
+commit.tmp through existing20attempts/19safe retries of ONE React Load; requires
+terminal RolledBack and exact cold prior bytes/archive, not a fabricated CSP.
+No production retry/budget change. This final fault is UNRUN until fresh build.
+
+Both reviewer Minor fixture corrections applied: archive semantics compared to
+preserved pre-Save snapshot; marker labels actual MemberPublished45. Exact ZIP and
+cold hashes remain required. Corrected C4/fault need rerun; read-close/C3/Save7
+not repeated without relevant changes. C2/C5 integration gaps remain unchanged.
+
 ## Final finite attempt49fc: C3 PASS, C5 real handoff FAIL, fixture corrections WIP
 
 Each category ran once from fresh e8 build + metadata49fc; no skip/duplicate/

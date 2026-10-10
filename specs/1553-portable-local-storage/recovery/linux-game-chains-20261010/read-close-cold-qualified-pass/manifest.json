@@ -1,0 +1,54 @@
+{
+  "SourceSHA": "6ae39ef43e960a3a2cfa21d14d32262800dcb3bc",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category linux-inventory-context-read-close -NoBuild",
+  "Status": "PASS",
+  "Scope": "Actual public ReadContextAsync owned late-close exact exception/release/no mutation/full canonical bytes+generation preserved; independent actual cold TestSupport process read, guardian driver0/ECHILD/zero emergency. Component owner only; not Program/gameplay/secondary-fault qualification.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "owned/cold.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/cold-read.json.gz",
+      "RawSHA256": "83c79b46ed2e23cd4021ffdc38062b000232a767e818a8340fe9a0efef32659c",
+      "RawBytes": 1136
+    },
+    {
+      "Path": "owned/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/native.log.gz",
+      "RawSHA256": "efb09606f82e04b228caa4d1d4ca716dd5f22ba6b0980ccdf0a8461ddb7a9ed3",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/read-close.json.gz",
+      "RawSHA256": "1452ae94d1e9436a5ad135c0da80e8afa1b0dc8c0492ce30106e5b2b77068900",
+      "RawBytes": 3234
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "c7adcb077f89d3bd2fa6e790361c44f5969f181650947fda00b6cca9d860c127",
+      "RawBytes": 1121
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "2088b018c59bb41fe4d1c685a7995301b2cb3789a17500ac064cfd55f5a9311a",
+      "RawBytes": 1475
+    },
+    {
+      "Path": "runner/linux-inventory-context-read-close-unit-001.trx.gz",
+      "RawSHA256": "6b685706a8b0a76576a1a597fde45a930f07775ec95710cd1e333d646e48eb9e",
+      "RawBytes": 3127
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "545661bddc8eed2a19faab1c596d81d1f67a5c9add8cbc00523029f22a35ca45",
+      "RawBytes": 1660974
+    }
+  ]
+}

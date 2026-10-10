@@ -284,7 +284,7 @@ try:
             with zipfile.ZipFile(archives[0]) as archive:
                 saved_payload = {p: hashlib.sha256(archive.read(p)).hexdigest() for p in paths}
                 for p in paths:
-                    before = (session / p).read_text(encoding="utf-8-sig")
+                    before = (out / "snapshots/initial" / p).read_text(encoding="utf-8-sig")
                     assert json.loads(archive.read(p).decode("utf-8-sig")) == json.loads(before), p
             result["SavedPayloadSHA256"] = saved_payload
             result["SourceArchiveSHA256"] = hashlib.sha256(archive_bytes).hexdigest()
@@ -318,14 +318,14 @@ try:
             archives = list((session / "saves/manual_saves").glob("*.zip"))
             assert len(archives) == 1, archives
             archive_bytes = archives[0].read_bytes()
-            (out / "arm-load-fault").write_text("single actual CommitStaged cut")
+            (out / "arm-load-fault").write_text("persistent actual MemberPublished45 ordinary I/O fault; original bounded retries")
             rolled_back = post_click(page, "/api/saves/load",
                 lambda: page.get_by_role("button", name="Загрузить сохранение", exact=True).click(), expect_success=False)
             assert not rolled_back["success"] and rolled_back["disposition"] == "RolledBack", rolled_back
             assert rolled_back["needsFollowUp"] and not rolled_back["continuationBlocked"], rolled_back
             assert not rolled_back["freshLaunchRequired"] and rolled_back["mainSessionState"] == "NoActiveSession", rolled_back
             assert rolled_back["establishedGeneration"] == changed["generation"], rolled_back
-            assert read_json(out / "load-fault.json")["Cuts"] == 1
+            assert read_json(out / "load-fault.json")["Cuts"] == 20, "Existing twenty attempts/nineteen known-rollback retries must be exhausted; one player Load"
             assert snapshot("after-load-rollback") == changed, "Failed Load did not restore exact prior inventory/resources/generation"
             assert archives[0].read_bytes() == archive_bytes, "Failed Load changed its source archive"
             result["RolledBackLoad"] = rolled_back

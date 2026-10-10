@@ -36,10 +36,10 @@ internal static class BrowserGameFaultHost
             {
                 if (!File.Exists(Path.Combine(evidence, "arm-load-fault"))) return;
                 phases.Add(phase + ":" + index);
-                // The frozen isolated namespace's last published member is45.
-                // CommitStaged already supplies a durable committed candidate;
-                // cut the preceding real member publication for known rollback.
-                if (phase != TrustedLocalPublicationPhase.MemberPublished || index != 45 || cuts != 0) return;
+                // Persist the ordinary I/O fault through the existing twenty
+                // attempts (nineteen safe retries). A one-shot cut rolls back and then commits on retry.
+                // Frozen isolated namespace last member45, before commit.tmp.
+                if (phase != TrustedLocalPublicationPhase.MemberPublished || index != 45) return;
                 var journal = Path.Combine(root, ".boe_runtime/trusted-local-publication-v1/active.json");
                 using var actual = File.OpenRead(journal);
                 Span<byte> prefix = stackalloc byte[8]; actual.ReadExactly(prefix);
@@ -49,7 +49,7 @@ internal static class BrowserGameFaultHost
                 cuts++;
                 File.WriteAllText(Path.Combine(evidence, "load-fault.json"), JsonSerializer.Serialize(new
                 {
-                    Scope = "actual replacement journal BOELP3 and late MemberPublished45 before commit.tmp",
+                    Scope = "persistent actual BOELP3 late MemberPublished45 I/O cut through existing safe retries; before commit.tmp",
                     Cuts = cuts, Phases = phases.ToArray(), ModelCalls = 0
                 }));
                 throw new IOException("controlled actual browser Load late member45 publication failure");
