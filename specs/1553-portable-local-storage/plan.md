@@ -1,3 +1,15 @@
+Terminal causal RED75151f13:13=11PASS2FAIL,54.5315212s/complete,
+0skip/duplicate/timeout/cleanupcomplete. Original publication-conflict orchestration
+nowPASS. Actual ordinary cancel reaches rollback but remains staged; explicit
+terminalerror restores but leaves slot. Current WIP persists processing before
+cancel mutations; captures immutable prior exact-byte story/chat witnesses under
+original reservation; typed settled(error/rejected) only after exact original
+rollback hashes/baseline inventory, unchanged history, original artifacts and
+repair/protocol work absent. Cold settled verifies then deletes onlyslot, no domain
+replay. Cancel remains blocked pending external original stop/late-delivery proof.
+Uncertain/failed rollback/cleanup/physical close retain evidence. Accepted record
+also binds full old story prefixes. Source/positive/negative checks UNRUN.
+
 Actual f55 fixture timeout236.1209475s/0formalcompleted/noTRX/cleanupcomplete;
 stdout cancellation reached retained slot, background error writer stalled. Not
 behavior GREEN/completeRED. Deterministic original TerminalWaitStarted callback now

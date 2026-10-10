@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "75151f1384ca945c74993ee51ea0975e878ef9ef",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-player-input-recovery; fresh integration build",
+  "Status": "FAIL",
+  "Scope": "13executed11PASS2FAIL,54.5315212s,complete0skip/duplicate/timeout/cleanupcomplete. Original Process cancel stillstaged; explicit error keeps slot. Publication conflict nowPASS.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "5ca4ecee48de9ae1d78c945c9be3b9d3161481c76475db0f571a3540fe0ffe0f",
+      "RawBytes": 3889
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "f3064789ca38e6d15cbbab317a65101172749e69cc2050e40757e35339002ab7",
+      "RawBytes": 1475
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "585239689f9f0684705560d1bac694738dccb944595e671cd07eb78cb60eebd3",
+      "RawBytes": 42417
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "98d649ccbeb05b4e3e315fa505f2e793cb5bdb773424123ecc3f7cafed7020d9",
+      "RawBytes": 1650574
+    },
+    {
+      "Path": "runner/browser-player-input-recovery-integration-001.trx.gz",
+      "RawSHA256": "a44ebbcfc0b9b6a25370c21f5a20b4524fc8d5690f693a0cd4c2bc27d32e6180",
+      "RawBytes": 25885
+    }
+  ]
+}

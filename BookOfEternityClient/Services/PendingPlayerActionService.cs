@@ -14,7 +14,7 @@ internal static class PendingPlayerActionService
     // Strings are deliberately detached from mutable JsonNode/state objects.
     internal sealed record Binding(string ActionId, string Generation, string Action, string Source, string Json);
     internal sealed record State(Binding Binding, string Phase, string Json, string? ProofJson);
-    internal sealed record Staged(Binding Binding, string RequestJson, string ManifestJson, string AuthorityJson, string Json);
+    internal sealed record Staged(Binding Binding, string RequestJson, string ManifestJson, string AuthorityJson, string Json, string HistoryJson);
     internal sealed record StoryProof(string Path, int PrefixBytes, string PrefixHash, string RowJson);
 
     internal static State Parse(string json, string generation)
@@ -29,7 +29,7 @@ internal static class PendingPlayerActionService
             !Guid.TryParseExact(id, "N", out _) || root["sessionGeneration"]?.GetValue<string>() != generation ||
             string.IsNullOrWhiteSpace(action) || action.TrimStart().StartsWith('/') ||
             source is not ("browser-composer" or "browser-effect-action") ||
-            phase is not ("queued" or "preparing" or "staged" or "terminalProcessing" or "accepted") ||
+            phase is not ("queued" or "preparing" or "staged" or "terminalProcessing" or "accepted" or "settled") ||
             !DateTimeOffset.TryParse(root["submittedAtUtc"]?.GetValue<string>(), out _))
             throw new InvalidDataException("Ожидающее действие не связано с текущей сессией.");
         string? proofJson = null;
@@ -69,18 +69,19 @@ internal static class PendingPlayerActionService
 
     internal static Staged ReadStaged(State state)
     {
-        if (state.Phase is not ("staged" or "terminalProcessing" or "accepted"))
+        if (state.Phase is not ("staged" or "terminalProcessing" or "accepted" or "settled"))
             throw new InvalidDataException("Action has no original staging proof.");
         var proof = JsonNode.Parse(state.ProofJson!)!.AsObject();
         return new(state.Binding, Required(proof, "requestJson"), Required(proof, "manifestJson"),
-            Required(proof, "authorityJson"), state.Json);
+            Required(proof, "authorityJson"), state.Json, Required(proof, "historyBeforeJson"));
     }
 
     internal static JsonObject StagingProof(Staged staged) => new()
     {
         ["requestJson"] = staged.RequestJson,
         ["manifestJson"] = staged.ManifestJson,
-        ["authorityJson"] = staged.AuthorityJson
+        ["authorityJson"] = staged.AuthorityJson,
+        ["historyBeforeJson"] = staged.HistoryJson
     };
 
     internal static async Task<State?> ReadAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)

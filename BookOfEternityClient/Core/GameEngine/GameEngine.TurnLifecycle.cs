@@ -1543,6 +1543,7 @@ public partial class GameEngine
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
+            if (browserStaged != null) browserStaged = await ClaimBrowserTerminalAsync(browserStaged);
             // Delete the turn request, clean ready signals, and rollback game state
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_complete.json");
@@ -1578,6 +1579,11 @@ public partial class GameEngine
             await RestorePreTurnBackup(backedUpFiles);
             await CleanupPendingTurnSnapshotAsync();
             CleanupBackup(backedUpFiles);
+            if (browserStaged != null)
+            {
+                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalErrorRestored");
+                await ClassifyBrowserRecoveryAsync();
+            }
             return;
         }
 
@@ -1602,10 +1608,15 @@ public partial class GameEngine
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
             _fs.DeleteFile("input/turn_request.json");
-            await RollbackRejectedAcceptedTurnAsync(
+            var restored = await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
                 "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
             await CleanupPendingTurnSnapshotAsync();
+            if (browserStaged != null && restored)
+            {
+                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalRejectedRestored");
+                await ClassifyBrowserRecoveryAsync();
+            }
             return;
         }
         await InvokeSessionFinalizationCheckpointAsync(
@@ -1625,10 +1636,15 @@ public partial class GameEngine
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
             _fs.DeleteFile("input/turn_request.json");
-            await RollbackRejectedAcceptedTurnAsync(
+            var restored = await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
                 "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
             await CleanupPendingTurnSnapshotAsync();
+            if (browserStaged != null && restored)
+            {
+                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalRejectedRestored");
+                await ClassifyBrowserRecoveryAsync();
+            }
             return;
         }
 
