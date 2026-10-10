@@ -18,6 +18,8 @@ First actual selection at `8e817f39`: 1/1 FAIL25.3840055s, [100 raw payloads pre
 
 WIP correction now implements only exact outer Name prefix and failure graph retention. Source review/fresh matching preparation/one retry pending; original full failure was remotely saved at `56e6412923e9cc8586b6d23a22170f2ffaa00972` before this edit.
 
+Astra accepted exact correction `944c6b5e788e6b97abf5ba1a659772807b7a946c`: both carrier blobs and all100 failed-run payloads independently verified, no blocking findings. Exact outer prefix excludes nested lambda states while retaining ambiguity refusal; failure graphs are now preserved with the gate held. [Matching fresh preparation](recovery/linux-game-chains-20261010/c5-active-poll-observer-preparation/manifest.json) PASS102.2641177s, executed0, one planned descriptor/case, clean exact944c source, full owned cleanup. Catalog653/11452 remains the earlier actual discovery atf025; public Fact/selector/category ownership did not change. Next single NoBuild retry remains UNRUN.
+
 ### C5 coherent delivery checkpoint: independent raw review and clean restore — 2026-10-10
 
 IndependentAstra accepted ba4f0bfe boundedfullC5correctness evidence159carrier/156raw, nofindings:3originalunique relayIDs; story416→829→1242bytes/fullprefix; exactoriginalrequest/action/gen/stagednonce/PID/immutableclose/run;2Stopped/OwnedScopeEmpty owners/all12foregroundEOF; guardianclean; actual priorcleanupfailure repaired. Supplementary originalsnapshot/rollback inventoryauthority/all6binary+nativepackage hashes/finalpending/request/signedsnapshot/rollbackabsence andmatchingfresh9cff C# checksPASS. WholeT069/T070/T071 notaccepted, activepollnegativeUNRUN.
