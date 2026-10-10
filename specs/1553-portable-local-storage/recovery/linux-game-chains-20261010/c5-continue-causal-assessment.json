@@ -1,0 +1,1106 @@
+{
+  "SourceCarrierSHA": "61bdf05604ce4391c30086b67d8757ab2746017d",
+  "RuntimeSourceSHA": "ab5a1b6d3d64487c01532bffafbe7e17d1f0b73c",
+  "FrozenRawCarrierSHA": "78fd9086a908c314ffef455c21a9e4021dba55cd",
+  "Runs": 1,
+  "NormalClickAPICalls": 1,
+  "NormalClickAPIReturned": false,
+  "DiagnosticOutcome": "FAIL; pre-dispatch locator wait established for this run only",
+  "RequestedPriorClickCompletionCause": "UNKNOWN; prior performing-click completion stage was not reached in this run",
+  "PendingGameScreenCause": "UNKNOWN; endpoint begin/stop recorded, no causal internals inferred",
+  "OracleFix": null,
+  "ProductionFix": null,
+  "FurtherRuntime": "STOP; no retry, full C5 remains UNQUALIFIED and optimization WIP",
+  "ClockSemantics": "PythonMonotonic, CDP timestamp/wallTime, browser performance.now/timeOrigin/wallMilliseconds, driver UTC and server StopwatchTicks/frequency/UTC are preserved separately. Callback reception may lag event time. Driver UTC is not called a monotonic timestamp; no cross-clock equality is assumed.",
+  "API": {
+    "Begin": {
+      "Event": "NormalClickBegin",
+      "PythonMonotonic": 3510.713927126,
+      "Utc": "2026-10-10T19:57:12.931804+00:00",
+      "Selector": "button[data-launcher-mode=\"continue\"]",
+      "NoWaitAfter": true,
+      "TimeoutMilliseconds": 12000
+    },
+    "Error": {
+      "Event": "NormalClickError",
+      "PythonMonotonic": 3522.836573415,
+      "Utc": "2026-10-10T19:57:25.054451+00:00",
+      "Error": "Traceback (most recent call last):\n  File \"/workspace/The-Book-of-Eternity-Reborn/tests/fixtures/LinuxGameChains/console_chain.py\", line 449, in submit_browser_action\n    page.locator('button[data-launcher-mode=\"continue\"]').click(no_wait_after=True)\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py\", line 17876, in click\n    self._sync(\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_locator.py\", line 165, in click\n    return await self._frame._click(self._selector, strict=True, **params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_frame.py\", line 593, in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.click: Timeout 12000ms exceeded.\nCall log:\n  - waiting for locator(\"button[data-launcher-mode=\\\"continue\\\"]\")\n\n"
+    },
+    "ElapsedPythonSeconds": 12.122646289000386,
+    "TraceBefore": {
+      "type": "before",
+      "callId": "call@34",
+      "startTime": 3082.618,
+      "class": "Frame",
+      "method": "click",
+      "params": {
+        "selector": "button[data-launcher-mode=\"continue\"]",
+        "noWaitAfter": true,
+        "strict": true,
+        "timeout": 12000
+      },
+      "pageId": "page@29f8fbd9672242328ac5eb6cdb789503",
+      "beforeSnapshot": "before@call@34"
+    },
+    "TraceAfter": {
+      "type": "after",
+      "callId": "call@34",
+      "endTime": 15162.22,
+      "error": {
+        "message": "Timeout 12000ms exceeded.",
+        "stack": "TimeoutError: Timeout 12000ms exceeded.\n    at _ProgressController.run (/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/driver/package/lib/coreBundle.js:12135:32)\n    at DispatcherConnection.dispatch (/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/driver/package/lib/coreBundle.js:18775:44)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:502:9)",
+        "name": "TimeoutError"
+      },
+      "afterSnapshot": "after@call@34"
+    },
+    "TraceLogs": [
+      {
+        "type": "log",
+        "callId": "call@34",
+        "time": 3161.585,
+        "message": "waiting for locator(\"button[data-launcher-mode=\\\"continue\\\"]\")"
+      }
+    ]
+  },
+  "Protocol": {
+    "InputDispatchMouseEventSends": 0,
+    "InputSendAckChronology": [],
+    "LocatorQuerySends": 27,
+    "LocatorQueryACKs": 27,
+    "AllLocatorACKValuesUndefined": true,
+    "FirstQuerySend": {
+      "Line": 447,
+      "Utc": "2026-10-10T19:57:13.149Z",
+      "Id": 65
+    },
+    "LastQueryAck": {
+      "Line": 586,
+      "Utc": "2026-10-10T19:57:24.902Z",
+      "Direction": "◀ RECV",
+      "Value": {
+        "id": 103,
+        "result": {
+          "result": {
+            "type": "undefined"
+          }
+        },
+        "sessionId": "8EEE17F56A767DEB79656FD37B078196"
+      }
+    },
+    "BrowserVersionACK": {
+      "Line": 22,
+      "Utc": "2026-10-10T19:57:11.991Z",
+      "Direction": "◀ RECV",
+      "Value": {
+        "id": 1,
+        "result": {
+          "protocolVersion": "1.3",
+          "product": "Chrome/151.0.7922.173",
+          "revision": "@a96602f30358e9b5d256a0464e7e4d4bec223004",
+          "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+          "jsVersion": "15.1.206.23"
+        }
+      }
+    },
+    "APILogLines": [
+      {
+        "Line": 135,
+        "Text": "2026-10-10T19:57:12.482Z pw:api navigating to \"http://127.0.0.1:59597/\", waiting until \"domcontentloaded\""
+      },
+      {
+        "Line": 154,
+        "Text": "2026-10-10T19:57:12.536Z pw:api   \"commit\" event fired"
+      },
+      {
+        "Line": 155,
+        "Text": "2026-10-10T19:57:12.537Z pw:api   navigated to \"http://127.0.0.1:59597/\""
+      },
+      {
+        "Line": 256,
+        "Text": "2026-10-10T19:57:12.788Z pw:api   \"domcontentloaded\" event fired"
+      },
+      {
+        "Line": 261,
+        "Text": "2026-10-10T19:57:12.796Z pw:api   \"load\" event fired"
+      },
+      {
+        "Line": 419,
+        "Text": "2026-10-10T19:57:13.011Z pw:api waiting for locator(\"button[data-launcher-mode=\\\"continue\\\"]\")"
+      },
+      {
+        "Line": 591,
+        "Text": "2026-10-10T19:57:25.067Z pw:api taking page screenshot"
+      },
+      {
+        "Line": 594,
+        "Text": "2026-10-10T19:57:25.190Z pw:api waiting for fonts to load..."
+      },
+      {
+        "Line": 597,
+        "Text": "2026-10-10T19:57:25.194Z pw:api fonts loaded"
+      }
+    ]
+  },
+  "DOM": {
+    "ObservedContinueInputEvents": [],
+    "TrustedContinueClicks": 0,
+    "ComposerChanges": [
+      {
+        "PythonMonotonic": 3510.637421544,
+        "Utc": "2026-10-10T19:57:12.855299+00:00",
+        "browserNow": 331.5,
+        "browserTimeOrigin": 1791662232489.8,
+        "wallMilliseconds": 1791662232821,
+        "event": "composer-dom-change",
+        "composer": true,
+        "activeTab": "scene"
+      }
+    ],
+    "FailureHTMLState": {
+      "LoadingCard": true,
+      "LoadingShimmer": true,
+      "ComposerDisabled": true,
+      "ContinueButton": false,
+      "ActiveTabs": [
+        "scene"
+      ]
+    },
+    "PriorRetryHTMLState": {
+      "LoadingCard": false,
+      "LoadingShimmer": false,
+      "ComposerDisabled": false,
+      "ContinueButton": false,
+      "ActiveTabs": [
+        "scene"
+      ]
+    },
+    "PriorRetryConclusion": "Ready Scene/enabled composer is consistent with Continue activation, but prior raw has no trusted input/protocol witness proving it. Current pre-click loading shell is a distinct state."
+  },
+  "Server": {
+    "ObserverStarted": {
+      "Event": "ObserverStarted",
+      "Pid": 14088,
+      "Utc": "2026-10-10T19:57:09.0305137+00:00",
+      "StopwatchTicks": 3506812640698,
+      "StopwatchFrequency": 1000000000,
+      "TraceIdentifier": null,
+      "Method": null,
+      "Path": null,
+      "Query": null,
+      "UserAgent": null,
+      "Endpoint": null,
+      "Status": null,
+      "ConnectionId": null,
+      "RemotePort": null,
+      "Error": null
+    },
+    "ObserverErrors": [],
+    "StateGETs": [
+      {
+        "Path": "/api/main-menu",
+        "TraceIdentifier": "0HNP712LJNKOP:00000007",
+        "ServerStart": {
+          "Event": "Microsoft.AspNetCore.Hosting.HttpRequestIn.Start",
+          "Pid": 14088,
+          "Utc": "2026-10-10T19:57:12.9596375+00:00",
+          "StopwatchTicks": 3510741761420,
+          "StopwatchFrequency": 1000000000,
+          "TraceIdentifier": "0HNP712LJNKOP:00000007",
+          "Method": "GET",
+          "Path": "/api/main-menu",
+          "Query": "",
+          "UserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+          "Endpoint": null,
+          "Status": 200,
+          "ConnectionId": "0HNP712LJNKOP",
+          "RemotePort": 49058,
+          "Error": null
+        },
+        "ServerStop": {
+          "Event": "Microsoft.AspNetCore.Hosting.HttpRequestIn.Stop",
+          "Pid": 14088,
+          "Utc": "2026-10-10T19:57:21.8581202+00:00",
+          "StopwatchTicks": 3519640243913,
+          "StopwatchFrequency": 1000000000,
+          "TraceIdentifier": "0HNP712LJNKOP:00000007",
+          "Method": "GET",
+          "Path": "/api/main-menu",
+          "Query": "",
+          "UserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+          "Endpoint": "HTTP: GET /api/main-menu",
+          "Status": 200,
+          "ConnectionId": "0HNP712LJNKOP",
+          "RemotePort": 49058,
+          "Error": null
+        },
+        "ServerElapsedSeconds": 8.898482493,
+        "CDPRequest": {
+          "Event": "Network.requestWillBeSent",
+          "PythonMonotonic": 3510.741206106,
+          "Utc": "2026-10-10T19:57:12.959083+00:00",
+          "Params": {
+            "requestId": "14262.116",
+            "loaderId": "931FF5C6D48BB8C6C515D1EE831A3847",
+            "documentURL": "http://127.0.0.1:59597/",
+            "request": {
+              "url": "http://127.0.0.1:59597/api/main-menu",
+              "method": "GET",
+              "headers": {
+                "sec-ch-ua-platform": "\"Linux\"",
+                "Referer": "http://127.0.0.1:59597/",
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "accept": "application/json",
+                "sec-ch-ua": "\"Chromium\";v=\"151\", \"Not=A?Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0"
+              },
+              "mixedContentType": "none",
+              "initialPriority": "High",
+              "referrerPolicy": "strict-origin-when-cross-origin",
+              "isSameSite": true
+            },
+            "timestamp": 3510.729415,
+            "wallTime": 1791662232.948838,
+            "initiator": {
+              "type": "script",
+              "stack": {
+                "callFrames": [
+                  {
+                    "functionName": "K",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 121092
+                  },
+                  {
+                    "functionName": "getMainMenu",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 118986
+                  },
+                  {
+                    "functionName": "Ku",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 123939
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 125981
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 140649
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 140809
+                  },
+                  {
+                    "functionName": "Kc",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 91837
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106986
+                  },
+                  {
+                    "functionName": "jl",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106870
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106966
+                  },
+                  {
+                    "functionName": "jl",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106870
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 107750
+                  },
+                  {
+                    "functionName": "jl",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106870
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 107032
+                  },
+                  {
+                    "functionName": "qu",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 119810
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 117248
+                  },
+                  {
+                    "functionName": "te",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 0,
+                    "columnNumber": 10496
+                  }
+                ]
+              }
+            },
+            "redirectHasExtraInfo": false,
+            "type": "Fetch",
+            "frameId": "EF5C4F59FCE4A37AE6E52CF86097033E",
+            "hasUserGesture": false
+          }
+        },
+        "CDPResponses": [
+          {
+            "Event": "Network.responseReceived",
+            "PythonMonotonic": 3519.644958687,
+            "Utc": "2026-10-10T19:57:21.862837+00:00",
+            "Params": {
+              "requestId": "14262.116",
+              "loaderId": "931FF5C6D48BB8C6C515D1EE831A3847",
+              "timestamp": 3519.642156,
+              "type": "Fetch",
+              "response": {
+                "url": "http://127.0.0.1:59597/api/main-menu",
+                "status": 200,
+                "statusText": "OK",
+                "headers": {
+                  "Transfer-Encoding": "chunked",
+                  "Date": "Sat, 10 Oct 2026 19:57:21 GMT",
+                  "Content-Type": "application/json; charset=utf-8",
+                  "Server": "Kestrel"
+                },
+                "mimeType": "application/json",
+                "charset": "utf-8",
+                "connectionReused": true,
+                "connectionId": 44,
+                "remoteIPAddress": "127.0.0.1",
+                "remotePort": 59597,
+                "fromDiskCache": false,
+                "fromServiceWorker": false,
+                "fromPrefetchCache": false,
+                "encodedDataLength": 148,
+                "timing": {
+                  "requestTime": 3510.735478,
+                  "proxyStart": -1,
+                  "proxyEnd": -1,
+                  "dnsStart": -1,
+                  "dnsEnd": -1,
+                  "connectStart": -1,
+                  "connectEnd": -1,
+                  "sslStart": -1,
+                  "sslEnd": -1,
+                  "workerStart": -1,
+                  "workerReady": -1,
+                  "workerFetchStart": -1,
+                  "workerRespondWithSettled": -1,
+                  "sendStart": 2.525,
+                  "sendEnd": 2.605,
+                  "pushStart": 0,
+                  "pushEnd": 0,
+                  "receiveHeadersStart": 8904.673,
+                  "receiveHeadersEnd": 8904.818
+                },
+                "responseTime": 1791662241858.028,
+                "protocol": "http/1.1",
+                "alternateProtocolUsage": "unspecifiedReason",
+                "securityState": "secure"
+              },
+              "hasExtraInfo": true,
+              "frameId": "EF5C4F59FCE4A37AE6E52CF86097033E"
+            }
+          }
+        ]
+      },
+      {
+        "Path": "/api/session",
+        "TraceIdentifier": "0HNP712LJNKOU:00000002",
+        "ServerStart": {
+          "Event": "Microsoft.AspNetCore.Hosting.HttpRequestIn.Start",
+          "Pid": 14088,
+          "Utc": "2026-10-10T19:57:12.9631824+00:00",
+          "StopwatchTicks": 3510745306359,
+          "StopwatchFrequency": 1000000000,
+          "TraceIdentifier": "0HNP712LJNKOU:00000002",
+          "Method": "GET",
+          "Path": "/api/session",
+          "Query": "",
+          "UserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+          "Endpoint": null,
+          "Status": 200,
+          "ConnectionId": "0HNP712LJNKOU",
+          "RemotePort": 49098,
+          "Error": null
+        },
+        "ServerStop": {
+          "Event": "Microsoft.AspNetCore.Hosting.HttpRequestIn.Stop",
+          "Pid": 14088,
+          "Utc": "2026-10-10T19:57:21.8865735+00:00",
+          "StopwatchTicks": 3519668697247,
+          "StopwatchFrequency": 1000000000,
+          "TraceIdentifier": "0HNP712LJNKOU:00000002",
+          "Method": "GET",
+          "Path": "/api/session",
+          "Query": "",
+          "UserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+          "Endpoint": "HTTP: GET /api/session",
+          "Status": 200,
+          "ConnectionId": "0HNP712LJNKOU",
+          "RemotePort": 49098,
+          "Error": null
+        },
+        "ServerElapsedSeconds": 8.923390888,
+        "CDPRequest": {
+          "Event": "Network.requestWillBeSent",
+          "PythonMonotonic": 3510.741622136,
+          "Utc": "2026-10-10T19:57:12.959499+00:00",
+          "Params": {
+            "requestId": "14262.117",
+            "loaderId": "931FF5C6D48BB8C6C515D1EE831A3847",
+            "documentURL": "http://127.0.0.1:59597/",
+            "request": {
+              "url": "http://127.0.0.1:59597/api/session",
+              "method": "GET",
+              "headers": {
+                "sec-ch-ua-platform": "\"Linux\"",
+                "Referer": "http://127.0.0.1:59597/",
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "accept": "application/json",
+                "sec-ch-ua": "\"Chromium\";v=\"151\", \"Not=A?Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0"
+              },
+              "mixedContentType": "none",
+              "initialPriority": "High",
+              "referrerPolicy": "strict-origin-when-cross-origin",
+              "isSameSite": true
+            },
+            "timestamp": 3510.731298,
+            "wallTime": 1791662232.949319,
+            "initiator": {
+              "type": "script",
+              "stack": {
+                "callFrames": [
+                  {
+                    "functionName": "K",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 121092
+                  },
+                  {
+                    "functionName": "getSessionStatus",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 119031
+                  },
+                  {
+                    "functionName": "Ku",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 123955
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 125981
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 140649
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 140809
+                  },
+                  {
+                    "functionName": "Kc",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 91837
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106986
+                  },
+                  {
+                    "functionName": "jl",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106870
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106966
+                  },
+                  {
+                    "functionName": "jl",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106870
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 107750
+                  },
+                  {
+                    "functionName": "jl",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106870
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 107032
+                  },
+                  {
+                    "functionName": "qu",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 119810
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 117248
+                  },
+                  {
+                    "functionName": "te",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 0,
+                    "columnNumber": 10496
+                  }
+                ]
+              }
+            },
+            "redirectHasExtraInfo": false,
+            "type": "Fetch",
+            "frameId": "EF5C4F59FCE4A37AE6E52CF86097033E",
+            "hasUserGesture": false
+          }
+        },
+        "CDPResponses": [
+          {
+            "Event": "Network.responseReceived",
+            "PythonMonotonic": 3519.671505561,
+            "Utc": "2026-10-10T19:57:21.889383+00:00",
+            "Params": {
+              "requestId": "14262.117",
+              "loaderId": "931FF5C6D48BB8C6C515D1EE831A3847",
+              "timestamp": 3519.670423,
+              "type": "Fetch",
+              "response": {
+                "url": "http://127.0.0.1:59597/api/session",
+                "status": 200,
+                "statusText": "OK",
+                "headers": {
+                  "Transfer-Encoding": "chunked",
+                  "Date": "Sat, 10 Oct 2026 19:57:21 GMT",
+                  "Content-Type": "application/json; charset=utf-8",
+                  "Server": "Kestrel"
+                },
+                "mimeType": "application/json",
+                "charset": "utf-8",
+                "connectionReused": true,
+                "connectionId": 109,
+                "remoteIPAddress": "127.0.0.1",
+                "remotePort": 59597,
+                "fromDiskCache": false,
+                "fromServiceWorker": false,
+                "fromPrefetchCache": false,
+                "encodedDataLength": 148,
+                "timing": {
+                  "requestTime": 3510.735703,
+                  "proxyStart": -1,
+                  "proxyEnd": -1,
+                  "dnsStart": -1,
+                  "dnsEnd": -1,
+                  "connectStart": -1,
+                  "connectEnd": -1,
+                  "sslStart": -1,
+                  "sslEnd": -1,
+                  "workerStart": -1,
+                  "workerReady": -1,
+                  "workerFetchStart": -1,
+                  "workerRespondWithSettled": -1,
+                  "sendStart": 2.458,
+                  "sendEnd": 2.524,
+                  "pushStart": 0,
+                  "pushEnd": 0,
+                  "receiveHeadersStart": 8933.113,
+                  "receiveHeadersEnd": 8933.187
+                },
+                "responseTime": 1791662241886.692,
+                "protocol": "http/1.1",
+                "alternateProtocolUsage": "unspecifiedReason",
+                "securityState": "secure"
+              },
+              "hasExtraInfo": true,
+              "frameId": "EF5C4F59FCE4A37AE6E52CF86097033E"
+            }
+          }
+        ]
+      },
+      {
+        "Path": "/api/game-screen",
+        "TraceIdentifier": "0HNP712LJNKOQ:00000003",
+        "ServerStart": {
+          "Event": "Microsoft.AspNetCore.Hosting.HttpRequestIn.Start",
+          "Pid": 14088,
+          "Utc": "2026-10-10T19:57:12.9795449+00:00",
+          "StopwatchTicks": 3510761668844,
+          "StopwatchFrequency": 1000000000,
+          "TraceIdentifier": "0HNP712LJNKOQ:00000003",
+          "Method": "GET",
+          "Path": "/api/game-screen",
+          "Query": "",
+          "UserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+          "Endpoint": null,
+          "Status": 200,
+          "ConnectionId": "0HNP712LJNKOQ",
+          "RemotePort": 49062,
+          "Error": null
+        },
+        "ServerStop": {
+          "Event": "Microsoft.AspNetCore.Hosting.HttpRequestIn.Stop",
+          "Pid": 14088,
+          "Utc": "2026-10-10T19:57:26.9594841+00:00",
+          "StopwatchTicks": 3524741607859,
+          "StopwatchFrequency": 1000000000,
+          "TraceIdentifier": "0HNP712LJNKOQ:00000003",
+          "Method": "GET",
+          "Path": "/api/game-screen",
+          "Query": "",
+          "UserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+          "Endpoint": "HTTP: GET /api/game-screen",
+          "Status": 499,
+          "ConnectionId": "0HNP712LJNKOQ",
+          "RemotePort": 49062,
+          "Error": null
+        },
+        "ServerElapsedSeconds": 13.979939015,
+        "CDPRequest": {
+          "Event": "Network.requestWillBeSent",
+          "PythonMonotonic": 3510.742107176,
+          "Utc": "2026-10-10T19:57:12.959984+00:00",
+          "Params": {
+            "requestId": "14262.118",
+            "loaderId": "931FF5C6D48BB8C6C515D1EE831A3847",
+            "documentURL": "http://127.0.0.1:59597/",
+            "request": {
+              "url": "http://127.0.0.1:59597/api/game-screen",
+              "method": "GET",
+              "headers": {
+                "sec-ch-ua-platform": "\"Linux\"",
+                "Referer": "http://127.0.0.1:59597/",
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+                "accept": "application/json",
+                "sec-ch-ua": "\"Chromium\";v=\"151\", \"Not=A?Brand\";v=\"99\"",
+                "sec-ch-ua-mobile": "?0"
+              },
+              "mixedContentType": "none",
+              "initialPriority": "High",
+              "referrerPolicy": "strict-origin-when-cross-origin",
+              "isSameSite": true
+            },
+            "timestamp": 3510.731623,
+            "wallTime": 1791662232.949739,
+            "initiator": {
+              "type": "script",
+              "stack": {
+                "callFrames": [
+                  {
+                    "functionName": "K",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 121092
+                  },
+                  {
+                    "functionName": "getGameScreen",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 119071
+                  },
+                  {
+                    "functionName": "Ku",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 123976
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 125981
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 140649
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 16,
+                    "columnNumber": 140809
+                  },
+                  {
+                    "functionName": "Kc",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 91837
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106986
+                  },
+                  {
+                    "functionName": "jl",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106870
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106966
+                  },
+                  {
+                    "functionName": "jl",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106870
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 107750
+                  },
+                  {
+                    "functionName": "jl",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 106870
+                  },
+                  {
+                    "functionName": "Ml",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 107032
+                  },
+                  {
+                    "functionName": "qu",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 119810
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 7,
+                    "columnNumber": 117248
+                  },
+                  {
+                    "functionName": "te",
+                    "scriptId": "19",
+                    "url": "http://127.0.0.1:59597/assets/index-caggq4S7.js",
+                    "lineNumber": 0,
+                    "columnNumber": 10496
+                  }
+                ]
+              }
+            },
+            "redirectHasExtraInfo": false,
+            "type": "Fetch",
+            "frameId": "EF5C4F59FCE4A37AE6E52CF86097033E",
+            "hasUserGesture": false
+          }
+        },
+        "CDPResponses": []
+      }
+    ],
+    "ActualStderrBytes": 0
+  },
+  "BrowserErrors": [
+    {
+      "Event": "Console",
+      "PythonMonotonic": 3510.955693027,
+      "Utc": "2026-10-10T19:57:13.173570+00:00",
+      "Type": "error",
+      "Text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "Event": "Log.entryAdded",
+      "PythonMonotonic": 3510.956162873,
+      "Utc": "2026-10-10T19:57:13.174039+00:00",
+      "Params": {
+        "entry": {
+          "source": "network",
+          "level": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "timestamp": 1791662233131.598,
+          "url": "http://127.0.0.1:59597/favicon.ico",
+          "networkRequestId": "14262.122"
+        }
+      }
+    }
+  ],
+  "BrowserStderr": [
+    {
+      "Line": 4,
+      "Text": "2026-10-10T19:57:10.640Z pw:browser [pid=14133][err] [14133:14176:1010/195710.638123:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory"
+    },
+    {
+      "Line": 5,
+      "Text": "2026-10-10T19:57:11.082Z pw:browser [pid=14133][err] [14133:14176:1010/195711.081427:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")"
+    },
+    {
+      "Line": 6,
+      "Text": "2026-10-10T19:57:11.083Z pw:browser [pid=14133][err] [14133:14176:1010/195711.083441:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory"
+    },
+    {
+      "Line": 7,
+      "Text": "2026-10-10T19:57:11.083Z pw:browser [pid=14133][err] [14133:14176:1010/195711.083503:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory"
+    },
+    {
+      "Line": 8,
+      "Text": "2026-10-10T19:57:11.083Z pw:browser [pid=14133][err] [14133:14176:1010/195711.083514:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")"
+    },
+    {
+      "Line": 9,
+      "Text": "2026-10-10T19:57:11.100Z pw:browser [pid=14133][err] [14133:14190:1010/195711.099730:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:279] Failed to adjust OOM score of renderer with pid 14192: Read-only file system (30)"
+    },
+    {
+      "Line": 10,
+      "Text": "2026-10-10T19:57:11.920Z pw:browser [pid=14133][err] [14133:14176:1010/195711.919668:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")"
+    },
+    {
+      "Line": 11,
+      "Text": "2026-10-10T19:57:11.922Z pw:browser [pid=14133][err] [14133:14190:1010/195711.922457:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:279] Failed to adjust OOM score of renderer with pid 14225: Read-only file system (30)"
+    },
+    {
+      "Line": 12,
+      "Text": "2026-10-10T19:57:11.975Z pw:browser [pid=14133][err] [14133:14133:1010/195711.975365:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: "
+    },
+    {
+      "Line": 13,
+      "Text": "2026-10-10T19:57:11.975Z pw:browser [pid=14133][err] [14133:14133:1010/195711.975466:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: "
+    },
+    {
+      "Line": 14,
+      "Text": "2026-10-10T19:57:11.975Z pw:browser [pid=14133][err] [14133:14176:1010/195711.975571:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")"
+    },
+    {
+      "Line": 15,
+      "Text": "2026-10-10T19:57:11.975Z pw:browser [pid=14133][err] [14133:14176:1010/195711.975587:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")"
+    },
+    {
+      "Line": 16,
+      "Text": "2026-10-10T19:57:11.983Z pw:browser [pid=14133][err] [14133:14133:1010/195711.983432:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: "
+    },
+    {
+      "Line": 17,
+      "Text": "2026-10-10T19:57:11.990Z pw:browser [pid=14133][err] [14133:14176:1010/195711.989481:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory"
+    },
+    {
+      "Line": 18,
+      "Text": "2026-10-10T19:57:11.990Z pw:browser [pid=14133][err] [14133:14176:1010/195711.989524:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory"
+    },
+    {
+      "Line": 19,
+      "Text": "2026-10-10T19:57:11.990Z pw:browser [pid=14133][err] [14133:14133:1010/195711.989538:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: "
+    },
+    {
+      "Line": 20,
+      "Text": "2026-10-10T19:57:11.990Z pw:browser [pid=14133][err] [14133:14133:1010/195711.989573:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: "
+    },
+    {
+      "Line": 21,
+      "Text": "2026-10-10T19:57:11.990Z pw:browser [pid=14133][err] [14133:14176:1010/195711.989630:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")"
+    },
+    {
+      "Line": 24,
+      "Text": "2026-10-10T19:57:11.991Z pw:browser [pid=14133][err] [14133:14133:1010/195711.991842:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: unknown error type: "
+    },
+    {
+      "Line": 25,
+      "Text": "2026-10-10T19:57:11.992Z pw:browser [pid=14133][err] [14133:14133:1010/195711.991997:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: "
+    },
+    {
+      "Line": 26,
+      "Text": "2026-10-10T19:57:11.994Z pw:browser [pid=14133][err] [14133:14176:1010/195711.992228:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")"
+    },
+    {
+      "Line": 28,
+      "Text": "2026-10-10T19:57:11.996Z pw:browser [pid=14133][err] [14133:14133:1010/195711.995845:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: "
+    },
+    {
+      "Line": 29,
+      "Text": "2026-10-10T19:57:11.997Z pw:browser [pid=14133][err] [14133:14176:1010/195711.997002:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")"
+    },
+    {
+      "Line": 31,
+      "Text": "2026-10-10T19:57:12.001Z pw:browser [pid=14133][err] [14133:14133:1010/195712.001301:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: "
+    },
+    {
+      "Line": 36,
+      "Text": "2026-10-10T19:57:12.114Z pw:browser [pid=14133][err] [14133:14190:1010/195712.113938:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:279] Failed to adjust OOM score of renderer with pid 14251: Read-only file system (30)"
+    },
+    {
+      "Line": 41,
+      "Text": "2026-10-10T19:57:12.167Z pw:browser [pid=14133][err] [14133:14190:1010/195712.166774:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:279] Failed to adjust OOM score of renderer with pid 14260: Read-only file system (30)"
+    },
+    {
+      "Line": 42,
+      "Text": "2026-10-10T19:57:12.182Z pw:browser [pid=14133][err] [14133:14190:1010/195712.182040:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:279] Failed to adjust OOM score of renderer with pid 14262: Read-only file system (30)"
+    }
+  ],
+  "SourceReferences": [
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/App.tsx",
+      "Bytes": 7457,
+      "SHA256": "564f3bd490ff5b677154863ca979a210b33f151681ecbc1d84e5980dbe244545"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/context/ShellContext.tsx",
+      "Bytes": 16793,
+      "SHA256": "8fcec153cddcf8517f85cadebfe7ba3c7280b4ae2021458873f13c449cf8497c"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/hooks/loadShellState.ts",
+      "Bytes": 2555,
+      "SHA256": "17fe929c361bab2baf05ced70ad410af161c5a4dc58df4a559d9dd96c8004c5d"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx",
+      "Bytes": 26430,
+      "SHA256": "5a6eca1136f9713726012104a0c97b01f5f4834e5affd069938d8d68324085f5"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/console_chain.py",
+      "Bytes": 54716,
+      "SHA256": "a4b188ce512d85dd73e844b1f1e73cbc808048c7d74650a0305e393a4cabc4d2"
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/continue_observer.py",
+      "Bytes": 7267,
+      "SHA256": "00a9793d1853d4cb63b93d92b418b5a461fd824ffc259660e450e10ce78e5d2e"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/ContinueClickHttpObserver.cs",
+      "Bytes": 3332,
+      "SHA256": "943920f460c28ebac6d3fcad804b4a7816f1d5676315a835059ae326e9ba89aa"
+    }
+  ],
+  "Interpretation": [
+    "The normal Locator.click call remained at locator resolution; no Input.dispatchMouseEvent SEND or trusted Continue input is retained in the complete driver/DOM logs.",
+    "Composer appears before click with a disabled loading shell. App renders this when activeRoute is home but menu is null; shell publishes ready/menu only after all six initial GETs settle.",
+    "Main-menu/session complete 200, while game-screen remains unfinished throughout the click timeout and browser lifetime; server later stops 499 after browser close. The reason for endpoint delay is not established.",
+    "No navigation-barrier diagnosis is supported: existing no_wait_after=True disables it, and this run never reaches mouse dispatch.",
+    "The sole diagnostic did not reproduce the prior performing-click completion boundary. No oracle/timer/product change or fresh full C5 run is justified."
+  ],
+  "MinimumNextProposalOnly": "One newly authorized continuation using the same passive observers, with bounded observation of six-GET startup completion and an explicit real ready launcher/Continue-enabled prerequisite before the sole unchanged normal click. Preserve the existing 12s click and finite total cap; retain pending game-screen outcome or SEND/ACK/trusted activation/API completion. Do not treat loading composer as readiness, synthesize input, retry click, swallow timeout or fix endpoint cause by inference.",
+  "RawPayloadHashes": {
+    "web-action-1-playwright-driver.log": "73c6320e0ab9c49104046b00ff7706a65b93252f8e9689fc3888a6871888d14d",
+    "web-action-1-continue-events.jsonl": "ad55dfd411f2562fa551c85fc95e7e331c906b6bcf204e5af0e5b39eed9e1d9a",
+    "web-action-1-server-http.jsonl": "9b22f4072117f479fc022eeb8813896682231037d020eeb5b7bbbac0d6b8dacf",
+    "web-action-1-continue-trace.zip": "0e6754cc3342c10c60f65b578b150017b6cc631ad0f79d92cab5a5f4ac397458",
+    "web-action-1-stderr.raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "web-action-1-failure.html": "cb08242c1768bf150260be1c55b2cfc770f4eee2aa5a7ad372b3581259b816dd",
+    "result.json": "2f5d2e1c20c9c9d8aabe9f4bed4404a6c9b9112c4857647b9f7f813dcc0f7c1e",
+    "guardian.json": "7e2bc3f002615c05009c3a9339ff7ee869885da5886d69e572695018bd167c04"
+  }
+}
