@@ -520,6 +520,8 @@ public sealed class GameEngineSourceGuardTests
 
         var processPlayerTurn = ExtractMethodSource(source, "private async Task ProcessPlayerTurn(");
         Assert.Contains("bool playerFacingTurn = true", processPlayerTurn, StringComparison.Ordinal);
+        Assert.Contains("FinalizePlayerTurnAsync(preparation, action, playerFacingTurn, outcome)", processPlayerTurn, StringComparison.Ordinal);
+        processPlayerTurn = ExtractMethodSource(source, "private async Task FinalizePlayerTurnAsync(");
         Assert.Contains("if (playerFacingTurn)", processPlayerTurn, StringComparison.Ordinal);
         Assert.Contains("_gameLoop.IncrementTurn();", processPlayerTurn, StringComparison.Ordinal);
         Assert.Contains("_lastResponse = response;", processPlayerTurn, StringComparison.Ordinal);
@@ -691,11 +693,15 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", waitMethod, StringComparison.Ordinal);
         Assert.Contains("CaptureCurrentSessionGenerationAsync()", rawWaitMethod, StringComparison.Ordinal);
         Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", rawWaitMethod, StringComparison.Ordinal);
-        Assert.Contains("CaptureCurrentSessionGenerationAsync()", playerTurnMethod, StringComparison.Ordinal);
+        var stagingMethod = ExtractMethodSource(source, "private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(");
+        Assert.Contains("CaptureCurrentSessionGenerationAsync()", stagingMethod, StringComparison.Ordinal);
         Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", playerTurnMethod, StringComparison.Ordinal);
+        Assert.Contains("RunParticipatingExpectedSessionAsync(_fs, stagedPreparation.Generation", playerTurnMethod, StringComparison.Ordinal);
+        Assert.Contains("BeginBrowserOriginalOperation(browserStaged.Binding, browserStaged)", playerTurnMethod, StringComparison.Ordinal);
+        Assert.Contains("StagePlayerTurnAsync(action, extraSystemReminder", playerTurnMethod, StringComparison.Ordinal);
         Assert.Contains("CaptureCurrentSessionGenerationAsync()", lifeTransitionMethod, StringComparison.Ordinal);
         Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", lifeTransitionMethod, StringComparison.Ordinal);
-        foreach(var body in new[]{waitMethod,rawWaitMethod,playerTurnMethod,lifeTransitionMethod})
+        foreach(var body in new[]{waitMethod,rawWaitMethod,lifeTransitionMethod})
             Assert.True(body.IndexOf("RunParticipatingCurrentSessionAsync",StringComparison.Ordinal)<body.IndexOf("CaptureCurrentSessionGenerationAsync",StringComparison.Ordinal));
         Assert.Contains("catch (SessionReplacedException)", lifeTransitionMethod, StringComparison.Ordinal);
     }
@@ -743,7 +749,8 @@ public sealed class GameEngineSourceGuardTests
     public void GmResponseWaits_MustFailFastThroughHarnessTerminalErrorWhenRuntimeIsDead()
     {
         var turnLifecycleSource = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
-        var waitMethod = ExtractMethodSource(turnLifecycleSource, "private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()");
+        var waitMethod = ExtractMethodSource(turnLifecycleSource, "private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalWithParticipationAsync(");
+        Assert.Contains("WaitForTerminalSignalWithParticipationAsync(null)", turnLifecycleSource, StringComparison.Ordinal);
 
         Assert.Contains("ResolveTerminalSignalTimeoutSecondsAsync()", waitMethod, StringComparison.Ordinal);
         Assert.DoesNotContain("Math.Max(15, _stateManager.Settings.GmTimeoutSeconds)", waitMethod, StringComparison.Ordinal);
@@ -1111,19 +1118,17 @@ public sealed class GameEngineSourceGuardTests
     public void ProcessPlayerTurn_MustKeepValidatedPendingSnapshotContextAcrossLongGmWait()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
-        var methodStart = source.IndexOf("private async Task ProcessPlayerTurn(", StringComparison.Ordinal);
-        Assert.True(methodStart >= 0, "ProcessPlayerTurn must exist.");
-        var nextMethodStart = source.IndexOf("    internal static bool", methodStart, StringComparison.Ordinal);
-        Assert.True(nextMethodStart > methodStart, "ProcessPlayerTurn method boundary must be discoverable.");
-        var methodSource = source[methodStart..nextMethodStart];
-
-        var writeRequestIndex = methodSource.IndexOf("await _fs.WriteFileAtomicAsync(\"input/turn_request.json\"", StringComparison.Ordinal);
-        var snapshotContextIndex = methodSource.IndexOf("activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(", StringComparison.Ordinal);
-        var waitIndex = methodSource.IndexOf("if (await WaitForTerminalSignalAsync()", StringComparison.Ordinal);
-
-        Assert.True(writeRequestIndex >= 0, "ProcessPlayerTurn must write input/turn_request.json.");
-        Assert.True(snapshotContextIndex > writeRequestIndex, "ProcessPlayerTurn must validate pending snapshot after writing the current request.");
-        Assert.True(waitIndex > snapshotContextIndex, "ProcessPlayerTurn must keep the validated snapshot context in memory before the long GM wait starts.");
+        var staging = ExtractMethodSource(source, "private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(");
+        var operation = ExtractMethodSource(source, "private async Task ProcessPlayerTurn(");
+        var request = staging.IndexOf("await _fs.WriteFileAtomicAsync(\"input/turn_request.json\"", StringComparison.Ordinal);
+        var context = staging.IndexOf("activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(", StringComparison.Ordinal);
+        Assert.True(request >= 0 && context > request, "Original staging validates the signed context after publishing its request.");
+        Assert.Contains("new PlayerTurnPreparation(sessionGeneration, backedUpFiles, request, activeSnapshotContext, browserStaged)", staging, StringComparison.Ordinal);
+        Assert.True(operation.IndexOf("await StagePlayerTurnAsync", StringComparison.Ordinal) <
+                    operation.IndexOf("WaitForTerminalSignalAsync()", StringComparison.Ordinal));
+        Assert.Contains("stagedPreparation.BrowserStaged", operation, StringComparison.Ordinal);
+        Assert.Contains("LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false)", operation, StringComparison.Ordinal);
+        Assert.Contains("Request = originalRequest, SnapshotContext = context", operation, StringComparison.Ordinal);
     }
 
     [Fact]

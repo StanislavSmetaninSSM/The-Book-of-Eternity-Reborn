@@ -8,6 +8,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
+using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -446,56 +447,69 @@ public partial class GameEngine
         return ReadRelativeTextFromWorkspace(snapshotPath);
     }
 
-    private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()
+    private Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync() =>
+        WaitForTerminalSignalWithParticipationAsync(null);
+
+    private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalWithParticipationAsync(
+        PendingPlayerActionService.Staged? browserStaged)
     {
         using var cts = new CancellationTokenSource();
         var startTime = DateTime.UtcNow;
-        var terminalTimeoutSeconds = await ResolveTerminalSignalTimeoutSecondsAsync();
+        var terminalTimeoutSeconds = await InspectOriginalBrowserWaitAsync(browserStaged, async () =>
+        {
+            var timeout = await ResolveTerminalSignalTimeoutSecondsAsync();
+            await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.TerminalWaitStarted);
+            return timeout;
+        });
         var nextRuntimeHealthCheckAt = startTime.AddSeconds(15);
-        await InvokeSessionFinalizationCheckpointAsync(
-            SessionFinalizationCheckpoint.TerminalWaitStarted);
 
         var waitTask = Task.Run(async () =>
         {
             while (!cts.Token.IsCancellationRequested)
             {
-                await using (var signalInspectionLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+                var inspectionOutcome = await InspectOriginalBrowserWaitAsync<TerminalSignalWaitOutcome?>(browserStaged, async () =>
                 {
-                    await InvokeSessionFinalizationCheckpointAsync(
-                        SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired);
-                    if (_fs.FileExists(signalInspectionLease, "ready/turn_complete.json") ||
-                        _fs.FileExists(signalInspectionLease, "ready/turn_error.json"))
+                    await using (var signalInspectionLease = await _fs.AcquireCanonicalWriteLeaseAsync())
                     {
-                        return TerminalSignalWaitOutcome.Completed;
+                        await InvokeSessionFinalizationCheckpointAsync(
+                            SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired);
+                        if (_fs.FileExists(signalInspectionLease, "ready/turn_complete.json") ||
+                            _fs.FileExists(signalInspectionLease, "ready/turn_error.json"))
+                        {
+                            return TerminalSignalWaitOutcome.Completed;
+                        }
                     }
-                }
 
-                var now = DateTime.UtcNow;
-                var elapsedSeconds = (int)(now - startTime).TotalSeconds;
-                if (elapsedSeconds >= terminalTimeoutSeconds)
-                {
-                    var errorMessage =
-                        $"Мастер не ответил за {terminalTimeoutSeconds} секунд. Действие будет отменено; проверьте GM daemon/bridge и повторите ход.";
-                    if (await TryWriteHarnessTerminalErrorAsync(GmTerminalWaitTimeoutHarnessSource, errorMessage))
-                        return TerminalSignalWaitOutcome.Completed;
-
-                    return TerminalSignalWaitOutcome.Cancelled;
-                }
-
-                if (now >= nextRuntimeHealthCheckAt)
-                {
-                    nextRuntimeHealthCheckAt = now.AddSeconds(5);
-                    var unavailableReason = await DetectUnavailableGmRuntimeAsync();
-                    if (!string.IsNullOrWhiteSpace(unavailableReason))
+                    var now = DateTime.UtcNow;
+                    var elapsedSeconds = (int)(now - startTime).TotalSeconds;
+                    if (elapsedSeconds >= terminalTimeoutSeconds)
                     {
                         var errorMessage =
-                            $"Мастер недоступен: {unavailableReason} Действие будет отменено; перезапустите GM daemon/bridge и повторите ход.";
-                        if (await TryWriteHarnessTerminalErrorAsync(GmRuntimeUnavailableHarnessSource, errorMessage))
+                            $"Мастер не ответил за {terminalTimeoutSeconds} секунд. Действие будет отменено; проверьте GM daemon/bridge и повторите ход.";
+                        if (await TryWriteHarnessTerminalErrorAsync(GmTerminalWaitTimeoutHarnessSource, errorMessage))
                             return TerminalSignalWaitOutcome.Completed;
 
                         return TerminalSignalWaitOutcome.Cancelled;
                     }
-                }
+
+                    if (now >= nextRuntimeHealthCheckAt)
+                    {
+                        nextRuntimeHealthCheckAt = now.AddSeconds(5);
+                        var unavailableReason = await DetectUnavailableGmRuntimeAsync();
+                        if (!string.IsNullOrWhiteSpace(unavailableReason))
+                        {
+                            var errorMessage =
+                                $"Мастер недоступен: {unavailableReason} Действие будет отменено; перезапустите GM daemon/bridge и повторите ход.";
+                            if (await TryWriteHarnessTerminalErrorAsync(GmRuntimeUnavailableHarnessSource, errorMessage))
+                                return TerminalSignalWaitOutcome.Completed;
+
+                            return TerminalSignalWaitOutcome.Cancelled;
+                        }
+                    }
+
+                    return null;
+                });
+                if (inspectionOutcome.HasValue) return inspectionOutcome.Value;
 
                 await Task.Delay(500, cts.Token);
             }
@@ -850,14 +864,15 @@ public partial class GameEngine
 
     private async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()
     {
-        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        var stagedIdle = false;
+        var handled = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
         var pendingBrowserState = await ClassifyBrowserRecoveryAsync();
         PendingPlayerActionService.Staged? lateBrowserStaged = null;
         PendingPlayerActionService.StoryProof? lateBrowserStory = null;
         if (pendingBrowserState?.Phase == "staged" && !HasTerminalReadySignal())
         {
-            await Task.Delay(250);
+            stagedIdle = true;
             return true;
         }
         using var browserOriginalScope = pendingBrowserState?.Phase == "staged"
@@ -1125,6 +1140,8 @@ public partial class GameEngine
 
             return false;
         });
+        if (stagedIdle) await Task.Delay(250);
+        return handled;
     }
 
     /// <summary>
@@ -1384,6 +1401,13 @@ public partial class GameEngine
                action.Contains($"[{GuardianAbodeOfferingState.ActionTag}]", StringComparison.OrdinalIgnoreCase);
     }
 
+    private sealed record PlayerTurnPreparation(
+        string Generation,
+        RollbackSnapshot Backup,
+        TurnRequest Request,
+        ValidatedPendingTurnSnapshotContext SnapshotContext,
+        PendingPlayerActionService.Staged? BrowserStaged);
+
     private async Task ProcessPlayerTurn(
         string action,
         string? extraSystemReminder = null,
@@ -1392,21 +1416,72 @@ public partial class GameEngine
         bool playerFacingTurn = true,
         PendingPlayerActionService.Binding? browserAction = null)
     {
-        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        if (browserAction == null)
         {
+            // Console ordinary turns retain their original continuous owner.
+            await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+            {
+                var preparation = await StagePlayerTurnAsync(action, extraSystemReminder, null);
+                if (preparation == null) return;
+                PublishAgentConsoleGmWaitingSnapshot(
+                    waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);
+                var outcome = await WaitForTerminalSignalAsync();
+                await FinalizePlayerTurnAsync(preparation, action, playerFacingTurn, outcome);
+            });
+            return;
+        }
+
+        MainOperationClose? stagingClose = null;
+        bool stagingCloseObserved = false, stagingWasRemote = false;
+        var stagedPreparation = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,
+            () => StagePlayerTurnAsync(action, extraSystemReminder, browserAction),
+            observeOriginalClose: (close, observed, remote) =>
+            {
+                // Copy actual close facts only. Await-using disposal still follows
+                // this callback; the idle boundary starts after the top-level await.
+                stagingClose = close;
+                stagingCloseObserved = observed;
+                stagingWasRemote = remote;
+            });
+        if (stagedPreparation == null) return;
+        var browserStaged = stagedPreparation.BrowserStaged ?? throw BrowserOriginalMainCondition.Invalid();
+        PublishAgentConsoleGmWaitingSnapshot(
+            waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);
+#if DEBUG
+        await HoldOriginalBrowserIdleCutAsync(browserStaged, stagingClose, stagingCloseObserved, stagingWasRemote);
+#endif
+        var browserOutcome = await WaitForTerminalSignalWithParticipationAsync(browserStaged);
+        await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, stagedPreparation.Generation, async () =>
+        {
+            using var original = _fs.BeginBrowserOriginalOperation(browserStaged.Binding, browserStaged);
+            var manifest = await LoadPendingTurnSnapshotManifestAsync();
+            var context = await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false)
+                ?? throw BrowserOriginalMainCondition.Invalid();
+            var originalRequest = JsonSerializer.Deserialize<TurnRequest>(browserStaged.RequestJson, JsonOpts)
+                ?? throw BrowserOriginalMainCondition.Invalid();
+            await FinalizePlayerTurnAsync(stagedPreparation with
+            {
+                Request = originalRequest, SnapshotContext = context
+            }, action, playerFacingTurn, browserOutcome);
+            return true;
+        });
+    }
+
+    private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(
+        string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction)
+    {
         var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         using var browserOriginalScope = browserAction == null ? null : _fs.BeginBrowserOriginalOperation(browserAction);
         // Reserve/refuse before health validation can remove an unrelated request.
         if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
-            return;
+            return null;
 
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
         RollbackSnapshot? backedUpFiles = null;
         TurnRequest? request = null;
         ValidatedPendingTurnSnapshotContext? activeSnapshotContext = null;
         PendingPlayerActionService.Staged? browserStaged = null;
-        PendingPlayerActionService.StoryProof? browserStory = null;
 
         try
         {
@@ -1551,13 +1626,29 @@ public partial class GameEngine
         if (backedUpFiles == null || request == null || activeSnapshotContext == null)
             throw new InvalidOperationException("Turn staging failed before rollback snapshot and request were created.");
 
-        PublishAgentConsoleGmWaitingSnapshot(
-            waitingTitle ?? PlayerSafeWaitingTitle,
-            waitingText ?? PlayerSafeWaitingText);
-        if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
+        return new PlayerTurnPreparation(sessionGeneration, backedUpFiles, request, activeSnapshotContext, browserStaged);
+    }
+
+    private async Task FinalizePlayerTurnAsync(
+        PlayerTurnPreparation preparation, string action, bool playerFacingTurn, TerminalSignalWaitOutcome waitOutcome)
+    {
+        var backedUpFiles = preparation.Backup;
+        var request = preparation.Request;
+        var activeSnapshotContext = preparation.SnapshotContext;
+        var browserStaged = preparation.BrowserStaged;
+        PendingPlayerActionService.StoryProof? browserStory = null;
+        if (waitOutcome == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
-            if (browserStaged != null) browserStaged = await ClaimBrowserTerminalAsync(browserStaged);
+            if (browserStaged != null)
+            {
+                // Local input cancellation establishes no GM stop or terminal outcome.
+                // Block the original phase, keeping its request, signed bytes and any
+                // late terminal evidence for explicit recovery rather than rollback.
+                await ClaimBrowserTerminalAsync(browserStaged);
+                StopBrowserTerminalRecovery();
+                return;
+            }
             // Delete the turn request, clean ready signals, and rollback game state
             _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
@@ -1740,7 +1831,6 @@ public partial class GameEngine
             await FinishAcceptedBrowserActionAsync(browserStaged, browserStory);
             await ClassifyBrowserRecoveryAsync();
         }
-        });
     }
 
     private void CleanupAfterAcceptedChaosSeaMarkerTurn(string? action)

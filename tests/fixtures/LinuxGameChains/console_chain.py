@@ -306,6 +306,11 @@ def submit_browser_action(dll, action, ordinal):
             pending_artifact = out / (name + "-pending-action.json")
             pending_artifact.write_bytes(pending_path.read_bytes())
             submission["AuthoritativePending"] = pending
+            if ordinal == 2:
+                Path(str(idle_cut_path) + ".request").write_text(json.dumps({
+                    "schemaVersion": 1, "nonce": idle_cut_nonce, "pid": client.process.pid,
+                    "actionId": pending["actionId"], "requestId": pending["actionId"],
+                    "generation": pending["sessionGeneration"]}))
             submission["OriginalDerivedReady"] = rpc({"command": "status"})["status"]["ready"]
             if ordinal == 1:
                 assert pending["status"] == "queued", pending
@@ -450,7 +455,16 @@ try:
                 env["BOE_TEST_GAME_CHAIN_QUEUE"] = str(queue)
                 start_chain("whole-cold")
                 result["WholeChainColdRestart"] = {"PreviousPids": old_pids, "BridgePid": bridge.process.pid, "DaemonPid": daemon.process.pid}
+            if scenario == "browser-relay" and ordinal == 2:
+                idle_cut_nonce = uuid.uuid4().hex
+                idle_cut_path = out / "browser-original-idle-ack.json"
+                env["BOE_TEST_BROWSER_IDLE_CUT_PATH"] = str(idle_cut_path)
+                env["BOE_TEST_BROWSER_IDLE_CUT_NONCE"] = idle_cut_nonce
             client = Peer("client-cold-" + str(ordinal), ["dotnet", str(dll), str(base), "--plain-output"], True)
+            # Only this original client receives the diagnostic gate. The browser
+            # host, Chromium and every later cold child run the ordinary path.
+            env.pop("BOE_TEST_BROWSER_IDLE_CUT_PATH", None)
+            env.pop("BOE_TEST_BROWSER_IDLE_CUT_NONCE", None)
             fresh(client, "Продолжить")
             assert (session / "stories/chaos_sea.jsonl").read_bytes() == preserved_story, "Cold startup changed prior full story"
             if scenario == "console-musings":
@@ -486,12 +500,25 @@ try:
              "real daemon/relay delivery " + str(ordinal), 30)
         request_dir = sorted(queue.glob("request-*"), key=lambda p: p.stat().st_mtime)[-1]
         if scenario == "browser-relay" and ordinal == 2:
-            # Original request already delivered; no authored GM response exists.
-            # Replace only the real console client and recover its signed staged turn.
+            # Original request delivered, authored GM response still withheld.
+            # Cut only at the actual successfully closed staging idle boundary.
+            wait(lambda: idle_cut_path.exists(), "actual staging close/disposal idle ACK", 15)
+            idle_ack = read_json(idle_cut_path)
+            assert idle_ack["schemaVersion"] == 1 and idle_ack["nonce"] == idle_cut_nonce
+            assert idle_ack["pid"] == client.process.pid
+            assert all(idle_ack[k] for k in ["observed", "remote", "topLevelStagingAwaitReturned", "outsideParticipation"])
+            assert idle_ack["close"]["outcome"] == 0 and not idle_ack["close"]["closingFailed"], idle_ack
+            assert idle_ack["close"]["identity"] == original, idle_ack
+            assert read_json(record_path)["Identity"] == original_record and read_json(record_path)["Disposition"] == "Running"
+            assert not (session / "ready/turn_complete.json").exists() and not (session / "ready/turn_error.json").exists()
+            for path, expected_hash in idle_ack["artifactHashes"].items():
+                assert sha((session / path).read_bytes()) == expected_hash.lower(), path
             pending_path = session / "input/pending_player_action.json"
             pending_bytes = pending_path.read_bytes()
             staged = read_json(pending_path)
             assert staged["status"] == "staged", staged
+            assert idle_ack["actionId"] == idle_ack["requestId"] == staged["actionId"] == req["requestId"]
+            assert idle_ack["generation"] == staged["sessionGeneration"]
             request_bytes = (session / "input/turn_request.json").read_bytes()
             previous = client
             os.kill(previous.process.pid, signal.SIGKILL)
@@ -513,7 +540,8 @@ try:
             result.setdefault("InterruptedColdCuts", []).append({"Phase": "staged", "OriginalPid": previous.process.pid,
                 "ColdPid": client.process.pid, "OriginalExitCode": previous.process.returncode, "OriginalEOF": True,
                 "ActionId": staged["actionId"], "Generation": staged["sessionGeneration"], "RequestId": req["requestId"],
-                "OriginalPendingSHA256": sha(pending_bytes), "OriginalRequestSHA256": sha(request_bytes), "RelayRequests": 2})
+                "OriginalPendingSHA256": sha(pending_bytes), "OriginalRequestSHA256": sha(request_bytes), "RelayRequests": 2,
+                "IdleCloseWitness": idle_ack, "SameOriginalRunBeforeCut": original_record})
         captured, narrative = author_packet(request_dir, ordinal)
         assert captured == req, "relay/helper consumed a substituted original request"
         fresh(client, narrative, offset, 40)

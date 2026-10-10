@@ -201,6 +201,25 @@ public partial class FileSystemManager
         return manifest;
     }
 
+#if DEBUG
+    internal (BrowserOriginalMainCondition Condition, Dictionary<string,string> Hashes)
+        InspectOriginalBrowserClosedIdle(PendingPlayerActionService.Staged staged)
+    {
+        RequireLoadIpcOutsideFileScopes();
+        var manifest=ValidateOriginalBrowserAdmission(staged,verifyPhysical:true);
+        if(ReadOriginalBrowserText(PendingPlayerActionService.PendingPath)!=staged.Json)
+            throw BrowserOriginalMainCondition.Invalid();
+        var condition=manifest.BrowserOriginalMainCondition!;
+        condition.RequireCurrent(this);
+        var paths=new[]{PendingPlayerActionService.PendingPath,"input/turn_request.json",BrowserManifestPath,
+            PendingTurnSnapshotAuthority.AuthorityPath}.Concat(manifest.Files.Values)
+            .Concat(manifest.RollbackBackups.Values).Distinct(StringComparer.Ordinal);
+        var hashes=paths.ToDictionary(path=>path,path=>Convert.ToHexString(SHA256.HashData(
+            ReadOriginalBrowserBytes(path)??throw BrowserOriginalMainCondition.Invalid())),StringComparer.Ordinal);
+        return (condition,hashes);
+    }
+#endif
+
     private bool OriginalBrowserFileExists(string relative)
     {
         if(!PendingTurnSnapshotAuthority.IsSafeRelativePath(relative))throw BrowserOriginalMainCondition.Invalid();

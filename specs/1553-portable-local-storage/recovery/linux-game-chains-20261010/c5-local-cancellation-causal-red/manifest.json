@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "1e715d27d5566205788b289e30e942260add4159",
+  "Command": "pwsh -NoLogo -NoProfile -Command & ./scripts/test-csharp.ps1 -Category @(browser-player-terminal-disposition)",
+  "Status": "3PASS/1causalFAIL, complete4cases1descriptor,214.0928272s,0skip/duplicate/timeout,ownedcleanupcomplete",
+  "Scope": "Actual original warm cancellation deletes input request, contrary to approved lifetime retention. Original GM error and two synthetic provenance controls pass. No live model; fresh restored integration build.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "f3f8375864d82fb4ebfce5865ff06a56252769b04382b0a484aa5b75ca67ece2",
+      "RawBytes": 1185
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "cd71b00a65cb27f0ed174d39c3b982aaba365408aacdc5169c2625b54ea4511b",
+      "RawBytes": 1483
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "056de4a95b600812ab15c3bc97313fe8e909019e4f76f478e6fd3b6024155acd",
+      "RawBytes": 51366
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "e13a6c99baa928e5c4a2a08e43d8daa1806bcdc8e91256f78a02975191fbcf2f",
+      "RawBytes": 1671649
+    },
+    {
+      "Path": "runner/browser-player-terminal-disposition-integration-001.trx.gz",
+      "RawSHA256": "541b6b10923d4d41835210f04687801a568297b3b6e0a04f985427b43cbaccb3",
+      "RawBytes": 10667
+    }
+  ]
+}

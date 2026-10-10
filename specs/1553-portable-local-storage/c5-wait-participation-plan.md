@@ -3,7 +3,8 @@
 Owner/parent approved this bounded continuation after independent Astra/xhigh
 architecture review. Finish the reviewed bounded T070 checkpoint first, then
 implement the admission prerequisite and browser wait split as separate coherent
-changes. No lifetime implementation yet. Source #1553/T069; actual FAIL at
+changes. Admission prerequisite is reviewed GREEN; lifetime split WIP is now
+implemented but UNRUN, with exact status in plan.md. Source #1553/T069; actual FAIL at
 `cb4934790feb9c32f13aed42597ab8d7aa8e0024`, evidence
 [c5-crashcut-original-owner-fail](recovery/linux-game-chains-20261010/c5-crashcut-original-owner-fail/manifest.json).
 The agreed cold continuation criterion stays open. Queued crash acceptance and

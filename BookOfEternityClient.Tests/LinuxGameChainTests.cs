@@ -69,6 +69,20 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
                 Assert.NotEqual(cut.GetProperty("OriginalPid").GetInt32(), cut.GetProperty("ColdPid").GetInt32());
                 Assert.Equal(-9, cut.GetProperty("OriginalExitCode").GetInt32());
                 Assert.True(cut.GetProperty("OriginalEOF").GetBoolean());
+                Assert.True(cut.GetProperty("OriginalIdentityConsumedOnce").GetBoolean());
+                if (cut.GetProperty("Phase").GetString() == "staged")
+                {
+                    var witness = cut.GetProperty("IdleCloseWitness");
+                    Assert.True(witness.GetProperty("topLevelStagingAwaitReturned").GetBoolean());
+                    Assert.True(witness.GetProperty("outsideParticipation").GetBoolean());
+                    Assert.True(witness.GetProperty("observed").GetBoolean());
+                    Assert.True(witness.GetProperty("remote").GetBoolean());
+                    Assert.Equal(0, witness.GetProperty("close").GetProperty("outcome").GetInt32());
+                    Assert.False(witness.GetProperty("close").GetProperty("closingFailed").GetBoolean());
+                    Assert.Equal(cut.GetProperty("OriginalPid").GetInt32(), witness.GetProperty("pid").GetInt32());
+                    Assert.Equal(cut.GetProperty("ActionId").GetString(), witness.GetProperty("requestId").GetString());
+                    Assert.Equal(cut.GetProperty("Generation").GetString(), witness.GetProperty("generation").GetString());
+                }
             });
         }
         using var guardian = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "guardian.json")));

@@ -2,6 +2,33 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-browser-lifetime-source",
+            "responsibility": "Directly affected existing source guards for original staging/signed context, ordinary console wait, player-facing finalization, one terminal capture and expected-generation original browser finalization.",
+            "excludes": "Runtime crash/transport/materialization proof; unrelated documentation and GM rules.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.LocalCommandLoop_MustHandleInPlaceVitrineRequestsBeforeOrdinaryGmTurns",
+                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TurnFinalizers_MustRunUnderImmutableSessionOperationFence",
+                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.OrdinaryPlayerTurnWait_MustPublishAgentConsoleLoadingSnapshotBeforeTerminalWait",
+                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.ProcessPlayerTurn_MustKeepValidatedPendingSnapshotContextAcrossLongGmWait",
+                        "BookOfEternityClient.Tests.GameEngineSourceGuardTests.TerminalResolution_MustUseOneBoundSnapshotInsteadOfRereadingReadyFiles"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "browser-player-terminal-disposition",
             "responsibility": "Original browser terminal error settles only its actual outcome; local cancellation and harness diagnostic keep terminalProcessing plus original request and signed recovery evidence.",
             "excludes": "Game materialization, other recovery phases, external owner crash and transport qualification.",
@@ -22573,12 +22600,13 @@
         },
         {
             "id": "linux-game-chain-browser-relay",
-            "responsibility": "#1553 T066 C5 actual React/Chromium action against shipped Program --web while actual console GameEngine waits for player input and original Bridge/daemon/maintained relay is ready. Requires actual engine request, delivery/acceptance/cold continuation; HTTP success/queued pending alone is insufficient. Missing handoff remains FAIL.",
+            "responsibility": "#1553 T066 C5 actual React/Chromium action against shipped Program --web while actual console GameEngine waits for player input and original Bridge/daemon/maintained relay is ready. Requires actual engine request, delivery/acceptance/cold continuation; HTTP success/queued pending alone is insufficient. Missing handoff remains FAIL. Original queued crash and staged crash at witnessed actual immutable staging close plus awaited disposal; original GM response withheld, same request/action/generation consumed once after actual cold Program, original Stop/EOF/ECHILD.",
             "excludes": "No console input substitution for browser action, live model/provider, new browser engine architecture, B2-B5, native Windows/default worker/durable ACK qualification. Authored packets substitute model only if actual request reaches relay.",
             "changeHints": [
                 "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
                 "tests/fixtures/LinuxGameChains/console_chain.py",
-                "BookOfEternityClient/WebUi/BrowserPlayerActionService.cs"
+                "BookOfEternityClient/WebUi/BrowserPlayerActionService.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserWaitParticipation.cs"
             ],
             "related": [],
             "requirements": {

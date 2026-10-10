@@ -2,6 +2,24 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "portable-terminal-wait-storage-linux",
+            "reason": "Common waiter extraction preserves seven original storage/UI/key-task ownership outcomes and affected harness guard; fresh source compilation required.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md steps1–4"
+            ]
+        },
+        {
+            "category": "c5-browser-lifetime-source",
+            "reason": "Five directly affected existing source contracts after common staging/finalization extraction; bootstrap/transitions and ordinary console ownership remain fenced.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "c5-wait-participation-plan.md steps1–4"
+            ]
+        },
+        {
             "category": "browser-player-terminal-disposition",
             "reason": "Approved C5 lifetime wait has no continuous owner; local cancellation cannot prove GM stop or delete the original signed recovery tuple. Original GM error settlement and harness refusal are affected controls.",
             "contracts": [
@@ -177,7 +195,7 @@
         },
         {
             "category": "browser-player-terminal-provenance",
-            "reason": "Independent review found synthetic recovery and dual resolver mutations before browser refusal, including staged cold late entry. Actual four causal controls, separated from already qualified recovery27.",
+            "reason": "Warm browser finalization now re-enters original-run participation; actual original dual/diagnostic/recovered terminals must still block before mutating resolution.",
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER"
@@ -220,7 +238,7 @@
         },
         {
             "category": "linux-game-chain-console",
-            "reason": "T066 bounded Linux C1; real console entrypoint/relay/helper/acceptance, three independently correlated accepted turns, client-only restart then full client+Bridge+daemon+relay restart. Requires exact full history prefix and terminal stop proof for each original identity. Authored GM substitutes for model; no provider calls. Not guardian-command or whole-migration qualification.",
+            "reason": "Common stage/finalizer extraction must preserve three actual ordinary console accepted turns and whole history across client and full chain cold restarts.",
             "contracts": [
                 "#1553",
                 "US3",
@@ -262,7 +280,7 @@
         },
         {
             "category": "linux-game-chain-browser-relay",
-            "reason": "C5 actual bounded browser→engine→relay acceptance attempt; keeps expected full-chain assertion so disconnected queue/HTTP200 remains FAIL. Original engine/Bridge/daemon ready, no player input substitute/provider call.",
+            "reason": "Approved lifetime C5 actual idle staging crash after original immutable close/disposal; real React→Program→Bridge/daemon/relay, exact retained request/action/generation and once-only history, normal original Stop/EOF/ECHILD.",
             "contracts": [
                 "#1553",
                 "US3",
