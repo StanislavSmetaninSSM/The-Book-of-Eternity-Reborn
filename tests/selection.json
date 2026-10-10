@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "browser-pending-action-admission",
+      "reason": "T069 initial causal RED/GREEN through current producer entrypoint: existing single slot silently overwritten and lacks generation/action identity. No process/model or broad category.",
+      "contracts": [
+        "#1553",
+        "T069-C5-ORDINARY-CONSUMER",
+        "US3",
+        "FR-011",
+        "FR-013"
+      ]
+    },
+    {
       "category": "linux-game-chain-console",
       "reason": "T066 bounded Linux C1; real console entrypoint/relay/helper/acceptance, three independently correlated accepted turns, client-only restart then full client+Bridge+daemon+relay restart. Requires exact full history prefix and terminal stop proof for each original identity. Authored GM substitutes for model; no provider calls. Not guardian-command or whole-migration qualification.",
       "contracts": [
