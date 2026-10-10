@@ -26,7 +26,7 @@ import uuid
 
 repo, out, ship = map(lambda s: Path(s).resolve(), sys.argv[1:4])
 scenario = sys.argv[4] if len(sys.argv) > 4 else "console"
-assert scenario in ["console", "browser-relay"]
+assert scenario in ["console", "console-musings", "browser-relay"]
 base = out / "play"
 session = base / "game_session"
 session.mkdir(parents=True)
@@ -34,7 +34,7 @@ queue = out / "queue-1"
 queue.mkdir()
 started = time.monotonic()
 peers, events = [], []
-result = {"Scenario": "C1" if scenario == "console" else "C5", "Model": "deterministic-authored-fixture",
+result = {"Scenario": "C5" if scenario == "browser-relay" else "C1", "GuardianRoute": "addMusings" if scenario == "console-musings" else "thoughtJournal", "Model": "deterministic-authored-fixture",
           "ModelCalls": 0, "AcceptedTurns": [], "ClientColdRestart": False,
           "ProductionEntrypoint": "BookOfEternityClient/Program.cs → GameEngine.RunAsync"}
 env = dict(os.environ)
@@ -191,6 +191,9 @@ def author_packet(request_dir, ordinal):
         "title": "Наблюдение у берега", "summary": thought, "eventType": "soul_assessment",
         "consequence": "Душа сохраняет самостоятельность.", "attitude": "intrigued",
         "intent": "Остаться рядом без вмешательства."}]
+    if scenario == "console-musings":
+        guardians["UpdateGuardians"] = [{"command": "addMusings", "guardianId": guardian["guardianId"],
+            "musings": [{"turn": ordinal, "topic": "soul_assessment", "mood": "intrigued", "text": thought}]}]
     thoughts = "\n".join(["## NPC Scope", "- Mode: Scene-local", "- Relevant actors: " + actor,
                            "- Why relevant: Хранитель наблюдает за выбором души и сохраняет свою реакцию.",
                            "- Actors outside scope: нет", "- Why outside scope: Самостоятельные акторы не участвуют.",
@@ -214,6 +217,12 @@ def author_packet(request_dir, ordinal):
               "output/narrative_response.json": {"response": narrative, "timestamp": timestamp},
               "output/interface_updates.json": {"dialogueOptions": [], "timestamp": timestamp},
               "output/debug_logs.json": {"gm_thoughts_markdown": thoughts, "timestamp": timestamp}}
+    if scenario == "console-musings":
+        del writes["game_state/meta/guardian_thought_journal.json"]
+        writes["game_state/meta/guardians.json"] = guardians
+        writes["output/debug_logs.json"]["gm_thoughts_markdown"] = thoughts.replace(
+            "guardianThoughtJournalUpdates в game_state/meta/guardian_thought_journal.json: одна новая first-person запись, предыдущие entries сохраняются.",
+            "UpdateGuardians.addMusings в game_state/meta/guardians.json: одна новая first-person запись, прежние musings и activeGuardian mirror сохраняются.")
     packet = {"Completion": "turn", "Writes": [], "FilesModified": list(writes)}
     for path, data in writes.items():
         target = session / path
@@ -428,6 +437,7 @@ try:
     launcher = str(ship / "BookOfEternityClient/Launcher/bookofeternity.ps1")
     start_chain("first")
     preserved_story = b""
+    preserved_musings = []
 
     for ordinal in [1, 2, 3]:
         if ordinal > 1:
@@ -443,6 +453,10 @@ try:
             client = Peer("client-cold-" + str(ordinal), ["dotnet", str(dll), str(base), "--plain-output"], True)
             fresh(client, "Продолжить")
             assert (session / "stories/chaos_sea.jsonl").read_bytes() == preserved_story, "Cold startup changed prior full story"
+            if scenario == "console-musings":
+                cold_guardians = read_json(session / "game_state/meta/guardians.json")
+                assert cold_guardians["guardians"][0]["musings"] == preserved_musings
+                assert cold_guardians["activeGuardian"]["musings"] == preserved_musings
             result["ClientColdRestart"] = True
         offset = len(client.raw)
         client.send("\r")
@@ -505,6 +519,17 @@ try:
         assert not (session / "input/turn_request.json").exists(), "Acceptance still pending"
         entries = [json.loads(line) for line in story_bytes.decode("utf-8-sig").splitlines() if line.strip()]
         assert len(entries) == ordinal, entries
+        if scenario == "console-musings":
+            accepted_guardians = read_json(session / "game_state/meta/guardians.json")
+            musings = accepted_guardians["guardians"][0]["musings"]
+            assert musings[:len(preserved_musings)] == preserved_musings, "Accepted musings rewrote the full old prefix"
+            assert len(musings) == ordinal and musings[-1]["turn"] == ordinal, "Original command appended other than once"
+            assert accepted_guardians["activeGuardian"]["musings"] == musings, "Active Guardian mirror drifted"
+            assert not any(command.get("command") == "addMusings" for command in accepted_guardians.get("UpdateGuardians", []))
+            preserved_musings = musings
+            (out / ("guardians-after-" + str(ordinal) + ".json")).write_bytes((session / "game_state/meta/guardians.json").read_bytes())
+            result.setdefault("GuardianMusings", []).append({"Turn": ordinal, "RequestId": req["requestId"],
+                "FullPrefixPreserved": True, "CanonicalMirrorEqual": True, "Count": len(musings)})
         if scenario == "browser-relay":
             row = entries[-1]
             assert row["requestId"] == req["requestId"] == submitted["actionId"], row

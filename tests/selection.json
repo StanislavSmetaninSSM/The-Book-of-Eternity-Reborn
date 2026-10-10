@@ -2,6 +2,14 @@
     "schemaVersion": 1,
     "selections": [
         {
+            "category": "linux-game-chain-guardian-musings",
+            "reason": "T070 true original addMusings causal RED before production handoff; existing journal PASS does not qualify this route. Same original physical owner and full late validator.",
+            "contracts": [
+                "#1553",
+                "T070-GUARDIAN-MUSINGS-AUTHORITY"
+            ]
+        },
+        {
             "category": "browser-player-terminal-provenance",
             "reason": "Independent review found synthetic recovery and dual resolver mutations before browser refusal, including staged cold late entry. Actual four causal controls, separated from already qualified recovery27.",
             "contracts": [

@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "linux-game-chain-guardian-musings",
+            "responsibility": "#1553 T070 actual original Program/GameEngine/Bridge/daemon/relay/helper three addMusings turns, detached publication-to-late-validation authority, full old musings prefix/active mirror/once-only command consumption/client and whole original cold restarts. Deterministic original GM author only, no provider.",
+            "excludes": "C5 browser/crash ownership, B2-B5, paid/live GM, native Windows, general guardian command authority. Historic journal C1 remains distinct.",
+            "changeHints": [
+                "tests/fixtures/LinuxGameChains/console_chain.py",
+                "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+                "BookOfEternityClient/Core/GameEngine/"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 6,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.LinuxGameChainTests.Console_AddMusingsActualOriginalTurnColdRestartPreservesPrefixAndMirror"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "browser-player-terminal-provenance",
             "responsibility": "T069 captured original warm/late terminal provenance must refuse diagnostic/recovery and dual signals before mutating resolver; actual original lifecycle methods, per-test independent state.",
             "excludes": "No live GM, ordinary acceptance/cold process/repair/lifecycle settlement qualification.",

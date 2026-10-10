@@ -11,6 +11,9 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
     public Task Console_ActualRelayTurnColdRestartContinuesExactlyOnce() => RunAsync("console");
 
     [Fact]
+    public Task Console_AddMusingsActualOriginalTurnColdRestartPreservesPrefixAndMirror() => RunAsync("console-musings");
+
+    [Fact]
     public Task Browser_ActualRelayPlayerActionColdRestartContinuesExactlyOnce() => RunAsync("browser-relay");
 
     private async Task RunAsync(string mode)
@@ -46,7 +49,7 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
             await Run("dotnet", ["publish", Path.Combine(repo, project, project + ".csproj"), "--no-build", "--no-restore",
                 "-c", configuration, "-o", Path.Combine(ship, project), "-p:BoeNativePackageDirectory=" + package,
                 "-p:BoeRequireNativePackage=true"], "publish-" + project + ".log", 20);
-        var python = mode == "console" ? "/usr/bin/python3" : Environment.GetEnvironmentVariable("BOE_GAME_CHAIN_BROWSER_PYTHON");
+        var python = mode == "browser-relay" ? Environment.GetEnvironmentVariable("BOE_GAME_CHAIN_BROWSER_PYTHON") : "/usr/bin/python3";
         Assert.False(string.IsNullOrWhiteSpace(python), "Browser relay chain requires existing Python with Playwright.");
         await Run(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), "300000",
             python!, Path.Combine(repo, "tests/fixtures/LinuxGameChains/console_chain.py"), repo, own, ship, mode],
