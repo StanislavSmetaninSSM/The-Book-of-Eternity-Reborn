@@ -1,0 +1,127 @@
+{
+  "SourceSHA": "db4041c70a2c565aa15810a3f45453d98208426d",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category c5-browser-staged-idle-duration-diagnostic -NoBuild",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/c5-browser-staged-idle-duration-diagnostic-unit-001.trx.gz",
+      "RawSHA256": "a356d5d951495dfae42badc0d6e92beeb16930c23bb28ed85349517959adfbc6",
+      "RawBytes": 4987
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "ba467f71a68d9257fd4d47161c63e4e33009ff7ad84325f11b6413a9d08d9737",
+      "RawBytes": 1676725
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "b5f5a21e0812fc074ba8bb2a281857e21e341ec7fa72552e3d25dd73c7b1bc5a",
+      "RawBytes": 1124
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "7661c5bc9ea332db52e323196e8fa678378a8085ac99657e619e88dbbe317860",
+      "RawBytes": 1493
+    },
+    {
+      "Path": "owned/chain.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/native-preparation.log.gz",
+      "RawSHA256": "ed8f837164561f3bdab8427e696f231c284948f80815673ec82f07bb926c4b8c",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/publish-BookOfEternityClient.log.gz",
+      "RawSHA256": "46c3301a8e4cbc28e8e80cf8886f9cd273820973b4c65f3b2ac1b0ba96be8b3a",
+      "RawBytes": 74
+    },
+    {
+      "Path": "owned/publish-BookOfEternityGMBridge.log.gz",
+      "RawSHA256": "7b21eb6252d5176ee025cf7e13230c3cf257a32d3e0ead260fcd3f32a063bd45",
+      "RawBytes": 78
+    },
+    {
+      "Path": "native-package/build-provenance.json.gz",
+      "RawSHA256": "f6f975808e32da44aea5443ab42de21818d0940230c77d3999e32ded19783e33",
+      "RawBytes": 1153
+    },
+    {
+      "Path": "native-package/package-manifest.json.gz",
+      "RawSHA256": "4f0c3b4b7cdb032557c9f62d58a8e577f38fcbde8a16be48d42904ce3dbaa79f",
+      "RawBytes": 968
+    }
+  ],
+  "RunnerSummary": {
+    "Categories": [
+      "c5-browser-staged-idle-duration-diagnostic"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "db4041c70a2c565aa15810a3f45453d98208426d",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "c5-browser-staged-idle-duration-diagnostic",
+        "Seconds": 5.0840279,
+        "BudgetMinutes": 15,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0443264,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0454508,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1226723,
+        "Completed": true
+      },
+      {
+        "Name": "Frontend-build",
+        "Seconds": 5.2448743,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 20,
+    "WallTime": "00:00:14.2273760",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  },
+  "Status": "FAIL: native guardian prestart exit64; game driver and semantic assertions UNRUN",
+  "FailureQualification": "Existing --live-turn max300000 rejects810000 before driver spawn; no result.json or guardian.json. Runner onecasefailed, no game/relay execution."
+}

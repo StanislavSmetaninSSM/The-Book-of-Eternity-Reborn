@@ -1,0 +1,18 @@
+{
+  "SHA": "db4041c70a2c565aa15810a3f45453d98208426d",
+  "Base": "8f9bf9ea03fc0581dd8b69bb479edbc11af89d9e",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1597231,
+      "SHA256": "05c08e6ed1125cc8d39709ee502b11ddc89781c2fa28b4ce92c423842140d133",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-fresh-plan/manifest.json",
+      "Bytes": 1127,
+      "SHA256": "c64f9b12392817d28caab6187c9843438f7cb08ae2437d2264617593aae53c91",
+      "RemoteExact": true
+    }
+  ]
+}
