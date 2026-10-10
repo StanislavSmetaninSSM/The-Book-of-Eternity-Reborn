@@ -50,23 +50,41 @@ assert fsck.returncode == 0, fsck.stdout + fsck.stderr
 packet = root / "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010"
 manifests = artifacts = 0
 sources = set()
+source_annotations = []
+plain_artifacts = 0
 for manifest in sorted(packet.glob("*/manifest.json")):
     document = json.loads(manifest.read_text())
-    source = document["SourceSHA"]
-    assert re.fullmatch(r"[0-9a-f]{40}", source), manifest
-    git("cat-file", "-e", source + "^{commit}")
-    sources.add(source)
+    source = document.get("SourceSHA", document.get("RuntimeSource"))
+    if source is not None:
+        assert re.fullmatch(r"[0-9a-f]{40}", source), manifest
+        git("cat-file", "-e", source + "^{commit}")
+        sources.add(source)
+    else:
+        # The early browser ownership preflight explicitly records an
+        # uncommitted correction. Check its bytes, never invent a source SHA.
+        assert set(document) == {"Scope", "Source", "Files"}, manifest
+        assert isinstance(document["Source"], str) and document["Source"], manifest
+        source_annotations.append({"Packet": manifest.parent.name, "Source": document["Source"]})
+    assert isinstance(document["Files"], list) and document["Files"], manifest
     seen = set()
     for entry in document["Files"]:
         path = (manifest.parent / entry["Path"]).resolve()
         assert path.is_relative_to(manifest.parent.resolve()) and path not in seen
         seen.add(path)
-        raw = gzip.decompress(path.read_bytes())
-        assert len(raw) == entry["RawBytes"], path
-        assert hashlib.sha256(raw).hexdigest() == entry["RawSHA256"], path
+        stored = path.read_bytes()
+        if path.suffix == ".gz":
+            raw = gzip.decompress(stored)
+            length, digest = entry["RawBytes"], entry["RawSHA256"]
+        else:
+            raw = stored
+            length, digest = entry["Bytes"], entry["SHA256"]
+            plain_artifacts += 1
+        assert len(raw) == length, path
+        assert hashlib.sha256(raw).hexdigest() == digest, path
         artifacts += 1
     manifests += 1
 print(json.dumps({"Status": "PASS", "Scope": "GitHub-only clean restoration and raw artifact integrity; not runtime acceptance",
     "HEAD": expected, "Origin": origin, "Tree": git("rev-parse", "HEAD^{tree}").decode().strip(),
     "TrackedBlobs": blobs, "Manifests": manifests, "RawArtifacts": artifacts,
-    "SourceCommits": sorted(sources), "FsckExitCode": fsck.returncode, "RemoteRefs": refs.splitlines()}, indent=2))
+    "SourceCommits": sorted(sources), "SourceAnnotationsWithoutCommitBinding": source_annotations,
+    "PlainArtifacts": plain_artifacts, "FsckExitCode": fsck.returncode, "RemoteRefs": refs.splitlines()}, indent=2))

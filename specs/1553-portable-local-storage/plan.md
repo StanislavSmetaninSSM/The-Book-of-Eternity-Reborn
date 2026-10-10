@@ -64,8 +64,12 @@ fresh GitHub restoration are pending at this metadata checkpoint.
 Reproduce recovery with ordinary GitHub clone (no local alternates):
 `git clone --single-branch --no-tags --branch 1553-storage-migration-cloud-20261008 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git <new-empty-dir>`,
 then `python3 specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/verify_checkpoint.py <new-empty-dir> <exact-remote-full-SHA>`.
-Verifier checks all tracked blobbytes/fsck/currentremote/main/sourcecommit objects
-and every packetgzip rawhash/length; it executes no build/test/game/model and
+Verifier checks all tracked blobbytes/fsck/currentremote/main/bound sourcecommit
+objects and every packet gzip/plain hash/length; the original browser ownership
+preflight has only an explicit uncommitted-source annotation, not a fabricated
+commit binding. First fresh20317cad integrity attempt stopped with KeyError on that
+early manifest schema; verifier now checks both actual packet shapes without
+skipping its bytes. This is a verifier correction, not a gameplay retest; it executes no build/test/game/model and
 cannot replace semantic runtime review. Original broader storage recovery pins
 are separately verified by the existing parent restore receipt.
 
