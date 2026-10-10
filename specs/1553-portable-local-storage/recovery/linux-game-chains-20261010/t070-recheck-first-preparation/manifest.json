@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "12dab76c86bc81b5b63ebdaf0d42ac0c764ae6b6",
+  "Command": "pwsh -Command selected5 -PlanOnly -TimeoutMinutes12",
+  "Status": "PREPARATION PASS108.1561382s/5descriptors22cases0runtime",
+  "Scope": "Fresh integration+unit/references; runtime not executed, fixture output compliance correction follows.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "4dc41102060df773e9c7f0af4b3f6316826808bbc997c22c475a77fa23c37c3e",
+      "RawBytes": 6414
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "4cec460caccca05e8fd96b53f842f2805761a13e6543e50c5df0681441389411",
+      "RawBytes": 1959
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "d4a8dc4c0e4a2e3a0c7fa6d3a0bd8d9c5ac6f3081e0eba19b48782dbf8b3d443",
+      "RawBytes": 53545
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "5f5ff94ea13b5f9c855ba98ac82b46d3d7f149d054eacb295ef5131a2a80e3bf",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "59655a85b22fb9f2bc60666c92129dbcffdd812d4cf0ce7cff734e0339543cca",
+      "RawBytes": 3359819
+    }
+  ]
+}

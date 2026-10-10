@@ -45,6 +45,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(result["Accepted"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["FirstMutationInvalidatedCompletedScope"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["FreshComparisonObserved"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["RepairOnlyListedOutputs"]!.GetValue<bool>(), result.ToJsonString());
         Assert.Null(result["OperationFailure"]);
     }
 
@@ -59,7 +60,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         ValidationService? validator = null;
         ValidationService.GuardianMusingsValidationScope? originalScope = null;
         object? mutationWitness = null;
-        bool repaired = false, freshComparison = false, causalAuthorityRed = false;
+        bool repaired = false, freshComparison = false, causalAuthorityRed = false, repairOnlyListedOutputs = false;
         string? originalGeneration = null;
         ValidationService.GuardianMusingsValidationScope? CurrentScope() => validator is null ? null :
             ((AsyncLocal<ValidationService.GuardianMusingsValidationScope?>)typeof(ValidationService)
@@ -199,6 +200,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                                         ": actual second repair after original invalidation and narrative-only resubmission: " + request.ToJsonString());
                                 }
                                 Assert.Equal(new[] { "accepted_turn_empty_narrative_response" }, codes);
+                                var packets = request["harnessRepairPackets"]!.AsArray();
+                                Assert.Single(packets);
+                                Assert.Equal(new[] { "output/narrative_response.json" },
+                                    packets[0]!["targetFiles"]!.AsArray().Select(path => path!.GetValue<string>()).ToArray());
+                                var unlistedOutputs = new[] { "output/interface_updates.json", "output/debug_logs.json" }
+                                    .ToDictionary(path => path, path => File.ReadAllBytes(files.ResolvePath(path)));
+                                foreach (var pair in unlistedOutputs)
+                                    File.WriteAllBytes(Path.Combine(own, Path.GetFileName(pair.Key) + ".before-repair.bin"), pair.Value);
                                 Assert.NotNull(mutationWitness);
                                 File.WriteAllText(Path.Combine(own, "first-repair-mutation.json"), JsonSerializer.Serialize(mutationWitness));
                                 var witness = JsonSerializer.SerializeToNode(mutationWitness)!;
@@ -212,16 +221,17 @@ public sealed partial class GameEngineTurnLifecycleTests
                                 firstInvalidated = true;
                                 var stamp = DateTime.UtcNow.ToString("O");
                                 File.WriteAllText(files.ResolvePath("output/narrative_response.json"), JsonSerializer.Serialize(new { response = "Исходное письмо прочитано.", timestamp = stamp }));
-                                foreach (var path in new[] { "output/interface_updates.json", "output/debug_logs.json" })
-                                {
-                                    var node = JsonNode.Parse(File.ReadAllText(files.ResolvePath(path)))!;
-                                    node["timestamp"] = stamp;
-                                    File.WriteAllText(files.ResolvePath(path), node.ToJsonString());
-                                }
                                 repaired = true;
                                 File.WriteAllText(files.ResolvePath("game_state/control/validation_repair_ready.json"), JsonSerializer.Serialize(new
                                 { sessionId = originalRequest.SessionId, requestId = originalRequest.RequestId, turnNumber = originalRequest.TurnNumber,
                                     updatedAtUtc = stamp, status = "success", note = "Исправлен тип текста рассказа; состояние Хранителя не изменено." }));
+                                foreach (var pair in unlistedOutputs)
+                                {
+                                    var after = File.ReadAllBytes(files.ResolvePath(pair.Key));
+                                    File.WriteAllBytes(Path.Combine(own, Path.GetFileName(pair.Key) + ".after-repair.bin"), after);
+                                    Assert.Equal(pair.Value, after);
+                                }
+                                repairOnlyListedOutputs = true;
                             }
                         }
                         await Task.Delay(25, observerCancellation.Token);
@@ -278,6 +288,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new { Accepted = accepted,
                 FirstMutationInvalidatedCompletedScope = firstInvalidated, FreshComparisonObserved = freshComparison,
                 CausalAuthorityRed = causalAuthorityRed, RepairCount = repairCount, OriginalStopped = stopped, PhysicalCleanup = physical,
+                RepairOnlyListedOutputs = repairOnlyListedOutputs,
                 StopTaskSettled = stop.IsCompleted, OperationSettled = operation?.IsCompleted == true, ObserverSettled = observer?.IsCompleted == true,
                 OperationFailure = operationFailure?.ToString(), CleanupFailure = cleanupFailure?.ToString(),
                 MutationWitness = mutationWitness, ModelCalls = 0,

@@ -1,0 +1,72 @@
+{
+  "SHA": "12dab76c86bc81b5b63ebdaf0d42ac0c764ae6b6",
+  "Base": "740fbebd6c4e02c475b631e5c0b3c04ade59c81a",
+  "Files": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.MusingsPublication.cs",
+      "Bytes": 14526,
+      "SHA256": "dc70b94eec2179c34c21c6e04e66e552acb842262d45ca5b8308a0b59c02e764",
+      "RemoteExact": true
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.MusingsPublication.cs",
+      "Bytes": 10672,
+      "SHA256": "bb1ecffa00764592730a65cb2e4cf35f7516c0133f8c79b362491e3f497804b0",
+      "RemoteExact": true
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.GuardianMusings.cs",
+      "Bytes": 2494,
+      "SHA256": "053fb055a7a5aebd8ae681133d6b3b2db41ec53e985ebe67d886cb65b9cc22b6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "Bytes": 491657,
+      "SHA256": "99f382b5f31508743ada7a5ecd017d4929c8baa96eac82498f272ddfcf5d5ea2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+      "Bytes": 17736,
+      "SHA256": "5fefc400888488ae912bee4c0808d888d524eaa81be71fe073e611201dea4855",
+      "RemoteExact": true
+    },
+    {
+      "Path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "Bytes": 693766,
+      "SHA256": "6f973f3f7f17c935f88630478a69f1d6f10513c5818a05cc1a764f2695658db4",
+      "RemoteExact": true
+    },
+    {
+      "Path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "Bytes": 252375,
+      "SHA256": "564aa9aa3305dd080fe32ad216112dae54c2d1a5acd9fc7f58604819e1629d20",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1628725,
+      "SHA256": "0e78b61bdf137ba09fd01bac7e8b57d69922668c2b3914ac1a024fc4c200671a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-single-memory-red-remote.json",
+      "Bytes": 18981,
+      "SHA256": "59f5a2c1ce3a7a14e2bca5998049efc1cefc505599da101da25341d0cf4d6332",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1691057,
+      "SHA256": "5f6f2b02d6fe65f1b72da6d50964faeb07e1ad8985565d9e8cd065a4c6382bcf",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 21305,
+      "SHA256": "95c44e9ad5c9f52d08c8f3e8c2a01d3c8344538a6a4ca013aefd0298a41571f3",
+      "RemoteExact": true
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "SourceSHA": "12dab76c86bc81b5b63ebdaf0d42ac0c764ae6b6",
+  "Command": "pwsh -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild -TimeoutMinutes8",
+  "Status": "DISCOVERY PASS8.5505553s/649categories11448methods-files0runtime",
+  "Scope": "Complete inventory discovery only; no tests executed.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "a0d5df0b1742bad8b002cf1a4aead0a69d633b40ec88622ade905331d1c5052d",
+      "RawBytes": 1404
+    },
+    {
+      "Path": "runner/catalog-audit.json.gz",
+      "RawSHA256": "ac41930e440760354efa5dd58cb17cba104c8c6ebf9d7492bacc59267a2f6b31",
+      "RawBytes": 103
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "43da7aa43d7d8075ae711ed8a165aea367c4b30047d8e3137317fe4a948c519f",
+      "RawBytes": 3281939
+    }
+  ]
+}
