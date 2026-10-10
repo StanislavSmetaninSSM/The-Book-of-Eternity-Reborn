@@ -2,6 +2,33 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-original-status-phase",
+            "responsibility": "Actual original NativeLineage Bridge status publisher encountering genuine GameEngine preparing outside its lease: known pre-publication diagnostic refusal defers, exact browser/status bytes preserved, same original owner remains Running, later actual staged publication succeeds and original Stop/physical cleanup completes.",
+            "excludes": "No general browser admission bypass, Program/relay gameplay, model/provider or replacement/active-crash settlement claim. Existing genuine status I/O fault and retirement controls selected separately.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserStatusPhase.cs",
+                "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs"
+            ],
+            "related": [
+                "gm-main-status-retirement-linux"
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_StatusPreparingRefusalDefersWithoutLosingOriginalOwner"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-browser-lifetime-source",
             "responsibility": "Directly affected existing source guards for original staging/signed context, ordinary console wait, player-facing finalization, one terminal capture and expected-generation original browser finalization.",
             "excludes": "Runtime crash/transport/materialization proof; unrelated documentation and GM rules.",

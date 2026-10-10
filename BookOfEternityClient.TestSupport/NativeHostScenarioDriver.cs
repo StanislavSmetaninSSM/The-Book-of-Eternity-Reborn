@@ -15,7 +15,7 @@ internal static class NativeHostScenarioDriver
     internal static async Task<int> Main(string[] args)
     {
         if ((args.Length == 4 && args[0] == "engine-browser-recovery-cold") ||
-            (args.Length == 6 && args[0] is "engine-browser-staging-cut" or "engine-browser-staging-publisher" or "engine-browser-quiescent-admission"))
+            (args.Length == 6 && args[0] is "engine-browser-staging-cut" or "engine-browser-staging-publisher" or "engine-browser-quiescent-admission" or "engine-browser-status-phase"))
         {
             // The integration fixture supplies the real lifecycle service factory.
             // Resolve its test-only dependencies in this isolated child, without a project cycle.
@@ -31,6 +31,7 @@ internal static class NativeHostScenarioDriver
                 "engine-browser-staging-cut" => "WriteBrowserStagingCutProbeAsync",
                 "engine-browser-staging-publisher" => "RunOriginalBrowserStagingPublisherAsync",
                 "engine-browser-quiescent-admission" => "WriteBrowserQuiescentAdmissionProbeAsync",
+                "engine-browser-status-phase" => "WriteBrowserStatusPhaseProbeAsync",
                 _ => "WriteBrowserRecoveryColdProbeAsync"
             };
             var method = assembly.GetType("BookOfEternityClient.Tests.GameEngineTurnLifecycleTests", true)!
