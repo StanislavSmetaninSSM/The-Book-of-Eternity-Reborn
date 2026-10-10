@@ -164,7 +164,7 @@ def worker(*args):
 def author_packet(request_dir, ordinal):
     request = read_json(request_dir / "game-request.json")
     control = request["progressionControl"]
-    narrative = "Проверочный след " + str(ordinal) + ": душа осмотрелась и сохранила память о берегe."
+    narrative = "Проверочный след " + str(ordinal) + ": Хранитель наблюдает за душой у берега."
     report = {k: request[k] for k in ["sessionId", "requestId", "turnNumber"]}
     report.update(worldCyclesProcessed=0, factionCyclesProcessed=0,
                   newLastWorldSimulationTimeInMinutes=control["lastWorldSimulationTimeInMinutes"],
@@ -176,11 +176,35 @@ def author_packet(request_dir, ordinal):
         next_key = "nextChaosSeaTurnOrdinal" if contour == "chaosSea" else "next" + contour[0].upper() + contour[1:] + suffix
         report["newLast" + contour[0].upper() + contour[1:] + suffix] = control[next_key]
     timestamp = datetime.now(timezone.utc).isoformat()
-    thoughts = "\n".join(["## NPC Scope", "- Mode: Scene-local", "- Relevant actors: нет",
-                           "- Why relevant: Душа осматривается без структурных изменений NPC или Хранителя.",
+    guardians = read_json(session / "game_state/meta/guardians.json")
+    guardian = guardians["guardians"][0]
+    actor = guardian["canonicalName"]
+    thought = "Я запомню самостоятельный выбор души осмотреть берег, проверочный след " + str(ordinal) + "."
+    musing = {"turn": ordinal, "topic": "soul_assessment", "mood": "calm", "thought": thought}
+    guardian.setdefault("musings", []).append(musing)
+    active = guardians.get("activeGuardian")
+    if isinstance(active, dict) and active.get("guardianId") == guardian["guardianId"]:
+        active.setdefault("musings", []).append(musing.copy())
+    thoughts = "\n".join(["## NPC Scope", "- Mode: Scene-local", "- Relevant actors: " + actor,
+                           "- Why relevant: Хранитель наблюдает за выбором души и сохраняет свою реакцию.",
                            "- Actors outside scope: нет", "- Why outside scope: Самостоятельные акторы не участвуют.",
-                           "", "## Reasoning", "- Детерминированная тестовая заготовка; провайдер не вызван."])
-    writes = {"game_state/control/progression_report.json": {"progressionProcessingReport": report},
+                           "", "## Reasoning", "### " + actor,
+                           "- Current location: Море Хаоса; перемещения нет.",
+                           "- Situation: Душа осматривается у берега, Хранитель наблюдает.",
+                           "- Profile inputs: Существующий свободный Хранитель сопровождает душу; искусства не применяются.",
+                           "- Motivation: Дать душе пространство для самостоятельного решения.",
+                           "- Constraints: Без новых сил, ресурсов, предметов или ран.",
+                           "- Thoughts: " + thought,
+                           "- Strategy options:",
+                           "1. Наблюдать. Benefit: сохранить самостоятельность. Risk: душа не попросит помощи.",
+                           "2. Вмешаться. Benefit: дать совет. Risk: навязать направление.",
+                           "- Chosen strategy: Наблюдать.",
+                           "- Rejected alternatives: Душа не просила совета.",
+                           "- Actions: Хранитель наблюдает и запоминает выбор души.",
+                           "- State changes: game_state/meta/guardians.json guardians[].musings и activeGuardian.musings: новая first-person запись, старые записи сохранены.",
+                           "- Детерминированная тестовая заготовка; провайдер не вызван."])
+    writes = {"game_state/meta/guardians.json": guardians,
+              "game_state/control/progression_report.json": {"progressionProcessingReport": report},
               "output/narrative_response.json": {"response": narrative, "timestamp": timestamp},
               "output/interface_updates.json": {"dialogueOptions": [], "timestamp": timestamp},
               "output/debug_logs.json": {"gm_thoughts_markdown": thoughts, "timestamp": timestamp}}

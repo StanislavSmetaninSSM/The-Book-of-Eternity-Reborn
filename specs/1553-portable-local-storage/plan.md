@@ -1,3 +1,23 @@
+## C1 actual helper execution / actor contract FAIL — WIP
+
+Source `f95da76f91ea960ce2f9a3ad2a63aff5d10d106e`: actual C1
+**FAIL1/1**,70.7917266s,0skip/duplicate/timeout.
+[Packet](recovery/linux-game-chains-20261010/c1-actor-contract-fail/manifest.json).
+Maintained relay/fixed helper реально исполнил authored turn packet:
+Executed=true,ExitCode0,ChildExited/IoDrained=true. Это **не acceptance**:
+actual client создал repair request с3ошибками — missing Guardian first-person
+thought delta,missing named Actor Brain block,changed afterlife profile outside
+scope. После отменённого bootstrap ответ с actorless scope не соответствует
+существующим начальным Guardian contracts. Accepted0/modelCalls0; restarts UNRUN.
+
+Fixture автор теперь прочитывает настоящий current Guardian, сохраняет весь
+canonical root, добавляет одну first-person musings entry, явно описывает actor
+в scope/full Actor Brain и narrative. Старые musings и поля не удаляются,
+искусства/рана/ресурсы/новые акторы не вводятся; approved force_binding assertion
+не тронута. Действующий GM contract и validator не меняются. Это корректный
+bounded authored gameplay packet вместо actorless invalid fixture, не live GM.
+Existing actor scope/reasoning/journal examples сверены. AST PASS; GREEN UNRUN.
+
 ## C1 packet contract preflight — WIP
 
 Source `5285f3bb8627f0f7e4826fdba8a2722ab890f4c1`: actual C1
