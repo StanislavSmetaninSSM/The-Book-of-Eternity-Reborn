@@ -16,8 +16,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         const string path = "game_state/meta/guardians.json";
         await using var context = await CreateHeldTreatmentPipelineContextAsync(null, composePublication: false,
-            configureBeforePreparation: files => files.WriteFileAtomicAsync(path,
-                GuardianSystemRegressionTests.BuildCurrentMusingsPublicationBaseline()));
+            configureBeforePreparation: GuardianSystemRegressionTests.PrepareCurrentMusingsPublicationBaselineAsync);
         var root = JsonNode.Parse((await context.FileSystem.ReadFileAsync(context.Lease, path))!)!.AsObject();
         var prefix = root["guardians"]![0]!["musings"]!.DeepClone();
         root["UpdateGuardians"] = new JsonArray(new JsonObject
@@ -30,6 +29,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             })
         });
         if (questSurface) root[GuardianProjectState.QuestProgressUpdatesProperty] = new JsonArray();
+        else root.Remove(GuardianProjectState.QuestProgressUpdatesProperty);
+        Assert.Equal(questSurface, root.ContainsKey(GuardianProjectState.QuestProgressUpdatesProperty));
         await context.FileSystem.WriteFileAtomicAsync(context.Lease, path, root.ToJsonString());
         await RestoreHeldTreatmentAndComposeSameSemanticPlanAsync(context);
         await context.ReleaseLeaseAsync();
@@ -38,7 +39,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var disposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync", "guardian original treatment handoff", snapshot, null,
             HeldTreatmentPipelineContext.Turn, null);
-        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, disposition);
+        Assert.True(disposition == AcceptedTurnValidationDisposition.Accepted,
+            disposition + ": " + await context.FileSystem.ReadFileAsync("game_state/control/validation_repair_request.json"));
         Assert.Equal(spendsBefore + 1, CountHeldTreatmentEnergySpends(await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
         var handoff = typeof(GameEngine).GetField("_acceptedTurnGuardianMusingsValidation", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(engine);
         Assert.NotNull(handoff);

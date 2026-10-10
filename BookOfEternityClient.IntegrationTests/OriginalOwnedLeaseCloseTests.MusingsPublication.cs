@@ -21,7 +21,14 @@ public sealed partial class OriginalOwnedLeaseCloseTests
     [InlineData("read_close", true)]
     public async Task GuardianMusingsPublication_OriginalComparisonStorageFailureCannotEnterDomainRepair(string mode, bool unauthorized)
     {
-        using var fixture = new GuardianSystemRegressionTests();
+        var fixture = new GuardianSystemRegressionTests();
+        Task? originalOperation = null;
+        try { await RunMusingsComparisonFaultAsync(fixture, mode, unauthorized, task => originalOperation = task); }
+        finally { if (originalOperation is null || originalOperation.IsCompleted) fixture.Dispose(); }
+    }
+
+    private async Task RunMusingsComparisonFaultAsync(GuardianSystemRegressionTests fixture, string mode, bool unauthorized, Action<Task> track)
+    {
         await fixture.PrepareMusingsPublicationAsync(1);
         const string path = "game_state/meta/guardians.json";
         var armed = false;
@@ -73,9 +80,12 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         }
         var before = Directory.GetFiles(fixture.FixtureRootPath, "*", SearchOption.AllDirectories).ToDictionary(p => p, File.ReadAllBytes);
         using var scope = validator.UseCompletedGuardianMusingsValidationScope(refresh.GuardianMusingsValidation);
+        var prerequisite = await validator.ValidateGameStateAsync(new GameStateValidationSelection(GameStateValidationPhase.MetaMiscStateFiles, [path]));
+        Assert.Equal(unauthorized, prerequisite.Any(issue => issue.Severity == IssueSeverity.Error));
         armed = true;
         var operation = Task.Run(() => validator.ValidateGameStateAsync(new GameStateValidationSelection(
             GameStateValidationPhase.MetaMiscStateFiles, [path])));
+        track(operation);
         FileSystemManager.CanonicalWriteLease? original = null;
         Exception? failure;
         try
@@ -103,14 +113,21 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         finally
         {
             allow.TrySetResult();
-            _ = await Record.ExceptionAsync(() => operation.WaitAsync(TimeSpan.FromSeconds(12)));
+            var joinedFailure = await Record.ExceptionAsync(() => operation.WaitAsync(TimeSpan.FromSeconds(12)));
             armed = false;
+            Assert.True(operation.IsCompleted, "Preparation/cleanup incomplete: original comparison did not join; fixture root retained. " + joinedFailure);
         }
         Assert.True(cuts > 0);
         Assert.Same(mode == "close" ? closeFailure : primary, failure);
         if (mode == "read_close") Assert.Same(closeFailure, failure!.Data["CoordinatedLeaseReleaseFailure"]);
         Assert.Equal(mode is "close" or "read_close" ? 1 : 0, closer.Calls);
-        if (original is not null) Assert.False(original.IsActive);
+        if (original is not null)
+        {
+            Assert.False(original.IsActive);
+            Assert.Null(original.AmbientRegistration);
+            Assert.Null(original.MainAdmission);
+            Assert.Null(original.ExternalPublicationContext);
+        }
         Assert.Equal(0, mutations);
         Assert.Equal(before.Keys.Order(), Directory.GetFiles(fixture.FixtureRootPath, "*", SearchOption.AllDirectories).Order());
         foreach (var pair in before) Assert.Equal(pair.Value, File.ReadAllBytes(pair.Key));

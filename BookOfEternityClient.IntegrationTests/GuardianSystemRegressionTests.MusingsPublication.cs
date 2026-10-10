@@ -136,7 +136,7 @@ public sealed partial class GuardianSystemRegressionTests
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
         await PrepareGuardianDialogueActorBrainFixtureAsync(OldMusings, OldMusings);
-        await _fs.WriteFileAtomicAsync(MusingsRootPath, BuildCurrentMusingsPublicationBaseline());
+        await PrepareCurrentMusingsPublicationBaselineAsync(_fs);
         // This boundary requires the exact reader contract; the older actor-brain
         // fixture's legacy text-hash snapshot is not publication authority.
         await new LiveTurnPreparationService(_fs).PrepareAsync(new LiveTurnPreparationOptions
@@ -154,6 +154,8 @@ public sealed partial class GuardianSystemRegressionTests
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         var baseline = await validator.DebugResolveGuardianPolicyContextAsync();
         Assert.Equal("Resolved", baseline.GenericSharedStrictPreTurnGuardianAuthorityStatus);
+        Assert.True(baseline.StrictPreTurnGuardianAuthorityStatus == "Resolved",
+            baseline.StrictPreTurnGuardianAuthorityStatus + ": " + baseline.StrictPreTurnGuardianAuthorityFailureDescription);
         Assert.DoesNotContain(await ValidateMusingsStateAsync(validator), issue => issue.Severity == IssueSeverity.Error);
         var root = JsonNode.Parse((await _fs.ReadFileAsync(MusingsRootPath))!)!;
         root["UpdateGuardians"] = MusingsCommands(count);
@@ -166,6 +168,13 @@ public sealed partial class GuardianSystemRegressionTests
         foreach (var guardian in root["guardians"]!.AsArray().OfType<JsonObject>().Append(root["activeGuardian"]!.AsObject()))
             guardian["gachaSystem"] = new JsonObject { ["currentReturnCycleId"] = "", ["gachaHistory"] = new JsonArray() };
         return root.ToJsonString();
+    }
+
+    internal static async Task PrepareCurrentMusingsPublicationBaselineAsync(FileSystemManager files)
+    {
+        await files.WriteFileAtomicAsync(MusingsRootPath, BuildCurrentMusingsPublicationBaseline());
+        await files.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, EmptyGuardianProjectTrackerJson);
+        await files.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, EmptyGuardianPowerJournalJson);
     }
 
     private static JsonArray MusingsCommands(int count) => new(new JsonObject

@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "aacd8ef31360ebd4299db3eb49c251ce3a06642e",
+  "Command": "pwsh -NoLogo -NoProfile -Command ./scripts/test-csharp.ps1 -Category @(guardian-musings-publication, guardian-musings-original-consumers)",
+  "Status": "FAIL",
+  "Scope": "Planned28 in2descriptors, first12=1PASS/11FAIL69.4229973s, second16UNRUN; eight original comparison faults actually swallowed with original gate/lease, substituted cleanup actually proceeds. Treatment2 rejects before Accepted and both included quest surface, not qualified handoff RED; cleanup positive PASS may lack strict current root. Fresh build/0skip/dup/timeout/runnercleanupcomplete; worker cases finish.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "8c5bd44f516a2db46f2c6ad6852c753209cf055070268a085d50005d5e4ba8de",
+      "RawBytes": 3824
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "e532c0e7f81a072fddead69afd139aed8b438289f81aabbd0a38fdbb70ee1ffa",
+      "RawBytes": 1583
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "11df91c1116976bd07ffb4f06351ddf15fe6df8ce7e6870af7702164258455bc",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/guardian-musings-original-consumers-integration-001.trx.gz",
+      "RawSHA256": "b2a05db9603796e68a518edca654048a96e84dfa7c9c06e055226169cc9786b8",
+      "RawBytes": 78804
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "248ffec20693396ea90ae4e15a26f3770a4fb0cfd72ef946c2233a16d60a13e0",
+      "RawBytes": 1689353
+    }
+  ]
+}
