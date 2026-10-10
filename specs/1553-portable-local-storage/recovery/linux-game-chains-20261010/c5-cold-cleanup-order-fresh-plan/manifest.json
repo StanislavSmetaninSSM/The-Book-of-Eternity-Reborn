@@ -1,6 +1,6 @@
 {
   "SourceSHA": "9cff87fe34c52562bc83c6c4f2fc1aa8a9ee7b7b",
-  "Command": "pwsh -NoLogo -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @(c5-accepted-terminal-cleanup-order,c5-browser-staged-idle-duration-diagnostic) -PlanOnly\"",
+  "Command": "pwsh -NoLogo -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @('c5-accepted-terminal-cleanup-order','c5-browser-staged-idle-duration-diagnostic') -PlanOnly\"",
   "Status": "PREPARATION PASS / six planned cases / zero runtime",
   "Scope": "Fresh integration+unit/project-reference builds; five existing cleanup/receipt controls then one realfullC5; frontend actual-run prep remains.",
   "ModelCalls": 0,

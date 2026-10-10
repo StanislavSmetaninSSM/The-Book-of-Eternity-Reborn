@@ -1,3 +1,7 @@
+### Cold accepted-cleanup integrity controls GREEN; full C5 next — 2026-10-10
+
+1398023e/matchingfresh9cffintegration: `c5-accepted-terminal-cleanup-order` **5/5PASS8.8840511s**, complete1descriptor/5cases/0skip/duplicate/timeout, owned/runtimecleanup complete. [Raw](recovery/linux-game-chains-20261010/c5-cold-cleanup-order-controls-green/manifest.json). Four existing substituted/unowned warmcleanup negatives plus acceptedreceipt reentry/dequeue preserve originalauthority/remainingbytes/history/noreplay. This qualifies affected controls only; truefullC5 originatingFAIL preserved and correctedchainUNRUN. Astra verifies priorfreshcarrier10files/raw5 and selectionwording; remainingarchiveCommandquoteMinor nowfixedwith literalPowerShellcategoryIDs, actualrunnerrawunchanged. Sourcecode unchanged9cff; no passingcategoryrepeat. Savebefore nextsolefullC5-NoBuildusingmatchingfreshunit/Bridge andactualfrontendprep, unchangeddiagnostic660/720/750/755/helper60/single180, no performance/guardchange. T069/T070/T071 unchecked.
+
 ### Cold cleanup one-line fix fresh preparation — 2026-10-10
 
 Independent Astra accepts9cff source/selection and genuinefullC5RED reuse; all246 failurecarrier blobs/243raw and4sourcecarrier files verified. Four warmintegrity +accepteddequeue selection sufficient, no newtests/matrix needed. Minor stale “no production edits” diagnostic reason corrected to name the one cleanup ordering change; no performance/timeout/guard-weakening edits.
