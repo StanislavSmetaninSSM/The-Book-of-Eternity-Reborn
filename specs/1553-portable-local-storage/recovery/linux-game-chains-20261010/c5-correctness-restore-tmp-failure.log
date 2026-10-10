@@ -1,0 +1,48 @@
+Cloning into '/tmp/boe-c5-correctness-restore-ba4f0bfe'...
+error: unable to write file BookOfEternityClient/Music/Fallen Angel.mp3
+error: unable to write file BookOfEternityClient/Music/Falling From Heaven.mp3
+error: unable to write file BookOfEternityClient/Music/Find The Way.mp3
+error: unable to write file BookOfEternityClient/Music/Find Your Shadow.mp3
+error: unable to write file BookOfEternityClient/Music/Fortuna.mp3
+error: unable to write file BookOfEternityClient/Music/Horam Exspectans.mp3
+error: unable to write file BookOfEternityClient/Music/Inquisitione.mp3
+error: unable to write file BookOfEternityClient/Music/Light in the Fog.mp3
+error: unable to write file BookOfEternityClient/Music/Main Theme (alt).mp3
+error: unable to write file BookOfEternityClient/Music/Main Theme.mp3
+error: unable to write file BookOfEternityClient/Music/README.md
+error: unable to write file BookOfEternityClient/Music/Sea of Сhaos.mp3
+error: unable to write file BookOfEternityClient/Music/The Fate.mp3
+error: unable to write file BookOfEternityClient/Music/The Mystical Ring.mp3
+error: unable to write file BookOfEternityClient/Music/The Mystical Way.mp3
+error: unable to write file BookOfEternityClient/Music/The Path.mp3
+error: unable to write file BookOfEternityClient/Music/The Reborn Soul.mp3
+error: unable to write file BookOfEternityClient/Music/Uplifting Wind.mp3
+error: unable to write file BookOfEternityClient/Music/Via Vitae.mp3
+error: unable to write file BookOfEternityClient/Program.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedEffectBoundaryTranscript.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedEffectUseArbiter.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.LiveWounds.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.MortalRecovery.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsDirectWoundPublicationAuthority.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsOwnerTransition.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlan.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.LiveTurn.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.MissingSide.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.OriginalPrefix.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.OriginalSpiritualReduction.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.OriginalSpiritualResources.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.PendingContinuation.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.ResourcePrefixView.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.SpiritualMechanics.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.TerminalSpiritualResources.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.WoundFutureCandidates.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.WoundInstances.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalRecovery.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs
+error: unable to write file BookOfEternityClient/Services/AcceptedTurnProjectionClock.cs
+error: unable to write file BookOfEternityClient/Services/ActorJournalState.cs
+error: unable to write f
