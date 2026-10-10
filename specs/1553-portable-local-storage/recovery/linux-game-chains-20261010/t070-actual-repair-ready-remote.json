@@ -1,0 +1,48 @@
+{
+  "SHA": "3991d981f6886155d213ab938dc3ef62c7efc4b7",
+  "Base": "301e417ef8e80c2c1d5b55987a74943e3322247b",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1620945,
+      "SHA256": "f6737d65e7e849d24d499bdfa9be203d9c4eeeee832bfcf7474da0ab0224d8eb",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-actual-repair-final-oracle-remote.json",
+      "Bytes": 2609,
+      "SHA256": "ffc0a49d48a2a40f5a81a5bfec32c4ffed4741e4a6baf3ca4761c28bbb8dd26a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-actual-repair-final-preparation/manifest.json",
+      "Bytes": 1130,
+      "SHA256": "8c0071baecc2a9d1b3056a1c3e1a2ab6da0d50f3f704fb1e30f4aa6e5bc85c78",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-actual-repair-final-preparation/runner/Build-integration.log.gz",
+      "Bytes": 2982,
+      "SHA256": "c647ad819699b9dd830cdcb642cb08caaabaea7a47b246ec80248fc81368d12d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-actual-repair-final-preparation/runner/dotnet-test.log.gz",
+      "Bytes": 183795,
+      "SHA256": "a4c859d8ec545143bb29d84d240d59ed67fe386c29ddeaad8f759764fa2252bb",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-actual-repair-final-preparation/runner/plan.json.gz",
+      "Bytes": 538,
+      "SHA256": "2a543aa4fd0dec526399709306d2e5de3e93d591384869c9ca39036beb63bef4",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-actual-repair-final-preparation/runner/summary.json.gz",
+      "Bytes": 615,
+      "SHA256": "5e3f5fe62a129dc89efb467a9ae27321d1176f1bebed0755967b9782ef75ea18",
+      "RemoteExact": true
+    }
+  ]
+}
