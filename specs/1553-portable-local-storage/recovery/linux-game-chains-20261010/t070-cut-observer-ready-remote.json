@@ -1,0 +1,48 @@
+{
+  "SHA": "3edef9b695913f13a80c7d8d35d9df89e9b1ef83",
+  "Base": "748b6da41c6dc69b8b57963d06a4c9e864f98d5e",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1647184,
+      "SHA256": "30ccd40043de0275dce3bfb896ae33ffb8f5f7037bf5da86dc5faa8d6dbf6142",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cut-observer-preparation/manifest.json",
+      "Bytes": 1206,
+      "SHA256": "2c0d977b59c7ea4bc59f8cf6ce7fa5ab8a28e895019f5c8b2c80c977246d2602",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cut-observer-preparation/runner/Build-integration.log.gz",
+      "Bytes": 3037,
+      "SHA256": "24f0f0d62bd98095b3600099e5c67962e54fdbf8972b088eeaaf4b425f36e451",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cut-observer-preparation/runner/dotnet-test.log.gz",
+      "Bytes": 183931,
+      "SHA256": "eda2d4713eab61f3e40eb12bd77139cc1c19eb2ee9ce2891a5b0d9be9fcd5f62",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cut-observer-preparation/runner/plan.json.gz",
+      "Bytes": 640,
+      "SHA256": "2562d68dfb9190ff9640e713413ff99ede6198e2619e0a77086b34a3d414ff83",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cut-observer-preparation/runner/summary.json.gz",
+      "Bytes": 655,
+      "SHA256": "24d219b570448695c1637c40499b8f56d64526135ffbde2a549304f59010f0bc",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cut-observer-source-remote.json",
+      "Bytes": 1120,
+      "SHA256": "f396c6d0a566c0deae8f5ece7c427280170da557a47522e8a1fb9470f692dc5f",
+      "RemoteExact": true
+    }
+  ]
+}
