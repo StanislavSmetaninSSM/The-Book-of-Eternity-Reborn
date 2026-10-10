@@ -1,3 +1,22 @@
+## Actual C4 nested-acquisition RED and bounded correction WIP
+
+Source8d0ffde0 diagnostic same-handler wrapper **FAIL1/1**,30.9482745s:
+actual React Save409/Blocked, no archive. [Causal trace](recovery/linux-game-chains-20261010/c4-nested-validation-lease-red/manifest.json)
+shows BuildDashboard's public BuildValidationAsync participating helper attempts
+VerifyCurrentSessionOperationAsync→AcquireCanonicalWriteLease while the original
+CreateManualSave RunBoundTransaction already owns that exact physical lease.
+First lock failure is captured with original caller stack; subsequent lock retries
+fill32 cap, so the final swallowed exception type is not directly captured.
+Git blame: public helper changed3d6cfd248 (migration HTTP-original-owner slice);
+bound caller existed beforehand. Actual Program REDca599 preserved separately.
+
+Minimal bound dashboard correction threads its existing lease, uses the same full
+validation core, and verifies that exact valid lease/generation before and after.
+Public unbound reads retain participating admission/finalization. No lock budgets,
+validators, owner/readiness proofs or game/GM-authored contracts change; no prompt
+or example update required for this client-owned read finalization fix.
+Actual Program C4 GREEN and Load fault are UNRUN until fresh selected build/run.
+
 ## C4/C5 fixture review corrections and diagnostic WIP — 2026-10-10
 
 Independent Astra/xhigh review at a746 accepted the bounded recorded C1/C3;

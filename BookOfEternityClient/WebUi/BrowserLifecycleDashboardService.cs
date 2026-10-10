@@ -34,15 +34,23 @@ public sealed class BrowserLifecycleDashboardService
     internal async Task<BrowserLifecycleDashboardDto> BuildDashboardAsync(
         FileSystemManager.CanonicalWriteLease writeLease)
     {
+        _fs.VerifyCurrentSessionOperation(writeLease);
         var session = await _sessionStatus.BuildStatusAsync(writeLease);
-        return await BuildDashboardAsync(session);
+        var dashboard = await BuildDashboardAsync(session, writeLease);
+        _fs.VerifyCurrentSessionOperation(writeLease);
+        return dashboard;
     }
 
     private async Task<BrowserLifecycleDashboardDto> BuildDashboardAsync(
-        LocalWebUiSessionStatus session)
+        LocalWebUiSessionStatus session,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var soul = await BuildSoulSummaryAsync();
-        var validation = await BuildValidationAsync();
+        // The bound Save caller already owns the canonical lease. A separate
+        // participating read would reacquire that same lock on finalization.
+        var validation = writeLease == null
+            ? await BuildValidationAsync()
+            : await BuildValidationCoreAsync();
 
         return new BrowserLifecycleDashboardDto(
             SchemaVersion: 1,
