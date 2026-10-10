@@ -1,0 +1,60 @@
+{
+  "SHA": "bf500a2249878b53e0a79cab976ec2881a71623b",
+  "Base": "760d673b460e09f8308d9086efa1f9bad00e64fd",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1610547,
+      "SHA256": "f51ecd145ff3c64f0c8c6dc7e344c7e37ee3d424046b178e9f1add3492f2a0e2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-cleanup-retry-helper-refusal-remote.json",
+      "Bytes": 73577,
+      "SHA256": "86e6a0c473dbfd5996143e1f1b15b1744955282a8cd338ea50d62d5f4237ad0c",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-cleanup-retry-readonly-restore.json",
+      "Bytes": 73098,
+      "SHA256": "6aa5b91c35a844d03942313dbe1d855c0506355a54bfbf550689ce9751008fe2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-inner-failure-trace-smoke/after.log.gz",
+      "Bytes": 344,
+      "SHA256": "eafa667b88ebf09806e72bdf7213258acfefd57a38d41c3d6b8d3cb5c9e771f9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-inner-failure-trace-smoke/before.log.gz",
+      "Bytes": 212,
+      "SHA256": "f03eefccaeb09617efe30ee4ae9cbcddb1f7b89e01f8b213521c856a199a0057",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-inner-failure-trace-smoke/manifest.json",
+      "Bytes": 1310,
+      "SHA256": "37ca2496debe1029d1b1838be39480cd1d7d73e956ea3ae9a7de51dd9cd0b3bb",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-helper-inner-failure-trace-smoke/summary.json.gz",
+      "Bytes": 461,
+      "SHA256": "0b9036c4b7127382f43368a313279ff68d3c38d1ed04edc835a8e7bbbf417588",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 20074,
+      "SHA256": "91d9202431eb18c35557bee6627de50fc8477f97936071c58c07fc81f80c0044",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tools/gm-relay/relay-apply-response.ps1",
+      "Bytes": 2353,
+      "SHA256": "228e0691c127f959128382766aaff173807cb384d562a26ff0b402f12915e859",
+      "RemoteExact": true
+    }
+  ]
+}
