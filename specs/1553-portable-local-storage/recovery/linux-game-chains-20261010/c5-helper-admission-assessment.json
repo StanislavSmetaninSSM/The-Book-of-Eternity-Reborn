@@ -232,7 +232,7 @@
     "MinimumNextProposal": "One newly scoped original failing Complete-BoeTurn write-scope seq0 capture, retaining its actual returned frame/ok/state/sequence/generation/ExpectedGeneration/structured refusal-close fields, dedicated managed child identity/exit/joined stderr and original monotonic bounds. Passive existing-boundary observations only; unchanged10000ms/65536/4000, authority/owner/uncertain/no replay. No retry, timer, guard or repair is inferred from this result."
   },
   "WriteContinuation": {
-    "Status": "WIP / source-gate and fresh preparation and sole write observation UNRUN",
+    "Status": "Source gate and matching preparation/catalog PASS; sole write observation UNRUN",
     "AuthorizedBaseSHA": "4e8fd25a605bbb6cee5fd8959662e276428016f9",
     "Target": "Actual Complete-BoeTurn write-scope seq0 in original relay packet consumer, excluding earlier read/Write-BoeJson scopes",
     "PlannedCapture": [
@@ -267,6 +267,24 @@
         "LaterConsumerFailureObserved": 96.85019155900045
       },
       "Limit": "No actual transaction/producer/rename/delete witness identifies transition or links it to later write admission refusal. UNKNOWN; no extra journal instrumentation/fix/run selected."
+    },
+    "SourceAssemblySHA": "2d29d5af8602b92d499fdb8cae09e82f27d8db46",
+    "SourceGate": "same Astra PASS/no blocking findings",
+    "Preparation": {
+      "WallSeconds": 128.5485521,
+      "BuildUnitSeconds": 122.9347856,
+      "PlannedCases": 1,
+      "ExecutedCases": 0,
+      "CleanupComplete": true,
+      "Manifest": "c5-helper-write-preparation/manifest.json"
+    },
+    "Catalog": {
+      "Seconds": 12.2758193,
+      "Valid": true,
+      "Categories": 657,
+      "Methods": 11457,
+      "Executed": 0,
+      "Manifest": "c5-helper-write-catalog/manifest.json"
     }
   }
 }
