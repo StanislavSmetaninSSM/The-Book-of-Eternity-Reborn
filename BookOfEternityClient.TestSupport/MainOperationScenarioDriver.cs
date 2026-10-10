@@ -73,9 +73,12 @@ internal static partial class MainOperationScenarioDriver
                 }
             }
             if(running==null)server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
-            if(mode.StartsWith("terminal-main-operation-expected-run-",StringComparison.Ordinal))
+            if(mode.StartsWith("terminal-main-operation-expected-run-",StringComparison.Ordinal) ||
+                mode.StartsWith("terminal-main-operation-expected-client-",StringComparison.Ordinal))
             {
-                await VerifyOriginalRunExpectationAsync(mode["terminal-main-operation-expected-run-".Length..], root, pipeName, host!, type, result);
+                var actualClient = mode.StartsWith("terminal-main-operation-expected-client-",StringComparison.Ordinal);
+                var prefix = actualClient ? "terminal-main-operation-expected-client-" : "terminal-main-operation-expected-run-";
+                await VerifyOriginalRunExpectationAsync(mode[prefix.Length..], root, pipeName, host!, type, result, actualClient);
                 await Call("StopShellAsync");
                 result["OriginalStopped"] = GmSessionRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root,".boe_runtime/gm-runs/main.json"))).Disposition == GmSessionRunDisposition.Stopped;
                 if(!(bool)result["OriginalStopped"]!)throw new InvalidOperationException("Original owner did not stop after expectation control.");

@@ -1,3 +1,7 @@
+### C5 actual client and private-frame qualification WIP — 2026-10-10
+
+New12controlsUNRUN: actual original client8(fullidentity negative7 beforeconnect plus matching actualclose/disposal), original bound privateframe borrowing/disposed/escaped3, existing actual committed original journal cleanupdebt1. Production unchanged. Categories c5-original-client-admission and c5-original-browser-frame-lifetime isolate these requirements; fresh unit/integration next. Escaped task is joined after originalowner closes, not treated as fresh authority. Remaining original stopped/active transition proof and independent review precede approved lifetime split.
+
 ### C5 actual staging journal refusal bounded GREEN — 2026-10-10
 
 Fresh source5603151f integration **5/5PASS**,56.9517143s,complete2/2descriptors,no skip/duplicate/timeout,ownedcleanupcomplete. Genuine SIGKILL cuts at original publisher members0/1 and exact journal reinsertion at physical lock all refuse with zero recovery and unchanged original tree; permitted unrelated journal2 remain GREEN. Strengthened oracle verifies exact ordered request/slot paths, action/generation and no commitstage. [Raw GREEN39payloads](recovery/linux-game-chains-20261010/c5-actual-staging-journal-refusal-green/manifest.json). Read-only original trusted journal interpretation and post-recovery tuple recheck now bounded verified; shared prerequisite still WIP pending independent review and remaining active-client/quiescent/warm controls. No lifetime/C5/T070 completion.

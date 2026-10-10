@@ -2,6 +2,59 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "c5-original-browser-frame-lifetime",
+            "responsibility": "Actual original private browser scope permits borrowing, refuses disposed/escaped owner, and actual committed original journal cleanup debt preserves exact staged tuple.",
+            "excludes": "Actual Program/React staged-idle crash, active original owner native propagation, Windows and live model qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 4,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_PrivateFrameRequiresActualOriginalOwner",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_CommittedOriginalJournalDebtAllowsExactStage"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "c5-original-client-admission",
+            "responsibility": "Actual GmMainOperationClient full retained identity pre-connect refusal and matching original activation/immutable close/disposal beneath original Bridge/native owner with normal stop.",
+            "excludes": "Full Program/React staged-idle crash, original manifest capture, storage recovery and unrelated GM helper/shutdown behavior; no model or Windows qualification.",
+            "changeHints": [
+                "BookOfEternityGMBridge/BridgeHost.MainOperations.cs",
+                "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+                "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ExpectedRunIdentityRefusesBeforeConnecting"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-original-browser-staging-crash",
             "responsibility": "Actual original GameEngine staging publisher SIGKILL at each of its two member publication boundaries under independently guardian-owned driver; no wrapper rollback before cut. Uncommitted original journal must refuse before replay, including journal inserted after preflight at physical lock.",
             "excludes": "Guarded quiescent component only; no actual Program/relay gameplay, active-owner uncertainty recovery, model, arbitrary crash recovery or new journal.",

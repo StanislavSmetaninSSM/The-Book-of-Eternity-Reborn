@@ -11,6 +11,17 @@ public sealed class GmMainOperationLinuxTests
     [InlineData("boot")]
     [InlineData("backend")]
     [InlineData("root")]
+    public Task OriginalClient_ExpectedRunIdentityRefusesBeforeConnecting(string coordinate) =>
+        GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-expected-client-" + coordinate);
+    [Theory]
+    [InlineData("same")]
+    [InlineData("run")]
+    [InlineData("generation")]
+    [InlineData("epoch")]
+    [InlineData("host")]
+    [InlineData("boot")]
+    [InlineData("backend")]
+    [InlineData("root")]
     public Task OriginalOwner_ExpectedRunIdentityRefusesBeforeMint(string coordinate) =>
         GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-expected-run-" + coordinate);
 

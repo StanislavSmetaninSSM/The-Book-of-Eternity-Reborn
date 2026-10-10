@@ -1,13 +1,15 @@
 using System.IO.Pipes;
 using System.Reflection;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
 internal static partial class MainOperationScenarioDriver
 {
     private static async Task VerifyOriginalRunExpectationAsync(string coordinate, string root, string pipeName,
-        object host, Type type, Dictionary<string, object?> result)
+        object host, Type type, Dictionary<string, object?> result, bool actualClient = false)
     {
         var owner = (GmSessionRunCoordinator)type.GetField("_mainRun", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
         if(owner.Record?.Disposition != GmSessionRunDisposition.Running)throw new InvalidOperationException("Original live owner prerequisite failed.");
@@ -28,6 +30,33 @@ internal static partial class MainOperationScenarioDriver
             .GetField("_remotePins", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(owner)!;
         var before = pins.Count;
         using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+        if(actualClient)
+        {
+            Exception? refusal = null;
+            GmMainOperationClient? client = null;
+            try { client = await GmMainOperationClient.OpenAsync(new FileSystemManager(root,
+                NullLogger<FileSystemManager>.Instance), deadline.Token, expected); }
+            catch(InvalidDataException failure) { refusal = failure; }
+            if(client != null)
+            {
+                await using(client)
+                {
+                    await client.CompleteAsync(MainOperationOutcome.Completed, false);
+                    result["ActualOriginalClose"] = client.TerminalClose;
+                    result["CloseObserved"] = client.CloseObserved;
+                }
+            }
+            result["OriginalIdentity"] = original;
+            result["ExpectedIdentity"] = expected;
+            result["RefusalPhase"] = refusal?.Data["ParticipatingAdmissionPhase"];
+            result["PinsBefore"] = before;
+            result["PinsAfter"] = pins.Count;
+            result["OriginalUncertain"] = owner.IsUncertain;
+            result["ExpectationMatchedBehavior"] = !owner.IsUncertain && pins.Count == before &&
+                (coordinate == "same" ? client != null && client.CloseObserved :
+                    client == null && (string?)refusal?.Data["ParticipatingAdmissionPhase"] == "read-record");
+            return;
+        }
         using var pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
         await pipe.ConnectAsync(deadline.Token);
         var operation = Guid.NewGuid().ToString("N");

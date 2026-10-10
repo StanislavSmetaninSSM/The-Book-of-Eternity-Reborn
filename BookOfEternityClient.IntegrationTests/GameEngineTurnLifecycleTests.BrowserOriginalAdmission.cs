@@ -11,6 +11,74 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    [Theory]
+    [InlineData("borrowed")]
+    [InlineData("disposed")]
+    [InlineData("escaped")]
+    public async Task BrowserOriginalAdmission_PrivateFrameRequiresActualOriginalOwner(string kind)
+    {
+        var (_, staged) = await PrepareBrowserInputStagingAsync();
+        Task? escaped = null;
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, staged.Binding.Generation, async () =>
+        {
+            using var original = _fs.BeginBrowserOriginalOperation(staged.Binding, staged);
+            if(kind == "borrowed")
+            {
+                await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, staged.Binding.Generation, async () =>
+                {
+                    await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                    Assert.Equal(staged.RequestJson, await _fs.ReadFileAsync(lease,"input/turn_request.json"));
+                    return true;
+                });
+                await using var afterBorrow = await _fs.AcquireCanonicalWriteLeaseAsync();
+                Assert.Equal(staged.Json, await _fs.ReadFileAsync(afterBorrow,PendingPlayerActionService.PendingPath));
+            }
+            else if(kind == "disposed")
+            {
+                original.Dispose();
+                Assert.Throws<InvalidDataException>(() => original.ValidateOwner(null));
+            }
+            else
+            {
+                escaped = Task.Run(async () =>
+                {
+                    await release.Task;
+                    await Assert.ThrowsAsync<InvalidDataException>(async () =>
+                    { await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync(); });
+                });
+            }
+            return true;
+        });
+        var before = OriginalAdmissionTree();
+        release.TrySetResult();
+        if(escaped != null) await escaped.WaitAsync(TimeSpan.FromSeconds(5));
+        AssertOriginalAdmissionTree(before);
+    }
+
+    [Fact]
+    public async Task BrowserOriginalAdmission_CommittedOriginalJournalDebtAllowsExactStage()
+    {
+        var (_, staged) = await PrepareBrowserInputStagingAsync(withRollback:true);
+        await using(var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var publisher = new TrustedLocalFilePublication(_fs, new TrustedLocalFileScope([_fs.BasePath]));
+            var path = _fs.ResolvePath("input/turn_request.json");
+            Assert.Throws<C5RecoveryInterruption>(() => publisher.Publish(lease,
+                TrustedLocalGeneration.Existing(staged.Binding.Generation), [new(path, File.ReadAllBytes(path), File.ReadAllBytes(path))],
+                (phase, _) => { if(phase == TrustedLocalPublicationPhase.Committed) throw new C5RecoveryInterruption(); }));
+        }
+        var journal = JsonNode.Parse(File.ReadAllText(Path.Combine(_fs.BasePath,".boe_runtime/trusted-local-publication-v1/active.json")))!;
+        Assert.True(journal["Committed"]!.GetValue<bool>());
+        var callbacks = 0;
+        var cold = new FileSystemManager(_fs.BasePath,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,
+            new FileSystemManagerHooks{LocalPublicationRecoveryObserver=(_,_)=>callbacks++});
+        await using var coldLease = await cold.AcquireCanonicalWriteLeaseAsync();
+        Assert.True(callbacks>0);
+        Assert.Equal(staged.RequestJson,await cold.ReadFileAsync(coldLease,"input/turn_request.json"));
+        Assert.Equal(staged.Json,await cold.ReadFileAsync(coldLease,PendingPlayerActionService.PendingPath));
+    }
+
     [Fact]
     public async Task BrowserOriginalAdmission_OrdinaryProducerRejectsRawStoryCaseAliases()
     {
