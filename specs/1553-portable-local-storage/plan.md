@@ -1,3 +1,19 @@
+## C1 packet contract preflight — WIP
+
+Source `5285f3bb8627f0f7e4826fdba8a2722ab890f4c1`: actual C1
+**FAIL1/1**,31.5628045s,0skip/duplicate/timeout; actual turn request/delivery,
+accepted0/modelCalls0,cleanup ECHILD/0emergency.
+[Packet](recovery/linux-game-chains-20261010/c1-adapter-fixture-fail/manifest.json).
+Следующая fixture ошибка — `relay_worker answer` требует `--adapter`.
+Это bounded adapter identity, не executable/model adapter. Runtime не меняется.
+После двух fixture подготовительных ошибок вместо следующего blind run прочтены
+весь `relay_worker.py`, fixed `relay-apply-response.ps1`, worker publication contract,
+current output examples and actual request progression fields. Добавлен явный
+`deterministic-authored-game-chain-v1`, обязательные timestamps и полный actorless
+NPC Scope/Reasoning согласно existing примерному контракту. Это no-provider
+fixture authoring, не ослабление validator или изменение GM contract.
+Python AST PASS, actual GREEN UNRUN. C# build послеc72 всё ещё свежий/неизменный.
+
 ## C1 admission прошла; authored packet preparation FAIL / WIP
 
 Source `c72c2a9871315f17fd844f75e6466df61a3be712`: свежая PlanOnly

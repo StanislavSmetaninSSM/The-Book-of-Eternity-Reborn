@@ -5,6 +5,7 @@ main ownership, relay/helper, validation, application and persistence are real.
 An outer host-guardian owns this driver and all of its descendant processes.
 """
 import errno
+from datetime import datetime, timezone
 import fcntl
 import hashlib
 import json
@@ -174,10 +175,15 @@ def author_packet(request_dir, ordinal):
         suffix = "SimulationOrdinal" if contour == "chaosSea" else "CycleOrdinal"
         next_key = "nextChaosSeaTurnOrdinal" if contour == "chaosSea" else "next" + contour[0].upper() + contour[1:] + suffix
         report["newLast" + contour[0].upper() + contour[1:] + suffix] = control[next_key]
+    timestamp = datetime.now(timezone.utc).isoformat()
+    thoughts = "\n".join(["## NPC Scope", "- Mode: Scene-local", "- Relevant actors: нет",
+                           "- Why relevant: Душа осматривается без структурных изменений NPC или Хранителя.",
+                           "- Actors outside scope: нет", "- Why outside scope: Самостоятельные акторы не участвуют.",
+                           "", "## Reasoning", "- Детерминированная тестовая заготовка; провайдер не вызван."])
     writes = {"game_state/control/progression_report.json": {"progressionProcessingReport": report},
-              "output/narrative_response.json": {"response": narrative},
-              "output/interface_updates.json": {"dialogueOptions": []},
-              "output/debug_logs.json": {"gm_thoughts_markdown": "Детерминированная тестовая заготовка; провайдер не вызван."}}
+              "output/narrative_response.json": {"response": narrative, "timestamp": timestamp},
+              "output/interface_updates.json": {"dialogueOptions": [], "timestamp": timestamp},
+              "output/debug_logs.json": {"gm_thoughts_markdown": thoughts, "timestamp": timestamp}}
     packet = {"Completion": "turn", "Writes": [], "FilesModified": list(writes)}
     for path, data in writes.items():
         target = session / path
@@ -185,7 +191,7 @@ def author_packet(request_dir, ordinal):
     answer = out / ("authored-" + str(ordinal) + ".json")
     answer.write_text(json.dumps(packet, ensure_ascii=False, indent=2))
     (out / ("request-" + str(ordinal) + ".json")).write_bytes((request_dir / "game-request.json").read_bytes())
-    worker("answer", request_dir, answer)
+    worker("answer", request_dir, answer, "--adapter", "deterministic-authored-game-chain-v1")
     return request, narrative
 
 
