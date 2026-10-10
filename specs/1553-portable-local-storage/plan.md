@@ -1,3 +1,76 @@
+## Итог текущего ограниченного этапа C1–C5 — 2026-10-10 (review/restore WIP)
+
+Source issue[#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553),
+разрешённый cloud stage T066–T068. Branch `1553-storage-migration-cloud-20261008`,
+base `e7d88d002858287ef19ee97213f7934f43e3023f`, runtime fixes c72c2a98/e8a38743;
+последние исправленные сценарии и результаты на `3cb165dffd1b806932a100b65830d5275c669de1`.
+`main` сохраняется d0241e71e349fbe2020e4a41b6be7c627c81cbb4; CI/protection/merge/issues
+не менялись. ModelCalls0, живого провайдера/модели не было. Это конечная сверка
+данного этапа, не whole-migration/all-platform/game-feature acceptance.
+
+| Требование → реальный путь | Фактическая проверка и источник | Остаток |
+|---|---|---|
+| T066 C1, US3/FR004–006,011,013: Program→GameEngine→real Bridge/daemon/maintained relay/helper→validation/domain/storage→console | [PASS1/1,141.4183056s](recovery/linux-game-chains-20261010/c1-qualified-per-run-stop/manifest.json), source4419c875. Authored deterministic GM substitutes model only. Three accepted turns retain full substantive story prefix314→625→936bytes; client-only restart, then all client/Bridge/daemon/relay restart; each original identity has its own Stopped proof/all EOF, guardianECHILD/0emergency/0failure. | Chaos Sea ordinary journal route only; addMusings authority defect remains. Not liveGM/B2/item/wound materialization. |
+| T066 C2, #1536 physical wound/treatment fresh player action→sealed client request→resolution→canonical receipt/history→cold continuation | **Whole-game UNRUN**: no runtime harmful-occurrence producer and no production callers of fresh PrepareProcedure/Course/Guaranteed or command composition. Existing resolver/persisted finalized consumer remain implemented. [Required guided flow](../1536-complete-wound-materialization/contracts/wound-player-commands-and-projection.md), [fresh preparation](../../BookOfEternityClient/Services/MortalWoundTreatmentPlanner.Requests.cs), [production replay](../../BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs). | Missing fresh selection/request wiring; neutral fixture also lacks target wound/identity/history/routes/actor/provider/world-time/signed snapshot prerequisites. B2 afterlife force_binding is not a universal Mortal blocker. No invented authority/mechanic in this stage. |
+| T066 C3, US3: real Program--web/React/Chromium→guided inventory split→storage/index/receipt→full host/browser cold restart→merge | [PASS1/1,28.0522491s](recovery/linux-game-chains-20261010/c3-final-strict-guards-pass/manifest.json), source49fc22e8. Exact DTO RequiresInput→Completed, original receipt/history prefixes, exactly one transition per identity, merged child retired, full6path+generation bytes cold preserved. | Initial sealed Rare item5/receipt42 is explicit fixture, not an accepted materialization turn. |
+| T066 C4, US3/FR011–013: actual React Save→prepared archive→split→actual no-main Load/full bundle/navigation→generation→full host/browser cold→new split | [Final PASS1/1,32.9479436s](recovery/linux-game-chains-20261010/c4-final-presave-guard-pass/manifest.json), source3cb165df. Independent pre-Save logical identity, exact committed ZIP payload6hashes, sourceZIPunchanged, loaded=cold full snapshot incl generation-document bytes, newgen/newPIDs. | No active original GM; no fresh-launch ACK should occur. Original-main Load handshake remains separate historical bounded evidence, not qualified anew here. |
+| T067 actual late Load write failure→known rollback→cold continuation | [PASS1/1,35.7226100s](recovery/linux-game-chains-20261010/c4-persistent-io-rollback-cold-pass/manifest.json), source3cb165df. Initial test-only BrowserGameFaultHost runs actual LocalWebUiHost/services/React; cold actualProgram. Real BOELP3 late MemberPublished45/no commit.tmp IOException persists through20attempts/19existing safe retries of ONE React Load, terminalRolledBack/NeedsFollowUp/no block/no main, prior6paths+generation exact/sourceZIPunchanged, full cold actualhost/browser, nextmerge5. | Controlled injection disclosed. Not original engine rollback26/27, uncertainty/primary+secondary close combinations, or universal Load qualification. No retry/budget change. |
+| T067 former source-only104 actual ReadContextAsync own lease late close→physical release→independent cold read | [PASS1/1,7.0408666s](recovery/linux-game-chains-20261010/read-close-cold-qualified-pass/manifest.json), source6ae39ef4. Exact original IOException/close1/no return, lease/context cleared, mutations0, all8canonical files+generation unchanged/lock available, separate actualTestSupport coldprocess item5/samefullstate, guardiandriver0/ECHILD/0emergency/0failure. | Component owner only, not Program/gameplay; no complete81-owner or secondary-fault claim. |
+| T066 C5 real browser action→engine request→relay→accepted turn/cold continuation | [Actual FAIL1/1,58.3348185s](recovery/linux-game-chains-20261010/c5-actual-handoff-fail/manifest.json), source49fc22e8. React200/Success and exact pending bytes; derivedreadytrue/actualengine+Bridge+daemon alive;20s no turn_request, relay0/accepted0. Unique web/Chrome normal exit, originalStopped/allEOF/guardianclean; consolefailureCtrl+Cexit-2 disclosed. | Pending file has writers, no production consumer. Full cold accepted continuationUNRUN. Storage introduction not established; no console-input substitute/new browser architecture. |
+| Affected C4 publication/outcome invariants | [PASS7/7,7.2287107s](recovery/linux-game-chains-20261010/save-outcomes-seven-pass/manifest.json), source49fc22e8: original6commit/rollback/uncertain/cleanup/refresh/debt +generationguard. | Component negatives distinct from actual chain qualification. |
+
+### Изменения, причины и пределы
+
+Only two production corrections: bounded original participating menu story read
+[MainMenu514](../../BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs)
+and bound dashboard carrying/verifying original held lease before+after
+[Dashboard34](../../BookOfEternityClient/WebUi/BrowserLifecycleDashboardService.cs).
+Actual original C1 admission refusal and C4 self-contention RED retained; same
+full validators/guard/generation/nativeowner proofs, no fixture authority relaxation.
+Changes are client-owned read finalization, not GM schema/mechanics; prompts,
+examples and game rules need no update. No other gameplay fix claimed.
+
+Historical fault explanation explicitly superseded: CommitStaged callback occurs
+before active replacement/attempt.Committed, so the prior statement that its
+interrupted first attempt had committed was wrong. The actual still-uncommitted
+active journal recovers before-state; LoadNamespace249–256 safely retries ordinary
+IO only after confirmedRolledBack. One-shot finalCommitted shows permitted later
+retry, not failed rollback. Preserved packets retain actual final DTO and no
+first-outcome witness; persistent20cut final test now qualifies terminalrollback.
+
+C1 Guardian addMusings authority-loss defect remains separate: normalizer removes
+commands before later authority reconstructs pre-turn expected state; journalPASS
+does not qualify that command. B2 coldforce_binding approvedFAIL remains open and
+fullB2–B5 paused. Source-only81 ≠81defects; no new census/all81 rewrite. Native
+Windows, systemdS2/S3 unavailable/off, default nativeworkers/durableACK, actual
+wound110/engine26–27faults and liveprovider remain outside accepted evidence.
+
+### Проверки и восстановление
+
+Fresh final2category PlanOnly/buildPASS36.2721527s:2planned/0executed.
+Every actual category above planned=completed,0skip/duplicate/timeout and owned
+cleanupcomplete. No Full/Fast/PreMerge/all-category sequence. Browser integration
+requires built React, actual Python3.12/Playwright1.62 identified by
+BOE_GAME_CHAIN_BROWSER_PYTHON, /usr/bin/chromium, DOTNET_ROOT runtime/PowerShell7;
+CI currently disabled and not provisioned by this stage. Discovery-only catalog
+is running once after final category changes; independent final Astra/xhigh and
+exact-tip fresh restoration still pending at this metadata checkpoint.
+
+Reproduce recovery with ordinary GitHub clone (no local alternates):
+`git clone --single-branch --no-tags --branch 1553-storage-migration-cloud-20261008 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git <new-empty-dir>`,
+then `python3 specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/verify_checkpoint.py <new-empty-dir> <exact-remote-full-SHA>`.
+Verifier checks all tracked blobbytes/fsck/currentremote/main/sourcecommit objects
+and every packetgzip rawhash/length; it executes no build/test/game/model and
+cannot replace semantic runtime review. Original broader storage recovery pins
+are separately verified by the existing parent restore receipt.
+
+Следующий шаг после доставки: выбрать цельный отдельный feature stage по
+существующей спецификации: C5 pending action→engine wiring либо #1536 fresh
+physical treatment player→sealed request (followed by real harmful producers).
+These are implemented-product gaps rather than questions the spec already answers.
+No feature implementation starts in this finite storage verification stage.
+T066–T068 stay unchecked until parent acceptance; T061–T065 retain actual limits.
+
 ## C4 whole local chain PASS; read-owner close/cold PASS; persistent I/O correction
 
 Source6ae39ef4, fresh3planned/0executed buildPASS40.2243562s.
