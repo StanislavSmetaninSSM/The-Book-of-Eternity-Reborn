@@ -1,0 +1,54 @@
+{
+  "SHA": "5849401195f8f6f995ea0660ae8c1895195929ed",
+  "Base": "1398023ea081df059c28b4326114f0296619ff8e",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1606689,
+      "SHA256": "188edfba65f7ad803bad92f291214fb7a22dfb21548be819c5559ce950b2cd06",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-cold-cleanup-order-controls-green/manifest.json",
+      "Bytes": 1121,
+      "SHA256": "9ccffd3362bef91b800a65e3f6585ae5194107161afce4be96af62e864f9433d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-cold-cleanup-order-controls-green/runner/c5-accepted-terminal-cleanup-order-integration-001.trx.gz",
+      "Bytes": 1821,
+      "SHA256": "769e68e76ecef5283ec1c730bcc47860308bbe56fd250fb109d4603553696a3e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-cold-cleanup-order-controls-green/runner/dotnet-test.log.gz",
+      "Bytes": 181015,
+      "SHA256": "432582cccd3af45498b9ca60d527186765587d6cc1165c85f4a8b5f6b43d58f9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-cold-cleanup-order-controls-green/runner/plan.json.gz",
+      "Bytes": 608,
+      "SHA256": "8306812aad4732cd1c476c693975e7f1bc4989a02a9628051ba752fe9268e229",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-cold-cleanup-order-controls-green/runner/summary.json.gz",
+      "Bytes": 605,
+      "SHA256": "cc4f7fc0f9a4b7b5c6f8fe26e967538ef7f4c4b7fd155fd9dd7ab254db18da26",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-cold-cleanup-order-fresh-plan/manifest.json",
+      "Bytes": 1339,
+      "SHA256": "0e74bce254194549e275b1d357b24175ded9e3bb577ea5d604d19e54e48405bb",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-cold-cleanup-preparation-remote.json",
+      "Bytes": 2782,
+      "SHA256": "4bb1422a96f86e6d1df8aff408dea651488d2a844975ff6884c80178ddfc22fe",
+      "RemoteExact": true
+    }
+  ]
+}
