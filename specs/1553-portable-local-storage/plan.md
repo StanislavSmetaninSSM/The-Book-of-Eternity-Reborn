@@ -50,7 +50,7 @@ Original C5 full-chain FAIL remains untouched; consumer/recovery/input still UNR
 Input component RED prepared: PlayerInputDraftTests exercises actual TextComposer
 with interrupted current line after a completed multiline line and while confirming
 a preserved draft. Expected full draft; no native reader/process substitute claim.
-Runtime RED execution UNRUN. Existing clipboard tests remain separate affected controls.
+Actual RED at21edae15:2/2FAIL,87.4108207s; complete1descriptor/2cases,0skip/duplicate/timeout and ownedcleanupcomplete. [Archived RED](recovery/linux-game-chains-20261010/c5-input-draft-red/manifest.json). Minimal draft preservation implemented; GREEN UNRUN. Existing clipboard tests remain separate affected controls.
 
 ### T070 execution steps (all UNRUN)
 
