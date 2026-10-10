@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "dd3f5cd39b96c5d99c42620d0d514a963ecd4036",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-player-input-recovery; fresh build",
+  "Status": "PASS",
+  "Scope": "13/13,55.3676936s complete0skip/duplicate/timeout/cleanupcomplete; original publication conflict and knownerror/cancel components. Broader syntheticerror/failedrestore findings stillopen.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "4c8e9375c3a494535405e5dcf1f27c73d9472528f4a05a0523520b324a731f47",
+      "RawBytes": 3889
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "a6b00bdbefe9a1458c5a1b74c700e25433c5912af71bbde301c06bd68bb7d7a2",
+      "RawBytes": 1571
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "79b53c006f9a68b6135a57ddbbbb8054c807f80227c7e3eaf1c0e6db12d5c09e",
+      "RawBytes": 42417
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "f752532058e923e04a3ebcdd170c00678a7fe841b982e5649d2053da289351d9",
+      "RawBytes": 1648816
+    },
+    {
+      "Path": "runner/browser-player-input-recovery-integration-001.trx.gz",
+      "RawSHA256": "5ebae5182f47a29c0b681718a9f732a9df2215e9894f5dd0659e8c3d0851e519",
+      "RawBytes": 22680
+    }
+  ]
+}

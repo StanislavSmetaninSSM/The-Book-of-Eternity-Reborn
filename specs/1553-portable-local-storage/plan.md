@@ -1,3 +1,13 @@
+Actual dd3f5cd3 recovery GREEN13/13,55.3676936s complete,
+0skip/duplicate/timeout/cleanupcomplete. Independent Astra found two additional
+Important paths: unsuccessful rejection rollback still followed by snapshot
+cleanup, and synthetic HarnessSource error mistaken for actual GM completion.
+New original TryWriteHarnessTerminalErrorAsync controls (timeout/runtime-unavailable)
+are test-first/UNRUN, existing13 do not qualify them. Next source keeps synthetic
+original request/signal/snapshot/evidence processing-blocked, and avoids cleanup
+after failed rejection restore. Settled receipt must preserve original terminal
+signal provenance. FullT069/C5 affected rerun/cold/newnegative scope remains open.
+
 Terminal causal RED75151f13:13=11PASS2FAIL,54.5315212s/complete,
 0skip/duplicate/timeout/cleanupcomplete. Original publication-conflict orchestration
 nowPASS. Actual ordinary cancel reaches rollback but remains staged; explicit

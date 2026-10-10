@@ -34,17 +34,25 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData("cancel")]
     [InlineData("error")]
-    public async Task BrowserInput_RestoredTerminalDispositionSettlesOrBlocksBeforeContinuation(string disposition)
+    [InlineData("gm_terminal_wait_timeout")]
+    [InlineData("gm_runtime_unavailable")]
+    public async Task BrowserInput_TerminalDispositionSettlesOrBlocksBeforeContinuation(string disposition)
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
         var binding = await QueueBrowserInputAsync();
         var input = new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]);
-        var engine = CreateGameEngine(input, finalizationHooks: new GameEngineSessionFinalizationHooks
+        GameEngine? engine = null;
+        engine = CreateGameEngine(input, finalizationHooks: new GameEngineSessionFinalizationHooks
         {
             AtCheckpointAsync = async checkpoint =>
             {
                 if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted) return;
                 if (disposition == "cancel") { input.Enqueue(Key(ConsoleKey.Escape)); return; }
+                if (disposition != "error")
+                {
+                    Assert.True(await InvokePrivateAsync<bool>(engine!, "TryWriteHarnessTerminalErrorAsync", disposition, "Controlled synthetic GM diagnostic."));
+                    return;
+                }
                 var request = await WaitForTurnRequestAsync();
                 await _fs.WriteFileAtomicAsync("ready/turn_error.json", JsonSerializer.Serialize(new
                 {
@@ -54,17 +62,27 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
         });
         await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", binding.Action, null, null, null, true, binding);
-        if (disposition == "cancel")
+        if (disposition != "error")
         {
             // Local waiter completion proves no external worker stop or late-output fence.
+            Assert.NotNull(await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath));
             Assert.Equal("terminalProcessing", JsonNode.Parse((await _fs.ReadFileAsync(PendingPlayerActionService.PendingPath))!)!["status"]!.GetValue<string>());
             var before = BrowserRecoveryTree();
             await Assert.ThrowsAsync<InvalidOperationException>(() => InvokePrivateTaskAsync(CreateGameEngine(), "ClassifyBrowserRecoveryAsync"));
             AssertBrowserRecoveryTree(before);
         }
         else Assert.False(_fs.FileExists(PendingPlayerActionService.PendingPath));
-        Assert.False(_fs.FileExists("input/turn_request.json"));
-        Assert.False(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+        if (disposition is "cancel" or "error")
+        {
+            Assert.False(_fs.FileExists("input/turn_request.json"));
+            Assert.False(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+        }
+        else
+        {
+            Assert.True(_fs.FileExists("input/turn_request.json"));
+            Assert.True(_fs.FileExists("ready/turn_error.json"));
+            Assert.True(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+        }
         Assert.Equal(0, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
     }
 
