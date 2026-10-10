@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "06f07fa21bccad46cd6dae8bca7ccdd3ec49f522",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"guardian-musings-actual-repair\", \"c5-original-post-validation-source\") -PlanOnly -TimeoutMinutes 10'",
+  "Status": "PASS_PREPARATION_ONLY",
+  "Scope": "Fresh integration+unit references build208.1351352s exit0;2planneddescriptors/4cases0executed. Defective fixture source reviewed and corrected afterward; no runtime/authority proof.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "2124fff0d02f867ab90182db6e7fe86f8a9e9a5b82066bfbcf54afb72149b5af",
+      "RawBytes": 2740
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "d93d11b7dd650f399e6256cfb70d6a69462f00671bc3fcff45968fb2b70a0ea8",
+      "RawBytes": 1673
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "9bce273b46ff8291588a7122e150f6c7d87370a98d6788317e8bc7dbc376ef9b",
+      "RawBytes": 53545
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "ee6393efbcea1bcd3e2abb7a94460ba4f87cddba551904cc79728358abba8399",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "5eb99db02b78e82bcdb5d7f9fe506c56ff92afd49ae6a34b45e47e58b6270ae1",
+      "RawBytes": 3359582
+    }
+  ]
+}

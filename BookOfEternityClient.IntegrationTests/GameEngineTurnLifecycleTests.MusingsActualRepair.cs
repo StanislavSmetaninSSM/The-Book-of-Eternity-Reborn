@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
-using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
@@ -39,6 +39,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(result["OriginalStopped"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["PhysicalCleanup"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["OperationSettled"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["StopTaskSettled"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["ObserverSettled"]!.GetValue<bool>(), result.ToJsonString());
         Assert.Null(result["CleanupFailure"]);
         Assert.True(result["Accepted"]!.GetValue<bool>(), result.ToJsonString());
@@ -58,7 +59,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         ValidationService? validator = null;
         ValidationService.GuardianMusingsValidationScope? originalScope = null;
         object? mutationWitness = null;
-        bool repaired = false, freshComparison = false;
+        bool repaired = false, freshComparison = false, causalAuthorityRed = false;
+        string? originalGeneration = null;
         ValidationService.GuardianMusingsValidationScope? CurrentScope() => validator is null ? null :
             ((AsyncLocal<ValidationService.GuardianMusingsValidationScope?>)typeof(ValidationService)
                 .GetField("_guardianMusingsPublication", flags)!.GetValue(validator)!).Value;
@@ -69,25 +71,34 @@ public sealed partial class GameEngineTurnLifecycleTests
                 // Read inside the original mutation flow, before even the first repair deletion.
                 // This callback is observational: no lease, waits, writes or manual invalidation.
                 var scope = CurrentScope();
-                if (mutationWitness is null && scope?.Completion is not null && !scope.Enabled)
+                var stack = new StackTrace().ToString();
+                if (mutationWitness is null && originalScope is not null &&
+                    stack.Contains("ValidateCurrentGameStateOrShowErrorsAsync", StringComparison.Ordinal))
                 {
-                    originalScope = scope;
-                    var capture = scope.Completion.GetType().GetField("_capture", flags)!.GetValue(scope.Completion)!;
-                    var snapshot = (PendingTurnSnapshotReadAuthority)capture.GetType().GetField("_snapshot", flags)!.GetValue(capture)!;
-                    mutationWitness = new { Path = path, CompletionPresent = true, Enabled = scope.Enabled,
-                        Generation = capture.GetType().GetField("_generation", flags)!.GetValue(capture),
-                        snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber,
-                        Stack = new StackTrace().ToString() };
+                    // Select the first repair-owned mutation independently of Enabled.
+                    // A still-enabled/missing/replaced scope is retained and fails the oracle.
+                    var completion = scope?.Completion;
+                    var capture = completion?.GetType().GetField("_capture", flags)!.GetValue(completion);
+                    var snapshot = capture is null ? null :
+                        (PendingTurnSnapshotReadAuthority)capture.GetType().GetField("_snapshot", flags)!.GetValue(capture)!;
+                    mutationWitness = new { Path = path, CompletionPresent = completion is not null,
+                        Enabled = scope?.Enabled, ScopeReferenceMatches = ReferenceEquals(scope, originalScope),
+                        Generation = capture?.GetType().GetField("_generation", flags)!.GetValue(capture),
+                        SessionId = snapshot?.SessionId, RequestId = snapshot?.RequestId,
+                        TurnNumber = snapshot?.TurnNumber, Stack = stack };
                 }
                 return Task.CompletedTask;
             },
-            AfterCanonicalReadAttemptAsync = path =>
+            BeforeCanonicalReadOpenAsync = path =>
             {
                 var scope = CurrentScope();
-                if (repaired && path == guardianPath && scope?.Completion is not null && scope.Enabled &&
-                    !ReferenceEquals(scope, originalScope) && !originalScope!.Enabled &&
+                if (path == guardianPath && scope?.Completion is not null && scope.Enabled &&
                     new StackTrace().ToString().Contains("ReadForComparisonAsync", StringComparison.Ordinal))
-                    freshComparison = true;
+                {
+                    if (!repaired) originalScope ??= scope;
+                    else if (originalScope is not null && !ReferenceEquals(scope, originalScope) && !originalScope.Enabled)
+                        freshComparison = true;
+                }
                 return Task.CompletedTask;
             }
         };
@@ -144,6 +155,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                         {
                             originalRequest = JsonSerializer.Deserialize<TurnRequest>(File.ReadAllText(files.ResolvePath("input/turn_request.json")), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
                             CaptureBrowserProfileFixture(files, own);
+                            originalGeneration = JsonNode.Parse(File.ReadAllText(files.SessionGenerationPath))!["GenerationId"]!.GetValue<string>();
+                            File.WriteAllBytes(Path.Combine(own, "original-generation.json"), File.ReadAllBytes(files.SessionGenerationPath));
                             WriteMusingsRepairPacket(files, originalRequest);
                         }
                         return Task.CompletedTask;
@@ -162,7 +175,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                         if (File.Exists(files.ResolvePath(repairPath)))
                         {
                             var raw = File.ReadAllBytes(files.ResolvePath(repairPath));
-                            var request = JsonNode.Parse(raw)!;
+                            // Preserve the exact first production bytes even if interpretation fails.
+                            var observedPath = Path.Combine(own, "first-observed-repair-request.bin");
+                            if (!File.Exists(observedPath)) File.WriteAllBytes(observedPath, raw);
+                            var request = JsonNode.Parse(Encoding.UTF8.GetString(raw).TrimStart('\uFEFF'))!;
                             var attempt = request["revalidationAttempt"]!.GetValue<int>();
                             if (attempt > lastAttempt)
                             {
@@ -173,14 +189,25 @@ public sealed partial class GameEngineTurnLifecycleTests
                                 Assert.Equal(originalRequest.SessionId, request["sessionId"]!.GetValue<string>());
                                 Assert.Equal(originalRequest.RequestId, request["requestId"]!.GetValue<string>());
                                 Assert.Equal(originalRequest.TurnNumber, request["turnNumber"]!.GetValue<int>());
+                                var codes = request["errors"]!.AsArray().Select(row => row!["code"]!.GetValue<string>()).ToArray();
                                 if (attempt != 1)
-                                    throw new InvalidOperationException("Actual second repair after completed original scope invalidation: " + request.ToJsonString());
-                                Assert.Contains("accepted_turn_empty_narrative_response", request.ToJsonString());
-                                Assert.DoesNotContain("guardian_materialized_state_outside_authority", request.ToJsonString());
+                                {
+                                    causalAuthorityRed = codes.Contains("guardian_materialized_state_outside_authority", StringComparer.Ordinal);
+                                    throw new InvalidOperationException((causalAuthorityRed ? "CAUSAL AUTHORITY RED" : "UNQUALIFIED SECOND REPAIR") +
+                                        ": actual second repair after original invalidation and narrative-only resubmission: " + request.ToJsonString());
+                                }
+                                Assert.Equal(new[] { "accepted_turn_empty_narrative_response" }, codes);
                                 Assert.NotNull(mutationWitness);
                                 File.WriteAllText(Path.Combine(own, "first-repair-mutation.json"), JsonSerializer.Serialize(mutationWitness));
-                                firstInvalidated = originalScope?.Completion is not null && !originalScope.Enabled;
-                                Assert.True(firstInvalidated);
+                                var witness = JsonSerializer.SerializeToNode(mutationWitness)!;
+                                Assert.Equal(originalRequest.SessionId, witness["SessionId"]!.GetValue<string>());
+                                Assert.Equal(originalRequest.RequestId, witness["RequestId"]!.GetValue<string>());
+                                Assert.Equal(originalRequest.TurnNumber, witness["TurnNumber"]!.GetValue<int>());
+                                Assert.Equal(originalGeneration, witness["Generation"]!.GetValue<string>());
+                                Assert.True(witness["ScopeReferenceMatches"]!.GetValue<bool>());
+                                Assert.True(witness["CompletionPresent"]!.GetValue<bool>());
+                                Assert.False(witness["Enabled"]!.GetValue<bool>());
+                                firstInvalidated = true;
                                 var stamp = DateTime.UtcNow.ToString("O");
                                 File.WriteAllText(files.ResolvePath("output/narrative_response.json"), JsonSerializer.Serialize(new { response = "Исходное письмо прочитано.", timestamp = stamp }));
                                 foreach (var path in new[] { "output/interface_updates.json", "output/debug_logs.json" })
@@ -213,9 +240,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(JsonNode.DeepEquals(after, published["activeGuardian"]!["musings"]));
             Assert.False(published["UpdateGuardians"]?.AsArray().OfType<JsonObject>().Any(row => row["command"]?.GetValue<string>() == "addMusings") ?? false);
             var story = File.ReadAllLines(files.ResolvePath("stories/chaos_sea.jsonl")).Where(line => !string.IsNullOrWhiteSpace(line)).ToArray();
-            File.WriteAllText(Path.Combine(own, "accepted-story.jsonl"), string.Join('\n', story));
+            File.WriteAllBytes(Path.Combine(own, "accepted-story.jsonl"), File.ReadAllBytes(files.ResolvePath("stories/chaos_sea.jsonl")));
             Assert.Single(story);
-            Assert.Contains("Исходное письмо прочитано.", story[0]);
+            var entry = JsonNode.Parse(story[0])!;
+            Assert.Equal(originalRequest!.TurnNumber, entry["turn"]!.GetValue<int>());
+            Assert.Equal(originalRequest.PlayerAction, entry["player"]!.GetValue<string>());
+            Assert.Equal("Исходное письмо прочитано.", entry["narrative"]!.GetValue<string>());
+            Assert.False(File.Exists(files.ResolvePath("input/turn_request.json")));
             Assert.Equal(1, repairCount);
             Assert.False(originalScope!.Enabled);
             accepted = true;
@@ -232,16 +263,20 @@ public sealed partial class GameEngineTurnLifecycleTests
             var stop = Call("StopShellAsync");
             try { await stop.WaitAsync(TimeSpan.FromSeconds(15)); stopped = owner?.Record?.Disposition == GmSessionRunDisposition.Stopped; }
             catch (Exception failure) { cleanupFailure ??= failure; }
-            if (type.GetField("_pty", flags)!.GetValue(host) is IOwnedTerminalSession terminal)
-                physical = (await terminal.StopAndObserveAsync(CancellationToken.None)).CleanupComplete;
-            else physical = stopped;
+            try
+            {
+                if (type.GetField("_pty", flags)!.GetValue(host) is IOwnedTerminalSession terminal)
+                    physical = (await terminal.StopAndObserveAsync(CancellationToken.None)).CleanupComplete;
+                else physical = stopped;
+            }
+            catch (Exception failure) { cleanupFailure ??= failure; }
             await control.CancelAsync();
             try { await server.WaitAsync(TimeSpan.FromSeconds(5)); ((IDisposable)host).Dispose(); }
             catch (Exception failure) { cleanupFailure ??= failure; }
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new { Accepted = accepted,
                 FirstMutationInvalidatedCompletedScope = firstInvalidated, FreshComparisonObserved = freshComparison,
-                RepairCount = repairCount, OriginalStopped = stopped, PhysicalCleanup = physical,
-                OperationSettled = operation?.IsCompleted == true, ObserverSettled = observer?.IsCompleted == true,
+                CausalAuthorityRed = causalAuthorityRed, RepairCount = repairCount, OriginalStopped = stopped, PhysicalCleanup = physical,
+                StopTaskSettled = stop.IsCompleted, OperationSettled = operation?.IsCompleted == true, ObserverSettled = observer?.IsCompleted == true,
                 OperationFailure = operationFailure?.ToString(), CleanupFailure = cleanupFailure?.ToString(),
                 MutationWitness = mutationWitness, ModelCalls = 0,
                 Scope = "Actual ordinary console ProcessPlayerTurn with original NativeBridge; fixture authors model data only. Not Program/relay/browser/crash qualification." }));
