@@ -1,3 +1,7 @@
+### C5 guard publication boundary consistency — 2026-10-10
+
+BeforefirstGREEN, narrowper-mutationcheck to actualowner+finitecleanupinventory. Fullprivatephasecomparison remainsbeforeadmission/recovery; actualslotCAS necessarily changes its bytes before post-success privateExpectedPendingJson advance. No broadskip/warmgrant. b017sharedguard remainsUNRUN; new17 runsnextwithmatchingfreshintegration.
+
 ### C5 three Important causal RED and exact guard WIP — 2026-10-10
 
 832030d9 freshintegration6/6causalFAIL49.6020487s,complete0skip/duplicate/timeout/cleanupcomplete: actualpendingjournalreplayedforforgedaccepted/settledandescapedJSONmissing/downgraded; actualowningcleanupproceedswithchangedbackup/unrelatedrollback. [Raw reviewRED](recovery/linux-game-chains-20261010/c5-browser-review-qualified-red/manifest.json). NewguardUNRUN: strictduplicate-awarestructuralJSON classification; exactprivateExpectedPendingJson advancesonlyafteractualowningPendingPlayerActionService publication, neverstatusstrings; completeaccepted/settledread-onlyreceipt semantics extractedsamecoreforpreflightandactualengine; finiteoriginalsnapshot/rollback/request/manifest/authoritycleanuphashinventory, checkbeforefirstcleanupandremainingbytes/extra-artifactsbeforeeachacquisition/mutation. Storage readfailures retained throughauthorityvalidator. Allno-recoveryreaders actualtrustedlocal; no tinycap. ThreeImportant acceptance pending17focused/validreceiptwarmhelpers/ordinarysignedreaders/nativeandindependentreview; lifetimeunchanged.
