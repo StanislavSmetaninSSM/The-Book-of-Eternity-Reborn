@@ -842,7 +842,7 @@
       }
     },
     "JournalCausalProposal": {
-      "Status": "Source gate and matching preparation PASS; ownership discovery/catalog carrier/readback and sole8caseRED pending",
+      "Status": "SUSPENDED: source gate/matching preparation/catalog PASS; sole8case causal RED UNRUN; no repair/fullC5 qualification",
       "Seam": "Optional instance-local selected-path callback after actual Active/IntentStage selection before unchanged HasNamespaceJournalMagic fresh validation",
       "Cases": [
         "Actual held publisher IntentStaged to Move/IntentPublished then full commit/lease release",
@@ -910,8 +910,28 @@
         "ApprovalReviewRejection": "NONE IDENTIFIED",
         "ProductFailureOrCausalRed": false,
         "ReadOnlyRecovery": "Existing session97848 completed exit0, clean29d/matching PlanOnly/cleanup confirmed; no new build/catalog/test/edit/archive during recovery",
-        "BypassOrPermissionCredentialChange": false
-      }
+        "BypassOrPermissionCredentialChange": false,
+        "RepeatedNotice": "Parent relayed same generic possible cybersecurity risk; no named prohibited tool/action or approval rejection",
+        "CurrentCoordinatorBoundary": "No new implementation/build/catalog/discovery/runtime tests; only read-only recovery and authorized saving already-completed evidence/checkpoint",
+        "SafeRecovery": "Read-only60385 runner summary confirms completed PASS and3retainedfiles; archive/ledger publication only after recovery"
+      },
+      "Catalog": {
+        "Manifest": "c5-journal-selection-catalog/manifest.json",
+        "RevisionSHA": "7b82966e8f54ad197d9f1e511aed457dfced3ccc",
+        "SourceAssemblySHA": "29d03a4a68900b3b43366c2fac7c6ac9efb333a2",
+        "WallSeconds": 14.2257317,
+        "Valid": true,
+        "Categories": 659,
+        "Methods": 11459,
+        "Unmapped": [],
+        "Stale": [],
+        "Executed": 0,
+        "Exit": 0,
+        "CleanRevision": true,
+        "OwnedRuntimeCleanup": true
+      },
+      "Remaining": "Reviewed8case actual owned-transition causal RED stillUNRUN due execution suspension. After suspension resolution: first causal raw/review, minimum proven independently reviewed repair if warranted, mandatory current optimized fullC5. No resume authorized by this checkpoint.",
+      "NewSelectedGitHubOnlyRecovery": "NOT PERFORMED for journal block; only exact remote/fetched new payload membership/bytes verified at safe checkpoint"
     }
   }
 }
