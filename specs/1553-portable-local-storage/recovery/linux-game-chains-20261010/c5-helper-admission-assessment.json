@@ -1,0 +1,234 @@
+{
+  "Status": "STOP: selected default-read seq0 healthy and complete; later write-scope identity refusal cause UNKNOWN",
+  "BaseSHA": "7144596fca9300e523fa6ee5bc6b93f7f91e0a40",
+  "SourceAssemblySHA": "db4416250273dc49fc4f668bf26a29b9987eb970",
+  "RuntimeCarrierSHA": "64d68805c4483510e5e6efd2c9f1169ec87984a9",
+  "FrozenFirstRawSHA": "d6319b854a4428da4b0db67fe3c2280a38b1d52e",
+  "RawManifest": "c5-helper-admission-first-failure/manifest.json",
+  "Runner": {
+    "Executed": 1,
+    "Completed": 1,
+    "Passed": 0,
+    "Failed": 1,
+    "ExitCode": 1,
+    "ElapsedSeconds": 119.9481581,
+    "NoTimeoutUnderfillDuplicate": true,
+    "OwnedAndRuntimeCleanupComplete": true
+  },
+  "Driver": {
+    "ElapsedSeconds": 97.93074892799996,
+    "DiagnosticTotalBudgetExceeded": false,
+    "CleanupStartedAtSeconds": 96.8529831779997,
+    "OriginalStopped": true,
+    "IoDrained": true,
+    "PeerEOFCount": 5
+  },
+  "FirstNavigation": {
+    "Count": 1,
+    "SixGETsFinished200": true,
+    "ReadyStartupSeconds": 12.348745012001018,
+    "NormalClickSeconds": 0.7843706160001602,
+    "NormalAPIReturned": true,
+    "TrustedContinueClicks": 1,
+    "Limit": "One actual navigation and queued SIGKILL/EOF/cold replacement only; no later navigation or accepted/full cold qualification."
+  },
+  "SelectedTarget": {
+    "Method": "first Open-BoeHelperScope default-read seq0 from actual packet consumer Resolve-BoeSessionPath",
+    "ConsumerPid": 32535,
+    "ScopeId": "4887208f8b1744bbacdaf2dd5fc2f947",
+    "DedicatedManagedPid": 32571,
+    "LinuxStarttime": "938861",
+    "BootId": "a447dd74-2561-437d-9196-437acf6efd60",
+    "ObservationComplete": true,
+    "Rows": 12,
+    "Errors": 0,
+    "Dropped": 0,
+    "CaptureIncomplete": false,
+    "ReadOutcome": {
+      "Utf8Bytes": 544,
+      "IsNull": false,
+      "FrameOutcome": "within-frame-bound",
+      "WaitCompleted": true
+    },
+    "ReadDurationSeconds": 0.995883145,
+    "OriginalFrame": {
+      "ok": true,
+      "state": "active",
+      "sequence": 0,
+      "generation": "0479a56b31b24e36bb2e87f57ba6e77a",
+      "originalClose": {
+        "pinId": "c97f8109c7454436bfe80c72e9cd714a",
+        "closeId": "42d6b31a7ad440c4a735aa9fd08ed4a8",
+        "operationId": "b9780bc2f6934d23aad3f64e996e409a",
+        "identity": {
+          "rootKey": "/tmp/gc-808dcc989b93/play",
+          "runId": "18f6387159af47a8bccdf829e0c3bf39",
+          "generationId": "0479a56b31b24e36bb2e87f57ba6e77a",
+          "epoch": 1,
+          "backend": 2,
+          "hostInstanceId": "5290fd4b2d594b84a720986931889b82",
+          "bootId": "a447dd74-2561-437d-9196-437acf6efd60"
+        },
+        "outcome": 0,
+        "closingFailed": false
+      }
+    },
+    "RetainedFrameBytes": 544,
+    "RetainedFrameSHA256": "3bdca6940bcf8f7fbbfc92eb5cc962f97ce236da0983e1ebfaa3f9f4d0831a33",
+    "DedicatedManagedExitCode": 0,
+    "JoinedStderrBytes": 0,
+    "DisposalReturned": true,
+    "CleanupKillIntentObserved": false,
+    "MonotonicEvents": [
+      {
+        "Phase": "launch-begin",
+        "StopwatchTicks": 9388601003462,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:10.8189796+00:00"
+      },
+      {
+        "Phase": "launch-return",
+        "StopwatchTicks": 9388656733884,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:10.8746131+00:00"
+      },
+      {
+        "Phase": "write-begin",
+        "StopwatchTicks": 9388657831544,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:10.8757095+00:00"
+      },
+      {
+        "Phase": "write-return",
+        "StopwatchTicks": 9388658601652,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:10.8764796+00:00"
+      },
+      {
+        "Phase": "read-begin",
+        "StopwatchTicks": 9388658937283,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:10.8768145+00:00"
+      },
+      {
+        "Phase": "read-return",
+        "StopwatchTicks": 9389654820428,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:11.8727017+00:00"
+      },
+      {
+        "Phase": "read-frame-retained",
+        "StopwatchTicks": 9389660945230,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:11.8788261+00:00"
+      },
+      {
+        "Phase": "admission-return",
+        "StopwatchTicks": 9389663135626,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:11.8810159+00:00"
+      },
+      {
+        "Phase": "dispose-begin",
+        "StopwatchTicks": 9389849067420,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:12.0669488+00:00"
+      },
+      {
+        "Phase": "dispose-exit-observed",
+        "StopwatchTicks": 9389850981475,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:12.0688614+00:00"
+      },
+      {
+        "Phase": "dispose-joined",
+        "StopwatchTicks": 9389865535359,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:12.0834148+00:00"
+      },
+      {
+        "Phase": "dispose-return",
+        "StopwatchTicks": 9389867971461,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:12.0858507+00:00"
+      }
+    ],
+    "Limit": "Observes the first default-read scope only, not every legitimate bootstrap/read/write helper opening. Exit observations bound exit; they are not exact OS exit timestamps."
+  },
+  "LaterConsumerFailure": {
+    "ConsumerPid": 32535,
+    "ConsumerExecution": {
+      "Executed": true,
+      "ExitCode": 1,
+      "ChildExited": true,
+      "IoDrained": true
+    },
+    "ObservedAtSeconds": 96.85019155900045,
+    "OriginalStack": "relay-apply-response.ps1:42 -> Complete-BoeTurn -> Invoke-BoeHelperScope -Mode write -> Open-BoeHelperScope",
+    "OuterException": "Original initialized helper admission refused.",
+    "InnerException": "Helper admission identity is invalid.",
+    "ExactSourcePredicate": "not reply.ok OR reply.state != active OR reply.sequence != 0 OR generation not lowercase32hex OR nonempty ExpectedGeneration differs",
+    "KnownBoundary": "Existing Read-BoeHelperFrame returned parsed reply far enough to reach the admission identity guard in this later scope. Its actual original seq0 fields were not captured.",
+    "MissingObservations": [
+      "later write-scope original seq0 ok/state/sequence/generation and actual ExpectedGeneration",
+      "structured reason/effective outcome/original or terminal close when present",
+      "later dedicated managed child PID/Linux starttime/boot identity",
+      "later child exit/already-joined stderr and original write/read/exit/disposal monotonic bounds"
+    ],
+    "Limit": "Outer PowerShell consumer Exit1 does not establish a managed helper crash. Healthy managed32571 belongs to earlier default-read scope and is not the later write child."
+  },
+  "SeparateGameLoopFailure": {
+    "ObservedAtSeconds": 64.56349738999961,
+    "ObservedDuringCleanup": false,
+    "Pid": 32248,
+    "ExceptionType": "System.IO.FileNotFoundException",
+    "Path": "play/.boe_runtime/trusted-local-publication-v1/intent.tmp",
+    "ActualStack": "TrustedLocalFileScope.ValidateFileLeaf -> HasNamespaceJournalMagic -> RequireBrowserRecoveryPreservesOriginal -> RequireOriginalBrowserRecoverySafe -> PreflightBrowserOriginalAdmission -> MainAdmission.AcquireAsync -> original engine terminal wait",
+    "Limit": "Retained earlier real exception. No demonstrated causal link to later write identity refusal or prior default-read NULL/oversize; no off-target fix selected."
+  },
+  "SequentialStopState": {
+    "BeginMonotonic": 9405.130924165,
+    "Files": [
+      {
+        "Path": "input/turn_request.json",
+        "ObservedMonotonic": 9405.130926676,
+        "Exists": true,
+        "Bytes": 59101,
+        "SHA256": "9ddef556808388005c8ae7430110fec41bcc1af4614fc5b43adccdd7a761dfbb"
+      },
+      {
+        "Path": "input/pending_player_action.json",
+        "ObservedMonotonic": 9405.131352773,
+        "Exists": true,
+        "Bytes": 165099,
+        "SHA256": "9c1bf06c59df74b500e85c830fd86b52ef63c31cb215ffa5f0b7f891e2b9981d"
+      },
+      {
+        "Path": "ready/turn_complete.json",
+        "ObservedMonotonic": 9405.131579949,
+        "Exists": false
+      },
+      {
+        "Path": "ready/turn_error.json",
+        "ObservedMonotonic": 9405.131619401,
+        "Exists": false
+      },
+      {
+        "Path": "stories/chaos_sea.jsonl",
+        "ObservedMonotonic": 9405.131647244,
+        "Exists": false
+      }
+    ],
+    "Limit": "Read-only sequential observations, not an atomic state snapshot or accepted/cold qualification. Empty test AcceptedTurns is not physical absence proof.",
+    "EndMonotonic": 9405.131662405
+  },
+  "CausalConclusion": "The older Resolve-BoeSessionPath default-read NULL-or-oversize branch was not reproduced. The selected actual original default-read discriminator is NONNULL544 bytes, identity accepted, managed exit0. Overall diagnostic FAIL is the distinct later write-scope identity refusal, whose exact predicate/cause remains UNKNOWN. Earlier historical helper and post-performing click causes remain unknown. Instrumentation can perturb timing; this healthy observation does not prove an older cause was fixed.",
+  "Decision": {
+    "AdditionalRuntime": false,
+    "ProductOrOracleRepair": false,
+    "FullC5Rerun": false,
+    "FullC5Qualification": "FAIL/UNQUALIFIED; optimized implementation remains WIP",
+    "TaskCheckboxes": "T069/T070/T071 unchanged and unchecked",
+    "MinimumNextProposal": "One newly scoped original failing Complete-BoeTurn write-scope seq0 capture, retaining its actual returned frame/ok/state/sequence/generation/ExpectedGeneration/structured refusal-close fields, dedicated managed child identity/exit/joined stderr and original monotonic bounds. Passive existing-boundary observations only; unchanged10000ms/65536/4000, authority/owner/uncertain/no replay. No retry, timer, guard or repair is inferred from this result."
+  }
+}
