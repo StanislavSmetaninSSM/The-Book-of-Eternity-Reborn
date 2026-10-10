@@ -24,6 +24,8 @@ import traceback
 import uuid
 
 repo, out, ship = map(lambda s: Path(s).resolve(), sys.argv[1:4])
+scenario = sys.argv[4] if len(sys.argv) > 4 else "console"
+assert scenario in ["console", "browser-relay"]
 base = out / "play"
 session = base / "game_session"
 session.mkdir(parents=True)
@@ -31,7 +33,7 @@ queue = out / "queue-1"
 queue.mkdir()
 started = time.monotonic()
 peers, events = [], []
-result = {"Scenario": "C1", "Model": "deterministic-authored-fixture",
+result = {"Scenario": "C1" if scenario == "console" else "C5", "Model": "deterministic-authored-fixture",
           "ModelCalls": 0, "AcceptedTurns": [], "ClientColdRestart": False,
           "ProductionEntrypoint": "BookOfEternityClient/Program.cs → GameEngine.RunAsync"}
 env = dict(os.environ)
@@ -234,6 +236,85 @@ def exit_client(client):
     assert client.process.returncode == 0
 
 
+def submit_browser_action(dll, action):
+    """Actual React action with original engine waiting, Bridge/daemon/relay ready.
+
+    Requires real turn delivery after the browser write, not merely HTTP success.
+    Missing production handoff must remain FAIL; no console-input substitute.
+    """
+    import urllib.request
+    from playwright.sync_api import sync_playwright
+    with socket.socket() as available:
+        available.bind(("127.0.0.1", 0))
+        url = "http://127.0.0.1:" + str(available.getsockname()[1])
+    web = Peer("web-first", ["dotnet", str(dll), str(base), "--web", "--web-url", url], True)
+    def ready():
+        assert web.process.poll() is None, "Actual web host exited before browser action"
+        try:
+            with urllib.request.urlopen(url, timeout=1) as response:
+                return response.status == 200
+        except (OSError, urllib.error.URLError):
+            return False
+    wait(ready, "actual web host startup")
+    with sync_playwright() as driver:
+        browser = driver.chromium.launch(executable_path="/usr/bin/chromium", headless=True,
+                                         args=["--no-sandbox", "--disable-dev-shm-usage"], env=env)
+        page = browser.new_page(reduced_motion="reduce")
+        page.set_default_timeout(12000)
+        def inventory():
+            cdp = browser.new_browser_cdp_session()
+            try:
+                rows = cdp.send("SystemInfo.getProcessInfo")["processInfo"]
+                assert any(row["type"] == "browser" for row in rows)
+                return [int(row["id"]) for row in rows]
+            finally:
+                cdp.detach()
+        pids = inventory()
+        result["Browser"] = {"RealChromiumPids": pids, "Closed": False}
+        try:
+            page.goto(url, wait_until="domcontentloaded")
+            page.locator('button[data-launcher-mode="continue"]').click()
+            page.get_by_label("Команда или действие", exact=True).fill(action)
+            with page.expect_response(lambda r: r.request.method == "POST" and r.url == url + "/api/explorer/player-action") as response:
+                page.get_by_role("button", name="Отправить", exact=True).click()
+            reply = response.value
+            body = reply.json()
+            result["BrowserSubmission"] = {"Status": reply.status, "Request": reply.request.post_data_json,
+                                           "Response": body}
+            assert reply.status == 200 and body["success"], body
+            pending_path = session / "input/pending_player_action.json"
+            pending = read_json(pending_path)
+            assert pending["playerAction"] == action and pending["source"] == "browser-composer", pending
+            (out / "browser-pending-action.json").write_bytes(pending_path.read_bytes())
+            result["BrowserSubmission"]["AuthoritativePending"] = pending
+            result["BrowserSubmission"]["OriginalDerivedReady"] = rpc({"command": "status"})["status"]["ready"]
+            page.screenshot(path=str(out / "browser-submitted.png"))
+            (out / "browser-submitted.html").write_text(page.content())
+            try:
+                wait(lambda: (session / "input/turn_request.json").exists(), "browser action becomes actual engine turn request", 20)
+            except Exception:
+                result["BrowserHandoff"] = {"TurnRequestCreated": False,
+                    "PendingExactBytesPreserved": pending_path.read_bytes() == (out / "browser-pending-action.json").read_bytes(),
+                    "RelayRequestCount": len(list(queue.glob("request-*"))),
+                    "ConsoleStillAtPlayerInput": "Ваш ход" in client.text(),
+                    "EngineAlive": client.process.poll() is None,
+                    "BridgeAlive": bridge.process.poll() is None,
+                    "DaemonAlive": daemon.process.poll() is None,
+                    "AcceptedContinuationColdRestart": "UNRUN: browser action never reached actual turn request"}
+                raise
+        finally:
+            pids = sorted(set(pids + inventory()))
+            browser.close()
+            def all_exited():
+                for pid in pids:
+                    path = Path("/proc") / str(pid) / "stat"
+                    if path.exists() and path.read_text().split(")", 1)[1].split()[0] != "Z":
+                        return False
+                return True
+            wait(all_exited, "actual C5 browser process exit")
+            result["Browser"] = {"RealChromiumPids": pids, "Closed": True}
+
+
 client = bridge = daemon = None
 original = original_record = None
 record_path = base / ".boe_runtime/gm-runs/main.json"
@@ -328,7 +409,10 @@ try:
         fresh(client, "Ваш ход", offset)
         action = "Осматриваюсь и запоминаю берег, проверочный ход " + str(ordinal) + "."
         offset = len(client.raw)
-        client.send(action + "\r")
+        if scenario == "browser-relay":
+            submit_browser_action(dll, action)
+        else:
+            client.send(action + "\r")
         wait(lambda: (session / "input/turn_request.json").exists(), "actual player request " + str(ordinal), 30)
         req = read_json(session / "input/turn_request.json")
         assert req["playerAction"] == action and req["turnNumber"] == ordinal, req

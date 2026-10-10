@@ -8,7 +8,12 @@ namespace BookOfEternityClient.Tests;
 public sealed class LinuxGameChainTests(ITestOutputHelper output)
 {
     [Fact]
-    public async Task Console_ActualRelayTurnColdRestartContinuesExactlyOnce()
+    public Task Console_ActualRelayTurnColdRestartContinuesExactlyOnce() => RunAsync("console");
+
+    [Fact]
+    public Task Browser_ActualRelayPlayerActionColdRestartContinuesExactlyOnce() => RunAsync("browser-relay");
+
+    private async Task RunAsync(string mode)
     {
         Assert.True(OperatingSystem.IsLinux(), "This scenario requires real Linux execution; Windows is not qualified.");
         var repo = TestRepoPaths.RepoRoot;
@@ -41,8 +46,10 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
             await Run("dotnet", ["publish", Path.Combine(repo, project, project + ".csproj"), "--no-build", "--no-restore",
                 "-c", configuration, "-o", Path.Combine(ship, project), "-p:BoeNativePackageDirectory=" + package,
                 "-p:BoeRequireNativePackage=true"], "publish-" + project + ".log", 20);
+        var python = mode == "console" ? "/usr/bin/python3" : Environment.GetEnvironmentVariable("BOE_GAME_CHAIN_BROWSER_PYTHON");
+        Assert.False(string.IsNullOrWhiteSpace(python), "Browser relay chain requires existing Python with Playwright.");
         await Run(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), "300000",
-            "/usr/bin/python3", Path.Combine(repo, "tests/fixtures/LinuxGameChains/console_chain.py"), repo, own, ship],
+            python!, Path.Combine(repo, "tests/fixtures/LinuxGameChains/console_chain.py"), repo, own, ship, mode],
             "chain.log", 310);
         using var result = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(own, "result.json")));
         Assert.True(result.RootElement.GetProperty("PASS").GetBoolean(), result.RootElement.ToString());

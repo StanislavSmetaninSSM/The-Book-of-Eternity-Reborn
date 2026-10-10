@@ -1,3 +1,24 @@
+## C3 full-state fixture validation; C5 executable handoff attempt WIP
+
+Source `267d071c0b175058eaeb6ddab03f9bab4a2bcd9a`: C3 **FAIL1/1**,
+29.2785253s,0skip/duplicate/timeout. Real React Continue and CDP ownership/normal
+close now work; composer is disabled before command. [Evidence](recovery/linux-game-chains-20261010/c3-incomplete-world-fixture-fail/manifest.json)
+includes actual DOM/screen; all recorded Chromium exited, hostexit0,
+guardian ECHILD/0emergency/0failures/no deadline. Existing neutral Save fixture
+is sufficient for limited refresh/save tests, but not proven valid under full
+browser lifecycle validator. Need an isolated read-only actual dashboard
+preflight to identify exact missing current-schema inputs before another chain
+attempt. Do not bypass composer/validation or substitute direct HTTP mutations.
+This is not established product RED. C3 commands/cold continuation remain UNRUN.
+
+C5 exact new owned category/source WIP: actual cancelled NewGame bootstrap,
+real console waits at player input, original Bridge/daemon/relay derived ready,
+real Program --web/React/Chromium submits prose. Requires actual engine request
+and relay acceptance; observes queued pending bytes and exact missing handoff
+if it times out20s. Browser IPC HTTP200 alone remains FAIL; no console input
+substitution. Reuses C1 original terminal per-identity stop proof and bounded
+model author seam only after delivery; no model calls. Actual C5/build UNRUN.
+
 ## C3 browser PID preflight — preparation PASS; game chain WIP
 
 Source `60ca2104610865b0a11f1c970f551bc68c2c1b41`: C3 **FAIL1/1**,

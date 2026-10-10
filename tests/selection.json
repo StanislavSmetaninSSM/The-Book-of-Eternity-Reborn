@@ -42,6 +42,20 @@
         "FR-013",
         "T066-LINUX-GAME-CHAINS"
       ]
+    },
+    {
+      "category": "linux-game-chain-browser-relay",
+      "reason": "C5 actual bounded browser→engine→relay acceptance attempt; keeps expected full-chain assertion so disconnected queue/HTTP200 remains FAIL. Original engine/Bridge/daemon ready, no player input substitute/provider call.",
+      "contracts": [
+        "#1553",
+        "US3",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "FR-011",
+        "FR-013",
+        "T066-LINUX-GAME-CHAINS"
+      ]
     }
   ]
 }

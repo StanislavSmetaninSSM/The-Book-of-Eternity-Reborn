@@ -22080,6 +22080,32 @@
           ]
         }
       ]
+    },
+    {
+      "id": "linux-game-chain-browser-relay",
+      "responsibility": "#1553 T066 C5 actual React/Chromium action against shipped Program --web while actual console GameEngine waits for player input and original Bridge/daemon/maintained relay is ready. Requires actual engine request, delivery/acceptance/cold continuation; HTTP success/queued pending alone is insufficient. Missing handoff remains FAIL.",
+      "excludes": "No console input substitution for browser action, live model/provider, new browser engine architecture, B2-B5, native Windows/default worker/durable ACK qualification. Authored packets substitute model only if actual request reaches relay.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+        "tests/fixtures/LinuxGameChains/console_chain.py",
+        "BookOfEternityClient/WebUi/BrowserPlayerActionService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": true,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 6,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxGameChainTests.Browser_ActualRelayPlayerActionColdRestartContinuesExactlyOnce"
+          ]
+        }
+      ]
     }
   ]
 }
