@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "3269891d30c8237b458081aee2a01bbc9466bfd5",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-player-input-recovery",
+  "Status": "FAIL",
+  "Scope": "15 actual recovery cases: 13PASS2FAIL; synthetic timeout/unavailable wrongly dequeued; complete59.6458163s,0skip/duplicate/timeout,owned cleanup complete. No provider.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "b4a4d21f087342c85afbe7fcd659cd80ab5588b43668c44556189af903272104",
+      "RawBytes": 3873
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "9377cebe597d78113fa94ce3571e51781743e17470ac238c762964e7102124b3",
+      "RawBytes": 1475
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "e498e957f47bdf0fd661273e4d96e1e09c81aece8f11c0cf15caa1fa1fe3bea4",
+      "RawBytes": 42417
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "e13dfd3eba29e0118ae27f0847fc993b0b06ec13bb407e825ab9fec83dc02262",
+      "RawBytes": 1650804
+    },
+    {
+      "Path": "runner/browser-player-input-recovery-integration-001.trx.gz",
+      "RawSHA256": "3af52b13bbaa74f5d10532057f734e205f966a09c67b10b03cbff3c57fc29add",
+      "RawBytes": 29436
+    }
+  ]
+}

@@ -279,7 +279,7 @@ public partial class GameEngine
     private static readonly string[] BrowserSettlementWorkPaths =
     [ValidationRepairRequestPath, ValidationRepairReadyPath, "game_state/control/terminal_protocol_failure_request.json"];
 
-    private Task<bool> FinishRestoredBrowserActionAsync(PendingPlayerActionService.Staged staged, string disposition) =>
+    private Task<bool> FinishRestoredBrowserActionAsync(PendingPlayerActionService.Staged staged, string disposition, string terminalSignalJson) =>
         WithPendingActionLeaseAsync(async lease =>
         {
             var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
@@ -288,6 +288,7 @@ public partial class GameEngine
                 throw new InvalidOperationException(BrowserRecoveryMessage);
             var proof = PendingPlayerActionService.StagingProof(staged);
             proof["terminalDisposition"] = disposition;
+            proof["terminalSignalJson"] = terminalSignalJson;
             var settled = PendingPlayerActionService.CreatePhase(state, "settled", proof);
             var candidate = PendingPlayerActionService.ReadStaged(PendingPlayerActionService.Parse(settled, staged.Binding.Generation));
             await ValidateRestoredBrowserSettlementAsync(lease, candidate, ValidateDetachedBrowserBinding(staged));
@@ -300,7 +301,15 @@ public partial class GameEngine
     {
         var state = PendingPlayerActionService.Parse(staged.Json, staged.Binding.Generation);
         var disposition = JsonNode.Parse(state.ProofJson!)!["terminalDisposition"]?.GetValue<string>();
+        var terminalJson = JsonNode.Parse(state.ProofJson!)!["terminalSignalJson"]?.GetValue<string>()
+            ?? throw new InvalidDataException(BrowserRecoveryMessage);
+        _ = StrictJsonAuthority.Deserialize<JsonObject>(terminalJson, JsonOpts, "original browser terminal disposition");
+        var signal = ParseReadySignalMetadata(terminalJson, "original browser terminal disposition");
+        var terminalKind = disposition == "originalTerminalErrorRestored" ? "turn_error" : "turn_complete";
         if (disposition is not ("originalTerminalErrorRestored" or "originalTerminalRejectedRestored") ||
+            signal == null || !string.IsNullOrWhiteSpace(signal.HarnessSource) ||
+            signal.SessionId != manifest.SessionId || signal.RequestId != manifest.RequestId || signal.TurnNumber != manifest.TurnNumber ||
+            !HasValidTerminalSignalContract(terminalKind, signal) ||
             !PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(staged.AuthorityJson, out var original) ||
             original == null || original.RollbackHashMode != PendingTurnSnapshotAuthority.ExactRollbackHashMode)
             throw new InvalidDataException(BrowserRecoveryMessage);

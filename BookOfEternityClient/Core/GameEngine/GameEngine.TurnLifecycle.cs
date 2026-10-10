@@ -1569,6 +1569,15 @@ public partial class GameEngine
         if (terminalOutcome.Kind == "failure")
             return;
 
+        if (browserStaged != null && !string.IsNullOrWhiteSpace(terminalOutcome.Signal?.HarnessSource))
+        {
+            // A client diagnostic/recovered signal is not original GM completion.
+            // Keep its provenance and every original artifact behind processing.
+            _inGame = false;
+            AnsiConsole.MarkupLine($"[yellow]{BrowserRecoveryMessage}[/]");
+            return;
+        }
+
         if (terminalOutcome.Kind == "error")
         {
             ShowTurnErrorMessage(terminalSignals.ErrorJson);
@@ -1581,7 +1590,7 @@ public partial class GameEngine
             CleanupBackup(backedUpFiles);
             if (browserStaged != null)
             {
-                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalErrorRestored");
+                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalErrorRestored", terminalSignals.ErrorJson!);
                 await ClassifyBrowserRecoveryAsync();
             }
             return;
@@ -1611,10 +1620,11 @@ public partial class GameEngine
             var restored = await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
                 "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
+            if (browserStaged != null && !restored) return;
             await CleanupPendingTurnSnapshotAsync();
             if (browserStaged != null && restored)
             {
-                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalRejectedRestored");
+                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalRejectedRestored", terminalSignals.CompletionJson!);
                 await ClassifyBrowserRecoveryAsync();
             }
             return;
@@ -1639,10 +1649,11 @@ public partial class GameEngine
             var restored = await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
                 "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
+            if (browserStaged != null && !restored) return;
             await CleanupPendingTurnSnapshotAsync();
             if (browserStaged != null && restored)
             {
-                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalRejectedRestored");
+                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalRejectedRestored", terminalSignals.CompletionJson!);
                 await ClassifyBrowserRecoveryAsync();
             }
             return;

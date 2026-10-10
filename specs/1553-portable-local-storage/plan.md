@@ -1,3 +1,5 @@
+Synthetic terminal causal RED at3269891d:15=13PASS2FAIL,59.6458163s,complete;0skip/duplicate/timeout,owned cleanup complete. New source keeps all original artifacts behind terminalProcessing when HarnessSource is diagnostic/recovered, and binds settled receipts to the captured original GM terminal JSON. Failed rejection restore returns before snapshot cleanup. Source GREEN/failed-restore negative/separate-process receipt cold controls UNRUN; no T069 completion claim. Raw evidence: recovery/linux-game-chains-20261010/c5-synthetic-terminal-causal-red.
+
 Actual dd3f5cd3 recovery GREEN13/13,55.3676936s complete,
 0skip/duplicate/timeout/cleanupcomplete. Independent Astra found two additional
 Important paths: unsuccessful rejection rollback still followed by snapshot
