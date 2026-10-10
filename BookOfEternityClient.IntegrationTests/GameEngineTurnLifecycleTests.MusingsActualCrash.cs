@@ -31,9 +31,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         Directory.CreateDirectory(own);
         _directGachaOutput?.WriteLine("Owned actual staging cut evidence: " + own);
         var package = Path.Combine(own, "package");
-        await RunBrowserProfileChildAsync("pwsh", ["-NoLogo", "-NoProfile", "-File",
+        var nativeBuildArguments = new List<string> { "-NoLogo", "-NoProfile", "-File",
             Path.Combine(TestRepoPaths.RepoRoot, "scripts/build-linux-supervisor.ps1"), "-OutputDirectory", package,
-            "-IncludeHostGuardian", "-IncludeTerminalFixture"], Path.Combine(own, "native.log"), 25);
+            "-IncludeHostGuardian", "-IncludeTerminalFixture" };
+        if (cut == 2) nativeBuildArguments.AddRange(["-TerminalFixtureLifetimeSeconds", "180"]);
+        await RunBrowserProfileChildAsync("pwsh", nativeBuildArguments.ToArray(), Path.Combine(own, "native.log"), 25);
         var support = Path.Combine(Path.GetDirectoryName(typeof(GameEngineTurnLifecycleTests).Assembly.Location)!, "BookOfEternityClient.TestSupport.dll");
         await RunBrowserProfileChildAsync(Path.Combine(package, "host-guardian"), ["--live-turn", Path.Combine(own, "guardian.json"), "240000",
             Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"), support, "engine-musings-cut",
@@ -138,6 +140,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             identity = cutEvidence["PinIdentity"]!.Deserialize<MainOperationClose>()!;
             var active = owner.QueryRemoteOperation(identity);
             Assert.Equal(MainOperationState.Active, active.State);
+            File.WriteAllText(Path.Combine(own, "terminal-before-kill.json"), JsonSerializer.Serialize(new
+            {
+                ObservedAtUtc = DateTime.UtcNow, terminal.Identity, RootExited = terminal.RootExited.IsCompleted,
+                ObservedRootExit = terminal.RootExited.IsCompletedSuccessfully ? terminal.RootExited.Result : null
+            }));
             Assert.False(terminal.RootExited.IsCompleted);
             File.WriteAllText(Path.Combine(own, "pin-before-kill.json"), JsonSerializer.Serialize(active));
             original.Kill();
@@ -185,6 +192,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         finally
         {
             File.WriteAllText(Path.Combine(own, "failure-before-cleanup.txt"), failure?.ToString() ?? "none");
+            File.WriteAllText(Path.Combine(own, "terminal-before-cleanup.json"), JsonSerializer.Serialize(new
+            {
+                ObservedAtUtc = DateTime.UtcNow, Identity = terminal?.Identity, RootExited = terminal?.RootExited.IsCompleted,
+                ObservedRootExit = terminal?.RootExited.IsCompletedSuccessfully == true ? terminal.RootExited.Result : null
+            }));
             foreach (var child in new[] { original, cold })
             {
                 if (child is null) continue;
