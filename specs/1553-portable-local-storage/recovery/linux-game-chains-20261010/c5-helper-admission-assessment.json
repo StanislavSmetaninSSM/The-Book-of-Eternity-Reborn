@@ -771,7 +771,7 @@
       "ObservedDuringCleanup": false,
       "CleanupStartedAtSeconds": 102.13864760599972,
       "ColdPid": 46529,
-      "Stack": "TrustedLocalFileScope.ValidateFileLeaf180→ValidateFile138→HasNamespaceJournalMagic22→RequireBrowserRecoveryPreservesOriginal361→BrowserOriginalAdmission398/382→MainAdmission.AcquireAsync58→RunParticipating124→WaitForTerminalSignal poll470/588/617→ProcessPlayerTurn1456→EnterGameLoop1328",
+      "Stack": "TrustedLocalFileScope.ValidateFileLeaf180\u2192ValidateFile138\u2192HasNamespaceJournalMagic22\u2192RequireBrowserRecoveryPreservesOriginal361\u2192BrowserOriginalAdmission398/382\u2192MainAdmission.AcquireAsync58\u2192RunParticipating124\u2192WaitForTerminalSignal poll470/588/617\u2192ProcessPlayerTurn1456\u2192EnterGameLoop1328",
       "Raw": "c5-helper-managed-first-outcome/owned0/result.json.gz",
       "ExactThrowTimestamp": "UNOBSERVED; timestamp is retained output observation",
       "ResponsibleProducerRenameDeleteTransaction": "UNOBSERVED",
@@ -786,7 +786,7 @@
       "NativeBuildSeconds": 40,
       "GuardianSeconds": 15,
       "OuterSeconds": 20,
-      "PrepCatalogRuntime": "Source gate/prep/catalog PASS; sole control runtime UNRUN",
+      "PrepCatalogRuntime": "Source gate/prep/catalog PASS; sole control runtime PASS1/1; first raw frozen before assessment",
       "Methods": 11458,
       "CategoriesExpected": 658,
       "SourceAssemblySHA": "4cbb67fc47221f3874ee79417280be3380262e18",
@@ -812,6 +812,27 @@
         "CleanSource": true,
         "OwnedRuntimeCleanup": true,
         "Manifest": "c5-helper-control-catalog/manifest.json"
+      },
+      "FirstOutcome": {
+        "RuntimeCarrier": "d362e1a62c4c19b59578afbb1f0c5c0e71ae8114",
+        "Runner": "20261010-224449-777-55863-1d8b37bb81fe4b5a97542b8f3d0f0eab-categories",
+        "Owned": "native-terminal/69519b2474ac41c1a1e53ef2d309c161",
+        "WallSeconds": 15.479934,
+        "Passed": 1,
+        "Failed": 0,
+        "Executed": 1,
+        "Exit": 0,
+        "Timeout": false,
+        "CompleteSelection": true,
+        "OwnedRuntimeCleanup": true,
+        "Manifest": "c5-helper-control-first-outcome/manifest.json",
+        "TargetManagedPID": 56127,
+        "ActualCompletedRead": "NULL/EOF, UTF8 count/frame NULL, observer errors0",
+        "ManagedExit": 2,
+        "OriginalConfigurationException": "System.IO.InvalidDataException: Initialized configuration is absent.",
+        "ControlBodyEntered": false,
+        "NoActiveOrClose": true,
+        "Qualification": "Capture control only; no product repair, old cause or fullC5 qualification"
       }
     }
   }

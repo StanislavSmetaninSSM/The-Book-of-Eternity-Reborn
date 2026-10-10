@@ -1,0 +1,158 @@
+{
+  "SourceSHA": "4cbb67fc47221f3874ee79417280be3380262e18",
+  "Command": "pwsh ./scripts/test-csharp.ps1 -Category c5-helper-caught-exception-control -NoBuild -TimeoutMinutes 3",
+  "ModelCalls": 0,
+  "ArchiveScope": "Complete runner and owned runtime diagnostics, game/relay state, screenshot/HTML, snapshots/rollback and ZIPs; immutable published ship is retained by complete byte/hash inventory with native/runtime binaries. Browser/cache/config/data/tmp ephemeral files are excluded. No node_modules/local Git objects.",
+  "Files": [
+    {
+      "Path": "runner/c5-helper-caught-exception-control-unit-001.trx.gz",
+      "RawSHA256": "86a26746631073aeeaaffc1bf2794e193e03c103f9acdc355ae40e4d30cf2bb9",
+      "RawBytes": 2984
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "9f73d9e41216cb6e7891098bb48f0d1918af4937631aeb9c31b0e1a6b5c019f1",
+      "RawBytes": 1666170
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "4e120bb405e681afa8d44ca4d8e77f89f8d7b1fbb3a92cfcc12e3af181a45ec8",
+      "RawBytes": 1106
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "d4b3f988a6b73c6a54c61ea2341b1473a323e3638581d907fd2b33ac6b3419a0",
+      "RawBytes": 1474
+    },
+    {
+      "Path": "owned0/boe-lineage-supervisor.gz",
+      "RawSHA256": "794d26f3cff54353eec5ac24a96bef8090d779544ae2afa590b8320b04751a7e",
+      "RawBytes": 82056
+    },
+    {
+      "Path": "owned0/build-provenance.json.gz",
+      "RawSHA256": "dc50df631ff912a2f43371e405740938ce03134b1e279117a57e7f0caa31cc53",
+      "RawBytes": 1438
+    },
+    {
+      "Path": "owned0/build.log.gz",
+      "RawSHA256": "130f542079194275cf26f04724b9571bedc071c257766a1dc40bfa0b0b2cac43",
+      "RawBytes": 122
+    },
+    {
+      "Path": "owned0/continue.gz",
+      "RawSHA256": "03473d82867753aaed383d1e1d53e699d23192def52210bacc1ce59b4c196071",
+      "RawBytes": 24
+    },
+    {
+      "Path": "owned0/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned0/guardian.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/helper-child-56111.json.gz",
+      "RawSHA256": "8a8b164c9e56e953cb4fd152784b2b57f55d24ed0e1458513d3e85eff5eed013",
+      "RawBytes": 147
+    },
+    {
+      "Path": "owned0/helper-child-56127.json.gz",
+      "RawSHA256": "562b73963ee2092556efb9d52edba654c568d8c303dcc6e9ae23b59e413630d5",
+      "RawBytes": 5310
+    },
+    {
+      "Path": "owned0/initialized.gz",
+      "RawSHA256": "dd41052374ccb21894e7cf150be3d0ec3116078cab00b510fc6806ab24c0cd57",
+      "RawBytes": 27
+    },
+    {
+      "Path": "owned0/neutral-cli.gz",
+      "RawSHA256": "b9f927bf40b8b2b3e4354d4b3ebe1fa6e189f54c9fd79c9b5377cd117731decd",
+      "RawBytes": 29448
+    },
+    {
+      "Path": "owned0/neutral-terminal-manifest.json.gz",
+      "RawSHA256": "22862d1e707209e721cffead544462d437f9b082b7305d7071b239f29ad9437d",
+      "RawBytes": 324
+    },
+    {
+      "Path": "owned0/package-manifest.json.gz",
+      "RawSHA256": "835406002d65d2d4271222ca99af911efc1360ac5f1435663fc00e04f52b3055",
+      "RawBytes": 968
+    },
+    {
+      "Path": "owned0/powershell.json.gz",
+      "RawSHA256": "789e4b2097dbb11f5e2250e95857771f3eadb92e74ba2d65253112005bf13a1b",
+      "RawBytes": 8962
+    },
+    {
+      "Path": "owned0/scenario.json.gz",
+      "RawSHA256": "480580f0f312784389541bcca543177f1c4245f76055330622dec01630c41bfa",
+      "RawBytes": 32114
+    },
+    {
+      "Path": "owned0/session-owner/.boe_runtime/locks/canonical-write.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/session-owner/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/session-owner/.boe_runtime/session-generation/current.json.gz",
+      "RawSHA256": "968489a198ad769229c74c2fae2f57a90a9b01040a94473b68ba1864915b25ab",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned0/session-owner/game_session/config.json.gz",
+      "RawSHA256": "0161a627cbe337e86add4479118f4f3bee6503578c287bf10c875fdc8faeb043",
+      "RawBytes": 8152
+    },
+    {
+      "Path": "owned0/session-owner/game_session/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "RawSHA256": "1de418f49147a1fd7f9cb95af03aba735181bbb3d014de4e2bc545ea99e60388",
+      "RawBytes": 13
+    },
+    {
+      "Path": "owned0/session-owner/game_session/game_state/control/pending_turn_snapshot.json.gz",
+      "RawSHA256": "a95c061ba0a24363a1632b181e127bd43a38ac2c7f706f691acf7167f9a82190",
+      "RawBytes": 77
+    },
+    {
+      "Path": "owned0/session-owner/game_session/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "c41772db849c6999d25790339465467bfe79e3390d814671ce9ebe5157bd8a62",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned0/session-owner/game_session/game_state/world/helper-policy.json.gz",
+      "RawSHA256": "1de418f49147a1fd7f9cb95af03aba735181bbb3d014de4e2bc545ea99e60388",
+      "RawBytes": 13
+    },
+    {
+      "Path": "owned0/session-owner/game_session/input/turn_request.json.gz",
+      "RawSHA256": "497ddfb39c606dbcd55a8a80e3834da23bfabf7ac007fe781c516ba9848cbf95",
+      "RawBytes": 99
+    },
+    {
+      "Path": "owned0/session-owner/game_session/output/helper-snapshot.json.gz",
+      "RawSHA256": "1de418f49147a1fd7f9cb95af03aba735181bbb3d014de4e2bc545ea99e60388",
+      "RawBytes": 13
+    },
+    {
+      "Path": "owned0/session-owner/game_session-sibling/outside.json.gz",
+      "RawSHA256": "cea192554ad3e9c529c64c3712cd61be0aeae504bcc81acda7b3147a8be3819e",
+      "RawBytes": 13
+    },
+    {
+      "Path": "owned0-binary-provenance.json.gz",
+      "RawSHA256": "800da5b2986118b0e683d16c58a3b8ef5bb53b3797e337ee919d55789c831d43",
+      "RawBytes": 141
+    }
+  ]
+}
