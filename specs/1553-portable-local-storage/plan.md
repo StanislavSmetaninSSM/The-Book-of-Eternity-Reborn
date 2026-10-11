@@ -33,8 +33,8 @@ ExternalPublicationContext is an actual owning-disposal seam, not native FileStr
 Counts are retained recipe/source expectations, never executions. Existing native Windows relay24/24 historical acceptance does not qualify these unrun recipes; not all Windows work is UNRUN. User boundary remains native Windows only in the supplied/parent-coordinated Windows environment after the agreed integration stage. No HOME-PC access, all-category sequence or automatic native-worker launch is requested. For **one** separately agreed existing category, future commands are documentation only (replace `$category` with that one fixed literal; preserve category budgets):
 
 ```powershell
-pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category $category -PlanOnly -TimeoutMinutes 10
-pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category $category -NoBuild -TimeoutMinutes 10
+pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category $category -PlanOnly
+pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category $category -NoBuild
 ```
 
 NoBuild requires a successful matching fresh selected build/source/DLL preflight. PlanOnly/discovery is0execution. Preserve exact source/compiler/DLL pins, command/plan/TRX/raw planned-versus-completed counts, genuinely reached native hooks, original owner/request/generation identity, exact bytes/absence/cold retained state, primary-secondary/noLater and strict owned cleanup. Platform-return/skip, mock-only or zero-hook results cannot become native PASS.
