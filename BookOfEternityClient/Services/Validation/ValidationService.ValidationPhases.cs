@@ -8,7 +8,7 @@ public partial class ValidationService
     private readonly AsyncLocal<GameStateValidationSelection?> _activeGameStateValidationSelection = new();
 
     private async Task<List<ValidationIssue>> ValidateGameStateCoreAsync(
-        GameStateValidationSelection selection)
+        GameStateValidationSelection selection, bool metaControlShapesOnly)
     {
         ArgumentNullException.ThrowIfNull(selection);
         var previousSelection = _activeGameStateValidationSelection.Value;
@@ -28,9 +28,14 @@ public partial class ValidationService
             var issues = new List<ValidationIssue>();
             var phases = selection.Phases;
 
-            await RunCoreValidationPhasesAsync(phases, issues);
-            await RunActorAndStateValidationPhasesAsync(phases, issues);
-            await RunLifecycleValidationPhasesAsync(phases, issues);
+            if (metaControlShapesOnly)
+                await RunMetaControlShapeReadPhaseAsync(issues);
+            else
+            {
+                await RunCoreValidationPhasesAsync(phases, issues);
+                await RunActorAndStateValidationPhasesAsync(phases, issues);
+                await RunLifecycleValidationPhasesAsync(phases, issues);
+            }
 
             LogValidationErrors(issues);
             return issues;

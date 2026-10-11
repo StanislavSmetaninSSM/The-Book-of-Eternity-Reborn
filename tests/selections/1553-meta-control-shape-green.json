@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-meta-control-shape-read-phase",
+      "reason": "#1553/T071 Meta22 preparatory source. RED exactly positive2 work-bound only; GREEN controls/affected World consumers separately gated. No runtime authorized by this selection.",
+      "contracts": [
+        "#1553/T071-META-READ-PHASE",
+        "actual22 core/read order and immutable images",
+        "whole entry-through-finally proof ceiling<=6; no authority cache"
+      ]
+    },
+    {
+      "category": "portable-meta-control-shape-read-phase-controls",
+      "reason": "#1553/T071 Meta22 preparatory source. RED exactly positive2 work-bound only; GREEN controls/affected World consumers separately gated. No runtime authorized by this selection.",
+      "contracts": [
+        "#1553/T071-META-READ-PHASE",
+        "actual22 core/read order and immutable images",
+        "whole entry-through-finally proof ceiling<=6; no authority cache"
+      ]
+    },
+    {
+      "category": "portable-meta-control-shape-world-entry-neighbors",
+      "reason": "#1553/T071 Meta22 preparatory source. RED exactly positive2 work-bound only; GREEN controls/affected World consumers separately gated. No runtime authorized by this selection.",
+      "contracts": [
+        "#1553/T071-META-READ-PHASE",
+        "actual22 core/read order and immutable images",
+        "whole entry-through-finally proof ceiling<=6; no authority cache"
+      ]
+    },
+    {
+      "category": "c5-world-state-read-phase",
+      "reason": "#1553/T071 Meta22 preparatory source. RED exactly positive2 work-bound only; GREEN controls/affected World consumers separately gated. No runtime authorized by this selection.",
+      "contracts": [
+        "#1553/T071-META-READ-PHASE",
+        "actual22 core/read order and immutable images",
+        "whole entry-through-finally proof ceiling<=6; no authority cache"
+      ]
+    }
+  ]
+}

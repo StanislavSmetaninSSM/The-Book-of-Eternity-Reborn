@@ -35,21 +35,25 @@ public partial class ValidationService
         }
     }
 
-    private Task<List<ValidationIssue>> ValidateGameStateInternalAsync(GameStateValidationSelection selection)
+    private Task<List<ValidationIssue>> ValidateGameStateInternalAsync(GameStateValidationSelection selection) =>
+        StartAdmittedGameStateAsync(selection, metaControlShapesOnly: false);
+
+    private Task<List<ValidationIssue>> StartAdmittedGameStateAsync(
+        GameStateValidationSelection selection, bool metaControlShapesOnly)
     {
         ArgumentNullException.ThrowIfNull(selection);
         var invocation = AdmitWorldValidation(true, selection);
         var previous = _worldValidationInvocation.Value;
         _worldValidationInvocation.Value = invocation;
-        try { return RunAdmittedGameStateAsync(selection, invocation); }
+        try { return RunAdmittedGameStateAsync(selection, invocation, metaControlShapesOnly); }
         catch { ReleaseWorldValidation(invocation); throw; }
         finally { _worldValidationInvocation.Value = previous; }
     }
 
     private async Task<List<ValidationIssue>> RunAdmittedGameStateAsync(
-        GameStateValidationSelection selection, WorldValidationInvocation invocation)
+        GameStateValidationSelection selection, WorldValidationInvocation invocation, bool metaControlShapesOnly)
     {
-        try { return await ValidateGameStateCoreAsync(selection); }
+        try { return await ValidateGameStateCoreAsync(selection, metaControlShapesOnly); }
         finally { ReleaseWorldValidation(invocation); }
     }
 

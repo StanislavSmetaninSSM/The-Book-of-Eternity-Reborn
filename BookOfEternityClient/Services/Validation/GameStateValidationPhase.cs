@@ -102,6 +102,11 @@ internal sealed class GameStateValidationSelection
 
     public GameStateValidationPhase Phases { get; }
 
+#if DEBUG
+    internal bool SelectsOnlyStateFiles(IReadOnlySet<string> allowedPaths) =>
+        _stateFiles != null && _stateFiles.All(allowedPaths.Contains);
+#endif
+
     public bool IncludesStateFile(string relativePath)
     {
         return _stateFiles == null ||
