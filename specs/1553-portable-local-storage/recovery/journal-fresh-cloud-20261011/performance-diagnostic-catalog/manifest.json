@@ -1,0 +1,172 @@
+{
+  "Utc": "2026-10-11T02:30:19.512248+00:00",
+  "SourceSHA": "6ba6cb56b9a442753c95c3ddafed959620eeb7f8",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -ValidateCatalog -TimeoutMinutes 8",
+  "RunnerPath": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261011-022851-252-17109-d4d70670ca124dc0919e13079a0b6754-categories",
+  "ModelCalls": 0,
+  "ArchiveScope": "Every completed runner file, full outer console, and explicitly selected journal observations/before-after trees; for owned C5 chain every regular runtime/game/relay/diagnostic/native file except ephemeral tmp/cache/config/data, and ship preserved by complete byte/hash inventory; no source cache, credentials or unrelated state.",
+  "SourcePins": {
+    "BookOfEternityClient/Core/FileSystemManager.cs": "794e46855935eba31a58da064b3fd5078292e25fb08a3ba165bd7e4fef69ee52",
+    "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs": "2d6199fefecfb84b62a42c56f2c8c9bdb7abaf53fcfb699d86d71676f7034bc4",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs": "fdcb3969df9ff2f8a13a92af9eee1a207250c088bc8871906badbcb2c1a70e9b",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserOriginalAdmission.cs": "fdcc2fbf0a6e5d350ad2215844d0b40aaa6d1807c0b2fb6ec0d6386f0bfff26c",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs": "93403801377336387e5cf20399b54d1aa928ff3e40dc30fe0ab43dbf96559981",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92",
+    "scripts/test-csharp.ps1": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+    "scripts/testing/TestCategoryExecution.ps1": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38",
+    "scripts/testing/TestCategoryCatalog.psm1": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+    "tests/categories.json": "d66299e5286c48b2dd63e8447eec421b42d8b10db40f4be8e99efaf223363228",
+    "BookOfEternityClient.Tests/LinuxGameChainTests.cs": "6b16459c015896dec6dfe58bc93a7bf825e6f2b9ad658e984b357a4dec700144",
+    "tests/fixtures/LinuxGameChains/console_chain.py": "f721317c0699d4f5d0bf6a0dc72db01a176970663398b73dda367fc6aae2038a",
+    "tests/fixtures/LinuxGameChains/startup_observer.py": "b927d2db9f1ad80b11a09cd6e0f271cd6acee9ab1593952a40bb782e245d7fae",
+    "scripts/build-linux-supervisor.ps1": "362dd6d89f79bc7fd9d67edbc2bc1f02b11a3cb5cc138389a735753986b76b16",
+    "tools/gm-relay/relay_cli.py": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606",
+    "tests/selection.json": "81cb80c3324ae11b95369e06558a189a77c6610866018325986d668022382117",
+    "BookOfEternityClient.WebFrontend/package.json": "34ea949d7c929126538542684bf2af693caecf2345a9e67e9ae1e1d794c505d7",
+    "BookOfEternityClient.WebFrontend/package-lock.json": "c4dd676e182fd9438736bc9cf67ee05165a34b0348bd93bbd6e3619b7164410c",
+    "native/linux/boe-lineage-supervisor.c": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+    "tests/fixtures/LinuxHost/host-guardian.c": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3",
+    "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.Diagnostics.cs": "ba79079fdb95facadff5b8417808b68418a80a833fb73b45f4faf86045f78e8a",
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs": "5480855a5bd9742d262a7c362d209927fd5adefd97fe6c3a67b8091b11940abd",
+    "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs": "7a857ec50550365f6576b8e2ccc056e662c87622e1a32f652952760761d3e753",
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+    "BookOfEternityClient.Tests/BrowserAdmissionDiagnosticsTests.cs": "dde035adb180fad7f8b66d6b38e167fe6f946148a75cf78d4dcb13bb9d212168"
+  },
+  "Assemblies": {
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "1acaa46f764af9afcdb8842822cf703fa2999ca431f23f9c3181761d1db4eaf3",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll": "10a40af0c1679beabfa89aa6b994cb179e69207951c5fed39937d152e550e8d5",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb": "2c2333665852edad165e095cfc2ebdf8a4347b4630acc637a37960f05e096f73",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll": "0fd11980ecac53c21603efe3643912c7c3093a72527dff8763dbd4ee425c5e48",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "29be43d5144363523c574d904a5a88db58acb349ed9c7856fcb7fc8375192b1a",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb": "dc5c9e52867111847e26276385e73889dc418a05b50f948e296ccd9df1b58f3c",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll": "7e8fe00bcc579c725ee5b3dd4ec39ca35c1b0df85fc0adde3d890e41e4c14092",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "1acaa46f764af9afcdb8842822cf703fa2999ca431f23f9c3181761d1db4eaf3",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll": "10a40af0c1679beabfa89aa6b994cb179e69207951c5fed39937d152e550e8d5",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb": "f04ba511fda7deaf3da2930252a84bd66dfc5e32af18d08b0d526537e39f06ae",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "29be43d5144363523c574d904a5a88db58acb349ed9c7856fcb7fc8375192b1a",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb": "dc5c9e52867111847e26276385e73889dc418a05b50f948e296ccd9df1b58f3c",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll": "10a40af0c1679beabfa89aa6b994cb179e69207951c5fed39937d152e550e8d5",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb": "dc5c9e52867111847e26276385e73889dc418a05b50f948e296ccd9df1b58f3c",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll": "10a40af0c1679beabfa89aa6b994cb179e69207951c5fed39937d152e550e8d5",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll": "68f0a502cc8a493eb591241d5cafe38c45f1585d694bac63f77f0ca577131a5d",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.pdb": "dc5c9e52867111847e26276385e73889dc418a05b50f948e296ccd9df1b58f3c",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.pdb": "c37c6f721a3bf08859f23d44d925a80c46e837d6d14bfe756073cbe518e385aa",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "1acaa46f764af9afcdb8842822cf703fa2999ca431f23f9c3181761d1db4eaf3",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.dll": "10a40af0c1679beabfa89aa6b994cb179e69207951c5fed39937d152e550e8d5",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "29be43d5144363523c574d904a5a88db58acb349ed9c7856fcb7fc8375192b1a",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.pdb": "dc5c9e52867111847e26276385e73889dc418a05b50f948e296ccd9df1b58f3c"
+  },
+  "Files": [
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "4334edd6d2dd400cf53660b2af0b1620e02d3df3c055242c944adf64bf62b018",
+      "RawBytes": 40317
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "84442ab62f745c5e2f9c9fcf32147e9d4acaa8f6f09e8cf25b03e5ae7301af62",
+      "RawBytes": 1019
+    },
+    {
+      "Path": "runner/catalog-audit.json.gz",
+      "RawSHA256": "c22868a9fa39c41015eca81a9034321996162c1f25d83b919879d93a246c042f",
+      "RawBytes": 103
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "c6e5bae30263b94a4458f00204acefe46a9321474e720f7415a61699c38779bb",
+      "RawBytes": 3328126
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "657a06b0df9464f3f5060a5d7bdee496bb9162665111556b8f56530a40171863",
+      "RawBytes": 1598
+    },
+    {
+      "Path": "outer-console.log.gz",
+      "RawSHA256": "6685e8fed2f75be2837ac3281329c22e046c86854941735ecf65b8587c8cffcb",
+      "RawBytes": 765
+    }
+  ],
+  "Summary": {
+    "Categories": [
+      null
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "6ba6cb56b9a442753c95c3ddafed959620eeb7f8",
+      "WorkingTreeFingerprint": "1F8E1638440F5A44B5B0B53975A33ABC1CED52F2F1FE0C485C980149D996F517",
+      "ChangedFiles": 7
+    },
+    "CatalogAudit": {
+      "Valid": true,
+      "Methods": 11466,
+      "Categories": 661,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0361195,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0359645,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0830938,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 22.5207267,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 1.3419599,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0028175,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 8,
+    "WallTime": "00:00:29.3065632",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "OwnedChains": []
+}

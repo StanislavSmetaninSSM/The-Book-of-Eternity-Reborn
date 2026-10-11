@@ -31,6 +31,7 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
         using (Context(collector, "acquired-lock-before-recovery", "0123456789abcdef0123456789abcdef"))
         using (Measure(collector, "inclusive-preflight"))
         {
+            Assert.False(Snapshot(collector)["Complete"]!.GetValue<bool>());
             ticks = 10;
             using (Measure(collector, "physical-verification"))
             {
@@ -141,6 +142,7 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
             File.WriteAllText(Path.Combine(evidence, "owner-nonce"), "changed");
             Invoke(refused, "Export");
             Assert.Equal(1, Snapshot(refused)["ExportFailures"]!.GetValue<int>());
+            Assert.False(Snapshot(refused)["Complete"]!.GetValue<bool>());
             Assert.Equal(original, File.ReadAllBytes(exported));
             Assert.Empty(Directory.EnumerateFileSystemEntries(canonical));
         }
@@ -163,5 +165,35 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
         Assert.Equal(repetitions, result["Rows"]!.AsArray().Single()!["Count"]!.GetValue<long>());
         output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { Repetitions = repetitions, EmptySeconds = emptySeconds,
             DiagnosticSeconds = diagnosticSeconds, Scope = "Finite in-memory collector calibration; not end-to-end overhead or acceptance latency." }));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void OriginalHookFailurePropagatesWithDiagnosticsDisabledAndEnabled(bool enabled)
+    {
+        var own = Path.Combine(Path.GetTempPath(), "boe-diag-hook-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(own);
+        try
+        {
+            var original = new InvalidOperationException("Original hook failure remains visible.");
+            var files = new FileSystemManager(own, Microsoft.Extensions.Logging.Abstractions.NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                { BrowserOriginalAdmissionTimingObserver = (_, _) => throw original });
+            var collector = enabled ? Create(System.Diagnostics.Stopwatch.GetTimestamp) : null;
+            typeof(FileSystemManager).GetField("_browserAdmissionDiagnostic", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .SetValue(files, collector);
+            var measured = (IDisposable)typeof(FileSystemManager).GetMethod("MeasureOriginalBrowserAdmission",
+                BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(files, ["inclusive-preflight"])!;
+            Assert.Same(original, Assert.Throws<InvalidOperationException>(measured.Dispose));
+            if (collector != null)
+            {
+                var snapshot = Snapshot(collector);
+                Assert.Equal(1, snapshot["Rows"]!.AsArray().Single()!["Count"]!.GetValue<long>());
+                Assert.Equal(0, snapshot["DiagnosticFailures"]!.GetValue<int>());
+            }
+            Assert.Empty(Directory.EnumerateFileSystemEntries(own));
+        }
+        finally { Directory.Delete(own); }
     }
 }
