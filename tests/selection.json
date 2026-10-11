@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "c5-original-rollback-streaming-contracts",
-      "reason": "Independent production DESIGN PASS authorizes one existing-path allocation RED Fact only; source review before actual RED. Whole-file managed allocation growth must causally fail on unchanged product.",
+      "reason": "Causal RED frozen at exact693744B payload/allocation growth plus17 existing controlPASS. Reviewed minimal three-file exact rollback streaming callback now needs eleven narrow allocation/strict-read/length/EOF/native-path/dispatch/original-exception/same-lease drift cases before actual GREEN, then actual C5 protocol separately. No bypass/cache or broad matrix.",
       "contracts": [
         "#1553",
         "T069-C5-ORDINARY-CONSUMER",

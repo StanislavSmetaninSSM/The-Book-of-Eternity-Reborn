@@ -23504,10 +23504,13 @@
       },
         {
             "id": "c5-original-rollback-streaming-contracts",
-            "responsibility": "#1553 causal same-thread managed allocation slope on the existing complete held browser proof: independent genuine signed fixtures, identical non-probe canonical bytes, 22 versus 693766 byte rollback payload. Current RED source owns exactly one allocation Fact; semantic streaming controls are added only after preserved causal RED and candidate SOURCE gate.",
-            "excludes": "No product reader/API/hook change in this RED block, elapsed-time or full-C5 speed claim, removed proof/path boundaries, cross-proof cache, broad recovery matrix or matched C5 execution.",
+            "responsibility": "#1553 strict exact rollback streaming contracts: causal same-thread whole-proof allocation slope; actual checked file reader and production captured-length chunk core; verified exact/default/legacy callback dispatch and invalid digest refusal; original callback exception identity; fresh rollback drift refusal after success within the same physical lease. Five methods/eleven cases across unit and integration.",
+            "excludes": "No elapsed-time or full-C5 speed claim, removed proof/path boundaries, cross-proof cache, general byte/snapshot reader or lease/journal/RNG change, production mutation hooks, broad recovery matrix or C5 execution.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserRollbackAllocationBudget.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserRollbackHashContracts.cs",
+                "BookOfEternityClient.Tests/OriginalBrowserRollbackHashContractsTests.cs",
+                "BookOfEternityClient.Tests/PendingTurnSnapshotAuthorityTests.RollbackHashDispatch.cs",
                 "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
                 "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserOriginalAuthority.cs",
                 "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs"
@@ -23532,7 +23535,16 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_RollbackPayloadGrowthDoesNotAllocateWholeContent"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_RollbackPayloadGrowthDoesNotAllocateWholeContent",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAuthority_HashCallbackPreservesOriginalException",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_RollbackDriftRefusedAfterSuccessWithinSameHeldLease"
+                    ]
+                },
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.OriginalBrowserRollbackHashContractsTests.StrictRollbackHash_ActualReaderAndChunkCorePreserveRefusals",
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode"
                     ]
                 }
             ]
