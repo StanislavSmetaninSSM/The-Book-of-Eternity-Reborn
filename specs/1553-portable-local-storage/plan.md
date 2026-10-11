@@ -1,5 +1,7 @@
 ## T067 treatment Probe original owner #110 — TEST-ONLY WIP, 2026-10-11
 
+CURRENT SAME+ROOT SOURCE ACCEPTED `7bfcb469c9fe802268e4a77237f45756307b7965`; single P2 fixture cleanup gap closed. ROOT releases only fresh initial-four PlanOnly + discovery-only catalog (zero executed tests); all actual runtime still HOLD until exact preparation/source/DLL readback. Original product/input/oracle/selection unchanged.
+
 SAME SOURCE BLOCK `94311d15ea72db14d30b6c706ac3680c2bc2666a`: one P2 fixture cleanup gap only (gate/settlement exception could skip global FirstChance unsubscribe/marker reset). Minimal test-only correction WIP: guaranteed nested finally removes handler and resets marker/armed; settlement outcome and fixture cleanup failures are separately emitted and cannot replace target primary or qualify causal RED. Normal hot/cold/oracles unchanged; no product/input/selection expansion. Delta SOURCE recheck pending; all build/PlanOnly/catalog/runtime HOLD/UNRUN.
 
 Tracked child `T067-TREATMENT-PROBE-OWNED-CLOSE`, base `c220e1741feed42935784fb1f90641f1c6bf30ab`. TEST-ONLY preparation: one new integration Theory/four rows, one dedicated descriptor. Product/runner/cold infrastructure unchanged; build/PlanOnly/catalog/actual runtime UNRUN until SAME+ROOT SOURCE gate. First PASS remains PASS; only a same-primary mismatch after all nonfault state/owner/cold/cleanup assertions can qualify causal RED. Parent T067 OPEN; accepted #26/#27 fixes and all frozen evidence retained.
