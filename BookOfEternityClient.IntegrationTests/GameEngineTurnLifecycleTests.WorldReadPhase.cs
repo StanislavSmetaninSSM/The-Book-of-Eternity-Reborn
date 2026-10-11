@@ -75,18 +75,28 @@ public sealed partial class GameEngineTurnLifecycleTests
             };
             probe.Arm();
             Exception? failure;
+            List<ValidationIssue>? result = null;
             try
             {
                 var selected = coreSelectedOut ? new GameStateValidationSelection(
                     GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [WorldFactionStructure]) : WorldSelection;
-                failure = await Record.ExceptionAsync(() => probe.Validator.ValidateGameStateAsync(selected));
-                WorldEvidence(probe, new { coreSelectedOut, structureReads, Failure = failure?.ToString(),
+                failure = await Record.ExceptionAsync(async () => { result = await probe.Validator.ValidateGameStateAsync(selected); });
+                WorldEvidence(probe, new { coreSelectedOut, structureReads, ResultPublished = result != null, Failure = failure?.ToString(),
                     OriginalCore = Convert.ToHexString(SHA256.HashData(before)),
                     ChangedCore = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(corePath))) });
             }
             finally { probe.OnRead = null; File.WriteAllBytes(corePath, before); }
-            Assert.Equal(2, structureReads);
+            Assert.Equal(coreSelectedOut ? 3 : 2, structureReads);
+            Assert.Null(result);
             Assert.NotNull(failure);
+            if (coreSelectedOut)
+            {
+                // First captured structure must be freshly compared before the nested core drift.
+                Assert.Contains("RequireUnchangedReadsAsync", failure!.StackTrace);
+                Assert.Equal(new[] { WorldFactionStructure, WorldFactionCore, WorldFactionCore,
+                    WorldFactionStructure, WorldFactionStructure, WorldFactionCore },
+                    probe.OpenedReads.Where(path => path == WorldFactionCore || path == WorldFactionStructure));
+            }
             Assert.IsAssignableFrom<IOException>(failure);
             Assert.False(WorldHasAmbientLease(probe.Files));
         });
@@ -332,7 +342,11 @@ public sealed partial class GameEngineTurnLifecycleTests
                 File.WriteAllBytes(corePath, coreBytes);
             }
             Assert.Null(result);
-            Assert.Equal(1, coreReads);
+            Assert.Equal(kind == "data-io" ? 2 : 1, coreReads);
+            Assert.Equal(kind == "data-io"
+                ? new[] { WorldFactionStructure, WorldFactionCore, WorldFactionCore, WorldFactionStructure }
+                : new[] { WorldFactionStructure, WorldFactionCore },
+                probe.OpenedReads.Where(path => path == WorldFactionCore || path == WorldFactionStructure));
             if (kind == "data-io")
             {
                 // Original nullable callback finishes; its strict pair still runs in order.
