@@ -875,8 +875,20 @@ public partial class GameEngine
             stagedIdle = true;
             return true;
         }
+#if DEBUG
+        using var diagnosticLateWindow = pendingBrowserState?.Phase == "staged"
+            ? _fs.BrowserDiagnosticLateWindow("unbound", pendingBrowserState.Binding.ActionId, pendingBrowserState.Binding.Generation) : null;
+        try
+        {
+#endif
         using var browserOriginalScope = pendingBrowserState?.Phase == "staged"
             ? _fs.BeginBrowserOriginalOperation(pendingBrowserState.Binding, PendingPlayerActionService.ReadStaged(pendingBrowserState)) : null;
+#if DEBUG
+        using var diagnosticOwner = browserOriginalScope == null ? null : _fs.BrowserDiagnosticIdentity(null,
+            pendingBrowserState!.Binding.ActionId, pendingBrowserState.Binding.Generation, browserOriginalScope.Condition.ActiveIdentity);
+        using var diagnosticCaller = browserOriginalScope == null ? null : _fs.BrowserDiagnosticLogical(null, "browser-late-terminal-finalization");
+        if (browserOriginalScope != null) _fs.BrowserDiagnosticMark("processing-owner");
+#endif
         var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
             await InvokeSessionFinalizationCheckpointAsync(
                 SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound);
@@ -886,6 +898,9 @@ public partial class GameEngine
             var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(
                 manifest,
                 requireCurrentContext: false);
+#if DEBUG
+            using var diagnosticRequest = browserOriginalScope == null ? null : _fs.BrowserDiagnosticIdentity(snapshotContext?.RequestId, null, null, null);
+#endif
             var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
             var terminalSignals = await CaptureBoundTerminalSignalSnapshotAsync();
             var completionSignal = ParseReadySignalMetadata(
@@ -1029,6 +1044,9 @@ public partial class GameEngine
                         await _storyService.AppendTurnAsync(
                             _gameLoop.TurnNumber, state.CurrentRealm ?? "Chaos Sea", state.Incarnation,
                             lateAction, lateResponse?.Response, state.CurrentLocation, lateStoryRefs);
+#if DEBUG
+                    if (lateBrowserStaged != null) _fs.BrowserDiagnosticMark("story-published");
+#endif
 
                     await ProcessMortalProgressionAfterAcceptedTurnAsync();
                     var browserLifeHandoff = lateBrowserStaged != null && _fs.FileExists("game_state/control/life_transitions.json");
@@ -1139,6 +1157,10 @@ public partial class GameEngine
             }
 
             return false;
+#if DEBUG
+        }
+        catch { _fs.BrowserDiagnosticMark("finalizer-failed"); throw; }
+#endif
         });
         if (stagedIdle) await Task.Delay(250);
         return handled;

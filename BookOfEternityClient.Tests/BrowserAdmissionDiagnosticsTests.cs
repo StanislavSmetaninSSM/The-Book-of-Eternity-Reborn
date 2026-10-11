@@ -241,6 +241,23 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
         });
         Assert.True(Snapshot(identities)["Complete"]!.GetValue<bool>());
 
+        var requests = Create(() => 1);
+        foreach (var id in new[] { "44444444444444444444444444444444", "55555555555555555555555555555555" })
+        {
+            using ((IDisposable)Invoke(requests, "Identity", id, "same-action", "same-generation", null!))
+                Invoke(requests, "Content", path, "ordinary-async", "physical-result", "missing", 0L);
+        }
+        var requestRows = Snapshot(requests)["ContentRows"]!.AsArray();
+        Assert.Equal(2, requestRows.Count); // ONLY RequestId differs; no window/attempt difference.
+        Assert.Equal(2, requestRows.Select(row => row!["Labels"]!["RequestId"]!.GetValue<string>()).Distinct().Count());
+        Assert.All(requestRows, row =>
+        {
+            Assert.Equal("same-action", row!["Labels"]!["ActionId"]!.GetValue<string>());
+            Assert.Equal("same-generation", row["Labels"]!["Generation"]!.GetValue<string>());
+            Assert.Equal("unbound", row["Labels"]!["WindowId"]!.GetValue<string>());
+            Assert.Equal(1, row["OutsideWindow"]!["PhysicalMissing"]!.GetValue<long>());
+        });
+
         // Actual public flow: the ORIGINAL after-attempt hook creates the absent
         // file, so the quiescence followup reads it. No fabricated authority/lease.
         var own = Path.Combine(Path.GetTempPath(), "boe-diag-content-" + Guid.NewGuid().ToString("N"));

@@ -144,7 +144,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
         public int RollbackMembers { get; set; }
     }
 
-    private sealed record ContentKey(string Path, string ReaderFamily, Labels Labels);
+    private sealed record ContentKey(string ReaderFamily, Labels Labels);
     private sealed class ContentCounts
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
@@ -192,7 +192,6 @@ internal sealed class BrowserAdmissionDiagnosticCollector
     }
     private sealed class ContentRow(ContentKey key)
     {
-        public string Path => key.Path;
         public string ReaderFamily => key.ReaderFamily;
         public Labels Labels => key.Labels;
         public string ValidationPhase => key.Labels.ValidationPhase;
@@ -293,7 +292,11 @@ internal sealed class BrowserAdmissionDiagnosticCollector
         }
         catch (Exception) { Interlocked.Increment(ref _diagnosticFailures); return Noop.Instance; }
     }
-    internal IDisposable BeginWindow(string request, string action, string generation)
+    internal IDisposable BeginWindow(string request, string action, string generation) =>
+        BeginWindowCore(request, action, generation, "terminal-wait-returned");
+    internal IDisposable BeginLateWindow(string request, string action, string generation) =>
+        BeginWindowCore(request, action, generation, "late-terminal-observed");
+    private IDisposable BeginWindowCore(string request, string action, string generation, string startMarker)
     {
         try
         {
@@ -304,7 +307,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
                 if (_windows.Count == 8) { _droppedWindows++; return Noop.Instance; }
                 var id = Environment.ProcessId + "-" + (_windows.Count + 1);
                 window = new(id, _clock(), request, action, generation);
-                window.Markers.Add("terminal-wait-returned", window.StartedTicks);
+                window.Markers.Add(startMarker, window.StartedTicks);
                 _windows.Add(window);
             }
             var labels = (_logical.Value?.Labels ?? new()) with
@@ -359,7 +362,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
                 }
                 var segment = logical?.Window == null ? "outside" :
                     logical.Window.EndTicks is { } end && observed >= end ? "after-window" : "inside-window";
-                var key = new ContentKey(path, family, logical?.Labels ?? new());
+                var key = new ContentKey(family, logical?.Labels ?? new());
                 if (!_contentRows.TryGetValue(key, out var row))
                 {
                     if (_rows.Count + _contentRows.Count >= _capacity) { _droppedRows++; _droppedContentRows++; return; }
@@ -551,7 +554,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
             return JsonSerializer.Serialize(new
             {
                 ProcessId = Environment.ProcessId, StopwatchFrequency = Stopwatch.Frequency,
-                Qualification = "Raw synchronous attempt wall work; concurrent totals may overlap, never CPU/latency. Engine terminal-wait-returned→accepted-receipt-published window is distinct from external HelperComplete→Acceptance. True RequestId is separate from original pending ActionId; unavailable identity stays unbound/null.",
+                Qualification = "Raw synchronous attempt wall work; concurrent totals may overlap, never CPU/latency. Engine terminal-wait-returned OR late-terminal-observed→accepted-receipt-published window is distinct from external HelperComplete→Acceptance. The late path does not wait for a terminal; its marker records the already staged non-idle branch before original owner acquisition. True RequestId is separate from original pending ActionId; unavailable identity stays unbound/null.",
                 WindowQualification = "Contained spans only, with separate crossing/late raw spans, no clipping or subtraction. No incoming pre-window span accounting. Finalizer failure/incomplete window is not accepted. Stopwatch ticks are process-domain anchors, no assumed Python clock mapping. Pending owner lifecycle Phase is not ValidationPhase.",
                 CaptureSealed = _captureSealed,
                 CompleteQualification = "Completeness of diagnostic recording at this finite boundary only, never successful/accepted processing: each window Outcome and AcceptedTicks are independent. First owned export attempt seals later measurement starts, which are excluded; not whole-process completeness. LeaseId zero means unavailable, not absence of an ambient lease.",
@@ -563,7 +566,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
                 DiagnosticFailures = _diagnosticFailures, ExportFailures = _exportFailures,
                 ActiveFrames = _activeFrames,
                 ActiveContentCalls = _activeContentCalls,
-                ContentQualification = "Semantic starts/completions versus physical attempts/retries/qualified absent results. Fault/data-fault never missing. Omitted fixed counter fields mean zero (not unavailable); failed/dropped recording is qualified separately. Fixed counters carry inside/after/outside-window observation-point classification, not read duration or admission counts. Families describe different layers of the same read; do not sum their bytes/events as unique reads. Existing raw direct IO outside these selected filesystem readers is not inventoried. Present/absence observations are not authority grants.",
+                ContentQualification = "Aggregation is ReaderFamily × full immutable Labels; no Path dimension or representative path is retained. Semantic starts/completions versus physical attempts/retries/qualified absent results. Fault/data-fault never missing. Omitted fixed counter fields mean zero (not unavailable); failed/dropped recording is qualified separately. Fixed counters carry inside/after/outside-window observation-point classification, not read duration or admission counts. Families describe different layers of the same read; do not sum their bytes/events as unique reads. Existing raw direct IO outside these selected filesystem readers is not inventoried. Present/absence observations are not authority grants.",
                 CollectorBookkeepingTicks = _overheadTicks, Acquisitions = _acquisitions, Contention = _contention,
                 EmptyRecovery = _emptyRecovery, PresentRecovery = _presentRecovery,
                 Complete = _droppedRows == 0 && _accountingErrors == 0 && _diagnosticFailures == 0 &&
@@ -600,6 +603,8 @@ public partial class FileSystemManager
         _browserAdmissionDiagnostic?.SnapshotOverride(present);
     internal IDisposable? BrowserDiagnosticWindow(string request, string action, string generation) =>
         _browserAdmissionDiagnostic?.BeginWindow(request, action, generation);
+    internal IDisposable? BrowserDiagnosticLateWindow(string request, string action, string generation) =>
+        _browserAdmissionDiagnostic?.BeginLateWindow(request, action, generation);
     internal IDisposable? BrowserDiagnosticIdentity(string? request, string? action, string? generation,
         Services.GmRuntime.GmSessionRunIdentity? owner) =>
         _browserAdmissionDiagnostic?.Identity(request, action, generation, owner);
