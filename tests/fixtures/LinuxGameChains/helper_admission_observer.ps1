@@ -23,7 +23,8 @@ function Write-BoeAdmissionObservation {
 }
 
 function Begin-BoeAdmissionObservation {
-    param([string]$Mode, [string]$SessionPath, [AllowNull()][string]$ExpectedGeneration)
+    param([string]$Mode, [string]$SessionPath, [AllowNull()][string]$ExpectedGeneration,
+        [AllowNull()][string]$RequestPath)
     try {
         if ($Mode -cne 'read' -or $script:BoeAdmissionObserverTargetClaimed -or
             -not $env:BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR) { return }
@@ -34,10 +35,10 @@ function Begin-BoeAdmissionObservation {
             $_.ScriptName -ceq (Join-Path $PSScriptRoot 'GM_Turn_Helper.ps1') }).Count) { return }
         $matchedRequestPath=$null
         if ($env:BOE_TEST_HELPER_TARGET_FIRST_QUEUE) {
-            $caller=@($stack | Where-Object { $_.ScriptName -ceq $env:BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT -and $_.ScriptLineNumber -eq 30 })[0]
-            $variables=$caller.GetFrameVariables()
-            if (-not $variables.ContainsKey('RequestPath') -or $variables['RequestPath'].Value -isnot [string]) { return }
-            $matchedRequestPath=[IO.Path]::GetFullPath($variables['RequestPath'].Value)
+            # The real consumer dot-sources the helper; its typed parameter is
+            # dynamically visible to the prepared Open hook, not a frame tuple local.
+            if ([string]::IsNullOrWhiteSpace($RequestPath)) { return }
+            $matchedRequestPath=[IO.Path]::GetFullPath($RequestPath)
             $requestDirectory=[IO.Path]::GetDirectoryName($matchedRequestPath)
             if ([IO.Path]::GetFileName($matchedRequestPath) -cne 'request.json' -or
                 [IO.Path]::GetFileName($requestDirectory) -cnotmatch '^request-1-[0-9a-f]{32}$' -or
@@ -54,6 +55,7 @@ function Begin-BoeAdmissionObservation {
             SummaryPath="$stem-summary.json"; Rows=0; Bytes=0; Dropped=0; Errors=0; Truncated=$false }
         Write-BoeAdmissionObservation $null 'launch-begin' @{ Session=$SessionPath; ExpectedGeneration=$ExpectedGeneration; FailureNonce=$script:BoeAdmissionProbe.FailureNonce;
             MatchedRequestPath=$matchedRequestPath; FirstQueue=$env:BOE_TEST_HELPER_TARGET_FIRST_QUEUE;
+            RequestPathSource='Explicit caller value at prepared Open-BoeHelperScope';
             ConsumerScript=$env:BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT;
             CallStack=@($stack | ForEach-Object { @{ Function=$_.FunctionName; Script=$_.ScriptName; Line=$_.ScriptLineNumber } }) }
     } catch { if ($script:BoeAdmissionProbe) { $script:BoeAdmissionProbe.Errors++ } }

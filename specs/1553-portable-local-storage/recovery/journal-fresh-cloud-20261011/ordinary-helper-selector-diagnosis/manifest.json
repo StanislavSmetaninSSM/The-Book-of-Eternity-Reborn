@@ -1,0 +1,53 @@
+{
+  "SourceSHA": "7d5766309a6877ccee2892aa284927cfe5fc24aa",
+  "Scope": "Root-owned prior source/evidence diagnosis plus isolated scope/path probes only; byte-exact safe relevant originals. No game/managed helper/native process/protocol operations. Synthetic topology limitation retained in original construction/diagnosis. Historical ordinary FAIL/capture INCOMPLETE/actual branch UNKNOWN unchanged.",
+  "Files": [
+    {
+      "Path": "GM_Turn_Helper.ps1.gz",
+      "RawSHA256": "afcf542365a24b78ff857b3e294df4131e123a249380d2e12f8d62e3755f4fd3",
+      "RawBytes": 595
+    },
+    {
+      "Path": "construction.json.gz",
+      "RawSHA256": "700b910c6520685768a584dd5e9618883ab86bf9188f4be53640e5bfdee4efd8",
+      "RawBytes": 847
+    },
+    {
+      "Path": "frozen-path-predicates-result.json.gz",
+      "RawSHA256": "d83fabaac05bed6c130e05ca7c596f99457ba9257e90dabb9b5ccb2d2244a7e9",
+      "RawBytes": 668
+    },
+    {
+      "Path": "frozen-path-predicates.ps1.gz",
+      "RawSHA256": "e77821d9b50c344769d5fa0360150b631c758554506881050dfb96b4e78dc8a5",
+      "RawBytes": 1272
+    },
+    {
+      "Path": "helper_admission_observer.ps1.gz",
+      "RawSHA256": "e7fae7976fb7c854a12aac9e934eb0a524933c7375e7d9badaea69a7148f60b6",
+      "RawBytes": 4978
+    },
+    {
+      "Path": "relay-apply-response.ps1.gz",
+      "RawSHA256": "09abd2497403912cc2e79e4e51fc2df387c8c77060cf7f8042b2322cd338c34c",
+      "RawBytes": 2459
+    },
+    {
+      "Path": "scope-probe-console.json.gz",
+      "RawSHA256": "c2cdc125c90d5ca1d4843afd16ea9844f1cd60b5931dec135b256d0ca92c9ed3",
+      "RawBytes": 2815
+    },
+    {
+      "Path": "scope-probe-result.json.gz",
+      "RawSHA256": "198c102f67ccbb815b1ea84e115e5b7646680fd14d3596c786eefd6d7e73d5f7",
+      "RawBytes": 1961
+    },
+    {
+      "Path": "selector-source-evidence-diagnosis.json.gz",
+      "RawSHA256": "ca28e2b14b7a09ba20e25ca76f0360eae3db5c21410ab30a439f9f2b81c163d6",
+      "RawBytes": 10529
+    }
+  ],
+  "NewProjectTests": 0,
+  "NewGameOrHelperInvocations": 0
+}
