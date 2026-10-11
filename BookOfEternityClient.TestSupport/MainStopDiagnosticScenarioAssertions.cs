@@ -65,7 +65,8 @@ internal static class MainStopDiagnosticScenarioAssertions
         Require(!first.GetProperty("State").GetProperty("OwnerUncertain").GetBoolean() &&
             current.GetProperty("State").GetProperty("OwnerUncertain").GetBoolean(),"Report lost before/after NotifyUncertain state.");
         var settled=current.GetProperty("State");
-        Require(settled.GetProperty("InputDrainCompleted").GetBoolean() && settled.GetProperty("RegisteredLoopStatuses").EnumerateArray().All(s=>s.GetString()=="RanToCompletion") &&
+        Require(settled.GetProperty("InputDrainCompleted").GetBoolean() && settled.GetProperty("RegisteredLoopStatuses").GetArrayLength()==6 &&
+            settled.GetProperty("RegisteredLoopStatuses").EnumerateArray().All(s=>s.GetString()=="RanToCompletion") &&
             settled.GetProperty("RootExitStatus").GetString()=="RanToCompletion" && settled.GetProperty("AuthorityLostStatus").GetString()=="WaitingForActivation", "Report misrepresented actual managed settlement.");
         var proof=JsonSerializer.Deserialize<TerminalStopEvidence>(settled.GetProperty("NativeProof").GetRawText());
         Require(proof?.Identity==terminal && proof.State==GmWorkerStopState.StoppedWithinScope && proof.CleanupComplete && !proof.AuthorityRetained,"Report changed original native proof identity/outcome.");

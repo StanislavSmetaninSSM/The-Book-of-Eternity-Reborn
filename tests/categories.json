@@ -5228,10 +5228,7 @@
                 "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
                 "BookOfEternityGMBridge/Program.cs"
             ],
-            "related": [
-                "gm-main-pin-timeout-first-refusal-linux",
-                "gm-main-run-owner-linux"
-            ],
+            "related": [],
             "requirements": {
                 "frontendBuild": false,
                 "exclusive": true,
