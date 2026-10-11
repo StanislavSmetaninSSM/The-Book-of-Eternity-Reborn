@@ -1,5 +1,6 @@
 using System.Runtime.ExceptionServices;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmRuntime;
 
 namespace BookOfEternityClient.Core;
 
@@ -10,11 +11,20 @@ public partial class FileSystemManager
     internal WorldValidationReadScope? BeginWorldValidationRead()
     {
         var original = CurrentBrowserOriginalScope();
+        if (original is not { Processing: true, Cleanup: false, Staged: not null }) return null;
         var owner = MainAdmissions.Value;
-        if (original is not { Processing: true, Cleanup: false, Staged: not null } ||
-            owner == null || owner.Closed || !owner.Acquired || owner.Closing || owner.BoundClosing ||
-            owner.MetadataOnly || HasAmbientCanonicalLease()) return null;
+        // Async disposal closes the shared child but cannot move the caller's
+        // AsyncLocal head. Match existing admission's terminal-remote prohibition
+        // before resolving the live original through closed/foreign descendants.
+        for (var p = owner; p != null; p = p.Parent)
+            if (p.Closed && p.OwnsRemote && p.RootIdentity == CanonicalRootAuthorityIdentity)
+                throw GmSessionRunPersistence.Invalid();
+        while (owner != null && (owner.Closed || owner.RootIdentity != CanonicalRootAuthorityIdentity || !owner.Acquired))
+            owner = owner.Parent;
+        // This validates the actual scope owner/access, not just a live ancestor.
+        // A truly closed original refuses; it cannot become scalar eligibility.
         original.ValidateOwner(owner);
+        if (owner!.Closing || owner.BoundClosing || owner.MetadataOnly || HasAmbientCanonicalLease()) return null;
         var scope = new WorldValidationReadScope(this, original, owner);
         owner.ReserveWorldRead(scope);
         try

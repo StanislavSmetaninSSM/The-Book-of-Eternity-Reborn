@@ -527,7 +527,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs", "384F9F65D33E1C70C6F7E337D96AEC6E71664D142612546139345BF274923A14"),
             ("BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs", "03D8FEF5770D2B88C71378249F5A6129BFFEB98E5A1CAA0B422CC919BC4ED4E8"),
             ("BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs", "7A857EC50550365F6576B8E2CCC056E662C87622E1A32F652952760761D3E753"),
-            ("BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs", "56DCD7EC7171492FCE002CD2329A9B2E67D2C67A9A9F52745E8B0AD4D0D2E6A7"),
+            ("BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs", "A486A6229C80BA88E918E669E3FCE153201DDD29E67C868607FD74F8200AC14A"),
             ("BookOfEternityClient/Core/FileSystemManager.cs", "DA3A5022C5C5AE5A57B7BCE07B01200121576521E18EB7BB742C91894608715D"),
             ("BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs", "2747AB5E07B0823105855FF6A80D0F172AB98CFDDCB5B51D678D68FD8C62FFCC"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationBinding.cs", "22BF78161FC966A6C50CC8B7962A4105AC318C1542253BA09EF10CAAF90DC0E5"),
