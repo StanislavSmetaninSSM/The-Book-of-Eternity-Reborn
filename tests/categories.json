@@ -5218,6 +5218,32 @@
             ]
         },
         {
+            "id": "gm-main-pin-timeout-first-refusal-linux",
+            "responsibility": "#1553 ONE existing held-pin timeout: observe the first BeginStop timeout and marked Confirm refusal before pin release/cleanup retry using test-only FirstChanceException memory snapshots.",
+            "excludes": "No historical B2 root-cause proof, lifecycle/Stop fix, C5/A2/ordinary-OFF rerun, fake tasks, production hooks or broader native matrix.",
+            "changeHints": [
+                "BookOfEternityClient.TestSupport/MainRunPinTimeoutObservation.cs",
+                "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs",
+                "BookOfEternityClient.Tests/GmMainRunOwnerLinuxTests.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_PinTimeoutPreservesFirstRefusalEvidence"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "gm-main-run-owner-linux",
             "responsibility": "#1553 F1 connected fixed neutral BridgeHost, original native terminal and durable main record, independent guardian cleanup.",
             "excludes": "Linux-x64 native fixture only; no F2/F3, systemd/Windows native, real GM/saves/cold guarantees.",

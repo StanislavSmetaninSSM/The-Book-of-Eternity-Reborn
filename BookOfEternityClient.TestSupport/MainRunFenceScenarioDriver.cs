@@ -330,11 +330,20 @@ internal static class MainRunFenceScenarioDriver
                 await stop!;Require(Read().Disposition==GmSessionRunDisposition.Stopped,"Held decision prevented confirmed main stop.");
             }
             else if(mode=="terminal-main-pin-timeout") {
+                var observation=new MainRunPinTimeoutObservation(owner,host!,terminal);
                 var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var finish=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 var operation=owner.RunOperationAsync(async()=>{entered.SetResult();await finish.Task;return 0;});await entered.Task;
                 try {
-                    Exception? error=null;try{await Call("StopShellAsync");}catch(Exception e){error=e;}
+                    Exception? error=null;
+                    observation.Start();
+                    try{await Call("StopShellAsync");}catch(Exception e){error=e;}
+                    finally{observation.Stop();}
+                    var frozen=observation.Freeze(error,Read());
+                    result["PinTimeoutObservation"]=frozen.Evidence;
+                    // One export after failure/handler removal, before finish or the outer cleanup retry.
+                    await File.WriteAllTextAsync(Path.Combine(folder,"pin-timeout-observation.json"),JsonSerializer.Serialize(frozen.Evidence));
                     Require(error!=null && (bool)Field("_terminalUncertain")! && owner.RetainsAuthority && Read().Disposition!=GmSessionRunDisposition.Stopped,"Pin timeout retired main or hid uncertainty.");
+                    Require(frozen.Complete,"Pin-timeout observation incomplete or first refusal did not match the bounded missing-lifecycle hypothesis.");
                 } finally {finish.SetResult();await operation;}
             }
             else if(mode is "terminal-main-native-dispose-fault" or "terminal-main-bus-dispose-fault") {
