@@ -4064,7 +4064,37 @@
           "Pid": 57390
         }
       },
-      "CategoryCompleted": false
+      "CategoryCompleted": false,
+      "OriginalRunsCount": 2,
+      "OriginalStopsCount": 1,
+      "IoDrainedPresent": false,
+      "CleanupFailure": [
+        "Traceback (most recent call last):\n  File \"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tests/fixtures/LinuxGameChains/console_chain.py\", line 952, in <module>\n    stop_chain()\n  File \"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tests/fixtures/LinuxGameChains/console_chain.py\", line 649, in stop_chain\n    assert stop[\"ok\"] and stop[\"status\"][\"terminalStop\"][\"cleanupComplete\"], stop\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'ok': False, 'error': 'Main run metadata or original owner admission is unavailable.', 'status': {'terminalRunId': 'f9f92d55ff8748c6864ecfe454d77fcb', 'terminalGuarantee': 'ordinary-same-namespace-lineage', 'terminalUncertain': True, 'terminalStop': {'identity': {'runId': 'f9f92d55ff8748c6864ecfe454d77fcb', 'backend': 'native-lineage', 'guarantee': 'ordinary-same-namespace-lineage', 'rootPid': 57085}, 'state': 'stopped-within-scope', 'reason': 'stop-requested', 'cleanupComplete': True, 'authorityRetained': False}, 'terminalOwnerRetained': True, 'inputBindingId': '80524ef9e57e409d8fa35fd9cf18712f', 'promptDelivery': {'operationId': 'ce54e2745160456f9d9a5072c7a18a70', 'operationKind': 'turn', 'operationRevision': 'live', 'inputBindingId': '80524ef9e57e409d8fa35fd9cf18712f', 'contentHash': '740D485DFDDE10A5A5F1CC40F37C1BE6B242A7A828BCAD80DB406EB1A344682A', 'disposition': 'submission-observed', 'phase': 'terminal', 'reason': 'fresh-submission-observed'}, 'backend': 'native-lineage', 'state': 'TerminalUncertain', 'ready': False, 'helperPid': 57071, 'sessionPath': '/tmp/gc-c8b839ad7932/play/game_session', 'shellPid': 57085, 'pipeName': 'gc-8b670fee30f0', 'cliLaunchCommand': \"& '/usr/bin/python3' '/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tools/gm-relay/relay_cli.py' --session '/tmp/gc-c8b839ad7932/play/game_session' --queue $env:BOE_TEST_GAME_CHAIN_QUEUE --model 'deterministic-no-provider'\", 'shellWorkingDirectory': '/tmp/gc-c8b839ad7932/play/game_session', 'lastPromptDispatchState': 'SubmissionObserved', 'lastPromptDispatchStartedAtUtc': '2026-10-11T04:37:32.7316020+00:00', 'lastPromptDispatchCompletedAtUtc': '2026-10-11T04:37:32.7673776+00:00', 'lastPromptDispatchElapsedMs': 34, 'startedAtUtc': '2026-10-11T04:37:02.1061920+00:00', 'updatedAtUtc': '2026-10-11T04:38:42.4445680+00:00', 'lastError': 'Original terminal ownership or I/O settlement is uncertain; replacement remains blocked.', 'workerStatuses': [{'outputsSettled': False, 'cleanupDeferred': False, 'workerId': 'validation_repair_codex', 'state': 'disabled', 'ready': False, 'updatedAtUtc': '2026-10-11T04:37:02.2876478+00:00'}, {'outputsSettled': False, 'cleanupDeferred': False, 'workerId': 'narrative_draft_codex', 'state': 'disabled', 'ready': False, 'updatedAtUtc': '2026-10-11T04:37:02.2876478+00:00'}, {'outputsSettled': False, 'cleanupDeferred': False, 'workerId': 'analysis_codex', 'state': 'disabled', 'ready': False, 'updatedAtUtc': '2026-10-11T04:37:02.2876478+00:00'}, {'outputsSettled': False, 'cleanupDeferred': False, 'workerId': 'guardian_abode_content_codex', 'state': 'disabled', 'ready': False, 'updatedAtUtc': '2026-10-11T04:37:02.2876478+00:00'}, {'outputsSettled': False, 'cleanupDeferred': False, 'workerId': 'soul_content_codex', 'state': 'disabled', 'ready': False, 'updatedAtUtc': '2026-10-11T04:37:02.2876478+00:00'}, {'outputsSettled': False, 'cleanupDeferred': False, 'workerId': 'inventory_content_codex', 'state': 'disabled', 'ready': False, 'updatedAtUtc': '2026-10-11T04:37:02.2876478+00:00'}, {'outputsSettled': False, 'cleanupDeferred': False, 'workerId': 'skill_content_codex', 'state': 'disabled', 'ready': False, 'updatedAtUtc': '2026-10-11T04:37:02.2876478+00:00'}, {'outputsSettled': False, 'cleanupDeferred': False, 'workerId': 'npc_content_codex', 'state': 'disabled', 'ready': False, 'updatedAtUtc': '2026-10-11T04:37:02.2876478+00:00'}]}}\n",
+        "Traceback (most recent call last):\n  File \"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tests/fixtures/LinuxGameChains/console_chain.py\", line 959, in <module>\n    wait(lambda: p.process.poll() is not None, p.name + \" failed foreground exit\", 8)\n  File \"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tests/fixtures/LinuxGameChains/console_chain.py\", line 242, in wait\n    assert time.monotonic() < deadline, \"Timeout: \" + label\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Timeout: bridge-whole-cold failed foreground exit\n",
+        "Traceback (most recent call last):\n  File \"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tests/fixtures/LinuxGameChains/console_chain.py\", line 963, in <module>\n    wait(lambda: all(len(p.closed) == len(p.streams) for p in peers), \"all owned EOF\", 8)\n  File \"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tests/fixtures/LinuxGameChains/console_chain.py\", line 242, in wait\n    assert time.monotonic() < deadline, \"Timeout: \" + label\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Timeout: all owned EOF\n"
+      ],
+      "Guardian": {
+        "echild": true,
+        "driverExitCode": 1,
+        "emergencySignals": 0,
+        "reaped": 14,
+        "failures": 0,
+        "deadline": false
+      },
+      "PersistedMainRecord": {
+        "SchemaVersion": 1,
+        "Identity": {
+          "RootKey": "/tmp/gc-c8b839ad7932/play",
+          "RunId": "f9f92d55ff8748c6864ecfe454d77fcb",
+          "GenerationId": "fc73074eca5649348cddc7a87a45bf60",
+          "Epoch": 2,
+          "Backend": "LinuxSupervisor",
+          "HostInstanceId": "c760dcaee043434c9c8a1fbb7d4f8a10",
+          "BootId": "25db1c9c-7ae8-427f-846a-3948ab0e718a"
+        },
+        "Disposition": "Uncertain",
+        "StopEvidence": null
+      }
     }
   }
 }
