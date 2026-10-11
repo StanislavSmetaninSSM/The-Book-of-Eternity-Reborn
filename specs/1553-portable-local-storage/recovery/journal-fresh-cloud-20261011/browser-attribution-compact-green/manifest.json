@@ -372,7 +372,7 @@
     "RuntimeCleanupComplete": true,
     "OriginalFailure": "BrowserAdmissionDiagnostics_LateTerminalBranchCapturesOnceAndPreservesOriginalFailure: Assert.NotNull window.OwnerIdentity line55; full actual failed/closed late window emitted before assertion",
     "RemainingCases": "2 source-guard cases not completed; fail-fast, no inferred results",
-    "Cause": "UNKNOWN; source-only diagnosis pending after first evidence publication",
+    "Cause": "SOURCE-only confirmed P2 fixture assertion mismatch, not a confirmed collector defect: setup BrowserInputRecovery450–473 establishes no active GM run; MainRunFence119–133 permits guarded quiescent condition with ActiveIdentity=null; TurnLifecycle887–890 and Diagnostics272–282,333 preserve that nullable identity. Line55 incorrectly requires an active owner.",
     "NoRetry": true,
     "NoC5": true
   },
@@ -385,5 +385,17 @@
       "BookOfEternityClient.Tests"
     ],
     "Qualification": "Official fresh Build-integration and Build-unit exit0 at ba9a; all actual observed DLL/PDB hashes retained; no NoBuild/no C5."
+  },
+  "Assessment": {
+    "FrozenEvidenceCarrier": "d37e61ceaf766fb91a7237bd870514c3139ac66f",
+    "ReviewedCompiledSourceSHA": "ba9a4878c6fe05bcff70a84051a5197591e413f7",
+    "SourceVerdict": "SAME SOURCE PASS ba9a",
+    "EvidenceVerdict": "SAME and ROOT fidelity PASS d37:12 gzip/3765380 raw bytes/131 source pins/22 actual DLL-PDB hashes/exact set-Git/14 unique TRX outcomes",
+    "ActualOutcome": "FIRST GREEN FAIL/INCOMPLETE:13PASS1FAIL2UNRUN; no result relabeling",
+    "ReachedAssertions": "Before line55: idle/no-window, same original exception, reached1, single window, exact action/generation and unbound request",
+    "UnreachedAssertions": "Assertions56–64 were not executed after the line55 failure; no assertion-PASS claim",
+    "IndependentRawObservations": "Separate emitted-profile readback establishes failed/closed/no accepted, actual markers, Complete=true and zero drops/errors; recording completeness is not accepted processing or complete selected controls",
+    "DiagnosisScope": "Quiescent nullable-identity fixture mismatch; no confirmed collector functional defect. No active-owner runtime coverage from this setup. Successful late acceptance/outer-close and all16 focused controls are not qualified.",
+    "ReleaseStatus": "C5 UNRUN/HOLD; no source/test correction, build or runtime released. Next step requires separate coordinator scope decision. Historical incomplete attribution/performance UNQUALIFIED and prior UNKNOWN remain."
   }
 }
