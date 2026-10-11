@@ -81,6 +81,41 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
     }
 
     [Fact]
+    public void SnapshotDuringClockSetupCannotClaimACompletedRow()
+    {
+        using var starting = new ManualResetEventSlim();
+        using var releaseClock = new ManualResetEventSlim();
+        using var releaseScope = new ManualResetEventSlim();
+        var calls = 0;
+        var collector = Create(() =>
+        {
+            if (Interlocked.Increment(ref calls) == 2)
+            {
+                starting.Set();
+                Assert.True(releaseClock.Wait(TimeSpan.FromSeconds(5)));
+            }
+            return 1;
+        });
+        var measuring = Task.Factory.StartNew(() =>
+        {
+            using (Measure(collector, "setup-in-progress"))
+                Assert.True(releaseScope.Wait(TimeSpan.FromSeconds(5)));
+        }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        try
+        {
+            Assert.True(starting.Wait(TimeSpan.FromSeconds(5)));
+            var snapshot = Snapshot(collector);
+            Assert.False(snapshot["Complete"]!.GetValue<bool>());
+        }
+        finally
+        {
+            releaseClock.Set(); releaseScope.Set();
+            measuring.GetAwaiter().GetResult();
+        }
+        Assert.True(Snapshot(collector)["Complete"]!.GetValue<bool>());
+    }
+
+    [Fact]
     public void CapacityBoundsAggregationAndMarksDroppedRows()
     {
         var collector = Create(() => 1, 2);
