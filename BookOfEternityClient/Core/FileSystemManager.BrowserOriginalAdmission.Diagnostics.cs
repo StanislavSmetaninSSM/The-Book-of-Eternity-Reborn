@@ -18,7 +18,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
     private readonly string? _directory, _nonce, _canonicalRoot;
     private int _droppedRows, _accountingErrors, _diagnosticFailures, _exportFailures, _activeFrames;
     private long _overheadTicks, _acquisitions, _contention, _emptyRecovery, _presentRecovery;
-    private bool _exported;
+    private bool _exported, _captureSealed;
 
     private BrowserAdmissionDiagnosticCollector(Func<long> clock, int capacity,
         string? directory = null, string? nonce = null, string? canonicalRoot = null)
@@ -185,6 +185,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
     }
     internal IDisposable Measure(string stage)
     {
+        var reserved = false;
         try
         {
             var setup = _clock();
@@ -194,19 +195,31 @@ internal sealed class BrowserAdmissionDiagnosticCollector
             Row row;
             lock (_gate)
             {
+                if (_captureSealed) return Noop.Instance;
                 if (!_rows.TryGetValue(key, out row!))
                 {
                     if (_rows.Count >= _capacity) { _droppedRows++; return Noop.Instance; }
                     row = new(key); _rows.Add(key, row);
                 }
+                // Snapshot/export uses the same gate: even clock/frame setup
+                // belongs to a pending invocation, never a complete empty row.
+                Interlocked.Increment(ref _activeFrames);
+                reserved = true;
             }
             var started = _clock();
             Interlocked.Add(ref _overheadTicks, Math.Max(0, started - setup));
             var frame = new TimingFrame(this, _timing, row, context?.Lease ?? 0, started);
-            Interlocked.Increment(ref _activeFrames);
-            _timing = frame; return frame;
+            _timing = frame; reserved = false; return frame;
         }
-        catch (Exception) { Interlocked.Increment(ref _diagnosticFailures); return Noop.Instance; }
+        catch (Exception)
+        {
+            lock (_gate)
+            {
+                Interlocked.Increment(ref _diagnosticFailures);
+                if (reserved) Interlocked.Decrement(ref _activeFrames);
+            }
+            return Noop.Instance;
+        }
     }
     internal void Read(string kind, long bytes)
     {
@@ -252,6 +265,8 @@ internal sealed class BrowserAdmissionDiagnosticCollector
             {
                 ProcessId = Environment.ProcessId, StopwatchFrequency = Stopwatch.Frequency,
                 Qualification = "Per-action/process aggregate synchronous wall work; concurrent totals may overlap. ActionId joins RequestId only through the actual C5 identity assertion. No acceptance-window accounting or CPU measurement.",
+                CaptureSealed = _captureSealed,
+                CompleteQualification = "Completeness at this finite capture boundary only. First owned export attempt seals later measurement starts, which are excluded; not whole-process completeness. LeaseId zero means unavailable, not absence of an ambient lease.",
                 SelfTicksQualification = "RAW INSTRUMENTED SELF WALL: inclusive minus direct child inclusive in the same invocation. Includes child Measure setup/Dispose bookkeeping and Read/Inventory/Context costs; not pure IO/hash work.",
                 CollectorBookkeepingTicksQualification = "Partial setup/dispose estimate overlapping parent SelfTicks. Never subtract as exact overhead or sum with SelfTicks; end-to-end observer overhead remains uncalibrated.",
                 Rows = _rows.Values.ToArray(), DroppedRows = _droppedRows, AccountingErrors = _accountingErrors,
@@ -270,6 +285,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
             lock (_gate)
             {
                 if (_exported || _directory == null || _nonce == null || _canonicalRoot == null) return;
+                _captureSealed = true;
                 if (!OwnedOptionsValid(_directory, _nonce, _canonicalRoot)) { _exportFailures++; return; }
                 var scope = new TrustedLocalFileScope([_directory]);
                 var path = scope.ValidateFile(Path.Combine(_directory, "process-" + Environment.ProcessId + "-" + _nonce + ".json"));
@@ -287,10 +303,15 @@ public partial class FileSystemManager
 {
     private readonly BrowserAdmissionDiagnosticCollector? _browserAdmissionDiagnostic;
     private IDisposable? BrowserDiagnosticContext(string origin, Services.PendingPlayerActionService.Staged? staged = null,
-        CanonicalWriteLease? lease = null) => _browserAdmissionDiagnostic?.Context(origin,
+        CanonicalWriteLease? lease = null)
+    {
+        if (_browserAdmissionDiagnostic == null) return null;
+        var held = lease != null || HasAmbientCanonicalLease();
+        return _browserAdmissionDiagnostic.Context(origin,
             staged?.Binding.ActionId ?? CurrentBrowserOriginalScope()?.Binding.ActionId ?? "unbound",
             CurrentBrowserOriginalScope()?.ExpectedState?.Phase ?? "unbound",
-            lease?.Purpose.ToString() ?? "unheld", lease?.BrowserDiagnosticId ?? 0,
-            lease != null || HasAmbientCanonicalLease());
+            lease?.Purpose.ToString() ?? (held ? "unknown-ambient-purpose" : "unheld"),
+            lease?.BrowserDiagnosticId ?? 0, held);
+    }
 }
 #endif
