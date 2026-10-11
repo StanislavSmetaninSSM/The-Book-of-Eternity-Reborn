@@ -1,0 +1,37 @@
+{
+  "CompiledSourceSHA": "6576d58a6b6760960bb1e893631ac924c1befe1e",
+  "Runner": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261011-123007-519-120822-fd1b2bd3984f41e5ba7b174ed1ce69f2-categories",
+  "Tests": {
+    "Total": 26,
+    "Executed": 26,
+    "Passed": 26,
+    "Failed": 0
+  },
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 26,
+    "CompletedCases": 26,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "WallTimeIncludingBuild": "00:02:07.9579074",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "CleanupComplete": true,
+  "DuplicateTests": [],
+  "Positives": [
+    {
+      "Layout": "absent",
+      "ProofSpans": 5,
+      "InvocationSecondsAuxiliary": 0.0415529
+    },
+    {
+      "Layout": "mixed",
+      "ProofSpans": 5,
+      "InvocationSecondsAuxiliary": 0.0542265
+    }
+  ],
+  "InputComparison": "One full RED→first actual positive2 comparison retained separately; production/positive/input/shared-helper source unchanged in fixture correction",
+  "FirstRun": "26 executed24PASS2fixtureFAIL preservedc06"
+}
