@@ -4304,5 +4304,10 @@
       "SHA256": "f16fd6b78ac934995f9c02053be6ea04d3616bb77fecbfee4100f6a954354590"
     }
   },
-  "AssessmentStatus": "Frozen first ordinary raw; independent source/evidence gate pending. Original FAIL/performance UNQUALIFIED retained; no further runtime/fix/retry authorized."
+  "AssessmentStatus": "Frozen first ordinary raw; independent source/evidence gate pending. Original FAIL/performance UNQUALIFIED retained; no further runtime/fix/retry authorized.",
+  "SupportingRootRuntimeReadback": {
+    "Path": "../world-read-phase-ordinary-root-readback.json",
+    "SHA256": "d1b3c4e71627c37236d4eef76275a08337a4d1542cbe350f12a256779f696918",
+    "Scope": "ONE parent direct completed ordinary summary/TRX/result readback, frozen first raw8870033b/runtime0419; original FAIL, late-observation causal limit and unknown historical helper predicates retained."
+  }
 }
