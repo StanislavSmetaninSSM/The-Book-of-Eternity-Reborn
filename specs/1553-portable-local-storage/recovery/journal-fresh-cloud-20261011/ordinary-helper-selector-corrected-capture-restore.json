@@ -1,0 +1,65 @@
+{
+  "Utc": "2026-10-11T08:58:04.631740+00:00",
+  "Repository": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "Branch": "1553-storage-migration-cloud-20261008",
+  "PreviousSelectedSHA": "7d5766309a6877ccee2892aa284927cfe5fc24aa",
+  "FrozenReviewCarrierSHA": "b2bfd0730b33d4b26a4472364205b9f6daf1b674",
+  "AcceptedFrozenAssessmentSHA": "8cf5650828481e4ff648b320a31075a3e76cbff0",
+  "FirstRawSHA": "cb3ec35ac2f5a5755c118fe9d2c3873cc83137c4",
+  "ActualRemoteSHA": "b2bfd0730b33d4b26a4472364205b9f6daf1b674",
+  "RecoveryDirectory": "/workspace/1553-ordinary-helper-capture-recovery-20261011-2f68496c",
+  "Method": "Incremental direct GitHub fetch into SAME prior selected checkout; retain313 prior selected files and materialize324 new files. No local source/object/cache copy and no new clone.",
+  "ChangedBlockFilesCovered": 327,
+  "PreviouslySelectedFiles": 313,
+  "AddedSelectedFiles": 324,
+  "SelectedFiles": 637,
+  "SelectedBytes": 13006321,
+  "SelectedModePathSHA256": "d4935e824c70879abed4587bc07ffca9b093af412d03a5bd3bddd14bbaf65b0b",
+  "SelectedModePathHashFormat": "Sorted UTF8 lines: mode SPACE path SPACE SHA256 LF",
+  "EverySelectedByteModeMatchesGitAndWriter": true,
+  "EntireCheckoutExactSelectedSet": true,
+  "Archives": [
+    {
+      "Name": "ordinary-helper-selector-diagnosis",
+      "RawPayloads": 9,
+      "ExpandedBytes": 26124,
+      "SourcePins": 0
+    },
+    {
+      "Name": "ordinary-helper-selector-proof",
+      "RawPayloads": 35,
+      "ExpandedBytes": 948468,
+      "SourcePins": 31
+    },
+    {
+      "Name": "ordinary-helper-selector-nonce-proof",
+      "RawPayloads": 6,
+      "ExpandedBytes": 96515,
+      "SourcePins": 31
+    },
+    {
+      "Name": "ordinary-helper-selector-preparation",
+      "RawPayloads": 4,
+      "ExpandedBytes": 1671003,
+      "SourcePins": 31
+    },
+    {
+      "Name": "ordinary-helper-selector-corrected-actual",
+      "RawPayloads": 265,
+      "ExpandedBytes": 9137884,
+      "SourcePins": 31
+    }
+  ],
+  "CurrentBlockRawPayloads": 319,
+  "CurrentBlockRawExpandedBytes": 11879994,
+  "EveryCurrentRawHashLengthExactSetTracked": true,
+  "RecordedSourcePinsMatchSelectedBytes": true,
+  "OlderRawReauditCount": 0,
+  "Clean": true,
+  "NoAlternates": true,
+  "PromisorAwareFsckFullStrictExitCode": 0,
+  "FsckOutput": "",
+  "NewCloneCount": 0,
+  "ProjectBuildDiscoveryRuntimeExecutedByReadback": 0,
+  "Qualification": "Selected source/current-block evidence readback only. Minimal fixture selector proof9/9; ONE corrected ordinary1FAIL/captureCOMPLETE first healthy read. Historical causesUNKNOWN/WIP and performanceUNQUALIFIED remain. Older unmaterialized source/raw not audited; no fulltree/game qualification."
+}
