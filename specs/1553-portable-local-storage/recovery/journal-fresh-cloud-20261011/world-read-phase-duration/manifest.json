@@ -4048,5 +4048,19 @@
     ],
     "ScopeLimit": "No matching failure-record line is not a healthy seq0/managed-helper/first-predicate completeness proof; no observer/transport substitution or explicit successful-catch witness installed. Original existing duration assertions still determine result."
   },
-  "AssessmentStatus": "Frozen first duration actual; pending ONE independent integration evidence verdict. Ordinary frozen FAIL/performance UNQUALIFIED and historic causes UNKNOWN preserved; no rerun/Meta implementation."
+  "AssessmentStatus": "SAME independent duration integration/SOURCE+EVIDENCE PASS8e and root direct readback PASS; first runtime8d/sourcea0 unchanged. Correctness diagnostic only, ordinary FAIL/performance UNQUALIFIED/historical UNKNOWN retained; no rerun/Meta implementation.",
+  "SupportingRootReadback": {
+    "Path": "../world-read-phase-duration-root-readback.json",
+    "SHA256": "842c86bf43d19276870178b8e42213ab35c5cc61e1173057edbf9c48317033bd",
+    "FrozenEvidenceCarrierSHA": "8e1ae86ed1318baa8dcccc6c5bb7a16a20693a7a",
+    "RuntimeCompiledCarrierSHA": "8d913ba526e665f1186d1a5f03dad0ec90176efc",
+    "ProductSourceBaselineSHA": "a0e22b16d1a0f6ef63ea051a143f46ce6c5a12ce",
+    "Scope": "ONE parent direct committed duration raw/source/DLL/ship/native/result readback; existing scenario correctness only; no ordinary40/performance or historical cause qualification."
+  },
+  "IndependentReview": {
+    "Reviewer": "SAME Astra",
+    "Verdict": "Duration integration/SOURCE+EVIDENCE PASS",
+    "FrozenEvidenceSHA": "8e1ae86ed1318baa8dcccc6c5bb7a16a20693a7a",
+    "Limits": "All legacy40 exceeded; failure-only health/seq0 completeness proof and per-child environment snapshots unavailable; no captured failure markers/fields does not resolve historical UNKNOWN causes."
+  }
 }

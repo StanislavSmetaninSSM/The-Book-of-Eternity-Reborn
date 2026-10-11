@@ -1,10 +1,90 @@
+### T071-META-READ-PHASE concrete candidate/prerequisites — DESIGN HOLD, 2026-10-11
+
+SAME Astra source-only Meta audit on final World baseline `a0e22b16d1a0f6ef63ea051a143f46ce6c5a12ce` gives **DESIGN HOLD**, not implementation approval. Candidate is ONE eligible read-only `ValidateMetaMiscStateFiles` invocation under the same original browser/pending snapshot override and real original-owner/pin/MainAccess/physical-lease lifecycle; ClientOwnedControlFiles/CrossReferences and mutation/publication invocations are excluded. World proof116→5/96→5/26GREEN is a prior bounded mechanism result, not proof of this larger closure. All Meta code/tests/build/catalog/component/runtime are UNRUN; only these existing plan/tasks change. Full transitive callback/read/authority/cache closure and measured component ceiling remain prerequisites; no universal reader framework or automatic World-to-Meta bypass.
+
+**Selected publication policy.** Scalar fallback specifically when `_guardianMusingsPublication.Value is { Enabled:true, Completion:not null }`; ordinary enabled scope with Completion=null is not excluded merely for its existence. GuardianPolicyKernel281→GuardianMusingsPublication242–249 calls actual `AcquireCanonicalWriteLeaseAsync`, `completion.ReadForComparisonAsync` and owned release. That path must keep its original scalar acquisition/comparison/error policy; no nested physical lock inside Meta lease. A same-lease completion adapter is an unchosen alternative requiring a separate authority/close proof. Decide eligibility before any phase/cache mutation; fallback cannot bypass same-instance reservation or use phase-derived authority. All other scalar eligibility limitations (unbound/draft/no verified original override/closing/reentrant/already-held) need exact source mapping before approval, not optimistic ambient grants.
+
+**Reservation/isolation candidate.** Whole eligible invocation admission reserves synchronously before top-level cache resets, includes already-running GameState and synchronous ValidateResponse consumers, override install and Dispose. Already admitted sibling prevents candidate reservation without waiting or mutating it; newly entering sibling/reentrant/mutator fails before cache/override access. Short primitive/reference gates only, no callback/I/O/authority check/disposal under gate. Scope installation/removal must execute in caller ExecutionContext using the accepted synchronous issuer pattern; async-only AsyncLocal installation is insufficient. Save and restore SAME previous `_knownCanonicalFactionIdsCache`/`_knownCanonicalFactionNamesCache` references and untouched contents, `_gameStateValidationGuardianPolicyContextCache.Value`, `_gameStateValidationGuardianProjectTrackerPolicyContextCache.Value` and shared `_guardianPolicyContextInProgress`. Fresh phase-local lazily constructed context/authority maps cannot derive inputs from prior cache provenance or escape to other phases, successful or failed. Restore exact references in all exits; ordinary reset/default method semantics preserved. Guardian publication scope install/restore and context consumers need inclusion in exclusion audit; proposed policy is not an implemented guarantee.
+
+**Read/authority policy prerequisites.** Preserve direct82-call order, flexible callback before strict pair, duplicates/issues and all selected-out/nested/current repeat consumptions. Narrow adapters must cover direct `_fs`, external request readers, signed Guardian raw-byte readers, control/existence/ready/manifest probes with their actual consumption/short-circuit order. Current versus signed/control authority remains distinct. Existing SameTurnOwnerReadView18–21 alone retains its registered draft priority; no extending draft precedence to external current/control/signed readers. No eager later read/fault may precede earlier callbacks. Record exact actual consumed bytes or qualified absence (including repeated/direct current reads), dependencies even when their top-level path is not selected, and honest unreadable/parse status; never treat data-I/O as qualified absence. GuardianPolicyKernel309–319, signed-reader catches and SystemGuardianAttraction broad catches must let actual owner/path/generation refusal escape immediately SAME exception/ref/EDI/stack. Preserve legacy nullable data/parse callback ordering and first data-failure EDI, with no issue success publication after failure; original primary wins over actual close secondary. No cached authority/PASS across owner/lease/generation/internal write/recovery/delete boundaries.
+
+Whole closing policy must include original full opening/recovery checks, full end proof, exact complete consumed readset comparison, late current owner/gen/pin fence and actual owning lease close BEFORE any issues/caches/results escape. Computation failure retains original primary and skips success qualification; cancellation/late-close/native/competitor/internal-mutation/exhausted-read/open failures and disposal cannot grant success. Unknown nested canonical acquisition/publication path means HOLD or exact prereviewed scalar eligibility restriction, not deleting a guard. Existing legitimate closed-game edits remain valid outside protected operation.
+
+**Direct roster, source reachability only.** LifecycleControlAndStateFiles334–910: F=ValidateFlexibleStateFile, S=ValidateStrictTopLevelObjectFileAsync, dash=no direct strict pair. 44 actual paths,82calls=6singletons+38pairs. GuardianProject helper is invoked at654, before player_behavior655, although its four declarations are895/901/907/909. Table declaration line ordering is not execution ordering. Constants resolved from current source; `lore/codex_entries.json` has no game_state/meta prefix.
+
+| Actual path | F line | S line |
+| --- | ---: | ---: |
+| game_state/meta/soul_state.json | 336 | — |
+| game_state/meta/afterlife_spiritual_conflict_state.json | 350 | 356 |
+| game_state/meta/afterlife_entity_profiles.json | 362 | 389 |
+| game_state/meta/afterlife_active_threats.json | 401 | 413 |
+| game_state/meta/chaos_sea_guardian_politics.json | 421 | 438 |
+| game_state/meta/afterlife_chronicles.json | 450 | 459 |
+| game_state/meta/afterlife_global_flags.json | 467 | 476 |
+| game_state/meta/afterlife_story_outline.json | 484 | 493 |
+| game_state/meta/main_story_saref_state.json | 501 | 511 |
+| game_state/control/pending_saref_wings_infiltration.json | 519 | 526 |
+| game_state/meta/guardians.json | 533 | — |
+| game_state/control/pending_player_guardian_foundation.json | 542 | 548 |
+| game_state/meta/shining_abode_state.json | 554 | 568 |
+| game_state/control/pending_shining_abode_actions.json | 582 | 587 |
+| game_state/control/pending_shining_trade_inventory_requests.json | 592 | 597 |
+| game_state/control/pending_source_of_light_capstone.json | 602 | 608 |
+| game_state/meta/guardian_abode_residents.json | 614 | 632 |
+| game_state/meta/abode_power_journal.json | 650 | 652 |
+| game_state/meta/player_behavior.json | 655 | — |
+| game_state/meta/character_chronicle.json | 660 | — |
+| game_state/meta/guardian_thought_journal.json | 665 | 670 |
+| game_state/meta/guardian_social_journal.json | 675 | 680 |
+| game_state/meta/achievements.json | 685 | 690 |
+| game_state/meta/math_audit.json | 695 | 702 |
+| lore/codex_entries.json | 709 | 714 |
+| game_state/misc/multipliers.json | 719 | 724 |
+| game_state/misc/vehicles.json | 729 | — |
+| game_state/misc/storage_access.json | 734 | — |
+| game_state/misc/player_interactions.json | 739 | 744 |
+| game_state/control/life_transitions.json | 749 | 754 |
+| game_state/control/incarnation_trigger.json | 759 | 764 |
+| game_state/control/ascension.json | 769 | 774 |
+| game_state/control/pending_shining_faction_foundings.json | 779 | 784 |
+| game_state/control/pending_shining_faction_realignments.json | 789 | 794 |
+| game_state/control/pending_shining_faction_leadership_transitions.json | 799 | 804 |
+| game_state/control/pending_npc_trade_inventory_requests.json | 809 | 815 |
+| game_state/control/pending_guardian_abode_residents_request.json | 820 | 826 |
+| game_state/control/pending_guardian_abode_resident_transfers.json | 832 | 843 |
+| game_state/control/pending_guardian_abode_resident_interactions.json | 848 | 853 |
+| game_state/control/pending_resident_companion_manifestation_request.json | 858 | 863 |
+| game_state/control/pending_guardian_social_interactions.json | 869 | 874 |
+| game_state/control/pending_npc_social_interactions.json | 879 | 884 |
+| game_state/meta/guardian_projects.json | 895 | 901 |
+| game_state/meta/guardian_project_journal.json | 907 | 909 |
+
+**Confirmed nested dependencies (partial roster, NOT complete transitive closure).** References are source on a0 baseline; no per-phase/path C5 attribution follows.
+
+| Source boundary | Confirmed nested consumption/mutable boundary |
+| --- | --- |
+| SameTurnOwnerReadView18–21; flexible/strict7803/7899 | Only registered current draft helper; otherwise real reader. Meta callbacks must retain original current/signed/control distinctions. |
+| NpcWorldAndMeta8387–8421 → GuardianPolicyKernel194/210/1741/1768 | MetaMisc contract → Guardian current guardians/projects; signed guardians/projects/power journal/soul; two cached AsyncLocal contexts/shared in-progress; mutable authority roots/maps. |
+| GuardianPolicyKernel1649/1689 raw1668/1711;651/1573/2685/3005 | Signed Guardian byte reader/membership/hash/authority; ordered input/repair/ready/manifest probes. Completion comparison's acquisition above is specifically excluded. |
+| AcceptedTurnAndInkFeathers3426/3450/3496/3544/4001/5099/5152/5217/5225/5250 | Prevalidated override versus full pending snapshot; detached authority/current request/signed textbytes/tracked current/nullable legacy. No silent no-override recovery batching. |
+| ChaosSeaGuardianPolitics508–511; AfterlifeArchiveTradeAndLifecycle234/370 | Direct sync physical guardians; afterlifeArchive.stored + actionReceipts arrays → physical guardian_project_journal even with empty receipts. |
+| Lifecycle4456/6622/6679/6793/6974/7016/7172–7483 | Manifestation/life transition/ascension/incarnation physical controls/current soul/conflict/returnguard; signed soul/conflict/guardians/Shining; source/action metadata. |
+| Lifecycle2909/3005/4432 | SystemGuardianAttraction current control/existence, signed realm/lookup/authority, ready probes/manifest action fallback and broad catch. |
+| ShiningAbode707/771/824/911/975/1039; ShiningCoreActionRequestState141–166/266 | Five Shining contexts: ready→signed-request eligibility/current soul/Shining/external request validators; physical soul/Shining/residents/guardians/own request, conditional relic-gacha resource definitions/state/history150–154. |
+| ShiningTradeRequestState781–792; ShiningFactionRequestState234/395/488/1039/1280–1430 | Physical roots/own+foreign request/resident transfer dependencies. Parsed local JsonObject normalization must not mutate a shared cached object. |
+| SourceOfLightCapstone57/140/172 + State186–325; SarefMainStory133/251/306 | Current request/roots/signed baseline/ordered blockers/presence/conditional reads; Wingsrequest/current soul/Shining/story/blockers/faction links/oathbound. Separate resolution method is outside candidate. |
+| SourceOfLight blockers642/652 | Six additional ordered C singleton-presence probes: pending_abode_offering, pending_guardian_trade_request, pending_player_guardian_foundation, system_guardian_attraction, pending_archive_consultation_request, pending_archive_project_fuel_request (.json). Six request-array surfaces already direct; preserve short circuit. |
+| Lifecycle868/890/1146–1160 | Manifestation-realm context plus dispatcher.13 contexts: LifeTransition,Incarnation,Ascension,ShiningCore,ShiningTrade,ShiningFounding,ShiningRealignment,ShiningLeadershipTransition,SourceOfLightCapstone,SarefWingsRequest,SarefWingsFactionLinks,SarefOathboundPostStory,SystemGuardianAttraction. |
+
+**Numeric limit and required gate.** Archived layouts suggest63–65 absent direct content reads/pass; two eligible passes is a callgraph/layout hypothesis, not actual audit attribution. Historical four-new-proof estimate `2*(4*[63..65]-4)=496..512` savings is conditional, not a new proof ceiling or measured gain; five-proof assumption gives494..510, six gives492..508. Present/Exists probes/nested callbacks/excluded publication cannot automatically join this budget. Remaining dominant-action scope and actual phase eligibility require source/authority mapping; no promised latency percentage or expensive full-chain performance pairs. Before implementation: close all transitive I/O/callback leaves and mutation/acquisition/cache/scope consumers; give exact adapters and signed/current/draft provenance, no-side-effect/result-escape proof, unknown-read/selection guard; independently review concrete measured-ceiling component plan on identical immutable inputs with ordered issues, original exceptions and all close paths. Targeted tests would cover Completionnonnull scalar versus null eligible, selected-out nested drift, current/signed/control identity/gen/owner mutation, legacy-data versus immediate authority refusal, nonnull exact cache/context refs, already-active and new/reentrant siblings/override withdrawals, cancellation/read/owning-close+secondary and no ambient/token/maps leak. These are prerequisites only, no case inventory/runtime or production release claimed. ClientOwnedControlFiles/CrossReferences/Meta implementation excluded until a separate accepted gate and coordinator choice.
+
 ### T071-WORLD-READ-PHASE ONE duration correctness PASS frozen — 2026-10-11
 
 **Existing duration correctness1planned1executed1PASS**, complete1/1 descriptor/case, runner384.9592290s including fresh selected unit/Client/TestSupport/Bridge/frontend/native closure; driver290.2166865550025s; exit0/no timeout/duplicates0/owned cleanupcomplete. Product/source baseline `a0e22b16d1a0f6ef63ea051a143f46ce6c5a12ce`, compiled/clean runtime carrier `8d913ba526e665f1186d1a5f03dad0ec90176efc` (docs-only WIP from baseline). Exactly one official fresh `-Category c5-browser-staged-idle-duration-diagnostic -TimeoutMinutes 20` command, original660/720/60/180/750/755/category15 budgets. Two separate passive DEBUG failure nonces ON from process start; profile/ordinary-helper/helperAdmission/startup/continue variants OFF, no source/transport substitutions. Failure-only scope/setup/export overhead uncalibrated; zero matching failure-record lines and consumer logs0B are not seq0/healthy-helper capture completeness or proof of no suppressed exceptions. No repeated run or extra controls.
 
 All3accepted turns/original session and fullstory-prefix/once-only/queued+stagedcold/wholecold assertions PASS, existing three startup/sixGET/trustedContinue prerequisites retained. Helper-complete→acceptance observed seconds **50.2234854900 /62.7012205940 /52.1067997850**; authored-packet→acceptance **59.8995563560 /73.5533708080 /62.6058843370**. These are one diagnostic's observed intervals, not isolated costs or comparable causal speedup. All3 LegacyNarrative40Exceeded=true: earlier ordinary1FAIL and performance UNQUALIFIED remain. All acceptance observations precede cleanup started289.8184370259987s; result has no original failure fields, no original throw times inferred. Both originalStops have exact originalIdentity=RecordAfter=StopEvidence, RPCok/Stopped/OwnedScopeEmpty/uncertainfalse/ownerunretained; all12peerEOF/IoDrained, guardianECHILDtrue/driverExit0/reaped13/emergency0/failures0/deadlinefalse.
 
-Full [first duration raw/build/runner/chain/invocation manifest](recovery/journal-fresh-cloud-20261011/world-read-phase-duration/manifest.json):194gzip/11,077,182 expandedB/65SourcePins, fresh selected-vs-observed DLL provenance,680publishedship hashes and4nativepackage hashes. Original result.TurnDurations[].Inventory/current request/manifest/authority/physical bytes and full hidden runtime/relay/helper/Stop records retained; no normalization. Independent integration SOURCE/EVIDENCE verdict pending; World component26/26/proof116→5,96→5 remains separate. Historical ordinary/B2/helper/actor failures+UNKNOWN/WIP/performance UNQUALIFIED/T069–T071 open retained. No new runtime/fix/Meta implementation released; Meta source-only design eligibility audit is a separate next gate.
+Full [first duration raw/build/runner/chain/invocation manifest](recovery/journal-fresh-cloud-20261011/world-read-phase-duration/manifest.json):194gzip/11,077,182 expandedB/65SourcePins, fresh selected-vs-observed DLL provenance,680publishedship hashes and4nativepackage hashes. Original result.TurnDurations[].Inventory/current request/manifest/authority/physical bytes and full hidden runtime/relay/helper/Stop records retained; no normalization. SAME Astra **duration integration/SOURCE+EVIDENCE PASS `8e1ae86ed1318baa8dcccc6c5bb7a16a20693a7a`** and [root direct readback PASS](recovery/journal-fresh-cloud-20261011/world-read-phase-duration-root-readback.json) (byte-exact SHA256842c86bf43d19276870178b8e42213ab35c5cc61e1173057edbf9c48317033bd) accepted. Receipt binds FIRST frozen8e/runtime8d/sourcea0,194raw/65pins/22observedDLL-PDB/680ship/4native, original assertions and precleanup milestones. This later metadata carrier is not another runtime. Failure-only health/seq0 completeness proof and per-child environment snapshots remain absent; alllegacy40 exceeded and historical causes UNKNOWN unchanged. World component26/26/proof116→5,96→5 remains separate. Historical ordinary/B2/helper/actor failures+UNKNOWN/WIP/performance UNQUALIFIED/T069–T071 open retained. No new runtime/fix/Meta implementation released; Meta source-only design eligibility audit is a separate next gate.
 
 ### T071-WORLD-READ-PHASE ONE duration correctness diagnostic WIP — 2026-10-11
 
