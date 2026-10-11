@@ -23422,6 +23422,36 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": "c5-browser-admission-diagnostics",
+            "responsibility": "#1553 bounded DEBUG opt-in original-browser profiling collector: synchronous nested self/inclusive wall accounting, concurrent branch isolation, finite row cap, disabled/invalid owned admission, create-only failure-isolated export and finite overhead calibration. Diagnostic totals never stand for acceptance-window costs.",
+            "excludes": "No product proof optimization, actual full C5 execution, latency/SLA, cross-lease PASS reuse, release telemetry or native Windows qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.Diagnostics.cs",
+                "BookOfEternityClient.Tests/BrowserAdmissionDiagnosticsTests.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-browser-staged-idle-duration-diagnostic",
+                    "when": "After independent source gate, one actual current C5 profiling baseline exercises this collector through Program and helper children."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.BrowserAdmissionDiagnosticsTests.*"
+                    ]
+                }
+            ]
         }
     ]
 }

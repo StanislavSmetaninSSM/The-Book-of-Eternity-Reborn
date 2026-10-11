@@ -1,0 +1,157 @@
+using System.Reflection;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
+{
+    private static Type Collector => typeof(FileSystemManager).Assembly.GetType(
+        "BookOfEternityClient.Core.BrowserAdmissionDiagnosticCollector")
+        ?? throw new Xunit.Sdk.XunitException("Missing bounded original-browser diagnostic collector.");
+    private static object Invoke(object collector, string method, params object[] args) =>
+        Collector.GetMethod(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)!
+            .Invoke(collector, args)!;
+    private static object Create(Func<long> clock, int capacity = 64) =>
+        Collector.GetMethod("CreateForTests", BindingFlags.Static | BindingFlags.NonPublic)!
+            .Invoke(null, [clock, capacity])!;
+    private static IDisposable Context(object collector, string origin, string request = "unbound") =>
+        (IDisposable)Invoke(collector, "Context", origin, request, "staged", "SessionMutation", 7L, true);
+    private static IDisposable Measure(object collector, string stage) =>
+        (IDisposable)Invoke(collector, "Measure", stage);
+    private static JsonNode Snapshot(object collector) => JsonNode.Parse((string)Invoke(collector, "SnapshotJson"))!;
+
+    [Fact]
+    public void NestedSynchronousFramesConserveSelfTimeAndClassifyBytes()
+    {
+        long ticks = 0;
+        var collector = Create(() => ticks);
+        using (Context(collector, "acquired-lock-before-recovery", "0123456789abcdef0123456789abcdef"))
+        using (Measure(collector, "inclusive-preflight"))
+        {
+            ticks = 10;
+            using (Measure(collector, "physical-verification"))
+            {
+                Invoke(collector, "Read", "tuple", 23L);
+                ticks = 20;
+                using (Measure(collector, "snapshot-hash-verification"))
+                {
+                    Invoke(collector, "Read", "snapshot-hash", 31L);
+                    ticks = 40;
+                }
+                ticks = 50;
+            }
+            ticks = 70;
+        }
+        var result = Snapshot(collector);
+        var rows = result["Rows"]!.AsArray();
+        Assert.Equal(3, rows.Count);
+        var parent = rows.Single(row => row!["Stage"]!.GetValue<string>() == "inclusive-preflight")!;
+        Assert.Equal(70, parent["InclusiveTicks"]!.GetValue<long>());
+        Assert.Equal(30, parent["SelfTicks"]!.GetValue<long>());
+        Assert.Equal(70, rows.Sum(row => row!["SelfTicks"]!.GetValue<long>()));
+        Assert.Equal(23, rows.Sum(row => row!["TupleBytes"]!.GetValue<long>()));
+        Assert.Equal(31, rows.Sum(row => row!["SnapshotHashBytes"]!.GetValue<long>()));
+        Assert.All(rows, row => Assert.Equal("acquired-lock-before-recovery", row!["Origin"]!.GetValue<string>()));
+        Assert.Equal(0, result["AccountingErrors"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task ConcurrentBranchesKeepSynchronousFrameStacksSeparate()
+    {
+        var collector = Create(System.Diagnostics.Stopwatch.GetTimestamp);
+        using var barrier = new Barrier(2);
+        await Task.WhenAll(new[] { "main-admission-acquire", "worker-cleanup-audit-append" }.Select(origin =>
+            Task.Factory.StartNew(() =>
+            {
+                using (Context(collector, origin))
+                using (Measure(collector, "inclusive-preflight"))
+                {
+                    Assert.True(barrier.SignalAndWait(TimeSpan.FromSeconds(5)));
+                    using (Measure(collector, "physical-verification")) Invoke(collector, "Read", "rollback", 17L);
+                }
+            }, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default)));
+        var result = Snapshot(collector);
+        Assert.Equal(4, result["Rows"]!.AsArray().Count);
+        Assert.Equal(34, result["Rows"]!.AsArray().Sum(row => row!["RollbackBytes"]!.GetValue<long>()));
+        Assert.Equal(0, result["AccountingErrors"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void CapacityBoundsAggregationAndMarksDroppedRows()
+    {
+        var collector = Create(() => 1, 2);
+        for (var i = 0; i < 20; i++)
+            using (Context(collector, "other"))
+            using (Measure(collector, "stage-" + i)) { }
+        var result = Snapshot(collector);
+        Assert.Equal(2, result["Rows"]!.AsArray().Count);
+        Assert.Equal(18, result["DroppedRows"]!.GetValue<int>());
+        Assert.False(result["Complete"]!.GetValue<bool>());
+    }
+
+    [Fact]
+    public void DisabledOrInvalidOwnedOptionsCreateNoCollectorOrExport()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-diag-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            var create = Collector.GetMethod("CreateOwned", BindingFlags.Static | BindingFlags.NonPublic)!;
+            Assert.Null(create.Invoke(null, [null, null, root]));
+            Assert.Null(create.Invoke(null, [root, "invalid", root]));
+            Assert.Null(create.Invoke(null, [root, Guid.NewGuid().ToString("N"), root]));
+            Assert.Empty(Directory.EnumerateFileSystemEntries(root));
+        }
+        finally { Directory.Delete(root); }
+    }
+
+    [Fact]
+    public void OwnedExportIsCreateOnlyAndFailuresCannotEscape()
+    {
+        var own = Path.Combine(Path.GetTempPath(), "boe-diag-" + Guid.NewGuid().ToString("N"));
+        var canonical = Path.Combine(own, "canonical");
+        var evidence = Path.Combine(own, "evidence");
+        Directory.CreateDirectory(canonical);
+        Directory.CreateDirectory(evidence);
+        var nonce = Guid.NewGuid().ToString("N");
+        File.WriteAllText(Path.Combine(evidence, "owner-nonce"), nonce);
+        try
+        {
+            var collector = Collector.GetMethod("CreateOwned", BindingFlags.Static | BindingFlags.NonPublic)!
+                .Invoke(null, [evidence, nonce, canonical]);
+            Assert.NotNull(collector);
+            using (Context(collector, "other")) using (Measure(collector, "inclusive-preflight")) { }
+            Invoke(collector, "Export");
+            var exported = Directory.EnumerateFiles(evidence, "*.json").Single();
+            var original = File.ReadAllBytes(exported);
+            Invoke(collector, "Export");
+            Assert.Equal(original, File.ReadAllBytes(exported));
+            File.WriteAllText(Path.Combine(evidence, "owner-nonce"), "changed");
+            Invoke(collector, "Export");
+            Assert.Equal(original, File.ReadAllBytes(exported));
+            Assert.Empty(Directory.EnumerateFileSystemEntries(canonical));
+        }
+        finally { Directory.Delete(own, true); }
+    }
+
+    [Fact]
+    public void FiniteCollectorCalibrationReportsOwnElapsedWithoutLatencyClaim()
+    {
+        var collector = Create(System.Diagnostics.Stopwatch.GetTimestamp);
+        const int repetitions = 10000;
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        for (var i = 0; i < repetitions; i++) { }
+        var emptySeconds = watch.Elapsed.TotalSeconds;
+        watch.Restart();
+        using (Context(collector, "other"))
+            for (var i = 0; i < repetitions; i++) using (Measure(collector, "calibration")) { }
+        var diagnosticSeconds = watch.Elapsed.TotalSeconds;
+        var result = Snapshot(collector);
+        Assert.Equal(repetitions, result["Rows"]!.AsArray().Single()!["Count"]!.GetValue<long>());
+        output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { Repetitions = repetitions, EmptySeconds = emptySeconds,
+            DiagnosticSeconds = diagnosticSeconds, Scope = "Finite in-memory collector calibration; not end-to-end overhead or acceptance latency." }));
+    }
+}
