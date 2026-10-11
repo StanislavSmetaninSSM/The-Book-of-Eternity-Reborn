@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "portable-engine-rollback-owned-close-linux",
+            "responsibility": "#1553/T067 original GameEngine rollback owners #26/#27: actual CreatePreTurnBackup, quiescent original physical main admission/generation, success and late own-context close, real evidence aggregate/CSP and stale generation primary identity, exact warm bytes/absence/evidence and fresh-process canonical recovery/read/refusal. One Theory, nine directed Linux rows; source gate required before execution.",
+            "excludes": "No whole player turn/C5, active GM/native workers, native FileStream-close fault, Windows, #110, broad fault matrix, performance/hash/timer changes or assumed multi-file atomicity. ExternalPublicationContext is the actual owning-lease disposal seam.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+                "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineRollback.cs",
+                "BookOfEternityClient.TestSupport/EngineRollbackColdProbe.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "c5-browser-active-poll-crash",
             "responsibility": "#1553 T069 Genuine original browser short signal inspection after real queued producer/staging, held original physical lease/pin; actual engine SIGKILL137/EOF makes exactly that pin Unresolved while NativeBridge survives; cold actual browser classifier refuses native admission before physical open/recovery/mutation with exact staged bytes/inventory.",
             "excludes": "Idle continuation, T070 cuts, full Program/React/relay chain, Windows/live models, performance or whole T069 acceptance, broad fault or tamper matrices.",

@@ -14,6 +14,8 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
+        if (args.Length == 3 && args[0] == "engine-rollback-cold-read")
+            return await EngineRollbackColdProbe.RunAsync(args[1], args[2]);
         if ((args.Length == 4 && args[0] == "engine-browser-recovery-cold") ||
             (args.Length == 6 && args[0] is "engine-browser-staging-cut" or "engine-browser-staging-publisher" or "engine-browser-quiescent-admission" or "engine-browser-status-phase" or "engine-browser-consumer-profile" or "engine-musings-repair" or "engine-musings-cut" or "engine-musings-original-cut" or "engine-musings-cold" or "engine-browser-active-poll-original"))
         {
