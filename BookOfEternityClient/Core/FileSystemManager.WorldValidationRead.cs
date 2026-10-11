@@ -1,3 +1,4 @@
+using System.Runtime.ExceptionServices;
 using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Core;
@@ -43,6 +44,25 @@ public partial class FileSystemManager
         if (notifyAttempt) InvokeAfterCanonicalReadAttempt(path);
         return snapshot?.Content;
     }
+    internal (byte[]? Bytes, ExceptionDispatchInfo? DataFailure) ReadWorldValidationNullableBytesSync(
+        CanonicalWriteLease lease, string path, bool notifyAttempt)
+    {
+        EnsureValidCanonicalWriteLease(lease);
+        // These concrete nullable leaves are ordinary current/control files.
+        // A different reader family requires closure review, never a broad catch.
+        if (!UsesTrustedLocalWriter(lease, path))
+            throw new InvalidOperationException("World nullable read is outside ordinary storage.");
+        var snapshot = ReadOrdinaryFileSnapshotCore(path, lease, out var failure, nullableDataFailure: true);
+        if (failure == null && notifyAttempt)
+        {
+            // This is only the existing data-observation hook, not an authority boundary.
+            try { InvokeAfterCanonicalReadAttempt(path); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+            { failure = ExceptionDispatchInfo.Capture(error); }
+        }
+        return (snapshot?.Content, failure);
+    }
+
     internal async Task<byte[]?> ReadWorldValidationBytesAsync(CanonicalWriteLease lease, string path)
     {
         var bytes = await ReadFileBytesAsync(lease, path);

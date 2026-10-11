@@ -1,3 +1,5 @@
+using System.Runtime.ExceptionServices;
+
 namespace BookOfEternityClient.Core;
 
 public partial class FileSystemManager
@@ -104,8 +106,15 @@ public partial class FileSystemManager
     }
 
     private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(
-        string relativePath, CanonicalWriteLease? lease = null)
+        string relativePath, CanonicalWriteLease? lease = null) =>
+        ReadOrdinaryFileSnapshotCore(relativePath, lease, out _, nullableDataFailure: false);
+
+    // Only the World legacy-null adapter opts in. Authority/path checks remain
+    // outside data catches; a failed data read is not an observed absence.
+    private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(string relativePath,
+        CanonicalWriteLease? lease, out ExceptionDispatchInfo? dataFailure, bool nullableDataFailure)
     {
+        dataFailure = null;
         var expectedPath = ResolvePath(relativePath);
         var scope = new TrustedLocalFileScope([GameSessionPath]);
         for (var attempt = 0; ; attempt++)
@@ -116,17 +125,50 @@ public partial class FileSystemManager
                 if (lease != null) EnsureValidCanonicalWriteLease(lease);
                 EnsureCanonicalPathStillSafe(relativePath, expectedPath);
                 if (!File.Exists(scope.ValidateFile(expectedPath))) return null;
-                using var stream = OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous: false);
-                if (stream == null) return null;
+                using var stream = OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous: false,
+                    out dataFailure, nullableDataFailure, attempt >= TransientFileAccessRetryCount);
+                if (stream == null)
+                {
+                    // Open failures still prove neither data nor absence. Recheck
+                    // authority and namespace outside the FileStream-only catch.
+                    if (dataFailure != null)
+                    {
+                        if (lease != null) EnsureValidCanonicalWriteLease(lease);
+                        CompleteOrdinaryRead(scope, relativePath, expectedPath);
+                    }
+                    return null;
+                }
                 initialValidationComplete = true;
-                // The existing synchronous reader has only the post-open hook.
-                _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
-                var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
-                using var buffer = CreateOrdinaryReadBuffer(stream);
-                stream.CopyTo(buffer);
+                if (!nullableDataFailure)
+                {
+                    // Preserve the default reader's original data/check/materialization order.
+                    _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
+                    var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
+                    using var buffer = CreateOrdinaryReadBuffer(stream);
+                    stream.CopyTo(buffer);
+                    CompleteOrdinaryRead(scope, relativePath, expectedPath);
+                    if (lease != null) EnsureValidCanonicalWriteLease(lease);
+                    return new(buffer.ToArray(), timestamp);
+                }
+                CanonicalFileReadSnapshot snapshot;
+                try
+                {
+                    // The existing synchronous reader has only the post-open hook.
+                    _hooks?.AfterCanonicalReadInitialValidationAsync?.Invoke(relativePath).GetAwaiter().GetResult();
+                    var timestamp = File.GetLastWriteTimeUtc(stream.SafeFileHandle);
+                    using var buffer = CreateOrdinaryReadBuffer(stream);
+                    stream.CopyTo(buffer);
+                    snapshot = new(buffer.ToArray(), timestamp);
+                }
+                catch (Exception error) when (nullableDataFailure &&
+                    (error is IOException or UnauthorizedAccessException))
+                {
+                    dataFailure = ExceptionDispatchInfo.Capture(error);
+                    return null;
+                }
                 CompleteOrdinaryRead(scope, relativePath, expectedPath);
                 if (lease != null) EnsureValidCanonicalWriteLease(lease);
-                return new(buffer.ToArray(), timestamp);
+                return snapshot;
             }
             catch (Exception ex) when (!initialValidationComplete &&
                 IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
@@ -139,8 +181,14 @@ public partial class FileSystemManager
     // Shared by ordinary readers and the leased B2 before-image reader. Every
     // actual open has a fresh common type check, including after boundary hooks.
     private static FileStream? OpenValidatedOrdinaryFile(
-        TrustedLocalFileScope scope, string expectedPath, bool asynchronous)
+        TrustedLocalFileScope scope, string expectedPath, bool asynchronous) =>
+        OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous, out _, false, false);
+
+    private static FileStream? OpenValidatedOrdinaryFile(TrustedLocalFileScope scope,
+        string expectedPath, bool asynchronous, out ExceptionDispatchInfo? dataFailure,
+        bool nullableDataFailure, bool retriesExhausted)
     {
+        dataFailure = null;
         var path = scope.ValidateFile(expectedPath);
         try
         {
@@ -149,6 +197,13 @@ public partial class FileSystemManager
         }
         catch (FileNotFoundException) { scope.ValidateFile(path); return null; }
         catch (DirectoryNotFoundException) { scope.ValidateFile(path); return null; }
+        catch (Exception error) when (nullableDataFailure &&
+            (error is IOException or UnauthorizedAccessException) &&
+            (retriesExhausted || !IsTransientOrdinaryReadOpenException(error)))
+        {
+            dataFailure = ExceptionDispatchInfo.Capture(error);
+            return null;
+        }
     }
 
     private async Task<CanonicalFileReadSnapshot> ReadOpenedOrdinarySnapshotAsync(FileStream stream,

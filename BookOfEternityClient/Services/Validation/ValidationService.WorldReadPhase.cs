@@ -142,7 +142,12 @@ public partial class ValidationService
             await phase.RequireUnchangedReadsAsync();
             phase.RequireCurrent();
         }
-        catch (Exception error) { primary = error; }
+        catch (Exception error)
+        {
+            primary = phase.ReadFailure?.SourceException ?? error;
+            if (!ReferenceEquals(primary, error))
+                try { primary.Data["WorldReadPhase.LaterFailure"] = error; } catch { }
+        }
         finally
         {
             lock (_worldReadGate)
@@ -247,15 +252,14 @@ public partial class ValidationService
             // Actual authority checks are outside the legacy data/null catch.
             // A caught data fault is unverifiable, never recorded as absence.
             RequireCurrent(); RequirePath(path);
-            byte[]? bytes;
-            try { bytes = service._fs.ReadWorldValidationBytesSync(Lease, path, notifyAttempt: !directCurrent); }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException)
+            var read = service._fs.ReadWorldValidationNullableBytesSync(Lease, path, notifyAttempt: !directCurrent);
+            if (read.DataFailure != null)
             {
-                ReadFailure ??= ExceptionDispatchInfo.Capture(error);
+                ReadFailure ??= read.DataFailure;
                 return null;
             }
-            RequireCurrent(); Remember(path, bytes);
-            return bytes == null ? null : DecodePendingSnapshotText(bytes);
+            RequireCurrent(); Remember(path, read.Bytes);
+            return read.Bytes == null ? null : DecodePendingSnapshotText(read.Bytes);
         }
         private void Remember(string path, byte[]? bytes)
         {

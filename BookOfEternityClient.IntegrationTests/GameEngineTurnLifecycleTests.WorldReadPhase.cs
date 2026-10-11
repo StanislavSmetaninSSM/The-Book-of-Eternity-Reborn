@@ -278,6 +278,217 @@ public sealed partial class GameEngineTurnLifecycleTests
         });
     }
 
+    [Theory]
+    [InlineData("data-io")]
+    [InlineData("path-refusal")]
+    public async Task WorldReadPhase_NestedCoreNullableDataAndAuthorityRemainDistinct(string kind)
+    {
+        await WithWorldReadFixture("faction", async probe =>
+        {
+            using var snapshot = probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
+            var selected = new GameStateValidationSelection(
+                GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [WorldFactionStructure]);
+            var corePath = probe.Files.ResolvePath(WorldFactionCore);
+            var coreBytes = File.ReadAllBytes(corePath);
+            var dataFailure = new IOException("nested current core data cut");
+            Exception? firstRefusal = null;
+            string? firstStack = null;
+            var captureRefusal = new AsyncLocal<bool>();
+            var coreReads = 0;
+            var structureReads = 0;
+            EventHandler<System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs> observe = (_, args) =>
+            {
+                if (captureRefusal.Value && firstRefusal == null && args.Exception is InvalidDataException)
+                { firstRefusal = args.Exception; firstStack = args.Exception.StackTrace; }
+            };
+            probe.OnRead = path =>
+            {
+                if (path == WorldFactionStructure) structureReads++;
+                if (path != WorldFactionCore || ++coreReads != 1) return Task.CompletedTask;
+                if (kind == "data-io") return Task.FromException(dataFailure);
+                // Real namespace refusal in the checked reader, not an injected authority exception.
+                File.Delete(corePath);
+                Directory.CreateDirectory(corePath);
+                captureRefusal.Value = true;
+                return Task.CompletedTask;
+            };
+            probe.Arm();
+            List<ValidationIssue>? result = null;
+            Exception? failure = null;
+            AppDomain.CurrentDomain.FirstChanceException += observe;
+            try
+            {
+                failure = await Record.ExceptionAsync(async () => { result = await probe.Validator.ValidateGameStateAsync(selected); });
+                WorldEvidence(probe, new { kind, coreReads, structureReads, ResultPublished = result != null,
+                    Failure = failure?.ToString(), FirstRefusal = firstRefusal?.ToString(), firstStack,
+                    SameDataFailure = ReferenceEquals(dataFailure, failure), SameRefusal = ReferenceEquals(firstRefusal, failure) });
+            }
+            finally
+            {
+                AppDomain.CurrentDomain.FirstChanceException -= observe;
+                captureRefusal.Value = false;
+                probe.OnRead = null;
+                if (Directory.Exists(corePath)) Directory.Delete(corePath);
+                File.WriteAllBytes(corePath, coreBytes);
+            }
+            Assert.Null(result);
+            Assert.Equal(1, coreReads);
+            if (kind == "data-io")
+            {
+                // Original nullable callback finishes; its strict pair still runs in order.
+                Assert.Equal(2, structureReads);
+                Assert.Same(dataFailure, failure);
+                Assert.Contains("ReadOrdinaryFileSnapshotCore", failure!.StackTrace);
+            }
+            else
+            {
+                Assert.Equal(1, structureReads);
+                Assert.NotNull(firstRefusal);
+                Assert.Same(firstRefusal, failure);
+                Assert.Contains("ValidateFile", firstStack);
+            }
+            Assert.False(WorldHasAmbientLease(probe.Files));
+        });
+    }
+
+    [Theory]
+    [InlineData("retained-physical-sibling")]
+    [InlineData("prior-borrow-resumes")]
+    [InlineData("failed-opening")]
+    [InlineData("already-running-response")]
+    public async Task WorldReadPhase_ExistingAdmissionAndOpeningBranchesReleaseOnlyOwnState(string kind)
+    {
+        await WithWorldReadFixture("faction", async probe =>
+        {
+            using var snapshot = probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
+            var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var phaseEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var phaseRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            Task? sibling = null;
+            Task<List<ValidationIssue>>? admitted = null;
+            Exception? refused = null;
+            Exception? siblingFailure = null;
+            var openings = 0;
+            var borrows = 0;
+            var openingFailure = new IOException("World opening after registration cut");
+            string? responseBoundary = null;
+            var siblingAmbientAfter = true;
+            async Task PauseSibling() { entered.TrySetResult(); await release.Task; }
+            probe.Arm();
+            try
+            {
+                if (kind == "failed-opening")
+                {
+                    probe.OnOpened = () => ++openings == 1 ? Task.FromException(openingFailure) : Task.CompletedTask;
+                    refused = await Record.ExceptionAsync(() => probe.Validator.ValidateGameStateAsync(WorldSelection));
+                    Assert.Same(openingFailure, refused);
+                    Assert.Equal(1, openings);
+                    Assert.Null(GetPrivateFieldValue<object?>(probe.Validator, "_worldReadPhase"));
+                    Assert.Null(GetPrivateFieldValue<object?>(probe.Validator, "_worldReservation"));
+                    Assert.Equal(0, GetPrivateFieldValue<int>(probe.Validator, "_worldValidationCalls"));
+                    Assert.False(WorldHasAmbientLease(probe.Files));
+                    probe.OnOpened = null;
+                }
+                else if (kind == "retained-physical-sibling")
+                {
+                    // Separate ExecutionContext retains a real same-access physical admission,
+                    // without making the candidate's own context an already-held scalar fallback.
+                    sibling = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await using (var held = await probe.Files.AcquireCanonicalWriteLeaseAsync())
+                                await PauseSibling();
+                        }
+                        finally { siblingAmbientAfter = WorldHasAmbientLease(probe.Files); }
+                    });
+                    await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    var before = WorldInputImages(probe.Files);
+                    refused = await Record.ExceptionAsync(() => probe.Validator.ValidateGameStateAsync(WorldSelection));
+                    Assert.IsType<InvalidOperationException>(refused);
+                    Assert.False(sibling.IsCompleted);
+                    Assert.Equal(before, WorldInputImages(probe.Files));
+                }
+                else if (kind == "prior-borrow-resumes")
+                {
+                    probe.OnBorrow = () => Interlocked.Increment(ref borrows) == 1 ? PauseSibling() : Task.CompletedTask;
+                    sibling = Task.Run(async () =>
+                    {
+                        try { await using var old = await probe.Files.AcquireCanonicalWriteLeaseAsync(); }
+                        finally { siblingAmbientAfter = WorldHasAmbientLease(probe.Files); }
+                    });
+                    await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    probe.OnRead = async path =>
+                    {
+                        if (path != WorldFactionCore || phaseEntered.Task.IsCompleted) return;
+                        phaseEntered.TrySetResult();
+                        await phaseRelease.Task;
+                    };
+                    admitted = probe.Validator.ValidateGameStateAsync(WorldSelection);
+                    await phaseEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    release.TrySetResult();
+                    siblingFailure = await Record.ExceptionAsync(() => sibling.WaitAsync(TimeSpan.FromSeconds(10)));
+                    Assert.IsType<InvalidOperationException>(siblingFailure);
+                    Assert.False(admitted.IsCompleted);
+                    Assert.True(borrows >= 2); // Old borrow plus permitted private phase issuance.
+                }
+                else
+                {
+                    var signedCore = probe.Manifest.Files![WorldFactionCore];
+                    probe.OnRead = path =>
+                    {
+                        if (path != signedCore || entered.Task.IsCompleted) return Task.CompletedTask;
+                        responseBoundary = new System.Diagnostics.StackTrace().ToString();
+                        return PauseSibling();
+                    };
+                    sibling = Task.Run(() =>
+                    {
+                        using var response = JsonDocument.Parse("{\"response\":\"owned response\",\"factions\":[]}");
+                        probe.Validator.ValidateResponse(response.RootElement);
+                    });
+                    await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    var ids = GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionIdsCache");
+                    var names = GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionNamesCache");
+                    var priorOverride = GetPrivateFieldValue<object?>(probe.Validator, "_prevalidatedPendingTurnSnapshotOverride");
+                    refused = await Record.ExceptionAsync(() => probe.Validator.ValidateGameStateAsync(WorldSelection));
+                    Assert.IsType<InvalidOperationException>(refused);
+                    Assert.False(sibling.IsCompleted);
+                    Assert.Contains("ValidateResponse", responseBoundary);
+                    Assert.Same(ids, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionIdsCache"));
+                    Assert.Same(names, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionNamesCache"));
+                    Assert.Same(priorOverride, GetPrivateFieldValue<object?>(probe.Validator, "_prevalidatedPendingTurnSnapshotOverride"));
+                }
+            }
+            finally
+            {
+                // Always settle the actual original sibling; never abandon a retained lease/task on assertion failure.
+                probe.OnRead = null;
+                probe.OnBorrow = null;
+                probe.OnOpened = null;
+                release.TrySetResult();
+                phaseRelease.TrySetResult();
+                if (sibling != null && siblingFailure == null)
+                    siblingFailure = await Record.ExceptionAsync(() => sibling.WaitAsync(TimeSpan.FromSeconds(10)));
+                if (admitted != null) await admitted.WaitAsync(TimeSpan.FromSeconds(10));
+                WorldEvidence(probe, new { kind, openings, borrows, responseBoundary,
+                    Refused = refused?.ToString(), SiblingFailure = siblingFailure?.ToString(), siblingAmbientAfter,
+                    PhaseSettled = admitted?.IsCompletedSuccessfully,
+                    ReservationReleased = GetPrivateFieldValue<object?>(probe.Validator, "_worldReservation") == null });
+            }
+            if (kind == "prior-borrow-resumes") Assert.IsType<InvalidOperationException>(siblingFailure);
+            else Assert.Null(siblingFailure);
+            if (kind is "prior-borrow-resumes" or "retained-physical-sibling") Assert.False(siblingAmbientAfter);
+            Assert.Null(GetPrivateFieldValue<object?>(probe.Validator, "_worldReadPhase"));
+            Assert.Null(GetPrivateFieldValue<object?>(probe.Validator, "_worldReservation"));
+            Assert.Equal(0, GetPrivateFieldValue<int>(probe.Validator, "_worldValidationCalls"));
+            Assert.False(WorldHasAmbientLease(probe.Files));
+            // Teardown must leave both the instance and the actual access eligible for a fresh legitimate invocation.
+            await probe.Validator.ValidateGameStateAsync(WorldSelection);
+            Assert.False(WorldHasAmbientLease(probe.Files));
+        });
+    }
+
     [Fact]
     public async Task WorldReadPhase_FreshCacheInputsDoNotEscapePhase()
     {
@@ -314,9 +525,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         (string Path, string Hash)[] pins = [
             ("BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs", "1DECB1BEB44D2FD0466199E58FF06FB6B39E7795341493FE8DA09A977EC8D202"),
             ("BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs", "384F9F65D33E1C70C6F7E337D96AEC6E71664D142612546139345BF274923A14"),
-            ("BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs", "4A738F91985C2DD42A9117E22F0D9E0B824495B3594798A9B5579095FB0DB6D4"),
+            ("BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs", "03D8FEF5770D2B88C71378249F5A6129BFFEB98E5A1CAA0B422CC919BC4ED4E8"),
             ("BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs", "7A857EC50550365F6576B8E2CCC056E662C87622E1A32F652952760761D3E753"),
-            ("BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs", "FF22FBB6DBB4BC2591D0AC895FA386A36675BAB727375AD17A51208DA2B5DABE"),
+            ("BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs", "56DCD7EC7171492FCE002CD2329A9B2E67D2C67A9A9F52745E8B0AD4D0D2E6A7"),
             ("BookOfEternityClient/Core/FileSystemManager.cs", "DA3A5022C5C5AE5A57B7BCE07B01200121576521E18EB7BB742C91894608715D"),
             ("BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs", "2747AB5E07B0823105855FF6A80D0F172AB98CFDDCB5B51D678D68FD8C62FFCC"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationBinding.cs", "22BF78161FC966A6C50CC8B7962A4105AC318C1542253BA09EF10CAAF90DC0E5"),
@@ -342,7 +553,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs", "081B4FD60653F4AC130B4598C232AB7CBA233EBEC17722D766DDC92461269B35"),
             ("BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs", "9C05FAA1FE96FA41A119A9938802D273BF31B717333904D52826C7C4AA299BAF"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs", "2A08384218F6F328DB9BC37BE89E88CC8F50EE3AC915587E1B76C6119B5395B2"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "9CBDB7A0320531AD909EBA04C65A09AAFC6D3B9E25CB84E2EF56BA8F30B64755"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "5560C8FBCDCFFC101666F06721C11253C214E8FC54008DD97BD0F0E95509072A"),
             ("BookOfEternityClient/Services/ValidationService.cs", "58511D428841000B0BF4AA4AAF5E28B239457DF199D25AE91AB37F85358E9062"),
         ];
         foreach (var (path, hash) in pins)
@@ -382,6 +593,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal FileSystemManager.BrowserOriginalOperationScope Original { get; set; } = null!;
         internal Func<string, Task>? OnRead;
         internal Func<Task>? OnOpened;
+        internal Func<Task>? OnBorrow;
         internal int SeededOpenings;
         internal bool Armed;
         internal int PhysicalProofSpans;
@@ -397,6 +609,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
+                BeforeMainBorrowRetainAsync = () => probe?.Armed == true
+                    ? probe.OnBorrow?.Invoke() ?? Task.CompletedTask : Task.CompletedTask,
                 AfterCanonicalWriteLockOpenedAsync = () => probe?.Armed == true
                     ? probe.OnOpened?.Invoke() ?? Task.CompletedTask : Task.CompletedTask,
                 AfterCanonicalReadInitialValidationAsync = path =>
@@ -439,7 +653,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Inputs = WorldInputImages(files), CurrentTopLevelAbsence = WorldCurrentPaths.Select(path =>
                     new { Path = path, Absent = !File.Exists(files.ResolvePath(path)) }) });
             try { await operation(probe); assertionsCompleted = true; }
-            finally { probe.OnRead = null; probe.OnOpened = null; probe.Armed = false; }
+            finally { probe.OnRead = null; probe.OnOpened = null; probe.OnBorrow = null; probe.Armed = false; }
             return true;
         });
         }
