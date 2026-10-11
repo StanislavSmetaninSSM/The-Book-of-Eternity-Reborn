@@ -51,8 +51,13 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
             info.Environment.Remove("BOE_TEST_C5_HELPER_ADMISSION_DIAGNOSTIC");
             info.Environment.Remove("BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR");
             info.Environment.Remove("BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT");
+            info.Environment.Remove("BOE_TEST_BROWSER_ADMISSION_PROFILE_DIR");
+            info.Environment.Remove("BOE_TEST_BROWSER_ADMISSION_PROFILE_NONCE");
+            info.Environment.Remove("BOE_TEST_C5_ADMISSION_PROFILE");
             if (durationDiagnostic && logName == "chain.log")
                 info.Environment["BOE_TEST_C5_DURATION_DIAGNOSTIC"] = "1";
+            if (durationDiagnostic && logName == "chain.log" && Environment.GetEnvironmentVariable("BOE_TEST_C5_ADMISSION_PROFILE") == "1")
+                info.Environment["BOE_TEST_C5_ADMISSION_PROFILE"] = "1";
             if (continueDiagnostic && logName == "chain.log")
                 info.Environment["BOE_TEST_C5_CONTINUE_DIAGNOSTIC"] = "1";
             if (startupDiagnostic && logName == "chain.log")

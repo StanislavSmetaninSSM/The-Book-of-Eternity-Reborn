@@ -110,9 +110,13 @@ public partial class FileSystemManager
 
     private void RecoverTrustedLocalStorage(CanonicalWriteLease lease)
     {
-        EnsureWorkerRecoveryAdmission(lease);
+        EnsureWorkerRecoveryAdmission(lease,"trusted-local-recovery-wrapper");
         lease.EnsureNoPendingLocalDecision();
-        if (!HasStorageEvidence(LocalPublicationRoot)) return;
+        var hasEvidence = HasStorageEvidence(LocalPublicationRoot);
+#if DEBUG
+        _browserAdmissionDiagnostic?.Recovery(hasEvidence);
+#endif
+        if (!hasEvidence) return;
         var before = ReadExistingSessionGeneration(lease);
         new TrustedLocalFilePublication(this, new TrustedLocalFileScope([BasePath]))
             .Recover(lease, _hooks?.LocalPublicationRecoveryObserver);

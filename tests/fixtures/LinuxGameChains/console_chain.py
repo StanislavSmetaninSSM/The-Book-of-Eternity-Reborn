@@ -30,6 +30,9 @@ scenario = sys.argv[4] if len(sys.argv) > 4 else "console"
 assert scenario in ["console", "console-musings", "browser-relay"]
 helper_admission_diagnostic = os.environ.get("BOE_TEST_C5_HELPER_ADMISSION_DIAGNOSTIC") == "1"
 duration_diagnostic = os.environ.get("BOE_TEST_C5_DURATION_DIAGNOSTIC") == "1" or helper_admission_diagnostic
+admission_profile_requested = os.environ.get("BOE_TEST_C5_ADMISSION_PROFILE") == "1"
+if admission_profile_requested and (not duration_diagnostic or helper_admission_diagnostic or not __debug__):
+    raise RuntimeError("Admission profiling requires only the complete bounded C5 duration category")
 startup_diagnostic = os.environ.get("BOE_TEST_C5_STARTUP_DIAGNOSTIC") == "1"
 continue_diagnostic = os.environ.get("BOE_TEST_C5_CONTINUE_DIAGNOSTIC") == "1" or startup_diagnostic
 if continue_diagnostic and (scenario != "browser-relay" or duration_diagnostic or not __debug__):
@@ -74,6 +77,40 @@ if helper_admission_diagnostic:
         "GuardianSeconds": 240, "ExternalSeconds": 250,
         "Qualification": "One actual queued-cold relay consumer/Complete-BoeTurn write seq0; no acceptance or full C5 qualification."})
 env = dict(os.environ)
+admission_profile_directory = None
+fixture_timings = {} if admission_profile_requested else None
+if admission_profile_requested:
+    try:
+        admission_profile_directory = out / "admission-profile"
+        admission_profile_directory.mkdir()
+        admission_profile_nonce = uuid.uuid4().hex
+        (admission_profile_directory / "owner-nonce").write_text(admission_profile_nonce, encoding="ascii")
+        env["BOE_TEST_BROWSER_ADMISSION_PROFILE_DIR"] = str(admission_profile_directory)
+        env["BOE_TEST_BROWSER_ADMISSION_PROFILE_NONCE"] = admission_profile_nonce
+    except Exception as failure:
+        result["AdmissionProfileSetupFailure"] = type(failure).__name__
+        admission_profile_directory = None
+        env.pop("BOE_TEST_BROWSER_ADMISSION_PROFILE_DIR", None)
+        env.pop("BOE_TEST_BROWSER_ADMISSION_PROFILE_NONCE", None)
+
+
+def record_fixture_timing(name, elapsed):
+    if fixture_timings is not None:
+        row = fixture_timings.setdefault(name, {"Count": 0, "InclusiveSeconds": 0.0})
+        row["Count"] += 1
+        row["InclusiveSeconds"] += elapsed
+
+
+def timed_fixture(name, function):
+    if fixture_timings is None:
+        return function
+    def measured(*args, **kwargs):
+        begin = time.monotonic()
+        try:
+            return function(*args, **kwargs)
+        finally:
+            record_fixture_timing(name, time.monotonic() - begin)
+    return measured
 if helper_admission_diagnostic:
     from prepare_helper_observation import prepare, collect
     env.update(prepare(repo, out, ship))
@@ -642,6 +679,11 @@ def start_chain(suffix):
     fresh(daemon, "Waiting for turns...")
     result.setdefault("OriginalRuns", []).append(original_record)
 
+pump = timed_fixture("pump-including-nested-observation", pump)
+observe_diagnostic_turn = timed_fixture("diagnostic-poll-observation", observe_diagnostic_turn)
+capture_staged_inventory = timed_fixture("pre-packet-inventory", capture_staged_inventory)
+author_packet = timed_fixture("authored-packet-call", author_packet)
+
 try:
     dll = ship / "BookOfEternityClient/BookOfEternityClient.dll"
     if scenario == "browser-relay":
@@ -822,6 +864,7 @@ try:
         else:
             fresh(client, narrative, offset, 40)
             fresh(client, "Ваш ход", offset, 40)
+        assertion_begin = time.monotonic() if fixture_timings is not None else None
         story_path = session / "stories/chaos_sea.jsonl"
         story_bytes = story_path.read_bytes()
         prefix_sha = sha(preserved_story) if preserved_story else None
@@ -861,6 +904,8 @@ try:
         execution = read_json(request_dir / "execution.json")
         assert execution["Executed"] and execution["ExitCode"] == 0 and execution["ChildExited"] and execution["IoDrained"], execution
         if duration_diagnostic:
+            if assertion_begin is not None:
+                record_fixture_timing("post-narrative-semantic-assertions", time.monotonic() - assertion_begin)
             now = time.monotonic() - started
             assert now < duration_row["AcceptanceAbsoluteDeadlineAtSeconds"], "Diagnostic full acceptance assertions exceeded deadline"
             duration_row.update(AcceptanceObservedAtSeconds=now,
@@ -943,6 +988,20 @@ finally:
     goal = (result.get("HelperAdmissionDiagnosticAssertionsPassed") if helper_admission_diagnostic else
             result.get("ContinueDiagnosticAssertionsPassed") if continue_diagnostic else result.get("ChainAssertionsPassed"))
     result["PASS"] = bool(goal and result["OriginalStopped"] and result.get("IoDrained") and not result.get("Failure") and not result.get("CleanupFailure") and not result.get("InstrumentationFailure"))
+    if admission_profile_requested:
+        result["AdmissionProfile"] = {
+            "Requested": True,
+            "Qualification": "Action/process aggregate wall work only, not costs inside HelperComplete/AuthoredPacket acceptance windows. Missing exports, including SIGKILL, are unavailable/incomplete, never zero.",
+            "FixtureTimings": fixture_timings,
+            "FixtureTimingLimit": "Nested inclusive totals may overlap and must not be summed. Export and polling instrumentation overhead remains uncalibrated end to end."}
+        try:
+            files = sorted(admission_profile_directory.glob("process-*.json")) if admission_profile_directory else []
+            result["AdmissionProfile"]["Exports"] = [{"Path": str(path.relative_to(out)), "Bytes": path.stat().st_size,
+                "SHA256": sha(path.read_bytes())} for path in files]
+            exported_pids = {int(path.name.split("-")[1]) for path in files}
+            result["AdmissionProfile"]["PeerExportPresence"] = {peer.name: peer.process.pid in exported_pids for peer in peers}
+        except Exception as failure:
+            result["AdmissionProfile"]["CollectionFailure"] = type(failure).__name__
     (out / "events.json").write_text(json.dumps(events, ensure_ascii=False, indent=2))
     (out / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2))
     print(json.dumps(result, ensure_ascii=False))

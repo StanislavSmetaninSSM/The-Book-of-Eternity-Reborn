@@ -10,9 +10,23 @@ public partial class FileSystemManager
     private const string BrowserManifestPath = "game_state/control/pending_turn_snapshot.json";
     private static readonly AsyncLocal<BrowserOriginalOperationScope?> BrowserOriginalOperations = new();
 
-    private IDisposable? MeasureOriginalBrowserAdmission(string stage) =>
-        _hooks?.BrowserOriginalAdmissionTimingObserver is { } observer
+    private IDisposable? MeasureOriginalBrowserAdmission(string stage)
+    {
+        IDisposable? existing = _hooks?.BrowserOriginalAdmissionTimingObserver is { } observer
             ? new OriginalBrowserAdmissionTiming(observer, stage) : null;
+#if DEBUG
+        var diagnostic = _browserAdmissionDiagnostic?.Measure(stage);
+        if (existing == null) return diagnostic;
+        if (diagnostic != null) return new CombinedBrowserTiming(existing, diagnostic);
+#endif
+        return existing;
+    }
+#if DEBUG
+    private sealed class CombinedBrowserTiming(IDisposable existing, IDisposable diagnostic) : IDisposable
+    {
+        public void Dispose() { try { existing.Dispose(); } finally { diagnostic.Dispose(); } }
+    }
+#endif
 
     private sealed class OriginalBrowserAdmissionTiming(Action<string, TimeSpan> observer, string stage) : IDisposable
     {
@@ -63,6 +77,9 @@ public partial class FileSystemManager
             Condition=owner.CaptureBrowserCondition(binding.Generation);
             if(staged != null)
             {
+#if DEBUG
+                using var diagnostic = files.BrowserDiagnosticContext("operation-construction", staged);
+#endif
                 RequireOriginalTuple(ExpectedStaged??throw BrowserOriginalMainCondition.Invalid(),staged);
                 var manifest=files.ValidateOriginalBrowserAdmission(staged, verifyPhysical: true);
                 if(manifest.BrowserOriginalMainCondition != Condition) throw BrowserOriginalMainCondition.Invalid();
@@ -78,6 +95,9 @@ public partial class FileSystemManager
         }
         internal void Seal(PendingPlayerActionService.Staged staged)
         {
+#if DEBUG
+            using var diagnostic = _files.BrowserDiagnosticContext("operation-seal", staged);
+#endif
             ValidateOwner(MainAdmissions.Value);
             if(Staged != null || staged.Binding.ActionId != Binding.ActionId) throw BrowserOriginalMainCondition.Invalid();
             RequireOriginalTuple(ExpectedStaged??throw BrowserOriginalMainCondition.Invalid(),staged);
@@ -93,6 +113,9 @@ public partial class FileSystemManager
         }
         internal void BeginCleanup()
         {
+#if DEBUG
+            using var diagnostic = _files.BrowserDiagnosticContext("cleanup-begin", Staged);
+#endif
             ValidateOwner(MainAdmissions.Value);
             if(!Processing || Staged == null) throw BrowserOriginalMainCondition.Invalid();
             if(!Cleanup)
@@ -222,6 +245,11 @@ public partial class FileSystemManager
         // a new cold-only limit on produced history or canonical snapshots.
         if(length>Array.MaxLength)throw new IOException("Original browser file cannot be represented by the existing byte reader.");
         var bytes=new byte[(int)length];stream.ReadExactly(bytes);
+#if DEBUG
+        _browserAdmissionDiagnostic?.Read(relative is "input/turn_request.json" or BrowserManifestPath or PendingTurnSnapshotAuthority.AuthorityPath or PendingPlayerActionService.PendingPath
+            ? "tuple" : relative.StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.Ordinal)
+                ? "snapshot" : relative.Contains(".rollback.", StringComparison.Ordinal) ? "rollback" : "other", length);
+#endif
         if(stream.ReadByte()!=-1)throw BrowserOriginalMainCondition.Invalid();
         scope.ValidateFile(path,false);return bytes;
     }
@@ -239,12 +267,19 @@ public partial class FileSystemManager
             !relative.StartsWith("game_state/control/pending_turn_snapshot/",StringComparison.Ordinal))throw BrowserOriginalMainCondition.Invalid();
         scope??=CreateOriginalBrowserFileScope(held);var path=scope.ValidateFile(ResolvePath(relative),false);
         using var stream=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
-        if(Convert.ToHexString(SHA256.HashData(stream))!=expected)throw BrowserOriginalMainCondition.Invalid();
+        var actualHash=Convert.ToHexString(SHA256.HashData(stream));
+#if DEBUG
+        _browserAdmissionDiagnostic?.Read("snapshot-hash", stream.Position);
+#endif
+        if(actualHash!=expected)throw BrowserOriginalMainCondition.Invalid();
         scope.ValidateFile(path,false);
     }
     private GameEngine.PendingTurnSnapshotManifest ValidateOriginalBrowserAdmission(PendingPlayerActionService.Staged staged,bool verifyPhysical,
         CanonicalWriteLease? physicalLease=null)
     {
+#if DEBUG
+        using var diagnostic = BrowserDiagnosticContext(_browserAdmissionDiagnostic?.CurrentOrigin ?? "other", staged, physicalLease);
+#endif
         GameEngine.PendingTurnSnapshotManifest manifest;
         using(MeasureOriginalBrowserAdmission("detached-proof-decoding"))
         {
@@ -257,6 +292,9 @@ public partial class FileSystemManager
         // same-filesystem physical lease is the diagnostic witness at that call.
         var held=physicalLease!=null || HasAmbientCanonicalLease();
         using var physicalTiming=MeasureOriginalBrowserAdmission("physical-verification");
+#if DEBUG
+        _browserAdmissionDiagnostic?.Inventory(manifest.Files.Count, manifest.RollbackBackups.Count);
+#endif
         // Grants live only in this one held proof. Each reader still freshly
         // validates the complete ancestor/leaf path before and after its read.
         var fileScope=held?CreateOriginalBrowserFileScope(held):null;
@@ -281,6 +319,9 @@ public partial class FileSystemManager
     internal (BrowserOriginalMainCondition Condition, Dictionary<string,string> Hashes)
         InspectOriginalBrowserClosedIdle(PendingPlayerActionService.Staged staged)
     {
+#if DEBUG
+        using var diagnostic = BrowserDiagnosticContext("closed-idle-diagnostic", staged);
+#endif
         RequireLoadIpcOutsideFileScopes();
         var manifest=ValidateOriginalBrowserAdmission(staged,verifyPhysical:true);
         if(ReadOriginalBrowserText(PendingPlayerActionService.PendingPath)!=staged.Json)
@@ -320,8 +361,12 @@ public partial class FileSystemManager
         Walk(GameSessionPath);return result.ToArray();
     }
 
-    private BrowserOriginalMainCondition? PreflightBrowserOriginalAdmission(MainAdmission admission,CanonicalWriteLease? physicalLease=null)
+    private BrowserOriginalMainCondition? PreflightBrowserOriginalAdmission(MainAdmission admission,CanonicalWriteLease? physicalLease=null,
+        string diagnosticOrigin="other")
     {
+#if DEBUG
+        using var diagnostic = BrowserDiagnosticContext(diagnosticOrigin, lease: physicalLease);
+#endif
         using var preflightTiming=MeasureOriginalBrowserAdmission("inclusive-preflight");
         if(admission.MetadataOnly)return null; // existing typed stop/diagnostic contract
         var scope=CurrentBrowserOriginalScope();

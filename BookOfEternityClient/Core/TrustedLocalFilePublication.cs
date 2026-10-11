@@ -419,7 +419,7 @@ internal sealed partial class TrustedLocalFilePublication
     internal void Recover(FileSystemManager.CanonicalWriteLease lease,
         Action<TrustedLocalPublicationPhase, int>? observer = null)
     {
-        _files.EnsureWorkerRecoveryAdmission(lease);
+        _files.EnsureWorkerRecoveryAdmission(lease,"publication-recovery-body");
         lease.EnsureNoPendingLocalDecision();
         RecoverCore(lease, observer);
     }

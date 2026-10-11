@@ -104,6 +104,12 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
             Assert.Null(create.Invoke(null, [root, "invalid", root]));
             Assert.Null(create.Invoke(null, [root, Guid.NewGuid().ToString("N"), root]));
             Assert.Empty(Directory.EnumerateFileSystemEntries(root));
+            var nested = Path.Combine(root, "nested");
+            Directory.CreateDirectory(nested);
+            var nonce = Guid.NewGuid().ToString("N");
+            File.WriteAllText(Path.Combine(nested, "owner-nonce"), nonce);
+            Assert.Null(create.Invoke(null, [nested, nonce, root]));
+            Directory.Delete(nested, true);
         }
         finally { Directory.Delete(root); }
     }
@@ -129,8 +135,12 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
             var original = File.ReadAllBytes(exported);
             Invoke(collector, "Export");
             Assert.Equal(original, File.ReadAllBytes(exported));
+            var refused = Collector.GetMethod("CreateOwned", BindingFlags.Static | BindingFlags.NonPublic)!
+                .Invoke(null, [evidence, nonce, canonical]);
+            Assert.NotNull(refused);
             File.WriteAllText(Path.Combine(evidence, "owner-nonce"), "changed");
-            Invoke(collector, "Export");
+            Invoke(refused, "Export");
+            Assert.Equal(1, Snapshot(refused)["ExportFailures"]!.GetValue<int>());
             Assert.Equal(original, File.ReadAllBytes(exported));
             Assert.Empty(Directory.EnumerateFileSystemEntries(canonical));
         }

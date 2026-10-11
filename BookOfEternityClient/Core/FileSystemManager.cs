@@ -278,6 +278,9 @@ public partial class FileSystemManager
 
     internal sealed class CanonicalWriteLease : IAsyncDisposable
     {
+#if DEBUG
+        internal long BrowserDiagnosticId { get; set; }
+#endif
         private FileStream? _stream;
         private PhysicalFileAuthority.StableDirectory? _parentAuthority;
         private AmbientCanonicalLeaseRegistration? _ambientRegistration;
@@ -608,6 +611,9 @@ public partial class FileSystemManager
         _loadTransactionOperations = loadTransactionOperations ??
             throw new ArgumentNullException(nameof(loadTransactionOperations));
         _hooks = hooks;
+#if DEBUG
+        _browserAdmissionDiagnostic = BrowserAdmissionDiagnosticCollector.FromEnvironment(_basePath);
+#endif
     }
 
     public void EnsureDirectoryStructure()
@@ -3664,6 +3670,9 @@ public partial class FileSystemManager
             catch (IOException) when (attempt < CanonicalWriteLockRetryCount - 1)
             {
                 parentAuthority.Dispose();
+#if DEBUG
+                _browserAdmissionDiagnostic?.Contended();
+#endif
                 if (_hooks?.CanonicalWriteLockContendedAsync != null)
                     await _hooks.CanonicalWriteLockContendedAsync();
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
@@ -3697,6 +3706,9 @@ public partial class FileSystemManager
                 stream,
                 parentAuthority,
                 purpose) { WorkerPurpose = workerPurpose, MainAdmission=MainAdmissions.Value };
+#if DEBUG
+            if (_browserAdmissionDiagnostic != null) writeLease.BrowserDiagnosticId = _browserAdmissionDiagnostic.LeaseOpened();
+#endif
             try
             {
                 if(purpose==CanonicalWritePurpose.MainMetadata) {
@@ -3714,7 +3726,7 @@ public partial class FileSystemManager
                     // publication recovery or granting mutation authority.
                     writeLease.MainAdmission!.Validate(writeLease);return writeLease;
                 }
-                EnsureMainBeforeRecovery(writeLease);
+                EnsureMainBeforeRecovery(writeLease, "acquired-lock-before-recovery");
                 // An explicitly bound reader is fenced before any recovery or
                 // evidence classification, including quiescent local admission.
                 EnsureBoundSessionOperationCanWrite(writeLease);
@@ -3775,7 +3787,7 @@ public partial class FileSystemManager
                 }
                 // Permitted unrelated recovery cannot leave a different browser
                 // tuple or main condition behind and still return a mutable lease.
-                EnsureMainBeforeRecovery(writeLease);
+                EnsureMainBeforeRecovery(writeLease, "acquired-lock-after-recovery");
                 AdmitConsoleRollbackEvidence(writeLease);
                 if (purpose == CanonicalWritePurpose.SessionMutation)
                     EnsureBoundSessionOperationCanWrite(writeLease);
@@ -3951,11 +3963,11 @@ public partial class FileSystemManager
             throw new InvalidOperationException("Canonical write lease is not active for this game session.");
     }
 
-    internal void EnsureWorkerRecoveryAdmission(CanonicalWriteLease writeLease)
+    internal void EnsureWorkerRecoveryAdmission(CanonicalWriteLease writeLease, string diagnosticOrigin = "worker-other")
     {
         EnsureValidCanonicalWriteLease(writeLease);
         CanonicalRootAuthorityIdentity.WorkerContext?.ValidateBeforeRecovery();
-        EnsureMainBeforeRecovery(writeLease);
+        EnsureMainBeforeRecovery(writeLease, diagnosticOrigin);
     }
 
     internal void EnsureCanonicalWriteLeaseActive(CanonicalWriteLease writeLease) =>

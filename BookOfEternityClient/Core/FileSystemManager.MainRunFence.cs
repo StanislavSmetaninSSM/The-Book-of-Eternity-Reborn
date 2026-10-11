@@ -55,7 +55,7 @@ public partial class FileSystemManager
             // Finalization borrows an actual original closing frame. The purpose
             // value alone cannot bypass admission or acquire recovery authority.
             if(closing && !BoundClosing)throw GmSessionRunPersistence.Invalid();
-            var browserOriginal=closing?null:_files.PreflightBrowserOriginalAdmission(this);
+            var browserOriginal=closing?null:_files.PreflightBrowserOriginalAdmission(this,diagnosticOrigin:"main-admission-acquire");
             // A quiescent witness cannot become a new active grant while opening.
             browserOriginal?.RequireCurrent(_files);
             if(browserOriginal!=null && _files._hooks?.AfterBrowserOriginalPreflightAsync is { } originalHook)
@@ -259,11 +259,11 @@ public partial class FileSystemManager
     }
     internal Task<CanonicalWriteLease> AcquireMainMetadataLeaseAsync()=>
         AcquireCanonicalWriteLeaseWithAmbientAsync(CanonicalWritePurpose.MainMetadata,CancellationToken.None);
-    private void EnsureMainBeforeRecovery(CanonicalWriteLease lease)
+    private void EnsureMainBeforeRecovery(CanonicalWriteLease lease,string diagnosticOrigin="other")
     {
         lease.MainAdmission!.Validate(lease);
         if(lease.MainAdmission.MetadataOnly)throw GmSessionRunPersistence.Invalid();
-        _ = PreflightBrowserOriginalAdmission(lease.MainAdmission,lease);
+        _ = PreflightBrowserOriginalAdmission(lease.MainAdmission,lease,diagnosticOrigin);
         // Original active recovery must inspect generation-changing intent before
         // effects. The typed trusted-local reader handles in-generation journals.
         if(lease.MainAdmission.ActiveGeneration!=null)
