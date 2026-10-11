@@ -1,0 +1,48 @@
+{
+  "Utc": "2026-10-11T07:28:14.992906+00:00",
+  "Repository": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "Branch": "1553-storage-migration-cloud-20261008",
+  "FrozenSHA": "2cbf371ef45f5dc13e9fdccc902d89b93c3d0a6d",
+  "ActualRemoteSHA": "2cbf371ef45f5dc13e9fdccc902d89b93c3d0a6d",
+  "RecoveryDirectory": "/workspace/1553-helper-default-read-recovery-20261011-2cbf371e",
+  "Method": "ONE fresh direct GitHub-only depth1/filter blob:none clone; exact selected checkout; no local source/object/cache copies",
+  "BaseSHA": "dd0ef10732078173a9bdb396352d1b70ab77a5ba",
+  "ChangedFilesCovered": 294,
+  "CriticalFiles": 40,
+  "Overlap": 5,
+  "SelectedFiles": 329,
+  "SelectedBytes": 9161800,
+  "SelectedModePathSHA256": "06ab1a329a12ce69a8020a0e238446222035fc671e2a2da257726f6e5f7eaa50",
+  "EverySelectedByteModeMatchesGit": true,
+  "EntireCheckoutExactSelectedSet": true,
+  "Archives": [
+    {
+      "Name": "helper-default-read-preparation",
+      "SourceSHA": "9977975e1fe8be9297e305c13e31d954b533a383",
+      "RawPayloads": 7,
+      "ExpandedBytes": 1787913
+    },
+    {
+      "Name": "helper-default-read-catalog",
+      "SourceSHA": "9977975e1fe8be9297e305c13e31d954b533a383",
+      "RawPayloads": 6,
+      "ExpandedBytes": 3373261
+    },
+    {
+      "Name": "helper-default-read-actual",
+      "SourceSHA": "2819ee81c954c44ccbd2e8d8bea1cb19487860a3",
+      "RawPayloads": 272,
+      "ExpandedBytes": 9397602
+    }
+  ],
+  "NewRawPayloads": 285,
+  "NewRawExpandedBytes": 14558776,
+  "EveryNewRawHashLengthExactSetTracked": true,
+  "RecordedSourcePinsMatchSelectedBytes": true,
+  "Clean": true,
+  "NoAlternates": true,
+  "PromisorAwareFsckFullStrictExitCode": 0,
+  "FsckOutput": "",
+  "ProjectBuildDiscoveryRuntimeExecutedByRecovery": 0,
+  "Qualification": "SELECTED source/evidence recovery only; old unmaterialized blobs/raw are not audited. Sole original diagnostic outcome and historical UNKNOWN/WIP preserved."
+}
