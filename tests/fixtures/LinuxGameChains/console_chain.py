@@ -29,6 +29,7 @@ repo, out, ship = map(lambda s: Path(s).resolve(), sys.argv[1:4])
 scenario = sys.argv[4] if len(sys.argv) > 4 else "console"
 assert scenario in ["console", "console-musings", "browser-relay"]
 helper_admission_diagnostic = os.environ.get("BOE_TEST_C5_HELPER_ADMISSION_DIAGNOSTIC") == "1"
+ordinary_helper_capture = os.environ.get("BOE_TEST_C5_ORDINARY_HELPER_CAPTURE") == "1"
 duration_diagnostic = os.environ.get("BOE_TEST_C5_DURATION_DIAGNOSTIC") == "1" or helper_admission_diagnostic
 admission_profile_requested = os.environ.get("BOE_TEST_C5_ADMISSION_PROFILE") == "1"
 if admission_profile_requested and (not duration_diagnostic or helper_admission_diagnostic or not __debug__):
@@ -39,6 +40,8 @@ if continue_diagnostic and (scenario != "browser-relay" or duration_diagnostic o
     raise RuntimeError("Continue diagnostic requires only browser-relay with nonoptimized assertions")
 if duration_diagnostic and (scenario != "browser-relay" or not __debug__):
     raise RuntimeError("C5 diagnostic requires browser-relay and nonoptimized Python assertions")
+if ordinary_helper_capture and (scenario != "browser-relay" or duration_diagnostic or continue_diagnostic or admission_profile_requested or not __debug__):
+    raise RuntimeError("Ordinary helper capture requires the unchanged ordinary browser-relay path only")
 work_seconds, total_seconds = (660, 720) if duration_diagnostic else (240, 240)
 if continue_diagnostic:
     work_seconds, total_seconds = 120, 180
@@ -111,9 +114,11 @@ def timed_fixture(name, function):
         finally:
             record_fixture_timing(name, time.monotonic() - begin)
     return measured
-if helper_admission_diagnostic:
+if helper_admission_diagnostic or ordinary_helper_capture:
     from prepare_helper_observation import prepare, collect
     env.update(prepare(repo, out, ship))
+    env["BOE_TEST_HELPER_TARGET_FIRST_QUEUE"] = str(queue)
+ordinary_capture_request_dir = None
 env.update(TERM="dumb", NO_COLOR="1")
 for key, name in [("TMPDIR", "tmp"), ("XDG_CONFIG_HOME", "config"),
                   ("XDG_DATA_HOME", "data"), ("XDG_CACHE_HOME", "cache")]:
@@ -773,6 +778,8 @@ try:
         wait(lambda: len([p for p in queue.glob("request-*") if (p / "game-request.json").exists()]) == (ordinal if ordinal < 3 else 1),
              "real daemon/relay delivery " + str(ordinal), 30)
         request_dir = sorted(queue.glob("request-*"), key=lambda p: p.stat().st_mtime)[-1]
+        if ordinary_helper_capture and ordinal == 1:
+            ordinary_capture_request_dir = request_dir
         if scenario == "browser-relay" and ordinal == 2:
             # Original request delivered, authored GM response still withheld.
             # Cut only at the actual successfully closed staging idle boundary.
@@ -927,7 +934,7 @@ try:
         result["ChainAssertionsPassed"] = True
 except Exception:
     result["Failure"] = traceback.format_exc()
-    if not helper_admission_diagnostic and client is not None and "Main run metadata or original owner admission is unavailable" in client.text():
+    if not helper_admission_diagnostic and not ordinary_helper_capture and client is not None and "Main run metadata or original owner admission is unavailable" in client.text():
         # Existing diagnostic entry point records the actual production stack.
         # It is diagnostic only and does not qualify an interactive game chain.
         try:
@@ -985,6 +992,26 @@ finally:
         len(result.get("OriginalStops", [])) == len(result["OriginalRuns"]) and
         all(any(stop["Identity"] == identity and stop["RecordAfter"]["Disposition"] == "Stopped"
                 for stop in result["OriginalStops"]) for identity in result["OriginalRuns"]))
+    if ordinary_helper_capture:
+        # Collection follows all original ordinary waits and cleanup; never poll,
+        # wait for a helper, navigate, or change the original success oracle here.
+        capture = {"Requested": True, "CollectionAfterOriginalCleanup": True,
+                   "OriginalSuccessOracleUnchanged": True,
+                   "Limit": "First request only. Capture gaps are missing evidence, not invented refusal predicates; observer scheduling overhead is uncalibrated."}
+        try:
+            if ordinary_capture_request_dir is None:
+                raise RuntimeError("Original first request was not reached; no substitute consumer")
+            capture["RequestPath"] = str(ordinary_capture_request_dir / "request.json")
+            capture["Started"] = read_json(ordinary_capture_request_dir / "started.json")
+            execution_path = ordinary_capture_request_dir / "execution.json"
+            capture["Execution"] = read_json(execution_path) if execution_path.exists() else None
+            capture["Observation"] = collect(out, capture["Started"]["ChildPid"])
+            if capture["Observation"]["MatchedRequestPath"] != capture["RequestPath"]:
+                capture["Observation"]["MissingObservations"].append("Matched caller RequestPath does not equal original first request")
+                capture["Observation"]["ObservationComplete"] = False
+        except Exception as failure:
+            capture["CollectionFailure"] = type(failure).__name__ + ": " + str(failure)
+        result["OrdinaryHelperCapture"] = capture
     goal = (result.get("HelperAdmissionDiagnosticAssertionsPassed") if helper_admission_diagnostic else
             result.get("ContinueDiagnosticAssertionsPassed") if continue_diagnostic else result.get("ChainAssertionsPassed"))
     result["PASS"] = bool(goal and result["OriginalStopped"] and result.get("IoDrained") and not result.get("Failure") and not result.get("CleanupFailure") and not result.get("InstrumentationFailure"))

@@ -66,7 +66,8 @@ def prepare(repo, out, ship):
                   "ObserverSHA256": hashlib.sha256(observer.read_bytes()).hexdigest(), "Sources": sources,
                   "Caps": {"EventRows": 32, "EventBytes": 1048576, "FullFrameUtf8Bytes": 65536,
                            "OversizePrefixCharacters": 4096, "StderrStoredUtf8BytesMaximum": 262144},
-                  "Limit": "Passive file writes can perturb timing. NULL and byte count are copied only after the original read returns; joined stderr/exit only after original joins. Observed exit times are bounds, not exact OS exit timestamps."}
+                  "FirstRequestFence": "When BOE_TEST_HELPER_TARGET_FIRST_QUEUE is set, exact caller RequestPath must be request.json under initialqueue/request-1-GUIDN; later consumers/queue2, bootstrap and write excluded. Public SDK CallStackFrame.GetFrameVariables reads only the actual matched scalar RequestPath, no file/path authority claims.",
+                  "Limit": "Rows/frame/stderr buffer in memory; no JSON/file writes or proc reads before original admission. Pre-read import/target stack/caller variable/nonce/timestamps allocate and may perturb scheduling. Linux birth reads only after original guard passed, or original refusal disposal; early child exit can make birth unavailable, never held/retried. Buffer JSON/file export follows original Dispose and stdout/stderr joins; setup copying/provenance I/O precedes ordinary startup. All instrumentation effects remain uncalibrated. Exit times are observation bounds, not exact OS timestamps."}
     (out / "helper-observer-provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
     return {"BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR": str(folder),
             "BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT": str(repo / "tools/gm-relay/relay-apply-response.ps1")}
@@ -138,6 +139,7 @@ def collect(out, consumer_pid):
         if isinstance(parsed_reply, dict) and not (parsed_reply.get("state") == "admission-cancelled" and parsed_reply.get("effectiveOutcome") == 2) and len(identities) != 1:
             problems.append("Original parseable default-read reply retained but guard predicate row missing; this does not prove guard reached")
     return {"Summary": summary, "Events": events, "ObservationComplete": not problems,
+            "MatchedRequestPath": summary.get("MatchedRequestPath"),
             "ManagedCaughtExceptions": managed_failures,
             "ManagedExceptionLimit": "No caught record on a healthy admission is expected; absence on a refusal is a causal gap, not proof that no exception occurred. Only original caught/InnerException and three known lifecycle Data links are retained within explicit caps.",
             "MissingObservations": problems, "IdentityGuardObservation": identities[0]["Data"] if len(identities) == 1 else None,

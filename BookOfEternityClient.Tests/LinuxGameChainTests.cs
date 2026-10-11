@@ -31,6 +31,8 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
     private async Task RunAsync(string mode, bool durationDiagnostic = false, bool continueDiagnostic = false, bool startupDiagnostic = false, bool helperAdmissionDiagnostic = false)
     {
         var observeContinue = continueDiagnostic || startupDiagnostic;
+        var ordinaryHelperCapture = mode == "browser-relay" && !durationDiagnostic && !observeContinue &&
+            !helperAdmissionDiagnostic && Environment.GetEnvironmentVariable("BOE_TEST_C5_ORDINARY_HELPER_CAPTURE") == "1";
         Assert.True(OperatingSystem.IsLinux(), "This scenario requires real Linux execution; Windows is not qualified.");
         var repo = TestRepoPaths.RepoRoot;
         var own = Path.Combine("/tmp", "gc-" + Guid.NewGuid().ToString("N")[..12]);
@@ -49,9 +51,11 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
             info.Environment.Remove("BOE_TEST_C5_CONTINUE_DIAGNOSTIC");
             info.Environment.Remove("BOE_TEST_C5_STARTUP_DIAGNOSTIC");
             info.Environment.Remove("BOE_TEST_C5_HELPER_ADMISSION_DIAGNOSTIC");
+            info.Environment.Remove("BOE_TEST_C5_ORDINARY_HELPER_CAPTURE");
             info.Environment.Remove("BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR");
             info.Environment.Remove("BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT");
-            if (helperAdmissionDiagnostic)
+            info.Environment.Remove("BOE_TEST_HELPER_TARGET_FIRST_QUEUE");
+            if (helperAdmissionDiagnostic || ordinaryHelperCapture)
                 info.Environment.Remove("BOE_TEST_HELPER_FAILURE_NONCE");
             info.Environment.Remove("BOE_TEST_BROWSER_ADMISSION_PROFILE_DIR");
             info.Environment.Remove("BOE_TEST_BROWSER_ADMISSION_PROFILE_NONCE");
@@ -66,6 +70,8 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
                 info.Environment["BOE_TEST_C5_STARTUP_DIAGNOSTIC"] = "1";
             if (helperAdmissionDiagnostic && logName == "chain.log")
                 info.Environment["BOE_TEST_C5_HELPER_ADMISSION_DIAGNOSTIC"] = "1";
+            if (ordinaryHelperCapture && logName == "chain.log")
+                info.Environment["BOE_TEST_C5_ORDINARY_HELPER_CAPTURE"] = "1";
             foreach (var argument in arguments) info.ArgumentList.Add(argument);
             using var process = Process.Start(info)!;
             var text = await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(
