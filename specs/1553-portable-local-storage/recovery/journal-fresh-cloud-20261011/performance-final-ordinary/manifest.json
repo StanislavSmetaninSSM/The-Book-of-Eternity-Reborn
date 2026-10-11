@@ -57,7 +57,8 @@
     "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs": "b3e58253d7e7b285fa8dad42775ee230a17cd3875c34891da6f52bfd3aded2c3",
     "BookOfEternityClient/Core/SessionOperationContext.cs": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8",
     "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs": "5480855a5bd9742d262a7c362d209927fd5adefd97fe6c3a67b8091b11940abd",
-    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "fbb72eb049db9f75dca5032891a540ffed47919422c869dc674d43ac11a2cad1"
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "fbb72eb049db9f75dca5032891a540ffed47919422c869dc674d43ac11a2cad1",
+    "BookOfEternityClient/Core/BrowserOriginalMainCondition.cs": "65f7b8f7d5b0bd592aa87cf42c354d54ab97a48c321b21cc8439b85cd55dae18"
   },
   "Assemblies": {
     "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "23c42c7449ce205f31b5996bde54f7a6059c120cf4b259ccf1c91deb6763ebfb",
@@ -4187,10 +4188,18 @@
     },
     "ActualHelperRefusal": "Original initialized helper admission refused. inner Helper admission identity is invalid. transport111/114",
     "ExactFailedHelperPredicate": "UNKNOWN: consumed open-reply frame not archived; no proof ordinary failure is pure speed or same exactcause asA2",
-    "LaterGameLoopIOException": "Observed during cleanup at79.303754488s; not causally mapped to helper refusal",
     "OriginalStop": "identitymatchingRPCok/unretained/durableStopped/OwnedScopeEmpty/all5EOF/IoDrained",
     "Guardian": "ECHILDtrue/driverExit1/reaped5/0emergency/0failures/deadlinefalse",
-    "Recommendation": "WIP; ordinaryqualificationFAIL/performanceUNQUALIFIED/no mergeoracceptance; no retry/timer/guardchange"
+    "Recommendation": "WIP; ordinaryqualificationFAIL/performanceUNQUALIFIED/no mergeoracceptance; no retry/timer/guardchange",
+    "LaterGameLoopFailure": {
+      "ExceptionType": "System.IO.InvalidDataException",
+      "Message": "Original browser action, run or snapshot evidence changed; continuation refused.",
+      "Origin": "BrowserOriginalMainCondition.RequireCurrent:44 / PreflightBrowserOriginalAdmission:460",
+      "ObservedAtSeconds": 79.30375448799896,
+      "DuringCleanup": true,
+      "CausalRelationshipToPrimaryHelperRefusal": "UNKNOWN"
+    }
   },
-  "IndependentReview": "Pending one final combined evidence/report review at original freeze; earlier independent Stoprepeat PASS and targetedsource/GREEN reviews remain separate."
+  "IndependentReview": "Pending one final combined evidence/report review at original freeze; earlier independent Stoprepeat PASS and targetedsource/GREEN reviews remain separate.",
+  "AssessmentCorrection": "Metadata-only correction of earlier8a3833b2 later-game-loop type/origin label from direct preserved original raw; no source/runner/chain/gzip bytes changed."
 }
