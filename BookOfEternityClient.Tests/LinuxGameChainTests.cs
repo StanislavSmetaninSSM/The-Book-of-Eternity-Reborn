@@ -26,7 +26,7 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
     public Task Browser_StartupReadyContinue_ProtocolDiagnostic() => RunAsync("browser-relay", startupDiagnostic: true);
 
     [Fact]
-    public Task Browser_QueuedColdWriteHelper_AdmissionDiagnostic() => RunAsync("browser-relay", helperAdmissionDiagnostic: true);
+    public Task Browser_QueuedColdDefaultReadHelper_AdmissionDiagnostic() => RunAsync("browser-relay", helperAdmissionDiagnostic: true);
 
     private async Task RunAsync(string mode, bool durationDiagnostic = false, bool continueDiagnostic = false, bool startupDiagnostic = false, bool helperAdmissionDiagnostic = false)
     {
@@ -51,6 +51,8 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
             info.Environment.Remove("BOE_TEST_C5_HELPER_ADMISSION_DIAGNOSTIC");
             info.Environment.Remove("BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR");
             info.Environment.Remove("BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT");
+            if (helperAdmissionDiagnostic)
+                info.Environment.Remove("BOE_TEST_HELPER_FAILURE_NONCE");
             info.Environment.Remove("BOE_TEST_BROWSER_ADMISSION_PROFILE_DIR");
             info.Environment.Remove("BOE_TEST_BROWSER_ADMISSION_PROFILE_NONCE");
             info.Environment.Remove("BOE_TEST_C5_ADMISSION_PROFILE");
@@ -99,6 +101,7 @@ public sealed class LinuxGameChainTests(ITestOutputHelper output)
             var observation = result.RootElement.GetProperty("HelperAdmissionObservation");
             Assert.True(observation.GetProperty("ObservationComplete").GetBoolean());
             Assert.True(observation.GetProperty("Summary").GetProperty("NonceConfigured").GetBoolean());
+            Assert.Equal("parsed-json", observation.GetProperty("RetainedFrameParse").GetProperty("Outcome").GetString());
             Assert.False(observation.GetProperty("ReadOutcome").GetProperty("IsNull").GetBoolean());
             Assert.True(observation.GetProperty("ReadOutcome").GetProperty("Utf8Bytes").GetInt32() <= 65536);
             Assert.Empty(observation.GetProperty("IdentityGuardObservation").GetProperty("FailedPredicates").EnumerateArray());

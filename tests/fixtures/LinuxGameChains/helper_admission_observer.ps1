@@ -9,8 +9,8 @@ function Write-BoeAdmissionObservation {
         $probe = if ($Context) { $Context.BoeAdmissionObservation } else { $script:BoeAdmissionProbe }
         if (-not $probe) { return }
         if ($Phase.StartsWith('read-') -and $Context.sequence -ne 0) { return }
-        $row = [ordered]@{ Phase=$Phase; ScopeId=$probe.ScopeId; ConsumerPid=$PID; Mode='write';
-            Method='Complete-BoeTurn Open-BoeHelperScope write seq0'; Sequence=$(if ($Context) { $Context.sequence } else { $null });
+        $row = [ordered]@{ Phase=$Phase; ScopeId=$probe.ScopeId; ConsumerPid=$PID; Mode='read';
+            Method='Resolve-BoeSessionPath Open-BoeHelperScope default-read seq0'; Sequence=$(if ($Context) { $Context.sequence } else { $null });
             HelperPid=$probe.HelperPid; LinuxStarttime=$probe.LinuxStarttime; BootId=$probe.BootId;
             StopwatchTicks=[Diagnostics.Stopwatch]::GetTimestamp(); StopwatchFrequency=[Diagnostics.Stopwatch]::Frequency;
             Utc=[DateTimeOffset]::UtcNow.ToString('O'); Data=$Data }
@@ -25,11 +25,12 @@ function Write-BoeAdmissionObservation {
 function Begin-BoeAdmissionObservation {
     param([string]$Mode, [string]$SessionPath, [AllowNull()][string]$ExpectedGeneration)
     try {
-        if ($Mode -cne 'write' -or $script:BoeAdmissionObserverTargetClaimed -or
+        if ($Mode -cne 'read' -or $script:BoeAdmissionObserverTargetClaimed -or
             -not $env:BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR) { return }
         $stack = @(Get-PSCallStack)
-        if (-not @($stack | Where-Object { $_.ScriptName -ceq $env:BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT }).Count) { return }
-        if (-not @($stack | Where-Object { $_.FunctionName -ceq 'Complete-BoeTurn' -and
+        if (-not @($stack | Where-Object { $_.ScriptName -ceq $env:BOE_TEST_HELPER_TARGET_CONSUMER_SCRIPT -and
+            $_.ScriptLineNumber -eq 30 }).Count) { return }
+        if (-not @($stack | Where-Object { $_.FunctionName -ceq 'Resolve-BoeSessionPath' -and
             $_.ScriptName -ceq (Join-Path $PSScriptRoot 'GM_Turn_Helper.ps1') }).Count) { return }
         $script:BoeAdmissionObserverTargetClaimed = $true
         $stem = Join-Path $env:BOE_TEST_HELPER_ADMISSION_OBSERVER_DIR "consumer-$PID"
@@ -48,7 +49,7 @@ function Configure-BoeAdmissionFailureCapture {
     param($Start)
     try {
         # Remove inherited test settings from every child. Only the actual selected
-        # write launch gets this valid nonce; no process-global setting is changed.
+        # default-read launch gets this valid nonce; no process-global setting is changed.
         [void]$Start.Environment.Remove('BOE_TEST_HELPER_FAILURE_NONCE')
         $probe=$script:BoeAdmissionProbe
         if(-not $probe -or $probe.Attached -or $probe.NonceConfigured){return}
@@ -62,7 +63,7 @@ function Attach-BoeAdmissionObservation {
     param($Context)
     try {
         $probe = $script:BoeAdmissionProbe
-        if (-not $probe -or $probe.Attached -or $Context.mode -cne 'write') { return }
+        if (-not $probe -or $probe.Attached -or $Context.mode -cne 'read') { return }
         $probe.Attached=$true; $probe.HelperPid=$Context.process.Id
         $Context | Add-Member -NotePropertyName BoeAdmissionObservation -NotePropertyValue $probe
         # Read only this actual newly launched managed child's Linux identity; no PID search.

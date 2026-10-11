@@ -62,7 +62,7 @@ def prepare(repo, out, ship):
                         "OriginalSHA256": hashlib.sha256(original).hexdigest(), "InstrumentedBytes": len(instrumented),
                         "InstrumentedSHA256": hashlib.sha256(instrumented).hexdigest(),
                         "ExactSubstitutions": [{"Before": a, "After": b} for a, b in replacements]})
-    provenance = {"Scope": "Fixture-only actual relay consumer Complete-BoeTurn write-scope seq0 observation; production source unchanged",
+    provenance = {"Scope": "Fixture-only actual relay consumer line30 Resolve-BoeSessionPath default-read seq0 observation; production source unchanged",
                   "ObserverSHA256": hashlib.sha256(observer.read_bytes()).hexdigest(), "Sources": sources,
                   "Caps": {"EventRows": 32, "EventBytes": 1048576, "FullFrameUtf8Bytes": 65536,
                            "OversizePrefixCharacters": 4096, "StderrStoredUtf8BytesMaximum": 262144},
@@ -87,7 +87,7 @@ def collect(out, consumer_pid):
         problems.append("Actual joined/disposal summary unavailable: " + repr(error))
     reads = [row for row in events if row["Phase"] == "read-return"]
     if len(reads) != 1:
-        problems.append("Expected exactly one actual Complete-BoeTurn write-scope seq0 completed read")
+        problems.append("Expected exactly one actual Resolve-BoeSessionPath default-read seq0 completed read")
     if not events or not all(row["ConsumerPid"] == consumer_pid and row["ScopeId"] == summary.get("ScopeId") for row in events):
         problems.append("Actual consumer/scope correlation incomplete")
     if not summary.get("HelperPid") or summary.get("HelperPid") == consumer_pid or not summary.get("LinuxStarttime") or not summary.get("BootId"):
@@ -120,23 +120,27 @@ def collect(out, consumer_pid):
     launches = [row for row in events if row["Phase"] == "launch-begin"]
     identities = [row for row in events if row["Phase"] == "identity-guard-observed"]
     if len(launches) != 1 or "ExpectedGeneration" not in launches[0]["Data"]:
-        problems.append("Actual write-scope ExpectedGeneration unavailable")
+        problems.append("Actual default-read ExpectedGeneration unavailable")
     if len(identities) > 1:
-        problems.append("Ambiguous original write-scope identity observation")
+        problems.append("Ambiguous original default-read identity observation")
     # NULL/oversize/parse failure/cancellation can exit before the identity guard.
     # Retained actual frame explains whether a missing guard row is expected.
     parsed_reply = None
+    frame_parse = {"Outcome": "unavailable", "Limit": "Independent parsing of retained consumed frame after original consumer settlement; original parser/catch behavior unchanged."}
+    if len(reads) == 1:
+        frame_parse["Outcome"] = reads[0]["Data"]["FrameOutcome"]
     if len(reads) == 1 and reads[0]["Data"]["FrameOutcome"] == "within-frame-bound":
         try:
             parsed_reply = json.loads(Path(str(stem) + "-seq0.txt").read_text())
-        except Exception:
-            pass
+            frame_parse.update(Outcome="parsed-json", IsObject=isinstance(parsed_reply, dict))
+        except Exception as error:
+            frame_parse.update(Outcome="parse-error", ErrorType=type(error).__name__, Error=str(error)[:4096])
         if isinstance(parsed_reply, dict) and not (parsed_reply.get("state") == "admission-cancelled" and parsed_reply.get("effectiveOutcome") == 2) and len(identities) != 1:
-            problems.append("Original parseable write reply retained but guard predicate row missing; this does not prove guard reached")
+            problems.append("Original parseable default-read reply retained but guard predicate row missing; this does not prove guard reached")
     return {"Summary": summary, "Events": events, "ObservationComplete": not problems,
             "ManagedCaughtExceptions": managed_failures,
             "ManagedExceptionLimit": "No caught record on a healthy admission is expected; absence on a refusal is a causal gap, not proof that no exception occurred. Only original caught/InnerException and three known lifecycle Data links are retained within explicit caps.",
             "MissingObservations": problems, "IdentityGuardObservation": identities[0]["Data"] if len(identities) == 1 else None,
             "ActualExpectedGeneration": launches[0]["Data"].get("ExpectedGeneration") if len(launches) == 1 else None,
-            "ReadOutcome": reads[0]["Data"] if len(reads) == 1 else None, "ConsumerPid": consumer_pid,
+            "ReadOutcome": reads[0]["Data"] if len(reads) == 1 else None, "RetainedFrameParse": frame_parse, "ConsumerPid": consumer_pid,
             "Limit": "Dedicated managed exit code is separate from relay consumer exit. Dispose kill intent, when present, is cleanup; observations do not assign it as the preceding read cause."}
