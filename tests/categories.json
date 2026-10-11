@@ -2,6 +2,38 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "portable-treatment-probe-owned-close-linux",
+            "responsibility": "#1553/T067 original acquisition #110: actual held-treatment refresh/take receipt and real Probe canonical owner; valid and own-close controls, physical malformed generation parser primary with/without own-close, exact hot cut and separate-process authoritative generation/read/refusal before any fixture restoration. One Theory/four Linux rows; no assumed RED before original-state/cleanup controls pass.",
+            "excludes": "No publication inside Probe, fabricated receipt/grant/CSP, native FileStream-close fault, cold in-memory treatment token resurrection, active GM/full game/C5/B2-B5/Windows/performance/timer changes. Actual ExternalPublicationContext owning-disposal seam only; FirstChance filters actual invocation and production stack. Registry monitor is test-only scheduling, never authority.",
+            "changeHints": [
+                "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+                "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+                "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.OriginalTreatmentProbeOwnedClose.cs"
+            ],
+            "related": [
+                {
+                    "id": "portable-original-treatment-progression-advance-close-linux",
+                    "when": "A product Probe change also selects the three accepted actual Advance/Probe/Complete and genuine stored-CSP controls once in targeted GREEN; not required for unchanged-product initial four-row baseline."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTreatmentProbeOwnerPreservesActualGenerationFailureAndColdState"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "portable-engine-rollback-owned-close-linux",
             "responsibility": "#1553/T067 original GameEngine rollback owners #26/#27: actual CreatePreTurnBackup, quiescent original physical main admission/generation, success and late own-context close, real evidence aggregate/CSP and stale generation primary identity, exact warm bytes/absence/evidence and fresh-process canonical recovery/read/refusal. One Theory, nine directed Linux rows; source gate required before execution.",
             "excludes": "No whole player turn/C5, active GM/native workers, native FileStream-close fault, Windows, #110, broad fault matrix, performance/hash/timer changes or assumed multi-file atomicity. ExternalPublicationContext is the actual owning-lease disposal seam.",

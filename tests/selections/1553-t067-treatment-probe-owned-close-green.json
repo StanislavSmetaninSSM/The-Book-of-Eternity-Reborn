@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-treatment-probe-owned-close-linux",
+      "reason": "Same four actual Probe rows after any reviewed minimal causal fix; positive/inputs/owner/fault oracle unchanged.",
+      "contracts": [
+        "actual held transaction/take receipt and original physical owner",
+        "actual parser primary reference/stack and own-close secondary; noLater",
+        "exact hot cut bytes/absence and cold before/after before fixture restoration",
+        "no assumed causal RED; preparation is not execution"
+      ]
+    },
+    {
+      "category": "portable-original-treatment-progression-advance-close-linux",
+      "reason": "Conditional product Probe fix affects accepted Advance Probe calls: retain all three genuine known/known-close/uncertain Advance\u2192Probe\u2192Complete/latch controls once. Seven cases total; no new producer or broad suite."
+    }
+  ]
+}
