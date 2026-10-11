@@ -139,7 +139,7 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
                         if (!release.Wait(TimeSpan.FromSeconds(5)))
                             throw new TimeoutException("Boundary interleaving release missing.");
                         using (Measure(concurrentCollector!, "inherited-late")) { }
-                        Invoke(concurrentCollector!, "Content", "late.json", "test", "physical", "missing", 0L);
+                        Invoke(concurrentCollector!, "Content", "late.json", "test", "physical-result", "missing", 0L);
                     });
                     if (!examined.Wait(TimeSpan.FromSeconds(5)))
                         throw new TimeoutException("Boundary interleaving branch missing.");
