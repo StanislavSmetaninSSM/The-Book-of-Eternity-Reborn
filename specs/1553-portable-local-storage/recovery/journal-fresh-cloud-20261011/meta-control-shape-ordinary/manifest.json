@@ -4547,5 +4547,10 @@
       "SHA256": "c010f7d8e9c8eb3e5143013a60f7894bed6bad3c87592cd27e26ffe4ddf87ab0"
     }
   },
-  "AssessmentStatus": "Firstraw frozen; boundedprimary40deadline/source/evidence review pending. Late observation is not throw time or causal attribution; old helper/actor UNKNOWN/performanceUNQUALIFIED preserved. Duration conditional rootrelease pending, no actualdurationrun."
+  "AssessmentStatus": "SAME independent ordinary EVIDENCE fidelity PASS974 and ROOT classification PASS; original runtime1FAIL remains, late observation notthrowtime/cause, no provednewMetaerror. Conditionalexistingduration run performed separately; no ordinaryacceptance/performanceclaim.",
+  "SupportingRootRuntimeReadback": {
+    "Path": "../meta-control-shape-ordinary-root-readback.json",
+    "SHA256": "8ed736d18814b62d74f070d6344fbed84d700732863217191e5caca621fdca21",
+    "FrozenFirstCarrierSHA": "974247ce08b19b23512cbd78da03783d9ba070e8"
+  }
 }
