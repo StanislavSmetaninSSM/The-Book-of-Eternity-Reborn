@@ -23676,16 +23676,40 @@
 {
             "id": "portable-meta-control-shape-read-phase",
             "responsibility": "T071 causal positive2: same private DEBUG component entry uses actual synchronous GameState admission and production prefix/finally. Exact22 F/S current-control scalar body at original749 position. Full returned issue order/input images must succeed before whole-entry physical-proof ceiling1..6. All-absent and mixed data; count before admission through finally, no scalar-neighbor subtraction.",
-            "excludes": "#1553 reduced current-only shape window; no full Meta82/44, fullchain/perf pairs, provider, timer/guard changes, forged owner/lease/token or absent-API causal RED. Preparatory scalar wrapper only; controls UNRUN until valid RED and minimal implementation.",
+            "excludes": "#1553 accepted current-only11/22 slice; no fullMeta82/44, broad suite/fullchain perf pairs, providers, timers/guards widening, forged authority or new framework. Actual runtime requires grouped SOURCE gate.",
             "changeHints": [
                 "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs",
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MetaControlShapes.cs"
             ],
             "related": [
                 {
-                    "id": "portable-meta-control-shape-read-phase-controls",
-                    "when": "After preserved positive work-bound RED, directed async error/readset/cache/selection and concrete source guard."
+            "id": "portable-meta-control-shape-read-phase-controls",
+            "responsibility": "Directed current shape controls: immediate async read/cancel sameprimary/no result, AFTER-read repeat drift, actual nonnull faction-field refs after normal reset with honest Guardian-context nonaccess, private dispatch rejects unknown/unrestricted selection and phase, conservative closure/static-initialization pins. Not initial causal RED selection.",
+            "excludes": "#1553 reduced current-only shape window; no full Meta82/44, fullchain/perf pairs, provider, timer/guard changes, forged owner/lease/token or absent-API causal RED. Preparatory scalar wrapper only; controls UNRUN until valid RED and minimal implementation.",
+            "changeHints": [
+                "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MetaControlShapes.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_AsyncFailureIsImmediateOriginalAndDoesNotPublish",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_RepeatedCurrentDriftNeverPublishesIssues",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_PhaseLeavesNonNullFactionCachesAndGuardianStateUntouched",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_ComponentRejectsWidenedDispatchBeforeAdmission",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SourceClosurePinsRequireReview"
+                    ]
                 }
+            ]
+        }
             ],
             "requirements": {
                 "frontendBuild": false,
@@ -23733,7 +23757,7 @@
 {
             "id": "portable-meta-control-shape-world-entry-neighbors",
             "responsibility": "Minimal affected existing World entry/codeguard consumers of shared synchronous issuer and original cache prefix/finally: actual retained/racing admission, failed opening, already-running response and conservative World closure pins. Original World fixture inputs/body/counter ceilings unchanged.",
-            "excludes": "#1553 reduced current-only shape window; no full Meta82/44, fullchain/perf pairs, provider, timer/guard changes, forged owner/lease/token or absent-API causal RED. Preparatory scalar wrapper only; controls UNRUN until valid RED and minimal implementation.",
+            "excludes": "#1553 accepted current-only11/22 slice; no fullMeta82/44, broad suite/fullchain perf pairs, providers, timers/guards widening, forged authority or new framework. Actual runtime requires grouped SOURCE gate.",
             "changeHints": [
                 "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs",
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MetaControlShapes.cs"

@@ -567,8 +567,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs", "081B4FD60653F4AC130B4598C232AB7CBA233EBEC17722D766DDC92461269B35"),
             ("BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs", "9C05FAA1FE96FA41A119A9938802D273BF31B717333904D52826C7C4AA299BAF"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs", "314858FA04D4A401066489BB4664455BB1CC81154FBD6AE1E4E24F2AE3281555"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "AD48A1FB09682331F90E75ADFF710B0F2935359A226DB5E4FAB728A36BCEB266"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "69874147E722526621794999A63BDE8CB5D4FF84F7064C898C7A79F080E4674F"),
             ("BookOfEternityClient/Services/ValidationService.cs", "58511D428841000B0BF4AA4AAF5E28B239457DF199D25AE91AB37F85358E9062"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs", "A37AACB291B09E4990B5799A0B57ACE4B01314729671AEC468ECD6FD75DCB571"),
         ];
         foreach (var (path, hash) in pins)
             Assert.Equal(hash, Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(TestRepoPaths.RepoRoot, path)))));

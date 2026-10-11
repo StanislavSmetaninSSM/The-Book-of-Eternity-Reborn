@@ -72,7 +72,7 @@ public partial class ValidationService
             }
             phase.Physical = physical;
             await physical.OpenAsync();
-            phase.Active = true;
+            lock (_worldReadGate) phase.Active = true;
             phase.RequireCurrent();
             // Pure callback closure: no cache/context isolation or reset here.
             await ValidateMetaControlShapeFilesCoreAsync(localIssues);
@@ -84,7 +84,7 @@ public partial class ValidationService
         catch (Exception error) { primary = error; }
         finally
         {
-            phase.Active = false;
+            lock (_worldReadGate) phase.Active = false;
             try { if (physical != null) await physical.DisposeAsync(); }
             catch (Exception close)
             {

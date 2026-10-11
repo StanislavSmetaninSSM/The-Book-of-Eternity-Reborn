@@ -115,7 +115,7 @@ public partial class ValidationService
         lock (_worldReadGate)
         {
             if (!ReferenceEquals(_worldReservation, invocation) || invocation.Closed ||
-                _worldReadPhase != null || _worldOverrideMutations != 0)
+                _worldReadPhase != null || _metaControlShapeReadPhase != null || _worldOverrideMutations != 0)
                 throw new InvalidOperationException("World validation cannot enter its read phase.");
             phase = new WorldReadPhase(this, _prevalidatedPendingTurnSnapshotOverride!);
             _worldReadPhase = phase;

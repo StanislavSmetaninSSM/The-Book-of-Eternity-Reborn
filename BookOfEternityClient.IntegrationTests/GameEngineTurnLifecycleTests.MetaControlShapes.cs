@@ -1,5 +1,9 @@
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
+using Microsoft.Extensions.Logging.Abstractions;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -96,26 +100,46 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData("read")]
     [InlineData("cancel")]
+    [InlineData("close")]
+    [InlineData("read-and-close")]
     public async Task MetaControlShapes_AsyncFailureIsImmediateOriginalAndDoesNotPublish(string kind)
     {
         await WithWorldReadFixture("meta", async probe =>
         {
             using var snapshot = probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
-            Exception primary = kind == "read" ? new IOException("owned Meta async read cut") :
-                new OperationCanceledException("owned Meta cancellation cut", new CancellationToken(true));
+            Exception primary = kind == "cancel" ? new OperationCanceledException("owned Meta cancellation cut", new CancellationToken(true)) :
+                new IOException("owned Meta async read cut");
+            var close = new IOException("owned Meta actual owning close cut");
+            var closeProbe = new MetaOwningCloseProbe(probe, close);
             var ids = new HashSet<string> { "prior_id" };
             var names = new HashSet<string> { "Prior name" };
             SeedMetaShapeOpeningCaches(probe, ids, names);
             var reached = 0;
-            probe.OnRead = path => path == MetaShapePaths[0] && ++reached == 1
-                ? Task.FromException(primary) : Task.CompletedTask;
+            probe.OnRead = path =>
+            {
+                if (path != MetaShapePaths[0] || ++reached != 1) return Task.CompletedTask;
+                if (kind is "close" or "read-and-close") MetaShapePhaseLease(probe).ExternalPublicationContext = closeProbe;
+                return kind == "close" ? Task.CompletedTask : Task.FromException(primary);
+            };
             probe.Arm();
             List<ValidationIssue>? result = null;
             var failure = await Record.ExceptionAsync(async () => { result = await InvokeMetaShapeComponent(probe.Validator); });
-            WorldEvidence(probe, new { kind, reached, Failure = failure?.ToString(), SamePrimary = ReferenceEquals(primary, failure), ResultPublished = result != null });
-            Assert.Equal(1, reached);
-            Assert.Same(primary, failure);
-            Assert.Contains("ReadOrdinaryFileSnapshotCoreAsync", failure!.StackTrace);
+            WorldEvidence(probe, new { kind, reached, Failure = failure?.ToString(), SamePrimary = ReferenceEquals(primary, failure),
+                ResultPublished = result != null, closeProbe.Calls, closeProbe.ProofsAtClose,
+                SameSecondary = ReferenceEquals(close, failure?.Data["MetaControlShapes.CloseFailure"]) });
+            if (kind == "close")
+            {
+                Assert.Same(close, failure);
+                Assert.True(closeProbe.ProofsAtClose >= 5); // Successful end/readset, then actual owning Dispose.
+            }
+            else
+            {
+                Assert.Equal(1, reached);
+                Assert.Same(primary, failure);
+                Assert.Contains("ReadOrdinaryFileSnapshotCoreAsync", failure!.StackTrace);
+            }
+            if (kind is "close" or "read-and-close") Assert.Equal(1, closeProbe.Calls);
+            if (kind == "read-and-close") Assert.Same(close, failure!.Data["MetaControlShapes.CloseFailure"]);
             Assert.Null(result);
             Assert.True(probe.SeededOpenings > 0);
             Assert.Same(ids, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionIdsCache"));
@@ -126,8 +150,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         }, additionalInputs: MetaShapeMixedInputs());
     }
 
-    [Fact]
-    public async Task MetaControlShapes_RepeatedCurrentDriftNeverPublishesIssues()
+    [Theory]
+    [InlineData("repeat")]
+    [InlineData("end-readset")]
+    public async Task MetaControlShapes_RepeatedCurrentDriftNeverPublishesIssues(string boundary)
     {
         await WithWorldReadFixture("meta", async probe =>
         {
@@ -138,7 +164,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             probe.OnAfterRead = relative =>
             {
                 // Existing after-attempt hook runs after the first data capture; mutate before strict read.
-                if (relative == MetaShapePaths[0] && ++reads == 1)
+                if (relative == MetaShapePaths[0] && ++reads == (boundary == "repeat" ? 1 : 2))
                     File.WriteAllText(path, "{\"reason\":\"Voluntary\",\"summary\":\"changed\"}");
                 return Task.CompletedTask;
             };
@@ -147,9 +173,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             Exception? failure;
             try { failure = await Record.ExceptionAsync(async () => { result = await InvokeMetaShapeComponent(probe.Validator); }); }
             finally { probe.OnAfterRead = null; File.WriteAllBytes(path, before); }
-            WorldEvidence(probe, new { reads, Failure = failure?.ToString(), ResultPublished = result != null });
+            WorldEvidence(probe, new { boundary, reads, Failure = failure?.ToString(), ResultPublished = result != null });
             Assert.Null(result);
             Assert.IsAssignableFrom<IOException>(failure);
+            Assert.Contains(boundary == "repeat" ? "ReadTextAsync" : "RequireUnchangedReadsAsync", failure!.StackTrace);
             Assert.False(WorldHasAmbientLease(probe.Files));
         }, additionalInputs: MetaShapeMixedInputs());
     }
@@ -200,6 +227,413 @@ public sealed partial class GameEngineTurnLifecycleTests
             // Rejected fixed dispatch must not install a real admission or leak shared call count.
             Assert.Empty(await InvokeMetaShapeComponent(probe.Validator));
         });
+    }
+
+    [Theory]
+    [InlineData("already-running-scalar")]
+    [InlineData("new-game-state")]
+    [InlineData("new-response")]
+    [InlineData("override-install")]
+    [InlineData("override-dispose")]
+    [InlineData("canonical-mutation")]
+    [InlineData("canonical-acquire")]
+    public async Task MetaControlShapes_SiblingsAndOverrideCannotMutateReservedInvocation(string kind)
+    {
+        await WithWorldReadFixture("meta", async probe =>
+        {
+            using var snapshot = kind == "already-running-scalar" ? null :
+                probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
+            var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var pauses = 0;
+            probe.OnRead = path => path == MetaShapePaths[0] && Interlocked.Increment(ref pauses) == 1
+                ? Pause() : Task.CompletedTask;
+            async Task Pause() { entered.TrySetResult(); await release.Task; }
+            probe.Arm();
+            var admitted = InvokeMetaShapeComponent(probe.Validator);
+            Exception? rejected = null;
+            Exception? admittedFailure = null;
+            IDisposable? laterSnapshot = null;
+            try
+            {
+                await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                var priorIds = GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionIdsCache");
+                var priorNames = GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionNamesCache");
+                var priorOverride = GetPrivateFieldValue<object?>(probe.Validator, "_prevalidatedPendingTurnSnapshotOverride");
+                if (kind == "already-running-scalar")
+                {
+                    laterSnapshot = probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
+                    rejected = await Record.ExceptionAsync(() => InvokeMetaShapeComponent(probe.Validator));
+                    laterSnapshot.Dispose(); laterSnapshot = null;
+                }
+                else if (kind == "new-game-state")
+                    rejected = await Record.ExceptionAsync(() => probe.Validator.ValidateGameStateAsync(GameStateValidationPhase.RequiredFiles));
+                else if (kind == "new-response")
+                {
+                    using var response = JsonDocument.Parse("{\"response\":\"owned response\",\"factions\":[]}");
+                    rejected = Record.Exception(() => probe.Validator.ValidateResponse(response.RootElement));
+                }
+                else if (kind == "canonical-mutation")
+                {
+                    var before = WorldInputImages(probe.Files);
+                    rejected = await Record.ExceptionAsync(() => probe.Files.WriteFileAtomicAsync(
+                        MetaShapePhaseLease(probe), MetaShapePaths[0], "99"));
+                    Assert.Equal(before, WorldInputImages(probe.Files));
+                }
+                else if (kind == "canonical-acquire")
+                {
+                    rejected = await Record.ExceptionAsync(() => probe.Files.AcquireCanonicalWriteLeaseAsync());
+                    var lifecycle = await Record.ExceptionAsync(() => probe.Files.AcquireSessionLifecycleLeaseAsync());
+                    WorldEvidence(probe, new { NestedLifecycleRefusal = lifecycle?.ToString() });
+                    Assert.IsType<InvalidOperationException>(lifecycle);
+                }
+                else if (kind == "override-install")
+                    rejected = Record.Exception(() => laterSnapshot = probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(null));
+                else rejected = Record.Exception(() => snapshot!.Dispose());
+                WorldEvidence(probe, new { kind, Rejected = rejected?.ToString(), AdmittedStillPending = !admitted.IsCompleted,
+                    SameIds = ReferenceEquals(priorIds, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionIdsCache")),
+                    SameNames = ReferenceEquals(priorNames, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionNamesCache")),
+                    SameOverride = ReferenceEquals(priorOverride, GetPrivateFieldValue<object?>(probe.Validator, "_prevalidatedPendingTurnSnapshotOverride")) });
+                Assert.IsType<InvalidOperationException>(rejected);
+                Assert.False(admitted.IsCompleted);
+                Assert.Same(priorIds, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionIdsCache"));
+                Assert.Same(priorNames, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionNamesCache"));
+                Assert.Same(priorOverride, GetPrivateFieldValue<object?>(probe.Validator, "_prevalidatedPendingTurnSnapshotOverride"));
+            }
+            finally
+            {
+                probe.OnRead = null;
+                laterSnapshot?.Dispose();
+                release.TrySetResult();
+                admittedFailure = await Record.ExceptionAsync(() => admitted.WaitAsync(TimeSpan.FromSeconds(10)));
+                WorldEvidence(probe, new { kind, AdmittedFailure = admittedFailure?.ToString(),
+                    AdmittedReturnedIssues = admitted.IsCompletedSuccessfully });
+            }
+            if (kind == "override-dispose") Assert.NotNull(admittedFailure);
+            else Assert.Null(admittedFailure);
+            Assert.False(WorldHasAmbientLease(probe.Files));
+        }, additionalInputs: MetaShapeMixedInputs());
+    }
+
+    [Theory]
+    [InlineData("retained-physical-sibling")]
+    [InlineData("prior-borrow-resumes")]
+    [InlineData("failed-opening")]
+    [InlineData("already-running-response")]
+    public async Task MetaControlShapes_OriginalAdmissionOpeningAndResponseBranchesReleaseOnlyOwnState(string kind)
+    {
+        await WithWorldReadFixture("faction", async probe =>
+        {
+            using var snapshot = probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
+            var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var phaseEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var phaseRelease = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            Task? sibling = null;
+            Task<List<ValidationIssue>>? admitted = null;
+            Exception? refused = null;
+            Exception? siblingFailure = null;
+            var openings = 0;
+            var borrows = 0;
+            var openingFailure = new IOException("World opening after registration cut");
+            string? responseBoundary = null;
+            var siblingAmbientAfter = true;
+            async Task PauseSibling() { entered.TrySetResult(); await release.Task; }
+            probe.Arm();
+            try
+            {
+                if (kind == "failed-opening")
+                {
+                    probe.OnOpened = () => ++openings == 1 ? Task.FromException(openingFailure) : Task.CompletedTask;
+                    refused = await Record.ExceptionAsync(() => InvokeMetaShapeComponent(probe.Validator));
+                    Assert.Same(openingFailure, refused);
+                    Assert.Equal(1, openings);
+                    Assert.Null(GetPrivateFieldValue<object?>(probe.Validator, "_metaControlShapeReadPhase"));
+                    Assert.Null(GetPrivateFieldValue<object?>(probe.Validator, "_worldReservation"));
+                    Assert.Equal(0, GetPrivateFieldValue<int>(probe.Validator, "_worldValidationCalls"));
+                    Assert.False(WorldHasAmbientLease(probe.Files));
+                    probe.OnOpened = null;
+                }
+                else if (kind == "retained-physical-sibling")
+                {
+                    // Separate ExecutionContext retains a real same-access physical admission,
+                    // without making the candidate's own context an already-held scalar fallback.
+                    sibling = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await using (var held = await probe.Files.AcquireCanonicalWriteLeaseAsync())
+                                await PauseSibling();
+                        }
+                        finally { siblingAmbientAfter = WorldHasAmbientLease(probe.Files); }
+                    });
+                    await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    var before = WorldInputImages(probe.Files);
+                    refused = await Record.ExceptionAsync(() => InvokeMetaShapeComponent(probe.Validator));
+                    Assert.IsType<InvalidOperationException>(refused);
+                    Assert.False(sibling.IsCompleted);
+                    Assert.Equal(before, WorldInputImages(probe.Files));
+                }
+                else if (kind == "prior-borrow-resumes")
+                {
+                    probe.OnBorrow = () => Interlocked.Increment(ref borrows) == 1 ? PauseSibling() : Task.CompletedTask;
+                    sibling = Task.Run(async () =>
+                    {
+                        try { await using var old = await probe.Files.AcquireCanonicalWriteLeaseAsync(); }
+                        finally { siblingAmbientAfter = WorldHasAmbientLease(probe.Files); }
+                    });
+                    await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    probe.OnRead = async path =>
+                    {
+                        if (path != MetaShapePaths[0] || phaseEntered.Task.IsCompleted) return;
+                        phaseEntered.TrySetResult();
+                        await phaseRelease.Task;
+                    };
+                    admitted = InvokeMetaShapeComponent(probe.Validator);
+                    await phaseEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    release.TrySetResult();
+                    siblingFailure = await Record.ExceptionAsync(() => sibling.WaitAsync(TimeSpan.FromSeconds(10)));
+                    Assert.IsType<InvalidOperationException>(siblingFailure);
+                    Assert.False(admitted.IsCompleted);
+                    Assert.True(borrows >= 2); // Old borrow plus permitted private phase issuance.
+                }
+                else
+                {
+                    var signedCore = probe.Manifest.Files![WorldFactionCore];
+                    probe.OnRead = path =>
+                    {
+                        if (path != signedCore || entered.Task.IsCompleted) return Task.CompletedTask;
+                        responseBoundary = new System.Diagnostics.StackTrace().ToString();
+                        return PauseSibling();
+                    };
+                    sibling = Task.Run(() =>
+                    {
+                        using var response = JsonDocument.Parse("{\"response\":\"owned response\",\"factions\":[]}");
+                        probe.Validator.ValidateResponse(response.RootElement);
+                    });
+                    await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    var ids = GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionIdsCache");
+                    var names = GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionNamesCache");
+                    var priorOverride = GetPrivateFieldValue<object?>(probe.Validator, "_prevalidatedPendingTurnSnapshotOverride");
+                    refused = await Record.ExceptionAsync(() => InvokeMetaShapeComponent(probe.Validator));
+                    Assert.IsType<InvalidOperationException>(refused);
+                    Assert.False(sibling.IsCompleted);
+                    Assert.Contains("ValidateResponse", responseBoundary);
+                    Assert.Same(ids, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionIdsCache"));
+                    Assert.Same(names, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionNamesCache"));
+                    Assert.Same(priorOverride, GetPrivateFieldValue<object?>(probe.Validator, "_prevalidatedPendingTurnSnapshotOverride"));
+                }
+            }
+            finally
+            {
+                // Always settle the actual original sibling; never abandon a retained lease/task on assertion failure.
+                probe.OnRead = null;
+                probe.OnBorrow = null;
+                probe.OnOpened = null;
+                release.TrySetResult();
+                phaseRelease.TrySetResult();
+                if (sibling != null && siblingFailure == null)
+                    siblingFailure = await Record.ExceptionAsync(() => sibling.WaitAsync(TimeSpan.FromSeconds(10)));
+                if (admitted != null) await admitted.WaitAsync(TimeSpan.FromSeconds(10));
+                WorldEvidence(probe, new { kind, openings, borrows, responseBoundary,
+                    Refused = refused?.ToString(), SiblingFailure = siblingFailure?.ToString(), siblingAmbientAfter,
+                    PhaseSettled = admitted?.IsCompletedSuccessfully,
+                    ReservationReleased = GetPrivateFieldValue<object?>(probe.Validator, "_worldReservation") == null });
+            }
+            if (kind == "prior-borrow-resumes") Assert.IsType<InvalidOperationException>(siblingFailure);
+            else Assert.Null(siblingFailure);
+            if (kind is "prior-borrow-resumes" or "retained-physical-sibling") Assert.False(siblingAmbientAfter);
+            Assert.Null(GetPrivateFieldValue<object?>(probe.Validator, "_metaControlShapeReadPhase"));
+            Assert.Null(GetPrivateFieldValue<object?>(probe.Validator, "_worldReservation"));
+            Assert.Equal(0, GetPrivateFieldValue<int>(probe.Validator, "_worldValidationCalls"));
+            Assert.False(WorldHasAmbientLease(probe.Files));
+            // Teardown must leave both the instance and the actual access eligible for a fresh legitimate invocation.
+            await InvokeMetaShapeComponent(probe.Validator);
+            Assert.False(WorldHasAmbientLease(probe.Files));
+        }, additionalInputs: MetaShapeMixedInputs());
+    }
+
+    [Theory]
+    [InlineData("generation")]
+    [InlineData("owner-before-read")]
+    [InlineData("owner-on-close")]
+    [InlineData("override-withdraw")]
+    public async Task MetaControlShapes_ContinuityLossNeverPublishesIncludingActualOwningClose(string kind)
+    {
+        await WithWorldReadFixture("meta", async probe =>
+        {
+            using var snapshot = probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
+            var generationBefore = File.ReadAllBytes(probe.Files.SessionGenerationPath);
+            var close = new MetaOwningCloseProbe(probe, beforeClose: () => probe.Original.Dispose());
+            var reached = 0;
+            probe.OnRead = path =>
+            {
+                if (path != MetaShapePaths[0] || ++reached != 1) return Task.CompletedTask;
+                if (kind == "owner-on-close") MetaShapePhaseLease(probe).ExternalPublicationContext = close;
+                else if (kind == "owner-before-read") probe.Original.Dispose();
+                else if (kind == "override-withdraw") snapshot.Dispose();
+                else
+                {
+                    var changed = JsonNode.Parse(generationBefore)!;
+                    changed["GenerationId"] = Guid.NewGuid().ToString("N");
+                    File.WriteAllText(probe.Files.SessionGenerationPath, changed.ToJsonString());
+                }
+                return Task.CompletedTask;
+            };
+            probe.Arm();
+            List<ValidationIssue>? result = null;
+            Exception? failure;
+            try { failure = await Record.ExceptionAsync(async () => { result = await InvokeMetaShapeComponent(probe.Validator); }); }
+            finally { probe.OnRead = null; File.WriteAllBytes(probe.Files.SessionGenerationPath, generationBefore); }
+            WorldEvidence(probe, new { kind, reached, close.Calls, close.ProofsAtClose,
+                Failure = failure?.ToString(), ResultPublished = result != null });
+            Assert.True(reached > 0);
+            Assert.NotNull(failure);
+            Assert.Null(result);
+            if (kind == "owner-on-close")
+            {
+                Assert.Equal(1, close.Calls);
+                Assert.True(close.ProofsAtClose >= 5);
+                Assert.Contains("RequireOwnerAfterClose", failure!.StackTrace);
+            }
+            Assert.False(WorldHasAmbientLease(probe.Files));
+        }, allowEstablishedReplacement: kind == "generation", additionalInputs: MetaShapeMixedInputs());
+    }
+
+    [Theory]
+    [InlineData("partial")]
+    [InlineData("zero-window")]
+    [InlineData("held")]
+    [InlineData("draft")]
+    public async Task MetaControlShapes_EligibilityKeepsActualScalarDraftAndZeroWindowBoundaries(string kind)
+    {
+        const string social = "game_state/control/pending_guardian_social_interactions.json";
+        var inputs = new Dictionary<string, string>(MetaShapeMixedInputs()) { [social] = "{\"requests\":[]}" };
+        await WithWorldReadFixture("meta", async probe =>
+        {
+            using var snapshot = probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
+            var metaOpenings = 0;
+            probe.OnOpened = () =>
+            {
+                if (GetPrivateFieldValue<object?>(probe.Validator, "_metaControlShapeReadPhase") != null) metaOpenings++;
+                return Task.CompletedTask;
+            };
+            probe.Arm();
+            List<ValidationIssue> issues;
+            if (kind == "partial")
+            {
+                issues = await InvokeMetaShapeComponent(probe.Validator,
+                    new(GameStateValidationPhase.MetaMiscStateFiles, [MetaShapePaths[0]]));
+                Assert.Equal(new[] { "flexible_state_invalid_root", "strict_state_invalid_root" }, issues.Select(issue => issue.Code));
+                Assert.All(probe.OpenedReads, path => Assert.Equal(MetaShapePaths[0], path));
+                Assert.Equal(1, metaOpenings);
+                Assert.InRange(probe.PhysicalProofSpans, 1, 6);
+            }
+            else if (kind == "zero-window")
+            {
+                // Real ordinary insertion still runs neighbors; only selected shape window opens are counted here.
+                issues = await probe.Validator.ValidateGameStateAsync(
+                    new GameStateValidationSelection(GameStateValidationPhase.MetaMiscStateFiles, [social]));
+                Assert.Equal(0, metaOpenings);
+                Assert.DoesNotContain(probe.OpenedReads, path => MetaShapePaths.Contains(path));
+            }
+            else if (kind == "held")
+            {
+                await using (var existing = await probe.Files.AcquireCanonicalWriteLeaseAsync())
+                {
+                    issues = await InvokeMetaShapeComponent(probe.Validator);
+                    Assert.True(existing.IsActive);
+                    Assert.True(WorldHasAmbientLease(probe.Files));
+                    Assert.Equal(0, metaOpenings); // Existing legitimate held scalar path; no nested phase lease.
+                }
+            }
+            else
+            {
+                var images = MetaShapePaths.ToDictionary(path => path,
+                    path => new CanonicalBeforeImage(true, System.Text.Encoding.UTF8.GetBytes("{}")));
+                images[MetaShapePaths[0]] = new CanonicalBeforeImage(false, null);
+                Assert.True(File.Exists(probe.Files.ResolvePath(MetaShapePaths[0])));
+                var draft = SpiritualOriginalDraftInputs.Create("fixed_session", "fixed_request", "fixed_snapshot", 1, MetaShapePaths, images);
+                // Construct the actual immutable draft reader through its original constructor; never forge authority.
+                var ctor = typeof(ValidationService).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic,
+                    null, [typeof(FileSystemManager), typeof(Microsoft.Extensions.Logging.ILogger<ValidationService>), typeof(SpiritualOriginalDraftInputs)], null)!;
+                var validator = Assert.IsType<ValidationService>(ctor.Invoke([probe.Files, NullLogger<ValidationService>.Instance, draft]));
+                var scalar = await InvokeMetaShapeComponent(validator);
+                using var bound = validator.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
+                issues = await InvokeMetaShapeComponent(validator);
+                Assert.Equal(WorldIssues(scalar), WorldIssues(issues));
+                Assert.DoesNotContain(issues, issue => issue.FilePath == MetaShapePaths[0]);
+                Assert.Null(draft.ReadText(MetaShapePaths[0])); // Registered absence wins over present physical bytes.
+                var subset = MetaShapePaths.Skip(1).ToArray();
+                var limitedDraft = SpiritualOriginalDraftInputs.Create("fixed_session", "fixed_request", "fixed_snapshot", 1,
+                    subset, subset.ToDictionary(path => path, path => images[path]));
+                var limited = Assert.IsType<ValidationService>(ctor.Invoke([probe.Files, NullLogger<ValidationService>.Instance, limitedDraft]));
+                using var limitedBound = limited.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
+                var refused = await Record.ExceptionAsync(() => InvokeMetaShapeComponent(limited,
+                    new(GameStateValidationPhase.MetaMiscStateFiles, [MetaShapePaths[0]])));
+                Assert.IsType<KeyNotFoundException>(refused);
+                Assert.Contains("ReadImage", refused!.StackTrace);
+                Assert.Empty(probe.OpenedReads); // Registered draft priority/refusal; no physical fallback.
+                Assert.Equal(0, metaOpenings);
+            }
+            WorldEvidence(probe, new { kind, metaOpenings, Issues = WorldIssues(issues),
+                MetaPhaseReleased = GetPrivateFieldValue<object?>(probe.Validator, "_metaControlShapeReadPhase") == null,
+                ReservationReleased = GetPrivateFieldValue<object?>(probe.Validator, "_worldReservation") == null });
+            Assert.Null(GetPrivateFieldValue<object?>(probe.Validator, "_metaControlShapeReadPhase"));
+            Assert.Null(GetPrivateFieldValue<object?>(probe.Validator, "_worldReservation"));
+            Assert.Equal(0, GetPrivateFieldValue<int>(probe.Validator, "_worldValidationCalls"));
+            Assert.False(WorldHasAmbientLease(probe.Files));
+        }, additionalInputs: inputs);
+    }
+
+    [Fact]
+    public async Task MetaControlShapes_ActualPathRefusalEscapesImmediatelySameException()
+    {
+        await WithWorldReadFixture("meta", async probe =>
+        {
+            using var snapshot = probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(probe.Manifest);
+            var path = probe.Files.ResolvePath(MetaShapePaths[0]);
+            var before = File.ReadAllBytes(path);
+            var observing = new AsyncLocal<bool>();
+            Exception? first = null;
+            string? stack = null;
+            EventHandler<FirstChanceExceptionEventArgs> observe = (_, args) =>
+            {
+                if (observing.Value && first == null && args.Exception is InvalidDataException)
+                { first = args.Exception; stack = args.Exception.StackTrace; }
+            };
+            var reached = 0;
+            probe.OnRead = relative =>
+            {
+                if (relative != MetaShapePaths[0] || ++reached != 1) return Task.CompletedTask;
+                File.Delete(path);
+                Directory.CreateDirectory(path); // Actual trusted leaf-type refusal after original open.
+                observing.Value = true;
+                return Task.CompletedTask;
+            };
+            probe.Arm();
+            List<ValidationIssue>? result = null;
+            Exception? failure;
+            AppDomain.CurrentDomain.FirstChanceException += observe;
+            try { failure = await Record.ExceptionAsync(async () => { result = await InvokeMetaShapeComponent(probe.Validator); }); }
+            finally
+            {
+                AppDomain.CurrentDomain.FirstChanceException -= observe;
+                observing.Value = false;
+                probe.OnRead = null;
+                if (Directory.Exists(path)) Directory.Delete(path);
+                File.WriteAllBytes(path, before);
+            }
+            WorldEvidence(probe, new { reached, Failure = failure?.ToString(), FirstRefusal = first?.ToString(), stack,
+                SameRefusal = ReferenceEquals(first, failure), ResultPublished = result != null });
+            Assert.Equal(1, reached);
+            Assert.NotNull(first);
+            Assert.Same(first, failure);
+            Assert.Contains("ValidateFile", stack);
+            Assert.Null(result);
+            Assert.Equal(new[] { MetaShapePaths[0] }, probe.OpenedReads);
+            Assert.False(WorldHasAmbientLease(probe.Files));
+        }, additionalInputs: MetaShapeMixedInputs());
     }
 
     [Fact]
@@ -267,7 +701,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs", "F6CE6B4767D130BB8F71C7A77742CB00AEAD9A3BF4525352203C9E085C164918"),
             ("BookOfEternityClient/Services/Validation/ValidationService.GuardiansAndAfterlife.cs", "0CC60E658442A70540C489FAE2E0E69644CA1AAE9D8DAE987232899C95C0B6AE"),
             ("BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs", "C494D49C017336596DF49F7A44E6D9A10172FD035268E9A3DD92B43B5F78A938"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs", "8ACB74E0935762AF0FD1ABDA0D6655F01F23528C59EA46A48328E6EDEC0357AA"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs", "A37AACB291B09E4990B5799A0B57ACE4B01314729671AEC468ECD6FD75DCB571"),
             ("BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs", "9581356324418C0867A0F947D88CF3347D06D8B635C1075A9B3004B1C8384635"),
             ("BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs", "28D7114A73FEFA461D4E8502FD88D2D661C4A664F26A9767840556D1B0F37C31"),
             ("BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs", "54222A4E3EDE3574E4A489C88F8C085A015408DDEE4C6F9531ECF87D0D5AF907"),
@@ -275,17 +709,39 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs", "A8E0669C2BB1C692C2E9FA7481D78F2102267503BC31061974874DA9A4551971"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs", "081B4FD60653F4AC130B4598C232AB7CBA233EBEC17722D766DDC92461269B35"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs", "314858FA04D4A401066489BB4664455BB1CC81154FBD6AE1E4E24F2AE3281555"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "AD48A1FB09682331F90E75ADFF710B0F2935359A226DB5E4FAB728A36BCEB266"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "69874147E722526621794999A63BDE8CB5D4FF84F7064C898C7A79F080E4674F"),
             ("BookOfEternityClient/Services/ValidationService.cs", "58511D428841000B0BF4AA4AAF5E28B239457DF199D25AE91AB37F85358E9062"),
             ("BookOfEternityClient/Services/WorldDirectiveService.cs", "1E272E2A48AC49EB82894C917FA3476D24C568BFE9C903B358CB56FE3529C2C0"),
             ("BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs", "323D61E2EF12FF77662712D5CE199A2CA0DFE6211544FF8E19CD60E984B93CD1"),
             ("BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs", "7154852B8EF29AFA1262CEF0E4BB3A0FF28F14AFEEBE98C2A0834676E4C5CF5B"),
             ("BookOfEternityClient/Core/TrustedLocalFileScope.cs", "B2F5FD598A1D728BC133944492D36B3E600E5C4293704EB88B26861B4E5C55D2"),
+            ("BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs", "23AB7EE1C59825D38232C99D1BC5082F874B9A7CC46547345E4D8E628569E972"),
+            ("BookOfEternityClient/Services/AcceptedMechanicsPlan.cs", "D9089B7EDBC9A276C928FE62E9D3AA1890750E400421533975A5F7D42E401B9E"),
         ];
         foreach (var (path, expected) in pins)
             Assert.Equal(expected, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(Path.Combine(TestRepoPaths.RepoRoot, path)))));
         var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs"));
         foreach (var path in MetaShapePaths) Assert.Contains('"' + path + '"', source);
+    }
+
+    private static FileSystemManager.CanonicalWriteLease MetaShapePhaseLease(WorldReadProbe probe)
+    {
+        var phase = GetPrivateFieldValue<object?>(probe.Validator, "_metaControlShapeReadPhase");
+        Assert.NotNull(phase);
+        return Assert.IsType<FileSystemManager.CanonicalWriteLease>(phase.GetType()
+            .GetProperty("Lease", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(phase));
+    }
+
+    private sealed class MetaOwningCloseProbe(WorldReadProbe probe, Exception? failure = null, Action? beforeClose = null) : IDisposable
+    {
+        internal int Calls, ProofsAtClose;
+        public void Dispose()
+        {
+            Calls++;
+            ProofsAtClose = probe.PhysicalProofSpans;
+            beforeClose?.Invoke();
+            if (failure != null) ExceptionDispatchInfo.Capture(failure).Throw();
+        }
     }
 
     private static void SeedMetaShapeOpeningCaches(WorldReadProbe probe, HashSet<string> ids, HashSet<string> names)
