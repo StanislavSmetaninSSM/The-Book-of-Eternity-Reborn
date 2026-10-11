@@ -23501,6 +23501,41 @@
             ]
           }
         ]
-      }
+      },
+        {
+            "id": "c5-original-rollback-streaming-contracts",
+            "responsibility": "#1553 causal same-thread managed allocation slope on the existing complete held browser proof: independent genuine signed fixtures, identical non-probe canonical bytes, 22 versus 693766 byte rollback payload. Current RED source owns exactly one allocation Fact; semantic streaming controls are added only after preserved causal RED and candidate SOURCE gate.",
+            "excludes": "No product reader/API/hook change in this RED block, elapsed-time or full-C5 speed claim, removed proof/path boundaries, cross-proof cache, broad recovery matrix or matched C5 execution.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserRollbackAllocationBudget.cs",
+                "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserOriginalAuthority.cs",
+                "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs"
+            ],
+            "related": [
+                {
+                    "id": "portable-signed-snapshot-authority-neighbors",
+                    "when": "Retain existing exact/legacy signed snapshot and rollback authority consumers."
+                },
+                {
+                    "id": "c5-held-proof-scope-budget",
+                    "when": "Retain actual held proof scope lifetime and fresh snapshot drift refusal."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_RollbackPayloadGrowthDoesNotAllocateWholeContent"
+                    ]
+                }
+            ]
+        }
     ]
 }

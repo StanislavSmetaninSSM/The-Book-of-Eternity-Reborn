@@ -2,13 +2,28 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "c5-checked-rollback-hash-filter",
-      "reason": "Coordinator authorized exactly one test-only checked-reader comparison after SHA provider-only rejection. Actual current private reader versus strict streaming prototype, all current path/length/refusal checks; source gate before actual filter, no product edit/full C5 until convincing time and allocation evidence.",
+      "category": "c5-original-rollback-streaming-contracts",
+      "reason": "Independent production DESIGN PASS authorizes one existing-path allocation RED Fact only; source review before actual RED. Whole-file managed allocation growth must causally fail on unchanged product.",
       "contracts": [
         "#1553",
         "T069-C5-ORDINARY-CONSUMER",
-        "T071-C5-MUSINGS-CHECKPOINT",
-        "strict exact rollback length/ReadExactly/EOF/native/path boundaries; finite diagnostic filter only"
+        "strict exact rollback allocation without weakening current authority/path checks"
+      ]
+    },
+    {
+      "category": "portable-signed-snapshot-authority-neighbors",
+      "reason": "Existing fifteen signed snapshot/rollback authority exact-byte and legacy consumers must pass alongside allocation RED; future optional callback must preserve default and legacy behavior.",
+      "contracts": [
+        "#1553",
+        "signed snapshot authority exact/legacy byte contracts"
+      ]
+    },
+    {
+      "category": "c5-held-proof-scope-budget",
+      "reason": "Existing two controls verify real held proof scope lifetime and subsequent snapshot drift refusal; no proof boundary or scope reuse is changed.",
+      "contracts": [
+        "#1553",
+        "physical lease ownership and fresh same-lease integrity proof"
       ]
     }
   ]
