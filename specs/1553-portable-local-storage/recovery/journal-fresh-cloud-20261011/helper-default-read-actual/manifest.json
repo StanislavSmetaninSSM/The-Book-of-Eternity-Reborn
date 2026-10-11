@@ -35,7 +35,8 @@
     "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1": "89b5201abfe16160b9c1b5465cf331a81ef5976120936aedee141442405007d9",
     "BookOfEternityClient/Launcher/gm_main_operation.ps1": "9ec146965c358bf28424154c1d9fa1fa5e626cb0b5568911a12b130dfb6ab97d",
     "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
-    "tools/gm-relay/relay-apply-response.ps1": "228e0691c127f959128382766aaff173807cb384d562a26ff0b402f12915e859"
+    "tools/gm-relay/relay-apply-response.ps1": "228e0691c127f959128382766aaff173807cb384d562a26ff0b402f12915e859",
+    "BookOfEternityClient/Core/BrowserOriginalMainCondition.cs": "65f7b8f7d5b0bd592aa87cf42c354d54ab97a48c321b21cc8439b85cd55dae18"
   },
   "Assemblies": {
     "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "7b587efbaba215c05f8f2714136a2cf5bb5513066396868e2eef8fb2f9b6ffbe",
@@ -4234,5 +4235,65 @@
     }
   ],
   "ReviewedCompiledSourceSHA": "9977975e1fe8be9297e305c13e31d954b533a383",
-  "ActualEnvironment": "Inherited Stop/helper nonce and all9optional diagnostic options unset. Fact enables only existing helper diagnostic; fixture generates valid nonce only for exact targeted managed child ProcessStartInfo."
+  "ActualEnvironment": "Inherited Stop/helper nonce and all9optional diagnostic options unset. Fact enables only existing helper diagnostic; fixture generates valid nonce only for exact targeted managed child ProcessStartInfo.",
+  "Assessment": {
+    "Scope": "ONE selected actual default-read Resolve-BoeSessionPath/realrelayline30 seq0 only; no fullC5 or ordinary qualification. Assessment reads frozen original raw after first publication230ae068.",
+    "SelectedScopeHealthy": true,
+    "ObservationComplete": true,
+    "FrameRawSHA256": "665e171c9ebc9ecce2743d48d62ce03c1b535995c32c4c101a8b6ce096f22432",
+    "FrameUtf8Bytes": 544,
+    "ActualPredicateCopies": {
+      "ReplyNotOk": false,
+      "StateNotActive": false,
+      "SequenceNotZero": false,
+      "GenerationFormatInvalid": false,
+      "ExpectedGenerationMismatch": false
+    },
+    "ExpectedGeneration": "0d7346fd5b2345109e5e0e415cf0fbb0",
+    "Generation": "0d7346fd5b2345109e5e0e415cf0fbb0",
+    "ActualConsumerPid": 93679,
+    "ActualManagedIdentity": {
+      "HelperPid": 93709,
+      "LinuxStarttime": "2362740",
+      "BootId": "25db1c9c-7ae8-427f-846a-3948ab0e718a",
+      "FailureNonce": "63130886336a46fca33a15791cc8b2d6",
+      "NonceConfigured": true,
+      "ExitCode": 0
+    },
+    "JoinedManagedStderrUtf8Bytes": 0,
+    "ObservedManagedCaughtExceptionRecords": 0,
+    "ObservedReadIntervalSeconds": 0.630017815,
+    "TimingLimit": "Between original read begin/return observations; includes observer costs, not isolated product time or speedup. Exit timestamps are observation bounds.",
+    "ConsumerExecution": {
+      "Executed": true,
+      "ExitCode": 0,
+      "ChildExited": true,
+      "IoDrained": true
+    },
+    "OriginalStopIdentityMatchesDurableAndEvidence": true,
+    "OriginalStopDisposition": "Stopped",
+    "OriginalStopEvidenceKind": "OwnedScopeEmpty",
+    "Guardian": {
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 5,
+      "failures": 0,
+      "deadline": false
+    },
+    "SeparateColdEngineFailure": {
+      "Pid": 93514,
+      "ExceptionType": "System.IO.InvalidDataException",
+      "Origin": "BrowserOriginalMainCondition.RequireCurrent44 / PreflightBrowserOriginalAdmission460",
+      "ObservedAtSeconds": 49.11537813299947,
+      "CleanupStartedAtSeconds": 47.70040438000069,
+      "DuringCleanup": true,
+      "RelationshipToSelectedHelperOrHistoricalRefusal": "UNKNOWN; not selected helper caught-exception record"
+    },
+    "AcceptedTurnEvidence": "AcceptedTurns[] only; sequential observed request/pending/ready and story file state does not prove physical acceptance absence. No acceptance wait/later navigation performed.",
+    "HistoricalA2OrdinaryHelperRefusalReproduced": false,
+    "HistoricalA2OrdinaryExactFailedPredicate": "UNKNOWN; their original consumed seq0 unavailable, this healthy new frame cannot substitute.",
+    "HistoricalB2StopCause": "UNKNOWN; original FAIL preserved.",
+    "PerformanceQualification": "UNQUALIFIED/WIP; no fix, guard/timer/RNG changes or further runtime."
+  }
 }
