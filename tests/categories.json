@@ -23482,7 +23482,7 @@
         },
         {
             "id": "c5-browser-admission-diagnostics",
-            "responsibility": "#1553 bounded DEBUG opt-in original-browser profiling collector: synchronous nested self/inclusive wall accounting, concurrent branch isolation, finite row cap, disabled/invalid owned admission, create-only failure-isolated export and finite overhead calibration. Per-action sums never stand for latency; bounded engine-window contained/crossing attribution is distinct from external Helper→Acceptance. Content aggregation is ReaderFamily×full immutable labels with no Path dimension; bounded real late-terminal branch failure/idle control distinguishes late observation from warm terminal wait.",
+            "responsibility": "#1553 bounded DEBUG opt-in original-browser profiling collector: synchronous nested self/inclusive wall accounting, concurrent branch isolation, finite row cap, disabled/invalid owned admission, create-only failure-isolated export and finite overhead calibration. Per-action sums never stand for latency; bounded engine-window contained/crossing attribution is distinct from external Helper→Acceptance. Content aggregation is ReaderFamily×full immutable labels with no Path dimension; bounded real late-terminal branch failure/idle control distinguishes late observation from warm terminal wait. Real Meta residual source-group control compares disabled/enabled ordered reads/issues/input bytes and original failure/parent restoration; finite logical labels have no Path dimension.",
             "excludes": "No product proof optimization, actual full C5 execution, latency/SLA, cross-lease PASS reuse, release telemetry or native Windows qualification.",
             "changeHints": [
                 "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.Diagnostics.cs",
@@ -23512,7 +23512,8 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserAdmissionDiagnostics_LateTerminalBranchCapturesOnceAndPreservesOriginalFailure"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserAdmissionDiagnostics_LateTerminalBranchCapturesOnceAndPreservesOriginalFailure",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserAdmissionDiagnostics_MetaSubgroupsPreserveRealReadOrderIssuesAndFailure"
                     ]
                 }
             ]

@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "c5-browser-admission-diagnostics",
-      "reason": "#1553/T071 coherent bounded diagnostic correction: no-Path multipath conservation/identity separation and actual late-terminal idle/failure capture plus ALL original attribution controls. C5 separately gated.",
+      "reason": "#1553/T071-META-SUBGROUP-ATTRIBUTION: one real residual Meta enabled/disabled read-order/issues/fault/restoration control plus ALL unchanged original16 attribution cases. Test-first subgroup coverage RED; C5 separately gated, no proof optimization.",
       "contracts": [
         "T071-BROWSER-ADMISSION-ATTRIBUTION",
         "original exception/guards unchanged",
