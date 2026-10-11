@@ -44,6 +44,13 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
                     using (Measure(collector, "physical-verification")) { }
                 }
             }));
+            var original = new InvalidOperationException("logical branch original");
+            var caught = await Record.ExceptionAsync(async () =>
+            {
+                using (Logical(collector, "failed-branch", "engine-test"))
+                { await Task.Yield(); throw original; }
+            });
+            Assert.Same(original, caught);
             using (Measure(collector, "after-branches")) { }
         }
         using (Measure(collector, "after-restore")) { }
@@ -52,6 +59,7 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
             rows.Where(row => row!["Stage"]!.GetValue<string>() == "physical-verification")
                 .Select(row => row!["ValidationPhase"]!.GetValue<string>()).OrderBy(value => value));
         Assert.Equal("outer", rows.Single(row => row!["Stage"]!.GetValue<string>() == "after-branches")!["ValidationPhase"]!.GetValue<string>());
+        Assert.Equal("engine-test", rows.Single(row => row!["Stage"]!.GetValue<string>() == "after-branches")!["EngineCaller"]!.GetValue<string>());
         Assert.Equal("unbound", rows.Single(row => row!["Stage"]!.GetValue<string>() == "after-restore")!["ValidationPhase"]!.GetValue<string>());
         Assert.Equal(0, Snapshot(collector)["AccountingErrors"]!.GetValue<int>());
     }
@@ -61,6 +69,7 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
     {
         long ticks = 0;
         var collector = Create(() => ticks);
+        using (Logical(collector, "MetaMiscStateFiles", "postaccepted-validation"))
         using (Window(collector))
         {
             ticks = 1;
@@ -82,6 +91,13 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
         Assert.Equal(1, contained["ContainedCount"]!.GetValue<long>());
         Assert.Equal(2, contained["ContainedInclusiveTicks"]!.GetValue<long>());
         Assert.Equal(2, contained["ContainedSelfTicks"]!.GetValue<long>());
+        Assert.Equal("postaccepted-validation", contained["EngineCaller"]!.GetValue<string>());
+        Assert.Equal("0123456789abcdef0123456789abcdef", contained["RequestId"]!.GetValue<string>());
+        Assert.Equal("fedcba9876543210fedcba9876543210", contained["ActionId"]!.GetValue<string>());
+        Assert.Equal("11111111111111111111111111111111", contained["Generation"]!.GetValue<string>());
+        Assert.NotEqual("unbound", contained["WindowId"]!.GetValue<string>());
+        Assert.Equal(contained["WindowId"]!.GetValue<string>(), contained["ProcessingAttemptId"]!.GetValue<string>());
+        Assert.Null(contained["OwnerIdentity"]); // No actual original owner installed in this pure clock test.
         var crossing = rows.Single(row => row!["Stage"]!.GetValue<string>() == "crossing")!;
         Assert.Equal(1, crossing["CrossingCount"]!.GetValue<long>());
         Assert.Equal(4, crossing["CrossingInclusiveTicks"]!.GetValue<long>());
@@ -96,7 +112,7 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public void ContentCountersKeepMissingFollowupAndNullableDataFaultDistinct()
+    public async Task ContentCountersKeepMissingFollowupAndNullableDataFaultDistinct()
     {
         var collector = Create(() => 1);
         const string path = "game_state/control/life_transitions.json";
@@ -110,20 +126,70 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
             Invoke(collector, "Content", path, "world-nullable-sync", "leaf", "data-fault", 0L);
         }
         var rows = Snapshot(collector)["ContentRows"]!.AsArray();
-        Assert.Equal(6, rows.Count);
-        Assert.Equal(1, rows.Where(row => row!["Attempt"]!.GetValue<string>() == "initial" &&
-            row["Outcome"]!.GetValue<string>() == "missing").Sum(row => row!["Count"]!.GetValue<long>()));
+        Assert.Equal(2, rows.Count);
+        var ordinary = rows.Single(row => row!["ReaderFamily"]!.GetValue<string>() == "public-text-async")!["OutsideWindow"]!;
+        Assert.Equal(1, ordinary["SemanticStarts"]!.GetValue<long>());
+        Assert.Equal(1, ordinary["InitialMissing"]!.GetValue<long>());
+        Assert.Equal(1, ordinary["FollowupPresent"]!.GetValue<long>());
         var fault = rows.Single(row => row!["ReaderFamily"]!.GetValue<string>() == "world-nullable-sync")!;
-        Assert.Equal("data-fault", fault["Outcome"]!.GetValue<string>());
+        Assert.Equal(1, fault["OutsideWindow"]!["LeafDataFaults"]!.GetValue<long>());
+        Assert.Equal(0, (fault["OutsideWindow"]!["LeafMissing"]?.GetValue<long>() ?? 0));
         Assert.All(rows, row => Assert.Equal("MetaMiscStateFiles", row!["ValidationPhase"]!.GetValue<string>()));
         Assert.Equal(0, Snapshot(collector)["Acquisitions"]!.GetValue<long>());
+
+        // Actual public flow: the ORIGINAL after-attempt hook creates the absent
+        // file, so the quiescence followup reads it. No fabricated authority/lease.
+        var own = Path.Combine(Path.GetTempPath(), "boe-diag-content-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(own);
+        try
+        {
+            var hookCalls = 0;
+            FileSystemManager? files = null;
+            files = new FileSystemManager(own, Microsoft.Extensions.Logging.Abstractions.NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                { AfterCanonicalReadAttemptAsync = relative =>
+                    { hookCalls++; File.WriteAllText(files!.ResolvePath(relative), "actual followup"); return Task.CompletedTask; } });
+            Directory.CreateDirectory(files.GameSessionPath);
+            var wired = Create(System.Diagnostics.Stopwatch.GetTimestamp);
+            typeof(FileSystemManager).GetField("_browserAdmissionDiagnostic", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(files, wired);
+            Assert.Equal("actual followup", await files.ReadFileAsync("followup.txt"));
+            Assert.Equal(1, hookCalls);
+            var actual = Snapshot(wired)["ContentRows"]!.AsArray().Single(row => row!["ReaderFamily"]!.GetValue<string>() == "public-text-async")!["OutsideWindow"]!;
+            Assert.Equal(1, actual["SemanticStarts"]!.GetValue<long>());
+            Assert.Equal(1, actual["InitialMissing"]!.GetValue<long>());
+            Assert.Equal(1, actual["FollowupReasonMissing"]!.GetValue<long>());
+            Assert.Equal(1, actual["FollowupPresent"]!.GetValue<long>());
+            Assert.Equal(1, actual["SemanticReturnedPresent"]!.GetValue<long>());
+            Assert.Equal(0, (actual["SemanticFaults"]?.GetValue<long>() ?? 0));
+            Assert.True(Snapshot(wired)["Complete"]!.GetValue<bool>());
+
+            var original = new IOException("actual nullable data read failure");
+            var nullableFiles = new FileSystemManager(own, Microsoft.Extensions.Logging.Abstractions.NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                { AfterCanonicalReadInitialValidationAsync = _ => Task.FromException(original) });
+            var nullableCollector = Create(System.Diagnostics.Stopwatch.GetTimestamp);
+            typeof(FileSystemManager).GetField("_browserAdmissionDiagnostic", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(nullableFiles, nullableCollector);
+            var reader = typeof(FileSystemManager).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Single(method => method.Name == "ReadOrdinaryFileSnapshotCore" && method.GetParameters().Length == 4);
+            object?[] arguments = ["followup.txt", null, null, true];
+            Assert.Null(reader.Invoke(nullableFiles, arguments));
+            Assert.Same(original, Assert.IsType<System.Runtime.ExceptionServices.ExceptionDispatchInfo>(arguments[2]).SourceException);
+            var data = Snapshot(nullableCollector)["ContentRows"]!.AsArray().Single()!["OutsideWindow"]!;
+            Assert.Equal(1, data["PhysicalDataFaults"]!.GetValue<long>());
+            Assert.Equal(0, (data["PhysicalMissing"]?.GetValue<long>() ?? 0));
+        }
+        finally { Directory.Delete(own, true); }
     }
 
     [Fact]
     public void FailedAndWindowLimitedCaptureCannotClaimCompleteProcessing()
     {
         var collector = Create(() => 1);
-        using (Window(collector)) Invoke(collector, "Mark", "finalizer-failed");
+        using (Window(collector))
+        {
+            Assert.False(Snapshot(collector)["Complete"]!.GetValue<bool>());
+            Invoke(collector, "Mark", "finalizer-failed");
+        }
         var first = Assert.Single(Snapshot(collector)["Windows"]!.AsArray())!;
         Assert.Equal("failed", first["Outcome"]!.GetValue<string>());
         Assert.Null(first["AcceptedTicks"]);
@@ -132,6 +198,29 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
         Assert.Equal(8, result["Windows"]!.AsArray().Count);
         Assert.Equal(1, result["DroppedWindows"]!.GetValue<int>());
         Assert.False(result["Complete"]!.GetValue<bool>());
+
+        var limited = Create(() => 1, 1);
+        using (Measure(limited, "occupies-shared-row")) { }
+        Invoke(limited, "Content", "missing.json", "ordinary-sync", "physical-result", "missing", 0L);
+        Assert.Equal(1, Snapshot(limited)["DroppedContentRows"]!.GetValue<int>());
+        Assert.False(Snapshot(limited)["Complete"]!.GetValue<bool>());
+
+        var open = Create(() => 1);
+        Invoke(open, "Content", "read.json", "public-text-async", "semantic", "started", 0L);
+        Assert.False(Snapshot(open)["Complete"]!.GetValue<bool>());
+        Invoke(open, "Content", "read.json", "public-text-async", "semantic", "fault", 0L);
+        using (Window(open)) { }
+        Assert.Equal("incomplete", Assert.Single(Snapshot(open)["Windows"]!.AsArray())!["Outcome"]!.GetValue<string>());
+
+        var throwClock = false;
+        var closing = Create(() => throwClock ? throw new IOException("diagnostic clock") : 1);
+        var original = new InvalidOperationException("original failure during close");
+        Assert.Same(original, Record.Exception(() =>
+        { using (Window(closing)) { throwClock = true; throw original; } }));
+        throwClock = false;
+        using (Measure(closing, "after-failed-close")) { }
+        Assert.Equal("unbound", Assert.Single(Snapshot(closing)["Rows"]!.AsArray())!["WindowId"]!.GetValue<string>());
+        Assert.Equal(1, Snapshot(closing)["DiagnosticFailures"]!.GetValue<int>());
     }
 
     [Fact]
@@ -251,6 +340,28 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
             Assert.Null(create.Invoke(null, [root, "invalid", root]));
             Assert.Null(create.Invoke(null, [root, Guid.NewGuid().ToString("N"), root]));
             Assert.Empty(Directory.EnumerateFileSystemEntries(root));
+            var files = new FileSystemManager(root, Microsoft.Extensions.Logging.Abstractions.NullLogger<FileSystemManager>.Instance);
+            typeof(FileSystemManager).GetField("_browserAdmissionDiagnostic", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(files, null);
+            var logical = (Func<string?, string?, IDisposable?>)typeof(FileSystemManager)
+                .GetMethod("BrowserDiagnosticLogical", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .CreateDelegate(typeof(Func<string?, string?, IDisposable?>), files);
+            var window = (Func<string, string, string, IDisposable?>)typeof(FileSystemManager)
+                .GetMethod("BrowserDiagnosticWindow", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .CreateDelegate(typeof(Func<string, string, string, IDisposable?>), files);
+            var mark = (Action<string>)typeof(FileSystemManager)
+                .GetMethod("BrowserDiagnosticMark", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .CreateDelegate(typeof(Action<string>), files);
+            // Warm the actual null-conditional filesystem surface before the finite
+            // allocation observation; reflection itself is outside this observation.
+            Assert.Null(logical("MetaMiscStateFiles", "disabled"));
+            var before = GC.GetAllocatedBytesForCurrentThread();
+            for (var i = 0; i < 1000; i++)
+            {
+                using var labelScope = logical("MetaMiscStateFiles", "disabled");
+                using var windowScope = window("request", "action", "generation");
+                mark("processing-owner");
+            }
+            Assert.Equal(0, GC.GetAllocatedBytesForCurrentThread() - before);
             var nested = Path.Combine(root, "nested");
             Directory.CreateDirectory(nested);
             var nonce = Guid.NewGuid().ToString("N");
@@ -308,13 +419,28 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
         for (var i = 0; i < repetitions; i++) { }
         var emptySeconds = watch.Elapsed.TotalSeconds;
         watch.Restart();
+        var beforeUnlabeledBytes = GC.GetAllocatedBytesForCurrentThread();
         using (Context(collector, "other"))
             for (var i = 0; i < repetitions; i++) using (Measure(collector, "calibration")) { }
         var diagnosticSeconds = watch.Elapsed.TotalSeconds;
+        var unlabeledBytes = GC.GetAllocatedBytesForCurrentThread() - beforeUnlabeledBytes;
+        watch.Restart();
+        var beforeLabeledBytes = GC.GetAllocatedBytesForCurrentThread();
+        using (Context(collector, "other"))
+            for (var i = 0; i < repetitions; i++)
+                using (Logical(collector, "calibration", "collector-control"))
+                using (Measure(collector, "calibration-labeled"))
+                    Invoke(collector, "Content", "calibration.json", "ordinary-sync", "physical-result", "missing", 0L);
+        var labeledSeconds = watch.Elapsed.TotalSeconds;
+        var labeledBytes = GC.GetAllocatedBytesForCurrentThread() - beforeLabeledBytes;
         var result = Snapshot(collector);
-        Assert.Equal(repetitions, result["Rows"]!.AsArray().Single()!["Count"]!.GetValue<long>());
+        Assert.Equal(2, result["Rows"]!.AsArray().Count);
+        Assert.All(result["Rows"]!.AsArray(), row => Assert.Equal(repetitions, row!["Count"]!.GetValue<long>()));
+        Assert.Equal(repetitions, Assert.Single(result["ContentRows"]!.AsArray())!["OutsideWindow"]!["PhysicalMissing"]!.GetValue<long>());
         output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { Repetitions = repetitions, EmptySeconds = emptySeconds,
-            DiagnosticSeconds = diagnosticSeconds, Scope = "Finite in-memory collector calibration; not end-to-end overhead or acceptance latency." }));
+            UnlabeledSeconds = diagnosticSeconds, LabeledSeconds = labeledSeconds, UnlabeledManagedBytes = unlabeledBytes,
+            LabeledManagedBytes = labeledBytes,
+            Scope = "Finite in-memory control including test reflection harness overhead; label/content/window-free loop observations, not isolated collector cost or end-to-end IO/acceptance overhead. Do not subtract as exact calibrated production overhead." }));
     }
 
     [Theory]

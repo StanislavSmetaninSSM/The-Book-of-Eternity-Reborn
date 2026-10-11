@@ -52,6 +52,9 @@ public partial class FileSystemManager
         var snapshot = UsesTrustedLocalWriter(lease, path)
             ? ReadOrdinaryFileSnapshotCore(path, lease) : ReadFileSnapshotCore(path);
         if (notifyAttempt) InvokeAfterCanonicalReadAttempt(path);
+#if DEBUG
+        BrowserDiagnosticContent(path, "world-bytes-sync", "leaf", snapshot == null ? "missing" : "present", snapshot?.Content.Length ?? 0);
+#endif
         return snapshot?.Content;
     }
     internal (byte[]? Bytes, ExceptionDispatchInfo? DataFailure) ReadWorldValidationNullableBytesSync(
@@ -70,6 +73,10 @@ public partial class FileSystemManager
             catch (Exception error) when (error is IOException or UnauthorizedAccessException)
             { failure = ExceptionDispatchInfo.Capture(error); }
         }
+#if DEBUG
+        BrowserDiagnosticContent(path, "world-nullable-sync", "leaf", failure != null ? "data-fault" :
+            snapshot == null ? "missing" : "present", snapshot?.Content.Length ?? 0);
+#endif
         return (snapshot?.Content, failure);
     }
 
@@ -77,6 +84,9 @@ public partial class FileSystemManager
     {
         var bytes = await ReadFileBytesAsync(lease, path);
         await InvokeAfterCanonicalReadAttemptAsync(path);
+#if DEBUG
+        BrowserDiagnosticContent(path, "world-bytes-async", "leaf", bytes == null ? "missing" : "present", bytes?.Length ?? 0);
+#endif
         return bytes;
     }
 
@@ -85,6 +95,9 @@ public partial class FileSystemManager
         var snapshot = await ReadFileSnapshotAsync(lease, path);
         var text = DecodeFileSnapshot(snapshot);
         await InvokeAfterCanonicalReadAttemptAsync(path);
+#if DEBUG
+        BrowserDiagnosticContent(path, "world-text-async", "leaf", snapshot == null ? "missing" : "present", snapshot?.Content.Length ?? 0);
+#endif
         return (snapshot?.Content, text);
     }
 

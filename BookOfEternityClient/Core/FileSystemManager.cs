@@ -1318,29 +1318,68 @@ public partial class FileSystemManager
 
     public async Task<string?> ReadFileAsync(string relativePath)
     {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-async", "semantic", "started");
+#endif
+#if DEBUG
+        try
+        {
+#endif
         await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             CancellationToken.None);
         var result = await ReadOrdinaryFileCoreAsync(relativePath);
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-async", "initial", result == null ? "missing" : "present");
+#endif
         await InvokeAfterCanonicalReadAttemptAsync(relativePath);
         if (!HasAmbientCanonicalLease() &&
             (result == null || HasPendingFilePublications()))
         {
+#if DEBUG
+            BrowserDiagnosticContent(relativePath, "public-text-async", "followup-reason", result == null ? "missing" : "pending");
+#endif
             await using var writeLease =
                 await AcquirePublicationReadQuiescenceLeaseAsync();
             result = await ReadOrdinaryFileCoreAsync(relativePath);
+#if DEBUG
+                BrowserDiagnosticContent(relativePath, "public-text-async", "followup", result == null ? "missing" : "present");
+#endif
         }
 
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-async", "semantic", result == null ? "returned-missing" : "returned-present");
+#endif
         return result;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "public-text-async", "semantic", "fault"); throw; }
+#endif
     }
 
     internal async Task<string?> ReadFileAsync(
         CanonicalWriteLease writeLease,
         string relativePath)
     {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-text-async", "semantic", "started");
+        try
+        {
+#endif
         EnsureValidCanonicalWriteLease(writeLease);
-        return UsesTrustedLocalWriter(writeLease, relativePath)
+        var result = UsesTrustedLocalWriter(writeLease, relativePath)
             ? await ReadOrdinaryFileCoreAsync(relativePath, writeLease)
             : await ReadFileCoreAsync(relativePath);
+
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-text-async", "semantic", result == null ? "returned-missing" : "returned-present");
+#endif
+        return result;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "explicit-text-async", "semantic", "fault"); throw; }
+#endif
     }
 
     private async Task<string?> ReadFileCoreAsync(string relativePath)
@@ -1379,36 +1418,82 @@ public partial class FileSystemManager
         CanonicalWriteLease writeLease,
         string relativePath)
     {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-bytes-async", "semantic", "started");
+        try
+        {
+#endif
         EnsureValidCanonicalWriteLease(writeLease);
-        return UsesTrustedLocalWriter(writeLease, relativePath)
+        var result = UsesTrustedLocalWriter(writeLease, relativePath)
             ? await ReadOrdinaryFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease)
             : await ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
+
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-bytes-async", "semantic", result == null ? "returned-missing" : "returned-present");
+#endif
+        return result;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "explicit-bytes-async", "semantic", "fault"); throw; }
+#endif
     }
 
     internal async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotAsync(
         CanonicalWriteLease writeLease,
         string relativePath)
     {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-snapshot-async", "semantic", "started");
+        try
+        {
+#endif
         EnsureValidCanonicalWriteLease(writeLease);
-        return UsesTrustedLocalWriter(writeLease, relativePath)
+        var result = UsesTrustedLocalWriter(writeLease, relativePath)
             ? await ReadOrdinaryFileSnapshotCoreAsync(relativePath, CancellationToken.None, writeLease)
             : await ReadFileSnapshotCoreAsync(relativePath, CancellationToken.None);
+
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-snapshot-async", "semantic", result == null ? "returned-missing" : "returned-present");
+#endif
+        return result;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "explicit-snapshot-async", "semantic", "fault"); throw; }
+#endif
     }
 
     internal string? ReadFileSync(string relativePath)
     {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-sync", "semantic", "started");
+#endif
+#if DEBUG
+        try
+        {
+#endif
         RecoverPendingFilePublicationsBeforeCanonicalRead();
         var snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-sync", "initial", snapshot == null ? "missing" : "present");
+#endif
         InvokeAfterCanonicalReadAttempt(relativePath);
         if (!HasAmbientCanonicalLease() &&
             (snapshot == null || HasPendingFilePublications()))
         {
+#if DEBUG
+            BrowserDiagnosticContent(relativePath, "public-text-sync", "followup-reason", snapshot == null ? "missing" : "pending");
+#endif
             var writeLease = AcquirePublicationReadQuiescenceLeaseAsync()
                 .GetAwaiter()
                 .GetResult();
             try
             {
                 snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
+#if DEBUG
+                BrowserDiagnosticContent(relativePath, "public-text-sync", "followup", snapshot == null ? "missing" : "present");
+#endif
             }
             finally
             {
@@ -1418,7 +1503,15 @@ public partial class FileSystemManager
                     .GetResult();
             }
         }
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-sync", "semantic", snapshot == null ? "returned-missing" : "returned-present");
+#endif
         return DecodeFileSnapshot(snapshot);
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "public-text-sync", "semantic", "fault"); throw; }
+#endif
     }
 
     internal string? ReadFileSync(
@@ -1448,18 +1541,34 @@ public partial class FileSystemManager
 
     internal byte[]? ReadFileBytesSync(string relativePath)
     {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-sync", "semantic", "started");
+#endif
+#if DEBUG
+        try
+        {
+#endif
         RecoverPendingFilePublicationsBeforeCanonicalRead();
         var snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-sync", "initial", snapshot == null ? "missing" : "present");
+#endif
         InvokeAfterCanonicalReadAttempt(relativePath);
         if (!HasAmbientCanonicalLease() &&
             (snapshot == null || HasPendingFilePublications()))
         {
+#if DEBUG
+            BrowserDiagnosticContent(relativePath, "public-bytes-sync", "followup-reason", snapshot == null ? "missing" : "pending");
+#endif
             var writeLease = AcquirePublicationReadQuiescenceLeaseAsync()
                 .GetAwaiter()
                 .GetResult();
             try
             {
                 snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
+#if DEBUG
+                BrowserDiagnosticContent(relativePath, "public-bytes-sync", "followup", snapshot == null ? "missing" : "present");
+#endif
             }
             finally
             {
@@ -1469,7 +1578,15 @@ public partial class FileSystemManager
                     .GetResult();
             }
         }
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-sync", "semantic", snapshot == null ? "returned-missing" : "returned-present");
+#endif
         return snapshot?.Content;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "public-bytes-sync", "semantic", "fault"); throw; }
+#endif
     }
 
     private Task<byte[]?> ReadFileBytesCoreAsync(string relativePath) =>
@@ -1479,24 +1596,48 @@ public partial class FileSystemManager
         string relativePath,
         CancellationToken cancellationToken)
     {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-async", "semantic", "started");
+#endif
+#if DEBUG
+        try
+        {
+#endif
         await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             cancellationToken);
         var result = await ReadOrdinaryFileBytesCoreAsync(
             relativePath,
             cancellationToken);
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-async", "initial", result == null ? "missing" : "present");
+#endif
         await InvokeAfterCanonicalReadAttemptAsync(relativePath);
         if (!HasAmbientCanonicalLease() &&
             (result == null || HasPendingFilePublications()))
         {
+#if DEBUG
+            BrowserDiagnosticContent(relativePath, "public-bytes-async", "followup-reason", result == null ? "missing" : "pending");
+#endif
             await using var writeLease =
                 await AcquirePublicationReadQuiescenceLeaseAsync(
                     cancellationToken);
             result = await ReadOrdinaryFileBytesCoreAsync(
                 relativePath,
                 cancellationToken);
+#if DEBUG
+                BrowserDiagnosticContent(relativePath, "public-bytes-async", "followup", result == null ? "missing" : "present");
+#endif
         }
 
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-async", "semantic", result == null ? "returned-missing" : "returned-present");
+#endif
         return result;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "public-bytes-async", "semantic", "fault"); throw; }
+#endif
     }
 
     private async Task<byte[]?> ReadFileBytesCoreAsync(

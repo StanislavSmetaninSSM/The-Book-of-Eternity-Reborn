@@ -39,6 +39,9 @@ public partial class ValidationService
 
     private async Task RunMetaControlShapeReadPhaseAsync(List<ValidationIssue> issues)
     {
+#if DEBUG
+        using var diagnosticPhase = _fs.BrowserDiagnosticLogical("MetaControlShapes", null);
+#endif
         var invocation = _worldValidationInvocation.Value;
         if (invocation is not { MetaReserved: true })
         {
@@ -78,7 +81,12 @@ public partial class ValidationService
             await ValidateMetaControlShapeFilesCoreAsync(localIssues);
             phase.RequireCurrent();
             physical.RequireFullEndProof();
+#if DEBUG
+            using (_fs.BrowserDiagnosticLogical("MetaControlShapes/fresh-readset", null))
+#endif
+            {
             await phase.RequireUnchangedReadsAsync();
+            }
             phase.RequireCurrent();
         }
         catch (Exception error) { primary = error; }

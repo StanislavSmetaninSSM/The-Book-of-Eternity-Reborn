@@ -104,6 +104,9 @@ public partial class ValidationService
 
     private async Task RunWorldReadPhaseAsync(List<ValidationIssue> issues)
     {
+#if DEBUG
+        using var diagnosticPhase = _fs.BrowserDiagnosticLogical("WorldQuestCombatFactionStateFiles", null);
+#endif
         var invocation = _worldValidationInvocation.Value;
         if (invocation is not { WorldReserved: true })
         {
@@ -152,7 +155,12 @@ public partial class ValidationService
             phase.RequireCurrent();
             phase.ReadFailure?.Throw();
             physical.RequireFullEndProof();
+#if DEBUG
+            using (_fs.BrowserDiagnosticLogical("WorldQuestCombatFactionStateFiles/fresh-readset", null))
+#endif
+            {
             await phase.RequireUnchangedReadsAsync();
+            }
             phase.RequireCurrent();
         }
         catch (Exception error)

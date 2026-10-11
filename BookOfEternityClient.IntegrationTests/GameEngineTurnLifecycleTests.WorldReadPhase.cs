@@ -539,10 +539,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         (string Path, string Hash)[] pins = [
             ("BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs", "1DECB1BEB44D2FD0466199E58FF06FB6B39E7795341493FE8DA09A977EC8D202"),
             ("BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs", "384F9F65D33E1C70C6F7E337D96AEC6E71664D142612546139345BF274923A14"),
-            ("BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs", "03D8FEF5770D2B88C71378249F5A6129BFFEB98E5A1CAA0B422CC919BC4ED4E8"),
+            ("BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs", "094D4D2F2C2CF7ABBF959165C9F2722F4057902F9EC0F78EDC4B9ED9BC87A148"),
             ("BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs", "7A857EC50550365F6576B8E2CCC056E662C87622E1A32F652952760761D3E753"),
-            ("BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs", "A486A6229C80BA88E918E669E3FCE153201DDD29E67C868607FD74F8200AC14A"),
-            ("BookOfEternityClient/Core/FileSystemManager.cs", "DA3A5022C5C5AE5A57B7BCE07B01200121576521E18EB7BB742C91894608715D"),
+            ("BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs", "5DA0C9B4A45E1D19E4ECF6D37988569C1D5F218CA4B1725F25FF66BC505502FA"),
+            ("BookOfEternityClient/Core/FileSystemManager.cs", "14DCB900D73951BF5228D474255C197324DDB32DF74A075CE22F4DEC64600EC9"),
             ("BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs", "2747AB5E07B0823105855FF6A80D0F172AB98CFDDCB5B51D678D68FD8C62FFCC"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationBinding.cs", "22BF78161FC966A6C50CC8B7962A4105AC318C1542253BA09EF10CAAF90DC0E5"),
             ("BookOfEternityClient/Services/Validation/ValidationService.AfterlifeArchiveTradeAndLifecycle.cs", "B1802B0118538AF647648B0803B84BB92D155E5FFDD59E4C0BDD3A70FD44EDE7"),
@@ -566,10 +566,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs", "A8E0669C2BB1C692C2E9FA7481D78F2102267503BC31061974874DA9A4551971"),
             ("BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs", "081B4FD60653F4AC130B4598C232AB7CBA233EBEC17722D766DDC92461269B35"),
             ("BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs", "9C05FAA1FE96FA41A119A9938802D273BF31B717333904D52826C7C4AA299BAF"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs", "314858FA04D4A401066489BB4664455BB1CC81154FBD6AE1E4E24F2AE3281555"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "69874147E722526621794999A63BDE8CB5D4FF84F7064C898C7A79F080E4674F"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs", "5BEFA60382B54840F8BB228306E8BCBB4708BC433436133CF843578CE41221C4"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "E68B9CE8E06E73E28BDAAF6D7DE91B108371FF26F2821D8DFB6395747C0F4729"),
             ("BookOfEternityClient/Services/ValidationService.cs", "58511D428841000B0BF4AA4AAF5E28B239457DF199D25AE91AB37F85358E9062"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs", "A37AACB291B09E4990B5799A0B57ACE4B01314729671AEC468ECD6FD75DCB571"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs", "A0B1AF0D4B06A0D4C74BF31A1CFCA22FE9D902F3D7586B4D9A51888664AB7F93"),
         ];
         foreach (var (path, hash) in pins)
             Assert.Equal(hash, Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(TestRepoPaths.RepoRoot, path)))));

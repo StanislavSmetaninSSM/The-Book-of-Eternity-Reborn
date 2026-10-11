@@ -62,31 +62,55 @@ public partial class FileSystemManager
     private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotCoreAsync(
         string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null)
     {
+#if DEBUG
+        var diagnosticOutcome = "fault";
+        long diagnosticBytes = 0;
+        try
+        {
+#endif
         cancellationToken.ThrowIfCancellationRequested();
         var expectedPath = ResolvePath(relativePath);
         var scope = new TrustedLocalFileScope([GameSessionPath]);
         FileStream? stream;
         for (var attempt = 0; ; attempt++)
         {
+#if DEBUG
+            BrowserDiagnosticContent(relativePath, "ordinary-async", "physical-attempt", "started");
+#endif
             cancellationToken.ThrowIfCancellationRequested();
             if (lease != null) EnsureValidCanonicalWriteLease(lease);
             stream = null;
             try
             {
                 EnsureCanonicalPathStillSafe(relativePath, expectedPath);
-                if (!File.Exists(scope.ValidateFile(expectedPath))) return null;
+                if (!File.Exists(scope.ValidateFile(expectedPath)))
+                {
+#if DEBUG
+                    diagnosticOutcome = "missing";
+#endif
+                    return null;
+                }
                 await InvokeBeforeCanonicalReadOpenAsync(relativePath);
                 cancellationToken.ThrowIfCancellationRequested();
                 if (lease != null) EnsureValidCanonicalWriteLease(lease);
                 EnsureCanonicalPathStillSafe(relativePath, expectedPath);
                 stream = OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous: true);
-                if (stream == null) return null;
+                if (stream == null)
+                {
+#if DEBUG
+                    diagnosticOutcome = "missing";
+#endif
+                    return null;
+                }
                 if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
                     await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
                 break;
             }
             catch (Exception ex) when (IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
+#if DEBUG
+                BrowserDiagnosticContent(relativePath, "ordinary-async", "retry", "open-fault");
+#endif
                 if (stream != null) await stream.DisposeAsync();
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
             }
@@ -101,8 +125,17 @@ public partial class FileSystemManager
         {
             var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken);
             if (lease != null) EnsureValidCanonicalWriteLease(lease);
+#if DEBUG
+            diagnosticOutcome = "present"; diagnosticBytes = snapshot.Content.Length;
+#endif
             return snapshot;
         }
+
+#if DEBUG
+        }
+        catch { diagnosticOutcome = "fault"; throw; }
+        finally { BrowserDiagnosticContent(relativePath, "ordinary-async", "physical-result", diagnosticOutcome, diagnosticBytes); }
+#endif
     }
 
     private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(
@@ -114,17 +147,32 @@ public partial class FileSystemManager
     private CanonicalFileReadSnapshot? ReadOrdinaryFileSnapshotCore(string relativePath,
         CanonicalWriteLease? lease, out ExceptionDispatchInfo? dataFailure, bool nullableDataFailure)
     {
+#if DEBUG
+        var diagnosticOutcome = "fault";
+        long diagnosticBytes = 0;
+        try
+        {
+#endif
         dataFailure = null;
         var expectedPath = ResolvePath(relativePath);
         var scope = new TrustedLocalFileScope([GameSessionPath]);
         for (var attempt = 0; ; attempt++)
         {
+#if DEBUG
+            BrowserDiagnosticContent(relativePath, "ordinary-sync", "physical-attempt", "started");
+#endif
             var initialValidationComplete = false;
             try
             {
                 if (lease != null) EnsureValidCanonicalWriteLease(lease);
                 EnsureCanonicalPathStillSafe(relativePath, expectedPath);
-                if (!File.Exists(scope.ValidateFile(expectedPath))) return null;
+                if (!File.Exists(scope.ValidateFile(expectedPath)))
+                {
+#if DEBUG
+                    diagnosticOutcome = "missing";
+#endif
+                    return null;
+                }
                 using var stream = OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous: false,
                     out dataFailure, nullableDataFailure, attempt >= TransientFileAccessRetryCount);
                 if (stream == null)
@@ -136,6 +184,9 @@ public partial class FileSystemManager
                         if (lease != null) EnsureValidCanonicalWriteLease(lease);
                         CompleteOrdinaryRead(scope, relativePath, expectedPath);
                     }
+#if DEBUG
+                    diagnosticOutcome = dataFailure == null ? "missing" : "data-fault";
+#endif
                     return null;
                 }
                 initialValidationComplete = true;
@@ -148,7 +199,11 @@ public partial class FileSystemManager
                     stream.CopyTo(buffer);
                     CompleteOrdinaryRead(scope, relativePath, expectedPath);
                     if (lease != null) EnsureValidCanonicalWriteLease(lease);
-                    return new(buffer.ToArray(), timestamp);
+                    var result = new CanonicalFileReadSnapshot(buffer.ToArray(), timestamp);
+#if DEBUG
+                    diagnosticOutcome = "present"; diagnosticBytes = result.Content.Length;
+#endif
+                    return result;
                 }
                 CanonicalFileReadSnapshot snapshot;
                 try
@@ -164,18 +219,33 @@ public partial class FileSystemManager
                     (error is IOException or UnauthorizedAccessException))
                 {
                     dataFailure = ExceptionDispatchInfo.Capture(error);
+#if DEBUG
+                    diagnosticOutcome = "data-fault";
+#endif
                     return null;
                 }
                 CompleteOrdinaryRead(scope, relativePath, expectedPath);
                 if (lease != null) EnsureValidCanonicalWriteLease(lease);
+#if DEBUG
+                diagnosticOutcome = "present"; diagnosticBytes = snapshot.Content.Length;
+#endif
                 return snapshot;
             }
             catch (Exception ex) when (!initialValidationComplete &&
                 IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
             {
+#if DEBUG
+                BrowserDiagnosticContent(relativePath, "ordinary-sync", "retry", "open-fault");
+#endif
                 Thread.Sleep(TransientFileAccessRetryDelay);
             }
         }
+
+#if DEBUG
+        }
+        catch { diagnosticOutcome = "fault"; throw; }
+        finally { BrowserDiagnosticContent(relativePath, "ordinary-sync", "physical-result", diagnosticOutcome, diagnosticBytes); }
+#endif
     }
 
     // Shared by ordinary readers and the leased B2 before-image reader. Every

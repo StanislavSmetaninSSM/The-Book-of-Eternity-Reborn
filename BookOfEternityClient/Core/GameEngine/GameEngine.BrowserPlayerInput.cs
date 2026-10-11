@@ -266,6 +266,9 @@ public partial class GameEngine
         proof["story"] = JsonSerializer.SerializeToNode(story, JsonOpts);
         var acceptedJson = PendingPlayerActionService.CreatePhase(state, "accepted", proof);
         await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, acceptedJson);
+#if DEBUG
+        _fs.BrowserDiagnosticMark("accepted-receipt-published");
+#endif
         return true;
     });
 

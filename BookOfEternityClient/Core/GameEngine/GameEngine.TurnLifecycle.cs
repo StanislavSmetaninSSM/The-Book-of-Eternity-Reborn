@@ -1454,20 +1454,38 @@ public partial class GameEngine
         await HoldOriginalBrowserIdleCutAsync(browserStaged, stagingClose, stagingCloseObserved, stagingWasRemote);
 #endif
         var browserOutcome = await WaitForTerminalSignalWithParticipationAsync(browserStaged);
+#if DEBUG
+        using var diagnosticWindow = _fs.BrowserDiagnosticWindow(stagedPreparation.Request.RequestId ?? "unbound", browserStaged.Binding.ActionId, browserStaged.Binding.Generation);
+        try
+        {
+#endif
         await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, stagedPreparation.Generation, async () =>
         {
             using var original = _fs.BeginBrowserOriginalOperation(browserStaged.Binding, browserStaged);
+#if DEBUG
+            using var diagnosticOwner = _fs.BrowserDiagnosticIdentity(null, browserStaged.Binding.ActionId,
+                browserStaged.Binding.Generation, original.Condition.ActiveIdentity);
+            using var diagnosticCaller = _fs.BrowserDiagnosticLogical(null, "browser-terminal-finalization");
+            _fs.BrowserDiagnosticMark("processing-owner");
+#endif
             var manifest = await LoadPendingTurnSnapshotManifestAsync();
             var context = await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false)
                 ?? throw BrowserOriginalMainCondition.Invalid();
             var originalRequest = JsonSerializer.Deserialize<TurnRequest>(browserStaged.RequestJson, JsonOpts)
                 ?? throw BrowserOriginalMainCondition.Invalid();
+#if DEBUG
+            using var diagnosticRequest = _fs.BrowserDiagnosticIdentity(originalRequest.RequestId, null, null, null);
+#endif
             await FinalizePlayerTurnAsync(stagedPreparation with
             {
                 Request = originalRequest, SnapshotContext = context
             }, action, playerFacingTurn, browserOutcome);
             return true;
         });
+#if DEBUG
+        }
+        catch { _fs.BrowserDiagnosticMark("finalizer-failed"); throw; }
+#endif
     }
 
     private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(
@@ -1784,6 +1802,9 @@ public partial class GameEngine
                     _gameLoop.TurnNumber, state.CurrentRealm ?? "Chaos Sea", state.Incarnation,
                     action, response?.Response, state.CurrentLocation, storyRefs);
 
+#if DEBUG
+            _fs.BrowserDiagnosticMark("story-published");
+#endif
             await ProcessMortalProgressionAfterAcceptedTurnAsync();
 
             // Check for GM-triggered life transitions
@@ -1828,6 +1849,9 @@ public partial class GameEngine
             if (browserIncarnationHandoff) return;
         }
 
+#if DEBUG
+        _fs.BrowserDiagnosticMark("accepted-artifact-cleanup-begun");
+#endif
         CleanupBackup(backedUpFiles);
         await CleanupAcceptedTurnTerminalArtifactsAsync();
         if (browserStaged != null && browserStory != null)

@@ -222,7 +222,13 @@ public partial class GameEngine
                     await _validator.RecheckOriginalGuardianMusingsAfterRepairAsync(guardianMusingsForRepair))
                 : null;
             repairResubmissionCompleted = false;
-            var issues = await _validator.ValidateGameStateAsync();
+            List<ValidationIssue> issues;
+#if DEBUG
+            using (_fs.BrowserDiagnosticLogical(null, source))
+#endif
+            {
+                issues = await _validator.ValidateGameStateAsync();
+            }
             if (RequiresAcceptedTurnPayloadValidation(source))
             {
                 if (RequiresFreshNarrativePayload(source))
@@ -437,6 +443,9 @@ public partial class GameEngine
             await EnsureClientOwnedSystemFilesHealthyAsync();
             var spiritualAdmission = SpiritualContinuationAdmission.Admitted;
             UpstreamAcceptedTurnValidation upstreamValidation;
+#if DEBUG
+            using (_fs.BrowserDiagnosticLogical(null, "accepted-upstream-raw"))
+#endif
             using (var upstreamSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest))
                 upstreamValidation = await CollectAcceptedTurnUpstreamRawStateIssuesAsync();
             if (upstreamValidation.RejectSpiritualBoundary)
@@ -456,6 +465,9 @@ public partial class GameEngine
                 activeSnapshotContext = freshSnapshot.Context;
             }
             using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
+#if DEBUG
+            using var diagnosticAcceptedCaller = _fs.BrowserDiagnosticLogical(null, "accepted-validation-loop");
+#endif
             rawIssues.AddRange(await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
             if (spiritualAdmission == SpiritualContinuationAdmission.RequiresInitialResourceValidation &&
                 !rawIssues.Any(issue => issue.Severity == IssueSeverity.Error))
