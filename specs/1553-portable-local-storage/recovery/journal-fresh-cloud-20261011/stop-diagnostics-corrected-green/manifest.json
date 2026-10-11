@@ -1,0 +1,490 @@
+{
+  "Utc": "2026-10-11T06:08:25.575276+00:00",
+  "SourceSHA": "5a15cf99d9f03a257633e2015c2d98da2aeb5b82",
+  "Command": "source env.sh; pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-main-stop-first-failure-diagnostics-linux.json -TimeoutMinutes 6",
+  "RunnerPath": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261011-060617-772-75267-f960b603f7f94b2f914e92f4e4a1281d-categories",
+  "ModelCalls": 0,
+  "ArchiveScope": "Every completed runner file, full outer console, and explicitly selected journal observations/before-after trees; for owned C5 chain every regular runtime/game/relay/diagnostic/native file except ephemeral tmp/cache/config/data, and ship preserved by complete byte/hash inventory; no source cache, credentials or unrelated state.",
+  "SourcePins": {
+    "BookOfEternityClient/Core/FileSystemManager.cs": "794e46855935eba31a58da064b3fd5078292e25fb08a3ba165bd7e4fef69ee52",
+    "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs": "fdcb3969df9ff2f8a13a92af9eee1a207250c088bc8871906badbcb2c1a70e9b",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserOriginalAdmission.cs": "fdcc2fbf0a6e5d350ad2215844d0b40aaa6d1807c0b2fb6ec0d6386f0bfff26c",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs": "93403801377336387e5cf20399b54d1aa928ff3e40dc30fe0ab43dbf96559981",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92",
+    "scripts/test-csharp.ps1": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+    "scripts/testing/TestCategoryExecution.ps1": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38",
+    "scripts/testing/TestCategoryCatalog.psm1": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+    "tests/categories.json": "458d6294f815b15b7d6651ef6d941e139988d294635750d2dbd3145d7802ab3b",
+    "BookOfEternityClient.Tests/LinuxGameChainTests.cs": "6b16459c015896dec6dfe58bc93a7bf825e6f2b9ad658e984b357a4dec700144",
+    "tests/fixtures/LinuxGameChains/console_chain.py": "f721317c0699d4f5d0bf6a0dc72db01a176970663398b73dda367fc6aae2038a",
+    "tests/fixtures/LinuxGameChains/startup_observer.py": "b927d2db9f1ad80b11a09cd6e0f271cd6acee9ab1593952a40bb782e245d7fae",
+    "scripts/build-linux-supervisor.ps1": "362dd6d89f79bc7fd9d67edbc2bc1f02b11a3cb5cc138389a735753986b76b16",
+    "tools/gm-relay/relay_cli.py": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606",
+    "tests/selection.json": "27006455535cc002e981dcffc40a9da07570279270dec10d587c138d906dc239",
+    "BookOfEternityClient.WebFrontend/package.json": "34ea949d7c929126538542684bf2af693caecf2345a9e67e9ae1e1d794c505d7",
+    "BookOfEternityClient.WebFrontend/package-lock.json": "c4dd676e182fd9438736bc9cf67ee05165a34b0348bd93bbd6e3619b7164410c",
+    "native/linux/boe-lineage-supervisor.c": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+    "tests/fixtures/LinuxHost/host-guardian.c": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3",
+    "BookOfEternityClient.TestSupport/MainRunPinTimeoutObservation.cs": "624e18ea7b3a58e5db51f9426c6fea269b06502b565af91b120456d0797e68eb",
+    "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs": "035650e0699b73c859d4b13b9326cbcbc5bb2348664e1d56e334079af209a838",
+    "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs": "b9dee77e72f2fa264e6db7965aa733a6807a16858eb6eb4ffb1ee6f97496404e",
+    "BookOfEternityClient.Tests/GmMainRunOwnerLinuxTests.cs": "f0725fc64c9e15ab2170702a190c4a80ddf39718b6f74ae0a08f7809a46e0f7d",
+    "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs": "a71ecce4a60b8285b91e53f75fd0292b902b860ed664c02fc93695656ce3fda6",
+    "tests/selections/1553-main-stop-pin-timeout-causal-linux.json": "89f4c4a74e9f8c99eca78c3b3b56fff44a4929803aec15da780265a000331dc8",
+    "BookOfEternityGMBridge/Program.cs": "a8b964bb7841fb83a61a48da4e1535b3fc7c3f939b12b82d880cf5fb86623272",
+    "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs": "2e6318b45aae98237326879f4d5a29c63714684ebbcff3a4075d5433c86f694c",
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+    "BookOfEternityClient/Core/GmSessionRunPersistence.cs": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb",
+    "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
+    "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7",
+    "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f",
+    "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+    "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+    "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj": "c49d352dbfb3bb464e0a5bd456366222e0abe792b1264d665d60c8d545e487d4",
+    "BookOfEternityClient.TestSupport/MainStopDiagnosticScenarioAssertions.cs": "6e64e2e486f6e65f046f39edf32ed93f2956149122e9b16451804709c004a397",
+    "tests/selections/1553-main-stop-first-failure-diagnostics-linux.json": "089fbac3b7ceb73ce960a7de980e32acb8269c4e412e90ad342c49c03f053a4b",
+    "BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs": "acdbb9c72c679a61346769e261db058b76304b93b865bf6c337b09aaf9aacd58",
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.StopDiagnostics.cs": "ec8f7b40abe3f454f27776308030aff5804624db83eb4485c628ed0a7ff9b176",
+    "BookOfEternityGMBridge/BridgeHost.StopDiagnostics.cs": "91399893f28b34afe0e973d2b4fd79f1c94e5ebc52c3cec19438c800638c6b2f"
+  },
+  "Assemblies": {
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "23c42c7449ce205f31b5996bde54f7a6059c120cf4b259ccf1c91deb6763ebfb",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll": "c259f66befe422569bf56495fcf97814551fd30c62d872d47333d9f1750c5bf5",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb": "e28624604158f63594792f7663d12de14d1ee26c3c252334b246aad9a8e8ca90",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll": "f9c3661970cab6039ea5e489bfb4cf18c64b3510cc1421ae5775b235afef5734",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "16816a48f08f67c6cb48a39b58b7a5077db6293ab1867fd2402c818e94603bf2",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb": "42de1ccc8fd22e2110a43330eda51cbd068ed3be390771813511332b001d73a0",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll": "e383d87802246abbfa868fa706193d61fefee67e31c64f53b8bacdf1ba725175",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "7fa4b5ab72e90e65a0efbb4aff415e9de87270824aa2176762d6e7947656e582",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll": "91e1826993b8853c3523c495d6ec4cd04b696ab8da3ea563151b34d24f78a0d1",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb": "da4b61e1266e36bd0675d9bc3361c3fcc01fe7416ca6e4289fa1d898a81a9ec2",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "631af12c60faef70ee752f2e78c685bbb160b25928b3502311748adabe0a629a",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb": "edfaa06723bb62a9e68aa606febb37715f82f8cdb0aafc8504d4245cfe639501",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll": "91e1826993b8853c3523c495d6ec4cd04b696ab8da3ea563151b34d24f78a0d1",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb": "edfaa06723bb62a9e68aa606febb37715f82f8cdb0aafc8504d4245cfe639501",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll": "91e1826993b8853c3523c495d6ec4cd04b696ab8da3ea563151b34d24f78a0d1",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll": "5c4b149b71aeaf6f60da42421cd8542399a666bc5b9764b1ec039174ab513fb2",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.pdb": "edfaa06723bb62a9e68aa606febb37715f82f8cdb0aafc8504d4245cfe639501",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.pdb": "a4116ffdcca41e1231b9c5ba3a529eaf162eb7d4b3cc3ec5459b09c3da0bfaca",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "7fa4b5ab72e90e65a0efbb4aff415e9de87270824aa2176762d6e7947656e582",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.dll": "91e1826993b8853c3523c495d6ec4cd04b696ab8da3ea563151b34d24f78a0d1",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "631af12c60faef70ee752f2e78c685bbb160b25928b3502311748adabe0a629a",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.pdb": "edfaa06723bb62a9e68aa606febb37715f82f8cdb0aafc8504d4245cfe639501"
+  },
+  "Files": [
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "0de495e86cab15b1833778a7cd6c6f9df5d9f439275d39095a55b5de0237af47",
+      "RawBytes": 57585
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "a441a7dc508bb0a7fc7287462089b6bdf3432ae439a459370d60aa6865c249ee",
+      "RawBytes": 1726079
+    },
+    {
+      "Path": "runner/gm-main-stop-first-failure-diagnostics-linux-unit-001.trx.gz",
+      "RawSHA256": "123740090cce8ae02614caf75b0d9a89692cca229dcae21c9d13eb8bf8a7a735",
+      "RawBytes": 10887
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "fdcb79b4ddce35d8ed6b3dc87a1ab0599d4b60deec3d4d6dcf97d379f0d485b7",
+      "RawBytes": 2871
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "8d885f4d2a275b722d6c692fc1837a0212df6f2d9cd32fc0e0b9e7ac2f1e4397",
+      "RawBytes": 2348
+    },
+    {
+      "Path": "outer-console.log.gz",
+      "RawSHA256": "bfe966429fefe45db2921a19201a4f799ba5c71e4df1e311b521495f2a4240a3",
+      "RawBytes": 2818
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/boe-lineage-supervisor.gz",
+      "RawSHA256": "2c558044c2895b6b6f691e81e2a16ff710e783e6daa7e5629c0d7a31f7b516ae",
+      "RawBytes": 82136
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/build-provenance.json.gz",
+      "RawSHA256": "c0c6f719b95dac614cabb89c0a3bcf76c2ce304de9886c2426f25f574c9a4245",
+      "RawBytes": 1438
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/build.log.gz",
+      "RawSHA256": "4e09d9d7298fc833f8b016a67cde4ff3ff695db6cd53cb0cddf7e02ea7466a7e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/guardian.log.gz",
+      "RawSHA256": "b8d0a62f2c5f7d150cd1fe5644955c950bf122826deb267a2c68784c8e6eb5c9",
+      "RawBytes": 65
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/host-guardian.gz",
+      "RawSHA256": "b523b066d9de83067470285a7b207053c8214ca6e945c235c42b6adacba8319e",
+      "RawBytes": 43160
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/neutral-cli.gz",
+      "RawSHA256": "efd2fee0c4c1c543bfc9ff9216189da0c933edb7f845b20f499409fe0940abe3",
+      "RawBytes": 29528
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/neutral-session-86aaf69d966c475883483e22429a43d7/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "3fd2032c9b5f69ff2538d7fbe612982ae8593e3ad406f1cede59e7082aec93a7",
+      "RawBytes": 497
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/neutral-session-86aaf69d966c475883483e22429a43d7/.boe_runtime/locks/canonical-write.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/neutral-session-86aaf69d966c475883483e22429a43d7/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/neutral-session-86aaf69d966c475883483e22429a43d7/.boe_runtime/locks/session-lifecycle.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/neutral-session-86aaf69d966c475883483e22429a43d7/.boe_runtime/session-generation/current.json.gz",
+      "RawSHA256": "0cedd292166e1ed7d179561cf4e9991fbc0e3abe681470f104382ef7f54d5e34",
+      "RawBytes": 69
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/neutral-session-86aaf69d966c475883483e22429a43d7/game_session/config.json.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/neutral-session-86aaf69d966c475883483e22429a43d7/game_session/game_state/control/gm_bridge_status.json.gz",
+      "RawSHA256": "1e576a2b963704788577eae2f92d2fd1f59af887d46639685a40687b20f7f0ba",
+      "RawBytes": 858
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/neutral-terminal-manifest.json.gz",
+      "RawSHA256": "4cc4a72913028369a5ced1c32505b6597db5b19f4ce04ac181b464bd2d624820",
+      "RawBytes": 324
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/package-manifest.json.gz",
+      "RawSHA256": "03e98f1b3978b6c4d266f93c9699e49c9eaf6241f4b144fa04dd593aa82fb79f",
+      "RawBytes": 968
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/pin-timeout-observation.json.gz",
+      "RawSHA256": "ec68087fa88ce09f86dd3ce69e272a5ab5f5913e1976966d2d6e65145c690f3c",
+      "RawBytes": 16709
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/scenario.json.gz",
+      "RawSHA256": "07a0fe4f2ff7c76686ffdfddd9730b29c0ffe2ce5c83d60c6a183c8caf493447",
+      "RawBytes": 29719
+    },
+    {
+      "Path": "cases/7f16a4d87f2d48b89eaad1df5384c068/stop-rpc-stderr.txt.gz",
+      "RawSHA256": "85224c1e065dc4159f09ba578b0ca125fc5fb858e24e6c0b77c1009764b574be",
+      "RawBytes": 5655
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/boe-lineage-supervisor.gz",
+      "RawSHA256": "2c558044c2895b6b6f691e81e2a16ff710e783e6daa7e5629c0d7a31f7b516ae",
+      "RawBytes": 82136
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/build-provenance.json.gz",
+      "RawSHA256": "c0c6f719b95dac614cabb89c0a3bcf76c2ce304de9886c2426f25f574c9a4245",
+      "RawBytes": 1438
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/build.log.gz",
+      "RawSHA256": "cc67196ca8b575dbb3b8294ab5f9e8a4f115385407a1f137b3f70897f1ff1f9f",
+      "RawBytes": 149
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/guardian.log.gz",
+      "RawSHA256": "34f085a7022c236dfef8dec28578f8d9d5ed48f21f0b3ffc84c3724372df3077",
+      "RawBytes": 65
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/host-guardian.gz",
+      "RawSHA256": "b523b066d9de83067470285a7b207053c8214ca6e945c235c42b6adacba8319e",
+      "RawBytes": 43160
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/neutral-cli.gz",
+      "RawSHA256": "efd2fee0c4c1c543bfc9ff9216189da0c933edb7f845b20f499409fe0940abe3",
+      "RawBytes": 29528
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/neutral-session-0aab9c15b1534327b90c49fdd8d4c130/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "67aac967f22dc4107add0525bb2fde22f1ecbe3b066ab11350c93b88d86374f8",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/neutral-session-0aab9c15b1534327b90c49fdd8d4c130/.boe_runtime/locks/canonical-write.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/neutral-session-0aab9c15b1534327b90c49fdd8d4c130/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/neutral-session-0aab9c15b1534327b90c49fdd8d4c130/.boe_runtime/locks/session-lifecycle.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/neutral-session-0aab9c15b1534327b90c49fdd8d4c130/.boe_runtime/session-generation/current.json.gz",
+      "RawSHA256": "5249954c48c1657499bbf046d959851f93a09ef2c746fc0295478fe63aa43ad7",
+      "RawBytes": 69
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/neutral-session-0aab9c15b1534327b90c49fdd8d4c130/game_session/config.json.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/neutral-session-0aab9c15b1534327b90c49fdd8d4c130/game_session/game_state/control/gm_bridge_status.json.gz",
+      "RawSHA256": "ae2381d79d56eb17eb7d7d8ca5d3da93a2ed5a1a12a333a1a8e9eb3a2c138cc3",
+      "RawBytes": 858
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/neutral-terminal-manifest.json.gz",
+      "RawSHA256": "4cc4a72913028369a5ced1c32505b6597db5b19f4ce04ac181b464bd2d624820",
+      "RawBytes": 324
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/non-primary-refusal-observation.json.gz",
+      "RawSHA256": "a6f146f63e8355c8273fefa463197d111cf34358bb7555d20920a29af356251a",
+      "RawBytes": 3140
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/package-manifest.json.gz",
+      "RawSHA256": "03e98f1b3978b6c4d266f93c9699e49c9eaf6241f4b144fa04dd593aa82fb79f",
+      "RawBytes": 968
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/scenario.json.gz",
+      "RawSHA256": "ba9a5622c7cd7e0c2ab9f4463ef29e0eba37dbe503a32620bccfa6ab840d550a",
+      "RawBytes": 7728
+    },
+    {
+      "Path": "cases/c4185c174eec49f58b36f4498c6b7199/stop-rpc-stderr.txt.gz",
+      "RawSHA256": "a3b72e80dfd6551c0aa858b27275659ccc173c939104e3073a58fd52b731b468",
+      "RawBytes": 4483
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/boe-lineage-supervisor.gz",
+      "RawSHA256": "2c558044c2895b6b6f691e81e2a16ff710e783e6daa7e5629c0d7a31f7b516ae",
+      "RawBytes": 82136
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/build-provenance.json.gz",
+      "RawSHA256": "c0c6f719b95dac614cabb89c0a3bcf76c2ce304de9886c2426f25f574c9a4245",
+      "RawBytes": 1438
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/build.log.gz",
+      "RawSHA256": "e518a95e0db0b6ed473ba8f512e4470eb7c5314787bca9bed3583403f80d2a8b",
+      "RawBytes": 149
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/config.json.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/guardian.log.gz",
+      "RawSHA256": "3549fe84023f6ef0bb8d30530b7e556063d116899a8d991c3a37573b4edca91d",
+      "RawBytes": 413
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/host-guardian.gz",
+      "RawSHA256": "b523b066d9de83067470285a7b207053c8214ca6e945c235c42b6adacba8319e",
+      "RawBytes": 43160
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/neutral-cli.gz",
+      "RawSHA256": "efd2fee0c4c1c543bfc9ff9216189da0c933edb7f845b20f499409fe0940abe3",
+      "RawBytes": 29528
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/neutral-session-68e52d81002e4fc784bea072a5e05f4f/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "8965afebbcbd620c6d7b9a760de739a64864b22030e1cf98a9a61e51f0831fb7",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/neutral-session-68e52d81002e4fc784bea072a5e05f4f/.boe_runtime/locks/canonical-write.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/neutral-session-68e52d81002e4fc784bea072a5e05f4f/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/neutral-session-68e52d81002e4fc784bea072a5e05f4f/.boe_runtime/locks/session-lifecycle.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/neutral-session-68e52d81002e4fc784bea072a5e05f4f/.boe_runtime/session-generation/current.json.gz",
+      "RawSHA256": "189bb5387a7c6ed524e693b9d110e2396d04a21ca8baae04e1a6d399a7427cdb",
+      "RawBytes": 69
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/neutral-session-68e52d81002e4fc784bea072a5e05f4f/game_session/config.json.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/neutral-session-68e52d81002e4fc784bea072a5e05f4f/game_session/game_state/control/gm_bridge_status.json.gz",
+      "RawSHA256": "1ca84f79083987fbae5dff36e43996e5e8d3de468da74f34984dda175f98dd5d",
+      "RawBytes": 1440
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/neutral-terminal-manifest.json.gz",
+      "RawSHA256": "4cc4a72913028369a5ced1c32505b6597db5b19f4ce04ac181b464bd2d624820",
+      "RawBytes": 324
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/package-manifest.json.gz",
+      "RawSHA256": "03e98f1b3978b6c4d266f93c9699e49c9eaf6241f4b144fa04dd593aa82fb79f",
+      "RawBytes": 968
+    },
+    {
+      "Path": "cases/d70ae06dafef4ba58d0c6cbe658ec679/scenario.json.gz",
+      "RawSHA256": "23f132a9ba03ef9009ee4ef11d152501744e7ae94318b8caf3ed45723e321d27",
+      "RawBytes": 1071
+    }
+  ],
+  "Summary": {
+    "Categories": [
+      "gm-main-stop-first-failure-diagnostics-linux"
+    ],
+    "Reasons": [
+      {
+        "category": "gm-main-stop-first-failure-diagnostics-linux",
+        "reason": "Coordinator/Astra approve bounded test-first Stop failure preservation. Four exact methods yield six cases: pin-timeout and non-primary refusal require new diagnostics (expected causal RED2 missing-report failures); unchanged positive original Stop plus RPC shell/host/io controls must pass4. Original state/reply/stderr is frozen before diagnostic assertions. No lifecycle or C5 runtime; global CI selection unchanged.",
+        "contracts": [
+          "#1553 T069-T071 remain open",
+          "first observed original Stop failure and exact first failed predicate",
+          "unchanged exception/RPC/retained-uncertain authority and positive Stop boundary"
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "5a15cf99d9f03a257633e2015c2d98da2aeb5b82",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-main-stop-first-failure-diagnostics-linux",
+        "Seconds": 14.4829303,
+        "BudgetMinutes": 3,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.042284,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0305202,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0874192,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 44.3332509,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0027441,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 6,
+    "WallTime": "00:01:01.1149517",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 6,
+      "CompletedCases": 6,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 6,
+      "Executed": 6,
+      "Passed": 6,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "OwnedChains": [],
+  "FreshCompiledSourceSHA": "5a15cf99d9f03a257633e2015c2d98da2aeb5b82",
+  "IndependentReview": "SAME combined product/test/evidence review pending; corrected entry-original binding and honest text-overflow completeness, no additional acceptance cycle.",
+  "BuildProvenance": "Fresh selected unit/product/Bridge/TestSupport build at clean5a15; unselected integration assembly hashes historical inventory only.",
+  "PrimaryFreshAssemblies": {
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll": "e383d87802246abbfa868fa706193d61fefee67e31c64f53b8bacdf1ba725175",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll": "91e1826993b8853c3523c495d6ec4cd04b696ab8da3ea563151b34d24f78a0d1",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll": "5c4b149b71aeaf6f60da42421cd8542399a666bc5b9764b1ec039174ab513fb2",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "631af12c60faef70ee752f2e78c685bbb160b25928b3502311748adabe0a629a"
+  },
+  "OwnedNativeCaseRoots": [
+    "7f16a4d87f2d48b89eaad1df5384c068",
+    "c4185c174eec49f58b36f4498c6b7199",
+    "d70ae06dafef4ba58d0c6cbe658ec679"
+  ],
+  "ActualOutcome": "Corrected GREEN6/6complete; exact existingStop/refusal/RPC outcomes and first/current/retry provenance retained. Pure oversized Message/StackText controls return incomplete/capturefailure without changing actual Stop exception; no new xUnit/nativeStop. Initial0cf GREEN and bothRED attempts preserved separately."
+}
