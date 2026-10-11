@@ -23482,7 +23482,7 @@
         },
         {
             "id": "c5-browser-admission-diagnostics",
-            "responsibility": "#1553 bounded DEBUG opt-in original-browser profiling collector: synchronous nested self/inclusive wall accounting, concurrent branch isolation, finite row cap, disabled/invalid owned admission, create-only failure-isolated export and finite overhead calibration. Diagnostic totals never stand for acceptance-window costs.",
+            "responsibility": "#1553 bounded DEBUG opt-in original-browser profiling collector: synchronous nested self/inclusive wall accounting, concurrent branch isolation, finite row cap, disabled/invalid owned admission, create-only failure-isolated export and finite overhead calibration. Per-action sums never stand for latency; bounded engine-window contained/crossing attribution is distinct from external Helper→Acceptance.",
             "excludes": "No product proof optimization, actual full C5 execution, latency/SLA, cross-lease PASS reuse, release telemetry or native Windows qualification.",
             "changeHints": [
                 "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.Diagnostics.cs",
@@ -23506,6 +23506,37 @@
                     "project": "unit",
                     "tests": [
                         "BookOfEternityClient.Tests.BrowserAdmissionDiagnosticsTests.*"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "c5-browser-admission-source-guards",
+            "responsibility": "#1553/T071 only the existing World and Meta conservative source-closure pin Facts after independently reviewed DEBUG attribution edits. Source pins are not runtime authority or a complete method roster.",
+            "excludes": "No phase component controls, actual game/C5 execution, optimization, CI/global selection or authority expansion.",
+            "changeHints": [
+                "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-browser-admission-diagnostics",
+                    "when": "Focused instrumentation contracts accompany mechanical refresh of only changed reviewed source pins."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_SourceClosurePinsRequireExplicitReview",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SourceClosurePinsRequireReview"
                     ]
                 }
             ]

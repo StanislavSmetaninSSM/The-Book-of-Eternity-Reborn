@@ -23,6 +23,117 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
         (IDisposable)Invoke(collector, "Measure", stage);
     private static JsonNode Snapshot(object collector) => JsonNode.Parse((string)Invoke(collector, "SnapshotJson"))!;
 
+    // New attribution contracts are deliberately test-first. These are collector
+    // observations, never assertions that a storage admission or turn succeeded.
+    private static IDisposable Logical(object collector, string phase, string caller) =>
+        (IDisposable)Invoke(collector, "Logical", phase, caller);
+    private static IDisposable Window(object collector) => (IDisposable)Invoke(collector, "BeginWindow",
+        "0123456789abcdef0123456789abcdef", "fedcba9876543210fedcba9876543210", "11111111111111111111111111111111");
+
+    [Fact]
+    public async Task LogicalLabelsFlowAcrossAwaitAndRestoreWithoutSiblingLeakage()
+    {
+        var collector = Create(System.Diagnostics.Stopwatch.GetTimestamp);
+        using (Logical(collector, "outer", "engine-test"))
+        {
+            await Task.WhenAll(new[] { "MetaMiscStateFiles", "ClientOwnedControlFiles" }.Select(async phase =>
+            {
+                using (Logical(collector, phase, "engine-test"))
+                {
+                    await Task.Yield();
+                    using (Measure(collector, "physical-verification")) { }
+                }
+            }));
+            using (Measure(collector, "after-branches")) { }
+        }
+        using (Measure(collector, "after-restore")) { }
+        var rows = Snapshot(collector)["Rows"]!.AsArray();
+        Assert.Equal(new[] { "ClientOwnedControlFiles", "MetaMiscStateFiles" },
+            rows.Where(row => row!["Stage"]!.GetValue<string>() == "physical-verification")
+                .Select(row => row!["ValidationPhase"]!.GetValue<string>()).OrderBy(value => value));
+        Assert.Equal("outer", rows.Single(row => row!["Stage"]!.GetValue<string>() == "after-branches")!["ValidationPhase"]!.GetValue<string>());
+        Assert.Equal("unbound", rows.Single(row => row!["Stage"]!.GetValue<string>() == "after-restore")!["ValidationPhase"]!.GetValue<string>());
+        Assert.Equal(0, Snapshot(collector)["AccountingErrors"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void WindowSpansSeparateContainedCrossingAndLateWork()
+    {
+        long ticks = 0;
+        var collector = Create(() => ticks);
+        using (Window(collector))
+        {
+            ticks = 1;
+            using (Measure(collector, "contained")) ticks = 3;
+            ticks = 4;
+            using (Measure(collector, "crossing"))
+            {
+                ticks = 6;
+                Invoke(collector, "Mark", "accepted-receipt-published");
+                ticks = 8;
+            }
+            ticks = 9;
+            using (Measure(collector, "late")) ticks = 11;
+            ticks = 12;
+        }
+        var result = Snapshot(collector);
+        var rows = result["Rows"]!.AsArray();
+        var contained = rows.Single(row => row!["Stage"]!.GetValue<string>() == "contained")!;
+        Assert.Equal(1, contained["ContainedCount"]!.GetValue<long>());
+        Assert.Equal(2, contained["ContainedInclusiveTicks"]!.GetValue<long>());
+        Assert.Equal(2, contained["ContainedSelfTicks"]!.GetValue<long>());
+        var crossing = rows.Single(row => row!["Stage"]!.GetValue<string>() == "crossing")!;
+        Assert.Equal(1, crossing["CrossingCount"]!.GetValue<long>());
+        Assert.Equal(4, crossing["CrossingInclusiveTicks"]!.GetValue<long>());
+        Assert.Equal(0, crossing["ContainedInclusiveTicks"]!.GetValue<long>());
+        Assert.Equal(1, rows.Single(row => row!["Stage"]!.GetValue<string>() == "late")!["LateCount"]!.GetValue<long>());
+        var window = Assert.Single(result["Windows"]!.AsArray())!;
+        Assert.Equal(0, window["StartedTicks"]!.GetValue<long>());
+        Assert.Equal(6, window["AcceptedTicks"]!.GetValue<long>());
+        Assert.Equal(12, window["ClosedTicks"]!.GetValue<long>());
+        Assert.Equal("accepted", window["Outcome"]!.GetValue<string>());
+        Assert.True(result["Complete"]!.GetValue<bool>());
+    }
+
+    [Fact]
+    public void ContentCountersKeepMissingFollowupAndNullableDataFaultDistinct()
+    {
+        var collector = Create(() => 1);
+        const string path = "game_state/control/life_transitions.json";
+        using (Logical(collector, "MetaMiscStateFiles", "postaccepted-validation"))
+        {
+            Invoke(collector, "Content", path, "public-text-async", "semantic", "started", 0L);
+            Invoke(collector, "Content", path, "public-text-async", "initial", "missing", 0L);
+            Invoke(collector, "Content", path, "public-text-async", "followup-reason", "missing", 0L);
+            Invoke(collector, "Content", path, "public-text-async", "followup", "present", 17L);
+            Invoke(collector, "Content", path, "public-text-async", "semantic", "returned-present", 17L);
+            Invoke(collector, "Content", path, "world-nullable-sync", "leaf", "data-fault", 0L);
+        }
+        var rows = Snapshot(collector)["ContentRows"]!.AsArray();
+        Assert.Equal(6, rows.Count);
+        Assert.Equal(1, rows.Where(row => row!["Attempt"]!.GetValue<string>() == "initial" &&
+            row["Outcome"]!.GetValue<string>() == "missing").Sum(row => row!["Count"]!.GetValue<long>()));
+        var fault = rows.Single(row => row!["ReaderFamily"]!.GetValue<string>() == "world-nullable-sync")!;
+        Assert.Equal("data-fault", fault["Outcome"]!.GetValue<string>());
+        Assert.All(rows, row => Assert.Equal("MetaMiscStateFiles", row!["ValidationPhase"]!.GetValue<string>()));
+        Assert.Equal(0, Snapshot(collector)["Acquisitions"]!.GetValue<long>());
+    }
+
+    [Fact]
+    public void FailedAndWindowLimitedCaptureCannotClaimCompleteProcessing()
+    {
+        var collector = Create(() => 1);
+        using (Window(collector)) Invoke(collector, "Mark", "finalizer-failed");
+        var first = Assert.Single(Snapshot(collector)["Windows"]!.AsArray())!;
+        Assert.Equal("failed", first["Outcome"]!.GetValue<string>());
+        Assert.Null(first["AcceptedTicks"]);
+        for (var i = 0; i < 8; i++) using (Window(collector)) { }
+        var result = Snapshot(collector);
+        Assert.Equal(8, result["Windows"]!.AsArray().Count);
+        Assert.Equal(1, result["DroppedWindows"]!.GetValue<int>());
+        Assert.False(result["Complete"]!.GetValue<bool>());
+    }
+
     [Fact]
     public void NestedSynchronousFramesConserveSelfTimeAndClassifyBytes()
     {

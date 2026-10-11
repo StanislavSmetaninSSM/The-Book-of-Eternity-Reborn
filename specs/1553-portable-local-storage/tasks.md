@@ -1,3 +1,7 @@
+## Current bounded instrumentation block — 2026-10-11
+
+- [ ] T071-BROWSER-ADMISSION-ATTRIBUTION [child T071/#1553] [Accepted bounded instrumentation/test-first checkpoint](plan.md#t071-browser-admission-attribution--test-first-wip-2026-10-11): four collector contracts +existing diagnostics +two affected source guards, proposed14methods/15cases; implementation/preparation/actual controls/C5 UNRUN. No source/runtime PASS claimed; independent coherent SOURCE gate first. Logical labels are separate from synchronous timings; actual engine publication window is distinct from external helper/driver anchors. Preserve original guards/errors/order/short-circuit, missing-vs-fault, finite owned export and disabled no-state path. One duration attribution runtime remains separately gated; no optimization/CI/full suite. Prior bounded Meta/World/duration results stay frozen; ordinary/performance unqualified, historical causes UNKNOWN.
+
 ## Разрешённый следующий runtime проход — 2026-10-10
 
 Source #1553; accepted baseline `a7a662571ec070a433da6b9cd6a1ecc3dda5a232`;
