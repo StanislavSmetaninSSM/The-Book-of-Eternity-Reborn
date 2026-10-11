@@ -280,8 +280,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/WorldDirectiveService.cs", "1E272E2A48AC49EB82894C917FA3476D24C568BFE9C903B358CB56FE3529C2C0"),
         ];
         foreach (var (path, expected) in pins)
-            Assert.Equal(expected, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(FindRepoFile(path)))));
-        var source = File.ReadAllText(FindRepoFile("BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs"));
+            Assert.Equal(expected, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(Path.Combine(TestRepoPaths.RepoRoot, path)))));
+        var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs"));
         foreach (var path in MetaShapePaths) Assert.Contains('"' + path + '"', source);
     }
 
