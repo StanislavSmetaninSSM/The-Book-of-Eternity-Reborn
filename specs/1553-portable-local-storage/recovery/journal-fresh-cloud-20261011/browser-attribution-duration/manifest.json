@@ -6029,7 +6029,7 @@
     "AllOriginalThreeTurnAssertions": true,
     "ModelCalls": 0,
     "Ordinary40sAndPerformance": "UNQUALIFIED; all three legacy narrative40 exceeded",
-    "AttributionAssessment": "HOLD until first frozen raw readback; no ranking/causal gain"
+    "AttributionAssessment": "SAME independent and ROOT fidelity/causal assessment PASS for frozen3f53d2f6; engine attribution INCOMPLETE/BLOCKED. No provably complete engine acceptance phase scope; ranking and optimization candidates withheld."
   },
   "ProfileCaptureHealth": {
     "ExportFiles": 398,
@@ -6094,5 +6094,182 @@
       "SHA256": "04505fafff2f2645439e890d8054a4af515efb44a7c19344eee39ba404b5d6e8"
     }
   },
-  "TimingsQualification": "HelperToAcceptance is external driver observation. Raw AuthoredPacketToAcceptanceSeconds is AcceptanceObservedAtSeconds minus LegacyNarrativeWaitStartedAtSeconds, not AuthoredPacketCallStartedAtSeconds. Engine window ticks are separate process-domain anchors; inclusive work overlaps and cannot be summed as CPU/wall latency. Full observer overhead uncalibrated."
+  "TimingsQualification": "HelperToAcceptance is external driver observation. Raw AuthoredPacketToAcceptanceSeconds is AcceptanceObservedAtSeconds minus LegacyNarrativeWaitStartedAtSeconds, not AuthoredPacketCallStartedAtSeconds. Engine window ticks are separate process-domain anchors; inclusive work overlaps and cannot be summed as CPU/wall latency. Full observer overhead uncalibrated.",
+  "AttributionAssessment": {
+    "FrozenFirstRawCarrierSHA": "3f53d2f6c39d33e4df3f34c8e6e86993cff17b0b",
+    "ReviewedInstrumentationSHA": "95b786f5f20fa27a3b6a35df35f42cb1a62f00e3",
+    "RuntimeCompiledSHA": "7a08b71d85e4548af204c1fd114d0ded8e33e833",
+    "IndependentVerdict": "SAME independent fidelity/causal reason PASS; ROOT direct raw/source/binary/inventory readback PASS. These accept evidence and limits, not complete attribution.",
+    "EngineAttribution": "INCOMPLETE/BLOCKED",
+    "TimingKey": [
+      "Stage",
+      "Origin",
+      "original context Request",
+      "lifecycle Phase",
+      "Purpose",
+      "Held",
+      "full Labels"
+    ],
+    "ContentKey": [
+      "Path",
+      "ReaderFamily",
+      "full Labels"
+    ],
+    "LogicalLabelFields": [
+      "ValidationPhase",
+      "EngineCaller",
+      "RequestId",
+      "ActionId",
+      "Generation",
+      "OwnerIdentity",
+      "SnapshotOverridePresent",
+      "ProcessingAttemptId",
+      "WindowId"
+    ],
+    "CounterDimensionsNotKeys": "Content attempt/outcome/retry and inside/after/outside are fixed counters. Lease IDs are timing values. OwnerIdentity has value equality.",
+    "MainProcessCardinality": [
+      {
+        "PID": 169124,
+        "TimingKeys": 1153,
+        "ContentKeys": 2943,
+        "CombinedKeys": 4096,
+        "ContentPaths": 324,
+        "ReaderFamilies": 10,
+        "ContentPathFamilyKeys": 1183,
+        "TimingPhaseCallerAttemptRequestCombinations": 56,
+        "ContentPhaseCallerAttemptRequestCombinations": 62,
+        "UnionCombinations": 63,
+        "ProjectedExportTimingKeys": 1152,
+        "SavedContentProjectionWithoutPath": 179,
+        "DroppedTimingAttempts": 84242,
+        "DroppedContentAttempts": 9258,
+        "PathPrefixGroups": {
+          "contextPack": 72,
+          "snapshotMembers": 63,
+          "other": 189
+        },
+        "RollbackSuffixPathsOverlappingPrefixGroups": 62,
+        "ExportBytes": 3630784
+      },
+      {
+        "PID": 170561,
+        "TimingKeys": 1126,
+        "ContentKeys": 2970,
+        "CombinedKeys": 4096,
+        "ContentPaths": 336,
+        "ReaderFamilies": 10,
+        "ContentPathFamilyKeys": 1110,
+        "TimingPhaseCallerAttemptRequestCombinations": 37,
+        "ContentPhaseCallerAttemptRequestCombinations": 44,
+        "UnionCombinations": 44,
+        "ProjectedExportTimingKeys": 1126,
+        "SavedContentProjectionWithoutPath": 149,
+        "DroppedTimingAttempts": 49013,
+        "DroppedContentAttempts": 17488,
+        "PathPrefixGroups": {
+          "contextPack": 72,
+          "snapshotMembers": 68,
+          "other": 196
+        },
+        "RollbackSuffixPathsOverlappingPrefixGroups": 68,
+        "ExportBytes": 2767911
+      },
+      {
+        "PID": 171915,
+        "TimingKeys": 1174,
+        "ContentKeys": 2922,
+        "CombinedKeys": 4096,
+        "ContentPaths": 336,
+        "ReaderFamilies": 10,
+        "ContentPathFamilyKeys": 1198,
+        "TimingPhaseCallerAttemptRequestCombinations": 56,
+        "ContentPhaseCallerAttemptRequestCombinations": 62,
+        "UnionCombinations": 63,
+        "ProjectedExportTimingKeys": 1173,
+        "SavedContentProjectionWithoutPath": 179,
+        "DroppedTimingAttempts": 91879,
+        "DroppedContentAttempts": 9677,
+        "PathPrefixGroups": {
+          "contextPack": 72,
+          "snapshotMembers": 68,
+          "other": 196
+        },
+        "RollbackSuffixPathsOverlappingPrefixGroups": 68,
+        "ExportBytes": 3619931
+      }
+    ],
+    "Saturation": "Shared4096 key budget reached in all three main exports. Existing keys keep aggregating; each rejected new-key lookup increments an attempt counter, not a unique-key/row/proof/read counter. No rejected key/timestamp/scope is retained.",
+    "DroppedTimingQualification": "Rejected Measure returns Noop without a timing child. Retained parent self may include omitted child work and read/inventory counts may attach to ancestor; decomposition is incomplete, not a qualified category lower bound.",
+    "UnknownLoss": [
+      "first saturation time",
+      "unique lost timing/content keys",
+      "lost per-phase/caller/window distribution",
+      "fully observed engine phase scopes"
+    ],
+    "CompleteNonEngineExports": {
+      "Exports": 395,
+      "TimingKeys": 3970,
+      "ContentKeys": 3440,
+      "EngineWindows": 0,
+      "WebActionPIDs": [
+        168825,
+        170161,
+        171956
+      ],
+      "WebActionCombinedLogicalCombinationsEach": 30,
+      "Qualification": "caller/request/window unbound; not engine acceptance-phase coverage"
+    },
+    "WindowCoverage": [
+      {
+        "PID": 169124,
+        "Turn": 1,
+        "WindowId": "169124-1",
+        "RequestId": "ec267c40cbfa4cc0bd0fc33701ecb8f6",
+        "OriginalOwnerRunId": "fada2cdee6b1487a9cab66dfdca5eb65",
+        "OriginalOwnerEpoch": 1,
+        "AllOriginalOwnerFieldsMatch": true,
+        "AllSixMarkersPresent": true,
+        "Outcome": "accepted",
+        "StartToAcceptedSeconds": 45.913874586,
+        "WorkComplete": "UNPROVEN; process drops cannot be assigned to scopes"
+      },
+      {
+        "PID": 170561,
+        "Turn": 2,
+        "RequestId": "469239c613234ac6b63daeb8544da4c1",
+        "WindowId": null,
+        "Gap": "actual late-response recovery path does not open ProcessPlayerTurn diagnostic window; no dropped window",
+        "FirstPassSnapshotOverride": true,
+        "PostMaterializedSnapshotOverride": false,
+        "WorkComplete": "UNPROVEN; no engine window and dropped aggregation attempts"
+      },
+      {
+        "PID": 171915,
+        "Turn": 3,
+        "WindowId": "171915-1",
+        "RequestId": "2a5c75b5dfdd4742a9309a7b625cc010",
+        "OriginalOwnerRunId": "9c1d31b600bc4f87a501479f726aa310",
+        "OriginalOwnerEpoch": 2,
+        "AllOriginalOwnerFieldsMatch": true,
+        "AllSixMarkersPresent": true,
+        "Outcome": "accepted",
+        "StartToAcceptedSeconds": 52.29218388,
+        "WorkComplete": "UNPROVEN; process drops cannot be assigned to scopes"
+      }
+    ],
+    "Ranking": "WITHHELD: no fully observed engine acceptance phase scope. No next runtime optimization selected.",
+    "AggregationProposalOnly": {
+      "Change": "remove Path from existing ContentKey; retain ReaderFamily and all immutable logical identity labels and fixed segment/outcome counters",
+      "SavedProjectionKeys": [
+        179,
+        149,
+        179
+      ],
+      "Limits": "retained-only projection; unknown lost keys prevent guaranteed full fit; loses per-path breakdown; timing projection and missing late-response anchor remain separate",
+      "Status": "UNIMPLEMENTED/UNRUN; no source or runtime release; no cap raise or framework"
+    },
+    "NoFurtherRuntime": true,
+    "Qualification": "Application1/1 correctness PASS, ordinary40/performance UNQUALIFIED, historical B2/helper/actor UNKNOWN unchanged. Passive failure-only capture health and per-child environment snapshots absent; overhead uncalibrated. Raw payloads/settings/source pins unchanged.",
+    "TimingProjectionCaveat": "Exported ActionId replaces original context Request with logical ActionId when unbound. One original key distinction is hidden in each T1/T3 export; projected counts1152/1173 are not actual key counts1153/1174."
+  }
 }
