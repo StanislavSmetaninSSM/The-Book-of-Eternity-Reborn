@@ -45,6 +45,8 @@ public sealed partial class PendingTurnSnapshotAuthorityTests
                 Assert.False(Validate(authority, _ => invalid, Read, out failure));
                 Assert.Equal("rollback_backup_unreadable", failure);
             }
+            Assert.False(Validate(authority, _ => new string('0', 64), Read, out failure));
+            Assert.Equal("detached_authority_mismatch", failure);
             // The existing byte-reader prerequisite remains even with a hash callback.
             hashReads = 0;
             Assert.False(Validate(authority, Hash, null, out failure));
