@@ -1,0 +1,21 @@
+{
+  "SourceSHA": "e08dd09687208f32c08cf2adfe1222fe8a0d27b6",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category c5-original-rollback-streaming-contracts,portable-signed-snapshot-authority-neighbors,c5-held-proof-scope-budget -PlanOnly -TimeoutMinutes 6",
+  "ExitCode": 1,
+  "Planned": 0,
+  "Executed": 0,
+  "Qualification": "Argument dispatch refused a single comma-joined unknown category before any runner/build/discovery/workload. No current runner directory or assembly pins are claimed. Next invocation uses existing SelectionFile array support.",
+  "SourcePins": {
+    "scripts/test-csharp.ps1": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+    "tests/categories.json": "97f7a3991455ada7c88a189fccadb775c17ec319cd99795cbf0fe99a86cfb0bb",
+    "tests/selection.json": "5405514a19563279de95b58269537160fe2cf3c1210b040bb151e2f1c249861e",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserRollbackAllocationBudget.cs": "84be0961d43d02064265955abd1457999deca8cee7d82f0fd2665a8812c501e5"
+  },
+  "Files": [
+    {
+      "Path": "outer-console.log.gz",
+      "RawSHA256": "59739b499c5005812a336e6c69e3bf5ddc649dd3f7797fa7a22811260fb69e4a",
+      "RawBytes": 466
+    }
+  ]
+}
