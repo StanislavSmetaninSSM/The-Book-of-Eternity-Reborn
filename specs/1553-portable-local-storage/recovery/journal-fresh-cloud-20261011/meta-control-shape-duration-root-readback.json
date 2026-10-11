@@ -1,0 +1,51 @@
+{
+  "Utc": "2026-10-11T15:41:51.693044+00:00",
+  "ReviewedFirstCarrier": "a9b02a02f13555396688dc1614433256111141cd",
+  "DirectRemoteSHA": "a9b02a02f13555396688dc1614433256111141cd",
+  "ManifestSHA256": "630fbbc0f67bd2faf34ceac916a1c160a0a25593287f31a898985295b4eb6db1",
+  "RuntimeSource": "807e1310148693b5ca8480ab8bf829184fae0840",
+  "VerifiedPayloads": 194,
+  "VerifiedRawBytes": 11069641,
+  "AllPayloadHashesLengthsAndExactInventory": true,
+  "AllPayloadsGitTracked": true,
+  "SourcePinsVerifiedAgainstRuntimeSourceAndLive": 124,
+  "ActualTRXSummaryPASS": true,
+  "RunnerWallSeconds": 376.2039983,
+  "DriverSeconds": 308.661502338,
+  "AcceptedTurns": 3,
+  "QueuedStagedColdCuts": 2,
+  "StopsWithMatchingIdentityDurableStoppedOwnedScopeEmpty": 2,
+  "PeerEOFCount": 12,
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 15,
+    "failures": 0,
+    "deadline": false
+  },
+  "TurnTimings": [
+    {
+      "Turn": 1,
+      "HelperToAcceptanceSeconds": 48.966025285000796,
+      "AuthoredPacketToAcceptanceSeconds": 59.0307388700021,
+      "LegacyNarrative40Exceeded": true,
+      "SemanticAssertionsPassed": true
+    },
+    {
+      "Turn": 2,
+      "HelperToAcceptanceSeconds": 56.713825070000894,
+      "AuthoredPacketToAcceptanceSeconds": 66.45247912400373,
+      "LegacyNarrative40Exceeded": true,
+      "SemanticAssertionsPassed": true
+    },
+    {
+      "Turn": 3,
+      "HelperToAcceptanceSeconds": 52.41228658299951,
+      "AuthoredPacketToAcceptanceSeconds": 61.24266586700105,
+      "LegacyNarrative40Exceeded": true,
+      "SemanticAssertionsPassed": true
+    }
+  ],
+  "Limits": "Duration correctness only; ordinary40 FAIL, full performance UNQUALIFIED; passive failure-only diagnostics do not prove healthy admission/seq0/completeness. Historical actor/helper UNKNOWN retained."
+}
