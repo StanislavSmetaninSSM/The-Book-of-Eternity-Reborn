@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Text.Json;
@@ -87,6 +88,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var closer = new ProbeThrowingClose(closeFailure, () => terminal = true);
             FileSystemManager.CanonicalWriteLease? original = null; string? ownerState = null;
             Exception? primary = null, observationFailure = null, failure = null;
+            string? observedFirstChanceStack = null;
             MortalWoundTreatmentPublicationProbeResult? result = null;
             Task<MortalWoundTreatmentPublicationProbeResult>? operation = null;
             var marker = new AsyncLocal<object?>(); var invocation = new object();
@@ -110,10 +112,15 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             EventHandler<FirstChanceExceptionEventArgs> observe = (_, args) =>
             {
-                if (!ReferenceEquals(marker.Value, invocation) || primary != null || args.Exception is not InvalidDataException ||
-                    args.Exception.StackTrace?.Contains("ParseSessionGenerationText", StringComparison.Ordinal) != true ||
-                    args.Exception.StackTrace.Contains("AcceptedTurnAuthorityRegistry.GetState", StringComparison.Ordinal) != true ||
-                    args.Exception.StackTrace.Contains("MortalWoundTreatmentResourcePublicationTransaction.ProbeAsync", StringComparison.Ordinal) != true) return;
+                if (!ReferenceEquals(marker.Value, invocation) || primary != null || args.Exception is not InvalidDataException) return;
+                // Current frames identify the first production throw, before Probe's await-using closes its owner.
+                var currentStack = new StackTrace(fNeedFileInfo: false);
+                var methods = currentStack.GetFrames().Select(frame => frame.GetMethod()).ToArray();
+                if (!methods.Any(method => method?.DeclaringType == typeof(FileSystemManager) && method.Name == "ParseSessionGenerationText") ||
+                    !methods.Any(method => method?.DeclaringType == typeof(AcceptedTurnAuthorityRegistry) && method.Name == "GetState") ||
+                    !methods.Any(method => method?.Name == "MoveNext" && method.DeclaringType?.FullName?.StartsWith(
+                        typeof(MortalWoundTreatmentResourcePublicationTransaction).FullName + "+<ProbeAsync>", StringComparison.Ordinal) == true)) return;
+                observedFirstChanceStack = currentStack.ToString();
                 primary = args.Exception; primaryObservations++; terminal = true;
                 try { InspectOwner(); } catch (Exception error) { observationFailure = error; }
             };
@@ -178,7 +185,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             using (var lockProbe = new FileStream(files.CanonicalWriteLockPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None)) lockAvailable = true;
             _directGachaOutput.WriteLine(JsonSerializer.Serialize(new { mode, Scope = "actual Probe owner; quiescent physical main guard; cold physical authority only, not treatment-token resurrection",
                 context.Root, actualOwnerState = ownerState, actualRegistryState = state.GetType().FullName, physicalScope, acquired, baselineCondition, condition,
-                Receipt = ProbeEvidence(initial), acquirePauses, generationCuts, primaryObservations, attachments, closer.Calls, primary = primary?.ToString(), failure = failure?.ToString(), observationFailure = observationFailure?.ToString(),
+                Receipt = ProbeEvidence(initial), acquirePauses, generationCuts, primaryObservations, observedFirstChanceStack, attachments, closer.Calls, primary = primary?.ToString(), failure = failure?.ToString(), observationFailure = observationFailure?.ToString(),
                 SamePrimary = ReferenceEquals(primary, failure), SameSecondary = ReferenceEquals(failure?.Data["CoordinatedLeaseReleaseFailure"], closeFailure),
                 FixtureSettlementOutcome = fixtureSettlementOutcome?.ToString(), FixtureSettlementFailure = fixtureSettlementFailure?.ToString(), FixtureGateFailure = fixtureGateFailure?.ToString(),
                 Result = result == null ? (JsonElement?)null : ProbeEvidence(result), lockAvailable, activeAfter = original?.IsActive, ambientAfter = original?.AmbientRegistration != null,
