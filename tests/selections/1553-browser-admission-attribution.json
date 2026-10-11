@@ -3,13 +3,20 @@
   "selections": [
     {
       "category": "c5-browser-admission-diagnostics",
-      "reason": "#1553/T071 bounded DEBUG instrumentation contracts: logical await labels, synchronous timing, qualified missing/followup/fault accounting and finite engine-window attribution. Runtime remains gated by grouped SOURCE review.",
-      "contracts": ["T071-BROWSER-ADMISSION-ATTRIBUTION", "original exception/guards unchanged", "no async timing frames or external latency claim"]
+      "reason": "#1553/T071 coherent bounded diagnostic correction: no-Path multipath conservation/identity separation and actual late-terminal idle/failure capture plus ALL original attribution controls. C5 separately gated.",
+      "contracts": [
+        "T071-BROWSER-ADMISSION-ATTRIBUTION",
+        "original exception/guards unchanged",
+        "no async timing frames or external latency claim"
+      ]
     },
     {
       "category": "c5-browser-admission-source-guards",
       "reason": "Only the two existing World/Meta conservative source-pin Facts affected by reviewed instrumentation edits; no full component/game selection.",
-      "contracts": ["reviewed source-only pin refresh", "no read-closure widening"]
+      "contracts": [
+        "reviewed source-only pin refresh",
+        "no read-closure widening"
+      ]
     }
   ]
 }

@@ -190,24 +190,56 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
         const string path = "game_state/control/life_transitions.json";
         using (Logical(collector, "MetaMiscStateFiles", "postaccepted-validation"))
         {
-            Invoke(collector, "Content", path, "public-text-async", "semantic", "started", 0L);
-            Invoke(collector, "Content", path, "public-text-async", "initial", "missing", 0L);
-            Invoke(collector, "Content", path, "public-text-async", "followup-reason", "missing", 0L);
-            Invoke(collector, "Content", path, "public-text-async", "followup", "present", 17L);
-            Invoke(collector, "Content", path, "public-text-async", "semantic", "returned-present", 17L);
-            Invoke(collector, "Content", path, "world-nullable-sync", "leaf", "data-fault", 0L);
+          foreach (var observedPath in new[] { path, "game_state/control/ascension.json" })
+          {
+            Invoke(collector, "Content", observedPath, "public-text-async", "semantic", "started", 0L);
+            Invoke(collector, "Content", observedPath, "public-text-async", "initial", "missing", 0L);
+            Invoke(collector, "Content", observedPath, "public-text-async", "followup-reason", "missing", 0L);
+            Invoke(collector, "Content", observedPath, "public-text-async", "followup", "present", 17L);
+            Invoke(collector, "Content", observedPath, "public-text-async", "semantic", "returned-present", 17L);
+            Invoke(collector, "Content", observedPath, "world-nullable-sync", "leaf", "data-fault", 0L);
+          }
         }
         var rows = Snapshot(collector)["ContentRows"]!.AsArray();
         Assert.Equal(2, rows.Count);
+        Assert.All(rows, row => Assert.False(row!.AsObject().ContainsKey("Path")));
+        Assert.Contains("no Path", Snapshot(collector)["ContentQualification"]!.GetValue<string>(), StringComparison.Ordinal);
         var ordinary = rows.Single(row => row!["ReaderFamily"]!.GetValue<string>() == "public-text-async")!["OutsideWindow"]!;
-        Assert.Equal(1, ordinary["SemanticStarts"]!.GetValue<long>());
-        Assert.Equal(1, ordinary["InitialMissing"]!.GetValue<long>());
-        Assert.Equal(1, ordinary["FollowupPresent"]!.GetValue<long>());
+        Assert.Equal(2, ordinary["SemanticStarts"]!.GetValue<long>());
+        Assert.Equal(2, ordinary["InitialMissing"]!.GetValue<long>());
+        Assert.Equal(2, ordinary["FollowupPresent"]!.GetValue<long>());
+        Assert.Equal(10, ordinary["Events"]!.GetValue<long>());
+        Assert.Equal(68, ordinary["ObservedBytes"]!.GetValue<long>());
         var fault = rows.Single(row => row!["ReaderFamily"]!.GetValue<string>() == "world-nullable-sync")!;
-        Assert.Equal(1, fault["OutsideWindow"]!["LeafDataFaults"]!.GetValue<long>());
+        Assert.Equal(2, fault["OutsideWindow"]!["LeafDataFaults"]!.GetValue<long>());
         Assert.Equal(0, (fault["OutsideWindow"]!["LeafMissing"]?.GetValue<long>() ?? 0));
         Assert.All(rows, row => Assert.Equal("MetaMiscStateFiles", row!["ValidationPhase"]!.GetValue<string>()));
         Assert.Equal(0, Snapshot(collector)["Acquisitions"]!.GetValue<long>());
+
+        // Removing path must not merge distinct requests/windows/immutable labels.
+        var identities = Create(() => 1);
+        foreach (var id in new[] { "22222222222222222222222222222222", "33333333333333333333333333333333" })
+        {
+            using (Logical(identities, "MetaMiscStateFiles", "postaccepted-validation"))
+            using ((IDisposable)Invoke(identities, "BeginWindow", id, id, id))
+            {
+                Invoke(identities, "Content", path, "ordinary-async", "physical-result", "missing", 0L);
+                Invoke(identities, "Content", "other.json", "ordinary-async", "physical-result", "missing", 0L);
+                Invoke(identities, "Mark", "accepted-receipt-published");
+            }
+        }
+        var identityRows = Snapshot(identities)["ContentRows"]!.AsArray();
+        Assert.Equal(2, identityRows.Count);
+        Assert.Equal(2, identityRows.Select(row => row!["Labels"]!["RequestId"]!.GetValue<string>()).Distinct().Count());
+        Assert.Equal(2, identityRows.Select(row => row!["Labels"]!["WindowId"]!.GetValue<string>()).Distinct().Count());
+        Assert.All(identityRows, row =>
+        {
+            var labels = row!["Labels"]!;
+            Assert.Equal(labels["RequestId"]!.GetValue<string>(), labels["ActionId"]!.GetValue<string>());
+            Assert.Equal(labels["RequestId"]!.GetValue<string>(), labels["Generation"]!.GetValue<string>());
+            Assert.Equal(2, row["InsideWindow"]!["PhysicalMissing"]!.GetValue<long>());
+        });
+        Assert.True(Snapshot(identities)["Complete"]!.GetValue<bool>());
 
         // Actual public flow: the ORIGINAL after-attempt hook creates the absent
         // file, so the quiescence followup reads it. No fabricated authority/lease.
