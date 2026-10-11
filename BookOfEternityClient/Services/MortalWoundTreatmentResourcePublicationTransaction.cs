@@ -333,13 +333,27 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
     {
         ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
-        await using var writeLease =
+        var writeLease =
             await fileSystem.AcquireCanonicalWriteLeaseAsync();
-        return AcceptedTurnAuthorityRegistry
-            .ProbeTakenMortalWoundTreatmentPublication(
-                fileSystem,
-                writeLease,
-                _receipt);
+        Exception? operationFailure = null;
+        try
+        {
+            return AcceptedTurnAuthorityRegistry
+                .ProbeTakenMortalWoundTreatmentPublication(
+                    fileSystem,
+                    writeLease,
+                    _receipt);
+        }
+        catch (Exception failure)
+        {
+            operationFailure = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fileSystem, writeLease, completed: false, operationFailure);
+        }
     }
 
     internal async Task<IReadOnlyList<ValidationIssue>>
