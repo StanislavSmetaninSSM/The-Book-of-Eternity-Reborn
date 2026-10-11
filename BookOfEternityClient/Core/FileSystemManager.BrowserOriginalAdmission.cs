@@ -253,6 +253,37 @@ public partial class FileSystemManager
         if(stream.ReadByte()!=-1)throw BrowserOriginalMainCondition.Invalid();
         scope.ValidateFile(path,false);return bytes;
     }
+    private string? HashOriginalBrowserRollback(string relative,TrustedLocalFileScope? scope,bool held,byte[] scratch)
+    {
+        if(!PendingTurnSnapshotAuthority.IsSafeRelativePath(relative))throw BrowserOriginalMainCondition.Invalid();
+        scope??=CreateOriginalBrowserFileScope(held);var path=scope.ValidateFile(ResolvePath(relative));
+        if(!File.Exists(path))return null;
+        using var stream=new FileStream(scope.ValidateFile(path,false),FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
+        var length=stream.Length;
+        if(length>Array.MaxLength)throw new IOException("Original browser file cannot be represented by the existing byte reader.");
+        using var sha=SHA256.Create();
+        AppendOriginalBrowserInitialBytes(stream,length,scratch,sha);
+#if DEBUG
+        _browserAdmissionDiagnostic?.Read(relative.Contains(".rollback.",StringComparison.Ordinal)?"rollback":"other",length);
+#endif
+        scope.ValidateFile(path,false);
+        sha.TransformFinalBlock(Array.Empty<byte>(),0,0);
+        return Convert.ToHexString(sha.Hash!);
+    }
+    // Actual strict reader primitive: read precisely captured length, then refuse
+    // growth before the caller's final path validation and digest publication.
+    private static void AppendOriginalBrowserInitialBytes(Stream stream,long length,byte[] scratch,HashAlgorithm hash)
+    {
+        var remaining=length;
+        while(remaining>0)
+        {
+            var count=(int)Math.Min(remaining,scratch.Length);
+            stream.ReadExactly(scratch.AsSpan(0,count));
+            hash.TransformBlock(scratch,0,count,null,0);
+            remaining-=count;
+        }
+        if(stream.ReadByte()!=-1)throw BrowserOriginalMainCondition.Invalid();
+    }
     private string? ReadOriginalBrowserText(string relative) => ReadOriginalBrowserText(relative,null,null);
     private string? ReadOriginalBrowserText(string relative,TrustedLocalFileScope? scope,bool? held)
     {
@@ -303,8 +334,11 @@ public partial class FileSystemManager
             ReadOriginalBrowserText(PendingTurnSnapshotAuthority.AuthorityPath,fileScope,held)!=staged.AuthorityJson)
             throw BrowserOriginalMainCondition.Invalid();
         PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload;
+        byte[]? rollbackScratch=null; // One lazy buffer per proof, never retained across calls/leases.
         using(MeasureOriginalBrowserAdmission("authority-and-rollback-verification"))
-            payload=GameEngine.ValidateOriginalBrowserAuthority(manifest,staged.AuthorityJson,relative=>ReadOriginalBrowserBytes(relative,fileScope,held));
+            payload=GameEngine.ValidateOriginalBrowserAuthority(manifest,staged.AuthorityJson,
+                relative=>ReadOriginalBrowserBytes(relative,fileScope,held),
+                relative=>HashOriginalBrowserRollback(relative,fileScope,held,rollbackScratch??=new byte[65536]));
         if(payload.SnapshotHashMode!=PendingTurnSnapshotAuthority.ExactSnapshotHashMode ||
             payload.RollbackHashMode!=PendingTurnSnapshotAuthority.ExactRollbackHashMode ||
             !manifest.Files.Keys.ToHashSet(StringComparer.Ordinal).SetEquals(manifest.SnapshotFileHashes.Keys))

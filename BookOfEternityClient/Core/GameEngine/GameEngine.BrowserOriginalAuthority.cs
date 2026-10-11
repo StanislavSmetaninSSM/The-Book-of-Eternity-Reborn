@@ -4,15 +4,18 @@ namespace BookOfEternityClient.Core;
 public partial class GameEngine
 {
     internal static PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload ValidateOriginalBrowserAuthority(
-        PendingTurnSnapshotManifest manifest,string authority,Func<string,byte[]?> read)
+        PendingTurnSnapshotManifest manifest,string authority,Func<string,byte[]?> read,
+        Func<string,string?>? exactRollbackHash=null)
     {
         Exception? readFailure=null;
         byte[]? ReadOriginal(string path) { try{return read(path);} catch(Exception failure){readFailure??=failure;throw;} }
+        string? HashOriginal(string path) { try{return exactRollbackHash!(path);} catch(Exception failure){readFailure??=failure;throw;} }
         var valid=PendingTurnSnapshotAuthority.TryValidateManifestForDestructiveAuthority(manifest,authority,SnapshotHashJsonOpts,
             static m=>m.ManifestPayloadHash,static (m,h)=>m.ManifestPayloadHash=h,
             static m=>m.SessionId,static m=>m.RequestId,static m=>m.TurnNumber,
             static m=>m.Files,static m=>m.SnapshotFileHashes,static m=>m.ClientOwnedValidationHashes,
-            static m=>m.RollbackBaselineFiles,static m=>m.SourceLabel,static m=>m.RollbackBackups,ReadOriginal,out var payload,out _);
+            static m=>m.RollbackBaselineFiles,static m=>m.SourceLabel,static m=>m.RollbackBackups,ReadOriginal,out var payload,out _,
+            exactRollbackHash:exactRollbackHash==null?null:HashOriginal);
         if(readFailure!=null)ExceptionDispatchInfo.Capture(readFailure).Throw();
         if(!valid || payload==null)throw BrowserOriginalMainCondition.Invalid();
         return payload!;

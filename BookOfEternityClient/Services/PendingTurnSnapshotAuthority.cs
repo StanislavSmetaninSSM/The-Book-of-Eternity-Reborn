@@ -453,7 +453,8 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IDictionary<string, string>?>? getRollbackBackups,
         Func<string, byte[]?>? readRelativeFileBytes,
         out PendingTurnSnapshotAuthorityPayload? payload,
-        out string failureCode)
+        out string failureCode,
+        Func<string, string?>? exactRollbackHash = null)
         where TManifest : class
     {
         return TryValidateManifestAgainstAuthority(
@@ -474,7 +475,8 @@ internal static class PendingTurnSnapshotAuthority
             readRelativeFileBytes,
             out payload,
             out failureCode,
-            requireRollbackArtifactPaths: true);
+            requireRollbackArtifactPaths: true,
+            exactRollbackHash: exactRollbackHash);
     }
 
     internal static bool TryValidateManifestForReaderAuthority<TManifest>(
@@ -536,7 +538,8 @@ internal static class PendingTurnSnapshotAuthority
         Func<string, byte[]?>? readRelativeFileBytes,
         out PendingTurnSnapshotAuthorityPayload? payload,
         out string failureCode,
-        bool requireRollbackArtifactPaths)
+        bool requireRollbackArtifactPaths,
+        Func<string, string?>? exactRollbackHash = null)
         where TManifest : class
     {
         payload = null;
@@ -610,7 +613,8 @@ internal static class PendingTurnSnapshotAuthority
                 hashSnapshotBytesExactly: string.Equals(
                     actualPayload.SnapshotHashMode,
                     ExactSnapshotHashMode,
-                    StringComparison.Ordinal));
+                    StringComparison.Ordinal),
+                exactRollbackHash: exactRollbackHash);
         }
         catch (InvalidOperationException)
         {
@@ -764,7 +768,8 @@ internal static class PendingTurnSnapshotAuthority
         Func<TManifest, IDictionary<string, string>?>? getRollbackBackups,
         Func<string, byte[]?>? readRelativeFileBytes,
         bool hashRollbackBytesExactly,
-        bool hashSnapshotBytesExactly)
+        bool hashSnapshotBytesExactly,
+        Func<string, string?>? exactRollbackHash = null)
         where TManifest : class
     {
         var rollbackBackups = getRollbackBackups != null
@@ -790,7 +795,8 @@ internal static class PendingTurnSnapshotAuthority
                 : CopyNormalizedFileHashes(
                     rollbackBackups,
                     readRelativeFileBytes,
-                    hashRollbackBytesExactly),
+                    hashRollbackBytesExactly,
+                    exactRollbackHash),
             RollbackHashMode = hashRollbackBytesExactly ? ExactRollbackHashMode : null,
             RollbackBaselineFiles = CopyNormalizedBaselineFiles(getRollbackBaselineFiles(manifest)),
             SourceLabel = string.IsNullOrWhiteSpace(getSourceLabel(manifest))
@@ -849,7 +855,8 @@ internal static class PendingTurnSnapshotAuthority
     private static Dictionary<string, string> CopyNormalizedFileHashes(
         IDictionary<string, string> fileMap,
         Func<string, byte[]?>? readRelativeFileBytes,
-        bool hashBytesExactly)
+        bool hashBytesExactly,
+        Func<string, string?>? exactRollbackHash)
     {
         if (readRelativeFileBytes == null)
             throw new InvalidOperationException("Validated pending snapshot authority requires a readable file delegate for rollback-backed authority.");
@@ -857,6 +864,15 @@ internal static class PendingTurnSnapshotAuthority
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var (logicalPath, relativePath) in fileMap)
         {
+            if (hashBytesExactly && exactRollbackHash != null)
+            {
+                var digest = exactRollbackHash(relativePath);
+                if (digest == null || digest.Length != 64 || digest.Any(static c => !char.IsAsciiHexDigit(c)))
+                    throw new InvalidOperationException(
+                        $"Validated pending snapshot authority requires readable file '{relativePath}' for '{logicalPath}'.");
+                result[logicalPath] = digest;
+                continue;
+            }
             var content = readRelativeFileBytes(relativePath);
             if (content == null)
             {
