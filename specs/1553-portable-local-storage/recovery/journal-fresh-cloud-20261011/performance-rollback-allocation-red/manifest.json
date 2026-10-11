@@ -1,0 +1,235 @@
+{
+  "Utc": "2026-10-11T03:50:21.753144+00:00",
+  "SourceSHA": "8eb51c9c3429ed91c910c6ff2d0c0eedd39d0144",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -SelectionFile ./tests/selection.json -TimeoutMinutes 6",
+  "RunnerPath": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261011-034821-547-35047-1715efccc96d40e2a1868f2b9281de4e-categories",
+  "ModelCalls": 0,
+  "ArchiveScope": "Every completed runner file, full outer console, and explicitly selected journal observations/before-after trees; for owned C5 chain every regular runtime/game/relay/diagnostic/native file except ephemeral tmp/cache/config/data, and ship preserved by complete byte/hash inventory; no source cache, credentials or unrelated state.",
+  "SourcePins": {
+    "BookOfEternityClient/Core/FileSystemManager.cs": "794e46855935eba31a58da064b3fd5078292e25fb08a3ba165bd7e4fef69ee52",
+    "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs": "2d6199fefecfb84b62a42c56f2c8c9bdb7abaf53fcfb699d86d71676f7034bc4",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs": "fdcb3969df9ff2f8a13a92af9eee1a207250c088bc8871906badbcb2c1a70e9b",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserOriginalAdmission.cs": "fdcc2fbf0a6e5d350ad2215844d0b40aaa6d1807c0b2fb6ec0d6386f0bfff26c",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs": "93403801377336387e5cf20399b54d1aa928ff3e40dc30fe0ab43dbf96559981",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92",
+    "scripts/test-csharp.ps1": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+    "scripts/testing/TestCategoryExecution.ps1": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38",
+    "scripts/testing/TestCategoryCatalog.psm1": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+    "tests/categories.json": "97f7a3991455ada7c88a189fccadb775c17ec319cd99795cbf0fe99a86cfb0bb",
+    "BookOfEternityClient.Tests/LinuxGameChainTests.cs": "6b16459c015896dec6dfe58bc93a7bf825e6f2b9ad658e984b357a4dec700144",
+    "tests/fixtures/LinuxGameChains/console_chain.py": "f721317c0699d4f5d0bf6a0dc72db01a176970663398b73dda367fc6aae2038a",
+    "tests/fixtures/LinuxGameChains/startup_observer.py": "b927d2db9f1ad80b11a09cd6e0f271cd6acee9ab1593952a40bb782e245d7fae",
+    "scripts/build-linux-supervisor.ps1": "362dd6d89f79bc7fd9d67edbc2bc1f02b11a3cb5cc138389a735753986b76b16",
+    "tools/gm-relay/relay_cli.py": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606",
+    "tests/selection.json": "5405514a19563279de95b58269537160fe2cf3c1210b040bb151e2f1c249861e",
+    "BookOfEternityClient.WebFrontend/package.json": "34ea949d7c929126538542684bf2af693caecf2345a9e67e9ae1e1d794c505d7",
+    "BookOfEternityClient.WebFrontend/package-lock.json": "c4dd676e182fd9438736bc9cf67ee05165a34b0348bd93bbd6e3619b7164410c",
+    "native/linux/boe-lineage-supervisor.c": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+    "tests/fixtures/LinuxHost/host-guardian.c": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserRollbackAllocationBudget.cs": "84be0961d43d02064265955abd1457999deca8cee7d82f0fd2665a8812c501e5",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserProofScopeBudget.cs": "41114a12b2ef9e5209ac349a4fd835ba738c0b2e50f69a71bc159f1da9ae6846",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserOriginalAuthority.cs": "478dc7d77143e09af633f605dac0b88d5dbb508c79a446c61c3687cff16b336f",
+    "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs": "6b924fe31e3f31a610496594cee3e916dc282657061f8a8a0d10590fc91ac80a"
+  },
+  "Assemblies": {
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "f35cd3d03391e9d66c0ddada47656e850b24329342cc1ffd508318767dd9c2c6",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll": "45d5f68ae58e86d07f6c669e9891eed2a835fd18bc06a66b8098cb041f34de92",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb": "352b4136af92da5b0b7c3948ce5ad7ba992036d1a3605964b6e5cd8e55bd697e",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll": "40f0635f5c12dbfd4e67f4ecc3e48bd491a6307a8ac073cf30c2071f45277a8c",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "21ac2b48937bacd2637b032d3589809fdee5a5243d176800d0b13f6162e33b73",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb": "1908c85afec58f0016395ab7140fba3712027a255248d362fa56697430280296",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll": "13ef7d8a14e9a3c8cd9d247fe5335f17147219eb00b43d733c6bef07e10e3bb7",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "f35cd3d03391e9d66c0ddada47656e850b24329342cc1ffd508318767dd9c2c6",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll": "45d5f68ae58e86d07f6c669e9891eed2a835fd18bc06a66b8098cb041f34de92",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb": "574f23ddd9a637bcbe8004bb7d7ac4d3d9d91cc4521cab3091bf99c3fafb8bc3",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "21ac2b48937bacd2637b032d3589809fdee5a5243d176800d0b13f6162e33b73",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb": "1908c85afec58f0016395ab7140fba3712027a255248d362fa56697430280296",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll": "45d5f68ae58e86d07f6c669e9891eed2a835fd18bc06a66b8098cb041f34de92",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb": "1908c85afec58f0016395ab7140fba3712027a255248d362fa56697430280296",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll": "45d5f68ae58e86d07f6c669e9891eed2a835fd18bc06a66b8098cb041f34de92",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll": "f9fc335e0ca3260a21067a0f671072d9a755787df6f9a036f94b65215789cb32",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.pdb": "1908c85afec58f0016395ab7140fba3712027a255248d362fa56697430280296",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.pdb": "52bdea086bd441bfc7f8d52afe8caba329a3900f56bda39be4ddb37704edc03f",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "f35cd3d03391e9d66c0ddada47656e850b24329342cc1ffd508318767dd9c2c6",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.dll": "45d5f68ae58e86d07f6c669e9891eed2a835fd18bc06a66b8098cb041f34de92",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "21ac2b48937bacd2637b032d3589809fdee5a5243d176800d0b13f6162e33b73",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.pdb": "1908c85afec58f0016395ab7140fba3712027a255248d362fa56697430280296"
+  },
+  "Files": [
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "2c26d267406e02f4c8f9ed6dc605e1c8130208f09bbdca00b113309624107f60",
+      "RawBytes": 67789
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "1bba2893e79484c70d46adc1e87ff951fe022660b9573865cd0c1120fafe4234",
+      "RawBytes": 30113
+    },
+    {
+      "Path": "runner/c5-held-proof-scope-budget-integration-001.trx.gz",
+      "RawSHA256": "73ddfd98227d651147db2ba3c761bacbdff2afb3ca5f7ac82d3e94a108e7ecae",
+      "RawBytes": 5057
+    },
+    {
+      "Path": "runner/c5-original-rollback-streaming-contracts-integration-002.trx.gz",
+      "RawSHA256": "d2d4677572579eda4d810710e6ae37b31d4b7c516782bcc1f903e6ec5cce6d34",
+      "RawBytes": 6090
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "6750b2b8a4bec3781ed04af091738fa05766db843268605fdcc660c06ee8d956",
+      "RawBytes": 3388352
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "bb37fe099e1c210a9b3f25a5aa13aa3a26b3a12f880e276ee2e384f7553f4689",
+      "RawBytes": 9007
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "ea4b7960c0302520df37652e0e92c5b075f6098ce95ead2ff6c56818e3c2aa63",
+      "RawBytes": 3088
+    },
+    {
+      "Path": "outer-console.log.gz",
+      "RawSHA256": "2a9b790a3e1bf0a673fa6c2bce6b3d316de40acdb1432e475ff844299f79ed4b",
+      "RawBytes": 9942
+    }
+  ],
+  "Summary": {
+    "Categories": [
+      "c5-original-rollback-streaming-contracts",
+      "portable-signed-snapshot-authority-neighbors",
+      "c5-held-proof-scope-budget"
+    ],
+    "Reasons": [
+      {
+        "category": "c5-original-rollback-streaming-contracts",
+        "reason": "Independent production DESIGN PASS authorizes one existing-path allocation RED Fact only; source review before actual RED. Whole-file managed allocation growth must causally fail on unchanged product.",
+        "contracts": [
+          "#1553",
+          "T069-C5-ORDINARY-CONSUMER",
+          "strict exact rollback allocation without weakening current authority/path checks"
+        ]
+      },
+      {
+        "category": "portable-signed-snapshot-authority-neighbors",
+        "reason": "Existing fifteen signed snapshot/rollback authority exact-byte and legacy consumers must pass alongside allocation RED; future optional callback must preserve default and legacy behavior.",
+        "contracts": [
+          "#1553",
+          "signed snapshot authority exact/legacy byte contracts"
+        ]
+      },
+      {
+        "category": "c5-held-proof-scope-budget",
+        "reason": "Existing two controls verify real held proof scope lifetime and subsequent snapshot drift refusal; no proof boundary or scope reuse is changed.",
+        "contracts": [
+          "#1553",
+          "physical lease ownership and fresh same-lease integrity proof"
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "8eb51c9c3429ed91c910c6ff2d0c0eedd39d0144",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "c5-held-proof-scope-budget",
+        "Seconds": 2.6387013,
+        "BudgetMinutes": 3,
+        "Completed": true
+      },
+      {
+        "Category": "c5-original-rollback-streaming-contracts",
+        "Seconds": 3.2266801,
+        "BudgetMinutes": 3,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0352021,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0318465,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0765442,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 57.8743042,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 12.7506151,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 6,
+    "WallTime": "00:01:21.1615927",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 3,
+      "CompletedDescriptors": 2,
+      "PlannedCases": 18,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [
+        "portable-signed-snapshot-authority-neighbors-unit-003"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 2,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  },
+  "OwnedChains": [],
+  "RedQualification": "Exact causal allocation assertion failure only, existing held controls2PASS. Runner fail-fast prevents subsequent15authority cases, therefore3actual/18planned, selection incomplete; no17PASS claim. Original full raw retained; product unchanged and no repeat before bounded completion decision.",
+  "CausalAllocation": {
+    "SnapshotCount": 2,
+    "RollbackCount": 2,
+    "WarmupProofsPerFixture": 8,
+    "SamplesPerFixture": 3,
+    "ProofsPerSample": 4,
+    "SmallPayloadBytes": 22,
+    "LargePayloadBytes": 693766,
+    "SmallAllocationsPerProof": [
+      363312,
+      363312,
+      363312
+    ],
+    "LargeAllocationsPerProof": [
+      1057056,
+      1057056,
+      1057056
+    ],
+    "MedianAllocationGrowth": 693744,
+    "AllowedAllocationGrowth": 131072
+  }
+}
