@@ -1,0 +1,176 @@
+{
+  "Utc": "2026-10-11T11:06:18.998497+00:00",
+  "SourceSHA": "34727bfbe9c529b0987a47322d7b00b972a8664e",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-world-read-phase-red.json -PlanOnly -TimeoutMinutes 10",
+  "RunnerPath": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261011-110335-763-113179-0a36f92fc97c494a9277e7ceb2302a19-categories",
+  "ModelCalls": 0,
+  "ArchiveScope": "Every completed runner file, full outer console, and explicitly selected journal observations/before-after trees; for owned C5 chain every regular runtime/game/relay/diagnostic/native file except ephemeral tmp/cache/config/data, and ship preserved by complete byte/hash inventory; no source cache, credentials or unrelated state.",
+  "SourcePins": {
+    "BookOfEternityClient/Core/FileSystemManager.cs": "794e46855935eba31a58da064b3fd5078292e25fb08a3ba165bd7e4fef69ee52",
+    "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs": "fdcb3969df9ff2f8a13a92af9eee1a207250c088bc8871906badbcb2c1a70e9b",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserOriginalAdmission.cs": "fdcc2fbf0a6e5d350ad2215844d0b40aaa6d1807c0b2fb6ec0d6386f0bfff26c",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs": "93403801377336387e5cf20399b54d1aa928ff3e40dc30fe0ab43dbf96559981",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92",
+    "scripts/test-csharp.ps1": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+    "scripts/testing/TestCategoryExecution.ps1": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38",
+    "scripts/testing/TestCategoryCatalog.psm1": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+    "tests/categories.json": "a3ee87a7b56bdb5185d7c8d698df1d8353c5ff95f5d9c03b944f0422610f56f4",
+    "BookOfEternityClient.Tests/LinuxGameChainTests.cs": "006a060d343373375f7e980b6cbe42405880dc0e73d1fa2d321589d8daf0aa9c",
+    "tests/fixtures/LinuxGameChains/console_chain.py": "da994f5e1e3c1a2d1a763763504c5da5fc6bee721449b69c9bc57db4eac50de3",
+    "tests/fixtures/LinuxGameChains/startup_observer.py": "b927d2db9f1ad80b11a09cd6e0f271cd6acee9ab1593952a40bb782e245d7fae",
+    "scripts/build-linux-supervisor.ps1": "362dd6d89f79bc7fd9d67edbc2bc1f02b11a3cb5cc138389a735753986b76b16",
+    "tools/gm-relay/relay_cli.py": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606",
+    "tests/selection.json": "27006455535cc002e981dcffc40a9da07570279270dec10d587c138d906dc239",
+    "BookOfEternityClient.WebFrontend/package.json": "34ea949d7c929126538542684bf2af693caecf2345a9e67e9ae1e1d794c505d7",
+    "BookOfEternityClient.WebFrontend/package-lock.json": "c4dd676e182fd9438736bc9cf67ee05165a34b0348bd93bbd6e3619b7164410c",
+    "native/linux/boe-lineage-supervisor.c": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+    "tests/fixtures/LinuxHost/host-guardian.c": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs": "8271c6bcc59ed0a5ed99c8472d3851513f26fdb6642d601f68932cb7d5fbd4f1",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserProofScopeBudget.cs": "41114a12b2ef9e5209ac349a4fd835ba738c0b2e50f69a71bc159f1da9ae6846",
+    "BookOfEternityClient/Services/ValidationService.cs": "a8bd34a8e45bff7b16ba375424830f2237e6bb5db5106d4341de5037799d7ab7",
+    "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs": "b7054e4d37cc7ff27074ecbce9d7dc497b5ae2ccc5310af98d2cba99354c3ce8",
+    "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs": "47afd0d98eb09dbbe5782c1f523ce63b2528cdefe972f2c8c405b5753c0e7335",
+    "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs": "10089c4b8d54747b6ae2048d3be840bd2a6a915cd0ce176554345c0888594bcd",
+    "BookOfEternityClient/Services/Validation/ValidationService.FactionsAndProjects.cs": "519b6ba62619fe848be7ca9b621b1aaa7c18de5edcdc22c74fe79732a0a2ac66",
+    "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs": "e4dfac4e5aa9abb18424e960c370585302433a5d1a8c65bd3d5c010ddb05a44a",
+    "BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs": "8bb6e1c8ed5c0178f73f9d69e3646c19ecfcbebdfc693168d515150c907555db",
+    "BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs": "67a523a3c6109fe1d62716953d5b26ad38e4d8cefa68ce6572e31334fa7263de",
+    "tests/selections/1553-world-read-phase-red.json": "aa0f2bf59a1301ef657bac0c6338f0fd88a3fb1f95edabcd41ae150f714c1d4d"
+  },
+  "Assemblies": {
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "814ac4088eb12bcbdaa985268f6b220bb0b1c6c9f56ec7a16ce0519950f23cf5",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll": "e5e9261fe35403e538d3dbed6b7354d9801ee5c019302af813e244e632874a0b",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb": "8968ffe6d842de08f41a4a8dbe370fb16d15006e5cff76eaf63749175b6d98d1",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll": "d8111709bf2fc8ee4bc8345db404cc45bb8820a5fff3a81aff10eec088e03bbc",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "b4f3fc7eba82b8ffa8b8c6df696972fd5c4a2bd99556d32dbbade729bba96c65",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb": "475ab49de14eab07dc2e05ceee1ba4c998853d1b9b2a5f21cc50266afbb48dfb",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll": "83c6609e963528270abe9d0923c41d65bc8cf7934e807ed6006dba56348a5b96",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "280c5105a6d0dbd332409478d55e75b756730145154eaf7d4efbc9e9ed20e7fb",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll": "fecdf0b08e57126fcbe8d12d0d98bfbc26b2c1d52f7d7e847706562a491adf61",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb": "e54252f50a994860efc4087cba5d1f2e3c22daaa9ee5d9281de01054561779ea",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "56563f20fc32eef84cb69db8ed236a50ec9c56ff1ba645305be64f3e7efcd5fb",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb": "dc8ec40c469be896936ac2f85300ec56d78fe796dcaa7f47646c248ed8656fa3",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll": "e5e9261fe35403e538d3dbed6b7354d9801ee5c019302af813e244e632874a0b",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb": "475ab49de14eab07dc2e05ceee1ba4c998853d1b9b2a5f21cc50266afbb48dfb",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll": "fecdf0b08e57126fcbe8d12d0d98bfbc26b2c1d52f7d7e847706562a491adf61",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll": "4b45e10e0f3b3cfe80935eec90d9f153cb674102c1b2cb1f23234e7ffacabd87",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.pdb": "dc8ec40c469be896936ac2f85300ec56d78fe796dcaa7f47646c248ed8656fa3",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.pdb": "8610a8ea83f7fe336eeda7d2e27371cdbe97d3648308b904e4e9d2801d81b5b0",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "814ac4088eb12bcbdaa985268f6b220bb0b1c6c9f56ec7a16ce0519950f23cf5",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.dll": "e5e9261fe35403e538d3dbed6b7354d9801ee5c019302af813e244e632874a0b",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "b4f3fc7eba82b8ffa8b8c6df696972fd5c4a2bd99556d32dbbade729bba96c65",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.pdb": "475ab49de14eab07dc2e05ceee1ba4c998853d1b9b2a5f21cc50266afbb48dfb"
+  },
+  "Files": [
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "e0c3a6924e08b8ea656b52b89e379e715d7026fd66dc6e6829ae39ed709b83f2",
+      "RawBytes": 67789
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "5b18b23a2f2045f6e36b43db80d7a95e03cebf47fdb1b9d437a14c2fa6b6f7a7",
+      "RawBytes": 1692343
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "a59ea4e427feda8ed1aade8b786fa89893d37cd97d0649c07714aeaa1c223477",
+      "RawBytes": 1741
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "ef995d4b535d82ae5d7cd868561a950a4fb722590bd94bf68efc44479cf842b1",
+      "RawBytes": 2080
+    },
+    {
+      "Path": "outer-console.log.gz",
+      "RawSHA256": "8916ce13c12f5ac2a9c0d2580da9c82b52b7b6f9ebe19a1f55690faeee38bbe7",
+      "RawBytes": 1370
+    }
+  ],
+  "Summary": {
+    "Categories": [
+      "c5-world-state-read-phase"
+    ],
+    "Reasons": [
+      {
+        "category": "c5-world-state-read-phase",
+        "reason": "T071 first actual causal RED: exactly one Theory descriptor/two immutable layouts; old complete scalar result must be preserved and only the <=6 full-proof work ceiling fails. Controls are separately owned/prepared UNRUN until minimal implementation. No fullchain/runtime now; root fixture inspection precedes fresh PlanOnly and RED.",
+        "contracts": [
+          "#1553/T071-WORLD-READ-PHASE",
+          "whole invocation full-proof count <=6",
+          "identical input bytes and complete ordered scalar issue oracle"
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "34727bfbe9c529b0987a47322d7b00b972a8664e",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0355421,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0404354,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0831342,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 123.8204185,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0040486,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:02:06.2845699",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 2,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "c5-world-state-read-phase-integration-001"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "OwnedChains": [],
+  "CompiledSourceSHA": "34727bfbe9c529b0987a47322d7b00b972a8664e",
+  "Scope": "World component prerequisite; selected fresh integration PlanOnly or discovery-only catalog, no test execution. Product source unchanged; controls13 and ordinary UNRUN."
+}
