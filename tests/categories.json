@@ -23605,6 +23605,70 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": "c5-world-state-read-phase",
+            "responsibility": "T071 WorldQuest read-phase causal component: actual original-browser owner/Processing and real selected ValidateGameState entry; identical immutable signed/current inputs and scalar ordered-issue oracle. Two layouts (all29 absent and mixed/present duplicate flexible/strict diagnostics) require at most six physical-verification spans across the entire successful invocation, including opening/final gate/close.",
+            "excludes": "No copied validator, authority PASS cache, absent-member RED, C5 game chain, Meta phase, performance pairs, provider calls, timer/guard changes or claim that open-hook counts are logical read counts.",
+            "changeHints": [
+                "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-world-state-read-phase-controls",
+                    "when": "After preserved causal count RED and minimal implementation, retain owner/readset/cache/exclusion negatives on the same real fixture."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_WholeWindowProofCeilingPreservesOrderedIssues"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "c5-world-state-read-phase-controls",
+            "responsibility": "T071 selected World component controls only: selected-out/repeated nested core drift, original read/cancellation exception, owner/generation/override withdrawal, already-running scalar and new GameState/Response siblings, override install/dispose exclusion, phase cache discard and existing ambient release. Existing read hooks/barriers, original public entrypoints; no new product seam.",
+            "excludes": "Initial work-bound RED excludes this prepared control family. No broader validation matrix, full C5, copied current-core selector, missing-private-member oracle or claim that failed timing spans are completed proofs.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+                "BookOfEternityClient/Services/ValidationService.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-world-state-read-phase",
+                    "when": "Same-input proof ceiling and ordered issues qualify the selected mechanism before ordinary integration."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 4,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_NestedCurrentCoreDriftNeverPublishesIssues",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_ReadFailureKeepsOriginalExceptionAndClearsContext",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_LateOriginalContinuityLossRefusesResult",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_SameInstanceSiblingAndOverrideExcludedBeforeSharedMutation",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_FreshCacheInputsDoNotEscapePhase"
+                    ]
+                }
+            ]
         }
     ]
 }
