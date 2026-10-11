@@ -25,7 +25,12 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private static IReadOnlyDictionary<string, string> MetaShapeMixedInputs() => new Dictionary<string, string> {
         [MetaShapePaths[0]] = "17",
+        [MetaShapePaths[1]] = "{",
+        [MetaShapePaths[2]] = "[{},\"élan\"]",
         [MetaShapePaths[3]] = "{\"requests\":[{\"requestId\":\"fixed_request\",\"charter\":{\"favoredArchetype\":\"unknown\",\"patronEffectFamily\":\"bad\"}}],\"wrong\":true}",
+        [MetaShapePaths[4]] = "",
+        [MetaShapePaths[5]] = " \t\r\n",
+        [MetaShapePaths[6]] = "{\"requests\":[],\"_fixture\":\"ёж🌙\"}",
         [MetaShapePaths[10]] = "{\"requests\":[{\"requestId\":\"fixed_manifestation\",\"manifestationSource\":\"bad\",\"relicId\":\"fixed_relic\",\"personalityProfile\":{\"coreValues\":[],\"personalityTraits\":[{\"value\":0}]},\"abodeDisposition\":{\"powerSensitivity\":\"bad\"},\"abodeDevotionLevel\":101,\"restlessness\":101,\"abodeDevotionTier\":\"bad\",\"migrationState\":\"bad\"}]}"
     };
 
@@ -59,6 +64,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 Assert.Equal(new[] { "flexible_state_invalid_root", "strict_state_invalid_root" },
                     scalar.Where(issue => issue.FilePath == MetaShapePaths[0]).Select(issue => issue.Code));
+                Assert.Equal(new[] { "flexible_state_invalid_json", "strict_state_invalid_json" },
+                    scalar.Where(issue => issue.FilePath == MetaShapePaths[1]).Select(issue => issue.Code));
+                Assert.Equal(new[] { "strict_state_invalid_root" },
+                    scalar.Where(issue => issue.FilePath == MetaShapePaths[2]).Select(issue => issue.Code));
+                Assert.DoesNotContain(scalar, issue => issue.FilePath == MetaShapePaths[4] || issue.FilePath == MetaShapePaths[5]);
+                Assert.Equal(System.Text.Encoding.UTF8.GetPreamble().Concat(
+                    System.Text.Encoding.UTF8.GetBytes(MetaShapeMixedInputs()[MetaShapePaths[6]])).ToArray(),
+                    File.ReadAllBytes(probe.Files.ResolvePath(MetaShapePaths[6])));
                 Assert.Contains(scalar, issue => issue.Code == "shining_abode_invalid_favored_archetype");
                 Assert.Contains(scalar, issue => issue.Code == "guardian_abode_resident_personality_trait_value_out_of_bounds");
             }
