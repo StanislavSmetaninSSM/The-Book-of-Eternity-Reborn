@@ -169,6 +169,10 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
             Invoke(collector, "Export");
             var exported = Directory.EnumerateFiles(evidence, "*.json").Single();
             var original = File.ReadAllBytes(exported);
+            using (Measure(collector, "after-export-excluded")) { }
+            var sealedSnapshot = Snapshot(collector);
+            Assert.True(sealedSnapshot["CaptureSealed"]!.GetValue<bool>());
+            Assert.Single(sealedSnapshot["Rows"]!.AsArray());
             Invoke(collector, "Export");
             Assert.Equal(original, File.ReadAllBytes(exported));
             var refused = Collector.GetMethod("CreateOwned", BindingFlags.Static | BindingFlags.NonPublic)!
