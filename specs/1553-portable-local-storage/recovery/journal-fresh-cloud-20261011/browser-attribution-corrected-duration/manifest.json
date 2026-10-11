@@ -6163,5 +6163,90 @@
       }
     ],
     "Qualification": "Three accepted/closed windows and zero initial finite-export drops/errors/active; binding/fullwork coverage still independently checked before ranking. Late lexical close precedes external participating-owner close, whose original C5 oracles are separate. Missing killed/uncaptured peer exports unavailable, not zero; full observer overhead uncalibrated."
+  },
+  "Assessment": {
+    "FrozenEvidenceCarrier": "0604d5228454ce5bc4de4051dec68ddec2e2cc48",
+    "CompiledRuntimeCarrier": "4ade31cfe5488639077e39bcdc6cdaa0b6ddddaf",
+    "ReviewedCodeSHA": "9d79c79f73f79bae349c5e879f1a7f5cccea383d",
+    "Verdict": "SAME SOURCE PASS; corrected focused16/16PASS; ROOT+SAME frozen duration evidence PASS/no blockers. ONE duration application1/1PASS and three engine-window recorded scopes qualified for raw contained phase/caller ranking, not whole-C5 or performance qualification.",
+    "IndependentEvidence": "597 gzip/23251944 raw bytes/exact set-Git/131 compiled pins/22 actual DLL-PDB/680 live ship/4 live native verified;399 Complete exports/all drop-error-active counters0;three exact request-action-generation-full original owners (diagnostic Backend2 equals LinuxSupervisor enum encoding), accepted marker order and original full3turn/Stop/EOF/guardian assertions.",
+    "WindowScope": {
+      "ProcessIdsInTurnOrder": [
+        185951,
+        187481,
+        188800
+      ],
+      "RowsInMainExports": [
+        2089,
+        1880,
+        2089
+      ],
+      "MainExportBytes": [
+        2496823,
+        2317387,
+        2496773
+      ],
+      "StartToAcceptedSeconds": [
+        48.995092119,
+        58.157801756,
+        52.719170266
+      ],
+      "StartMarkers": [
+        "terminal-wait-returned",
+        "late-terminal-observed",
+        "terminal-wait-returned"
+      ],
+      "ContainedSelfSeconds": [
+        37.168331581,
+        46.312418846,
+        40.405671008
+      ],
+      "UnboundValidationPhaseContainedSelfSeconds": [
+        7.586023327,
+        7.76985262,
+        7.877522218
+      ],
+      "CrossingSpanCount": [
+        0,
+        0,
+        0
+      ],
+      "LateSpanCount": [
+        2606,
+        5950,
+        2826
+      ],
+      "LateInclusiveSeconds": [
+        0.100155045,
+        0.224202729,
+        0.097764776
+      ]
+    },
+    "ObservedRanking": {
+      "Metric": "RAW Contained Self WALL seconds, synchronous inclusive minus direct-child inclusive within each recorded invocation; NOT CPU or engine latency; concurrent totals may overlap. Unbound phase work remains explicit; phase/caller marginals and joint rows overlap and must not be summed as disjoint work.",
+      "LargestNamedPhase": "MetaMiscStateFiles",
+      "LargestNamedPhaseContainedSelfSeconds": 26.790573149,
+      "LargestCaller": "пост-материализации принятого хода",
+      "LargestCallerContainedSelfSeconds": 53.41290756,
+      "LargestJointPhase": "MetaMiscStateFiles",
+      "LargestJointCaller": "пост-материализации принятого хода",
+      "LargestJointContainedSelfSeconds": 14.250749708,
+      "LargestJointPerTurnSeconds": [
+        4.149008417,
+        5.508203747,
+        4.593537544
+      ],
+      "UnboundPhaseContainedSelfSeconds": 23.233398165
+    },
+    "Limits": [
+      "Three finite engine-window recording scopes, not complete whole-C5/process/peer coverage; six peer exports unavailable, not zero.",
+      "Warm windows begin after terminal wait; late begins after participating admission before browser-original scope. Pre-window work excluded; crossing and late work separate, no clipping/subtraction.",
+      "Late ClosedTicks/finalizer-closed is callback lexical completion before outer generation/main-owner close. Accepted/closed window does not imply outer close success; original Stop/cleanup oracles separately passed.",
+      "Engine stopwatch start-to-accepted anchors differ from external HelperComplete-to-Acceptance; no clock mapping or causal latency subtraction.",
+      "All legacy40 narrative limits exceeded. Ordinary40 acceptance/full performance remain UNQUALIFIED; no percentage/speedup/calibrated observer-overhead/CPU claim.",
+      "Historical first d37 focused FAIL and first3f incomplete profile remain immutable; older helper/actor/B2 causes UNKNOWN/FAIL retained.",
+      "No next optimization selected. Broad T069–T071/storage/performance work stays OPEN; bounded diagnostic criterion alone is qualified."
+    ],
+    "NextStep": "Final metadata/recovery readback only. No source/test/build/runtime/repeat/capraise/framework/optimization release."
   }
 }
