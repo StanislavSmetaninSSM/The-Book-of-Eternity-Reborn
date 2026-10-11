@@ -1,0 +1,22 @@
+{
+  "Utc": "2026-10-11T06:56:56.859574+00:00",
+  "Repository": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "Branch": "1553-storage-migration-cloud-20261008",
+  "SourceSHA": "78aa8e61661e9055bf6bb7d7296298382c5c45ef",
+  "ActualRemoteSHA": "78aa8e61661e9055bf6bb7d7296298382c5c45ef",
+  "RecoveryDirectory": "/workspace/1553-performance-completion-recovery-20261011-78aa8e61",
+  "Method": "ONE fresh direct GitHub-only single-branch clone; no local source/object/cache copies",
+  "TrackedFiles": 43209,
+  "TrackedBytes": 929879254,
+  "OrderedTrackedModePathBlobSHA256": "7a59ea41233e2787c3474c524efc25fae641d3d4fe5cbb3eef54e6ddea16b9e8",
+  "EveryTrackedByteAndModeMatchesGit": true,
+  "RawManifests": 61,
+  "RawPayloads": 2730,
+  "RawExpandedBytes": 201350352,
+  "EveryRawSHA256LengthExactSetTracked": true,
+  "GitFsckExitCode": 0,
+  "GitFsckOutput": "",
+  "WorkingTreeClean": true,
+  "ProjectCodeBuildTestsExecutedByRecovery": 0,
+  "Qualification": "Source/evidence recovery only. Preserves original runtime outcomes and open performance/lifecycle/Windows qualifications."
+}
