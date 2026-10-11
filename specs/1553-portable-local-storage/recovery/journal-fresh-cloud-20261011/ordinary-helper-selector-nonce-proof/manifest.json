@@ -1,0 +1,82 @@
+{
+  "FixtureSourceSHA": "1f11c1795f25ecd969db699e60a3e882c6cdc368",
+  "CarrierBeforeProofSHA": "9855ba619ff7ab6826e43afa100d656d70db22f6",
+  "Command": "source /workspace/boe-cloud-tools-20261011/env.sh; pwsh -NoLogo -NoProfile -File /workspace/boe-cloud-tools-20261011/ordinary-helper-selector-nonce-corrected/selector-probe.ps1",
+  "ExitCode": 0,
+  "Files": [
+    {
+      "Path": "selector-probe.ps1.gz",
+      "RawBytes": 5828,
+      "RawSHA256": "b34cefdc3cb54ef3976157a932ad0ec197d785e06f3f0d84bc7d9ca39194fabd"
+    },
+    {
+      "Path": "harness/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.gz",
+      "RawBytes": 2561,
+      "RawSHA256": "1993c09cc7fcaec8d299e6edca94af491184eb3503261a16dfc526de66fb2450"
+    },
+    {
+      "Path": "correction-construction.json.gz",
+      "RawBytes": 4819,
+      "RawSHA256": "052fdcb1bc95a9f22837a63af36145fbf24b8eb599f2f08d061f7bdc4cc5e66b"
+    },
+    {
+      "Path": "proof-receipt.json.gz",
+      "RawBytes": 1452,
+      "RawSHA256": "6852e5a23d412ea649ab30013e0063f32c6af7ac99ddb87a31d02d0c06f00983"
+    },
+    {
+      "Path": "selector-probe-console.log.gz",
+      "RawBytes": 45697,
+      "RawSHA256": "fafdb02ce756f40079f26d62659b2057f3beefc83c450d4c8d66288564f38da7"
+    },
+    {
+      "Path": "selector-probe-result.json.gz",
+      "RawBytes": 36158,
+      "RawSHA256": "0cbbf924bd31fb96755ffd86b35195f6d2a8fef1cd4a3280ea4532705a4d89dc"
+    }
+  ],
+  "SourcePins": {
+    "BookOfEternityClient/Core/FileSystemManager.cs": "794e46855935eba31a58da064b3fd5078292e25fb08a3ba165bd7e4fef69ee52",
+    "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs": "fdcb3969df9ff2f8a13a92af9eee1a207250c088bc8871906badbcb2c1a70e9b",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserOriginalAdmission.cs": "fdcc2fbf0a6e5d350ad2215844d0b40aaa6d1807c0b2fb6ec0d6386f0bfff26c",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs": "93403801377336387e5cf20399b54d1aa928ff3e40dc30fe0ab43dbf96559981",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92",
+    "scripts/test-csharp.ps1": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+    "scripts/testing/TestCategoryExecution.ps1": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38",
+    "scripts/testing/TestCategoryCatalog.psm1": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+    "tests/categories.json": "cce405ddc1a1f4a44e57c60add43f8bbd334d5e37f09a4709b621ae182ef7008",
+    "BookOfEternityClient.Tests/LinuxGameChainTests.cs": "006a060d343373375f7e980b6cbe42405880dc0e73d1fa2d321589d8daf0aa9c",
+    "tests/fixtures/LinuxGameChains/console_chain.py": "da994f5e1e3c1a2d1a763763504c5da5fc6bee721449b69c9bc57db4eac50de3",
+    "tests/fixtures/LinuxGameChains/startup_observer.py": "b927d2db9f1ad80b11a09cd6e0f271cd6acee9ab1593952a40bb782e245d7fae",
+    "scripts/build-linux-supervisor.ps1": "362dd6d89f79bc7fd9d67edbc2bc1f02b11a3cb5cc138389a735753986b76b16",
+    "tools/gm-relay/relay_cli.py": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606",
+    "tests/selection.json": "27006455535cc002e981dcffc40a9da07570279270dec10d587c138d906dc239",
+    "BookOfEternityClient.WebFrontend/package.json": "34ea949d7c929126538542684bf2af693caecf2345a9e67e9ae1e1d794c505d7",
+    "BookOfEternityClient.WebFrontend/package-lock.json": "c4dd676e182fd9438736bc9cf67ee05165a34b0348bd93bbd6e3619b7164410c",
+    "native/linux/boe-lineage-supervisor.c": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+    "tests/fixtures/LinuxHost/host-guardian.c": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3",
+    "tests/fixtures/LinuxGameChains/prepare_helper_observation.py": "41dba81cdff18dd7e615df9e7b7b811e902313a352b6cfbcf3bc2fd437ebaf8d",
+    "tests/fixtures/LinuxGameChains/helper_admission_observer.ps1": "67916a0f222079de4986dcaf62fdb5283bd67aea817b32e268faac443c0642f2",
+    "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs": "b3b0ec413b54e217cd8cc31bf94e1caf7963761dc13c347ecaae5f9bd7de6233",
+    "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1": "89b5201abfe16160b9c1b5465cf331a81ef5976120936aedee141442405007d9",
+    "BookOfEternityClient/Launcher/gm_main_operation.ps1": "9ec146965c358bf28424154c1d9fa1fa5e626cb0b5568911a12b130dfb6ab97d",
+    "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+    "tools/gm-relay/relay-apply-response.ps1": "228e0691c127f959128382766aaff173807cb384d562a26ff0b402f12915e859",
+    "BookOfEternityClient/Core/BrowserOriginalMainCondition.cs": "65f7b8f7d5b0bd592aa87cf42c354d54ab97a48c321b21cc8439b85cd55dae18"
+  },
+  "ReusedExactShippedMaterials": "ordinary-helper-selector-proof/manifest.json at9855; hashes recorded in correction-construction.json, reused materials byte-exact. Original old observer/transport/main match frozenactual.",
+  "Proofs": 9,
+  "Passed": 9,
+  "FirstSelectedEnvironmentNonce": "48854e8a430a4589ade716a68e3fd6fa",
+  "GuidNAndEqualsFrozenFailureNonce": true,
+  "FirstPSIUnchangedAfterSeparateSecondConfiguration": true,
+  "SecondPSINonceAbsent": true,
+  "PriorClaimCorrection": "Published FIRST9855 proof retained byte-exact. Its9/9 established target selection/flags/events and exclusions, but did NOT establish actual final Environment nonce: two Configure calls on same PSI erased it and oracle did not check environment value. This corrected inert proof freezes/validates first actual Environment nonce before configuring a separate PSI and verifies first unchanged/second absent. No observer Configure/preparer/product change.",
+  "ProjectBuildDiscoveryTestInvocations": 0,
+  "ManagedNativeGameInvocations": 0,
+  "Limit": "Pure inert selector/configuration proof only; no actual process/read/protocol/ordinary outcome or original failure diagnosis. Prior first proof remains byte-exact but its9/9 did not establish actual selected Environment nonce."
+}
