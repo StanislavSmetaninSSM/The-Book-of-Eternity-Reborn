@@ -141,5 +141,5 @@
     "DuplicateTests": []
   },
   "OwnedChains": [],
-  "PreconditionQualification": "Runner refused absent frontend node_modules before discovery/plan/workload:0executed tests/no owned chain/no acceptance latency. PlanOnly fresh selected build had passed, but runtime dependency prerequisite differs. This failed invocation is preserved separately, no timing arm replacement or implicit PASS. Four actual C5 arms remain UNRUN pending bounded prerequisite completion."
+  "PreconditionQualification": "Runner refused absent frontend node_modules before workload:1descriptor/1case planned,0executed tests/no owned chain/no acceptance latency. PlanOnly fresh selected build had passed, but runtime dependency prerequisite differs. This failed invocation is preserved separately, no timing arm replacement or implicit PASS. Four actual C5 arms remain UNRUN pending bounded prerequisite completion."
 }
