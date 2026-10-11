@@ -109,6 +109,17 @@ public sealed partial class GameEngineTurnLifecycleTests
         else
         {
             Assert.IsType<InvalidDataException>(failure);
+            var reason = damage switch
+            {
+                "protected-v2" => "Uncommitted publication would alter original browser evidence",
+                "generation" => "Original browser publication belongs to a different generation",
+                "namespace" => "Original browser session has pending namespace publication",
+                "commit-only" => "Original browser publication has unresolved commit evidence",
+                "leaf-directory" => "The local file path is not a regular file",
+                "root-file" => "A local storage ancestor is missing, linked or not a directory",
+                _ => throw new InvalidOperationException("Unknown journal refusal fixture.")
+            };
+            Assert.Contains(reason, failure!.Message, StringComparison.Ordinal);
             Assert.Equal(damage is "protected-v2" or "generation" or "namespace" ? 2 : 1, selections);
         }
         Assert.Equal(0, physicalLocks);
@@ -118,7 +129,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (damage == "leaf-directory") Assert.True(Directory.Exists(active));
         if (damage == "root-file") Assert.True(File.Exists(journalRoot));
         _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new { damage, selections, physicalLocks, recoveries,
-            failure = failure!.GetType().FullName, retained = retained!.ToDictionary(pair => pair.Key,
+            failure = failure!.GetType().FullName, failure.Message, retained = retained!.ToDictionary(pair => pair.Key,
                 pair => Convert.ToHexString(SHA256.HashData(pair.Value))) }));
     }
 
