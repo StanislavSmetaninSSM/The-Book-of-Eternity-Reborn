@@ -134,7 +134,7 @@ public sealed class CheckedRollbackHashFilterTests(ITestOutputHelper output)
             ([0, 1, 127, 128, 255, 16, 32], "1804B084980780FD19D518D8BFF867E69CFACC4F14F98D4CD757ADE9ABBFAEB8"),
             ([239, 187, 191, 97, 98], "E54DD095F92262CBAF1EF453DE08896FEE09647D82BE9433CC344752E643E43D"),
             ([240, 40, 140, 188, 192, 175, 0], "B0092EB2C379028748E10D9111849ACEEFE413135CAFADFCB497DE08A96BE290")
-        }
+        })
         {
             File.WriteAllBytes(path, content);
             Assert.Equal(expected, A(relative)); Assert.Equal(expected, B(relative)); Assert.Equal(content, File.ReadAllBytes(path));
