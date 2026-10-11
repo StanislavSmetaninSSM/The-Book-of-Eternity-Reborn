@@ -16,7 +16,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
     private readonly Func<long> _clock;
     private readonly int _capacity;
     private readonly string? _directory, _nonce, _canonicalRoot;
-    private int _droppedRows, _accountingErrors, _diagnosticFailures, _exportFailures;
+    private int _droppedRows, _accountingErrors, _diagnosticFailures, _exportFailures, _activeFrames;
     private long _overheadTicks, _acquisitions, _contention, _emptyRecovery, _presentRecovery;
     private bool _exported;
 
@@ -160,9 +160,10 @@ internal sealed class BrowserAdmissionDiagnosticCollector
         private bool _disposed;
         public void Dispose()
         {
+            if (_disposed) return;
+            _disposed = true;
             try
             {
-                if (_disposed) return; _disposed = true;
                 var ended = Owner._clock();
                 if (_thread != Environment.CurrentManagedThreadId || !ReferenceEquals(_timing, this))
                 { Interlocked.Increment(ref Owner._accountingErrors); return; }
@@ -179,6 +180,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
                 Interlocked.Add(ref Owner._overheadTicks, Math.Max(0, Owner._clock() - ended));
             }
             catch (Exception) { Interlocked.Increment(ref Owner._diagnosticFailures); }
+            finally { Interlocked.Decrement(ref Owner._activeFrames); }
         }
     }
     internal IDisposable Measure(string stage)
@@ -201,6 +203,7 @@ internal sealed class BrowserAdmissionDiagnosticCollector
             var started = _clock();
             Interlocked.Add(ref _overheadTicks, Math.Max(0, started - setup));
             var frame = new TimingFrame(this, _timing, row, context?.Lease ?? 0, started);
+            Interlocked.Increment(ref _activeFrames);
             _timing = frame; return frame;
         }
         catch (Exception) { Interlocked.Increment(ref _diagnosticFailures); return Noop.Instance; }
@@ -249,11 +252,15 @@ internal sealed class BrowserAdmissionDiagnosticCollector
             {
                 ProcessId = Environment.ProcessId, StopwatchFrequency = Stopwatch.Frequency,
                 Qualification = "Per-action/process aggregate synchronous wall work; concurrent totals may overlap. ActionId joins RequestId only through the actual C5 identity assertion. No acceptance-window accounting or CPU measurement.",
+                SelfTicksQualification = "RAW INSTRUMENTED SELF WALL: inclusive minus direct child inclusive in the same invocation. Includes child Measure setup/Dispose bookkeeping and Read/Inventory/Context costs; not pure IO/hash work.",
+                CollectorBookkeepingTicksQualification = "Partial setup/dispose estimate overlapping parent SelfTicks. Never subtract as exact overhead or sum with SelfTicks; end-to-end observer overhead remains uncalibrated.",
                 Rows = _rows.Values.ToArray(), DroppedRows = _droppedRows, AccountingErrors = _accountingErrors,
                 DiagnosticFailures = _diagnosticFailures, ExportFailures = _exportFailures,
+                ActiveFrames = _activeFrames,
                 CollectorBookkeepingTicks = _overheadTicks, Acquisitions = _acquisitions, Contention = _contention,
                 EmptyRecovery = _emptyRecovery, PresentRecovery = _presentRecovery,
-                Complete = _droppedRows == 0 && _accountingErrors == 0 && _diagnosticFailures == 0
+                Complete = _droppedRows == 0 && _accountingErrors == 0 && _diagnosticFailures == 0 &&
+                    _exportFailures == 0 && _activeFrames == 0
             });
     }
     internal void Export()
