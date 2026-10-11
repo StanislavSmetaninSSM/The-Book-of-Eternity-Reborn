@@ -1,0 +1,1733 @@
+{
+  "Verdict": "Three accepted closed work-complete engine windows qualified; all captures sealed/complete and health zero. Ranking covers observed groups only; source branches without rows remain unobserved.",
+  "Metric": "Raw instrumented synchronous contained self wall seconds. Includes collector bookkeeping; concurrent totals may overlap; no inclusive sums, CPU, engine latency percentage, calibrated overhead or causal speedup.",
+  "Scope": "Seven original source groups include originating nested Guardian/context work. Family counters are layered, not unique physical reads; no per-path costs.",
+  "SourceSHA": "d4b79236e15aca989207d2a6712562857e1d8a21",
+  "CaptureCount": 402,
+  "UnobservedSourceGroups": [
+    "ManifestationContext"
+  ],
+  "AggregateRanking": [
+    {
+      "Group": "GuardianAndShiningShapes",
+      "ContainedSelfSeconds": 7.741992469000001
+    },
+    {
+      "Group": "AfterlifeAndSarefShapes",
+      "ContainedSelfSeconds": 6.1766407260000005
+    },
+    {
+      "Group": "MiscShapes",
+      "ContainedSelfSeconds": 5.771165352000001
+    },
+    {
+      "Group": "LifecycleContexts",
+      "ContainedSelfSeconds": 3.299710777
+    },
+    {
+      "Group": "BehaviourAndJournalShapes",
+      "ContainedSelfSeconds": 2.620347209
+    },
+    {
+      "Group": "SocialRequestShapes",
+      "ContainedSelfSeconds": 0.816117238
+    }
+  ],
+  "Windows": [
+    {
+      "Turn": 1,
+      "ProcessId": 199867,
+      "WindowId": "199867-1",
+      "RequestId": "cef5b6c5de3c4a3fb1eff7b8e98a0824",
+      "Groups": [
+        {
+          "Group": "GuardianAndShiningShapes",
+          "ContainedSelfSeconds": 2.331924421,
+          "CallerSelfSeconds": {
+            "обработки хода": 1.137158416,
+            "пост-материализации принятого хода": 1.1947660050000002
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.09541936100000001,
+            "trusted-scope-construction-unheld": 0.04337115000000001,
+            "detached-proof-decoding": 0.15357697299999998,
+            "physical-verification": 0.07454711,
+            "authority-and-rollback-verification": 1.0653627220000002,
+            "snapshot-hash-verification": 0.898057204,
+            "trusted-scope-construction-held": 0.0015899009999999997
+          },
+          "ContainedFullProofs": 288,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 89,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 16,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 16,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 76,
+              "ObservedBytes": 59067,
+              "PhysicalAttempts": 38,
+              "PhysicalMissing": 32,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/обработки хода/override=True": {
+              "Events": 229,
+              "SemanticStarts": 63,
+              "SemanticReturnedMissing": 20,
+              "SemanticReturnedPresent": 43,
+              "InitialMissing": 20,
+              "InitialPresent": 43,
+              "FollowupReasonMissing": 20,
+              "FollowupMissing": 20
+            },
+            "ordinary-sync/обработки хода/override=True": {
+              "Events": 188,
+              "ObservedBytes": 1691435,
+              "PhysicalAttempts": 94,
+              "PhysicalMissing": 40,
+              "PhysicalPresent": 54
+            },
+            "public-bytes-async/обработки хода/override=True": {
+              "Events": 9,
+              "SemanticStarts": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialPresent": 3
+            },
+            "public-bytes-sync/обработки хода/override=True": {
+              "Events": 33,
+              "SemanticStarts": 11,
+              "SemanticReturnedPresent": 11,
+              "InitialPresent": 11
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 89,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 16,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 16,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 76,
+              "ObservedBytes": 59067,
+              "PhysicalAttempts": 38,
+              "PhysicalMissing": 32,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/пост-материализации принятого хода/override=True": {
+              "Events": 229,
+              "SemanticStarts": 63,
+              "SemanticReturnedMissing": 20,
+              "SemanticReturnedPresent": 43,
+              "InitialMissing": 20,
+              "InitialPresent": 43,
+              "FollowupReasonMissing": 20,
+              "FollowupMissing": 20
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=True": {
+              "Events": 188,
+              "ObservedBytes": 1691435,
+              "PhysicalAttempts": 94,
+              "PhysicalMissing": 40,
+              "PhysicalPresent": 54
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=True": {
+              "Events": 9,
+              "SemanticStarts": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialPresent": 3
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=True": {
+              "Events": 33,
+              "SemanticStarts": 11,
+              "SemanticReturnedPresent": 11,
+              "InitialPresent": 11
+            }
+          }
+        },
+        {
+          "Group": "AfterlifeAndSarefShapes",
+          "ContainedSelfSeconds": 1.774786474,
+          "CallerSelfSeconds": {
+            "обработки хода": 0.8688111389999997,
+            "пост-материализации принятого хода": 0.9059753350000002
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.07603904,
+            "trusted-scope-construction-unheld": 0.036948506,
+            "detached-proof-decoding": 0.12293056100000001,
+            "physical-verification": 0.05362943599999999,
+            "authority-and-rollback-verification": 0.80289202,
+            "snapshot-hash-verification": 0.681067412,
+            "trusted-scope-construction-held": 0.001279499
+          },
+          "ContainedFullProofs": 224,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 77,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 10,
+              "SemanticReturnedPresent": 9,
+              "InitialMissing": 10,
+              "InitialPresent": 9,
+              "FollowupReasonMissing": 10,
+              "FollowupMissing": 10
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 62,
+              "ObservedBytes": 53788,
+              "PhysicalAttempts": 31,
+              "PhysicalMissing": 20,
+              "PhysicalPresent": 11
+            },
+            "public-text-sync/обработки хода/override=True": {
+              "Events": 198,
+              "SemanticStarts": 54,
+              "SemanticReturnedMissing": 18,
+              "SemanticReturnedPresent": 36,
+              "InitialMissing": 18,
+              "InitialPresent": 36,
+              "FollowupReasonMissing": 18,
+              "FollowupMissing": 18
+            },
+            "ordinary-sync/обработки хода/override=True": {
+              "Events": 164,
+              "ObservedBytes": 1521704,
+              "PhysicalAttempts": 82,
+              "PhysicalMissing": 36,
+              "PhysicalPresent": 46
+            },
+            "public-bytes-async/обработки хода/override=True": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            },
+            "public-bytes-sync/обработки хода/override=True": {
+              "Events": 30,
+              "SemanticStarts": 10,
+              "SemanticReturnedPresent": 10,
+              "InitialPresent": 10
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 77,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 10,
+              "SemanticReturnedPresent": 9,
+              "InitialMissing": 10,
+              "InitialPresent": 9,
+              "FollowupReasonMissing": 10,
+              "FollowupMissing": 10
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 62,
+              "ObservedBytes": 53788,
+              "PhysicalAttempts": 31,
+              "PhysicalMissing": 20,
+              "PhysicalPresent": 11
+            },
+            "public-text-sync/пост-материализации принятого хода/override=True": {
+              "Events": 198,
+              "SemanticStarts": 54,
+              "SemanticReturnedMissing": 18,
+              "SemanticReturnedPresent": 36,
+              "InitialMissing": 18,
+              "InitialPresent": 36,
+              "FollowupReasonMissing": 18,
+              "FollowupMissing": 18
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=True": {
+              "Events": 164,
+              "ObservedBytes": 1521704,
+              "PhysicalAttempts": 82,
+              "PhysicalMissing": 36,
+              "PhysicalPresent": 46
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=True": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=True": {
+              "Events": 30,
+              "SemanticStarts": 10,
+              "SemanticReturnedPresent": 10,
+              "InitialPresent": 10
+            }
+          }
+        },
+        {
+          "Group": "MiscShapes",
+          "ContainedSelfSeconds": 1.719647691,
+          "CallerSelfSeconds": {
+            "обработки хода": 0.838086669,
+            "пост-материализации принятого хода": 0.8815610220000001
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.067400334,
+            "trusted-scope-construction-unheld": 0.036312683,
+            "detached-proof-decoding": 0.119107302,
+            "physical-verification": 0.04971744,
+            "authority-and-rollback-verification": 0.791474735,
+            "snapshot-hash-verification": 0.6545292180000001,
+            "trusted-scope-construction-held": 0.001105979
+          },
+          "ContainedFullProofs": 208,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 52,
+              "SemanticStarts": 12,
+              "SemanticReturnedMissing": 8,
+              "SemanticReturnedPresent": 4,
+              "InitialMissing": 8,
+              "InitialPresent": 4,
+              "FollowupReasonMissing": 8,
+              "FollowupMissing": 8
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 44,
+              "ObservedBytes": 46068,
+              "PhysicalAttempts": 22,
+              "PhysicalMissing": 16,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/обработки хода/override=True": {
+              "Events": 198,
+              "SemanticStarts": 54,
+              "SemanticReturnedMissing": 18,
+              "SemanticReturnedPresent": 36,
+              "InitialMissing": 18,
+              "InitialPresent": 36,
+              "FollowupReasonMissing": 18,
+              "FollowupMissing": 18
+            },
+            "ordinary-sync/обработки хода/override=True": {
+              "Events": 164,
+              "ObservedBytes": 1521704,
+              "PhysicalAttempts": 82,
+              "PhysicalMissing": 36,
+              "PhysicalPresent": 46
+            },
+            "public-bytes-async/обработки хода/override=True": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            },
+            "public-bytes-sync/обработки хода/override=True": {
+              "Events": 30,
+              "SemanticStarts": 10,
+              "SemanticReturnedPresent": 10,
+              "InitialPresent": 10
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 52,
+              "SemanticStarts": 12,
+              "SemanticReturnedMissing": 8,
+              "SemanticReturnedPresent": 4,
+              "InitialMissing": 8,
+              "InitialPresent": 4,
+              "FollowupReasonMissing": 8,
+              "FollowupMissing": 8
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 44,
+              "ObservedBytes": 46068,
+              "PhysicalAttempts": 22,
+              "PhysicalMissing": 16,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/пост-материализации принятого хода/override=True": {
+              "Events": 198,
+              "SemanticStarts": 54,
+              "SemanticReturnedMissing": 18,
+              "SemanticReturnedPresent": 36,
+              "InitialMissing": 18,
+              "InitialPresent": 36,
+              "FollowupReasonMissing": 18,
+              "FollowupMissing": 18
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=True": {
+              "Events": 164,
+              "ObservedBytes": 1521704,
+              "PhysicalAttempts": 82,
+              "PhysicalMissing": 36,
+              "PhysicalPresent": 46
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=True": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=True": {
+              "Events": 30,
+              "SemanticStarts": 10,
+              "SemanticReturnedPresent": 10,
+              "InitialPresent": 10
+            }
+          }
+        },
+        {
+          "Group": "LifecycleContexts",
+          "ContainedSelfSeconds": 1.0012385350000002,
+          "CallerSelfSeconds": {
+            "обработки хода": 0.49790035,
+            "пост-материализации принятого хода": 0.503338185
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.038525461999999996,
+            "trusted-scope-construction-unheld": 0.021505945000000002,
+            "detached-proof-decoding": 0.06714004,
+            "physical-verification": 0.029814808999999998,
+            "authority-and-rollback-verification": 0.453819323,
+            "snapshot-hash-verification": 0.389833192,
+            "trusted-scope-construction-held": 0.0005997639999999999
+          },
+          "ContainedFullProofs": 128,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 80,
+              "SemanticStarts": 16,
+              "SemanticReturnedMissing": 16,
+              "InitialMissing": 16,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 64,
+              "PhysicalAttempts": 32,
+              "PhysicalMissing": 32
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 80,
+              "SemanticStarts": 16,
+              "SemanticReturnedMissing": 16,
+              "InitialMissing": 16,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 64,
+              "PhysicalAttempts": 32,
+              "PhysicalMissing": 32
+            }
+          }
+        },
+        {
+          "Group": "BehaviourAndJournalShapes",
+          "ContainedSelfSeconds": 0.7860008570000001,
+          "CallerSelfSeconds": {
+            "обработки хода": 0.38628304900000004,
+            "пост-материализации принятого хода": 0.399717808
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.031733226999999996,
+            "trusted-scope-construction-unheld": 0.013827473000000002,
+            "detached-proof-decoding": 0.055979772,
+            "physical-verification": 0.027010762,
+            "authority-and-rollback-verification": 0.35706120399999997,
+            "snapshot-hash-verification": 0.299858354,
+            "trusted-scope-construction-held": 0.000530065
+          },
+          "ContainedFullProofs": 96,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 24,
+              "SemanticStarts": 6,
+              "SemanticReturnedMissing": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 3,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 3,
+              "FollowupMissing": 3
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 20,
+              "ObservedBytes": 21939,
+              "PhysicalAttempts": 10,
+              "PhysicalMissing": 6,
+              "PhysicalPresent": 4
+            },
+            "public-text-sync/обработки хода/override=True": {
+              "Events": 99,
+              "SemanticStarts": 27,
+              "SemanticReturnedMissing": 9,
+              "SemanticReturnedPresent": 18,
+              "InitialMissing": 9,
+              "InitialPresent": 18,
+              "FollowupReasonMissing": 9,
+              "FollowupMissing": 9
+            },
+            "ordinary-sync/обработки хода/override=True": {
+              "Events": 82,
+              "ObservedBytes": 760852,
+              "PhysicalAttempts": 41,
+              "PhysicalMissing": 18,
+              "PhysicalPresent": 23
+            },
+            "public-bytes-async/обработки хода/override=True": {
+              "Events": 3,
+              "SemanticStarts": 1,
+              "SemanticReturnedPresent": 1,
+              "InitialPresent": 1
+            },
+            "public-bytes-sync/обработки хода/override=True": {
+              "Events": 15,
+              "SemanticStarts": 5,
+              "SemanticReturnedPresent": 5,
+              "InitialPresent": 5
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 24,
+              "SemanticStarts": 6,
+              "SemanticReturnedMissing": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 3,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 3,
+              "FollowupMissing": 3
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 20,
+              "ObservedBytes": 21939,
+              "PhysicalAttempts": 10,
+              "PhysicalMissing": 6,
+              "PhysicalPresent": 4
+            },
+            "public-text-sync/пост-материализации принятого хода/override=True": {
+              "Events": 99,
+              "SemanticStarts": 27,
+              "SemanticReturnedMissing": 9,
+              "SemanticReturnedPresent": 18,
+              "InitialMissing": 9,
+              "InitialPresent": 18,
+              "FollowupReasonMissing": 9,
+              "FollowupMissing": 9
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=True": {
+              "Events": 82,
+              "ObservedBytes": 760852,
+              "PhysicalAttempts": 41,
+              "PhysicalMissing": 18,
+              "PhysicalPresent": 23
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=True": {
+              "Events": 3,
+              "SemanticStarts": 1,
+              "SemanticReturnedPresent": 1,
+              "InitialPresent": 1
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=True": {
+              "Events": 15,
+              "SemanticStarts": 5,
+              "SemanticReturnedPresent": 5,
+              "InitialPresent": 5
+            }
+          }
+        },
+        {
+          "Group": "SocialRequestShapes",
+          "ContainedSelfSeconds": 0.265518286,
+          "CallerSelfSeconds": {
+            "обработки хода": 0.12827715500000003,
+            "пост-материализации принятого хода": 0.13724113099999996
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.011221798,
+            "trusted-scope-construction-unheld": 0.004399178000000001,
+            "detached-proof-decoding": 0.020264806,
+            "physical-verification": 0.007074501,
+            "authority-and-rollback-verification": 0.121385271,
+            "snapshot-hash-verification": 0.101005838,
+            "trusted-scope-construction-held": 0.000166894
+          },
+          "ContainedFullProofs": 32,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 20,
+              "SemanticStarts": 4,
+              "SemanticReturnedMissing": 4,
+              "InitialMissing": 4,
+              "FollowupReasonMissing": 4,
+              "FollowupMissing": 4
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 16,
+              "PhysicalAttempts": 8,
+              "PhysicalMissing": 8
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 20,
+              "SemanticStarts": 4,
+              "SemanticReturnedMissing": 4,
+              "InitialMissing": 4,
+              "FollowupReasonMissing": 4,
+              "FollowupMissing": 4
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 16,
+              "PhysicalAttempts": 8,
+              "PhysicalMissing": 8
+            }
+          }
+        },
+        {
+          "Group": "ManifestationContext",
+          "ContainedSelfSeconds": null,
+          "Observation": "No timing/content rows in this captured window; admission cost unobserved, not zero-cost proof."
+        }
+      ],
+      "UnboundNullOwnerRows": 12,
+      "UnboundNullOwnerContainedSelfSeconds": 0.045595298,
+      "AllUnboundPhaseContainedSelfSeconds": 7.250956288,
+      "ObservedGroupsContainedSelfSeconds": 7.879116264,
+      "RemainingOuterMetaSelfSeconds": 0,
+      "AcceptedMetaControlShapesSelfSeconds": 0.080688706
+    },
+    {
+      "Turn": 2,
+      "ProcessId": 201372,
+      "WindowId": "201372-1",
+      "RequestId": "aef9f461208d4dcf86df2a66725a812f",
+      "Groups": [
+        {
+          "Group": "GuardianAndShiningShapes",
+          "ContainedSelfSeconds": 2.9969137770000005,
+          "CallerSelfSeconds": {
+            "late response GM": 1.3897914489999998,
+            "пост-материализации принятого хода": 1.6071223280000004
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.127110841,
+            "trusted-scope-construction-unheld": 0.05349938800000001,
+            "detached-proof-decoding": 0.280207389,
+            "physical-verification": 0.089320889,
+            "authority-and-rollback-verification": 1.34867889,
+            "snapshot-hash-verification": 1.0959113790000001,
+            "trusted-scope-construction-held": 0.0021850010000000002
+          },
+          "ContainedFullProofs": 324,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/late response GM/override=True": {
+              "Events": 89,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 16,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 16,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/late response GM/override=True": {
+              "Events": 76,
+              "ObservedBytes": 59067,
+              "PhysicalAttempts": 38,
+              "PhysicalMissing": 32,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/late response GM/override=True": {
+              "Events": 229,
+              "SemanticStarts": 63,
+              "SemanticReturnedMissing": 20,
+              "SemanticReturnedPresent": 43,
+              "InitialMissing": 20,
+              "InitialPresent": 43,
+              "FollowupReasonMissing": 20,
+              "FollowupMissing": 20
+            },
+            "ordinary-sync/late response GM/override=True": {
+              "Events": 188,
+              "ObservedBytes": 1759825,
+              "PhysicalAttempts": 94,
+              "PhysicalMissing": 40,
+              "PhysicalPresent": 54
+            },
+            "public-bytes-async/late response GM/override=True": {
+              "Events": 9,
+              "SemanticStarts": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialPresent": 3
+            },
+            "public-bytes-sync/late response GM/override=True": {
+              "Events": 33,
+              "SemanticStarts": 11,
+              "SemanticReturnedPresent": 11,
+              "InitialPresent": 11
+            },
+            "public-text-async/пост-материализации принятого хода/override=False": {
+              "Events": 89,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 16,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 16,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/пост-материализации принятого хода/override=False": {
+              "Events": 76,
+              "ObservedBytes": 59067,
+              "PhysicalAttempts": 38,
+              "PhysicalMissing": 32,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/пост-материализации принятого хода/override=False": {
+              "Events": 355,
+              "SemanticStarts": 99,
+              "SemanticReturnedMissing": 29,
+              "SemanticReturnedPresent": 70,
+              "InitialMissing": 29,
+              "InitialPresent": 70,
+              "FollowupReasonMissing": 29,
+              "FollowupMissing": 29
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=False": {
+              "Events": 1502,
+              "ObservedBytes": 20372365,
+              "PhysicalAttempts": 751,
+              "PhysicalMissing": 58,
+              "PhysicalPresent": 693
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=False": {
+              "Events": 1869,
+              "SemanticStarts": 623,
+              "SemanticReturnedPresent": 623,
+              "InitialPresent": 623
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=False": {
+              "Events": 9,
+              "SemanticStarts": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialPresent": 3
+            }
+          }
+        },
+        {
+          "Group": "AfterlifeAndSarefShapes",
+          "ContainedSelfSeconds": 2.4326955570000006,
+          "CallerSelfSeconds": {
+            "late response GM": 1.04664554,
+            "пост-материализации принятого хода": 1.3860500170000003
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.101754616,
+            "trusted-scope-construction-unheld": 0.041686535000000004,
+            "detached-proof-decoding": 0.22529593999999997,
+            "physical-verification": 0.06638449199999999,
+            "authority-and-rollback-verification": 1.106562629,
+            "snapshot-hash-verification": 0.889332618,
+            "trusted-scope-construction-held": 0.001678727
+          },
+          "ContainedFullProofs": 256,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/late response GM/override=True": {
+              "Events": 77,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 10,
+              "SemanticReturnedPresent": 9,
+              "InitialMissing": 10,
+              "InitialPresent": 9,
+              "FollowupReasonMissing": 10,
+              "FollowupMissing": 10
+            },
+            "ordinary-async/late response GM/override=True": {
+              "Events": 62,
+              "ObservedBytes": 55030,
+              "PhysicalAttempts": 31,
+              "PhysicalMissing": 20,
+              "PhysicalPresent": 11
+            },
+            "public-text-sync/late response GM/override=True": {
+              "Events": 198,
+              "SemanticStarts": 54,
+              "SemanticReturnedMissing": 18,
+              "SemanticReturnedPresent": 36,
+              "InitialMissing": 18,
+              "InitialPresent": 36,
+              "FollowupReasonMissing": 18,
+              "FollowupMissing": 18
+            },
+            "ordinary-sync/late response GM/override=True": {
+              "Events": 164,
+              "ObservedBytes": 1581716,
+              "PhysicalAttempts": 82,
+              "PhysicalMissing": 36,
+              "PhysicalPresent": 46
+            },
+            "public-bytes-async/late response GM/override=True": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            },
+            "public-bytes-sync/late response GM/override=True": {
+              "Events": 30,
+              "SemanticStarts": 10,
+              "SemanticReturnedPresent": 10,
+              "InitialPresent": 10
+            },
+            "public-text-async/пост-материализации принятого хода/override=False": {
+              "Events": 77,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 10,
+              "SemanticReturnedPresent": 9,
+              "InitialMissing": 10,
+              "InitialPresent": 9,
+              "FollowupReasonMissing": 10,
+              "FollowupMissing": 10
+            },
+            "ordinary-async/пост-материализации принятого хода/override=False": {
+              "Events": 62,
+              "ObservedBytes": 55030,
+              "PhysicalAttempts": 31,
+              "PhysicalMissing": 20,
+              "PhysicalPresent": 11
+            },
+            "public-text-sync/пост-материализации принятого хода/override=False": {
+              "Events": 310,
+              "SemanticStarts": 86,
+              "SemanticReturnedMissing": 26,
+              "SemanticReturnedPresent": 60,
+              "InitialMissing": 26,
+              "InitialPresent": 60,
+              "FollowupReasonMissing": 26,
+              "FollowupMissing": 26
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=False": {
+              "Events": 1332,
+              "ObservedBytes": 18126196,
+              "PhysicalAttempts": 666,
+              "PhysicalMissing": 52,
+              "PhysicalPresent": 614
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=False": {
+              "Events": 1662,
+              "SemanticStarts": 554,
+              "SemanticReturnedPresent": 554,
+              "InitialPresent": 554
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=False": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            }
+          }
+        },
+        {
+          "Group": "MiscShapes",
+          "ContainedSelfSeconds": 2.274115652,
+          "CallerSelfSeconds": {
+            "late response GM": 1.0134523670000002,
+            "пост-материализации принятого хода": 1.260663285
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.101618681,
+            "trusted-scope-construction-unheld": 0.038228261,
+            "detached-proof-decoding": 0.214849858,
+            "physical-verification": 0.07178480200000001,
+            "authority-and-rollback-verification": 1.020559728,
+            "snapshot-hash-verification": 0.825475439,
+            "trusted-scope-construction-held": 0.001598883
+          },
+          "ContainedFullProofs": 240,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/late response GM/override=True": {
+              "Events": 52,
+              "SemanticStarts": 12,
+              "SemanticReturnedMissing": 8,
+              "SemanticReturnedPresent": 4,
+              "InitialMissing": 8,
+              "InitialPresent": 4,
+              "FollowupReasonMissing": 8,
+              "FollowupMissing": 8
+            },
+            "ordinary-async/late response GM/override=True": {
+              "Events": 44,
+              "ObservedBytes": 46068,
+              "PhysicalAttempts": 22,
+              "PhysicalMissing": 16,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/late response GM/override=True": {
+              "Events": 198,
+              "SemanticStarts": 54,
+              "SemanticReturnedMissing": 18,
+              "SemanticReturnedPresent": 36,
+              "InitialMissing": 18,
+              "InitialPresent": 36,
+              "FollowupReasonMissing": 18,
+              "FollowupMissing": 18
+            },
+            "ordinary-sync/late response GM/override=True": {
+              "Events": 164,
+              "ObservedBytes": 1581716,
+              "PhysicalAttempts": 82,
+              "PhysicalMissing": 36,
+              "PhysicalPresent": 46
+            },
+            "public-bytes-async/late response GM/override=True": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            },
+            "public-bytes-sync/late response GM/override=True": {
+              "Events": 30,
+              "SemanticStarts": 10,
+              "SemanticReturnedPresent": 10,
+              "InitialPresent": 10
+            },
+            "public-text-async/пост-материализации принятого хода/override=False": {
+              "Events": 52,
+              "SemanticStarts": 12,
+              "SemanticReturnedMissing": 8,
+              "SemanticReturnedPresent": 4,
+              "InitialMissing": 8,
+              "InitialPresent": 4,
+              "FollowupReasonMissing": 8,
+              "FollowupMissing": 8
+            },
+            "ordinary-async/пост-материализации принятого хода/override=False": {
+              "Events": 44,
+              "ObservedBytes": 46068,
+              "PhysicalAttempts": 22,
+              "PhysicalMissing": 16,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/пост-материализации принятого хода/override=False": {
+              "Events": 310,
+              "SemanticStarts": 86,
+              "SemanticReturnedMissing": 26,
+              "SemanticReturnedPresent": 60,
+              "InitialMissing": 26,
+              "InitialPresent": 60,
+              "FollowupReasonMissing": 26,
+              "FollowupMissing": 26
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=False": {
+              "Events": 1332,
+              "ObservedBytes": 18126196,
+              "PhysicalAttempts": 666,
+              "PhysicalMissing": 52,
+              "PhysicalPresent": 614
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=False": {
+              "Events": 1662,
+              "SemanticStarts": 554,
+              "SemanticReturnedPresent": 554,
+              "InitialPresent": 554
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=False": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            }
+          }
+        },
+        {
+          "Group": "LifecycleContexts",
+          "ContainedSelfSeconds": 1.190025726,
+          "CallerSelfSeconds": {
+            "late response GM": 0.652743189,
+            "пост-материализации принятого хода": 0.5372825370000001
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.044936121,
+            "trusted-scope-construction-unheld": 0.021220529,
+            "detached-proof-decoding": 0.12221223200000002,
+            "physical-verification": 0.030760405,
+            "authority-and-rollback-verification": 0.541039806,
+            "snapshot-hash-verification": 0.42901311900000005,
+            "trusted-scope-construction-held": 0.0008435140000000001
+          },
+          "ContainedFullProofs": 128,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/late response GM/override=True": {
+              "Events": 80,
+              "SemanticStarts": 16,
+              "SemanticReturnedMissing": 16,
+              "InitialMissing": 16,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/late response GM/override=True": {
+              "Events": 64,
+              "PhysicalAttempts": 32,
+              "PhysicalMissing": 32
+            },
+            "public-text-async/пост-материализации принятого хода/override=False": {
+              "Events": 80,
+              "SemanticStarts": 16,
+              "SemanticReturnedMissing": 16,
+              "InitialMissing": 16,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/пост-материализации принятого хода/override=False": {
+              "Events": 64,
+              "PhysicalAttempts": 32,
+              "PhysicalMissing": 32
+            }
+          }
+        },
+        {
+          "Group": "BehaviourAndJournalShapes",
+          "ContainedSelfSeconds": 1.022504474,
+          "CallerSelfSeconds": {
+            "late response GM": 0.4590866380000001,
+            "пост-материализации принятого хода": 0.5634178359999998
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.04795102799999999,
+            "trusted-scope-construction-unheld": 0.017467194,
+            "detached-proof-decoding": 0.098064111,
+            "physical-verification": 0.034269545,
+            "authority-and-rollback-verification": 0.45558286000000003,
+            "snapshot-hash-verification": 0.368466934,
+            "trusted-scope-construction-held": 0.000702802
+          },
+          "ContainedFullProofs": 112,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/late response GM/override=True": {
+              "Events": 24,
+              "SemanticStarts": 6,
+              "SemanticReturnedMissing": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 3,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 3,
+              "FollowupMissing": 3
+            },
+            "ordinary-async/late response GM/override=True": {
+              "Events": 20,
+              "ObservedBytes": 23209,
+              "PhysicalAttempts": 10,
+              "PhysicalMissing": 6,
+              "PhysicalPresent": 4
+            },
+            "public-text-sync/late response GM/override=True": {
+              "Events": 99,
+              "SemanticStarts": 27,
+              "SemanticReturnedMissing": 9,
+              "SemanticReturnedPresent": 18,
+              "InitialMissing": 9,
+              "InitialPresent": 18,
+              "FollowupReasonMissing": 9,
+              "FollowupMissing": 9
+            },
+            "ordinary-sync/late response GM/override=True": {
+              "Events": 82,
+              "ObservedBytes": 790858,
+              "PhysicalAttempts": 41,
+              "PhysicalMissing": 18,
+              "PhysicalPresent": 23
+            },
+            "public-bytes-async/late response GM/override=True": {
+              "Events": 3,
+              "SemanticStarts": 1,
+              "SemanticReturnedPresent": 1,
+              "InitialPresent": 1
+            },
+            "public-bytes-sync/late response GM/override=True": {
+              "Events": 15,
+              "SemanticStarts": 5,
+              "SemanticReturnedPresent": 5,
+              "InitialPresent": 5
+            },
+            "public-text-async/пост-материализации принятого хода/override=False": {
+              "Events": 24,
+              "SemanticStarts": 6,
+              "SemanticReturnedMissing": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 3,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 3,
+              "FollowupMissing": 3
+            },
+            "ordinary-async/пост-материализации принятого хода/override=False": {
+              "Events": 20,
+              "ObservedBytes": 23209,
+              "PhysicalAttempts": 10,
+              "PhysicalMissing": 6,
+              "PhysicalPresent": 4
+            },
+            "public-text-sync/пост-материализации принятого хода/override=False": {
+              "Events": 155,
+              "SemanticStarts": 43,
+              "SemanticReturnedMissing": 13,
+              "SemanticReturnedPresent": 30,
+              "InitialMissing": 13,
+              "InitialPresent": 30,
+              "FollowupReasonMissing": 13,
+              "FollowupMissing": 13
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=False": {
+              "Events": 666,
+              "ObservedBytes": 9063098,
+              "PhysicalAttempts": 333,
+              "PhysicalMissing": 26,
+              "PhysicalPresent": 307
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=False": {
+              "Events": 831,
+              "SemanticStarts": 277,
+              "SemanticReturnedPresent": 277,
+              "InitialPresent": 277
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=False": {
+              "Events": 3,
+              "SemanticStarts": 1,
+              "SemanticReturnedPresent": 1,
+              "InitialPresent": 1
+            }
+          }
+        },
+        {
+          "Group": "SocialRequestShapes",
+          "ContainedSelfSeconds": 0.27988545100000006,
+          "CallerSelfSeconds": {
+            "late response GM": 0.14781901600000003,
+            "пост-материализации принятого хода": 0.132066435
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.010543047,
+            "trusted-scope-construction-unheld": 0.004918109999999999,
+            "detached-proof-decoding": 0.028040817000000003,
+            "physical-verification": 0.007870312,
+            "authority-and-rollback-verification": 0.12803035899999998,
+            "snapshot-hash-verification": 0.100303367,
+            "trusted-scope-construction-held": 0.00017943900000000004
+          },
+          "ContainedFullProofs": 32,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/late response GM/override=True": {
+              "Events": 20,
+              "SemanticStarts": 4,
+              "SemanticReturnedMissing": 4,
+              "InitialMissing": 4,
+              "FollowupReasonMissing": 4,
+              "FollowupMissing": 4
+            },
+            "ordinary-async/late response GM/override=True": {
+              "Events": 16,
+              "PhysicalAttempts": 8,
+              "PhysicalMissing": 8
+            },
+            "public-text-async/пост-материализации принятого хода/override=False": {
+              "Events": 20,
+              "SemanticStarts": 4,
+              "SemanticReturnedMissing": 4,
+              "InitialMissing": 4,
+              "FollowupReasonMissing": 4,
+              "FollowupMissing": 4
+            },
+            "ordinary-async/пост-материализации принятого хода/override=False": {
+              "Events": 16,
+              "PhysicalAttempts": 8,
+              "PhysicalMissing": 8
+            }
+          }
+        },
+        {
+          "Group": "ManifestationContext",
+          "ContainedSelfSeconds": null,
+          "Observation": "No timing/content rows in this captured window; admission cost unobserved, not zero-cost proof."
+        }
+      ],
+      "UnboundNullOwnerRows": 5,
+      "UnboundNullOwnerContainedSelfSeconds": 0.010219646,
+      "AllUnboundPhaseContainedSelfSeconds": 8.029069247,
+      "ObservedGroupsContainedSelfSeconds": 10.196140637000001,
+      "RemainingOuterMetaSelfSeconds": 0,
+      "AcceptedMetaControlShapesSelfSeconds": 0.827279418
+    },
+    {
+      "Turn": 3,
+      "ProcessId": 202727,
+      "WindowId": "202727-1",
+      "RequestId": "b568a09e8bb04ecda3588d6b969e382a",
+      "Groups": [
+        {
+          "Group": "GuardianAndShiningShapes",
+          "ContainedSelfSeconds": 2.4131542710000002,
+          "CallerSelfSeconds": {
+            "обработки хода": 1.161624452,
+            "пост-материализации принятого хода": 1.2515298190000002
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.092617677,
+            "trusted-scope-construction-unheld": 0.042510613999999995,
+            "detached-proof-decoding": 0.159421983,
+            "physical-verification": 0.074837081,
+            "authority-and-rollback-verification": 1.121700523,
+            "snapshot-hash-verification": 0.920276077,
+            "trusted-scope-construction-held": 0.001790316
+          },
+          "ContainedFullProofs": 288,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 89,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 16,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 16,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 76,
+              "ObservedBytes": 59067,
+              "PhysicalAttempts": 38,
+              "PhysicalMissing": 32,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/обработки хода/override=True": {
+              "Events": 229,
+              "SemanticStarts": 63,
+              "SemanticReturnedMissing": 20,
+              "SemanticReturnedPresent": 43,
+              "InitialMissing": 20,
+              "InitialPresent": 43,
+              "FollowupReasonMissing": 20,
+              "FollowupMissing": 20
+            },
+            "ordinary-sync/обработки хода/override=True": {
+              "Events": 188,
+              "ObservedBytes": 1762900,
+              "PhysicalAttempts": 94,
+              "PhysicalMissing": 40,
+              "PhysicalPresent": 54
+            },
+            "public-bytes-async/обработки хода/override=True": {
+              "Events": 9,
+              "SemanticStarts": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialPresent": 3
+            },
+            "public-bytes-sync/обработки хода/override=True": {
+              "Events": 33,
+              "SemanticStarts": 11,
+              "SemanticReturnedPresent": 11,
+              "InitialPresent": 11
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 89,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 16,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 16,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 76,
+              "ObservedBytes": 59067,
+              "PhysicalAttempts": 38,
+              "PhysicalMissing": 32,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/пост-материализации принятого хода/override=True": {
+              "Events": 229,
+              "SemanticStarts": 63,
+              "SemanticReturnedMissing": 20,
+              "SemanticReturnedPresent": 43,
+              "InitialMissing": 20,
+              "InitialPresent": 43,
+              "FollowupReasonMissing": 20,
+              "FollowupMissing": 20
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=True": {
+              "Events": 188,
+              "ObservedBytes": 1762900,
+              "PhysicalAttempts": 94,
+              "PhysicalMissing": 40,
+              "PhysicalPresent": 54
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=True": {
+              "Events": 9,
+              "SemanticStarts": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialPresent": 3
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=True": {
+              "Events": 33,
+              "SemanticStarts": 11,
+              "SemanticReturnedPresent": 11,
+              "InitialPresent": 11
+            }
+          }
+        },
+        {
+          "Group": "AfterlifeAndSarefShapes",
+          "ContainedSelfSeconds": 1.969158695,
+          "CallerSelfSeconds": {
+            "обработки хода": 0.9412203499999999,
+            "пост-материализации принятого хода": 1.027938345
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.07997663699999999,
+            "trusted-scope-construction-unheld": 0.038273891000000004,
+            "detached-proof-decoding": 0.137508419,
+            "physical-verification": 0.064648046,
+            "authority-and-rollback-verification": 0.903260241,
+            "snapshot-hash-verification": 0.744272111,
+            "trusted-scope-construction-held": 0.0012193500000000001
+          },
+          "ContainedFullProofs": 224,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 77,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 10,
+              "SemanticReturnedPresent": 9,
+              "InitialMissing": 10,
+              "InitialPresent": 9,
+              "FollowupReasonMissing": 10,
+              "FollowupMissing": 10
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 62,
+              "ObservedBytes": 56234,
+              "PhysicalAttempts": 31,
+              "PhysicalMissing": 20,
+              "PhysicalPresent": 11
+            },
+            "public-text-sync/обработки хода/override=True": {
+              "Events": 198,
+              "SemanticStarts": 54,
+              "SemanticReturnedMissing": 18,
+              "SemanticReturnedPresent": 36,
+              "InitialMissing": 18,
+              "InitialPresent": 36,
+              "FollowupReasonMissing": 18,
+              "FollowupMissing": 18
+            },
+            "ordinary-sync/обработки хода/override=True": {
+              "Events": 164,
+              "ObservedBytes": 1584586,
+              "PhysicalAttempts": 82,
+              "PhysicalMissing": 36,
+              "PhysicalPresent": 46
+            },
+            "public-bytes-async/обработки хода/override=True": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            },
+            "public-bytes-sync/обработки хода/override=True": {
+              "Events": 30,
+              "SemanticStarts": 10,
+              "SemanticReturnedPresent": 10,
+              "InitialPresent": 10
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 77,
+              "SemanticStarts": 19,
+              "SemanticReturnedMissing": 10,
+              "SemanticReturnedPresent": 9,
+              "InitialMissing": 10,
+              "InitialPresent": 9,
+              "FollowupReasonMissing": 10,
+              "FollowupMissing": 10
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 62,
+              "ObservedBytes": 56234,
+              "PhysicalAttempts": 31,
+              "PhysicalMissing": 20,
+              "PhysicalPresent": 11
+            },
+            "public-text-sync/пост-материализации принятого хода/override=True": {
+              "Events": 198,
+              "SemanticStarts": 54,
+              "SemanticReturnedMissing": 18,
+              "SemanticReturnedPresent": 36,
+              "InitialMissing": 18,
+              "InitialPresent": 36,
+              "FollowupReasonMissing": 18,
+              "FollowupMissing": 18
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=True": {
+              "Events": 164,
+              "ObservedBytes": 1584586,
+              "PhysicalAttempts": 82,
+              "PhysicalMissing": 36,
+              "PhysicalPresent": 46
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=True": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=True": {
+              "Events": 30,
+              "SemanticStarts": 10,
+              "SemanticReturnedPresent": 10,
+              "InitialPresent": 10
+            }
+          }
+        },
+        {
+          "Group": "MiscShapes",
+          "ContainedSelfSeconds": 1.7774020090000002,
+          "CallerSelfSeconds": {
+            "обработки хода": 0.8548984260000001,
+            "пост-материализации принятого хода": 0.9225035830000001
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.06980871500000001,
+            "trusted-scope-construction-unheld": 0.030977928,
+            "detached-proof-decoding": 0.115865433,
+            "physical-verification": 0.059984478,
+            "authority-and-rollback-verification": 0.8285815280000001,
+            "snapshot-hash-verification": 0.6709919020000001,
+            "trusted-scope-construction-held": 0.001192025
+          },
+          "ContainedFullProofs": 208,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 52,
+              "SemanticStarts": 12,
+              "SemanticReturnedMissing": 8,
+              "SemanticReturnedPresent": 4,
+              "InitialMissing": 8,
+              "InitialPresent": 4,
+              "FollowupReasonMissing": 8,
+              "FollowupMissing": 8
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 44,
+              "ObservedBytes": 46068,
+              "PhysicalAttempts": 22,
+              "PhysicalMissing": 16,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/обработки хода/override=True": {
+              "Events": 198,
+              "SemanticStarts": 54,
+              "SemanticReturnedMissing": 18,
+              "SemanticReturnedPresent": 36,
+              "InitialMissing": 18,
+              "InitialPresent": 36,
+              "FollowupReasonMissing": 18,
+              "FollowupMissing": 18
+            },
+            "ordinary-sync/обработки хода/override=True": {
+              "Events": 164,
+              "ObservedBytes": 1584586,
+              "PhysicalAttempts": 82,
+              "PhysicalMissing": 36,
+              "PhysicalPresent": 46
+            },
+            "public-bytes-async/обработки хода/override=True": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            },
+            "public-bytes-sync/обработки хода/override=True": {
+              "Events": 30,
+              "SemanticStarts": 10,
+              "SemanticReturnedPresent": 10,
+              "InitialPresent": 10
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 52,
+              "SemanticStarts": 12,
+              "SemanticReturnedMissing": 8,
+              "SemanticReturnedPresent": 4,
+              "InitialMissing": 8,
+              "InitialPresent": 4,
+              "FollowupReasonMissing": 8,
+              "FollowupMissing": 8
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 44,
+              "ObservedBytes": 46068,
+              "PhysicalAttempts": 22,
+              "PhysicalMissing": 16,
+              "PhysicalPresent": 6
+            },
+            "public-text-sync/пост-материализации принятого хода/override=True": {
+              "Events": 198,
+              "SemanticStarts": 54,
+              "SemanticReturnedMissing": 18,
+              "SemanticReturnedPresent": 36,
+              "InitialMissing": 18,
+              "InitialPresent": 36,
+              "FollowupReasonMissing": 18,
+              "FollowupMissing": 18
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=True": {
+              "Events": 164,
+              "ObservedBytes": 1584586,
+              "PhysicalAttempts": 82,
+              "PhysicalMissing": 36,
+              "PhysicalPresent": 46
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=True": {
+              "Events": 6,
+              "SemanticStarts": 2,
+              "SemanticReturnedPresent": 2,
+              "InitialPresent": 2
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=True": {
+              "Events": 30,
+              "SemanticStarts": 10,
+              "SemanticReturnedPresent": 10,
+              "InitialPresent": 10
+            }
+          }
+        },
+        {
+          "Group": "LifecycleContexts",
+          "ContainedSelfSeconds": 1.1084465159999999,
+          "CallerSelfSeconds": {
+            "обработки хода": 0.525166894,
+            "пост-материализации принятого хода": 0.5832796219999998
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.045029029,
+            "trusted-scope-construction-unheld": 0.018842025,
+            "detached-proof-decoding": 0.07299611,
+            "physical-verification": 0.035504754,
+            "authority-and-rollback-verification": 0.510441938,
+            "snapshot-hash-verification": 0.424969962,
+            "trusted-scope-construction-held": 0.0006626980000000001
+          },
+          "ContainedFullProofs": 128,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 80,
+              "SemanticStarts": 16,
+              "SemanticReturnedMissing": 16,
+              "InitialMissing": 16,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 64,
+              "PhysicalAttempts": 32,
+              "PhysicalMissing": 32
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 80,
+              "SemanticStarts": 16,
+              "SemanticReturnedMissing": 16,
+              "InitialMissing": 16,
+              "FollowupReasonMissing": 16,
+              "FollowupMissing": 16
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 64,
+              "PhysicalAttempts": 32,
+              "PhysicalMissing": 32
+            }
+          }
+        },
+        {
+          "Group": "BehaviourAndJournalShapes",
+          "ContainedSelfSeconds": 0.8118418780000001,
+          "CallerSelfSeconds": {
+            "обработки хода": 0.39202236500000004,
+            "пост-материализации принятого хода": 0.419819513
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.029609068,
+            "trusted-scope-construction-unheld": 0.014699278,
+            "detached-proof-decoding": 0.05216266,
+            "physical-verification": 0.025061362999999996,
+            "authority-and-rollback-verification": 0.37971732199999997,
+            "snapshot-hash-verification": 0.31007647200000005,
+            "trusted-scope-construction-held": 0.0005157149999999999
+          },
+          "ContainedFullProofs": 96,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 24,
+              "SemanticStarts": 6,
+              "SemanticReturnedMissing": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 3,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 3,
+              "FollowupMissing": 3
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 20,
+              "ObservedBytes": 24479,
+              "PhysicalAttempts": 10,
+              "PhysicalMissing": 6,
+              "PhysicalPresent": 4
+            },
+            "public-text-sync/обработки хода/override=True": {
+              "Events": 99,
+              "SemanticStarts": 27,
+              "SemanticReturnedMissing": 9,
+              "SemanticReturnedPresent": 18,
+              "InitialMissing": 9,
+              "InitialPresent": 18,
+              "FollowupReasonMissing": 9,
+              "FollowupMissing": 9
+            },
+            "ordinary-sync/обработки хода/override=True": {
+              "Events": 82,
+              "ObservedBytes": 792293,
+              "PhysicalAttempts": 41,
+              "PhysicalMissing": 18,
+              "PhysicalPresent": 23
+            },
+            "public-bytes-async/обработки хода/override=True": {
+              "Events": 3,
+              "SemanticStarts": 1,
+              "SemanticReturnedPresent": 1,
+              "InitialPresent": 1
+            },
+            "public-bytes-sync/обработки хода/override=True": {
+              "Events": 15,
+              "SemanticStarts": 5,
+              "SemanticReturnedPresent": 5,
+              "InitialPresent": 5
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 24,
+              "SemanticStarts": 6,
+              "SemanticReturnedMissing": 3,
+              "SemanticReturnedPresent": 3,
+              "InitialMissing": 3,
+              "InitialPresent": 3,
+              "FollowupReasonMissing": 3,
+              "FollowupMissing": 3
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 20,
+              "ObservedBytes": 24479,
+              "PhysicalAttempts": 10,
+              "PhysicalMissing": 6,
+              "PhysicalPresent": 4
+            },
+            "public-text-sync/пост-материализации принятого хода/override=True": {
+              "Events": 99,
+              "SemanticStarts": 27,
+              "SemanticReturnedMissing": 9,
+              "SemanticReturnedPresent": 18,
+              "InitialMissing": 9,
+              "InitialPresent": 18,
+              "FollowupReasonMissing": 9,
+              "FollowupMissing": 9
+            },
+            "ordinary-sync/пост-материализации принятого хода/override=True": {
+              "Events": 82,
+              "ObservedBytes": 792293,
+              "PhysicalAttempts": 41,
+              "PhysicalMissing": 18,
+              "PhysicalPresent": 23
+            },
+            "public-bytes-async/пост-материализации принятого хода/override=True": {
+              "Events": 3,
+              "SemanticStarts": 1,
+              "SemanticReturnedPresent": 1,
+              "InitialPresent": 1
+            },
+            "public-bytes-sync/пост-материализации принятого хода/override=True": {
+              "Events": 15,
+              "SemanticStarts": 5,
+              "SemanticReturnedPresent": 5,
+              "InitialPresent": 5
+            }
+          }
+        },
+        {
+          "Group": "SocialRequestShapes",
+          "ContainedSelfSeconds": 0.270713501,
+          "CallerSelfSeconds": {
+            "обработки хода": 0.133617902,
+            "пост-материализации принятого хода": 0.13709559899999998
+          },
+          "StageSelfSeconds": {
+            "inclusive-preflight": 0.010736139,
+            "trusted-scope-construction-unheld": 0.005034361,
+            "detached-proof-decoding": 0.019649629999999998,
+            "physical-verification": 0.00731192,
+            "authority-and-rollback-verification": 0.126503749,
+            "snapshot-hash-verification": 0.10130029299999999,
+            "trusted-scope-construction-held": 0.000177409
+          },
+          "ContainedFullProofs": 32,
+          "LateCount": 0,
+          "InsideWindowContentByFamilyAndCaller": {
+            "public-text-async/обработки хода/override=True": {
+              "Events": 20,
+              "SemanticStarts": 4,
+              "SemanticReturnedMissing": 4,
+              "InitialMissing": 4,
+              "FollowupReasonMissing": 4,
+              "FollowupMissing": 4
+            },
+            "ordinary-async/обработки хода/override=True": {
+              "Events": 16,
+              "PhysicalAttempts": 8,
+              "PhysicalMissing": 8
+            },
+            "public-text-async/пост-материализации принятого хода/override=True": {
+              "Events": 20,
+              "SemanticStarts": 4,
+              "SemanticReturnedMissing": 4,
+              "InitialMissing": 4,
+              "FollowupReasonMissing": 4,
+              "FollowupMissing": 4
+            },
+            "ordinary-async/пост-материализации принятого хода/override=True": {
+              "Events": 16,
+              "PhysicalAttempts": 8,
+              "PhysicalMissing": 8
+            }
+          }
+        },
+        {
+          "Group": "ManifestationContext",
+          "ContainedSelfSeconds": null,
+          "Observation": "No timing/content rows in this captured window; admission cost unobserved, not zero-cost proof."
+        }
+      ],
+      "UnboundNullOwnerRows": 12,
+      "UnboundNullOwnerContainedSelfSeconds": 0.045450498,
+      "AllUnboundPhaseContainedSelfSeconds": 7.663903386,
+      "ObservedGroupsContainedSelfSeconds": 8.350716870000001,
+      "RemainingOuterMetaSelfSeconds": 0,
+      "AcceptedMetaControlShapesSelfSeconds": 0.098462617
+    }
+  ]
+}

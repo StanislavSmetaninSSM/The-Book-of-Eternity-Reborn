@@ -6088,5 +6088,87 @@
       "Qualification": "INITIAL exact schema-field raw observations only; ROOT+SAME full identity/coverage/fidelity review pending. Complete finite sealed recording excludes later starts, not whole-process/C5 coverage. Task-local first derived initial-health.json used unavailable name ActiveTimingFrames; its placeholder is not evidence. Actual ActiveFrames AND AccountingErrors fields above are present in every402profile and sum0. Original exports untouched."
     },
     "Qualification": "Original duration3turn/fullprefix/queued+staged/client+wholecold/Stop/EOF application assertions PASS, originalbudgets unchanged. No ranking or fully qualified engine/C5 attribution before independent review; existing late callback close precedes outer participating-owner close, separate full Stop/cleanup oracles apply. DurationPASS never ordinary40/performance qualification or nextoptimization. All historicalRED/UNKNOWNs/raw remain unchanged."
+  },
+  "Assessment": {
+    "Status": "WIP derived assessment: ROOT fidelity/work-window qualification PASS897c; SAME duration review PENDING",
+    "FrozenFirstRawCarrierSHA": "897c9fd113904acd830da7cceb1c78ecb2bccb7c",
+    "RuntimeCompiledSHA": "d4b79236e15aca989207d2a6712562857e1d8a21",
+    "ReviewedCodeSHA": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
+    "SupportingDerivedRanking": {
+      "Path": "meta-subgroup-ranking.json",
+      "Bytes": 71591,
+      "SHA256": "ee60c79f1691f906777f570e822e7cade78d869db3e26850a3aff27be9cbbd53",
+      "Method": "Byte-exact copy of ROOT independent aggregation of frozen profiles; plain derived JSON, not original raw or added collector schema. Original Files/pins/assemblies/summary/ownedchain/invocation unchanged."
+    },
+    "QualifiedMetric": "Raw instrumented synchronous contained self wall seconds inside three accepted closed work-complete engine windows; zero crossing/all health losses. Includes diagnostic bookkeeping, concurrent work can overlap, not CPU/latency/calibrated overhead/causal gain. Caller/stage/family details retained in supporting JSON.",
+    "ObservedSourceGroupsRanking": [
+      {
+        "Group": "GuardianAndShiningShapes",
+        "ContainedSelfSeconds": 7.741992469000001
+      },
+      {
+        "Group": "AfterlifeAndSarefShapes",
+        "ContainedSelfSeconds": 6.1766407260000005
+      },
+      {
+        "Group": "MiscShapes",
+        "ContainedSelfSeconds": 5.771165352000001
+      },
+      {
+        "Group": "LifecycleContexts",
+        "ContainedSelfSeconds": 3.299710777
+      },
+      {
+        "Group": "BehaviourAndJournalShapes",
+        "ContainedSelfSeconds": 2.620347209
+      },
+      {
+        "Group": "SocialRequestShapes",
+        "ContainedSelfSeconds": 0.816117238
+      }
+    ],
+    "UnobservedSourceGroups": [
+      "ManifestationContext"
+    ],
+    "AllSevenSourceBranchesCostCoverage": "UNQUALIFIED: ManifestationContext has NO timing/content rows in any of3 windows; NULL/unobserved, never imputedzero. Source guard4389 returns before any read when requestabsent; retained request path absent is source/evidence inference of unexecuted read branch, not a measured zero-cost stage.",
+    "WindowCoverage": {
+      "AcceptedWorkCompleteWindows": 3,
+      "CapturesSealedComplete": 402,
+      "AllActualSchemaHealthZero": true,
+      "MainKeys": [
+        2459,
+        2194,
+        2459
+      ],
+      "FullOriginalOwnerBinding": "ROOT matched every named row to actual7 identity fields, Backend numeric2 vsLinuxSupervisor enum only normalized; action/request/generation/attempt/markers match each accepted turn. Null owner on unbound phase rows stays unknown/unassigned.",
+      "UnboundNullOwnerRows": [
+        12,
+        5,
+        12
+      ],
+      "UnboundNullOwnerContainedSelfSeconds": [
+        0.045595298,
+        0.010219646,
+        0.045450498
+      ],
+      "PrevalidatedOverrideAsymmetry": "Actual six observed subgroup post-materialization proof count488/604/488; T2 overrideFalse scalar vs warmTrue preserved. No same-settings timingpair or optimizationclaim.",
+      "LateWindowClosure": "late-terminal-observed starts after outer participating admission; finalizer-closed is callback lexical close before external generation/main-owner close. Full originalC5Stop/cleanup separatelyPASS, cannot infer outerclose from accepted window."
+    },
+    "SourceInterpretation": {
+      "AfterlifeAndSarefShapes": "Whole group includes common Guardian callback/authority work (soul callback); no leafcost or executed-specific cache/Guardianbranch inference.",
+      "GuardianAndShiningShapes": "Whole current/signed Guardian/project/cache closure retained, needs own authority/lifetime/exclusion proof for any future change.",
+      "MiscShapes": "Generic common Guardian callback within group; Math-specific closure not separately qualified.",
+      "BehaviourAndJournalShapes": "Behavior+chronicle common callback included; only the two journal shape callback chains are source-pure local leaves, not measured separately.",
+      "SocialRequestShapes": "Local callback→ActorSocialInteractionRequestState predicate chain; any future fresh batching requires separate design/control proof, no optimizationchosen.",
+      "ManifestationContext": "Presence/currentrealm/malformed context conditional, no timing/content witness in thisrun; branchcost unknown.",
+      "LifecycleContexts": "13 context callbacks can reach current/signed/control authority, own architecture/closure required; not accepted11controlshape window."
+    },
+    "Limits": [
+      "Ranks only SIX observed parent sourcegroups in THREE finite engine windows; no full7branch/wholeC5/peerprocess coverage.",
+      "Ancestor/inclusive costs not summed as disjointwork; ReaderFamily counters layered, notuniquephysicalreads or perPath costs.",
+      "Alllegacy40 narrative limits and historical ordinaryFAIL/performanceUNQUALIFIED/UNKNOWN causes remain; broadT069–T071 OPEN.",
+      "Firstderivedinitial-health ActiveTimingFrames nonschema placeholder retainedhistorically; actualActiveFrames/AccountingErrors0 independently verified fromeveryrawprofile.",
+      "No nextoptimization selected; no source/runtime/rerun/capraise/recovery operation in this assessmentblock."
+    ]
   }
 }
