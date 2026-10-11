@@ -23683,33 +23683,9 @@
             ],
             "related": [
                 {
-            "id": "portable-meta-control-shape-read-phase-controls",
-            "responsibility": "Directed current shape controls: immediate async read/cancel sameprimary/no result, AFTER-read repeat drift, actual nonnull faction-field refs after normal reset with honest Guardian-context nonaccess, private dispatch rejects unknown/unrestricted selection and phase, conservative closure/static-initialization pins. Not initial causal RED selection.",
-            "excludes": "#1553 reduced current-only shape window; no full Meta82/44, fullchain/perf pairs, provider, timer/guard changes, forged owner/lease/token or absent-API causal RED. Preparatory scalar wrapper only; controls UNRUN until valid RED and minimal implementation.",
-            "changeHints": [
-                "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs",
-                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MetaControlShapes.cs"
-            ],
-            "related": [],
-            "requirements": {
-                "frontendBuild": false,
-                "exclusive": false
-            },
-            "timeoutMinutes": 3,
-            "expectedSeconds": null,
-            "selectors": [
-                {
-                    "project": "integration",
-                    "tests": [
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_AsyncFailureIsImmediateOriginalAndDoesNotPublish",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_RepeatedCurrentDriftNeverPublishesIssues",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_PhaseLeavesNonNullFactionCachesAndGuardianStateUntouched",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_ComponentRejectsWidenedDispatchBeforeAdmission",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SourceClosurePinsRequireReview"
-                    ]
+                    "id": "portable-meta-control-shape-read-phase-controls",
+                    "when": "After preserved positive work-bound RED, directed async error/readset/cache/selection and concrete source guard."
                 }
-            ]
-        }
             ],
             "requirements": {
                 "frontendBuild": false,
@@ -23728,8 +23704,8 @@
         },
 {
             "id": "portable-meta-control-shape-read-phase-controls",
-            "responsibility": "Directed current shape controls: immediate async read/cancel sameprimary/no result, AFTER-read repeat drift, actual nonnull faction-field refs after normal reset with honest Guardian-context nonaccess, private dispatch rejects unknown/unrestricted selection and phase, conservative closure/static-initialization pins. Not initial causal RED selection.",
-            "excludes": "#1553 reduced current-only shape window; no full Meta82/44, fullchain/perf pairs, provider, timer/guard changes, forged owner/lease/token or absent-API causal RED. Preparatory scalar wrapper only; controls UNRUN until valid RED and minimal implementation.",
+            "responsibility": "Directed implemented-but-UNRUN Meta31 controls: immediate async read/cancel/actual own-close and primary-secondary, exact current readset/repeat drift, nonnull faction refs and Guardian nonaccess, original owner/generation/late-close/override, already-running/new sibling and physical acquisition/opening, scalar draft/partial/zero/held eligibility, actual trusted-path refusal, dispatch and conservative source pins. Positive causal RED frozen separately.",
+            "excludes": "#1553 accepted current-only11/22 slice; no fullMeta82/44, broad suite/fullchain perf pairs, providers, timer/guard changes, forged owner/lease/token or new framework. Implementation/control runtime UNRUN pending grouped SOURCE gate and matching fresh preparation.",
             "changeHints": [
                 "BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs",
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MetaControlShapes.cs"
@@ -23749,7 +23725,12 @@
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_RepeatedCurrentDriftNeverPublishesIssues",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_PhaseLeavesNonNullFactionCachesAndGuardianStateUntouched",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_ComponentRejectsWidenedDispatchBeforeAdmission",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SourceClosurePinsRequireReview"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SourceClosurePinsRequireReview",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_SiblingsAndOverrideCannotMutateReservedInvocation",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_OriginalAdmissionOpeningAndResponseBranchesReleaseOnlyOwnState",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_ContinuityLossNeverPublishesIncludingActualOwningClose",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_EligibilityKeepsActualScalarDraftAndZeroWindowBoundaries",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MetaControlShapes_ActualPathRefusalEscapesImmediatelySameException"
                     ]
                 }
             ]
