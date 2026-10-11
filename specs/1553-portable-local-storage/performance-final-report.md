@@ -1,0 +1,75 @@
+# #1553 final bounded Linux performance report — WIP / unqualified
+
+2026-10-11. Sole Sol6.1 implementation; root coordination and independent SAME Astra/XHigh review. This report preserves the completed authorized inventory, not acceptance of the candidate, merge, issue closure or Windows qualification. T069–T071 remain open. Recommend **WIP**: final ordinary correctness FAIL, mixed/incomplete descriptive arms, historical B2 first Stop cause UNKNOWN and the A2/ordinary helper compound predicate UNKNOWN. No third optimization, lifecycle repair, timer increase, weakened guard or automatic replacement run.
+
+The final candidate reduces whole-file byte-array materialization only for exact signed rollback hashing, with proof-local64KiB scratch. Original authority boundaries, fresh before/after path/native/leaf checks, length/Array.MaxLength/ReadExactly/EOF/mutation refusal, original exception forwarding and legacy default byte-reader path remain. The provider-only SHA.HashData candidate was rejected and never integrated. No GM prompt/example update is needed: these are client-owned storage/DEBUG diagnostic operations; gameplay and GM-authored contracts did not change.
+
+## All actual outcomes
+
+Every listed invocation planned/executed exactly1case, with no runner timeout and complete owned/runtime cleanup. Model/provider calls0. A2 is the explicitly authorized remaining original-baseline arm after the preserved B2 FAIL, not its replacement. Final ordinary is a separate mandatory correctness run.
+
+| Actual run | Outcome | Mode; Stop diagnostic nonce | Accepted turns / cold cuts | HelperComplete→Acceptance seconds, turns1/2/3 | AuthoredPacket→Acceptance seconds, turns1/2/3 |
+| --- | --- | --- | ---: | --- | --- |
+| [A1](recovery/journal-fresh-cloud-20261011/performance-descriptive-A1/manifest.json) | PASS | duration ON; Stop OFF | 3 / 2 | 52.992658776 / 72.696763176 / 58.988923800 | 62.657550274 / 84.138562240 / 69.218563187 |
+| [B1](recovery/journal-fresh-cloud-20261011/performance-descriptive-B1/manifest.json) | PASS | duration ON; Stop OFF | 3 / 2 | 51.949794260 / 67.044444600 / 53.230880605 | 60.432790063 / 77.907880860 / 62.497873164 |
+| [B2](recovery/journal-fresh-cloud-20261011/performance-descriptive-B2-failure/manifest.json) | FAIL | duration ON; Stop OFF | 3 / 2 | 50.096500711 / 63.283051263 / 53.409017707 | 58.437067482 / 72.774923862 / 64.116297640 |
+| [A2](recovery/journal-fresh-cloud-20261011/performance-descriptive-A2/manifest.json) | FAIL | duration ON; Stop OFF | 0 / 1 | unavailable | unavailable |
+| [Stop repeat](recovery/journal-fresh-cloud-20261011/stop-diagnostics-real-c5/manifest.json) | PASS | duration ON; Stop ON | 3 / 2 | 50.839050488 / 61.957949704 / 52.916505818 | 58.452330208 / 72.591473567 / 63.465898028 |
+| [Ordinary final](recovery/journal-fresh-cloud-20261011/performance-final-ordinary/manifest.json) | FAIL | ordinary OFF; Stop OFF | 0 / 1 | unavailable | unavailable |
+
+A1 and B1 pass original semantic/Stop/EOF assertions. B2 accepted3turns but its whole-cold original Stop refused, retained Uncertain owner and missing EOF; it stays foreverFAIL. Its exact first failed predicate/root cause and any relationship to the streaming fix remain UNKNOWN. A2 fails before first acceptance: helper actually Executed=true/ExitCode1/ChildExited=true/IoDrained=true; fixture315 refuses the failed helper, with no valid latency anchor. Primary consumer error is `Original initialized helper admission refused.` with inner `Helper admission identity is invalid.` at transport111/114. The consumed open-reply frame was not archived, so the guard’s ok/state/sequence/generation/expected-generation condition cannot be selected. Later game-loop admission IOException observed during cleanup43.060160724s has no proven causal mapping to that first helper refusal.
+
+Stop repeat passes3turns/2cuts and both exact original identities are RPCok/durableStopped/OwnedScopeEmpty/unretained;12peersEOF/IoDrained/final main record and guardian ECHILD/0emergency/0failure/no deadline pass. Failure-only Stop report count0: this success does not expose a historical B2 predicate or explain its cause. SAME Astra/root EVIDENCE PASS for frozen4425/runtime36e7 is accepted.
+
+Ordinary final fails the original first narrative40s wait (console_chain865/265/242), before any accepted turn. Its actual helper also exits1 with the same outer/inner generic admission messages; therefore this cannot be called a pure speed timeout or proved to have the same exact cause as A2. A later game-loop admission IOException at79.303754488s was observed during cleanup. Ordinary result has no DiagnosticOnly/TurnDurations/DiagnosticBudgets fields; no diagnostic latency anchors or explicit JSONfalse are fabricated. The sole original Stop nevertheless passes identity matching/RPCok/durableStopped/OwnedScopeEmpty/unretained/all5EOF/IoDrained. A2 and ordinary guardians both report ECHILDtrue/driverExit1/reaped5/0emergency/0failures/deadlinefalse. Driver1 is the preserved test failure, not an emergency cleanup failure. No rerun or timer/assertion change occurred.
+
+## Timing limits and all signed descriptive values
+
+These are distinct overall intervals, not per-turn acceptance or isolated Stop cost:
+
+| Actual run | Runner total seconds | Category total seconds | Driver total seconds |
+| --- | ---: | ---: | ---: |
+| A1 | 331.0645440 | 323.7804265 | 319.656451537 |
+| B1 | 371.7221452 | 311.6054883 | 307.480864277 |
+| B2 | 360.8010968 | 315.4629207 | 311.348574971 |
+| A2 | 54.3544077 | 47.2049177 | 43.194454972 |
+| Stop repeat | 343.0082988 | 293.0011673 | 289.758520728 |
+| Ordinary final | 168.3259583 | 83.4914577 | 79.426998659 |
+
+Signed descriptive A1−B1 values (positive means B1 observed faster): Helper 1.042864516 / 5.652318576 / 5.758043195s; packet 2.224760211 / 6.230681380 / 6.720690023s. Across these three different turns, signed Helper range [1.042864516,5.758043195]s and packet [2.224760211,6.720690023]s; this is not a repeated same-turn variance estimate. B2→A2 reverse-order signed values are unavailable because A2 has0valid acceptance anchors; never fill them with0, ignore the failed arm or claim two completed matched pairs.
+
+Helper B1/B2 per-turn [min,max]: [50.096500711,51.949794260], [63.283051263,67.044444600], [53.230880605,53.409017707].
+
+Packet B1/B2 per-turn [min,max]: [58.437067482,60.432790063], [72.774923862,77.907880860], [62.497873164,64.116297640].
+
+These ranges retain B2’s accepted-turn observations despite its failed overall arm; they are descriptive data only. All12 recorded completed duration-turn LegacyNarrative40Exceeded flags (A1/B1/B2/Stop repeat) are true. Gameplay values/bytes differ, source/assembly/DEBUG diagnostic closure differs as disclosed, observer overhead and scheduling noise are uncalibrated, and trials are not strict equal-byte causal comparisons. No general performance gain,40s qualification, isolated Stop timing or regression closure follows.
+
+## Sources, data and settings
+
+- A1: actual source/carrier `a179521aa60201a8bb04b08301e4c39e036fefb9`; 193 gzip / 10,952,172 expanded bytes; complete source/DLL/ship pins in linked manifest.
+- B1: actual source/carrier `273ce358c7bedd6028aac42eccaede5d9eb2c05c`; 193 gzip / 11,062,902 expanded bytes; complete source/DLL/ship pins in linked manifest.
+- B2: actual source/carrier `d45420231bbd5bffd8c27e6fa5f024158af09567`; 193 gzip / 11,970,588 expanded bytes; complete source/DLL/ship pins in linked manifest.
+- A2: actual source/carrier `a179521aa60201a8bb04b08301e4c39e036fefb9`; 255 gzip / 9,360,938 expanded bytes; complete source/DLL/ship pins in linked manifest.
+- Stop repeat: actual source/carrier `36e7c4ff66f2eefab61701a460c52b33e141cb95`; 194 gzip / 11,065,175 expanded bytes; complete source/DLL/ship pins in linked manifest.
+- Ordinary final: actual source/carrier `590516fd7721ebc03a8ae3ac4aee2813d7abf5f9`; 253 gzip / 9,034,776 expanded bytes; complete source/DLL/ship pins in linked manifest.
+
+A=a179 is the clean original detached baseline worktree, byte-identical to actualA1. B1/B2 use the reviewed three-file streaming closure; the final candidate also contains independently reviewed DEBUG owner-bound first/current Stop diagnostics and test controls added after those arms. Final ordinary disables them from original process creation, but code/assembly delta vs oldB1/B2 is disclosed rather than treated as strict source equality. Metadata carriers differ from reviewed code5a15; every run records actual clean Revision/fresh source/DLL/native/ship pins. Unselected integration assembly inventory is not evidence that it was freshly built. Ten selected fixture/runner/relay/native source files stay byte-identical, combined compact pin5ae997539f3477fa58ea852c445fcf061ae24872266c954c7a1545d29f550267. Official runner selected/frontend/native/Debugship preparation is fresh per arm; no stale NoBuild or source/fixture/RNG hook.
+
+- A1: request gacha base scores 57/46/55. Full20dice, persisted pending dice, request/manifest/authority bytes and identities remain original raw; no gameplay normalization.
+- B1: request gacha base scores 47/55/39. Full20dice, persisted pending dice, request/manifest/authority bytes and identities remain original raw; no gameplay normalization.
+- B2: request gacha base scores 37/38/36. Full20dice, persisted pending dice, request/manifest/authority bytes and identities remain original raw; no gameplay normalization.
+- A2: request gacha base scores 49. Full20dice, persisted pending dice, request/manifest/authority bytes and identities remain original raw; no gameplay normalization.
+- Stop repeat: request gacha base scores 29/35/33. Full20dice, persisted pending dice, request/manifest/authority bytes and identities remain original raw; no gameplay normalization.
+- Ordinary final: request gacha base scores 56. Full20dice, persisted pending dice, request/manifest/authority bytes and identities remain original raw; no gameplay normalization.
+
+Duration arms explicitly disable performance aggregate profile and optional continue/startup/helper observers. Stop nonce OFF for A1/B1/B2/A2, ON only for the independent normal-stop repeat. Existing durationFact enables work660/total720/category15/global20min/guardian750/external755, helper exit proof60s, HelperComplete→Acceptance180s, startup60s and Continue12s. Frozen combined preflight shorthand “helper180” means acceptance, not helper exit proof. Final exact `linux-game-chain-browser-relay` selects Browser_ActualRelayPlayerActionColdRestartContinuesExactlyOnce with durationDiagnostic=false; all9optional flags and newStop nonce unset, original40s narrative/prompt,work/total240/category6/global20min/guardian300/external310 unchanged. Standard existing cold-cut/game-loop-failure witnesses remain part of the unchanged fixture. Commands and explicit environment roots are frozen in each manifest/preflight; no provider calls.
+
+Duration `result.TurnDurations[].Inventory` preserves63/62 then68/68 snapshot/rollback member counts for complete runs, all paths/bytes/SHA256 and originalBOM. A2 preserves first63/62 inventory only; ordinary does not create that duration-only inventory but its whole original owned tree is frozen. Identity/session/root/time differences and derived signatures/hashes are retained, not normalized to conceal gameplay differences. All manifest-listed gzip payloads are SHA256/length/exact-set verified and tracked, including ignored archived hidden runtime. Published ship has complete per-member byte/hash inventory. No source cache, credentials or unrelated runtime is archived.
+
+## Limited causal evidence and review
+
+The warmed checked-reader component filter has18signed positive time pairs at the actual observed layout/lengths, process-wideGC and managed-allocation evidence; native allocations/CPU and full acceptance critical-path costs are unmeasured. It measures comparable checked reads, not a raw hash, with same immutable synthetic content/layout and original SHA provider both arms. Drift/order/GC spread remains raw. Optimistic count projections are whole-action linear scope assuming all savings critical-path, not rigorous bounds or observed C5 gains. Existing profile’s repeated proofs/approximately32GB rollback traffic retain mandatory boundaries; nested inclusive/request totals are not sums of acceptance latency.
+
+Causal production allocation RED was selected18 but fail-fast actually executed3: allocationFAIL+2scopePASS,15authority controlsUNRUN in that invocation; exact693744B payload-growth slope. A separate preserved15/15authority completion gives17existing controlPASS across the two runs, not18executed RED. Minimal product SOURCE PASSed5 and full11new+17existing28/28GREEN remain valid limited evidence. Subsequent Stop diagnostic controlled mechanism and corrected6/6GREEN/independentSOURCE+EVIDENCEPASS confirm held-pin timeout masking, not historicalB2. Both unexpected diagnostic RED attempts (1PASS5FAIL then3PASS3FAIL, including unknown pre-Stop positive failure) remain separately preserved.
+
+One final combined independent evidence/report review is pending at this freeze; no further runtime, build/discovery or optimization is authorized by the report. Root owns exactly one final fresh official GitHub recovery after the reviewed final packet is published, then receipt-only metadata fetched into that same clone. Existing recovery receipts are historical for their exact carriers; do not claim current final recovery before that operation. Recommended next decision is a narrowly scoped investigation of the actual missing helper open-reply predicate and unresolved B2 original Stop cause, with concrete causal evidence before any fix/repeat. Keep this branch WIP and T069–T071 open; no merge/acceptance claim.
