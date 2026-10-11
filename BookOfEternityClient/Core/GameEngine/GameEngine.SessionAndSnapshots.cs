@@ -2052,10 +2052,10 @@ public partial class GameEngine
     private async Task RestorePreTurnBackup(RollbackSnapshot snapshot)
     {
         var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        Exception? operationFailure = null;
         try { await RestorePreTurnBackupAsync(writeLease, snapshot); }
-        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
-        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
+        catch (Exception failure) { operationFailure = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, operationFailure); }
         await RefreshRuntimeStateAfterExactRollbackAsync();
     }
 
@@ -2064,7 +2064,7 @@ public partial class GameEngine
         string expectedSessionGeneration)
     {
         var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        Exception? operationFailure = null;
         var restored = false;
         try
         {
@@ -2073,13 +2073,14 @@ public partial class GameEngine
             restored = true;
             CleanupBackup(writeLease, snapshot);
         }
-        catch (CoordinatedStatePublicationUncertainException failure)
+        catch (Exception failure)
         {
-            uncertainty = failure;
-            failure.Data["PreTurnRollbackRestoredBeforeCleanup"] = restored;
+            operationFailure = failure;
+            if (failure is CoordinatedStatePublicationUncertainException)
+                failure.Data["PreTurnRollbackRestoredBeforeCleanup"] = restored;
             throw;
         }
-        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, operationFailure); }
 
         await RefreshRuntimeStateAfterExactRollbackAsync();
     }
