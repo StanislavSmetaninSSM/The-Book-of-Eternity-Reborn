@@ -14,6 +14,115 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Theory]
+    [InlineData("protected-v2")]
+    [InlineData("generation")]
+    [InlineData("namespace")]
+    [InlineData("commit-only")]
+    [InlineData("second-disappearance")]
+    [InlineData("leaf-directory")]
+    [InlineData("root-file")]
+    public async Task BrowserOriginalAdmission_JournalReselectionRetainsStrictRefusals(string damage)
+    {
+        var (_, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+        var journalRoot = Path.Combine(_fs.RuntimeRootPath, "trusted-local-publication-v1");
+        var intent = Path.Combine(journalRoot, "intent.tmp");
+        var active = Path.Combine(journalRoot, "active.json");
+        var commit = Path.Combine(journalRoot, "commit.tmp");
+        byte[]? journalBytes = null;
+        var scope = new TrustedLocalFileScope([_fs.BasePath]);
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var publication = new TrustedLocalFilePublication(_fs, scope);
+            void Capture(TrustedLocalPublicationPhase phase, int _)
+            {
+                if (phase != TrustedLocalPublicationPhase.IntentStaged) return;
+                journalBytes = File.ReadAllBytes(intent);
+                throw new C5RecoveryInterruption();
+            }
+            var generation = TrustedLocalGeneration.Existing(staged.Binding.Generation);
+            var outcome = damage == "protected-v2"
+                ? publication.PublishImagesWithOutcome(lease, generation,
+                    [new(_fs.ResolvePath("input/turn_request.json"),
+                        TrustedLocalFileImage.FromFile(scope, _fs.ResolvePath("input/turn_request.json")),
+                        TrustedLocalFileImage.FromBytes([1, 2, 3]))], Capture)
+                : publication.PublishWithOutcome(lease, generation,
+                    [new(_fs.ResolvePath("game_state/control/c5_recovery_probe.json"), null, [1, 2, 3])], Capture);
+            Assert.Equal(TrustedLocalPublicationDisposition.RolledBack, outcome.Disposition);
+            Assert.IsType<C5RecoveryInterruption>(outcome.Failure);
+        }
+        Assert.NotNull(journalBytes);
+        Assert.Empty(Directory.EnumerateFileSystemEntries(journalRoot));
+        // These are owned negative fixtures made from a real encoded journal,
+        // not evidence about the historical publisher or a new causal race.
+        if (damage == "generation")
+        {
+            var json = System.Text.Json.Nodes.JsonNode.Parse(journalBytes!)!;
+            var other = Guid.NewGuid().ToString("N");
+            json["GenerationBefore"]!["Id"] = other;
+            json["GenerationAfter"]!["Id"] = other;
+            journalBytes = System.Text.Encoding.UTF8.GetBytes(json.ToJsonString());
+        }
+        File.WriteAllBytes(intent, journalBytes!);
+        var selections = 0;
+        var physicalLocks = 0;
+        var recoveries = 0;
+        Dictionary<string, byte[]>? retained = null;
+        var cold = new FileSystemManager(_fs.BasePath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                BrowserRecoveryJournalSelectedObserver = path =>
+                {
+                    selections++;
+                    Assert.InRange(selections, 1, 2);
+                    Assert.Equal(selections == 1 ? intent : active, path);
+                    if (selections == 2)
+                    {
+                        if (damage == "second-disappearance") File.Delete(active);
+                    }
+                    else if (damage == "root-file")
+                    {
+                        File.Delete(intent);
+                        Directory.Delete(journalRoot);
+                        File.WriteAllText(journalRoot, "An owned wrong-type journal root.");
+                    }
+                    else
+                    {
+                        File.Move(intent, damage == "commit-only" ? commit : active);
+                        if (damage == "namespace") File.WriteAllBytes(active, "BOELP3\r\n"u8.ToArray());
+                        if (damage == "leaf-directory")
+                        {
+                            File.Delete(active);
+                            Directory.CreateDirectory(active);
+                        }
+                    }
+                    retained = OriginalAdmissionTree();
+                },
+                AfterCanonicalWriteLockOpenedAsync = () => { physicalLocks++; return Task.CompletedTask; },
+                LocalPublicationRecoveryObserver = (_, _) => recoveries++
+            });
+        var failure = await Record.ExceptionAsync(async () => { await using var lease = await cold.AcquireCanonicalWriteLeaseAsync(); });
+        if (damage == "second-disappearance")
+        {
+            Assert.Equal(active, Assert.IsType<FileNotFoundException>(failure).FileName);
+            Assert.Equal(2, selections);
+        }
+        else
+        {
+            Assert.IsType<InvalidDataException>(failure);
+            Assert.Equal(damage is "protected-v2" or "generation" or "namespace" ? 2 : 1, selections);
+        }
+        Assert.Equal(0, physicalLocks);
+        Assert.Equal(0, recoveries);
+        Assert.NotNull(retained);
+        AssertOriginalAdmissionTree(retained!);
+        if (damage == "leaf-directory") Assert.True(Directory.Exists(active));
+        if (damage == "root-file") Assert.True(File.Exists(journalRoot));
+        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new { damage, selections, physicalLocks, recoveries,
+            failure = failure!.GetType().FullName, retained = retained!.ToDictionary(pair => pair.Key,
+                pair => Convert.ToHexString(SHA256.HashData(pair.Value))) }));
+    }
+
+    [Theory]
     [InlineData("intent-rename")]
     [InlineData("committed-cleanup")]
     public async Task BrowserOriginalAdmission_SelectedJournalSurvivesOwnedPublicationTransition(string transition)

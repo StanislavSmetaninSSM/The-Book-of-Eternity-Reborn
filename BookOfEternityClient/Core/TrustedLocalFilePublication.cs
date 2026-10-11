@@ -347,32 +347,49 @@ internal sealed partial class TrustedLocalFilePublication
         Func<string,bool>? protectsReceiptNamespace = null, Action<string>? selectedObserver = null)
     {
         if (!Directory.Exists(_journalRoot)) return;
-        _journalScope.ValidateDirectory(_journalRoot, allowMissing: false);
-        ValidateJournalDirectory();
-        var path = File.Exists(_journalScope.ValidateFile(Active)) ? Active :
-            File.Exists(_journalScope.ValidateFile(IntentStage)) ? IntentStage : null;
-        if (path == null)
+        var retrySelectedDisappearance = true;
+        while (true)
         {
-            if (File.Exists(_journalScope.ValidateFile(CommitStage)))
-                throw Conflict("Original browser publication has unresolved commit evidence.");
+            _journalScope.ValidateDirectory(_journalRoot, allowMissing: false);
+            ValidateJournalDirectory();
+            var path = File.Exists(_journalScope.ValidateFile(Active)) ? Active :
+                File.Exists(_journalScope.ValidateFile(IntentStage)) ? IntentStage : null;
+            if (path == null)
+            {
+                if (File.Exists(_journalScope.ValidateFile(CommitStage)))
+                    throw Conflict("Original browser publication has unresolved commit evidence.");
+                return;
+            }
+            selectedObserver?.Invoke(path);
+            Journal journal;
+            try
+            {
+                // Namespace recovery may replace the original session and its tuple.
+                if (HasNamespaceJournalMagic(path))
+                    throw Conflict("Original browser session has pending namespace publication.");
+                journal = ReadJournal(path);
+            }
+            catch (FileNotFoundException failure) when (retrySelectedDisappearance &&
+                MemberComparer.Equals(failure.FileName, path))
+            {
+                // An owned publisher may move or clean up this selected name before
+                // the codec's last reopen. Reselect once, retaining every guard.
+                retrySelectedDisappearance = false;
+                continue;
+            }
+            if (journal.GenerationAfter != TrustedLocalGeneration.Existing(generation) ||
+                !journal.Committed && journal.GenerationBefore != journal.GenerationAfter)
+                throw Conflict("Original browser publication belongs to a different generation.");
+            if (journal.Committed) return; // Actual committed debt performs only the existing cleanup.
+            var paths = originalPaths.Select(relative => _scope.ValidateFile(_files.ResolvePath(relative)))
+                .ToHashSet(MemberComparer);
+            foreach (var member in journal.Members)
+                if ((paths.Contains(member.Path) || protectsReceiptNamespace?.Invoke(
+                        Path.GetRelativePath(_files.GameSessionPath,member.Path).Replace('\\','/'))==true) &&
+                    (member.Before.Exists != member.After.Exists || member.Before.Sha256 != member.After.Sha256))
+                    throw Conflict("Uncommitted publication would alter original browser evidence; recovery refused.");
             return;
         }
-        selectedObserver?.Invoke(path);
-        // Namespace recovery may replace the original session and its tuple.
-        if (HasNamespaceJournalMagic(path))
-            throw Conflict("Original browser session has pending namespace publication.");
-        var journal = ReadJournal(path);
-        if (journal.GenerationAfter != TrustedLocalGeneration.Existing(generation) ||
-            !journal.Committed && journal.GenerationBefore != journal.GenerationAfter)
-            throw Conflict("Original browser publication belongs to a different generation.");
-        if (journal.Committed) return; // Actual committed debt performs only the existing cleanup.
-        var paths = originalPaths.Select(relative => _scope.ValidateFile(_files.ResolvePath(relative)))
-            .ToHashSet(MemberComparer);
-        foreach (var member in journal.Members)
-            if ((paths.Contains(member.Path) || protectsReceiptNamespace?.Invoke(
-                    Path.GetRelativePath(_files.GameSessionPath,member.Path).Replace('\\','/'))==true) &&
-                (member.Before.Exists != member.After.Exists || member.Before.Sha256 != member.After.Sha256))
-                throw Conflict("Uncommitted publication would alter original browser evidence; recovery refused.");
     }
 
     internal void ValidateMainRecoveryGeneration(FileSystemManager.CanonicalWriteLease lease)

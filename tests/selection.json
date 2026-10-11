@@ -3,7 +3,17 @@
     "selections": [
         {
             "category": "c5-original-browser-journal-selection-race",
-            "reason": "Two new actual held-publisher transitions interleaved with original browser prelock journal selection; exact selected-path FileNotFound RED before any repair, physical fresh proof oracle and all original bytes preserved. Source-pinned fresh selected preparation/catalog and independent source gate before sole8case run; no historical actor attribution.",
+            "reason": "Preserved actual 2/2 selected-path causal RED after successful owned publication/lease disposal; final GREEN must obtain fresh physical original proof with unchanged original evidence. Exact two causal cases plus six controls and seven separately owned reselection refusal cases; no historical actor attribution.",
+            "contracts": [
+                "#1553",
+                "T069-C5-ORDINARY-CONSUMER",
+                "T071-C5-MUSINGS-CHECKPOINT",
+                "Original prelock projection and physically held fresh original authority"
+            ]
+        },
+        {
+            "category": "c5-original-browser-journal-reselection-refusals",
+            "reason": "Independent Astra/XHigh design review requires current-authority retry negatives: seven distinct refusal branches including actual v2 protected-member journal; exact retained evidence, no physical-lock/recovery bypass and bounded second disappearance.",
             "contracts": [
                 "#1553",
                 "T069-C5-ORDINARY-CONSUMER",

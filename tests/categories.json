@@ -767,8 +767,8 @@
         },
         {
             "id": "c5-original-browser-journal-selection-race",
-            "responsibility": "#1553 T069/T071 deterministic actual browser prelock journal selection concurrent with one real physical-lease-owned publisher. Two cases: original IntentStage Move to Active and committed Active cleanup disappearance. Test-only instance-local selected-path latch; original codec/guards/recovery remain unchanged. Requires witnessed transaction/path/bytes/hash/intermediate phase and successful full publication/actual lease disposal before resuming preflight; successful oracle requires fresh physical held original proof and unchanged original tuple/manifest/signed authority/snapshots. Current-source causal RED must be exact selected-path FileNotFound at HasNamespaceJournalMagic; timeout/unreached seam is incomplete, not proof. Each case cancellation30s/latches and bounded joins10s; category2min, explicit overall6 with six existing pending-recovery/refusal controls.",
-            "excludes": "Historical responsible actor/transaction attribution, old helper causal linkage, product fix, fullC5 acceptance, live provider, Windows/B2/main/CI/merge/issues.",
+            "responsibility": "#1553 T069/T071 deterministic actual browser prelock journal selection concurrent with one real physical-lease-owned publisher. Two cases: original IntentStage Move to Active and committed Active cleanup disappearance. Test-only instance-local selected-path latch; strict codec/guards/recovery remain unchanged; selected-name disappearance permits one fresh reselection only. Requires witnessed transaction/path/bytes/hash/intermediate phase and successful full publication/actual lease disposal before resuming preflight; successful oracle requires fresh physical held original proof and unchanged original tuple/manifest/signed authority/snapshots. Preserved pre-fix causal RED is exact selected-path FileNotFound at HasNamespaceJournalMagic; post-fix GREEN requires fresh held original proof. Timeout/unreached seam is incomplete, not proof. Each case cancellation30s/latches and bounded joins10s; category2min, explicit overall6 with six existing pending-recovery/refusal controls and separately owned seven reselection negatives.",
+            "excludes": "Historical responsible actor/transaction attribution, old helper causal linkage, fullC5 acceptance, live provider, Windows/B2/main/CI/merge/issues.",
             "changeHints": [
                 "BookOfEternityClient/Core/FileSystemManager.cs",
                 "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
@@ -783,6 +783,10 @@
                 {
                     "id": "c5-original-browser-review-refusals",
                     "when": "Journal projection changes must retain original pending phase and escaped-proof refusal before recovery."
+                },
+                {
+                    "id": "c5-original-browser-journal-reselection-refusals",
+                    "when": "One selected-name retry must run all current-authority guards and retain unsupported/unsafe evidence."
                 }
             ],
             "requirements": {
@@ -797,6 +801,44 @@
                     "project": "integration",
                     "tests": [
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_SelectedJournalSurvivesOwnedPublicationTransition"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "c5-original-browser-journal-reselection-refusals",
+            "responsibility": "#1553 T069/T071 seven owned negative fixtures from real encoded publication journals: reselection must refuse uncommitted original protected-member v2 debt, different generation, namespace authority, commit-only debt, repeated selected disappearance, directory leaf and regular-file journal root. All refuse before physical lock/recovery and retain exact remaining original/journal bytes. These fixtures do not establish a causal or historical publisher interleaving.",
+            "excludes": "Full codec/fault matrix, historical actor/helper attribution, performance, full C5 acceptance, Windows and live providers.",
+            "changeHints": [
+                "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs"
+            ],
+            "related": [
+                {
+                    "id": "c5-original-browser-journal-selection-race",
+                    "when": "Positive causal regression must keep fresh actual physical original proof after normal owned publication."
+                },
+                {
+                    "id": "c5-original-browser-pending-recovery",
+                    "when": "Physical lock must still recheck original tuple before actual recovery."
+                },
+                {
+                    "id": "c5-original-browser-review-refusals",
+                    "when": "Forged phase and escaped original proof remain refusal boundaries."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_JournalReselectionRetainsStrictRefusals"
                     ]
                 }
             ]
