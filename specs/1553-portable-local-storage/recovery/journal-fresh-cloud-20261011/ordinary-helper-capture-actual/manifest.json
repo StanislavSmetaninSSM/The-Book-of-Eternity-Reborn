@@ -4256,6 +4256,59 @@
       "failures": 0,
       "deadline": false
     },
-    "Assessment": "First complete raw publication only; causal assessment pending root readback. Missing observer evidence is not a fabricated failed predicate; selected consumer Exit0 does not replace ordinary case FAIL."
+    "Assessment": "First complete raw frozen at bdbd1d4c8067360fc363f2df47262052db55b773; root independent verification complete. Original ordinary case FAIL; diagnostic capture INCOMPLETE. Detailed bounded assessment below; no source fix, runtime repeat or failed predicate inferred."
+  },
+  "Assessment": {
+    "FrozenFirstRawSHA": "bdbd1d4c8067360fc363f2df47262052db55b773",
+    "Provenance": "Actual clean runtime carrier a08961c2ae6c4439d24fe6c0190e711c95292db6; compiled source e49f215ebdb10e778d8f7895fc8a87b23d8ea1d3. Root verified all261 gzip/9,046,079expanded bytes,31source pins/four matching prep primary DLLs; SAME Astra independently checked256owned files/681ship members/two literal substitutions/TRX/Stop/guardian. Source/preparation PASS does not qualify runtime capture; assessment metadata review pending.",
+    "OriginalResult": {
+      "Planned": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "SelectionComplete": true,
+      "RunnerWallSeconds": 88.4965899,
+      "DriverElapsedSeconds": 78.80552484899818,
+      "FailureBoundary": "console_chain.py:872 → fresh → wait:247: original40s first queued-cold narrative assertion. AcceptedTurns[] is the fixture test list only, not proof of physical acceptance absence."
+    },
+    "ConsumerEvidence": {
+      "FirstRequestPath": "/tmp/gc-6cac4a346d5c/queue-1/request-1-3929525909394c43b919eba2877d00a1/request.json",
+      "ConsumerPID": 97942,
+      "Executed": true,
+      "ExitCode": 0,
+      "ChildExited": true,
+      "IoDrained": true,
+      "Limit": "Outer PowerShell consumer facts only. Actual first consumer settlement/read timestamps are unavailable; no dedicated managed helper admission, PID, exit or guard result inferred."
+    },
+    "Capture": {
+      "CollectionAfterOriginalCleanup": true,
+      "ObservationComplete": false,
+      "Events": [],
+      "Summary": {},
+      "MatchedRequestPath": null,
+      "Unavailable": [
+        "consumed seq0 including NULL/length/frame/parser outcome",
+        "actual ExpectedGeneration",
+        "five original guard predicate copies",
+        "configured managed capture nonce",
+        "distinct managed PID/Linux birth/boot/exit",
+        "already-joined managed stderr",
+        "original managed caught records",
+        "actual first read/settlement timestamps"
+      ],
+      "Limit": "MISSINGDATA. Empty ManagedCaughtExceptions[] with missing stderr is not evidence of no exception. No healthy targeted admission or first failed predicate established. Observer nonengagement branch/cause UNKNOWN; possible first-fence/API/scope source hypotheses are unconfirmed. Bootstrap references instrumented owned ship and setup/provenance/two substitutions are verified, but none proves observer ran. No extra helper control or regular diagnostic fallback ran."
+    },
+    "SeparateEngineFailure": {
+      "PID": 97747,
+      "ExceptionType": "System.IO.InvalidDataException",
+      "Origin": "BrowserOriginalMainCondition.RequireCurrent:44 → MainAdmission:60 → ReadFileAsync:1327 → ValidationService/postaccepted validation → FinalizePlayerTurnAsync:1749",
+      "ObservedAtSeconds": 78.58110398899953,
+      "CleanupStartedAtSeconds": 78.45400545699886,
+      "ObservedDuringCleanup": true,
+      "Limit": "Observation time is not throw time or evidence of antecedent causality. It is not a selected managed-helper caught record; no causal assignment to original timeout or historic helper refusal."
+    },
+    "Shutdown": "Actual OriginalStop identity equals durable RecordAfter and StopEvidence identity; Stopped/OwnedScopeEmpty/uncertainfalse/no retained owner. All five peer EOF and IoDrained. Guardian ECHILDtrue/driverExit1/reaped5/emergency0/failures0/deadlinefalse. Clean original Stop and guardian remain separate from failed case/capture.",
+    "SettingsAndEffects": "Original ordinary durationfalse/continuefalse/helperAdmissionfalse/profilefalse, all18original pump/wait function ASTs and original40/240/300/310/category6 budgets preserved. Only fixture capture opt-in and approved postfailure fallback exclusion. Prelaunch memory/stack/nonce work, postdecision Linux identity attempts and protocol-closed exports are uncalibrated scheduling effects, not a no-overhead claim; absent capture cannot demonstrate these hooks ran.",
+    "Decision": "Sole ordinary invocation FAIL and capture INCOMPLETE. Previous targeted PASS is not an equivalent ordinary run. Historical B2/A2/ordinary failures and unknown causes remain; candidate WIP/performance UNQUALIFIED/T069–T071 open. No observer fix/probe/retry/rerun/source changes. Hold for SAME Astra assessment closure and root ONE selected GitHub recovery."
   }
 }
