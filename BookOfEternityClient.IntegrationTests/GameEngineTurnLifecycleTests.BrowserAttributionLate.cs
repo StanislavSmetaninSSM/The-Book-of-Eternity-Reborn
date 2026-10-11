@@ -15,6 +15,11 @@ public sealed partial class GameEngineTurnLifecycleTests
     public async Task BrowserAdmissionDiagnostics_LateTerminalBranchCapturesOnceAndPreservesOriginalFailure()
     {
         var (_, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+        var condition = GameEngine.ValidateDetachedBrowserBinding(staged).BrowserOriginalMainCondition;
+        Assert.NotNull(condition);
+        Assert.Equal("quiescentAbsent", condition.Kind);
+        Assert.Equal(staged.Binding.Generation, condition.Generation);
+        Assert.Null(condition.ActiveIdentity);
         var original = new IOException("original late-terminal checkpoint failure");
         var reached = 0;
         var engine = CreateGameEngine(finalizationHooks: new GameEngineSessionFinalizationHooks
@@ -52,7 +57,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(staged.Binding.ActionId, window["ActionId"]!.GetValue<string>());
         Assert.Equal(staged.Binding.Generation, window["Generation"]!.GetValue<string>());
         Assert.Equal("unbound", window["RequestId"]!.GetValue<string>()); // Original snapshot load is not reached.
-        Assert.NotNull(window["OwnerIdentity"]);
+        Assert.Null(window["OwnerIdentity"]); // Guarded quiescent condition has no active owner identity.
         Assert.Equal("failed", window["Outcome"]!.GetValue<string>());
         Assert.Null(window["AcceptedTicks"]);
         Assert.NotNull(window["ClosedTicks"]);
