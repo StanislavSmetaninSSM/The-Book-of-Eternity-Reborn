@@ -43,7 +43,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var outcome = damage == "protected-v2"
                 ? publication.PublishImagesWithOutcome(lease, generation,
                     [new(_fs.ResolvePath("input/turn_request.json"),
-                        TrustedLocalFileImage.FromFile(scope, _fs.ResolvePath("input/turn_request.json")),
+                        TrustedLocalFileImage.CaptureFile(scope, _fs.ResolvePath("input/turn_request.json")),
                         TrustedLocalFileImage.FromBytes([1, 2, 3]))], Capture)
                 : publication.PublishWithOutcome(lease, generation,
                     [new(_fs.ResolvePath("game_state/control/c5_recovery_probe.json"), null, [1, 2, 3])], Capture);
