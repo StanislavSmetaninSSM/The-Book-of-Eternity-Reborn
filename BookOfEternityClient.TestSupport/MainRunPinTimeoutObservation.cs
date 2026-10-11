@@ -26,6 +26,8 @@ internal sealed class MainRunPinTimeoutObservation
     private Exception? _firstTimeoutException, _firstConfirmException;
     private Capture? _firstTimeout, _firstConfirm;
     private string? _captureFailure;
+    internal Exception? FirstTimeoutException=>_firstTimeoutException;
+    internal Exception? FirstConfirmException=>_firstConfirmException;
 
     internal sealed record Snapshot(int Pins, string PinDrainStatus, bool PinDrainCompleted, bool LifecyclePresent,
         bool LifecycleActive, bool OwnerUncertain, bool OwnerRetired, bool OwnerClosed,

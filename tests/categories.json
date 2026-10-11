@@ -5218,6 +5218,40 @@
             ]
         },
         {
+            "id": "gm-main-stop-first-failure-diagnostics-linux",
+            "responsibility": "#1553 bounded first Stop failure diagnostics: actual held-pin timeout RPC refusal and non-primary admission predicate, immutable original owner/exception provenance across existing cleanup retry, failure-only export/capture/nonce containment, existing successful original Stop and three RPC cancellation/error controls.",
+            "excludes": "No lifecycle repair, guard/timer/public RPC changes, B2 root-cause proof, C5/A2/ordinary-OFF replay or expanded native matrix. Pure diagnostic fault/nonce controls reuse the actual refusal; no extra Stop or fabricated settlement.",
+            "changeHints": [
+                "BookOfEternityClient.TestSupport/MainStopDiagnosticScenarioAssertions.cs",
+                "BookOfEternityClient.TestSupport/MainRunPinTimeoutObservation.cs",
+                "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs",
+                "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+                "BookOfEternityGMBridge/Program.cs"
+            ],
+            "related": [
+                "gm-main-pin-timeout-first-refusal-linux",
+                "gm-main-run-owner-linux"
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_PinTimeoutPreservesFirstRefusalEvidence",
+                        "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_RefusalWithoutPrimaryStopFailureKeepsActualPredicate",
+                        "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement",
+                        "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualRequestBoundary_OnlyHostCancellationStopsServing"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "gm-main-pin-timeout-first-refusal-linux",
             "responsibility": "#1553 ONE existing held-pin timeout: observe the first BeginStop timeout and marked Confirm refusal before pin release/cleanup retry using test-only FirstChanceException memory snapshots.",
             "excludes": "No historical B2 root-cause proof, lifecycle/Stop fix, C5/A2/ordinary-OFF rerun, fake tasks, production hooks or broader native matrix.",
