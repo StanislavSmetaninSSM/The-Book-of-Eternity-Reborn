@@ -1,3 +1,46 @@
+## T068 original T067 boundary audit and platform handoff — DOCS-ONLY WIP, 2026-10-11
+
+Tracked child `T068-LINUX-BOUNDARY-HANDOFF`, existing branch `1553-storage-migration-cloud-20261008`; immutable audited source base `9ba80c3ce580d01b2fd5a90033ce22e6d27593d7`. **Read-only audit/docs handoff only; SOURCE/EVIDENCE faithfulness review pending. No runtime/build/catalog/service/project/native execution or new evidence packet.** The original T067 candidate list contains four points below; all are now bounded accepted. No next specific original T067 Linux point is identified. Parent T067/T068/T061–T065 remain OPEN; 81 historical source-only acquisitions are not an automatic queue of defects. Component exclusions are honest scope limits, not newly authorized cases.
+
+| Original T067 point | Accepted boundary and immutable evidence |
+| --- | --- |
+| #26 `RestorePreTurnBackup` | Real engine snapshot/owner, ordinary evidence failure and own-close precedence, exact restored bytes/absence, retained backup; [rollback GREEN](recovery/journal-fresh-cloud-20261011/t067-engine-rollback-green/manifest.json), combined #26/#27 actual9/9, reviewed43b19. |
+| #27 `RestorePreTurnBackupForSessionAsync` | Same actual owner/primary-secondary/noLater/cold verification; success cleanup and genuine CSP retained journal/typed cold refusal; same nine-row packet. |
+| #104 `InventoryManagementService.ReadContextAsync` | Actual public owned late-close exact exception/release/no mutation and cold physical read; **1/1** at `6ae39ef43e960a3a2cfa21d14d32262800dcb3bc`, [qualified packet](recovery/linux-game-chains-20261010/read-close-cold-qualified-pass/manifest.json). Component only, not full gameplay or secondary-fault qualification. |
+| #110 treatment `ProbeAsync` | Same parser primary + exact own-close secondary, noLater, hot/cold retained malformed authority; accepted Advance3/stored-CSP controls; **7/7** reviewed9df81, [Probe GREEN](recovery/journal-fresh-cloud-20261011/t067-treatment-probe-green/manifest.json). Existing-generation/quiescent component only. |
+
+ExternalPublicationContext is an actual owning-disposal seam, not native FileStream-close fault evidence. Absent-generation creation, cold in-memory receipt resurrection, active GM/full-turn and whole recoverability remain unqualified. Client-owned exception precedence requires no GM schema/mechanic/prompt change. WorldQuest and MetaControlShapes optimizations/accepted fixes remain intact; ordinary40 FAIL/full C5 performance UNQUALIFIED, B2–B5 paused and historical actor/helper-refusal causes UNKNOWN remain unchanged.
+
+**F18 legacy native physical cuts are Windows-only, all actual bodies UNRUN.** [Native-mods packet](recovery/storage-migration-native-mods-20261009/manifest.json) preserves baseline135881/final5e0a build/discovery only; it does not qualify Linux or native execution. Exact `FileSystemManagerTests` six-method roster (current source lines):
+
+- `LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination` —2743.
+- `LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence` —2816.
+- `LegacyAtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence` —2859.
+- `LegacyAtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing` —2931.
+- `LegacyAtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal` —2985.
+- `LegacyAtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes` —3137.
+
+| Existing Windows owner recipe | Expected cases / qualification |
+| --- | --- |
+| `legacy-physical-publication-windows` |6 original physical-cut Facts, body-required Windows, UNRUN. |
+| `portable-console-rollback-preparation` |16, [existing Windows owner recipe](recovery/storage-migration-console-green-20261008/manifest.json), UNRUN; Linux-only neighbor is excluded. |
+| `portable-browser-protocol-native-windows` |30 ordinary/extended-path protocol cases, UNRUN. |
+| `gm-main-metadata-native-windows` |32 =22 faults+2sharing+4foreign+2partial+2unknown, UNRUN. |
+| `gm-main-owner-native-windows` |27 =6+9+12, UNRUN. |
+| `gm-main-bridge-native-windows` |3 path variants of one original WMI/ConPTY/Job host Theory, UNRUN. |
+| `portable-native-runtime-contention-windows` |3 Facts across unit+integration, UNRUN; exact fresh PlanOnly inventory remains authoritative. |
+
+Counts are retained recipe/source expectations, never executions. Existing native Windows relay24/24 historical acceptance does not qualify these unrun recipes; not all Windows work is UNRUN. User boundary remains native Windows only in the supplied/parent-coordinated Windows environment after the agreed integration stage. No HOME-PC access, all-category sequence or automatic native-worker launch is requested. For **one** separately agreed existing category, future commands are documentation only (replace `$category` with that one fixed literal; preserve category budgets):
+
+```powershell
+pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category $category -PlanOnly -TimeoutMinutes 10
+pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category $category -NoBuild -TimeoutMinutes 10
+```
+
+NoBuild requires a successful matching fresh selected build/source/DLL preflight. PlanOnly/discovery is0execution. Preserve exact source/compiler/DLL pins, command/plan/TRX/raw planned-versus-completed counts, genuinely reached native hooks, original owner/request/generation identity, exact bytes/absence/cold retained state, primary-secondary/noLater and strict owned cleanup. Platform-return/skip, mock-only or zero-hook results cannot become native PASS.
+
+**Separate blockers, not permission/wiring work:** ROOT read-only environment observes PID1=`tail`, no `/run/user/*/bus`, `/dev/snd` absent; cgroup2 is visible but no accessible systemd user manager or qualified owned scope. Actual systemd S2/S3 remains deferred/backend OFF; audio/desktop/target-hardware acceptance needs its real environment. `GmWorkerBackendSelector.cs:41–42` returns NotQualified for ordinary Linux WorkerRelease (typed pool/quarantine/durable admission required, no process launched); this blocks original native #81 Prepared/#82 Release qualification. NeutralHost/controlled fixture admission is not that capability. Do not change access, enable services or wire native producers to claim acceptance. This handoff chooses no implementation/optimization or next automatic runtime.
+
 ## T067 treatment Probe original owner #110 — FINAL bounded ACCEPTED, 2026-10-11
 
 <a id="t067-treatment-probe-original-owner-110--source-accepted-green-pending-2026-10-11"></a>
@@ -9,7 +52,7 @@ All Probe4 pass actual original owning-lease/physical main admission and exact g
 
 Historical firsta29=2PASS2fixtureFAIL is NOT product RED; corrected32513=3PASS1causalRED remains original (secondary assertion then UNREACHED); failedprep613183 exact missing-contracts error remains0build0exec. All raw, first manifests/tests/oracles/inputs and previous #26/#27/WorldQuest/MetaControlShapes accepted fixes are unchanged. The following pending/HOLD/UNRUN paragraphs are explicitly historical and superseded for this bounded child. **Original ordinary40 FAIL/full-C5 and performance UNQUALIFIED remain unchanged; broader T067/T061–T065 stay OPEN, B2–B5 paused.** No further runner/service/build/runtime/Windows work is released by this verdict.
 
-Remaining Linux-before-Windows scope from [current T061–T065 obligations](tasks.md#актуальные-обязательства-t060t065): positive native physical publication cuts and specifically affected unqualified source-only/known-close boundaries; real default Linux worker/Prepared durable owner ACK and whole command/game transport/lifecycle (systemdS2/S3 remains unavailable/off); actual target hardware/native execution where the contract requires it, with no simulated hardware/all-platform claim. This is a remaining qualification list, not an automatic81-case queue. Native Windows owner/browser/transport recipes remain unexecuted and follow the user's explicit Windows-environment boundary, not cloud-Linux substitution or automatic execution.
+Precise remaining platform boundary (see the T068 handoff above): original T067 #26/#27/#104/#110 are now bounded accepted and no further specific original Linux point has been identified. F18 positive legacy physical cuts are six Windows-only recipes, not Linux prerequisites. Real ordinary Linux WorkerRelease/Prepared durable ACK, systemd manager/user-bus/owned scope and actual audio/hardware remain separately unqualified; source-only81 is not an automatic defect/test queue. Native Windows recipes follow the user-provided Windows environment boundary; no cloud-Linux substitute, automatic execution, wiring or permissions change.
 
 HISTORICAL carrier status: corrected FIRST actual same4 frozen: **3 PASS / 1 causal primary-oracle FAIL candidate**, four complete rows/1descriptor, 26.1302597s/exit1/no timeout/duplicates/runnercleanupcomplete. Runtime `7de3206a85d75be921528b224a60b26080d3a4af`, compiled `2e1e8d9fc4ee7a441ebacb8dd794d9b5f8d5a9af`, reviewed observer `204b563d`. [Corrected first manifest](recovery/journal-fresh-cloud-20261011/t067-treatment-probe-corrected-first/manifest.json):7 gzip/23,449,318 expanded B/67sourcepins/22actual DLL-PDB (12 reused fresh selected). Valid/close/generation PASS; generation-close solely fails Assert.Same line214: original real parser InvalidDataException replaced by exact own ExternalPublicationContext close IOException. Both generation observers reached actual active hoisted Probe lease once, PhysicalScope+MainAcquired true; combined closer attached/called once, observationFailure null. All preceding exact byte/absence/hot+cold/lock/owner teardown/noLater/fixture cleanup assertions passed; same-secondary assertion remains UNREACHED behind failed primary oracle. All four hotAfter=coldBefore=coldAfter exact, four unique cold PIDs, malformed-generation typed cold refusal/zero canonical reads before restoration, eight owned roots removed. First a29 2PASS/2fixtureFAIL remains immutable/history, not product RED. ROOT+SAME causal readback pending; **no product edit/retest before independent gate**. Minimal candidate intent only: explicit Probe own-lease try/catch-all/barethrow plus existing coordinated release preserving primary/secondary; body/acquisition/resource/claim order unchanged, conditional GREEN4+accepted3 only after separate SOURCE release.
 
