@@ -6090,7 +6090,7 @@
     "Qualification": "Original duration3turn/fullprefix/queued+staged/client+wholecold/Stop/EOF application assertions PASS, originalbudgets unchanged. No ranking or fully qualified engine/C5 attribution before independent review; existing late callback close precedes outer participating-owner close, separate full Stop/cleanup oracles apply. DurationPASS never ordinary40/performance qualification or nextoptimization. All historicalRED/UNKNOWNs/raw remain unchanged."
   },
   "Assessment": {
-    "Status": "WIP derived assessment: ROOT fidelity/work-window qualification PASS897c; SAME duration review PENDING",
+    "Status": "ROOT+SAME independent EVIDENCE/three-window qualification PASS frozen897c; six observed source groups rank qualified, full7branch coverage UNQUALIFIED; metadata review PENDING",
     "FrozenFirstRawCarrierSHA": "897c9fd113904acd830da7cceb1c78ecb2bccb7c",
     "RuntimeCompiledSHA": "d4b79236e15aca989207d2a6712562857e1d8a21",
     "ReviewedCodeSHA": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
@@ -6169,6 +6169,31 @@
       "Alllegacy40 narrative limits and historical ordinaryFAIL/performanceUNQUALIFIED/UNKNOWN causes remain; broadT069–T071 OPEN.",
       "Firstderivedinitial-health ActiveTimingFrames nonschema placeholder retainedhistorically; actualActiveFrames/AccountingErrors0 independently verified fromeveryrawprofile.",
       "No nextoptimization selected; no source/runtime/rerun/capraise/recovery operation in this assessmentblock."
-    ]
+    ],
+    "ObservedGroupsContainedSelfSeconds": 26.425973771,
+    "LargestJointGroupCaller": {
+      "Group": "GuardianAndShiningShapes",
+      "EngineCaller": "пост-материализации принятого хода",
+      "ContainedSelfSeconds": 4.053418152
+    },
+    "DurationObservationLimits": {
+      "LegacyNarrative40Exceeded": [
+        true,
+        true,
+        true
+      ],
+      "LegacyPrompt40Exceeded": [
+        false,
+        false,
+        false
+      ],
+      "HelperCompleteToAcceptanceSeconds": [
+        48.615923369,
+        61.995339779,
+        51.171999646
+      ],
+      "Qualification": "Externaldriver polling interval distinct from instrumented window/selfwork; no isolated engine latency or improvement. Raw AuthoredPacketToAcceptanceSeconds uses existing LegacyNarrativeWaitStartedAtSeconds anchor, not AuthoredPacketCallStartedAtSeconds; no new interpretation of that original field."
+    },
+    "OriginalOracles": "SAME+ROOT confirmed full3accepted/prefix/cold, two exact durable original Stop identities/OwnedScopeEmpty and12EOF/guardianECHILD clear. Separate from finite accepted callback window external-close qualification."
   }
 }
