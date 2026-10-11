@@ -13,7 +13,11 @@
     },
     {
       "category": "portable-original-treatment-progression-advance-close-linux",
-      "reason": "Conditional product Probe fix affects accepted Advance Probe calls: retain all three genuine known/known-close/uncertain Advance\u2192Probe\u2192Complete/latch controls once. Seven cases total; no new producer or broad suite."
+      "reason": "Conditional product Probe fix affects accepted Advance Probe calls: retain all three genuine known/known-close/uncertain Advance\u2192Probe\u2192Complete/latch controls once. Seven cases total; no new producer or broad suite.",
+      "contracts": [
+        "accepted Advance-to-Probe-to-Complete known result and own-close preservation",
+        "stored publication-uncertain CSP identity and no later acquisition/read/publication/recovery"
+      ]
     }
   ]
 }
