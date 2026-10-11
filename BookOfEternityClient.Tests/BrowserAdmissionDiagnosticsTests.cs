@@ -287,8 +287,8 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
         var throwClock = false;
         var closing = Create(() => throwClock ? throw new IOException("diagnostic clock") : 1);
         var original = new InvalidOperationException("original failure during close");
-        Assert.Same(original, Record.Exception(() =>
-        { using (Window(closing)) { throwClock = true; throw original; } }));
+        Assert.Same(original, Record.Exception((Action)(() =>
+        { using (Window(closing)) { throwClock = true; throw original; } })));
         throwClock = false;
         using (Measure(closing, "after-failed-close")) { }
         Assert.Equal("unbound", Assert.Single(Snapshot(closing)["Rows"]!.AsArray())!["WindowId"]!.GetValue<string>());
