@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "c5-byte-digest-observed-rollback-filter",
-      "reason": "Coordinator supersedes allocation RED/product edit: first one cheap comparable filter on actual observed rollback lengths and whole-action counts; no behavior fix or full C5 pairs until meaningful supported effect and independent gate.",
+      "category": "c5-checked-rollback-hash-filter",
+      "reason": "Coordinator authorized exactly one test-only checked-reader comparison after SHA provider-only rejection. Actual current private reader versus strict streaming prototype, all current path/length/refusal checks; source gate before actual filter, no product edit/full C5 until convincing time and allocation evidence.",
       "contracts": [
         "#1553",
         "T069-C5-ORDINARY-CONSUMER",
         "T071-C5-MUSINGS-CHECKPOINT",
-        "finite diagnostic hypothesis filter; no latency qualification"
+        "strict exact rollback length/ReadExactly/EOF/native/path boundaries; finite diagnostic filter only"
       ]
     }
   ]

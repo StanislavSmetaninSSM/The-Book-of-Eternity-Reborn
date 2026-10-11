@@ -23477,6 +23477,30 @@
                     ]
                 }
             ]
-        }
+        },
+      {
+        "id": "c5-checked-rollback-hash-filter",
+        "responsibility": "#1553 one finite test-only Linux checked-path rollback streaming hypothesis filter: actual unchanged byte reader versus strict initial-length incremental hashing; fresh scopes, real file layouts, elapsed/managed-allocation/process-wide GC pairs and scoped refusal/mutation controls. PASS qualifies controls only, never speed.",
+        "excludes": "No production reader/authority API or hook changes, legacy path changes, omitted proof/path/length/EOF/native checks, cache, general benchmark/profiler, full C5 or acceptance-window attribution. Frozen source-sequence mutation oracle is not actual-A mutation validation.",
+        "changeHints": [
+          "BookOfEternityClient.Tests/CheckedRollbackHashFilterTests.cs"
+        ],
+        "related": [],
+        "requirements": {
+          "frontendBuild": false,
+          "exclusive": true,
+          "ciRunner": "ubuntu-24.04"
+        },
+        "timeoutMinutes": 2,
+        "expectedSeconds": null,
+        "selectors": [
+          {
+            "project": "unit",
+            "tests": [
+              "BookOfEternityClient.Tests.CheckedRollbackHashFilterTests.FiniteCheckedPathFilterUsesPinnedRollbackLayouts"
+            ]
+          }
+        ]
+      }
     ]
 }
