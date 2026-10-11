@@ -12,9 +12,10 @@ public partial class ValidationService
     private WorldValidationInvocation? _worldReservation;
     private WorldReadPhase? _worldReadPhase;
 
-    private sealed class WorldValidationInvocation(bool reserved)
+    private sealed class WorldValidationInvocation(bool worldReserved, bool metaReserved)
     {
-        internal readonly bool Reserved = reserved;
+        internal readonly bool WorldReserved = worldReserved, MetaReserved = metaReserved;
+        internal bool Reserved => WorldReserved || MetaReserved;
         internal bool Closed;
     }
 
@@ -24,11 +25,15 @@ public partial class ValidationService
         lock (_worldReadGate)
         {
             if (_worldReservation != null) throw new InvalidOperationException("World validation already reserves this instance.");
-            var reserve = browser && _prevalidatedPendingTurnSnapshotOverride != null &&
+            var world = browser && _prevalidatedPendingTurnSnapshotOverride != null &&
                 selection!.Phases.Includes(GameStateValidationPhase.WorldQuestCombatFactionStateFiles);
+            var meta = browser && _prevalidatedPendingTurnSnapshotOverride != null &&
+                selection!.Phases.Includes(GameStateValidationPhase.MetaMiscStateFiles) &&
+                MetaControlShapeCurrentPaths.Any(selection.IncludesStateFile);
+            var reserve = world || meta;
             if (reserve && (_worldValidationCalls != 0 || _worldOverrideMutations != 0))
                 throw new InvalidOperationException("World validation conflicts with an already admitted instance consumer.");
-            var invocation = new WorldValidationInvocation(reserve);
+            var invocation = new WorldValidationInvocation(world, meta);
             _worldValidationCalls++;
             if (reserve) _worldReservation = invocation;
             return invocation;
@@ -82,10 +87,14 @@ public partial class ValidationService
     {
         lock (_worldReadGate)
         {
-            if (_worldReservation != null && (_worldReadPhase != null ||
+            if (_worldReservation != null && (_worldReadPhase != null || _metaControlShapeReadPhase != null ||
                 !ReferenceEquals(_worldReservation, _worldValidationInvocation.Value) || _worldReservation.Closed))
             {
-                if (withdrawal && _worldReadPhase != null) _worldReadPhase.Invalidated = true;
+                if (withdrawal)
+                {
+                    if (_worldReadPhase != null) _worldReadPhase.Invalidated = true;
+                    if (_metaControlShapeReadPhase != null) _metaControlShapeReadPhase.Invalidated = true;
+                }
                 throw new InvalidOperationException("Snapshot override cannot change during reserved World validation.");
             }
             _worldOverrideMutations++;
@@ -96,7 +105,7 @@ public partial class ValidationService
     private async Task RunWorldReadPhaseAsync(List<ValidationIssue> issues)
     {
         var invocation = _worldValidationInvocation.Value;
-        if (invocation is not { Reserved: true })
+        if (invocation is not { WorldReserved: true })
         {
             RequireWorldCacheAccess();
             await ValidateWorldQuestCombatFactionStateFilesCore(issues);

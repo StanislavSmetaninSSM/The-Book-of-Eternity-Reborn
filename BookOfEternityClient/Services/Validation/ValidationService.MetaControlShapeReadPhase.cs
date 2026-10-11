@@ -1,3 +1,7 @@
+using System.Runtime.ExceptionServices;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
+
 namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
@@ -31,9 +35,124 @@ public partial class ValidationService
     }
 #endif
 
-    // Preparatory scalar wrapper: no Meta reservation, physical lease or result reuse yet.
-    private Task RunMetaControlShapeReadPhaseAsync(List<ValidationIssue> issues) =>
-        ValidateMetaControlShapeFilesCoreAsync(issues);
+    private MetaControlShapeReadPhase? _metaControlShapeReadPhase;
+
+    private async Task RunMetaControlShapeReadPhaseAsync(List<ValidationIssue> issues)
+    {
+        var invocation = _worldValidationInvocation.Value;
+        if (invocation is not { MetaReserved: true })
+        {
+            RequireWorldCacheAccess();
+            await ValidateMetaControlShapeFilesCoreAsync(issues);
+            return;
+        }
+        MetaControlShapeReadPhase phase;
+        lock (_worldReadGate)
+        {
+            if (!ReferenceEquals(_worldReservation, invocation) || invocation.Closed ||
+                _worldReadPhase != null || _metaControlShapeReadPhase != null || _worldOverrideMutations != 0)
+                throw new InvalidOperationException("Meta shape validation cannot enter its read phase.");
+            phase = new MetaControlShapeReadPhase(this, _prevalidatedPendingTurnSnapshotOverride!);
+            _metaControlShapeReadPhase = phase;
+        }
+        FileSystemManager.WorldValidationReadScope? physical = null;
+        Exception? primary = null;
+        var localIssues = new List<ValidationIssue>();
+        try
+        {
+            // Reuse the existing exact original-owner/access/physical lease issuer.
+            // No authority PASS cache or signed/draft read widening.
+            physical = _fs.BeginWorldValidationRead();
+            if (physical == null)
+            {
+                lock (_worldReadGate) _metaControlShapeReadPhase = null;
+                // Genuine held/closing eligibility keeps the whole invocation reservation.
+                await ValidateMetaControlShapeFilesCoreAsync(issues);
+                return;
+            }
+            phase.Physical = physical;
+            await physical.OpenAsync();
+            phase.Active = true;
+            phase.RequireCurrent();
+            // Pure callback closure: no cache/context isolation or reset here.
+            await ValidateMetaControlShapeFilesCoreAsync(localIssues);
+            phase.RequireCurrent();
+            physical.RequireFullEndProof();
+            await phase.RequireUnchangedReadsAsync();
+            phase.RequireCurrent();
+        }
+        catch (Exception error) { primary = error; }
+        finally
+        {
+            phase.Active = false;
+            try { if (physical != null) await physical.DisposeAsync(); }
+            catch (Exception close)
+            {
+                if (primary == null) primary = close;
+                else try { primary.Data["MetaControlShapes.CloseFailure"] = close; } catch { }
+            }
+            finally { lock (_worldReadGate) _metaControlShapeReadPhase = null; }
+        }
+        if (primary != null) ExceptionDispatchInfo.Capture(primary).Throw();
+        physical!.RequireOwnerAfterClose();
+        RequireWorldCacheAccess();
+        if (phase.Invalidated || !ReferenceEquals(phase.Manifest, _prevalidatedPendingTurnSnapshotOverride))
+            throw new IOException("Original Meta shape snapshot changed before issue publication.");
+        issues.AddRange(localIssues);
+    }
+
+    private MetaControlShapeReadPhase? CurrentMetaControlShapeReadPhase()
+    {
+        RequireWorldCacheAccess();
+        var phase = _metaControlShapeReadPhase;
+        if (phase is not { Active: true }) return null;
+        phase.RequireCurrent();
+        return phase;
+    }
+
+    private sealed class MetaControlShapeReadPhase(ValidationService service,
+        ValidationPendingTurnSnapshotManifest manifest)
+    {
+        internal readonly ValidationPendingTurnSnapshotManifest Manifest = manifest;
+        internal FileSystemManager.WorldValidationReadScope Physical = null!;
+        internal FileSystemManager.CanonicalWriteLease Lease => Physical.Lease!;
+        internal bool Active, Invalidated;
+        private readonly Dictionary<string, byte[]?> _reads = new(StringComparer.OrdinalIgnoreCase);
+        internal void RequireCurrent()
+        {
+            service.RequireWorldCacheAccess();
+            if (!Active || Invalidated || !ReferenceEquals(Manifest, service._prevalidatedPendingTurnSnapshotOverride))
+                throw new IOException("Original Meta shape context changed.");
+            Physical.RequireCurrent();
+        }
+        internal async Task<string?> ReadTextAsync(string path)
+        {
+            RequireCurrent();
+            if (!MetaControlShapeCurrentPaths.Contains(path))
+                throw new InvalidOperationException("Meta shape current read is outside its exact source closure.");
+            // Original async snapshot/decode/AFTER-read hook, immediate first failure.
+            var read = await service._fs.ReadWorldValidationTextAsync(Lease, path);
+            RequireCurrent();
+            if (_reads.TryGetValue(path, out var previous))
+            {
+                if (!Same(previous, read.Bytes)) throw new IOException("Meta shape consumed changed current bytes.");
+            }
+            else _reads.Add(path, read.Bytes?.ToArray());
+            return read.Text;
+        }
+        private static bool Same(byte[]? first, byte[]? second) => first == null ? second == null :
+            second != null && first.AsSpan().SequenceEqual(second);
+        internal async Task RequireUnchangedReadsAsync()
+        {
+            foreach (var (path, bytes) in _reads)
+            {
+                RequireCurrent();
+                var current = await service._fs.ReadFileBytesAsync(Lease, path);
+                RequireCurrent();
+                if (!Same(bytes, current)) throw new IOException("Meta shape input changed before issue publication.");
+            }
+        }
+    }
 
     private async Task ValidateMetaControlShapeFilesCoreAsync(List<ValidationIssue> issues)
     {
