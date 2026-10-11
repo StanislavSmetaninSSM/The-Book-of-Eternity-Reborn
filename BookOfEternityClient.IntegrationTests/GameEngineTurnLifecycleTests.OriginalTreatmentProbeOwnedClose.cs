@@ -120,6 +120,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var gateHeld = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             using var releaseGate = new ManualResetEventSlim();
             Task? gateOwner = null;
+            Exception? fixtureSettlementOutcome = null, fixtureSettlementFailure = null, fixtureGateFailure = null;
             try
             {
                 if (!invalidGeneration)
@@ -146,10 +147,28 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             finally
             {
-                allowAcquire.TrySetResult(); releaseGate.Set();
-                if (operation != null && !operation.IsCompleted) await Record.ExceptionAsync(() => operation);
-                if (gateOwner != null) await gateOwner;
-                AppDomain.CurrentDomain.FirstChanceException -= observe; marker.Value = null; armed = false;
+                try
+                {
+                    try
+                    {
+                        allowAcquire.TrySetResult(); releaseGate.Set();
+                        if (operation != null && !operation.IsCompleted)
+                            fixtureSettlementOutcome = await Record.ExceptionAsync(() => operation);
+                    }
+                    catch (Exception error) { fixtureSettlementFailure = error; }
+                    try { if (gateOwner != null) await gateOwner; }
+                    catch (Exception error) { fixtureGateFailure = error; }
+                }
+                finally
+                {
+                    AppDomain.CurrentDomain.FirstChanceException -= observe;
+                    marker.Value = null; armed = false;
+                    if (fixtureSettlementOutcome != null || fixtureSettlementFailure != null || fixtureGateFailure != null)
+                        _directGachaOutput.WriteLine(JsonSerializer.Serialize(new { mode, Scope = "fixture settlement/gate cleanup; not target primary or causal RED",
+                            FixtureSettlementOutcome = fixtureSettlementOutcome?.ToString(), FixtureSettlementFailure = fixtureSettlementFailure?.ToString(),
+                            FixtureGateFailure = fixtureGateFailure?.ToString(), SameTargetPrimary = ReferenceEquals(primary, fixtureSettlementOutcome),
+                            TargetPrimary = primary?.ToString(), TargetFailure = failure?.ToString(), ObserverUnsubscribed = true, MarkerReset = marker.Value == null, armed }));
+                }
             }
             var after = EngineRollbackColdProbe.Images(files);
             var coldOwner = new OriginalOwnedLeaseCloseTests(_directGachaOutput);
@@ -161,6 +180,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 context.Root, actualOwnerState = ownerState, actualRegistryState = state.GetType().FullName, physicalScope, acquired, baselineCondition, condition,
                 Receipt = ProbeEvidence(initial), acquirePauses, generationCuts, primaryObservations, attachments, closer.Calls, primary = primary?.ToString(), failure = failure?.ToString(), observationFailure = observationFailure?.ToString(),
                 SamePrimary = ReferenceEquals(primary, failure), SameSecondary = ReferenceEquals(failure?.Data["CoordinatedLeaseReleaseFailure"], closeFailure),
+                FixtureSettlementOutcome = fixtureSettlementOutcome?.ToString(), FixtureSettlementFailure = fixtureSettlementFailure?.ToString(), FixtureGateFailure = fixtureGateFailure?.ToString(),
                 Result = result == null ? (JsonElement?)null : ProbeEvidence(result), lockAvailable, activeAfter = original?.IsActive, ambientAfter = original?.AmbientRegistration != null,
                 mainAfter = original?.MainAdmission != null, externalAfter = original?.ExternalPublicationContext != null,
                 laterAcquisitions, laterReads, laterMutations, laterRecovery, Before = before, After = after, Cold = cold }));
@@ -172,6 +192,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AssertProbeImages(after, JsonSerializer.Deserialize<Dictionary<string, byte[]>>(cold.GetProperty("After"))!);
                 Assert.True(lockAvailable); Assert.NotNull(original); Assert.False(original.IsActive); Assert.Null(original.AmbientRegistration);
                 Assert.Null(original.MainAdmission); Assert.Null(original.ExternalPublicationContext); Assert.Null(observationFailure);
+                Assert.Null(fixtureSettlementFailure); Assert.Null(fixtureGateFailure);
                 Assert.Equal(1, acquirePauses); Assert.Equal(invalidGeneration ? 1 : 0, generationCuts);
                 Assert.Equal(throwClose ? 1 : 0, attachments); Assert.Equal(attachments, closer.Calls);
                 Assert.Equal(0, laterAcquisitions); Assert.Equal(0, laterReads); Assert.Equal(0, laterMutations); Assert.Equal(0, laterRecovery);
