@@ -37,8 +37,8 @@ internal static class MainStopDiagnosticScenarioAssertions
         var method=typeof(GmSessionRunCoordinator).GetMethod("TryFreezeStopFailureText",BindingFlags.Static|BindingFlags.NonPublic)
             ?? throw new InvalidOperationException("Bounded failure text capture missing.");
         var originalStack=actualRefusal.StackTrace;var first=actualRefusal.Data[FirstExceptionKey];
-        foreach(var failMessage in new[]{true,false}) {
-            var hostile=new GetterFailure(failMessage);
+        Exception[] controls=[new GetterFailure(true),new GetterFailure(false),new LargeTextFailure(true),new LargeTextFailure(false)];
+        foreach(var hostile in controls) {
             var capture=method.Invoke(null,[hostile])!;var type=capture.GetType();
             Require(!(bool)type.GetProperty("CaptureComplete")!.GetValue(capture)! &&
                 type.GetProperty("CaptureFailure")!.GetValue(capture)!=null &&
@@ -143,5 +143,10 @@ internal static class MainStopDiagnosticScenarioAssertions
     {
         public override string Message=>message ? throw new IOException("controlled Message getter failure") : base.Message;
         public override string? StackTrace=>!message ? throw new IOException("controlled StackTrace getter failure") : base.StackTrace;
+    }
+    private sealed class LargeTextFailure(bool message) : IOException("controlled diagnostic text overflow")
+    {
+        public override string Message=>message?new string('x',2049):base.Message;
+        public override string? StackTrace=>!message?new string('x',4097):base.StackTrace;
     }
 }

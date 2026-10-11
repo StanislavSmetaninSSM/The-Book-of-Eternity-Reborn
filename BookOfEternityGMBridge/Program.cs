@@ -598,18 +598,20 @@ internal sealed partial class BridgeHost : IDisposable
         RequireStartupObservationSettled();
         InputLifetime? input;
         IOwnedTerminalSession? pty;
+        GmSessionRunCoordinator? stopOwner;
         lock (_sync)
         {
             input = _inputLifetime;
             pty = _pty;
+            stopOwner = _mainRun;
         }
         var statusDrain = SealOriginalStatusPublicationAsync();
         if (input != null)
             RevokeInputLifetime(input);
         Exception? metadataFailure=null;
-        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){RecordStopFailure(ex,"begin_stop_metadata");metadataFailure=ex;}
+        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){RecordStopFailure(stopOwner,pty,ex,"begin_stop_metadata");metadataFailure=ex;}
         try { await statusDrain.WaitAsync(InputDrainTimeout); }
-        catch(Exception ex) { RecordStopFailure(ex,"status_publication_drain");metadataFailure ??= ex; _mainRun?.NotifyUncertain(); }
+        catch(Exception ex) { RecordStopFailure(stopOwner,pty,ex,"status_publication_drain");metadataFailure ??= ex; _mainRun?.NotifyUncertain(); }
         if (pty != null)
         {
             try
@@ -625,16 +627,16 @@ internal sealed partial class BridgeHost : IDisposable
                 else if(proof.AuthorityRetained)failed="bridge_native_authority_retained";
                 if(failed!=null) {
                     var refusal=new InvalidOperationException("Original terminal scoped stop is unconfirmed.");
-                    RecordStopFailure(refusal,"native_scope_stop",failed);
+                    RecordStopFailure(stopOwner,pty,refusal,"native_scope_stop",failed);
                     throw refusal;
                 }
             }
             catch (Exception ex)
             {
-                RecordStopFailure(ex,"native_scope_stop");
+                RecordStopFailure(stopOwner,pty,ex,"native_scope_stop");
                 MarkTerminalUncertain();
                 var refusal=new TimeoutException("Original terminal owner is retained as Uncertain.", ex);
-                RecordStopFailure(refusal,"native_scope_stop",GmSessionRunCoordinator.GetStopFailureReport(ex)?.CurrentFailure.FirstFailedPredicate);
+                RecordStopFailure(stopOwner,pty,refusal,"native_scope_stop",GmSessionRunCoordinator.GetStopFailureReport(ex)?.CurrentFailure.FirstFailedPredicate);
                 throw refusal;
             }
         }
@@ -642,7 +644,7 @@ internal sealed partial class BridgeHost : IDisposable
         {
             if(metadataFailure!=null)throw metadataFailure;
             if(_mainRun!=null && pty==null)throw new InvalidOperationException("Original main metadata owner remains unresolved without terminal retirement evidence.");
-            if(pty!=null) { await Task.WhenAll(_outputPumpTask??Task.CompletedTask,_resizePumpTask??Task.CompletedTask).WaitAsync(InputDrainTimeout); await RetireTerminalHandlesAsync(pty); }
+            if(pty!=null) { await Task.WhenAll(_outputPumpTask??Task.CompletedTask,_resizePumpTask??Task.CompletedTask).WaitAsync(InputDrainTimeout); await RetireTerminalHandlesAsync(pty,stopOwner); }
             return;
         }
 
@@ -662,7 +664,7 @@ internal sealed partial class BridgeHost : IDisposable
         try { await drain.WaitAsync(InputDrainTimeout); }
         catch (TimeoutException failure)
         {
-            RecordStopFailure(failure,"managed_input_drain",inputDrain:drain);
+            RecordStopFailure(stopOwner,pty,failure,"managed_input_drain",inputDrain:drain);
             if (pty != null) MarkTerminalUncertain();
             lock (_sync)
             {
@@ -675,7 +677,7 @@ internal sealed partial class BridgeHost : IDisposable
             }
             throw; // Keep actual tasks, binding and CTS for the next stop attempt.
         }
-        if (pty != null) await RetireTerminalHandlesAsync(pty);
+        if (pty != null) await RetireTerminalHandlesAsync(pty,stopOwner);
         if(metadataFailure!=null)throw metadataFailure;
         lock (_sync)
         {
@@ -711,7 +713,7 @@ internal sealed partial class BridgeHost : IDisposable
         }
     }
 
-    private async Task RetireTerminalHandlesAsync(IOwnedTerminalSession session)
+    private async Task RetireTerminalHandlesAsync(IOwnedTerminalSession session,GmSessionRunCoordinator? stopOwner)
     {
         try
         {
@@ -720,15 +722,15 @@ internal sealed partial class BridgeHost : IDisposable
         }
         catch (Exception ex)
         {
-            RecordStopFailure(ex,"terminal_dispose");
+            RecordStopFailure(stopOwner,session,ex,"terminal_dispose");
             MarkTerminalUncertain();
             var refusal=new TimeoutException("Original terminal resources remain retained.", ex);
-            RecordStopFailure(refusal,"terminal_dispose");
+            RecordStopFailure(stopOwner,session,refusal,"terminal_dispose");
             throw refusal;
         }
         if(_mainRun!=null) {
             try { await _mainRun.ConfirmSettledStopAsync(session,await _terminalStopTask!); }
-            catch(Exception failure) { RecordStopFailure(failure,"confirm_settled_stop",inputDrain:_inputLifetime?.DrainTask);if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
+            catch(Exception failure) { RecordStopFailure(stopOwner,session,failure,"confirm_settled_stop",inputDrain:_inputLifetime?.DrainTask);if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
             _lastMainRun=_mainRun;_mainRun=null;_productionConfig=null;_windowsProductionConfig=null;
         }
         lock (_sync)

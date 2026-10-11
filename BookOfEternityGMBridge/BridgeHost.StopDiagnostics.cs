@@ -6,15 +6,19 @@ namespace BookOfEternityGMBridge;
 
 internal sealed partial class BridgeHost
 {
-    private void RecordStopFailure(Exception failure,string stage,string? predicate=null,Task? inputDrain=null)
+    private void RecordStopFailure(GmSessionRunCoordinator? original,IOwnedTerminalSession? originalSession,
+        Exception failure,string stage,string? predicate=null,Task? inputDrain=null)
     {
 #if DEBUG
         try {
-            // The current original owner only; no root lookup, last owner or recovery authority.
-            var original=_mainRun;
+            // Frozen StopCore entry refs only; a new/current owner never receives the old failure.
+            lock(_sync)if(!ReferenceEquals(_mainRun,original) || !ReferenceEquals(_pty,originalSession))return;
+            if(original==null || !original.MatchesStopDiagnosticOwner(originalSession))return;
             var stop=_terminalStopTask;
-            original?.RecordStopFailure(failure,stage,predicate,inputDrain,
-                stop?.IsCompletedSuccessfully==true?stop.Result:null);
+            var proof=stop?.IsCompletedSuccessfully==true?stop.Result:null;
+            if(proof!=null && (originalSession==null || proof.Identity!=originalSession.Identity ||
+                proof.Identity.RunId!=original.Record?.Identity.RunId))return;
+            original.RecordStopFailure(failure,stage,predicate,inputDrain,proof);
         } catch { }
 #endif
     }
