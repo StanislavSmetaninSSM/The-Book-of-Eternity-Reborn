@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "c5-world-state-read-phase",
+      "reason": "T071 same immutable two causal layouts after preserved RED116/96; original scalar ordered issues and input images unchanged, whole successful proof ceiling <=6.",
+      "contracts": [
+        "#1553/T071-WORLD-READ-PHASE",
+        "actual whole-window proof ceiling <=6",
+        "complete same-input ordered scalar oracle"
+      ]
+    },
+    {
+      "category": "c5-world-state-read-phase-controls",
+      "reason": "Exactly prepared World readset/owner/cache/override/sibling negatives plus actual owning lease close/primary-secondary and same-access canonical/lifecycle mutation/acquisition refusal. No ordinary, Meta, performance pairs or broader suite.",
+      "contracts": [
+        "selected-out nested current core drift",
+        "exact prior cache refs restored",
+        "original primary and owning close failures",
+        "same original access exclusion before waiting"
+      ]
+    }
+  ]
+}

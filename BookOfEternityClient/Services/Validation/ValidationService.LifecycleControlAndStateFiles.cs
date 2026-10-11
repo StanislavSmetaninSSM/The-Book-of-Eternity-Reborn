@@ -120,6 +120,11 @@ public partial class ValidationService
 
     private async Task ValidateWorldQuestCombatFactionStateFiles(List<ValidationIssue> issues)
     {
+        await RunWorldReadPhaseAsync(issues);
+    }
+
+    private async Task ValidateWorldQuestCombatFactionStateFilesCore(List<ValidationIssue> issues)
+    {
         await ValidateMortalLocationStateFileRootAsync(
             MortalLocationMaterializationContract.CurrentLocationPath,
             "currentLocationData",

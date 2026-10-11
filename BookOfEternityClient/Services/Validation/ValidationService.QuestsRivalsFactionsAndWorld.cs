@@ -1758,6 +1758,7 @@ public partial class ValidationService
 
 	    private HashSet<string> GetKnownCanonicalFactionIds()
 	    {
+            RequireWorldCacheAccess();
 	        if (_knownCanonicalFactionIdsCache != null)
 	            return _knownCanonicalFactionIdsCache;
 

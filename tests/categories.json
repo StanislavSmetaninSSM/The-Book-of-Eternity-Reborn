@@ -23638,7 +23638,7 @@
         },
         {
             "id": "c5-world-state-read-phase-controls",
-            "responsibility": "T071 selected World component controls only: selected-out/repeated nested core drift, original read/cancellation exception, owner/generation/override withdrawal, already-running scalar and new GameState/Response siblings, override install/dispose exclusion, phase cache discard and existing ambient release. Existing read hooks/barriers, original public entrypoints; no new product seam.",
+            "responsibility": "T071 selected World component controls only: selected-out/repeated nested core drift, original read/cancellation exception, actual owning lease close/primary-secondary failure, owner/generation/override withdrawal, already-running scalar and new GameState/Response siblings, override install/dispose and actual same-access canonical write/acquisition/lifecycle exclusion, phase cache discard and existing ambient release. Existing read hooks/barriers, original public entrypoints; no new product seam. Task-specific conservative file pins protect the selected declaration/callback/read/cache/admission closure; no exact method-count claim.",
             "excludes": "Initial work-bound RED excludes this prepared control family. No broader validation matrix, full C5, copied current-core selector, missing-private-member oracle or claim that failed timing spans are completed proofs.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.WorldReadPhase.cs",
@@ -23665,7 +23665,8 @@
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_ReadFailureKeepsOriginalExceptionAndClearsContext",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_LateOriginalContinuityLossRefusesResult",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_SameInstanceSiblingAndOverrideExcludedBeforeSharedMutation",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_FreshCacheInputsDoNotEscapePhase"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_FreshCacheInputsDoNotEscapePhase",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorldReadPhase_SourceClosurePinsRequireExplicitReview"
                     ]
                 }
             ]

@@ -7,7 +7,7 @@ public partial class ValidationService
 {
     private readonly AsyncLocal<GameStateValidationSelection?> _activeGameStateValidationSelection = new();
 
-    private async Task<List<ValidationIssue>> ValidateGameStateInternalAsync(
+    private async Task<List<ValidationIssue>> ValidateGameStateCoreAsync(
         GameStateValidationSelection selection)
     {
         ArgumentNullException.ThrowIfNull(selection);

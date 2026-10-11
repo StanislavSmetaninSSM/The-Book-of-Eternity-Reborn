@@ -18,7 +18,7 @@ public partial class ValidationService
     private Task<string?> ReadSameTurnOwnerCurrentTextAsync(string path) =>
         _sameTurnOwnerInputs is { } inputs
             ? Task.FromResult(inputs.ReadText(path))
-            : _fs.ReadFileAsync(path);
+            : CurrentWorldReadPhase() is { } phase ? phase.ReadTextAsync(path) : _fs.ReadFileAsync(path);
 
     /// <summary>
     /// Checks current owner presence in the same bound read view used for its contents.

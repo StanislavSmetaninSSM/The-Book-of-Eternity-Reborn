@@ -15,9 +15,18 @@ public partial class ValidationService
 
     internal IDisposable UsePrevalidatedPendingTurnSnapshotScope(object? manifest)
     {
-        var previous = _prevalidatedPendingTurnSnapshotOverride;
-        _prevalidatedPendingTurnSnapshotOverride = ConvertToValidationPendingTurnSnapshotManifest(manifest);
-        return new PrevalidatedPendingTurnSnapshotScope(this, previous);
+        BeginWorldOverrideMutation(withdrawal: false);
+        try
+        {
+            var converted = ConvertToValidationPendingTurnSnapshotManifest(manifest);
+            lock (_worldReadGate)
+            {
+                var previous = _prevalidatedPendingTurnSnapshotOverride;
+                _prevalidatedPendingTurnSnapshotOverride = converted;
+                return new PrevalidatedPendingTurnSnapshotScope(this, previous);
+            }
+        }
+        finally { EndWorldOverrideMutation(); }
     }
 
     private static ValidationPendingTurnSnapshotManifest? ConvertToValidationPendingTurnSnapshotManifest(object? manifest)
@@ -48,11 +57,21 @@ public partial class ValidationService
 
         public void Dispose()
         {
-            if (_disposed)
-                return;
-
-            _service._prevalidatedPendingTurnSnapshotOverride = _previous;
-            _disposed = true;
+            lock (_service._worldReadGate)
+            {
+                if (_disposed) return;
+                _service.BeginWorldOverrideMutation(withdrawal: true);
+            }
+            try
+            {
+                lock (_service._worldReadGate)
+                {
+                    if (_disposed) return;
+                    _service._prevalidatedPendingTurnSnapshotOverride = _previous;
+                    _disposed = true;
+                }
+            }
+            finally { _service.EndWorldOverrideMutation(); }
         }
     }
 
@@ -3430,8 +3449,9 @@ public partial class ValidationService
 
     private string? ReadPendingTurnSnapshotAuthoritySync()
     {
-        return _fs.ReadFileSync(
-            PendingTurnSnapshotAuthority.AuthorityPath);
+        return CurrentWorldReadPhase() is { } phase
+            ? phase.ReadTextSync(PendingTurnSnapshotAuthority.AuthorityPath)
+            : _fs.ReadFileSync(PendingTurnSnapshotAuthority.AuthorityPath);
     }
 
     private byte[]? ReadRelativeFileBytesFromWorkspace(string relativePath)
@@ -3439,7 +3459,7 @@ public partial class ValidationService
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
-        return _fs.ReadFileBytesSync(relativePath);
+        return CurrentWorldReadPhase() is { } phase ? phase.ReadBytesSync(relativePath) : _fs.ReadFileBytesSync(relativePath);
     }
 
     private string? ReadPreTurnTrackedFileSync(string relativePath)
@@ -3494,7 +3514,7 @@ public partial class ValidationService
         }
 
         var snapshotBytes = writeLease == null
-            ? await _fs.ReadFileBytesAsync(snapshotPath)
+            ? CurrentWorldReadPhase() is { } phase ? await phase.ReadBytesAsync(snapshotPath) : await _fs.ReadFileBytesAsync(snapshotPath)
             : await _fs.ReadFileBytesAsync(writeLease, snapshotPath);
         if (snapshotBytes == null)
             return null;
@@ -3536,7 +3556,7 @@ public partial class ValidationService
             return null;
         }
 
-        var snapshotBytes = _fs.ReadFileBytesSync(snapshotPath);
+        var snapshotBytes = CurrentWorldReadPhase() is { } phase ? phase.ReadBytesSync(snapshotPath) : _fs.ReadFileBytesSync(snapshotPath);
 
         if (snapshotBytes == null)
             return null;
@@ -3983,7 +4003,7 @@ public partial class ValidationService
         FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var json = writeLease == null
-            ? _fs.ReadFileSync(requestPath)
+            ? CurrentWorldReadPhase() is { } phase ? phase.ReadTextSync(requestPath) : _fs.ReadFileSync(requestPath)
             : _fs.ReadFileAsync(writeLease, requestPath)
                 .GetAwaiter()
                 .GetResult();
@@ -5198,7 +5218,7 @@ public partial class ValidationService
         string path,
         FileSystemManager.CanonicalWriteLease? writeLease) =>
         writeLease == null
-            ? _fs.ReadFileAsync(path)
+            ? CurrentWorldReadPhase() is { } phase ? phase.ReadTextAsync(path) : _fs.ReadFileAsync(path)
             : _fs.ReadFileAsync(writeLease, path);
 
     private byte[]? ReadRelativeFileBytesFromWorkspace(
@@ -5209,7 +5229,7 @@ public partial class ValidationService
             return null;
 
         return writeLease == null
-            ? _fs.ReadFileBytesSync(relativePath)
+            ? CurrentWorldReadPhase() is { } phase ? phase.ReadBytesSync(relativePath) : _fs.ReadFileBytesSync(relativePath)
             : _fs.ReadFileBytesAsync(writeLease, relativePath)
                 .GetAwaiter()
                 .GetResult();
@@ -5238,6 +5258,7 @@ public partial class ValidationService
 
     private string? ReadCanonicalFileSync(string relativePath)
     {
+        if (CurrentWorldReadPhase() is { } phase) return phase.ReadNullableTextSync(relativePath);
         try
         {
             return _fs.ReadFileSync(relativePath);

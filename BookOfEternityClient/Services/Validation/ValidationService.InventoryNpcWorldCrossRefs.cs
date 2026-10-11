@@ -374,6 +374,7 @@ public partial class ValidationService
         if (_sameTurnOwnerInputs is { } inputs)
             return inputs.ReadText(relativePath);
 
+        if (CurrentWorldReadPhase() is { } phase) return phase.ReadNullableTextSync(relativePath, directCurrent: true);
         try
         {
             var path = _fs.ResolvePath(relativePath);

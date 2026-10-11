@@ -1279,6 +1279,7 @@ public partial class FileSystemManager
 
     private void EnsureCanonicalMutationBoundary(string relativePath, string expectedFullPath)
     {
+        RequireNoWorldValidationMutation();
         var revalidatedFullPath = ResolvePath(relativePath);
         if (!string.Equals(
                 revalidatedFullPath,
@@ -3602,9 +3603,9 @@ public partial class FileSystemManager
     private Task<CanonicalWriteLease>
         AcquireCanonicalWriteLeaseWithAmbientAsync(
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null, WorldValidationReadScope? worldIssuance = null)
     {
-        var mainAdmission=BeginMainAdmission();
+        var mainAdmission=BeginMainAdmission(false, worldIssuance, physicalScope: true);
         var registration = new AmbientCanonicalLeaseRegistration(
             CompactAmbientCanonicalLeaseHead());
         _ambientCanonicalLease.Value = registration;
@@ -3851,7 +3852,7 @@ public partial class FileSystemManager
 
     internal Task<SessionLifecycleLease> AcquireSessionLifecycleLeaseAsync()
     {
-        var main=BeginMainAdmission();
+        var main=BeginMainAdmission(false, physicalScope: true);
         return AcquireMainLifecycleAsync(main);
     }
 

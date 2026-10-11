@@ -30,9 +30,16 @@ public partial class ValidationService
     /// </summary>
     public List<ValidationIssue> ValidateResponse(JsonElement response)
     {
-        var issues = ValidateResponseInternal(response);
-        ValidateRawMortalLocationMaterializationResponse(response, issues);
-        return issues;
+        var invocation = AdmitWorldValidation(false);
+        var previous = _worldValidationInvocation.Value;
+        _worldValidationInvocation.Value = invocation;
+        try
+        {
+            var issues = ValidateResponseInternal(response);
+            ValidateRawMortalLocationMaterializationResponse(response, issues);
+            return issues;
+        }
+        finally { ReleaseWorldValidation(invocation); _worldValidationInvocation.Value = previous; }
     }
 
     public Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadAsync()

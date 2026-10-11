@@ -95,6 +95,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData("read")]
     [InlineData("cancellation")]
+    [InlineData("close")]
+    [InlineData("read-and-close")]
     public async Task WorldReadPhase_ReadFailureKeepsOriginalExceptionAndClearsContext(string kind)
     {
         await WithWorldReadFixture("mixed", async probe =>
@@ -105,13 +107,34 @@ public sealed partial class GameEngineTurnLifecycleTests
             var priorIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "prior_id" };
             var priorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "Prior name" };
             SeedWorldOpeningCaches(probe, priorIds, priorNames);
-            probe.OnRead = path => path == WorldQuestHistory ? Task.FromException(primary) : Task.CompletedTask;
+            var close = new IOException("owned World lease close cut");
+            var injectedClose = new WorldThrowingClose(close);
+            var closeArmed = false;
+            probe.OnRead = path =>
+            {
+                if (path != WorldQuestHistory) return Task.CompletedTask;
+                if (kind is "close" or "read-and-close")
+                {
+                    // Actual private phase's physical lease, not a counterfeit owner or test close callback.
+                    WorldPhaseLease(probe).ExternalPublicationContext = injectedClose;
+                    closeArmed = true;
+                }
+                return kind == "close" ? Task.CompletedTask : Task.FromException(primary);
+            };
             probe.Arm();
             var failure = await Record.ExceptionAsync(() => probe.Validator.ValidateGameStateAsync(WorldSelection));
             probe.OnRead = null;
-            WorldEvidence(probe, new { kind, Failure = failure?.ToString(), SamePrimary = ReferenceEquals(primary, failure) });
-            Assert.Same(primary, failure);
-            Assert.Contains("ReadOrdinaryFileSnapshotCoreAsync", failure!.StackTrace);
+            WorldEvidence(probe, new { kind, Failure = failure?.ToString(), SamePrimary = ReferenceEquals(primary, failure),
+                closeArmed, injectedClose.Calls, CloseFailure = close.ToString(),
+                SameSecondary = ReferenceEquals(close, failure?.Data["WorldReadPhase.CloseFailure"]) });
+            if (kind == "close") Assert.Same(close, failure);
+            else
+            {
+                Assert.Same(primary, failure);
+                Assert.Contains("ReadOrdinaryFileSnapshotCoreAsync", failure!.StackTrace);
+            }
+            if (kind is "close" or "read-and-close") { Assert.True(closeArmed); Assert.Equal(1, injectedClose.Calls); }
+            if (kind == "read-and-close") Assert.Same(close, failure!.Data["WorldReadPhase.CloseFailure"]);
             Assert.False(WorldHasAmbientLease(probe.Files));
             Assert.True(probe.SeededOpenings > 0);
             Assert.Same(priorIds, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionIdsCache"));
@@ -175,6 +198,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("new-response")]
     [InlineData("override-install")]
     [InlineData("override-dispose")]
+    [InlineData("canonical-mutation")]
+    [InlineData("canonical-acquire")]
     public async Task WorldReadPhase_SameInstanceSiblingAndOverrideExcludedBeforeSharedMutation(string kind)
     {
         await WithWorldReadFixture("mixed", async probe =>
@@ -210,6 +235,20 @@ public sealed partial class GameEngineTurnLifecycleTests
                 {
                     using var response = JsonDocument.Parse("{\"response\":\"owned response\",\"factions\":[]}");
                     rejected = Record.Exception(() => probe.Validator.ValidateResponse(response.RootElement));
+                }
+                else if (kind == "canonical-mutation")
+                {
+                    var before = WorldInputImages(probe.Files);
+                    rejected = await Record.ExceptionAsync(() => probe.Files.WriteFileAtomicAsync(
+                        WorldPhaseLease(probe), WorldQuestHistory, "99"));
+                    Assert.Equal(before, WorldInputImages(probe.Files));
+                }
+                else if (kind == "canonical-acquire")
+                {
+                    rejected = await Record.ExceptionAsync(() => probe.Files.AcquireCanonicalWriteLeaseAsync());
+                    var lifecycle = await Record.ExceptionAsync(() => probe.Files.AcquireSessionLifecycleLeaseAsync());
+                    WorldEvidence(probe, new { NestedLifecycleRefusal = lifecycle?.ToString() });
+                    Assert.IsType<InvalidOperationException>(lifecycle);
                 }
                 else if (kind == "override-install")
                     rejected = Record.Exception(() => laterSnapshot = probe.Validator.UsePrevalidatedPendingTurnSnapshotScope(null));
@@ -262,6 +301,77 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Same(staleNames, GetPrivateFieldValue<object?>(probe.Validator, "_knownCanonicalFactionNamesCache"));
             Assert.False(WorldHasAmbientLease(probe.Files));
         });
+    }
+
+    [Fact]
+    public void WorldReadPhase_SourceClosurePinsRequireExplicitReview()
+    {
+        // Task-specific conservative source fence, not a general analyzer.
+        // Pins include complete files of concrete World declarations/callbacks,
+        // nested read adapters/caches and their admission/lease boundaries.
+        // Whole-file pins deliberately require review even for unrelated edits
+        // in these shared files; they do not claim an exact method count.
+        (string Path, string Hash)[] pins = [
+            ("BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs", "1DECB1BEB44D2FD0466199E58FF06FB6B39E7795341493FE8DA09A977EC8D202"),
+            ("BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs", "384F9F65D33E1C70C6F7E337D96AEC6E71664D142612546139345BF274923A14"),
+            ("BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs", "4A738F91985C2DD42A9117E22F0D9E0B824495B3594798A9B5579095FB0DB6D4"),
+            ("BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs", "7A857EC50550365F6576B8E2CCC056E662C87622E1A32F652952760761D3E753"),
+            ("BookOfEternityClient/Core/FileSystemManager.WorldValidationRead.cs", "FF22FBB6DBB4BC2591D0AC895FA386A36675BAB727375AD17A51208DA2B5DABE"),
+            ("BookOfEternityClient/Core/FileSystemManager.cs", "DA3A5022C5C5AE5A57B7BCE07B01200121576521E18EB7BB742C91894608715D"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs", "2747AB5E07B0823105855FF6A80D0F172AB98CFDDCB5B51D678D68FD8C62FFCC"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationBinding.cs", "22BF78161FC966A6C50CC8B7962A4105AC318C1542253BA09EF10CAAF90DC0E5"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.AfterlifeArchiveTradeAndLifecycle.cs", "B1802B0118538AF647648B0803B84BB92D155E5FFDD59E4C0BDD3A70FD44EDE7"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.AfterlifeCombatConditions.cs", "DFBD505B555F308CE7DF3B3DD6FD30FA67F662CCAE06EB59EE1A58C455953A81"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs", "5EB03DB7C9B75486404BB4219D79B62D8C6981D63F06AF31A8E4DD07529E1E6F"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs", "AC3B8D4D77674067557518C6FCFDAB6D42CA33139BBC375E562D80CC08A75F15"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs", "C31D6A98874B052C97085DD0FEC851C7B773929DAEFB60005DCB942D57270488"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.FactionsAndProjects.cs", "4A59E7A4B8E12843F960F17B6A62967A414124F913EC3D3D628ECA90E91F66E6"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.GuardiansAndAfterlife.cs", "0CC60E658442A70540C489FAE2E0E69644CA1AAE9D8DAE987232899C95C0B6AE"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs", "A894C83CAEABAEB74E674C66ECD1EA575ABD71A63BB7105AEF429C2E2A694FB5"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs", "088DE99781DA74850C48639D7B86C5DF792CBD44A677204B2CB731E0840E8CC4"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.MortalFactionMaterialization.cs", "B0E9BD001B5674935F8CB27928F8CE9C29A0E4B31271155DC6E3E3071CFAA995"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs", "BC6A6F0D2B571D30108AA90CF2D3ED5A02570A8BDA35B77C2ED42E2F7C028CB5"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs", "9581356324418C0867A0F947D88CF3347D06D8B635C1075A9B3004B1C8384635"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs", "28D7114A73FEFA461D4E8502FD88D2D661C4A664F26A9767840556D1B0F37C31"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs", "54222A4E3EDE3574E4A489C88F8C085A015408DDEE4C6F9531ECF87D0D5AF907"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.QuestsAndSoulState.cs", "D7AE9436B054878818C36759A60D1FFB44C9375EC6A58C88FAA73101BA67BB60"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs", "96042BF2E790C80932810689D5DC0EE2F13ED567C2BE47487EFFA05C6730C0A0"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs", "27CBB3A49DA317C542B573451E29E78990A70F7E78141EAAF460A483E362CE51"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.RivalThreads.cs", "87DD3F1326CB0EBC5D4935DE145F15266FB30E0177064B8E36960C0A6A0A7576"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.SameTurnOwnerReadView.cs", "E2A4B238596AF1FE336B25BD340CB0A2199758F476DB9BD76A16D45EA22ACAC7"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs", "081B4FD60653F4AC130B4598C232AB7CBA233EBEC17722D766DDC92461269B35"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs", "9C05FAA1FE96FA41A119A9938802D273BF31B717333904D52826C7C4AA299BAF"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs", "2A08384218F6F328DB9BC37BE89E88CC8F50EE3AC915587E1B76C6119B5395B2"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs", "9CBDB7A0320531AD909EBA04C65A09AAFC6D3B9E25CB84E2EF56BA8F30B64755"),
+            ("BookOfEternityClient/Services/ValidationService.cs", "58511D428841000B0BF4AA4AAF5E28B239457DF199D25AE91AB37F85358E9062"),
+        ];
+        foreach (var (path, hash) in pins)
+            Assert.Equal(hash, Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(TestRepoPaths.RepoRoot, path)))));
+        var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
+            "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs"));
+        foreach (var path in WorldCurrentPaths) Assert.Contains('"' + path + '"', source);
+        Assert.Contains("RequireFullEndProof", source);
+        Assert.Contains("RequireUnchangedReadsAsync", source);
+        Assert.Contains("_knownCanonicalFactionIdsCache = previousIds", source);
+        Assert.Contains("_knownCanonicalFactionNamesCache = previousNames", source);
+    }
+
+    private sealed class WorldThrowingClose(Exception failure) : IDisposable
+    {
+        internal int Calls;
+        public void Dispose()
+        {
+            Calls++;
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
+        }
+    }
+
+    private static FileSystemManager.CanonicalWriteLease WorldPhaseLease(WorldReadProbe probe)
+    {
+        var phase = GetPrivateFieldValue<object?>(probe.Validator, "_worldReadPhase");
+        Assert.NotNull(phase);
+        var lease = phase.GetType().GetProperty("Lease", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(phase);
+        return Assert.IsType<FileSystemManager.CanonicalWriteLease>(lease);
     }
 
     private sealed class WorldReadProbe(FileSystemManager files, ValidationService validator)
