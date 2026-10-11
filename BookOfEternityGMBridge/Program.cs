@@ -377,12 +377,16 @@ internal sealed partial class BridgeHost : IDisposable
             // The handler may throw before the normal response deadline is armed.
             using var errorDeadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             errorDeadline.CancelAfter(TimeSpan.FromSeconds(3));
-            await WriteMessageAsync(server, new BridgeResponse
+            try
             {
-                Ok = false,
-                Error = ex.Message,
-                Status = SnapshotStatus()
-            }, errorDeadline.Token);
+                await WriteMessageAsync(server, new BridgeResponse
+                {
+                    Ok = false,
+                    Error = ex.Message,
+                    Status = SnapshotStatus()
+                }, errorDeadline.Token);
+            }
+            finally { ReportStopFailure(ex); }
         }
         return true;
     }
@@ -603,9 +607,9 @@ internal sealed partial class BridgeHost : IDisposable
         if (input != null)
             RevokeInputLifetime(input);
         Exception? metadataFailure=null;
-        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){metadataFailure=ex;}
+        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){RecordStopFailure(ex,"begin_stop_metadata");metadataFailure=ex;}
         try { await statusDrain.WaitAsync(InputDrainTimeout); }
-        catch(Exception ex) { metadataFailure ??= ex; _mainRun?.NotifyUncertain(); }
+        catch(Exception ex) { RecordStopFailure(ex,"status_publication_drain");metadataFailure ??= ex; _mainRun?.NotifyUncertain(); }
         if (pty != null)
         {
             try
@@ -613,14 +617,25 @@ internal sealed partial class BridgeHost : IDisposable
                 _terminalStopTask ??= ObserveScopedTerminalStopAsync(pty);
                 var proof = await _terminalStopTask.WaitAsync(InputDrainTimeout);
                 lock(_sync)_status.TerminalStop=proof;
-                if (_terminalUncertain || proof.Identity != pty.Identity ||
-                    proof.State != GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained)
-                    throw new InvalidOperationException("Original terminal scoped stop is unconfirmed.");
+                string? failed=null;
+                if(_terminalUncertain)failed="bridge_terminal_uncertain";
+                else if(proof.Identity!=pty.Identity)failed="bridge_native_identity_mismatch";
+                else if(proof.State!=GmWorkerStopState.StoppedWithinScope)failed="bridge_native_stop_unconfirmed";
+                else if(!proof.CleanupComplete)failed="bridge_native_cleanup_incomplete";
+                else if(proof.AuthorityRetained)failed="bridge_native_authority_retained";
+                if(failed!=null) {
+                    var refusal=new InvalidOperationException("Original terminal scoped stop is unconfirmed.");
+                    RecordStopFailure(refusal,"native_scope_stop",failed);
+                    throw refusal;
+                }
             }
             catch (Exception ex)
             {
+                RecordStopFailure(ex,"native_scope_stop");
                 MarkTerminalUncertain();
-                throw new TimeoutException("Original terminal owner is retained as Uncertain.", ex);
+                var refusal=new TimeoutException("Original terminal owner is retained as Uncertain.", ex);
+                RecordStopFailure(refusal,"native_scope_stop",GmSessionRunCoordinator.GetStopFailureReport(ex)?.CurrentFailure.FirstFailedPredicate);
+                throw refusal;
             }
         }
         if (input == null)
@@ -645,8 +660,9 @@ internal sealed partial class BridgeHost : IDisposable
                 Task.WhenAll(input.PromptTasks));
         }
         try { await drain.WaitAsync(InputDrainTimeout); }
-        catch (TimeoutException)
+        catch (TimeoutException failure)
         {
+            RecordStopFailure(failure,"managed_input_drain",inputDrain:drain);
             if (pty != null) MarkTerminalUncertain();
             lock (_sync)
             {
@@ -704,12 +720,15 @@ internal sealed partial class BridgeHost : IDisposable
         }
         catch (Exception ex)
         {
+            RecordStopFailure(ex,"terminal_dispose");
             MarkTerminalUncertain();
-            throw new TimeoutException("Original terminal resources remain retained.", ex);
+            var refusal=new TimeoutException("Original terminal resources remain retained.", ex);
+            RecordStopFailure(refusal,"terminal_dispose");
+            throw refusal;
         }
         if(_mainRun!=null) {
             try { await _mainRun.ConfirmSettledStopAsync(session,await _terminalStopTask!); }
-            catch { if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
+            catch(Exception failure) { RecordStopFailure(failure,"confirm_settled_stop",inputDrain:_inputLifetime?.DrainTask);if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
             _lastMainRun=_mainRun;_mainRun=null;_productionConfig=null;_windowsProductionConfig=null;
         }
         lock (_sync)

@@ -232,6 +232,7 @@ internal sealed partial class GmSessionRunCoordinator
             var identity=new GmSessionRunIdentity(_files.BasePath,Guid.NewGuid().ToString("N"),generation,
                 _record==null?1:checked(_record.Identity.Epoch+1),_backend,Guid.NewGuid().ToString("N"),boot);
             Publish(new(1,identity,GmSessionRunDisposition.Prepared,null));
+            BindStopDiagnosticIdentity(identity);
         }
         catch(CoordinatedStatePublicationUncertainException failure){owningPublicationUncertainty=failure;throw;}
         finally{await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_files,lease,false,owningPublicationUncertainty);}
@@ -307,7 +308,7 @@ internal sealed partial class GmSessionRunCoordinator
         if(_terminal==null)throw GmSessionRunPersistence.Invalid(); // retained no-child uncertainty cannot claim retirement
         Task drain;lock(_sync)drain=_drained.Task;
         try {await drain.WaitAsync(TimeSpan.FromSeconds(5));}
-        catch(TimeoutException){NotifyUncertain();throw;} // no filesystem locks across pin drain
+        catch(TimeoutException failure){RecordStopFailure(failure,"pin_drain_timeout");NotifyUncertain();throw;} // no filesystem locks across pin drain
         using(Enter(true))if(_stopLifecycle==null)_stopLifecycle=await _files.AcquireSessionLifecycleLeaseAsync();
     }
     internal async Task ConfirmSettledStopAsync(IOwnedTerminalSession original,TerminalStopEvidence proof)
@@ -316,33 +317,43 @@ internal sealed partial class GmSessionRunCoordinator
         var drain=binding?.InputDrain();
         // Caller evidence alone cannot mint retirement. Require actual registered
         // original managed tasks, original adapter's proof object and disposal.
-        if(!ReferenceEquals(original,_terminal) || binding==null || !ReferenceEquals(binding.Session,original) ||
-            drain?.IsCompleted!=true || binding.Loops.Any(t=>!t.IsCompleted) || _stopLifecycle?.IsActive!=true)
-            throw GmSessionRunPersistence.Invalid();
+        if(!ReferenceEquals(original,_terminal))throw StopInvalid("original_terminal_mismatch",drain,firstGate:0);
+        if(binding==null)throw StopInvalid("binding_missing",drain,firstGate:1);
+        if(!ReferenceEquals(binding.Session,original))throw StopInvalid("binding_session_mismatch",drain,firstGate:2);
+        if(drain?.IsCompleted!=true)throw StopInvalid("input_drain_incomplete",drain,firstGate:3);
+        if(binding.Loops.Any(t=>!t.IsCompleted))throw StopInvalid("registered_loops_incomplete",drain,firstGate:4);
+        if(_stopLifecycle?.IsActive!=true)throw StopInvalid("stop_lifecycle_inactive",drain,firstGate:5);
         var actual=await original.StopAndObserveAsync(CancellationToken.None);
-        if(!ReferenceEquals(proof,actual))throw GmSessionRunPersistence.Invalid();
+        if(!ReferenceEquals(proof,actual))throw StopInvalid("proof_reference_mismatch",drain);
         try {await drain;await Task.WhenAll(binding.Loops);await original.DisposeAsync();}
-        catch{NotifyUncertain();throw;}
-        if(actual.Identity!=original.Identity || actual.Identity.RunId!=Identity.RunId ||
-            actual.State!=GmWorkerStopState.StoppedWithinScope || !actual.CleanupComplete || actual.AuthorityRetained ||
-            original.AuthorityLost.IsCompleted || !original.RootExited.IsCompletedSuccessfully)
-        {NotifyUncertain();throw GmSessionRunPersistence.Invalid();}
+        catch(Exception failure){NotifyUncertain();RecordStopFailure(failure,"managed_input_drain",inputDrain:drain,actualBridgeProof:actual);throw;}
+        string? failed=null;
+        if(actual.Identity!=original.Identity)failed="native_identity_mismatch";
+        else if(actual.Identity.RunId!=Identity.RunId)failed="native_run_mismatch";
+        else if(actual.State!=GmWorkerStopState.StoppedWithinScope)failed="native_stop_unconfirmed";
+        else if(!actual.CleanupComplete)failed="native_cleanup_incomplete";
+        else if(actual.AuthorityRetained)failed="native_authority_retained";
+        else if(original.AuthorityLost.IsCompleted)failed="original_authority_lost";
+        else if(!original.RootExited.IsCompletedSuccessfully)failed="original_root_incomplete";
+        if(failed!=null){NotifyUncertain();throw StopInvalid(failed,drain,actual);}
         // The original proof and actual settlement survive metadata ACK debt.
         _settledStop??=proof;
-        lock(_sync)if(_uncertain || _pins!=0)throw GmSessionRunPersistence.Invalid();
+        lock(_sync)failed=_uncertain?"owner_uncertain":_pins!=0?"active_pins":null;
+        if(failed!=null)throw StopInvalid(failed,drain,actual);
         using(Enter(true))await using(var lease=await _files.AcquireMainMetadataLeaseAsync())
         {
             if(_persistence.HasDebt){_persistence.Retry();Acknowledge();}
-            if(_record?.Disposition is not (GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Stopped))throw GmSessionRunPersistence.Invalid();
+            if(_record?.Disposition is not (GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Stopped))throw StopInvalid("record_disposition_invalid",drain,actual);
             if(_record?.Disposition!=GmSessionRunDisposition.Stopped)
                 Publish(GmSessionRunTransitions.ConfirmStopped(_record!,new(Identity,GmSessionRunStopKind.OwnedScopeEmpty,Identity.BootId)));
         }
-        if(original.AuthorityLost.IsCompleted || !original.RootExited.IsCompletedSuccessfully) {
-            NotifyUncertain();throw GmSessionRunPersistence.Invalid();
-        }
+        failed=original.AuthorityLost.IsCompleted?"late_authority_lost":!original.RootExited.IsCompletedSuccessfully?"late_root_incomplete":null;
+        if(failed!=null) {NotifyUncertain();throw StopInvalid(failed,drain,actual);}
         await _stopLifecycle.DisposeAsync();_stopLifecycle=null;
-        lock(_sync){if(_uncertain)throw GmSessionRunPersistence.Invalid();_retired=true;}
-        lock(RootIdentity.WorkerContextGate){if(RootIdentity.MainCoordinator!=this)throw GmSessionRunPersistence.Invalid();RootIdentity.MainCoordinator=null;}
+        lock(_sync){failed=_uncertain?"late_owner_uncertain":null;if(failed==null)_retired=true;}
+        if(failed!=null)throw StopInvalid(failed,drain,actual);
+        lock(RootIdentity.WorkerContextGate){failed=RootIdentity.MainCoordinator!=this?"late_coordinator_mismatch":null;if(failed==null)RootIdentity.MainCoordinator=null;}
+        if(failed!=null)throw StopInvalid(failed,drain,actual);
         _productionWorkers?.ReleaseClient();
         _guard.Dispose();
     }
