@@ -700,7 +700,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ("BookOfEternityClient/Services/TrainingRequestState.cs", "524B30A6C574B22C19274120E45D55683B3BED98163107C10E5A314F334F1DF8"),
             ("BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs", "F6CE6B4767D130BB8F71C7A77742CB00AEAD9A3BF4525352203C9E085C164918"),
             ("BookOfEternityClient/Services/Validation/ValidationService.GuardiansAndAfterlife.cs", "0CC60E658442A70540C489FAE2E0E69644CA1AAE9D8DAE987232899C95C0B6AE"),
-            ("BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs", "C494D49C017336596DF49F7A44E6D9A10172FD035268E9A3DD92B43B5F78A938"),
+            ("BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs", "D9A268C30CB219FC1E66E3A6466880E4124155CBEFCC448A8B4824FDCB39179B"),
             ("BookOfEternityClient/Services/Validation/ValidationService.MetaControlShapeReadPhase.cs", "A0B1AF0D4B06A0D4C74BF31A1CFCA22FE9D902F3D7586B4D9A51888664AB7F93"),
             ("BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs", "9581356324418C0867A0F947D88CF3347D06D8B635C1075A9B3004B1C8384635"),
             ("BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs", "28D7114A73FEFA461D4E8502FD88D2D661C4A664F26A9767840556D1B0F37C31"),

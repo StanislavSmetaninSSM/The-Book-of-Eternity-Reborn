@@ -333,6 +333,10 @@ public partial class ValidationService
 
     private async Task ValidateMetaMiscStateFiles(List<ValidationIssue> issues)
     {
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/AfterlifeAndSarefShapes", null);
+#endif
         await ValidateFlexibleStateFile("game_state/meta/soul_state.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -530,6 +534,13 @@ public partial class ValidationService
                 "routeFragments", "substituteFragments", "availableAdvantages", "disadvantages",
                 "expectedResponseSurface", "expectedClosure"
             }, issues);
+#if DEBUG
+        }
+#endif
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/GuardianAndShiningShapes", null);
+#endif
         await ValidateFlexibleStateFile("game_state/meta/guardians.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -652,6 +663,13 @@ public partial class ValidationService
         await ValidateStrictTopLevelObjectFileAsync(GuardianPowerEventState.JournalPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "entries" }, issues);
         await ValidateGuardianProjectStateFilesAsync(issues);
+#if DEBUG
+        }
+#endif
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/BehaviourAndJournalShapes", null);
+#endif
         await ValidateFlexibleStateFile("game_state/meta/player_behavior.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -682,6 +700,13 @@ public partial class ValidationService
             {
                 ActorJournalState.EntriesProperty
             }, issues);
+#if DEBUG
+        }
+#endif
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/MiscShapes", null);
+#endif
         await ValidateFlexibleStateFile("game_state/meta/achievements.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -746,8 +771,22 @@ public partial class ValidationService
             {
                 "otherPlayersInteractions"
             }, issues);
+#if DEBUG
+        }
+#endif
         await RunMetaControlShapeReadPhaseAsync(issues);
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/ManifestationContext", null);
+#endif
         await ValidatePendingResidentCompanionManifestationRealmContextAsync(issues);
+#if DEBUG
+        }
+#endif
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/SocialRequestShapes", null);
+#endif
         await ValidateFlexibleStateFile(ActorSocialInteractionRequestState.PendingGuardianRequestPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -768,8 +807,18 @@ public partial class ValidationService
             {
                 ActorSocialInteractionRequestState.RequestsProperty
             }, issues);
+#if DEBUG
+        }
+#endif
         // Client-owned world setup surfaces are validated via mutation checks instead of GM repair-loop shape errors.
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/LifecycleContexts", null);
+#endif
         await ValidateLifecycleControlContextAsync(issues);
+#if DEBUG
+        }
+#endif
     }
 
     private async Task ValidateGuardianProjectStateFilesAsync(List<ValidationIssue> issues)
