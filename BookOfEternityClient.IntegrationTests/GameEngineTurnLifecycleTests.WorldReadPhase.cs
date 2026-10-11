@@ -27,6 +27,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             // Scalar authority path, same actual original owner and immutable inputs.
             // No override means this reference is ineligible for the proposed pilot.
+            if (layout == "absent") Assert.All(WorldCurrentPaths, path => Assert.False(File.Exists(probe.Files.ResolvePath(path))));
             var before = WorldInputImages(probe.Files);
             var scalar = await probe.Validator.ValidateGameStateAsync(WorldSelection);
             Assert.Equal(before, WorldInputImages(probe.Files));
@@ -42,9 +43,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             probe.Arm(); // Entire public invocation: opening, callbacks, final gate and close.
             List<ValidationIssue>? actual = null;
             Exception? failure = null;
+            var started = System.Diagnostics.Stopwatch.GetTimestamp();
             try { actual = await probe.Validator.ValidateGameStateAsync(WorldSelection); }
             catch (Exception error) { failure = error; throw; }
-            finally { WorldEvidence(probe, new { layout, before, ScalarIssues = WorldIssues(scalar),
+            finally { WorldEvidence(probe, new { layout, before, InvocationSeconds = System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalSeconds,
+                ScalarIssues = WorldIssues(scalar),
                 ActualIssues = actual == null ? null : WorldIssues(actual), Failure = failure?.ToString() }); }
             Assert.Equal(before, WorldInputImages(probe.Files));
             Assert.Equal(WorldIssues(scalar), WorldIssues(actual!));
