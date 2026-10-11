@@ -78,5 +78,14 @@
   "PriorClaimCorrection": "Published FIRST9855 proof retained byte-exact. Its9/9 established target selection/flags/events and exclusions, but did NOT establish actual final Environment nonce: two Configure calls on same PSI erased it and oracle did not check environment value. This corrected inert proof freezes/validates first actual Environment nonce before configuring a separate PSI and verifies first unchanged/second absent. No observer Configure/preparer/product change.",
   "ProjectBuildDiscoveryTestInvocations": 0,
   "ManagedNativeGameInvocations": 0,
-  "Limit": "Pure inert selector/configuration proof only; no actual process/read/protocol/ordinary outcome or original failure diagnosis. Prior first proof remains byte-exact but its9/9 did not establish actual selected Environment nonce."
+  "Limit": "Pure inert selector/configuration proof only; no actual process/read/protocol/ordinary outcome or original failure diagnosis. Prior first proof remains byte-exact but its9/9 did not establish actual selected Environment nonce.",
+  "IndependentGroupedReview": {
+    "Reviewer": "SAME Astra independent reviewer",
+    "Verdict": "Final SOURCE+PROOF+PREPARATION PASS",
+    "ReviewedFrozenSHA": "70c4ca45db6eb880771fad54c197e5aa792df477",
+    "ExactReviewerResultAsRelayedByRoot": "explicitRequestPathnoShadow; gates/ordinaryguards/timers/joins retained;54gzip/2742110B;9/9inert;1PlanOnlyplanned0executed; actualadmission/capturecompleteness/ordinaryPASS stillUNRUN and historic/perfUNQUALIFIED preserved.",
+    "RootVerification": "Nonce raw/actualremote independently PASS; source/proof/prep primary pins confirmed.",
+    "Qualification": "Review and proof/preparation only. Actual admission/capture completeness/ordinary PASS UNRUN; historical ordinary FAIL/capture INCOMPLETE, unknown causes and performance UNQUALIFIED retained.",
+    "Scope": "Two-file fixture delta explicit caller RequestPath, all54gzip/2,742,110expanded bytes across diagnosis+firstproof+correctedproof+prep,9/9inert expectations,1PlanOnlyplanned/0executed. No shadowed caller argument, no altered ordinary guards/timers/joins."
+  }
 }
