@@ -4308,5 +4308,216 @@
       "deadline": false
     },
     "Assessment": "First complete corrected actual raw publication only. Original ordinary FAIL and complete selected first-read capture are separate outcomes. No historical failure closure or antecedent causal claim; root readback/assessment pending; no extra runtime."
+  },
+  "Assessment": {
+    "FrozenFirstRawSHA": "cb3ec35ac2f5a5755c118fe9d2c3873cc83137c4",
+    "RuntimeCarrierSHA": "273f0a8479d55498ceb9db7ac037dbfa2c4a1bde",
+    "ReviewedFixtureSourceSHA": "1f11c1795f25ecd969db699e60a3e882c6cdc368",
+    "CompiledPrimarySourceSHA": "e49f215ebdb10e778d8f7895fc8a87b23d8ea1d3",
+    "OriginalOrdinaryResult": {
+      "Planned": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "SelectionComplete": true,
+      "RunnerWallSeconds": 89.5279139,
+      "DriverElapsedSeconds": 79.96419496200178,
+      "Failure": "Original40s firstqueued-cold narrative assertion console_chain.py872 → fresh270 → wait247; unchanged ordinary case FAIL. AcceptedTurns[] is the test list only, not proof of physical acceptance absence. Later staged/whole-cold/three-turn success oracle not fulfilled; no duration anchors fabricated."
+    },
+    "Activation": {
+      "FirstRequestPath": "/tmp/gc-0618acee7cb8/queue-1/request-1-c8e04e6cbe3d444dbd92bf9f87f0725c/request.json",
+      "MatchedRequestPath": "/tmp/gc-0618acee7cb8/queue-1/request-1-c8e04e6cbe3d444dbd92bf9f87f0725c/request.json",
+      "RequestPathSource": "Explicit caller value at prepared Open-BoeHelperScope",
+      "ScopeId": "30fd6adafa3245ac88121ce70b4a6307",
+      "ConsumerPID": 104061,
+      "ManagedPID": 104091,
+      "ManagedLinuxStarttime": "2891956",
+      "ManagedBootId": "25db1c9c-7ae8-427f-846a-3948ab0e718a",
+      "FailureNonce": "e9b1496c4c114f79a1c133844ea1e02d",
+      "NonceConfigured": true,
+      "OrderedActivation": [
+        "launch-begin",
+        "managed-failure-capture-configured",
+        "launch-return",
+        "write-begin",
+        "write-return",
+        "read-begin"
+      ],
+      "ActualLaunchStack": [
+        {
+          "Line": 31,
+          "Function": "Begin-BoeAdmissionObservation",
+          "Script": "/tmp/gc-0618acee7cb8/ship/BookOfEternityClient/Launcher/helper_admission_observer.ps1"
+        },
+        {
+          "Line": 102,
+          "Function": "Open-BoeHelperScope",
+          "Script": "/tmp/gc-0618acee7cb8/ship/BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1"
+        },
+        {
+          "Line": 133,
+          "Function": "Invoke-BoeHelperScope",
+          "Script": "/tmp/gc-0618acee7cb8/ship/BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1"
+        },
+        {
+          "Line": 35,
+          "Function": "Resolve-BoeSessionPath",
+          "Script": "/tmp/gc-0618acee7cb8/ship/BookOfEternityClient/Launcher/GM_Turn_Helper.ps1"
+        },
+        {
+          "Line": 30,
+          "Function": "<ScriptBlock>",
+          "Script": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tools/gm-relay/relay-apply-response.ps1"
+        }
+      ],
+      "Limit": "Actual explicit firstqueue/request1/Mode read selection engaged; exact real relay line30 and shipped Resolve35/Invoke133/Open102 stack retained. Only selected managed PSI configured; identity read observed after original guard passed. All observer costs remain uncalibrated."
+    },
+    "ConsumedSeq0": {
+      "IsNull": false,
+      "UTF8Bytes": 544,
+      "RawSHA256": "0f07c9da8183bdaa701772cd29e1103a79925593bd7ef23259cac815e239ba28",
+      "PrefixOnly": false,
+      "RetainedParseOutcome": "parsed-json/object",
+      "ActualReply": {
+        "ok": true,
+        "state": "active",
+        "sequence": 0,
+        "generation": "90086e79431c4b3086f0134299f70c5d",
+        "originalClose": {
+          "pinId": "23acae623d234ef68255551d9c3af8cc",
+          "closeId": "ee4979306e5640fea8f2a1fb73b8d928",
+          "operationId": "d83422b16a65442fa5a76ba8b4f7279c",
+          "identity": {
+            "rootKey": "/tmp/gc-0618acee7cb8/play",
+            "runId": "7551e09c3cf247b39324278fc4b200c9",
+            "generationId": "90086e79431c4b3086f0134299f70c5d",
+            "epoch": 1,
+            "backend": 2,
+            "hostInstanceId": "767bafc68cb84bd893840c155a6cb2ce",
+            "bootId": "25db1c9c-7ae8-427f-846a-3948ab0e718a"
+          },
+          "outcome": 0,
+          "closingFailed": false
+        }
+      },
+      "ActualExpectedGeneration": "90086e79431c4b3086f0134299f70c5d",
+      "CopiedPredicates": {
+        "ReplyNotOk": false,
+        "StateNotActive": false,
+        "SequenceNotZero": false,
+        "GenerationFormatInvalid": false,
+        "ExpectedGenerationMismatch": false
+      },
+      "FailedPredicateCopies": [],
+      "AdmissionReturned": {
+        "Generation": "90086e79431c4b3086f0134299f70c5d",
+        "Sequence": 0,
+        "State": "active",
+        "Ok": true
+      },
+      "Limit": "Five copies immediately before unchanged original guard, not a trace of product short-circuit ordering. All are false and actual admission-return is observed; no failed predicate reproduced on this first read. This does not explain prior unrecorded refusals."
+    },
+    "Settlement": {
+      "OuterConsumer": {
+        "PID": 104061,
+        "Executed": true,
+        "ExitCode": 0,
+        "ChildExited": true,
+        "IoDrained": true
+      },
+      "DedicatedManagedHelper": {
+        "PID": 104091,
+        "ExitCode": 0,
+        "JoinedStderrBytes": 0,
+        "EmittedManagedCatchRecords": [],
+        "DisposeReturned": true,
+        "Lost": false,
+        "PublicationUncertain": false,
+        "PendingReadCompleted": true,
+        "StderrReadCompleted": true
+      },
+      "ObservationComplete": true,
+      "Rows": 15,
+      "Errors": 0,
+      "Dropped": 0,
+      "Truncated": false,
+      "MissingObservations": [],
+      "Limit": "Outer PowerShell consumer exit and dedicated managed exit are distinct. Complete empty joined managed stderr supports zero emitted capture records on this selected scope only; not a global no-exception claim."
+    },
+    "ObservedIntervals": {
+      "Clock": "Every observer row StopwatchFrequency1000000000; same-process monotonic row differences. Full timestamps remain raw.",
+      "ReadBeginToReadReturnSeconds": 0.393500138,
+      "LaunchBeginToDisposeReturnSeconds": 0.544830499,
+      "Limit": "Instrumented observation spans, not isolated product cost, acceptance latency or speedup. Driver/observer clocks are not mapped into an invented common acceptance timeline; collector reads files only after original cleanup."
+    },
+    "SeparateEngineFailure": {
+      "PID": 103866,
+      "Nonce": "9e989f00124243d4af416e4c757e99ce",
+      "ExceptionType": "System.IO.IOException",
+      "Message": "Main run metadata or original owner admission is unavailable.",
+      "OriginalStackReference": "FirstRawResult.OriginalGameLoopFailure.exception and archived result.json/client-queued-cold.raw retain full exact original stack.",
+      "TopOrigin": "GmMainOperationClient.Validate:71 → MainAdmission.Validate:141 → BrowserOriginalOperationScope.ValidateOwner:93 → PreflightBrowserOriginalAdmission:407 → ReadFileAsync:1327 → ValidationService/postaccepted validation → FinalizePlayerTurnAsync:1749",
+      "ObservedAtSeconds": 79.74395729500247,
+      "CleanupStartedAtSeconds": 78.8386501870009,
+      "ObservedDuringCleanup": true,
+      "Limit": "Coldengine IOException observed during cleanup, not selected helper catch. Observation time is not throw time or antecedent causality proof; no assignment as ordinary timeout cause."
+    },
+    "Shutdown": {
+      "OriginalIdentity": {
+        "RootKey": "/tmp/gc-0618acee7cb8/play",
+        "RunId": "7551e09c3cf247b39324278fc4b200c9",
+        "GenerationId": "90086e79431c4b3086f0134299f70c5d",
+        "Epoch": 1,
+        "Backend": "LinuxSupervisor",
+        "HostInstanceId": "767bafc68cb84bd893840c155a6cb2ce",
+        "BootId": "25db1c9c-7ae8-427f-846a-3948ab0e718a"
+      },
+      "StopIdentityEqualsRecordAndEvidence": true,
+      "RecordDisposition": "Stopped",
+      "StopEvidenceKind": "OwnedScopeEmpty",
+      "RPCTerminalUncertain": false,
+      "RPCTerminalOwnerRetained": false,
+      "RPCOk": true,
+      "OriginalStopped": true,
+      "IoDrained": true,
+      "Peers": {
+        "client-first": {
+          "ExitCode": -9,
+          "EOF": true,
+          "Pid": 103260
+        },
+        "bridge-first": {
+          "ExitCode": 0,
+          "EOF": true,
+          "Pid": 103276
+        },
+        "daemon-first": {
+          "ExitCode": 0,
+          "EOF": true,
+          "Pid": 103321
+        },
+        "web-action-1": {
+          "ExitCode": 0,
+          "EOF": true,
+          "Pid": 103583
+        },
+        "client-queued-cold": {
+          "ExitCode": -2,
+          "EOF": true,
+          "Pid": 103866
+        }
+      },
+      "Guardian": {
+        "echild": true,
+        "driverExitCode": 1,
+        "emergencySignals": 0,
+        "reaped": 5,
+        "failures": 0,
+        "deadline": false
+      },
+      "Limit": "Original Stop/owned cleanup succeeds separately from ordinary case FAIL. Interrupted firstclient -9 and final coldclient -2 remain raw; allfiveEOF, no invented successful client exit."
+    },
+    "Settings": "Ordinary durationfalse/continuefalse/helperAdmissionfalse/profilefalse, original startup/pump/40/work240/guardian300/external310/category6/three-turn+cold goal unchanged. Only fixture capture opt-in and approved postfailure fallback exclusion. No prepacket inventory, sixGET prerequisite, extra helper settle wait, early break, guard/protocol/RNG/timer change or retry. ModelCalls0. Only fixture selector correction; no product repair.",
+    "Decision": "Corrected selector captures this first real read completely; first admission healthy/no failed predicate reproduced. Sole ordinary test remains FAIL and cause UNKNOWN. Historical first ordinary FAIL/capture INCOMPLETE, historical B2/A2/ordinary refusals/UNKNOWN remain byte-exact; no historical repair/fullC5/performance PASS. Candidate WIP/performance UNQUALIFIED/T069–T071 open. No further runtime/source changes. SAME actual raw+assessment review pending; root owns same selected GitHub final readback."
   }
 }
