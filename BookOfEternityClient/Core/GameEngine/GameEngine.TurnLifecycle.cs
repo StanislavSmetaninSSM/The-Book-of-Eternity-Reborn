@@ -1099,6 +1099,9 @@ public partial class GameEngine
                     var browserIncarnationHandoff = lateBrowserStaged != null && _fs.FileExists("game_state/control/incarnation_trigger.json");
                     if (!await CheckGmIncarnationTrigger(snapshotContext) && !browserIncarnationHandoff)
                     {
+#if DEBUG
+                        _fs.BrowserDiagnosticMark("accepted-artifact-cleanup-begun");
+#endif
                         await CleanupAcceptedTurnTerminalArtifactsAsync();
                         if (lateBrowserStaged != null && lateBrowserStory != null)
                         {
