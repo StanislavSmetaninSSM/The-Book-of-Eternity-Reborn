@@ -109,6 +109,78 @@ public sealed class BrowserAdmissionDiagnosticsTests(ITestOutputHelper output)
         Assert.Equal(12, window["ClosedTicks"]!.GetValue<long>());
         Assert.Equal("accepted", window["Outcome"]!.GetValue<string>());
         Assert.True(result["Complete"]!.GetValue<bool>());
+
+        // Force an inherited branch to contend while the boundary clock is read.
+        // It must not classify later work before that earlier boundary is published.
+        VerifyBoundarySerialization(accepted: true);
+        VerifyBoundarySerialization(accepted: false);
+
+        void VerifyBoundarySerialization(bool accepted)
+        {
+            long concurrentTicks = 0;
+            var readingBoundary = false;
+            var boundaryThread = Environment.CurrentManagedThreadId;
+            object? gate = null;
+            Task? branch = null;
+            bool? gateWasAvailable = null;
+            using var examined = new ManualResetEventSlim();
+            using var release = new ManualResetEventSlim();
+            object? concurrentCollector = null;
+            var concurrent = Create(() =>
+            {
+                if (readingBoundary && Environment.CurrentManagedThreadId == boundaryThread)
+                {
+                    branch = Task.Run(() =>
+                    {
+                        var entered = Monitor.TryEnter(gate!);
+                        gateWasAvailable = entered;
+                        if (entered) Monitor.Exit(gate!);
+                        examined.Set();
+                        if (!release.Wait(TimeSpan.FromSeconds(5)))
+                            throw new TimeoutException("Boundary interleaving release missing.");
+                        using (Measure(concurrentCollector!, "inherited-late")) { }
+                        Invoke(concurrentCollector!, "Content", "late.json", "test", "physical", "missing", 0L);
+                    });
+                    if (!examined.Wait(TimeSpan.FromSeconds(5)))
+                        throw new TimeoutException("Boundary interleaving branch missing.");
+                    return 6;
+                }
+                return Volatile.Read(ref concurrentTicks);
+            });
+            concurrentCollector = concurrent;
+            gate = Collector.GetField("_gate", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(concurrent)!;
+            using (Logical(concurrent, "MetaMiscStateFiles", "boundary-interleaving"))
+            {
+                var windowScope = Window(concurrent);
+                try
+                {
+                    readingBoundary = true;
+                    if (accepted) Invoke(concurrent, "Mark", "accepted-receipt-published");
+                    else windowScope.Dispose();
+                }
+                finally
+                {
+                    readingBoundary = false;
+                    Volatile.Write(ref concurrentTicks, 8);
+                    release.Set();
+                }
+                branch!.GetAwaiter().GetResult();
+                Volatile.Write(ref concurrentTicks, 10);
+                windowScope.Dispose();
+            }
+            Assert.False(gateWasAvailable);
+            var concurrentResult = Snapshot(concurrent);
+            var lateRow = Assert.Single(concurrentResult["Rows"]!.AsArray())!;
+            Assert.Equal(1, lateRow["LateCount"]!.GetValue<long>());
+            Assert.Equal(0, lateRow["ContainedCount"]!.GetValue<long>());
+            var content = Assert.Single(concurrentResult["ContentRows"]!.AsArray())!;
+            Assert.Equal(1, content["AfterWindow"]!["PhysicalMissing"]!.GetValue<long>());
+            Assert.Equal(0, content["InsideWindow"]!["PhysicalMissing"]?.GetValue<long>() ?? 0);
+            Assert.Equal(0, concurrentResult["DiagnosticFailures"]!.GetValue<int>());
+            Assert.Equal(accepted ? "accepted" : "incomplete",
+                Assert.Single(concurrentResult["Windows"]!.AsArray())!["Outcome"]!.GetValue<string>());
+            Assert.True(concurrentResult["Complete"]!.GetValue<bool>());
+        }
     }
 
     [Fact]

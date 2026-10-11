@@ -227,9 +227,9 @@ internal sealed class BrowserAdmissionDiagnosticCollector
             {
                 if (closes != null)
                 {
-                    var ended = owner._clock();
                     lock (owner._gate)
                     {
+                        var ended = owner._clock();
                         closes.ClosedTicks = ended;
                         closes.Markers.TryAdd("finalizer-closed", ended);
                         if (closes.EndTicks == null)
@@ -322,10 +322,10 @@ internal sealed class BrowserAdmissionDiagnosticCollector
             if (tag?.Window == null) return;
             if (marker is not ("processing-owner" or "story-published" or "accepted-artifact-cleanup-begun" or
                 "accepted-receipt-published" or "finalizer-failed")) return;
-            var ticks = _clock();
             lock (_gate)
             {
                 if (_captureSealed) return;
+                var ticks = _clock();
                 tag.Window.Markers.TryAdd(marker, ticks);
                 if (marker == "processing-owner") tag.Window.OwnerIdentity = tag.Labels.OwnerIdentity;
                 if (marker == "accepted-receipt-published" && tag.Window.EndTicks == null)
