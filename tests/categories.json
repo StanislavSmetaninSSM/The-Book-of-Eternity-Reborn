@@ -23452,6 +23452,31 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": "c5-byte-digest-observed-rollback-filter",
+            "responsibility": "#1553 finite warmed same-thread SHA256 hypothesis filter on pinned actual rollback byte-length distributions: counterbalanced operator wall/allocation observations with digest/null/input integrity controls. PASS is correctness only, not latency qualification.",
+            "excludes": "No production optimization, profiling framework, actual C5 repetition, acceptance-window attribution or authority/lease algorithm change.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/ByteDigestObservedRollbackFilterTests.cs",
+                "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.ByteDigestObservedRollbackFilterTests.SameThreadFiniteFilterUsesPinnedObservedRollbackSizes"
+                    ]
+                }
+            ]
         }
     ]
 }

@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "c5-browser-admission-diagnostics",
-      "reason": "Read-only diagnostic extension only: causal RED/GREEN for finite accounting/branch isolation/disabled owned export. Actual C5 and integrity proof optimization remain gated.",
+      "category": "c5-byte-digest-observed-rollback-filter",
+      "reason": "Coordinator supersedes allocation RED/product edit: first one cheap comparable filter on actual observed rollback lengths and whole-action counts; no behavior fix or full C5 pairs until meaningful supported effect and independent gate.",
       "contracts": [
         "#1553",
         "T069-C5-ORDINARY-CONSUMER",
         "T071-C5-MUSINGS-CHECKPOINT",
-        "DEBUG diagnostic observer without authority effect"
+        "finite diagnostic hypothesis filter; no latency qualification"
       ]
     }
   ]
