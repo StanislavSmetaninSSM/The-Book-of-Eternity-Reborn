@@ -24,6 +24,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     public async Task BrowserOriginalAdmission_JournalReselectionRetainsStrictRefusals(string damage)
     {
         var (_, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+        var originalBefore = OriginalAdmissionTree();
+        var request = _fs.ResolvePath("input/turn_request.json");
+        var requestBefore = File.ReadAllBytes(request);
         var journalRoot = Path.Combine(_fs.RuntimeRootPath, "trusted-local-publication-v1");
         var intent = Path.Combine(journalRoot, "intent.tmp");
         var active = Path.Combine(journalRoot, "active.json");
@@ -37,18 +40,29 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 if (phase != TrustedLocalPublicationPhase.IntentStaged) return;
                 journalBytes = File.ReadAllBytes(intent);
-                throw new C5RecoveryInterruption();
+                if (damage != "protected-v2") throw new C5RecoveryInterruption();
             }
             var generation = TrustedLocalGeneration.Existing(staged.Binding.Generation);
             var outcome = damage == "protected-v2"
                 ? publication.PublishImagesWithOutcome(lease, generation,
-                    [new(_fs.ResolvePath("input/turn_request.json"),
-                        TrustedLocalFileImage.CaptureFile(scope, _fs.ResolvePath("input/turn_request.json")),
+                    [new(request,
+                        TrustedLocalFileImage.CaptureFile(scope, request),
                         TrustedLocalFileImage.FromBytes([1, 2, 3]))], Capture)
                 : publication.PublishWithOutcome(lease, generation,
                     [new(_fs.ResolvePath("game_state/control/c5_recovery_probe.json"), null, [1, 2, 3])], Capture);
-            Assert.Equal(TrustedLocalPublicationDisposition.RolledBack, outcome.Disposition);
-            Assert.IsType<C5RecoveryInterruption>(outcome.Failure);
+            if (damage == "protected-v2")
+            {
+                Assert.True(outcome.Disposition == TrustedLocalPublicationDisposition.Committed && outcome.Failure == null,
+                    "Completed v2 fixture publication failed: " + outcome);
+                Assert.Equal(new byte[] { 1, 2, 3 }, File.ReadAllBytes(request));
+                File.WriteAllBytes(request, requestBefore);
+            }
+            else
+            {
+                Assert.Equal(TrustedLocalPublicationDisposition.RolledBack, outcome.Disposition);
+                Assert.IsType<C5RecoveryInterruption>(outcome.Failure);
+            }
+            AssertOriginalAdmissionTree(originalBefore);
         }
         Assert.NotNull(journalBytes);
         Assert.Empty(Directory.EnumerateFileSystemEntries(journalRoot));
