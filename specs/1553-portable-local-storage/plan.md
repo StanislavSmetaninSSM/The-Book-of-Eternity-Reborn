@@ -1,6 +1,8 @@
-## T068 original T067 boundary audit and platform handoff — DOCS-ONLY WIP, 2026-10-11
+## T068 original T067 boundary audit and platform handoff — FINAL read-only handoff accepted, 2026-10-11
 
-Tracked child `T068-LINUX-BOUNDARY-HANDOFF`, existing branch `1553-storage-migration-cloud-20261008`; immutable audited source base `9ba80c3ce580d01b2fd5a90033ce22e6d27593d7`. **Read-only audit/docs handoff only; SOURCE/EVIDENCE faithfulness review pending. No runtime/build/catalog/service/project/native execution or new evidence packet.** The original T067 candidate list contains four points below; all are now bounded accepted. No next specific original T067 Linux point is identified. Parent T067/T068/T061–T065 remain OPEN; 81 historical source-only acquisitions are not an automatic queue of defects. Component exclusions are honest scope limits, not newly authorized cases.
+<a id="t068-original-t067-boundary-audit-and-platform-handoff--docs-only-wip-2026-10-11"></a>
+
+Tracked child `T068-LINUX-BOUNDARY-HANDOFF`, existing branch `1553-storage-migration-cloud-20261008`; immutable audited source base `9ba80c3ce580d01b2fd5a90033ce22e6d27593d7`. **FINAL SAME DOCS FIDELITY PASS +ROOT accepted**, reviewed `c69638944ad1a95f23f0ba38a1dd7403c5c72cd2`, no blockers; bounded handoff child complete. Source base `9ba80c3ce580d01b2fd5a90033ce22e6d27593d7` unchanged. Read-only audit/docs only; all seven listed new Windows recipes remain UNRUN. No runtime/build/catalog/service/project/native execution, source/selector/access change or new evidence packet. The original T067 candidate list contains four points below; all are now bounded accepted. No next specific original T067 Linux point is identified. Parent T067/T068/T061–T065 remain OPEN; 81 historical source-only acquisitions are not an automatic queue of defects. Component exclusions are honest scope limits, not newly authorized cases.
 
 | Original T067 point | Accepted boundary and immutable evidence |
 | --- | --- |
