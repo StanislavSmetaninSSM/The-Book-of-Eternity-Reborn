@@ -3640,11 +3640,11 @@
     "FreshSelectedBuild": [
       "BookOfEternityClient.IntegrationTests",
       "BookOfEternityClient",
-      "BookOfEternityClient.TestSupport",
-      "BookOfEternityGMBridge"
+      "BookOfEternityClient.TestSupport"
     ],
     "UnitAssembly": "Observed existing file hash only; no fresh unit build is claimed by selected integration run.",
-    "SourceSHA": "6576d58a6b6760960bb1e893631ac924c1befe1e"
+    "SourceSHA": "6576d58a6b6760960bb1e893631ac924c1befe1e",
+    "BridgeAssembly": "Observed existing file hashes only; no Bridge project output in Build-integration.log and no integration project reference. Unused by this component; its older copied Client.dll is not the freshly selected Client.dll."
   },
   "SupportingCorrectedRuntimeReadback": {
     "Path": "../world-read-phase-corrected-green-root-readback.json",
