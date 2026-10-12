@@ -1,3 +1,21 @@
+## F04/F05 Windows browser protocol30 — reader fixed, repeat28PASS/2BOMFAIL frozen, 2026-10-12
+
+SOURCE PASS be02e0f998cf440ff5c14a6218d6dcb8cedc9113 by actual Astra XHigh;
+test-only physical FileStream/Open/Read/ReadWrite|Delete under same lease,
+all After/receipt/identity/neutral/authentic6 assertions unchanged, product8c unchanged.
+Fresh selected integration build90.763677s/PlanOnly106.8931965s30planned7Theory0exec;
+1629source(1628same+1test)/157DLLPDB fresh selected outputs verified before/after.
+Exactly one approved NoBuild repeat30complete=28PASS2FAIL,category90.0332923s/
+runner103.1837133s,exit1; budgets3/8,no skip/dup/timeout,bothcleanup/30roots absent.
+Physical After now reached/pass for both authentic6 paths; subsequent raw manifest
+JsonNode.Parse Windows.cs197 fails0xEF byte0. Source writer includes UTF8 preamble:
+fixture decode mismatch, no production defect demonstrated. Receipt/identity/
+neutral/authentic6 recovery remain UNREACHED/UNQUALIFIED. Category FAIL; independent
+EVIDENCE/DIAGNOSIS pending, test-only BOM decode proposal NOT applied/runtime HOLD.
+[Full repeat originals/provenance/diagnosis](recovery/windows-browser-protocol-reader-20261012/manifest.json).
+First28P2sharingFAIL below immutable; F18PASS/parentOPEN/same-process Fresh limits
+and ordinary40FAIL/performanceUNQUALIFIED/B2-B5paused/other5WindowsUNRUN preserved.
+
 ## F04/F05 Windows browser protocol30 — approved fixture reader correction WIP, 2026-10-12
 
 Coordinator accepted first28PASS/2fixtureFAIL at9bb4e646 and authorized only the

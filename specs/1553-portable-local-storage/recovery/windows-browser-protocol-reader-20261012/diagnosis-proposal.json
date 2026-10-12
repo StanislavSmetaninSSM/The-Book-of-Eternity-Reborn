@@ -1,0 +1,29 @@
+{
+  "State": "SourceSupportedFixtureJsonBomMismatch_IndependentEvidenceDiagnosisReviewPending_NoSecondFix",
+  "ObservedResult": "One approved repeat:30 executed,28 PASS,2 FAIL,exit1; all cleanup completed",
+  "PreviousReaderFix": "Applied/reviewed test-only physical Open/Read/FileShare.ReadWrite|Delete, lexical disposal under same lease",
+  "ReachedNewBoundary": "Both ordinary/extended authentic6 rows passed the real physical Assert.Equal(After,image.ToArray()) before failing at JsonNode.Parse(File.ReadAllBytes(manifest)) Windows.cs197.",
+  "ObservedException": "System.Text.Json.JsonReaderException: '0xEF' is an invalid start of a value;line0/byte0; original TRX unchanged",
+  "SourceMechanism": [
+    "StageOriginalBrowserWriteTransactionAsync writes the authentic schema6 manifest through fs.WriteFileAtomicAsync (ExplorerLocalTurnRollbackArtifacts.cs507).",
+    "The legacy mutation/progress writer also persists the actual manifest through the same fs.WriteFileAtomicAsync text encoding path.",
+    "FileSystemManager.WriteFileAtomicAsync passes EncodeUtf8WithPreamble; that method explicitly prefixes Encoding.UTF8.GetPreamble before the UTF8 JSON body (FileSystemManager.cs764-774,4322-4330).",
+    "The unchanged test sends all raw bytes, including that UTF8 preamble, into the JsonNode.Parse(ReadOnlySpan<byte>) path; the actual Utf8JsonReader stack rejects the first0xEF.",
+    "Microsoft documents that raw UTF8 BOM must be excluded from Utf8JsonReader input. The BOM source chain explains the observed failure without changing product persistence."
+  ],
+  "ObservationLimit": "Raw exception observes0xEF at byte0. Full EFBBBF preamble is source-supported; failed fixture file was removed by normal cleanup and no separate manifest-byte export or additional runtime probe is claimed.",
+  "Classification": "Second fixture/oracle JSON decoding mismatch; no production defect demonstrated. Independent evidence/diagnosis review pending.",
+  "StillUnreached": [
+    "Post-parse schemaVersion/publicationReceipt/publishedIdentity assertions",
+    "Neutral backup creation in authentic6 body",
+    "Fresh-object authentic6 recovery/exact restored bytes/retained neutral assertions"
+  ],
+  "MinimalProposalNotApplied": "Change only the authentic6 test manifest decode to JsonNode.Parse(File.ReadAllText(_files.ResolvePath(transaction.ManifestPath))) so the physical text reader consumes the UTF8 BOM; alternatively remove exactly a verified UTF8 preamble from the already physically read raw bytes before Parse. Keep physical After assertion, same lease, every schema/receipt/identity/neutral/recovery assertion and product wire bytes unchanged. No rewriting manifest or blanket trimming/catch/retry.",
+  "PrimaryReferences": [
+    "https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/use-utf8jsonreader",
+    "https://github.com/dotnet/runtime/blob/v8.0.31/src/libraries/System.Private.CoreLib/src/System/IO/File.cs"
+  ],
+  "SecondFixApplied": false,
+  "ProductChanged": false,
+  "FurtherRuntime": "HOLD; the one approved repeat is consumed, no third actual"
+}
