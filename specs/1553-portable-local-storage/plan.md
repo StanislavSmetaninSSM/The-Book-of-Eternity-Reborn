@@ -1,3 +1,17 @@
+## T068 Windows path equivalence — actual operand observation WIP, 2026-10-12
+
+Coordinator accepted93ffa98/29PASS1extendedProductFAIL and authorized narrow
+correctness work. Before any equality decisions change: DEBUG captures the same
+single GetFinalPath result already used by rollback, compared path and three
+intent operands on the original unknown-path exception; authentic6 emits them
+and rethrows the same primary failure. Release behavior/decision guards unchanged.
+Focused native-original-six-path-causal-windows selects existing1Theory2cases,
+category3min/runner8min unchanged; no global selection edits or other runtime.
+Independent SOURCE review/fresh build/PlanOnly/one causal observation UNRUN.
+Existing canonical TrustedLocalFileScope spelling helper is a candidate only:
+drive/UNC forms, refusal of device/ambiguous/dot components must remain bounded.
+Product equality patch follows actual operands, SOURCE gate and causal RED/GREEN;
+final native30+F18native6 needed. ParentOPEN/all prior raw retained/no coldrestart.
 ## F04/F05 Windows browser protocol30 — exact BOM corrected, reviewed29PASS1NativeProductFAIL_HOLD, 2026-10-12
 
 SOURCE PASS 6473dda217717b1d37500e215d701292ae5a77a6 by actual Astra XHigh; exact physical BOM removal/

@@ -1281,7 +1281,12 @@ internal static class ReversibleFilePublication
         sourceEvidenceRetained = false;
         if (sourceHandle != null)
         {
+#if DEBUG
+            var sourceOpenedPath = PhysicalFileAuthority.GetFinalPath(sourceHandle);
+            var sourceCurrentPath = NormalizeWindowsHandlePath(sourceOpenedPath);
+#else
             var sourceCurrentPath = GetOpenedPath(sourceHandle);
+#endif
             if (PathsEqual(sourceCurrentPath, intent.DestinationPath))
             {
                 PhysicalFileAuthority.EnsureExactFileIdentity(
@@ -1307,8 +1312,16 @@ internal static class ReversibleFilePublication
             if (!PathsEqual(sourceCurrentPath, intent.SourcePath) &&
                 !PathsEqual(sourceCurrentPath, intent.FailedSourcePath))
             {
-                throw new InvalidDataException(
+                var failure = new InvalidDataException(
                     $"{intent.AuthorityName} rollback source identity is at an unknown path.");
+#if DEBUG
+                failure.Data["RollbackSourceOpenedPath"] = sourceOpenedPath;
+                failure.Data["RollbackSourceComparedPath"] = sourceCurrentPath;
+                failure.Data["RollbackIntentDestinationPath"] = intent.DestinationPath;
+                failure.Data["RollbackIntentSourcePath"] = intent.SourcePath;
+                failure.Data["RollbackIntentFailedSourcePath"] = intent.FailedSourcePath;
+#endif
+                throw failure;
             }
         }
 

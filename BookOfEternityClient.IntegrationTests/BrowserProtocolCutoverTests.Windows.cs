@@ -204,7 +204,23 @@ public sealed partial class BrowserProtocolCutoverTests
             Assert.NotNull(manifest["externalEntries"]![0]!["publishedIdentity"]);
             neutral = AddNeutralBackup();
         }
-        await using (var lease = await Fresh().AcquireCanonicalWriteLeaseAsync()) { }
+        try
+        {
+            await using (var lease = await Fresh().AcquireCanonicalWriteLeaseAsync()) { }
+        }
+        catch (InvalidDataException failure)
+        {
+            output.WriteLine("NativeRollbackPathOperands=" + JsonSerializer.Serialize(new
+            {
+                Extended = extended,
+                OpenedPath = failure.Data["RollbackSourceOpenedPath"] as string,
+                ComparedPath = failure.Data["RollbackSourceComparedPath"] as string,
+                IntentDestinationPath = failure.Data["RollbackIntentDestinationPath"] as string,
+                IntentSourcePath = failure.Data["RollbackIntentSourcePath"] as string,
+                IntentFailedSourcePath = failure.Data["RollbackIntentFailedSourcePath"] as string
+            }));
+            throw;
+        }
         Assert.Equal(Before, File.ReadAllBytes(_files.ResolvePath(Member))); Assert.Equal(Before, File.ReadAllBytes(ProfilePath));
         Assert.Equal(Before, File.ReadAllBytes(neutral)); Assert.False(File.Exists(JournalPath));
         Assert.Empty(Directory.GetFiles(_files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "browser_write_manifest.json", SearchOption.AllDirectories));
