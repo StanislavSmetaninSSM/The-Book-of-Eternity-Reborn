@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-create",
+            "responsibility": "#1536 first test-only CREATE consumer causal Fact/one case. Independent actual declared QTE source42/maxII -> Applied health Damage5/health155/original occurrence and terminal cleanup; real next engine/session executes complete ordinary ProcessPlayerTurn43. Official signed N43/closed offered ref/pristine wound roots are read before the offline GM authors strict single materialize/woundRef/proposal plus matching scene/interface/debug/ready. Public proposal uses existing grammar: severityI belowII, generic other readable locus without body authority, one periodic_damage owned consequence, treatment/recovery/deterioration, verbatim acquisition narration. Full engine return/accepted checkpoint/loop43/story43 precede first missing complete player-wound predicate. Following oracles cover client IDs, strict identity/history/anchors/consequence-effect agreement, original42+decision43 materialize receipt and pending/draft/command consumption.",
+            "excludes": "No production consumer, synthetic fixture source/authority/occurrence/context, direct Stage/Adapter/Composer/Planner/Distributor substitute, canonical root/ID/receipt initialization by test, post-create resource equality constraint, old NONE/projection/producer selection repeats, CREATE replay/atomicity/archive qualification, new worker/harness/provider/Windows/C5/journal or broad suite. Prerequisite failures are blockers, never called consumer causal RED.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerCreate.cs",
+                "BookOfEternityClient/Services/WoundMaterializationContract.cs",
+                "BookOfEternityClient/Services/MortalWoundOpportunityReceiptState.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-none",
+                    "when": "Accepted4010 first NONE causal RED is preserved separately; this one-case CREATE cohort precedes any combined NONE/CREATE production wiring."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualNextOrdinaryCreatePublishesCompleteWound"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-none",
             "responsibility": "#1536 first test-only NONE consumer causal Fact/one case. Genuine actual declared ordinary QTE N42 finalizes health160->155 and one original-source occurrence, then a new engine executes complete ordinary ProcessPlayerTurn N43 on the same root/session. TerminalWaitStarted reads the official signed current snapshot including real observed absence and the physical closed offered row; offline GM authors only ordinary prose/interface/debug, strict single {opportunityRef,decision:none} and matching ready. Actual pre-materialization acceptance checkpoint, returned engine, GameLoop43, story43 and source/health/history prerequisites precede the first durable NONE receipt assertion. Expected receipt retains original42 plus decision43 correlation, consumes pending without wound allocation/transition and consumes draft/command under common publication.",
             "excludes": "No production consumer/normalizer/adapter invocation substitute, fabricated original source/occurrence/binding/hash, initialized pristine receipt/history/wound roots, direct Stage-only proof, pre-normalization publication assertion, new worker/harness, CREATE/replay/rollback/archive/fresh-process cases, provider/model/Windows/C5/broad suite or repeat of passed projection/producer selections. Prerequisite failure is a blocker, not consumer causal RED.",

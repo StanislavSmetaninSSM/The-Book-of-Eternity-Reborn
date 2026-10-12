@@ -5,8 +5,60 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (FIRST GENUINE NONE CONSUMER CAUSAL RED ROOT-VERIFIEDa4; PUBLICATION/EVIDENCE PENDING; CONSUMER PRODUCTION UNIMPLEMENTED)
+## Current T070 boundary — 2026-10-12 (NONE CAUSAL RED EVIDENCE ACCEPTED4010; FIRST CREATE CONSUMER TEST-ONLY SOURCE WIP; CHECKS UNRUN)
 
+First genuine NONE consumer causal RED EVIDENCE/status accepted by actual retained Astra
+XHigh at4010b6584a9ddabb5cea5352198ca32dff5d2102, no findings. Root exact remote/clean
+selected519-file recovery verified. NONE remains its own1 actual/1 executed/0 PASS/1 FAIL
+cohort: missing durable receipt after complete accepted genuine N43; later NONE receipt/
+consume/wound-unchanged assertions UNREACHED. Projection accepted4d4 actual/28 executed/
+26 PASS/2 FAIL/26 unique passed cases and producer accepted1b23 executed/22 PASS/1 FAIL
+remain separate and unchanged; all frozen manifests/old outcome bytes stay immutable.
+
+Current bounded TEST-ONLY CREATE WIP adds exactly one Fact in a new existing engine partial,
+one category5/default10 and one task-local selector. Independently owned actual declared QTE
+source42/max2 must finalize health160→155/one real original occurrence/terminal cleanup;
+new same-root/session engine must complete actual ProcessPlayerTurn43. Existing owned-hook/
+Reader reads official signed N43 roots, exact physical closed offer/ref and genuine pristine
+wound/control absence BEFORE authoring one strict output/mortal_wound_decisions.json object
+{opportunityRef,decision:"materialize",woundRef,proposal} and legitimate matching ordinary
+scene/interface/debug/ready. No canonical root initialization, permanent wound/effect ID,
+source authority, receipt JSON or direct Stage/Adapter/Composer/Planner substitute.
+
+Proposal uses only existing public GM creation grammar from WoundMaterializationLifecycleTests.
+Creation.cs1052–1162 and EffectMaterializationTestFixture.CreateDefinition: explicit severityI
+within offeredII, other/readableLocus (sealed other is allowed, no fabricated body coordinates),
+closed classification/display/empty complications, one owned periodic_damage consequence root,
+existing empty treatment arrays/requires_stabilization recovery and supported deterioration
+policy. acquisitionNarration appears verbatim in the actual ordinary scene. Only GM JSON
+construction is copied; none of that fixture's synthetic binding/context/authority or tests
+is invoked. Canonical recovery/deterioration anchors and client IDs are postconditions only.
+
+Full actual engine return/accepted pre-normalization hook/loop43/story43 precede FIRST missing
+complete canonical player-wound predicate. Signed pre-turn resource/source bytes are exact;
+post-create resources are observed without requiring equality, since legal wound effects/
+anchors may change them. Raw source/request/draft/ready/failure/admission/turn/story and all
+relevant canonical after-state are emitted before first oracle so an earlier failure is a
+prerequisite blocker, never manufactured RED. Following oracles require one strict complete
+client-ID wound severityI/domainphysical/maxAtCreationII, one exact identity/create history
+transition/owned recovery+deterioration anchors, one complete owned consequence/effect and
+identity/source agreement, correlated materialize receipt original42+decision43 with actual
+wound/transition IDs, pending empty and transient draft/WoundCommand consumed. No replay/
+atomicity/archive qualification follows from this one case.
+
+CREATE SOURCE/FIXTURE/SELECTION, selected fresh integration build/PlanOnly, ownership audit
+and first actual are ALL UNRUN. Static inventory1 method/1 case/1 descriptor, category5/default10;
+702 categories/11534 methods predicted, not discovery evidence. [Exact CREATE selection](../../tests/selections/1536-qte-physical-injury-consumer-create.json)
+selects only this new Fact; old701 catalog suffix/nodes, NONE Fact/selector, ce955 original
+source causal Fact, first projection Fact/selectors, global CI/selection and all checkboxes
+remain unchanged. No helper refactor/new worker/harness/provider/Windows/C5/journal or project
+execution. No GM prompt capability update: production is unchanged, only the already accepted
+future public CREATE protocol is test data. NONE/CREATE production, consumer replay/rollback/
+atomicity and actual after-terminal save-load/new-root/fresh-process remain UNIMPLEMENTED/
+UNRUN; full T070/FR-063/parent/#1536 OPEN. Mutations STOPPED at coherent five-path TEST-ONLY
+SOURCE WIP for immediate root publication/recovery and mandatory independent source gate.
+
+Historical independently accepted first NONE causal RED:
 FIRST genuine NONE consumer causal RED is ROOT raw-verified at SOURCE/FIXTURE/SELECTION
 accepted runtime/compilea4f720969d35cfccaef1b908756dca69829e5a67. Native
 20261012-200832-736-359223-2631dd614ad14bf6826e2e1c7b7c5a4c-categories:
@@ -33,8 +85,9 @@ removed=true/failure=null and root checked actual absence. All98 source pins/10 
 binaries matched PRE/POST actual BEFORE these metadata edits. Read frozen manifest and
 decompressed root readback before editing. The locally frozen24 gz artifacts plus manifest
 [NONE consumer causal RED packet](./recovery/qte-physical-consumer-none-causal-red-20261012)
-retains raw original evidence; publication and independent EVIDENCE/status review are PENDING.
-No production fix is released before that gate. Original ce955 Fact, first projection
+retains raw original evidence; publication and independent EVIDENCE/status acceptance completed
+at4010b6584a9ddabb5cea5352198ca32dff5d2102. Only the separate CREATE test-only block above is
+released next; no production consumer fix is released here. Original ce955 Fact, first projection
 Fact/selectors, all old packets/global selection and parent checkboxes remain unchanged.
 
 Fresh selected preparation native
@@ -48,11 +101,10 @@ not passing test assertions. NONE is a new separate cohort:1 actual/1 executed/0
 Projection accepted4d remains4 actual/28 executed/26 PASS/2 FAIL/26 unique passed cases;
 producer accepted1b remains23 executed/22 PASS/1 FAIL, separately preserved.
 
-CREATE test-only causal proof and NONE/CREATE production wiring, consumer replay/rollback/
-atomicity and actual after-terminal save-load/new-root/fresh-process remain pending; full
-T070/FR-063/parent/#1536 remain OPEN. No source/test/catalog/selector/prompt/packet change or
-project execution in this metadata-only checkpoint. Mutations STOPPED at two-doc READY for
-immediate root frozen-packet publication/recovery and independent EVIDENCE gate.
+CREATE test-only source is now authored above but SOURCE/runtime UNRUN; NONE/CREATE production
+wiring, consumer replay/rollback/atomicity and actual after-terminal save-load/new-root/
+fresh-process remain pending; full T070/FR-063/parent/#1536 OPEN. This accepted historical NONE
+metadata checkpoint changed no production/test/catalog/selector/prompt/packet or checkbox.
 
 Historical first NONE test-only source boundary (SOURCE accepteda4; first actual RED above):
 Bounded read-only PROJECTION QUALIFICATION/EVIDENCE/status accepted by actual retained
