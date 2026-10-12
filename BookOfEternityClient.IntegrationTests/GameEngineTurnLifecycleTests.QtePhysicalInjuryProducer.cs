@@ -61,7 +61,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(run.StoryAtHandoff, await _fs.ReadFileBytesAsync(QteStoryPath));
         foreach (var image in originals) Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(image.Key));
         await WriteActualPhysicalBoundedReceiptAsync();
-        var resumed = CreateGameEngine(new QueuedConsoleInputSource(), settings =>
+        var resumed = CreateGameEngine(new QueuedConsoleInputSource([]), settings =>
         { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; });
         GetPrivateField<GameLoop>(resumed, "_gameLoop").SetSession(run.Source!.SessionId, PhysicalInjurySourceTurn);
         await GetPrivateField<StateManager>(resumed, "_stateManager").RefreshGameStateAsync();

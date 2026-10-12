@@ -5,7 +5,32 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; BOUNDED PRODUCER SOURCE/FIXTURE/SELECTION READY; PRODUCER SOURCE ACCEPTED423aed; FIRST PREPARATION COMPILE BLOCKER; MINIMAL IMPORT CORRECTION READY; FRESH CHECKS UNRUN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; BOUNDED PRODUCER SOURCE/FIXTURE/SELECTION READY; PRODUCER SOURCE ACCEPTED423aed; SECOND PREPARATION COMPILE BLOCKER; WHOLE SCOPED API PROOF; EMPTY-KEYS FIXTURE CORRECTION READY; FRESH CHECKS UNRUN)
+
+Import SOURCE/FIXTURE/SELECTION accepted1f1e11b2a2b1961663ddacad0caee8d63a0e70d9 and first
+six-artifact/77-pin preparation BLOCKER EVIDENCE accepted;78 current source pins/recovery309
+exact, no recovery execution. Second fresh remainder PlanOnly preparation (0 tests) failed
+before discovery: compile1f1e11, run20261012-161822-270-318805-85e1839ea9424f81aeb4f8aad1f233c2-categories,
+exit1,108.5580811s wall/integration build108.3350505s,76 warnings/1 error, no timeout.
+Exact CS7036 at QtePhysicalInjuryProducer.cs(64,44): QueuedConsoleInputSource requires
+IEnumerable<ConsoleKeyInfo> keys. Client and TestSupport emitted successfully; integration
+assembly blocked, unit/discovery/catalog/actual causal/remainder UNRUN. Root froze/published
+six-artifact/78-source-pin second preparation packetcce705fce538cbfd08b24eebd6b4a0429e57cee1,
+remote exact. This is preparation compile failure, not causal RED or executed test FAIL;
+first preparation blocker and all older packets remain unchanged.
+
+Before a third preparation, read-only whole scoped API proof covered the new producer source,
+all six integration methods/private helpers, changed unit guard surfaces and actual called
+factory/input/context/cache/selection/constructor declarations. The preserved compiler log
+emits Client/TestSupport and has one compiler error (the same error repeated in summary).
+No additional concrete symbol/API mismatch was found; unit compilation/runtime are not
+claimed. The scoped files have exactly one parameterless queued-input call. Its declaration
+is GameEngineTurnLifecycleTests.cs:11075; the accepted receipt neighbor already passes [].
+Current correction changes ONLY that call to new QueuedConsoleInputSource([]), preserving
+method flow, every oracle/source capability, selector and budgets. Mutations STOPPED at
+minimal SOURCE READY for root publication and retained focused fixture/API readback plus
+second preparation BLOCKER EVIDENCE gate. Fresh both-project preparation and all actual
+producer checks remain UNRUN; original causal hash/checklists/immutable outcomes unchanged.
 
 Focused retained actual Astra XHigh SOURCE/FIXTURE/SELECTION accepted423aed1719282368c1413f9436df642f513ce844
 with no remaining Critical/Important findings; root verified301 selected recovery files/77
