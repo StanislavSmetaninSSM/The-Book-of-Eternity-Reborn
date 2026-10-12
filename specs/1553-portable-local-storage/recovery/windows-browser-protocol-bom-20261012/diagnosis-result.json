@@ -1,0 +1,48 @@
+{
+  "State": "NativeExtendedProductRecoveryFailure_SourceSupportedPrefixMismatch_ReviewPending_HOLD",
+  "ActualResult": "29 PASS / 1 FAIL; all30executed; ordinary authentic6 fullyPASS; extended authentic6 production recoveryFAIL",
+  "CompiledRuntime": "6473dda217717b1d37500e215d701292ae5a77a6",
+  "Failure": {
+    "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(extended: True)",
+    "Outcome": "Failed",
+    "Duration": "00:00:01.0784628",
+    "OriginalStdOut": "ManifestParserControls=True; BOM=True; NoBOM=True; MalformedUtf8Rejected=True; DoubleBOMRejected=True; PhysicalBytesUnchanged=True\r\nOwnedFixtureRemoved=True",
+    "OwnedFixtureRemovedReceipt": true,
+    "ErrorMessage": "System.IO.InvalidDataException : Daren reward profile rollback source identity is at an unknown path.",
+    "ErrorStackTrace": "   at BookOfEternityClient.Core.ReversibleFilePublication.RollBack(PublicationIntent intent, SafeFileHandle sourceHandle, SafeFileHandle destinationHandle, StableDirectory sourceParent, StableDirectory destinationParent, Func`2 beforeAbsenceFinalValidation, Boolean& sourceEvidenceRetained) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 1310\r\n   at BookOfEternityClient.Core.ReversibleFilePublication.RecoverOne(String authorityRoot, StableDirectory journalRootAuthority, String transactionRoot, Boolean acknowledgeDeferredCommit, String expectedTransactionId, Nullable`1 cleanupResolution) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 1252\r\n   at BookOfEternityClient.Core.ReversibleFilePublication.RecoverPending(String authorityRoot, String journalRoot) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 973\r\n   at BookOfEternityClient.Core.FileSystemManager.RecoverInterruptedFilePublications() in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 4191\r\n   at BookOfEternityClient.Core.FileSystemManager.<>c__DisplayClass187_1.<<AcquireCanonicalWriteLeaseCoreAsync>b__0>d.MoveNext() in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3903\r\n--- End of stack trace from previous location ---\r\n   at BookOfEternityClient.Core.FileSystemManager.RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func`1 recovery) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.TrustedLocalStorage.cs:line 21\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3901\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3953\r\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3768\r\n   at BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(Boolean extended) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient.IntegrationTests\\BrowserProtocolCutoverTests.Windows.cs:line 207\r\n--- End of stack trace from previous location ---"
+  },
+  "ReachedForBothAuthenticSix": [
+    "All physical parser controls with explicit witnesses",
+    "Physical After exact bytes",
+    "Manifest schema6",
+    "Member publicationReceipt",
+    "External publishedIdentity",
+    "Neutral backup creation"
+  ],
+  "OrdinaryAuthenticSix": "PASS full Fresh recovery/exact Before member/profile/retained neutral/journal and manifest absence",
+  "ExtendedUnreached": [
+    "Fresh acquisition completion",
+    "Post-recovery exact Before member/profile/retained neutral",
+    "Post-recovery journal and manifest absence"
+  ],
+  "ConfirmedProductBoundary": "Fresh().AcquireCanonicalWriteLeaseAsync\u2192RecoverInterruptedFilePublications\u2192ReversibleFilePublication.RecoverPending/RecoverOne\u2192RollBack unknown source path guard at1310; no fixture parser/assertion failure",
+  "SourceSupportedMechanism": [
+    "Extended fixture ConfiguredRoot is \\\\?\\ + Path.GetFullPath(_root); FileSystemManager.ResolvePhysicalBasePath retains its full extended drive form for a non-reparse owned root.",
+    "DarenRewardProfileRollbackTransaction profile and temporary paths derive from fs.BasePath; PublishDeferredAsync stores Path.GetFullPath(sourcePath/destinationPath) in its PublicationIntent.",
+    "RollBack gets sourceCurrentPath via GetOpenedPath\u2192NormalizeWindowsHandlePath, which removes \\\\?\\ (and converts \\\\?\\UNC\\ to ordinary UNC).",
+    "PathsEqual compares only Path.GetFullPath(left/right) with Windows OrdinalIgnoreCase; it does not normalize the journal-side extended prefix.",
+    ".NET8 Windows GetFullPathInternal returns extended paths unchanged. Thus a normalized opened path and an equivalent extended journal path fail textual equality; observed ordinaryPASS/extendedFAIL and guard location fit this mechanism."
+  ],
+  "ObservationLimits": "Native compared path strings/file IDs/full intent image were not separately exported; source-chain is the causal proposal, not a new native handle trace. Normal fixture cleanup removed owned state; original stack/TRX/source snapshots retained.",
+  "Classification": "Confirmed native Windows product recovery failure in extended authentic6; source-supported path-prefix normalization defect candidate. Not a new simple fixture error.",
+  "MinimalProductProposalNotApplied": "Review consistent Windows path equivalence for opened-handle versus intent paths at ReversibleFilePublication.PathsEqual/RollBack. Normalize ordinary/extended drive and UNC representations on both sides under the same authority policy; preserve file-ID/volume/hash/containment/reparse/race and genuinely unknown-path refusal. Add directed positive equivalent-path and negative different-object/outside-authority controls before any product change. Do not strip the fixture extended root, skip/relax assertions or alter journal bytes merely to pass.",
+  "PrimaryReference": "https://github.com/dotnet/runtime/blob/v8.0.31/src/libraries/System.Private.CoreLib/src/System/IO/Path.Windows.cs",
+  "ProductEdited": false,
+  "AdditionalActual": false,
+  "FurtherRuntime": "HOLD; product failure stops authorized fixture loop",
+  "FirstSharingAndSecondBomFailuresPreserved": true,
+  "F18Prior6PASSPreserved": true,
+  "Parent1553": "OPEN",
+  "FreshProcessColdRestartQualified": false,
+  "IndependentEvidenceDiagnosisReview": "PENDING"
+}

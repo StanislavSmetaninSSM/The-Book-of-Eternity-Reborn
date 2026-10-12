@@ -1,0 +1,669 @@
+{
+  "SchemaVersion": 1,
+  "RecordedUtc": "2026-10-12T01:29:25.314750+00:00",
+  "State": "OneBomCorrectedActual29PASS1ProductRecoveryFAIL_ReviewPending_HOLD",
+  "TrackedTask": "#1553 / F04-F05 Windows protocol30 test-reader correction",
+  "CheckoutHead": "6473dda217717b1d37500e215d701292ae5a77a6",
+  "CompiledSource": "6473dda217717b1d37500e215d701292ae5a77a6",
+  "OriginalProductSource": "8c2ecdfaa1003e49bf15ba83693788e9b19dd10f",
+  "WorkingBranch": "1553-storage-migration-windows-f18-20261011T235650Z",
+  "Category": "portable-browser-protocol-native-windows",
+  "PreparationCommand": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category portable-browser-protocol-native-windows -PlanOnly",
+  "ActualCommand": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category portable-browser-protocol-native-windows -NoBuild",
+  "NewBuildExecuted": true,
+  "BuildWallSeconds": 55.3518569,
+  "PreparationWallTime": "00:01:07.5639874",
+  "PreparationPlannedCases": 30,
+  "PreparationExecutedCases": 0,
+  "Methods": 7,
+  "MethodCounts": [
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAliasMember_RecordsOneBaselineAndRestoresExactBytes",
+      "Cases": 2
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup",
+      "Cases": 2
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler",
+      "Cases": 4
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers",
+      "Cases": 8
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsNeutralPendingBackup_RecoversWithoutBrowserManifest",
+      "Cases": 2
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence",
+      "Cases": 4
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+      "Cases": 8
+    }
+  ],
+  "ActualAttemptsInThisBlock": 1,
+  "HistoricalActualAttemptsIncludingFirst": 3,
+  "ActualWallTime": "00:01:38.9229583",
+  "CategorySeconds": 86.7955645,
+  "CategoryCompletedFlag": false,
+  "SelectionComplete": true,
+  "CategoryBudgetMinutes": 3,
+  "RunnerBudgetMinutes": 8,
+  "Planned": 30,
+  "Executed": 30,
+  "Passed": 29,
+  "Failed": 1,
+  "Skipped": 0,
+  "TimedOut": false,
+  "DuplicateTests": 0,
+  "ExitCode": 1,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "StrictCleanupReceipts": 30,
+  "BrowserRootRemainders": 0,
+  "WorkerRuntimeRemainders": 0,
+  "ActiveOwnedOperations": 0,
+  "SourcePinsVerifiedBeforePrepareBeforeActualAfterActual": 1629,
+  "UnchangedSourcePinsFromFirst": 1628,
+  "TestOnlyChangedSourcePins": 1,
+  "DllPdbPinsVerifiedBeforeActualAfterActual": 157,
+  "FreshIntegrationOutputs": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "Bytes": 27633152,
+      "SHA256": "3b1adee9b15dbb8b71be7f355bd63d276f3a2008191617605c05468e741a6f69",
+      "LastWriteUtc": "2026-10-12T01:25:19.950269+00:00"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb",
+      "Bytes": 4461340,
+      "SHA256": "a1f61833e7cb1943d0272b1856692a8483b5c8805d4184d64935830709f7eead",
+      "LastWriteUtc": "2026-10-12T01:25:18.997432+00:00"
+    }
+  ],
+  "TestReaderCorrectionApplied": true,
+  "ProductSourceChanged": false,
+  "ProductSharingChanged": false,
+  "SourceReview": {
+    "Verdict": "SOURCE PASS",
+    "ReviewedSha": "6473dda217717b1d37500e215d701292ae5a77a6",
+    "Base": "bb485e1112355402fa119a24b2178bcfbf83667c",
+    "Reviewer": "gpt-6-astra",
+    "Effort": "xhigh",
+    "Findings": [],
+    "PhysicalRead": true,
+    "ExactSingleBomRemoval": true,
+    "StrictUtf8": true,
+    "ProductAndAssertionsUnchanged": true,
+    "Controls": "BOM/noBOM/cyrillic/malformedUTF8withandwithoutBOM/doubleBOM/physicalbytesunchanged",
+    "OwnedControlCleanup": true,
+    "Methods": 7,
+    "Cases": 30,
+    "CategoryBudgetMinutes": 3,
+    "RunnerBudgetMinutes": 8,
+    "RuntimeQualifiedByReview": false
+  },
+  "FirstResult": "28 PASS / 2 fixture FAIL",
+  "FirstEvidenceSha": "9bb4e646e379363684ea9d741ebae837f354e8df",
+  "FirstEvidence": "../windows-browser-protocol-20261012/manifest.json",
+  "FirstRawUnchanged": true,
+  "AuthenticSixRecoveryRows": [
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.6012770",
+      "OriginalStdOut": "ManifestParserControls=True; BOM=True; NoBOM=True; MalformedUtf8Rejected=True; DoubleBOMRejected=True; PhysicalBytesUnchanged=True\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(extended: True)",
+      "Outcome": "Failed",
+      "Duration": "00:00:01.0784628",
+      "OriginalStdOut": "ManifestParserControls=True; BOM=True; NoBOM=True; MalformedUtf8Rejected=True; DoubleBOMRejected=True; PhysicalBytesUnchanged=True\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "System.IO.InvalidDataException : Daren reward profile rollback source identity is at an unknown path.",
+      "ErrorStackTrace": "   at BookOfEternityClient.Core.ReversibleFilePublication.RollBack(PublicationIntent intent, SafeFileHandle sourceHandle, SafeFileHandle destinationHandle, StableDirectory sourceParent, StableDirectory destinationParent, Func`2 beforeAbsenceFinalValidation, Boolean& sourceEvidenceRetained) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 1310\r\n   at BookOfEternityClient.Core.ReversibleFilePublication.RecoverOne(String authorityRoot, StableDirectory journalRootAuthority, String transactionRoot, Boolean acknowledgeDeferredCommit, String expectedTransactionId, Nullable`1 cleanupResolution) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 1252\r\n   at BookOfEternityClient.Core.ReversibleFilePublication.RecoverPending(String authorityRoot, String journalRoot) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 973\r\n   at BookOfEternityClient.Core.FileSystemManager.RecoverInterruptedFilePublications() in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 4191\r\n   at BookOfEternityClient.Core.FileSystemManager.<>c__DisplayClass187_1.<<AcquireCanonicalWriteLeaseCoreAsync>b__0>d.MoveNext() in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3903\r\n--- End of stack trace from previous location ---\r\n   at BookOfEternityClient.Core.FileSystemManager.RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func`1 recovery) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.TrustedLocalStorage.cs:line 21\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3901\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3953\r\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3768\r\n   at BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(Boolean extended) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient.IntegrationTests\\BrowserProtocolCutoverTests.Windows.cs:line 207\r\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "AuthenticSixQualification": "1 ordinary fullPASS;1 extended native productRecoveryFAIL/unqualified",
+  "QualificationBasis": "TRX outcomes of complete pinned unchanged assertion bodies; no separately serialized native values claimed",
+  "Cases": [
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAliasMember_RecordsOneBaselineAndRestoresExactBytes(extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.9492816",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence(existed: False, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.1354538",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: False, rollback: False, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.3362002",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"empty-old-intent\", extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.6452580",
+      "OriginalStdOut": "Protocol=empty-old-intent; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler(legacy: False, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:04.0137589",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: False, rollback: True, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.6685588",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: True, rollback: False, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:04.4844200",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: False, rollback: True, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.8294270",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsNeutralPendingBackup_RecoversWithoutBrowserManifest(extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.0249487",
+      "OriginalStdOut": "NeutralOnly=True; cut=1; recoveryEvents=3; exactSnapshot=True\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"neutral\", extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.1853170",
+      "OriginalStdOut": "Protocol=neutral; cut=1; recoveryEvents=4; mutations=6\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: True, rollback: True, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:04.9226093",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"mixed-manifest\", extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.6153008",
+      "OriginalStdOut": "Protocol=mixed-manifest; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler(legacy: True, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.9053449",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"malformed-current-intent\", extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.5528435",
+      "OriginalStdOut": "Protocol=malformed-current-intent; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.6012770",
+      "OriginalStdOut": "ManifestParserControls=True; BOM=True; NoBOM=True; MalformedUtf8Rejected=True; DoubleBOMRejected=True; PhysicalBytesUnchanged=True\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsNeutralPendingBackup_RecoversWithoutBrowserManifest(extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.9324709",
+      "OriginalStdOut": "NeutralOnly=True; cut=1; recoveryEvents=3; exactSnapshot=True\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence(existed: True, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.3976080",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: True, rollback: False, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:04.3411824",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence(existed: True, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.0707772",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: False, rollback: False, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.4420039",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler(legacy: True, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.8318867",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAliasMember_RecordsOneBaselineAndRestoresExactBytes(extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.8501778",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"empty-old-intent\", extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.5089868",
+      "OriginalStdOut": "Protocol=empty-old-intent; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence(existed: False, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.1063155",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"malformed-current-intent\", extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.5614888",
+      "OriginalStdOut": "Protocol=malformed-current-intent; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"mixed-manifest\", extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:02.0279363",
+      "OriginalStdOut": "Protocol=mixed-manifest; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"neutral\", extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.2287700",
+      "OriginalStdOut": "Protocol=neutral; cut=1; recoveryEvents=4; mutations=6\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: True, rollback: True, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:04.9533588",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(extended: True)",
+      "Outcome": "Failed",
+      "Duration": "00:00:01.0784628",
+      "OriginalStdOut": "ManifestParserControls=True; BOM=True; NoBOM=True; MalformedUtf8Rejected=True; DoubleBOMRejected=True; PhysicalBytesUnchanged=True\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "System.IO.InvalidDataException : Daren reward profile rollback source identity is at an unknown path.",
+      "ErrorStackTrace": "   at BookOfEternityClient.Core.ReversibleFilePublication.RollBack(PublicationIntent intent, SafeFileHandle sourceHandle, SafeFileHandle destinationHandle, StableDirectory sourceParent, StableDirectory destinationParent, Func`2 beforeAbsenceFinalValidation, Boolean& sourceEvidenceRetained) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 1310\r\n   at BookOfEternityClient.Core.ReversibleFilePublication.RecoverOne(String authorityRoot, StableDirectory journalRootAuthority, String transactionRoot, Boolean acknowledgeDeferredCommit, String expectedTransactionId, Nullable`1 cleanupResolution) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 1252\r\n   at BookOfEternityClient.Core.ReversibleFilePublication.RecoverPending(String authorityRoot, String journalRoot) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 973\r\n   at BookOfEternityClient.Core.FileSystemManager.RecoverInterruptedFilePublications() in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 4191\r\n   at BookOfEternityClient.Core.FileSystemManager.<>c__DisplayClass187_1.<<AcquireCanonicalWriteLeaseCoreAsync>b__0>d.MoveNext() in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3903\r\n--- End of stack trace from previous location ---\r\n   at BookOfEternityClient.Core.FileSystemManager.RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func`1 recovery) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.TrustedLocalStorage.cs:line 21\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3901\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3953\r\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3768\r\n   at BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(Boolean extended) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient.IntegrationTests\\BrowserProtocolCutoverTests.Windows.cs:line 207\r\n--- End of stack trace from previous location ---"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler(legacy: False, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:04.0270681",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    }
+  ],
+  "Archives": [
+    {
+      "Path": "prepare-original.zip",
+      "Bytes": 203187,
+      "SHA256": "0b3abf94e9730fbbada709b8db850c8f0ed40d23c055e9c158670dc2a5a0d70e",
+      "Entries": [
+        {
+          "Path": "runner/Build-integration.log",
+          "Bytes": 80783,
+          "SHA256": "d2434b60258ea866b91fade7a2b4fde5bffa5f5730c6346367c4d10703a6ffb2"
+        },
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1769889,
+          "SHA256": "f11bd07d1e354eb9858d66ba1e04f0a9368b8f22f3fead912dc86335c9629845"
+        },
+        {
+          "Path": "runner/owned-process-0ab22dd52da4432bb6c72921073e99ae.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-2f8677c995e54bbfb6e3ab47a8a9e92e.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-98b25a5966634350a483daff723f971a.json",
+          "Bytes": 259,
+          "SHA256": "962b0da0df8a09784a49b9e1e7762ba8024df441bf87ffb7af504d3f1b3e3e24"
+        },
+        {
+          "Path": "runner/owned-process-cfd994d7c95542079eb95dee264f85c2.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-eb9fa59f8a794c1c9c7701d351b4c372.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 3103,
+          "SHA256": "19e30e43caf0c15739dc7f9e75e7e9d1c302fb919cf8a970b047bd3aa16f62a6"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1572,
+          "SHA256": "ffe40ddb4cba7e942252df0f6cd7c77a1aa6ada7d9f5acb1fe2904fcd982f908"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2431,
+          "SHA256": "af2b95d54c2cb6a4436abff1d9f9860456be3f5bb7e58d9dac88d0f10c31eeb5"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 3003,
+          "SHA256": "28d18b773c70d92df275a49616d252c60ef72de091a2db2ed9a16faab36de118"
+        }
+      ]
+    },
+    {
+      "Path": "actual-original.zip",
+      "Bytes": 201835,
+      "SHA256": "569a92b0ad5f292932a2da3ffcdbe1ced51d90fbd08ff615f4fdb00f7a0d7240",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1694772,
+          "SHA256": "238eb99779d02f2296ab5ced43287435d1134dd8e4415e97833ebc3fe31cf534"
+        },
+        {
+          "Path": "runner/owned-process-01597b2c3ac74256b85a04f3b60f7085.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-27f216710b4241599002795b085382a8.json",
+          "Bytes": 1440,
+          "SHA256": "86ff7116a265d1dbbfef5b7107b3db449afa8ac134c51e2c5f06f09a051a857d"
+        },
+        {
+          "Path": "runner/owned-process-b446b54158fa423b911efdf3f9851c22.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-e50dc589a5a34e5ea5293257b5d0c564.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-ebceae195f5c41d98c8e8c2cbc9d711a.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 3102,
+          "SHA256": "6a68223ccff4fc3b4efa80567c871bef131cb27bc3d6317fb652c3a9faa0cf9f"
+        },
+        {
+          "Path": "runner/portable-browser-protocol-native-windows-integration-001.trx",
+          "Bytes": 61001,
+          "SHA256": "d918f4fe44c7dcebac72c2695e5ec7be4da76562aecf00c4af5108511700d5be"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1458,
+          "SHA256": "444de21642df482df00b1b711a172d5203986b160366306b60aadfc1c541d231"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2426,
+          "SHA256": "8cb35e8d6ecb9272116a0c2f4e55763d48c9465a0bec677b0ef50ccac4c187f9"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 174,
+          "SHA256": "4b2ad56b36d6ba17f5cb157c479d84bd129c61933a2a3766faa5fe9f112c6347"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 7546,
+          "SHA256": "950e8559757c6456132c664a2bcfafa11126ced2a4e2e94923fe3f27d645d958"
+        }
+      ]
+    },
+    {
+      "Path": "execution-provenance.zip",
+      "Bytes": 324662,
+      "SHA256": "cc67f0a092f14953cf61aff0681bffd8d15d28443c6479c26cf8da9035d02902",
+      "Entries": [
+        {
+          "Path": "browser-bom-inputs.py",
+          "Bytes": 6855,
+          "SHA256": "7f47a7d54fcdadf61d6002a7dab5a0dd49fb90b77ef2e0cb0cd2e27cdd2dcd6d"
+        },
+        {
+          "Path": "run-browser-bom-phase.ps1",
+          "Bytes": 4326,
+          "SHA256": "582050a8917bdd68ed7d2284ee8ec880d86389541c0d6a738a52dd0789b270b8"
+        },
+        {
+          "Path": "freeze-browser-bom.py",
+          "Bytes": 9679,
+          "SHA256": "de79d88809667ea41c18f4101f10d47cc9d53cbe6a24e79e76bdaf46405fab58"
+        },
+        {
+          "Path": "setup-browser-bom.py",
+          "Bytes": 2197,
+          "SHA256": "b8d4477991e78d3483d5d7be31d2fd3c6a2d9824e6dafaaad421e87283c82bff"
+        },
+        {
+          "Path": "evidence/browser-bom-source-review.json",
+          "Bytes": 610,
+          "SHA256": "661795f69579e0c95c889c2f6bb42ef998a0b7a7fa72fe1ce714aa7a596306d9"
+        },
+        {
+          "Path": "evidence/browser-bom-inputs-before-prepare.json",
+          "Bytes": 386280,
+          "SHA256": "6a4c382685ed4a9fb1ef18fa99c9e883849ac2aab425b85b4ecd695151991047"
+        },
+        {
+          "Path": "evidence/browser-bom-inputs-before-actual.json",
+          "Bytes": 386886,
+          "SHA256": "f4e1728c8859512140f4b63aa682a3319498ceb6e2feb397d0854855e6f1f06b"
+        },
+        {
+          "Path": "evidence/browser-bom-inputs-after-actual.json",
+          "Bytes": 386832,
+          "SHA256": "b790ae1e741d476f5a4892d879525097876ce072e1186e5dd9be03999dfeaf54"
+        },
+        {
+          "Path": "evidence/browser-bom-prepare-gate.json",
+          "Bytes": 1808,
+          "SHA256": "59fcc5999b4cd427ddbbe190bbc51fd4d7d2aa7e7016a162264885d449c7a1ca"
+        },
+        {
+          "Path": "evidence/browser-bom-post-run-process-readback.json",
+          "Bytes": 961,
+          "SHA256": "05b5fb638fbecf319fc04fd722648ab44398cadadc55f291b6d624c4a3e3a31f"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.Windows.cs",
+          "Bytes": 17177,
+          "SHA256": "b78e42e7ca5261a0e7d6b7fe82ccd4f23862bbf4648b40196122d6e7e69977fc"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.cs",
+          "Bytes": 12103,
+          "SHA256": "c2da7ea7eaa91bbba5cc1e93a7731f0bc9b0d76781fa09fee142c3a442bbb609"
+        }
+      ]
+    }
+  ],
+  "Limits": [
+    "Fresh() is same-process new FileSystemManager; no fresh-process cold restart",
+    "Protocol component category only; no browser DOM/UI/full game/whole migration",
+    "F18 prior6PASS and historical ordinary40FAIL/performanceUNQUALIFIED/B2-B5paused unchanged",
+    "No further runtime or product change authorized by this result"
+  ],
+  "TestOnlyExactBomParserApplied": true,
+  "StrictUtf8Controls": "BOM/noBOM/malformedUTF8withandwithoutBOM/doubleBOM; physical bytes unchanged; inside2authentic6rows",
+  "PreviousBomFailureEvidence": "../windows-browser-protocol-reader-20261012/manifest.json",
+  "PreviousBomFailureSha": "bb485e1112355402fa119a24b2178bcfbf83667c",
+  "ControlWitnesses": [
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.6012770",
+      "OriginalStdOut": "ManifestParserControls=True; BOM=True; NoBOM=True; MalformedUtf8Rejected=True; DoubleBOMRejected=True; PhysicalBytesUnchanged=True\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(extended: True)",
+      "Outcome": "Failed",
+      "Duration": "00:00:01.0784628",
+      "OriginalStdOut": "ManifestParserControls=True; BOM=True; NoBOM=True; MalformedUtf8Rejected=True; DoubleBOMRejected=True; PhysicalBytesUnchanged=True\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "System.IO.InvalidDataException : Daren reward profile rollback source identity is at an unknown path.",
+      "ErrorStackTrace": "   at BookOfEternityClient.Core.ReversibleFilePublication.RollBack(PublicationIntent intent, SafeFileHandle sourceHandle, SafeFileHandle destinationHandle, StableDirectory sourceParent, StableDirectory destinationParent, Func`2 beforeAbsenceFinalValidation, Boolean& sourceEvidenceRetained) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 1310\r\n   at BookOfEternityClient.Core.ReversibleFilePublication.RecoverOne(String authorityRoot, StableDirectory journalRootAuthority, String transactionRoot, Boolean acknowledgeDeferredCommit, String expectedTransactionId, Nullable`1 cleanupResolution) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 1252\r\n   at BookOfEternityClient.Core.ReversibleFilePublication.RecoverPending(String authorityRoot, String journalRoot) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\ReversibleFilePublication.cs:line 973\r\n   at BookOfEternityClient.Core.FileSystemManager.RecoverInterruptedFilePublications() in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 4191\r\n   at BookOfEternityClient.Core.FileSystemManager.<>c__DisplayClass187_1.<<AcquireCanonicalWriteLeaseCoreAsync>b__0>d.MoveNext() in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3903\r\n--- End of stack trace from previous location ---\r\n   at BookOfEternityClient.Core.FileSystemManager.RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func`1 recovery) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.TrustedLocalStorage.cs:line 21\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3901\r\n   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3953\r\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3768\r\n   at BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(Boolean extended) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient.IntegrationTests\\BrowserProtocolCutoverTests.Windows.cs:line 207\r\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "AuthenticSixOrdinaryQualified": true,
+  "AuthenticSixExtendedRecoveryQualified": false,
+  "BothAuthenticSixReachedBeforeRecovery": [
+    "All physical parser controls with explicit witnesses",
+    "Physical After exact bytes",
+    "Manifest schema6",
+    "Member publicationReceipt",
+    "External publishedIdentity",
+    "Neutral backup creation"
+  ],
+  "ExtendedUnreached": [
+    "Fresh acquisition completion",
+    "Post-recovery exact Before member/profile/retained neutral",
+    "Post-recovery journal and manifest absence"
+  ],
+  "DiagnosisResult": "diagnosis-result.json",
+  "FurtherRuntime": "HOLD_product_failure"
+}

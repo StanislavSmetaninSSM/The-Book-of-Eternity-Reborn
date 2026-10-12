@@ -1,3 +1,24 @@
+## F04/F05 Windows browser protocol30 — exact BOM corrected, 29PASS1FAIL_EvidenceReviewPending_HOLD, 2026-10-12
+
+SOURCE PASS 6473dda217717b1d37500e215d701292ae5a77a6 by actual Astra XHigh; exact physical BOM removal/
+strictUTF8/unchanged product and all original assertions. Physical parser controls
+2/2 witnesses inside unchanged7Theory30cases.
+Fresh integration build55.3518569s/PlanOnly00:01:07.5639874/
+30planned0exec,1629source157DLLPDB fresh/equal before-after.
+One NoBuild actual30complete=29PASS1FAIL,
+runner00:01:38.9229583/category86.7955645s/exit1;
+budgets3/8/no skip/dup/timeout/bothcleanup/30roots absent.
+Authentic6 ordinary fullPASS; extended production recovery source-unknown-path FAIL
+at ReversibleFilePublication.cs1310/Fresh acquisition Windows.cs207. Both physical
+After/schema6/receipt/identity/neutralcreation pass, extended final restoredbytes/
+neutralretention/journal+manifestabsence UNREACHED. Prefix equivalence source
+candidate: GetOpenedPath strips extended prefix, intent retains it, PathsEqual
+compares GetFullPath without symmetric normalization. Product proposal ONLY/no
+edit/runtime HOLD; native compared strings/intent image not exported.
+Independent EVIDENCE review pending. First2failurecarriers/F18PASS preserved;
+parentOPEN/same-processFresh/no UI/fullgame/coldrestart/performance claim.
+[Complete original evidence](recovery/windows-browser-protocol-bom-20261012/manifest.json).
+
 ## F04/F05 Windows browser protocol30 — exact BOM fixture parser WIP, 2026-10-12
 
 Coordinator accepted bb485e1112355402fa119a24b2178bcfbf83667c and approved
