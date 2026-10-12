@@ -101,7 +101,8 @@ internal static class MortalWoundOpportunityAdapter
             var result = ComposeAcceptedResponseCore(fs, lease, correlation,
                 new GameResponse { Response = scene ?? string.Empty, WoundDecisions = [draft] }, out exactReplay);
             return result.Success ? result : Failure(result.Issues.Select(issue =>
-                issue.FilePath == "woundDecisions[0]" || issue.FilePath.StartsWith("woundDecisions[0].", StringComparison.Ordinal)
+                issue.FilePath == "woundDecisions[0]" || issue.FilePath.StartsWith("woundDecisions[0].", StringComparison.Ordinal) ||
+                issue.WoundRepairContext is not null && WoundRepairPacketBuilder.IsRepairableIssue(issue)
                     ? issue : PrivateSourceIssue(issue)));
         }
         catch (Exception error) when (error is JsonException or InvalidDataException or DecoderFallbackException)

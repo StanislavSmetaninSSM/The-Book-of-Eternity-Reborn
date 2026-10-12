@@ -22,17 +22,19 @@ public partial class GameEngine
         try
         {
             if (!ordinaryUpstreamAccepted) await RevokeOwnedMortalQteCommandAsync(lease);
+            var stageRan = false;
+            async Task<IReadOnlyList<ValidationIssue>> StageCurrentMortalDecision(FileSystemManager.CanonicalWriteLease currentLease)
+            {
+                stageRan = true;
+                return await StageMortalQteDecisionAsync(currentLease);
+            }
             var issues = await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync(lease,
-                ordinaryUpstreamAccepted ? StageMortalQteDecisionAsync : null,
+                ordinaryUpstreamAccepted ? StageCurrentMortalDecision : null,
                 ordinaryUpstreamAccepted ? SealMortalQteDecisionAsync : null,
                 ordinaryUpstreamAccepted ? () => _mortalQteExactReplay : null);
-            if (_mortalQteDecisionImages is not null)
-                issues = issues.Select(issue => issue.Category == IssueCategory.ClientOwnedSurface ||
-                    issue.FilePath == MortalWoundOccurrenceState.StatePath ||
-                    issue.FilePath.StartsWith(MortalWoundOccurrenceState.StatePath + ".", StringComparison.Ordinal) ||
-                    issue.FilePath == MortalWoundOpportunityReceiptState.StatePath ||
-                    issue.FilePath.StartsWith(MortalWoundOpportunityReceiptState.StatePath + ".", StringComparison.Ordinal)
-                        ? MortalWoundOpportunityAdapter.PrivateSourceIssue(issue) : issue).ToArray();
+            if (stageRan && _mortalQteDecisionImages is not null)
+                issues = issues.Select(issue => IsMortalQtePrivateCanonicalIssue(issue)
+                        ? MortalWoundOpportunityAdapter.PrivateSourceIssue(issue) : BindMortalQteDraftRepairTarget(issue)).ToArray();
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
                 await RevokeOwnedMortalQteCommandAsync(lease);
             return issues;
@@ -58,19 +60,7 @@ public partial class GameEngine
             var scene = sceneRoot?["response"] is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;
             var composed = MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse(_fs, lease, raw, scene, out var replay);
             if (composed is null) return Array.Empty<ValidationIssue>();
-            if (!composed.Success) return composed.Issues.Select(issue =>
-                issue.FilePath == "woundDecisions[0]" || issue.FilePath.StartsWith("woundDecisions[0].", StringComparison.Ordinal)
-                    ? new ValidationIssue(MortalWoundOpportunityAdapter.DecisionPath, issue.Severity,
-                        issue.FilePath + ": " + issue.Message, issue.Code, issue.Actor, issue.Section,
-                        issue.Expected, issue.Actual, issue.RepairHint, issue.Category, issue.RepairTargetFiles)
-                    {
-                        FactionRepairClassification = issue.FactionRepairClassification,
-                        MortalItemRepairContext = issue.MortalItemRepairContext,
-                        MortalLocationRepairContext = issue.MortalLocationRepairContext,
-                        EffectRepairContext = issue.EffectRepairContext,
-                        WoundRepairContext = issue.WoundRepairContext?.Clone()
-                    }
-                    : issue).ToArray();
+            if (!composed.Success) return composed.Issues.Select(BindMortalQteDraftRepairTarget).ToArray();
             var decision = StrictJsonAuthority.Deserialize<JsonElement>(raw!,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "accepted Mortal wound decision");
             _mortalQteOwnedCommand = await StateDistributor.StageAcceptedWoundCommandAsync(_fs, lease,
@@ -89,6 +79,39 @@ public partial class GameEngine
             return new[] { new ValidationIssue(MortalWoundOpportunityAdapter.DecisionPath, IssueSeverity.Error,
                 "Mortal wound decision staging refused: " + error.Message, "mortal_wound_decision_staging_invalid") };
         }
+    }
+
+    private static bool IsMortalQtePrivateCanonicalIssue(ValidationIssue issue)
+    {
+        if (issue.Category == IssueCategory.ClientOwnedSurface) return true;
+        var privatePaths = new[] { MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath,
+            WoundIdentityState.StatePath, WoundHistoryState.HistoryPath, WoundCarrierCatalog.PlayerPath,
+            WoundCarrierCatalog.NpcPath, WoundCarrierCatalog.EnemiesPath, WoundCarrierCatalog.AlliesPath,
+            WoundCarrierCatalog.AfterlifeProfilesPath, EffectIdentityState.StatePath, EffectCarrierCatalog.PlayerPath,
+            EffectCarrierCatalog.NpcPath, EffectCarrierCatalog.EnemiesPath, EffectCarrierCatalog.AlliesPath,
+            EffectCarrierCatalog.AfterlifeProfilesPath, EffectCarrierCatalog.SpiritualConflictPath };
+        return (issue.Section is "wound_materialization" or "effect_materialization" ||
+                issue.FilePath.StartsWith(MortalWoundOccurrenceState.StatePath, StringComparison.Ordinal) ||
+                issue.FilePath.StartsWith(MortalWoundOpportunityReceiptState.StatePath, StringComparison.Ordinal)) &&
+            privatePaths.Any(path => issue.FilePath == path || issue.FilePath.StartsWith(path + ".", StringComparison.Ordinal));
+    }
+
+    private static ValidationIssue BindMortalQteDraftRepairTarget(ValidationIssue issue)
+    {
+        if (issue.FilePath != "woundDecisions[0]" && !issue.FilePath.StartsWith("woundDecisions[0].", StringComparison.Ordinal) &&
+            !(issue.WoundRepairContext is not null && WoundRepairPacketBuilder.IsRepairableIssue(issue))) return issue;
+        // Logical proposal/scene coordinates remain available to the existing bounded
+        // repair packet. Only its client-issued file target is the public draft.
+        return new ValidationIssue(issue.FilePath, issue.Severity, issue.Message, issue.Code, issue.Actor,
+            issue.Section, issue.Expected, issue.Actual, issue.RepairHint, issue.Category,
+            [MortalWoundOpportunityAdapter.DecisionPath])
+        {
+            FactionRepairClassification = issue.FactionRepairClassification,
+            MortalItemRepairContext = issue.MortalItemRepairContext,
+            MortalLocationRepairContext = issue.MortalLocationRepairContext,
+            EffectRepairContext = issue.EffectRepairContext,
+            WoundRepairContext = issue.WoundRepairContext?.Clone()
+        };
     }
 
     private async Task<IReadOnlyList<ValidationIssue>> SealMortalQteDecisionAsync(

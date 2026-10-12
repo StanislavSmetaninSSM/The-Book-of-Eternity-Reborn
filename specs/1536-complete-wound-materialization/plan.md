@@ -9,8 +9,74 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (SOURCE BLOCKED79; FINDINGS1–2 CORRECTION MIDPOINT WIP; FINDING3 UNFINISHED/FINDING4 HOLD)
+## Current T070 first vertical — 2026-10-12 (FINDING1 SOURCE CLOSED; RESIDUAL2/LOGICAL3 CORRECTION MIDPOINT WIP; TYPED RETRY3 UNFINISHED/4 DESIGN ACCEPTED, SOURCE UNWRITTEN)
 
+First correction midpoint published201eb1ec318d2b415853c28b39fd5312217b6e26; ROOT verified
+exact remote, clean primary and569-file GitHub-only selected recovery/all36 connected paths.
+Actual retained Astra XHigh focused SOURCE readback statically CLOSED finding1 and accepted
+the coherent first-publication player/identity correction; residual finding2 was confirmed:
+post-publication exact replay emits wound_carrier_invalid_root/StateConsistency at the current
+player carrier, bypassing the previous Category-only marker. Full c7..candidate SOURCE gate
+remains BLOCKED, no runtime/build/discovery/catalog execution or qualification claim.
+
+This stopped second correction midpoint extends finding2 only within a Mortal adapter staged
+in THIS validation pass. Known canonical wound/identity/history/effect carrier roots and
+feature occurrence/receipt diagnostics are classified private before owned command revocation;
+StateConsistency parse failures now retain that classification. Shared NPC/afterlife roots
+are not globally prohibited or reclassified outside this admitted Mortal pass. One existing
+private-source theory adds the exact retained-source NONE replay/player-null row: first actual
+component common NONE publication/receipt, same real N43 source/public decision resubmission,
+then deliberately corrupted live player carrier. It requires the genuine emitted
+wound_carrier_invalid_root diagnostic and real task/dispatch refusal/no worker task/run/ready.
+No valid receipt, occurrence, source or accepted afterimage is authored. This row is UNRUN;
+source4 continuity remains strict and untouched. First-publication two rows/oracles remain.
+
+Finding3 is PARTIAL/UNFINISHED. Public proposal/scene logical issue coordinates are preserved
+for the existing WoundRepairPacketBuilder and fail-closed classification; client-issued
+RepairTargetFiles binds only the exact public DecisionPath. Existing task target resolution
+recognizes that feature-bound semantic target; it does not grant canonical proposal scope.
+Acquisition narration with existing trusted WoundRepairContext remains GM repairable rather
+than being reclassified as private source. Downstream resource/skill proposal diagnostics
+use the same target binding after current adapter admission. Existing severity/location
+component task-target assertions follow these real logical diagnostics. No public grammar,
+private authority or accepted command schema changes. The missing typed retry capture remains:
+rejected raw proposals have no accepted command, and later issued commands are revoked before
+current retry capture. Next bounded source work must retain trusted existing packet/context
+plus exact rejected draft/source evidence, or the genuinely issued typed command before its
+exact revocation, and verify corrected re-submission through the real repair decision path.
+No invalid accepted command may be fabricated; new real repair round-trip controls are still
+UNWRITTEN/UNRUN and excluded from current source inventory until authored.
+
+Finding4 bounded completion-sidecar DESIGN is now independently ACCEPTED by actual retained
+Astra XHigh, source still UNWRITTEN/UNRUN and released only after this midpoint is published.
+Approved exact replay is SAME physical durable root with its ACTUAL retained N43 into a fresh
+child process, separate from ordinary archive save/load into a new root and a genuinely NEW
+decision turn. No SaveLoad transport exception or snapshot copying/re-signing is needed. The
+narrow design derives the fixed completed footprint from the TAKEN validated common plan's
+exact serialized bytes and publishes all common members plus marker in ONE existing atomic
+batch, with exact recovery/readback/compensation; no postcommit writer or authority from marker
+presence alone. Receipt alone cannot waive original resource-quartet continuity, and a
+process-local completion is insufficient. No finding4 source or new controls are authored in
+this midpoint; complete SOURCE gate remains BLOCKED and project checks UNRUN.
+
+Current STATIC preparation17 methods/43 cases/8 descriptors/default30; remainder15 methods/
+41 cases/6 descriptors/default20, excluding the two protected causal Facts. Same category
+budgets; common owner5 methods/14 rows. Catalog707 categories/11543 methods, NOT discovery;
+old702 nodes/suffix/global CI/selection unchanged. Raw-draft theory uses the production
+canonical baseline writer; other components use actual StagePlayerTurn43/official Reader,
+never labelled full ordinary/archive proof. Both metadata active bodies match.
+[Preparation](../../tests/selections/1536-qte-physical-injury-consumer-preparation.json)
+[Controls remainder](../../tests/selections/1536-qte-physical-injury-consumer-controls.json)
+
+NONE4010/CREATEc7 accepted proper causal REDs remain separately1 executed/0 PASS/1 FAIL;
+producer1b23 executed/22 PASS/1 FAIL and projection4d4 actual/28 executed/26 PASS/2 FAIL
+unchanged. Source/build/catalog/runtime/review of corrections remain PENDING/UNRUN; ce955/
+NONE/CREATE/projection Facts, old packets and all checkboxes unchanged. Actual after-terminal
+pending+consumed archive/newroot/freshregistries/freshprocess, durable-session exact replay,
+full consumer/T070/FR-063/parent/#1536 qualification remain OPEN/UNRUN. Mutations STOPPED for
+immediate ROOT source WIP publication/recovery before typed-retry/real-control authoring.
+
+Historical201 first correction midpoint (finding1 later statically closed; residual2 above):
 Mandatory actual retained Astra XHigh full c7..79a2e338bf8e890cd6f6d55320ca2304ec6dcb11
 SOURCE/FIXTURE/SELECTION review was BLOCKED by four Important findings, no Critical.
 No candidate project execution occurred. This stopped first correction midpoint authors

@@ -278,6 +278,10 @@ public static class GmWorkerTaskPacketBuilder
 
     internal static string ResolveValidationTargetPath(ValidationIssue issue)
     {
+        if (issue.RepairTargetFiles.Count == 1 && issue.RepairTargetFiles[0] == MortalWoundOpportunityAdapter.DecisionPath &&
+            (issue.FilePath == "woundDecisions[0]" || issue.FilePath.StartsWith("woundDecisions[0].", StringComparison.Ordinal) ||
+             issue.WoundRepairContext is not null && WoundRepairPacketBuilder.IsRepairableIssue(issue)))
+            return MortalWoundOpportunityAdapter.DecisionPath;
         var actorMaterializationAuthority = ResolveActorMaterializationAuthorityPath(issue);
         if (actorMaterializationAuthority != null)
             return actorMaterializationAuthority;
