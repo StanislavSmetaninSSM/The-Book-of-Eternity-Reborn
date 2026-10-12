@@ -1,0 +1,316 @@
+{
+  "source": "0449b7d0101a7ec54379fbd5cf2a67d7351240a6",
+  "compileSource": "0449b7d0101a7ec54379fbd5cf2a67d7351240a6",
+  "run": "20261012-204406-569-364908-333431585b0d4a90a9473702fea69fca-categories",
+  "exitCode": 1,
+  "wallTime": "00:00:21.4824428",
+  "methods": 1,
+  "cases": 1,
+  "descriptors": 1,
+  "executed": 1,
+  "passed": 0,
+  "failed": 1,
+  "complete": true,
+  "timedOut": false,
+  "skipCount": 0,
+  "duplicateTestIDs": 0,
+  "testResult": {
+    "executionId": "8d5fdda9-815b-433a-9508-0e0f59a2d96a",
+    "testId": "4d8cfb21-1768-0a2d-ed38-151b50ef373d",
+    "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualNextOrdinaryCreatePublishesCompleteWound",
+    "computerName": "c52ff4ce1115",
+    "duration": "00:00:16.5421080",
+    "startTime": "2026-10-12T20:44:27.6664892+00:00",
+    "endTime": "2026-10-12T20:44:27.6664990+00:00",
+    "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+    "outcome": "Failed",
+    "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+    "relativeResultsDirectory": "8d5fdda9-815b-433a-9508-0e0f59a2d96a"
+  },
+  "errorMessage": "Completed actual N43 CREATE turn did not publish one complete canonical player wound.",
+  "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualNextOrdinaryCreatePublishesCompleteWound() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerCreate.cs:line 97\n--- End of stack trace from previous location ---",
+  "classification": "GENUINE_CREATE_CONSUMER_CAUSAL_RED_MISSING_CANONICAL_PLAYER_WOUND",
+  "allPrerequisitesReachedAndPassed": true,
+  "firstCausalPredicateLine": 97,
+  "sourceCoordinates": {
+    "SessionId": "session_qte_story_append",
+    "RequestId": "abb743e03cc24f75b9a2c1775514bc74",
+    "SnapshotToken": "C111AFD77ECACE444E187FD17063DC4D03EE95C392E70A33F240F998C74886EF",
+    "TurnNumber": 42
+  },
+  "nextCoordinates": {
+    "SessionId": "session_qte_story_append",
+    "RequestId": "64e96718c213450a98fc3403a8fc6369",
+    "SnapshotToken": "1687DB671609B053A10C85C3DCF67B2572188DA47599F838177621919D7621B9",
+    "TurnNumber": 43,
+    "Realm": "mortal_world"
+  },
+  "nextOfficialReaderSuccess": true,
+  "ordinaryValidated": true,
+  "engineFailure": null,
+  "actualLoopTurn": 43,
+  "storyTurns": [
+    42,
+    43
+  ],
+  "sourceHealth": 155,
+  "sourcePendingUnchanged": true,
+  "receiptBeforeAndAfterAbsent": true,
+  "playerWoundIdentityHistoryAndEffectsAfterAbsent": true,
+  "materializeDraftStillPresentAndExact": true,
+  "woundCommandAbsent": true,
+  "proposalSeverity": "I",
+  "offeredMaximumSeverity": "II",
+  "verbatimAcquisitionNarrationInAcceptedStory": true,
+  "canonicalWoundIdentityHistoryAnchorEffectReceiptAndConsumeOraclesAfterFirstPredicate": "UNREACHED",
+  "nativeObservationCount": 6,
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e1c57bc292674033a37e96b3f14d333c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "allEmittedStrictRootsActuallyAbsent": true,
+  "runnerOwnedTreeCleanupSucceeded": true,
+  "sourcePinsPrePostMatched": 106,
+  "freshBinaryPinsPrePostMatched": 10,
+  "metadataEditedBeforeRootPostReadback": false,
+  "firstCreateActualInvocations": 1,
+  "noneCausalEvidence": "unchangedACCEPTED4010 1exec0PASS1FAIL",
+  "projectionQualification": "unchangedACCEPTED4d 4actual28executed26PASS2FAIL/26uniquePASS18methods",
+  "producerQualification": "unchangedACCEPTED1b 23executed22PASS1FAIL/22uniquePASS16methods",
+  "noneCreateProduction": "UNIMPLEMENTED_UNRUN",
+  "noNewProductionAuthorizedUntilEvidenceGate": true,
+  "verifiedUtc": "2026-10-12T20:45:26.966511+00:00",
+  "issue": 1536,
+  "branch": "1536-wound-b2-cloud-20261012",
+  "sourceReview": "SOURCE_FIXTURE_SELECTION_ACCEPTED actual retained AstraXHigh0449b7d0",
+  "evidenceReview": "PENDING",
+  "sourceOriginalCausalFactSHA256": "ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f",
+  "preparationExecutedTests": 0,
+  "catalogExecutedTests": 0,
+  "preparation": "20261012-203940-843-364466-3d3b7b74420e4933961f0e818d360ef2-categories",
+  "catalog": "20261012-204210-688-364660-a697a860be3447fc856a4a1156072c46-categories",
+  "catalogCategories": 702,
+  "catalogMethods": 11534,
+  "scope": "FIRST genuine CREATE missingcanonicalplayerwound RED after complete accepted N43; later canonical/receipt/consume oracles unreached; NONE/CREATE production remains unimplemented",
+  "artifacts": [
+    {
+      "path": "preparation-Build-integration.log.gz",
+      "originalPath": "TestResults/test-categories/20261012-203940-843-364466-3d3b7b74420e4933961f0e818d360ef2-categories/Build-integration.log",
+      "originalBytes": 72979,
+      "originalSHA256": "d442aa7e1a80157c29ce65b7ee8f9673aa7181e5fd5e868afc546f16d75184e0",
+      "storedBytes": 5174,
+      "storedSHA256": "6b8b411dab8453aeafd0f29d1556c175f648a8fc21003efe5e287a077e1812ef",
+      "compression": "gzip"
+    },
+    {
+      "path": "preparation-dotnet-test.log.gz",
+      "originalPath": "TestResults/test-categories/20261012-203940-843-364466-3d3b7b74420e4933961f0e818d360ef2-categories/dotnet-test.log",
+      "originalBytes": 1720480,
+      "originalSHA256": "f7c31a43e291bd3a239be6327b67fe2b3395aa5bed30ce812b4409c6508fb640",
+      "storedBytes": 188842,
+      "storedSHA256": "51b5ed56d8413f34c844889faf894d712b316f309a0b79662aacc53199bedacd",
+      "compression": "gzip"
+    },
+    {
+      "path": "preparation-plan.json.gz",
+      "originalPath": "TestResults/test-categories/20261012-203940-843-364466-3d3b7b74420e4933961f0e818d360ef2-categories/plan.json",
+      "originalBytes": 3288,
+      "originalSHA256": "165f9a4b4d36818c752f268be7992d14d735dbd40b81271d2d64f67ffeef0fe6",
+      "storedBytes": 1569,
+      "storedSHA256": "56356cd47da65d41591bc8bf6cca937489f380ed7c29ee890dc4279b735b4508",
+      "compression": "gzip"
+    },
+    {
+      "path": "preparation-summary.json.gz",
+      "originalPath": "TestResults/test-categories/20261012-203940-843-364466-3d3b7b74420e4933961f0e818d360ef2-categories/summary.json",
+      "originalBytes": 3583,
+      "originalSHA256": "ae3de798db93cd77fedbc06edc476cbeee0677432a659dda19993fd94a9d9162",
+      "storedBytes": 1682,
+      "storedSHA256": "e501751d6964af5ee5183f54effaf623160bbb4c8449fd53f36d5febddad7e07",
+      "compression": "gzip"
+    },
+    {
+      "path": "catalog-Build-integration.log.gz",
+      "originalPath": "TestResults/test-categories/20261012-204210-688-364660-a697a860be3447fc856a4a1156072c46-categories/Build-integration.log",
+      "originalBytes": 709,
+      "originalSHA256": "f0fff34bd016b16e17ef7eb4ff5bf0c097a87bcc5b65ef85c76181370762a9e8",
+      "storedBytes": 276,
+      "storedSHA256": "f4d649e0d8e786f9472f0f1f152d47730e8f60c9508b9b2914b2ee947f3fdb6d",
+      "compression": "gzip"
+    },
+    {
+      "path": "catalog-Build-unit.log.gz",
+      "originalPath": "TestResults/test-categories/20261012-204210-688-364660-a697a860be3447fc856a4a1156072c46-categories/Build-unit.log",
+      "originalBytes": 30113,
+      "originalSHA256": "786b7c94356c67cfa9e1ed9fe158afd2d0c112cd49e957378ae273ee1d3f1365",
+      "storedBytes": 1756,
+      "storedSHA256": "59e5b4d3d70ae068fedebf80a21deb610e367a482fe904643ed5dcf1809ec3fc",
+      "compression": "gzip"
+    },
+    {
+      "path": "catalog-catalog-audit.json.gz",
+      "originalPath": "TestResults/test-categories/20261012-204210-688-364660-a697a860be3447fc856a4a1156072c46-categories/catalog-audit.json",
+      "originalBytes": 103,
+      "originalSHA256": "0dbbb9bbe86b0088dc2f2ee87c8f3d8e9ea2b098bacb891c826b57e5de9aabf3",
+      "storedBytes": 103,
+      "storedSHA256": "6742d55a102334d91872416e8f87108de2561598be9b2d4200a23733e847f859",
+      "compression": "gzip"
+    },
+    {
+      "path": "catalog-dotnet-test.log.gz",
+      "originalPath": "TestResults/test-categories/20261012-204210-688-364660-a697a860be3447fc856a4a1156072c46-categories/dotnet-test.log",
+      "originalBytes": 3344667,
+      "originalSHA256": "216ee61793c8cc127119e0d7fad5dae56c2ef02ae72070a63012c3445ad68b89",
+      "storedBytes": 369281,
+      "storedSHA256": "228f8a721efb291f3ab31e3a89c674df9fd21afcbbce24c018d8eeb803a89035",
+      "compression": "gzip"
+    },
+    {
+      "path": "catalog-summary.json.gz",
+      "originalPath": "TestResults/test-categories/20261012-204210-688-364660-a697a860be3447fc856a4a1156072c46-categories/summary.json",
+      "originalBytes": 1599,
+      "originalSHA256": "1520c278a4384371616189160543f96fcc79bb677382925664e6e82336d98658",
+      "storedBytes": 641,
+      "storedSHA256": "17cf3d57e9c3609bdcd00e5b061449cd02c719222c744890d13b1b41fe90ba53",
+      "compression": "gzip"
+    },
+    {
+      "path": "actual-dotnet-test.log.gz",
+      "originalPath": "TestResults/test-categories/20261012-204406-569-364908-333431585b0d4a90a9473702fea69fca-categories/dotnet-test.log",
+      "originalBytes": 1906102,
+      "originalSHA256": "b943fe847387840f8311802136cc90df94635ae1c476e0d1b5686bc6806f6711",
+      "storedBytes": 249995,
+      "storedSHA256": "212741390f303e2f638bf8496d695e183a22733f083d86921f340397cf971dd6",
+      "compression": "gzip"
+    },
+    {
+      "path": "actual-plan.json.gz",
+      "originalPath": "TestResults/test-categories/20261012-204406-569-364908-333431585b0d4a90a9473702fea69fca-categories/plan.json",
+      "originalBytes": 3286,
+      "originalSHA256": "e7965d66d7ca919d0bb7a200e845b862dd759a246b128e39d12d8f40eac8cb56",
+      "storedBytes": 1566,
+      "storedSHA256": "dfe04a0441a3bce6a550bc5ce0f940e9efdbb7e1d1077b4a3cc2cdc6e04ed811",
+      "compression": "gzip"
+    },
+    {
+      "path": "actual-qte-physical-injury-consumer-create-integration-001.trx.gz",
+      "originalPath": "TestResults/test-categories/20261012-204406-569-364908-333431585b0d4a90a9473702fea69fca-categories/qte-physical-injury-consumer-create-integration-001.trx",
+      "originalBytes": 522343,
+      "originalSHA256": "65ba4345077db7bb391cf02b3a55c5f5730ec828fbf0e6a7618e4c0e2df2665b",
+      "storedBytes": 133208,
+      "storedSHA256": "1a3d9fe7515a59908cff5de60951f0057093e12365690584eafb803532a4725d",
+      "compression": "gzip"
+    },
+    {
+      "path": "actual-summary.json.gz",
+      "originalPath": "TestResults/test-categories/20261012-204406-569-364908-333431585b0d4a90a9473702fea69fca-categories/summary.json",
+      "originalBytes": 3470,
+      "originalSHA256": "e529c3cb3a1b1d032ffc5fd60e9d005c662491080cc179510162ac998d9c4d27",
+      "storedBytes": 1649,
+      "storedSHA256": "f147d6779dd79e38226e4fd4f0ff49944e19c08effe5ecfa3f2bacef00b70b6f",
+      "compression": "gzip"
+    },
+    {
+      "path": "candidate-0449-source-pins.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/candidate-0449-source-pins.json",
+      "originalBytes": 21300,
+      "originalSHA256": "b1570bed65a26c54258801470e163180cb6a2035790e183e404debe6025401c0",
+      "storedBytes": 6555,
+      "storedSHA256": "2da291e61c8c830f71b5546f6a8300c24907db71367344a919282f60cb9d9b73",
+      "compression": "gzip"
+    },
+    {
+      "path": "fresh-0449-binary-pins.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/fresh-0449-binary-pins.json",
+      "originalBytes": 2598,
+      "originalSHA256": "8158cd586f1c94e3b4cab757d5bd6da1b9c22262c0f9c7f656a86c48fa22232c",
+      "storedBytes": 700,
+      "storedSHA256": "c2cc7fdb6d8dc2166eab32a5ce0fd2cd5ac1e1afac5a37322928e3d7b17dea3e",
+      "compression": "gzip"
+    },
+    {
+      "path": "preparation-invocation-prewritten.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/preparation-invocation-prewritten.json",
+      "originalBytes": 684,
+      "originalSHA256": "4290b56a2663d820c6a97d486c3d5427313cca871eed675ebe194029e685fd25",
+      "storedBytes": 446,
+      "storedSHA256": "150b9c65318b21c7b13ce00d97b435f8323ebadcd01b66cd9a9d5b317cef54bf",
+      "compression": "gzip"
+    },
+    {
+      "path": "preparation-console.log.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/preparation-console.log",
+      "originalBytes": 1434,
+      "originalSHA256": "0194c73dfd1c7a2550e4c6c2fb5c41786d7d5c04da23c64c764482f76f30bd4e",
+      "storedBytes": 641,
+      "storedSHA256": "c40472aaf244d10276ecc9319c2fd9f5a681bd6691602ce4916e44a2dd82a4e4",
+      "compression": "gzip"
+    },
+    {
+      "path": "preparation-readback.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/preparation-readback.json",
+      "originalBytes": 7448,
+      "originalSHA256": "c6d2725e560bdba7f7700dbbd03b600c21b43c8d018728b5dc463907f0ee9dc7",
+      "storedBytes": 2098,
+      "storedSHA256": "c616f8298ca79082ef2561cc577b4b9ff8f25631005b0b6e1ddb589d226bce6a",
+      "compression": "gzip"
+    },
+    {
+      "path": "catalog-invocation-prewritten.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/catalog-invocation-prewritten.json",
+      "originalBytes": 594,
+      "originalSHA256": "02983a2a6c41d01414cd52740849aa4233ec46d0fef1c852a9612b92340da51d",
+      "storedBytes": 425,
+      "storedSHA256": "adcf12e26e69007025309a79932e2c5aeda934636ad43a2cdfeae40ffc6dfca8",
+      "compression": "gzip"
+    },
+    {
+      "path": "catalog-console.log.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/catalog-console.log",
+      "originalBytes": 768,
+      "originalSHA256": "31844ff451a9f553e6d3f6850082a835b62e59f83758f0f49e1bb65379015ec0",
+      "storedBytes": 411,
+      "storedSHA256": "a25ba650e7818a6b0754a5af3f191e5afe6f58ebe1e3b06b4d46e021753ff8b5",
+      "compression": "gzip"
+    },
+    {
+      "path": "catalog-readback.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/catalog-readback.json",
+      "originalBytes": 2116,
+      "originalSHA256": "04b3a3f5d126f6e42f9f835d081b405d295ed11412de4e69ca25a6fec00d7285",
+      "storedBytes": 775,
+      "storedSHA256": "386297ef8a096e35ab932a6c5925138a1e8d356f2e8e464ac26b36987c254bd2",
+      "compression": "gzip"
+    },
+    {
+      "path": "first-actual-invocation-prewritten.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/first-actual-invocation-prewritten.json",
+      "originalBytes": 1869,
+      "originalSHA256": "bb2d5267a1d7c681983aec3de1f362cb86e62466e085f5252e196e2d42921182",
+      "storedBytes": 831,
+      "storedSHA256": "ef271f9fb1675e2016a651b37c0f25bd3afe82abe7156190fffca7dd5fdd82c6",
+      "compression": "gzip"
+    },
+    {
+      "path": "first-actual-console.log.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/first-actual-console.log",
+      "originalBytes": 259898,
+      "originalSHA256": "f0817414a7f8e98bb96c43e75a45434ec97ea4094893814dce6c4b8bc97e3971",
+      "storedBytes": 66654,
+      "storedSHA256": "7bc482168f446efcb2f5065a391cc019990312ae2a195e03ea7cf1ecb95354b9",
+      "compression": "gzip"
+    },
+    {
+      "path": "first-actual-root-readback.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-consumer-create-20261012/first-actual-root-readback.json",
+      "originalBytes": 236555,
+      "originalSHA256": "7b32abf4e4b4d0e464d4dc650204f60f015a82620eb3dda3c604a59164ab10f6",
+      "storedBytes": 65472,
+      "storedSHA256": "aba84cd5cfe983d563fd6aaa759a1d72ec134f5dc1942ce6562850c8afd165be",
+      "compression": "gzip"
+    }
+  ]
+}

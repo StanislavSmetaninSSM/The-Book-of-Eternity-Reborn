@@ -9,8 +9,53 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (NONE CAUSAL RED EVIDENCE ACCEPTED4010; FIRST CREATE CONSUMER TEST-ONLY SOURCE WIP; CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-12 (FIRST GENUINE CREATE CONSUMER CAUSAL RED ROOT-VERIFIED0449; PUBLICATION/EVIDENCE PENDING; COMMON CONSUMER PRODUCTION UNIMPLEMENTED)
 
+FIRST genuine CREATE consumer causal RED is ROOT raw-verified at SOURCE/FIXTURE/SELECTION
+accepted runtime/compile0449b7d0101a7ec54379fbd5cf2a67d7351240a6. Native
+20261012-204406-569-364908-333431585b0d4a90a9473702fea69fca-categories:
+exit1,21.4824428s,COMPLETE1 method/1 case/1 descriptor,1 executed/0 PASS/1 FAIL,
+no timeout/skip/duplicates,runner cleanup=true. Exact first causal failure at new Fact:97:
+"Completed actual N43 CREATE turn did not publish one complete canonical player wound."
+ROOT full TRX/error/stack/stdout/6 observations prove all preceding real source42 health155/
+occurrence/original cleanup, official signed N43/closed offer/pristine absences, lawful raw
+materialize proposal/scene/ready and full engine return/accepted hook/loop43/story43 passed.
+Reader Success=true/Issues=[],gmAuthored/ordinaryValidated=true,EngineFailure=null;
+accepted story has turns42+43, acquisitionNarration verbatim, proposalI within offeredII.
+Genuine source session_qte_story_append requestabb743e03cc24f75b9a2c1775514bc74/snapshot
+C111AFD77ECACE444E187FD17063DC4D03EE95C392E70A33F240F998C74886EF/turn42;
+genuine next request64e96718c213450a98fc3403a8fc6369/snapshot
+1687DB671609B053A10C85C3DCF67B2572188DA47599F838177621919D7621B9/turn43,
+same session/Mortal. Raw player wound/identity/history/effects absent, effect index empty,
+receiptBefore/After absent, pending unchanged, exact materialize draft persists, command
+absent. ALL later strict complete-wound/identity/history/anchor/effect/receipt/correlation/
+consume assertions are UNREACHED, not passed. This is proper missing-wound causal RED;
+no new production fix is released before its EVIDENCE gate.
+
+One strict root /tmp/boe-gameengine-turnlifecycle-e1c57bc292674033a37e96b3f14d333c emitted
+removed=true/failure=null and root checked actual absence. All106 source pins/10 fresh
+binaries matched PRE/POST actual BEFORE these metadata edits. Read frozen manifest and
+decompressed root readback before editing. The locally frozen24 gz artifacts plus manifest
+[CREATE consumer causal RED packet](./recovery/qte-physical-consumer-create-causal-red-20261012)
+retain raw original evidence; publication and independent EVIDENCE/status review are PENDING.
+Fresh selected preparation native
+20261012-203940-843-364466-3d3b7b74420e4933961f0e818d360ef2-categories:
+exit0,103.7335849s,Build-integration101.0927837s/78 warnings/0 errors,
+actual1 method/1 case/1 descriptor,0 tests. Fresh both-build ownership audit native
+20261012-204210-688-364660-a697a860be3447fc856a4a1156072c46-categories:
+exit0,27.6795771s,702 categories/11534 methods,valid/0 unmapped/0 stale,0 tests.
+Preparation/catalog are discovery evidence only; CREATE is a separate1 actual/1 executed/
+0 PASS/1 FAIL cohort. NONE EVIDENCE accepted4010 separately1 executed/0 PASS/1 FAIL;
+qualified projection4d4 actual/28 executed/26 PASS/2 FAIL and producer1b23 executed/
+22 PASS/1 FAIL remain unchanged, with no passed cohort repeated.
+
+Common NONE/CREATE production, consumer replay/rollback/atomicity and actual after-terminal
+save-load/new-root/fresh-process remain pending; full T070/FR-063/parent/#1536 OPEN. No
+source/test/catalog/selector/prompt/packet/checkbox mutation or project execution in this
+two-doc metadata checkpoint. Mutations STOPPED for immediate root frozen-packet publication/
+recovery and mandatory independent EVIDENCE gate before any production release.
+
+Historical first CREATE test-only source boundary (SOURCE accepted0449; proper RED above):
 First genuine NONE consumer causal RED EVIDENCE/status accepted by actual retained Astra
 XHigh at4010b6584a9ddabb5cea5352198ca32dff5d2102, no findings. Root exact remote/clean
 selected519-file recovery verified. NONE remains its own1 actual/1 executed/0 PASS/1 FAIL
@@ -19,7 +64,7 @@ consume/wound-unchanged assertions UNREACHED. Projection accepted4d4 actual/28 e
 26 PASS/2 FAIL/26 unique passed cases and producer accepted1b23 executed/22 PASS/1 FAIL
 remain separate and unchanged; all frozen manifests/old outcome bytes stay immutable.
 
-Current bounded TEST-ONLY CREATE WIP adds exactly one Fact in a new existing engine partial,
+The bounded TEST-ONLY CREATE source added exactly one Fact in a new existing engine partial,
 one category5/default10 and one task-local selector. Independently owned actual declared QTE
 source42/max2 must finalize health160→155/one real original occurrence/terminal cleanup;
 new same-root/session engine must complete actual ProcessPlayerTurn43. Existing owned-hook/
@@ -50,17 +95,18 @@ identity/source agreement, correlated materialize receipt original42+decision43 
 wound/transition IDs, pending empty and transient draft/WoundCommand consumed. No replay/
 atomicity/archive qualification follows from this one case.
 
-CREATE SOURCE/FIXTURE/SELECTION, selected fresh integration build/PlanOnly, ownership audit
-and first actual are ALL UNRUN. Static inventory1 method/1 case/1 descriptor, category5/default10;
-702 categories/11534 methods predicted, not discovery evidence. [Exact CREATE selection](../../tests/selections/1536-qte-physical-injury-consumer-create.json)
+CREATE SOURCE/FIXTURE/SELECTION accepted0449; selected fresh integration build/PlanOnly and
+ownership audit completed0 tests,1 method/1 case/1 descriptor,702 categories/11534 methods.
+First actual proper CREATE RED is recorded above; category5/default10 remains unchanged. [Exact CREATE selection](../../tests/selections/1536-qte-physical-injury-consumer-create.json)
 selects only this new Fact; old701 catalog suffix/nodes, NONE Fact/selector, ce955 original
 source causal Fact, first projection Fact/selectors, global CI/selection and all checkboxes
 remain unchanged. No helper refactor/new worker/harness/provider/Windows/C5/journal or project
 execution. No GM prompt capability update: production is unchanged, only the already accepted
 future public CREATE protocol is test data. NONE/CREATE production, consumer replay/rollback/
 atomicity and actual after-terminal save-load/new-root/fresh-process remain UNIMPLEMENTED/
-UNRUN; full T070/FR-063/parent/#1536 OPEN. Mutations STOPPED at coherent five-path TEST-ONLY
-SOURCE WIP for immediate root publication/recovery and mandatory independent source gate.
+UNRUN; full T070/FR-063/parent/#1536 OPEN. The coherent five-path TEST-ONLY source WIP was
+published and independently SOURCE accepted0449 before preparation/first actual; no
+production consumer implementation followed before evidence.
 
 Historical independently accepted first NONE causal RED:
 FIRST genuine NONE consumer causal RED is ROOT raw-verified at SOURCE/FIXTURE/SELECTION
