@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED SOURCE ACCEPTED / BUILD-DISCOVERY-RUNTIME UNRUN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; STORY CONTROLS UNRUN)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -255,6 +255,21 @@ retained in existing TRX diagnostics. Inventory9 methods/15 cases, selectors, bu
 production and causal Fact/hash stay unchanged. Build/discovery/runtime UNRUN; full SOURCE/
 FIXTURE/SELECTION still pending. Root publishes the three-path correction and requests focused
 recheck; reviewer continues immutablecd4 remainder. No producer or successful cold proof claim.
+
+Current first causal result: compile/runtime174aabad7632d7eef18f96a08d7ef2b64f042386,
+SOURCE accepted1969223f. Catalog124106 valid687/11519, fresh builds0 errors77/35 warnings,
+0 tests; exact PlanOnly1244331/1 descriptor,0 tests. First matching actual124518 completed
+**1 executed,0 PASS,1 FAIL**, complete, no timeout/skips/duplicates, wall13.8029845s. Original
+Fact reaches actual canonical health160→155/Applied Damage5/event turn_42:qte_terminal:1:resource:1,
+terminal continuation/history and original cleanup with null engine/fixture failure, then
+fails line239 missing pending occurrence. This is genuine finalized-harm producer RED REACHED.
+Full TRX/source35/binary10/strictcleanup1/root absence read back; [24-artifact immutable packet](./recovery/qte-physical-injury-finalization-causal-red-20261012)
+all stored/raw/original hashes verified. Third historical finalization invocation; first current
+source invocation, prior timeout/story packets unchanged. Remaining same bounded story controls
+14 cases UNRUN, no full GREEN/cold claim. Producer/consumer/save-load still NOT IMPLEMENTED/
+UNRUN. Next exact finite story controls on matching fresh binaries, immutable first outcomes
+and independent EVIDENCE gate; no new scope. Nonblocking new CS8602/xUnit1013 warnings recorded
+in plan/raw logs, no warning cleanup. All checkboxes unchanged.
 
 Fresh actual independent Astra XHigh combined SOURCE/FIXTURE/SELECTION ACCEPTED at
 1969223f594193a48516d70b0819d8a0d866515d (cd4 production plus child correction). Confirmed

@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "qte-physical-injury-finalization"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-physical-injury-finalization",
+      "reason": "#1536 T070 first test-only finalized-health-harm/missing-occurrence causal cohort: one real ordinary GameEngine QTE case, category5/default overall10; accepted admission51 unchanged and not selected again.",
+      "contracts": [
+        "Actual ProcessPlayerTurn stages the ordinary request/signed source snapshot; coordinates are read by official PendingTurnSnapshotReader while that request is live, never manufactured from raw request JSON",
+        "Offline correlated GM raw offer plus real queued Agent Console acceptance/action/final screen establishes frozen branch declaration before any health mutation",
+        "Actual common QTE resource/effect finalization must yield exact canonical health160->155, one matching Applied Damage/history row, lawful resource owner agreement, terminal continuation/history and ordinary cleanup before the missing-occurrence assertion",
+        "Exactly one strict pending source occurrence must retain original signed source coordinates and explicit maximum2; no producer/binding/occurrence/receipt/after-image fabrication",
+        "Per-test owned root and strict cleanup; protected wound identity/history/receipt/command bytes unchanged; any preceding fixture/admission/finalization failure is a blocker, not causal producer RED"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 2.1997331,
+  "Descriptors": [
+    {
+      "Name": "qte-physical-injury-finalization-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "qte-physical-injury-finalization",
+      "Categories": [
+        "qte-physical-injury-finalization"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

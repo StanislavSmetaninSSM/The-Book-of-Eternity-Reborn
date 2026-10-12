@@ -1,0 +1,178 @@
+{
+  "scope": "#1536 first genuine finalized canonical player health QTE Damage reaches missing-occurrence causal RED; story controls still UNRUN",
+  "source": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "compileSource": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "runtimeSource": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "acceptedSourceGate": "1969223f594193a48516d70b0819d8a0d866515d",
+  "runs": {
+    "catalog": "20261012-124106-045-293711-af45a6bd55964292904a5f12a753a361-categories",
+    "causalPlan": "20261012-124433-382-294411-f01ea0d123a24d578b2d8f0a410467a4-categories",
+    "causalActual": "20261012-124518-139-294545-fbd68da7a28a4daebff95227aec1848d-categories"
+  },
+  "thisSourceActualInvocations": 1,
+  "allFinalizationActualInvocations": 3,
+  "counts": {
+    "plannedCases": 1,
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "descriptors": 1,
+    "complete": true
+  },
+  "timedOut": false,
+  "failureClass": "MISSING_OCCURRENCE_CAUSAL_RED_REACHED",
+  "error": "Finalized canonical player health Damage from the declared ordinary QTE has no pending Mortal wound occurrence.",
+  "finalizedHealthDamage": "REACHED actual160->155 one Applied5 event turn_42:qte_terminal:1:resource:1; terminal continuation/history and cleanup",
+  "missingOccurrencePredicate": "REACHED missing pending occurrence",
+  "strictDistinctOwnedCleanupRootsAbsent": 1,
+  "sourcePins": 35,
+  "binaryPins": 10,
+  "newStoryControls": "UNRUN",
+  "producer": "NOT_IMPLEMENTED",
+  "artifacts": [
+    {
+      "path": "catalog-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124106-045-293711-af45a6bd55964292904a5f12a753a361-categories/summary.json",
+      "sha256": "7870ec971e9dc8c79b7f4154d0c8943f901db307a859662e13bfea72ac099131",
+      "originalSha256": "7870ec971e9dc8c79b7f4154d0c8943f901db307a859662e13bfea72ac099131"
+    },
+    {
+      "path": "catalog-catalog-audit.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124106-045-293711-af45a6bd55964292904a5f12a753a361-categories/catalog-audit.json",
+      "sha256": "fda591e66ce7571d53b79b79a65a47cf5f9a4e0ebd21414d4b5c8bb82cfd4dff",
+      "originalSha256": "fda591e66ce7571d53b79b79a65a47cf5f9a4e0ebd21414d4b5c8bb82cfd4dff"
+    },
+    {
+      "path": "catalog-Build-integration.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124106-045-293711-af45a6bd55964292904a5f12a753a361-categories/Build-integration.log",
+      "sha256": "17fc871d3dd87a6630e95eaf6cd60bc275bfe1920314b964b67796bc7bb3b9b3",
+      "originalSha256": "89fd3227854eaf6b1b54b0589b789e94b099a2ee304537272cdc664b964f82f2"
+    },
+    {
+      "path": "catalog-Build-unit.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124106-045-293711-af45a6bd55964292904a5f12a753a361-categories/Build-unit.log",
+      "sha256": "f807ee61edc4289bdbf598b8d170fdfde1efccced69a9cb43fb985fd869a4a55",
+      "originalSha256": "ef647a0e466e535ed8387fdf60570cb0325c527a8aa2ac7e3c12a36a8c147056"
+    },
+    {
+      "path": "catalog-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124106-045-293711-af45a6bd55964292904a5f12a753a361-categories/dotnet-test.log",
+      "sha256": "5dbfc1a92a96f77576dcfe81c217d62cb9a469230f8718fc8568b487bdd771e0",
+      "originalSha256": "4a5dba85043ec1d45994aa51d659e9fdd2a59a262862fc1460a85f3a04cdd1e7"
+    },
+    {
+      "path": "causal-plan-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124433-382-294411-f01ea0d123a24d578b2d8f0a410467a4-categories/summary.json",
+      "sha256": "4adfb82d60a839795134f66e2ff9e1a3ab81f1a21fa55bfb050327f5f0ec1105",
+      "originalSha256": "4adfb82d60a839795134f66e2ff9e1a3ab81f1a21fa55bfb050327f5f0ec1105"
+    },
+    {
+      "path": "causal-plan-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124433-382-294411-f01ea0d123a24d578b2d8f0a410467a4-categories/plan.json",
+      "sha256": "9b96fa88ed378b37b5d5171cd470926a43fb1f38e4e2db84be1eeff5e168dab7",
+      "originalSha256": "9b96fa88ed378b37b5d5171cd470926a43fb1f38e4e2db84be1eeff5e168dab7"
+    },
+    {
+      "path": "causal-plan-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124433-382-294411-f01ea0d123a24d578b2d8f0a410467a4-categories/dotnet-test.log",
+      "sha256": "e2cc35ecf6ccce8f9ca74a0392d61b29023cea96eaeaee8acad5d648c2ea7afa",
+      "originalSha256": "11146f7bc9eb604c8d211f4d37966cda5bcf326fc7dfded74e0e09d27c583bfa"
+    },
+    {
+      "path": "causal-actual-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124518-139-294545-fbd68da7a28a4daebff95227aec1848d-categories/summary.json",
+      "sha256": "d742f1abb3d78f2e1d7afdcd82a91f9dc01e9754db54729dc990c914a8e97bb1",
+      "originalSha256": "d742f1abb3d78f2e1d7afdcd82a91f9dc01e9754db54729dc990c914a8e97bb1"
+    },
+    {
+      "path": "causal-actual-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124518-139-294545-fbd68da7a28a4daebff95227aec1848d-categories/plan.json",
+      "sha256": "b491a0c4426c0c8d0c650b4c4d9adf21e8f0ba34f24223916d30c5129389c710",
+      "originalSha256": "b491a0c4426c0c8d0c650b4c4d9adf21e8f0ba34f24223916d30c5129389c710"
+    },
+    {
+      "path": "causal-actual-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124518-139-294545-fbd68da7a28a4daebff95227aec1848d-categories/dotnet-test.log",
+      "sha256": "91d8f699c87d32235dce3a5df53cd755bac0406ad1e8ef99801ec9c1bd66b46c",
+      "originalSha256": "22d64e3057d8a68885c9af329642af8c496be1113e85e9af27acdd3af9ddf63b"
+    },
+    {
+      "path": "causal-actual-qte-physical-injury-finalization-integration-001.trx.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124518-139-294545-fbd68da7a28a4daebff95227aec1848d-categories/qte-physical-injury-finalization-integration-001.trx",
+      "sha256": "a59b91e858cc07f9fc073e1be1bb7483c7ca2230c8f9850c0af832f395ed979c",
+      "originalSha256": "d49853402e67c11b1823aa3c9f5ae90aef534eabaefaca952e9411ae7599c47f"
+    },
+    {
+      "path": "source-pins.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/source-pins.json",
+      "sha256": "7e9bcbd40ebc1aba2c8874dce6010f922e1aec1bab354bcb26c8967d206f8638",
+      "originalSha256": "7e9bcbd40ebc1aba2c8874dce6010f922e1aec1bab354bcb26c8967d206f8638"
+    },
+    {
+      "path": "fresh-build-binaries.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/fresh-build-binaries.json",
+      "sha256": "a4a4bbdd2c65b96d9e49fa71eaa0b1370c04b7fdc996cf3773d8071a3a763923",
+      "originalSha256": "a4a4bbdd2c65b96d9e49fa71eaa0b1370c04b7fdc996cf3773d8071a3a763923"
+    },
+    {
+      "path": "catalog-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/catalog-invocation-prewritten.json",
+      "sha256": "24ce732f7eed70afb1becd29a11309573723039957819200d6e2176ffd50fc27",
+      "originalSha256": "24ce732f7eed70afb1becd29a11309573723039957819200d6e2176ffd50fc27"
+    },
+    {
+      "path": "causal-plan-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/causal-plan-invocation-prewritten.json",
+      "sha256": "ca66d56ba1df2899f57e608d9db209bbc145c0c34aef8652d72f7685eed22e9b",
+      "originalSha256": "ca66d56ba1df2899f57e608d9db209bbc145c0c34aef8652d72f7685eed22e9b"
+    },
+    {
+      "path": "causal-preparation-readback.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/causal-preparation-readback.json",
+      "sha256": "37878c943cf9f3d7258cbfaac0d5891442ddc43238e6a53faf78121ddb07544d",
+      "originalSha256": "37878c943cf9f3d7258cbfaac0d5891442ddc43238e6a53faf78121ddb07544d"
+    },
+    {
+      "path": "causal-actual-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/causal-actual-invocation-prewritten.json",
+      "sha256": "2afc632678b327bacba991195d3b16b3aade0efd7d9576f59c75fd14dee17790",
+      "originalSha256": "2afc632678b327bacba991195d3b16b3aade0efd7d9576f59c75fd14dee17790"
+    },
+    {
+      "path": "causal-first-actual-readback.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/causal-first-actual-readback.json",
+      "sha256": "d69716fac38bf1991691c4387321577ae6f30afd0f808ac291929e2e041f6627",
+      "originalSha256": "d69716fac38bf1991691c4387321577ae6f30afd0f808ac291929e2e041f6627"
+    },
+    {
+      "path": "catalog-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/catalog-console.log",
+      "sha256": "5f9817931a79c3e66ce65dfef7bc3ece4607022a571864fd4079bd70cef70db7",
+      "originalSha256": "e63995c409f01da1c3c2066295e796290f80e2504449b90600b1298d9e24738a"
+    },
+    {
+      "path": "causal-plan-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/causal-plan-console.log",
+      "sha256": "64617d2b242b04496efde8a316aa375c3cc6e504560168521cd0e2bc497a4cfe",
+      "originalSha256": "0c0067f77a238af936e087e947c3c0f9c6a3c0c9ec75adc7d05fe093ea197f43"
+    },
+    {
+      "path": "causal-actual-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/causal-actual-console.log",
+      "sha256": "56c21e674bccf36c0458682923a4c76da2a2e310757401839e4f535b881602bb",
+      "originalSha256": "209d76edabee977ae956dd7bd12f9a752b1371c27d22513b4ec369c629205f50"
+    },
+    {
+      "path": "causal-full-trx-stdout.txt.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/causal-full-trx-stdout.txt",
+      "sha256": "155ac3e875c7e191ed0a1227fa0e0b4e0c45e59229bc1904af4cb4226d0666f7",
+      "originalSha256": "781b10d9ce5a55af3e471649fa8963f0c218bf59ecb3b87f63ab5464ec6067e7"
+    },
+    {
+      "path": "causal-full-trx-error.txt.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/causal-full-trx-error.txt",
+      "sha256": "d1f8d4a1745ea9cb8102609f2516db131f2de49d7dc96fae9dc04a13f321fc9e",
+      "originalSha256": "5ebb9dc2a78b8e5ccb09d7ad1679b889ba59544066a56986d3b9400b768ea833"
+    }
+  ]
+}

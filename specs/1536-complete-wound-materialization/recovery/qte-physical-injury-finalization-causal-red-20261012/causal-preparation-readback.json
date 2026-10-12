@@ -1,0 +1,16 @@
+{
+  "source": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "catalogRun": "20261012-124106-045-293711-af45a6bd55964292904a5f12a753a361-categories",
+  "planRun": "20261012-124433-382-294411-f01ea0d123a24d578b2d8f0a410467a4-categories",
+  "buildErrors": 0,
+  "warnings": {
+    "integration": 77,
+    "unit": 35
+  },
+  "sourcePinsMatched": 35,
+  "binaryPinsMatched": 10,
+  "plannedCases": 1,
+  "plannedMethods": 1,
+  "descriptors": 1,
+  "testsExecuted": 0
+}

@@ -1,0 +1,9 @@
+{
+  "source": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+  "kind": "ownership build/discovery only, zero executed tests",
+  "newCohortPlannedMethods": 9,
+  "newCohortPlannedCases": 15,
+  "timeBefore": "2026-10-12T12:41:05.477764+00:00",
+  "env": "/workspace/boe-cloud-tools-20261011/env.sh"
+}

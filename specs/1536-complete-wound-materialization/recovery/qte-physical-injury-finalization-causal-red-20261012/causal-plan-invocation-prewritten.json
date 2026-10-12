@@ -1,0 +1,10 @@
+{
+  "source": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-qte-physical-injury-finalization.json -PlanOnly -NoBuild",
+  "testsExpected": 0,
+  "plannedMethods": 1,
+  "plannedCases": 1,
+  "freshBuild": true,
+  "binaryPins": 10,
+  "timeBefore": "2026-10-12T12:44:32.813379+00:00"
+}

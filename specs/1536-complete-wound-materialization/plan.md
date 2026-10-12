@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED SOURCE ACCEPTED / BUILD-DISCOVERY-RUNTIME UNRUN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; STORY CONTROLS UNRUN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -462,6 +462,41 @@ Build/discovery/runtime remain UNRUN; combined SOURCE/FIXTURE/SELECTION is not y
 Root publishes this three-path correction and requests focused recheck while the reviewer
 continues the immutablecd4 remainder. Original causal Fact/hash and all checkboxes unchanged;
 no producer/cold success claim. Stop mutations at this source-only READY boundary.
+
+### First genuine finalized-harm causal RED — 2026-10-12
+
+Compile/runtime source174aabad7632d7eef18f96a08d7ef2b64f042386, accepted production/tests
+SOURCE gate1969223f. Fresh catalog124106 built integration/unit0 errors (77/35 warnings),
+validated687 categories/11519 methods/files without unmapped/stale selectors and executed0
+tests. PlanOnly124433 `-SelectionFile tests/selections/1536-qte-physical-injury-finalization.json
+-PlanOnly -NoBuild` selected exactly1 method/1 case/1 descriptor and executed0 tests. Matching
+first actual124518 (`-NoBuild`, category5/default10) completed **1 executed,0 PASS,1 FAIL**,
+complete1/1 descriptor, no timeout/skips/duplicates; wall13.8029845 seconds, runner cleanup complete.
+
+The unchanged causal Fact now reaches actual official source42/health160, frozen declared QTE,
+local finalized canonical Applied Damage5 with event `turn_42:qte_terminal:1:resource:1`,
+health160→155, legal state/history/owner agreement, terminal continuation/history and original
+request/snapshot/authority/offer cleanup. EngineFailure=null and FixtureFailure=null. Failure
+is exactly line239: “Finalized canonical player health Damage from the declared ordinary QTE
+has no pending Mortal wound occurrence.” The missing occurrence predicate is REACHED, not
+another fixture/story prerequisite failure. Genuine request11702defa990442a82d384d5395bda92,
+source tokenBA870AAE76661971A11E66E20F8559215D0C79773318518EC75F8EC6080DBA05; source label
+обработки хода. Strict fixture cleanup receipt1 and actual owned-root absence confirmed.
+
+Root inspected full raw TRX stdout/error and matched35 source/10 fresh binary pins. Frozen
+24-artifact+manifest packet is [causal RED](./recovery/qte-physical-injury-finalization-causal-red-20261012);
+all stored/raw/original hashes match. This is third finalization actual across historical
+first timeout0 completed and second pre-harm1 FAIL; this runtime source has only1 invocation.
+Prior packets stay immutable. Source-gated story fix now unblocks this causal path, but new
+story guard/lifetime/documentation cohorts14 cases remain UNRUN; no full story GREEN or cold
+success claim yet. Producer is NOT IMPLEMENTED; first-slice wound consumer/replay/save-load
+remain UNRUN. Next finish the same accepted finite story controls on the matching fresh binary,
+freeze first outcomes and independently assess evidence before the producer block. No new
+optimization, full suite, budget increase or scope expansion.
+
+Nonblocking build remainder: new fixture CS8602 at QteStoryAppend.cs379 and xUnit1013 for its
+public reflection probe156 (public transport method is not a new test). Preserve raw77-warning
+log; no independent warning cleanup added to this bounded block. Checkboxes unchanged.
 
 ### Combined SOURCE/FIXTURE/SELECTION accepted — 2026-10-12
 

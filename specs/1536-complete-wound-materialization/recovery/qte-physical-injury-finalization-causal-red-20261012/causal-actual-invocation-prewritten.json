@@ -1,0 +1,13 @@
+{
+  "source": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "acceptedSourceGate": "1969223f594193a48516d70b0819d8a0d866515d",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-qte-physical-injury-finalization.json -NoBuild",
+  "expectedCases": 1,
+  "categoryBudgetMinutes": 5,
+  "defaultOverallMinutes": 10,
+  "thisSourceActualInvocation": 1,
+  "allFinalizationActualInvocation": 3,
+  "timeBefore": "2026-10-12T12:45:17.610265+00:00",
+  "harmOccurrencePredicate": "UNREACHED_before_this_invocation",
+  "producer": "NOT_IMPLEMENTED"
+}
