@@ -74,7 +74,21 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(run.ActionObserved);
         var active = (await GetPrivateField<QteSceneService>(run.Engine!, "_qteSceneService").ReadRuntimeStateAsync()).ActiveScene;
         Assert.Equal("awaiting_receipt", active!.EffectResolutionState);
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+        Assert.False(_fs.FileExists("ready/turn_error.json"));
+        var retainedOriginal = await CaptureQteStoryOriginalArtifactsAsync();
         await AssertPhysicalInjuryProtectedBytesAsync(run.ProtectedBefore);
+        // Without a QTE receipt, the actual idle caller must remain awaiting and must not
+        // reaccept the already consumed ordinary ready or append that ordinary story twice.
+        Assert.True(await InvokePrivateAsync<bool>(run.Engine!, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
+        Assert.Equal(PhysicalInjurySourceTurn, GetPrivateField<GameLoop>(run.Engine!, "_gameLoop").TurnNumber);
+        Assert.Equal("awaiting_receipt", (await GetPrivateField<QteSceneService>(run.Engine!, "_qteSceneService").ReadRuntimeStateAsync()).ActiveScene!.EffectResolutionState);
+        Assert.Equal(run.StoryAtHandoff, await _fs.ReadFileBytesAsync(QteStoryPath));
+        await AssertPhysicalInjuryProtectedBytesAsync(run.ProtectedBefore);
+        foreach (var pair in retainedOriginal) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+        Assert.False(_fs.FileExists("ready/turn_error.json"));
+        WritePhysicalInjuryDiagnostic("qte_story_actual_idle_without_receipt", new { run.Source!.RequestId, Turn = GetPrivateField<GameLoop>(run.Engine!, "_gameLoop").TurnNumber, State = "awaiting_receipt", OriginalArtifacts = retainedOriginal.Keys });
         var definitions = ResourceDefinitionCatalog.ParseCanonical(await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath), false).Catalog!;
         var pending = ResourcePendingResolutionState.ParseCanonical(await _fs.ReadFileAsync(ResourcePendingResolutionState.PendingPath), definitions, false);
         Assert.True(pending.IsValid, JsonSerializer.Serialize(pending.Issues));
@@ -93,10 +107,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         // Recreate the real engine/service on the same root, retaining generation and canonical continuation.
         var resumed = CreateGameEngine(new QueuedConsoleInputSource([]), settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; });
         await GetPrivateField<StateManager>(resumed, "_stateManager").RefreshGameStateAsync();
-        var completion = await GetPrivateField<QteSceneService>(resumed, "_qteSceneService").ResumeDeferredEffectResolutionAsync(PhysicalInjurySourceTurn);
-        Assert.NotNull(completion);
-        Assert.False(completion!.AwaitingEffectResolution);
-        await AssertActualQteStoryFinalizedAsync(_fs, run.Source!, run.StoryAtHandoff!, expectedHealth: 153m);
+        GetPrivateField<GameLoop>(resumed, "_gameLoop").SetSession(run.Source!.SessionId, run.Source.TurnNumber);
+        Assert.True(await InvokePrivateAsync<bool>(resumed, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
+        await AssertActualQteStoryFinalizedAsync(_fs, run.Source, run.StoryAtHandoff!, expectedHealth: 153m);
+        AssertQteStoryOriginalArtifactsRemoved(retainedOriginal);
+        WritePhysicalInjuryDiagnostic("qte_story_deferred_actual_idle_resume", new { run.Source.RequestId, OriginalArtifacts = retainedOriginal.Keys });
     }
 
     [Fact]
@@ -107,16 +122,34 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.IsType<OperationCanceledException>(run.Failure);
         Assert.True(run.ActionObserved);
         await AssertPhysicalInjuryProtectedBytesAsync(run.ProtectedBefore);
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+        Assert.False(_fs.FileExists("ready/turn_error.json"));
+        var retainedOriginal = await CaptureQteStoryOriginalArtifactsAsync();
         var output = Path.Combine(_rootPath, "qte-story-cold.json");
         var support = Path.Combine(Path.GetDirectoryName(typeof(GameEngineTurnLifecycleTests).Assembly.Location)!, "BookOfEternityClient.TestSupport.dll");
         await RunBrowserColdChildAsync(Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"),
             [support, "engine-qte-story-resume", typeof(GameEngineTurnLifecycleTests).Assembly.Location, _fs.BasePath, output], output + ".log", 45);
         var observed = JsonNode.Parse(File.ReadAllText(output))!.AsObject();
         Assert.NotEqual(Environment.ProcessId, observed["processId"]!.GetValue<int>());
-        Assert.Equal("Completed", observed["state"]!.GetValue<string>());
+        Assert.True(observed["handledByActualIdleCaller"]!.GetValue<bool>());
+        Assert.Equal("terminal", observed["continuationState"]!.GetValue<string>());
         Assert.Equal(run.Source!.RequestId, observed["requestId"]!.GetValue<string>());
         Assert.Equal(run.SnapshotToken, observed["snapshotToken"]!.GetValue<string>());
         await AssertActualQteStoryFinalizedAsync(_fs, run.Source, run.StoryAtHandoff!, expectedHealth: 155m);
+        AssertQteStoryOriginalArtifactsRemoved(retainedOriginal);
+        var childCleanup = File.ReadAllLines(output + ".log")
+            .Select(line => (Line: line, Start: line.IndexOf("{\"CleanupOwnedRoot\"", StringComparison.Ordinal)))
+            .Where(item => item.Start >= 0)
+            .Select(item => JsonNode.Parse(item.Line[item.Start..])!).ToArray();
+        var receipt = Assert.Single(childCleanup);
+        Assert.True(receipt["OwnedFixtureRemoved"]!.GetValue<bool>());
+        Assert.Null(receipt["CleanupFailure"]);
+        WritePhysicalInjuryDiagnostic("qte_story_actual_child_idle_completed", new
+        {
+            ParentProcessId = Environment.ProcessId, Child = observed, ChildCleanup = childCleanup,
+            OriginalArtifacts = retainedOriginal.Keys, OriginalArtifactsRemoved = retainedOriginal.Keys.All(path => !_fs.FileExists(path)),
+            StoryUnchanged = run.StoryAtHandoff!.AsSpan().SequenceEqual(File.ReadAllBytes(_fs.ResolvePath(QteStoryPath)))
+        });
     }
 
     // Same existing TestSupport reflection transport as browser cold probes; no independent harness or manufactured QTE start.
@@ -132,18 +165,51 @@ public sealed partial class GameEngineTurnLifecycleTests
         var original = JsonNode.Parse((await files.ReadFileAsync("input/turn_request.json"))!)!.AsObject();
         string token;
         string generation;
-        QteSceneService.QteActionResolution resolution;
+        string session;
+        int turn;
+        SetPrivateField(qte, "_inputSource", input);
         await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
         {
             var source = PendingTurnSnapshotReader.ReadCurrent(files, lease, [ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath]);
             Assert.True(source.Success, JsonSerializer.Serialize(source.Issues));
             token = source.Snapshot!.SnapshotToken;
             generation = files.GetOrCreateSessionGeneration(lease);
-            resolution = await SessionOperationContext.RunBoundAsync(files, generation, lease,
-                () => qte.ResolveActiveActionAsync(lease, "brace", "success", PhysicalInjurySourceTurn));
+            session = source.Snapshot.SessionId;
+            turn = source.Snapshot.TurnNumber;
         }
-        await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new { processId = Environment.ProcessId, state = resolution.State,
+        GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(session, turn);
+        var handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+        var completed = JsonNode.Parse((await files.ReadFileAsync(QteDeferredEffectContinuation.StatePath))!)!.AsObject();
+        await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new { processId = Environment.ProcessId,
+            handledByActualIdleCaller = handled, continuationState = completed["state"]!.GetValue<string>(),
             requestId = original["requestId"]!.GetValue<string>(), snapshotToken = token, generation }));
+    }
+
+    private async Task<Dictionary<string, byte[]>> CaptureQteStoryOriginalArtifactsAsync()
+    {
+        var manifestJson = (await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json"))!;
+        var manifest = JsonNode.Parse(manifestJson)!.AsObject();
+        var paths = new[] { "input/turn_request.json", "game_state/control/pending_turn_snapshot.json", PendingTurnSnapshotAuthority.AuthorityPath }
+            .Concat(manifest["files"]!.AsObject().Select(pair => pair.Value!.GetValue<string>()))
+            .Concat(manifest["rollbackBackups"]!.AsObject().Select(pair => pair.Value!.GetValue<string>()))
+            .Distinct(StringComparer.Ordinal).ToArray();
+        var images = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+        foreach (var path in paths)
+        {
+            var bytes = await _fs.ReadFileBytesAsync(path);
+            Assert.NotNull(bytes);
+            images.Add(path, bytes!);
+        }
+        Assert.NotEmpty(images);
+        WritePhysicalInjuryDiagnostic("qte_story_retained_original_artifacts", new { Paths = images.Keys });
+        return images;
+    }
+
+    private void AssertQteStoryOriginalArtifactsRemoved(IReadOnlyDictionary<string, byte[]> originals)
+    {
+        foreach (var path in originals.Keys) Assert.False(_fs.FileExists(path), "Completed QTE retained original artifact: " + path);
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+        Assert.False(_fs.FileExists("ready/turn_error.json"));
     }
 
     private sealed class QteStoryRun

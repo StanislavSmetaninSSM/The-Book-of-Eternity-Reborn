@@ -731,6 +731,29 @@ public sealed partial class QteSceneService
                 capture.AuthorityFingerprint,
             EffectResolutionState = "armed"
         };
+        var ordinarySignalWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>();
+        if (acceptedStoryAppend != null)
+        {
+            // Consume only this accepted ordinary signal in the same durable QTE handoff.
+            // Keep original request/snapshot/backups for paused and deferred source readers.
+            var source = acceptedStoryAppend.Persisted["source"]!;
+            foreach (var path in new[] { "ready/turn_complete.json", "ready/turn_error.json" })
+            {
+                var bytes = await _fs.ReadFileBytesAsync(writeLease, path);
+                if (bytes != null)
+                {
+                    var signal = StrictJsonAuthority.Deserialize<JsonObject>(Encoding.UTF8.GetString(bytes).TrimStart('\uFEFF'), JsonOpts, "accepted ordinary QTE ready")!;
+                    if (signal["sessionId"]?.GetValue<string>() != source["sessionId"]!.GetValue<string>() ||
+                        signal["requestId"]?.GetValue<string>() != source["requestId"]!.GetValue<string>() ||
+                        signal["turnNumber"]?.GetValue<int>() != source["turnNumber"]!.GetValue<int>())
+                        throw new InvalidDataException("qte_client_story_append_source_mismatch: ordinary ready belongs to a different source.");
+                }
+                ordinarySignalWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(path,
+                    PreviousJson: null, NextJson: null, RequireCurrentBaseline: true,
+                    ExactPrevious: new CanonicalBeforeImage(bytes != null, bytes)));
+            }
+            _fs.AllowBrowserOriginalCleanup();
+        }
         var runtimeJson = JsonSerializer.Serialize(state, JsonOpts);
         if (_hooks?.BeforeRuntimeWriteAsync != null)
             await _hooks.BeforeRuntimeWriteAsync();
@@ -761,6 +784,7 @@ public sealed partial class QteSceneService
                     RequireCurrentBaseline: true,
                     ExactPrevious: capture.OfferBeforeImage)
             ])
+            .Concat(ordinarySignalWrites)
             .ToArray();
         var legacyRuntimeHook = _hooks?.AfterLegacyAcceptanceRuntimeWrittenAsync;
         var committed = legacyRuntimeHook == null

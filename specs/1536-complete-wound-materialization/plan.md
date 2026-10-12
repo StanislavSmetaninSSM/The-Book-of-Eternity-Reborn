@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED APPEND IMPLEMENTATION WIP)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED SOURCE READY / CHECKS UNRUN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -29,7 +29,7 @@ before harm; its immutable packet is publishedcf14c4f8 with independent EVIDENCE
 Read-only provenance review confirmed a production story-validation phase bug. The current
 checkpoint specifies its narrowly authorized prerequisite design. Fresh independent Astra XHigh
 bounded DESIGN acceptance incorporates the latest user scope ruling; the earlier unresolved
-anti-owner proposal at eec3c36e is historical WIP, not accepted as a whole. The current source/tests/docs/selection block is publishable WIP, not READY: original-ready handoff consumption and resumed terminal cleanup are unfinished. Build/discovery/runtime for this block remain UNRUN. No occurrence producer or canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
+anti-owner proposal at eec3c36e is historical WIP, not accepted as a whole. The current source/tests/docs/selection block is source READY for publication and combined SOURCE/FIXTURE/SELECTION review: exact ordinary-ready handoff consumption, actual idle resumed terminal cleanup and their existing Fact controls are authored. Build/discovery/runtime for this block remain UNRUN. No occurrence producer or canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
 
@@ -392,10 +392,13 @@ combined independent SOURCE/FIXTURE/SELECTION acceptance before any execution. T
 9b prerequisite RED already supplies causal TDD evidence; new preservation negatives need not
 be falsely labelled new RED. Producer remains forbidden until genuine finalized-harm RED.
 
-### Story prerequisite publication boundary — 2026-10-12, WIP/UNRUN
+### Story prerequisite publication boundary — 2026-10-12, source READY / checks UNRUN
 
 Source parent eec3c36e9398fdda8fa9d75ff1bdb69dbd3f86b9; same task branch/cloud Linux.
-Sol6.1 XHigh paused at a stable write boundary before root publication. Tests were authored
+Sol6.1 XHigh paused at a stable write boundary; root published source WIP
+2eabe8f9e7819f61a753a42f9f42727d00231046, read the exact remote ref and verified selected
+GitHub recovery (20 changed files/134 materialized file bytes/blob matches). The current
+remaining lifecycle authoring uses that clean source base; publication is not SOURCE acceptance. Tests were authored
 before the minimum code using the already observed immutable story prerequisite REDcf14.
 New files are `Services/StoryService.AcceptedStoryAppend.cs`, integration partial
 `GameEngineTurnLifecycleTests.QteStoryAppend.cs`, and task-local
@@ -407,15 +410,40 @@ ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f.
 Planned inventory9 methods/15 cases: causal1/1, guards2/7 (3 minutes/default8),
 lifetime5/6 including existing compatibility2/2 (5/default10), docs1/1 (2/default7).
 
-Remaining before READY: consume ordinary ready at durable QTE handoff to prevent idle
-reacceptance/duplicate append; release retained request/snapshot/backups after resumed
-terminal completion; make tests observe the actual idle caller at that boundary; reduce
-catalog formatting-only edits and refresh exact status. Build, discovery, all new runtime
-controls, corrected causal third actual, producer/consumer/replay/rollback/save-load are
-UNRUN. No current SOURCE/FIXTURE/SELECTION acceptance. Checkboxes remain unchanged.
-Next: root commit/push this WIP, read exact remote SHA, then release the sole writer only
-for those bounded missing parts; publish READY candidate and obtain independent combined
-Astra XHigh SOURCE/FIXTURE/SELECTION acceptance before any project execution. Existing
+The bounded remainder is now source READY. Existing coordinated Begin publication consumes
+only ready/turn_complete and ready/turn_error with exact original session/request/turn and
+byte before-images alongside runtime/continuation/offer deletion. Original request/snapshot/
+rollback backups remain intact at paused/deferred handoff. Recovered QTE defers its formerly
+early backup deletion; ordinary/recovered/late-ready awaiting exits retain those readers.
+Actual engine idle terminal completion first verifies original request/manifest payload hash,
+source turn, session and current generation, then uses existing original backup/snapshot
+cleanup. An unrelated/later original source grants no cleanup authority. No source recapture,
+new manifest, re-sign or archive-generation rebind. Decline/rejection/non-QTE cleanup paths
+remain active. Deferred and true child-process controls now invoke the actual engine idle
+caller with original session/turn42, verify exact story/one selected Damage, and require every
+observed retained original request/snapshot/backup artifact to be absent after terminal. Within
+the same deferred Fact, actual idle before any receipt must remain awaiting with exact
+unchanged story/resource/wound/original-artifact bytes and turn42, proving no ordinary reaccept.
+The parent cold Fact emits child PID, original correlation/token, terminal state and child
+strict cleanup receipt plus original artifact absence into TRX output before root cleanup.
+Paused/awaiting cases require ordinary ready absence, preventing ordinary acceptance/reappend
+on resume. Catalog edits now only insert the three owners relative to eec; all previous
+catalog entries remain byte-identical. Existing global selection/CI and causal Fact are unchanged.
+
+Changed contracts and selected affected consumers: private console/browser append bookkeeping,
+three ordinary engine callers, canonical QTE handoff/terminal/resume and its specific history
+validation; new guards/lifetime cohorts cover those paths, two existing named continuation
+Facts retain absent-witness and restart consumers, one existing documentation guard covers
+Rule lifecycle synchronization. Accepted admission33/compatibility16/example1 remain unselected
+because raw offer/physical DTO/example grammar is unchanged; no old selector is removed.
+Four exact task-local files select causal1/1 at5/default10, guards2/7 at3/default8, lifetime5/6
+at5/default10 and documentation1/1 at2/default7 —9 methods/15 source cases total, planning
+counts only. No discovery/build or project execution has occurred on either2eab WIP or this
+remainder. All actual outcome claims remain the immutable9b prerequisite1 FAIL. New controls
+are UNRUN, third causal finalized-harm/occurrence predicate UNREACHED/UNRUN, producer forbidden.
+Root publishes this READY candidate and obtains independent combined Astra XHigh SOURCE/
+FIXTURE/SELECTION acceptance before fresh bounded discovery/preparation/actual. All checkboxes,
+original packets, accepted B2–B5 and historical cold count1 remain unchanged. The existing
 isolated tool environment is `/workspace/boe-cloud-tools-20261011/env.sh`; platform Debian13.6
 x86_64, SDK10.0.401/runtime8.0.31, PowerShell7.6.6. No provider calls or Windows proof.
 

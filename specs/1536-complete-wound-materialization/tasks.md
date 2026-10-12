@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED APPEND IMPLEMENTATION WIP)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED SOURCE READY / CHECKS UNRUN)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -15,7 +15,7 @@ has SOURCE/selection acceptance and matching51-case GREEN EVIDENCE accepted880ef
 First one-case fixture attempt is a published59fb65f6 pre-harm timeout. The minimal
 owner-callback correction received SOURCE acceptance9b1d4448; its completed1 FAIL before
 harm is publishedcf14c4f8 with independent EVIDENCE acceptance and confirmed production
-story-validation phase bug. Current authorized prerequisite has publishable source/tests/docs/selection WIP, not READY; build/discovery/runtime UNRUN, original-ready consumption and resumed terminal cleanup unfinished;
+story-validation phase bug. Current authorized prerequisite is source READY for publication/combined SOURCE-FIXTURE-SELECTION review; build/discovery/runtime UNRUN, exact ordinary-ready handoff and resumed terminal cleanup controls are authored;
 fresh independent bounded DESIGN acceptance incorporates the latest user trusted-checkpoint
 scope ruling. The eec3c36e unresolved anti-owner proposal is historical WIP, not whole accepted design.
 Prior4085 source facts
@@ -218,13 +218,33 @@ Client-owned bookkeeping alone introduces no new GM-authored field/example; exis
 guidance remains accurate. Any implemented control/validation lifecycle change gets targeted
 QTE documentation/source guards in the same implementation block; no afterlife change proposed.
 
-Current stable publication WIP is documented in the [plan boundary](./plan.md#story-prerequisite-publication-boundary--2026-10-12-wipunrun):
-new private exact-writer witness, integration partial and three selectors, existing engine/
-continuation/validator/browser carry paths, lifecycle docs/guard. Original causal Fact is
-byte-unchanged, no producer/consumer. Sole Sol writer is paused for root publication. Remaining
-before READY: ordinary ready consumption at durable handoff, resumed terminal source/backups
-cleanup and actual idle-caller tests, narrow catalog formatting, final status. No current
-SOURCE acceptance or execution; next root publishes WIP then releases only this remainder.
+Source WIP2eabe8f9e7819f61a753a42f9f42727d00231046 is remotely verified with selected
+GitHub recovery20 changed files/134 materialized file bytes/blob matches. The sole Sol writer
+completed only its bounded missing lifecycle on that clean base. Current source is READY for
+root publication/combined SOURCE-FIXTURE-SELECTION review, not accepted or executed.
+
+The coordinated durable QTE Begin handoff consumes only exact correlated ordinary ready byte
+before-images; request/snapshot/backups remain for paused/deferred readers. Recovered QTE
+defers early backup deletion; awaiting ordinary/recovered/late-ready retain originals. Actual
+idle terminal completion validates original request/session/turn/token/current generation
+before existing cleanup and preserves unrelated/later original requests. Tests now use the
+actual idle caller for both bounded receipt and true same-root child-process resume, configure
+original session/turn42, require ready absent at handoff, exact unchanged story/one selected
+health Damage and all observed retained original artifacts absent after terminal. Within the
+existing deferred Fact, no-receipt actual idle preserves awaiting state/turn42 and exact story/
+resource/wound/original bytes. Cold parent diagnostics preserve actual child PID/correlation/
+terminal/strict child cleanup and original absence in TRX before fixture cleanup. No ordinary
+acceptance/append replay, new snapshot, anti-owner architecture or active-QTE archive support.
+
+Catalog now adds only three finite owners; previous entries are byte-identical to eec and no
+old selector/global selection/CI changed. Exact four task-local selections remain9 methods/
+15 planned source cases: causal1/1 budget5/default10, guards2/7 budget3/default8, lifetime5/6
+(including named compatibility2/2) budget5/default10, docs1/1 budget2/default7. Existing causal
+Fact SHA256ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f is unchanged.
+No fresh discovery/build/runtime; all new controls UNRUN, physical harm/missing occurrence
+predicate still UNREACHED/UNRUN and producer forbidden. Root publishes and requests combined
+independent SOURCE/FIXTURE/SELECTION before fresh bounded preparation/actual. No checkbox or
+historical evidence change; current9b story prerequisite RED remains immutable.
 
 The plan now fixes the proposed optional QTE `physicalInjury` declaration: closed
 exactly five fields: schemaVersion1, one-based resource command ordinal, explicit maximum1–4, bounded cause

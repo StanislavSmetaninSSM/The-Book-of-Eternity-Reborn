@@ -1140,6 +1140,7 @@ public partial class GameEngine
                     await Task.Delay(250);
                     return true;
                 }
+                await CleanupCompletedQteOriginalSourceAsync(resumedDeferredQte);
                 _lastResponse = resumedDeferredQte.Response;
                 _pendingImagePrompt = resumedDeferredQte.Response?.ImagePrompt;
                 await ProcessMortalProgressionAfterAcceptedTurnAsync();
@@ -1160,6 +1161,7 @@ public partial class GameEngine
                     await Task.Delay(250);
                     return true;
                 }
+                await CleanupCompletedQteOriginalSourceAsync(resumedQte);
                 _lastResponse = resumedQte.Response;
                 _pendingImagePrompt = resumedQte.Response?.ImagePrompt;
                 await ProcessMortalProgressionAfterAcceptedTurnAsync();
@@ -2299,6 +2301,32 @@ public partial class GameEngine
         await CheckLifeTransitions(snapshotContext);
         await CheckAscensionTrigger();
         return (false, completion.Response, false);
+    }
+
+    private async Task CleanupCompletedQteOriginalSourceAsync(QteSceneService.QteSceneCompletion completion)
+    {
+        var json = await _fs.ReadFileAsync(QteDeferredEffectContinuation.StatePath);
+        if (json == null) return;
+        var continuation = StrictJsonAuthority.Deserialize<JsonObject>(json, JsonOpts, "completed QTE continuation")!;
+        if (continuation["state"]?.GetValue<string>() != "terminal" ||
+            continuation["qteId"]?.GetValue<string>() != completion.QteId ||
+            continuation["clientStoryAppend"]?["source"] is not JsonObject source)
+            return;
+        var generation = await CaptureCurrentSessionGenerationAsync();
+        if (source["sessionGeneration"]?.GetValue<string>() != generation ||
+            continuation["sessionGeneration"]?.GetValue<string>() != generation)
+            throw new InvalidDataException("qte_client_story_append_source_mismatch: completed QTE cleanup belongs to another generation.");
+        var manifest = await LoadPendingTurnSnapshotManifestAsync();
+        var original = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
+        // A later/unrelated original request is never cleanup authority for this completed QTE.
+        if (original == null || original.SessionId != source["sessionId"]?.GetValue<string>() ||
+            original.RequestId != source["requestId"]?.GetValue<string>() ||
+            original.TurnNumber != source["turnNumber"]?.GetValue<int>() ||
+            original.Manifest.ManifestPayloadHash != source["snapshotToken"]?.GetValue<string>())
+            return;
+        var rollback = BuildValidatedRollbackSnapshot(original);
+        if (HasRollbackCapability(rollback)) CleanupBackup(rollback!);
+        await CleanupAcceptedTurnTerminalArtifactsAsync();
     }
 
     private async Task ProcessMortalProgressionAfterAcceptedTurnAsync()
