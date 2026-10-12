@@ -158,6 +158,19 @@ public sealed partial class PromptDocumentationCoverageTests
         Assert.Contains("mortal_qte_terminal_resource_penalty_v1", qteExample, StringComparison.Ordinal);
         Assert.Contains("turn_42:qte_terminal:2:resource:1", qteExample, StringComparison.Ordinal);
         Assert.Contains("turn_42:qte_terminal:3:resource:1", qteExample, StringComparison.Ordinal);
+
+        var runtimePrompt = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+        foreach (var document in new[] { apiSpec, daemonSpec, qteRules, stepGuide, qteExample, runtimePrompt })
+        {
+            foreach (var token in new[]
+                     {
+                         "physicalInjury", "schemaVersion", "resourceCommandOrdinal", "maximumSeverityRank",
+                         "allowedLocationKinds", "2000", "anatomical", "systemic", "mental", "spiritual_axis", "other",
+                         "no default IV", "before selection", "occurrence production remains pending"
+                     })
+                Assert.Contains(token, document, StringComparison.Ordinal);
+        }
+        Assert.Contains("mortal_qte_physical_injury_declaration_v1", qteExample, StringComparison.Ordinal);
     }
 
     [Fact]

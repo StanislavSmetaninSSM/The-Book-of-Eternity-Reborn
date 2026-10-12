@@ -90,6 +90,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("duplicate_field")]
     [InlineData("confusable_field")]
     [InlineData("wrong_case_field")]
+    [InlineData("wrong_case_envelope")]
+    [InlineData("confusable_envelope")]
     [InlineData("non_health")]
     [InlineData("unselected_invalid")]
     public async Task QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(string mutation)
@@ -319,6 +321,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             case "duplicate_field": return offer.ToJsonString().Replace("\"maximumSeverityRank\":2", "\"maximumSeverityRank\":2,\"maximumSeverityRank\":3", StringComparison.Ordinal);
             case "confusable_field": injury["MaximumSeverityRank"] = 2; break;
             case "wrong_case_field": injury.Remove("maximumSeverityRank"); injury["MaximumSeverityRank"] = 2; break;
+            case "wrong_case_envelope": outcome.Remove("physicalInjury"); outcome["PhysicalInjury"] = injury; break;
+            case "confusable_envelope": outcome["physіcalInjury"] = injury.DeepClone(); break;
             case "non_health": outcome["responseFragment"]!["resourceChanges"]![0]!["resourceKey"] = "poise"; break;
             case "unselected_invalid": offer["terminalOutcomes"]![1]!["physicalInjury"]!["maximumSeverityRank"] = 5; break;
             default: throw new ArgumentOutOfRangeException(nameof(mutation), mutation, "Unknown injury test mutation.");

@@ -784,6 +784,7 @@ public sealed partial class ExampleDocumentationValidationTests
             ["mortal_resource_setting_definition_initialize_v1"] = "E_CLI_Mortal_Resources.txt",
             ["mortal_resource_player_npc_mutation_v1"] = "E_CLI_Mortal_Resources.txt",
             ["mortal_qte_terminal_resource_penalty_v1"] = "E_CLI_QTE_Offer.txt",
+            ["mortal_qte_physical_injury_declaration_v1"] = "E_CLI_QTE_Offer.txt",
             ["mortal_resource_item_combat_mutation_v1"] = "E_CLI_Mortal_Resources.txt",
             ["mortal_resource_capacity_reconfigure_v1"] = "E_CLI_Mortal_Resources.txt",
             ["mortal_resource_bounded_receipt_v1"] = "E_CLI_Mortal_Resources.txt",
@@ -866,6 +867,31 @@ public sealed partial class ExampleDocumentationValidationTests
         Assert.Equal(10m, qteCommand.Amount);
         Assert.Equal("narrative_outcome", qteCommand.Source.Kind);
         Assert.Equal("turn_42:qte_terminal:2:resource:1", qteCommand.EventRef);
+
+        Assert.All(qteOffer!.TerminalOutcomes, outcome => Assert.Null(outcome.PhysicalInjury));
+        var injuryRoot = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_injury_declaration_v1");
+        using var injuryDocument = JsonDocument.Parse(injuryRoot.ToJsonString());
+        Assert.Empty(QtePhysicalInjuryContract.ValidateRawOffer(injuryDocument.RootElement));
+        var health = ResourceBootstrapStateBuilder.BuildMortalPlayer(1, 42, 10, 10, 10, 10, 10);
+        Assert.True(health.IsValid);
+        Assert.Empty(QtePhysicalInjuryContract.ValidateCanonicalHealth(injuryDocument.RootElement,
+            health.Definitions!.ToCanonicalJson(), health.State!.ToCanonicalJson()));
+        var injuryOffer = JsonSerializer.Deserialize<QteSceneService.QteOffer>(injuryRoot.ToJsonString(), SerializerOptions)!;
+        var retained = JsonSerializer.SerializeToNode(injuryOffer, SerializerOptions)!.AsObject();
+        Assert.Equal(2, injuryOffer.TerminalOutcomes.Count);
+        for (var index = 0; index < injuryOffer.TerminalOutcomes.Count; index++)
+        {
+            Assert.True(JsonNode.DeepEquals(injuryRoot["terminalOutcomes"]![index]!["physicalInjury"],
+                retained["terminalOutcomes"]![index]!["physicalInjury"]));
+            var declaration = Assert.IsType<QteSceneService.QtePhysicalInjury>(injuryOffer.TerminalOutcomes[index].PhysicalInjury);
+            Assert.Equal(index == 0 ? 1 : 3, declaration.MaximumSeverityRank);
+            var commands = ResourceAcceptedTurnInputComposer.Parse(new JsonObject
+            {
+                ["resourceChanges"] = injuryOffer.TerminalOutcomes[index].ResponseFragment!["resourceChanges"]!.DeepClone()
+            }.ToJsonString());
+            Assert.True(commands.IsValid);
+            Assert.Equal(5m, Assert.Single(commands.ResourceChanges).Amount);
+        }
     }
 
     [Theory]

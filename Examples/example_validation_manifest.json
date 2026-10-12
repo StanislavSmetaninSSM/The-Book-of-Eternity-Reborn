@@ -1170,6 +1170,26 @@
       ]
     },
     {
+      "contractId": "mortal_qte_physical_injury_declaration_v1",
+      "file": "E_CLI_QTE_Offer.txt",
+      "statePath": "output/qte_offer.json -> frozen game_state/control/qte_runtime.json offer and qte_deferred_effect_continuation.json fingerprint",
+      "responseSurface": "terminalOutcomes[].physicalInjury plus the indexed responseFragment.resourceChanges[]",
+      "realms": [
+        "Mortal World"
+      ],
+      "description": "Closed optional five-field source declaration authoring and preselection retention with two equal-damage branches carrying different explicit maxima; no finalized-harm or wound-route claim.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.UnifiedResourceMaterializationManifest_CoversMortalAndAfterlifeWorkedFamilies -> QtePhysicalInjuryContract.ValidateRawOffer/ValidateCanonicalHealth + QteSceneService.QteOffer + ResourceAcceptedTurnInputComposer.Parse",
+      "coverageLimit": "The worked declaration grammar, canonical health binding, resource commands and exact typed retention are checked; genuine ordinary signed admission/freeze is covered separately by GameEngineTurnLifecycleTests.QtePhysicalInjury_*; occurrence production remains pending.",
+      "requiredText": [
+        "mortal_qte_physical_injury_declaration_v1",
+        "\"physicalInjury\"",
+        "\"maximumSeverityRank\": 1",
+        "\"maximumSeverityRank\": 3",
+        "occurrence production remains pending"
+      ]
+    },
+    {
       "contractId": "mortal_qte_terminal_resource_penalty_v1",
       "file": "E_CLI_QTE_Offer.txt",
       "statePath": "output/qte_offer.json -> game_state/resources/resource_state.json + resource_history.json + resource_owner_authority.json",

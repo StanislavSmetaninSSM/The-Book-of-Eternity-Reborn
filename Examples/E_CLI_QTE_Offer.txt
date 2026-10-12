@@ -80,6 +80,7 @@
 - A bounded terminal penalty uses only `responseFragment.resourceChanges[]` with `operation=damage`, exact target `player/player_current`, an existing active `resourceKey`, positive exact `amount`, `source.kind=narrative_outcome`, non-empty `reason`, and no GM-authored `sourceId`.
 - Its exact event identity is `turn_{sourceTurn}:qte_terminal:{one-based terminal outcome ordinal}:resource:{one-based command ordinal}`. The worked payloads below assume accepted source turn 42.
 - Every terminal branch is validated, but only the selected branch is applied through the common resource reducer/quartet. Exact retry is replay; definition/capacity commands and legacy `current*Change` aliases are forbidden in QTE.
+- Optional `terminalOutcomes[].physicalInjury` declares a potential player-health injury before selection. Omission preserves resource-only QTE. When present it has exactly five fields: `schemaVersion` = 1; `resourceCommandOrdinal` is a one-based index into that outcome's actual `responseFragment.resourceChanges[]` (existing mutation limit 512) and must name exact `damage` on canonical `health` for `player/player_current`; `maximumSeverityRank` is an explicit integer 1..4, independent of damage amount, with no default IV; `cause` is trimmed nonempty text of at most 2000 characters without controls; `allowedLocationKinds` contains 1..5 unique exact tokens from `anatomical`, `systemic`, `mental`, `spiritual_axis`, `other`. Explicit null, missing/unknown/duplicate/case-confusable or wrong-case fields reject as raw input in every terminal branch, including unselected branches. Do not supply owner/domain, source/profile IDs, hard caps, guarantees, worsening or seals. The client retains the declaration in the frozen offer and its existing continuation fingerprint before selection. This checkpoint implements declaration admission and freeze only; occurrence production remains pending and no wound decision file or physical wound publication is available through this QTE route yet.
 - Successful terminal outcomes must include positive `experienceGained`.
 - For validation purposes, a successful terminal outcome is any outcome reachable by following `success` branches from `startChapterId`.
 - The client will convert a successful QTE `experienceGained` into a real increase of the authoritative XP counter in `game_state/player/experience.json`.
@@ -88,6 +89,131 @@
 - `responseFragment` must not use ordinary `image_prompt`; QTE images go through `sceneImagePrompt`, `chapterImagePrompt`, or `outcomeImagePrompt`.
 - For reaction checks, the client handles physical key/RU-EN normalization: prompt labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` refer to physical QTE keys.
 - GM-authored QTE configs do not encode player keyboard layout; normal text input, dialogue, names, and narrative prose remain ordinary text.
+
+## Optional physical injury declaration — admission and freeze
+
+### mortal_qte_physical_injury_declaration_v1
+
+For accepted source turn 42, both branches damage the same existing active player health instance by 5. The source declares maximum I for a glancing impact and III for a direct impact; equal damage does not derive a severity maximum. The client validates both declarations before selection, retains their exact cause/location subset and maximum in the frozen offer, and rejects a changed maximum against the existing continuation fingerprint. Omitting `physicalInjury` gives the resource-only example below. This worked offer proves authoring/admission/typed retention; occurrence production remains pending, so it does not demonstrate a finalized injury, wound opportunity, GM decision or wound publication.
+
+```json
+{
+  "qteId": "qte_stone_impact_001",
+  "title": "Обвал",
+  "offerText": "Укрыться от падающих камней.",
+  "introNarrative": "Камни срываются со свода.",
+  "startChapterId": "impact",
+  "chapters": [
+    {
+      "chapterId": "impact",
+      "title": "Удар",
+      "narrative": "Осколки летят к герою.",
+      "actions": [
+        {
+          "actionId": "brace",
+          "label": "Укрыться",
+          "check": {
+            "type": "BranchChoice",
+            "baseDifficulty": 1,
+            "primaryCharacteristic": "dexterity",
+            "config": {
+              "choiceGrade": "success"
+            }
+          },
+          "routing": {
+            "success": {
+              "terminalOutcomeId": "glancing"
+            },
+            "partial": {
+              "terminalOutcomeId": "direct"
+            },
+            "fail": {
+              "terminalOutcomeId": "direct"
+            }
+          },
+          "successText": "Камень лишь задевает героя.",
+          "partialText": "Камень попадает в героя.",
+          "failText": "Прямой удар камня."
+        }
+      ]
+    }
+  ],
+  "terminalOutcomes": [
+    {
+      "outcomeId": "glancing",
+      "title": "Скользящий удар",
+      "finalNarrative": "Камень задевает героя.",
+      "gmSummary": "Выбранный исход обвала.",
+      "physicalInjury": {
+        "schemaVersion": 1,
+        "resourceCommandOrdinal": 1,
+        "maximumSeverityRank": 1,
+        "cause": "Удар падающего камня.",
+        "allowedLocationKinds": [
+          "anatomical",
+          "other"
+        ]
+      },
+      "responseFragment": {
+        "response": "Камень задевает героя.",
+        "experienceGained": 1,
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": {
+              "kind": "player",
+              "targetId": "player_current"
+            },
+            "resourceKey": "health",
+            "amount": 5,
+            "source": {
+              "kind": "narrative_outcome"
+            },
+            "eventRef": "turn_42:qte_terminal:1:resource:1",
+            "reason": "Удар падающего камня."
+          }
+        ]
+      }
+    },
+    {
+      "outcomeId": "direct",
+      "title": "Прямой удар",
+      "finalNarrative": "Камень задевает героя.",
+      "gmSummary": "Выбранный исход обвала.",
+      "physicalInjury": {
+        "schemaVersion": 1,
+        "resourceCommandOrdinal": 1,
+        "maximumSeverityRank": 3,
+        "cause": "Удар падающего камня.",
+        "allowedLocationKinds": [
+          "anatomical",
+          "other"
+        ]
+      },
+      "responseFragment": {
+        "response": "Камень задевает героя.",
+        "experienceGained": 0,
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": {
+              "kind": "player",
+              "targetId": "player_current"
+            },
+            "resourceKey": "health",
+            "amount": 5,
+            "source": {
+              "kind": "narrative_outcome"
+            },
+            "eventRef": "turn_42:qte_terminal:2:resource:1",
+            "reason": "Удар падающего камня."
+          }
+        ]
+      }
+    }
+  ]
+}
+```
 
 ## Example `output/qte_offer.json`
 

@@ -364,6 +364,20 @@ public partial class ValidationService
                 return issues;
             }
 
+            var injuryIssues = QtePhysicalInjuryContract.ValidateRawOffer(root);
+            issues.AddRange(injuryIssues);
+            if (injuryIssues.Count != 0)
+                return issues;
+            if (manifest != null && QtePhysicalInjuryContract.HasDeclaration(root))
+            {
+                injuryIssues = QtePhysicalInjuryContract.ValidateCanonicalHealth(root,
+                    await ReadValidatedPendingTurnSnapshotFileAsync(manifest, ResourceMaterializationContract.DefinitionsPath),
+                    await ReadValidatedPendingTurnSnapshotFileAsync(manifest, ResourceMaterializationContract.StatePath));
+                issues.AddRange(injuryIssues);
+                if (injuryIssues.Count != 0)
+                    return issues;
+            }
+
             var missingOfferFields = GetMissingRequiredNonEmptyStringProperties(root, "qteId", "title", "offerText", "introNarrative", "startChapterId");
             if (missingOfferFields.Count > 0)
             {

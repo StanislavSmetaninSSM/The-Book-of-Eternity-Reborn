@@ -3,11 +3,12 @@
     "categories": [
         {
             "id": "qte-physical-injury-admission",
-            "responsibility": "#1536 T070 first declaration-control cohort: real engine ordinary signed snapshot, raw physicalInjury admission, exact preselection branch freeze and immutable maximum binding. Three integration methods/31 cases: three lawful/absent rows, 27 malformed rows and one frozen-tamper control.",
+            "responsibility": "#1536 T070 first declaration-control cohort: real engine ordinary signed snapshot, raw physicalInjury admission, exact preselection branch freeze and immutable maximum binding. Three integration methods/33 cases: three lawful/absent rows, 29 malformed rows (original 27 plus two outer-alias controls) and one frozen-tamper control. The immutable first declaration RED remains 31 cases.",
             "excludes": "No finalized-harm/occurrence chain claim, wound decision/materialization, save/load, long binding cold, QTE practice/Daren/minigame matrices, full validation pipeline, providers or performance claims. Existing duplicate-property refusal is retained; unknown/malformed declarations cannot gain authority by typed field loss.",
             "changeHints": [
                 "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
                 "BookOfEternityClient/Services/QteSceneService.cs",
+                "BookOfEternityClient/Services/QtePhysicalInjuryContract.cs",
                 "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs"
             ],
@@ -26,6 +27,80 @@
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_FrozenMaximumCannotChangeBeforeTerminalSelection"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-injury-compatibility",
+            "responsibility": "#1536 T070 declaration admission compatibility: four existing integration methods/16 cases protect undeclared closed resource Damage, negative amount, all nine resource authority refusals and five strict offer parse/duplicate/null refusals. Exact targeted overlap with validation-pipeline/qte-rules owners; original selectors remain unchanged and accounted for.",
+            "excludes": "Physical injury cohort is separately owned; no minigame/scoring/practice/Daren matrices, finalized resource publication, occurrences, wounds, afterlife, providers or full validation pipeline.",
+            "changeHints": [
+                "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+                "BookOfEternityClient/Services/QteSceneService.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-admission",
+                    "when": "Raw declaration/typed offer admission changes also run the genuine signed admission/freeze cohort."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_AcceptsClosedQteV1ResourceDamage",
+                        "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsNegativeTerminalResourceDamage",
+                        "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract",
+                        "BookOfEternityClient.Tests.QteSceneServiceTests.TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-injury-documentation",
+            "responsibility": "#1536 T070 two existing guards/two cases: six GM-facing surfaces including runtime prompt describe the closed physicalInjury admission/freeze boundary; worked resource/injury offers and manifest validate raw grammar, canonical health binding, equal Damage/different explicit maxima and exact typed retention. Intentional finite overlap with documentation-examples; existing broad selectors are unchanged.",
+            "excludes": "No full documentation owner or unrelated matrix execution; the existing resource manifest case retains its prior Mortal/afterlife worked-family checks. No claimed finalized health harm, occurrence source, wound opportunity/decision/publication or afterlife contract change.",
+            "changeHints": [
+                "CLI_API_Specification.md",
+                "CLI_Agent_Daemon_Specification.md",
+                "Rules/Block_CLI_QTE.txt",
+                "TaskGuides/CLI_Step_Main.txt",
+                "Examples/E_CLI_QTE_Offer.txt",
+                "Examples/example_validation_manifest.json",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-admission",
+                    "when": "GM-authored declaration support changes require genuine ordinary admission/freeze controls with these guards."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces"
+                    ]
+                },
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.UnifiedResourceMaterializationManifest_CoversMortalAndAfterlifeWorkedFamilies"
                     ]
                 }
             ]

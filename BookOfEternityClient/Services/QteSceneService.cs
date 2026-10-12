@@ -231,6 +231,19 @@ public sealed partial class QteSceneService
 
         try
         {
+            using var document = JsonDocument.Parse(json);
+            var injuryIssues = QtePhysicalInjuryContract.ValidateRawOffer(document.RootElement);
+            if (injuryIssues.Count != 0)
+                throw new InvalidDataException(string.Join("; ", injuryIssues.Select(issue => $"{issue.Code}@{issue.FilePath}")));
+            // Undeclared offers need no wound source or additional canonical resource reads.
+            if (QtePhysicalInjuryContract.HasDeclaration(document.RootElement))
+            {
+                injuryIssues = QtePhysicalInjuryContract.ValidateCanonicalHealth(document.RootElement,
+                    await ReadCanonicalFileAsync(writeLease, ResourceMaterializationContract.DefinitionsPath),
+                    await ReadCanonicalFileAsync(writeLease, ResourceMaterializationContract.StatePath));
+                if (injuryIssues.Count != 0)
+                    throw new InvalidDataException(string.Join("; ", injuryIssues.Select(issue => $"{issue.Code}@{issue.FilePath}")));
+            }
             return StrictJsonAuthority.Deserialize<QteOffer>(
                 json,
                 JsonOpts,
@@ -6476,6 +6489,29 @@ public sealed partial class QteSceneService
 
         [JsonPropertyName("responseFragment")]
         public JsonObject? ResponseFragment { get; set; }
+
+        [JsonPropertyName("physicalInjury")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public QtePhysicalInjury? PhysicalInjury { get; set; }
+    }
+
+    [JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
+    public sealed class QtePhysicalInjury
+    {
+        [JsonPropertyName("schemaVersion"), JsonRequired]
+        public int SchemaVersion { get; set; }
+
+        [JsonPropertyName("resourceCommandOrdinal"), JsonRequired]
+        public int ResourceCommandOrdinal { get; set; }
+
+        [JsonPropertyName("maximumSeverityRank"), JsonRequired]
+        public int MaximumSeverityRank { get; set; }
+
+        [JsonPropertyName("cause"), JsonRequired]
+        public string Cause { get; set; } = "";
+
+        [JsonPropertyName("allowedLocationKinds"), JsonRequired]
+        public List<string> AllowedLocationKinds { get; set; } = new();
     }
 
     public sealed class QteScoreModel
