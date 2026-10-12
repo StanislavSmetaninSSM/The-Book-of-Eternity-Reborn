@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (CORRECTED FIXTURE ACTUAL1FAIL; STORY-CONTINUITY DIAGNOSIS)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; EXACT APPEND DESIGN WIP)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -23,8 +23,13 @@ design, causal RED, minimal implementation and GREEN. This checkpoint specifies 
 accepted serialization design, immutable first admission/freeze result and minimum
 production admission/freeze boundary. Fresh selected preparation and one matching
 GREEN invocation are complete and its immutable GREEN packet/EVIDENCE review are accepted at880ef52c.
-First finalized-harm fixture attempt timed out before its prerequisites and is published59fb65f6;
-one ownership-only fixture correction is WIP, with focused SOURCE review and fresh actual UNRUN. No occurrence producer or
+First finalized-harm fixture attempt timed out before its prerequisites and is published59fb65f6.
+The ownership-only correction received SOURCE acceptance9b1d4448 and completed1 FAIL
+before harm; its immutable packet is publishedcf14c4f8 with independent EVIDENCE acceptance.
+Read-only provenance review confirmed a production story-validation phase bug. The current
+checkpoint specifies its narrowly authorized prerequisite design, with one unresolved persisted
+issuance question for focused independent DESIGN review. No production/test implementation,
+third actual, occurrence producer or
 canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
@@ -136,19 +141,20 @@ QTE → finalized canonical health Damage → missing-occurrence causal cohort b
 before any producer implementation. T070, parent RESULT-CLOSURE and #1536 remain OPEN; all
 checkboxes, accepted historical B2–B5 evidence and GameEngine cold count1 are unchanged.
 
-### First finalized-health-harm control — ownership fixture correction WIP
+### First finalized-health-harm control — corrected fixture tested, prerequisite RED
 
 Original test-only base is accepted880ef52ce9ec9270942e2363691cfb4bf76477aa; current
-correction base is published59fb65f6f06b0645cf51e74078d65de6fc58eab0 on the same Linux task branch.
+correction source is9b1d44484d7d26bcb0bff92dc5a5cd4c16af4d88, with evidence carrier
+cf14c4f896ea387d1716a48f6475e4fc3d11b7da on the same Linux task branch.
 `GameEngineTurnLifecycleTests.QtePhysicalInjuryFinalization.cs` adds exactly one Fact/one
 case: `QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence`.
 Category `qte-physical-injury-finalization`, task-local
 `tests/selections/1536-qte-physical-injury-finalization.json`, budget5/default overall10.
 The documented owner is finite and exclusive to this causal boundary; existing selectors,
 production, GM guidance and global CI selection are unchanged. The accepted51 cases are
-not selected again. The original53a823e preparation/timeout is retained below; fresh
-build/PlanOnly/actual for this fixture correction are **UNRUN**. No method/selector change
-requires a new catalog discovery.
+not selected again. The original53a823e preparation/timeout and corrected9b1d4448
+preparation/1 FAIL are retained below. No method/selector change required a new catalog
+discovery. The physical missing-occurrence predicate remains **UNREACHED**.
 
 The existing engine fixture copies its immutable base into its independently owned root,
 then bootstraps real Mortal player health with actual resource contracts. Actual
@@ -177,9 +183,10 @@ only a blocker. The existing occurrence parser then requires one row with the or
 source coordinates, QTE/physical source and explicit maximum2. No future producer-type or
 missing-context-property assertion can substitute for finalized harm.
 
-Next: root publishes this ownership-only fixture WIP and completes focused independent
-Astra XHigh SOURCE/fixture review before a fresh one-case PlanOnly rebuild and matching
-corrected actual. Preserve the immutable first timeout; freeze the new actual outcome too. No source producer/publication code is authorized
+The ownership-only fixture source and its actual story-blocker packet are published and
+independently accepted. Next is the exact client-append prerequisite DESIGN gate below.
+Preserve both immutable outcomes; no third actual follows before that gate and bounded TDD.
+No source producer/publication code is authorized
 until the actual finalized canonical health harm milestone and missing-occurrence RED are
 established. All T070/#1536 checkboxes remain OPEN; original31 RED, accepted51 GREEN and
 historical B2–B5/cold evidence remain immutable. This test-only checkpoint changes no GM
@@ -216,10 +223,10 @@ unique owned directory and exact session/request/turn, removed only that directo
 confirmed absence. This manual cleanup is distinct from a strict fixture receipt.
 The first blocker is frozen and remotely published at
 `59fb65f6f06b0645cf51e74078d65de6fc58eab0`; its packet/source pins are immutable.
-Current ownership-only correction moves source observation and offline GM writes into the
-existing original-owner terminal-wait hook; it preserves every damage/occurrence oracle.
-Next is root correction WIP publication and focused independent SOURCE review, then fresh
-one-case PlanOnly rebuild and a new actual attempt, under unchanged5/default overall10. No production/producer is authorized by
+The subsequently published9b1d4448 correction moved source observation and offline GM writes
+into the original-owner terminal-wait hook, preserving every damage/occurrence oracle.
+Its completed1 FAIL is recorded next; the next current action is prerequisite DESIGN review,
+not another unchanged invocation. Existing5/default overall10 remain unchanged. No producer is authorized by
 this failure. Admission51 GREEN/original31 RED, all task checkboxes and historical B2–B5/
 cold evidence remain unchanged; full T070/#1536 and finalized-health vertical remain OPEN.
 
@@ -246,13 +253,143 @@ UNREACHED. It is an ordinary/QTE pipeline prerequisite blocker, NOT causal produ
 retains full summary/TRX/logs, source/binary pins and root full readback. One strict fixture
 cleanup receipt and actual owned-root absence were confirmed. No manual cleanup was needed.
 
+The packet is remotely published atcf14c4f896ea387d1716a48f6475e4fc3d11b7da; fresh independent
+Astra XHigh **STORY-BLOCKER EVIDENCE ACCEPTED**, with confirmed Important production phase bug.
+Exact preparation is20261012-110032-446-286153-550e7bca87c8496894f73782c63fcae7-categories;
+actual is20261012-110308-302-286368-5108af70bc144078a93644af32582416-categories.
 After two failed first attempts, no third expensive run or producer code follows blindly.
-Next is read-only minimal source/provenance diagnosis of client story publication between
-ordinary acceptance and QTE versus the snapshot used by story validation. Determine fixture
-omission versus existing pipeline phase mismatch before choosing one lawful correction.
+Source/provenance diagnosis is complete: client StoryService appends after ordinary admission
+but before QTE, whose history guard still compares to the original preturn snapshot.
 Do not waive story validation, enable allowPreexistingStateIssues, relax assertions, fabricate
 baseline or increase budgets. Production remains unchanged; causal occurrence RED/GREEN,
 next-turn consumer/replay/rollback/save-load remain UNRUN. T070/#1536 and all checkboxes OPEN.
+
+### Exact client-story-append prerequisite design — WIP, focused persistence gate
+
+Design-only basecf14c4f896ea387d1716a48f6475e4fc3d11b7da, same task branch/Linux; current
+user-selected implementation owner is Sol6.1 XHigh and reviewer is separate Astra XHigh.
+Root authorized only this necessary prerequisite fix before the physical producer. Current
+1-case failure is a meaningful **story-phase prerequisite RED**, not physical-producer RED.
+No new code, test, category, selection or runtime is part of this design checkpoint.
+
+**Confirmed seams.** `Core/GameEngine/GameEngine.TurnLifecycle.cs:1817–1826` publishes the
+client story before QTE1850. `Services/StoryService.cs:41–60` is that console writer;
+browser `AppendOriginalBrowserTurnAsync:70–107` already reads exact prefix, writes one row
+and compares exact readback. `PendingPlayerActionService.StoryProof:18` records AFTER-image
+length/hash and row; it does not retain original source/before image or prove issuer.
+`Core/GameEngine/GameEngine.SessionAndSnapshots.cs:684–699` captures only chat/story hashes;
+`Services/Validation/ValidationService.BootstrapAndProtocol.cs:640–681` compares them to
+original signed history. Seeding a story only changes created refusal to modified refusal.
+
+**One writer-issued delta.** Add a nested internal sealed `StoryService.AcceptedStoryAppend`
+with private constructor and detached bytes. Its only fresh factory is a narrow internal
+`AppendAcceptedQteSourceTurnAsync` writer path, called at the existing accepted story append
+in ordinary, recovered and late-ready engine paths; browser uses the same verification
+around its existing append/readback. The writer itself reads the official active snapshot
+and validated original history map under the held canonical lease. Callers supply accepted
+story inputs, never a row/proof/before image/hash map or deserialized source authority.
+No public API, GM response field, JsonConstructor or caller-side Seal method mints a witness.
+Normal non-QTE/public AppendTurn policy remains unchanged; a QTE witness is returned only
+after successful exact publication/readback, never after best-effort append failure.
+
+The writer verifies genuine source session/request/snapshot token/turn/sourceLabel and current
+session generation; sourceLabel must be existing QTE-eligible ordinary action. Realm and
+incarnation select exactly `StoryService.GetStoryPath` for that actual accepted story, and
+must agree with the original source/current accepted owner context. No arbitrary path/list,
+case alias, second story, marker row or externally authored delta is authorized. Before bytes
+must match the ORIGINAL signed map's existing text-hash algorithm and existence/path set;
+they are read before the client append, not accepted as a newly captured permissive baseline.
+After bytes must equal `(before bytes if present, otherwise UTF8.GetPreamble()) +
+UTF8(serialized existing StoryEntry + LF)`. Existing empty file stays empty-prefix; absent
+is distinct. Strict row readback verifies source turn/action/realm and actual accepted
+narrative/location/entityRefs/timestamp; browser's actual actionId/generation remain exact.
+Console row content/order is unchanged; no requestId or extra row fields are added to console.
+
+**Closed candidate serialization.** Existing `qte_deferred_effect_continuation.json` gains
+optional `clientStoryAppend`; absent means no authorized delta, not a synthesized witness.
+Raw duplicate/unknown/case-confusable fields fail before JsonNode/DTO conversion.
+
+| Exact member | Value and check |
+| --- | --- |
+| `schemaVersion` | integer1 |
+| `writerKind` | exact `console_turn` or `browser_turn`, matching actual append path |
+| `source` | closed `sessionId`, `requestId`, `snapshotToken`, `turnNumber`, `sourceLabel`, `sessionGeneration`; all copied from genuine validated original source/held owner, never raw request's nonexistent snapshotToken |
+| `storyPath` | exact single writer-derived relative path; no normalization grants alternate paths |
+| `originalHistoryBindings` | original validated chat/story path→hash map, unchanged; no newly captured current map. This is retained provenance data, not independent issuer authority |
+| `before` | closed `existed`, `bytesBase64`, `fingerprint`; null bytes iff absent, existing CanonicalBeforeImage existence+exact-byte fingerprint |
+| `rowJson` | exact actual writer serialization of one existing StoryEntry, without LF |
+| `after` | closed `byteLength`, `fingerprint`; recomputed CanonicalBeforeImage of exact before+row afterimage; never an override supplied by GM |
+
+Engine passes the issued typed object to `HandleAcceptedQteOfferAsync`→internal QTE start/
+begin→`QteDeferredEffectContinuation.CaptureAsync` before selection. Capture checks exact
+source, offer turn, current story afterimage and preserves the candidate plus exact story
+afterimage in the existing coordinated QTE handoff. No new control file, signing secret,
+cloned/re-signed original manifest or general history framework. Public Begin-only callers
+without an actual engine append receive no history exception. Every existing sealed root,
+original snapshot/control guard and offer/resource admission stays enabled.
+
+**Only one comparison changes.** A QTE-specific validation call accepts only the private
+verified witness. For that exact story path, compare current exact bytes to proven afterimage;
+use original signed map/path set unchanged for all other histories. Authorize that one new
+path only when original absence was established. Modified/deleted authorized story, a second
+append, unrelated changed/created story and changed original source all refuse before harm.
+Ordinary GM admission has no witness and retains original created/modified refusals. Do not
+exclude ClientOwnedControlFiles, waive history, enable allowPreexistingStateIssues, overwrite
+the original source, move story ordering or use current-history hashes as authority.
+
+**Lifetime and unresolved authority boundary.** The exact candidate is intended to survive
+armed/terminal_selected/awaiting_receipt and all deferred waves in the existing continuation;
+terminal/finalization checks must recheck source and exact current history on every resume.
+Fresh-process recovery must work through the existing canonical runtime/continuation owner,
+not an ephemeral validator scope or Deserialize-to-capability shortcut. Where the original
+snapshot remains, independently revalidate it; never replace it with the retained hash map.
+SaveLoadService explicitly excludes pending snapshot files (SaveLoadService.cs:69–94), so
+archive continuation cannot assume those files survive. Candidate retained provenance alone
+is insufficient to authorize fresh-process/archived recovery.
+
+**UNRESOLVED DESIGN QUESTION, blocking implementation/rehydration:** current continuation
+checks392–414 compare body SHA and ActiveScene.DeferredEffectContinuationFingerprint. Changing
+only continuation and recomputing SHA fails that runtime link. However neither QTE control
+root is captured by the current ordinary client-owned history map, and no equivalent GM
+ingress protection was found. A GM/caller could alter story+witness+continuation AND runtime
+fingerprint together. Self-consistency then proves no client issuance. Independent DESIGN
+review must choose the smallest actual trusted capture/publication anchor for this one delta,
+including recovery after original snapshot cleanup. Hashes, two mutable linked roots, private
+in-memory constructor or retained source strings cannot be claimed as that durable anchor.
+No runtime path may grant the exception until this boundary is resolved and its simultaneous
+self-seal negative is present. This checkpoint proposes exact data/writer/check seams, not
+a claim that persisted issuer authority is already solved.
+
+**Finite TDD/selection plan (all new tests UNWRITTEN/UNRUN).** Reuse the existing independently
+owned engine fixture and TerminalWaitStarted/offline GM/queued UI; keep the current damage/
+occurrence Fact unchanged. Proposed methods are in `GameEngineTurnLifecycleTests` partials:
+
+| Exact method | Cases and prerequisite/oracle | Planned owner/budget |
+| --- | --- | --- |
+| Existing `QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence` | 1; preserve original genuine-source/finalized health160→155/terminal/cleanup prerequisites, then missing occurrence. Current prerequisite RED already frozen | existing `qte-physical-injury-finalization`,5/default10 |
+| New `QteStoryAppend_OriginalGmHistoryTamperIsRefused` | 2: preaccept create and change; raw original GM ingress refuses before client append/harm | `qte-story-append-guards`,3/default8 |
+| New `QteStoryAppend_PostHandoffHistoryTamperIsRefused` | 4: authorized story alteration, unrelated new story, witness+continuation rehash alone, witness+continuation+runtime rehash together; real client append/handoff must first be observed, then refuse before harm with protected resource/wound bytes | same guards,3/default8 |
+| New `QteStoryAppend_RecoveredOrdinarySourceRetainsExactDelta` | 2: existing recovered-ready and late-ready source paths; real writer append and terminal finalized Damage, unchanged original source and exact single story row | `qte-story-append-lifetime`,5/default10 |
+| New `QteStoryAppend_DeferredReceiptResumeRetainsExactDelta` | 1: actual ordinary engine append→existing bounded deferred wait→real receipt/resume, no reappend or permissive baseline | same lifetime,5/default10 |
+| New `QteStoryAppend_FreshProcessPersistedDeltaKeepsAuthority` | 2: genuine client continuation after clean owner close/new process, and persisted simultaneous self-seal tamper; positive must reach harm, negative must refuse before harm. Archive variant may fold into later actual first-vertical save/load, remaining explicitly UNRUN meanwhile | same lifetime,5/default10 |
+| Existing `QteDeferredEffectContinuationIntegrationTests.AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild`; `AcceptedTerminalDamage_AfterRestartUsesSealedEffectTriggerAndClosesContinuation` | 1 each; absent witness/direct existing continuation compatibility and sealed restart behavior; source-change affected consumers only | same finite lifetime owner overlap,5/default10 |
+
+Inventory planned8 methods/14 cases: existing causal1, new guards2/6, new lifetime3/5,
+existing compatibility2/2. Three finite invocations retain existing5-minute boundary and
+new guards3/lifetime5 protective budgets; no category budget increase, full qte-rules,
+mortal-wounds-state, aggregate, global CI change or accepted51 rerun. After DESIGN gate,
+test-only WIP gets exact task-local selectors/category ownership and independent SOURCE/
+fixture/selection review before fresh discovery/preparation/actual. Preserve actual counts,
+predicate reachability and strict unique-root cleanup; a failing prerequisite is never producer
+RED. Minimal fix follows only the scoped TDD/source gates. Then the unchanged1-case chain
+must establish finalized canonical Damage plus missing occurrence before producer code.
+
+This client-owned bookkeeping design adds no GM-authored capability/field/example; existing
+admission guidance remains accurate. Any eventual persisted control/validation change must
+receive its targeted QTE lifecycle documentation/source-guard synchronization in the same
+implementation block. No afterlife GM contract change is proposed. Next: root publishes this
+DESIGN WIP and requests focused independent Astra XHigh review of the explicit durable-anchor
+question. Stop mutations here; all implementation, new tests and third actual remain UNRUN.
 
 ### Established contract and field ownership
 

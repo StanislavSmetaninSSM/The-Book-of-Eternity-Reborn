@@ -5,15 +5,19 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (CORRECTED FIXTURE ACTUAL1FAIL; STORY-CONTINUITY DIAGNOSIS)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; EXACT APPEND DESIGN WIP)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
 first real scenario through exact design, independent review, causal RED, minimum
 implementation and GREEN; minimum admission/freeze plus coherent GM guidance/example/guards
 has SOURCE/selection acceptance and matching51-case GREEN EVIDENCE accepted880ef52c.
-First one-case fixture attempt is a published59fb65f6 pre-harm timeout; the minimal
-owner-callback correction is WIP with focused SOURCE review/fresh actual UNRUN. Prior4085 source facts
+First one-case fixture attempt is a published59fb65f6 pre-harm timeout. The minimal
+owner-callback correction received SOURCE acceptance9b1d4448; its completed1 FAIL before
+harm is publishedcf14c4f8 with independent EVIDENCE acceptance and confirmed production
+story-validation phase bug. Current work is design-only for the authorized prerequisite;
+one durable-issuance question is open for focused DESIGN review, with no code/test/third run.
+Prior4085 source facts
 and bef700/076ecc compatible-contract acceptance remain retained; the old product-policy
 blocker was superseded by normative engineering classification. No checkbox changes:
 T070/parent/#1536 remain OPEN; B2–B5 accepted33PASS, first B3 oracle FAIL, all immutable
@@ -78,14 +82,14 @@ missing-occurrence assertion follows actual canonical health160→155, one Appli
 history row, resource owner/state agreement, terminal QTE closure and ordinary cleanup.
 Before that milestone, any failure is a fixture/finalization blocker, never causal RED.
 Per-test independent root, exact protected wound bytes and strict cleanup are required.
-The original53a823e preparation/timeout is retained below. On published59fb65f6, one
-minimal fixture correction now moves official source observation and all transient GM output
+The original53a823e preparation/timeout is retained below. Published9b1d4448 minimal
+fixture correction moves official source observation and all transient GM output
 writes into existing TerminalWaitStarted/AtCheckpointAsync inside the original participating
 owner. Outside Task.Run, missing-request polling, separate validator and health reads are
 removed; no new TCS/harness, owner propagation, lock release or oracle change. Existing
 phase/failure diagnostics cover callback entry/source/authoring/ready. Method/category/selection
-and5-minute budget are unchanged. Corrected build/PlanOnly/actual are UNRUN pending root
-publication and focused SOURCE/fixture review; no new inventory requires catalog rediscovery.
+and5-minute budget are unchanged. Corrected fresh PlanOnly110032/actual110308 are complete:
+1 case/0 PASS/1 FAIL,12.544s,no timeout. No new inventory required catalog rediscovery.
 Full chain/T070/#1536 and all checkboxes remain OPEN; originalRED31 and acceptedGREEN51
 are immutable. The first RED evidence carrier284 is distinct from actual compile/runtime76.
 
@@ -120,10 +124,10 @@ unique owned directory and exact session/request/turn, removed only that directo
 confirmed absence. This manual cleanup is distinct from a strict fixture receipt.
 The first blocker is frozen and remotely published at
 `59fb65f6f06b0645cf51e74078d65de6fc58eab0`; its packet/source pins are immutable.
-Current ownership-only correction moves source observation and offline GM writes into the
-existing original-owner terminal-wait hook; it preserves every damage/occurrence oracle.
-Next is root correction WIP publication and focused independent SOURCE review, then fresh
-one-case PlanOnly rebuild and a new actual attempt, under unchanged5/default overall10. No production/producer is authorized by
+Subsequently published9b1d4448 correction moves source observation and offline GM writes
+into the original-owner terminal-wait hook, preserving every damage/occurrence oracle.
+Its completed1 FAIL is retained below. Current next action is prerequisite DESIGN review,
+not another unchanged invocation; existing5/default overall10 remain unchanged. No producer is authorized by
 this failure. Admission51 GREEN/original31 RED, all task checkboxes and historical B2–B5/
 cold evidence remain unchanged; full T070/#1536 and finalized-health vertical remain OPEN.
 
@@ -150,13 +154,68 @@ UNREACHED. It is an ordinary/QTE pipeline prerequisite blocker, NOT causal produ
 retains full summary/TRX/logs, source/binary pins and root full readback. One strict fixture
 cleanup receipt and actual owned-root absence were confirmed. No manual cleanup was needed.
 
+The packet is publishedcf14c4f896ea387d1716a48f6475e4fc3d11b7da; fresh independent Astra XHigh
+STORY-BLOCKER EVIDENCE ACCEPTED, with Important true production phase bug confirmed.
+Exact preparation is20261012-110032-446-286153-550e7bca87c8496894f73782c63fcae7-categories;
+actual is20261012-110308-302-286368-5108af70bc144078a93644af32582416-categories.
 After two failed first attempts, no third expensive run or producer code follows blindly.
-Next is read-only minimal source/provenance diagnosis of client story publication between
-ordinary acceptance and QTE versus the snapshot used by story validation. Determine fixture
-omission versus existing pipeline phase mismatch before choosing one lawful correction.
+Read-only diagnosis confirmed client story publication after ordinary acceptance/before QTE
+versus the unchanged original preturn history baseline used by QTE terminal validation.
 Do not waive story validation, enable allowPreexistingStateIssues, relax assertions, fabricate
 baseline or increase budgets. Production remains unchanged; causal occurrence RED/GREEN,
 next-turn consumer/replay/rollback/save-load remain UNRUN. T070/#1536 and all checkboxes OPEN.
+
+### Current authorized prerequisite — exact append DESIGN WIP only
+
+Basecf14c4f896ea387d1716a48f6475e4fc3d11b7da, same Linux1536 task branch. Root authorized
+this necessary story-phase prerequisite before the physical producer; actual implementation
+owner is user-selected Sol6.1 XHigh, independent reviewer separate Astra XHigh. The precise
+writer/closed serialization/delta checks/lifetime/finite test map is in the active plan's
+`Exact client-story-append prerequisite design` section. No production/new tests/categories/
+selectors or runtime changed for this checkpoint; all task checkboxes remain unchanged.
+
+Use only a private typed witness issued by the actual successful accepted StoryService writer
+and exact readback, reusing browser prefix→row→after verification. Bound original genuine
+session/request/snapshot/turn/generation/sourceLabel, exact single writer path, original history
+map, exact before image, unchanged StoryEntry row and exact derived afterimage. Persist optional
+closed `clientStoryAppend` in existing QTE continuation; callers/GM never supply a sealed row,
+before image/hash map or new raw JSON authority. Console story order/content remains unchanged.
+The QTE validator may recognize only that proven exact client delta; ordinary GM ingress and
+every other history/snapshot/control check remain enabled. No permissive recapture, manifest
+re-sign/clone, new secret, general history framework or ClientOwnedControlFiles exclusion.
+
+**Unresolved DESIGN gate:** two mutable continuation/runtime fingerprints do not establish
+persisted issuer authority. Current original history hashes contain only chat/stories, not
+the two QTE control roots. A forged story+witness+continuation+runtime rehash must still refuse.
+There is no identified existing checked ingress seam that already prevents that combined edit;
+do not claim one. Fresh-process/archive recovery needs a smallest actual trusted publication/
+capture anchor, beyond retained source strings, hash-map data or an in-memory constructor.
+Archive saves exclude original pending snapshot files. Independent DESIGN review must resolve
+that one boundary before production or JSON-to-witness rehydration can proceed.
+
+Planned finite inventory is8 methods/14 cases, all new tests UNWRITTEN/UNRUN: existing causal
+Fact1; new original-GM create/change2; new post-handoff authorized alteration/unrelated new
+story/single-root rehash/both-root rehash4; recovered-ready/late-ready2; deferred receipt1;
+fresh-process lawful/tampered2; two named existing continuation compatibility Facts2. Exact
+method names/oracles are in the plan. Planned guards2 methods/6 cases,3-minute category;
+lifetime5 methods/7 cases including compatibility,5 minutes; existing causal1/1 stays5.
+Use three finite task-local invocations/default8 or10, not one aggregate/budget increase;
+category owner/selection files are authored only after DESIGN acceptance, then SOURCE/fixture/
+selection gate and fresh preparation. Global CI/old selectors and accepted51 remain unchanged.
+Fresh-process archive proof may fold into the actual first-vertical save/load, explicitly UNRUN
+until observed; constructor or missing future proof-property failures never substitute for harm.
+
+Next: root publishes this two-document DESIGN WIP and obtains focused independent Astra XHigh
+review of the persisted-anchor question. Stop edits; no third actual, code or new tests now.
+After the resolved design and bounded TDD/source gate, minimal prerequisite fix must preserve
+the existing finalization Fact and obtain real finalized health Damage/missing-occurrence RED
+before any producer. Original31 declaration RED284 (compile76), accepted51 GREEN880 (runtime141),
+timeout59fb (runtime53), story prerequisite REDcf14 (runtime9b), historical B2–B5 and cold1
+remain immutable. Full T070/FR063/result closure, consumer/replay/rollback/save-load remain OPEN.
+
+Client-owned bookkeeping alone introduces no new GM-authored field/example; existing admission
+guidance remains accurate. Any implemented control/validation lifecycle change gets targeted
+QTE documentation/source guards in the same implementation block; no afterlife change proposed.
 
 The plan now fixes the proposed optional QTE `physicalInjury` declaration: closed
 exactly five fields: schemaVersion1, one-based resource command ordinal, explicit maximum1–4, bounded cause
