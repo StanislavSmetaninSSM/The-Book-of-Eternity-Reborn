@@ -39,7 +39,8 @@ public partial class ValidationService
         JsonObject Commands,
         WoundAcceptedTurnInput Input,
         WoundPreparedAcceptedTurnPlan PreparedPlan,
-        EffectApplicationDiagnosticLocations? EffectLocations);
+        EffectApplicationDiagnosticLocations? EffectLocations,
+        AcceptedTurnRawWoundDraft OriginalDraft);
 
     /// <summary>
     /// Carries validated pre-allocation data; a copy or matching fingerprint does not grant live selection authority.
@@ -65,7 +66,8 @@ public partial class ValidationService
     private sealed record AcceptedTurnWoundPlanningHandoff(
         JsonObject Commands,
         WoundAcceptedTurnInput Input,
-        AcceptedMechanicsWoundStageBundle StageBundle);
+        AcceptedMechanicsWoundStageBundle StageBundle,
+        MortalWoundOpportunityReceiptConsumePlanResult? MortalQteReceipt);
 
     private sealed class AcceptedTurnWoundHandoffSink
     {
@@ -450,7 +452,7 @@ public partial class ValidationService
         }
         return new AcceptedTurnPreparedWoundHandoff(selection.Commands,
             WoundAcceptedTurnData.CloneInput(selection.Input)!, prepared.Plan,
-            selection.EffectLocations?.BindPreparedSources(prepared.Plan));
+            selection.EffectLocations?.BindPreparedSources(prepared.Plan), draft!);
     }
 
     /// <summary>
@@ -618,8 +620,20 @@ public partial class ValidationService
         if (skillScopeIssues.Count != 0)
             return null;
 
+        var carrierBaseline = draft.PreTurnCarriers;
+        if (carrierBaseline.PlayerWounds is null && draft.ParsedCommands.Commands.Any(command =>
+                draft.SignedOccurrences.Occurrences.Any(row => row.OccurrenceId == command.Opportunity.OpportunityId && row.AdapterKind == "qte") &&
+                command.Opportunity.ProfileKey == "mortal_qte_terminal_health_damage_v1" &&
+                command.Opportunity.Owner.CarrierPath == WoundCarrierCatalog.PlayerPath &&
+                command.Decision.GetProperty("decision").GetString() == "materialize"))
+        {
+            // This null came only from the official reader's observed absence. A real
+            // CREATE may plan the first carrier in memory; NONE never creates an empty root.
+            carrierBaseline = carrierBaseline with { PlayerWounds = new JsonObject
+                { ["schemaVersion"] = 1, ["activeWounds"] = new JsonArray() } };
+        }
         var acceptedOwnerCarriers = WoundAcceptedOwnerCarrierAuthority.Compose(
-            draft.PreTurnCarriers,
+            carrierBaseline,
             effectInput.AcceptedCarrierBaselines ??
             effectInput.PreTurnCarriers ??
             new EffectCarrierCatalogInput(null, null, null, null, null, null));
@@ -886,6 +900,8 @@ public partial class ValidationService
         issues.AddRange(final.Issues);
         if (!final.Success || final.Plan is null)
             return null;
+        var mortalReceipt = PlanAcceptedMortalQteReceipt(prepared, final.Plan, issues);
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return null;
         try
         {
             return new AcceptedTurnWoundPlanningHandoff(
@@ -895,7 +911,7 @@ public partial class ValidationService
                     prepared.Input,
                     prepared.PreparedPlan,
                     effectResult.Plan,
-                    final.Plan));
+                    final.Plan), mortalReceipt);
         }
         catch (ArgumentException exception)
         {
@@ -906,6 +922,48 @@ public partial class ValidationService
                 exception.GetType().Name));
             return null;
         }
+    }
+
+    private static MortalWoundOpportunityReceiptConsumePlanResult? PlanAcceptedMortalQteReceipt(
+        AcceptedTurnPreparedWoundHandoff prepared, WoundAcceptedTurnPlan final, List<ValidationIssue> issues)
+    {
+        var commands = prepared.OriginalDraft.ParsedCommands;
+        if (commands.Commands.Count != 1 || commands.TreatmentCommands.Count != 0 ||
+            !prepared.OriginalDraft.SignedOccurrences.Occurrences.Any(row =>
+                row.OccurrenceId == commands.Commands[0].Opportunity.OpportunityId && row.AdapterKind == "qte") ||
+            commands.Commands[0].Opportunity.ProfileKey != "mortal_qte_terminal_health_damage_v1") return null;
+        var command = commands.Commands[0];
+        var fresh = WoundResponseInputComposer.RecomposeCommandRoot(prepared.Input.Binding, commands,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        issues.AddRange(fresh.Issues);
+        var history = WoundHistoryState.Parse(final.HistoryAfterImage.ToJsonString(), WoundHistoryState.HistoryPath);
+        issues.AddRange(history.Issues);
+        if (!fresh.Success || fresh.DecisionReceipts.Count != 1 || history.State is null)
+        {
+            AddMissingWoundStageIssue(issues, "mortal_qte_decision_receipt_partial", "one exact fresh receipt and final typed history");
+            return null;
+        }
+        var decision = command.Decision.GetProperty("decision").GetString()!;
+        var receipt = fresh.DecisionReceipts[0];
+        var transitions = history.State.Transitions.Where(row => row.OperationKey == receipt.OperationKey).ToArray();
+        if ((decision == "none" && transitions.Length != 0) ||
+            (decision == "materialize" && transitions.Length != 1))
+        {
+            issues.Add(WoundIssue(WoundHistoryState.HistoryPath, "mortal_qte_decision_final_history_mismatch",
+                "NONE has no transition; materialize has one exact final typed transition", "final operation history mismatch"));
+            return null;
+        }
+        var binding = prepared.Input.Binding;
+        var plan = MortalWoundOpportunityReceiptState.PlanConsumeAndAppend(
+            prepared.OriginalDraft.SignedOccurrences, prepared.OriginalDraft.SignedReceipts,
+            new MortalWoundOpportunityReceiptDraft(new(binding.SessionId, binding.RequestId, binding.SnapshotToken, binding.Turn),
+                command.Opportunity.OpportunityId, command.Opportunity.AuthorityFingerprint, decision,
+                receipt.DecisionFingerprint, receipt.OperationKey, transitions.SingleOrDefault()?.WoundId,
+                transitions.SingleOrDefault()?.TransitionId), history.State);
+        issues.AddRange(plan.Issues);
+        if (plan.OccurrenceState is null || plan.ReceiptState is null)
+            AddMissingWoundStageIssue(issues, "mortal_qte_decision_receipt_partial", "complete pending and receipt after-images");
+        return plan.Issues.Count == 0 && plan.OccurrenceState is not null && plan.ReceiptState is not null ? plan : null;
     }
 
     private static WoundResponseCommandParsingResult? ParseAcceptedTurnWoundCommands(

@@ -55,7 +55,8 @@ internal static class WoundAcceptedTurnSnapshotContract
     [
         "output/narrative_response.json",
         "output/interface_updates.json",
-        "output/debug_logs.json"
+        "output/debug_logs.json",
+        MortalWoundOpportunityAdapter.DecisionPath
     ];
 
     private static readonly string[] RequiredPathInventory = CarrierPathInventory

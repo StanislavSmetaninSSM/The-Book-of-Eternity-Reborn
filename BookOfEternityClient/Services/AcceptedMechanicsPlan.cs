@@ -1370,6 +1370,18 @@ internal sealed class AcceptedMechanicsPlan
                 nameof(carrierComposition));
         }
         var woundPublication = carrierComposition?.WoundPublication;
+        var mortalNoneComposition = _woundStageBundle is not null && liveWoundCompletion is null &&
+            _pendingGmPacket is null && carrierComposition is not null && woundPublication is null &&
+            _ownerCompanionAfterImages.ContainsKey(MortalWoundOpportunityReceiptState.StatePath) &&
+            _woundStageBundle.FinalPlan.TransitionIntents.Count == 0 &&
+            _woundStageBundle.FinalPlan.AllocatedWoundIds.Count == 0 &&
+            _woundStageBundle.FinalPlan.AllocatedTransitionIds.Count == 0 &&
+            _woundStageBundle.FinalPlan.CarrierContributions.Count == 0 &&
+            JsonNode.DeepEquals(_woundStageBundle.FinalPlan.IdentityIndexAfterImage, _woundStageBundle.Input.PreTurnIdentityIndex) &&
+            JsonNode.DeepEquals(_woundStageBundle.FinalPlan.HistoryAfterImage, _woundStageBundle.Input.PreTurnHistory) &&
+            ObjectMapsEqual(_effectCarrierAfterImages, carrierComposition.EffectCarrierAfterImages) &&
+            ObjectMapsEqual(_ownerCompanionAfterImages, carrierComposition.OwnerCompanionAfterImages) &&
+            directWoundPublicationAuthority is null && treatmentResourcePublicationAuthority is null;
         if ((_woundStageBundle is null && liveWoundCompletion is null &&
              carrierComposition is not null) ||
             ((_woundStageBundle is not null || liveWoundCompletion is not null) &&
@@ -1377,7 +1389,7 @@ internal sealed class AcceptedMechanicsPlan
              _pendingGmPacket is null) ||
             (_pendingGmPacket is not null && carrierComposition is not null) ||
             (_pendingGmPacket is not null && liveWoundCompletion is not null) ||
-            (carrierComposition is not null && woundPublication is null) ||
+            (carrierComposition is not null && woundPublication is null && !mortalNoneComposition) ||
             (liveWoundCompletion is not null &&
              woundPublication?.LiveWoundProofFingerprint !=
                  liveWoundCompletion.ProofFingerprint))

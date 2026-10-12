@@ -13,6 +13,7 @@ public partial class GameEngine
     // Only bytes actually issued by this engine may be revoked during its repair loop.
     // A foreign command is always preserved and refused by the command-only distributor.
     private byte[]? _mortalQteOwnedCommand;
+    private IReadOnlyDictionary<string, CanonicalBeforeImage>? _mortalQteDecisionImages;
 
     private async Task<IReadOnlyList<ValidationIssue>> ValidateResourceAndMortalQteDecisionAsync(bool ordinaryUpstreamAccepted = true)
     {
@@ -21,7 +22,8 @@ public partial class GameEngine
         {
             if (!ordinaryUpstreamAccepted) await RevokeOwnedMortalQteCommandAsync(lease);
             var issues = await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync(lease,
-                ordinaryUpstreamAccepted ? StageMortalQteDecisionAsync : null);
+                ordinaryUpstreamAccepted ? StageMortalQteDecisionAsync : null,
+                ordinaryUpstreamAccepted ? SealMortalQteDecisionAsync : null);
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
                 await RevokeOwnedMortalQteCommandAsync(lease);
             return issues;
@@ -40,7 +42,8 @@ public partial class GameEngine
         {
             var rawBytes = await _fs.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath);
             var raw = rawBytes is null ? null : new UTF8Encoding(false, true).GetString(rawBytes).TrimStart('\uFEFF');
-            var narrative = await _fs.ReadFileAsync(lease, WoundNarrativeOutputPath);
+            var narrativeBytes = await _fs.ReadFileBytesAsync(lease, WoundNarrativeOutputPath);
+            var narrative = narrativeBytes is null ? null : new UTF8Encoding(false, true).GetString(narrativeBytes).TrimStart('\uFEFF');
             var sceneRoot = narrative is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(
                 narrative.TrimStart('\uFEFF'), new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "Mortal wound ordinary scene");
             var scene = sceneRoot?["response"] is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;
@@ -51,6 +54,12 @@ public partial class GameEngine
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "accepted Mortal wound decision");
             _mortalQteOwnedCommand = await StateDistributor.StageAcceptedWoundCommandAsync(_fs, lease,
                 new GameResponse { Response = scene ?? string.Empty, WoundDecisions = [decision] }, composed);
+            _mortalQteDecisionImages = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal)
+            {
+                [MortalWoundOpportunityAdapter.DecisionPath] = new(rawBytes is not null, rawBytes),
+                [WoundNarrativeOutputPath] = new(narrativeBytes is not null, narrativeBytes),
+                [AcceptedMechanicsPlan.WoundCommandPath] = new(_mortalQteOwnedCommand is not null, _mortalQteOwnedCommand)
+            };
             return Array.Empty<ValidationIssue>();
         }
         catch (Exception error) when (error is JsonException or InvalidDataException or DecoderFallbackException)
@@ -60,10 +69,29 @@ public partial class GameEngine
         }
     }
 
+    private async Task<IReadOnlyList<ValidationIssue>> SealMortalQteDecisionAsync(
+        FileSystemManager.CanonicalWriteLease lease, IReadOnlyDictionary<string, CanonicalBeforeImage> commonBeforeImages)
+    {
+        if (_mortalQteDecisionImages is null) return Array.Empty<ValidationIssue>();
+        foreach (var pair in _mortalQteDecisionImages)
+        {
+            var current = await _fs.ReadFileBytesAsync(lease, pair.Key);
+            if (!commonBeforeImages.TryGetValue(pair.Key, out var common) || common.Existed != pair.Value.Existed ||
+                !Same(common.Bytes, pair.Value.Bytes) || !Same(current, pair.Value.Bytes))
+                return new[] { new ValidationIssue(pair.Key, IssueSeverity.Error,
+                    "The raw decision, ordinary scene or issued wound command changed before the common seal.",
+                    "mortal_wound_decision_staged_input_changed") };
+        }
+        return Array.Empty<ValidationIssue>();
+
+        static bool Same(byte[]? left, byte[]? right) => left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
+    }
+
     private async Task RevokeOwnedMortalQteCommandAsync(FileSystemManager.CanonicalWriteLease lease)
     {
         AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, lease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, lease);
+        _mortalQteDecisionImages = null;
         if (_mortalQteOwnedCommand is not { } issued) return;
         var current = await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
         if (current is not null && current.AsSpan().SequenceEqual(issued))

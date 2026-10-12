@@ -9,54 +9,57 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (COMMON NONE/CREATE CONSUMER SECOND SOURCE MIDPOINT WIP; STAGING/PRISTINE READS WRITTEN; RECEIPT ASSEMBLY UNFINISHED)
+## Current T070 first vertical — 2026-10-12 (COMMON NONE/CREATE CONSUMER THIRD SOURCE MIDPOINT WIP; PENDING RECEIPT JOIN WRITTEN; REPLAY/CONTROLS/DOCS UNFINISHED)
 
-COMMON NONE/CREATE consumer implementation remains SOURCE WIP. First strict-draft/
-signed-pristine component midpoint was published436a9e0db13c3816c781f633ec92c1d21e4c431d;
-ROOT verified exact remote and556-file selected recovery without project execution or source
-acceptance. Both genuine causal REDs remain accepted: NONE4010 missing durable receipt and
-CREATEc7 missing complete canonical player wound after full actual N43 completion. Both
-unchanged Facts remain separate1 actual/1 executed/0 PASS/1 FAIL; later oracles UNREACHED.
-Producer accepted1b23 executed/22 PASS/1 FAIL and projection accepted4d4 actual/28 executed/
-26 PASS/2 FAIL are unchanged. All historical packets/checklists/protected causal Facts stay
-immutable; no previously passing cohort is repeated.
+COMMON NONE/CREATE consumer remains SOURCE WIP. Second staging/signed-pristine source
+midpoint was published8eeeca4a0997620e0dc74ec1989d528ddb2c7114; ROOT verified exact remote,
+clean560-file selected recovery and full source readback without acceptance or execution.
+Both actual causal REDs remain separately evidence accepted: NONE4010 missing receipt and
+CREATEc7 missing complete wound after complete N43. Their unchanged Facts remain separate
+1 actual/1 executed/0 PASS/1 FAIL; later postconditions UNREACHED. Producer accepted1b23
+executed/22 PASS/1 FAIL and projection accepted4d4 actual/28 executed/26 PASS/2 FAIL remain
+unchanged. Frozen packets, protected causal Facts, global selection and checkboxes unchanged.
 
-Second stopped source midpoint adds the actual GameEngine validation/repair callback under
-the existing canonical lease after resource/owner admission and before effect→wound planning.
-Only already-successful upstream admission invokes Mortal draft staging. StateDistributor
-now has an accepted-command-only seam reusing its strict command/response/scene checks;
-it never redistributes general response fields or output files and refuses existing foreign
-commands. The engine records only command bytes it actually issued; each repair iteration
-revokes matching owned bytes, invalidates common/effect cache, and preserves a foreign
-replacement. Resource-validation refusal likewise revokes the owned command. New wound-planning
-reads use official observed-optional roots; only signed-observed absence becomes in-memory
-pristine identity/history/pending/receipt values. Exact missing-before versus present-before
-client-owned checks remain enforced; covered null/corruption is not treated as absence.
-The exact transient output/mortal_wound_decisions.json path is excluded through existing
-SaveLoad EphemeralControlFiles, shared by save/import/cleanup. Archive behavior is UNRUN.
+Third stopped source midpoint writes the pending-decision common join. Existing sole1535
+Prepare→effect→Finalize supplies the final typed wound history and allocated IDs; the private
+wound handoff calls actual PlanConsumeAndAppend with the genuine signed pending/receipt
+partition and reconstructed decision authority. Canonical pending/receipt after-images join
+OwnerCompanionAfterImages BEFORE the one common input/cache/reduction/publication. Complete
+ordered original accepted-event vector is bound alongside the ordinary accepted events;
+receipt/pending/history agreement and exact draft/scene/issued-command inputs enter internal
+fingerprints and before-images before final input construction. The GameEngine's internal
+final guard requires captured common bytes AND current bytes to equal its actual staged
+inputs. Rejected/changed input cannot gain this final common seal. No standalone receipt
+writer, second identity allocator/reduction or new source/capture framework is introduced.
 
-The existing first-midpoint component control remains1 theory/10 rows, budget5/default10,
-[exact draft selection](../../tests/selections/1536-qte-physical-injury-consumer-draft.json).
-It uses independently owned actual QTE42/health155/occurrence then production N43 baseline
-writer/official Reader: valid_none/missing/json_null/duplicate/case_alias/wrong_case/unknown/
-foreign/receipt_null/history_null. Component admission is not full N43 engine publication.
-All703 catalog nodes/source-planned11535 methods are unchanged by this second midpoint;
-new discovery/catalog has NOT run. Old702 catalog suffix, global selection/CI, original
-ce955 and NONE/CREATE/projection Facts/selectors remain unchanged. All new controls UNRUN;
-no newly authored negative is claimed as an observed RED.
+NONE's exact zero-transition stage retains unchanged identity/history and zero allocated IDs/
+carrier contributions; its typed composition has no WoundPublication and consumes raw draft+
+owned command with durable receipt/pending after-images. CREATE may plan the first player
+wound carrier in memory ONLY after official observed absence and one accepted actual QTE
+materialize command; that carrier is written only with the complete wound/history/effect/
+receipt common publication and existing FR057/FR065 anchors. Generic unrelated zero-stage
+publication behavior is retained. The exact draft path now participates in existing transient
+cleanup before a new ordinary request and existing wound output/rollback/browser inventory;
+its SaveLoad ephemeral exclusion from the second midpoint is unchanged.
 
-Common receipt/pending companion assembly after final typed wound history, exact raw draft/
-scene/owned-command checks at final common input sealing, NONE zero-transition draft+command
-consumption without WoundPublication, connected retry/rollback/resubmission controls and
-combined preparation/remainder selectors are UNFINISHED. Six actual GM guidance/example/
-manifest/guard/runtime-prompt surfaces are UNFINISHED and no new capability is claimed.
-Existing Prepare→effect→Finalize and sole1535 allocator/FR057+FR065 anchors are retained;
-no separate receipt writer, second reduction, re-signed snapshot or new authority framework.
-SOURCE/FIXTURE/SELECTION review, build, discovery and runtime for both WIP midpoints remain
-UNRUN/PENDING. Mutations STOPPED for immediate ROOT source WIP publication/recovery, then
-resume remaining connected assembly/controls/docs only from ROOT's published checkpoint.
-Full consumer replay/atomicity and actual after-terminal save-load/new-root/fresh-process
-remain unimplemented/unrun; T070/FR-063/parent/#1536 checkboxes stay OPEN.
+A verified remaining branch is OPEN: exact replay against retained active pre-consumption
+snapshot validates the current durable receipt, then existing Composer returns commands=[]
+and distributor returns null. It requires bounded once-only completion/final input guards/
+transient consumption without a second allocation/history/receipt; that zero-command branch
+is UNFINISHED and no replay qualification is claimed. Remaining meaningful staging-change/
+foreign-command/cache/rollback/resubmission controls, combined finite preparation/remainder
+selectors and all six GM guidance/example/manifest/guard/runtime surfaces are UNFINISHED.
+Actual after-terminal save-load/new-root/fresh-process remains required and UNRUN.
+
+Existing new component owner qte-physical-injury-consumer-draft remains1 theory/10 cases,
+budget5/default10, [exact selection](../../tests/selections/1536-qte-physical-injury-consumer-draft.json).
+It uses real QTE42 then production next43 baseline writer/official Reader, never fabricated
+source/binding/hash. All703 catalog nodes/static-planned11535 methods remain unchanged by
+this midpoint; no fresh discovery/catalog/build/runtime has run, and old cached binaries do
+not verify new source. SOURCE/FIXTURE/SELECTION review for the connected candidate is PENDING;
+no newly authored control is claimed as observed RED. Mutations STOPPED for immediate ROOT
+WIP publication/recovery; next source step is the verified zero-command replay branch plus
+finite controls/docs. T070/fullFR-063/parent/#1536 checkboxes stay OPEN.
 
 Historical CREATE first-result metadata below records its pre-EVIDENCE boundary;
 publication/EVIDENCE pending wording there is historical, superseded by acceptedc7 above.

@@ -747,6 +747,17 @@ internal static partial class AcceptedMechanicsCarrierAssembler
 
             var input = woundStages.Input;
             var final = woundStages.FinalPlan;
+            if (final.TransitionIntents.Count == 0 && ownerRoots.ContainsKey(MortalWoundOpportunityReceiptState.StatePath))
+            {
+                if (final.AllocatedWoundIds.Count != 0 || final.AllocatedTransitionIds.Count != 0 ||
+                    final.CarrierContributions.Count != 0 || woundAnchorPlan is not null ||
+                    !JsonNode.DeepEquals(final.IdentityIndexAfterImage, input.PreTurnIdentityIndex) ||
+                    !JsonNode.DeepEquals(final.HistoryAfterImage, input.PreTurnHistory))
+                    return Failed("accepted_mechanics_empty_wound_stage_changed", "A zero-transition decision changed wound state.",
+                        "unchanged identity/history with no allocation or carrier contribution", "changed empty wound stage");
+                return AcceptedMechanicsCarrierCompositionResult.CreateValidated(effectRoots, ownerRoots, null,
+                    Array.Empty<ValidationIssue>(), PublicationProof);
+            }
             var woundRoots = new Dictionary<string, JsonObject>(
                 StringComparer.Ordinal);
             var contributionOwners = new HashSet<WoundOwnerCoordinate>();
@@ -4657,6 +4668,13 @@ internal static partial class AcceptedMechanicsPlanner
                 SpiritualWoundDecisionPendingState.StatePath, AcceptedMechanicsPlan.WoundCommandPath };
             touched.UnionWith(spiritualControls);
             consumed.UnionWith(spiritualControls);
+        }
+        if (ownerCompanionAfterImages.ContainsKey(MortalWoundOpportunityReceiptState.StatePath))
+        {
+            var mortalControls = new[] { MortalWoundOpportunityAdapter.DecisionPath, AcceptedMechanicsPlan.WoundCommandPath };
+            touched.UnionWith(mortalControls);
+            consumed.UnionWith(mortalControls);
+            touched.Add("output/narrative_response.json");
         }
 
         return new AcceptedMechanicsPlanningResult(

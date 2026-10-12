@@ -18,7 +18,8 @@ public partial class ValidationService
     internal async Task<IReadOnlyList<ValidationIssue>>
         ValidateAcceptedTurnRawResourceMaterializationAsync(
             FileSystemManager.CanonicalWriteLease writeLease,
-            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null)
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null,
+            Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -38,7 +39,7 @@ public partial class ValidationService
         try
         {
             var issues = await ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
-                writeLease, stageMortalQteDecision: stageMortalQteDecision);
+                writeLease, stageMortalQteDecision: stageMortalQteDecision, sealMortalQteDecision: sealMortalQteDecision);
             keepCommonHandoff = AcceptedMechanicsPlanAuthority.HasValidated(
                 _fs,
                 writeLease);
@@ -185,7 +186,8 @@ public partial class ValidationService
             FileSystemManager.CanonicalWriteLease writeLease,
             SpiritualOriginalInputSink? spiritualCapture = null,
             MortalOriginalInputSink? mortalCapture = null,
-            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null)
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null,
+            Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -463,6 +465,16 @@ public partial class ValidationService
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
         var woundHandoff = woundHandoffSink.Value;
+        var mortalReceipt = woundHandoff?.MortalQteReceipt;
+        var ownerCompanionAfterImages = ownerComposition.OwnerCompanionAfterImages.ToDictionary(
+            static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
+        if (mortalReceipt is not null)
+        {
+            ownerCompanionAfterImages.Add(MortalWoundOccurrenceState.StatePath,
+                JsonNode.Parse(MortalWoundOccurrenceState.SerializeCanonical(mortalReceipt.OccurrenceState!))!.AsObject());
+            ownerCompanionAfterImages.Add(MortalWoundOpportunityReceiptState.StatePath,
+                JsonNode.Parse(MortalWoundOpportunityReceiptState.SerializeCanonical(mortalReceipt.ReceiptState!))!.AsObject());
+        }
 
         EffectAcceptedTurnPlan? effectPlan = null;
         if (EffectAcceptedTurnPlanAuthority.TryPeekValidated(
@@ -625,6 +637,20 @@ public partial class ValidationService
                         woundHandoff.StageBundle.BundleFingerprint
                 }
         };
+        var commonAcceptedEvents = events.Root.DeepClone().AsObject();
+        if (mortalReceipt is not null)
+        {
+            commonAcceptedEvents["mortalWoundSourceAcceptedEvents"] = JsonSerializer.SerializeToNode(
+                woundHandoff!.Input.Binding.AcceptedEvents, Configuration.SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+            internalInputs["mortalQteDecisionReceipt"] = new JsonObject
+            {
+                ["pendingAfter"] = ownerCompanionAfterImages[MortalWoundOccurrenceState.StatePath].DeepClone(),
+                ["receiptsAfter"] = ownerCompanionAfterImages[MortalWoundOpportunityReceiptState.StatePath].DeepClone(),
+                ["historyAgreement"] = JsonSerializer.SerializeToNode(mortalReceipt.HistoryAgreement,
+                    Configuration.SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                ["finalWoundPlanFingerprint"] = woundHandoff!.StageBundle.FinalPlan.WoundFinalPlanFingerprint
+            };
+        }
         if (_spiritualWoundSourceSession is { HasWork: true } sourceSessionInput)
             internalInputs["spiritualSourcePreparation"] = sourceSessionInput.BuildInputBinding();
         var beforePaths = new HashSet<string>(StringComparer.Ordinal)
@@ -651,9 +677,15 @@ public partial class ValidationService
             beforePaths.UnionWith(
                 WoundAcceptedTurnSnapshotContract.RequiredPaths);
         }
+        if (mortalReceipt is not null)
+        {
+            beforePaths.Add(MortalWoundOpportunityAdapter.DecisionPath);
+            beforePaths.Add(AcceptedMechanicsPlan.WoundCommandPath);
+            beforePaths.Add("output/narrative_response.json");
+        }
         if (_spiritualWoundSourceSession is { HasWork: true } sourceSessionForBinding)
             beforePaths.UnionWith(sourceSessionForBinding.SelectedPaths);
-        beforePaths.UnionWith(ownerComposition.OwnerCompanionAfterImages.Keys);
+        beforePaths.UnionWith(ownerCompanionAfterImages.Keys);
         beforePaths.UnionWith(ownerComposition.OwnerTransitions.Select(static value => value.Path));
         beforePaths.UnionWith(acceptedItemOwners.Select(static owner => owner.FilePath));
         foreach (var outcome in registeredSystemOutcomes)
@@ -687,6 +719,22 @@ public partial class ValidationService
             foreach (var pair in outcome.ExpectedBeforeImages)
                 beforeImages[pair.Key] = pair.Value;
         }
+        if (sealMortalQteDecision is not null)
+        {
+            issues.AddRange(await sealMortalQteDecision(writeLease, beforeImages));
+            if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+        }
+        if (mortalReceipt is not null)
+        {
+            internalInputs["mortalQteDecisionInputs"] = new JsonObject();
+            foreach (var path in new[] { MortalWoundOpportunityAdapter.DecisionPath,
+                         AcceptedMechanicsPlan.WoundCommandPath, "output/narrative_response.json" })
+            {
+                var image = beforeImages[path];
+                internalInputs["mortalQteDecisionInputs"]![path] = HashText("mortal-qte-decision-exact-input-v1",
+                    image.Existed ? Convert.ToBase64String(image.Bytes!) : "<absent>");
+            }
+        }
         var fingerprints = new AcceptedMechanicsAuthorityFingerprints(
             Definitions: HashText("resource-definitions-v1", definitionsJson!),
             Owners: owners.Fingerprint,
@@ -704,7 +752,7 @@ public partial class ValidationService
             EffectIdentityIndex: HashText(
                 "effect-index-v1",
                 effectIdentityJson ?? "<missing>"),
-            AcceptedEvents: HashNode("resource-events-v1", events.Root),
+            AcceptedEvents: HashNode("resource-events-v1", commonAcceptedEvents),
             Commands: HashText(
                 "accepted-mechanics-commands-v1",
                 acceptedCommands.Root.ToJsonString() + "\n" +
@@ -741,7 +789,7 @@ public partial class ValidationService
             effectPlan,
             ownerCapacityDrafts: ownerComposition.CapacityDrafts,
             terminalOwners: ownerComposition.TerminalOwners,
-            ownerCompanionAfterImages: ownerComposition.OwnerCompanionAfterImages,
+            ownerCompanionAfterImages: ownerCompanionAfterImages,
             ownerTransitions: ownerComposition.OwnerTransitions,
             registeredSystemOutcomes: registeredSystemOutcomes,
             pendingResolutionState: pendingResolutionState,
@@ -754,7 +802,7 @@ public partial class ValidationService
             manifest.ManifestPayloadHash,
             realm,
             manifest.TurnNumber,
-            events.Root,
+            commonAcceptedEvents,
             acceptedCommands.Root,
             effectCommands,
             pendingInput,

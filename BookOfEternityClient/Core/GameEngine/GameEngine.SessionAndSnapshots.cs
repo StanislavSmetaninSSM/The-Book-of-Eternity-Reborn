@@ -1834,6 +1834,7 @@ public partial class GameEngine
             "output/narrative_response.json",
             "output/interface_updates.json",
             "output/debug_logs.json",
+            MortalWoundOpportunityAdapter.DecisionPath,
             "output/ink_feather_action_result.json",
             QteSceneService.QteOfferPath,
             ProgressionScheduleService.ReportPath
