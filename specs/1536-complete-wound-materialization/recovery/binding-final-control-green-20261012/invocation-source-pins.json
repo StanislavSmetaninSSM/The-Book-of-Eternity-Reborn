@@ -1,0 +1,110 @@
+{
+  "source": "d5b2f86d5bff6e2aa5fc16978d3db939358cef75",
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs",
+      "sha256": "ffa05bcbc31030ca19229c3976e8bd04e6a10d1a628b56fcef057b931acc91eb",
+      "bytes": 30803
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrame.cs",
+      "sha256": "0b8d6a57e013566e6ae4782821d161a6f101dd7c53916af88d472a662f1904fa",
+      "bytes": 14522
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSourceTransaction.cs",
+      "sha256": "ce2ad1cd2270ebc3912e1d327dcbdb7f6d303f279d95e1f81d45128e47d1a828",
+      "bytes": 17727
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStagedHistory.cs",
+      "sha256": "83f035e9f642ab1e4acb1afd606dc2180ab2d5995c409a33038d5a7c676b193b",
+      "bytes": 16260
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingFinalControl.cs",
+      "sha256": "fa7c88528555a7792b51e2c4f6d7027457783c78eab9a300f16c67f63f0bdd55",
+      "bytes": 13577
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CurrentCommittedPublicationWitness.cs",
+      "sha256": "49f94d09e5e2fc8d6bde1c981365fa52ae7e0098516d53c03aa8fc9b9ec1e624",
+      "bytes": 4038
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+      "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2",
+      "bytes": 10450
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundDependentDraftPolicy.cs",
+      "sha256": "bfaf1a75ae9fddf64af4cba4da11a8d7426710bd4635cdb63c9764e33ef73599",
+      "bytes": 18590
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundContinuationProtocol.cs",
+      "sha256": "7455208a4c86ece0b2344b80ce259f84a7f1c9844779bb2b994c2d031b6cde1f",
+      "bytes": 15979
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualBindingTerminalControlCorrection.cs",
+      "sha256": "98aebf6ccb4934a9b8297a7f71de7bbb98d60982c209f05cfc5863ac2f7ed292",
+      "bytes": 3354
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+      "sha256": "505af738c5acc825d450d922151379c31f6077662d2654309eb17b340a652b91",
+      "bytes": 325701
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualBindingDependency.cs",
+      "sha256": "843be084df48a1308a0edb8a2741f4aa794c00d6fee6783ec0bebc7ad6655582",
+      "bytes": 16523
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationDraft.cs",
+      "sha256": "6793bcf32cc9b63542135c86c7ce8ef172c37618f834ff4ec7b0d6aec42b0aa6",
+      "bytes": 18761
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationTransport.cs",
+      "sha256": "5163f0f5a0125915589052d32405f1e43c6f4b025acbab990470fcd05be565ba",
+      "bytes": 13202
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentContext.cs",
+      "sha256": "709c8e3ec518f8bb721551cc424044c88f417331c54aca274a7e0be9bf1ab2dd",
+      "bytes": 7173
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentWalk.cs",
+      "sha256": "353f239dab54676e6b511e6848d3f14cc65eca443a2905310bd4fc8a297d8d18",
+      "bytes": 25401
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs",
+      "sha256": "4008208eb0d260c95aa140729d21847c9c11fa959cafda65c2b57e7eda29ea1a",
+      "bytes": 17354
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs",
+      "sha256": "9c05faa1fe96fa41a119a9938802d273bf31b717333904d52826c7c4aa299baf",
+      "bytes": 68363
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "1e36e9cf157c55f080d647988c40c553206dbc3f5d97776185c09c64f6f04282",
+      "bytes": 1750666
+    },
+    {
+      "path": "tests/selections/1536-binding-final-control.json",
+      "sha256": "11e57931960af56eb575d67881f71372854bcfda3140af5ebe55784d1d6f237c",
+      "bytes": 1437
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "bytes": 81688
+    }
+  ]
+}

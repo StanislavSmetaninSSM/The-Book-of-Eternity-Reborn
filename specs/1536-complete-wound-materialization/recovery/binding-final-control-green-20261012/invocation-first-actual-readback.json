@@ -1,0 +1,258 @@
+{
+  "source": "d5b2f86d5bff6e2aa5fc16978d3db939358cef75",
+  "compileSource": "d5b2f86d5bff6e2aa5fc16978d3db939358cef75",
+  "runtimeSource": "d5b2f86d5bff6e2aa5fc16978d3db939358cef75",
+  "run": "20261012-061335-019-261020-40938f7e72104b768899b5a04c8983b5-categories",
+  "caseCount": 2,
+  "passed": 2,
+  "failed": 0,
+  "distinctCleanupReceipts": 2,
+  "all2OwnedRootsAbsent": true,
+  "runtimeBinaryHashesUnchanged": true,
+  "sourceHashesUnchanged": true,
+  "sourceCleanAtReadback": true,
+  "actualInvocations": 1,
+  "priorB3FailedActualInvocations": 1,
+  "priorAcceptedColdCount": 1,
+  "scope": "Same-candidate ordinary cost probe and actual rejection; one private A committed, direct/wrapper B reconstructed and evaluated Resolved; final B not committed and no new GameEngine/canonical publication.",
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingClosesAThenSeparatelyCorrectsFinalControl",
+      "outcome": "Passed",
+      "duration": "00:00:15.4531716",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-6b44a07e2ead4ad7b301f9ef9fa07a5a",
+          "wrapper": false,
+          "mixed": true,
+          "phase": "ordinary_invalid_cost_probe",
+          "PolicyAllows": true,
+          "Disposition": "dependent_continuation",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].actionCostAudit.player.effectiveCost",
+              "Severity": 2,
+              "Message": "Стоимость ОД должна соответствовать формуле effectiveCost = max(minCost, baseCost - artTier).",
+              "Category": 1,
+              "Code": "afterlife_conflict_action_cost_mismatch",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "baseCost=4, minCost=2, effectiveCost=3",
+              "Actual": "baseCost=4, minCost=2, effectiveCost=2",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "root": "/tmp/boe-resource-materialization-6b44a07e2ead4ad7b301f9ef9fa07a5a",
+          "wrapper": false,
+          "mixed": true,
+          "phase": "invalid_cost_with_held_echo",
+          "PolicyAllows": true,
+          "disposition": "Rejected",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_continuation_proposal_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "wrapper": false,
+          "mixed": true,
+          "phase": "a_evaluated",
+          "disposition": "Advanced",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.controlState",
+              "Severity": 2,
+              "Message": "Итоговый activeConflict.controlState должен совпадать с последним audited exchange.after.controlState текущего хода.",
+              "Category": 1,
+              "Code": "afterlife_conflict_control_snapshot_missing",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "activeConflict.controlState matches the control state derived from current exchange.after.controlState snapshots",
+              "Actual": "root controlState differs from audited exchange controlState",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "wrapper": false,
+          "mixed": true,
+          "phase": "a_committed_b_issued",
+          "a": "sha256:43d8afa360fc52dfed0be8629a8b95a39a9dba112f1e0197cceaebcb52c5078c",
+          "b": "sha256:686109b54b3086fe1cc9944914b820b0d59940f79af049357bb1c7e29e963780",
+          "DependentDraftFields": [
+            {
+              "Path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+              "JsonPointer": "/activeConflict/controlState"
+            }
+          ],
+          "progressCount": 1,
+          "Issues": [
+            {
+              "FilePath": "activeConflict.controlState",
+              "Severity": 2,
+              "Message": "Итоговый activeConflict.controlState должен совпадать с последним audited exchange.after.controlState текущего хода.",
+              "Category": 1,
+              "Code": "afterlife_conflict_control_snapshot_missing",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "activeConflict.controlState matches the control state derived from current exchange.after.controlState snapshots",
+              "Actual": "root controlState differs from audited exchange controlState",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "wrapper": false,
+          "mixed": true,
+          "phase": "b_recovered_changed_a_rejected",
+          "recoveredA": "sha256:43d8afa360fc52dfed0be8629a8b95a39a9dba112f1e0197cceaebcb52c5078c",
+          "recoveredB": "sha256:686109b54b3086fe1cc9944914b820b0d59940f79af049357bb1c7e29e963780",
+          "issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_continuation_proposal_not_preserved",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "wrapper": false,
+          "mixed": true,
+          "phase": "b_evaluated",
+          "disposition": "Resolved",
+          "Issues": []
+        },
+        {
+          "wrapper": false,
+          "mixed": true,
+          "phase": "preservation_complete",
+          "SavedChoiceAndCanonicalBytesPreserved": true,
+          "ExactlyOneCommittedA": true,
+          "FinalBUncommitted": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-6b44a07e2ead4ad7b301f9ef9fa07a5a",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_ForceBindingWrapperClosesAThenFinalControl",
+      "outcome": "Passed",
+      "duration": "00:00:15.7381576",
+      "structuredOutput": [
+        {
+          "wrapper": true,
+          "mixed": false,
+          "phase": "a_evaluated",
+          "disposition": "Advanced",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.controlState",
+              "Severity": 2,
+              "Message": "Итоговый activeConflict.controlState должен совпадать с последним audited exchange.after.controlState текущего хода.",
+              "Category": 1,
+              "Code": "afterlife_conflict_control_snapshot_missing",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "activeConflict.controlState matches the control state derived from current exchange.after.controlState snapshots",
+              "Actual": "root controlState differs from audited exchange controlState",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "wrapper": true,
+          "mixed": false,
+          "phase": "a_committed_b_issued",
+          "a": "sha256:a5c316965b81ce6131e3a3798ad57ab72f66775e3f337f362b321a3d5dd6ddbf",
+          "b": "sha256:da65f97fbea95b9cdcccbe47ea86671d3e74002c4d6e6ede1bae90c8895e902b",
+          "DependentDraftFields": [
+            {
+              "Path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+              "JsonPointer": "/afterlifeSpiritualConflictUpdate/activeConflictAfter/controlState"
+            }
+          ],
+          "progressCount": 1,
+          "Issues": [
+            {
+              "FilePath": "activeConflict.controlState",
+              "Severity": 2,
+              "Message": "Итоговый activeConflict.controlState должен совпадать с последним audited exchange.after.controlState текущего хода.",
+              "Category": 1,
+              "Code": "afterlife_conflict_control_snapshot_missing",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "activeConflict.controlState matches the control state derived from current exchange.after.controlState snapshots",
+              "Actual": "root controlState differs from audited exchange controlState",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "wrapper": true,
+          "mixed": false,
+          "phase": "b_recovered_changed_a_rejected",
+          "recoveredA": "sha256:a5c316965b81ce6131e3a3798ad57ab72f66775e3f337f362b321a3d5dd6ddbf",
+          "recoveredB": "sha256:da65f97fbea95b9cdcccbe47ea86671d3e74002c4d6e6ede1bae90c8895e902b",
+          "issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_continuation_proposal_not_preserved",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "wrapper": true,
+          "mixed": false,
+          "phase": "b_evaluated",
+          "disposition": "Resolved",
+          "Issues": []
+        },
+        {
+          "wrapper": true,
+          "mixed": false,
+          "phase": "preservation_complete",
+          "SavedChoiceAndCanonicalBytesPreserved": true,
+          "ExactlyOneCommittedA": true,
+          "FinalBUncommitted": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-e68fa558fd4c4245b70806d8bf9e92da",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    }
+  ]
+}

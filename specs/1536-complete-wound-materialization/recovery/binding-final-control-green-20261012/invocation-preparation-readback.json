@@ -1,0 +1,71 @@
+{
+  "source": "d5b2f86d5bff6e2aa5fc16978d3db939358cef75",
+  "compileSource": "d5b2f86d5bff6e2aa5fc16978d3db939358cef75",
+  "planRun": "20261012-061031-833-260551-9571f0e8b9734e2fb0aade4a3d382297-categories",
+  "planWallTime": "00:01:48.1228822",
+  "phaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.034048,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0309606,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0908076,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 105.5260989,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0042792,
+      "Completed": true
+    }
+  ],
+  "planSelection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 2,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "spiritual-binding-final-control-integration-001",
+      "spiritual-binding-wrapper-control-integration-002"
+    ],
+    "Complete": false
+  },
+  "methodCount": 2,
+  "planTests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "freshBinaryPinsMatchAfter": true,
+  "sourcePinsMatchAfter": true,
+  "sourceCleanAfter": true,
+  "cleanup": {
+    "planOwnedTree": true,
+    "planRuntime": true
+  },
+  "warnings": {
+    "integration": 73,
+    "errors": 0
+  },
+  "unitBuilt": false,
+  "budgetsMinutes": {
+    "finalControl": 5,
+    "wrapperControl": 5,
+    "overallDefault": 15
+  },
+  "actualTestsRun": 0,
+  "priorB3FailedActualInvocations": 1,
+  "priorAcceptedColdCount": 1
+}

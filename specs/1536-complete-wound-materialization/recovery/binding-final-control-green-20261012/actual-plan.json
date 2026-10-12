@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "spiritual-binding-final-control",
+    "spiritual-binding-wrapper-control"
+  ],
+  "Reasons": [
+    {
+      "category": "spiritual-binding-final-control",
+      "reason": "#1536 B3 existing mixed owner: prove issued A policy allows the wrong-cost edit while the genuine ordinary probe reports its exact cost error and actual evaluation rejects it beside held terminal echo, then exact A/B progression and final raw validation.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B3 / RESULT-CLOSURE-BINDING rev1",
+        "Genuine saved-choice policy provenance; same physical candidate ordinary source probe has exact action-cost mismatch expected3/actual2; disposed before Evaluate Rejected/no next request; byte preservation after both",
+        "Distinct A/B, one committed A, reconstructed accepted A/B, changed-A rejection, final B Resolved without final publication"
+      ]
+    },
+    {
+      "category": "spiritual-binding-wrapper-control",
+      "reason": "Retain the existing force-binding effective replacement-carrier neighbor through the shared strengthened A/B and preservation helper.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B3 / RESULT-CLOSURE-BINDING rev1",
+        "Effective raw replacement carrier and ignored sibling precedence, exact B pointer, immutable accepted A and saved choice",
+        "Same-process reconstructed ValidationService evidence only; existing GameEngine cold/warm packets reused without rerun"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "d5b2f86d5bff6e2aa5fc16978d3db939358cef75",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 2.2032751,
+  "Descriptors": [
+    {
+      "Name": "spiritual-binding-final-control-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-binding-final-control",
+      "Categories": [
+        "spiritual-binding-final-control"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingClosesAThenSeparatelyCorrectsFinalControl",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingClosesAThenSeparatelyCorrectsFinalControl",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "spiritual-binding-wrapper-control-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-binding-wrapper-control",
+      "Categories": [
+        "spiritual-binding-wrapper-control"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_ForceBindingWrapperClosesAThenFinalControl",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_ForceBindingWrapperClosesAThenFinalControl",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

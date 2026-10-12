@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (B2 ACCEPTED; B3 CORRECTED TEST-ONLY WIP)
+## Current original-completion boundary — 2026-10-12 (B2 ACCEPTED; B3 CORRECTED 2 PASS — REVIEW PENDING)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Lorian subsequently accepted
@@ -15,7 +15,8 @@ released one fresh selected preparation and one matching actual; both are frozen
 B2 evidence is independently accepted on383930; coordinator now releases only
 the B3 test-only refinement below. Its first separately released matching actual
 failed. Independent consultation identifies an overconstrained named-on-Evaluate
-oracle; only the test correction is now released, with no preparation/runtime/B4/B5.
+oracle. Corrected SOURCE d5b2 and separately released fresh preparation/first
+corrected actual are now complete2PASS; EVIDENCE review is pending, B4/B5 gated.
 The [current plan](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
 separates source coverage, historical PASS without available raw artifacts and
 retained raw-verified evidence for exact RESULT-CLOSURE-BINDING B2–B5.
@@ -85,8 +86,17 @@ rules and the strong existing oracle. Independent consultation/coordinator revie
 rev1 requirement for the exact named diagnostic on Evaluate. The production guard
 is optional/deferred. Released test-only correction keeps the exact cost oracle on
 the genuine same-candidate ordinary probe and actual rejection/preservation after
-probe disposal. FirstFAIL remains immutable; corrected selection UNRUN and pending
-finding-focused SOURCE review before any preparation/actual release. No retry/instrumentation/project
+probe disposal. FirstFAIL remains immutable. Corrected SOURCE/fixture/selection
+ACCEPTED d5b2f86d5bff6e2aa5fc16978d3db939358cef75 without findings, followed by
+coordinator-released fresh PlanOnly061031 (2/2/2,zero execution) and first corrected
+actual061335:2/2PASS,38.0364553s,complete/no timeout/duplicate/underfill. Separate
+[GREEN packet](./recovery/binding-final-control-green-20261012/manifest.json) retains
+20 artifacts,21 source pins,6 binary pins and2 strict cleanup/observed absent roots.
+Exact same-draft ordinary cost cause and actual generic rejection both retained;
+direct/wrapper B pointers, distinct IDs, one committed A, reconstructed accepted
+A/B, changed-A rejection and final raw B Resolved/empty issues all passed. Final B
+uncommitted; no production change or new GameEngine/cold run. Corrected EVIDENCE
+review pending before B4 scope; all task checkboxes remain OPEN. No retry/instrumentation/project
 run or B4/B5 work; all checkboxes and earlier accepted packets remain unchanged.
 
 Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and

@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip"></a>
-## Current #1536 completion checkpoint — 2026-10-12 (B2 ACCEPTED; B3 CORRECTED TEST-ONLY WIP)
+## Current #1536 completion checkpoint — 2026-10-12 (B2 ACCEPTED; B3 CORRECTED 2 PASS — REVIEW PENDING)
 
 Lorian accepted the bounded force_binding restoration through
 `ceedbe496a0ecc3a3e3cd96518675ba128989099` and resumed original #1536 completion.
@@ -22,8 +22,9 @@ coordinator verified all22 artifacts/source pins,10 binaries and13 raw cases.
 The B3 test-only refinement passed independent SOURCE review on84a5; coordinator
 released one fresh selected preparation and one matching actual. That first actual
 failed as recorded below. Independent consultation then identified an overconstrained
-test oracle; coordinator releases the test-only correction below, not preparation,
-actual retry, production change or dependent B4/B5 work.
+test oracle. Corrected SOURCE was accepted on d5b2, followed by separately released
+fresh preparation and first corrected actual2PASS. Both outcomes are frozen;
+corrected EVIDENCE review is pending and dependent B4/B5 work remains gated.
 The prior block's code, three immutable packets and cold invocation count1 remain
 accepted and unchanged. Use the same Linux task branch,
 existing RESULT-CLOSURE-BINDING rev1 and exact
@@ -35,7 +36,7 @@ All four tasks remain OPEN. No new specification or evidence framework is needed
 | Existing task | Source/coverage and evidence status | Remaining bounded obligation |
 | --- | --- | --- |
 | B2 | `SpiritualBindingDependency.cs` and `SpiritualBindingResultClosure.cs` implement owner-derived result fields, eight original-policy variants plus the original-incoming row and immutable-input checks. `SpiritualBindingCorrectionBoundaryTests.cs` covers four presence/carrier cases. Historical PASS84efd5c4/db70c216/c3b2ddc3 is recorded below; matching raw artifacts are unavailable in this checkout. Current authority21 GREEN is retained raw proof of its narrower gate/cost scope. The new result-admission packet retains13PASS including actual blocked admission/rejection, independently EVIDENCE ACCEPTED383930. | Accept/reconcile this bounded evidence and remaining original B2 obligations; first block below. Preserve both strong prerequisites and independent mixed-cost permissions. |
-| B3 | `SpiritualBindingTerminalControlCorrection.cs` plus `SpiritualBindingFinalControl.cs` cover detached echo, actual A/B, mixed invalid-cost rejection and wrapper precedence. Historical PASS4636aa27/da4b50cf is prose-recorded, not currently raw-reverified. | Reconcile exact final carrier/value/presence and unrelated ordinary-error rejection. Refine the existing mixed invalid-cost diagnostic assertion later only if needed; no duplicate scenario. |
+| B3 | `SpiritualBindingTerminalControlCorrection.cs` plus `SpiritualBindingFinalControl.cs` cover detached echo, actual A/B, mixed invalid-cost rejection and wrapper precedence. Historical PASS4636aa27/da4b50cf is prose-recorded, not currently raw-reverified. Corrected current2PASS retains direct/wrapper raw A/B and ordinary-cost evidence, pending EVIDENCE review. | Accept/reconcile the current bounded evidence; first failure remains preserved as the corrected test-oracle overconstraint, without a production change. |
 | B4 | The #1553 `storage-migration-spiritual-lifecycle-20261009` packet retains hash-verified warm binding PASS with matching relevant fixture pins. The current cold packet retains one force-binding PASS; shared `SpiritualStagedHistory.cs` source covers forged B, while `SpiritualBindingFinalControl.cs` covers changed accepted A. | Reconcile shared negative evidence and cumulative A/B/replay obligations; reuse accepted warm/cold instead of repeating them. Source coverage alone is not a new passing result. |
 | B5 | Existing GM matrix/guide/CLI-worker/example/manifest changes and no-update rationales are recorded below; two changed docs/example guards have current retained GREEN. | Complete only still-relevant nonbinding compatibility/GM final controls and coherent independent B2–B5 review; no broad documentation matrix or retired aggregate lanes. |
 
@@ -171,7 +172,7 @@ Independent Astra XHigh EVIDENCE ACCEPTED without findings on
 hashes, actual cases and cleanup. This first result remains immutable. B2–B5/#1536
 checkboxes remain OPEN; the coordinator separately released the next block below.
 
-### Current B3 test-only block — corrected oracle; first failure preserved
+### Current B3 test-only block — corrected first 2 PASS; evidence review pending
 
 Retain the two existing Facts in `SpiritualBindingFinalControl.cs`: mixed direct
 binding and force-binding replacement carrier. The shared original-admission helper
@@ -263,9 +264,38 @@ and exact cost Error/path/expected/actual, then dispose it. Full byte assertions
 prove this probe did not repair/change the scenario before Evaluate. Keep actual
 Evaluate Rejected/no next request/Error and raw generic diagnostics, followed by
 all existing valid A/B, carrier, replay and final B checks. Earlier first-FAIL packet
-remains immutable. Corrected two-case selection is UNRUN; finding-focused independent
-SOURCE review precedes separately released fresh preparation and actual. No build,
-discovery, runtime, production change or retry occurred for this corrected candidate. Do not start B4/B5 or
+remains immutable. Independent Astra XHigh corrected SOURCE/fixture/selection
+ACCEPTED without findings on `d5b2f86d5bff6e2aa5fc16978d3db939358cef75`;
+coordinator exact diff/remote readback passed, then separately released preparation
+and the first corrected actual. No production correction was made.
+
+Corrected evidence is frozen separately in
+[the final-control GREEN packet](./recovery/binding-final-control-green-20261012/manifest.json):
+20 stored/raw-hash-verified artifacts,21 source pins and6 selected DLL/PDB pins.
+Compile/runtime are clean d5b2. PlanOnly
+`20261012-061031-833-260551-9571f0e8b9734e2fb0aade4a3d382297-categories`
+planned2/2/2 with zero execution; integration build105.5260989s,73 warnings/0 errors,
+cleanup passed, no unit build/catalog/timeout override. First corrected actual
+`20261012-061335-019-261020-40938f7e72104b768899b5a04c8983b5-categories`
+passed2/2 with2/2 descriptors in38.0364553s wall (cases15.4531716/15.7381576s),
+no timeout, skip, duplicate or underfill. Both strict roots were observed absent;
+source/binary pins and all private/canonical/submitted byte assertions passed.
+
+The genuine same-draft probe returned only the exact ordinary cost mismatch at
+`activeConflict.exchangeLog[1].actionCostAudit.player.effectiveCost`, expected
+base4/min2/effective3 versus actual2. Evaluate retained its actual generic
+proposal-invalid rejection/no next request. Each valid A then Advanced with the
+held terminal diagnostic, committed exactly one A and issued a distinct B:
+`/activeConflict/controlState` for direct, and
+`/afterlifeSpiritualConflictUpdate/activeConflictAfter/controlState` for wrapper.
+Reconstructed A/B IDs matched; changed A was rejected as proposal_not_preserved;
+final cumulative raw B evaluated Resolved with no issues/no next request. Final B
+remains uncommitted: this is private same-process validator evidence, not new
+GameEngine/canonical publication. Earlier warm/cold packets and cold counter1 stay.
+
+Corrected EVIDENCE review is pending on the published packet/checkpoint. B3 has one
+preserved failed invocation plus one corrected invocation; no further run or B4/B5
+work follows before coordinator acceptance/scope. All B2–B5/#1536 checkboxes stay OPEN. Do not start B4/B5 or
 broad replay/transport owners. B2–B5/#1536 checkboxes remain OPEN; cold stays1.
 
 ### Accepted recovery and cold-blocker context — 2026-10-12
