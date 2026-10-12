@@ -15,7 +15,10 @@ internal static class PendingPlayerActionService
     internal sealed record Binding(string ActionId, string Generation, string Action, string Source, string Json);
     internal sealed record State(Binding Binding, string Phase, string Json, string? ProofJson);
     internal sealed record Staged(Binding Binding, string RequestJson, string ManifestJson, string AuthorityJson, string Json, string HistoryJson);
-    internal sealed record StoryProof(string Path, int PrefixBytes, string PrefixHash, string RowJson);
+    internal sealed record StoryProof(string Path, int PrefixBytes, string PrefixHash, string RowJson)
+    {
+        internal StoryService.AcceptedStoryAppend? QteStoryAppend { get; init; }
+    }
 
     internal static State Parse(string json, string generation)
     {

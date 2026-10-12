@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "qte-story-append-documentation",
+      "reason": "#1536 One affected existing documentation/source guard, category2/default7, checks the exact private continuity lifecycle and unchanged GM offer/receipt boundary.",
+      "contracts": [
+        "Rules/Block_CLI_QTE.txt documents exact client-owned story delta, continued unrelated history guards, same-root resume and trusted portable checkpoint boundary",
+        "No new GM authored witness/schema, worked offer change, anti-owner architecture or active-QTE archive capability is introduced"
+      ]
+    }
+  ]
+}

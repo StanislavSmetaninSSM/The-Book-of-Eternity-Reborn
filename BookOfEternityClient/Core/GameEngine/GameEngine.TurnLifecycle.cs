@@ -167,7 +167,8 @@ public partial class GameEngine
                 return false;
             }
 
-            if (HasRollbackCapability(rollbackSnapshot))
+            var retainSourceForQte = _fs.FileExists(QteSceneService.QteOfferPath);
+            if (!retainSourceForQte && HasRollbackCapability(rollbackSnapshot))
                 CleanupBackup(rollbackSnapshot!);
 
             _gameLoop.IncrementTurn();
@@ -181,7 +182,7 @@ public partial class GameEngine
 
             var acceptedAction = snapshotContext?.PlayerAction ?? string.Empty;
             var state = _stateManager.CurrentState;
-            await _storyService.AppendTurnAsync(
+            var acceptedStoryAppend = await _storyService.AppendAcceptedQteSourceTurnAsync(
                 _gameLoop.TurnNumber,
                 state.CurrentRealm ?? "Chaos Sea",
                 state.Incarnation,
@@ -206,9 +207,11 @@ public partial class GameEngine
 
             _pendingMemoryLegacyAwaitingConsumption = false;
 
-            var qteHandling = await HandleAcceptedQteOfferAsync(response, snapshotContext);
+            var qteHandling = await HandleAcceptedQteOfferAsync(response, snapshotContext, acceptedStoryAppend);
             if (qteHandling.EarlyExit)
             {
+                if (qteHandling.AwaitingEffectResolution) return true;
+                if (retainSourceForQte && HasRollbackCapability(rollbackSnapshot)) CleanupBackup(rollbackSnapshot!);
                 await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
                 if (await CheckGmIncarnationTrigger(snapshotContext))
                     return true;
@@ -216,6 +219,7 @@ public partial class GameEngine
                 return true;
             }
 
+            if (retainSourceForQte && HasRollbackCapability(rollbackSnapshot)) CleanupBackup(rollbackSnapshot!);
             _lastResponse = qteHandling.Response;
             _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
 
@@ -1038,10 +1042,14 @@ public partial class GameEngine
 
                     var state = _stateManager.CurrentState;
                     var lateStoryRefs = await ExtractStoryEntityRefsAsync(lateAction);
+                    StoryService.AcceptedStoryAppend? lateStoryAppend;
                     if (lateBrowserStaged != null)
+                    {
                         lateBrowserStory = await AppendBrowserStoryAsync(lateBrowserStaged, lateResponse, state.CurrentLocation, lateStoryRefs);
+                        lateStoryAppend = lateBrowserStory.QteStoryAppend;
+                    }
                     else
-                        await _storyService.AppendTurnAsync(
+                        lateStoryAppend = await _storyService.AppendAcceptedQteSourceTurnAsync(
                             _gameLoop.TurnNumber, state.CurrentRealm ?? "Chaos Sea", state.Incarnation,
                             lateAction, lateResponse?.Response, state.CurrentLocation, lateStoryRefs);
 #if DEBUG
@@ -1067,7 +1075,8 @@ public partial class GameEngine
                         await FinalizePendingMemoryLegacyConsumptionAsync();
 
                     var browserQteHandoff = lateBrowserStaged != null && _fs.FileExists(QteSceneService.QteOfferPath);
-                    var qteHandling = await HandleAcceptedQteOfferAsync(lateResponse, snapshotContext);
+                    var qteHandling = await HandleAcceptedQteOfferAsync(lateResponse, snapshotContext, lateStoryAppend);
+                    if (qteHandling.AwaitingEffectResolution) return true;
                     if (lateBrowserStaged != null && (qteHandling.EarlyExit || browserQteHandoff)) return true;
                     if (!qteHandling.EarlyExit)
                     {
@@ -1820,10 +1829,14 @@ public partial class GameEngine
             // Persist turn to story file
             var state = _stateManager.CurrentState;
             var storyRefs = await ExtractStoryEntityRefsAsync(action);
+            StoryService.AcceptedStoryAppend? acceptedStoryAppend;
             if (browserStaged != null)
+            {
                 browserStory = await AppendBrowserStoryAsync(browserStaged, response, state.CurrentLocation, storyRefs);
+                acceptedStoryAppend = browserStory.QteStoryAppend;
+            }
             else
-                await _storyService.AppendTurnAsync(
+                acceptedStoryAppend = await _storyService.AppendAcceptedQteSourceTurnAsync(
                     _gameLoop.TurnNumber, state.CurrentRealm ?? "Chaos Sea", state.Incarnation,
                     action, response?.Response, state.CurrentLocation, storyRefs);
 
@@ -1847,10 +1860,10 @@ public partial class GameEngine
             await ConsumeAfterlifeReturnProtectionIfNeededAsync(activeSnapshotContext);
 
             var browserQteHandoff = browserStaged != null && _fs.FileExists(QteSceneService.QteOfferPath);
-            var qteHandling = await HandleAcceptedQteOfferAsync(response, activeSnapshotContext);
+            var qteHandling = await HandleAcceptedQteOfferAsync(response, activeSnapshotContext, acceptedStoryAppend);
             if (qteHandling.EarlyExit)
             {
-                CleanupBackup(backedUpFiles);
+                if (!qteHandling.AwaitingEffectResolution) CleanupBackup(backedUpFiles);
                 return;
             }
             if (browserQteHandoff) return;
@@ -2221,16 +2234,17 @@ public partial class GameEngine
         return text[start..end].Trim();
     }
 
-    private async Task<(bool EarlyExit, GameResponse Response)> HandleAcceptedQteOfferAsync(
+    private async Task<(bool EarlyExit, GameResponse Response, bool AwaitingEffectResolution)> HandleAcceptedQteOfferAsync(
         GameResponse? response,
-        ValidatedPendingTurnSnapshotContext? snapshotContext)
+        ValidatedPendingTurnSnapshotContext? snapshotContext,
+        StoryService.AcceptedStoryAppend? acceptedStoryAppend = null)
     {
         response ??= new GameResponse();
         var offer = await _qteSceneService.TryReadOfferAsync();
         if (offer == null)
         {
             await _qteSceneService.ClearDeclineMarkerAsync();
-            return (false, response);
+            return (false, response, false);
         }
 
         if (!QteSceneService.IsEligibleOfferSourceLabel(snapshotContext?.SourceLabel))
@@ -2240,7 +2254,7 @@ public partial class GameEngine
                 offer.QteId,
                 snapshotContext?.SourceLabel ?? "<missing>");
             _qteSceneService.ClearOfferFile();
-            return (false, response);
+            return (false, response, false);
         }
 
         if (snapshotContext is null || snapshotContext.TurnNumber <= 0)
@@ -2249,7 +2263,7 @@ public partial class GameEngine
                 "QTE offer {QteId} has no positive validated source turn and will be ignored.",
                 offer.QteId);
             _qteSceneService.ClearOfferFile();
-            return (false, response);
+            return (false, response, false);
         }
 
         offer = await _qteSceneService.BindAcceptedTurnAuthorityAsync(
@@ -2272,18 +2286,19 @@ public partial class GameEngine
                 await ProcessPlayerTurn(originalAction, declineReminder);
             }
 
-            return (true, response);
+            return (true, response, false);
         }
 
         var completion = await _qteSceneService.StartAcceptedSceneAsync(
             offer,
-            sourceTurnNumber);
+            sourceTurnNumber,
+            acceptedStoryAppend);
         if (completion.AwaitingEffectResolution)
-            return (true, completion.Response);
+            return (true, completion.Response, true);
         await ProcessMortalProgressionAfterAcceptedTurnAsync();
         await CheckLifeTransitions(snapshotContext);
         await CheckAscensionTrigger();
-        return (false, completion.Response);
+        return (false, completion.Response, false);
     }
 
     private async Task ProcessMortalProgressionAfterAcceptedTurnAsync()

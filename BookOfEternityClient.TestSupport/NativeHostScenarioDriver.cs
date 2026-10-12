@@ -16,7 +16,7 @@ internal static class NativeHostScenarioDriver
     {
         if (args.Length == 3 && args[0] == "engine-rollback-cold-read")
             return await EngineRollbackColdProbe.RunAsync(args[1], args[2]);
-        if ((args.Length == 4 && args[0] == "engine-browser-recovery-cold") ||
+        if ((args.Length == 4 && args[0] is "engine-browser-recovery-cold" or "engine-qte-story-resume") ||
             (args.Length == 6 && args[0] is "engine-browser-staging-cut" or "engine-browser-staging-publisher" or "engine-browser-quiescent-admission" or "engine-browser-status-phase" or "engine-browser-consumer-profile" or "engine-musings-repair" or "engine-musings-cut" or "engine-musings-original-cut" or "engine-musings-cold" or "engine-browser-active-poll-original"))
         {
             // The integration fixture supplies the real lifecycle service factory.
@@ -30,6 +30,7 @@ internal static class NativeHostScenarioDriver
             var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(args[1]);
             var name = args[0] switch
             {
+                "engine-qte-story-resume" => "WriteQteStoryResumeProbeAsync",
                 "engine-browser-staging-cut" => "WriteBrowserStagingCutProbeAsync",
                 "engine-browser-staging-publisher" => "RunOriginalBrowserStagingPublisherAsync",
                 "engine-browser-quiescent-admission" => "WriteBrowserQuiescentAdmissionProbeAsync",

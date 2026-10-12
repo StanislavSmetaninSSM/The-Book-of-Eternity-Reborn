@@ -503,8 +503,31 @@ public partial class ValidationService
     }
 
 
-    private async Task ValidateClientOwnedControlFilesAsync(List<ValidationIssue> issues)
+    private async Task ValidateQteAcceptedStoryContinuityAsync(List<ValidationIssue> issues, StoryService.AcceptedStoryAppend append)
     {
+        var actualStory = await _fs.ReadFileBytesAsync(append.StoryPath);
+        if (actualStory == null || !actualStory.AsSpan().SequenceEqual(append.AfterBytes))
+            issues.Add(new ValidationIssue(append.StoryPath, IssueSeverity.Error,
+                "Accepted client story differs from its exact appended afterimage.", code: "client_owned_story_append_afterimage_mismatch", section: "ClientHistory"));
+        var bindings = append.OriginalHistoryBindings;
+        foreach (var pair in bindings)
+        {
+            if (pair.Key == append.StoryPath) continue;
+            var text = await _fs.ReadFileAsync(pair.Key);
+            var hash = text == null ? string.Empty : ComputeSha256(text);
+            if (!string.Equals(hash, pair.Value, StringComparison.OrdinalIgnoreCase))
+                issues.Add(new ValidationIssue(pair.Key, IssueSeverity.Error,
+                    "Unrelated client-maintained history changed during QTE.", code: "client_owned_history_surface_modified", section: "ClientHistory"));
+        }
+        foreach (var path in EnumerateStoryContinuityFiles())
+            if (path != append.StoryPath && !bindings.ContainsKey(path))
+                issues.Add(new ValidationIssue(path, IssueSeverity.Error,
+                    "QTE cannot authorize an unrelated new story.", code: "client_owned_story_continuity_created_by_gm", section: "ClientHistory"));
+    }
+
+    private async Task ValidateClientOwnedControlFilesAsync(List<ValidationIssue> issues, StoryService.AcceptedStoryAppend? acceptedStoryAppend = null)
+    {
+        if (acceptedStoryAppend != null) await ValidateQteAcceptedStoryContinuityAsync(issues, acceptedStoryAppend);
         var manifestExists = _fs.FileExists(PendingTurnSnapshotManifestPath);
         var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
         var validatedLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
@@ -643,7 +666,7 @@ public partial class ValidationService
             // runtime-authored protocol surfaces. They can legitimately change while the client
             // advances the repair/protocol loop, so blaming the GM for their hash drift creates a
             // self-sustaining deadlock. Only history surfaces remain in the GM-blame hash pass.
-            if (!IsClientOwnedHistoryValidationPath(baselinePath))
+            if (!IsClientOwnedHistoryValidationPath(baselinePath) || baselinePath == acceptedStoryAppend?.StoryPath)
                 continue;
 
             var currentContent = await _fs.ReadFileAsync(baselinePath);
@@ -665,6 +688,7 @@ public partial class ValidationService
         var baselineHistoryPaths = new HashSet<string>(
             validatedManifest.ClientOwnedValidationHashes.Keys.Where(IsClientOwnedHistoryValidationPath),
             StringComparer.OrdinalIgnoreCase);
+        if (acceptedStoryAppend != null) baselineHistoryPaths.Add(acceptedStoryAppend.StoryPath);
         foreach (var storyPath in EnumerateStoryContinuityFiles())
         {
             if (baselineHistoryPaths.Contains(storyPath))

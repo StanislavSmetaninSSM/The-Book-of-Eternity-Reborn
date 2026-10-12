@@ -2,6 +2,113 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-story-append-guards",
+            "responsibility": "#1536 story-phase prerequisite preservation: two integration methods/seven cases. Actual ProcessPlayerTurn stages official source; preaccept GM create/change is refused. Actual accepted client story/handoff precedes altered authorized story, unrelated new story, mismatched runtime crosslink, stale source and duplicate-story replay negatives. Exact resource/wound byte boundary and strict owned cleanup.",
+            "excludes": "No physical occurrence producer/consumer, fabricated source/binding/afterimage, anti-owner whole-save rewriting, active-QTE archive generation rebind, provider/native Windows/C5, broad qte-rules or accepted admission51 rerun. Original signed envelope and client-owned controls remain intact.",
+            "changeHints": [
+                "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs",
+                "BookOfEternityClient/Services/QteSceneService.cs",
+                "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-finalization",
+                    "when": "Run the unchanged actual health-Damage/missing-occurrence case after the prerequisite fix; reaching the final harm milestone remains required before producer code."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_OriginalGmHistoryTamperIsRefused",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_PostHandoffHistoryTamperIsRefused"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-story-append-lifetime",
+            "responsibility": "#1536 story-phase prerequisite: five integration methods/six cases. Actual original ProcessPlayerTurn source stages recovered-ready/late-ready2, real bounded deferred receipt1 and same-root true child-process paused resume1, all requiring exact client story plus finalized health Damage. Two existing named continuation Facts preserve absent-witness/direct and restart semantics; intentional finite overlap with existing qte-rules owner.",
+            "excludes": "No physical occurrence producer/consumer, fabricated source/binding/afterimage, anti-owner whole-save rewriting, active-QTE archive generation rebind, provider/native Windows/C5, broad qte-rules or accepted admission51 rerun. Original signed envelope and client-owned controls remain intact.",
+            "changeHints": [
+                "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs",
+                "BookOfEternityClient/Services/QteSceneService.cs",
+                "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-finalization",
+                    "when": "Run the unchanged actual health-Damage/missing-occurrence case after the prerequisite fix; reaching the final harm milestone remains required before producer code."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_RecoveredOrdinarySourceRetainsExactDelta",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_DeferredReceiptResumeRetainsExactDelta",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_FreshProcessPersistedDeltaKeepsAuthority",
+                        "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild",
+                        "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptedTerminalDamage_AfterRestartUsesSealedEffectTriggerAndClosesContinuation"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-story-append-documentation",
+            "responsibility": "#1536 one existing unit source/documentation guard covers private client story continuity lifecycle, unchanged GM offer grammar and explicit admission-only physical declaration boundary. Intentional existing documentation/admission owner overlap; one method/one case.",
+            "excludes": "No physical occurrence producer/consumer, fabricated source/binding/afterimage, anti-owner whole-save rewriting, active-QTE archive generation rebind, provider/native Windows/C5, broad qte-rules or accepted admission51 rerun. Original signed envelope and client-owned controls remain intact.",
+            "changeHints": [
+                "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs",
+                "BookOfEternityClient/Services/QteSceneService.cs",
+                "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-finalization",
+                    "when": "Run the unchanged actual health-Damage/missing-occurrence case after the prerequisite fix; reaching the final harm milestone remains required before producer code."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-finalization",
             "responsibility": "#1536 T070 first finalized-harm causal RED: one integration Fact/one case invokes actual GameEngine ProcessPlayerTurn, genuine original ordinary signed snapshot, offline correlated GM offer, real Agent Console accept/action/finish, actual finalized canonical player health Damage/history and terminal QTE closure, then requires one persisted source occurrence. No direct Begin-only route or fabricated authority.",
             "excludes": "No production/producer changes, fabricated occurrence/binding/event/receipt/after-image, next-turn decision/wound consumer, save/replay/rollback matrix, provider/native worker calls, Windows/C5, broad QTE/validation owners or duplicate admission51 rerun. Setup/admission/finalization failures are blockers until the finalized_damage milestone is reached.",
@@ -23974,30 +24081,30 @@
                 }
             ]
         },
-      {
-        "id": "c5-checked-rollback-hash-filter",
-        "responsibility": "#1553 one finite test-only Linux checked-path rollback streaming hypothesis filter: actual unchanged byte reader versus strict initial-length incremental hashing; fresh scopes, real file layouts, elapsed/managed-allocation/process-wide GC pairs and scoped refusal/mutation controls. PASS qualifies controls only, never speed.",
-        "excludes": "No production reader/authority API or hook changes, legacy path changes, omitted proof/path/length/EOF/native checks, cache, general benchmark/profiler, full C5 or acceptance-window attribution. Frozen source-sequence mutation oracle is not actual-A mutation validation.",
-        "changeHints": [
-          "BookOfEternityClient.Tests/CheckedRollbackHashFilterTests.cs"
-        ],
-        "related": [],
-        "requirements": {
-          "frontendBuild": false,
-          "exclusive": true,
-          "ciRunner": "ubuntu-24.04"
-        },
-        "timeoutMinutes": 2,
-        "expectedSeconds": null,
-        "selectors": [
-          {
-            "project": "unit",
-            "tests": [
-              "BookOfEternityClient.Tests.CheckedRollbackHashFilterTests.FiniteCheckedPathFilterUsesPinnedRollbackLayouts"
+        {
+            "id": "c5-checked-rollback-hash-filter",
+            "responsibility": "#1553 one finite test-only Linux checked-path rollback streaming hypothesis filter: actual unchanged byte reader versus strict initial-length incremental hashing; fresh scopes, real file layouts, elapsed/managed-allocation/process-wide GC pairs and scoped refusal/mutation controls. PASS qualifies controls only, never speed.",
+            "excludes": "No production reader/authority API or hook changes, legacy path changes, omitted proof/path/length/EOF/native checks, cache, general benchmark/profiler, full C5 or acceptance-window attribution. Frozen source-sequence mutation oracle is not actual-A mutation validation.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/CheckedRollbackHashFilterTests.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.CheckedRollbackHashFilterTests.FiniteCheckedPathFilterUsesPinnedRollbackLayouts"
+                    ]
+                }
             ]
-          }
-        ]
-      },
+        },
         {
             "id": "c5-original-rollback-streaming-contracts",
             "responsibility": "#1553 strict exact rollback streaming contracts: causal same-thread whole-proof allocation slope; actual checked file reader and production captured-length chunk core; verified exact/default/legacy callback dispatch and invalid digest refusal; original callback exception identity; fresh rollback drift refusal after success within the same physical lease. Five methods/eleven cases across unit and integration.",
@@ -24112,7 +24219,7 @@
                 }
             ]
         },
-{
+        {
             "id": "portable-meta-control-shape-read-phase",
             "responsibility": "T071 causal positive2: same private DEBUG component entry uses actual synchronous GameState admission and production prefix/finally. Exact22 F/S current-control scalar body at original749 position. Full returned issue order/input images must succeed before whole-entry physical-proof ceiling1..6. All-absent and mixed data; count before admission through finally, no scalar-neighbor subtraction.",
             "excludes": "#1553 accepted current-only11/22 slice; no fullMeta82/44, broad suite/fullchain perf pairs, providers, timers/guards widening, forged authority or new framework. Actual runtime requires grouped SOURCE gate.",
@@ -24141,7 +24248,7 @@
                 }
             ]
         },
-{
+        {
             "id": "portable-meta-control-shape-read-phase-controls",
             "responsibility": "Directed implemented-but-UNRUN Meta31 controls: immediate async read/cancel/actual own-close and primary-secondary, exact current readset/repeat drift, nonnull faction refs and Guardian nonaccess, original owner/generation/late-close/override, already-running/new sibling and physical acquisition/opening, scalar draft/partial/zero/held eligibility, actual trusted-path refusal, dispatch and conservative source pins. Positive causal RED frozen separately.",
             "excludes": "#1553 accepted current-only11/22 slice; no fullMeta82/44, broad suite/fullchain perf pairs, providers, timer/guard changes, forged owner/lease/token or new framework. Implementation/control runtime UNRUN pending grouped SOURCE gate and matching fresh preparation.",
@@ -24174,7 +24281,7 @@
                 }
             ]
         },
-{
+        {
             "id": "portable-meta-control-shape-world-entry-neighbors",
             "responsibility": "Minimal affected existing World entry/codeguard consumers of shared synchronous issuer and original cache prefix/finally: actual retained/racing admission, failed opening, already-running response and conservative World closure pins. Original World fixture inputs/body/counter ceilings unchanged.",
             "excludes": "#1553 accepted current-only11/22 slice; no fullMeta82/44, broad suite/fullchain perf pairs, providers, timers/guards widening, forged authority or new framework. Actual runtime requires grouped SOURCE gate.",

@@ -27,6 +27,13 @@
                     - If the player declines the QTE offer, the client will request a new ordinary GM turn and the same `qteId` MUST NOT be re-offered immediately.
                     - If the player accepts, the full QTE scene resolves LOCALLY on the client; there is no extra GM turn after acceptance.
 
+                    Client-owned accepted story continuity:
+                    - After the ordinary offer turn is accepted, the client appends its ordinary story row before the local QTE starts. This is the client's accepted story append, not GM state authoring.
+                    - The existing canonical QTE continuation retains internal `clientStoryAppend` evidence for only that exact client-written row: original source correlation, original prefix and exact afterimage. Local terminal validation and same-root paused/deferred resume verify that exact delta; every other story/history guard stays enabled.
+                    - The GM MUST NOT write `stories/*.jsonl`, `clientStoryAppend`, QTE runtime/continuation state or their fingerprints. These are client-owned bookkeeping, never offer fields or GM receipt authority.
+                    - A changed authorized story, unrelated new story, stale original source, mismatched runtime link or repeated story append is refused. No permissive history recapture or extra GM narrative turn is allowed.
+                    - Same-root QTE continuation uses the current session generation. Active-QTE archive generation rebinding is outside this contract; physical occurrence save/load belongs after terminal QTE. Portable checkpoint hashes are corruption/correlation checks, not cryptographic anti-owner signatures.
+
                     Deferred terminal effect receipts:
                     - If a selected terminal outcome reaches a bounded effect/resource component, the client enters `awaiting_receipt` and creates `input/qte_effect_resolution_request.json` with `requestKind=qte_deferred_effect_resolution`.
                     - This is a receipt-only task and not an ordinary turn. Read only that request's `safePacket`; do not read or reuse `input/turn_request.json`, create a pending-turn snapshot, run story or progression work, advance lifecycle, or increment the turn counter.

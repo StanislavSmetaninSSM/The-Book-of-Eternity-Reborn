@@ -17,7 +17,7 @@ namespace BookOfEternityClient.Services;
 ///   stories/mortal_life_2.jsonl      — second mortal incarnation
 ///   stories/mortal_life_N.jsonl      — Nth mortal incarnation
 /// </summary>
-public class StoryService
+public partial class StoryService
 {
     private readonly FileSystemManager _fs;
     private readonly ILogger<StoryService> _logger;
@@ -77,7 +77,9 @@ public class StoryService
             throw new SessionReplacedException("Сессия браузерного хода изменилась.", binding.Generation,
                 _fs.GetOrCreateSessionGeneration(lease));
         var path = GetStoryPath(realm, incarnation);
-        var before = await _fs.ReadFileBytesAsync(lease, path) ?? Encoding.UTF8.GetPreamble();
+        var rawBefore = await _fs.ReadFileBytesAsync(lease, path);
+        var qteSource = await CaptureAcceptedQteStorySourceAsync(lease, turnNumber, realm, incarnation, binding.Action, path, rawBefore);
+        var before = rawBefore ?? Encoding.UTF8.GetPreamble();
         var previousText = Encoding.UTF8.GetString(before).TrimStart('\uFEFF');
         foreach (var line in previousText.Split('\n', StringSplitOptions.RemoveEmptyEntries))
         {
@@ -98,7 +100,11 @@ public class StoryService
         var expected = before.Concat(Encoding.UTF8.GetBytes(row + "\n")).ToArray();
         if (!actual.AsSpan().SequenceEqual(expected))
             throw new IOException("Accepted story readback did not preserve the original prefix and exact row.");
-        return new(path, actual.Length, PendingPlayerActionService.Hash(actual), row);
+        return new(path, actual.Length, PendingPlayerActionService.Hash(actual), row)
+        {
+            QteStoryAppend = qteSource == null ? null : AcceptedStoryAppend.FromSuccessfulWriter(
+                qteSource.Value.Source, qteSource.Value.Histories, "browser_turn", path, rawBefore, row, actual, AcceptedStoryWriterCapability)
+        };
     }
 
     /// <summary>

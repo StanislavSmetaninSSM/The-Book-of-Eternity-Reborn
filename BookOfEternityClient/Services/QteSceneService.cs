@@ -651,6 +651,13 @@ public sealed partial class QteSceneService
         return await ExecuteActiveSceneAsync(state, currentTurnNumber);
     }
 
+    internal async Task<QteSceneCompletion> StartAcceptedSceneAsync(QteOffer offer, int currentTurnNumber,
+        StoryService.AcceptedStoryAppend? acceptedStoryAppend)
+    {
+        var state = await BeginAcceptedSceneCoreAsync(null, offer, currentTurnNumber, acceptedStoryAppend);
+        return await ExecuteActiveSceneAsync(state, currentTurnNumber);
+    }
+
     public Task<QteRuntimeState> ReadRuntimeStateAsync() => LoadRuntimeStateAsync(writeLease: null);
 
     internal Task<QteRuntimeState> ReadRuntimeStateAsync(
@@ -674,7 +681,8 @@ public sealed partial class QteSceneService
     private async Task<QteRuntimeState> BeginAcceptedSceneCoreAsync(
         FileSystemManager.CanonicalWriteLease? writeLease,
         QteOffer offer,
-        int currentTurnNumber)
+        int currentTurnNumber,
+        StoryService.AcceptedStoryAppend? acceptedStoryAppend = null)
     {
         if (writeLease == null)
         {
@@ -685,7 +693,8 @@ public sealed partial class QteSceneService
                 return await BeginAcceptedSceneCoreAsync(
                     ownedLease,
                     offer,
-                    currentTurnNumber);
+                    currentTurnNumber,
+                    acceptedStoryAppend);
             }
             catch (CoordinatedStatePublicationUncertainException failure) { owningPublicationUncertainty = failure; throw; }
             finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, ownedLease, false, owningPublicationUncertainty); }
@@ -706,7 +715,8 @@ public sealed partial class QteSceneService
             _fs,
             writeLease,
             offer,
-            currentTurnNumber);
+            currentTurnNumber,
+            acceptedStoryAppend);
         state.PendingOffer = offer;
         state.ActiveScene = new ActiveQteSceneState
         {
@@ -1975,6 +1985,8 @@ public sealed partial class QteSceneService
         QteTerminalResourceSelection? resourceSelection = null,
         QteDeferredAcceptedMechanicsPreparation? deferredPreparation = null)
     {
+        var acceptedStoryAppend = deferredPreparation == null ? null : await StoryService.RehydrateQteStoryAppendAsync(
+            _fs, writeLease, deferredPreparation.ContinuationRoot);
         var baseline = await CaptureQteNormalizationBaselineAsync(
             writeLease,
             response,
@@ -1983,7 +1995,7 @@ public sealed partial class QteSceneService
         if (allowPreexistingStateIssues)
         {
             await RefreshGameStateAsync(writeLease);
-            preexistingErrorFingerprints = (await _validator.ValidateGameStateAsync())
+            preexistingErrorFingerprints = (await _validator.ValidateQteTerminalGameStateAsync(acceptedStoryAppend))
                 .Where(issue => issue.Severity == IssueSeverity.Error)
                 .Select(BuildValidationIssueFingerprint)
                 .ToHashSet(StringComparer.Ordinal);
@@ -2003,7 +2015,7 @@ public sealed partial class QteSceneService
                 baseline.NormalizerBackupsByPath);
             await RefreshGameStateAsync(writeLease);
 
-            var issues = await _validator.ValidateGameStateAsync();
+            var issues = await _validator.ValidateQteTerminalGameStateAsync(acceptedStoryAppend);
             var errors = issues.Where(issue => issue.Severity == IssueSeverity.Error).ToList();
             if (preexistingErrorFingerprints is { Count: > 0 })
             {

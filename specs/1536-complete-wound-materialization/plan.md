@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; EXACT APPEND DESIGN WIP)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED APPEND IMPLEMENTATION WIP)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -27,10 +27,9 @@ First finalized-harm fixture attempt timed out before its prerequisites and is p
 The ownership-only correction received SOURCE acceptance9b1d4448 and completed1 FAIL
 before harm; its immutable packet is publishedcf14c4f8 with independent EVIDENCE acceptance.
 Read-only provenance review confirmed a production story-validation phase bug. The current
-checkpoint specifies its narrowly authorized prerequisite design, with one unresolved persisted
-issuance question for focused independent DESIGN review. No production/test implementation,
-third actual, occurrence producer or
-canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
+checkpoint specifies its narrowly authorized prerequisite design. Fresh independent Astra XHigh
+bounded DESIGN acceptance incorporates the latest user scope ruling; the earlier unresolved
+anti-owner proposal at eec3c36e is historical WIP, not accepted as a whole. The current source/tests/docs/selection block is publishable WIP, not READY: original-ready handoff consumption and resumed terminal cleanup are unfinished. Build/discovery/runtime for this block remain UNRUN. No occurrence producer or canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
 
@@ -264,7 +263,7 @@ Do not waive story validation, enable allowPreexistingStateIssues, relax asserti
 baseline or increase budgets. Production remains unchanged; causal occurrence RED/GREEN,
 next-turn consumer/replay/rollback/save-load remain UNRUN. T070/#1536 and all checkboxes OPEN.
 
-### Exact client-story-append prerequisite design — WIP, focused persistence gate
+### Exact client-story-append prerequisite design — bounded DESIGN accepted
 
 Design-only basecf14c4f896ea387d1716a48f6475e4fc3d11b7da, same task branch/Linux; current
 user-selected implementation owner is Sol6.1 XHigh and reviewer is separate Astra XHigh.
@@ -337,30 +336,30 @@ Ordinary GM admission has no witness and retains original created/modified refus
 exclude ClientOwnedControlFiles, waive history, enable allowPreexistingStateIssues, overwrite
 the original source, move story ordering or use current-history hashes as authority.
 
-**Lifetime and unresolved authority boundary.** The exact candidate is intended to survive
-armed/terminal_selected/awaiting_receipt and all deferred waves in the existing continuation;
-terminal/finalization checks must recheck source and exact current history on every resume.
-Fresh-process recovery must work through the existing canonical runtime/continuation owner,
-not an ephemeral validator scope or Deserialize-to-capability shortcut. Where the original
-snapshot remains, independently revalidate it; never replace it with the retained hash map.
-SaveLoadService explicitly excludes pending snapshot files (SaveLoadService.cs:69–94), so
-archive continuation cannot assume those files survive. Candidate retained provenance alone
-is insufficient to authorize fresh-process/archived recovery.
+**Accepted lifetime/authority boundary.** Fresh independent Astra XHigh BOUNDED DESIGN
+ACCEPTED after the latest user scope correction: actual private writer issuance → existing
+coordinated canonical runtime/continuation publication → QTE-specific exact story validation.
+Existing client-owned checkpoints are trusted local state. PendingTurnSnapshotAuthority format4
+is portable SHA256-PAYLOAD-JSON (source981), not cryptographic anti-owner protection. Original
+“signed” source terminology denotes the client envelope, never a secret-backed issuer claim.
+Ordinary untrusted GM input cannot supply this witness or authorize a history delta. Preserve
+original GM history refusals, byte corruption/source/crosslink/replay checks; do not claim that
+current history hashes already pin QTE controls. Coordinated owner rewriting of every saved
+canonical root is outside this reproduced bug and the accepted trusted-player threat model.
+No new persistent access, keys, credential handling or anti-owner architecture is required.
 
-**UNRESOLVED DESIGN QUESTION, blocking implementation/rehydration:** current continuation
-checks392–414 compare body SHA and ActiveScene.DeferredEffectContinuationFingerprint. Changing
-only continuation and recomputing SHA fails that runtime link. However neither QTE control
-root is captured by the current ordinary client-owned history map, and no equivalent GM
-ingress protection was found. A GM/caller could alter story+witness+continuation AND runtime
-fingerprint together. Self-consistency then proves no client issuance. Independent DESIGN
-review must choose the smallest actual trusted capture/publication anchor for this one delta,
-including recovery after original snapshot cleanup. Hashes, two mutable linked roots, private
-in-memory constructor or retained source strings cannot be claimed as that durable anchor.
-No runtime path may grant the exception until this boundary is resolved and its simultaneous
-self-seal negative is present. This checkpoint proposes exact data/writer/check seams, not
-a claim that persisted issuer authority is already solved.
+The exact witness survives armed/terminal_selected/awaiting_receipt/deferred waves in existing
+canonical continuation. Internal rehydration occurs only after current generation, runtime
+crosslink, closed continuation/offer/source, before→row→after and current exact bytes validate;
+JSON/hash consistency alone is not a public capability. Independently check the original
+snapshot where still available, without cloning/re-signing/rebaselining it. Same-root clean
+fresh-process paused/deferred recovery uses that existing canonical pair. SaveLoad rotates
+generation and does not rebind active QTE; new active-QTE archive support is OUTSIDE this
+prerequisite. Later real first-vertical archive save/load AFTER terminal QTE for pending/consumed
+occurrence remains required and UNRUN. The prior unresolved simultaneous all-root self-seal
+requirement is superseded by this concrete bounded ruling, not silently claimed solved.
 
-**Finite TDD/selection plan (all new tests UNWRITTEN/UNRUN).** Reuse the existing independently
+**Finite TDD/selection plan (new tests authored; build/discovery/runtime UNRUN).** Reuse the existing independently
 owned engine fixture and TerminalWaitStarted/offline GM/queued UI; keep the current damage/
 occurrence Fact unchanged. Proposed methods are in `GameEngineTurnLifecycleTests` partials:
 
@@ -368,17 +367,17 @@ occurrence Fact unchanged. Proposed methods are in `GameEngineTurnLifecycleTests
 | --- | --- | --- |
 | Existing `QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence` | 1; preserve original genuine-source/finalized health160→155/terminal/cleanup prerequisites, then missing occurrence. Current prerequisite RED already frozen | existing `qte-physical-injury-finalization`,5/default10 |
 | New `QteStoryAppend_OriginalGmHistoryTamperIsRefused` | 2: preaccept create and change; raw original GM ingress refuses before client append/harm | `qte-story-append-guards`,3/default8 |
-| New `QteStoryAppend_PostHandoffHistoryTamperIsRefused` | 4: authorized story alteration, unrelated new story, witness+continuation rehash alone, witness+continuation+runtime rehash together; real client append/handoff must first be observed, then refuse before harm with protected resource/wound bytes | same guards,3/default8 |
+| New `QteStoryAppend_PostHandoffHistoryTamperIsRefused` | 5: authorized story alteration, unrelated new story, mismatched runtime crosslink, stale original source and duplicate-story replay; real client append/handoff must first be observed, then refuse before harm with protected resource/wound bytes | same guards,3/default8 |
 | New `QteStoryAppend_RecoveredOrdinarySourceRetainsExactDelta` | 2: existing recovered-ready and late-ready source paths; real writer append and terminal finalized Damage, unchanged original source and exact single story row | `qte-story-append-lifetime`,5/default10 |
 | New `QteStoryAppend_DeferredReceiptResumeRetainsExactDelta` | 1: actual ordinary engine append→existing bounded deferred wait→real receipt/resume, no reappend or permissive baseline | same lifetime,5/default10 |
-| New `QteStoryAppend_FreshProcessPersistedDeltaKeepsAuthority` | 2: genuine client continuation after clean owner close/new process, and persisted simultaneous self-seal tamper; positive must reach harm, negative must refuse before harm. Archive variant may fold into later actual first-vertical save/load, remaining explicitly UNRUN meanwhile | same lifetime,5/default10 |
+| New `QteStoryAppend_FreshProcessPersistedDeltaKeepsAuthority` | 1: genuine client continuation after clean owner close/new process on the same root; actual original engine append/handoff precedes pause, resumed terminal must reach harm without reappend. No active-QTE archive load | same lifetime,5/default10 |
 | Existing `QteDeferredEffectContinuationIntegrationTests.AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild`; `AcceptedTerminalDamage_AfterRestartUsesSealedEffectTriggerAndClosesContinuation` | 1 each; absent witness/direct existing continuation compatibility and sealed restart behavior; source-change affected consumers only | same finite lifetime owner overlap,5/default10 |
 
-Inventory planned8 methods/14 cases: existing causal1, new guards2/6, new lifetime3/5,
-existing compatibility2/2. Three finite invocations retain existing5-minute boundary and
+Inventory planned9 methods/15 cases: existing causal1, new guards2/7, new lifetime3/4,
+existing compatibility2/2, affected documentation1/1. Four finite invocations retain existing5-minute boundary and
 new guards3/lifetime5 protective budgets; no category budget increase, full qte-rules,
 mortal-wounds-state, aggregate, global CI change or accepted51 rerun. After DESIGN gate,
-test-only WIP gets exact task-local selectors/category ownership and independent SOURCE/
+the coherent tests-first implementation WIP gets exact task-local selectors/category ownership and independent SOURCE/
 fixture/selection review before fresh discovery/preparation/actual. Preserve actual counts,
 predicate reachability and strict unique-root cleanup; a failing prerequisite is never producer
 RED. Minimal fix follows only the scoped TDD/source gates. Then the unchanged1-case chain
@@ -387,9 +386,38 @@ must establish finalized canonical Damage plus missing occurrence before produce
 This client-owned bookkeeping design adds no GM-authored capability/field/example; existing
 admission guidance remains accurate. Any eventual persisted control/validation change must
 receive its targeted QTE lifecycle documentation/source-guard synchronization in the same
-implementation block. No afterlife GM contract change is proposed. Next: root publishes this
-DESIGN WIP and requests focused independent Astra XHigh review of the explicit durable-anchor
-question. Stop mutations here; all implementation, new tests and third actual remain UNRUN.
+implementation block. No afterlife GM contract change is proposed. Next authorized coherent block: behavior tests first, then minimum prerequisite production
+fix, coherent lifecycle docs/guards and finite selection; root publishes the WIP and obtains
+combined independent SOURCE/FIXTURE/SELECTION acceptance before any execution. The original
+9b prerequisite RED already supplies causal TDD evidence; new preservation negatives need not
+be falsely labelled new RED. Producer remains forbidden until genuine finalized-harm RED.
+
+### Story prerequisite publication boundary — 2026-10-12, WIP/UNRUN
+
+Source parent eec3c36e9398fdda8fa9d75ff1bdb69dbd3f86b9; same task branch/cloud Linux.
+Sol6.1 XHigh paused at a stable write boundary before root publication. Tests were authored
+before the minimum code using the already observed immutable story prerequisite REDcf14.
+New files are `Services/StoryService.AcceptedStoryAppend.cs`, integration partial
+`GameEngineTurnLifecycleTests.QteStoryAppend.cs`, and task-local
+`tests/selections/1536-qte-story-append-{guards,lifetime,documentation}.json`.
+Actual console/browser writer readback, exact closed delta, three engine caller carry paths,
+existing continuation capture/rehydration and QTE-specific history comparison are wired.
+Existing physical causal Fact SHA256 remains
+ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f.
+Planned inventory9 methods/15 cases: causal1/1, guards2/7 (3 minutes/default8),
+lifetime5/6 including existing compatibility2/2 (5/default10), docs1/1 (2/default7).
+
+Remaining before READY: consume ordinary ready at durable QTE handoff to prevent idle
+reacceptance/duplicate append; release retained request/snapshot/backups after resumed
+terminal completion; make tests observe the actual idle caller at that boundary; reduce
+catalog formatting-only edits and refresh exact status. Build, discovery, all new runtime
+controls, corrected causal third actual, producer/consumer/replay/rollback/save-load are
+UNRUN. No current SOURCE/FIXTURE/SELECTION acceptance. Checkboxes remain unchanged.
+Next: root commit/push this WIP, read exact remote SHA, then release the sole writer only
+for those bounded missing parts; publish READY candidate and obtain independent combined
+Astra XHigh SOURCE/FIXTURE/SELECTION acceptance before any project execution. Existing
+isolated tool environment is `/workspace/boe-cloud-tools-20261011/env.sh`; platform Debian13.6
+x86_64, SDK10.0.401/runtime8.0.31, PowerShell7.6.6. No provider calls or Windows proof.
 
 ### Established contract and field ownership
 

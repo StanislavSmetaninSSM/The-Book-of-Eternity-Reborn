@@ -105,7 +105,8 @@ internal static class QteDeferredEffectContinuation
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
         QteSceneService.QteOffer offer,
-        int acceptedSourceTurn)
+        int acceptedSourceTurn,
+        StoryService.AcceptedStoryAppend? acceptedStoryAppend = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -141,6 +142,15 @@ internal static class QteDeferredEffectContinuation
             sealedRoots.Add(
                 path,
                 new CanonicalBeforeImage(bytes != null, bytes));
+        }
+
+        if (acceptedStoryAppend != null)
+        {
+            var request = ParseObject(sealedRoots["input/turn_request.json"]);
+            var soul = ParseObject(sealedRoots["game_state/meta/soul_state.json"]);
+            await acceptedStoryAppend.ValidateQteBindingAsync(fileSystem, writeLease,
+                ResolveSessionId(sealedRoots, sessionGeneration), sessionGeneration, acceptedSourceTurn, request, soul);
+            sealedRoots.Add(acceptedStoryAppend.StoryPath, new CanonicalBeforeImage(true, acceptedStoryAppend.AfterBytes));
         }
 
         var runtimeBytes = await fileSystem.ReadFileBytesAsync(
@@ -270,6 +280,7 @@ internal static class QteDeferredEffectContinuation
             ["state"] = "armed",
             ["resolvedWaveBindings"] = new JsonArray()
         };
+        if (acceptedStoryAppend != null) root["clientStoryAppend"] = acceptedStoryAppend.Persisted;
         root["identityLedger"] = await QteDeferredAcceptedMechanicsPlanner
             .PreallocateIdentityLedgerAtAcceptanceAsync(root, offer);
         var authorityFingerprint = HashNode(
@@ -466,7 +477,9 @@ internal static class QteDeferredEffectContinuation
             throw new InvalidDataException(
                 "qte_deferred_continuation_roots_invalid: sealedRootBindings must be an array.");
         }
+        var acceptedStoryAppend = await StoryService.RehydrateQteStoryAppendAsync(fileSystem, writeLease, root);
         var expectedPaths = SealedRootPaths.ToHashSet(StringComparer.Ordinal);
+        if (acceptedStoryAppend != null) expectedPaths.Add(acceptedStoryAppend.StoryPath);
         var actualPaths = new HashSet<string>(StringComparer.Ordinal);
         var sealedRoots = new Dictionary<string, CanonicalBeforeImage>(
             StringComparer.Ordinal);
@@ -584,7 +597,7 @@ internal static class QteDeferredEffectContinuation
             "acceptedMechanicsAuthority", "identityLedger", "state",
             "selectedTerminalBinding", "currentWave",
             "resolvedWaveBindings", "terminalFingerprint",
-            "authorityFingerprint"
+            "authorityFingerprint", "clientStoryAppend"
         };
         if (root.Select(static pair => pair.Key)
             .Any(key => !allowed.Contains(key)))

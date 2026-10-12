@@ -25,6 +25,9 @@ public partial class ValidationService
         GameStateValidationSelection selection)
         => ValidateGameStateInternalAsync(selection);
 
+    internal Task<List<ValidationIssue>> ValidateQteTerminalGameStateAsync(StoryService.AcceptedStoryAppend? acceptedStoryAppend)
+        => StartAdmittedGameStateAsync(GameStateValidationSelection.All, metaControlShapesOnly: false, acceptedStoryAppend);
+
     /// <summary>
     /// Validate a single GM response before distributing to files.
     /// </summary>

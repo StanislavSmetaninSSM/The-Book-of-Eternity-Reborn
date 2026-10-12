@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "qte-story-append-lifetime",
+      "reason": "#1536 Exact actual client story delta across recovered-ready/late-ready, bounded receipt resume and true same-root child process, plus two named existing continuation consumers; six cases, category5/default10.",
+      "contracts": [
+        "Original ProcessPlayerTurn stages genuine source; recovered/late-ready uses actual existing engine caller, never a fabricated snapshot",
+        "Receipt data binds the actual pending request; real resumed terminal finalizes health160->155 plus bounded2 where applicable without reappending story",
+        "Child process uses existing TestSupport reflection transport after actual original engine handoff/pause and clean owner close; same root/generation, no active-QTE archive rebind",
+        "Two named existing direct continuation compatibility Facts keep absent-witness and sealed restart consumers accounted for"
+      ]
+    }
+  ]
+}

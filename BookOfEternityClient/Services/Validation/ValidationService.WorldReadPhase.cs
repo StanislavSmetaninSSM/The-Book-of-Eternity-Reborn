@@ -44,21 +44,21 @@ public partial class ValidationService
         StartAdmittedGameStateAsync(selection, metaControlShapesOnly: false);
 
     private Task<List<ValidationIssue>> StartAdmittedGameStateAsync(
-        GameStateValidationSelection selection, bool metaControlShapesOnly)
+        GameStateValidationSelection selection, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend = null)
     {
         ArgumentNullException.ThrowIfNull(selection);
         var invocation = AdmitWorldValidation(true, selection);
         var previous = _worldValidationInvocation.Value;
         _worldValidationInvocation.Value = invocation;
-        try { return RunAdmittedGameStateAsync(selection, invocation, metaControlShapesOnly); }
+        try { return RunAdmittedGameStateAsync(selection, invocation, metaControlShapesOnly, acceptedStoryAppend); }
         catch { ReleaseWorldValidation(invocation); throw; }
         finally { _worldValidationInvocation.Value = previous; }
     }
 
     private async Task<List<ValidationIssue>> RunAdmittedGameStateAsync(
-        GameStateValidationSelection selection, WorldValidationInvocation invocation, bool metaControlShapesOnly)
+        GameStateValidationSelection selection, WorldValidationInvocation invocation, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend)
     {
-        try { return await ValidateGameStateCoreAsync(selection, metaControlShapesOnly); }
+        try { return await ValidateGameStateCoreAsync(selection, metaControlShapesOnly, acceptedStoryAppend); }
         finally { ReleaseWorldValidation(invocation); }
     }
 

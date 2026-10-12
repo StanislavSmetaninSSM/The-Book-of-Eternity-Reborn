@@ -1,0 +1,318 @@
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.AgentConsole;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class GameEngineTurnLifecycleTests
+{
+    private const string QteStoryPath = "stories/mortal_life_2.jsonl";
+    private const string QteStoryAction = "Укрыться от падающих камней.";
+    private const string QteStoryNarrative = "Камни падают. Укрыться от обвала?";
+
+    [Theory]
+    [InlineData("create")]
+    [InlineData("change")]
+    public async Task QteStoryAppend_OriginalGmHistoryTamperIsRefused(string mutation)
+    {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var run = await RunActualQteStorySourceAsync(preacceptMutation: mutation);
+        Assert.IsType<OperationCanceledException>(run.Failure);
+        Assert.NotNull(run.Source);
+        var expected = mutation == "create" ? "client_owned_story_continuity_created_by_gm" : "client_owned_history_surface_modified";
+        Assert.Contains(run.PreacceptIssues!, issue => issue.FilePath == QteStoryPath && issue.Code == expected);
+        Assert.False(run.ActionObserved);
+        await AssertPhysicalInjuryProtectedBytesAsync(run.ProtectedBefore);
+        WritePhysicalInjuryDiagnostic("qte_story_original_gm_refused", new { mutation, Issues = run.PreacceptIssues });
+    }
+
+    [Theory]
+    [InlineData("story_altered", "client_owned_story_append_afterimage_mismatch")]
+    [InlineData("unrelated_story", "client_owned_story_continuity_created_by_gm")]
+    [InlineData("crosslink", "qte_deferred_continuation_runtime_mismatch")]
+    [InlineData("stale_source", "qte_client_story_append_source_mismatch")]
+    [InlineData("replay", "client_owned_story_append_afterimage_mismatch")]
+    public async Task QteStoryAppend_PostHandoffHistoryTamperIsRefused(string mutation, string diagnostic)
+    {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var run = await RunActualQteStorySourceAsync(postHandoffMutation: mutation);
+        Assert.True(run.ActionObserved, "Actual ordinary admission and client story append must precede the directed tamper.");
+        Assert.NotNull(run.StoryAtHandoff);
+        Assert.NotNull(run.Failure);
+        Assert.Contains(diagnostic, run.Failure.ToString(), StringComparison.Ordinal);
+        if (mutation == "unrelated_story") Assert.Contains("stories/mortal_life_999.jsonl", run.Failure.ToString(), StringComparison.Ordinal);
+        await AssertPhysicalInjuryProtectedBytesAsync(run.ProtectedBefore);
+        Assert.False(_fs.FileExists(QteSceneService.QteHistoryPath));
+        WritePhysicalInjuryDiagnostic("qte_story_post_handoff_refused", new { mutation, diagnostic, Failure = run.Failure.ToString() });
+    }
+
+    [Theory]
+    [InlineData("recovered_ready")]
+    [InlineData("late_ready")]
+    public async Task QteStoryAppend_RecoveredOrdinarySourceRetainsExactDelta(string mode)
+    {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var run = await RunActualQteStorySourceAsync(mode: mode);
+        Assert.Null(run.Failure);
+        await AssertActualQteStoryFinalizedAsync(_fs, run.Source!, run.StoryAtHandoff!, expectedHealth: 155m);
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+    }
+
+    [Fact]
+    public async Task QteStoryAppend_DeferredReceiptResumeRetainsExactDelta()
+    {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var run = await RunActualQteStorySourceAsync(bounded: true);
+        Assert.Null(run.Failure);
+        Assert.True(run.ActionObserved);
+        var active = (await GetPrivateField<QteSceneService>(run.Engine!, "_qteSceneService").ReadRuntimeStateAsync()).ActiveScene;
+        Assert.Equal("awaiting_receipt", active!.EffectResolutionState);
+        await AssertPhysicalInjuryProtectedBytesAsync(run.ProtectedBefore);
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath), false).Catalog!;
+        var pending = ResourcePendingResolutionState.ParseCanonical(await _fs.ReadFileAsync(ResourcePendingResolutionState.PendingPath), definitions, false);
+        Assert.True(pending.IsValid, JsonSerializer.Serialize(pending.Issues));
+        var pendingRequest = Assert.Single(pending.State!.Requests);
+        var request = JsonNode.Parse((await _fs.ReadFileAsync(QteDeferredEffectContinuation.RequestPath))!)!.AsObject();
+        // Actual pending request and correlation produce only offline GM receipt data; no accepted receipt/authority is fabricated.
+        var receipts = new JsonObject { ["schemaVersion"] = 1, ["effectResolutionReceipts"] = new JsonArray(new JsonObject
+        { ["requestId"] = pendingRequest.RequestId, ["resultKind"] = "resource_delta", ["amount"] = 2, ["reason"] = "Каменная крошка усиливает рану." }) };
+        foreach (var field in new[] { "requestKind", "sessionId", "sessionGeneration", "continuationId", "requestId", "waveId", "waveOrdinal", "acceptedSourceTurn", "qteId", "selectedTerminalFingerprint", "pendingStateFingerprint", "fullTurnFingerprint", "semanticTurnFingerprint" })
+            receipts[field] = request[field]!.DeepClone();
+        await _fs.WriteFileAtomicAsync(QteDeferredEffectContinuation.ReceiptPath, receipts.ToJsonString());
+        var receiptBytes = (await _fs.ReadFileBytesAsync(QteDeferredEffectContinuation.ReceiptPath))!;
+        var ready = new JsonObject { ["schemaVersion"] = 1, ["receiptsFingerprint"] = "sha256:" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(receiptBytes)).ToLowerInvariant(), ["timestamp"] = DateTime.UtcNow.ToString("o"), ["status"] = "success" };
+        foreach (var field in new[] { "requestKind", "sessionId", "sessionGeneration", "continuationId", "requestId", "waveId", "waveOrdinal", "acceptedSourceTurn", "qteId", "pendingStateFingerprint" }) ready[field] = request[field]!.DeepClone();
+        await _fs.WriteFileAtomicAsync(QteDeferredEffectContinuation.ReadyPath, ready.ToJsonString());
+        // Recreate the real engine/service on the same root, retaining generation and canonical continuation.
+        var resumed = CreateGameEngine(new QueuedConsoleInputSource([]), settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; });
+        await GetPrivateField<StateManager>(resumed, "_stateManager").RefreshGameStateAsync();
+        var completion = await GetPrivateField<QteSceneService>(resumed, "_qteSceneService").ResumeDeferredEffectResolutionAsync(PhysicalInjurySourceTurn);
+        Assert.NotNull(completion);
+        Assert.False(completion!.AwaitingEffectResolution);
+        await AssertActualQteStoryFinalizedAsync(_fs, run.Source!, run.StoryAtHandoff!, expectedHealth: 153m);
+    }
+
+    [Fact]
+    public async Task QteStoryAppend_FreshProcessPersistedDeltaKeepsAuthority()
+    {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var run = await RunActualQteStorySourceAsync(pauseAtAction: true);
+        Assert.IsType<OperationCanceledException>(run.Failure);
+        Assert.True(run.ActionObserved);
+        await AssertPhysicalInjuryProtectedBytesAsync(run.ProtectedBefore);
+        var output = Path.Combine(_rootPath, "qte-story-cold.json");
+        var support = Path.Combine(Path.GetDirectoryName(typeof(GameEngineTurnLifecycleTests).Assembly.Location)!, "BookOfEternityClient.TestSupport.dll");
+        await RunBrowserColdChildAsync(Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"),
+            [support, "engine-qte-story-resume", typeof(GameEngineTurnLifecycleTests).Assembly.Location, _fs.BasePath, output], output + ".log", 45);
+        var observed = JsonNode.Parse(File.ReadAllText(output))!.AsObject();
+        Assert.NotEqual(Environment.ProcessId, observed["processId"]!.GetValue<int>());
+        Assert.Equal("Completed", observed["state"]!.GetValue<string>());
+        Assert.Equal(run.Source!.RequestId, observed["requestId"]!.GetValue<string>());
+        Assert.Equal(run.SnapshotToken, observed["snapshotToken"]!.GetValue<string>());
+        await AssertActualQteStoryFinalizedAsync(_fs, run.Source, run.StoryAtHandoff!, expectedHealth: 155m);
+    }
+
+    // Same existing TestSupport reflection transport as browser cold probes; no independent harness or manufactured QTE start.
+    public static async Task WriteQteStoryResumeProbeAsync(string root, string output)
+    {
+        using var factory = new GameEngineTurnLifecycleTests();
+        using var ownedFactory = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
+        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        var input = new QueuedConsoleInputSource([]);
+        var engine = factory.CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; }, fileSystem: files);
+        await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
+        var qte = GetPrivateField<QteSceneService>(engine, "_qteSceneService");
+        var original = JsonNode.Parse((await files.ReadFileAsync("input/turn_request.json"))!)!.AsObject();
+        string token;
+        string generation;
+        QteSceneService.QteActionResolution resolution;
+        await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+        {
+            var source = PendingTurnSnapshotReader.ReadCurrent(files, lease, [ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath]);
+            Assert.True(source.Success, JsonSerializer.Serialize(source.Issues));
+            token = source.Snapshot!.SnapshotToken;
+            generation = files.GetOrCreateSessionGeneration(lease);
+            resolution = await SessionOperationContext.RunBoundAsync(files, generation, lease,
+                () => qte.ResolveActiveActionAsync(lease, "brace", "success", PhysicalInjurySourceTurn));
+        }
+        await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new { processId = Environment.ProcessId, state = resolution.State,
+            requestId = original["requestId"]!.GetValue<string>(), snapshotToken = token, generation }));
+    }
+
+    private sealed class QteStoryRun
+    {
+        internal GameEngine? Engine;
+        internal TurnRequest? Source;
+        internal string? SnapshotToken;
+        internal Exception? Failure;
+        internal IReadOnlyList<ValidationIssue>? PreacceptIssues;
+        internal bool ActionObserved;
+        internal byte[]? StoryAtHandoff;
+        internal Dictionary<string, byte[]?> ProtectedBefore = new(StringComparer.Ordinal);
+    }
+
+    // Fixture changes that would break these tests: accepting a GM history edit, recapturing arbitrary history,
+    // losing exact client append at terminal/restart, or applying selected health Damage more than once.
+    private async Task<QteStoryRun> RunActualQteStorySourceAsync(string? preacceptMutation = null,
+        string? postHandoffMutation = null, string mode = "ordinary", bool pauseAtAction = false, bool bounded = false)
+    {
+        var run = new QteStoryRun();
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", "{\"qteEventsEnabled\":true}");
+        await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", JsonSerializer.Serialize(Characteristics.All.ToDictionary(name => name, _ => 20), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync("game_state/player/experience.json", "{\"level\":1,\"experience\":0,\"experienceForNextLevel\":100}");
+        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(2, PhysicalInjurySourceTurn - 1, 20, 20, 20, 20, 20);
+        Assert.True(resources.IsValid, JsonSerializer.Serialize(resources.Issues));
+        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.DefinitionsPath, resources.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.StatePath, resources.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.HistoryPath, resources.History!.ToCanonicalJson());
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(resources.Definitions, path => _fs.ReadFileAsync(path), resources.State, resources.History, CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(authority.IsValid, JsonSerializer.Serialize(authority.Issues));
+        await _fs.WriteFileAtomicAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath, authority.CanonicalAuthorityJson!);
+        if (preacceptMutation == "change") await new StoryService(_fs, NullLogger<StoryService>.Instance).AppendTurnAsync(41, "Mortal World", 2, "Предыдущий ход.", "До обвала.");
+        if (bounded) await SeedQteStoryBoundedReactionAsync();
+        foreach (var path in new[] { ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
+                     WoundIdentityState.StatePath, WoundHistoryState.HistoryPath, MortalWoundOpportunityReceiptState.StatePath, AcceptedMechanicsPlan.WoundCommandPath })
+            run.ProtectedBefore[path] = await _fs.ReadFileBytesAsync(path);
+        var console = new AgentConsoleStateStore();
+        AgentConsoleLiveInputSource? live = null;
+        using var input = live = new AgentConsoleLiveInputSource(console, TimeSpan.FromSeconds(10), AgentConsoleLiveInputSource.DefaultMaxQueueLength,
+            new AgentConsoleLiveInputSourceHooks { ActiveReadRegistered = kind =>
+            {
+                Assert.Equal(AgentConsoleInputKind.Key, kind);
+                var screen = console.GetSnapshot()!;
+                if (screen.ScreenId.StartsWith("qte-action-", StringComparison.Ordinal) && !run.ActionObserved)
+                {
+                    run.StoryAtHandoff = File.ReadAllBytes(_fs.ResolvePath(QteStoryPath));
+                    var rows = Encoding.UTF8.GetString(run.StoryAtHandoff).TrimStart('\uFEFF').Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                    var row = Assert.Single(rows);
+                    var entry = StrictJsonAuthority.Deserialize<StoryEntry>(row, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual client story row")!;
+                    Assert.Equal(PhysicalInjurySourceTurn, entry.Turn);
+                    Assert.Equal(QteStoryAction, entry.Player);
+                    Assert.Equal(QteStoryNarrative, entry.Narrative);
+                    Assert.Equal(run.ProtectedBefore[ResourceMaterializationContract.StatePath], File.ReadAllBytes(_fs.ResolvePath(ResourceMaterializationContract.StatePath)));
+                    run.ActionObserved = true;
+                    WritePhysicalInjuryDiagnostic("qte_story_actual_client_append", new { Mode = mode, RequestId = run.Source!.RequestId, SnapshotToken = run.SnapshotToken, Story = row });
+                    switch (postHandoffMutation)
+                    {
+                        case "story_altered": File.AppendAllText(_fs.ResolvePath(QteStoryPath), " "); break;
+                        case "replay": File.AppendAllText(_fs.ResolvePath(QteStoryPath), row + "\n"); break;
+                        case "unrelated_story": File.WriteAllText(_fs.ResolvePath("stories/mortal_life_999.jsonl"), row + "\n"); break;
+                        case "crosslink":
+                            var runtime = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(QteSceneService.QteRuntimePath)))!.AsObject();
+                            runtime["activeScene"]!["deferredEffectContinuationFingerprint"] = "sha256:" + new string('0', 64);
+                            File.WriteAllText(_fs.ResolvePath(QteSceneService.QteRuntimePath), runtime.ToJsonString()); break;
+                        case "stale_source":
+                            var request = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath("input/turn_request.json")))!.AsObject();
+                            request["requestId"] = "stale_original_request";
+                            File.WriteAllText(_fs.ResolvePath("input/turn_request.json"), request.ToJsonString()); break;
+                    }
+                    if (pauseAtAction) throw new OperationCanceledException("Controlled pause after actual accepted QTE/story handoff.");
+                }
+                Assert.True(live!.EnqueueKey(Key(ConsoleKey.Enter)).Accepted);
+            }});
+        var stagedReady = false;
+        async Task Author(SessionFinalizationCheckpoint checkpoint)
+        {
+            if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted || stagedReady) return;
+            await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                run.Source = JsonSerializer.Deserialize<TurnRequest>((await _fs.ReadFileAsync(lease, "input/turn_request.json"))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                var source = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, [ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath]);
+                Assert.True(source.Success, JsonSerializer.Serialize(source.Issues));
+                Assert.Equal(run.Source.RequestId, source.Snapshot!.RequestId);
+                Assert.Equal(PhysicalInjurySourceTurn, source.Snapshot.TurnNumber);
+                run.SnapshotToken = source.Snapshot.SnapshotToken;
+            }
+            if (preacceptMutation != null)
+            {
+                await _fs.WriteFileAtomicAsync(QteStoryPath, "{\"turn\":42,\"player\":\"GM wrote history\",\"narrative\":\"forbidden\"}\n");
+                run.PreacceptIssues = await GetPrivateField<ValidationService>(run.Engine!, "_validator").ValidateGameStateAsync(GameStateValidationPhase.ClientOwnedControlFiles);
+                throw new OperationCanceledException("Stop after real original GM history admission check.");
+            }
+            await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, BuildPhysicalInjuryOffer(declared: false, maximum: 2).ToJsonString());
+            var timestamp = DateTime.UtcNow.ToString("o");
+            await WriteJsonAsync("output/narrative_response.json", new { response = QteStoryNarrative, timestamp });
+            await WriteJsonAsync("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
+            await WriteJsonAsync("output/debug_logs.json", new { timestamp, gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n- Why relevant: Обвал без участия NPC.\n- Actors outside scope: нет\n- Why outside scope: В сцене нет других акторов.\n\n## Reasoning\n- Only the QTE offer is authored; no ordinary state changes." });
+            await WriteJsonAsync("ready/turn_complete.json", new { sessionId = run.Source.SessionId, requestId = run.Source.RequestId,
+                turnNumber = run.Source.TurnNumber, status = "success", timestamp, filesModified = new[] { QteSceneService.QteOfferPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" } });
+            stagedReady = true;
+            if (mode != "ordinary") throw new OperationCanceledException("Original real request/output staged before separate ready recovery.");
+        }
+        GameEngine NewEngine(bool hooks)
+        {
+            var engine = CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
+                finalizationHooks: hooks ? new GameEngineSessionFinalizationHooks { AtCheckpointAsync = Author } : null);
+            SetPrivateField(GetPrivateField<QteSceneService>(engine, "_qteSceneService"), "_inputSource", input);
+            GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession("session_qte_story_append", 41);
+            return engine;
+        }
+        run.Engine = NewEngine(true);
+        await _fs.WriteFileAtomicAsync("game_state/history/chat_log.json", new JsonObject { ["sessionId"] = "session_qte_story_append", ["entries"] = new JsonArray() }.ToJsonString());
+        await GetPrivateField<StateManager>(run.Engine, "_stateManager").RefreshGameStateAsync();
+        run.Failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(run.Engine, "ProcessPlayerTurn", QteStoryAction, null));
+        if (mode != "ordinary")
+        {
+            Assert.IsType<OperationCanceledException>(run.Failure);
+            Assert.True(stagedReady);
+            Assert.False(_fs.FileExists(QteStoryPath));
+            run.Engine = NewEngine(false);
+            await GetPrivateField<StateManager>(run.Engine, "_stateManager").RefreshGameStateAsync();
+            run.Failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(run.Engine,
+                mode == "recovered_ready" ? "WaitForGmResponse" : "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
+        }
+        WritePhysicalInjuryDiagnostic("qte_story_actual_engine_result", new { Mode = mode, preacceptMutation, postHandoffMutation, run.ActionObserved, Failure = run.Failure?.ToString() });
+        return run;
+    }
+
+    private static async Task AssertActualQteStoryFinalizedAsync(FileSystemManager files, TurnRequest source, byte[] story, decimal expectedHealth)
+    {
+        Assert.Equal(story, await files.ReadFileBytesAsync(QteStoryPath));
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath), false);
+        Assert.True(definitions.IsValid, JsonSerializer.Serialize(definitions.Issues));
+        var state = ResourceStateContract.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.StatePath), definitions.Catalog!, false);
+        var history = ResourceHistoryState.ParseCanonical(await files.ReadFileAsync(ResourceMaterializationContract.HistoryPath), definitions.Catalog!, false);
+        Assert.True(state.IsValid, JsonSerializer.Serialize(state.Issues));
+        Assert.True(history.IsValid, JsonSerializer.Serialize(history.Issues));
+        Assert.Empty(history.History!.ValidateStateAgreement(state.Ledger!));
+        var selected = Assert.Single(history.History.Transitions, transition => transition.EventRef == $"turn_{source.TurnNumber}:qte_terminal:1:resource:1");
+        Assert.Equal(ResourceTransitionOperation.Damage, selected.Operation);
+        Assert.Equal(ResourceTransitionOutcome.Applied, selected.Outcome);
+        Assert.Equal(5m, selected.AppliedAmount);
+        Assert.Equal(160m, selected.BeforeState!.Current);
+        Assert.Equal(155m, selected.AfterState!.Current);
+        Assert.Equal(expectedHealth, Assert.Single(state.Ledger!.Entries, entry => entry.Coordinate.ResourceKey == "health").Current);
+        var terminal = Assert.Single(JsonNode.Parse((await files.ReadFileAsync(QteSceneService.QteHistoryPath))!)!.AsArray())!;
+        Assert.Equal(source.TurnNumber, terminal["acceptedAtTurn"]!.GetValue<int>());
+        var continuation = JsonNode.Parse((await files.ReadFileAsync(QteDeferredEffectContinuation.StatePath))!)!.AsObject();
+        Assert.Equal("terminal", continuation["state"]!.GetValue<string>());
+        Assert.Null(JsonNode.Parse((await files.ReadFileAsync(QteSceneService.QteRuntimePath))!)["activeScene"]);
+    }
+
+    private async Task SeedQteStoryBoundedReactionAsync()
+    {
+        // Reuse the existing exact source/carrier fixture; copy its real canonical definitions, not pending authority.
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        using var ownedSource = new CleanupOwnedFixture(context.RootPath, line => _directGachaOutput?.WriteLine(line));
+        var trigger = new JsonObject { ["triggerId"] = "on_resource_damaged", ["eventType"] = "resource_damaged", ["priority"] = 100,
+            ["componentIds"] = new JsonArray("component_001"), ["consumeUses"] = true, ["resolutionMode"] = "bounded_receipt" };
+        var definition = EffectMaterializationTestFixture.CreateDefinition("periodic_damage");
+        definition["lifetime"] = new JsonObject { ["mode"] = "uses", ["initialUses"] = 1, ["consumingEventTypes"] = new JsonArray("resource_damaged") };
+        definition["triggers"] = new JsonArray(trigger.DeepClone());
+        await context.SeedPlayerSkillSourceAsync(definition);
+        await _fs.WriteFileAtomicAsync(EffectMaterializationTestContext.MaterializableSkillPath, (await context.ReadJsonAsync(EffectMaterializationTestContext.MaterializableSkillPath))!.ToJsonString());
+        var effect = EffectMaterializationTestContext.CreateSkillCanonicalEffect(profile: "periodic_damage");
+        effect["lifetime"] = new JsonObject { ["mode"] = "uses", ["remainingUses"] = 1, ["consumingTriggerIds"] = new JsonArray("on_resource_damaged") };
+        effect["triggers"] = new JsonArray(trigger.DeepClone());
+        await _fs.WriteFileAtomicAsync(EffectMaterializationTestContext.PlayerEffectsPath, new JsonObject { ["schemaVersion"] = 1, ["activeEffects"] = new JsonArray(effect.DeepClone()) }.ToJsonString());
+        await _fs.WriteFileAtomicAsync(EffectMaterializationTestContext.IdentityIndexPath, EffectMaterializationTestFixture.CreateIdentityIndex(effect).ToJsonString());
+    }
+}

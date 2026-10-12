@@ -171,6 +171,8 @@ public sealed partial class PromptDocumentationCoverageTests
                 Assert.Contains(token, document, StringComparison.Ordinal);
         }
         Assert.Contains("mortal_qte_physical_injury_declaration_v1", qteExample, StringComparison.Ordinal);
+        foreach (var token in new[] { "clientStoryAppend", "exact client-written row", "same-root paused/deferred resume", "every other story/history guard stays enabled", "never offer fields or GM receipt authority", "corruption/correlation checks" })
+            Assert.Contains(token, qteRules, StringComparison.Ordinal);
     }
 
     [Fact]

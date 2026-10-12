@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; EXACT APPEND DESIGN WIP)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED APPEND IMPLEMENTATION WIP)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -15,8 +15,9 @@ has SOURCE/selection acceptance and matching51-case GREEN EVIDENCE accepted880ef
 First one-case fixture attempt is a published59fb65f6 pre-harm timeout. The minimal
 owner-callback correction received SOURCE acceptance9b1d4448; its completed1 FAIL before
 harm is publishedcf14c4f8 with independent EVIDENCE acceptance and confirmed production
-story-validation phase bug. Current work is design-only for the authorized prerequisite;
-one durable-issuance question is open for focused DESIGN review, with no code/test/third run.
+story-validation phase bug. Current authorized prerequisite has publishable source/tests/docs/selection WIP, not READY; build/discovery/runtime UNRUN, original-ready consumption and resumed terminal cleanup unfinished;
+fresh independent bounded DESIGN acceptance incorporates the latest user trusted-checkpoint
+scope ruling. The eec3c36e unresolved anti-owner proposal is historical WIP, not whole accepted design.
 Prior4085 source facts
 and bef700/076ecc compatible-contract acceptance remain retained; the old product-policy
 blocker was superseded by normative engineering classification. No checkbox changes:
@@ -165,7 +166,7 @@ Do not waive story validation, enable allowPreexistingStateIssues, relax asserti
 baseline or increase budgets. Production remains unchanged; causal occurrence RED/GREEN,
 next-turn consumer/replay/rollback/save-load remain UNRUN. T070/#1536 and all checkboxes OPEN.
 
-### Current authorized prerequisite — exact append DESIGN WIP only
+### Current authorized prerequisite — bounded DESIGN accepted, coherent TDD block
 
 Basecf14c4f896ea387d1716a48f6475e4fc3d11b7da, same Linux1536 task branch. Root authorized
 this necessary story-phase prerequisite before the physical producer; actual implementation
@@ -184,30 +185,30 @@ The QTE validator may recognize only that proven exact client delta; ordinary GM
 every other history/snapshot/control check remain enabled. No permissive recapture, manifest
 re-sign/clone, new secret, general history framework or ClientOwnedControlFiles exclusion.
 
-**Unresolved DESIGN gate:** two mutable continuation/runtime fingerprints do not establish
-persisted issuer authority. Current original history hashes contain only chat/stories, not
-the two QTE control roots. A forged story+witness+continuation+runtime rehash must still refuse.
-There is no identified existing checked ingress seam that already prevents that combined edit;
-do not claim one. Fresh-process/archive recovery needs a smallest actual trusted publication/
-capture anchor, beyond retained source strings, hash-map data or an in-memory constructor.
-Archive saves exclude original pending snapshot files. Independent DESIGN review must resolve
-that one boundary before production or JSON-to-witness rehydration can proceed.
+Fresh independent Astra XHigh BOUNDED DESIGN ACCEPTED after latest user scope correction:
+private actual writer issuance + existing trusted canonical runtime/continuation publication,
+then exact source/generation/crosslink/before→row→after/current-byte/replay checks. Format4
+portable hashes are not cryptographic issuer proof; no new secret/credential/persistent-access
+or coordinated-owner whole-save anti-tamper architecture. Ordinary untrusted GM input cannot
+supply the witness; existing original history/control guards remain intact. Same-root paused/
+deferred fresh-process resume is required. Active-QTE archive generation rebinding is OUTSIDE
+this prerequisite; later actual post-terminal pending/consumed occurrence save/load remains
+required and UNRUN. Earlier eec unresolved all-root self-seal requirement is superseded.
 
-Planned finite inventory is8 methods/14 cases, all new tests UNWRITTEN/UNRUN: existing causal
+Planned finite inventory is9 methods/15 cases, new tests authored and build/discovery/runtime UNRUN: existing causal
 Fact1; new original-GM create/change2; new post-handoff authorized alteration/unrelated new
-story/single-root rehash/both-root rehash4; recovered-ready/late-ready2; deferred receipt1;
-fresh-process lawful/tampered2; two named existing continuation compatibility Facts2. Exact
-method names/oracles are in the plan. Planned guards2 methods/6 cases,3-minute category;
-lifetime5 methods/7 cases including compatibility,5 minutes; existing causal1/1 stays5.
-Use three finite task-local invocations/default8 or10, not one aggregate/budget increase;
-category owner/selection files are authored only after DESIGN acceptance, then SOURCE/fixture/
-selection gate and fresh preparation. Global CI/old selectors and accepted51 remain unchanged.
-Fresh-process archive proof may fold into the actual first-vertical save/load, explicitly UNRUN
-until observed; constructor or missing future proof-property failures never substitute for harm.
+story/mismatched runtime crosslink/stale original source/duplicate-story replay5; recovered-ready/late-ready2; deferred receipt1;
+same-root fresh-process lawful1; two named existing continuation compatibility Facts2; affected documentation guard1. Exact
+method names/oracles are in the plan. Planned guards2 methods/7 cases,3-minute category;
+lifetime5 methods/6 cases including compatibility,5 minutes; existing causal1/1 stays5.
+Use four finite task-local invocations/default8,10 or7 (documentation1/1 at2 minutes), not an aggregate/budget increase. Category ownership and three new selection files are present; SOURCE/fixture/selection gate and fresh preparation are still UNRUN. Global CI/old selectors and accepted51 remain unchanged.
+Same-root fresh-process proof must observe actual client append/handoff before pause and real
+terminal harm after resume; constructor or missing future proof-property failure is not harm.
 
-Next: root publishes this two-document DESIGN WIP and obtains focused independent Astra XHigh
-review of the persisted-anchor question. Stop edits; no third actual, code or new tests now.
-After the resolved design and bounded TDD/source gate, minimal prerequisite fix must preserve
+Next authorized coherent block: finite behavior tests FIRST, then minimum prerequisite fix
+and lifecycle docs/guards/selection; root publishes and obtains combined independent SOURCE/
+FIXTURE/SELECTION gate before execution. Existing9b actual story FAIL is meaningful prerequisite
+RED; new preservation negatives need not be claimed new RED. Minimal fix must preserve
 the existing finalization Fact and obtain real finalized health Damage/missing-occurrence RED
 before any producer. Original31 declaration RED284 (compile76), accepted51 GREEN880 (runtime141),
 timeout59fb (runtime53), story prerequisite REDcf14 (runtime9b), historical B2–B5 and cold1
@@ -216,6 +217,14 @@ remain immutable. Full T070/FR063/result closure, consumer/replay/rollback/save-
 Client-owned bookkeeping alone introduces no new GM-authored field/example; existing admission
 guidance remains accurate. Any implemented control/validation lifecycle change gets targeted
 QTE documentation/source guards in the same implementation block; no afterlife change proposed.
+
+Current stable publication WIP is documented in the [plan boundary](./plan.md#story-prerequisite-publication-boundary--2026-10-12-wipunrun):
+new private exact-writer witness, integration partial and three selectors, existing engine/
+continuation/validator/browser carry paths, lifecycle docs/guard. Original causal Fact is
+byte-unchanged, no producer/consumer. Sole Sol writer is paused for root publication. Remaining
+before READY: ordinary ready consumption at durable handoff, resumed terminal source/backups
+cleanup and actual idle-caller tests, narrow catalog formatting, final status. No current
+SOURCE acceptance or execution; next root publishes WIP then releases only this remainder.
 
 The plan now fixes the proposed optional QTE `physicalInjury` declaration: closed
 exactly five fields: schemaVersion1, one-based resource command ordinal, explicit maximum1–4, bounded cause
