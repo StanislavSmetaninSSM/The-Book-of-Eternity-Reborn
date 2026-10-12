@@ -1,3 +1,19 @@
+## T068 remaining five Windows owner recipes — authorized WIP, 2026-10-12
+
+Coordinator accepted806dd54/native36 and authorizes the original remaining five
+recipes sequentially: console16(5/10minutes), metadata32(3/8), owner27(3/8),
+bridge3(3/8), native contention3(2/7). Exact PlanOnly roster is authoritative.
+Console expressly excludes native Windows qualification: portable component only.
+Reuse matched fresh integration13e17; build unit/actual Bridge via official
+metadata PlanOnly, then reuse valid outputs. Separate compile origins retained
+for unit/integration contention. One category/attempt at a time, actual source
+andDLL/PDB before-after binding, original caps/strict assertions/owned cleanup;
+publish each result and independent evidence review before acceptance.
+[Inventory](recovery/windows-owner-recipes-20261012/manifest.json).
+Production failure: preserve causal evidence/minimalproposal before product fix.
+No new arbitrary cold/UNC/casesensitive/fullgame/perf tasks, no main/merge/PR/issues/
+paidcalls/security/install/speedredesign/budgetrelaxation; prior carriers immutable.
+
 ## T068 Windows path equivalence — bounded native36 reviewed PASS, 2026-10-12
 
 Actual independent gpt-6-astra/xhigh SOURCE + CAUSAL RED EVIDENCE PASS13e17a3,

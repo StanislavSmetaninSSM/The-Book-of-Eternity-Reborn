@@ -1,0 +1,195 @@
+{
+  "SchemaVersion": 1,
+  "TrackedTask": "#1553/T068 remaining five existing Windows owner recipes",
+  "AcceptedPreviousHead": "806dd54096e512bf8312e37720b40fffbdf01ebb",
+  "ExistingIntegrationCompiledHead": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+  "Recipes": [
+    {
+      "Key": "console",
+      "Category": "portable-console-rollback-preparation",
+      "ExpectedMethodCounts": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_CommittedCaptureDebtRetainsOwnedBeforeImages": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline": 2,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_PartialCleanupRetainsMarkerAndRetryDoesNotRestoreTwice": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedMarkerMustMatchLiveBytes": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedCancellationTransfersOwnershipBeforeDeletingRequest": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_GenerationReplacementCannotReuseWarmOwnership": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_AbsentOnlyPreparationRemainsVisibleToColdAdmission": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_UnadoptedColdInstanceRefusesAndRetainsExactEvidence": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ReachedPreparationFailureCanRetryExactBeforeImage": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ChangedBeforeImageRefusesWarmAdmissionWithoutMutation": 2,
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral": 1
+      },
+      "ExpectedCases": 16,
+      "ExpectedMethods": 14,
+      "ExpectedDescriptors": 1,
+      "Projects": [
+        "integration"
+      ],
+      "PrepareFreshBuild": false,
+      "NativeQualification": false,
+      "Responsibility": "Original console/incarnation preparation stages exact rollback evidence, survives lore deletion, retains original absence through signed snapshot overlay and restores consumed preparation with cleanup. Reached preparation faults, retry, exact warm evidence, cold unadopted refusal including absent-only staging. Marker-last cleanup, actual cold cancellation and console evidence save/load exclusion.",
+      "Excludes": "Other afterlife transitions, browser rollback, binding gameplay and native Windows qualification.",
+      "CategoryBudgetMinutes": 5,
+      "RunnerBudgetMinutes": 10,
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "RelevantSources": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs",
+        "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs"
+      ],
+      "FixturePrefixes": [
+        "boe-gameengine-turnlifecycle-",
+        "boe-save-load-tests-"
+      ],
+      "State": "UNRUN"
+    },
+    {
+      "Key": "metadata",
+      "Category": "gm-main-metadata-native-windows",
+      "ExpectedMethodCounts": {
+        "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativePublicationFaultRetainsExactPlanAndOriginalGuard": 22,
+        "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeSharingRefusalRetainsBeforeAndRetriesSameReplacement": 2,
+        "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeForeignStageOrNamespaceRetainsDebtAndForeignEvidence": 4,
+        "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeColdPartialNamespaceCannotGuessFreshInitialization": 2,
+        "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeUnknownAfterRenameCannotBeOverwrittenByFrozenRetry": 2
+      },
+      "ExpectedCases": 32,
+      "ExpectedMethods": 5,
+      "ExpectedDescriptors": 1,
+      "Projects": [
+        "unit"
+      ],
+      "PrepareFreshBuild": true,
+      "NativeQualification": true,
+      "Responsibility": "A01 native Windows create/replace metadata ordering, original guard and frozen debt retry on ordinary drive and extended paths; actual sharing, foreign stage/namespace, cold partial and unknown post-rename refusal. Bodies require Windows.",
+      "Excludes": "No Linux execution, directory-fsync or power-loss guarantee, boot provider, main activation, ConPTY or worker lifecycle.",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "RelevantSources": [
+        "BookOfEternityClient.Tests/GmMainMetadataWindowsTests.cs",
+        "BookOfEternityClient/Core/GmSessionRunPersistence.cs"
+      ],
+      "FixturePrefixes": [
+        "main-metadata-native-"
+      ],
+      "State": "UNRUN"
+    },
+    {
+      "Key": "owner",
+      "Category": "gm-main-owner-native-windows",
+      "ExpectedMethodCounts": {
+        "BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.OriginalAdmissionAndCancelledPreparationCreateNoWorkerInventory": 6,
+        "BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.ExistingInventoryRefusesWithoutAdoptionOrPreparation": 9,
+        "BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.ChangedStartupObservationCannotAdmitColdNonterminal": 12
+      },
+      "ExpectedCases": 27,
+      "ExpectedMethods": 3,
+      "ExpectedDescriptors": 1,
+      "Projects": [
+        "unit"
+      ],
+      "PrepareFreshBuild": false,
+      "NativeQualification": true,
+      "Responsibility": "Body-required original Windows owner admission with labelled fixture startup observation: absent/Stopped plus cancelled preparation releases original guard without ledger creation; existing inventory and all cold nonterminal records refuse despite changed observation. Ordinary, extended and drive-case spelling.",
+      "Excludes": "No WMI provider, live ConPTY/Job, status/participating/Load consumer or production worker qualification. Linux discovery is not native execution.",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "RelevantSources": [
+        "BookOfEternityClient.Tests/GmMainOwnerWindowsAdmissionTests.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+      ],
+      "FixturePrefixes": [
+        "main-owner-native-"
+      ],
+      "State": "UNRUN"
+    },
+    {
+      "Key": "bridge",
+      "Category": "gm-main-bridge-native-windows",
+      "ExpectedMethodCounts": {
+        "BookOfEternityClient.Tests.GmBridgeWindowsOriginalHostTests.NativeOriginalHostPublishesStatusAndRetiresItsExactRun": 3
+      },
+      "ExpectedCases": 3,
+      "ExpectedMethods": 1,
+      "ExpectedDescriptors": 1,
+      "Projects": [
+        "unit"
+      ],
+      "PrepareFreshBuild": false,
+      "NativeQualification": true,
+      "Responsibility": "Body-required native Windows original WMI/ConPTY/Job host status, participating mutation/close and shutdown under ordinary, extended and drive-case roots. Empty manual CLI; no live provider.",
+      "Excludes": "No broad worker/native fault or quarantine acceptance; remaining native recipe cuts remain separately required.",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "RelevantSources": [
+        "BookOfEternityClient.Tests/GmBridgeWindowsOriginalHostTests.cs",
+        "BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs",
+        "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+        "BookOfEternityGMBridge/ConPtySession.cs"
+      ],
+      "FixturePrefixes": [
+        "boe-bridge-native-"
+      ],
+      "State": "UNRUN"
+    },
+    {
+      "Key": "contention",
+      "Category": "portable-native-runtime-contention-windows",
+      "ExpectedMethodCounts": {
+        "BookOfEternityClient.Tests.GmWorkerProposalInboxTests.ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild": 1,
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence": 1,
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination": 1
+      },
+      "ExpectedCases": 3,
+      "ExpectedMethods": 3,
+      "ExpectedDescriptors": 2,
+      "Projects": [
+        "integration",
+        "unit"
+      ],
+      "PrepareFreshBuild": false,
+      "NativeQualification": true,
+      "Responsibility": "Original descriptor-bound create-only proposal directory/save file publication and absent-reader classification. Positive main-admission contention before writer release, separate canonical-lock zero, original publication joins before lease close and original reader joins afterward.",
+      "Excludes": "Requires actual Windows native primitives; Linux build/Plan is not execution qualification. No ordinary publisher substitution, platform override, external owner, live GM or global worker category.",
+      "CategoryBudgetMinutes": 2,
+      "RunnerBudgetMinutes": 7,
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "RelevantSources": [
+        "BookOfEternityClient.Tests/GmWorkerProposalInboxTests.cs",
+        "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs"
+      ],
+      "FixturePrefixes": [
+        "boe-gm-worker-inbox-",
+        "boe-filesystem-manager-"
+      ],
+      "State": "UNRUN"
+    }
+  ],
+  "Sequence": [
+    "console",
+    "metadata",
+    "owner",
+    "bridge",
+    "contention"
+  ],
+  "Policy": "One category at a time; official PlanOnly then bound NoBuild actual; native metadata unit build also builds Bridge; reuse matching outputs; independent evidence before acceptance",
+  "OnProductionFailure": "Preserve causal evidence and minimal proposal before any product edit",
+  "KnownExclusions": [
+    "No arbitrary extra cold/UNC/case-sensitive/fullgame/performance task",
+    "No main/merge/PR/issues/paidcalls/securitychange/install/speedredesign/budgetrelaxation"
+  ],
+  "State": "WIPInventoryNoNewExecution"
+}
