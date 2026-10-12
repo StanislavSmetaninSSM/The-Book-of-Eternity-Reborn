@@ -5,14 +5,15 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (ADMISSION/FREEZE GREEN EVIDENCE ACCEPTED; FINALIZED-HARM TEST-ONLY WIP)
+## Current T070 boundary — 2026-10-12 (FIRST FIXTURE BLOCKER PUBLISHED; OWNERSHIP FIXTURE CORRECTION WIP)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
 first real scenario through exact design, independent review, causal RED, minimum
 implementation and GREEN; minimum admission/freeze plus coherent GM guidance/example/guards
 has SOURCE/selection acceptance and matching51-case GREEN EVIDENCE accepted880ef52c.
-Next is one-case finalized-harm test-only WIP; its SOURCE gate/runtime are pending. Prior4085 source facts
+First one-case fixture attempt is a published59fb65f6 pre-harm timeout; the minimal
+owner-callback correction is WIP with focused SOURCE review/fresh actual UNRUN. Prior4085 source facts
 and bef700/076ecc compatible-contract acceptance remain retained; the old product-policy
 blocker was superseded by normative engineering classification. No checkbox changes:
 T070/parent/#1536 remain OPEN; B2–B5 accepted33PASS, first B3 oracle FAIL, all immutable
@@ -66,7 +67,7 @@ GREEN EVIDENCE ACCEPTED, no blocker (20 artifacts/24 source/10 binaries/all51 TR
 historically UNREACHED tamper predicate remain retained. Finalized canonical health Damage/
 occurrence chain stays **UNRUN**, with no producer/wound-route completion claim.
 
-First finalized-harm TEST-ONLY WIP on accepted880ef52c adds one Fact/one case in
+Original finalized-harm TEST-ONLY source on accepted880ef52c adds one Fact/one case in
 `GameEngineTurnLifecycleTests.QtePhysicalInjuryFinalization.cs`:
 `QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence`.
 Finite category `qte-physical-injury-finalization`, task-local selection of the same name,
@@ -77,8 +78,14 @@ missing-occurrence assertion follows actual canonical health160→155, one Appli
 history row, resource owner/state agreement, terminal QTE closure and ordinary cleanup.
 Before that milestone, any failure is a fixture/finalization blocker, never causal RED.
 Per-test independent root, exact protected wound bytes and strict cleanup are required.
-New source build/discovery/PlanOnly/actual are UNRUN pending root publication and independent
-SOURCE/fixture/selection gate; freeze first runtime outcome before any production correction.
+The original53a823e preparation/timeout is retained below. On published59fb65f6, one
+minimal fixture correction now moves official source observation and all transient GM output
+writes into existing TerminalWaitStarted/AtCheckpointAsync inside the original participating
+owner. Outside Task.Run, missing-request polling, separate validator and health reads are
+removed; no new TCS/harness, owner propagation, lock release or oracle change. Existing
+phase/failure diagnostics cover callback entry/source/authoring/ready. Method/category/selection
+and5-minute budget are unchanged. Corrected build/PlanOnly/actual are UNRUN pending root
+publication and focused SOURCE/fixture review; no new inventory requires catalog rediscovery.
 Full chain/T070/#1536 and all checkboxes remain OPEN; originalRED31 and acceptedGREEN51
 are immutable. The first RED evidence carrier284 is distinct from actual compile/runtime76.
 
@@ -111,8 +118,12 @@ pins and live/root readback. Runner owned-process-tree cleanup completed. Test f
 strict cleanup emitted no receipt because its process was killed; root then matched its
 unique owned directory and exact session/request/turn, removed only that directory and
 confirmed absence. This manual cleanup is distinct from a strict fixture receipt.
-Next is one minimal fixture correction and focused independent SOURCE review, then fresh
-selected preparation and a new actual attempt. No production/producer is authorized by
+The first blocker is frozen and remotely published at
+`59fb65f6f06b0645cf51e74078d65de6fc58eab0`; its packet/source pins are immutable.
+Current ownership-only correction moves source observation and offline GM writes into the
+existing original-owner terminal-wait hook; it preserves every damage/occurrence oracle.
+Next is root correction WIP publication and focused independent SOURCE review, then fresh
+one-case PlanOnly rebuild and a new actual attempt, under unchanged5/default overall10. No production/producer is authorized by
 this failure. Admission51 GREEN/original31 RED, all task checkboxes and historical B2–B5/
 cold evidence remain unchanged; full T070/#1536 and finalized-health vertical remain OPEN.
 
@@ -160,8 +171,9 @@ canonical anchors, FR063 later treatment reservation/full request/re-resolution/
 and FR066 occurrence/decision replay remain required. Synchronize affected existing QTE/
 ordinary GM guides, prompts, example/manifest, output policy and guards with implementation.
 Next is root publication/remote verification and independent Astra XHigh SOURCE/fixture/
-selection gate for the one-case test-only actual engine ordinary QTE → finalized canonical
-health Damage → missing-occurrence cohort, then fresh selected preparation and first actual.
+gate for the ownership-only fixture correction to actual engine ordinary QTE → finalized
+canonical health Damage → missing-occurrence, then fresh one-case PlanOnly rebuild and
+corrected actual.
 That genuine causal RED must precede producer implementation; admission GREEN EVIDENCE
 is already accepted880ef52c.
 Continue authorized gates without another human permission cycle; no unchanged first RED rerun. No additional project execution is performed here; no paid

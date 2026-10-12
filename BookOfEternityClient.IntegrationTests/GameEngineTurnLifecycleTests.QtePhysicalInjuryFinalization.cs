@@ -77,31 +77,25 @@ public sealed partial class GameEngineTurnLifecycleTests
                     Assert.True(live!.EnqueueKey(Key(ConsoleKey.Enter)).Accepted);
                 }
             });
-        var engine = CreateGameEngine(input, settings =>
-        {
-            InertRealmSettings(settings);
-            settings.AutosaveIntervalTurns = 0;
-        });
-        var qte = GetPrivateField<QteSceneService>(engine, "_qteSceneService");
-        SetPrivateField(qte, "_inputSource", input);
-        var gameLoop = GetPrivateField<GameLoop>(engine, "_gameLoop");
-        gameLoop.SetSession("session_qte_physical_finalization", PhysicalInjurySourceTurn - 1);
-        await _fs.WriteFileAtomicAsync("game_state/history/chat_log.json", new JsonObject
-        {
-            ["sessionId"] = gameLoop.SessionId, ["entries"] = new JsonArray()
-        }.ToJsonString());
-        await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
         TurnRequest? sourceRequest = null;
         string? sourceSnapshotToken = null;
-
-        var gm = Task.Run(async () =>
+        Exception? fixtureFailure = null;
+        var fixturePhase = "before-terminal-wait";
+        async Task AuthorQteAtOriginalTerminalWaitAsync(SessionFinalizationCheckpoint checkpoint)
         {
+            if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted)
+                return;
             try
             {
-                sourceRequest = await WaitForTurnRequestAsync();
-                Assert.Equal(PhysicalInjurySourceTurn, sourceRequest.TurnNumber);
+                fixturePhase = "original-owner-source-observation";
+                WritePhysicalInjuryDiagnostic("actual_engine_owned_terminal_wait", new { Checkpoint = checkpoint.ToString() });
+                Assert.Null(sourceRequest);
                 await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
                 {
+                    sourceRequest = JsonSerializer.Deserialize<TurnRequest>(
+                        (await _fs.ReadFileAsync(lease, "input/turn_request.json"))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+                    Assert.NotNull(sourceRequest);
+                    Assert.Equal(PhysicalInjurySourceTurn, sourceRequest.TurnNumber);
                     var snapshot = PendingTurnSnapshotReader.ReadCurrent(_fs, lease,
                         [ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
                          ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath]);
@@ -121,6 +115,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     });
                 }
 
+                fixturePhase = "original-owner-transient-output";
                 submittedOffer = BuildPhysicalInjuryOffer(declared: true, maximum: 2);
                 await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, submittedOffer.ToJsonString());
                 var timestamp = DateTime.UtcNow.ToString("o");
@@ -131,38 +126,53 @@ public sealed partial class GameEngineTurnLifecycleTests
                     timestamp,
                     gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n- Why relevant: Обвал без участия NPC.\n- Actors outside scope: нет\n- Why outside scope: В сцене нет других акторов.\n\n## Reasoning\n- Only the QTE offer is authored; no ordinary state changes."
                 });
-                var admission = await GetPrivateField<ValidationService>(engine, "_validator").ValidateAcceptedTurnQteOfferAsync();
-                WritePhysicalInjuryDiagnostic("actual_engine_raw_offer_admission", new { Issues = admission });
-                Assert.DoesNotContain(admission, issue => issue.Severity == IssueSeverity.Error);
-                Assert.Equal(healthBytesBefore, await _fs.ReadFileBytesAsync(ResourceMaterializationContract.StatePath));
                 await WriteJsonAsync("ready/turn_complete.json", new
                 {
                     sessionId = sourceRequest.SessionId, requestId = sourceRequest.RequestId, turnNumber = sourceRequest.TurnNumber,
                     status = "success", timestamp = DateTime.UtcNow.ToString("o"),
                     filesModified = new[] { QteSceneService.QteOfferPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" }
                 });
+                fixturePhase = "correlated-ready-published";
+                WritePhysicalInjuryDiagnostic("actual_engine_gm_ready", new
+                {
+                    sourceRequest.SessionId, sourceRequest.RequestId, sourceRequest.TurnNumber, Phase = fixturePhase
+                });
             }
             catch (Exception failure)
             {
-                WritePhysicalInjuryDiagnostic("actual_engine_gm_fixture_blocker", new { Failure = failure.ToString() });
-                if (sourceRequest != null)
-                    await WriteJsonAsync("ready/turn_error.json", new
-                    {
-                        sessionId = sourceRequest.SessionId, requestId = sourceRequest.RequestId,
-                        turnNumber = sourceRequest.TurnNumber, status = "error", timestamp = DateTime.UtcNow.ToString("o"),
-                        error = "Offline QTE fixture failed before producing its correlated completion."
-                    });
+                fixtureFailure = failure;
+                WritePhysicalInjuryDiagnostic("actual_engine_gm_fixture_blocker", new
+                {
+                    Phase = fixturePhase, Failure = failure.ToString()
+                });
                 throw;
             }
+        }
+
+        var engine = CreateGameEngine(input, settings =>
+        {
+            InertRealmSettings(settings);
+            settings.AutosaveIntervalTurns = 0;
+        }, finalizationHooks: new GameEngineSessionFinalizationHooks
+        {
+            AtCheckpointAsync = AuthorQteAtOriginalTerminalWaitAsync
         });
+        var qte = GetPrivateField<QteSceneService>(engine, "_qteSceneService");
+        SetPrivateField(qte, "_inputSource", input);
+        var gameLoop = GetPrivateField<GameLoop>(engine, "_gameLoop");
+        gameLoop.SetSession("session_qte_physical_finalization", PhysicalInjurySourceTurn - 1);
+        await _fs.WriteFileAtomicAsync("game_state/history/chat_log.json", new JsonObject
+        {
+            ["sessionId"] = gameLoop.SessionId, ["entries"] = new JsonArray()
+        }.ToJsonString());
+        await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
         var engineFailure = await Record.ExceptionAsync(() =>
             InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Укрыться от падающих камней.", null));
-        var gmFailure = await Record.ExceptionAsync(async () => await gm);
         WritePhysicalInjuryDiagnostic("actual_engine_execution", new
         {
-            EngineFailure = engineFailure?.ToString(), GmFailure = gmFailure?.ToString()
+            EngineFailure = engineFailure?.ToString(), FixtureFailure = fixtureFailure?.ToString(), Phase = fixturePhase
         });
-        Assert.Null(gmFailure);
+        Assert.Null(fixtureFailure);
         Assert.Null(engineFailure);
 
         // These are prerequisite assertions. A failure here is a setup/finalization blocker, never missing-occurrence RED.

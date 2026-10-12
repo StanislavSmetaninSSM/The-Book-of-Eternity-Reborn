@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (ADMISSION/FREEZE GREEN EVIDENCE ACCEPTED; FINALIZED-HARM TEST-ONLY WIP)
+## Current T070 first vertical — 2026-10-12 (FIRST FIXTURE BLOCKER PUBLISHED; OWNERSHIP FIXTURE CORRECTION WIP)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -23,7 +23,8 @@ design, causal RED, minimal implementation and GREEN. This checkpoint specifies 
 accepted serialization design, immutable first admission/freeze result and minimum
 production admission/freeze boundary. Fresh selected preparation and one matching
 GREEN invocation are complete and its immutable GREEN packet/EVIDENCE review are accepted at880ef52c.
-The next finalized-harm test-only source/fixture gate is pending; its runtime remains UNRUN. No occurrence producer or
+First finalized-harm fixture attempt timed out before its prerequisites and is published59fb65f6;
+one ownership-only fixture correction is WIP, with focused SOURCE review and fresh actual UNRUN. No occurrence producer or
 canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
@@ -135,23 +136,30 @@ QTE → finalized canonical health Damage → missing-occurrence causal cohort b
 before any producer implementation. T070, parent RESULT-CLOSURE and #1536 remain OPEN; all
 checkboxes, accepted historical B2–B5 evidence and GameEngine cold count1 are unchanged.
 
-### First finalized-health-harm control — TEST-ONLY WIP / SOURCE gate pending
+### First finalized-health-harm control — ownership fixture correction WIP
 
-Base is accepted880ef52ce9ec9270942e2363691cfb4bf76477aa on the same Linux task branch.
+Original test-only base is accepted880ef52ce9ec9270942e2363691cfb4bf76477aa; current
+correction base is published59fb65f6f06b0645cf51e74078d65de6fc58eab0 on the same Linux task branch.
 `GameEngineTurnLifecycleTests.QtePhysicalInjuryFinalization.cs` adds exactly one Fact/one
 case: `QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence`.
 Category `qte-physical-injury-finalization`, task-local
 `tests/selections/1536-qte-physical-injury-finalization.json`, budget5/default overall10.
 The documented owner is finite and exclusive to this causal boundary; existing selectors,
 production, GM guidance and global CI selection are unchanged. The accepted51 cases are
-not selected again. Build/discovery/PlanOnly/actual for this new source are **UNRUN**.
+not selected again. The original53a823e preparation/timeout is retained below; fresh
+build/PlanOnly/actual for this fixture correction are **UNRUN**. No method/selector change
+requires a new catalog discovery.
 
 The existing engine fixture copies its immutable base into its independently owned root,
 then bootstraps real Mortal player health with actual resource contracts. Actual
-`ProcessPlayerTurn` stages sourceN=42 and admits only offline correlated GM output. The GM
-responder observes source coordinates through official `PendingTurnSnapshotReader` under
-the actual active request while the original signed context is live; raw request has no
-snapshot token. Existing Agent Console live input queue/hook accepts the offer, selects
+`ProcessPlayerTurn` stages sourceN=42 and admits only offline correlated GM output.
+The existing `TerminalWaitStarted`/`AtCheckpointAsync` hook now observes the actual request
+and official `PendingTurnSnapshotReader` under a canonical lease borrowed from the original
+participating owner, then writes only the four transient GM outputs and correlated ready last.
+There is no outside Task.Run/TCS, public missing-request polling, separate validator or
+canonical-health read in the GM responder. No production owner/lock or expected result is
+changed; raw request still has no snapshot token. Existing phase/failure diagnostics identify
+owned callback entry, signed source observation, transient authoring and ready publication. Existing Agent Console live input queue/hook accepts the offer, selects
 its BranchChoice action and finishes the terminal screen. Its actual frozen action screen
 must retain both lawful declarations while canonical health bytes remain unchanged.
 No direct BeginAcceptedScene-only route or test-built occurrence/binding/event/receipt is used.
@@ -169,9 +177,9 @@ only a blocker. The existing occurrence parser then requires one row with the or
 source coordinates, QTE/physical source and explicit maximum2. No future producer-type or
 missing-context-property assertion can substitute for finalized harm.
 
-Next: root publishes this test-only WIP and completes independent Astra XHigh SOURCE/fixture/
-selection review before fresh selected preparation and exactly one matching first actual.
-Freeze that first outcome before correction. No source producer/publication code is authorized
+Next: root publishes this ownership-only fixture WIP and completes focused independent
+Astra XHigh SOURCE/fixture review before a fresh one-case PlanOnly rebuild and matching
+corrected actual. Preserve the immutable first timeout; freeze the new actual outcome too. No source producer/publication code is authorized
 until the actual finalized canonical health harm milestone and missing-occurrence RED are
 established. All T070/#1536 checkboxes remain OPEN; original31 RED, accepted51 GREEN and
 historical B2–B5/cold evidence remain immutable. This test-only checkpoint changes no GM
@@ -206,8 +214,12 @@ pins and live/root readback. Runner owned-process-tree cleanup completed. Test f
 strict cleanup emitted no receipt because its process was killed; root then matched its
 unique owned directory and exact session/request/turn, removed only that directory and
 confirmed absence. This manual cleanup is distinct from a strict fixture receipt.
-Next is one minimal fixture correction and focused independent SOURCE review, then fresh
-selected preparation and a new actual attempt. No production/producer is authorized by
+The first blocker is frozen and remotely published at
+`59fb65f6f06b0645cf51e74078d65de6fc58eab0`; its packet/source pins are immutable.
+Current ownership-only correction moves source observation and offline GM writes into the
+existing original-owner terminal-wait hook; it preserves every damage/occurrence oracle.
+Next is root correction WIP publication and focused independent SOURCE review, then fresh
+one-case PlanOnly rebuild and a new actual attempt, under unchanged5/default overall10. No production/producer is authorized by
 this failure. Admission51 GREEN/original31 RED, all task checkboxes and historical B2–B5/
 cold evidence remain unchanged; full T070/#1536 and finalized-health vertical remain OPEN.
 
@@ -443,9 +455,9 @@ The admission/freeze block synchronizes existing QTE API/runtime/daemon guidance
 `Examples/E_CLI_QTE_Offer.txt`, its validation manifest and affected existing guards;
 SOURCE/selection accepted141c6961 and matching51-case GREEN are recorded above.
 
-Next: publish and independently SOURCE-review the one-case test-only finalized-health-
-Damage/missing-occurrence control above, then fresh selected preparation/first actual before
-any producer code. Admission/freeze GREEN EVIDENCE is accepted880ef52c. Continue the authorized reviewed sequence with each first outcome
+Next: publish and independently SOURCE-review the ownership-only correction to the one-case
+finalized-health-Damage/missing-occurrence control, then fresh PlanOnly rebuild/corrected
+actual before any producer code. Admission/freeze GREEN EVIDENCE is accepted880ef52c. Continue the authorized reviewed sequence with each first outcome
 preserved before correction; no broad rerun or new human permission cycle. The first31-case
 RED remains immutable. This status update performs no additional project execution. No paid provider,
 Windows/HOME-PC, main/PR/issue/CI or optimization work; Windows evidence remains user-provided.
