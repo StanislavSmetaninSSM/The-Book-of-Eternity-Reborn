@@ -1860,7 +1860,8 @@
     "Category": "portable-native-runtime-contention-windows",
     "Passed": 3,
     "Failed": 0,
-    "State": "PASS runtime, independent evidence pending"
+    "State": "PASS runtime, independently accepted evidence",
+    "IndependentEvidenceReviewedHead": "5bd28de6dfea0fde5a7601994b30824b420a443c"
   },
   "AcceptedRecipes": [
     "console",
