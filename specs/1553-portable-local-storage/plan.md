@@ -1,3 +1,15 @@
+## T068 original Windows owner recipe contention/a1 — PASS runtime, independent evidence pending, 2026-10-12
+
+`portable-native-runtime-contention-windows` actual3PASS/0FAIL,
+3/3executed/planned, 00:00:36.1462237; PlanOnly0execution
+00:00:25.9473955. Original category/runner2/7minutes unchanged.
+Runtime checkoutd69c37c0594e0d02f5e0e5b41a1338a1095e856b; source1629original+539selectedextra
+unit/Bridge/CrashHost pins and290DLL/PDB stable, compile origins separately retained.
+Qualification: Native Windows required bodies.
+[Original logs and cases](recovery/windows-owner-recipes-20261012/contention/a1/manifest.json).
+No source/catalog/selector/guard/budget changes; prior results remain immutable.
+Independent evidence review before acceptance; parentsOPEN/known exclusions unchanged.
+
 ## T068 original Windows owner recipe bridge/a1 — bounded evidence accepted, 2026-10-12
 
 Actual independent gpt-6-astra/xhigh EVIDENCE PASS ata006185af37c6eb63f833552265b8b7b20b15031, no findings.

@@ -71,3 +71,13 @@ Compile origins: {"integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c", "un
 Qualification: Native Windows required bodies. Full immutable originals: `bridge/a1/manifest.json`.
 
 Independent actual gpt-6-astra/xhigh EVIDENCE PASS at `a006185af37c6eb63f833552265b8b7b20b15031` for `bridge/a1`, no actionable findings. Accepted scope remains: Native Windows required bodies.
+
+## contention/a1 — PASS runtime, independent evidence pending
+
+`portable-native-runtime-contention-windows`: 3PASS/0FAIL, 3executed/3planned;
+PlanOnly 00:00:25.9473955 / zero execution; actual 00:00:36.1462237.
+Category/runner budgets 2/7minutes unchanged.
+Runtime checkout `d69c37c0594e0d02f5e0e5b41a1338a1095e856b`, source1629 original +539 selected
+extra unit/Bridge/CrashHost pins, 290 DLL/PDB equal before/after.
+Compile origins: {"integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c", "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a", "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"}.
+Qualification: Native Windows required bodies. Full immutable originals: `contention/a1/manifest.json`.

@@ -1,0 +1,442 @@
+{
+  "SchemaVersion": 1,
+  "RecordedUtc": "2026-10-12T03:36:28.219053+00:00",
+  "Recipe": "contention",
+  "Attempt": "a1",
+  "Category": "portable-native-runtime-contention-windows",
+  "CheckoutHead": "d69c37c0594e0d02f5e0e5b41a1338a1095e856b",
+  "SemanticSourceEquals": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+  "CompiledProjectOrigins": {
+    "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+    "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+    "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+  },
+  "Qualification": "Native Windows required bodies",
+  "Planned": 3,
+  "ExpectedMethodCounts": {
+    "BookOfEternityClient.Tests.GmWorkerProposalInboxTests.ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild": 1,
+    "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence": 1,
+    "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination": 1
+  },
+  "Executed": 3,
+  "Passed": 3,
+  "Failed": 0,
+  "OtherOutcomes": {
+    "Passed": 3
+  },
+  "CompleteGreen": true,
+  "State": "EvidenceReviewPending",
+  "ActualAttemptsInStage": 1,
+  "PlanOnlyWallTime": "00:00:25.9473955",
+  "PlanOnlyExecuted": 0,
+  "BuildPhases": [],
+  "ActualWallTime": "00:00:36.1462237",
+  "CategoryResults": [
+    {
+      "Category": "portable-native-runtime-contention-windows",
+      "Seconds": 14.5829867,
+      "BudgetMinutes": 2,
+      "Completed": true
+    }
+  ],
+  "ExitCode": 0,
+  "SelectionComplete": true,
+  "CategoryBudgetMinutes": 2,
+  "RunnerBudgetMinutes": 7,
+  "TimedOut": false,
+  "Duplicates": [],
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "Health": {
+    "RecordedUtc": "2026-10-12T03:36:27.4693464Z",
+    "BootUtc": "2026-10-12T01:47:25.5000000Z",
+    "Recipe": "contention",
+    "Attempt": "a1",
+    "ProcessChecks": [
+      {
+        "Phase": "prepare",
+        "Kind": "Wrapper",
+        "Pid": 24620,
+        "StartUtc": "2026-10-12T03:32:42.4454541Z",
+        "Exited": true,
+        "PidReused": false
+      },
+      {
+        "Phase": "prepare",
+        "Kind": "Runner",
+        "Pid": 23940,
+        "StartUtc": "2026-10-12T03:32:44.1871500Z",
+        "Exited": true,
+        "PidReused": false
+      },
+      {
+        "Phase": "actual",
+        "Kind": "Wrapper",
+        "Pid": 32688,
+        "StartUtc": "2026-10-12T03:33:22.4080083Z",
+        "Exited": true,
+        "PidReused": false
+      },
+      {
+        "Phase": "actual",
+        "Kind": "Runner",
+        "Pid": 14328,
+        "StartUtc": "2026-10-12T03:33:23.9989670Z",
+        "Exited": true,
+        "PidReused": false
+      }
+    ],
+    "ActiveOwnedOperations": [],
+    "TaskOwnedRootRemainders": [],
+    "NoKillOrDelete": true
+  },
+  "SourcePins": 2168,
+  "OriginalClientIntegrationTestSupportSourcePins": 1629,
+  "ExtraUnitBridgeCrashHostSourcePins": 539,
+  "DllPdbPins": 290,
+  "ExactSourceAndDllBytesEqual": true,
+  "Cases": [
+    {
+      "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.4552953",
+      "OriginalStdOut": "{\"kind\":\"f18-native-runtime-contention\",\"method\":\"FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination\",\"root\":\"C:\\\\Temp\\\\boe-win-8c2ecdfa-20261011T234246Z\\\\tmp\\\\boe-filesystem-manager-0649643138344d53a137a64e1d64d7f4\",\"paused\":1,\"mainContentions\":1,\"canonicalContentions\":0,\"publicationStarted\":true,\"publicationSettled\":true,\"readerStarted\":true,\"readerSettled\":true}\r\n{\"CleanupOwnedRoot\":\"C:\\\\Temp\\\\boe-win-8c2ecdfa-20261011T234246Z\\\\tmp\\\\boe-filesystem-manager-0649643138344d53a137a64e1d64d7f4\",\"OwnedFixtureRemoved\":true,\"CleanupFailure\":null}",
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5379859",
+      "OriginalStdOut": "{\"kind\":\"f18-native-runtime-contention\",\"method\":\"FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence\",\"root\":\"C:\\\\Temp\\\\boe-win-8c2ecdfa-20261011T234246Z\\\\tmp\\\\boe-filesystem-manager-dca6d4f7a2c243088496752af81dc6b2\",\"paused\":1,\"mainContentions\":1,\"canonicalContentions\":0,\"publicationStarted\":true,\"publicationSettled\":true,\"readerStarted\":true,\"readerSettled\":true}\r\n{\"CleanupOwnedRoot\":\"C:\\\\Temp\\\\boe-win-8c2ecdfa-20261011T234246Z\\\\tmp\\\\boe-filesystem-manager-dca6d4f7a2c243088496752af81dc6b2\",\"OwnedFixtureRemoved\":true,\"CleanupFailure\":null}",
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProposalInboxTests.ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.8515669",
+      "OriginalStdOut": "{\"kind\":\"f18-native-runtime-contention\",\"method\":\"ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild\",\"root\":\"C:\\\\Temp\\\\boe-win-8c2ecdfa-20261011T234246Z\\\\tmp\\\\boe-gm-worker-inbox-4c9fb495ebdd4c50bf051b8057b2e067\",\"paused\":1,\"mainContentions\":1,\"canonicalContentions\":0,\"publicationStarted\":true,\"publicationSettled\":true,\"readerStarted\":true,\"readerSettled\":true}\r\n{\"CleanupOwnedRoot\":\"C:\\\\Temp\\\\boe-win-8c2ecdfa-20261011T234246Z\\\\tmp\\\\boe-gm-worker-inbox-4c9fb495ebdd4c50bf051b8057b2e067\",\"OwnedFixtureRemoved\":true}",
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    }
+  ],
+  "Witnesses": [
+    {
+      "kind": "f18-native-runtime-contention",
+      "method": "FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination",
+      "root": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-filesystem-manager-0649643138344d53a137a64e1d64d7f4",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "publicationStarted": true,
+      "publicationSettled": true,
+      "readerStarted": true,
+      "readerSettled": true
+    },
+    {
+      "CleanupOwnedRoot": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-filesystem-manager-0649643138344d53a137a64e1d64d7f4",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "kind": "f18-native-runtime-contention",
+      "method": "FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
+      "root": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-filesystem-manager-dca6d4f7a2c243088496752af81dc6b2",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "publicationStarted": true,
+      "publicationSettled": true,
+      "readerStarted": true,
+      "readerSettled": true
+    },
+    {
+      "CleanupOwnedRoot": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-filesystem-manager-dca6d4f7a2c243088496752af81dc6b2",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "kind": "f18-native-runtime-contention",
+      "method": "ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild",
+      "root": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-gm-worker-inbox-4c9fb495ebdd4c50bf051b8057b2e067",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "publicationStarted": true,
+      "publicationSettled": true,
+      "readerStarted": true,
+      "readerSettled": true
+    },
+    {
+      "CleanupOwnedRoot": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-gm-worker-inbox-4c9fb495ebdd4c50bf051b8057b2e067",
+      "OwnedFixtureRemoved": true
+    }
+  ],
+  "Archives": [
+    {
+      "Path": "contention/a1/prepare-original.zip",
+      "Bytes": 376779,
+      "SHA256": "dc9e40a8c09c31fff3af27c233f5e42e0f8635843cb48abfcaa19dd7e0f5d821",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 3379737,
+          "SHA256": "988154084e56a2980937d078ec19fb43e948b32c09513c14cfaeae4c3c078180"
+        },
+        {
+          "Path": "runner/owned-process-0bfc805379ea4f7790176d3aaf0c6eab.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-45b752c4ebd7400b9c536ebb39f533c0.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-5a0a96b863484b7a946ff8631bf80168.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-94aea0a4086f411cbd144f88e76d2f7b.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-eb09646e5a944f8f9b60efdc7ad37af9.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 2448,
+          "SHA256": "6c6f749ad4a24e65fc0b076b728d2514978acf2138ee676e3e8056ed9766d452"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1531,
+          "SHA256": "afdab5e2a13bf0587ab38e6b1135adebc3e0c63a14afd90104682ef52235f458"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2834,
+          "SHA256": "79f64737143e5ef10a1ae0a58e5edd0ae49d9d4d4815958a1901cc4d1ee1c5cd"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 2400,
+          "SHA256": "6187849c4d1933e5b7b0997fa7e3464ca88a7031625d1567b7c6d4d58f0c813f"
+        }
+      ]
+    },
+    {
+      "Path": "contention/a1/actual-original.zip",
+      "Bytes": 382483,
+      "SHA256": "c906135c726d24b195c66513c55b217c089ddb850c817699b9c28f9686a4a67d",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 3383300,
+          "SHA256": "933836d16c15626415973924e39986423e88d9cde3f4f010e03011d54574cb74"
+        },
+        {
+          "Path": "runner/owned-process-225b0db4a504499195368805b17489a4.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-6b8c53548a2042bdb55e6da5fe759492.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-9c2cdbeda03740cca86841e4a058b37a.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-a9746d51c3314e449825f7ae2a4fe6ff.json",
+          "Bytes": 632,
+          "SHA256": "97562cdca93d3be47e9a2b72064d0c3c9ec3fa677b6e18d93c65d6a9858bf6bf"
+        },
+        {
+          "Path": "runner/owned-process-da94e294bff94f6193906c5dc598a4ea.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-dae49410057f45079a03c033053320da.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-e784a7fd8c934329882c45e8d2552fc3.json",
+          "Bytes": 800,
+          "SHA256": "1423fa0e57211a3b39ba4cff0c4602c3fdd281f4226a9816a702beba00f1c307"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 2448,
+          "SHA256": "3ce9ab88e180d80e32f8a335c2fdb5c98c5d0f423830b4ec3bf83eb0d59a21ba"
+        },
+        {
+          "Path": "runner/portable-native-runtime-contention-windows-integration-001.trx",
+          "Bytes": 6117,
+          "SHA256": "0ed1d66d270ea940da63ed6d750fc259c21b6550cbbb92d9b4f9ccae962eb177"
+        },
+        {
+          "Path": "runner/portable-native-runtime-contention-windows-unit-002.trx",
+          "Bytes": 3814,
+          "SHA256": "2d35d64bb6adf7ec8d4ba7c6080ef6adbf73b49bd9b3c86597dc5fa934855236"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1560,
+          "SHA256": "1f089259718d806a56327c2e039b211bb50edfae4d0e7fe4440ceca2ec216181"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2803,
+          "SHA256": "2d91cd58c9c19ef61765f1a7188c05eb3654302af66e0d086066958781bcfb50"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 3945,
+          "SHA256": "6157396c2788ef15acbe5c7f8c2d03eab7bcca0f1b921eca65904e47110997bf"
+        }
+      ]
+    },
+    {
+      "Path": "contention/a1/execution-provenance.zip",
+      "Bytes": 1046598,
+      "SHA256": "d0d7c8d24abdd8bad78652a4ed366901049a016e6ae0424cfcdee7c22f642052",
+      "Entries": [
+        {
+          "Path": "owner-inputs.py",
+          "Bytes": 8528,
+          "SHA256": "5d9b2923c40a640e661154dd3a3b94a27bb5b4a7804222c7e32e66d7dc581f26"
+        },
+        {
+          "Path": "run-owner-phase.ps1",
+          "Bytes": 4881,
+          "SHA256": "05daf07b2ed66340631e9d190cdbd782857309516d09d009dd1a08ed15a16f80"
+        },
+        {
+          "Path": "post-owner.ps1",
+          "Bytes": 2357,
+          "SHA256": "1795959b8b98c3656c335ca0cf7ca869d75650a2b8ff53a2cfaea2d8b97df327"
+        },
+        {
+          "Path": "freeze-owner.py",
+          "Bytes": 8016,
+          "SHA256": "2a806ff5820234ac23d8d1b58ac7c4bfb34a9cd8a7a81ade1a2894adfd7a0332"
+        },
+        {
+          "Path": "evidence/owner-recipes-inventory.json",
+          "Bytes": 10713,
+          "SHA256": "cf8040fee984d08cd143b1b05febadabf0714452ce30aba494a299643c63d323"
+        },
+        {
+          "Path": "evidence/owner-recipes-source-review.json",
+          "Bytes": 1608,
+          "SHA256": "e1cc179f9350090ea1d13d2e9840781fb4fa139587a6b6a95490f723e5b1c97d"
+        },
+        {
+          "Path": "evidence/owner-recipes-output-cohorts.json",
+          "Bytes": 81496,
+          "SHA256": "b7fc3fca50528a6719a901029fbe3db2c19e3f12cdabd3a39f77b683b6237e0d"
+        },
+        {
+          "Path": "evidence/owner-recipes-extended-source-snapshot.json",
+          "Bytes": 138621,
+          "SHA256": "cd10c3be672a772dcfe454171322e7dc74567a61d588d7e15c7a0d929dbab65c"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-config.json",
+          "Bytes": 575412,
+          "SHA256": "b3683ce799a6212fa9952125076d96f6457d329948966eff56347d70d567ae67"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-inputs-before-prepare.json",
+          "Bytes": 654745,
+          "SHA256": "b834f5761129ccbd91613297de47be4c29e63d860e0679950b66a0791b2ff329"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-inputs-gate.json",
+          "Bytes": 655432,
+          "SHA256": "a482c54cee0be8180b8ec534281f0f439504ccb1555bef2e97deeead4e781259"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-inputs-before-actual.json",
+          "Bytes": 656826,
+          "SHA256": "f25eef53edde40077a9b471810fd842ab03453423c191f317cd9b2bb74cff4cb"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-inputs-after-actual.json",
+          "Bytes": 654787,
+          "SHA256": "20307e45b7edbd4682ab898299401278d50bca6d15eeec3a16911b8f9ec2c0fe"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-prepare-gate.json",
+          "Bytes": 668,
+          "SHA256": "f6baa2cde6b39a44477c1c619b8cd5d9d111377a55a48b5ccbfef8227dab547e"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-post-run.json",
+          "Bytes": 1020,
+          "SHA256": "413970abe916b469c9e7ffa894185c2351604a12adef1e732ec2e813f27a9e28"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.Tests/GmWorkerProposalInboxTests.cs",
+          "Bytes": 12803,
+          "SHA256": "1269fc27a3a06ce67408848b8626244b53c5346cda660f5dc24bb3d5e0618d5f"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+          "Bytes": 244500,
+          "SHA256": "aea1329cc9f65283fd6e5f0221cf3a2c4162ce90be6780fb17d3642106e1db19"
+        },
+        {
+          "Path": "repo/tests/categories.json",
+          "Bytes": 1746282,
+          "SHA256": "3d7240f545b41a9126760955fd65d7958f8e80aecb47a011b5e462818e11f507"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/ReversibleFilePublication.cs",
+          "Bytes": 72348,
+          "SHA256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+          "Bytes": 17671,
+          "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+        }
+      ]
+    }
+  ],
+  "Excludes": "Requires actual Windows native primitives; Linux build/Plan is not execution qualification. No ordinary publisher substitution, platform override, external owner, live GM or global worker category.",
+  "NoNewColdUncCaseSensitiveFullGamePerformanceTask": true,
+  "ParentIssueClosed": false
+}
