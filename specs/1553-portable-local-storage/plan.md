@@ -1,3 +1,13 @@
+## T068 original Windows owner recipe console/a1 — bounded evidence accepted, 2026-10-12
+
+Actual independent gpt-6-astra/xhigh EVIDENCE PASS at2b504bb0392d9d2d9ed4f7f73174bfac48cc1e3d, no findings.
+`portable-console-rollback-preparation` 16/16PASS/00:01:24.9528980;
+scope: Portable component executed on Windows; native Windows qualification expressly excluded. Source/DLL/PDB/raw/cleanup and original budgets retained.
+[Reviewed originals](recovery/windows-owner-recipes-20261012/console/a1/manifest.json).
+Only this recipe accepted; subsequent recipes require their own PlanOnly/gates/evidence.
+No new code/runtime repeated. Parent #1553/T067/T068/T061–T065 remains OPEN.
+The following pending status for this same attempt is historical and superseded.
+
 ## T068 original Windows owner recipe console/a1 — PASS runtime, independent evidence pending, 2026-10-12
 
 `portable-console-rollback-preparation` actual16PASS/0FAIL,

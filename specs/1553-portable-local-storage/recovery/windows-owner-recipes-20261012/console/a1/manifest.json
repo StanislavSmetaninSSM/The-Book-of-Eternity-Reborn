@@ -34,7 +34,7 @@
     "Passed": 16
   },
   "CompleteGreen": true,
-  "State": "EvidenceReviewPending",
+  "State": "BoundedRecipeReviewedPass",
   "ActualAttemptsInStage": 1,
   "PlanOnlyWallTime": "00:00:18.7673120",
   "PlanOnlyExecuted": 0,
@@ -485,5 +485,50 @@
   ],
   "Excludes": "Other afterlife transitions, browser rollback, binding gameplay and native Windows qualification.",
   "NoNewColdUncCaseSensitiveFullGamePerformanceTask": true,
-  "ParentIssueClosed": false
+  "ParentIssueClosed": false,
+  "IndependentEvidenceReview": {
+    "SchemaVersion": 1,
+    "Reviewer": "Actual gpt-6-astra/xhigh",
+    "Verdict": "PASS",
+    "FullVerdict": "PASS_CONSOLE16_EVIDENCE_AND_COHERENCE",
+    "ReviewedHead": "2b504bb0392d9d2d9ed4f7f73174bfac48cc1e3d",
+    "Category": "portable-console-rollback-preparation",
+    "Findings": [],
+    "Checks": {
+      "Archives": 3,
+      "Entries": 45,
+      "CRCSizeShaAndOriginalBytes": true,
+      "PlanOnlyCases": 16,
+      "Methods": 14,
+      "Descriptors": 1,
+      "PlanOnlyExecuted": 0,
+      "ActualAttempts": 1,
+      "Passed": 16,
+      "Failed": 0,
+      "SkipsDuplicatesTimeouts": 0,
+      "RunnerSeconds": 84.952898,
+      "CategorySeconds": 71.3050317,
+      "CategoryBudgetMinutes": 5,
+      "RunnerBudgetMinutes": 10,
+      "OriginalSourcePins": 1629,
+      "DllPdbPins": 157,
+      "FreshIntegrationBuildOrigin": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+      "PdbDllGuidAndChecksums": true,
+      "SelectedTestSourceDocuments": 3,
+      "RelevantProductSourceDocuments": 6,
+      "ExternalOwnedRootAndProcessReadback": true,
+      "ReusedPidDistinguishedByStart": 24980,
+      "SourceCatalogRecipesAndPriorCarriersUnchanged": true,
+      "MetadataCoherent": true,
+      "SeparateUnitBridgeCrashHostSnapshotRecords": 541,
+      "ConsoleExtraSourcePins": 0
+    },
+    "Qualification": "Portable component executed on Windows; native Windows qualification expressly excluded",
+    "Limits": [
+      "Other four recipes UNRUN",
+      "Parents OPEN",
+      "No process cold restart/fullgame/performance qualification"
+    ],
+    "ReviewerBuildTestProbeOrMutation": false
+  }
 }

@@ -33,3 +33,5 @@ Runtime checkout `4ef0b8c22257d61f531aa9ea338997b7e907a8bb`, source1629 original
 extra unit/Bridge/CrashHost pins, 157 DLL/PDB equal before/after.
 Compile origins: {"integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c"}.
 Qualification: Portable component executed on Windows; native Windows qualification expressly excluded. Full immutable originals: `console/a1/manifest.json`.
+
+Independent actual gpt-6-astra/xhigh EVIDENCE PASS at `2b504bb0392d9d2d9ed4f7f73174bfac48cc1e3d` for `console/a1`, no actionable findings. Accepted scope remains: Portable component executed on Windows; native Windows qualification expressly excluded.
