@@ -9,13 +9,65 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (PRODUCER QUALIFIED1b4739bb; CONSUMER FIRST BOM BLOCKER PRESERVEDb529; MINIMUM TEST-ONLY CORRECTION READY; CORRECTED CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-12 (PRODUCER QUALIFIED1b4739bb; PROPER N+1 SAFE-PROJECTION CAUSAL RED REACHED4b50; FREEZE/EVIDENCE PENDING; CONSUMER UNIMPLEMENTED)
 
+Minimum BOM-only correction SOURCE/FIXTURE/SELECTION accepted4b50fa1a; first published
+b52925-artifact BOM BLOCKER EVIDENCE accepted separately. Fresh selected integration
+PlanOnly175629 completed124.6067882s (integration build121.9680551s),77 warnings/0 errors,
+1 method/1 case/1 descriptor,0 tests. Catalog695 categories/11526 methods remains unchanged
+and was reused; body-only correction introduces no new inventory/audit. Root matched83
+source pins before actual and verified all83 immutable Git4b source bytes. After definite
+runtime,81 runtime code/contracts stayed exact and5 fresh selected integration4b binaries
+unchanged; ONLY these2 plan/tasks metadata files changed afterward at root request. Do not
+claim all83 current source pins after-match: those2 authorized post-runtime metadata deltas
+are explicitly separate from unchanged runtime source/binaries.
+
+FIRST CORRECTED ACTUAL proper consumer causal RED: native
+20261012-180039-313-336095-42f2ebdaf89344e4bced2a369ff8d5b0-categories,
+runtime/compile4b50fa1a,exit1,13.6201622s,1 executed/0 PASS/1 FAIL,complete1 descriptor,
+no timeout/duplicates. Exact failure new test:88: actual N+1 ordinary request lacks
+woundOpportunities. ALL preceding actual sourceN42 health155/one physical occurrence/max2/
+terminal cleanup and NEW engineN43 official Reader/known exact controlled OCE/request/source/
+byte prerequisites passed; both capture-hook and outside actualNextSource diagnostics were
+reached. SourceN42 request8f90982061a84043abbe6dad57021b5a/snapshot
+33C05D7D68D3142229BDDE243A669F90110E92FF23B6CC323F0D367D14FFD956/turn42 are genuine
+native observations. Genuine next request7ffe03f249bd4a89ba6b0d5ac3216ce3/snapshot
+8029B8B9288B7D5A4B011CA94F827DDE8CE0EC528B727349C7D395007C3D4111/turn43,
+session_qte_story_append/mortal_world is serialized by the outside observation. ControlledPause
+true; actual request lacks woundOpportunities, signed pending bytes retain the same one source
+occurrence/max2/health155. Root parsed5 native Boundary JSON observations and checked one
+strict root /tmp/boe-gameengine-turnlifecycle-6c148a1fdfea48a7b5cf3f390fb51bab actually gone.
+Root froze17 artifacts plus manifest in the [consumer projection causal RED packet](./recovery/qte-physical-consumer-projection-causal-red-20261012),
+all stored/decompressed/native original hashes verified; publication and independent EVIDENCE
+acceptance remain PENDING.
+
+This is the first proper safe-projection causal predicate REACHED, distinct from first BOM
+fixture blocker whose predicate was UNREACHED. Current consumer cohorts are2 actual runs,
+2 executed/0 PASS/2 FAIL (one prerequisite BOM blocker, one proper projection RED), not an
+addition to the qualified producer's23 executed/22 PASS/1 FAIL/22 unique cases. Producer
+EVIDENCE accepted1b and all older outcomes/checkboxes remain unchanged; no accepted producer
+test was repeated. Consumer production/projection/none/create/receipt/replay/atomicity/
+after-terminal save-load/fresh-process remain unimplemented/UNRUN.
+
+Current task is metadata plus READ-ONLY minimum projection proposal; NO production/test/
+catalog/selector mutation or project execution. Genuine N43 snapshot must cover full signed
+pending/consumed batch/event authority including signed pristine absence, while public request
+contains one closed safe row only. Same identity physical request→official Reader→final safe
+rewrite must happen under existing staging ownership before GM dispatch. BrowserPlayerInput:
+199–219 captures final RequestJson/proof and seals preparation, so its rewrite must finish
+inside existing browser preparation/lease BEFORE StagingProof/seal; no independent later
+rewrite, second lease, stale staged.RequestJson or new authority. Console staging must retain
+existing rollback. Existing request/GM guide/examples/source guards require coherent safe
+projection-only synchronization in the later source block. No implementation is authorized
+before root freeze/publication/causal EVIDENCE gate. Metadata edits STOPPED for immediate
+root publication; causal ce955 hash, every old packet/checkbox and full T070 openness exact.
+
+Historical minimum BOM correction (proper projection RED reached above):
 Root published first consumer BOM blocker packet/two-doc metadata at
 b52958a57644265d764f18b3f4c06630a2dad049, remote exact/clean;415 selected recovery files
 and all25 native/original/stored hashes,83 immutable195 source pins/10 fresh binaries checked.
 First consumer1 FAIL remains a fixture prerequisite blocker before the projection predicate,
-not consumer RED; independent BLOCKER EVIDENCE acceptance remains PENDING. Producer qualified
+not consumer RED; independent BLOCKER EVIDENCE acceptance is complete as recorded above. Producer qualified
 1b4739bb and its current3-cohort23 executed/22 PASS/1 FAIL/22 unique cases remain separate.
 
 Current authorized correction is ONLY new-test:74 request parser:
