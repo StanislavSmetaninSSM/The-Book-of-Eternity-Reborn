@@ -1,0 +1,77 @@
+{
+  "Categories": [
+    "spiritual-binding-result-dependency",
+    "spiritual-binding-control-boundaries"
+  ],
+  "Reasons": [
+    {
+      "category": "spiritual-binding-result-dependency",
+      "reason": "#1536 B2 test-only actual blocked admission: retain eight original policy rows, exercise real issued A rejection on both lost rows, and add one original-incoming ordinary binding row; no publication or cold rerun.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B2 / RESULT-CLOSURE-BINDING rev1",
+        "Ordinary blocked requires original incomingAction; exact missing-action diagnostic on both lost rows",
+        "Advanced retains terminal echo diagnostic; unchanged checkpoint, saved choice, canonical and submitted bytes; rejected physical draft blocks reading until exact pre-submission bytes are restored, then same A; positive same A without commit"
+      ]
+    },
+    {
+      "category": "spiritual-binding-control-boundaries",
+      "reason": "Retain the four existing exact control presence/value and raw carrier boundary controls alongside the affected B2 result policy.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B2 / RESULT-CLOSURE-BINDING rev1",
+        "Absent/null/none control presence and effective replacement-carrier precedence; no ordinary-owner or publication claim"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 130.0243767,
+  "Descriptors": [
+    {
+      "Name": "spiritual-binding-control-boundaries-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "spiritual-binding-control-boundaries",
+      "Categories": [
+        "spiritual-binding-control-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FailedResultAndFinalEcho_PreserveExactControlPresence|FullyQualifiedName=BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FinalEchoCarrier_RespectsReplacementPrecedenceAndExplicitPresence",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FailedResultAndFinalEcho_PreserveExactControlPresence",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FinalEchoCarrier_RespectsReplacementPrecedenceAndExplicitPresence",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "spiritual-binding-result-dependency-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-binding-result-dependency",
+      "Categories": [
+        "spiritual-binding-result-dependency"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult",
+          "Cases": 9
+        }
+      ]
+    }
+  ]
+}

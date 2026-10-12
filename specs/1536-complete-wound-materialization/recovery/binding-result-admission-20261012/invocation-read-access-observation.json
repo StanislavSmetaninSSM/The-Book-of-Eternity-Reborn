@@ -1,0 +1,6 @@
+{
+  "operation": "rg --files /tmp | rg '1536.*\\.py$|binding.*\\.py$' | head -25",
+  "toolChunk": "5a085d",
+  "exactError": "rg: /tmp/codex-daemon-1000: Permission denied (os error 13)",
+  "impact": "Unrelated recipe enumeration before preparation; no project build or runtime denial. Coordinator recorded and released unaffected preparation using only exact known task-local paths. No retry, escalation or bypass of denied directory."
+}

@@ -1,0 +1,52 @@
+{
+  "source": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "compileSource": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "planRun": "20261012-054322-148-255639-273aeaafc1ef49079c0df6d91d296b6e-categories",
+  "planWallTime": "00:02:10.2770102",
+  "planSelection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 13,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "spiritual-binding-control-boundaries-unit-001",
+      "spiritual-binding-result-dependency-integration-002"
+    ],
+    "Complete": false
+  },
+  "methodCount": 3,
+  "caseBreakdown": {
+    "unit": 4,
+    "integration": 9
+  },
+  "planTests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "freshBinaryPinsMatchAfter": true,
+  "sourcePinsMatchAfter": true,
+  "sourceCleanAfter": true,
+  "cleanup": {
+    "planOwnedTree": true,
+    "planRuntime": true
+  },
+  "warnings": {
+    "integration": {
+      "warnings": 73,
+      "errors": 0
+    },
+    "unit": {
+      "warnings": 35,
+      "errors": 0
+    }
+  },
+  "budgetsMinutes": {
+    "resultDependency": 5,
+    "controlBoundaries": 2,
+    "overallDefault": 12
+  },
+  "actualTestsRun": 0,
+  "priorAcceptedColdCount": 1
+}

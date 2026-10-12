@@ -9,13 +9,15 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip"></a>
-## Current #1536 completion checkpoint — 2026-10-12 (B2 TEST-ONLY WIP)
+## Current #1536 completion checkpoint — 2026-10-12 (B2 FIRST 13 PASS — EVIDENCE REVIEW PENDING)
 
 Lorian accepted the bounded force_binding restoration through
 `ceedbe496a0ecc3a3e3cd96518675ba128989099` and resumed original #1536 completion.
 Lorian subsequently accepted design/status carrier `81105a6bd487bc6077279aa12af79dbc301a16d9`
-and released only the first B2 test implementation below. Build, discovery, tests
-and project runtime remain unreleased pending SOURCE review and coordinator gates.
+and released the first B2 test implementation below. After independent SOURCE
+acceptance on `06e133381a26e6c50b4d8051f9aa106c5e0d9b44`, coordinator released one
+fresh selected PlanOnly and then one matching actual; both are now frozen below.
+Independent EVIDENCE review is pending; no further execution is released.
 The prior block's code, three immutable packets and cold invocation count1 remain
 accepted and unchanged. Use the same Linux task branch,
 existing RESULT-CLOSURE-BINDING rev1 and exact
@@ -26,7 +28,7 @@ All four tasks remain OPEN. No new specification or evidence framework is needed
 
 | Existing task | Source/coverage and evidence status | Remaining bounded obligation |
 | --- | --- | --- |
-| B2 | `SpiritualBindingDependency.cs` and `SpiritualBindingResultClosure.cs` implement owner-derived result fields, eight original-policy variants and immutable-input checks. `SpiritualBindingCorrectionBoundaryTests.cs` covers four presence/carrier cases. Historical PASS84efd5c4/db70c216/c3b2ddc3 is recorded below; matching raw artifacts are unavailable in this checkout. Current authority21 GREEN is retained raw proof of its narrower gate/cost scope. | Distinguish policy permission from actual ordinary `blocked` admission; first block below. Preserve both strong prerequisites and independent mixed-cost permissions. |
+| B2 | `SpiritualBindingDependency.cs` and `SpiritualBindingResultClosure.cs` implement owner-derived result fields, eight original-policy variants plus the original-incoming row and immutable-input checks. `SpiritualBindingCorrectionBoundaryTests.cs` covers four presence/carrier cases. Historical PASS84efd5c4/db70c216/c3b2ddc3 is recorded below; matching raw artifacts are unavailable in this checkout. Current authority21 GREEN is retained raw proof of its narrower gate/cost scope. The new result-admission packet retains13PASS including actual blocked admission/rejection, pending EVIDENCE review. | Accept/reconcile this bounded evidence and remaining original B2 obligations; first block below. Preserve both strong prerequisites and independent mixed-cost permissions. |
 | B3 | `SpiritualBindingTerminalControlCorrection.cs` plus `SpiritualBindingFinalControl.cs` cover detached echo, actual A/B, mixed invalid-cost rejection and wrapper precedence. Historical PASS4636aa27/da4b50cf is prose-recorded, not currently raw-reverified. | Reconcile exact final carrier/value/presence and unrelated ordinary-error rejection. Refine the existing mixed invalid-cost diagnostic assertion later only if needed; no duplicate scenario. |
 | B4 | The #1553 `storage-migration-spiritual-lifecycle-20261009` packet retains hash-verified warm binding PASS with matching relevant fixture pins. The current cold packet retains one force-binding PASS; shared `SpiritualStagedHistory.cs` source covers forged B, while `SpiritualBindingFinalControl.cs` covers changed accepted A. | Reconcile shared negative evidence and cumulative A/B/replay obligations; reuse accepted warm/cold instead of repeating them. Source coverage alone is not a new passing result. |
 | B5 | Existing GM matrix/guide/CLI-worker/example/manifest changes and no-update rationales are recorded below; two changed docs/example guards have current retained GREEN. | Complete only still-relevant nonbinding compatibility/GM final controls and coherent independent B2–B5 review; no broad documentation matrix or retired aggregate lanes. |
@@ -126,13 +128,42 @@ cleanup/preservation assertions are strengthened without selecting those later o
 
 SOURCE review of `90e22b0c6e160ef4670f6bb68b7d1938ed1090ed` found that
 re-reading A directly over a rejected physical draft overconstrained the reader.
-This test-only correction implements blocked/null then exact-byte restoration as
-above; production behavior is unchanged. Final SOURCE/fixture/selection review is
-pending on the published corrected candidate.
-No build, discovery or test was run;13 cases are static expectations, not observed
-passes. After SOURCE acceptance, coordinator releases fresh selected PlanOnly and
-pins before a matching bounded actual. Freeze any first failure before proposing
-production changes. B2–B5/#1536 remain OPEN; no dependent block starts here.
+The test-only correction above was independently SOURCE/fixture/selection ACCEPTED
+on `06e133381a26e6c50b4d8051f9aa106c5e0d9b44`, without findings; coordinator
+confirmed the final source and remote. No production correction was needed.
+
+First evidence is frozen in
+[the result-admission packet](./recovery/binding-result-admission-20261012/manifest.json):
+22 raw/stored-hash-verified artifacts,22 source pins and10 DLL/PDB pins. Compile
+and actual runtime source are both clean06e133; the later evidence carrier changes
+only this checkpoint and the packet. Fresh PlanOnly
+`20261012-054322-148-255639-273aeaafc1ef49079c0df6d91d296b6e-categories`
+planned13 cases/3 methods/2 descriptors with zero execution; integration/unit builds
+succeeded (107.638/17.830s,73/35 warnings,0 errors), cleanup passed. No catalog audit,
+repeated build or timeout override was used; selected bounds5/2/default12 remain.
+
+The single matching `-NoBuild` actual
+`20261012-054653-212-256178-b203aa5080d041ff9b8bf57a96030a83-categories`
+passed13/13,2/2 descriptors in30.6668319s wall, with no timeout, skip, duplicate or
+underfill. Both ordinary/force lost rows returned Rejected with only
+`afterlife_conflict_blocked_missing_incoming_action` at the exact incomingAction
+path; invalid physical reads were blocked/null and exact rollback restored the same
+A. The original-incoming ordinary row returned Advanced with only
+`afterlife_conflict_control_snapshot_missing` at `activeConflict.controlState`;
+the held echo and same A remained uncommitted. All byte assertions passed. Nine
+distinct strict cleanup receipts and nine observed absent roots are retained;
+runner cleanup and unchanged source/binary hash checks passed. Actual counter1
+belongs to this cheap block; the separately accepted GameEngine cold counter stays1.
+
+An unrelated pre-preparation `/tmp` enumeration returned permission denied for
+`/tmp/codex-daemon-1000` (chunk5a085d). The exact operation/error and coordinator's
+safe continuation are retained in the packet: no retry/escalation/access bypass,
+and no denial of the authorized project build or tests.
+
+EVIDENCE review is pending on the published packet/checkpoint. This first result
+is immutable; no repeat, B3 work or production change follows automatically.
+B2–B5/#1536 remain OPEN. Next action is independent evidence review and coordinator
+acceptance/scope for the next bounded original-completion block.
 
 ### Accepted recovery and cold-blocker context — 2026-10-12
 

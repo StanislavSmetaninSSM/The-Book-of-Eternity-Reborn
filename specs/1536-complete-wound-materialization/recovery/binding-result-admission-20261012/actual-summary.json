@@ -1,0 +1,93 @@
+{
+  "Categories": [
+    "spiritual-binding-result-dependency",
+    "spiritual-binding-control-boundaries"
+  ],
+  "Reasons": [
+    {
+      "category": "spiritual-binding-result-dependency",
+      "reason": "#1536 B2 test-only actual blocked admission: retain eight original policy rows, exercise real issued A rejection on both lost rows, and add one original-incoming ordinary binding row; no publication or cold rerun.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B2 / RESULT-CLOSURE-BINDING rev1",
+        "Ordinary blocked requires original incomingAction; exact missing-action diagnostic on both lost rows",
+        "Advanced retains terminal echo diagnostic; unchanged checkpoint, saved choice, canonical and submitted bytes; rejected physical draft blocks reading until exact pre-submission bytes are restored, then same A; positive same A without commit"
+      ]
+    },
+    {
+      "category": "spiritual-binding-control-boundaries",
+      "reason": "Retain the four existing exact control presence/value and raw carrier boundary controls alongside the affected B2 result policy.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B2 / RESULT-CLOSURE-BINDING rev1",
+        "Absent/null/none control presence and effective replacement-carrier precedence; no ordinary-owner or publication claim"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "spiritual-binding-control-boundaries",
+      "Seconds": 1.628814,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "spiritual-binding-result-dependency",
+      "Seconds": 24.3035289,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0363135,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0353456,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0940026,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0040902,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 12,
+  "WallTime": "00:00:30.6668319",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 13,
+    "CompletedCases": 13,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 13,
+    "Executed": 13,
+    "Passed": 13,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,382 @@
+{
+  "source": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "compileSource": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "runtimeSource": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "run": "20261012-054653-212-256178-b203aa5080d041ff9b8bf57a96030a83-categories",
+  "caseCount": 13,
+  "passed": 13,
+  "failed": 0,
+  "distinctCleanupReceipts": 9,
+  "all9OwnedRootsAbsent": true,
+  "runtimeBinaryHashesUnchanged": true,
+  "sourceHashesUnchanged": true,
+  "sourceCleanAtReadback": true,
+  "actualInvocations": 1,
+  "priorAcceptedColdCount": 1,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FailedResultAndFinalEcho_PreserveExactControlPresence(shape: \"absent\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000133",
+      "structuredOutput": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FailedResultAndFinalEcho_PreserveExactControlPresence(shape: \"none\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0062534",
+      "structuredOutput": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FinalEchoCarrier_RespectsReplacementPrecedenceAndExplicitPresence",
+      "outcome": "Passed",
+      "duration": "00:00:00.0009189",
+      "structuredOutput": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FailedResultAndFinalEcho_PreserveExactControlPresence(shape: \"null\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0003080",
+      "structuredOutput": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult(strong: False, alternative: \"nonmatching\")",
+      "outcome": "Passed",
+      "duration": "00:00:01.7858612",
+      "structuredOutput": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-3982d3d67729447cb84a926227999a95",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult(strong: False, alternative: \"lost\")",
+      "outcome": "Passed",
+      "duration": "00:00:04.4892361",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-e2de342b01b740e0bb0f6fd82cd8d643",
+          "strong": false,
+          "alternative": "lost",
+          "continuationId": "sha256:b0e1699fe3f94cfd27cfc846f36f0a74cb4b3a3803443613ba1e9b68708b1523",
+          "disposition": "Rejected",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].incomingAction",
+              "Severity": 2,
+              "Message": "blocked exchange должен явно описывать incomingAction, который был предотвращён.",
+              "Category": 1,
+              "Code": "afterlife_conflict_blocked_missing_incoming_action",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "incomingAction object",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "strong": false,
+          "alternative": "lost",
+          "readerPhase": "rejected_physical_draft",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].incomingAction",
+              "Severity": 2,
+              "Message": "blocked exchange должен явно описывать incomingAction, который был предотвращён.",
+              "Category": 1,
+              "Code": "afterlife_conflict_blocked_missing_incoming_action",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "incomingAction object",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "strong": false,
+          "alternative": "lost",
+          "readerPhase": "exact_draft_restored",
+          "Disposition": "dependent_draft",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].operationType",
+              "Severity": 2,
+              "Message": "Наложение оков (binding/force_binding) требует преимущества, setup или decisive_player_success.",
+              "Category": 1,
+              "Code": "afterlife_conflict_binding_without_leverage",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "effective starting position=player_advantaged|player_dominant, setup=true, or diceAudit.outcomeBand=decisive_player_success",
+              "Actual": "player_advantaged",
+              "RepairHint": null
+            },
+            {
+              "FilePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown",
+              "Severity": 2,
+              "Message": "diceAudit не должен содержать conflict_position modifiers, когда эффективная стартовая позиция равна contested.",
+              "Category": 1,
+              "Code": "afterlife_conflict_dice_unexpected_position_modifier_for_contested",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "no conflict_position modifiers for contested starting position",
+              "Actual": "1 entries, total 2",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "strong": false,
+          "alternative": "lost",
+          "NoncommittingBytesPreserved": true,
+          "SameIssuedA": true,
+          "NextRequestAbsent": true,
+          "ExactPreSubmissionDraftRestored": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-e2de342b01b740e0bb0f6fd82cd8d643",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult(strong: True, alternative: \"ready\")",
+      "outcome": "Passed",
+      "duration": "00:00:01.2667832",
+      "structuredOutput": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-e9331a0b7eab4b2dbbe9b772e9e6e9ed",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult(strong: True, alternative: \"lost\")",
+      "outcome": "Passed",
+      "duration": "00:00:02.9666248",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-cd59ad313ef04280995c0b190ebc3859",
+          "strong": true,
+          "alternative": "lost",
+          "continuationId": "sha256:e11d9e263bbd387971db83982c2ec705e27114f6d6817c89d4c0b71a9578c64d",
+          "disposition": "Rejected",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].incomingAction",
+              "Severity": 2,
+              "Message": "blocked exchange должен явно описывать incomingAction, который был предотвращён.",
+              "Category": 1,
+              "Code": "afterlife_conflict_blocked_missing_incoming_action",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "incomingAction object",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "strong": true,
+          "alternative": "lost",
+          "readerPhase": "rejected_physical_draft",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].incomingAction",
+              "Severity": 2,
+              "Message": "blocked exchange должен явно описывать incomingAction, который был предотвращён.",
+              "Category": 1,
+              "Code": "afterlife_conflict_blocked_missing_incoming_action",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "incomingAction object",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "strong": true,
+          "alternative": "lost",
+          "readerPhase": "exact_draft_restored",
+          "Disposition": "dependent_draft",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].operationType",
+              "Severity": 2,
+              "Message": "Силовые оковы (force_binding) требуют доминирования, готовой подготовки или decisive_player_success.",
+              "Category": 1,
+              "Code": "afterlife_conflict_force_binding_without_strong_leverage",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "effective starting position=player_dominant, setup/bindingSetup=ready, or diceAudit.outcomeBand=decisive_player_success",
+              "Actual": "player_dominant",
+              "RepairHint": null
+            },
+            {
+              "FilePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown",
+              "Severity": 2,
+              "Message": "diceAudit должен содержать только один conflict_position modifier, точно совпадающий с эффективной стартовой позицией.",
+              "Category": 1,
+              "Code": "afterlife_conflict_dice_unexpected_position_modifier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "only one conflict_position modifier for player_advantaged on player",
+              "Actual": "1 entries, total 4",
+              "RepairHint": null
+            },
+            {
+              "FilePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown.player",
+              "Severity": 2,
+              "Message": "diceAudit должен явно учитывать non-contested conflictPosition как позиционный модификатор.",
+              "Category": 1,
+              "Code": "afterlife_conflict_dice_missing_position_modifier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "modifierBreakdown.player[] item { modifierType: \"conflict_position\", position: \"player_advantaged\", value: 2 }",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "strong": true,
+          "alternative": "lost",
+          "NoncommittingBytesPreserved": true,
+          "SameIssuedA": true,
+          "NextRequestAbsent": true,
+          "ExactPreSubmissionDraftRestored": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-cd59ad313ef04280995c0b190ebc3859",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult(strong: False, alternative: \"ready\")",
+      "outcome": "Passed",
+      "duration": "00:00:01.2351173",
+      "structuredOutput": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-1f2eabbe98654b4dba785430733f4c53",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult(strong: False, alternative: \"outside\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.8751766",
+      "structuredOutput": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-f1c56f2ea29d4083b07a7f1acff65e0b",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult(strong: True, alternative: \"decisive\")",
+      "outcome": "Passed",
+      "duration": "00:00:01.4000277",
+      "structuredOutput": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-bc678c9388cb464290ed901f1eddf2fc",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult(strong: False, alternative: \"blocked_incoming\")",
+      "outcome": "Passed",
+      "duration": "00:00:04.4651020",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-d5a6d48674ed42fdb090c4d07a5db2a7",
+          "strong": false,
+          "alternative": "blocked_incoming",
+          "continuationId": "sha256:409e57ec2004f6330fac6c6ba484e552715bbc532b436f0d059b1dcc10d657b1",
+          "disposition": "Advanced",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.controlState",
+              "Severity": 2,
+              "Message": "Итоговый activeConflict.controlState должен совпадать с последним audited exchange.after.controlState текущего хода.",
+              "Category": 1,
+              "Code": "afterlife_conflict_control_snapshot_missing",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "activeConflict.controlState matches the control state derived from current exchange.after.controlState snapshots",
+              "Actual": "root controlState differs from audited exchange controlState",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "strong": false,
+          "alternative": "blocked_incoming",
+          "readerPhase": "advanced_uncommitted_draft",
+          "Disposition": "dependent_draft",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.controlState",
+              "Severity": 2,
+              "Message": "Итоговый activeConflict.controlState должен совпадать с последним audited exchange.after.controlState текущего хода.",
+              "Category": 1,
+              "Code": "afterlife_conflict_control_snapshot_missing",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "activeConflict.controlState matches the control state derived from current exchange.after.controlState snapshots",
+              "Actual": "root controlState differs from audited exchange controlState",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "strong": false,
+          "alternative": "blocked_incoming",
+          "NoncommittingBytesPreserved": true,
+          "SameIssuedA": true,
+          "NextRequestAbsent": true,
+          "ExactPreSubmissionDraftRestored": false
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-d5a6d48674ed42fdb090c4d07a5db2a7",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult(strong: False, alternative: \"mixed\")",
+      "outcome": "Passed",
+      "duration": "00:00:03.6125551",
+      "structuredOutput": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-b72bf3301fde455c92c93698613e06eb",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    }
+  ]
+}

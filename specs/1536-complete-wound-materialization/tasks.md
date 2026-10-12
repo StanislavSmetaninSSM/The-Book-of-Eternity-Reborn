@@ -5,17 +5,19 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (B2 TEST-ONLY WIP)
+## Current original-completion boundary — 2026-10-12 (B2 FIRST 13 PASS — EVIDENCE REVIEW PENDING)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Lorian subsequently accepted
 81105a6bd487bc6077279aa12af79dbc301a16d9 and released the first B2 test-only
-implementation/publication. Build/discovery/test/runtime remain unreleased.
+implementation/publication. Following SOURCE acceptance on06e133, coordinator
+released one fresh selected preparation and one matching actual; both are frozen.
+No further execution is released.
 The [current plan](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
 separates source coverage, historical PASS without available raw artifacts and
 retained raw-verified evidence for exact RESULT-CLOSURE-BINDING B2–B5.
 
-Current test-only WIP stays in B2: current lost drafts lack incomingAction, so
+Current test-only block stays in B2: current lost drafts lack incomingAction, so
 policy.Allows(blocked) does not prove ordinary admission. Keep the eight existing
 policy rows/four unit boundary cases; use real issued A to reject actual blocked
 on both lost rows with exact `afterlife_conflict_blocked_missing_incoming_action`
@@ -28,7 +30,7 @@ existing finite owners: result-dependency9 + control-boundaries4 =13 cases, no n
 methods/categories/harness/cold run. No production defect is asserted. Independent
 DESIGN ACCEPTED without findings on19aeaab55eb1e34bdcafe771df31c5ebb44d34f7 by
 independent Astra XHigh; coordinator full diff/remote/clean/diff-check readback passed.
-The implemented13 cases remain unexecuted. Task-local selection
+The implemented13 cases passed in the first matching actual on clean06e133. Task-local selection
 `tests/selections/1536-binding-result-admission.json` retains existing owners and5/2minute
 bounds, three methods/two descriptors; no category/global-selection change. Positive
 Advanced explicitly retains only the held terminal-control diagnostic; rejected lost
@@ -39,9 +41,15 @@ recovers the same A with private/canonical preservation rechecked. This corrects
 90e22 SOURCE review's overconstrained negative re-read; reader diagnostics are traced.
 Existing
 strict fixture cleanup/output supplies future raw diagnostics and root-absence receipts.
-SOURCE/fixture/selection review is pending before coordinator preparation/runtime
-release. No build/discovery/test ran, no production/cold change, no B2 closure.
-Preserve first outcomes before any proposed correction.
+Independent SOURCE/fixture/selection ACCEPTED06e133 without findings. Packet
+[recovery/binding-result-admission-20261012/manifest.json](./recovery/binding-result-admission-20261012/manifest.json)
+freezes fresh PlanOnly054322 (13/3/2,0 execution) and first actual054653
+(13/13PASS,2/2 descriptors,30.6668319s). Both missing-incoming negatives returned
+exact Rejected/blocked diagnostics; original-incoming positive returned Advanced
+with only the held terminal diagnostic. All byte assertions passed;9 distinct
+strict cleanup receipts/observed absent roots,22 source pins and10 binary pins match.
+No production/cold change or B2 closure. EVIDENCE review is pending; preserve this
+first outcome and stop dependent B3 work until coordinator acceptance/scope.
 
 Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and
 remaining spiritual consumers, lawful T107 initial-stage coexistence/healing,
