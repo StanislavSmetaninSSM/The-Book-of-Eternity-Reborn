@@ -23,3 +23,13 @@ No main/merge/PR/issues/paidcalls/security/install/speed/budget changes. Existin
 known processcold/UNCnative/casesensitivefolder/fullgame/performance exclusions
 are not a queue of new work. Prior F18/native30/path RED/GREEN history is retained.
 Parents #1553/T067/T068/T061–T065 remain OPEN; ordinary40FAIL/B2–B5paused unchanged.
+
+## console/a1 — PASS runtime, independent evidence pending
+
+`portable-console-rollback-preparation`: 16PASS/0FAIL, 16executed/16planned;
+PlanOnly 00:00:18.7673120 / zero execution; actual 00:01:24.9528980.
+Category/runner budgets 5/10minutes unchanged.
+Runtime checkout `4ef0b8c22257d61f531aa9ea338997b7e907a8bb`, source1629 original +0 selected
+extra unit/Bridge/CrashHost pins, 157 DLL/PDB equal before/after.
+Compile origins: {"integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c"}.
+Qualification: Portable component executed on Windows; native Windows qualification expressly excluded. Full immutable originals: `console/a1/manifest.json`.

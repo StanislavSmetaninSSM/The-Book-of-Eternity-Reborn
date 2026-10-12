@@ -1,3 +1,15 @@
+## T068 original Windows owner recipe console/a1 — PASS runtime, independent evidence pending, 2026-10-12
+
+`portable-console-rollback-preparation` actual16PASS/0FAIL,
+16/16executed/planned, 00:01:24.9528980; PlanOnly0execution
+00:00:18.7673120. Original category/runner5/10minutes unchanged.
+Runtime checkout4ef0b8c22257d61f531aa9ea338997b7e907a8bb; source1629original+0selectedextra
+unit/Bridge/CrashHost pins and157DLL/PDB stable, compile origins separately retained.
+Qualification: Portable component executed on Windows; native Windows qualification expressly excluded.
+[Original logs and cases](recovery/windows-owner-recipes-20261012/console/a1/manifest.json).
+No source/catalog/selector/guard/budget changes; prior results remain immutable.
+Independent evidence review before acceptance; parentsOPEN/known exclusions unchanged.
+
 ## T068 remaining five Windows owner recipes — authorized WIP, 2026-10-12
 
 Coordinator accepted806dd54/native36 and authorizes the original remaining five

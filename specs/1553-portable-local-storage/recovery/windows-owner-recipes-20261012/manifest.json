@@ -46,7 +46,16 @@
         "boe-gameengine-turnlifecycle-",
         "boe-save-load-tests-"
       ],
-      "State": "UNRUN"
+      "State": "EvidenceReviewPending",
+      "Attempts": [
+        {
+          "Manifest": "console/a1/manifest.json",
+          "Passed": 16,
+          "Failed": 0,
+          "CompleteGreen": true,
+          "CheckoutHead": "4ef0b8c22257d61f531aa9ea338997b7e907a8bb"
+        }
+      ]
     },
     {
       "Key": "metadata",
@@ -191,5 +200,341 @@
     "No arbitrary extra cold/UNC/case-sensitive/fullgame/performance task",
     "No main/merge/PR/issues/paidcalls/securitychange/install/speedredesign/budgetrelaxation"
   ],
-  "State": "WIPInventoryNoNewExecution"
+  "State": "WIPSequentialRecipeEvidence",
+  "Archives": [
+    {
+      "Path": "console/a1/prepare-original.zip",
+      "Bytes": 191399,
+      "SHA256": "e90b7e149e33c2fa0bfe19eed292635ca2adbbbf9668d5907df9cd27b1de6845",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1688774,
+          "SHA256": "fcca09543ce434701e3063c49c15fa37d4fece2ffcd7c03e7caf749be751e3e8"
+        },
+        {
+          "Path": "runner/owned-process-02c6d73097ab4dca936318169b22fe33.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-73e74ed622c4463998e63543c9ce6377.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-9a791702bf894da48b2d890e7ddffc8d.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-eb033680648e42d8bd87fa96ae1dcb8a.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 5505,
+          "SHA256": "8215fff2dcac76a95692fd06af65ec7e187ce018825654d27ce464e1d3629623"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1461,
+          "SHA256": "6777cc58dda2a286bd8da9e1b0d77a64bdb90b67d4968d771af5b3f11297057a"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2697,
+          "SHA256": "1438b39451dd7f07db03d3aa9984a9d3fdacb01303f6564e52b86b6494392dc0"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 5084,
+          "SHA256": "88a7f1c2e7d3fb3a89c1a19fb1d2869c866c38d5aa608dc6e8de071d8219739b"
+        }
+      ]
+    },
+    {
+      "Path": "console/a1/actual-original.zip",
+      "Bytes": 197142,
+      "SHA256": "326295df681bd03b6ebf3470bd593a6d6c2f5932661faded793d9030746ab033",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1690569,
+          "SHA256": "59d4644616a6f4ce44b28ad6e8ee8e7b3ce6760af2cb55cb408fa2ef830a0dce"
+        },
+        {
+          "Path": "runner/owned-process-18c24c60a85c47bf875eff38bd908fec.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-51c6be58de8a44d5b8fc872d1ed76439.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-5dc1e9e63aaf4ba0ad30a381236c81bc.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-ec32236a4199482e82bcf54db2a40926.json",
+          "Bytes": 2476,
+          "SHA256": "27a7dde1d0c0ded230e47519e612bb0ded2fc83f1f3538c5f4ee4c9e11c2cd51"
+        },
+        {
+          "Path": "runner/owned-process-fbffe2945e2846c8bfcc6ed29223e2ba.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 5504,
+          "SHA256": "5fa449f3c5e092e615747bc9cbef1a2d424064af21cc0865930b997e32d4afef"
+        },
+        {
+          "Path": "runner/portable-console-rollback-preparation-integration-001.trx",
+          "Bytes": 26852,
+          "SHA256": "889873632e2cf0c8964b0f9a72835a8e127e3834e9e7afa5e3cebd28b2f85d04"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1556,
+          "SHA256": "7c5d14dc2914a3bf0086e6f54b7f2b6c0ec620aaf45149d41b3d63bfc4f6097a"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2666,
+          "SHA256": "ad9ac973a61541c195be505aef812173d48e19950d6075cc0157dd78721ccfd8"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 5876,
+          "SHA256": "56f769596475c77854bcb106a2a97fcfcef658eb3d61626f806bc2d262e1a4dc"
+        }
+      ]
+    },
+    {
+      "Path": "console/a1/execution-provenance.zip",
+      "Bytes": 928444,
+      "SHA256": "c960aa78e20615396c0bcc8a2a0f7cbd57a85b7a272e2482bede7b36549f186e",
+      "Entries": [
+        {
+          "Path": "owner-inputs.py",
+          "Bytes": 8528,
+          "SHA256": "5d9b2923c40a640e661154dd3a3b94a27bb5b4a7804222c7e32e66d7dc581f26"
+        },
+        {
+          "Path": "run-owner-phase.ps1",
+          "Bytes": 4881,
+          "SHA256": "05daf07b2ed66340631e9d190cdbd782857309516d09d009dd1a08ed15a16f80"
+        },
+        {
+          "Path": "post-owner.ps1",
+          "Bytes": 2357,
+          "SHA256": "1795959b8b98c3656c335ca0cf7ca869d75650a2b8ff53a2cfaea2d8b97df327"
+        },
+        {
+          "Path": "freeze-owner.py",
+          "Bytes": 8016,
+          "SHA256": "2a806ff5820234ac23d8d1b58ac7c4bfb34a9cd8a7a81ade1a2894adfd7a0332"
+        },
+        {
+          "Path": "evidence/owner-recipes-inventory.json",
+          "Bytes": 10713,
+          "SHA256": "cf8040fee984d08cd143b1b05febadabf0714452ce30aba494a299643c63d323"
+        },
+        {
+          "Path": "evidence/owner-recipes-source-review.json",
+          "Bytes": 1608,
+          "SHA256": "e1cc179f9350090ea1d13d2e9840781fb4fa139587a6b6a95490f723e5b1c97d"
+        },
+        {
+          "Path": "evidence/owner-recipes-output-cohorts.json",
+          "Bytes": 44681,
+          "SHA256": "bd99fc3e0f645db9fb249840ea323527afe60e1849a9680588600b62ab76102f"
+        },
+        {
+          "Path": "evidence/owner-recipes-extended-source-snapshot.json",
+          "Bytes": 138621,
+          "SHA256": "cd10c3be672a772dcfe454171322e7dc74567a61d588d7e15c7a0d929dbab65c"
+        },
+        {
+          "Path": "evidence/owner-console-a1-config.json",
+          "Bytes": 438953,
+          "SHA256": "d9e6c024a8051c4a44fe569cbc3e53609bbfa282efaf32dc35f535a98f6855e7"
+        },
+        {
+          "Path": "evidence/owner-console-a1-inputs-before-prepare.json",
+          "Bytes": 480306,
+          "SHA256": "6673d594fafe77ace69cd2c90b6b166e94e5d109379be29e665c8fb07ca01e0a"
+        },
+        {
+          "Path": "evidence/owner-console-a1-inputs-gate.json",
+          "Bytes": 482427,
+          "SHA256": "54090b50b86f8099c5f1f5d1c471cc8ecd3d34ed3f40ebe87559d25eda5ac4b8"
+        },
+        {
+          "Path": "evidence/owner-console-a1-inputs-before-actual.json",
+          "Bytes": 482387,
+          "SHA256": "d25212bc10033e1e042bf31f914d2dd63394d1b29695e401d989a9cb9eefa0fb"
+        },
+        {
+          "Path": "evidence/owner-console-a1-inputs-after-actual.json",
+          "Bytes": 480348,
+          "SHA256": "f41dc06f53b8fb5a963f9bdc3aecfbf4c1ceb346aa91f8b269a11a5755b86273"
+        },
+        {
+          "Path": "evidence/owner-console-a1-prepare-gate.json",
+          "Bytes": 549,
+          "SHA256": "9e281f70f327893e05aed01d7bfda246cb33708dc2c4eb01a61a524cb623ff38"
+        },
+        {
+          "Path": "evidence/owner-console-a1-post-run.json",
+          "Bytes": 1016,
+          "SHA256": "7aff29acd8d9ccb3b17de69abda540f2f7a95174f45a2eb6c5c512b4616825df"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+          "Bytes": 584183,
+          "SHA256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs",
+          "Bytes": 15868,
+          "SHA256": "94dfd34a1db29e1a1cf21859445563ebcd77d03e68fe5352661c6801eda6fd5c"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+          "Bytes": 101344,
+          "SHA256": "3a632ae6077530fed9348bb9b624afb2aae69f6e9d918f12dbe73d51cb1f255c"
+        },
+        {
+          "Path": "repo/tests/categories.json",
+          "Bytes": 1746282,
+          "SHA256": "3d7240f545b41a9126760955fd65d7958f8e80aecb47a011b5e462818e11f507"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/ReversibleFilePublication.cs",
+          "Bytes": 72348,
+          "SHA256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+          "Bytes": 17671,
+          "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+        }
+      ]
+    }
+  ],
+  "IndependentSourceReview": {
+    "SchemaVersion": 1,
+    "Reviewer": "Actual gpt-6-astra/xhigh",
+    "Verdict": "SOURCE PASS",
+    "ReviewedHead": "4ef0b8c22257d61f531aa9ea338997b7e907a8bb",
+    "Findings": [],
+    "MethodsCases": {
+      "console": [
+        14,
+        16
+      ],
+      "metadata": [
+        5,
+        32
+      ],
+      "owner": [
+        3,
+        27
+      ],
+      "bridge": [
+        1,
+        3
+      ],
+      "contention": [
+        3,
+        3
+      ]
+    },
+    "BudgetsCategoryRunnerMinutes": {
+      "console": [
+        5,
+        10
+      ],
+      "metadata": [
+        3,
+        8
+      ],
+      "owner": [
+        3,
+        8
+      ],
+      "bridge": [
+        3,
+        8
+      ],
+      "contention": [
+        2,
+        7
+      ]
+    },
+    "NoPlatformReturnPass": true,
+    "OriginalNativeAssertionsAndPositiveHooksRetained": true,
+    "BridgeRealHostWmiConPtyJobEmptyCliOriginalRunRetirement": true,
+    "ConsoleQualification": "Portable component only, not native Windows qualification",
+    "OwnerStartupObservation": "Explicitly labelled fixture, not WMI/provider/live terminal",
+    "IntegrationReuse": {
+      "CompiledSource": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+      "SourcePins": 1629,
+      "DllPdbPins": 157,
+      "BytesEqual": true
+    },
+    "FreshMetadataBuildClosure": [
+      "unit",
+      "Client",
+      "TestSupport",
+      "Bridge",
+      "CrashHost"
+    ],
+    "RequiredExtraEvidence": "1629 pins cover Client/Integration/TestSupport only; separate new unit/Bridge/CrashHost source snapshot and fresh source/PDB binding required",
+    "ConsoleCleanup": "Best-effort source Dispose; external owned-root/process readback required",
+    "LaterDocsOnlyCheckpoints": "Applicable with unchanged code/catalog/build inputs and separate exact PlanOnly/source/DLL gate",
+    "ProductionFailure": "Preserve causal evidence and review minimal proposal before product fix",
+    "Acceptance": "Independent evidence review separately for every category",
+    "ReviewerBuildTestProbeOrMutation": false
+  },
+  "ExtraSourceSnapshot": {
+    "PathInProvenance": "evidence/owner-recipes-extended-source-snapshot.json",
+    "Records": 541,
+    "Meaning": "Supplements original1629Client/Integration/TestSupport sources for unit/Bridge/CrashHost; selected sources are deduplicated per recipe"
+  },
+  "LastCompletedRuntime": {
+    "Recipe": "console",
+    "Attempt": "a1",
+    "Category": "portable-console-rollback-preparation",
+    "Passed": 16,
+    "Failed": 0,
+    "State": "PASS runtime, independent evidence pending"
+  }
 }
