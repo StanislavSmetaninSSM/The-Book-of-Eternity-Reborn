@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "spiritual-binding-cold-publication"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "1445dc28d33ebead5b51e9867bdf40373f000877",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 65.5056944,
+  "Descriptors": [
+    {
+      "Name": "spiritual-binding-cold-publication-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-binding-cold-publication",
+      "Categories": [
+        "spiritual-binding-cold-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 15,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

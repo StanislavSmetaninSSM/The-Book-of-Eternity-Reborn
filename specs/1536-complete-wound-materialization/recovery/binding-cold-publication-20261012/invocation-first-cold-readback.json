@@ -1,0 +1,986 @@
+{
+  "source": "1445dc28d33ebead5b51e9867bdf40373f000877",
+  "run": "20261012-045710-684-249690-5b7dc7912c2444169979f2d797cdbf5b-categories",
+  "coldInvocationCount": 1,
+  "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady",
+  "outcome": "Passed",
+  "caseDuration": "00:00:43.2894978",
+  "errorMessage": null,
+  "rawStdoutSha256": "a865ba50b02aea3fe37a2ae643a0e3c13152a0f243d3c570cf763554d9fde5a7",
+  "boundaries": [
+    {
+      "boundary": "binding-warm-actors-settled",
+      "root": "/tmp/boe-resource-materialization-ec6811514eb44802a20f263e64c9fed0",
+      "beforeGenerationSha256": "cc026c5f395d55b33f137536667b1f68980bb2fcb04982b6f63c8857f8bf87c2",
+      "generationSha256": "cc026c5f395d55b33f137536667b1f68980bb2fcb04982b6f63c8857f8bf87c2",
+      "generationUnchanged": true,
+      "activeJournalAbsent": true,
+      "eventCount": 16,
+      "events": [
+        {
+          "index": 0,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "MemberPublished",
+          "transactionId": "87171cf9b81a4a9ba303d8a91e90ef7e",
+          "journalBytes": 125080,
+          "journalSha256": "af7596ff8fb69439f89f08bd80642a561492d6ce494259d5a680440df63573e5",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "8cfcaf9fc51036fe1021b345459af647d2cd2ecb971bb28b294d23d319e9495a",
+          "memberBytes": 93392,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 1,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "Committed",
+          "transactionId": "87171cf9b81a4a9ba303d8a91e90ef7e",
+          "journalBytes": 125079,
+          "journalSha256": "a46d615c0622f50241173600f892479bdf8816b1fdfa8810d54270b0ae815795",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "8cfcaf9fc51036fe1021b345459af647d2cd2ecb971bb28b294d23d319e9495a",
+          "memberBytes": 93392,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 2,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "MemberPublished",
+          "transactionId": "15dd78a330ab4664897374d164397a99",
+          "journalBytes": 3471,
+          "journalSha256": "a47a8bec4e060850fd45e11ab80e7e01141c41f982d8cc1889fc4f29328835e8",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "89d131bef0c9c5388bba90ea04a01d6fa71ea5d95885a0746c26b752029e85b1",
+          "memberBytes": 2192,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "430BDF742BDA2F62D430F67A6814A280D83421F4CC947464DA4433316E8A9ED2",
+            "phase": "decision",
+            "offer": {
+              "opportunityRef": "spiritual_wound_c1b38b156d99dd00b2d3d0635bacd3d231525c784669da66606715c9668b7bff",
+              "minimumSeverityRank": 1,
+              "requiredSeverityRank": null,
+              "maximumSeverityRank": 1,
+              "target": "Участник духовного конфликта",
+              "cause": "Духовное воздействие в обмене конфликта.",
+              "allowedLocationKinds": [
+                "anatomical",
+                "systemic",
+                "mental",
+                "spiritual_axis",
+                "other"
+              ],
+              "allowedDecisions": [
+                "none",
+                "materialize"
+              ]
+            },
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": []
+          },
+          "errors": []
+        },
+        {
+          "index": 3,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "Committed",
+          "transactionId": "15dd78a330ab4664897374d164397a99",
+          "journalBytes": 3470,
+          "journalSha256": "b1df9efd4ba3faa332c9ccb6c36c2afb6598673557b786a901622fb12f66edc4",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "89d131bef0c9c5388bba90ea04a01d6fa71ea5d95885a0746c26b752029e85b1",
+          "memberBytes": 2192,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "430BDF742BDA2F62D430F67A6814A280D83421F4CC947464DA4433316E8A9ED2",
+            "phase": "decision",
+            "offer": {
+              "opportunityRef": "spiritual_wound_c1b38b156d99dd00b2d3d0635bacd3d231525c784669da66606715c9668b7bff",
+              "minimumSeverityRank": 1,
+              "requiredSeverityRank": null,
+              "maximumSeverityRank": 1,
+              "target": "Участник духовного конфликта",
+              "cause": "Духовное воздействие в обмене конфликта.",
+              "allowedLocationKinds": [
+                "anatomical",
+                "systemic",
+                "mental",
+                "spiritual_axis",
+                "other"
+              ],
+              "allowedDecisions": [
+                "none",
+                "materialize"
+              ]
+            },
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": []
+          },
+          "errors": []
+        },
+        {
+          "index": 4,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "MemberPublished",
+          "transactionId": "a8776f9788b547518c02f7d449e3ed53",
+          "journalBytes": 267435,
+          "journalSha256": "7654c12e64cca6223ed544aed596e6c1134c5f9fa61edc422bda78bf6e3ce789",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "bee5bf1f13c590ac0c176229dbc36248028210a213708ecd16965a76c11fed71",
+          "memberBytes": 106722,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 5,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "Committed",
+          "transactionId": "a8776f9788b547518c02f7d449e3ed53",
+          "journalBytes": 267434,
+          "journalSha256": "b89b3ec20bb15e704afeb4eeb515bf7c9e82e92c9a8cfb7968b2e17948710f08",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "bee5bf1f13c590ac0c176229dbc36248028210a213708ecd16965a76c11fed71",
+          "memberBytes": 106722,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 6,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "MemberPublished",
+          "transactionId": "4ae12b24e9d545f2b4a78eeed945d69b",
+          "journalBytes": 3471,
+          "journalSha256": "15162df2d57aaa3a7291c20679707b824aa8aaaf7d3fa05e4bbdf7e80872e9f1",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": null,
+          "memberBytes": null,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 7,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "Committed",
+          "transactionId": "4ae12b24e9d545f2b4a78eeed945d69b",
+          "journalBytes": 3470,
+          "journalSha256": "e1d3da77fd2ad1d0546824b4f9b0046df17d52f0b6bad6b07a12933b2d0fa0e8",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": null,
+          "memberBytes": null,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 8,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "MemberPublished",
+          "transactionId": "ed61d265f16e4d388fb7f556c98b5e22",
+          "journalBytes": 6231,
+          "journalSha256": "a763dab86633dee508aa9b63c9471f4a520cec78fe41df7304c92de17cda63a9",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "b196b47bc23cd5d3fa708a5f585cbb30128481c67ee1fb78b05fcb0cc55098e9",
+          "memberBytes": 4262,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "sha256:bc728c2ef6c1d05b2fcb73e7ebc6b23498ff5f1064256de20a18592e44626bd4",
+            "phase": "dependent_draft",
+            "offer": null,
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": [
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/after/controlState"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/margin"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/modifierBreakdown"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/playerTotal"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/outcome"
+              }
+            ]
+          },
+          "errors": [
+            {
+              "code": "afterlife_conflict_force_binding_without_strong_leverage",
+              "filePath": "activeConflict.exchangeLog[1].operationType",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "Силовые оковы (force_binding) требуют доминирования, готовой подготовки или decisive_player_success.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "effective starting position=player_dominant, setup/bindingSetup=ready, or diceAudit.outcomeBand=decisive_player_success",
+              "actual": "player_dominant"
+            },
+            {
+              "code": "afterlife_conflict_dice_unexpected_position_modifier",
+              "filePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "diceAudit должен содержать только один conflict_position modifier, точно совпадающий с эффективной стартовой позицией.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "only one conflict_position modifier for player_advantaged on player",
+              "actual": "1 entries, total 4"
+            },
+            {
+              "code": "afterlife_conflict_dice_missing_position_modifier",
+              "filePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown.player",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "diceAudit должен явно учитывать non-contested conflictPosition как позиционный модификатор.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "modifierBreakdown.player[] item { modifierType: \"conflict_position\", position: \"player_advantaged\", value: 2 }",
+              "actual": "missing"
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "Committed",
+          "transactionId": "ed61d265f16e4d388fb7f556c98b5e22",
+          "journalBytes": 6230,
+          "journalSha256": "728aca5b1087a29ca7df257a1d00457186105a9ee98e42c502e5c0a2e18b392b",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "b196b47bc23cd5d3fa708a5f585cbb30128481c67ee1fb78b05fcb0cc55098e9",
+          "memberBytes": 4262,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "sha256:bc728c2ef6c1d05b2fcb73e7ebc6b23498ff5f1064256de20a18592e44626bd4",
+            "phase": "dependent_draft",
+            "offer": null,
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": [
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/after/controlState"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/margin"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/modifierBreakdown"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/playerTotal"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/outcome"
+              }
+            ]
+          },
+          "errors": [
+            {
+              "code": "afterlife_conflict_force_binding_without_strong_leverage",
+              "filePath": "activeConflict.exchangeLog[1].operationType",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "Силовые оковы (force_binding) требуют доминирования, готовой подготовки или decisive_player_success.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "effective starting position=player_dominant, setup/bindingSetup=ready, or diceAudit.outcomeBand=decisive_player_success",
+              "actual": "player_dominant"
+            },
+            {
+              "code": "afterlife_conflict_dice_unexpected_position_modifier",
+              "filePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "diceAudit должен содержать только один conflict_position modifier, точно совпадающий с эффективной стартовой позицией.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "only one conflict_position modifier for player_advantaged on player",
+              "actual": "1 entries, total 4"
+            },
+            {
+              "code": "afterlife_conflict_dice_missing_position_modifier",
+              "filePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown.player",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "diceAudit должен явно учитывать non-contested conflictPosition как позиционный модификатор.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "modifierBreakdown.player[] item { modifierType: \"conflict_position\", position: \"player_advantaged\", value: 2 }",
+              "actual": "missing"
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "MemberPublished",
+          "transactionId": "cd9c34eede7a4505b2abb2485384e111",
+          "journalBytes": 295307,
+          "journalSha256": "9c1c62d99b2b92618c6592b8901772fbac8777983eb65a77524b8faa96da938b",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "e66306a8bdb6cfe90cc8e57f143ec2af5ef08153bf9580d0bbd6449c3e5722f6",
+          "memberBytes": 114295,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 11,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "Committed",
+          "transactionId": "cd9c34eede7a4505b2abb2485384e111",
+          "journalBytes": 295306,
+          "journalSha256": "eaa8bec0f551b1493f3159805e061ffe49f7322152bb9f22457af3d156cb0aad",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "e66306a8bdb6cfe90cc8e57f143ec2af5ef08153bf9580d0bbd6449c3e5722f6",
+          "memberBytes": 114295,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 12,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "MemberPublished",
+          "transactionId": "644a5d4c342a43a18ddbdf908f177261",
+          "journalBytes": 6231,
+          "journalSha256": "284d872c5b60e0771ac81481e8b94ba479ac6011d963ad5ff102659640c6fcdd",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": null,
+          "memberBytes": null,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 13,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "Committed",
+          "transactionId": "644a5d4c342a43a18ddbdf908f177261",
+          "journalBytes": 6230,
+          "journalSha256": "7e71669c10f7c0de98a3873e855e2cfadb17f73251b83aaf82735aa7eaa2aa2b",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": null,
+          "memberBytes": null,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 14,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "MemberPublished",
+          "transactionId": "37fe8be3e9e14b258b5121e70340759b",
+          "journalBytes": 3739,
+          "journalSha256": "bb7fc72654482ab3f616b4ad3e50f30e9a1123ae06b35b144e197e96a5ea8604",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "cac1e98e49e6923804fd6e117f147f119e13d8231c55519188101365d77c60ad",
+          "memberBytes": 2392,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "sha256:d496dd4065d840919b6118adbf952fa5bf543ea9de7d983e8a8b785499422549",
+            "phase": "dependent_draft",
+            "offer": null,
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": [
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/controlState"
+              }
+            ]
+          },
+          "errors": [
+            {
+              "code": "afterlife_conflict_control_snapshot_missing",
+              "filePath": "activeConflict.controlState",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "Итоговый activeConflict.controlState должен совпадать с последним audited exchange.after.controlState текущего хода.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "activeConflict.controlState matches the control state derived from current exchange.after.controlState snapshots",
+              "actual": "root controlState differs from audited exchange controlState"
+            }
+          ]
+        },
+        {
+          "index": 15,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "Committed",
+          "transactionId": "37fe8be3e9e14b258b5121e70340759b",
+          "journalBytes": 3738,
+          "journalSha256": "ba238a2d1b227d652d21aaa332613bcaac8af285097a3f1fbc4de12cf9347a22",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "cac1e98e49e6923804fd6e117f147f119e13d8231c55519188101365d77c60ad",
+          "memberBytes": 2392,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "sha256:d496dd4065d840919b6118adbf952fa5bf543ea9de7d983e8a8b785499422549",
+            "phase": "dependent_draft",
+            "offer": null,
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": [
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/controlState"
+              }
+            ]
+          },
+          "errors": [
+            {
+              "code": "afterlife_conflict_control_snapshot_missing",
+              "filePath": "activeConflict.controlState",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "Итоговый activeConflict.controlState должен совпадать с последним audited exchange.after.controlState текущего хода.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "activeConflict.controlState matches the control state derived from current exchange.after.controlState snapshots",
+              "actual": "root controlState differs from audited exchange controlState"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundary": "binding-final-actors-settled",
+      "root": "/tmp/boe-resource-materialization-ec6811514eb44802a20f263e64c9fed0",
+      "beforeGenerationSha256": "cc026c5f395d55b33f137536667b1f68980bb2fcb04982b6f63c8857f8bf87c2",
+      "generationSha256": "cc026c5f395d55b33f137536667b1f68980bb2fcb04982b6f63c8857f8bf87c2",
+      "generationUnchanged": true,
+      "activeJournalAbsent": true,
+      "eventCount": 16,
+      "events": [
+        {
+          "index": 0,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "MemberPublished",
+          "transactionId": "87171cf9b81a4a9ba303d8a91e90ef7e",
+          "journalBytes": 125080,
+          "journalSha256": "af7596ff8fb69439f89f08bd80642a561492d6ce494259d5a680440df63573e5",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "8cfcaf9fc51036fe1021b345459af647d2cd2ecb971bb28b294d23d319e9495a",
+          "memberBytes": 93392,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 1,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "Committed",
+          "transactionId": "87171cf9b81a4a9ba303d8a91e90ef7e",
+          "journalBytes": 125079,
+          "journalSha256": "a46d615c0622f50241173600f892479bdf8816b1fdfa8810d54270b0ae815795",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "8cfcaf9fc51036fe1021b345459af647d2cd2ecb971bb28b294d23d319e9495a",
+          "memberBytes": 93392,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 2,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "MemberPublished",
+          "transactionId": "15dd78a330ab4664897374d164397a99",
+          "journalBytes": 3471,
+          "journalSha256": "a47a8bec4e060850fd45e11ab80e7e01141c41f982d8cc1889fc4f29328835e8",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "89d131bef0c9c5388bba90ea04a01d6fa71ea5d95885a0746c26b752029e85b1",
+          "memberBytes": 2192,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "430BDF742BDA2F62D430F67A6814A280D83421F4CC947464DA4433316E8A9ED2",
+            "phase": "decision",
+            "offer": {
+              "opportunityRef": "spiritual_wound_c1b38b156d99dd00b2d3d0635bacd3d231525c784669da66606715c9668b7bff",
+              "minimumSeverityRank": 1,
+              "requiredSeverityRank": null,
+              "maximumSeverityRank": 1,
+              "target": "Участник духовного конфликта",
+              "cause": "Духовное воздействие в обмене конфликта.",
+              "allowedLocationKinds": [
+                "anatomical",
+                "systemic",
+                "mental",
+                "spiritual_axis",
+                "other"
+              ],
+              "allowedDecisions": [
+                "none",
+                "materialize"
+              ]
+            },
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": []
+          },
+          "errors": []
+        },
+        {
+          "index": 3,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "Committed",
+          "transactionId": "15dd78a330ab4664897374d164397a99",
+          "journalBytes": 3470,
+          "journalSha256": "b1df9efd4ba3faa332c9ccb6c36c2afb6598673557b786a901622fb12f66edc4",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "89d131bef0c9c5388bba90ea04a01d6fa71ea5d95885a0746c26b752029e85b1",
+          "memberBytes": 2192,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "430BDF742BDA2F62D430F67A6814A280D83421F4CC947464DA4433316E8A9ED2",
+            "phase": "decision",
+            "offer": {
+              "opportunityRef": "spiritual_wound_c1b38b156d99dd00b2d3d0635bacd3d231525c784669da66606715c9668b7bff",
+              "minimumSeverityRank": 1,
+              "requiredSeverityRank": null,
+              "maximumSeverityRank": 1,
+              "target": "Участник духовного конфликта",
+              "cause": "Духовное воздействие в обмене конфликта.",
+              "allowedLocationKinds": [
+                "anatomical",
+                "systemic",
+                "mental",
+                "spiritual_axis",
+                "other"
+              ],
+              "allowedDecisions": [
+                "none",
+                "materialize"
+              ]
+            },
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": []
+          },
+          "errors": []
+        },
+        {
+          "index": 4,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "MemberPublished",
+          "transactionId": "a8776f9788b547518c02f7d449e3ed53",
+          "journalBytes": 267435,
+          "journalSha256": "7654c12e64cca6223ed544aed596e6c1134c5f9fa61edc422bda78bf6e3ce789",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "bee5bf1f13c590ac0c176229dbc36248028210a213708ecd16965a76c11fed71",
+          "memberBytes": 106722,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 5,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "Committed",
+          "transactionId": "a8776f9788b547518c02f7d449e3ed53",
+          "journalBytes": 267434,
+          "journalSha256": "b89b3ec20bb15e704afeb4eeb515bf7c9e82e92c9a8cfb7968b2e17948710f08",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "bee5bf1f13c590ac0c176229dbc36248028210a213708ecd16965a76c11fed71",
+          "memberBytes": 106722,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 6,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "MemberPublished",
+          "transactionId": "4ae12b24e9d545f2b4a78eeed945d69b",
+          "journalBytes": 3471,
+          "journalSha256": "15162df2d57aaa3a7291c20679707b824aa8aaaf7d3fa05e4bbdf7e80872e9f1",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": null,
+          "memberBytes": null,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 7,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "Committed",
+          "transactionId": "4ae12b24e9d545f2b4a78eeed945d69b",
+          "journalBytes": 3470,
+          "journalSha256": "e1d3da77fd2ad1d0546824b4f9b0046df17d52f0b6bad6b07a12933b2d0fa0e8",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": null,
+          "memberBytes": null,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 8,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "MemberPublished",
+          "transactionId": "ed61d265f16e4d388fb7f556c98b5e22",
+          "journalBytes": 6231,
+          "journalSha256": "a763dab86633dee508aa9b63c9471f4a520cec78fe41df7304c92de17cda63a9",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "b196b47bc23cd5d3fa708a5f585cbb30128481c67ee1fb78b05fcb0cc55098e9",
+          "memberBytes": 4262,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "sha256:bc728c2ef6c1d05b2fcb73e7ebc6b23498ff5f1064256de20a18592e44626bd4",
+            "phase": "dependent_draft",
+            "offer": null,
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": [
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/after/controlState"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/margin"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/modifierBreakdown"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/playerTotal"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/outcome"
+              }
+            ]
+          },
+          "errors": [
+            {
+              "code": "afterlife_conflict_force_binding_without_strong_leverage",
+              "filePath": "activeConflict.exchangeLog[1].operationType",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "Силовые оковы (force_binding) требуют доминирования, готовой подготовки или decisive_player_success.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "effective starting position=player_dominant, setup/bindingSetup=ready, or diceAudit.outcomeBand=decisive_player_success",
+              "actual": "player_dominant"
+            },
+            {
+              "code": "afterlife_conflict_dice_unexpected_position_modifier",
+              "filePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "diceAudit должен содержать только один conflict_position modifier, точно совпадающий с эффективной стартовой позицией.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "only one conflict_position modifier for player_advantaged on player",
+              "actual": "1 entries, total 4"
+            },
+            {
+              "code": "afterlife_conflict_dice_missing_position_modifier",
+              "filePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown.player",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "diceAudit должен явно учитывать non-contested conflictPosition как позиционный модификатор.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "modifierBreakdown.player[] item { modifierType: \"conflict_position\", position: \"player_advantaged\", value: 2 }",
+              "actual": "missing"
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "Committed",
+          "transactionId": "ed61d265f16e4d388fb7f556c98b5e22",
+          "journalBytes": 6230,
+          "journalSha256": "728aca5b1087a29ca7df257a1d00457186105a9ee98e42c502e5c0a2e18b392b",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "b196b47bc23cd5d3fa708a5f585cbb30128481c67ee1fb78b05fcb0cc55098e9",
+          "memberBytes": 4262,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "sha256:bc728c2ef6c1d05b2fcb73e7ebc6b23498ff5f1064256de20a18592e44626bd4",
+            "phase": "dependent_draft",
+            "offer": null,
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": [
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/after/controlState"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/margin"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/modifierBreakdown"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/diceAudit/playerTotal"
+              },
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/exchangeLog/1/outcome"
+              }
+            ]
+          },
+          "errors": [
+            {
+              "code": "afterlife_conflict_force_binding_without_strong_leverage",
+              "filePath": "activeConflict.exchangeLog[1].operationType",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "Силовые оковы (force_binding) требуют доминирования, готовой подготовки или decisive_player_success.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "effective starting position=player_dominant, setup/bindingSetup=ready, or diceAudit.outcomeBand=decisive_player_success",
+              "actual": "player_dominant"
+            },
+            {
+              "code": "afterlife_conflict_dice_unexpected_position_modifier",
+              "filePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "diceAudit должен содержать только один conflict_position modifier, точно совпадающий с эффективной стартовой позицией.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "only one conflict_position modifier for player_advantaged on player",
+              "actual": "1 entries, total 4"
+            },
+            {
+              "code": "afterlife_conflict_dice_missing_position_modifier",
+              "filePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown.player",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "diceAudit должен явно учитывать non-contested conflictPosition как позиционный модификатор.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "modifierBreakdown.player[] item { modifierType: \"conflict_position\", position: \"player_advantaged\", value: 2 }",
+              "actual": "missing"
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "MemberPublished",
+          "transactionId": "cd9c34eede7a4505b2abb2485384e111",
+          "journalBytes": 295307,
+          "journalSha256": "9c1c62d99b2b92618c6592b8901772fbac8777983eb65a77524b8faa96da938b",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "e66306a8bdb6cfe90cc8e57f143ec2af5ef08153bf9580d0bbd6449c3e5722f6",
+          "memberBytes": 114295,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 11,
+          "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+          "phase": "Committed",
+          "transactionId": "cd9c34eede7a4505b2abb2485384e111",
+          "journalBytes": 295306,
+          "journalSha256": "eaa8bec0f551b1493f3159805e061ffe49f7322152bb9f22457af3d156cb0aad",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "e66306a8bdb6cfe90cc8e57f143ec2af5ef08153bf9580d0bbd6449c3e5722f6",
+          "memberBytes": 114295,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 12,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "MemberPublished",
+          "transactionId": "644a5d4c342a43a18ddbdf908f177261",
+          "journalBytes": 6231,
+          "journalSha256": "284d872c5b60e0771ac81481e8b94ba479ac6011d963ad5ff102659640c6fcdd",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": null,
+          "memberBytes": null,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 13,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "Committed",
+          "transactionId": "644a5d4c342a43a18ddbdf908f177261",
+          "journalBytes": 6230,
+          "journalSha256": "7e71669c10f7c0de98a3873e855e2cfadb17f73251b83aaf82735aa7eaa2aa2b",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": null,
+          "memberBytes": null,
+          "memberAfterHashMatches": true
+        },
+        {
+          "index": 14,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "MemberPublished",
+          "transactionId": "37fe8be3e9e14b258b5121e70340759b",
+          "journalBytes": 3739,
+          "journalSha256": "bb7fc72654482ab3f616b4ad3e50f30e9a1123ae06b35b144e197e96a5ea8604",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": false,
+          "memberAfterSha256": "cac1e98e49e6923804fd6e117f147f119e13d8231c55519188101365d77c60ad",
+          "memberBytes": 2392,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "sha256:d496dd4065d840919b6118adbf952fa5bf543ea9de7d983e8a8b785499422549",
+            "phase": "dependent_draft",
+            "offer": null,
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": [
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/controlState"
+              }
+            ]
+          },
+          "errors": [
+            {
+              "code": "afterlife_conflict_control_snapshot_missing",
+              "filePath": "activeConflict.controlState",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "Итоговый activeConflict.controlState должен совпадать с последним audited exchange.after.controlState текущего хода.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "activeConflict.controlState matches the control state derived from current exchange.after.controlState snapshots",
+              "actual": "root controlState differs from audited exchange controlState"
+            }
+          ]
+        },
+        {
+          "index": 15,
+          "path": "game_state/control/validation_repair_request.json",
+          "phase": "Committed",
+          "transactionId": "37fe8be3e9e14b258b5121e70340759b",
+          "journalBytes": 3738,
+          "journalSha256": "ba238a2d1b227d652d21aaa332613bcaac8af285097a3f1fbc4de12cf9347a22",
+          "observedJournalEncoding": "plain JSON",
+          "journalFormat": 1,
+          "committed": true,
+          "memberAfterSha256": "cac1e98e49e6923804fd6e117f147f119e13d8231c55519188101365d77c60ad",
+          "memberBytes": 2392,
+          "memberAfterHashMatches": true,
+          "continuation": {
+            "schemaVersion": 1,
+            "continuationId": "sha256:d496dd4065d840919b6118adbf952fa5bf543ea9de7d983e8a8b785499422549",
+            "phase": "dependent_draft",
+            "offer": null,
+            "sceneTextSource": {
+              "path": "output/narrative_response.json",
+              "field": "response"
+            },
+            "dependentDraftFields": [
+              {
+                "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                "jsonPointer": "/activeConflict/controlState"
+              }
+            ]
+          },
+          "errors": [
+            {
+              "code": "afterlife_conflict_control_snapshot_missing",
+              "filePath": "activeConflict.controlState",
+              "severity": "Error",
+              "category": "StateConsistency",
+              "message": "Итоговый activeConflict.controlState должен совпадать с последним audited exchange.after.controlState текущего хода.",
+              "section": "AfterlifeSpiritualConflict",
+              "expected": "activeConflict.controlState matches the control state derived from current exchange.after.controlState snapshots",
+              "actual": "root controlState differs from audited exchange controlState"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "CleanupOwnedRoot": "/tmp/boe-resource-materialization-ec6811514eb44802a20f263e64c9fed0",
+    "OwnedFixtureRemoved": true,
+    "CleanupFailure": null,
+    "ObservedAbsentAfterRun": true
+  },
+  "source36PinsMatchAfter": true,
+  "binary6PinsMatchAfter": true,
+  "primaryOrdinaryRepairFailureObserved": false,
+  "secondaryResponderProtocolFailureObserved": false,
+  "limitations": [
+    "Same OS process; new FileSystemManager/GameEngine, not native-worker/fresh-process proof.",
+    "Final witness repeats the16warm journal events because the new cold filesystem has no observer hook. Final settled check proves generation unchanged and no active journal; applied ledger/wounds/control/cleanup/idle-reentry evidence comes from PASS of the pinned existing assertion method, not separately exported final canonical snapshots.",
+    "Raw observed active.json journal encoding is JSON Format1; no BOELP3 framing claim.",
+    "Three requests/responses, separate A/B correlation, two warm responses/no Ready at cut, held bytes, final resources and idle byte preservation are asserted by the executed existing Fact; raw stdout only exports witness and cleanup records."
+  ]
+}

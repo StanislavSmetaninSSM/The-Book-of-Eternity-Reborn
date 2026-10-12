@@ -18,8 +18,8 @@ on `d6284c72b3d5d67deed9027b893de4c4627b144a`; coordinator diff/remote/clean-tre
 diff-check verification also passed. The subsequent staged implementation release
 is recorded below. First causal RED and preparation are now preserved in the
 current plan/packet and independently accepted. SOURCE/SELECTION accepted b03e;
-the first GREEN23PASS is preserved below. Independent GREEN EVIDENCE review is
-next before any cold invocation. No B2–B5 checkbox changes or gameplay acceptance.
+GREEN EVIDENCE accepted1445dc28; the one cold owner PASS is preserved below.
+Independent final cold EVIDENCE review is next. No B2–B5 checkbox changes or gameplay acceptance.
 
 The old cold-UNRUN statement is historical: #1553's preserved packet has composed
 9 PASS, cold force-binding 1 FAIL (`afterlife_combat_profile_unknown_art`) and
@@ -29,7 +29,25 @@ engine recovery does not prove a new process. Earlier pauses are superseded only
 for this authorized recovery/design work. Remaining #1536 producers, treatment,
 spiritual healing/recovery and UI work remain open; category-only policy applies.
 
-First GREEN checkpoint 2026-10-12: SOURCE/SELECTION ACCEPTED without findings
+First cold checkpoint 2026-10-12: GREEN EVIDENCE ACCEPTED1445dc28; coordinator
+released fresh existing-owner PlanOnly045443 (1method/1case/1descriptor,0executed,
+73warnings/0errors) then exactly one matching actual045710 on clean compile/runtime
+1445dc28. **1/1 PASS**,43.2894978s case/48.2396798s wall, complete descriptor;
+no failure/skip/timeout/duplicate/underfill. Cold invocation count1; no rerun or
+source/fixture changes. Original15/8+8 bounds and defaultoverall20 unchanged.
+Full [cold packet](./recovery/binding-cold-publication-20261012/manifest.json)
+preserves18 full artifacts,36 source and6 fresh DLL/PDB pins, raw witness/journal
+bytes, exact invocation and cleanup. All pins match; runner cleanup and owned-root
+receipt/physical absence pass. Warm committed A/B evidence has16events with hashes;
+actual journal is JSON Format1, correcting the earlier BOELP3 assumption. Final
+settled witness repeats warm events; final canonical resources/control/once-only
+idle behavior is asserted by the passing existing Fact, without a separate cold
+journal trace or exported final canonical snapshot. Same-process engine recovery
+only; no fresh OS/native-worker qualification. RED/GREEN packets unchanged.
+Next: independent final cold EVIDENCE review and coordinator published-carrier/raw
+readback. B2–B5 remain OPEN; this is no blanket parent acceptance.
+
+Historical first GREEN checkpoint 2026-10-12: SOURCE/SELECTION ACCEPTED without findings
 on b03e6239; clean compile/runtime source matches. Fresh selected PlanOnly044517
 PASS7methods/23cases/3descriptors with successful integration/unit builds (73/35
 warnings,0errors), then one catalog-NoBuild044752 PASS677categories/11510methods,

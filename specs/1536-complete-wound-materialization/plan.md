@@ -37,7 +37,76 @@ are not build/runtime qualification. Preserve WorldQuest/Meta optimizations and
 all accepted correctness fixes. No main/merge/issue closure, HOME-PC, paid provider,
 timeout increase or performance redesign belongs to this block.
 
-### B2 first GREEN preserved / EVIDENCE review pending — 2026-10-12
+### B2 first cold owner PASS preserved / final EVIDENCE review pending — 2026-10-12
+
+Independent Astra XHigh GREEN EVIDENCE ACCEPTED without findings on carrier
+`1445dc28d33ebead5b51e9867bdf40373f000877`; coordinator verified26 raw/stored
+artifacts,18 compile-source pins,10 DLL/PDB pins and all23 cases/21 cleanup receipts.
+It then released fresh preparation on that carrier and, after exact readback,
+**one** existing `spiritual-binding-cold-publication` actual. Cold invocation count
+is permanently1 for this block; no retry, extra owner or source/fixture change.
+B2–B5 checkboxes remain OPEN pending their existing coherent acceptance duties.
+
+Full immutable [cold packet](./recovery/binding-cold-publication-20261012/manifest.json)
+contains18 artifacts with stored/raw SHA256,36 source pins and6 selected integration/
+runtime DLL/PDB pins. It retains full preparation/build/actual logs, exact plans,
+summaries, unabridged TRX including publication-journal/member bytes, prewritten and
+completed invocations, and derived journal/member hashes and cleanup readback.
+RED and GREEN packets are unchanged. Compile/runtime source was clean1445dc28;
+the later evidence carrier changes only packet and plan/tasks.
+
+Retained environment and official commands:
+
+1. `/workspace/boe-cloud-tools-20261011/powershell/pwsh -NoProfile -File scripts/test-csharp.ps1 -Category spiritual-binding-cold-publication -PlanOnly`
+   under `/workspace/boe-cloud-tools-20261011/env.sh` — run
+   `20261012-045443-327-249352-4b403b1aaa364a78b2a32706d7f2c8f1-categories`,
+   PASS65.7613312s, fresh integration63.1228468s,73warnings/0errors. Exactly
+   `SpiritualBindingContinuation_ColdAfterARequiresFinalReady`,1method/1case/
+   1descriptor, zero execution. No catalog or additional build.
+2. Same official launcher with `-Category spiritual-binding-cold-publication -NoBuild`
+   — run `20261012-045710-684-249690-5b7dc7912c2444169979f2d797cdbf5b-categories`,
+   first actual **1/1 PASS**,1/1 descriptor complete,43.2894978s case and
+   48.2396798s runner wall. Zero failure/skip/timeout/duplicate/underfill.
+   Descriptor15minutes, warm8/cold8 and unchanged runner overall20=`5+15`;
+   no timeout override. No second invocation is authorized by this result.
+
+Raw warm witness has16 real MemberPublished/Committed events. Committed requests
+are decision, A with five last-exchange fields, then B with exactly
+`/activeConflict/controlState`; the actual B continuation differs from A.
+Journal/member bytes and their SHA256 agree; both settled boundaries report
+unchanged generation and absent active journal. **Observed journal encoding is
+plain JSON Format1.** The earlier recovery source-description's BOELP3 assumption
+was inaccurate and is corrected below; this run does not qualify BOELP3 framing.
+No codec or hook was altered to obtain the result.
+
+The final settled witness repeats the same16 warm events: the new cold filesystem
+has no observer hook. Therefore final cold publication is not separately journal-
+traced. Its evidence is PASS of the pinned existing owner/assertion method: actual
+B cut with two responses and absent Ready, saved A/choice/held publication bytes,
+new same-process filesystem/engine reconstructing B, distinct final Ready and
+three requests/responses; one wound/effect/source decision, four applied spends
+3/2/2/2 with player1/guardian2 final balances, exact corrected exchange/control,
+turn42/story once, transient cleanup and byte-identical idle reentry. Final
+canonical snapshots are asserted in-process, not separately exported by the
+fixture. This is same-process recovery, not fresh OS process/native-worker proof.
+There is no primary ordinary-repair refusal or secondary responder protocol
+failure in the first successful result; historical RED remains retained separately.
+
+Both preparation and actual report successful owned-tree/runtime cleanup. The
+actual owned-root receipt reports successful removal, and physical absence was
+independently checked. All36 source and6 binary pins match after actual. Selected
+integration DLL SHA256
+`b09ef881f4384875b9d2509f71eb864bdb99d0f1fc8cb1ad4370b360e33227f0`,
+client DLL `43a731c05aa59449863487ad42b6cde80bc83a1d615087f352f6683052a51993`;
+matching PDB/project copies are retained in the packet.
+
+Next bounded action is independent final cold EVIDENCE review and coordinator
+published-carrier/raw readback, with these explicit limits. This scoped owner PASS
+is not parent #1536 or blanket B2–B5 acceptance. No B3–B5, later physical producers,
+spiritual healing/recovery, UI, native/provider or performance work was started.
+
+### Historical B2 first GREEN preserved / EVIDENCE review pending — 2026-10-12
+
 
 Independent Astra XHigh SOURCE/SELECTION ACCEPTED without findings on
 `b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c`; coordinator inspected the actual
@@ -285,8 +354,9 @@ on incompleteness/new product defect without an automatic long rerun. B2–B5 st
   It is not a faithful fixture correction.
 - Current `GameEngineTurnLifecycleTests.SpiritualBindingContinuation.cs` uses
   `LocalPublicationObserver` and `SpiritualLifecyclePublicationWitness` against
-  actual BOELP3 `trusted-local-publication-v1/active.json` MemberPublished/Committed
-  bytes and hashes. B is recognized only at Committed for the one
+  actual `trusted-local-publication-v1/active.json` MemberPublished/Committed
+  bytes and hashes. The first cold readback observes plain JSON Format1; the
+  earlier BOELP3 description was an inaccurate assumption, not qualification. B is recognized only at Committed for the one
   `/activeConflict/controlState` request; `BeforeCanonicalWriteLockOpenAsync`
   cancels once after that real boundary. Fresh FileSystemManager/GameEngine
   instances reconstruct pending B in the **same process**. No fresh OS process,
@@ -388,9 +458,9 @@ or rerun of unchanged passes. After two unsuccessful corrections of the same
 problem, stop and revisit the hypothesis. A real tool/security denial stops the
 operation with its exact text/ID recorded; no bypass. B2–B5 stay OPEN even if this
 one blocker passes until their existing coherent review/evidence obligations are
-met. The next bounded action is independent GREEN EVIDENCE review of the
-published packet above. Preserve both first outcomes; the single cold owner
-remains unrun until its explicit post-review coordinator release.
+met. The next bounded action is independent final cold EVIDENCE review of the
+published packet above. Preserve all first outcomes; the one authorized cold
+owner has run once and passed within the stated evidence limits.
 
 ## Historical completion checkpoint — resumed 2026-09-30
 
