@@ -245,7 +245,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task<QteStoryRun> RunActualQteStorySourceAsync(string? preacceptMutation = null,
         string? postHandoffMutation = null, string mode = "ordinary", bool pauseAtAction = false, bool bounded = false,
         bool physicalDeclaration = false, int physicalMaximum = 2, bool physicalOnlyUnselected = false,
-        Action? observeQteAction = null)
+        Action? observeQteAction = null, Action<AgentConsoleLiveInputSource>? retainLiveInput = null)
     {
         var run = new QteStoryRun();
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
@@ -267,7 +267,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             run.ProtectedBefore[path] = await _fs.ReadFileBytesAsync(path);
         var console = new AgentConsoleStateStore();
         AgentConsoleLiveInputSource? live = null;
-        using var input = live = new AgentConsoleLiveInputSource(console, TimeSpan.FromSeconds(10), AgentConsoleLiveInputSource.DefaultMaxQueueLength,
+        var input = live = new AgentConsoleLiveInputSource(console, TimeSpan.FromSeconds(10), AgentConsoleLiveInputSource.DefaultMaxQueueLength,
             new AgentConsoleLiveInputSourceHooks { ActiveReadRegistered = kind =>
             {
                 Assert.Equal(AgentConsoleInputKind.Key, kind);
@@ -303,6 +303,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
                 Assert.True(live!.EnqueueKey(Key(ConsoleKey.Enter)).Accepted);
             }});
+        using var ownedInput = retainLiveInput is null ? input : null;
+        retainLiveInput?.Invoke(input);
         var stagedReady = false;
         async Task Author(SessionFinalizationCheckpoint checkpoint)
         {

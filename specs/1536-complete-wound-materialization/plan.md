@@ -9,7 +9,22 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; BOUNDED PRODUCER SOURCE/FIXTURE/SELECTION READY; INDEPENDENT SOURCE GATE PENDING; CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; BOUNDED PRODUCER SOURCE/FIXTURE/SELECTION READY; FOCUSED FIXTURE READBACK PENDING; CHECKS UNRUN)
+
+Published source READYfa83fa2645fdc350b99ebf8097080986f3db05a5 is remote/recovery verified:
+300 selected GitHub files exact,76 source pins matched, no recovery/project execution.
+Actual retained Astra XHigh reviewed the full6114→fa83 producer block: production source/spec
+and finite selection accepted statically, with exactly one Important fixture blocker.
+Rollback/retry reused run.Engine after the helper disposed its live input; restored active
+terminal_selected idle resume must still use the actual QTE UI. Current narrow correction
+retains the SAME live AgentConsole input through this one test via an optional ownership
+callback and explicit test finally disposal. Existing helper defaults retain their old
+using lifetime; observer cleanup also runs in finally. Every publication-cut/rollback/root/
+health/retry/identity assertion remains unchanged, with no direct terminal resolver, new
+harness, authority/production/category/selector or inventory change. Mutations STOPPED at
+narrow SOURCE READY for root publication and focused same-reviewer fixture readback; build,
+discovery/PlanOnly/runtime remain UNRUN. Whole inventory16methods22cases = causal1 separately
+5/default10 + remainder15/21/default20; original causal hash/checklists/packets stay exact.
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh

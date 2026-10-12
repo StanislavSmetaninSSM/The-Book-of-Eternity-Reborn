@@ -80,42 +80,51 @@ public sealed partial class GameEngineTurnLifecycleTests
     public async Task QtePhysicalInjuryProducer_PublicationFailureRestoresSourceThenRetryPublishesOnce()
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
-        Dictionary<string, byte[]?>? selectedBefore = null;
-        var injected = false;
-        var run = await RunActualQteStorySourceAsync(physicalDeclaration: true, observeQteAction: () =>
+        IDisposable? retainedInput = null;
+        try
         {
-            selectedBefore = QteDeferredEffectContinuation.SealedRootPaths.Concat(QtePhysicalInjurySource.WoundRootPaths)
-                .Distinct(StringComparer.Ordinal).ToDictionary(path => path,
-                    path => _fs.FileExists(path) ? File.ReadAllBytes(_fs.ResolvePath(path)) : null, StringComparer.Ordinal);
-            _consolePublicationObserver = (phase, index) =>
+            Dictionary<string, byte[]?>? selectedBefore = null;
+            var injected = false;
+            var run = await RunActualQteStorySourceAsync(physicalDeclaration: true, observeQteAction: () =>
             {
-                if (injected || phase != TrustedLocalPublicationPhase.MemberPublished) return;
-                var journalPath = Path.Combine(_fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
-                using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(journalPath));
-                if (journal.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString()
-                    != _fs.ResolvePath(MortalWoundOccurrenceState.StatePath)) return;
-                Assert.False(journal.RootElement.GetProperty("Committed").GetBoolean());
-                injected = true;
-                throw new InvalidOperationException("Controlled physical occurrence publication failure.");
-            };
-        });
-        _consolePublicationObserver = null;
-        Assert.True(injected);
-        Assert.NotNull(run.Failure);
-        Assert.NotNull(selectedBefore);
-        foreach (var image in selectedBefore!) Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(image.Key));
-        Assert.False(_fs.FileExists(MortalWoundOccurrenceState.StatePath));
-        Assert.Equal(run.StoryAtHandoff, await _fs.ReadFileBytesAsync(QteStoryPath));
-        Assert.True(await InvokePrivateAsync<bool>(run.Engine!, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
-        await AssertActualQteStoryFinalizedAsync(_fs, run.Source!, run.StoryAtHandoff!, 155m);
-        var first = await AssertActualPhysicalOccurrenceAsync(run, 2);
-        var occurrenceBytes = await _fs.ReadFileBytesAsync(MortalWoundOccurrenceState.StatePath);
-        var historyBytes = await _fs.ReadFileBytesAsync(ResourceMaterializationContract.HistoryPath);
-        _ = await InvokePrivateAsync<bool>(run.Engine!, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
-        Assert.Equal(occurrenceBytes, await _fs.ReadFileBytesAsync(MortalWoundOccurrenceState.StatePath));
-        Assert.Equal(historyBytes, await _fs.ReadFileBytesAsync(ResourceMaterializationContract.HistoryPath));
-        WritePhysicalInjuryDiagnostic("qte_physical_actual_failure_retry", new
-        { run.Source!.RequestId, run.SnapshotToken, first.OccurrenceId, Roots = selectedBefore.Keys });
+                selectedBefore = QteDeferredEffectContinuation.SealedRootPaths.Concat(QtePhysicalInjurySource.WoundRootPaths)
+                    .Distinct(StringComparer.Ordinal).ToDictionary(path => path,
+                        path => _fs.FileExists(path) ? File.ReadAllBytes(_fs.ResolvePath(path)) : null, StringComparer.Ordinal);
+                _consolePublicationObserver = (phase, index) =>
+                {
+                    if (injected || phase != TrustedLocalPublicationPhase.MemberPublished) return;
+                    var journalPath = Path.Combine(_fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+                    using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(journalPath));
+                    if (journal.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString()
+                        != _fs.ResolvePath(MortalWoundOccurrenceState.StatePath)) return;
+                    Assert.False(journal.RootElement.GetProperty("Committed").GetBoolean());
+                    injected = true;
+                    throw new InvalidOperationException("Controlled physical occurrence publication failure.");
+                };
+            }, retainLiveInput: input => retainedInput = input);
+            _consolePublicationObserver = null;
+            Assert.True(injected);
+            Assert.NotNull(run.Failure);
+            Assert.NotNull(selectedBefore);
+            foreach (var image in selectedBefore!) Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(image.Key));
+            Assert.False(_fs.FileExists(MortalWoundOccurrenceState.StatePath));
+            Assert.Equal(run.StoryAtHandoff, await _fs.ReadFileBytesAsync(QteStoryPath));
+            Assert.True(await InvokePrivateAsync<bool>(run.Engine!, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
+            await AssertActualQteStoryFinalizedAsync(_fs, run.Source!, run.StoryAtHandoff!, 155m);
+            var first = await AssertActualPhysicalOccurrenceAsync(run, 2);
+            var occurrenceBytes = await _fs.ReadFileBytesAsync(MortalWoundOccurrenceState.StatePath);
+            var historyBytes = await _fs.ReadFileBytesAsync(ResourceMaterializationContract.HistoryPath);
+            _ = await InvokePrivateAsync<bool>(run.Engine!, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            Assert.Equal(occurrenceBytes, await _fs.ReadFileBytesAsync(MortalWoundOccurrenceState.StatePath));
+            Assert.Equal(historyBytes, await _fs.ReadFileBytesAsync(ResourceMaterializationContract.HistoryPath));
+            WritePhysicalInjuryDiagnostic("qte_physical_actual_failure_retry", new
+            { run.Source!.RequestId, run.SnapshotToken, first.OccurrenceId, Roots = selectedBefore.Keys });
+        }
+        finally
+        {
+            _consolePublicationObserver = null;
+            retainedInput?.Dispose();
+        }
     }
 
     private async Task<MortalWoundOccurrence> AssertActualPhysicalOccurrenceAsync(QteStoryRun run, int maximum)
