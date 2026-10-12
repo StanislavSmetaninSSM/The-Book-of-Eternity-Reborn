@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-finalization",
+            "responsibility": "#1536 T070 first finalized-harm causal RED: one integration Fact/one case invokes actual GameEngine ProcessPlayerTurn, genuine original ordinary signed snapshot, offline correlated GM offer, real Agent Console accept/action/finish, actual finalized canonical player health Damage/history and terminal QTE closure, then requires one persisted source occurrence. No direct Begin-only route or fabricated authority.",
+            "excludes": "No production/producer changes, fabricated occurrence/binding/event/receipt/after-image, next-turn decision/wound consumer, save/replay/rollback matrix, provider/native worker calls, Windows/C5, broad QTE/validation owners or duplicate admission51 rerun. Setup/admission/finalization failures are blockers until the finalized_damage milestone is reached.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryFinalization.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient/Services/QteSceneService.cs",
+                "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs",
+                "BookOfEternityClient/Services/MortalWoundOccurrenceState.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-admission",
+                    "when": "Select the accepted admission boundary only if subsequent source changes affect raw declaration/typed freeze contracts; unchanged first finalized-harm RED selects this one case alone."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-admission",
             "responsibility": "#1536 T070 first declaration-control cohort: real engine ordinary signed snapshot, raw physicalInjury admission, exact preselection branch freeze and immutable maximum binding. Three integration methods/33 cases: three lawful/absent rows, 29 malformed rows (original 27 plus two outer-alias controls) and one frozen-tamper control. The immutable first declaration RED remains 31 cases.",
             "excludes": "No finalized-harm/occurrence chain claim, wound decision/materialization, save/load, long binding cold, QTE practice/Daren/minigame matrices, full validation pipeline, providers or performance claims. Existing duplicate-property refusal is retained; unknown/malformed declarations cannot gain authority by typed field loss.",

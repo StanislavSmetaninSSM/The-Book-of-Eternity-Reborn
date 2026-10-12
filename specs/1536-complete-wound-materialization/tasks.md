@@ -5,13 +5,14 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (MINIMUM ADMISSION/FREEZE GREEN; EVIDENCE REVIEW PENDING)
+## Current T070 boundary — 2026-10-12 (ADMISSION/FREEZE GREEN EVIDENCE ACCEPTED; FINALIZED-HARM TEST-ONLY WIP)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
 first real scenario through exact design, independent review, causal RED, minimum
 implementation and GREEN; minimum admission/freeze plus coherent GM guidance/example/guards
-has SOURCE/selection acceptance and matching51-case GREEN. Packet publication/EVIDENCE gate pending. Prior4085 source facts
+has SOURCE/selection acceptance and matching51-case GREEN EVIDENCE accepted880ef52c.
+Next is one-case finalized-harm test-only WIP; its SOURCE gate/runtime are pending. Prior4085 source facts
 and bef700/076ecc compatible-contract acceptance remain retained; the old product-policy
 blocker was superseded by normative engineering classification. No checkbox changes:
 T070/parent/#1536 remain OPEN; B2–B5 accepted33PASS, first B3 oracle FAIL, all immutable
@@ -59,11 +60,27 @@ owned roots removed/absent. Frozen-tamper is now **REACHED/PASS**, with actual
 `qte_deferred_continuation_offer_mismatch`. Full preparation/actual IDs and exact methods
 are in [the active block](./plan.md#t070-first-vertical-source-design-2026-10-12).
 
-The admission/freeze boundary is verified by that selected GREEN. Root is freezing
-[the GREEN packet](./recovery/qte-physical-injury-admission-green-20261012); publication and
-independent EVIDENCE review remain pending. The immutable first31-case RED284c4f97 and its
+The admission/freeze boundary is verified by that selected GREEN. [The GREEN packet](./recovery/qte-physical-injury-admission-green-20261012) is published
+at880ef52ce9ec9270942e2363691cfb4bf76477aa; fresh independent Astra XHigh ADMISSION/FREEZE
+GREEN EVIDENCE ACCEPTED, no blocker (20 artifacts/24 source/10 binaries/all51 TRX/33 strict roots). The immutable first31-case RED284c4f97 and its
 historically UNREACHED tamper predicate remain retained. Finalized canonical health Damage/
 occurrence chain stays **UNRUN**, with no producer/wound-route completion claim.
+
+First finalized-harm TEST-ONLY WIP on accepted880ef52c adds one Fact/one case in
+`GameEngineTurnLifecycleTests.QtePhysicalInjuryFinalization.cs`:
+`QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence`.
+Finite category `qte-physical-injury-finalization`, task-local selection of the same name,
+5-minute category/default overall10. No producer/production/GM changes, old51 rerun or
+fake occurrence/binding/event/receipt. Actual ProcessPlayerTurn stages/admits the ordinary
+QTE; official live signed snapshot observation precedes queued UI selection. The expected
+missing-occurrence assertion follows actual canonical health160→155, one Applied Damage/
+history row, resource owner/state agreement, terminal QTE closure and ordinary cleanup.
+Before that milestone, any failure is a fixture/finalization blocker, never causal RED.
+Per-test independent root, exact protected wound bytes and strict cleanup are required.
+New source build/discovery/PlanOnly/actual are UNRUN pending root publication and independent
+SOURCE/fixture/selection gate; freeze first runtime outcome before any production correction.
+Full chain/T070/#1536 and all checkboxes remain OPEN; originalRED31 and acceptedGREEN51
+are immutable. The first RED evidence carrier284 is distinct from actual compile/runtime76.
 
 The plan now fixes the proposed optional QTE `physicalInjury` declaration: closed
 exactly five fields: schemaVersion1, one-based resource command ordinal, explicit maximum1–4, bounded cause
@@ -108,9 +125,11 @@ same-process waiver. FR057 creation treatment completeness, FR065 explicit recov
 canonical anchors, FR063 later treatment reservation/full request/re-resolution/publication
 and FR066 occurrence/decision replay remain required. Synchronize affected existing QTE/
 ordinary GM guides, prompts, example/manifest, output policy and guards with implementation.
-Next is root GREEN packet/status publication, remote recovery verification and independent
-Astra XHigh EVIDENCE gate. Then only test-only actual engine ordinary QTE → finalized
-canonical health Damage → missing-occurrence causal RED precedes producer implementation.
+Next is root publication/remote verification and independent Astra XHigh SOURCE/fixture/
+selection gate for the one-case test-only actual engine ordinary QTE → finalized canonical
+health Damage → missing-occurrence cohort, then fresh selected preparation and first actual.
+That genuine causal RED must precede producer implementation; admission GREEN EVIDENCE
+is already accepted880ef52c.
 Continue authorized gates without another human permission cycle; no unchanged first RED rerun. No additional project execution is performed here; no paid
 providers, Windows/HOME-PC, main/PR/issues/CI, optimization or other feature. Spec/contracts,
 prior immutable packets, task checkboxes and historical accepted evidence are unchanged.
