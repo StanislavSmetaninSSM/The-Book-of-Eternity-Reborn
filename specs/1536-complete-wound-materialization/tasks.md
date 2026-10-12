@@ -29,7 +29,8 @@ within, and client enforcement of, the sealed envelope. They do not already appr
 or implement this QTE grammar or ceiling derivation.
 
 The plan separates existing fields from the proposed one-owner extension; traces
-real source-N authority freeze (original request/snapshot missing today), final
+real source-N authority freeze (request bytes are already sealed, but validated
+typed request/snapshot authority is not projected into the common-plan input), final
 resource/effect result → registered draft → pure reducer → live pending/consumed
 PlanAppend/common atomic publication → next signed snapshot → existing Mortal
 adapter/StateDistributor/raw validator → Prepare/effect/Finalize/canonical anchor →

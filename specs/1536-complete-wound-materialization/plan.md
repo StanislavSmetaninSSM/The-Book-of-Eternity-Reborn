@@ -67,8 +67,12 @@ that decision, are:
    The proposed physical declaration must participate in that same validation/freeze.
 2. Preserve genuine source-N session/request/snapshot/turn authority at acceptance.
    Current continuation root (`QteDeferredEffectContinuation.cs:243–277`) retains
-   session/generation/source turn and sealed roots, but not the original validated
-   player request ID/snapshot token. `QteDeferredAcceptedMechanicsPlanner.cs:721`
+   session/generation/source turn and sealed roots. Its sealed inventory includes
+   `input/turn_request.json` (:95), with exact payload/SHA before-image (:931–943),
+   so original request ID bytes can already be retained (`TurnRequest.cs:11–12`).
+   Retained raw bytes are not the missing validated typed request/snapshot authority:
+   `TurnRequest` has no snapshot token, and the original binding is not projected
+   into the common-plan input. `QteDeferredAcceptedMechanicsPlanner.cs:721`
    currently uses continuation-derived request/token and an empty accepted-event
    array. Those existing resource-continuation coordinates are not proof of the
    original FR-066 source binding; the producer must not fabricate a replacement.
