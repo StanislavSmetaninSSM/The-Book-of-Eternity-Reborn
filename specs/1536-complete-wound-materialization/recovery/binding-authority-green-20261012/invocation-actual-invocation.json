@@ -1,0 +1,95 @@
+{
+  "status": "coordinator released ONE matching cheap actual",
+  "source": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "compileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "runtimeSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "argv": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-binding-authority-green.json",
+    "-NoBuild"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "environmentSource": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "writtenUtc": "2026-10-12T04:48:19.475886+00:00",
+  "expected": {
+    "methods": 7,
+    "cases": 23,
+    "descriptors": 3,
+    "passed": 23,
+    "failed": 0
+  },
+  "budgetsMinutes": {
+    "authority": 5,
+    "documentation": 2,
+    "observedOverallDefault": 12,
+    "runnerDefaultFormula": "5 + sum(selected category budgets) = 5 + 5 + 2 = 12"
+  },
+  "binaryPins": {
+    "source": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+    "compileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+    "planRun": "20261012-044517-315-247374-dcf7fc2668224d27b6bb43fe8f0cf83a-categories",
+    "pinnedUtc": "2026-10-12T04:47:52.231643+00:00",
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "52b0827c5efcfc08bcc32b3e85640160b91119aacb8c526585bf551aedc7bade",
+        "bytes": 27660288
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb",
+        "sha256": "cffcc2e1bd361bfe21f1a2d2f34c914be515923851c58e6fc7468c9777ff585e",
+        "bytes": 4465688
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "7d9354c43b0ab40d4bdb6e57d73a2175e4a367261624b085b5aee9fc64c0c59d",
+        "bytes": 25246208
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb",
+        "sha256": "3554c80e7d1d7c40da7518f6d2b85950cd7570d027e4142fed67d35be9835bb8",
+        "bytes": 5688708
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "7d9354c43b0ab40d4bdb6e57d73a2175e4a367261624b085b5aee9fc64c0c59d",
+        "bytes": 25246208
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb",
+        "sha256": "3554c80e7d1d7c40da7518f6d2b85950cd7570d027e4142fed67d35be9835bb8",
+        "bytes": 5688708
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "bdf0491bebe6dca499c781a80f1c8e6474c96ebdcee030f7174a3818b31938a8",
+        "bytes": 9265664
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb",
+        "sha256": "5da77d736efbf426ba5330e9717220b350b0ed2e7c0786cc48a581a9b216e181",
+        "bytes": 1830960
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "7d9354c43b0ab40d4bdb6e57d73a2175e4a367261624b085b5aee9fc64c0c59d",
+        "bytes": 25246208
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb",
+        "sha256": "3554c80e7d1d7c40da7518f6d2b85950cd7570d027e4142fed67d35be9835bb8",
+        "bytes": 5688708
+      }
+    ]
+  },
+  "cleanupRequirement": "all runner owned-tree/runtime cleanup true; each of21 authority fixture roots removed; docsFacts have no mutable fixture root",
+  "scope": "ONE finite cheap GREEN; cold excluded",
+  "startedUtc": "2026-10-12T04:49:14.960461+00:00",
+  "exitCode": 0,
+  "finishedUtc": "2026-10-12T04:49:27.897337+00:00",
+  "binaryPinsMatchAfter": true
+}

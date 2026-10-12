@@ -17,8 +17,9 @@ ordinary-profile preflight → source/fixture gate → fresh selected PlanOnly b
 on `d6284c72b3d5d67deed9027b893de4c4627b144a`; coordinator diff/remote/clean-tree/
 diff-check verification also passed. The subsequent staged implementation release
 is recorded below. First causal RED and preparation are now preserved in the
-current plan/packet and independently accepted; the narrow correction's
-SOURCE/selection review is next before build/GREEN execution. No B2–B5 checkbox changes or gameplay acceptance.
+current plan/packet and independently accepted. SOURCE/SELECTION accepted b03e;
+the first GREEN23PASS is preserved below. Independent GREEN EVIDENCE review is
+next before any cold invocation. No B2–B5 checkbox changes or gameplay acceptance.
 
 The old cold-UNRUN statement is historical: #1553's preserved packet has composed
 9 PASS, cold force-binding 1 FAIL (`afterlife_combat_profile_unknown_art`) and
@@ -28,7 +29,24 @@ engine recovery does not prove a new process. Earlier pauses are superseded only
 for this authorized recovery/design work. Remaining #1536 producers, treatment,
 spiritual healing/recovery and UI work remain open; category-only policy applies.
 
-Narrow correction WIP 2026-10-12: accepted/published first RED packet5f46c6a4
+First GREEN checkpoint 2026-10-12: SOURCE/SELECTION ACCEPTED without findings
+on b03e6239; clean compile/runtime source matches. Fresh selected PlanOnly044517
+PASS7methods/23cases/3descriptors with successful integration/unit builds (73/35
+warnings,0errors), then one catalog-NoBuild044752 PASS677categories/11510methods,
+no unmapped/stale, both zero-test execution. Coordinator-released actual044915
+PASS23/23 and3/3descriptors in12.3412336s; no timeout/skip/duplicate/underfill.
+All five force-tier negatives now reach invalid_art_tier; raw force3 and exact
+signed cost pass, unknown/recovery keys stay rejected. Runner cleanup and21/21
+unique fixture receipts/physical root absence verified;18source/10binary pins match.
+Full [GREEN packet](./recovery/binding-authority-green-20261012/manifest.json)
+preserves26 artifacts including all raw TRX/logs and prewritten invocations.
+Default overall12 follows unchanged runner5+category5+2; original mistaken10
+assumption is retained with correction, no limit override. First RED unchanged.
+Next: independent GREEN EVIDENCE review and coordinator remote/raw readback before
+explicit one-cold release. Cold invocations0; cheap controls prove intents, not
+applied ledger/publication. B2–B5 remain OPEN.
+
+Historical narrow correction WIP 2026-10-12: accepted/published first RED packet5f46c6a4
 permits only the existing soul whitelist's `force_binding` addition. Shared strict
 checks and original seed/cost/strong/cold boundaries remain unchanged. Existing GM
 matrix, binding example/manifest and two existing guards now clarify exact tier3,

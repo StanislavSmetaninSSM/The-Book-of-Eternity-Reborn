@@ -1,0 +1,21 @@
+{
+  "source": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "compileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "runtimeSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "argv": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-ValidateCatalog",
+    "-NoBuild"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "environmentSource": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "startedUtc": "2026-10-12T04:47:52.318384+00:00",
+  "scope": "one changed-owner inventory audit on matching fresh binaries; zero actual tests",
+  "binaryPins": "fresh-build-binaries.json",
+  "exitCode": 0,
+  "finishedUtc": "2026-10-12T04:47:59.026892+00:00",
+  "binaryPinsMatchAfter": true
+}

@@ -37,7 +37,67 @@ are not build/runtime qualification. Preserve WorldQuest/Meta optimizations and
 all accepted correctness fixes. No main/merge/issue closure, HOME-PC, paid provider,
 timeout increase or performance redesign belongs to this block.
 
-### B2 narrow correction / GREEN-source WIP — 2026-10-12
+### B2 first GREEN preserved / EVIDENCE review pending — 2026-10-12
+
+Independent Astra XHigh SOURCE/SELECTION ACCEPTED without findings on
+`b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c`; coordinator inspected the actual
+source/selection diff and remote checkpoint. On that clean compile/runtime SHA,
+coordinator released fresh preparation, then the single matching cheap actual.
+Full immutable [GREEN packet](./recovery/binding-authority-green-20261012/manifest.json)
+contains26 artifacts with stored/raw SHA256,18 source pins and10 DLL/PDB pins:
+prewritten/completed invocations, full build logs, plans, summaries, all three TRX,
+all23 case readbacks and21 distinct fixture-cleanup receipts. The first RED packet
+and its original outcome remain unchanged.
+
+Actual order and exact commands, under retained
+`/workspace/boe-cloud-tools-20261011/env.sh` (SDK10.0.401 / PowerShell7.6.6):
+
+1. `/workspace/boe-cloud-tools-20261011/powershell/pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-binding-authority-green.json -PlanOnly`
+   — run `20261012-044517-315-247374-dcf7fc2668224d27b6bb43fe8f0cf83a-categories`,
+   PASS128.7587201s; fresh integration106.0644846s/unit18.068534s,73/35warnings,
+   zero errors. Exact7methods/23cases/3descriptors, zero tests executed.
+2. Same official launcher with `-ValidateCatalog -NoBuild`
+   — run `20261012-044752-952-247766-0c1944943d2a4db2bafae6f61c5c41b0-categories`,
+   PASS6.0324935s;677categories/11510methods/files, no unmapped/stale selectors,
+   zero tests executed. No repeated build, audit or PlanOnly.
+3. Same official launcher with `-SelectionFile tests/selections/1536-binding-authority-green.json -NoBuild`
+   — run `20261012-044915-506-248066-6e195e87ab12402f9ff788e74cd3a094-categories`,
+   PASS12.3412336s;23/23 PASS,3/3 descriptors complete, zero failure/skip/timeout/
+   duplicate/underfill. Both documentation Facts and all21 authority cases pass.
+
+Raw force_binding tier3 now has no issues; all five malformed force tiers reach
+`afterlife_combat_profile_invalid_art_tier` rather than the earlier unknown-art
+short circuit. Arbitrary unknown and recover_spiritual_power keys remain rejected;
+known-key tier bounds and required wound arts remain enforced. Exact signed cost
+and all four authority/audit negatives pass. This proves ordinary admission,
+authoritative cost validation and emitted intents; it does not prove applied
+canonical expenses, once-only publication or B/Ready recovery. The examples remain
+focused fragments, not complete signed turns.
+
+All three runners report owned-tree/runtime cleanup successful. Actual TRX has21
+unique successful cleanup receipts, all21 paths observed absent; the two docs Facts
+have no mutable fixture root. All18 source pins and10 DLL/PDB hashes match after
+the actual run. Selected integration DLL SHA256
+`52b0827c5efcfc08bcc32b3e85640160b91119aacb8c526585bf551aedc7bade`,
+client DLL `7d9354c43b0ab40d4bdb6e57d73a2175e4a367261624b085b5aee9fc64c0c59d`;
+all project copies/PDBs and unit DLL are pinned in the packet. The evidence carrier
+commit is later than compile/runtime b03e; this checkpoint changes only evidence
+and plan/tasks, not the tested source.
+
+The prewritten PlanOnly metadata's assumed overall10minutes was inaccurate and is
+retained with explicit observed correction: unchanged runner default is
+`5 + sum(selected category budgets)` =12 for authority5 + docs2. No timeout flag,
+limit increase or category change was used. Single cold category15 would naturally
+have runner overall20; its descriptor15 and existing warm8/cold8 bounds stay fixed.
+
+Next bounded action: independent GREEN EVIDENCE review and coordinator remote/raw
+readback. Cold invocations in this block remain0; do not launch automatically on
+23PASS. Only explicit post-review release permits the one existing cold owner,
+with exact source/binary/selection preflight, immutable first outcome and no
+unreviewed rerun. B2–B5 and later producers/healing/UI remain OPEN.
+
+### Historical B2 narrow correction / GREEN-source WIP — 2026-10-12
+
 
 First RED packet checkpoint `5f46c6a4113b5cf3a49308c7823f867c6dcd9136` is now
 published and independently accepted for causal-RED/evidence content. Coordinator
@@ -328,9 +388,9 @@ or rerun of unchanged passes. After two unsuccessful corrections of the same
 problem, stop and revisit the hypothesis. A real tool/security denial stops the
 operation with its exact text/ID recorded; no bypass. B2–B5 stay OPEN even if this
 one blocker passes until their existing coherent review/evidence obligations are
-met. The next bounded action is independent SOURCE/selection review of the
-published narrow correction above. Preserve the accepted first RED packet;
-GREEN execution and the single cold owner retain their stated gates.
+met. The next bounded action is independent GREEN EVIDENCE review of the
+published packet above. Preserve both first outcomes; the single cold owner
+remains unrun until its explicit post-review coordinator release.
 
 ## Historical completion checkpoint — resumed 2026-09-30
 

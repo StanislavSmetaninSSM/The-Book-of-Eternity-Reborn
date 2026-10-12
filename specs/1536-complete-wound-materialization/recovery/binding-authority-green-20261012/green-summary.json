@@ -1,0 +1,94 @@
+{
+  "Categories": [
+    "spiritual-binding-authority-preflight",
+    "spiritual-binding-authority-documentation"
+  ],
+  "Reasons": [
+    {
+      "category": "spiritual-binding-authority-preflight",
+      "reason": "#1536 B2 GREEN: all21 raw-profile and signed-cost cases must pass after the force_binding-only gate alignment; preserve first causal RED packet.",
+      "contracts": [
+        "#1536/T081-D-POSITION-RESULT-CLOSURE-B2 / RESULT-CLOSURE-BINDING rev1",
+        "MetaMiscStateFiles exact raw soul profile, no normalization; force_binding tier3, unknown-art exclusion, integer0..5 and required wound arts",
+        "Signed original exact force_binding authority; player6->3->1 and guardian6->4->2; unchanged actors, four spend intents, no applied publication"
+      ]
+    },
+    {
+      "category": "spiritual-binding-authority-documentation",
+      "reason": "Two existing changed binding documentation/example guards validate exact authority terminology, ordinary cost arithmetic, existing A/B boundaries and truthful fragment coverage without unrelated documentation matrices.",
+      "contracts": [
+        "#1536/T081-D-POSITION-RESULT-CLOSURE-B2 / existing force_binding authority clarification",
+        "GM matrix and binding worked example/manifest synchronized with raw soul validation",
+        "No new art acquisition/UI/schema; fragments do not prove signed admission or publication"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "spiritual-binding-authority-documentation",
+      "Seconds": 2.4458645,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "spiritual-binding-authority-preflight",
+      "Seconds": 5.2288528,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0362989,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.031828,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0865211,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0041255,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 12,
+  "WallTime": "00:00:12.3412336",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 23,
+    "CompletedCases": 23,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 23,
+    "Executed": 23,
+    "Passed": 23,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
