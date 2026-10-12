@@ -9,14 +9,15 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip"></a>
-## Current #1536 completion checkpoint — 2026-10-12 (DESIGN ACCEPTED)
+## Current #1536 completion checkpoint — 2026-10-12 (B2 TEST-ONLY WIP)
 
 Lorian accepted the bounded force_binding restoration through
 `ceedbe496a0ecc3a3e3cd96518675ba128989099` and resumed original #1536 completion.
-This phase authorizes read-only design and this plan/tasks checkpoint only: no
-implementation, build, discovery, tests or project runtime. The prior block's stop
-is superseded only for this phase; its code, three immutable packets and cold
-invocation count1 remain accepted and unchanged. Use the same Linux task branch,
+Lorian subsequently accepted design/status carrier `81105a6bd487bc6077279aa12af79dbc301a16d9`
+and released only the first B2 test implementation below. Build, discovery, tests
+and project runtime remain unreleased pending SOURCE review and coordinator gates.
+The prior block's code, three immutable packets and cold invocation count1 remain
+accepted and unchanged. Use the same Linux task branch,
 existing RESULT-CLOSURE-BINDING rev1 and exact
 `T081-D-POSITION-RESULT-CLOSURE-B2`–`B5`; do not confuse earlier C4 B2/B3 IDs.
 All four tasks remain OPEN. No new specification or evidence framework is needed.
@@ -46,7 +47,7 @@ requires that action and emits `afterlife_conflict_blocked_missing_incoming_acti
 The existing actual A/B path submits `no_effect`. This is an acceptance-oracle gap,
 not an established production defect or permission to weaken the ordinary rule.
 
-Future test-only scope is the existing `SpiritualBindingResultClosure.cs` fixture:
+The test-only WIP uses the existing `SpiritualBindingResultClosure.cs` fixture:
 retain all eight current policy variants and four unit boundary cases. On both
 existing lost rows, submit actual `blocked` through the real issued A and ordinary
 `EvaluateSpiritualWoundContinuationDraftAsync`; require Rejected with the exact
@@ -66,9 +67,11 @@ Planned selection: existing `spiritual-binding-result-dependency` (nine integrat
 rows) plus `spiritual-binding-control-boundaries` (four unit rows), total13 cases.
 No new method, category, harness or cold owner; preserve existing category bounds
 of5minutes and2minutes, with no timeout override.
-After design acceptance and a separate implementation release: publish test-only
-WIP, independent source/fixture/selection review, then fresh selected preparation
-and bounded execution only when released. Preserve the first actual result. Any
+Task-local selection: `tests/selections/1536-binding-result-admission.json`;
+static inventory is three methods, two descriptors, nine integration plus four unit
+cases. Existing category definitions/global selection are unchanged. Publish this
+WIP for independent source/fixture/selection review, then fresh selected preparation
+and bounded execution only when separately released. Preserve the first actual result. Any
 owning failure freezes its exact cause before a separately reviewed minimal source
 correction; no speculative production change or repeated passed controls. Nothing
 in this checkpoint authorizes those future executions now.
@@ -99,11 +102,28 @@ in this checkpoint authorizes those future executions now.
 
 Independent Astra XHigh DESIGN ACCEPTED without findings on
 `19aeaab55eb1e34bdcafe771df31c5ebb44d34f7`; coordinator confirmed the complete
-two-file diff, actual remote SHA, clean tree and diff check. This is design-only
-acceptance: the proposed13 cases have not executed, and implementation/build/
-discovery/tests/runtime remain unreleased. Next action is coordinator review of
-the accepted design and an explicit first-test-block release before any dependent
-work; this verdict does not manufacture owner approval or close B2. Report to Lorian.
+two-file diff, actual remote SHA, clean tree and diff check. Lorian's subsequent
+81105 acceptance releases this test-only WIP, not execution or B2 closure.
+
+Implemented assertions preserve all eight original rows and add only
+`(false, "blocked_incoming")`, with pressure incomingAction authored before original
+ordinary admission/selection. The two lost rows require the exact missing-action
+Error/path through actual issued A. The positive row requires Advanced with only
+`afterlife_conflict_control_snapshot_missing` at `activeConflict.controlState`:
+that diagnostic describes the deliberately held B echo, not a resolved turn.
+All three evaluations require no next request, identical checkpoint/pending/command,
+canonical and submitted bytes, and the same re-read A; no progress commit occurs.
+The existing strict `OriginalFixtureCompletion` supplies owned-root absence receipts
+for the per-row fixtures, with lease/session disposal preceding context cleanup.
+Actual disposition/issues and completed preservation checks use existing test output.
+The shared helper's existing final-control callers retain their scenarios; its
+cleanup/preservation assertions are strengthened without selecting those later owners.
+
+SOURCE/fixture/selection review is pending on the published test-only candidate.
+No build, discovery or test was run;13 cases are static expectations, not observed
+passes. After SOURCE acceptance, coordinator releases fresh selected PlanOnly and
+pins before a matching bounded actual. Freeze any first failure before proposing
+production changes. B2–B5/#1536 remain OPEN; no dependent block starts here.
 
 ### Accepted recovery and cold-blocker context — 2026-10-12
 

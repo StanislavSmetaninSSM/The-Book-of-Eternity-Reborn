@@ -1,6 +1,8 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -17,7 +19,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// Selects force binding with original dominance; its boolean setup alone must not preserve strong leverage.
     /// </param>
     /// <param name="alternative">
-    /// Uses no independent leverage, ready setup, decisive dice, a different target operation, a mixed cost burden, or an out-of-scope strain consequence.
+    /// Uses no independent leverage, ready setup, decisive dice, a different target operation, a mixed cost burden, an out-of-scope strain consequence, or an original incoming action.
     /// </param>
     /// <returns>
     /// A task completing after original admission and exact current-exchange permissions are checked.
@@ -31,6 +33,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     [InlineData(false, "nonmatching")]
     [InlineData(false, "mixed")]
     [InlineData(false, "outside")]
+    [InlineData(false, "blocked_incoming")]
     public Task OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult(bool strong, string alternative) =>
         VerifyOriginalLastBindingAsync(strong, alternative, continueFinalControl: false);
 
@@ -52,14 +55,17 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <returns>
     /// A task completing after this isolated fixture's required contract checks.
     /// </returns>
-    private static async Task VerifyOriginalLastBindingAsync(bool strong, string alternative, bool continueFinalControl,
+    private async Task VerifyOriginalLastBindingAsync(bool strong, string alternative, bool continueFinalControl,
         bool wrapper = false)
     {
         var operation = strong ? "force_binding" : "binding";
         var mixed = alternative == "mixed";
-        await using var context = await CreateCompleteConflictFrameContextAsync(
+        var losesLeverage = alternative is "lost" or "blocked_incoming";
+        var context = await CreateCompleteConflictFrameContextAsync(
             seedOriginalInputs: fixture => SeedOriginalLastBindingInputsAsync(fixture, strong, mixed),
             signedDice: [5, 15, 13, alternative == "decisive" ? 3 : strong ? 11 : 10]);
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), _storageOutput.WriteLine);
         var originalDraft = await WriteOriginalLastBindingDraftAsync(context, strong, alternative);
         if (wrapper)
         {
@@ -85,7 +91,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         var preserved = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
         foreach (var path in new[] { "input/turn_request.json", ResourceMaterializationContract.StatePath,
                      ResourceMaterializationContract.HistoryPath, WoundIdentityState.StatePath,
-                     WoundHistoryState.HistoryPath, SpiritualWoundOpportunityReceiptState.StatePath })
+                     WoundHistoryState.HistoryPath, SpiritualWoundOpportunityReceiptState.StatePath,
+                     EffectIdentityState.StatePath, "game_state/meta/soul_state.json", AfterlifeEntityProfileState.StatePath })
             preserved[path] = await context.FileSystem.ReadFileBytesAsync(lease, path);
 
         await CommitSpiritualContinuationDraftFirstPairAsync(context, lease);
@@ -144,7 +151,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             "/activeConflict/exchangeLog/1/";
         var expectedFields = new List<string>
         { "diceAudit/margin", "diceAudit/modifierBreakdown", "diceAudit/playerTotal" };
-        if (alternative == "lost" || mixed) expectedFields.AddRange(["after/controlState", "outcome"]);
+        if (losesLeverage || mixed) expectedFields.AddRange(["after/controlState", "outcome"]);
         if (mixed) expectedFields.AddRange(["actionCostAudit/player/after", "actionCostAudit/player/effectiveCost"]);
         Assert.Equal(expectedFields.Select(field => exchangePointer + field).Order(StringComparer.Ordinal),
             dependent.DependentDraftFields.Select(field => field.JsonPointer));
@@ -152,7 +159,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             field => Assert.Equal(AfterlifeSpiritualConflictState.StatePath, field.Path));
         var policy = Assert.IsType<SpiritualWoundDependentDraftPolicy>(dependent.DraftPolicy);
         Assert.True(policy.Allows(originalDraft));
-        if (alternative != "lost" && !mixed)
+        if (!losesLeverage && !mixed)
         {
             var forbiddenResult = originalDraft.DeepClone().AsObject();
             var binding = BindingRawActive(forbiddenResult, wrapper)["exchangeLog"]![1]!;
@@ -217,6 +224,68 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.False(policy.Allows(damaged), "The bounded policy accepted " + mutation);
         }
         await AssertUnpublishedAsync();
+        if (!continueFinalControl && losesLeverage)
+        {
+            restoredSession.Dispose();
+            var issued = await context.Validator.ReadSpiritualWoundContinuationAsync(lease);
+            Assert.Equal("dependent_draft", issued.Disposition);
+            Assert.NotEmpty(issued.Issues);
+            var a = Assert.IsType<SpiritualWoundContinuationRequest>(issued.Request);
+            Assert.Equal(dependent.DependentDraftFields.Select(field => field.JsonPointer),
+                a.DependentDraftFields.Select(field => field.JsonPointer));
+            var responseA = CreateSpiritualStagedEmptyResponse(a);
+            var checkpointBefore = await context.FileSystem.ReadFileBytesAsync(lease,
+                SpiritualWoundCaptureCheckpointState.StatePath);
+            var pendingBefore = await context.FileSystem.ReadFileBytesAsync(lease,
+                SpiritualWoundDecisionPendingState.StatePath);
+            Assert.NotNull(checkpointBefore);
+
+            // The incoming action belongs to the original admission, never to this correction.
+            correctedBinding["outcome"] = "blocked";
+            Assert.True(policy.Allows(corrected));
+            var originalBinding = BindingRawActive(originalDraft, wrapper)["exchangeLog"]![1]!;
+            Assert.True(JsonNode.DeepEquals(originalBinding["incomingAction"], correctedBinding["incomingAction"]));
+            Assert.Equal(alternative == "blocked_incoming", correctedBinding["incomingAction"] is JsonObject);
+            Assert.True(JsonNode.DeepEquals(BindingRawActive(originalDraft, wrapper)["controlState"],
+                BindingRawActive(corrected, wrapper)["controlState"]));
+            Assert.False(JsonNode.DeepEquals(correctedBinding["after"]!["controlState"],
+                BindingRawActive(corrected, wrapper)["controlState"]));
+            var submitted = Encoding.UTF8.GetBytes(corrected.ToJsonString());
+            await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath, submitted);
+            var evaluated = await context.Validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, a, responseA);
+            _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, strong, alternative,
+                continuationId = a.ContinuationId, disposition = evaluated.Disposition.ToString(), evaluated.Issues }));
+            if (alternative == "blocked_incoming")
+            {
+                Assert.Equal(ValidationService.SpiritualWoundContinuationDisposition.Advanced, evaluated.Disposition);
+                // Advanced carries the deliberately held B diagnostic; it is not a resolved turn.
+                var terminal = Assert.Single(evaluated.Issues);
+                Assert.Equal("afterlife_conflict_control_snapshot_missing", terminal.Code);
+                Assert.Equal("activeConflict.controlState", terminal.FilePath);
+            }
+            else
+            {
+                Assert.Equal(ValidationService.SpiritualWoundContinuationDisposition.Rejected, evaluated.Disposition);
+                var error = Assert.Single(evaluated.Issues,
+                    issue => issue.Code == "afterlife_conflict_blocked_missing_incoming_action");
+                Assert.Equal(IssueSeverity.Error, error.Severity);
+                Assert.Equal("activeConflict.exchangeLog[1].incomingAction", error.FilePath);
+            }
+            Assert.Null(evaluated.NextRequest);
+            Assert.Equal(submitted, await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath));
+            Assert.Equal(checkpointBefore, await context.FileSystem.ReadFileBytesAsync(lease,
+                SpiritualWoundCaptureCheckpointState.StatePath));
+            Assert.Equal(pendingBefore, await context.FileSystem.ReadFileBytesAsync(lease,
+                SpiritualWoundDecisionPendingState.StatePath));
+            Assert.Equal(selectedCommand, await context.FileSystem.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+            foreach (var image in preserved)
+                Assert.Equal(image.Value, await context.FileSystem.ReadFileBytesAsync(lease, image.Key));
+            var stillIssued = await context.Validator.ReadSpiritualWoundContinuationAsync(lease);
+            Assert.Equal("dependent_draft", stillIssued.Disposition);
+            Assert.Equal(JsonSerializer.Serialize(a), JsonSerializer.Serialize(stillIssued.Request));
+            _storageOutput.WriteLine(JsonSerializer.Serialize(new { strong, alternative,
+                NoncommittingBytesPreserved = true, SameIssuedA = true, NextRequestAbsent = true }));
+        }
         if (continueFinalControl)
         {
             restoredSession.Dispose();
@@ -352,6 +421,11 @@ public sealed partial class AfterlifeResourceCutoverTests
         var binding = pressure.DeepClone();
         binding["exchangeId"] = "last_binding_result";
         binding["operationType"] = operation;
+        if (alternative == "blocked_incoming")
+            binding["incomingAction"] = new JsonObject
+            {
+                ["operationType"] = "pressure", ["summary"] = "Хранитель отвечает духовным давлением."
+            };
         if (strong) binding["setup"] = true;
         if (alternative == "ready") binding["bindingSetup"] = "ready";
         binding["outcome"] = "success";

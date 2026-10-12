@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "spiritual-binding-result-dependency",
+      "reason": "#1536 B2 test-only actual blocked admission: retain eight original policy rows, exercise real issued A rejection on both lost rows, and add one original-incoming ordinary binding row; no publication or cold rerun.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B2 / RESULT-CLOSURE-BINDING rev1",
+        "Ordinary blocked requires original incomingAction; exact missing-action diagnostic on both lost rows",
+        "Advanced retains terminal echo diagnostic; unchanged checkpoint, saved choice, canonical and submitted bytes, same issued A without commit"
+      ]
+    },
+    {
+      "category": "spiritual-binding-control-boundaries",
+      "reason": "Retain the four existing exact control presence/value and raw carrier boundary controls alongside the affected B2 result policy.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B2 / RESULT-CLOSURE-BINDING rev1",
+        "Absent/null/none control presence and effective replacement-carrier precedence; no ordinary-owner or publication claim"
+      ]
+    }
+  ]
+}
