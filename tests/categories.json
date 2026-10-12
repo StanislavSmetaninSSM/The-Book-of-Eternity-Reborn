@@ -72,7 +72,7 @@
         },
         {
             "id": "qte-physical-injury-consumer-common-controls",
-            "responsibility": "#1536 source-aware component common publication controls: four theories/11 rows. Genuine actual QTE42 followed by actual StagePlayerTurn43/official Reader, held-source validation and existing common normalizer. NONE/CREATE first publication and retained genuine snapshot exact/changed replay preserve once-only durable state and client IDs. Staged draft/scene/foreign-command drift refuses old cache/guarded publication; legal scene resubmission issues a new common fingerprint. Controlled actual receipt-member publication failure proves whole-tree rollback and exact revalidation/retry once. Source severity/location bounds refuse before publication. All component calls are labelled; full real ProcessPlayerTurn NONE/CREATE proof belongs to separate unchanged causal Facts.",
+            "responsibility": "#1536 source-aware component common publication controls: five theories/13 rows. Genuine actual QTE42 followed by actual StagePlayerTurn43/official Reader, held-source validation and existing common normalizer. NONE/CREATE first publication and retained genuine snapshot exact/changed replay preserve once-only durable state and client IDs. Staged draft/scene/foreign-command drift refuses old cache/guarded publication; legal scene resubmission issues a new common fingerprint. Controlled actual receipt-member publication failure proves whole-tree rollback and exact revalidation/retry once. Source severity/location bounds refuse before publication. Actual command publication hooks mutate signed-pristine player/identity roots after adapter admission; genuine downstream client-owned diagnostics refuse both task construction and dispatch before any worker proposal. All component calls are labelled; full real ProcessPlayerTurn NONE/CREATE proof belongs to separate unchanged causal Facts.",
             "excludes": "No fabricated valid occurrence/receipt/binding/hash, copied or resigned original snapshot, new allocator/writer/harness, component call labelled full engine proof, archive/new-root/fresh-process qualification, passing producer/projection broad repeats, Windows/C5/journal/provider/model/aggregate checks.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs",
@@ -100,7 +100,8 @@
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentStagedInputDriftRevokesCacheAndPreservesForeignCommand",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentReceiptMemberFailureRollsBackAndExactResubmissionPublishesOnce",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentProposalCannotExceedSealedMaximumOrLocation"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentProposalCannotExceedSealedMaximumOrLocation",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPostAdmissionCanonicalMutationCannotDelegate"
                     ]
                 }
             ]

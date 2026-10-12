@@ -245,7 +245,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task<QteStoryRun> RunActualQteStorySourceAsync(string? preacceptMutation = null,
         string? postHandoffMutation = null, string mode = "ordinary", bool pauseAtAction = false, bool bounded = false,
         bool physicalDeclaration = false, int physicalMaximum = 2, bool physicalOnlyUnselected = false,
-        Action? observeQteAction = null, Action<AgentConsoleLiveInputSource>? retainLiveInput = null)
+        Action? observeQteAction = null, Action<AgentConsoleLiveInputSource>? retainLiveInput = null,
+        bool physicalSiblingDamage = false)
     {
         var run = new QteStoryRun();
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
@@ -326,6 +327,15 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             var authoredOffer = BuildPhysicalInjuryOffer(declared: physicalDeclaration, maximum: physicalMaximum);
             if (physicalOnlyUnselected) authoredOffer["terminalOutcomes"]![0]!.AsObject().Remove("physicalInjury");
+            if (physicalSiblingDamage)
+            {
+                var changes = authoredOffer["terminalOutcomes"]![0]!["responseFragment"]!["resourceChanges"]!.AsArray();
+                var sibling = changes[0]!.DeepClone().AsObject();
+                sibling["amount"] = 1;
+                sibling["eventRef"] = $"turn_{PhysicalInjurySourceTurn}:qte_terminal:1:resource:2";
+                sibling["reason"] = "Каменная крошка дополнительно задевает героя.";
+                changes.Add(sibling);
+            }
             await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, authoredOffer.ToJsonString());
             var timestamp = DateTime.UtcNow.ToString("o");
             await WriteJsonAsync("output/narrative_response.json", new { response = QteStoryNarrative, timestamp });

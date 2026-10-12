@@ -26,6 +26,13 @@ public partial class GameEngine
                 ordinaryUpstreamAccepted ? StageMortalQteDecisionAsync : null,
                 ordinaryUpstreamAccepted ? SealMortalQteDecisionAsync : null,
                 ordinaryUpstreamAccepted ? () => _mortalQteExactReplay : null);
+            if (_mortalQteDecisionImages is not null)
+                issues = issues.Select(issue => issue.Category == IssueCategory.ClientOwnedSurface ||
+                    issue.FilePath == MortalWoundOccurrenceState.StatePath ||
+                    issue.FilePath.StartsWith(MortalWoundOccurrenceState.StatePath + ".", StringComparison.Ordinal) ||
+                    issue.FilePath == MortalWoundOpportunityReceiptState.StatePath ||
+                    issue.FilePath.StartsWith(MortalWoundOpportunityReceiptState.StatePath + ".", StringComparison.Ordinal)
+                        ? MortalWoundOpportunityAdapter.PrivateSourceIssue(issue) : issue).ToArray();
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
                 await RevokeOwnedMortalQteCommandAsync(lease);
             return issues;

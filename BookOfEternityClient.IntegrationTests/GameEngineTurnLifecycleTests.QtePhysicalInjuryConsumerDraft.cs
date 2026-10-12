@@ -28,10 +28,11 @@ public sealed partial class GameEngineTurnLifecycleTests
     public async Task QtePhysicalInjuryConsumer_ComponentDraftRequiresExactSignedOfferAndObservedAbsence(string mutation)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
-        var source = await RunActualQteStorySourceAsync(physicalDeclaration: true, physicalMaximum: 2);
+        var source = await RunActualQteStorySourceAsync(physicalDeclaration: true, physicalMaximum: 2,
+            physicalSiblingDamage: mutation == "event_order");
         Assert.Null(source.Failure);
         Assert.True(source.ActionObserved);
-        await AssertActualQteStoryFinalizedAsync(_fs, source.Source!, source.StoryAtHandoff!, 155m);
+        await AssertActualQteStoryFinalizedAsync(_fs, source.Source!, source.StoryAtHandoff!, mutation == "event_order" ? 154m : 155m);
         var occurrence = await AssertActualPhysicalOccurrenceAsync(source, 2);
         Assert.False(_fs.FileExists(MortalWoundOpportunityReceiptState.StatePath));
         Assert.False(_fs.FileExists(WoundHistoryState.HistoryPath));
@@ -44,7 +45,17 @@ public sealed partial class GameEngineTurnLifecycleTests
             var root = JsonNode.Parse((await _fs.ReadFileAsync(MortalWoundOccurrenceState.StatePath))!)!.AsObject();
             var row = Assert.Single(root["occurrences"]!.AsArray())!.AsObject();
             if (mutation == "missing_candidate") row["producerCandidateCount"] = 2;
-            else row["acceptedEvents"] = new JsonArray(row["acceptedEvents"]!.AsArray().Reverse().Select(value => value!.DeepClone()).ToArray());
+            else
+            {
+                var events = row["acceptedEvents"]!.AsArray();
+                Assert.True(events.Count >= 2, "The real selected QTE must publish distinct ordered siblings before an order mutation.");
+                Assert.Equal(events.Count, events.Select(value => value!["eventRef"]!.GetValue<string>()).Distinct(StringComparer.Ordinal).Count());
+                Assert.Equal($"turn_{PhysicalInjurySourceTurn}:qte_terminal:1:resource:1", events[0]!["eventRef"]!.GetValue<string>());
+                Assert.Equal($"turn_{PhysicalInjurySourceTurn}:qte_terminal:1:resource:2", events[1]!["eventRef"]!.GetValue<string>());
+                var reversed = new JsonArray(events.Reverse().Select(value => value!.DeepClone()).ToArray());
+                Assert.False(JsonNode.DeepEquals(events, reversed));
+                row["acceptedEvents"] = reversed;
+            }
             await _fs.WriteFileAtomicAsync(MortalWoundOccurrenceState.StatePath, root.ToJsonString());
         }
 

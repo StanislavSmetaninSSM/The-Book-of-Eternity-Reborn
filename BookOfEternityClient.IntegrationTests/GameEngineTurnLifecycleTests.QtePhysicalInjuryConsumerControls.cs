@@ -167,6 +167,56 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     [Theory]
+    [InlineData("player")]
+    [InlineData("identity")]
+    public async Task QtePhysicalInjuryConsumer_ComponentPostAdmissionCanonicalMutationCannotDelegate(string mutation)
+    {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var component = await PrepareMortalDecisionComponentAsync(true);
+        var path = mutation == "player" ? WoundCarrierCatalog.PlayerPath : WoundIdentityState.StatePath;
+        Assert.False(_fs.FileExists(path));
+        var injected = false;
+        _consoleMutationObserver = observed =>
+        {
+            if (injected || observed != AcceptedMechanicsPlan.WoundCommandPath) return;
+            injected = true;
+            // Real command-only publication occurs after signed adapter admission.
+            // Simulate unauthorized canonical mutation; this is deliberately invalid input.
+            Directory.CreateDirectory(Path.GetDirectoryName(_fs.ResolvePath(path))!);
+            File.WriteAllText(_fs.ResolvePath(path), "null");
+        };
+        IReadOnlyList<ValidationIssue> issues;
+        try { issues = await ValidateMortalDecisionComponentAsync(component.Engine); }
+        finally { _consoleMutationObserver = null; }
+        Assert.True(injected);
+        var actual = Assert.Single(issues.Where(issue => issue.Code == "wound_materialization_client_owned_root_mutated" && issue.FilePath == path));
+        Assert.Equal(MortalWoundOpportunityAdapter.PrivateSourceIssueSection, actual.Section);
+        Assert.Equal("Client", actual.Actor);
+        Assert.False(_fs.FileExists(AcceptedMechanicsPlan.WoundCommandPath));
+        var profile = GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate() with { Enabled = true, LaunchCommand = "false" };
+        var source = new WorkerTurnReference { SessionId = component.Snapshot.SessionId,
+            RequestId = component.Snapshot.RequestId, TurnNumber = component.Snapshot.TurnNumber };
+        string generation;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync()) generation = _fs.GetOrCreateSessionGeneration(lease);
+        Assert.Throws<ArgumentException>(() => GmWorkerTaskPacketBuilder.BuildValidationRepairTask(profile,
+            "post_admission_private_source", source, [actual], new Dictionary<string, string>(), "2026-10-12T00:00:00Z", generation));
+        var audit = new GmWorkerAuditLog(_fs);
+        var delegator = new GmWorkerValidationRepairDelegator(_fs, new GmWorkerBridgePool(_fs, auditLog: audit),
+            new GmWorkerApplyGate(GetPrivateField<ValidationService>(component.Engine, "_validator"), audit), audit);
+        var dispatched = await delegator.TryRunAsync([profile], [actual], source, "2026-10-12T00:00:00Z", 1,
+            expectedSessionGeneration: generation);
+        Assert.Equal(GmWorkerValidationRepairOutcome.TaskBuildFailed, dispatched.Outcome);
+        Assert.Contains("not worker proposal targets", dispatched.FallbackReason, StringComparison.Ordinal);
+        Assert.Null(dispatched.Task);
+        Assert.Null(dispatched.RunResult);
+        Assert.False(dispatched.ReadySignalCreated);
+        Assert.False(_fs.FileExists(GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath));
+        Assert.Equal("null", await _fs.ReadFileAsync(path));
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync()) Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
+        WritePhysicalInjuryDiagnostic("qte_consumer_component_downstream_private_refusal", new { mutation, injected, actual, dispatched });
+    }
+
+    [Theory]
     [InlineData("severity")]
     [InlineData("location")]
     public async Task QtePhysicalInjuryConsumer_ComponentProposalCannotExceedSealedMaximumOrLocation(string mutation)

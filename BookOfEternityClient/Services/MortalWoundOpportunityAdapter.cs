@@ -117,7 +117,7 @@ internal static class MortalWoundOpportunityAdapter
         });
     }
 
-    private static ValidationIssue PrivateSourceIssue(ValidationIssue issue) => new(
+    internal static ValidationIssue PrivateSourceIssue(ValidationIssue issue) => new(
         issue.FilePath, issue.Severity, issue.Message, issue.Code, actor: "Client", section: PrivateSourceIssueSection,
         expected: issue.Expected, actual: issue.Actual, repairHint: issue.RepairHint, category: issue.Category,
         repairTargetFiles: issue.RepairTargetFiles)

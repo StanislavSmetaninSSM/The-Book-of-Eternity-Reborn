@@ -5,8 +5,65 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (COMMON NONE/CREATE CONNECTED SOURCE READY; FINITE CONTROLS/GM DOCS/WORKER SCOPE WRITTEN; REVIEW/CHECKS UNRUN)
+## Current T070 boundary — 2026-10-12 (SOURCE BLOCKED79; FINDINGS1–2 CORRECTION MIDPOINT WIP; FINDING3 UNFINISHED/FINDING4 HOLD)
 
+Mandatory actual retained Astra XHigh full c7..79a2e338bf8e890cd6f6d55320ca2304ec6dcb11
+SOURCE/FIXTURE/SELECTION review was BLOCKED by four Important findings, no Critical.
+No candidate project execution occurred. This stopped first correction midpoint authors
+findings1–2 only; finding3 repair routing/retry is UNFINISHED and finding4 resource continuity
+is HOLD for the source-backed consultation/ruling. No SOURCE acceptance or runtime fix claim.
+ROOT owns publication/recovery/review/execution; writer performed source/static checks only.
+
+Finding1: event_order previously reversed a one-event real source and was not a negative.
+Only that row now requests a second lawful selected QTE health Damage1 sibling through the
+existing actual ProcessPlayerTurn/QTE helper; all helper defaults remain unchanged. Genuine
+selected Damage5 first remains160→155, sibling gives final154. The control requires at least
+two distinct actually finalized eventRefs in original order, then asserts reversal really
+changes JSON before signing the deliberately corrupt baseline with the existing component
+baseline writer. No valid occurrence/event/hash/source witness is fabricated; ce955/NONE/
+CREATE/projection protected Facts remain byte exact. Raw-draft theory uses the production
+canonical baseline writer; other component controls use actual StagePlayerTurn43/official
+Reader. Neither component setup is mislabeled full ordinary-turn/archive proof.
+
+Finding2: after real Mortal adapter admission, downstream ClientOwnedSurface failures and
+feature-owned pending/receipt failures are classified before command revocation. This check
+is conditional on the engine's issued Mortal decision images; unrelated afterlife/NPC flows
+are not globally reclassified. Existing task builder and dispatch reject the feature-specific
+private-source classification before enumerating proposal targets despite game_state/**.
+One new two-row component theory uses the actual command-publication hook to mutate the
+signed-pristine player/identity root after admission, requires the real emitted
+wound_materialization_client_owned_root_mutated diagnostic, then invokes actual task building
+and delegator TryRunAsync. It requires TaskBuildFailed/no task/run/ready/current command/cache,
+preserves the corrupted root for refusal evidence and resets its hook before strict cleanup.
+The enabled test-only profile uses literal false, never a model/provider launch command.
+All new controls are UNRUN; no observed RED or passing claim is made.
+
+Current static full preparation inventory17 methods/42 cases/8 descriptors/default30;
+controls remainder15 methods/40 cases/6 descriptors/default20, excluding two causal Facts.
+Same existing category budgets remain unchanged; common owner now5 methods/13 cases.
+Static catalog707 categories/11543 methods, NOT discovery; old702 nodes/suffix/global CI/
+selection unchanged, only the task-local common owner expands for this necessary negative.
+[Preparation](../../tests/selections/1536-qte-physical-injury-consumer-preparation.json)
+[Controls remainder](../../tests/selections/1536-qte-physical-injury-consumer-controls.json)
+
+Finding3 remains explicit: bare public-file remap breaks existing logical repair packet
+coordinates; rejected adapter proposals have no accepted command, and downstream staged
+command retry proof is currently revoked before capture. Next bounded source work must
+preserve existing logical coordinates + exact public repair target and source-bound typed
+retry proof through the real repair path, including acquisition narration and resource/skill
+proposal diagnostics; no invalid accepted command may be fabricated. Finding4 is untouched:
+original resource continuity cannot be waived because a Mortal receipt exists. Consultant
+is examining authentic completed-publication proof and durable lifetime; no source shortcut.
+
+Historical accepted NONE4010/CREATEc7 proper causal REDs remain separately1 executed/0 PASS/
+1 FAIL; producer1b23 executed/22 PASS/1 FAIL and projection4d4 actual/28 executed/26 PASS/
+2 FAIL unchanged. New compile/discovery/catalog/runtime and fixed SOURCE gate remain UNRUN/
+PENDING. Actual pending+consumed SaveGame→child LoadGame/newroot/freshregistries/freshprocess
+and full consumer/T070/FR-063/parent/#1536 qualification remain OPEN/UNRUN. All checkboxes,
+protected Facts and historical packets unchanged. Mutations STOPPED for immediate ROOT WIP
+publication before remaining finding3 authoring/finding4 consultation.
+
+Historical79 connected candidate/source-only selection boundary (full gate later BLOCKED):
 COMMON NONE/CREATE connected consumer candidate is SOURCE READY for ROOT publication and
 mandatory actual retained Astra XHigh SOURCE/FIXTURE/SELECTION review of the full c7..candidate
 change. This is source readiness, not acceptance or qualification. Fifth controls midpoint
