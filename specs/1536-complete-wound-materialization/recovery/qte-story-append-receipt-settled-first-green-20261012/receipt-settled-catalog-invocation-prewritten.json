@@ -1,0 +1,7 @@
+{
+  "source": "6552e488c60fe8cca9458e280bb39f7acb1f38a6",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild",
+  "testsExpected": 0,
+  "unitBinaries": "unchanged earlier fresh174aabad; unit/support/production unchanged; only integration fixture and metadata changed",
+  "timeBefore": "2026-10-12T14:01:15.738745+00:00"
+}

@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT BLOCKER EVIDENCE ACCEPTED; CANONICAL BASELINE SOURCE READY)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT BLOCKER EVIDENCE ACCEPTED; CANONICAL BASELINE SOURCE ACCEPTED; RECEIPT1 PASS; EVIDENCE PENDING)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -39,9 +39,12 @@ Receipt correction sourcef7d901b925ceb0a9f05bc74bc795313423e56a07 received focus
 fresh compile/runtimecaa3c5d8 preparation completed, then its actual132555 reached genuine
 source42 but timed out after six real mixed-state refusals. Independent BLOCKER EVIDENCE
 accepted the37-artifact packet publishedd0482fa945616c3afa429bb882c69df9f94e44fb.
-Current canonical-baseline fixture correction is source READY on that base: bounded-only
-pre-staging serialization and accumulated skills, with the same exact one-case selection.
-Its fresh catalog/build/PlanOnly/runtime are UNRUN pending publication and focused source gate.
+Canonical-baseline fixture source6552e488c60fe8cca9458e280bb39f7acb1f38a6 received focused
+SOURCE/FIXTURE/SELECTION acceptance. Fresh preparation completed and first affected actual
+140225 passed1/1; its17-artifact GREEN packet is frozen below, EVIDENCE review pending.
+Prior15 completed13PASS2FAIL plus1 incomplete remain unchanged; this separate1 PASS makes
+16 completed14PASS2FAIL plus one incomplete outcome across six invocations total.
+No aggregate GREEN run is implied.
 No occurrence producer or canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
@@ -545,8 +548,8 @@ those15 completed plus this1 incomplete invocation, not16 executed tests.
 After2 failed receipt-fixture attempts, independent Astra XHigh BLOCKER EVIDENCE accepted
 all37 artifacts/pins on publishedd0482fa9. Whole-baseline readback proves all six current
 pairs retain recursive property order/values after solely removing empty removeActiveSkills.
-The source-backed canonical pre-staging correction is authored below; fresh verification
-is UNRUN. Publish/review it before another actual. No afterimage copying into source, snapshot
+The source-backed canonical pre-staging correction is recorded below with focused source
+acceptance and its first affected1 PASS. First blocker evidence stays immutable. No afterimage copying into source, snapshot
 re-sign, guard waiver, bigger timer, new protocol/harness or producer. Parent/T070/#1536 open;
 all checkboxes unchanged.
 
@@ -563,7 +566,7 @@ inference about the unlogged first refusal, not an observed first runtime code. 
 
 That source gate's fresh selected preparation and corrected1-case actual are now complete
 as recorded above: real request, six mixed-state refusals, incomplete/timeout with no TRX.
-Only the new canonical-baseline correction's fresh checks remain UNRUN. No passing-neighbor
+The canonical-baseline correction's fresh checks are recorded below. No passing-neighbor
 rerun or budget increase. Producer/prerequisite closure stay pending; all prior packets and
 checkboxes remain immutable.
 
@@ -594,7 +597,7 @@ after mixed-state refusal/timeout. The immutable first6 result stays5 PASS/1 FAI
 lifecycle predicates UNREACHED.
 The original physical causal Fact/hash and all checkboxes remain unchanged.
 
-### Receipt canonical baseline correction — source READY, exact1-case checks UNRUN
+### Receipt canonical baseline correction — source ACCEPTED, first exact1-case GREEN
 
 Only SeedQteStoryBoundedReactionAsync, reached by bounded=true before ProtectedBefore and
 actual ProcessPlayerTurn, changes. Preserve the full authored skills/skillId/poiseDamage/
@@ -613,10 +616,39 @@ Existing qte-story-append-receipt owner/task-local selection still selects1 exis
 the settled six-root baseline; all unrelated catalog bytes/selectors and global CI are intact.
 Existing early-return diagnostics remain; no new repair observer/callback is added because
 the existing checkpoint enum has no verified post-repair-publication seam. No harness, timer,
-production, authority, snapshot, schema or oracle changes. Fresh source review and root-owned
-preparation/actual are UNRUN; prior15 completed13PASS2FAIL plus1 incomplete invocation and
-strict-versus-manual cleanup classifications are preserved. Producer remains NOT IMPLEMENTED;
+production, authority, snapshot, schema or oracle changes. Focused source6552e488 acceptance and root-owned
+preparation/first actual are recorded next; prior15 completed13PASS2FAIL plus1 incomplete
+invocation and strict-versus-manual cleanup classifications are preserved. Producer remains NOT IMPLEMENTED;
 all checkboxes and original causal Fact/hash remain unchanged.
+
+### Settled receipt first GREEN1 — 2026-10-12, EVIDENCE review pending
+
+Compile/runtime/source gate6552e488c60fe8cca9458e280bb39f7acb1f38a6; independent actual
+retained Astra XHigh SOURCE/FIXTURE/SELECTION accepted, zero Important/Critical findings.
+Fresh integration PlanOnly135845 built0 errors77 warnings,1 method/1 case/1 descriptor,
+0 tests; metadata NoBuild catalog140116 validated688 categories/11519 methods,0 tests.
+First matching actual140225 (`20261012-140225-029-303899-ab931e082b204a679d8da090d2aa78ea-categories`)
+completed1/1 PASS, zero FAIL/skips/duplicates/timeout,13.8621120s, complete selection.
+Same category5/default10; first actual on this corrected source, third receipt-fixture
+invocation total. No successful neighboring case was repeated.
+
+Full raw TRX confirms real original request42/09f8e12bab2d462f820c7765735bac38 and snapshot
+E3840439717BEE6E3EE3A9F6F0CD042277110BB281BA4D239A54FDD489DD8E24; actual client append,
+QTE action and awaiting receipt. Actual idle without receipt retains turn42/exact story,
+six protected roots and100 original artifacts. Actual correlated GM receipt through the
+recreated engine idle resumes selected Damage5 plus bounded2 (canonical health160→153),
+exact original story, terminal continuation and100 original artifacts removed. The old
+oracles are unchanged. Root verified all44 immutable source/5 fresh binary pins, full
+TRX stdout/error and both distinct strict cleanup receipts with actual root absence.
+No manual cleanup or project-runtime security refusal occurred.
+
+The immutable [17-artifact first GREEN packet](./recovery/qte-story-append-receipt-settled-first-green-20261012)
+is locally frozen; root publication and independent EVIDENCE acceptance remain next.
+Initial15 completed13PASS2FAIL and the separate incomplete timeout are preserved. This
+separate1 PASS yields16 completed14PASS2FAIL across six actual invocations total including
+one incomplete; no rewritten first outcome or aggregate GREEN claim. Bounded story
+prerequisite verification is observed, acceptance pending its EVIDENCE gate. Occurrence
+producer/next-snapshot none/create are NOT IMPLEMENTED; T070/#1536 and every checkbox stay open.
 
 ### Story preservation first GREEN7 — 2026-10-12
 
