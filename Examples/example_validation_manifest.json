@@ -2843,5 +2843,12 @@
       "runtimeScenarioIds": [],
       "exemptionReason": "The afterlife global flags example documents targeted update, hidden visibility, obsolete flag, and worldStateFlags separation; dedicated AfterlifeGlobalFlag validation and normalizer tests cover runtime behavior."
     }
-  ]
+  ],
+  "qtePhysicalOpportunityProjectionCoverage": {
+    "contractId": "mortal_qte_physical_opportunity_projection_v1",
+    "file": "E_CLI_QTE_Offer.txt",
+    "inputSurface": "input/turn_request.json.woundOpportunities",
+    "validationRoute": "ExampleDocumentationValidationTests.QtePhysicalOpportunityProjectionExample_IsClosedSafeClientInput",
+    "coverageLimit": "Closed public JSON grammar and explicit example maximum/cause/location subset only; official snapshot, complete canonical batch and browser proof behavior are covered by the focused projection controls. N+1 wound decision/consumer remains pending."
+  }
 }

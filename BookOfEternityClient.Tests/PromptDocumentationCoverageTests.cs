@@ -10,6 +10,30 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class PromptDocumentationCoverageTests
 {
     [Fact]
+    public void QtePhysicalOpportunityProjection_IsDocumentedAsClosedReadOnlyInput()
+    {
+        foreach (var path in new[]
+        {
+            new[] { "CLI_API_Specification.md" }, new[] { "CLI_Agent_Daemon_Specification.md" },
+            new[] { "Rules", "Block_CLI_QTE.txt" }, new[] { "TaskGuides", "CLI_Step_Main.txt" },
+            new[] { "Examples", "E_CLI_QTE_Offer.txt" },
+            new[] { "BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs" }
+        })
+        {
+            var text = ReadRepoFile(path);
+            foreach (var token in new[] { "woundOpportunities", "default `[]`", "canonical pending order",
+                         "complete pending/consumed batch", "ordered accepted-event", "official new-turn snapshot",
+                         "opportunityRef", "maximumSeverity", "safeContext", "allowedLocationKinds",
+                         "signed observed absence", "no live fallback", "N+1 wound decision/consumer remains pending" })
+                Assert.Contains(token, text, StringComparison.Ordinal);
+        }
+        var manifest = JsonNode.Parse(ReadRepoFile("Examples", "example_validation_manifest.json"))!;
+        var entry = manifest["qtePhysicalOpportunityProjectionCoverage"]!;
+        Assert.Equal("mortal_qte_physical_opportunity_projection_v1", entry["contractId"]!.GetValue<string>());
+        Assert.Contains("Closed public JSON grammar", entry["coverageLimit"]!.GetValue<string>(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MortalItemIdentityIndex_IsClientOwnedAcrossValidationAndRepairMappings()
     {
         var issueClassification = ReadRepoFile(

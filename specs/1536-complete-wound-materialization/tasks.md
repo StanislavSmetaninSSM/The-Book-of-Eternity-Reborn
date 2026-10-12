@@ -5,57 +5,79 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (PROJECTION CAUSAL RED EVIDENCE ACCEPTED87b5; MINIMUM SAFE-PROJECTION/STAGING SOURCE WIP; CONTROLS/GUIDANCE UNWRITTEN; CHECKS UNRUN)
+## Current T070 boundary — 2026-10-12 (PROJECTION CAUSAL RED EVIDENCE ACCEPTED87b5; MINIMUM SAFE-PROJECTION SOURCE/FIXTURES/SELECTION READY; CHECKS UNRUN)
 
 Actual retained Astra XHigh proper consumer projection causal RED EVIDENCE/status accepted
-87b5e355a2e6bbec7c2edc803462e2dd275e27f6, root remote/recovery433 selected files exact,
-17 artifact originals/83 immutable4b source/5 fresh binaries verified. Frozen historical
-manifest retains its pre-review PENDING bytes; acceptance is active metadata only. Source N42
-positive and real N43 official request/snapshot precede the exact missing safe projection
-predicate; old BOM blocker remains UNREACHED/separate. Producer qualification accepted1b,
-consumer2actual0PASS2FAIL and every old checkbox/packet/ce955 Fact unchanged.
+87b5e355a2e6bbec7c2edc803462e2dd275e27f6; historical17-artifact packet and pre-review manifest
+remain byte unchanged. First production/staging WIP published1f03ec9417a9a7dc84eddc04333237b1c711a2fe,
+exact remote/clean435-file selected GitHub recovery checked by root; that publication is not
+SOURCE acceptance. Current source/test/docs/selection candidate is READY for root publication
+and mandatory independent SOURCE/FIXTURE/SELECTION review. Build/discovery/catalog/PlanOnly/
+runtime for this candidate are ALL UNRUN; cached compile4b binaries are not fresh for it.
 
-Current stopped production/staging WIP adds TurnRequest.woundOpportunities defaultempty and
-one write-free MortalQteWoundOpportunityProjection over official Reader present/signed-absent
-roots. Strict pending/consumed/identity/history/carrier parse and agreements, complete all
-pending+consumed batches/event-vector rebind occur BEFORE one first eligible canonical QTE/
-player physical row is selected. Existing WoundOpportunityAuthority composes the explicit
-bound; public output is only4 safe row fields/context3, no new authority, HP severity or IV
-default. No canonical source/receipt/wound writes, second reducer, GM decision consumer or
-old terminal-capsule patch.
+TurnRequest.woundOpportunities defaults to[]; write-free projection uses only the genuine
+new ordinary snapshot and exact signed present/observed-absent roots, complete strict
+pending+consumed batch/event/history/carrier agreement BEFORE first canonical eligible QTE/
+player physical selection. Output is exactly4 public row fields/context3, explicit I..IV
+bound, no HP formula/defaultIV or new authority. Current presence publisher adds ONLY two
+Mortal observations (21 total); prior19 may retain existing unrelated read behavior but
+cannot prove new uncovered Mortal absence. Exact16/prior18 affected fixtures now exclude the
+new Mortal keys. No older-save migration/live fallback/owner anti-tamper mechanism is added.
 
-Necessary observed-absence seam adds ONLY pending Mortal occurrence/receipt paths to the
-existing current presence publisher (21 paths). Prior19 map retains only existing unrelated
-reader behavior alongside accepted16/18 sets; it cannot prove uncovered new Mortal absence.
-New projection uses CreateWithObservedOptionalPaths and requires explicit signed absence,
-no live fallback/fixture-seeded empty roots/new save migration. The AGENTS pre-release
-compatibility guard does not authorize broad older-save support. Finite new negative must
-prove prior19 without Mortal observations fails this new projection even when ordinary read
-remains permitted; meaningful empty/pristine/tamper/full-batch/order/closed-row controls
-remain unwritten and UNRUN.
+Console final rewrite uses exact provisional bytes inside one staging lease and existing
+rollback. Browser provisional request→Reader→safe projection→final physical request/proof
+publication→exact revalidation→seal stays under the SAME preparing lease/guards. Final returned
+PlayerTurnPreparation.Request is now re-deserialized from that same final request (browser
+Staged.RequestJson or console projected JSON), with original session/request/turn/timestamp/
+action agreement required. New console/browser control observes memory==physical safe row;
+browser also observes actual staged-proof request/manifest/authority agreement. No unrelated
+browser guard or capsule lifetime change. Direct stage controls are component evidence,
+not substitutes for the unchanged actual ProcessPlayerTurn causal Fact.
 
-Console holds one staging lease for same-identity provisional request→official Reader→
-projection→exact provisional before-image rewrite→physical equality/Reader revalidation;
-existing staging rollback surrounds it. Browser uses the SAME held preparing lease and
-current preparing-state guard for provisional physical request, projects before capturing
-final Staged.RequestJson/StagingProof, publishes final request with exact provisional bytes,
-revalidates exact final physical request/projection and then seals preparation. No later
-independent rewrite, second browser lease, new snapshot/re-sign or stale proof. Existing
-browser direct staging fixture consumers and exact competing-request/proof/failure controls
-require narrow source/fixture review; no accepted browser guard is waived.
+Finite preparation inventory:18 methods/25 cases/8 descriptors across6 categories, protective
+default24 minutes (5 preparation +5 causal +14 remainder). FIRST matching actual causal GREEN
+must use the original unchanged1-method/1-case/1-descriptor selector, category5/default10,
+then freeze/review its outcome. Controls remainder excludes that method:17 methods/24 cases/
+7 descriptors across5 categories, default19 (5 + budgets14); no passing causal rerun.
 
-Source WIP only: SOURCE acceptance/build/catalog/discovery/PlanOnly/runtime UNRUN. The one
-existing causal projection Fact/selector remains byte unchanged for FIRST matching GREEN
-separately; no unchanged RED rerun. Remaining focused tests/category owners/task-local
-control selector and coherent existing GM request/guide/examples/manifest/docguards are
-UNWRITTEN. Planned responsibilities are signed-pristine/empty/uncovered-presence/tamper,
-complete batch/event reconstruction before first-candidate ordering/closed row, exact
-browser preparing proof/competing-request preservation and projection-only documentation.
-Exact methods/cases/descriptors/budgets will be recorded with the finite controls block;
-no broad browser/C5/afterlife/presence suite or global CI/selector change. Mutation STOPPED
-for immediate root production/staging WIP publication before further authoring. This WIP
-does not implement none/create/live receipt/replay/atomic wound publication/after-terminal
-archive/fresh-process consumer goal; full T070/parent/#1536 remain OPEN.
+| Task-local owner | Exact methods / cases / descriptors | Budget minutes |
+| --- | --- | --- |
+| qte-physical-opportunity-projection-controls | 3 new integration theories / 9 cases / 1 | 5 |
+| qte-physical-opportunity-snapshot-presence | 1 changed unit Fact + 2 changed integration methods (1 Fact/2-row theory) + 1 new prior19 Fact / 5 cases / 2 | 2 |
+| qte-physical-opportunity-browser-staging | 5 exact existing browser Facts / 5 cases / 1 | 3 |
+| qte-physical-opportunity-event-order | 3 exact existing typed behavior Facts / 3 cases / 1 | 2 |
+| qte-physical-opportunity-documentation | 2 new unit/integration guards / 2 cases / 2 | 2 |
+
+Exact method lists/reasons/exclusions are recorded in tests/categories.json and
+[controls remainder selection](../../tests/selections/1536-qte-physical-opportunity-projection-controls.json);
+[full preparation selection](../../tests/selections/1536-qte-physical-opportunity-projection-preparation.json)
+is for fresh selected build/PlanOnly only. Five task-local owners intentionally overlap
+existing consumers; old catalog suffix and global CI/selection stay unchanged. Six new
+methods plus one method rename predict11532 discovered methods/700 categories; this is
+static inventory, not discovery evidence. New controls include signed pristine/explicit
+empty roots versus later live corruption, successful actual bounded sibling projection,
+corrupt event order/missing candidate/later invalid sibling/receipt refusal before safe
+selection, prior19 uncovered absence, exact console/browser request/proof, and named
+competing request/staged consumer/rollback failure controls. Named pure dependencies prove
+canonical candidate ordinal order and full historical event rebind; they do not fabricate
+an engine source. Per-test own fixture roots/strict cleanup use existing fixture mechanisms.
+
+All six GM surfaces (API, daemon, QTE rules, main task guide, worked QTE example, runtime
+prompt) now describe closed read-only default-empty/one-row input and retain the pending
+none/create decision-consumer boundary. New worked next-request JSON binds maximumIII and
+exact cause/location subset to the existing direct-impact declaration; manifest/guards
+state grammar/text coverage limits. Afterlife receives no new producer/decision capability;
+non-Mortal projection is empty, existing afterlife rules remain authoritative. No full
+browser/C5/native bridge/afterlife/wound suite, passing producer cohort, or global selection
+is included. No provider calls, project execution or author commit/push.
+
+Producer qualification accepted1b remains23 executed/22 PASS/1 FAIL across3 current cohorts,
+22 unique cases/16 methods; consumer historical2 actual runs remain0 PASS/2 FAIL (separate
+BOM blocker + genuine projection RED). No historical packet/checkbox/ce955 source Fact or
+first projection Fact/selector changed. New preservation controls have not been represented
+as previously observed RED. None/create decision consumer, live receipt materialization,
+replay/atomic wound publication and after-terminal archive/fresh-process remain unimplemented/
+UNRUN; full T070, parent and #1536 remain OPEN. Mutations STOPPED at this SOURCE READY boundary.
 
 Historical proper projection causal RED (EVIDENCE accepted87b5 above):
 Minimum BOM-only correction SOURCE/FIXTURE/SELECTION accepted4b50fa1a; first published
@@ -86,28 +108,19 @@ occurrence/max2/health155. Root parsed5 native Boundary JSON observations and ch
 strict root /tmp/boe-gameengine-turnlifecycle-6c148a1fdfea48a7b5cf3f390fb51bab actually gone.
 Root froze17 artifacts plus manifest in the [consumer projection causal RED packet](./recovery/qte-physical-consumer-projection-causal-red-20261012),
 all stored/decompressed/native original hashes verified; publication and independent EVIDENCE
-acceptance remain PENDING.
+acceptance completed at87b5 as recorded above.
 
 This is the first proper safe-projection causal predicate REACHED, distinct from first BOM
 fixture blocker whose predicate was UNREACHED. Current consumer cohorts are2 actual runs,
 2 executed/0 PASS/2 FAIL (one prerequisite BOM blocker, one proper projection RED), not an
 addition to the qualified producer's23 executed/22 PASS/1 FAIL/22 unique cases. Producer
 EVIDENCE accepted1b and all older outcomes/checkboxes remain unchanged; no accepted producer
-test was repeated. Consumer production/projection/none/create/receipt/replay/atomicity/
-after-terminal save-load/fresh-process remain unimplemented/UNRUN.
+test was repeated. Projection source is now authored/unverified above; none/create/receipt/
+replay/atomicity/after-terminal save-load/fresh-process remain unimplemented/UNRUN.
 
-Current task is metadata plus READ-ONLY minimum projection proposal; NO production/test/
-catalog/selector mutation or project execution. Genuine N43 snapshot must cover full signed
-pending/consumed batch/event authority including signed pristine absence, while public request
-contains one closed safe row only. Same identity physical request→official Reader→final safe
-rewrite must happen under existing staging ownership before GM dispatch. BrowserPlayerInput:
-199–219 captures final RequestJson/proof and seals preparation, so its rewrite must finish
-inside existing browser preparation/lease BEFORE StagingProof/seal; no independent later
-rewrite, second lease, stale staged.RequestJson or new authority. Console staging must retain
-existing rollback. Existing request/GM guide/examples/source guards require coherent safe
-projection-only synchronization in the later source block. No implementation is authorized
-before root freeze/publication/causal EVIDENCE gate. Metadata edits STOPPED for immediate
-root publication; causal ce955 hash, every old packet/checkbox and full T070 openness exact.
+The former read-only proposal and post-RED metadata checkpoint are historical: source release
+followed accepted87b5 evidence. Current projection-only source/selection READY is recorded above;
+no unchanged RED was repeated and none/create consumer remains outside this block.
 
 Historical minimum BOM correction (proper projection RED reached above):
 Root published first consumer BOM blocker packet/two-doc metadata at

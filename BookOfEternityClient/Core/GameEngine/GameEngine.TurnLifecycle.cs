@@ -1600,7 +1600,10 @@ public partial class GameEngine
             ClearTransientOutputFiles();
             var requestJson = JsonSerializer.Serialize(request, JsonOpts);
             if (browserAction != null)
+            {
                 browserStaged = await PublishBrowserStagingAsync(browserAction, requestJson);
+                requestJson = browserStaged.RequestJson;
+            }
             else
             {
                 await using var stagingLease = await _fs.AcquireCanonicalWriteLeaseAsync();
@@ -1614,6 +1617,14 @@ public partial class GameEngine
                     throw new InvalidOperationException("Ordinary request changed before safe opportunity projection.");
                 await RequireFinalOrdinaryWoundProjectionAsync(stagingLease, requestJson);
             }
+
+            var projectedRequest = JsonSerializer.Deserialize<TurnRequest>(requestJson, JsonOpts) ??
+                throw new InvalidDataException("Final ordinary request is missing.");
+            if (projectedRequest.SessionId != request.SessionId || projectedRequest.RequestId != request.RequestId ||
+                projectedRequest.TurnNumber != request.TurnNumber || projectedRequest.Timestamp != request.Timestamp ||
+                projectedRequest.PlayerAction != request.PlayerAction)
+                throw new InvalidDataException("Safe opportunity projection changed ordinary request identity.");
+            request = projectedRequest;
 
             var activeManifest = await LoadPendingTurnSnapshotManifestAsync();
             activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
@@ -4564,6 +4575,7 @@ IF REALM = Mortal World:
     - For BranchChoice, check.config.choiceGrade MUST be exactly success, partial, or fail.
     - Every terminal outcome MUST carry a complete responseFragment for local application.
     - Optional terminalOutcomes[].physicalInjury declares a potential player-health injury before selection. Omission preserves resource-only QTE. When present it has exactly five fields: schemaVersion = 1; resourceCommandOrdinal is a one-based index into that outcome's actual responseFragment.resourceChanges[] (existing mutation limit 512) and must name exact damage on canonical health for player/player_current; maximumSeverityRank is an explicit integer 1..4, independent of damage amount, with no default IV; cause is trimmed nonempty text of at most 2000 characters without controls; allowedLocationKinds contains 1..5 unique exact tokens from anatomical, systemic, mental, spiritual_axis, other. Explicit null, missing/unknown/duplicate/case-confusable or wrong-case fields reject as raw input in every terminal branch, including unselected branches. Do not supply owner/domain, source/profile IDs, hard caps, guarantees, worsening or seals. The client retains the declaration in the frozen offer and its existing continuation fingerprint before selection. After finalized positive Applied canonical health Damage from the selected declared branch, the client publishes one pending occurrence under mortal_qte_terminal_health_damage_v1 in the same resource/effect transaction. The explicit source maximum stays separate from the global hard cap IV; original session/request/snapshot/turn and complete ordered accepted sibling events remain bound to the occurrence. Exact retry preserves occurrence identity across pending or consumed receipts; resource-only/unselected declarations, zero applied damage, replay-only execution, awaiting receipt and preallocation publish no occurrence. N+1 wound decision/consumer remains pending; do not author a wound decision, occurrence, receipt, source coordinate or seal for this QTE route.
+    - The next ordinary Mortal World request exposes client-owned `woundOpportunities`: default `[]`, or one first eligible player physical opportunity in canonical pending order after complete pending/consumed batch and ordered accepted-event validation against the official new-turn snapshot. A row has exactly `opportunityRef`, `domain`, `maximumSeverity`, `safeContext`; `safeContext` has exactly `target`, `cause`, `allowedLocationKinds`. The maximum is the explicit source bound I..IV, never a damage formula or default IV. The opaque reference is comparison data; the GM must copy no private occurrence ID, owner, carrier path, profile, source coordinates, event vector or fingerprint into it. This safe projection is read-only input: N+1 wound decision/consumer remains pending; do not author a wound decision or canonical occurrence/receipt for this route. Missing optional roots count as pristine only with signed observed absence; no live fallback.
     - declineHint and cinematicJustification, if provided, are shown to the player in the offer prompt; keep them concise.
     - responseFragment MUST NOT use ordinary image_prompt; use sceneImagePrompt / chapterImagePrompt / outcomeImagePrompt instead.
     - Successful QTE terminal outcomes MUST grant positive experienceGained at minimum; the client will locally add it to the authoritative XP counter in experience.json.

@@ -81,6 +81,7 @@
 - Its exact event identity is `turn_{sourceTurn}:qte_terminal:{one-based terminal outcome ordinal}:resource:{one-based command ordinal}`. The worked payloads below assume accepted source turn 42.
 - Every terminal branch is validated, but only the selected branch is applied through the common resource reducer/quartet. Exact retry is replay; definition/capacity commands and legacy `current*Change` aliases are forbidden in QTE.
 - Optional `terminalOutcomes[].physicalInjury` declares a potential player-health injury before selection. Omission preserves resource-only QTE. When present it has exactly five fields: `schemaVersion` = 1; `resourceCommandOrdinal` is a one-based index into that outcome's actual `responseFragment.resourceChanges[]` (existing mutation limit 512) and must name exact `damage` on canonical `health` for `player/player_current`; `maximumSeverityRank` is an explicit integer 1..4, independent of damage amount, with no default IV; `cause` is trimmed nonempty text of at most 2000 characters without controls; `allowedLocationKinds` contains 1..5 unique exact tokens from `anatomical`, `systemic`, `mental`, `spiritual_axis`, `other`. Explicit null, missing/unknown/duplicate/case-confusable or wrong-case fields reject as raw input in every terminal branch, including unselected branches. Do not supply owner/domain, source/profile IDs, hard caps, guarantees, worsening or seals. The client retains the declaration in the frozen offer and its existing continuation fingerprint before selection. After finalized positive Applied canonical health Damage from the selected declared branch, the client publishes one pending occurrence under mortal_qte_terminal_health_damage_v1 in the same resource/effect transaction. The explicit source maximum stays separate from the global hard cap IV; original session/request/snapshot/turn and complete ordered accepted sibling events remain bound to the occurrence. Exact retry preserves occurrence identity across pending or consumed receipts; resource-only/unselected declarations, zero applied damage, replay-only execution, awaiting receipt and preallocation publish no occurrence. N+1 wound decision/consumer remains pending; do not author a wound decision, occurrence, receipt, source coordinate or seal for this QTE route.
+- The next ordinary Mortal World request exposes client-owned `woundOpportunities`: default `[]`, or one first eligible player physical opportunity in canonical pending order after complete pending/consumed batch and ordered accepted-event validation against the official new-turn snapshot. A row has exactly `opportunityRef`, `domain`, `maximumSeverity`, `safeContext`; `safeContext` has exactly `target`, `cause`, `allowedLocationKinds`. The maximum is the explicit source bound I..IV, never a damage formula or default IV. The opaque reference is comparison data; the GM must copy no private occurrence ID, owner, carrier path, profile, source coordinates, event vector or fingerprint into it. This safe projection is read-only input: N+1 wound decision/consumer remains pending; do not author a wound decision or canonical occurrence/receipt for this route. Missing optional roots count as pristine only with signed observed absence; no live fallback.
 - Successful terminal outcomes must include positive `experienceGained`.
 - For validation purposes, a successful terminal outcome is any outcome reachable by following `success` branches from `startChapterId`.
 - The client will convert a successful QTE `experienceGained` into a real increase of the authoritative XP counter in `game_state/player/experience.json`.
@@ -1112,5 +1113,34 @@ Do not put ordinary image output into `responseFragment`:
     "experienceGained": 30,
     "image_prompt": "forbidden here"
   }
+}
+```
+
+
+## Safe next-request projection — client input only
+
+### mortal_qte_physical_opportunity_projection_v1
+
+After the direct-impact branch above finalizes source turn 42, the client can expose
+this comparison row on ordinary turn 43. The reference below is illustrative: the
+GM reads the exact opaque reference from the actual request. Maximum III and the
+cause/location subset come from that selected declaration, not the five health
+points lost. This example authors no decision, receipt, source identity or wound.
+The same request without an eligible opportunity carries `"woundOpportunities": []`.
+
+```json
+{
+  "woundOpportunities": [
+    {
+      "opportunityRef": "mortal_wound_0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "domain": "physical",
+      "maximumSeverity": "III",
+      "safeContext": {
+        "target": "вы",
+        "cause": "Удар падающего камня.",
+        "allowedLocationKinds": ["anatomical", "other"]
+      }
+    }
+  ]
 }
 ```

@@ -18,6 +18,29 @@ namespace BookOfEternityClient.Tests;
 [Trait("Category", "FullValidation")]
 public sealed partial class ExampleDocumentationValidationTests
 {
+    [Fact]
+    public void QtePhysicalOpportunityProjectionExample_IsClosedSafeClientInput()
+    {
+        var root = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_opportunity_projection_v1");
+        Assert.Equal(new[] { "woundOpportunities" }, root.Select(field => field.Key));
+        var safe = Assert.Single(root["woundOpportunities"]!.AsArray())!.AsObject();
+        Assert.Equal(new[] { "domain", "maximumSeverity", "opportunityRef", "safeContext" }, safe.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.Equal("physical", safe["domain"]!.GetValue<string>());
+        Assert.StartsWith("mortal_wound_", safe["opportunityRef"]!.GetValue<string>());
+        Assert.Equal("III", safe["maximumSeverity"]!.GetValue<string>());
+        var context = safe["safeContext"]!.AsObject();
+        Assert.Equal(new[] { "allowedLocationKinds", "cause", "target" }, context.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.Equal("вы", context["target"]!.GetValue<string>());
+        var source = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_injury_declaration_v1");
+        var declaration = source["terminalOutcomes"]![1]!["physicalInjury"]!;
+        Assert.Equal(3, declaration["maximumSeverityRank"]!.GetValue<int>());
+        Assert.Equal(declaration["cause"]!.GetValue<string>(), context["cause"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(declaration["allowedLocationKinds"], context["allowedLocationKinds"]));
+        var manifest = JsonNode.Parse(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", "example_validation_manifest.json")))!;
+        Assert.Equal(nameof(QtePhysicalOpportunityProjectionExample_IsClosedSafeClientInput),
+            manifest["qtePhysicalOpportunityProjectionCoverage"]!["validationRoute"]!.GetValue<string>().Split('.').Last());
+    }
+
     private static readonly JsonDocumentOptions DocumentOptions = new()
     {
         AllowTrailingCommas = true,

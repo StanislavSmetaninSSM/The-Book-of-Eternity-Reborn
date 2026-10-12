@@ -2,6 +2,160 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-opportunity-projection-controls",
+            "responsibility": "#1536 minimum read-only physical opportunity projection controls: three integration theories/nine cases. Genuine baseline writer/official Reader prove signed pristine or explicit-empty roots and no borrowing later live data. Actual declared QTE plus actual bounded receipt completion proves full ordered finalized siblings before new-snapshot projection; valid batch projects and event-order/missing-candidate/corrupt-later-sibling/receipt corruption refuse the whole batch before selection. Actual ordinary staging checks final in-memory/physical request identity and closed safe row in console and browser, with exact staged proof. These are component/source controls; the separate original causal Fact remains the actual ProcessPlayerTurn N+1 vertical.",
+            "excludes": "No none/create decision consumer, canonical wound writes, fabricated valid occurrence/source/hash, broad producer/QTE/afterlife suite, provider or original causal repeat.",
+            "changeHints": [
+                "BookOfEternityClient/Services/MortalQteWoundOpportunityProjection.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryProjectionControls.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalProjection_SignedPristineOrEmptyRootsNeverBorrowLaterLiveState",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalProjection_ValidatesTheEntireSignedBatchBeforeSelectingFirst",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalProjection_FinalPreparationMatchesPhysicalRequestAndBrowserProof"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-opportunity-snapshot-presence",
+            "responsibility": "#1536 exact affected presence controls: four methods/five cases. Current publisher emits closed21 paths with the two Mortal surfaces; original exact16 and prior18 fixtures retain their existing unrelated reader semantics. Prior19 without Mortal observations cannot authorize missing Mortal roots. Intentional finite overlap with existing presence owners; no new older-save compatibility.",
+            "excludes": "No broad presence/afterlife suite or signed-envelope fixture used as a manufactured gameplay source; reader-contract mutation fixture alone does not prove an engine vertical.",
+            "changeHints": [
+                "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+                "BookOfEternityClient.Tests/PendingTurnSnapshotPresenceContractTests.cs",
+                "BookOfEternityClient.IntegrationTests/PendingTurnSnapshotPresenceIntegrationTests.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceContractTests.ClosedObservationContract_PreservesLegacySetsAndEmitsCurrentTwentyOnePaths"
+                    ]
+                },
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.LegacyPresenceMap_OrdinaryReadSucceedsButMissingSpiritualObservationFails",
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.PreviousPresenceMap_ReceiptRequiresCoverageOrSignedObservation",
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.PriorNineteenPresence_OrdinaryReadCannotAuthorizeUnobservedMortalAbsence"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-opportunity-browser-staging",
+            "responsibility": "#1536 five exact existing browser Facts/five cases affected by provisional request/final safe projection under preparing lease before staged proof/seal: competing requests before validation, after selection and during publication are preserved; direct genuine staged consumer and original rollback failure retain canonical evidence. Intentional exact overlap with browser-player-input-recovery and c5-original-decoded-state-controls; select these methods only.",
+            "excludes": "No broad browser/C5, native bridge status lane, terminal worker or archive/fresh-process consumer qualification. The new projection controls independently exercise the actual final staging proof.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_CompetingRequestAfterSelectionCannotBeOverwrittenByClaim",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_ProcessRefusesCompetingRequestBeforeMutatingValidation",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_ConflictBeforePublicationPreservesCompetingRequestAndOriginalSlot",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_StagedMenuDescriptionDoesNotInitializeOrRepairCanonicalState",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserInput_FailedOriginalRollbackRetainsSnapshotAndBlocksContinuation"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-opportunity-event-order",
+            "responsibility": "#1536 three named existing behavior Facts/three cases for the projection dependencies: complete ordered event semantics and historical full-vector rebind, plus canonical candidate ordinal order and whole pending/consumed retry classification. No production event composer/reducer changes in this projection block; these controls validate the relied-on pure contracts. Intentional exact overlap with their existing owners.",
+            "excludes": "No broad wound/producer/consumer/profile suite or passing producer-cohort repeats; canonical candidate-order behavior is a typed component proof, not a fabricated engine source.",
+            "changeHints": [
+                "BookOfEternityClient/Services/MortalQteWoundOpportunityProjection.cs",
+                "BookOfEternityClient/Services/WoundAcceptedEventAuthorityComposer.cs",
+                "BookOfEternityClient/Services/MortalWoundOccurrenceState.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.WoundAcceptedEventAuthorityComposerTests.Compose_PreservesCompleteOrderAndDerivesSelectedSemanticsByOrdinal",
+                        "BookOfEternityClient.Tests.WoundAcceptedEventAuthorityComposerTests.RebindMortalOccurrence_VerifiesHistoricalSetAndRebindsTheCompleteVector",
+                        "BookOfEternityClient.Tests.MortalWoundOccurrenceStateTests.PlanAppend_CanonicallyAppendsReversedCandidatesAndClassifiesExactAndChangedSourceRetries"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-opportunity-documentation",
+            "responsibility": "#1536 two new guards/two cases: all six GM surfaces describe default-empty/one-row closed read-only projection and its pending decision consumer boundary; worked next-request JSON/manifest binds maximumIII and exact cause/location subset to the existing selected declaration without exposing private authority.",
+            "excludes": "No full documentation/example/afterlife category, claim that wound decisions are consumed, snapshot/event authority invented from example JSON, or runtime verification from a text guard.",
+            "changeHints": [
+                "CLI_API_Specification.md",
+                "CLI_Agent_Daemon_Specification.md",
+                "Rules/Block_CLI_QTE.txt",
+                "TaskGuides/CLI_Step_Main.txt",
+                "Examples/E_CLI_QTE_Offer.txt",
+                "Examples/example_validation_manifest.json"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QtePhysicalOpportunityProjection_IsDocumentedAsClosedReadOnlyInput"
+                    ]
+                },
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.QtePhysicalOpportunityProjectionExample_IsClosedSafeClientInput"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-projection",
             "responsibility": "#1536 T070 first test-only N+1 consumer causal Fact/one case. Actual ordinary declared QTE N42 must finalize canonical health160->155, publish one original-source physical occurrence and finish terminal/source cleanup. New engine on same root/session stages real N43 ProcessPlayerTurn; TerminalWaitStarted captures physical request and official Reader under its participating lease before the wait worker. Known controlled OCE ends staging only after capture. Outside the hook all source/byte/Reader prerequisites precede the first missing raw woundOpportunities assertion and exact closed safe row checks.",
             "excludes": "No consumer production code, fixture-authored opportunity/occurrence/binding/fingerprint/profile, direct Begin-only source proof, external fake GM task/new harness, broadened runtime suite or passing producer neighbor rerun. N+1 none/create/receipt/replay/atomicity/archive/fresh-process goal remains future; setup/Reader/source failures are blockers, not consumer causal RED.",

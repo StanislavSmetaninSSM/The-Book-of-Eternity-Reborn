@@ -46,11 +46,13 @@ public sealed class PendingTurnSnapshotPresenceContractTests
     private static readonly string[] CurrentExpectedPaths =
     [
         .. PreviousExpectedPaths,
-        "game_state/wounds/spiritual_wound_opportunity_receipts.json"
+        "game_state/wounds/spiritual_wound_opportunity_receipts.json",
+        "game_state/control/pending_mortal_wound_occurrences.json",
+        "game_state/wounds/wound_opportunity_receipts.json"
     ];
 
     [Fact]
-    public void ClosedObservationContract_PreservesLegacySetsAndEmitsCurrentNineteenPaths()
+    public void ClosedObservationContract_PreservesLegacySetsAndEmitsCurrentTwentyOnePaths()
     {
         var helper = ClientAssembly.GetType(
             "BookOfEternityClient.Services.PendingTurnSnapshotPathPresenceV1");
