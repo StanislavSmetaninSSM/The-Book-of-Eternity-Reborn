@@ -243,7 +243,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     // Fixture changes that would break these tests: accepting a GM history edit, recapturing arbitrary history,
     // losing exact client append at terminal/restart, or applying selected health Damage more than once.
     private async Task<QteStoryRun> RunActualQteStorySourceAsync(string? preacceptMutation = null,
-        string? postHandoffMutation = null, string mode = "ordinary", bool pauseAtAction = false, bool bounded = false)
+        string? postHandoffMutation = null, string mode = "ordinary", bool pauseAtAction = false, bool bounded = false,
+        bool physicalDeclaration = false, int physicalMaximum = 2, bool physicalOnlyUnselected = false,
+        Action? observeQteAction = null)
     {
         var run = new QteStoryRun();
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
@@ -281,6 +283,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     Assert.Equal(QteStoryNarrative, entry.Narrative);
                     Assert.Equal(run.ProtectedBefore[ResourceMaterializationContract.StatePath], File.ReadAllBytes(_fs.ResolvePath(ResourceMaterializationContract.StatePath)));
                     run.ActionObserved = true;
+                    observeQteAction?.Invoke();
                     WritePhysicalInjuryDiagnostic("qte_story_actual_client_append", new { Mode = mode, RequestId = run.Source!.RequestId, SnapshotToken = run.SnapshotToken, Story = row });
                     switch (postHandoffMutation)
                     {
@@ -319,7 +322,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 run.PreacceptIssues = await GetPrivateField<ValidationService>(run.Engine!, "_validator").ValidateGameStateAsync(GameStateValidationPhase.ClientOwnedControlFiles);
                 throw new OperationCanceledException("Stop after real original GM history admission check.");
             }
-            await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, BuildPhysicalInjuryOffer(declared: false, maximum: 2).ToJsonString());
+            var authoredOffer = BuildPhysicalInjuryOffer(declared: physicalDeclaration, maximum: physicalMaximum);
+            if (physicalOnlyUnselected) authoredOffer["terminalOutcomes"]![0]!.AsObject().Remove("physicalInjury");
+            await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, authoredOffer.ToJsonString());
             var timestamp = DateTime.UtcNow.ToString("o");
             await WriteJsonAsync("output/narrative_response.json", new { response = QteStoryNarrative, timestamp });
             await WriteJsonAsync("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });

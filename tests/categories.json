@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-producer",
+            "responsibility": "#1536 T070 four actual ordinary GameEngine producer methods/six cases: explicit maximum1/4 under equal finalized health Damage, resource-only/unselected declaration suppression, actual bounded awaiting/no-receipt idle/final receipt complete sibling batch, and an actual coordinated occurrence-member publication cut followed by rollback/retry. Genuine official source coordinates and strict per-test owned cleanup. Source WIP; no runtime result claimed.",
+            "excludes": "No N+1 wound decision/consumer or save-load journey, fabricated source/occurrence/receipt authority, relaxed validators, arbitrary owner rewrite, provider/native Windows/archive-QTE or broad old51/qte-rules/mortal-wounds-state rerun. The byte-exact original causal Fact is selected separately.",
+            "changeHints": [
+                "BookOfEternityClient/Services/QtePhysicalWoundOccurrenceProducer.cs",
+                "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-finalization",
+                    "when": "First matching GREEN uses the unchanged original finalized-health missing-occurrence causal Fact separately; do not repeat its accepted RED."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer_ActualSelectedDeclarationBoundsOccurrence",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer_ActualResourceOnlyOrUnselectedDeclarationCreatesNoOccurrence",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer_ActualAwaitingReceiptPublishesOneCompleteFinalBatch",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer_PublicationFailureRestoresSourceThenRetryPublishesOnce"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-producer-admission",
             "responsibility": "#1536 producer original-source bridge's affected admission consumers only: two existing integration methods/four cases (absent/declared max1/declared max4 and frozen maximum tamper). Declared fixture acceptance passes its already genuine engine-staged official Reader coordinates through the internal source overload; raw rows and admission/freeze/tamper oracles remain unchanged. Intentional exact overlap with qte-physical-injury-admission.",
             "excludes": "No malformed admission neighbors or prior full51 rerun, new harm/occurrence assertion, producer/consumer proof from direct Begin alone, fabricated snapshot/token or relaxed missing-source behavior, provider/native Windows/archive-QTE.",

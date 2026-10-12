@@ -29,8 +29,8 @@ the same exact one-case selection; fresh preparation completed and first actual1
 Astra XHigh EVIDENCE accepted (17 artifacts/44 source/5 binary pins/native1 PASS/100 original
 artifacts retained then removed/two strict roots). Guards7+other lifetime5+docs1+receipt1
 complete the bounded story prerequisite; selected GitHub recovery267 exact files verified,
-no recovery execution. Producer source handoff below is WIP; projection/reseal/new controls
-remain UNWRITTEN and all project checks UNRUN;
+no recovery execution. Producer source handoff below is WIP; projection/reseal are authored,
+finite controls/guidance unfinished and all project checks UNRUN;
 fresh independent bounded DESIGN acceptance incorporates the latest user trusted-checkpoint
 scope ruling. The eec3c36e unresolved anti-owner proposal is historical WIP, not whole accepted design.
 Prior4085 source facts
@@ -44,8 +44,9 @@ stopped source WIP adds private genuine Reader/context/request/generation source
 actual engine/internal QTE/continuation handoff, declared wound-root byte/absence capture,
 closed canonical recovery/current original validation and copied frozen selected declaration
 on real/preallocation routes; selected response fingerprint binds declaration without
-changing undeclared shape. No real producer registration, event vector, append/LAST reseal,
-new controls/catalog/selection/GM guidance yet; full wound validation/stitching unfinished.
+changing undeclared shape. That first checkpoint did not yet register a producer or reseal
+input; the third published source WIP below authors these paths. Controls/selection/GM
+guidance are being completed.
 Build/discovery/runtime UNRUN; not accepted/complete. First bridge WIP is published22f3e32b
 with268 selected recovery files exact/no execution. Second source WIP adapts only lawful/
 tamper admission calls to internal source acceptance from their existing genuine staged
@@ -75,7 +76,9 @@ for immediate root source WIP publication; all old evidence/checklists/causal ha
 
 Bounded producer [source plan](./plan.md#bounded-physical-producer--published-plan6114a083-source-handoff-wipchecks-unrun)
 is retained from published6114a083; partial production handoff WIP is recorded above.
-Projection/reseal/new tests/catalog/selection remain unwritten; project execution UNRUN. The genuine unchanged source174aabad finalized-health missing-occurrence
+Projection/reseal are authored at publishedcdefc80f; four real-engine methods/six cases and
+their category owner are authored in the current stopped WIP. Other controls/owners/selector/
+GM guidance remain unfinished; project execution UNRUN. The genuine unchanged source174aabad finalized-health missing-occurrence
 RED is accepted and valid; original causal Fact SHA256
 ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f stays exact, no repeat RED.
 Focused Astra ruling: include LastUse and AfterCurrentReaction reservations as distinct
@@ -99,15 +102,21 @@ once with existing661–708 checks; no second reduction/allocation or arbitrary 
 Resource/effect/occurrence publish together through exact touched guards/common writer and
 actual rollback, no second writer. Profile/explicit max/hard4/null ordinary fields stay approved.
 
-Planned exact15 methods/21 cases (remaining new controls unwritten, all undiscovered/UNRUN), full selectors in plan table:
-existing causal1/1 qte-physical-injury-finalization5/default10; new actual producer4methods6cases
-qte-physical-injury-producer5/default10; new unit2methods4cases plus existing registration,
-finalized-boundary and consumed-replay3Facts =5methods7cases producer-contracts2/default7;
-existing byte-different terminal and bounded second-restart2Facts producer-continuation3/default8;
-existing QteTerminalResourcePenaltyContract documentation1Fact producer-documentation2/default7;
-affected existing lawful3/frozen1 producer-admission2 methods/4 cases3/default8. This authorized
-dependency adds2/4 to original planned13/17; admission raw/malformed/old compatibility untouched.
-Task-local1536-qte-physical-injury-producer.json/catalog will be authored with implementation;
+Planned exact16 methods/22 cases, undiscovered/UNRUN: original causal1/1 stays separate
+qte-physical-injury-finalization5/default10. Remainder15 methods/21 cases uses five owners,
+5+2+3+2+3 protective minutes/default20. Actual producer4methods6cases5/default10 are now
+written; contracts integration2methods4cases (genuine staged source/issued completed-result
+controls) plus existing registration/finalized-boundary/consumed-replay/prefix4Facts =6methods
+8cases2/default7. The exact prefix Fact is AcceptedEffectBoundaryTranscriptTests.
+TerminalReservationPrefix_RebindsTypedForeignTargetsAndOrdersByStableMechanics, justified by
+shared prefix extraction; no broad prefix category. Existing continuation2Facts3/default8,
+documentation1Fact2/default7, affected lawful3/frozen1 admission2methods4cases3/default8.
+Full method names remain in the plan table. Current first real-engine WIP uses only optional
+existing helper parameters (old defaults/oracles intact), actual source/health/awaiting/receipt
+and existing coordinated publication-member failure cut/rollback/idle retry; six cases UNRUN.
+No new tests had observed RED. Third sourcecdefc80f is published/recovery verified269 exact
+files/no execution. Contract controls, remaining owners/task-local1536-qte-physical-injury-
+producer.json and GM guidance remain unfinished. Stop mutations for immediate WIP publication;
 intentional old-owner overlaps/global CI unchanged, no broad mortal-wounds-state/qte-rules/
 accepted51 or aggregate rerun. New controls have no prior RED. Source guard changes zero
 implementors to exact1 Services/QtePhysicalWoundOccurrenceProducer.cs, retaining planner-only

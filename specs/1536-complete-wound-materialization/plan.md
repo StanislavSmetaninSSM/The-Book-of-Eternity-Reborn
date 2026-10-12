@@ -50,7 +50,7 @@ the first lifetime pre-QTE FAIL and subsequent incomplete invocation remain hist
 Prior15 completed13PASS2FAIL plus1 incomplete remain unchanged; this separate1 PASS makes
 16 completed14PASS2FAIL plus one incomplete outcome across six invocations total.
 No aggregate GREEN run is implied.
-No occurrence producer or canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
+The current producer source WIP changes no canonical wound schema. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
 
@@ -64,18 +64,17 @@ handoff, declared-only exact wound/occurrence/receipt root capture, and defensiv
 PhysicalInjury copies in real/preallocation selections. Selected response fingerprint binds
 that declaration; undeclared selected response shape/fingerprint stays unchanged.
 
-No actual producer is registered yet; common input still uses its old continuation/empty-event
-path. Full captured wound validation, event projection, finalized reduction/append/LAST reseal,
-finite new controls/catalog/selector and GM publication guidance remain unfinished. No build,
-discovery/runtime has run. Source is WIP, not SOURCE accepted or full implementation READY.
+That first bridge checkpoint did not yet register a producer or reseal the completed input.
+The third published source WIP below now authors those paths; all project checks and SOURCE
+acceptance remain pending. Finite controls/selection and GM guidance are being completed.
 First bridge WIP is published22f3e32b226a8e9483c132ab10820b16a50172bb with268 exact selected
 GitHub recovery files, no recovery execution. Current second source WIP adapts only the two
 lawful/frozen admission calls to an internal original-source overload using their existing
 genuine staged Reader/context. All three lawful rows, raw declarations and frozen-tamper
 oracles stay exact; public declared calls without source still fail closed. New narrow
 producer-admission owner selects2 methods/4 cases, category3/default8, intentional old-owner
-overlap; malformed/admission51 neighbors are excluded. Full producer selection is now planned
-15 methods/21 cases; remaining new controls/owners/task-local selector are unfinished.
+overlap; malformed/admission51 neighbors are excluded. Full producer inventory is now planned16 methods/22 cases; remaining controls/owners and
+task-local selector are unfinished.
 
 Capsule lifetime now distinguishes active source from historical terminal data. Exact
 original Reader/request/snapshot/generation agreement remains required while any original
@@ -113,6 +112,19 @@ remaining owners/task-local selector and coherent GM guidance/example/manifest a
 Actual replay-only semantics, event/identity stability, cache/awaited-wave seals and atomic
 rollback remain UNRUN source-gate risks. Old packets/checklists/causal hash are unchanged.
 Stop all source mutations for immediate root publication before further test/docs authoring.
+
+Root published/recovery-verified third source WIPcdefc80fedde01a906163faf995d8ceee91dc25f,
+269 selected files exact/no recovery execution. Current stopped fourth WIP adds the first
+four real-engine producer methods/six cases and their5-minute category owner. Existing
+RunActualQteStorySourceAsync gains only optional declaration/maximum/unselected/action-observer
+parameters; defaults preserve existing paths and oracles. These controls require actual
+health finalization, original source, absence before allocation/awaiting, complete accepted
+siblings, common occurrence-member cut/rollback and actual idle retry. The publication cut
+uses the existing coordinated LocalPublicationObserver and actual active-journal member path.
+No new observer seam/harness or synthetic accepted authority. All six cases are UNRUN; no
+claim that the new controls were previously RED. Contract controls, remaining owners/full
+remainder selector and coherent GM guidance are still unfinished; original causal Fact/hash
+and checklists are unchanged. Stop all mutations for immediate root WIP publication.
 
 Base4c2466dafc569ab8b85316de588a847f3371911d is published/recoverable; selected GitHub
 recovery267 exact files executes no project. Source174aabad already proved actual original
@@ -189,7 +201,8 @@ block, with no new product approval, keys, anti-owner contract or archive-QTE fe
    actual rollback membership to occurrence and receipt read guards. No post-publication
    occurrence writer, partial batch, after-cleanup source rediscovery or second allocator.
 
-Finite selection is PLANNED, unwritten/undiscovered/UNRUN. All exact methods below use
+Finite selection is PLANNED/undiscovered/UNRUN; four real-engine methods are authored in the
+current partial WIP below. All exact methods below use
 namespace BookOfEternityClient.Tests. New integration controls reuse the actual engine/
 official source/offline GM/live input/strict owned-root fixture, not a new harness. They
 have no previously observed RED; the unchanged accepted causal Fact supplies the real gap.
@@ -200,13 +213,18 @@ implementation; old-owner overlap is explicit, global CI unchanged, no aggregate
 | --- | --- |
 | Existing qte-physical-injury-finalization5/default10 | GameEngineTurnLifecycleTests.QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence1; matching GREEN after production, byte unchanged |
 | New qte-physical-injury-producer5/default10 | New GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer_ActualSelectedDeclarationBoundsOccurrence2 (max1/max4, equal Damage5); QtePhysicalInjuryProducer_ActualResourceOnlyOrUnselectedDeclarationCreatesNoOccurrence2; QtePhysicalInjuryProducer_ActualAwaitingReceiptPublishesOneCompleteFinalBatch1 (real awaiting/receipt, Damage2 sibling); QtePhysicalInjuryProducer_PublicationFailureRestoresSourceThenRetryPublishesOnce1 |
-| New qte-physical-injury-producer-contracts2/default7 | New QtePhysicalInjuryProducerTests.FinalizedProjection_ZeroOrReplayCannotCreateNewHarm2; FinalCompletion_MissingOriginalSourceOrChangedSiblingCannotPublish2; existing MortalWoundOccurrenceProducerTests.RegisteredProducerSeam_IsTheOnlyProductionCallerOfTheReducer1 and RegisteredProducerSeam_ProjectsOnlyAgainstTheFinalizedResourceEffectBoundary1; MortalWoundOccurrenceStateTests.PlanAppend_RequiresACompleteBatchAndCoalescesOnlyAnExactSourceRetryAcrossConsumedReceipts1 |
+| New qte-physical-injury-producer-contracts2/default7 | New integration GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer_FinalizedProjection_ZeroOrReplayCannotCreateNewHarm2 and QtePhysicalInjuryProducer_FinalCompletion_MissingOriginalSourceOrChangedSiblingCannotPublish2 (genuine staged source and issued completed-result component controls, not a full engine journey); existing unit MortalWoundOccurrenceProducerTests.RegisteredProducerSeam_IsTheOnlyProductionCallerOfTheReducer1 and RegisteredProducerSeam_ProjectsOnlyAgainstTheFinalizedResourceEffectBoundary1; MortalWoundOccurrenceStateTests.PlanAppend_RequiresACompleteBatchAndCoalescesOnlyAnExactSourceRetryAcrossConsumedReceipts1; AcceptedEffectBoundaryTranscriptTests.TerminalReservationPrefix_RebindsTypedForeignTargetsAndOrdersByStableMechanics1 |
 | New qte-physical-injury-producer-continuation3/default8 | Existing QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite1 and BoundedReceipt_AfterSecondRestartFinalizesWithoutOrdinaryTurnReplay1; affected capture/rehydration/selection/awaiting contracts |
 | New qte-physical-injury-producer-documentation2/default7 | Existing PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces1 |
 | New qte-physical-injury-producer-admission3/default8 | Existing GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches3 and QtePhysicalInjury_FrozenMaximumCannotChangeBeforeTerminalSelection1; genuine source-overload adaptation only, exact old oracles |
 
-Total15 methods/21 cases in separate finite cohorts (original13/17 plus the authorized
-affected admission2/4). Registration source guard retains
+Total16 methods/22 cases: original causal1/1 remains a separate first matching GREEN
+selection5/default10; the producer task-local remainder will select15 methods/21 cases across
+five categories with budgets5+2+3+2+3=15/default20. This includes the authorized admission2/4
+and exact existing prefix1/1 dependency of the shared prefix-builder extraction. Contracts
+owner has6 methods/8 cases (integration2/4 and unit4/4),2/default7. No broader prefix owner is
+selected. Genuine source/issued-owner constraints rehome the two new contract theories into
+the existing integration partial instead of fabricating a capsule or completion in unit tests. Registration source guard retains
 planner-only reducer callers and expects exactly one real implementor at
 Services/QtePhysicalWoundOccurrenceProducer.cs instead of its old zero assertion.
 Pure append controls cover pending/consumed replay without claiming a consumer journey.
