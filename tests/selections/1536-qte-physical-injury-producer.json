@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "qte-physical-injury-producer",
+      "reason": "Four new actual engine methods/six cases prove selected max bounds, absent/unselected suppression, awaiting/final siblings and atomic rollback/retry. Budget5.",
+      "contracts": [
+        "Actual ordinary ProcessPlayerTurn source before cleanup; selected positive Applied canonical health Damage only",
+        "No occurrence at acceptance/preallocation/awaiting; complete accepted resource/effect siblings and one final common publication",
+        "Explicit maximum1/4 with same damage amount; no HP formula/default IV; actual occurrence-member rollback restores exact roots before real idle retry"
+      ]
+    },
+    {
+      "category": "qte-physical-injury-producer-contracts",
+      "reason": "Two new genuine-source integration theories/four cases plus four exact existing unit Facts; six methods/eight cases. Budget2.",
+      "contracts": [
+        "Actual canonical pre-source zero/replay and issued Completed resources produce no new harm",
+        "Declared missing-original-source fails closed; changed sibling with recomputed caller hash cannot validate the already issued final plan",
+        "LAST final AcceptedEvents/InternalInputs fingerprints and ComputePlanningInput seal same resources/effects; exact registration, complete boundary, pending/consumed retry and shared reservation-prefix dependency"
+      ]
+    },
+    {
+      "category": "qte-physical-injury-producer-continuation",
+      "reason": "Two exact existing affected continuation Facts/two cases, budget3; no unrelated lifetime rerun.",
+      "contracts": [
+        "Exact sealed-root tamper refusal before writes",
+        "Second-restart bounded receipt completion without replaying ordinary acceptance"
+      ]
+    },
+    {
+      "category": "qte-physical-injury-producer-documentation",
+      "reason": "One affected documentation Fact/one case, budget2.",
+      "contracts": [
+        "Six existing GM surfaces/worked offer/manifest retain closed grammar and source-only pending occurrence publication",
+        "No new caller authority/GM fields or N+1 consumer completion claim"
+      ]
+    },
+    {
+      "category": "qte-physical-injury-producer-admission",
+      "reason": "Two affected existing lawful/frozen methods/four cases, budget3; genuine source overload adaptation and intentional old-owner overlap.",
+      "contracts": [
+        "Exact old raw rows/admission/frozen maximum oracles remain unchanged",
+        "Missing-source public API stays fail closed; absent declaration retains legacy resource-only behavior"
+      ]
+    }
+  ]
+}

@@ -183,7 +183,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <summary>Uses the real engine snapshot owner and actual physical request; never injects a prevalidated manifest.</summary>
     /// <returns>The engine's validator and QTE service over this test's independently bootstrapped health owner.</returns>
     private async Task<(ValidationService Validator, QteSceneService Service, TurnRequest Request)>
-        PreparePhysicalInjuryAdmissionAsync()
+        PreparePhysicalInjuryAdmissionAsync(Func<Task>? seedBeforeSource = null)
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Mortal World\",\"currentIncarnation\":1}");
         await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", "{\"qteEventsEnabled\":true}");
@@ -215,6 +215,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             entry.Coordinate.OwnerKind == ResourceOwnerKind.Player &&
             entry.Coordinate.ResourceOwnerId == "player_current" && entry.Coordinate.ResourceKey == "health");
         Assert.True(health.Current > 10m);
+        if (seedBeforeSource is not null) await seedBeforeSource();
 
         var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
         await _fs.WriteFileAtomicAsync("input/turn_request.json", JsonSerializer.Serialize(request, SnapshotHashJsonOpts));

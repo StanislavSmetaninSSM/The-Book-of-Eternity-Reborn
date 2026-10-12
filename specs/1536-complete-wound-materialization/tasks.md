@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER PROJECTION/FINAL SEAL SOURCE WIP; NEW CONTROLS/GUIDANCE UNFINISHED; CHECKS UNRUN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; BOUNDED PRODUCER SOURCE/FIXTURE/SELECTION READY; INDEPENDENT SOURCE GATE PENDING; CHECKS UNRUN)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -30,7 +30,7 @@ Astra XHigh EVIDENCE accepted (17 artifacts/44 source/5 binary pins/native1 PASS
 artifacts retained then removed/two strict roots). Guards7+other lifetime5+docs1+receipt1
 complete the bounded story prerequisite; selected GitHub recovery267 exact files verified,
 no recovery execution. Producer source handoff below is WIP; projection/reseal are authored,
-finite controls/guidance unfinished and all project checks UNRUN;
+finite controls/owners/selector/guidance authored below and all project checks UNRUN;
 fresh independent bounded DESIGN acceptance incorporates the latest user trusted-checkpoint
 scope ruling. The eec3c36e unresolved anti-owner proposal is historical WIP, not whole accepted design.
 Prior4085 source facts
@@ -69,16 +69,18 @@ preallocation74/350 suppression and awaiting exclusion feed completed planner-ow
 companion join; LAST private existing-key-issued clone replaces events/internal proof+both
 hashes/ComputePlanningInput, unchanged Resources/Effects, final cache/assembly once.
 Captured wound/original-request guards use common touched paths; no second publisher.
-Terminal historical source data cannot reopen active selection/reduction. New behavior tests,
-remaining owners/selector/GM guidance unfinished; all project/source checks UNRUN/PENDING.
+Terminal historical source data cannot reopen active selection/reduction. The final source
+boundary below completes finite controls/owners/selector/GM guidance; project/source checks
+remain UNRUN/PENDING.
 Replay/event/identity/cache/wave/rollback risks await focused full source gate. Stop mutations
 for immediate root source WIP publication; all old evidence/checklists/causal hash retained.
 
 Bounded producer [source plan](./plan.md#bounded-physical-producer--published-plan6114a083-source-handoff-wipchecks-unrun)
 is retained from published6114a083; partial production handoff WIP is recorded above.
 Projection/reseal are authored at publishedcdefc80f; four real-engine methods/six cases and
-their category owner are authored in the current stopped WIP. Other controls/owners/selector/
-GM guidance remain unfinished; project execution UNRUN. The genuine unchanged source174aabad finalized-health missing-occurrence
+their category owner are published28fed406 (270 exact recovery files/no execution). The
+final boundary adds integration contract2theories4cases, remaining owners/remainder selector
+and GM guidance/manifest/guard; project execution UNRUN. The genuine unchanged source174aabad finalized-health missing-occurrence
 RED is accepted and valid; original causal Fact SHA256
 ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f stays exact, no repeat RED.
 Focused Astra ruling: include LastUse and AfterCurrentReaction reservations as distinct
@@ -102,7 +104,7 @@ once with existing661–708 checks; no second reduction/allocation or arbitrary 
 Resource/effect/occurrence publish together through exact touched guards/common writer and
 actual rollback, no second writer. Profile/explicit max/hard4/null ordinary fields stay approved.
 
-Planned exact16 methods/22 cases, undiscovered/UNRUN: original causal1/1 stays separate
+Authored exact16 methods/22 cases, undiscovered/UNRUN: original causal1/1 stays separate
 qte-physical-injury-finalization5/default10. Remainder15 methods/21 cases uses five owners,
 5+2+3+2+3 protective minutes/default20. Actual producer4methods6cases5/default10 are now
 written; contracts integration2methods4cases (genuine staged source/issued completed-result
@@ -115,15 +117,24 @@ Full method names remain in the plan table. Current first real-engine WIP uses o
 existing helper parameters (old defaults/oracles intact), actual source/health/awaiting/receipt
 and existing coordinated publication-member failure cut/rollback/idle retry; six cases UNRUN.
 No new tests had observed RED. Third sourcecdefc80f is published/recovery verified269 exact
-files/no execution. Contract controls, remaining owners/task-local1536-qte-physical-injury-
-producer.json and GM guidance remain unfinished. Stop mutations for immediate WIP publication;
+files/no execution. Two contract theories use actual canonical zero/replay seed writes before
+the existing genuine engine snapshot, then official Reader/source factory and issued completed
+owner. Existing admission helper adds only optional pre-source callback, default unused.
+Applied0/Replay evidence precedes harmless assertions; original-source public refusal and
+changed actual sibling/recomputed caller hash precede cache rejection/no publication. These
+are typed component controls, not the full engine vertical. All remaining owners/task-local
+1536-qte-physical-injury-producer.json and six GM surfaces/worked offer/manifest/guard are
+authored. Source-only positive selected final Damage publishes a pending occurrence; no
+new GM fields, HP formula/defaultIV or consumer claim. Stop mutations at SOURCE READY for
+root publication and mandatory combined independent SOURCE/FIXTURE/SELECTION gate; static
+checks only, no project commands, acceptance or GREEN claim;
 intentional old-owner overlaps/global CI unchanged, no broad mortal-wounds-state/qte-rules/
 accepted51 or aggregate rerun. New controls have no prior RED. Source guard changes zero
 implementors to exact1 Services/QtePhysicalWoundOccurrenceProducer.cs, retaining planner-only
 reducer callers. Existing GM guidance/worked offer/manifest/guard describe source publication
-only, no new fields or claimed consumer. Root publishes plan then authorizes coherent block;
-combined source/fixture/selection gate precedes fresh root preparation/actual. Producer and
-N+1 none/create consumer/wound/receipt/archive-save-load remain UNIMPLEMENTED/UNRUN; all
+only, no new fields or claimed consumer. Combined source/fixture/selection gate precedes
+fresh root preparation/actual. Producer implementation is authored but UNVERIFIED;
+N+1 none/create consumer/wound/receipt/after-terminal save-load remain UNIMPLEMENTED/UNRUN; all
 checklists/immutable outcomes/historical B2–B5 and cold count1 remain unchanged.
 
 Fresh independent Astra XHigh EXACT DESIGN ACCEPTED5445ddfe360e7d7a2b044045128623a0a1dcf206

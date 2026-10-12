@@ -2,6 +2,100 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-producer-contracts",
+            "responsibility": "#1536 exact producer/source/seal dependency owner: integration two theories/four cases use genuine engine-staged source, actual canonical pre-source damage/replay and issued completed owner; zero applied/replay cannot produce harm, missing original source and changed sibling refuse before publication. Four existing unit Facts cover exact real registration, complete finalized boundary, pending/consumed exact retry and shared typed reservation-prefix binding. Six methods/eight cases; intentional exact existing-owner overlap.",
+            "excludes": "No claim that component controls are a full GameEngine vertical, forged source/capsule/issued result, owner rewrite, consumer/save-load, broad prefix/planner/afterlife/mortal-wounds-state or old51 rerun.",
+            "changeHints": [
+                "BookOfEternityClient/Services/QtePhysicalWoundOccurrenceProducer.cs",
+                "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+                "BookOfEternityClient/Services/AcceptedEffectBoundaryTranscript.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryProducerContracts.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer_FinalizedProjection_ZeroOrReplayCannotCreateNewHarm",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer_FinalCompletion_MissingOriginalSourceOrChangedSiblingCannotPublish"
+                    ]
+                },
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.MortalWoundOccurrenceProducerTests.RegisteredProducerSeam_IsTheOnlyProductionCallerOfTheReducer",
+                        "BookOfEternityClient.Tests.MortalWoundOccurrenceProducerTests.RegisteredProducerSeam_ProjectsOnlyAgainstTheFinalizedResourceEffectBoundary",
+                        "BookOfEternityClient.Tests.MortalWoundOccurrenceStateTests.PlanAppend_RequiresACompleteBatchAndCoalescesOnlyAnExactSourceRetryAcrossConsumedReceipts",
+                        "BookOfEternityClient.Tests.AcceptedEffectBoundaryTranscriptTests.TerminalReservationPrefix_RebindsTypedForeignTargetsAndOrdersByStableMechanics"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-injury-producer-continuation",
+            "responsibility": "#1536 two exact existing continuation consumers affected by declared-only capture/source handoff and completed final-input reseal: byte-different sealed-root rejection before writes and actual bounded receipt completion after second restart without ordinary replay. Two Facts/two cases; intentional old-owner overlap.",
+            "excludes": "No broad QTE rules/lifetime rerun, N+1 consumer, active-QTE archive rebind, fabricated continuation/snapshot, provider/native Windows.",
+            "changeHints": [
+                "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+                "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite",
+                        "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_AfterSecondRestartFinalizesWithoutOrdinaryTurnReplay"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-injury-producer-documentation",
+            "responsibility": "#1536 existing one documentation Fact/one case owns coherent six GM surfaces, worked raw offer and manifest: closed five-field declaration retained, selected positive finalized health source publishes pending occurrence with original correlation/complete siblings in common transaction, awaiting/preallocation suppression and no implemented N+1 consumer claim. Intentional overlap with existing documentation owner.",
+            "excludes": "No broad prompt/doc category or grammar neighbors, actual runtime publication proof from prose, new GM authority fields or complete wound route claim.",
+            "changeHints": [
+                "CLI_API_Specification.md",
+                "CLI_Agent_Daemon_Specification.md",
+                "Rules/Block_CLI_QTE.txt",
+                "TaskGuides/CLI_Step_Main.txt",
+                "Examples/E_CLI_QTE_Offer.txt",
+                "Examples/example_validation_manifest.json",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-producer",
             "responsibility": "#1536 T070 four actual ordinary GameEngine producer methods/six cases: explicit maximum1/4 under equal finalized health Damage, resource-only/unselected declaration suppression, actual bounded awaiting/no-receipt idle/final receipt complete sibling batch, and an actual coordinated occurrence-member publication cut followed by rollback/retry. Genuine official source coordinates and strict per-test owned cleanup. Source WIP; no runtime result claimed.",
             "excludes": "No N+1 wound decision/consumer or save-load journey, fabricated source/occurrence/receipt authority, relaxed validators, arbitrary owner rewrite, provider/native Windows/archive-QTE or broad old51/qte-rules/mortal-wounds-state rerun. The byte-exact original causal Fact is selected separately.",

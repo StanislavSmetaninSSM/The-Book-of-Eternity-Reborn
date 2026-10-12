@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER PROJECTION/FINAL SEAL SOURCE WIP; NEW CONTROLS/GUIDANCE UNFINISHED; CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; BOUNDED PRODUCER SOURCE/FIXTURE/SELECTION READY; INDEPENDENT SOURCE GATE PENDING; CHECKS UNRUN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -66,15 +66,16 @@ that declaration; undeclared selected response shape/fingerprint stays unchanged
 
 That first bridge checkpoint did not yet register a producer or reseal the completed input.
 The third published source WIP below now authors those paths; all project checks and SOURCE
-acceptance remain pending. Finite controls/selection and GM guidance are being completed.
+acceptance remain pending. Finite controls/selection and GM guidance are authored in the final source boundary below;
+SOURCE acceptance and all project checks remain pending.
 First bridge WIP is published22f3e32b226a8e9483c132ab10820b16a50172bb with268 exact selected
 GitHub recovery files, no recovery execution. Current second source WIP adapts only the two
 lawful/frozen admission calls to an internal original-source overload using their existing
 genuine staged Reader/context. All three lawful rows, raw declarations and frozen-tamper
 oracles stay exact; public declared calls without source still fail closed. New narrow
 producer-admission owner selects2 methods/4 cases, category3/default8, intentional old-owner
-overlap; malformed/admission51 neighbors are excluded. Full producer inventory is now planned16 methods/22 cases; remaining controls/owners and
-task-local selector are unfinished.
+overlap; malformed/admission51 neighbors are excluded. Full producer inventory is16 methods/22 cases; final owners and remainder selector are
+recorded below, undiscovered/UNRUN.
 
 Capsule lifetime now distinguishes active source from historical terminal data. Exact
 original Reader/request/snapshot/generation agreement remains required while any original
@@ -107,14 +108,14 @@ Declared wound fingerprints/read guards and original request join the common tou
 Historical terminal source data does not reopen selection: existing terminal state gates
 reject it before completed producer registration; active/awaiting still require originals.
 
-This is source WIP, not verified implementation or GREEN. New finite behavior controls,
-remaining owners/task-local selector and coherent GM guidance/example/manifest are unfinished.
+That third handoff was source WIP, not verified implementation or GREEN. Its finite behavior
+controls/owners/selector and GM guidance were completed in the final source boundary below.
 Actual replay-only semantics, event/identity stability, cache/awaited-wave seals and atomic
 rollback remain UNRUN source-gate risks. Old packets/checklists/causal hash are unchanged.
 Stop all source mutations for immediate root publication before further test/docs authoring.
 
 Root published/recovery-verified third source WIPcdefc80fedde01a906163faf995d8ceee91dc25f,
-269 selected files exact/no recovery execution. Current stopped fourth WIP adds the first
+269 selected files exact/no recovery execution. Published fourth WIP28fed40680e49c2593533d325b016027f87a197e adds the first
 four real-engine producer methods/six cases and their5-minute category owner. Existing
 RunActualQteStorySourceAsync gains only optional declaration/maximum/unselected/action-observer
 parameters; defaults preserve existing paths and oracles. These controls require actual
@@ -125,6 +126,38 @@ No new observer seam/harness or synthetic accepted authority. All six cases are 
 claim that the new controls were previously RED. Contract controls, remaining owners/full
 remainder selector and coherent GM guidance are still unfinished; original causal Fact/hash
 and checklists are unchanged. Stop all mutations for immediate root WIP publication.
+
+Current final producer SOURCE/FIXTURE/SELECTION READY boundary on published28fed406:
+two new integration contract theories/four cases reuse the existing admission fixture and
+real canonical resource writer before genuine engine snapshot creation. The optional
+seedBeforeSource callback is unused by existing rows. Source capture uses official Reader;
+ReduceAcceptedPlan alone issues the completed owner. Zero applied Damage and exact canonical
+history replay must have actual Applied/Replay transcript evidence and no harm/occurrence
+companion; missing original source refuses public declaration acceptance; a changed actual
+sibling event with a recomputed caller fingerprint cannot validate the already completed final
+plan. Same Resources/Effects are retained, both final authority hashes change and LAST
+ComputePlanningInput is checked. These are typed component controls, not full engine journeys.
+The real-engine4methods6cases remain the live source/finalization/awaited/atomic controls.
+
+All four new category owners and the narrow affected admission owner are authored. Existing
+finalization selector remains first causal1/1 GREEN5/default10. New task-local
+1536-qte-physical-injury-producer.json excludes that case:15 methods/21 cases, five categories,
+budgets5+2+3+2+3/default20. Contracts includes the one named existing typed reservation-prefix
+Fact because shared helper extraction affects its encoding; old prefix body equality is only
+static evidence. Three new owners are contracts6/8 (integration2/4 plus unit4/4), continuation2/2
+and documentation1/1; intentional old-owner overlaps stay explicit. Global CI unchanged.
+Six existing GM surfaces plus worked offer/manifest/documentation guard describe only selected
+positive finalized health source publication, original correlation, ordered siblings and
+atomic pending occurrence. No new GM fields, HP severity/defaultIV or consumer claim.
+
+All mutations STOPPED for root publication and mandatory combined independent
+SOURCE/FIXTURE/SELECTION gate. Static source/JSON/count/hash/diff checks only; no new build,
+discovery/PlanOnly/runtime, SOURCE acceptance or GREEN is claimed. Original causal Fact remains
+byte exact and is not rerun RED; new controls have no prior observed RED. Active/source lifetime,
+full event projection, final cache seal, awaited-wave stability, exact pending/consumed retry
+and real publication rollback remain runtime risks until matching bounded checks. No known
+new product/authority blocker. N+1 decision/consumer and after-terminal save-load remain
+unimplemented/UNRUN. All T070/#1536 checkboxes and immutable packets are unchanged.
 
 Base4c2466dafc569ab8b85316de588a847f3371911d is published/recoverable; selected GitHub
 recovery267 exact files executes no project. Source174aabad already proved actual original
@@ -201,13 +234,13 @@ block, with no new product approval, keys, anti-owner contract or archive-QTE fe
    actual rollback membership to occurrence and receipt read guards. No post-publication
    occurrence writer, partial batch, after-cleanup source rediscovery or second allocator.
 
-Finite selection is PLANNED/undiscovered/UNRUN; four real-engine methods are authored in the
-current partial WIP below. All exact methods below use
+Finite selection is authored/undiscovered/UNRUN. Six new integration methods/ten cases
+are authored; existing causal1 and affected exact existing methods retain their oracles. All exact methods below use
 namespace BookOfEternityClient.Tests. New integration controls reuse the actual engine/
 official source/offline GM/live input/strict owned-root fixture, not a new harness. They
 have no previously observed RED; the unchanged accepted causal Fact supplies the real gap.
-Catalog owners and task-local1536-qte-physical-injury-producer.json will be authored with
-implementation; old-owner overlap is explicit, global CI unchanged, no aggregate/broad run.
+Catalog owners and task-local1536-qte-physical-injury-producer.json are authored; old-owner
+overlap is explicit, global CI unchanged, no aggregate/broad run.
 
 | Planned owner / protective minutes | Exact selectors and case counts |
 | --- | --- |

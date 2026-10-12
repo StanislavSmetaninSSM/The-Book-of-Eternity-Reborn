@@ -166,11 +166,17 @@ public sealed partial class PromptDocumentationCoverageTests
                      {
                          "physicalInjury", "schemaVersion", "resourceCommandOrdinal", "maximumSeverityRank",
                          "allowedLocationKinds", "2000", "anatomical", "systemic", "mental", "spiritual_axis", "other",
-                         "no default IV", "before selection", "occurrence production remains pending"
+                         "no default IV", "before selection", "mortal_qte_terminal_health_damage_v1",
+                         "same resource/effect transaction", "complete ordered accepted sibling events",
+                         "awaiting receipt and preallocation publish no occurrence", "N+1 wound decision/consumer remains pending"
                      })
                 Assert.Contains(token, document, StringComparison.Ordinal);
+            Assert.DoesNotContain("occurrence production remains pending", document, StringComparison.Ordinal);
         }
         Assert.Contains("mortal_qte_physical_injury_declaration_v1", qteExample, StringComparison.Ordinal);
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        Assert.Contains("mortal_qte_terminal_health_damage_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("N+1 wound decision/consumer remains pending", manifest, StringComparison.Ordinal);
         foreach (var token in new[] { "clientStoryAppend", "exact client-written row", "same-root paused/deferred resume", "every other story/history guard stays enabled", "never offer fields or GM receipt authority", "corruption/correlation checks" })
             Assert.Contains(token, qteRules, StringComparison.Ordinal);
     }
