@@ -1,0 +1,574 @@
+{
+  "source": "24dba39c94afd224881519a045bfb1b02906139c",
+  "compileSource": "24dba39c94afd224881519a045bfb1b02906139c",
+  "runtimeSource": "24dba39c94afd224881519a045bfb1b02906139c",
+  "run": "20261012-063304-113-263107-6218538846ea47df900727684e0b7a59-categories",
+  "caseCount": 13,
+  "passed": 13,
+  "failed": 0,
+  "distinctCleanupReceipts": 14,
+  "all14OwnedRootsAbsent": true,
+  "runtimeBinaryHashesUnchanged": true,
+  "sourceHashesUnchanged": true,
+  "sourceCleanAtReadback": true,
+  "actualInvocations": 1,
+  "priorAcceptedColdCount": 1,
+  "knownPrefixDirectoryComparison": {
+    "beforeCount": 0,
+    "afterCount": 0,
+    "newlyRemaining": [],
+    "scope": "Directory names only known /tmp/boe-resource-materialization-*; no shared template creation or strict receipt claimed"
+  },
+  "scope": "Shared staged-history genuine accepted-A replay negatives; not new last-binding live cold publication or write-failure matrix.14 strict selected/foreign roots exclude shared builder receipt.",
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ForgedBTransportWithoutAcceptedAIsRejected",
+      "outcome": "Passed",
+      "duration": "00:00:09.5188694",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-e003aefe82af4599a34e1babeb13e181",
+          "scenario": "forged_b_without_a",
+          "genuineA": "sha256:32fd79f02a73e2ecd2e64f36dbdadfa5fb4d2fdc43a79440e8d62887171ac507",
+          "genuineB": "sha256:bc98fce0d2c15b9255593cd454f56ee903f9bf76f5be3732bd62754c92b194bd",
+          "forgedB": "sha256:7cd63f98f2e14892cba06019d1eb6456b57934b61127183f216ca4a6732cda02",
+          "disposition": "Rejected",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_continuation_proposal_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "forged_b_strict_resolution",
+          "issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_continuation_proposal_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "forged_b_without_a",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-e003aefe82af4599a34e1babeb13e181",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_GmAndWorkerCannotWriteAcceptedJournal",
+      "outcome": "Passed",
+      "duration": "00:00:09.0187658",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-c35ac034ed9f4b3bb56e6e94e696a4a4",
+          "scenario": "gm_private_journal_write",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_continuation_proposal_not_permitted",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "root": "/tmp/boe-resource-materialization-c35ac034ed9f4b3bb56e6e94e696a4a4",
+          "scenario": "worker_private_journal_write",
+          "result": "Rejected",
+          "AppliedFiles": [],
+          "RejectionReasons": [
+            "[Error/ClientOwnedSurface] game_state/control/spiritual_wound_capture_checkpoint.json: The current private spiritual decision is unavailable."
+          ]
+        },
+        {
+          "scenario": "gm_and_worker_private_journal_write",
+          "TransportBytesPreserved": true,
+          "AppliedFileCount": 0
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-c35ac034ed9f4b3bb56e6e94e696a4a4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal(mutation: \"broadened_fields\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.2512485",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-02aa707d84764cb2ba5b593b325bcad6",
+          "scenario": "invalid_journal",
+          "mutation": "broadened_fields",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The saved spiritual checkpoint cannot be replayed by its owners.",
+              "Category": 2,
+              "Code": "spiritual_c2_dependent_progress_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "invalid_journal",
+          "mutation": "broadened_fields",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-02aa707d84764cb2ba5b593b325bcad6",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal(mutation: \"unknown_field\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0273580",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-3695636fdecb48d2bb7bafd71446507b",
+          "scenario": "invalid_journal",
+          "mutation": "unknown_field",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The spiritual checkpoint cannot establish a current pending packet.",
+              "Category": 2,
+              "Code": "spiritual_checkpoint_physical_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "invalid_journal",
+          "mutation": "unknown_field",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-3695636fdecb48d2bb7bafd71446507b",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdBRejectsChangedAcceptedCriticalText(field: \"scaleLimit\")",
+      "outcome": "Passed",
+      "duration": "00:00:01.1078353",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-c72745e2c7124b5f80486caa62b1a15e",
+          "scenario": "accepted_critical_text",
+          "field": "scaleLimit",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "disposition": "Rejected",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_continuation_proposal_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "accepted_critical_text",
+          "field": "scaleLimit",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-c72745e2c7124b5f80486caa62b1a15e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal(mutation: \"wrong_owner\")",
+      "outcome": "Passed",
+      "duration": "00:00:01.7619833",
+      "structuredOutput": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-1b0ec82c9088492898c71d5995f00b6f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        },
+        {
+          "root": "/tmp/boe-resource-materialization-baa318e0b0d54aa8a56cd4c87b7c53b7",
+          "scenario": "invalid_journal",
+          "mutation": "wrong_owner",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The saved spiritual checkpoint cannot be replayed by its owners.",
+              "Category": 2,
+              "Code": "spiritual_c2_dependent_progress_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "invalid_journal",
+          "mutation": "wrong_owner",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-baa318e0b0d54aa8a56cd4c87b7c53b7",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal(mutation: \"empty_progress\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0351551",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-13cccde0ee78453c83d351720208ebe2",
+          "scenario": "invalid_journal",
+          "mutation": "empty_progress",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The spiritual checkpoint cannot establish a current pending packet.",
+              "Category": 2,
+              "Code": "spiritual_checkpoint_physical_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "invalid_journal",
+          "mutation": "empty_progress",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-13cccde0ee78453c83d351720208ebe2",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal(mutation: \"foreign_path\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0239412",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-22f38ae35066421ea9208e098e321ddc",
+          "scenario": "invalid_journal",
+          "mutation": "foreign_path",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The spiritual checkpoint cannot establish a current pending packet.",
+              "Category": 2,
+              "Code": "spiritual_checkpoint_physical_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "invalid_journal",
+          "mutation": "foreign_path",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-22f38ae35066421ea9208e098e321ddc",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal(mutation: \"ordinal_gap\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0298256",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-541e2bcae477452b8cf81f33f3a25220",
+          "scenario": "invalid_journal",
+          "mutation": "ordinal_gap",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The spiritual checkpoint cannot establish a current pending packet.",
+              "Category": 2,
+              "Code": "spiritual_checkpoint_physical_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "invalid_journal",
+          "mutation": "ordinal_gap",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-541e2bcae477452b8cf81f33f3a25220",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal(mutation: \"content_fingerprint\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0242982",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-6e70a50455394a97a7ddc324a7dd3e31",
+          "scenario": "invalid_journal",
+          "mutation": "content_fingerprint",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The spiritual checkpoint cannot establish a current pending packet.",
+              "Category": 2,
+              "Code": "spiritual_checkpoint_physical_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "invalid_journal",
+          "mutation": "content_fingerprint",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-6e70a50455394a97a7ddc324a7dd3e31",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal(mutation: \"future_b_image\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.2696816",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-3286b525072d4d698d9c04daf5277a06",
+          "scenario": "invalid_journal",
+          "mutation": "future_b_image",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The saved spiritual checkpoint cannot be replayed by its owners.",
+              "Category": 2,
+              "Code": "spiritual_c2_dependent_progress_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "invalid_journal",
+          "mutation": "future_b_image",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-3286b525072d4d698d9c04daf5277a06",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal(mutation: \"reordered_rows\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0248757",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-a37bf75a39c74ccfaaa98b8dd2a75d4b",
+          "scenario": "invalid_journal",
+          "mutation": "reordered_rows",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The spiritual checkpoint cannot establish a current pending packet.",
+              "Category": 2,
+              "Code": "spiritual_checkpoint_physical_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "invalid_journal",
+          "mutation": "reordered_rows",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-a37bf75a39c74ccfaaa98b8dd2a75d4b",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdBRejectsChangedAcceptedCriticalText(field: \"narrativeConstraint\")",
+      "outcome": "Passed",
+      "duration": "00:00:01.2549451",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-ee9dc5d831654cd68d45ffed921f13c5",
+          "scenario": "accepted_critical_text",
+          "field": "narrativeConstraint",
+          "a": "sha256:91e2d4dfa9ef890debd442e21f9a381198d56720d1ac4d4a53f2a915b813a5a2",
+          "b": "sha256:b479bf746caaa0dfec2f30088ef8e8a054af943181eb16a5e852a68ff0237abd",
+          "disposition": "Rejected",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_continuation_proposal_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "scenario": "accepted_critical_text",
+          "field": "narrativeConstraint",
+          "TransportBytesPreserved": true
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-ee9dc5d831654cd68d45ffed921f13c5",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    }
+  ]
+}

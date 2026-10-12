@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (B2/B3 EVIDENCE ACCEPTED; B4 TEST-ONLY WIP)
+## Current original-completion boundary — 2026-10-12 (B2/B3 EVIDENCE ACCEPTED; B4 FIRST 13 PASS — REVIEW PENDING)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Lorian subsequently accepted
@@ -17,8 +17,8 @@ the B3 test-only refinement below. Its first separately released matching actual
 failed. Independent consultation identifies an overconstrained named-on-Evaluate
 oracle. Corrected SOURCE d5b2 and separately released fresh preparation/first
 corrected actual are complete2PASS, scoped EVIDENCE ACCEPTED45dfda. Coordinator
-now releases only the B4 finite test/category work; its preparation/runtime and B5
-remain gated.
+accepted B4 SOURCE24dba and separately released fresh preparation/first actual:
+13PASS now frozen for EVIDENCE review; B5 remains gated.
 The [current plan](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
 separates source coverage, historical PASS without available raw artifacts and
 retained raw-verified evidence for exact RESULT-CLOSURE-BINDING B2–B5.
@@ -101,20 +101,29 @@ uncommitted; no production change or new GameEngine/cold run. Independent Astra
 XHigh scoped EVIDENCE ACCEPTED45dfda631272ebc7161ba9cbd45af312784f89e2 without
 findings; coordinator20artifact/21source/6binary/raw/cleanup readback passed.
 
-B4 test-only WIP retains four shared staged-history negative methods/13 cases
+B4 test-only block retains four shared staged-history negative methods/13 cases
 (1 forged B,2 accepted-critical-text,9 journal mutations,1 GM/worker private write).
 Real accepted A, raw rehashing, actual worker gate and preservation stay intact;
-existing output plus strict selected-context/foreign-root cleanup provide future
+existing output plus strict selected-context/foreign-root cleanup retain current
 raw evidence. The shared immutable template builder remains unchanged;14 strict
 per-case/foreign receipts do not imply all process-created roots. New finite
 `spiritual-cutover-private-replay-negatives` moves only four selectors from the
 three existing owners; static selector multiset is unchanged. Task-local
 `tests/selections/1536-binding-private-replay-negatives.json`:13/4/1 integration,
 existing10minute/default15 bounds; global selection/CI unchanged. Independent
-SOURCE/category review precedes separately released fresh preparation and actual;
-review determines whether preserved full inventory plus exact PlanOnly needs a catalog audit. No B4 build/discovery/runtime yet; no production/new
-scenario/harness/fault-matrix/long cold/B5. No further project run is authorized here;
-all checkboxes and earlier accepted packets remain unchanged.
+SOURCE/fixture/category-sufficiency ACCEPTED24dba; full unchanged inventory plus
+exact PlanOnly sufficed, no broad catalog audit/unit build. Fresh preparation062934
+on clean24dba:13/4/1, integration116.2875993s,73warnings/0errors,zero execution,
+26source/6freshDLL-PDB pins. Separately released first matching actual063304:
+13/13PASS,28.1563058s,one descriptor complete,no timeout/duplicate/underfill.
+[Immutable B4 packet](./recovery/binding-private-replay-negatives-20261012/manifest.json)
+retains21 full/raw-hashed artifacts, all13 diagnostics/preservation outputs,
+GM refusal/workerRejected with zero applied files,14 distinct strict root receipts
+and actual absence. Known-prefix directory names before0/after0/newlyremaining0;
+no shared-template receipt claimed. Source/binary hashes unchanged; runner cleanup
+passed. B4 EVIDENCE review pending; no production/new scenario/harness/fault-matrix/
+long cold/B5. No further project run is authorized here; cold remains1 and all
+checkboxes/earlier accepted packets remain unchanged.
 
 Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and
 remaining spiritual consumers, lawful T107 initial-stage coexistence/healing,

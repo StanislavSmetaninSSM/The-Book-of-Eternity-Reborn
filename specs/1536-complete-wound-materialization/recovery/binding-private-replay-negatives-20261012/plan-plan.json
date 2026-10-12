@@ -1,0 +1,56 @@
+{
+  "Categories": [
+    "spiritual-cutover-private-replay-negatives"
+  ],
+  "Reasons": [
+    {
+      "category": "spiritual-cutover-private-replay-negatives",
+      "reason": "#1536 B4 finite shared negative evidence after accepted binding B2/B3 and retained warm/cold: exact four existing methods only; no broad replay/transport or write-failure matrix.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B4 / RESULT-CLOSURE-BINDING rev1 shared continuation protections",
+        "Genuine accepted A required before B; immutable critical text and closed/rehashed journal ownership, order, fields, paths and fingerprints",
+        "GM/worker cannot write private accepted history; actual gates reject and preserve physical files; same-process reconstructed owners, not new live cold publication"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "24dba39c94afd224881519a045bfb1b02906139c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 118.5974367,
+  "Descriptors": [
+    {
+      "Name": "spiritual-cutover-private-replay-negatives-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-cutover-private-replay-negatives",
+      "Categories": [
+        "spiritual-cutover-private-replay-negatives"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdBRejectsChangedAcceptedCriticalText|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ForgedBTransportWithoutAcceptedAIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_GmAndWorkerCannotWriteAcceptedJournal",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdBRejectsChangedAcceptedCriticalText",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ForgedBTransportWithoutAcceptedAIsRejected",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_GmAndWorkerCannotWriteAcceptedJournal",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

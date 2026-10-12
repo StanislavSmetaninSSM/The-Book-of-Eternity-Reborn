@@ -1,0 +1,78 @@
+{
+  "Categories": [
+    "spiritual-cutover-private-replay-negatives"
+  ],
+  "Reasons": [
+    {
+      "category": "spiritual-cutover-private-replay-negatives",
+      "reason": "#1536 B4 finite shared negative evidence after accepted binding B2/B3 and retained warm/cold: exact four existing methods only; no broad replay/transport or write-failure matrix.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B4 / RESULT-CLOSURE-BINDING rev1 shared continuation protections",
+        "Genuine accepted A required before B; immutable critical text and closed/rehashed journal ownership, order, fields, paths and fingerprints",
+        "GM/worker cannot write private accepted history; actual gates reject and preserve physical files; same-process reconstructed owners, not new live cold publication"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "24dba39c94afd224881519a045bfb1b02906139c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "spiritual-cutover-private-replay-negatives",
+      "Seconds": 25.5204274,
+      "BudgetMinutes": 10,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0352944,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0447515,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0901944,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0030233,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:00:28.1563058",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 13,
+    "CompletedCases": 13,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 13,
+    "Executed": 13,
+    "Passed": 13,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

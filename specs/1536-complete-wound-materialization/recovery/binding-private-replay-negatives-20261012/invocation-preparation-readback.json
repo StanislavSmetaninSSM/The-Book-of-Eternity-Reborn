@@ -1,0 +1,71 @@
+{
+  "source": "24dba39c94afd224881519a045bfb1b02906139c",
+  "compileSource": "24dba39c94afd224881519a045bfb1b02906139c",
+  "planRun": "20261012-062934-206-262735-0cae5d9df29e4175a286ac0e486890d2-categories",
+  "planWallTime": "00:01:58.8457006",
+  "phaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0382872,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0433444,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.095673,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 116.2875993,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0037184,
+      "Completed": true
+    }
+  ],
+  "planSelection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 13,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "spiritual-cutover-private-replay-negatives-integration-001"
+    ],
+    "Complete": false
+  },
+  "methodCount": 4,
+  "planTests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "freshBinaryPinsMatchAfter": true,
+  "sourcePinsMatchAfter": true,
+  "sourceCleanAfter": true,
+  "sourcePinCount": 26,
+  "binaryPinCount": 6,
+  "cleanup": {
+    "planOwnedTree": true,
+    "planRuntime": true
+  },
+  "warnings": {
+    "integration": 73,
+    "errors": 0
+  },
+  "unitBuilt": false,
+  "catalogRun": false,
+  "budgetsMinutes": {
+    "privateReplayNegatives": 10,
+    "overallDefault": 15
+  },
+  "actualTestsRun": 0,
+  "priorAcceptedColdCount": 1
+}

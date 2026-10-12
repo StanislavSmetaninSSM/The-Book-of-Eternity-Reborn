@@ -1,0 +1,32 @@
+{
+  "source": "24dba39c94afd224881519a045bfb1b02906139c",
+  "compileSource": "24dba39c94afd224881519a045bfb1b02906139c",
+  "runtimeSource": null,
+  "argv": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-binding-private-replay-negatives.json",
+    "-PlanOnly"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "environmentSource": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "startedUtc": "2026-10-12T06:29:33.594367+00:00",
+  "scope": "B4 fresh selected integration preparation and exact PlanOnly only; no unit/catalog/actual tests",
+  "expected": {
+    "methods": 4,
+    "cases": 13,
+    "descriptors": 1,
+    "actualTests": 0
+  },
+  "budgetsMinutes": {
+    "privateReplayNegatives": 10,
+    "overallDefault": 15
+  },
+  "actualInvocations": 0,
+  "priorAcceptedColdCount": 1,
+  "exitCode": 0,
+  "finishedUtc": "2026-10-12T06:31:33.092627+00:00"
+}
