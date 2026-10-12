@@ -1,0 +1,178 @@
+{
+  "runtimeSource": "673796227c24a74c149b64bc431ff01a9bceab99",
+  "compileSource": "674e30a6441854e88454c89c48652005e57d4236",
+  "run": "20261012-165625-462-323511-ca83459306784be889c8bea18ed3525a-categories",
+  "exitCode": 1,
+  "wallTime": "00:00:54.6596612",
+  "timedOut": false,
+  "plannedMethods": 15,
+  "plannedCases": 21,
+  "plannedDescriptors": 6,
+  "completedMethods": 4,
+  "completedCases": 6,
+  "completedDescriptors": 1,
+  "complete": false,
+  "executed": 6,
+  "passed": 5,
+  "failed": 1,
+  "remainingUnrunCases": 15,
+  "remainingUnrunDescriptors": 5,
+  "duplicateTestIds": 0,
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-8a0519fe959448e1b1fb85c4c0e96169",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-3ba79a59df834f84b1d817faf55b9f0f",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-effect-materialization-8843f386831741b6b97e6d27ca147ee5",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-aa98323a0d0a4916aee31adb09f58d2e",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-274418166eee4454a2db9dbadab1a8b2",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d36dd7e39fa14a098102aec8eef16784",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ae65cf5f77e042babdaca85ea7f7303f",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "distinctStrictRoots": 7,
+  "allStrictRootsActuallyAbsent": true,
+  "sourcePinsMatched": 79,
+  "freshBinaryPinsMatched": 10,
+  "causal1PassNotRepeated": true,
+  "failureBoundary": "qte_deferred_pending_correlation_mismatch before awaiting receipt state; selected physical bounded finalization unreached",
+  "evidenceReview": "PENDING",
+  "verifiedUtc": "2026-10-12T16:58:24.865440+00:00",
+  "allNativeObservationJsonParsed": true,
+  "nativeObservations": 18,
+  "scope": "First producer remainder actual outcome,5PASS1FAIL of6executed; 15planned remaining cases UNRUN; bounded awaiting failed before receipt, no full qualification",
+  "acceptedSourceGate": "674e30a6441854e88454c89c48652005e57d4236",
+  "causalFirstGreenEvidenceGate": "673796227c24a74c149b64bc431ff01a9bceab99",
+  "causalFirstGreenIndependentEvidence": "ACCEPTED actual retained Astra XHigh",
+  "matchingPreparationPacket": "../qte-physical-producer-causal-first-green-20261012",
+  "thisRemainderActualInvocations": 1,
+  "firstFailure": "qte_deferred_pending_correlation_mismatch",
+  "correctionExecution": "UNRUN",
+  "consumerAndArchive": "NOT_IMPLEMENTED_UNRUN",
+  "artifacts": [
+    {
+      "path": "dotnet-test.log.gz",
+      "originalPath": "TestResults/test-categories/20261012-165625-462-323511-ca83459306784be889c8bea18ed3525a-categories/dotnet-test.log",
+      "originalBytes": 3331812,
+      "originalSHA256": "5eaa6262e03f0f38b688804d9f1ed892a03ef3fa37bc44dbde395eaf29678b17",
+      "storedBytes": 369563,
+      "storedSHA256": "455c0de090b1918ea733438caf55582e4776155f3bf90a55fdfaeb2d9e8f285b",
+      "compression": "gzip"
+    },
+    {
+      "path": "plan.json.gz",
+      "originalPath": "TestResults/test-categories/20261012-165625-462-323511-ca83459306784be889c8bea18ed3525a-categories/plan.json",
+      "originalBytes": 11478,
+      "originalSHA256": "e46b0c5c29f9214e986b7c86b208c17c2e3abdcdf0cf03e489535491e4d30ba6",
+      "storedBytes": 2308,
+      "storedSHA256": "a2702d104613ffca5f6387bc931ba3999bff3f9459d670e958d71a2a81cece7c",
+      "compression": "gzip"
+    },
+    {
+      "path": "qte-physical-injury-producer-integration-001.trx.gz",
+      "originalPath": "TestResults/test-categories/20261012-165625-462-323511-ca83459306784be889c8bea18ed3525a-categories/qte-physical-injury-producer-integration-001.trx",
+      "originalBytes": 101983,
+      "originalSHA256": "0c8d6d84fe6cd74376763d13d91e8b4133978a01545df59412bfa750df15607a",
+      "storedBytes": 10450,
+      "storedSHA256": "64381149f3b37f8d8443436d45e1c056d5d6458ffb8a8b125106b9dfb3fe3d03",
+      "compression": "gzip"
+    },
+    {
+      "path": "summary.json.gz",
+      "originalPath": "TestResults/test-categories/20261012-165625-462-323511-ca83459306784be889c8bea18ed3525a-categories/summary.json",
+      "originalBytes": 4485,
+      "originalSHA256": "758b7f59c0a7cb34ca081da9b9272c51ace5d0e37f2d0084bc65ba2b11009915",
+      "storedBytes": 1681,
+      "storedSHA256": "6b2fb0a41967e1e115eb872994c124cd7890b194b40de7c687308cb00bd8f7fb",
+      "compression": "gzip"
+    },
+    {
+      "path": "remainder-first-actual-console.log.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/remainder-first-actual-console.log",
+      "originalBytes": 28239,
+      "originalSHA256": "1f92b6c4f41ef90180ea31a8ec0d485660b80b90cfaaa9b5bbe31d1be68252aa",
+      "storedBytes": 3778,
+      "storedSHA256": "315864409e0c5676c772854c7364813395a796bc3ff2235092fabc0aca7b5cc8",
+      "compression": "gzip"
+    },
+    {
+      "path": "remainder-actual-invocation-prewritten.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/remainder-actual-invocation-prewritten.json",
+      "originalBytes": 1100,
+      "originalSHA256": "80fe14e1df0f2b2367e8faddc2e417d5768b48f50ad42530614d5ad02e422230",
+      "storedBytes": 602,
+      "storedSHA256": "bc7797631ad2270e15a9a21d26efb600b6290967bd11b0f4e0b463bc68d19961",
+      "compression": "gzip"
+    },
+    {
+      "path": "remainder-metadata-only-no-build-proof.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/remainder-metadata-only-no-build-proof.json",
+      "originalBytes": 5138,
+      "originalSHA256": "9b411aabe49fc92bfb23d2b45b654ae523274b6d7e1f5a502d3501a6a144e183",
+      "storedBytes": 970,
+      "storedSHA256": "8ec8a45b4bb24af8bf0eba6258fa38aa2d57490a9a984443c8185566db717650",
+      "compression": "gzip"
+    },
+    {
+      "path": "remainder-runtime-source-pins-673.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/remainder-runtime-source-pins-673.json",
+      "originalBytes": 15653,
+      "originalSHA256": "07cf8828c5ceb34514aeb811f89f3f548f7656483e2105e15a93e88382312b5b",
+      "storedBytes": 4929,
+      "storedSHA256": "1e04ff4841ae39ef29bf8c327493eeb416be1e8da913b5c1df5065bb5e3b4cfe",
+      "compression": "gzip"
+    },
+    {
+      "path": "fresh-build-binaries.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/fresh-build-binaries.json",
+      "originalBytes": 2467,
+      "originalSHA256": "79cf500326fe7c4544c6d9e8764b5ee16a1fc7ca2c4af81087f7e6f2d9a348cd",
+      "storedBytes": 635,
+      "storedSHA256": "696e4a61789606cbb62c324b01f4bbe5b0505bab2f909647415243c495654eb3",
+      "compression": "gzip"
+    },
+    {
+      "path": "remainder-first-outcome-root-readback.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/remainder-first-outcome-root-readback.json",
+      "originalBytes": 100394,
+      "originalSHA256": "018c76c64a745b3f849cfe3545161d2c3fbc19f45c8c65b6f7c881fba203a15b",
+      "storedBytes": 11619,
+      "storedSHA256": "3e491911b57be6a26fb14b20cafd3720cb8368b8f51d7787c2fb3307d14a4c05",
+      "compression": "gzip"
+    },
+    {
+      "path": "remainder-first-full-trx-output.txt.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/remainder-first-full-trx-output.txt",
+      "originalBytes": 48380,
+      "originalSHA256": "08181976f8cd4049dc2d67ac2cd5d856a742e64bed8d29f21a31748e4f0adaba",
+      "storedBytes": 5487,
+      "storedSHA256": "14c2e41dd582830f4349111596e87d08985804e6e639e6e20c14aea9dd90abfe",
+      "compression": "gzip"
+    }
+  ]
+}

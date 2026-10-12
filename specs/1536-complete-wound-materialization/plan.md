@@ -9,8 +9,43 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (PRODUCER SOURCE ACCEPTED674e; FIRST CAUSAL GREEN1/1 ROOT VERIFIED; EVIDENCE PENDING; REMAINDER21 ACTUAL UNRUN)
+## Current T070 first vertical — 2026-10-12 (CAUSAL GREEN EVIDENCE ACCEPTED673; REMAINDER FIRST6 ACTUAL5PASS1FAIL; PENDING-CORRELATION DIAGNOSIS; OTHER15 UNRUN)
 
+Current runtime carrier673796227c24a74c149b64bc431ff01a9bceab99/compile674e:
+first causal1 PASS packet has independent actual Astra XHigh EVIDENCE acceptance; no repeat
+of that accepted case. First exact remainder actual run
+20261012-165625-462-323511-ca83459306784be889c8bea18ed3525a-categories completed exit1,
+54.6596612s wall,no timeout/duplicates,6 executed/5 PASS/1 FAIL. Runner stopped after the
+first descriptor:1 of6 descriptors completed, overall selection incomplete, other15 cases
+UNRUN. Both explicit max1/max4 controls, absent/resource-only and unselected controls, and
+actual occurrence-member rollback/idle retry PASS. Root parsed18 native JSON boundary
+observations and3 positive occurrences (max4/max1/retry max2); seven distinct strict owned
+roots including bounded seed were actually removed/absent.79 runtime source/10 fresh compile
+binary pins matched before/after. No aggregate producer GREEN claim.
+
+Only ActualAwaitingReceiptPublishesOneCompleteFinalBatch failed its run.Failure null
+prerequisite: actual InvalidDataException qte_deferred_pending_correlation_mismatch at
+QteDeferredEffectResolutionTransport.CreateWaveAuthority:568, through PublishAwaitingReceiptAsync:295
+and QteSceneService:1860. Real ordinary source/accepted story/frozen action were reached;
+awaiting state/real receipt/final complete sibling batch remained UNREACHED. Native fixture
+source request5ff19d026ba44695a2db6b17eeeb2d94/snapshot
+9308C63FF9F0069498DDED76FF81A84A2DA60F382B10D2F60F6C9AE9B7842D52/turn42 were observed.
+The [immutable first remainder outcome packet](./recovery/qte-physical-producer-remainder-first-outcome-20261012)
+is frozen by root with11 artifacts; publication and independent EVIDENCE review pending.
+
+Current work is read-only source/pending/transport/full-turn/identity/replay diagnosis.
+BuildCommonPlan now binds declared original request into actual common input/pending authority,
+while CreateWaveAuthority:564 and ValidateRequestAgainstPending:763 still demand the old
+continuationId + _terminal coordinate. This is the source-backed leading cause; the exact
+pending request was not serialized separately in failing TRX, so no new raw observation is
+claimed. Minimum correction must preserve validated original-source authority and all session/
+turn/full/semantic/wave/packet checks plus undeclared semantics; no correlation waiver,
+synthetic afterimages or new authority. No production/fixture/catalog/selector changes or
+project execution authorized yet. Metadata edits STOPPED for root immediate publication;
+all old packets/checkboxes/causal hash remain exact, full T070/#1536 OPEN, remaining15 and
+N+1/consumer/after-terminal save-load UNRUN.
+
+Historical first causal boundary (EVIDENCE now accepted above):
 Current first genuine physical-producer boundary: actual retained Astra XHigh
 SOURCE/FIXTURE/SELECTION accepted674e30a6441854e88454c89c48652005e57d4236; both immutable
 preparation-blocker packets have independent EVIDENCE acceptance. Third fresh both-project
