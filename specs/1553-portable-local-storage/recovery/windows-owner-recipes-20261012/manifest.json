@@ -327,7 +327,16 @@
       "FixturePrefixes": [
         "boe-bridge-native-"
       ],
-      "State": "UNRUN"
+      "State": "EvidenceReviewPending",
+      "Attempts": [
+        {
+          "Manifest": "bridge/a1/manifest.json",
+          "Passed": 3,
+          "Failed": 0,
+          "CompleteGreen": true,
+          "CheckoutHead": "8ddcc6de5823039115d0494116c27703bb690aa3"
+        }
+      ]
     },
     {
       "Key": "contention",
@@ -376,7 +385,7 @@
     "No arbitrary extra cold/UNC/case-sensitive/fullgame/performance task",
     "No main/merge/PR/issues/paidcalls/securitychange/install/speedredesign/budgetrelaxation"
   ],
-  "State": "WIPSequentialAcceptedRecipes",
+  "State": "WIPSequentialRecipeEvidence",
   "Archives": [
     {
       "Path": "console/a1/prepare-original.zip",
@@ -1120,6 +1129,257 @@
           "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
         }
       ]
+    },
+    {
+      "Path": "bridge/a1/prepare-original.zip",
+      "Bytes": 191804,
+      "SHA256": "c6d6948e6cfd0bcadb49dc681f383716c3c63bcc04dc4aadc103e73d10a1b696",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1692754,
+          "SHA256": "6496504cf8d2faca9fe73e6c67bdc301edf550595d3d1ae0b3fd83dd0fa092f1"
+        },
+        {
+          "Path": "runner/owned-process-483778bc66b546a4ab4f928e2d02484c.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-60faf90df2454a399f563b53cd6aa391.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-67eeca20f9b146058bf1f2bef8097a34.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-907390285a724c799efd275ef9bfd454.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 1143,
+          "SHA256": "5b90d581bccd2bc49dddea7194bc341cd07185558bc26614dcd74ee9261cf134"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1436,
+          "SHA256": "31bdb3894cd597f74cd44cbf6f2eb7a0cf1ebafa619fb6eb7d0429d39fe42f12"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2783,
+          "SHA256": "48b76c2e5a8d309eac3acc79a00e814243e13d09b7ed4237fb061734f268c400"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 1319,
+          "SHA256": "137a8e6fe2e271f50c5ee910d577c4dc9d18fae987b2fc9c432943414fd30041"
+        }
+      ]
+    },
+    {
+      "Path": "bridge/a1/actual-original.zip",
+      "Bytes": 195566,
+      "SHA256": "d787b6fc4e2cb21bac38733c106d8b2ce81303d6668841a4d7b841b55a3d8ee7",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1694434,
+          "SHA256": "e31295dbd023367c24cf76a59578ea10d2181a90bad277ed3dcf965f578f62c7"
+        },
+        {
+          "Path": "runner/gm-main-bridge-native-windows-unit-001.trx",
+          "Bytes": 10426,
+          "SHA256": "9606ed6cf4330fa6ea680128d35e01550641e9fe03245aa07ae4de9003890d88"
+        },
+        {
+          "Path": "runner/owned-process-04988b4536ab4a33ba49f304eb61b4c2.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-148236bbf84d4362be850290c03c21ce.json",
+          "Bytes": 605,
+          "SHA256": "62e2209ad889adad505cc6409c7cf86ca90e24a5b23b5f4e7404af4e2f216aa8"
+        },
+        {
+          "Path": "runner/owned-process-19914839924d4d0a923fc79629437448.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-9cb1ffa43a26447d8bb719d2900a0296.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-e6ed56a1148142b8b29690660bdaa661.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 1143,
+          "SHA256": "788606766777018fb7c4b85f40ae2cbcda4fce978647f548514524a859f29f5d"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1534,
+          "SHA256": "5e0bc44e981c1c5d87aecd9542db72fdcf00649477a230c38ad6584b0250c389"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2752,
+          "SHA256": "eaad360fbcf09fe8a12a903eae92aacb14ec32b7c4fcb50b7e6306f80e756c8d"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 2056,
+          "SHA256": "0c66883ca442ef657ec05d3161a9c0fca2e35e585ae9e4acb2cd44e96ab7f956"
+        }
+      ]
+    },
+    {
+      "Path": "bridge/a1/execution-provenance.zip",
+      "Bytes": 1026613,
+      "SHA256": "94fffe34f7d0569d98f67f6f5e24a036dab5277fff23cf48a093e839613a1b39",
+      "Entries": [
+        {
+          "Path": "owner-inputs.py",
+          "Bytes": 8528,
+          "SHA256": "5d9b2923c40a640e661154dd3a3b94a27bb5b4a7804222c7e32e66d7dc581f26"
+        },
+        {
+          "Path": "run-owner-phase.ps1",
+          "Bytes": 4881,
+          "SHA256": "05daf07b2ed66340631e9d190cdbd782857309516d09d009dd1a08ed15a16f80"
+        },
+        {
+          "Path": "post-owner.ps1",
+          "Bytes": 2357,
+          "SHA256": "1795959b8b98c3656c335ca0cf7ca869d75650a2b8ff53a2cfaea2d8b97df327"
+        },
+        {
+          "Path": "freeze-owner.py",
+          "Bytes": 8016,
+          "SHA256": "2a806ff5820234ac23d8d1b58ac7c4bfb34a9cd8a7a81ade1a2894adfd7a0332"
+        },
+        {
+          "Path": "evidence/owner-recipes-inventory.json",
+          "Bytes": 10713,
+          "SHA256": "cf8040fee984d08cd143b1b05febadabf0714452ce30aba494a299643c63d323"
+        },
+        {
+          "Path": "evidence/owner-recipes-source-review.json",
+          "Bytes": 1608,
+          "SHA256": "e1cc179f9350090ea1d13d2e9840781fb4fa139587a6b6a95490f723e5b1c97d"
+        },
+        {
+          "Path": "evidence/owner-recipes-output-cohorts.json",
+          "Bytes": 81496,
+          "SHA256": "b7fc3fca50528a6719a901029fbe3db2c19e3f12cdabd3a39f77b683b6237e0d"
+        },
+        {
+          "Path": "evidence/owner-recipes-extended-source-snapshot.json",
+          "Bytes": 138621,
+          "SHA256": "cd10c3be672a772dcfe454171322e7dc74567a61d588d7e15c7a0d929dbab65c"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-config.json",
+          "Bytes": 574984,
+          "SHA256": "16d3f037771b71d351d1d5de28261c4438ee55807b578759fe41277780c1c46a"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-inputs-before-prepare.json",
+          "Bytes": 654732,
+          "SHA256": "2490e00b7ea41acd2ab743ad124c1d9c2590ceb75bf574ad568da156b8a99588"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-inputs-gate.json",
+          "Bytes": 655136,
+          "SHA256": "0abc3fa6c19f36b9b57e80e426ce70e2194e949d5ffb280b9f351e7ef833a2bc"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-inputs-before-actual.json",
+          "Bytes": 656813,
+          "SHA256": "02322bae98666c3c8766ee1ebfeaa3b71183e4cb3fa7dd0a277a6c6d33e3ec15"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-inputs-after-actual.json",
+          "Bytes": 654774,
+          "SHA256": "37be928ae7b094c5b03f6e272af880597ca11ee997eedc1eff10a2d4af567611"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-prepare-gate.json",
+          "Bytes": 651,
+          "SHA256": "b01aad4c2beb3d986554cd8a4ad27facd9af4e5ac3d3664a92944c78a295330f"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-post-run.json",
+          "Bytes": 1016,
+          "SHA256": "3f6f4ec10a93560c4a9a782d92f573e769042252093dce41437d72c8968175b4"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.Tests/GmBridgeWindowsOriginalHostTests.cs",
+          "Bytes": 5970,
+          "SHA256": "e02c85e0e13defbe19fa1f3a888cf2f374e67b12e12cf53524dec8543c96f0de"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs",
+          "Bytes": 4323,
+          "SHA256": "9465df35c9b8b85157f2b7d90deae2dc634b164aedc810888fdcdc49450c6320"
+        },
+        {
+          "Path": "repo/BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+          "Bytes": 4945,
+          "SHA256": "388b54b4714db8f8a7ef5e73a96b73adb52970d05e12be21403060b8e0cfa942"
+        },
+        {
+          "Path": "repo/BookOfEternityGMBridge/ConPtySession.cs",
+          "Bytes": 16505,
+          "SHA256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90"
+        },
+        {
+          "Path": "repo/tests/categories.json",
+          "Bytes": 1746282,
+          "SHA256": "3d7240f545b41a9126760955fd65d7958f8e80aecb47a011b5e462818e11f507"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/ReversibleFilePublication.cs",
+          "Bytes": 72348,
+          "SHA256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+          "Bytes": 17671,
+          "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+        }
+      ]
     }
   ],
   "IndependentSourceReview": {
@@ -1203,10 +1463,10 @@
     "Meaning": "Supplements original1629Client/Integration/TestSupport sources for unit/Bridge/CrashHost; selected sources are deduplicated per recipe"
   },
   "LastCompletedRuntime": {
-    "Recipe": "owner",
+    "Recipe": "bridge",
     "Attempt": "a1",
-    "Category": "gm-main-owner-native-windows",
-    "Passed": 27,
+    "Category": "gm-main-bridge-native-windows",
+    "Passed": 3,
     "Failed": 0,
     "State": "PASS runtime, independent evidence pending"
   },

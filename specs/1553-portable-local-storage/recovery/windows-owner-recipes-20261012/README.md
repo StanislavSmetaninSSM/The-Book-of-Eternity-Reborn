@@ -59,3 +59,13 @@ Compile origins: {"integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c", "un
 Qualification: Native Windows required bodies. Full immutable originals: `owner/a1/manifest.json`.
 
 Independent actual gpt-6-astra/xhigh EVIDENCE PASS at `339301e9bb55fbc82268422a5fd24d2a9f446b9e` for `owner/a1`, no actionable findings. Accepted scope remains: Native Windows required bodies.
+
+## bridge/a1 — PASS runtime, independent evidence pending
+
+`gm-main-bridge-native-windows`: 3PASS/0FAIL, 3executed/3planned;
+PlanOnly 00:00:12.3687033 / zero execution; actual 00:00:41.0058180.
+Category/runner budgets 3/8minutes unchanged.
+Runtime checkout `8ddcc6de5823039115d0494116c27703bb690aa3`, source1629 original +539 selected
+extra unit/Bridge/CrashHost pins, 290 DLL/PDB equal before/after.
+Compile origins: {"integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c", "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a", "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"}.
+Qualification: Native Windows required bodies. Full immutable originals: `bridge/a1/manifest.json`.

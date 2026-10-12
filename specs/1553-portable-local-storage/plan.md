@@ -1,3 +1,15 @@
+## T068 original Windows owner recipe bridge/a1 — PASS runtime, independent evidence pending, 2026-10-12
+
+`gm-main-bridge-native-windows` actual3PASS/0FAIL,
+3/3executed/planned, 00:00:41.0058180; PlanOnly0execution
+00:00:12.3687033. Original category/runner3/8minutes unchanged.
+Runtime checkout8ddcc6de5823039115d0494116c27703bb690aa3; source1629original+539selectedextra
+unit/Bridge/CrashHost pins and290DLL/PDB stable, compile origins separately retained.
+Qualification: Native Windows required bodies.
+[Original logs and cases](recovery/windows-owner-recipes-20261012/bridge/a1/manifest.json).
+No source/catalog/selector/guard/budget changes; prior results remain immutable.
+Independent evidence review before acceptance; parentsOPEN/known exclusions unchanged.
+
 ## T068 original Windows owner recipe owner/a1 — bounded evidence accepted, 2026-10-12
 
 Actual independent gpt-6-astra/xhigh EVIDENCE PASS at339301e9bb55fbc82268422a5fd24d2a9f446b9e, no findings.
