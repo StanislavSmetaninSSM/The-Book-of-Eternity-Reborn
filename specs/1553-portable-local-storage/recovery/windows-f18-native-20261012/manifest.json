@@ -1,0 +1,526 @@
+{
+  "SchemaVersion": 1,
+  "RecordedUtc": "2026-10-12T00:07:10.516649+00:00",
+  "TrackedTask": "#1553 / T064-STORAGE-CUTS / F18 native physical publication6",
+  "State": "FirstWindowsGreenFrozen_IndependentEvidenceReviewPending",
+  "Source": "8c2ecdfaa1003e49bf15ba83693788e9b19dd10f",
+  "WorkingBranch": "1553-storage-migration-windows-f18-20261011T235650Z",
+  "Windows": {
+    "SchemaVersion": 1,
+    "RecordedUtc": "2026-10-11T23:53:30.4652874Z",
+    "Computer": "HOME-PC",
+    "State": "PreflightReadyOnly",
+    "LastCompletedOperation": "Exact sparse checkout, source/recipe checks, clean status and remote SHA readback",
+    "Checkout": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo",
+    "Head": "8c2ecdfaa1003e49bf15ba83693788e9b19dd10f",
+    "Detached": true,
+    "Origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+    "RemoteBranch": "1553-storage-migration-cloud-20261008",
+    "RemoteRef": "8c2ecdfaa1003e49bf15ba83693788e9b19dd10f\trefs/heads/1553-storage-migration-cloud-20261008",
+    "SparsePatterns": [
+      "/*",
+      "!/specs/1553-portable-local-storage/recovery/"
+    ],
+    "TrackedPaths": 47141,
+    "MaterializedPaths": 4097,
+    "ExcludedHistoricalRecoveryPaths": 43044,
+    "GitAlternatesPresent": false,
+    "WorkingTreeChanges": 0,
+    "OS": "Windows 11 Pro x64 10.0.26200",
+    "Filesystem": "NTFS",
+    "FreeBytes": 305231273984,
+    "PowerShell": "7.6.6",
+    "DotnetSdks": [
+      "8.0.425",
+      "10.0.401"
+    ],
+    "Dotnet8Runtime": "8.0.31",
+    "Git": "2.55.0.windows.5",
+    "Python": "3.14.7",
+    "Node": "24.21.0",
+    "Npm": "11.19.0",
+    "CurrentTokenAdministrator": true,
+    "Category": "legacy-physical-publication-windows",
+    "Project": "integration",
+    "TargetFramework": "net8.0",
+    "CategoryBudgetMinutes": 3,
+    "RunnerDefaultBudgetMinutes": 8,
+    "FrontendBuildRequired": false,
+    "Exclusive": true,
+    "Roster": [
+      {
+        "Method": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination",
+        "Line": 2743,
+        "Fact": true,
+        "NativeWindowsRequired": true,
+        "StrictOwnedCleanup": true
+      },
+      {
+        "Method": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence",
+        "Line": 2816,
+        "Fact": true,
+        "NativeWindowsRequired": true,
+        "StrictOwnedCleanup": true
+      },
+      {
+        "Method": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence",
+        "Line": 2859,
+        "Fact": true,
+        "NativeWindowsRequired": true,
+        "StrictOwnedCleanup": true
+      },
+      {
+        "Method": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing",
+        "Line": 2931,
+        "Fact": true,
+        "NativeWindowsRequired": true,
+        "StrictOwnedCleanup": true
+      },
+      {
+        "Method": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal",
+        "Line": 2985,
+        "Fact": true,
+        "NativeWindowsRequired": true,
+        "StrictOwnedCleanup": true
+      },
+      {
+        "Method": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes",
+        "Line": 3137,
+        "Fact": true,
+        "NativeWindowsRequired": true,
+        "StrictOwnedCleanup": true
+      }
+    ],
+    "FuturePlanOnlyCommand": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category legacy-physical-publication-windows -PlanOnly",
+    "FutureActualCommand": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category legacy-physical-publication-windows -NoBuild",
+    "NoBuildGate": "Only after successful matching fresh selected PlanOnly build/discovery and source/DLL pins",
+    "BuildStarted": false,
+    "DiscoveryStarted": false,
+    "TestsStarted": false,
+    "NativeLinkWitnessExecuted": false,
+    "ActiveOwnedOperations": [],
+    "InterruptedFullCheckout": "Confirmed owned Git checkout/download tree was stopped before sparse retry; original session exit1 retained; no uncertain test/build launch",
+    "Restrictions": [
+      "Only six T064/F18 physical controls next after coordinator release",
+      "No B2-B5",
+      "No paid model calls",
+      "No timeout increases for PASS",
+      "No further architectural optimization",
+      "No main/merge/PR/issues/security/network changes"
+    ],
+    "Blockers": [],
+    "Unverified": [
+      "Fresh build and six-case discovery",
+      "Actual hard-link/symlink hooks and native identity",
+      "Runtime bytes/absence/recovery assertions",
+      "Owned and runtime cleanup results"
+    ]
+  },
+  "Category": "legacy-physical-publication-windows",
+  "PrepareCommand": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category legacy-physical-publication-windows -PlanOnly",
+  "ActualCommand": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category legacy-physical-publication-windows -NoBuild",
+  "PrepareWallTime": "00:02:34.2480703",
+  "FreshBuildSeconds": 135.3904195,
+  "ActualWallTime": "00:00:22.0654617",
+  "CategorySeconds": 9.7450533,
+  "CategoryBudgetMinutes": 3,
+  "RunnerBudgetMinutes": 8,
+  "ActualAttempts": 1,
+  "PreparationPlannedCases": 6,
+  "PreparationExecutedCases": 0,
+  "ActualPlannedCases": 6,
+  "ActualCompletedCases": 6,
+  "ActualPassedCases": 6,
+  "SkippedCases": 0,
+  "DuplicateTests": 0,
+  "TimedOut": false,
+  "SourcePinsVerifiedBeforeAndAfterActual": 1631,
+  "DllPdbPinsVerifiedBeforeAndAfterActual": 157,
+  "FreshSelectedProjectOutputs": [
+    {
+      "Path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "Bytes": 25246720,
+      "SHA256": "c8ab91535874e5f365be4fee74759f2ab056c1494ee951dfe1fb85682cfde6f7",
+      "LastWriteUtc": "2026-10-12T00:01:36.953445+00:00"
+    },
+    {
+      "Path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb",
+      "Bytes": 5689576,
+      "SHA256": "de1b972a61024f6cb8fdd125822c82d29d0598246b94c1440a58dc39ba1226b8",
+      "LastWriteUtc": "2026-10-12T00:01:31.603829+00:00"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "Bytes": 1827328,
+      "SHA256": "4f6efc47fff9b608f96017fed5062502fcc5c68dc548dc1efd10d33eea6872e3",
+      "LastWriteUtc": "2026-10-12T00:01:44.757477+00:00"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb",
+      "Bytes": 309420,
+      "SHA256": "f6e3161abf1c2a31dc40c609baf549bc7e745bec53a0cf5907856589f9eff8c7",
+      "LastWriteUtc": "2026-10-12T00:01:44.610865+00:00"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "Bytes": 27630592,
+      "SHA256": "8ce9fa99018c9758517275d898ec5aeb5c992398b5bd05a519dae056cf2a411e",
+      "LastWriteUtc": "2026-10-12T00:02:12.504430+00:00"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb",
+      "Bytes": 4460636,
+      "SHA256": "c07f7fdbd2879603aa75704b422b632594227bcd5b0426f42a07cba08fb21aad",
+      "LastWriteUtc": "2026-10-12T00:02:10.974429+00:00"
+    }
+  ],
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "OriginalRouteReceipts": 6,
+  "OriginalStrictCleanupReceipts": 6,
+  "ObservedFixtureAndRuntimeRootsAbsent": true,
+  "Cases": [
+    {
+      "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6300284",
+      "OriginalRouteReceipt": {
+        "kind": "native-legacy-publication-route",
+        "path": "game_state/world/destination-link-race.json",
+        "entered": true,
+        "flagRestored": true
+      },
+      "OriginalCleanupReceipt": {
+        "CleanupOwnedRoot": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-filesystem-manager-7e542eb89c8e498a84ffba7840646466",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "OwnedRootAbsentAfterRun": true
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.8168967",
+      "OriginalRouteReceipt": {
+        "kind": "native-legacy-publication-route",
+        "path": "game_state/world/post-publication-failure.json",
+        "entered": true,
+        "flagRestored": true
+      },
+      "OriginalCleanupReceipt": {
+        "CleanupOwnedRoot": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-filesystem-manager-5083bc7d9e2d46a5917cea5dd2c6c6c0",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "OwnedRootAbsentAfterRun": true
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2840836",
+      "OriginalRouteReceipt": {
+        "kind": "native-legacy-publication-route",
+        "path": "game_state/world/rollback-final-absence-race.json",
+        "entered": true,
+        "flagRestored": true
+      },
+      "OriginalCleanupReceipt": {
+        "CleanupOwnedRoot": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-filesystem-manager-c6b55c6744ac48c180b4c1e089645bbc",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "OwnedRootAbsentAfterRun": true
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6241077",
+      "OriginalRouteReceipt": {
+        "kind": "native-legacy-publication-route",
+        "path": "game_state/world/post-publication-source-link.json",
+        "entered": true,
+        "flagRestored": true
+      },
+      "OriginalCleanupReceipt": {
+        "CleanupOwnedRoot": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-filesystem-manager-c3989f5a84db4faca21fc256df4b60d2",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "OwnedRootAbsentAfterRun": true
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3182139",
+      "OriginalRouteReceipt": {
+        "kind": "native-legacy-publication-route",
+        "path": "game_state/world/post-publication-source-link-absent.json",
+        "entered": true,
+        "flagRestored": true
+      },
+      "OriginalCleanupReceipt": {
+        "CleanupOwnedRoot": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-filesystem-manager-1d0e94ba39b143c780a90c92ef347302",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "OwnedRootAbsentAfterRun": true
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyAtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.7336856",
+      "OriginalRouteReceipt": {
+        "kind": "native-legacy-publication-route",
+        "path": "game_state/world/committed-cleanup-debt.json",
+        "entered": true,
+        "flagRestored": true
+      },
+      "OriginalCleanupReceipt": {
+        "CleanupOwnedRoot": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-filesystem-manager-bf899e38d1dc4cc3ab3b976cc6bc2045",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "OwnedRootAbsentAfterRun": true
+    }
+  ],
+  "TrxCounters": {
+    "total": "6",
+    "executed": "6",
+    "passed": "6",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "Archives": [
+    {
+      "Path": "prepare-original.zip",
+      "Bytes": 204097,
+      "SHA256": "d209faca1b556a35b4dda83e985c85886ccd223f45314b2af040f62c4164a25d",
+      "Entries": [
+        {
+          "Path": "runner/Build-integration.log",
+          "Bytes": 82797,
+          "SHA256": "fc0530adf52c1f6826f315ca4c0ace28df1b6e986a400f9a398471a8f91f5870"
+        },
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1771897,
+          "SHA256": "d24c14a76e908b9bd58c9138371d8a6f9130b651d660cbf9c1336213ec705f79"
+        },
+        {
+          "Path": "runner/owned-process-08c545119e2943b79ff3ce372b93c9f3.json",
+          "Bytes": 259,
+          "SHA256": "962b0da0df8a09784a49b9e1e7762ba8024df441bf87ffb7af504d3f1b3e3e24"
+        },
+        {
+          "Path": "runner/owned-process-110013f5076f4f4e979c481a81995d56.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-117d881b99ec4d8497d285cc4139849f.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-548a40335e924b169e0b27ebb8c137f8.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-69d9510d95324b869f657e825c15ad30.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 2857,
+          "SHA256": "457ec5c37c149e09239700287070889d43b0c9e364214d3df64fa50905f03105"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1562,
+          "SHA256": "7fcfa5db8ecfb843687ae858c60b93c550a86f25bea8e38d9b77cd04e199e397"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2481,
+          "SHA256": "d7b58af089be5479fbfef592569732756ba89d5b1a617f14e66c9bdc4ff828fd"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 2801,
+          "SHA256": "c9aad9e9ca649093635a2f96645e64e076470481aedc210d01c7b4f8fa8433bb"
+        }
+      ]
+    },
+    {
+      "Path": "actual-original.zip",
+      "Bytes": 194850,
+      "SHA256": "8c247727ce5e9ae3c86194b4a58d1adc7573bd195e4b1100c10aa17948bf2fc8",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1690546,
+          "SHA256": "1ec26b1d9828fd0585a6e1d447b245d4508eb145abef62a44b55adfa028239a8"
+        },
+        {
+          "Path": "runner/legacy-physical-publication-windows-integration-001.trx",
+          "Bytes": 13326,
+          "SHA256": "201c15af8a1d52e4526370a126991d944ed5b090381a363a6952137cd92fb1cd"
+        },
+        {
+          "Path": "runner/owned-process-1368874be8294ed7b17d36020414afdf.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-5dd0580c594f46a784e0a9ac8852c807.json",
+          "Bytes": 1346,
+          "SHA256": "ba81c486f34b61d7d03d3fe7a2a04d5957568358b5467bc706fdf2d0d811ee7e"
+        },
+        {
+          "Path": "runner/owned-process-acac397e944e49b18d0afbb40dde68ef.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-c1292acca70f4c988a303d808512a071.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-ee3039fb54374d79acd4cf8b520886e0.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 2854,
+          "SHA256": "3c462f598e254cf8c6d597a0a2ad0286b4a955d2b3ddd9eb397dfdf82947a31f"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1545,
+          "SHA256": "025dc62f79338ff7b8f3411725a588447be28e0bb63a13177cb72c6f933c293c"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2476,
+          "SHA256": "32047295881398a7065e9ae740c2d0d61bf4c5605060958a22851d8dbcd7a0c6"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 3583,
+          "SHA256": "36ea0194072a9968b72fd5340126690048272a6ffa69cb2114fe7a65d7414768"
+        }
+      ]
+    },
+    {
+      "Path": "execution-provenance.zip",
+      "Bytes": 208535,
+      "SHA256": "f8e39df8057ff5d5f8e2957052b3a8808873580968b07ace50a296c434fa23e2",
+      "Entries": [
+        {
+          "Path": "preflight-state.json",
+          "Bytes": 4379,
+          "SHA256": "edc358978aaefa663466c589fbd948143cc6d7f5318c3eb6d7f075362dffe5cd"
+        },
+        {
+          "Path": "working-branch.json",
+          "Bytes": 310,
+          "SHA256": "36347b6daed89aee9a1a1dec3461cf69c32632cffb45da362400f91778c9e57d"
+        },
+        {
+          "Path": "run-phase.ps1",
+          "Bytes": 5094,
+          "SHA256": "1fcef2c0da73358dda0a69447ee54c7b21c1bc1baf0a48bc7b28ed162ea075b2"
+        },
+        {
+          "Path": "pin-source.py",
+          "Bytes": 1746,
+          "SHA256": "d8c7c7582dd76fb50456073813db094bcddcca7d8adde429795522019f311521"
+        },
+        {
+          "Path": "prepare-gate.py",
+          "Bytes": 4727,
+          "SHA256": "e768da1abbd8e94e0549d5e18cccecca4a698c96aba708c13c0d9eedbd696aee"
+        },
+        {
+          "Path": "freeze-evidence.py",
+          "Bytes": 8241,
+          "SHA256": "7c75757328c022a35775e00efe0a245ef68835b17e7248eda7fea72a66ac2484"
+        },
+        {
+          "Path": "evidence/source-pin-initial-failure.json",
+          "Bytes": 771,
+          "SHA256": "4a453fece6196c71171a03b8a3316b50ab99c2434d2889749bb054c4b091c7a1"
+        },
+        {
+          "Path": "evidence/source-before-prepare.json",
+          "Bytes": 341225,
+          "SHA256": "de24728e1f1407bcbe32571b6f2728f116cebf0133bdd3f3674ece25fe008401"
+        },
+        {
+          "Path": "evidence/source-linked-closure-supplement.json",
+          "Bytes": 544,
+          "SHA256": "235426b7bdb5419f9709f9d5e51841ce52f932afed72b3ce7a7fa5e935e796fd"
+        },
+        {
+          "Path": "evidence/prepare-gate.json",
+          "Bytes": 389012,
+          "SHA256": "74eab10ed74b72073b6f4b73bf7e1e619da496329900cad8bf4cafcb8c7d6766"
+        }
+      ]
+    }
+  ],
+  "NativeQualification": "Six unchanged Windows-only Facts executed their explicit legacy write lease route; original positive hooks and native hard-link/file-ID/reparse checks are asserted by pinned source and passing original TRX.",
+  "RecoveryScope": "Original committed-cleanup test performs the public recovery read after the legacy write helper has disposed its write lease, preserves published bytes and file identity and empties quarantine/journal. No additional fresh-process cold restart was executed.",
+  "Limits": [
+    "Legacy physical recorder/recovery component only, not ordinary trusted-local publication",
+    "No new process cold restart, active GM/full turn or whole storage recoverability qualification",
+    "No Windows qualification of the six other handoff categories",
+    "No B2-B5, provider calls, timer increases or architectural optimization",
+    "Initial Unicode pin-list metadata failure occurred before build/test and is not a product RED",
+    "Original runner logs, including pre-existing localized SDK decoding, are immutable"
+  ],
+  "ProductSourceChanged": false,
+  "TestSourceChanged": false,
+  "PostRunProcessReadback": {
+    "Path": "post-run-process-readback.json",
+    "Bytes": 288,
+    "SHA256": "27fb27c1b584aea0935ea21ee344a57632011432645e8cdc225da4bb3fb53027",
+    "ActiveOwnedOperations": 0,
+    "FixtureRootRemainders": 0
+  }
+}

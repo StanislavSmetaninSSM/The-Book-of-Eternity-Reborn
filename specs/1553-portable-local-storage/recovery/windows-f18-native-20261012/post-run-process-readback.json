@@ -1,0 +1,12 @@
+{
+  "RecordedUtc": "2026-10-12T00:07:10.8740828Z",
+  "State": "PrepareAndOneActualExited",
+  "ActiveOwnedOperations": [],
+  "PrepareRunnerPid": 26996,
+  "ActualRunnerPid": 23312,
+  "ConfirmedExitCodes": {
+    "Actual": 0,
+    "Prepare": 0
+  },
+  "FixtureRootRemainders": []
+}

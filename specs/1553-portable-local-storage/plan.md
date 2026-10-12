@@ -1,3 +1,31 @@
+## T064/F18 native Windows physical publication6 — FIRST GREEN frozen, review pending, 2026-10-12
+
+Source #1553; exact compiled/runtime `8c2ecdfaa1003e49bf15ba83693788e9b19dd10f`,
+branch `1553-storage-migration-windows-f18-20261011T235650Z`, HOME-PC Windows11/NTFS.
+[Complete first originals and provenance](recovery/windows-f18-native-20261012/manifest.json).
+Official selected fresh PlanOnly:1descriptor/6Facts planned/0executed,
+build135.3904195s/runner154.2480703s/exit0/cleanupcomplete. Matching sole NoBuild
+actual:6/6PASS, category9.7450533s/runner22.0654617s/exit0, no skips/duplicates/
+timeouts; existing3min category/8min runner unchanged. All six genuine explicit
+legacy-route entered/restored receipts and strict root-removal receipts retained;
+native positive hooks, Win32 identity/hard-link/reparse, exact bytes/absence and
+journal/quarantine assertions passed in unchanged original bodies.1631 conservative
+source/data/recipe pins and157 DLL/PDB records equal before/after;6fresh selected
+project outputs. Complete raw stdout/stderr/TRX/process state frozen; no repeats.
+
+Only original legacy physical recorder/recovery component is qualified by this
+first result; committed-debt original public recovery read follows disposed write
+lease, not a newly added fresh-process cold restart. No separately serialized
+native identity values/file images are claimed beyond executed original assertions.
+Earlier Unicode pin-list metadata failure occurred before build/test and is not
+product RED; linked source supplement and original log decoding retained. No
+product/test source change, other native categories, full migration/activeGM/turn,
+timer/guard/architecture/CI/security change or provider request. Ordinary40 FAIL,
+WorldQuest/Meta accepted fixes, paused B2–B5 and open parent tasks remain.
+Independent evidence review PENDING; first raw is remotely preserved before review.
+The following accepted docs-only handoff is historical for this now-executed
+six-Fact recipe; its other Windows recipe UNRUN qualifications remain current.
+
 ## T068 original T067 boundary audit and platform handoff — FINAL read-only handoff accepted, 2026-10-11
 
 <a id="t068-original-t067-boundary-audit-and-platform-handoff--docs-only-wip-2026-10-11"></a>
