@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT CORRECTION TIMED OUT AFTER MIXED-MUTATION REFUSAL; PREREQUISITE OPEN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT BLOCKER EVIDENCE ACCEPTED; CANONICAL BASELINE SOURCE READY)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -35,9 +35,13 @@ Actual finalized health Damage now reaches the missing-occurrence RED; guards7 P
 lifetime5 PASS/1 pre-QTE fixture failure and documentation1 PASS are retained below.
 These first actual cohorts total15 executed:13 PASS/2 FAIL (missing occurrence after finalized
 health Damage, and the bounded receipt fixture before QTE action); no aggregate rerun is implied.
-Current corrected sourcef7d901b925ceb0a9f05bc74bc795313423e56a07 changes only the bounded receipt fixture's
-canonical mastery seed, early-refusal diagnostics and exact one-case selection. Its fresh
-catalog/build/PlanOnly/runtime remain UNRUN pending publication and focused source gate.
+Receipt correction sourcef7d901b925ceb0a9f05bc74bc795313423e56a07 received focused acceptance;
+fresh compile/runtimecaa3c5d8 preparation completed, then its actual132555 reached genuine
+source42 but timed out after six real mixed-state refusals. Independent BLOCKER EVIDENCE
+accepted the37-artifact packet publishedd0482fa945616c3afa429bb882c69df9f94e44fb.
+Current canonical-baseline fixture correction is source READY on that base: bounded-only
+pre-staging serialization and accumulated skills, with the same exact one-case selection.
+Its fresh catalog/build/PlanOnly/runtime are UNRUN pending publication and focused source gate.
 No occurrence producer or canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
@@ -538,10 +542,11 @@ all stored/decompressed/original hashes match. Initial15 completed13PASS2FAIL/68
 accepted evidence, causalRED and successful neighbors remain unchanged. Current total is
 those15 completed plus this1 incomplete invocation, not16 executed tests.
 
-After2 failed receipt-fixture attempts, next is read-only whole baseline/source normalization
-investigation and a smallest lawful canonical pre-staging seed (all6 paths, exact existing
-serialization/empty-command semantics). Publish/review any evidenced correction and prove
-its directed admission before another actual. No afterimage copying into source, snapshot
+After2 failed receipt-fixture attempts, independent Astra XHigh BLOCKER EVIDENCE accepted
+all37 artifacts/pins on publishedd0482fa9. Whole-baseline readback proves all six current
+pairs retain recursive property order/values after solely removing empty removeActiveSkills.
+The source-backed canonical pre-staging correction is authored below; fresh verification
+is UNRUN. Publish/review it before another actual. No afterimage copying into source, snapshot
 re-sign, guard waiver, bigger timer, new protocol/harness or producer. Parent/T070/#1536 open;
 all checkboxes unchanged.
 
@@ -556,12 +561,13 @@ guards7 PASS, lifetime5 PASS/1 pre-QTE fixture failure, docs1 PASS are scoped co
 Actual cold child removes92 retained original artifacts. Missing mastery remains source-backed
 inference about the unlogged first refusal, not an observed first runtime code. No full GREEN.
 
-Next fresh selected integration PlanOnly receipt1, metadata-only catalog ownership audit
-for the new owner and only that corrected1-case actual; no passing-neighbor rerun or budget
-increase. Current corrected behavior/build/discovery/runtime remain UNRUN. Producer and
-prerequisite closure stay pending; all previous packets/checkboxes remain immutable.
+That source gate's fresh selected preparation and corrected1-case actual are now complete
+as recorded above: real request, six mixed-state refusals, incomplete/timeout with no TRX.
+Only the new canonical-baseline correction's fresh checks remain UNRUN. No passing-neighbor
+rerun or budget increase. Producer/prerequisite closure stay pending; all prior packets and
+checkboxes remain immutable.
 
-### Receipt fixture correction — source READY, exact1-case runtime UNRUN
+### First receipt mastery correction — accepted source, actual blocker preserved
 
 Base4e53c7d303daacf8d4305b3ce4217f2e688d4a96 is published and remote verified.
 ValidationService.AcceptedTurnAndInkFeathers.cs:3153–3183 requires mastery initialization
@@ -582,10 +588,35 @@ Its overlap with the unchanged qte-story-append-lifetime owner is intentional an
 all previous catalog entries/selectors and global CI remain intact. No new test method is
 introduced. The no-receipt actual idle, genuine correlated receipt, resumed Damage5+2,
 exact story/source artifact cleanup and strict owned cleanup oracles are unchanged.
-Root publishes this source then obtains focused SOURCE/FIXTURE/SELECTION review and fresh
-catalog/build/PlanOnly/one matching actual. All such correction checks are UNRUN here;
-the immutable first6 result stays5 PASS/1 FAIL and receipt lifecycle predicates UNREACHED.
+Root published this source atf7d901b9 with focused acceptance; compile/runtimecaa3c5d8
+fresh preparation and actual132555 are recorded above. That invocation remains incomplete
+after mixed-state refusal/timeout. The immutable first6 result stays5 PASS/1 FAIL and receipt
+lifecycle predicates UNREACHED.
 The original physical causal Fact/hash and all checkboxes remain unchanged.
+
+### Receipt canonical baseline correction — source READY, exact1-case checks UNRUN
+
+Only SeedQteStoryBoundedReactionAsync, reached by bounded=true before ProtectedBefore and
+actual ProcessPlayerTurn, changes. Preserve the full authored skills/skillId/poiseDamage/
+effectDefinition/mastery and nested values/order; assert the removal array is empty, omit
+removeActiveSkills and retain accumulated activeSkillChanges. Serialize that root, authored
+effect identity index, four existing resource roots (definitions/state/history/owner authority)
+and effect carrier with SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed. No runtime afterimage
+is read or copied into the baseline. CanonicalStateNormalizer.cs:151–156 and AcceptedMechanics:
+202–286 use indented UnsafeRelaxed publication; EffectAcceptedTurnInputComposer.cs:919–965
+builds accumulated skills without the transient removal property. The whole preserved six-pair
+proof establishes these exact differences; PlayerAndInventory.cs:308–324 mixed-state guard
+and original source capture remain unchanged.
+
+Existing qte-story-append-receipt owner/task-local selection still selects1 existing method/
+1 case, category5/default10, with intentional old-lifetime overlap. Responsibility now records
+the settled six-root baseline; all unrelated catalog bytes/selectors and global CI are intact.
+Existing early-return diagnostics remain; no new repair observer/callback is added because
+the existing checkpoint enum has no verified post-repair-publication seam. No harness, timer,
+production, authority, snapshot, schema or oracle changes. Fresh source review and root-owned
+preparation/actual are UNRUN; prior15 completed13PASS2FAIL plus1 incomplete invocation and
+strict-versus-manual cleanup classifications are preserved. Producer remains NOT IMPLEMENTED;
+all checkboxes and original causal Fact/hash remain unchanged.
 
 ### Story preservation first GREEN7 — 2026-10-12
 

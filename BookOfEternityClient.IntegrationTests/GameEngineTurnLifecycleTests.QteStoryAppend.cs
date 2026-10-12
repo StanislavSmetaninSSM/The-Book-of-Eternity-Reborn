@@ -412,7 +412,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         definition["lifetime"] = new JsonObject { ["mode"] = "uses", ["initialUses"] = 1, ["consumingEventTypes"] = new JsonArray("resource_damaged") };
         definition["triggers"] = new JsonArray(trigger.DeepClone());
         await context.SeedPlayerSkillSourceAsync(definition);
-        await _fs.WriteFileAtomicAsync(EffectMaterializationTestContext.MaterializableSkillPath, (await context.ReadJsonAsync(EffectMaterializationTestContext.MaterializableSkillPath))!.ToJsonString());
+        var skills = (await context.ReadJsonAsync(EffectMaterializationTestContext.MaterializableSkillPath))!.AsObject();
+        Assert.Empty(Assert.IsType<JsonArray>(skills["removeActiveSkills"]));
+        skills.Remove("removeActiveSkills");
+        await _fs.WriteFileAtomicAsync(EffectMaterializationTestContext.MaterializableSkillPath, skills.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await WriteJsonAsync("game_state/player/skill_mastery.json", new
         {
             skillMasteryChanges = new[]
@@ -429,7 +432,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         var effect = EffectMaterializationTestContext.CreateSkillCanonicalEffect(profile: "periodic_damage");
         effect["lifetime"] = new JsonObject { ["mode"] = "uses", ["remainingUses"] = 1, ["consumingTriggerIds"] = new JsonArray("on_resource_damaged") };
         effect["triggers"] = new JsonArray(trigger.DeepClone());
-        await _fs.WriteFileAtomicAsync(EffectMaterializationTestContext.PlayerEffectsPath, new JsonObject { ["schemaVersion"] = 1, ["activeEffects"] = new JsonArray(effect.DeepClone()) }.ToJsonString());
-        await _fs.WriteFileAtomicAsync(EffectMaterializationTestContext.IdentityIndexPath, EffectMaterializationTestFixture.CreateIdentityIndex(effect).ToJsonString());
+        await _fs.WriteFileAtomicAsync(EffectMaterializationTestContext.PlayerEffectsPath, new JsonObject { ["schemaVersion"] = 1, ["activeEffects"] = new JsonArray(effect.DeepClone()) }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(EffectMaterializationTestContext.IdentityIndexPath, EffectMaterializationTestFixture.CreateIdentityIndex(effect).ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        // Match the existing publisher before original source/protected-byte capture; no runtime afterimages.
+        foreach (var path in new[] { ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
+                     ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath })
+        {
+            var root = JsonNode.Parse((await _fs.ReadFileAsync(path))!)!;
+            await _fs.WriteFileAtomicAsync(path, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        }
     }
 }

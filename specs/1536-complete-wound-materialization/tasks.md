@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT CORRECTION TIMED OUT AFTER MIXED-MUTATION REFUSAL; PREREQUISITE OPEN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT BLOCKER EVIDENCE ACCEPTED; CANONICAL BASELINE SOURCE READY)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -19,10 +19,12 @@ story-validation phase bug. Story SOURCE/FIXTURE/SELECTION acceptance1969223f an
 compile174aabad precede actual finalized-health missing-occurrence RED, guards7 PASS,
 lifetime5 PASS/1 pre-QTE fixture failure and documentation1 PASS. The first actual cohorts
 total15 executed/13 PASS/2 FAIL: finalized-health missing occurrence
-and pre-QTE bounded receipt fixture, with no aggregate rerun. Current corrected source
-f7d901b925ceb0a9f05bc74bc795313423e56a07 corrects only that receipt fixture's canonical mastery seed and observational
-early-refusal diagnostics, with an exact one-case owner/selection; its fresh catalog/build/
-PlanOnly/runtime remain UNRUN pending publication and focused source gate;
+and pre-QTE bounded receipt fixture, with no aggregate rerun. Accepted receipt sourcef7d901b9
+then fresh compile/runtimecaa3c5d8 completed preparation and actual132555: genuine source42,
+six mixed-state refusals and protective timeout/0 completed/no TRX. Independent37-artifact
+BLOCKER EVIDENCE acceptanced0482fa945616c3afa429bb882c69df9f94e44fb is retained.
+Current bounded canonical-baseline fixture correction is source READY with the same exact
+one-case selection; only its fresh catalog/build/PlanOnly/runtime are UNRUN pending gate;
 fresh independent bounded DESIGN acceptance incorporates the latest user trusted-checkpoint
 scope ruling. The eec3c36e unresolved anti-owner proposal is historical WIP, not whole accepted design.
 Prior4085 source facts
@@ -293,8 +295,10 @@ receipt RED/GREEN or inflate completed count. [37-artifact immutable corrected B
 40source/5binary/raw/live15file hashes verified. Runner tree cleanup complete; strictfixture
 receipt NOTEMITTED. Root exactuniqueown path/session/request/turn/noownedprocess proof then
 170ownfile cleanup/actualabsence, distinct from strictfixture receipt. Initial15/13PASS2FAIL
-accepted evidence and all neighbors unchanged. Next read-only whole baseline normalization
-proof before minimum lawful pre-staging canonical fixture correction/review/another actual;
+accepted evidence and all neighbors unchanged. Independent Astra BLOCKER EVIDENCE accepted
+all37 artifacts/pins on publishedd0482fa9 and all six ordered JSON pairs match after solely
+omitting empty removeActiveSkills. Minimum lawful canonical pre-staging correction is authored,
+fresh checks UNRUN pending source review/another actual;
 no guard/snapshot/budget/harness expansion or producer. All checkboxes unchanged.
 
 Actual independent Astra XHigh receipt SOURCE/FIXTURE/SELECTION and initial EVIDENCE
@@ -302,11 +306,12 @@ ACCEPTEDf7d901b925ceb0a9f05bc74bc795313423e56a07, no confirmed Critical/Importan
 68 artifacts/35 source+10 binary pins per packet/all15 TRX/cleanup independently verified;
 causalRED valid after real harm, guard7PASS/lifetime5PASS1pre-QTEFAIL/docs1PASS retained,
 true cold original-artifact count92. First mastery refusal code remains unobserved inference.
-Next fresh integration receipt1 PlanOnly, metadata-only new-owner catalog audit0 tests and
-only corrected1 actual. Its behavior/build/discovery/runtime remain UNRUN; no producer or
+Its fresh integration receipt1 PlanOnly, metadata-only new-owner catalog and corrected1
+actual are completed above, ending in mixed-state refusal/timeout. Only the new canonical
+baseline correction's fresh checks remain UNRUN; no producer or
 prerequisite closure claim, old packets/checkboxes unchanged.
 
-Receipt fixture correction is source READY on published4e53c7d303daacf8d4305b3ce4217f2e688d4a96:
+Historical first mastery fixture correction on published4e53c7d303daacf8d4305b3ce4217f2e688d4a96:
 seed canonical matching Кровавый след mastery (existing skillId/active_skill_mastery,
 newMasteryLevel1/newCurrentMasteryProgress0/newMasteryProgressNeeded100/masteryLeveledUp=false),
 retain activeSkillChanges/poiseDamage/effect source, and observe real full-validator codes only
@@ -315,9 +320,20 @@ oracles remain unchanged; no production/authority/snapshot/GM contract edits. Ne
 qte-story-append-receipt and task-local1536-qte-story-append-receipt.json select only existing
 QteStoryAppend_DeferredReceiptResumeRetainsExactDelta:1 method/1 case, category5/default10.
 Intentional overlap with old lifetime owner is documented; prior catalog/selectors/CI unchanged.
-Root publication, focused SOURCE/FIXTURE/SELECTION and fresh catalog/build/PlanOnly/actual are
-required next; correction execution UNRUN, first6 lifetime result remains immutable5 PASS/1 FAIL.
+Root publication/focused acceptancef7d901b9 and fresh compile/runtimecaa3c5d8 checks are
+completed above; first6 lifetime result remains immutable5 PASS/1 FAIL.
 Original causal Fact/hash, all packets and checkboxes unchanged; no unrelated passing rerun.
+
+Current canonical-baseline correction is source READY on d0482fa9, only bounded seed before
+protected-byte/source capture: preserve full authored skills/mastery/poiseDamage/definition/
+identity/trigger/nested order, assert empty removeActiveSkills then omit it, and use existing
+pretty UnsafeRelaxed serialization for accumulated skills, identity index/four resource roots
+and consistent effect carrier. This matches established publisher/composer semantics, not
+copied runtime afterimages. Same qte-story-append-receipt1 method/1 case/category5/default10;
+owner/selection responsibility updated, all unrelated catalog bytes/CI/selectors preserved.
+No new observer/callback/harness/timer/production/authority/snapshot/schema/oracle changes.
+Fresh source gate/preparation/actual UNRUN;15 completed13PASS2FAIL plus1 incomplete invocation,
+strict/manual cleanup classifications and all immutable evidence/checklists retained.
 
 First story guard actual125028 at runtime09c9e8f4c7f38299978c612a6b8cb8201c10d110,
 compile174aabad (only checkpoint/packet changes since build) completed **7/7 PASS** after
