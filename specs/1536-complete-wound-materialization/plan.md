@@ -218,9 +218,34 @@ production defect. The underlying caught failure is unresolved. A commit, distin
 B IDs/pointers, cumulative/replay/final-preservation milestones were not reached;
 no new proof of those obligations is claimed. The prior B2 evidence remains accepted.
 
-Next step after durable freeze is read-only causal diagnosis and independent review
-of a concrete minimal proposal. Keep the oracle strong; no instrumentation/project
-run, retry or production/test correction is released here. Do not start B4/B5 or
+Read-only causal trace (static inference, not a recorded inner exception):
+`SpiritualWoundSourceContinuation.cs` ContinueActive returns on CheckExchange's cost
+error before final echo validation. `SpiritualC2DependentWalk.cs:264–265` preserves
+that correctable diagnostic in the actual walk. `SpiritualContinuationDraft.cs:153–157`
+then previews a successor despite nonempty current diagnostics. The preview takes
+the actual A at `SpiritualC2DependentWalk.cs:313–319`; its remaining wrong cost
+meets awaitingActualNarration and returns null at266. Transport context-null at
+`SpiritualContinuationTransport.cs:130–131` throws, and evaluation's catch at166
+collapses the result to the observed generic proposal-invalid. The frozen run proves
+only the external mismatch, not the internal throw location; original bad-cost
+rejection safety remains intact.
+
+Minimal proposal for independent review: after current-envelope authentication and
+whole-candidate preservation, consult the retained genuine policy's existing
+RequiresActualBindingResult proof through a narrow read-only session query. For
+that originally lawful LAST-binding frontier only, return Rejected with the exact
+current diagnostics unless they consist solely of the already-supported terminal
+control code/path. Keep the existing fully validated successor preview for that
+terminal echo. Generic nonbinding/multi-exchange progression, ordinary cost rules,
+request identity and all commit gates remain unchanged. Do not infer authority from
+public pointer names, normalize the bad cost, widen exception catches or weaken the
+test. The existing mixed and wrapper Facts remain the bounded rejection/success
+checks; fresh selected preparation and a matching first corrected run would need
+separate release after source review. No duplicate scenario or audit infrastructure.
+
+Next action is independent causal/design review of this proposal. No production
+defect/fix acceptance is claimed from the static trace. Keep the oracle strong;
+no instrumentation/project run, retry or production/test correction is released here. Do not start B4/B5 or
 broad replay/transport owners. B2–B5/#1536 checkboxes remain OPEN; cold stays1.
 
 ### Accepted recovery and cold-blocker context — 2026-10-12

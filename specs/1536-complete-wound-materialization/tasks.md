@@ -72,8 +72,14 @@ cleanup receipt/observed absent root. PolicyAllows=true and EvaluateRejected, bu
 only generic `spiritual_continuation_proposal_invalid` occurred at the private
 checkpoint path; exact ordinary-cost diagnostic assertion failed. No causal cost
 RED/product-defect claim or A/B milestone evidence; underlying cause unresolved.
-Read-only diagnosis/minimal proposal follows durable freeze, before independent
-review and any separately released correction. No retry/instrumentation/project
+Read-only source trace localizes likely diagnostic loss: actual wrong-cost issues
+survive the current walk, but successor preview reaches awaitingActualNarration/null,
+then the transport/evaluation catch yields the generic rejection. The inner throw
+was not observed. Proposed narrow guard uses the retained last-binding policy proof
+to return current nonterminal diagnostics before preview; only the supported terminal
+echo retains the existing validated preview. Preserve all authority/commit/ordinary
+rules and the strong existing oracle. Independent causal/design review must precede
+any separately released correction; see the current plan for exact source locations. No retry/instrumentation/project
 run or B4/B5 work; all checkboxes and earlier accepted packets remain unchanged.
 
 Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and
