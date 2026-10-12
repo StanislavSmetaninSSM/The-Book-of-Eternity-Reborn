@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip"></a>
-## Current #1536 completion checkpoint — 2026-10-12 (B2 ACCEPTED; B3 CORRECTED 2 PASS — REVIEW PENDING)
+## Current #1536 completion checkpoint — 2026-10-12 (B2/B3 EVIDENCE ACCEPTED; B4 TEST-ONLY WIP)
 
 Lorian accepted the bounded force_binding restoration through
 `ceedbe496a0ecc3a3e3cd96518675ba128989099` and resumed original #1536 completion.
@@ -24,7 +24,10 @@ released one fresh selected preparation and one matching actual. That first actu
 failed as recorded below. Independent consultation then identified an overconstrained
 test oracle. Corrected SOURCE was accepted on d5b2, followed by separately released
 fresh preparation and first corrected actual2PASS. Both outcomes are frozen;
-corrected EVIDENCE review is pending and dependent B4/B5 work remains gated.
+corrected scoped EVIDENCE ACCEPTED on45dfda631272ebc7161ba9cbd45af312784f89e2,
+with coordinator verification of20 artifacts,21 source pins,6 binaries, both raw
+cases and cleanup. Coordinator now releases the finite B4 test-only block below;
+B4 preparation/runtime and B5 remain gated.
 The prior block's code, three immutable packets and cold invocation count1 remain
 accepted and unchanged. Use the same Linux task branch,
 existing RESULT-CLOSURE-BINDING rev1 and exact
@@ -36,7 +39,7 @@ All four tasks remain OPEN. No new specification or evidence framework is needed
 | Existing task | Source/coverage and evidence status | Remaining bounded obligation |
 | --- | --- | --- |
 | B2 | `SpiritualBindingDependency.cs` and `SpiritualBindingResultClosure.cs` implement owner-derived result fields, eight original-policy variants plus the original-incoming row and immutable-input checks. `SpiritualBindingCorrectionBoundaryTests.cs` covers four presence/carrier cases. Historical PASS84efd5c4/db70c216/c3b2ddc3 is recorded below; matching raw artifacts are unavailable in this checkout. Current authority21 GREEN is retained raw proof of its narrower gate/cost scope. The new result-admission packet retains13PASS including actual blocked admission/rejection, independently EVIDENCE ACCEPTED383930. | Accept/reconcile this bounded evidence and remaining original B2 obligations; first block below. Preserve both strong prerequisites and independent mixed-cost permissions. |
-| B3 | `SpiritualBindingTerminalControlCorrection.cs` plus `SpiritualBindingFinalControl.cs` cover detached echo, actual A/B, mixed invalid-cost rejection and wrapper precedence. Historical PASS4636aa27/da4b50cf is prose-recorded, not currently raw-reverified. Corrected current2PASS retains direct/wrapper raw A/B and ordinary-cost evidence, pending EVIDENCE review. | Accept/reconcile the current bounded evidence; first failure remains preserved as the corrected test-oracle overconstraint, without a production change. |
+| B3 | `SpiritualBindingTerminalControlCorrection.cs` plus `SpiritualBindingFinalControl.cs` cover detached echo, actual A/B, mixed invalid-cost rejection and wrapper precedence. Historical PASS4636aa27/da4b50cf is prose-recorded, not currently raw-reverified. Corrected current2PASS retains direct/wrapper raw A/B and ordinary-cost evidence, independently scoped EVIDENCE ACCEPTED45dfda. | Reconcile with the remaining shared B4/B5 evidence; first failure remains preserved as the corrected test-oracle overconstraint, without a production change. |
 | B4 | The #1553 `storage-migration-spiritual-lifecycle-20261009` packet retains hash-verified warm binding PASS with matching relevant fixture pins. The current cold packet retains one force-binding PASS; shared `SpiritualStagedHistory.cs` source covers forged B, while `SpiritualBindingFinalControl.cs` covers changed accepted A. | Reconcile shared negative evidence and cumulative A/B/replay obligations; reuse accepted warm/cold instead of repeating them. Source coverage alone is not a new passing result. |
 | B5 | Existing GM matrix/guide/CLI-worker/example/manifest changes and no-update rationales are recorded below; two changed docs/example guards have current retained GREEN. | Complete only still-relevant nonbinding compatibility/GM final controls and coherent independent B2–B5 review; no broad documentation matrix or retired aggregate lanes. |
 
@@ -172,7 +175,7 @@ Independent Astra XHigh EVIDENCE ACCEPTED without findings on
 hashes, actual cases and cleanup. This first result remains immutable. B2–B5/#1536
 checkboxes remain OPEN; the coordinator separately released the next block below.
 
-### Current B3 test-only block — corrected first 2 PASS; evidence review pending
+### Accepted B3 test-only block — corrected first 2 PASS; first failure preserved
 
 Retain the two existing Facts in `SpiritualBindingFinalControl.cs`: mixed direct
 binding and force-binding replacement carrier. The shared original-admission helper
@@ -293,10 +296,47 @@ final cumulative raw B evaluated Resolved with no issues/no next request. Final 
 remains uncommitted: this is private same-process validator evidence, not new
 GameEngine/canonical publication. Earlier warm/cold packets and cold counter1 stay.
 
-Corrected EVIDENCE review is pending on the published packet/checkpoint. B3 has one
-preserved failed invocation plus one corrected invocation; no further run or B4/B5
-work follows before coordinator acceptance/scope. All B2–B5/#1536 checkboxes stay OPEN. Do not start B4/B5 or
-broad replay/transport owners. B2–B5/#1536 checkboxes remain OPEN; cold stays1.
+Independent Astra XHigh scoped EVIDENCE ACCEPTED without findings on
+`45dfda631272ebc7161ba9cbd45af312784f89e2`; coordinator full raw/hash/cleanup
+readback passed. B3 retains one failed invocation plus one corrected invocation;
+no further B3 or GameEngine cold run is needed for this unchanged evidence.
+All B2–B5/#1536 checkboxes remain OPEN; the coordinator released B4 test work below.
+
+### Current B4 shared replay-negative block — SOURCE review pending
+
+Retain four existing `SpiritualStagedHistory.cs` methods: forged B without accepted
+A (1), changed accepted critical text (2), invalid/rehashed journal (9), and actual
+GM/worker private-journal write refusal (1). Total13 cases/four methods. Existing
+genuine accepted-A preparation, complete raw rehashing, forged transport, real
+worker apply gate and all physical preservation assertions remain unchanged.
+Only existing structured test output and strict `OriginalFixtureCompletion` are
+added around the selected13 independent contexts and the foreign wrong_owner root.
+Lease/owner disposal precedes strict root cleanup. The immutable prepared-template
+builder remains unchanged with its existing await-dispose;14 per-case/foreign
+receipts would not claim every process-created root. Eventual actual metadata may
+compare directory names only under the known `/tmp/boe-resource-materialization-*`
+prefix to report newly remaining roots; no broad temporary-directory traversal or
+new cleanup framework.
+
+New finite owner `spiritual-cutover-private-replay-negatives` moves exactly these
+four selectors: two from c2-replay, one from c2-transport, one from staged-publication.
+Static full selector multiset is unchanged; all other categories remain unchanged,
+and the three previous owners retain their other selectors with explicit exclusions.
+New responsibility/exclusions/related consumers document the shared scope; existing
+10-minute protective bound is retained (default overall15), no timeout override.
+Task-local `tests/selections/1536-binding-private-replay-negatives.json` selects only
+this owner: expected13 cases/four methods/one integration descriptor. Global
+selection/CI and production/specification/contracts are untouched.
+
+These shared generic negatives complement accepted last-binding B3 A/B, retained
+warm raw and current cold1; they do not independently prove last-binding live cold
+publication. No progress-write fault matrix, broad replay/transport category,
+GameEngine rerun, new scenario/harness or B5 work. Publish this WIP for independent
+SOURCE/category-sufficiency review before fresh selected preparation and matching
+actual are separately released. Static full-multiset preservation and exact new-owner
+PlanOnly will be reviewed for sufficiency; any catalog audit needs a separate release. No build,
+discovery or runtime has run for this B4 candidate. Freeze any first failure before
+correction; no further project run is authorized by this checkpoint alone.
 
 ### Accepted recovery and cold-blocker context — 2026-10-12
 

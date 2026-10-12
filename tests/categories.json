@@ -15990,9 +15990,51 @@
             ]
         },
         {
+            "id": "spiritual-cutover-private-replay-negatives",
+            "responsibility": "Shared accepted-A/B private replay negatives from genuine staged history: forged B without accepted A, two changed accepted-critical-text rows, nine rehashed journal mutations and actual GM/worker private-journal write rejection. Four existing methods/thirteen cases with physical preservation and isolated fixture cleanup.",
+            "excludes": "Last-binding live warm/cold publication, fresh OS processes, progress-write failure matrix, broad C2 replay/transport, final canonical publication and spiritual healing. Shared generic negatives complement retained binding evidence; they do not themselves prove last-binding GameEngine cold recovery.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualStagedHistory.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationDraft.cs",
+                "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.SpiritualContinuation.cs"
+            ],
+            "related": [
+                {
+                    "id": "spiritual-binding-final-control",
+                    "when": "A change affects actual last-binding accepted-result and separate terminal B authority."
+                },
+                {
+                    "id": "spiritual-binding-wrapper-control",
+                    "when": "A change affects effective replacement carrier or preserved accepted A."
+                },
+                {
+                    "id": "spiritual-cutover-staged-publication",
+                    "when": "A change affects private progress write/readback fault handling; not automatically selected for unchanged replay-negative evidence."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true
+            },
+            "timeoutMinutes": 10,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ForgedBTransportWithoutAcceptedAIsRejected",
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdBRejectsChangedAcceptedCriticalText",
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal",
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_GmAndWorkerCannotWriteAcceptedJournal"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "spiritual-cutover-c2-replay",
             "responsibility": "C2 saved decision, cold origin, and continuation replay authority.",
-            "excludes": "Mortal wound treatment and unrelated afterlife politics.",
+            "excludes": "Mortal wound treatment and unrelated afterlife politics. Shared accepted-A/B private replay, forged B and journal-write negatives belong to spiritual-cutover-private-replay-negatives.",
             "changeHints": [
                 "BookOfEternityClient/Services/Spiritual*",
                 "BookOfEternityClient/Services/Afterlife*"
@@ -16039,8 +16081,6 @@
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuation_MissingSideUsesSignedTicketAndSameResourceOwner",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuation_RealReceiptRetryCommitsSourceOnlyAfterAcceptance",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuation_TwoMissingFillsKeepFirstAliasAndDelaySourceDice",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdBRejectsChangedAcceptedCriticalText",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedPreparedFixture_ReusesPreparationAndPreservesColdIsolation",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualColdContinuationView_AcceptsDependentCorrectionOnlyThroughOwnerStep",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualColdOriginView_PreservesForeignItemClaimOnPreflightRejection",
@@ -16055,7 +16095,7 @@
         {
             "id": "spiritual-cutover-c2-transport",
             "responsibility": "C2 continuation transport, worker handoff, and missing-side dispatch.",
-            "excludes": "Mortal wound treatment and unrelated afterlife politics.",
+            "excludes": "Mortal wound treatment and unrelated afterlife politics. Shared accepted-A/B private replay, forged B and journal-write negatives belong to spiritual-cutover-private-replay-negatives.",
             "changeHints": [
                 "BookOfEternityClient/Services/Spiritual*",
                 "BookOfEternityClient/Services/Afterlife*"
@@ -16102,7 +16142,6 @@
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_MaterializeIsComposedBeforeNarrativeApply",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_PublicTaskCannotAuthorizePrivateOrUnrelatedChanges",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuationWorker_ReadyPublishedDuringExecutionPreventsNarrativeApply",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ForgedBTransportWithoutAcceptedAIsRejected",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceContinuation_AppendedExchangeKeepsPriorSourceReferenceAndOriginalDice",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceContinuation_ChangedOriginRevokesOwnerAndCannotBeRestoredByEqualBytes",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SourceContinuation_ClosureFieldsCannotResolvePendingWithoutProducer",
@@ -16122,7 +16161,7 @@
         {
             "id": "spiritual-cutover-staged-publication",
             "responsibility": "Private accepted-frontier journal authority and atomic progress-write failure/readback classification.",
-            "excludes": "Issued-field admission, response evaluation, final GameEngine publication and unrelated afterlife mechanics.",
+            "excludes": "Issued-field admission, response evaluation, final GameEngine publication and unrelated afterlife mechanics. Shared accepted-A/B private replay, forged B and journal-write negatives belong to spiritual-cutover-private-replay-negatives.",
             "changeHints": [
                 "BookOfEternityClient/Services/Spiritual*",
                 "BookOfEternityClient/Services/Afterlife*"
@@ -16147,7 +16186,6 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_GmAndWorkerCannotWriteAcceptedJournal",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedHistory_ProgressCommitClassifiesWriteFailure"
                     ]
                 }
