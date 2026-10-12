@@ -5,27 +5,34 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (B2/B3/B4 EVIDENCE ACCEPTED; B5 FIRST 5 PASS — COHERENT REVIEW PENDING)
+## Current original-completion boundary — 2026-10-12 (ORIGINAL B2–B5 CHILDREN ACCEPTED; PARENT #1536 OPEN)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Lorian subsequently accepted
 81105a6bd487bc6077279aa12af79dbc301a16d9 and released the first B2 test-only
 implementation/publication. Following SOURCE acceptance on06e133, coordinator
 released one fresh selected preparation and one matching actual; both are frozen.
-B2 evidence is independently accepted on383930; coordinator now releases only
+B2 evidence is independently accepted on383930; coordinator then released only
 the B3 test-only refinement below. Its first separately released matching actual
 failed. Independent consultation identifies an overconstrained named-on-Evaluate
 oracle. Corrected SOURCE d5b2 and separately released fresh preparation/first
 corrected actual are complete2PASS, scoped EVIDENCE ACCEPTED45dfda. Coordinator
 accepted B4 SOURCE24dba and separately released fresh preparation/first actual:
-13PASS scoped EVIDENCE ACCEPTED130194. Coordinator now releases B5 test-only
+13PASS scoped EVIDENCE ACCEPTED130194. Coordinator then released B5 test-only
 compatibility/GM controls. SOURCE6d21 and separately released preparation/first
-actual now complete5PASS; coherent B2–B5 EVIDENCE review/acceptance remains gated.
+actual complete5PASS. Final coherent independent SOURCE/EVIDENCE ACCEPTED without
+blocking findings at `3fa7a4e31abbeef194ac7dc501490ac00dd33659`; coordinator confirms
+33PASS (13+2+13+5),104 artifacts across five new packets including historical B3
+FAIL, source/compile/binary pins, cleanup and nine reused GM checks. Only exact
+T081-D-POSITION-RESULT-CLOSURE-B2/B3/B4/B5 are now complete. Parent RESULT-CLOSURE,
+#1536 and every other checkbox remain unchanged. This later carrier is metadata-only;
+3fa7 remains the reviewed source/evidence point. Earlier OPEN/pending/release text
+below is historical stage evidence, superseded by this final bounded acceptance.
 The [current plan](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
 separates source coverage, historical PASS without available raw artifacts and
 retained raw-verified evidence for exact RESULT-CLOSURE-BINDING B2–B5.
 
-Current test-only block stays in B2: current lost drafts lack incomingAction, so
+Historical first B2 test-only block: current lost drafts lack incomingAction, so
 policy.Allows(blocked) does not prove ordinary admission. Keep the eight existing
 policy rows/four unit boundary cases; use real issued A to reject actual blocked
 on both lost rows with exact `afterlife_conflict_blocked_missing_incoming_action`
@@ -143,21 +150,28 @@ preservation/private-reduction rows and two GM mapping Facts passed; three stric
 roots absent, runner cleanup passed,42source/10binary pins unchanged. Immutable
 [B5 packet](./recovery/binding-compatibility-gm-20261012/manifest.json) retains22
 full/raw-hashed artifacts including9 reused binding guard/document checks.
-Coherent B2–B5 EVIDENCE review/root acceptance remains pending; no further execution.
+Coherent B2–B5 SOURCE/EVIDENCE accepted at3fa7 with coordinator confirmation;
+no further execution.
 Current plan maps all six rev1 rules to retained B2/B3/B4/warm/cold evidence and
 limits. Reuse accepted GREEN binding docs/example2PASS: five pinned source hashes
 and four further consumed documents unchanged from b03e. No new GM capability or
 Mortal/afterlife prompt/example edit; coverage mapping is not all-scenario execution.
-No production/new scenario/harness/long cold/feature work. B2–B5/#1536 checkboxes
-remain OPEN; distinct FR-063/native/C5/T070/healing/UI obligations remain open.
+No production/new scenario/harness/long cold/feature work. Only the four original
+B2–B5 children close; parent and distinct FR-063/native/C5/T070/healing/UI stay open.
+First B3 FAIL remains immutable; generic-Evaluate diagnostic usability improvement
+is optional, deferred and unimplemented.
 
-Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and
+B2→B3→B4→B5 original child acceptance is complete. Later backlog: real Mortal
+producer/consumer T070 and
 remaining spiritual consumers, lawful T107 initial-stage coexistence/healing,
 shared UI, providers and affected final guards. Existing seven producer kinds have
 zero production implementors; math helpers/registered arts are not healing flows.
 Reuse accepted no_effect warm/cold and exact-force controls. Cold count stays1;
 same-process/Format1/no final journal trace or exported snapshots are limits, not
-new rev1 gates; separate Mortal FR-063 stays open. All B2–B5/#1536 boxes stay OPEN.
+new rev1 gates; separate Mortal FR-063 and parent #1536 stay open. T070 is not
+started; next feature scope requires a separate coordinator release. No further
+project run is authorized. Windows evidence must be user-provided; no remote
+Windows/HOME-PC run follows.
 
 ## Accepted recovery/cold-blocker boundary — 2026-10-12
 
@@ -5760,7 +5774,13 @@ they are not additional required work. Full T069/T070 and FRONTIER remain open.
   its saved-command byte-comparison correction subsequently passes with all six
   cases in 84efd5c4 (2m56.721s command). This closes the test-first prerequisite,
   not RESULT-CLOSURE gameplay or its remaining B2–B5 acceptance.
-- [ ] T081-D-POSITION-RESULT-CLOSURE-B2 [US3] After B1, derive only owner-proved
+
+Bounded B2–B5 acceptance — 2026-10-12: final coherent independent SOURCE/EVIDENCE
+ACCEPTED3fa7a4e31abbeef194ac7dc501490ac00dd33659 and coordinator raw/artifact
+confirmation; see [six-rule evidence/limits](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip).
+Only the four following children close; earlier resumption notes preserve history.
+
+- [x] T081-D-POSITION-RESULT-CLOSURE-B2 [US3] After B1, derive only owner-proved
   current arithmetic plus outcome/after.controlState; admit ordinary-valid
   no_effect/blocked with exact before control/value/presence. Retain independently
   proved cost permissions and mixed-cost regression. Reject setup/operation/dice/
@@ -5779,18 +5799,18 @@ they are not additional required work. Full T069/T070 and FRONTIER remain open.
   Cold owner is existing spiritual-binding-cold-publication (one Fact); retain
   actual LocalPublicationObserver B cut, 15-minute category and strong 8/8 phases.
   Cold blocker resolution alone does not accept B2 or downstream B3–B5.
-- [ ] T081-D-POSITION-RESULT-CLOSURE-B3 [US3] After B2, validate actual A with only
+- [x] T081-D-POSITION-RESULT-CLOSURE-B3 [US3] After B2, validate actual A with only
   an independently proved exact final-control mismatch projected in a detached
   view; never suppress another ordinary error. Derive separate B for the unique
   effective raw activeConflict.controlState carrier/value/presence, keeping the
   existing dependent_draft phase and conflict lifecycle. Reject ignored wrappers and whole
   containers. Require full ordinary raw validation without temporary replacement after B.
-- [ ] T081-D-POSITION-RESULT-CLOSURE-B4 [US3] After B3, persist/replay genuinely
+- [x] T081-D-POSITION-RESULT-CLOSURE-B4 [US3] After B3, persist/replay genuinely
   closed last-exchange A and derive B with zero exchanges remaining. Preserve
   journal shape/hashes; invent no B row/source/opportunity. Prove real warm replies,
   cold accepted-A-before-B recovery, distinct Ready/correlation, cumulative A+B,
   exact cleanup and once-only publication; reject forged B and altered accepted A.
-- [ ] T081-D-POSITION-RESULT-CLOSURE-B5 [US3] After B4, synchronize afterlife GM
+- [x] T081-D-POSITION-RESULT-CLOSURE-B5 [US3] After B4, synchronize afterlife GM
   guides/live contract/CLI-worker instructions/example/manifest/guards and record
   prompt/Mortal decisions. Inspect XML build and the selected, documented categories
   covering changed policy, owning lifecycle/transport and GM docs/examples. Complete
