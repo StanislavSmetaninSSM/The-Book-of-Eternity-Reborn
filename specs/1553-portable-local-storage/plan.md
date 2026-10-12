@@ -1,4 +1,4 @@
-## T064/F18 native Windows physical publication6 — FIRST GREEN frozen, review pending, 2026-10-12
+## T064/F18 native Windows physical publication6 — FINAL bounded ACCEPTED, 2026-10-12
 
 Source #1553; exact compiled/runtime `8c2ecdfaa1003e49bf15ba83693788e9b19dd10f`,
 branch `1553-storage-migration-windows-f18-20261011T235650Z`, HOME-PC Windows11/NTFS.
@@ -22,7 +22,13 @@ product RED; linked source supplement and original log decoding retained. No
 product/test source change, other native categories, full migration/activeGM/turn,
 timer/guard/architecture/CI/security change or provider request. Ordinary40 FAIL,
 WorldQuest/Meta accepted fixes, paused B2–B5 and open parent tasks remain.
-Independent evidence review PENDING; first raw is remotely preserved before review.
+Independent actual Astra XHigh SOURCE/EVIDENCE PASS reviewed6f574b7d/no blockers:
+all36 ZIP entries/1631 runtime Git source pins/157 DLL-PDB records, native body
+fidelity and portable PDB GUID/document checksums independently verified. Direct
+GitHub-only recovery exact6f/clean/no alternates verifies8 changed files/36 entries;
+no restored build/test. This native6 child is bounded accepted; parent T064/#1553
+and the other six Windows recipes remain open/unrun. Final metadata carrier
+receives remote SHA/readback before handoff; no additional runtime is released.
 The following accepted docs-only handoff is historical for this now-executed
 six-Fact recipe; its other Windows recipe UNRUN qualifications remain current.
 

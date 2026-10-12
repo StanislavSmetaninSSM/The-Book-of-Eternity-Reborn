@@ -2,7 +2,7 @@
   "SchemaVersion": 1,
   "RecordedUtc": "2026-10-12T00:07:10.516649+00:00",
   "TrackedTask": "#1553 / T064-STORAGE-CUTS / F18 native physical publication6",
-  "State": "FirstWindowsGreenFrozen_IndependentEvidenceReviewPending",
+  "State": "BoundedNativeWindowsPhysical6ReviewedPass",
   "Source": "8c2ecdfaa1003e49bf15ba83693788e9b19dd10f",
   "WorkingBranch": "1553-storage-migration-windows-f18-20261011T235650Z",
   "Windows": {
@@ -522,5 +522,22 @@
     "SHA256": "27fb27c1b584aea0935ea21ee344a57632011432645e8cdc225da4bb3fb53027",
     "ActiveOwnedOperations": 0,
     "FixtureRootRemainders": 0
+  },
+  "IndependentReview": {
+    "Path": "independent-review.json",
+    "Model": "gpt-6-astra",
+    "ReasoningEffort": "xhigh",
+    "Verdict": "PASS",
+    "ReviewedCarrier": "6f574b7d1ae6d19904bf79909ba2d7c51561426e",
+    "MaterialFindings": 0
+  },
+  "FirstDirectGitHubRecovery": {
+    "Path": "first-github-recovery.json",
+    "Head": "6f574b7d1ae6d19904bf79909ba2d7c51561426e",
+    "ChangedFilesVerified": 8,
+    "ArchiveEntriesVerified": 36,
+    "Clean": true,
+    "AlternatesPresent": false,
+    "BuildOrTestFromRecovery": false
   }
 }

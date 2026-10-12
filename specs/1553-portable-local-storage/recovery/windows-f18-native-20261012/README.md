@@ -35,7 +35,13 @@ and the earlier Unicode pin-list metadata failure (before build/test; not produc
 RED). Every ZIP entry has exact SHA256/size in the manifest and was read back.
 Localized SDK decoding in original logs is preserved without text repair.
 
-Independent evidence/source-fidelity review is pending at this frozen carrier.
+Independent actual Astra XHigh source/evidence review PASS for carrier
+`6f574b7d1ae6d19904bf79909ba2d7c51561426e`; no material findings/blockers.
+All36 raw entries/1631 source pins/157 DLL-PDB pins and native body fidelity
+independently verified. Portable PDB GUID/document checksums bind the original
+Facts, native/cleanup helpers and linked source to the actual selected binaries.
+Fresh direct GitHub-only restore verified all8 changed files and36 ZIP entries:
+clean, exact6f, no alternates; selected source context only, no restored build/test.
 T064 and broader #1553 remain open. Qualification is the explicit legacy physical
 component only: no ordinary trusted-local/full-turn/active-GM/whole recoverability,
 fresh-process cold restart, other Windows categories, B2–B5, model/provider calls,
