@@ -9,8 +9,59 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (PRODUCER QUALIFIED1b4739bb; PROPER N+1 SAFE-PROJECTION CAUSAL RED REACHED4b50; FREEZE/EVIDENCE PENDING; CONSUMER UNIMPLEMENTED)
+## Current T070 first vertical — 2026-10-12 (PROJECTION CAUSAL RED EVIDENCE ACCEPTED87b5; MINIMUM SAFE-PROJECTION/STAGING SOURCE WIP; CONTROLS/GUIDANCE UNWRITTEN; CHECKS UNRUN)
 
+Actual retained Astra XHigh proper consumer projection causal RED EVIDENCE/status accepted
+87b5e355a2e6bbec7c2edc803462e2dd275e27f6, root remote/recovery433 selected files exact,
+17 artifact originals/83 immutable4b source/5 fresh binaries verified. Frozen historical
+manifest retains its pre-review PENDING bytes; acceptance is active metadata only. Source N42
+positive and real N43 official request/snapshot precede the exact missing safe projection
+predicate; old BOM blocker remains UNREACHED/separate. Producer qualification accepted1b,
+consumer2actual0PASS2FAIL and every old checkbox/packet/ce955 Fact unchanged.
+
+Current stopped production/staging WIP adds TurnRequest.woundOpportunities defaultempty and
+one write-free MortalQteWoundOpportunityProjection over official Reader present/signed-absent
+roots. Strict pending/consumed/identity/history/carrier parse and agreements, complete all
+pending+consumed batches/event-vector rebind occur BEFORE one first eligible canonical QTE/
+player physical row is selected. Existing WoundOpportunityAuthority composes the explicit
+bound; public output is only4 safe row fields/context3, no new authority, HP severity or IV
+default. No canonical source/receipt/wound writes, second reducer, GM decision consumer or
+old terminal-capsule patch.
+
+Necessary observed-absence seam adds ONLY pending Mortal occurrence/receipt paths to the
+existing current presence publisher (21 paths). Prior19 map retains only existing unrelated
+reader behavior alongside accepted16/18 sets; it cannot prove uncovered new Mortal absence.
+New projection uses CreateWithObservedOptionalPaths and requires explicit signed absence,
+no live fallback/fixture-seeded empty roots/new save migration. The AGENTS pre-release
+compatibility guard does not authorize broad older-save support. Finite new negative must
+prove prior19 without Mortal observations fails this new projection even when ordinary read
+remains permitted; meaningful empty/pristine/tamper/full-batch/order/closed-row controls
+remain unwritten and UNRUN.
+
+Console holds one staging lease for same-identity provisional request→official Reader→
+projection→exact provisional before-image rewrite→physical equality/Reader revalidation;
+existing staging rollback surrounds it. Browser uses the SAME held preparing lease and
+current preparing-state guard for provisional physical request, projects before capturing
+final Staged.RequestJson/StagingProof, publishes final request with exact provisional bytes,
+revalidates exact final physical request/projection and then seals preparation. No later
+independent rewrite, second browser lease, new snapshot/re-sign or stale proof. Existing
+browser direct staging fixture consumers and exact competing-request/proof/failure controls
+require narrow source/fixture review; no accepted browser guard is waived.
+
+Source WIP only: SOURCE acceptance/build/catalog/discovery/PlanOnly/runtime UNRUN. The one
+existing causal projection Fact/selector remains byte unchanged for FIRST matching GREEN
+separately; no unchanged RED rerun. Remaining focused tests/category owners/task-local
+control selector and coherent existing GM request/guide/examples/manifest/docguards are
+UNWRITTEN. Planned responsibilities are signed-pristine/empty/uncovered-presence/tamper,
+complete batch/event reconstruction before first-candidate ordering/closed row, exact
+browser preparing proof/competing-request preservation and projection-only documentation.
+Exact methods/cases/descriptors/budgets will be recorded with the finite controls block;
+no broad browser/C5/afterlife/presence suite or global CI/selector change. Mutation STOPPED
+for immediate root production/staging WIP publication before further authoring. This WIP
+does not implement none/create/live receipt/replay/atomic wound publication/after-terminal
+archive/fresh-process consumer goal; full T070/parent/#1536 remain OPEN.
+
+Historical proper projection causal RED (EVIDENCE accepted87b5 above):
 Minimum BOM-only correction SOURCE/FIXTURE/SELECTION accepted4b50fa1a; first published
 b52925-artifact BOM BLOCKER EVIDENCE accepted separately. Fresh selected integration
 PlanOnly175629 completed124.6067882s (integration build121.9680551s),77 warnings/0 errors,

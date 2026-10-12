@@ -51,6 +51,9 @@ public class TurnRequest
         ["targets"] = new JsonArray()
     };
 
+    [JsonPropertyName("woundOpportunities")]
+    public JsonArray WoundOpportunities { get; set; } = new();
+
 }
 
 public class AdditionalContext

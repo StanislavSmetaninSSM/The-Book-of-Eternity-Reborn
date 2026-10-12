@@ -1,6 +1,5 @@
 using System.Text;
 using System.Text.Json;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
@@ -202,6 +201,13 @@ public partial class GameEngine
         var state = await PendingPlayerActionService.ReadAsync(_fs, lease);
         if (state?.Phase != "preparing" || state.Binding.ActionId != binding.ActionId)
             throw new InvalidOperationException(BrowserRecoveryMessage);
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, lease,
+                CoordinatedStateWriteHelper.CreateGuardWrite(PendingPlayerActionService.PendingPath, state.Json),
+                new("input/turn_request.json", PreviousJson: null, requestJson, RequireCurrentBaseline: true)))
+            throw new InvalidOperationException(BrowserRecoveryMessage);
+        var provisional = new CanonicalBeforeImage(true,
+            await _fs.ReadFileBytesAsync(lease, "input/turn_request.json") ?? throw new InvalidDataException(BrowserRecoveryMessage));
+        requestJson = ProjectOrdinaryWoundOpportunities(lease, requestJson);
         var captured = new PendingPlayerActionService.Staged(binding, requestJson,
             await _fs.ReadFileAsync(lease, PendingTurnSnapshotManifestPath) ?? throw new InvalidDataException(BrowserRecoveryMessage),
             await _fs.ReadFileAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath) ?? throw new InvalidDataException(BrowserRecoveryMessage), "",
@@ -210,11 +216,29 @@ public partial class GameEngine
         var stagedJson = PendingPlayerActionService.CreatePhase(state, "staged", PendingPlayerActionService.StagingProof(captured));
         await PendingPlayerActionService.PublishAsync(_fs, lease, state.Json, stagedJson,
             new CoordinatedStateWriteHelper.PlannedWrite("input/turn_request.json",
-                PreviousJson: null, requestJson, RequireCurrentBaseline: true));
+                PreviousJson: null, requestJson, RequireCurrentBaseline: true, ExactPrevious: provisional));
+        await RequireFinalOrdinaryWoundProjectionAsync(lease, requestJson);
         var staged = captured with { Json = stagedJson };
         _fs.SealBrowserOriginalPreparation(staged);
         return staged;
     });
+
+    private string ProjectOrdinaryWoundOpportunities(FileSystemManager.CanonicalWriteLease lease, string requestJson)
+    {
+        var request = JsonSerializer.Deserialize<TurnRequest>(requestJson, JsonOpts) ??
+            throw new InvalidDataException("Ordinary request is missing before safe opportunity projection.");
+        request.WoundOpportunities = MortalQteWoundOpportunityProjection.ReadCurrent(_fs, lease);
+        return JsonSerializer.Serialize(request, JsonOpts);
+    }
+
+    private async Task RequireFinalOrdinaryWoundProjectionAsync(FileSystemManager.CanonicalWriteLease lease, string requestJson)
+    {
+        if (await _fs.ReadFileAsync(lease, "input/turn_request.json") != requestJson)
+            throw new InvalidDataException("Ordinary final request changed before dispatch.");
+        var request = JsonSerializer.Deserialize<TurnRequest>(requestJson, JsonOpts)!;
+        if (!JsonNode.DeepEquals(request.WoundOpportunities, MortalQteWoundOpportunityProjection.ReadCurrent(_fs, lease)))
+            throw new InvalidDataException("Ordinary safe opportunity projection changed before dispatch.");
+    }
 
     private Task<PendingPlayerActionService.Staged> ClaimBrowserTerminalAsync(PendingPlayerActionService.Staged staged) =>
         WithPendingActionLeaseAsync(async lease =>

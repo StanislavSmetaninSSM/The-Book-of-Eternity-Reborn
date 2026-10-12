@@ -1602,7 +1602,18 @@ public partial class GameEngine
             if (browserAction != null)
                 browserStaged = await PublishBrowserStagingAsync(browserAction, requestJson);
             else
-                await _fs.WriteFileAtomicAsync("input/turn_request.json", requestJson);
+            {
+                await using var stagingLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                await _fs.WriteFileAtomicAsync(stagingLease, "input/turn_request.json", requestJson);
+                var provisional = new CanonicalBeforeImage(true,
+                    await _fs.ReadFileBytesAsync(stagingLease, "input/turn_request.json") ??
+                    throw new InvalidDataException("Ordinary provisional request disappeared."));
+                requestJson = ProjectOrdinaryWoundOpportunities(stagingLease, requestJson);
+                if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, stagingLease,
+                        new("input/turn_request.json", null, requestJson, RequireCurrentBaseline: true, ExactPrevious: provisional)))
+                    throw new InvalidOperationException("Ordinary request changed before safe opportunity projection.");
+                await RequireFinalOrdinaryWoundProjectionAsync(stagingLease, requestJson);
+            }
 
             var activeManifest = await LoadPendingTurnSnapshotManifestAsync();
             activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
