@@ -5,8 +5,57 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (PRODUCER CORRECTION GREEN16/16 ROOT VERIFIED; EVIDENCE PENDING; CURRENT22 UNIQUE CASES PASSED; N+1 CONSUMER UNRUN)
+## Current T070 boundary — 2026-10-12 (BOUNDED PRODUCER QUALIFICATION EVIDENCE ACCEPTED1b4739bb; FIRST N+1 SAFE-PROJECTION TEST-ONLY SOURCE READY; CHECKS UNRUN)
 
+Actual retained Astra XHigh correction EVIDENCE/status and bounded producer qualification
+accepted1b4739bbacd562a4f0aec4b1df611cf7158a66db. Root verified remote/387 selected recovery
+files exact; no recovery execution. Current producer cohorts remain23 executed/22 PASS/1 FAIL
+across3 invocations,22 unique cases in16 methods passed. First remainder correlation FAIL and
+all earlier174 causal RED/story/admission/preparation outcomes are separate/immutable.
+The correction packet has28 artifacts (native catalog-audit added by root); no previous
+failure, passing case or actual invocation is repeated by this next block.
+
+Current authorized TEST-ONLY source READY: one new existing-lifecycle-partial Fact,
+QtePhysicalInjuryConsumer_ActualNextOrdinaryRequestProjectsOneSafeOpportunity. Actual source
+helper runs ordinary N42 declared maximum2 QTE, then real health155/AppliedDamage5, one
+original-coordinate physical occurrence, terminal QTE/history and original artifact cleanup
+are required. A NEW actual engine on the same root/session at turn42 owns fresh live input,
+refreshes StateManager and runs ProcessPlayerTurn for N43. Existing TerminalWaitStarted:465
+runs before Task.Run wait worker:472. Inside that participating owner/lease it captures the
+actual physical request plus official Reader selected existing occurrence/resource roots;
+only after capture throws one known controlled OCE. No outside GM task/owner contention,
+synthetic source/offer/occurrence/binding/fingerprint/profile/client projection or direct
+Begin substitute. All assertions are outside the hook; exact OCE/reached/Reader/new request43/
+token, health-state/history/pending-byte agreement and original occurrence identity/source
+must precede the FIRST missing raw woundOpportunities predicate. Any earlier failure is a
+prerequisite BLOCKER, not a consumer RED. Native JSON records actual source/next coordinates,
+raw request and pending occurrence before strict owned cleanup. Live input is explicitly
+disposed before the test's owned root; no wait worker is spawned after the controlled stop.
+
+Safe projection oracle is exactly one row with4 fields opportunityRef/domain/maximumSeverity/
+safeContext; physical domain, source ref, explicit maximumII and exactly3 safeContext fields
+(target/cause/allowedLocationKinds) equal the real occurrence. Closed field sets reject
+internal owner/path/source/profile/fingerprint/occurrence-identity authority leaks. Raw
+TurnRequest still has no snapshotToken; next token is from official Reader only. Production
+TurnRequest/staging/consumer/source-lifetime remain unchanged, with no old-terminal capsule
+patch. That hypothesis is reachability UNRUN, not a confirmed blocker. Later adapter pristine
+receipt/history signed-absence handling is a production seam to assess after this causal
+projection; no fixture authority is seeded to conceal it.
+
+New qte-physical-injury-consumer-projection category has1 method/1 case/integration1 descriptor,
+5-minute budget/default10; task-local1536-qte-physical-injury-consumer-projection.json selects
+only it. Static called constructor/CreateGameEngine/checkpoint/Reader/resource/occurrence/
+strict-cleanup API proof uses actual existing declarations. Old catalog entries and producer
+selector/global CI are unchanged. Inventory is expected+1 method/+1 category (11526/695),
+not a discovered count. New catalog audit/build/discovery/PlanOnly/first actual are UNRUN
+pending root publication and independent SOURCE/FIXTURE/SELECTION gate. No GM guidance/
+capability claim update: production is untouched. Mutations STOPPED at test-only READY.
+N+1 none/create/live receipt/replay/atomic publication/after-terminal archive save-load and
+fresh process remain required, unimplemented/UNRUN; full T070/parent/#1536 OPEN. Every old
+checkbox/packet and original causal ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f
+remain exact. Root owns publication and all project execution; no author project commands.
+
+Historical first correction GREEN (EVIDENCE/producer qualification accepted above):
 Current producer correction SOURCE/FIXTURE/SELECTION accepted625640bc; root verified
 matching80 source/10 fresh binary pins before/after. Fresh both-project PlanOnly171124
 completed0 errors,integration77/unit35 warnings,141.2152915s,12 methods/16 cases/6 descriptors
@@ -28,7 +77,7 @@ candidate0/count1 and all6 ordered accepted events: resource_mutation,effect_bou
 effect_activation,effect_terminal_last_use,resource_mutation,effect_boundary. Actual selected
 Damage5 plus bounded receipt Damage2 gives canonical health160→153. The [28-artifact first
 correction GREEN packet](./recovery/qte-physical-producer-correction-first-green-20261012)
-is being frozen by root; remote publication and independent EVIDENCE review remain PENDING.
+is published at1b4739bb and has independent EVIDENCE/producer qualification acceptance as recorded above.
 
 CURRENT producer qualification cohorts are causal1 PASS + first remainder5 PASS/1 FAIL +
 correction16 PASS:23 executed,22 PASS/1 FAIL across3 actual runs;22 unique cases in16 methods

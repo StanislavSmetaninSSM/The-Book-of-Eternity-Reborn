@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-projection",
+            "responsibility": "#1536 T070 first test-only N+1 consumer causal Fact/one case. Actual ordinary declared QTE N42 must finalize canonical health160->155, publish one original-source physical occurrence and finish terminal/source cleanup. New engine on same root/session stages real N43 ProcessPlayerTurn; TerminalWaitStarted captures physical request and official Reader under its participating lease before the wait worker. Known controlled OCE ends staging only after capture. Outside the hook all source/byte/Reader prerequisites precede the first missing raw woundOpportunities assertion and exact closed safe row checks.",
+            "excludes": "No consumer production code, fixture-authored opportunity/occurrence/binding/fingerprint/profile, direct Begin-only source proof, external fake GM task/new harness, broadened runtime suite or passing producer neighbor rerun. N+1 none/create/receipt/replay/atomicity/archive/fresh-process goal remains future; setup/Reader/source failures are blockers, not consumer causal RED.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerProjection.cs",
+                "BookOfEternityClient/Models/TurnRequest.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-producer-receipt",
+                    "when": "The qualified producer prerequisite is reused through the actual source helper in this new independent fixture; its passed tests are not selected again absent a changed producer contract."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualNextOrdinaryRequestProjectsOneSafeOpportunity"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-producer-receipt",
             "responsibility": "#1536 exact failed producer receipt Fact/one case after first remainder outcome5PASS1FAIL: declared canonical pending acceptedRequestId must equal the existing validated original-source capsule at initial and resumed wave transport checks. Actual pending session/request/turn and capsule snapshot observations precede genuine GM receipt; actual awaiting/no-receipt idle/final complete sibling batch/strict cleanup remain required. Intentional exact overlap with qte-physical-injury-producer; select only this owner for the correction, keeping its five passing neighbors preserved.",
             "excludes": "No passed max/absent/unselected/rollback neighbors or accepted causal1 rerun, broader QTE transport suite, new source/token/receipt authority, weakened correlation/validator, new harness/provider/native Windows, N+1 consumer/save-load or archive-QTE.",
