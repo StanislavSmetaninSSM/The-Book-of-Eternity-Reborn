@@ -135,7 +135,8 @@ public partial class GameEngine
     private sealed record WoundRepairRetryObligation(
         int CommandOrdinal,
         WoundRepairPacket Packet,
-        JsonObject ExpectedCommandRoot);
+        JsonObject? ExpectedCommandRoot,
+        MortalQteRejectedRepairInput? MortalQteInput = null);
 
     private sealed record RepairResubmissionPathObligation(
         string Path,

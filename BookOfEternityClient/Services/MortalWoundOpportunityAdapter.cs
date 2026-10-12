@@ -32,9 +32,15 @@ internal static class MortalWoundOpportunityAdapter
 
     internal static WoundResponseInputCompositionResult? ComposeQteAcceptedResponse(
         FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, string? rawDraft, string? scene,
-        out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay)
+        out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay) =>
+        ComposeQteAcceptedResponse(fs, lease, rawDraft, scene, out exactReplay, out _);
+
+    internal static WoundResponseInputCompositionResult? ComposeQteAcceptedResponse(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, string? rawDraft, string? scene,
+        out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay, out WoundOpportunityAuthority? repairOpportunity)
     {
         exactReplay = null;
+        repairOpportunity = null;
         fs.EnsureCanonicalWriteLeaseActive(lease);
         PendingTurnSnapshotReadAuthority snapshot;
         JsonArray offered;
@@ -99,7 +105,7 @@ internal static class MortalWoundOpportunityAdapter
                 occurrence.SafeContext
             }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
             var result = ComposeAcceptedResponseCore(fs, lease, correlation,
-                new GameResponse { Response = scene ?? string.Empty, WoundDecisions = [draft] }, out exactReplay);
+                new GameResponse { Response = scene ?? string.Empty, WoundDecisions = [draft] }, out exactReplay, out repairOpportunity);
             return result.Success ? result : Failure(result.Issues.Select(issue =>
                 issue.FilePath == "woundDecisions[0]" || issue.FilePath.StartsWith("woundDecisions[0].", StringComparison.Ordinal) ||
                 issue.WoundRepairContext is not null && WoundRepairPacketBuilder.IsRepairableIssue(issue)
@@ -173,9 +179,16 @@ internal static class MortalWoundOpportunityAdapter
 
     private static WoundResponseInputCompositionResult ComposeAcceptedResponseCore(
         FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, JsonElement sourceEvent,
-        GameResponse gameResponse, out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay)
+        GameResponse gameResponse, out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay) =>
+        ComposeAcceptedResponseCore(fs, lease, sourceEvent, gameResponse, out exactReplay, out _);
+
+    private static WoundResponseInputCompositionResult ComposeAcceptedResponseCore(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, JsonElement sourceEvent,
+        GameResponse gameResponse, out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay,
+        out WoundOpportunityAuthority? repairOpportunity)
     {
         exactReplay = null;
+        repairOpportunity = null;
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(lease);
         ArgumentNullException.ThrowIfNull(gameResponse);
@@ -334,6 +347,9 @@ internal static class MortalWoundOpportunityAdapter
                 worseningEvidence));
         if (!opportunityResult.Success || opportunityResult.Opportunity is null)
             return Failure(opportunityResult.Issues);
+        // This existing adapter-issued opportunity can constrain rejected draft repair;
+        // it never makes that rejected proposal an accepted command.
+        repairOpportunity = WoundAcceptedTurnData.CloneOpportunity(opportunityResult.Opportunity);
 
         var priorReceipts = currentReceipts!.Receipts
             .Select(value => new WoundOpportunityDecisionReceipt(

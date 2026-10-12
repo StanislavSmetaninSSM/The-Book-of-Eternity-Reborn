@@ -202,6 +202,7 @@ public partial class GameEngine
 
     private async Task RebindRuntimeAfterSessionReplacementAsync(string? establishedGeneration = null)
     {
+        ClearMortalQteRepairState();
         _lastResponse = null;
         _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
         _acceptedTurnSpiritualOutput = null;
@@ -1083,6 +1084,7 @@ public partial class GameEngine
 
         _fs.DeleteFile(writeLease, PendingTurnSnapshotManifestPath);
         _fs.DeleteFile(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);
+        ClearMortalQteRepairState();
     }
 
     private static bool HasRollbackCapability(RollbackSnapshot? snapshot) =>

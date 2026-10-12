@@ -9,8 +9,74 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (CLASS2/NARRATION3 SOURCE MIDPOINT WIP; TYPED RETRY/REAL CONTROLS3 UNWRITTEN; 4 DESIGN ACCEPTED/SOURCE UNWRITTEN)
+## Current T070 first vertical — 2026-10-12 (FINDING2 SOURCE CLOSED; TYPED RETRY3 SOURCE MIDPOINT WIP; REAL CONTROLS/LOCATION3 UNWRITTEN; 4 UNWRITTEN)
 
+Class/narration midpoint publisheda5afe49700411a0d6996aca333c66da1d7433488; ROOT verified
+exact remote/clean primary and569-file selected GitHub-only recovery/all36 connected paths.
+Actual retained Astra XHigh focused a5 SOURCE verdict ACCEPTED the class2 correction,
+real duplicate/null diagnostic controls and exact narration target/read-only context; no
+new Critical/Important delta. Finding2 is statically CLOSED. Full SOURCE remains BLOCKED
+on typed retry3/REAL round-trips and finding4 implementation. No project execution.
+
+Current stopped typed retry3 SOURCE WIP adds only a narrow private transport carrier in the
+existing GameEngine loop. Raw semantic refusal exposes the opportunity actually issued by
+the existing adapter after genuine original snapshot/batch/source checks. Its existing trusted
+WoundRepairContext/Packet, exact rejected draft/scene bytes, source binding/turn and physical
+generation are retained as retry constraint, never an accepted command. Actual downstream
+failure separately captures the genuinely client-issued typed command/root/exact bytes BEFORE
+exact owned revocation, with matching current raw/scene/owned-command images and the same
+trusted opportunity/packet. No rejected command JSON is synthesized, no authority from a raw
+caller hash, no second allocation/reduction or new general framework.
+
+Existing WoundRepairRetryObligation carries an optional private Mortal provenance variant;
+its legacy command branch remains. Capture requires the packet's exact candidate/semantic
+fingerprint/opportunity/rejected decision, current exact raw bytes, official unchanged N43
+source and physical generation. Raw refusal has null command; issued-command provenance has
+its actual root/bytes. The constraint survives exact command/cache revocation and existing
+repair rollback. Before StateDistributor can stage a corrected accepted command, the existing
+packet MatchesOpportunity/MatchesCorrectedDecision/preservedProposal checks plus original
+source/generation and scene sibling agreement must pass; full adapter/resource/effect/wound
+validation still decides acceptance. Narration-only requires the entire draft/proposal
+unchanged and allows response/timestamp correction only; proposal correction preserves scene
+response and unrelated proposal data. Timestamp may be refreshed under ordinary grammar.
+Late HasExactWoundRepairResubmission also verifies current OWN issued bytes and that same
+private correction constraint. Constraint cleanup is connected to completed/terminal/cancel
+original snapshot cleanup and session replacement; fresh staging cleans the old snapshot.
+
+This is uncompiled/unaccepted source integration, not proof that the repair loop works.
+REAL existing repair decision/request/wait/resubmission controls remain UNWRITTEN/UNRUN.
+Required next coverage: lawful severity/location bounded repair versus unrelated proposal
+drift; narration-only legal scene correction versus proposal drift; genuinely staged
+downstream resource failure→revocation→resource correction→same bound proposal→one common
+publication. Skill proof only where actual issued command is reachable. The source still
+needs bounded location repair packet handling and finite affected legacy retry control/API
+selection. No direct TaskBuilder assertion is mislabeled as a full round-trip. Original
+NONE/CREATE causal Facts remain unchanged; all new later controls have no observed RED yet.
+
+Finding4 completion-sidecar DESIGN accepted, implementation/controls UNWRITTEN/UNRUN and
+not touched before this typed3 midpoint is published. Derive exact fixed publication proof
+from TAKEN validated common plan/actual serialized bytes; publish all common writes/deletes
+and marker in ONE existing atomic batch with full compensation/recovery/readback. Receipt or
+marker presence alone never waives original quartet continuity. Same-root fresh-process
+replay retains ACTUAL N43; ordinary archive/newroot recovery stages a genuine new decision.
+No SaveLoad transport exception, copied/re-signed original snapshot, key or postcommit writer.
+
+Existing STATIC selections remain17 methods/44 cases/8 descriptors/default30 preparation,
+15 methods/42 cases/6 descriptors/default20 remainder excluding two causal Facts. Catalog707/
+11543 static; categories/selectors/global CI are unchanged in this midpoint. REAL control and
+legacy dependency inventory must be finalized after authoring, before full SOURCE review/
+preparation. Old accepted NONE4010 and CREATEc7 proper REDs separately1 executed/0 PASS/1 FAIL,
+producer1b23 executed/22 PASS/1 FAIL and projection4d4 actual/28 executed/26 PASS/2 FAIL remain
+unchanged. ce955/NONE/CREATE/projection Facts, old packets and all checkboxes unchanged.
+
+New source/API readback is STATIC only; build/discovery/catalog/runtime/complete SOURCE gate
+remain PENDING/UNRUN. Full consumer/T070/FR-063/parent/#1536, durable-session exact replay and
+actual pending+consumed archive/newroot/freshregistries/freshprocess qualification stay OPEN.
+Mutations STOPPED for immediate ROOT WIP publication/recovery before longer REAL control and
+finding4 authoring. This source checkpoint has five production paths plus these two metadata
+docs; no runtime/build/commit/push by the writer.
+
+Historicala5 class/narration source boundary (focused SOURCE acceptance supersedes pending):
 Logical3/residual2 midpoint published8e75b9124416d4f1ae9cd0db56ab8e8e250dd4eb; ROOT verified
 exact remote/clean primary and569-file GitHub-only selected recovery/all36 connected paths.
 Actual retained Astra XHigh confirmed null-carrier replay classification but found the same

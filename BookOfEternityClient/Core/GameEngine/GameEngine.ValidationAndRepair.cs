@@ -1851,6 +1851,8 @@ public partial class GameEngine
     {
         if (packets.Any(packet => !WoundRepairPacketBuilder.IsSupportedLiveRepairPacketKind(packet.CandidateKind)))
             return Array.Empty<WoundRepairRetryObligation>();
+        if (_mortalQteRejectedRepairInput is { } retained)
+            return await CaptureMortalQteRepairRetryAsync(packets, retained);
         var (root, parsed) = await ReadStrictWoundRepairCommandAsync();
         if (root is null || parsed is null || !parsed.Success)
             return Array.Empty<WoundRepairRetryObligation>();
@@ -1889,6 +1891,9 @@ public partial class GameEngine
             return true;
         if (obligations.Any(obligation => !WoundRepairPacketBuilder.IsSupportedLiveRepairPacketKind(obligation.Packet.CandidateKind)))
             return false;
+        if (obligations.Any(obligation => obligation.MortalQteInput is not null))
+            return obligations.Count == 1 && await HasExactMortalQteRepairResubmissionAsync(obligations[0]);
+        if (obligations.Any(obligation => obligation.ExpectedCommandRoot is null)) return false;
         var (root, parsed) = await ReadStrictWoundRepairCommandAsync();
         if (root is null || parsed is null || !parsed.Success ||
             obligations.Any(obligation => !JsonNode.DeepEquals(
@@ -1899,7 +1904,7 @@ public partial class GameEngine
         }
 
         var normalized = root.DeepClone().AsObject();
-        var expected = obligations[0].ExpectedCommandRoot.DeepClone().AsObject();
+        var expected = obligations[0].ExpectedCommandRoot!.DeepClone().AsObject();
         if (normalized["commands"] is not JsonArray normalizedCommands ||
             expected["commands"] is not JsonArray expectedCommands ||
             normalizedCommands.Count != expectedCommands.Count ||
