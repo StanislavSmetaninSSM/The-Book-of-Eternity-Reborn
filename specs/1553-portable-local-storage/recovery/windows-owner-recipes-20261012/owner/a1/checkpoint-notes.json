@@ -1,0 +1,13 @@
+{
+  "Recipe": "owner",
+  "Attempt": "a1",
+  "State": "PASS runtime, independent evidence pending",
+  "RuntimeCheckoutHead": "e937adbb5bef67e28029987993d658e911370af2",
+  "CompiledProjectOrigins": {
+    "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+    "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+    "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+  },
+  "Qualification": "Native Windows required bodies",
+  "NoSourceEdit": true
+}

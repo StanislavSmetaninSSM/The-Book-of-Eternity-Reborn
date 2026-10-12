@@ -1,3 +1,15 @@
+## T068 original Windows owner recipe owner/a1 — PASS runtime, independent evidence pending, 2026-10-12
+
+`gm-main-owner-native-windows` actual27PASS/0FAIL,
+27/27executed/planned, 00:00:18.8742302; PlanOnly0execution
+00:00:11.7380269. Original category/runner3/8minutes unchanged.
+Runtime checkoute937adbb5bef67e28029987993d658e911370af2; source1629original+539selectedextra
+unit/Bridge/CrashHost pins and290DLL/PDB stable, compile origins separately retained.
+Qualification: Native Windows required bodies.
+[Original logs and cases](recovery/windows-owner-recipes-20261012/owner/a1/manifest.json).
+No source/catalog/selector/guard/budget changes; prior results remain immutable.
+Independent evidence review before acceptance; parentsOPEN/known exclusions unchanged.
+
 ## T068 original Windows owner recipe metadata/a1 — bounded evidence accepted, 2026-10-12
 
 Actual independent gpt-6-astra/xhigh EVIDENCE PASS at97f95be1f16990f22372b76aee436fb2b6562183, no findings.
