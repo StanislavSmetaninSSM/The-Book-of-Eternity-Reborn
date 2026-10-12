@@ -5,7 +5,24 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; BOUNDED PRODUCER SOURCE/FIXTURE/SELECTION READY; FOCUSED FIXTURE READBACK PENDING; CHECKS UNRUN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; BOUNDED PRODUCER SOURCE/FIXTURE/SELECTION READY; PRODUCER SOURCE ACCEPTED423aed; FIRST PREPARATION COMPILE BLOCKER; MINIMAL IMPORT CORRECTION READY; FRESH CHECKS UNRUN)
+
+Focused retained actual Astra XHigh SOURCE/FIXTURE/SELECTION accepted423aed1719282368c1413f9436df642f513ce844
+with no remaining Critical/Important findings; root verified301 selected recovery files/77
+source pins, no recovery execution. First fresh remainder PlanOnly preparation failed before
+discovery: run20261012-161019-149-316384-331ab6736ec547ba9e0e3cee76fac1f0-categories,
+exit1,45.6069578s wall, integration build45.3181529s,4 warnings/1 error, no timeout,
+0 tests/0 descriptors. Exact CS0103 at QtePhysicalWoundOccurrenceProducer.cs(119,15):
+StrictJsonAuthority was unresolved because its BookOfEternityClient.Core namespace import
+was absent. Root published six-artifact/77-source-pin preparation BLOCKER packet at
+6b895b6085765989bb1fe37841acd0c687977439, remote exact. This is a compile/preparation
+blocker, never runtime RED/test FAIL. Catalog, original causal first GREEN and remainder21
+actual remain UNRUN; old655 binaries do not validate this producer source.
+Current correction adds ONLY using BookOfEternityClient.Core; no body/behavior/fixture/
+category/selector/inventory change. Mutations STOPPED at minimal SOURCE READY for root
+publication and the retained reviewer's import readback plus first preparation BLOCKER
+EVIDENCE gate. Fresh both-project preparation/discovery/runtime UNRUN. Accepted source423
+and compile-blocker carrier6b895b remain distinct; original causal/checklists/packets unchanged.
 
 Published source READYfa83fa2645fdc350b99ebf8097080986f3db05a5 is remote/recovery verified:
 300 selected GitHub files exact,76 source pins matched, no recovery/project execution.
