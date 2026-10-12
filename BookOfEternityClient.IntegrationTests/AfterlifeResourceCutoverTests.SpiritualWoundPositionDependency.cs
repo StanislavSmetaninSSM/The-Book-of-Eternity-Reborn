@@ -26,9 +26,11 @@ public sealed partial class AfterlifeResourceCutoverTests
     public async Task OriginalSpiritualC2_PositionDependencyReplaysSavedChoiceAndCorrectsOnlyLaterArithmetic(
         bool playerWound)
     {
-        await using var context = await CreateCompleteConflictFrameContextAsync(
+        var context = await CreateCompleteConflictFrameContextAsync(
             seedOriginalInputs: SeedOriginalIntakeBaselinesAsync,
             signedDice: playerWound ? [5, 15, 13, 8] : [15, 5, 13, 8]);
+        using var ownedFixture = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), _storageOutput.WriteLine);
         await WritePositionBurdenExchangesAsync(context, playerWound, modifier: "missing");
         var original = await ReadProjectedSourceContinuationCandidateAsync(context);
         var corrected = original.DeepClone().AsObject();
@@ -120,6 +122,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         await using var coldLease = await coldFs.AcquireCanonicalWriteLeaseAsync();
         var coldOpened = await coldValidator.OpenC2PrivateSessionAsync(coldLease);
         Assert.Equal("dependent_continuation", coldOpened.Disposition);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, playerWound,
+            phase = "cold_position_reopened", coldOpened.Disposition, coldOpened.Issues }));
         var correctionIssue = Assert.Single(coldOpened.Issues);
         Assert.Equal("afterlife_conflict_dice_missing_position_modifier", correctionIssue.Code);
         Assert.Equal("activeConflict.exchangeLog[1].diceAudit.modifierBreakdown." + affectedSide,
@@ -165,6 +169,8 @@ public sealed partial class AfterlifeResourceCutoverTests
             await coldFs.WriteFileAtomicBytesAsync(coldLease, AfterlifeSpiritualConflictState.StatePath,
                 Encoding.UTF8.GetBytes(damaged.ToJsonString()));
             var invalid = await coldValidator.OpenC2PrivateSessionAsync(coldLease);
+            _storageOutput.WriteLine(JsonSerializer.Serialize(new { playerWound, mutation,
+                phase = "mutated_draft_open", invalid.Disposition, invalid.Issues }));
             using (var invalidSession = invalid.Session)
             {
                 if (invalidSession is not null)
@@ -172,6 +178,8 @@ public sealed partial class AfterlifeResourceCutoverTests
                     // Deliberately bypass descriptor reads: execution itself must enforce the frozen comparison.
                     var forbiddenResume = await invalidSession.ResumeDependentContinuationAsync(coldLease);
                     using var forbiddenOwner = forbiddenResume.Session;
+                    _storageOutput.WriteLine(JsonSerializer.Serialize(new { playerWound, mutation,
+                        phase = "forbidden_resume", forbiddenResume.Disposition, forbiddenResume.Issues }));
                     Assert.True(forbiddenResume.Disposition == "blocked",
                         $"Direct Resume accepted {mutation}: {FormatC2SubmissionIssues(forbiddenResume)}");
                 }
@@ -252,5 +260,12 @@ public sealed partial class AfterlifeResourceCutoverTests
             current["activeConflict"]!["exchangeLog"]![1]!["diceAudit"]!["diceUsed"]));
         foreach (var pair in immutableImages)
             Assert.Equal(pair.Value, await coldFs.ReadFileBytesAsync(coldLease, pair.Key));
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, playerWound,
+            phase = "position_compatibility_complete", continuationId, opportunityRef,
+            completed.Disposition, reduction.Success, reduction.Issues,
+            wound.WoundId, owner = wound.Owner.OwnerId, decisionCount = decisions.Count,
+            spends = spends.Select(row => new { row.AppliedAmount,
+                before = row.BeforeState!.Current, after = row.AfterState!.Current }),
+            SavedChoiceAndImmutableBytesPreserved = true, CanonicalPublication = false }));
     }
 }

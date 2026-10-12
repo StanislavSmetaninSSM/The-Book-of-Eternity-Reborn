@@ -15103,9 +15103,45 @@
             ]
         },
         {
+            "id": "documentation-afterlife-entrypoints-coverage",
+            "responsibility": "Two existing GM final controls: mandatory prompt entrypoints reference afterlife matrix/examples, and all worked afterlife examples have runtime scenario mapping or explicit exemption.",
+            "excludes": "Execution of example scenarios, broad documentation matrix, binding-specific docs/example guards already owned separately, provider or game runtime. Manifest mappings are not proof that every scenario ran.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+                "CLI_Agent_Daemon_Specification.md",
+                "TaskGuides/CLI_Step_Main.txt",
+                "Examples/example_validation_manifest.json"
+            ],
+            "related": [
+                {
+                    "id": "documentation-afterlife",
+                    "when": "A change affects other afterlife GM guidance contracts."
+                },
+                {
+                    "id": "spiritual-binding-authority-documentation",
+                    "when": "A change affects the specific binding guide or worked example; select its existing actual owner as needed."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 10,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples",
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "documentation-afterlife",
             "responsibility": "Afterlife GM prompts, contract matrix, examples, source guards, and manifest coverage.",
-            "excludes": "Production behavior; this category verifies guidance, examples, and source coverage.",
+            "excludes": "Production behavior; this category verifies guidance, examples, and source coverage. Selected mandatory entrypoint and worked-example coverage mapping controls belong to documentation-afterlife-entrypoints-coverage.",
             "changeHints": [
                 "OtherGuides/Afterlife_Contract_Matrix.md",
                 "Examples/E_CLI_Afterlife_Turns.txt",
@@ -15169,7 +15205,6 @@
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeSocialRoutingTagsResponseModesAndTransferMetadataAreDocumented",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeSpecialArtCombatEffectContractIsDocumentedForGm",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeSpiritualConflictContractIsDocumentedForGm",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWriterRoomContractIsDocumentedForGm",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AgentInstructionsRequireHarnessFirstGmReliabilityWork",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AgentInstructionsRequirePromptDocsImpactCheckForAllRealms",
@@ -15190,7 +15225,6 @@
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.LauncherRealmCheckNamesCanonicalSoulStateSource",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.LegacyShiningNativeFactionDiscoveryContractIsDocumentedForGm",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.LightIncarnateHistoryDocumentation_RequiresAcceptedPayloadNotOldMarker",
-                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MortalNpcSocialTopicContractIsDocumented",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.NextLifeScenarioCoreIsDocumentedAsClientOwnedBootstrapInput",
                         "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.NonFeatherAbodeOfferingsAreDocumentedWithoutInkFeatherReceipt",
@@ -16032,9 +16066,44 @@
             ]
         },
         {
+            "id": "spiritual-cutover-position-compatibility",
+            "responsibility": "Saved nonbinding position wound compatibility: player/guardian later arithmetic replay plus critical narration retaining A until authenticated progress issues B. Two existing methods/three cases preserve signed inputs, saved choice, closed prefix and once-only completed private reduction.",
+            "excludes": "Binding result/terminal-control owners, live GameEngine publication, fresh OS processes, broad C2 replay, healing and performance. Completed private reduction is not canonical publication.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualWoundPositionDependency.cs",
+                "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPositionCriticalContinuation.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentWalk.cs"
+            ],
+            "related": [
+                {
+                    "id": "spiritual-binding-result-dependency",
+                    "when": "A change affects position-derived binding outcome permissions."
+                },
+                {
+                    "id": "spiritual-cutover-private-replay-negatives",
+                    "when": "A change affects accepted private progress replay or tamper rejection."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 10,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionDependencyReplaysSavedChoiceAndCorrectsOnlyLaterArithmetic",
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionCriticalNarrationRetainsCurrentFrontierAndResumesCold"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "spiritual-cutover-c2-replay",
             "responsibility": "C2 saved decision, cold origin, and continuation replay authority.",
-            "excludes": "Mortal wound treatment and unrelated afterlife politics. Shared accepted-A/B private replay, forged B and journal-write negatives belong to spiritual-cutover-private-replay-negatives.",
+            "excludes": "Mortal wound treatment and unrelated afterlife politics. Shared accepted-A/B private replay, forged B and journal-write negatives belong to spiritual-cutover-private-replay-negatives. Selected nonbinding position replay/critical narration controls belong to spiritual-cutover-position-compatibility.",
             "changeHints": [
                 "BookOfEternityClient/Services/Spiritual*",
                 "BookOfEternityClient/Services/Afterlife*"
@@ -16073,8 +16142,6 @@
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2SavedReplay_RejectsRehashedExcessDecisionSuffix",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2SavedReplay_RejectsRehashedExcessStepDecisions",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2SavedReplay_RejectsRehashedExtraAllocationTail",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionCriticalNarrationRetainsCurrentFrontierAndResumesCold",
-                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionDependencyReplaysSavedChoiceAndCorrectsOnlyLaterArithmetic",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuation_CommandFileEditStillRevokesOwnedWait",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuation_InvalidMissingEvidenceLeavesBothPrefixesRetryable",
                         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualContinuation_LateMissingResourceFailureRevokesWithoutSourceCommit",

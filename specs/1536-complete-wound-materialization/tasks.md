@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (B2/B3 EVIDENCE ACCEPTED; B4 FIRST 13 PASS — REVIEW PENDING)
+## Current original-completion boundary — 2026-10-12 (B2/B3/B4 EVIDENCE ACCEPTED; B5 TEST-ONLY WIP)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Lorian subsequently accepted
@@ -18,7 +18,8 @@ failed. Independent consultation identifies an overconstrained named-on-Evaluate
 oracle. Corrected SOURCE d5b2 and separately released fresh preparation/first
 corrected actual are complete2PASS, scoped EVIDENCE ACCEPTED45dfda. Coordinator
 accepted B4 SOURCE24dba and separately released fresh preparation/first actual:
-13PASS now frozen for EVIDENCE review; B5 remains gated.
+13PASS scoped EVIDENCE ACCEPTED130194. Coordinator now releases B5 test-only
+compatibility/GM controls; preparation/runtime and coherent child acceptance gated.
 The [current plan](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
 separates source coverage, historical PASS without available raw artifacts and
 retained raw-verified evidence for exact RESULT-CLOSURE-BINDING B2–B5.
@@ -121,9 +122,26 @@ retains21 full/raw-hashed artifacts, all13 diagnostics/preservation outputs,
 GM refusal/workerRejected with zero applied files,14 distinct strict root receipts
 and actual absence. Known-prefix directory names before0/after0/newlyremaining0;
 no shared-template receipt claimed. Source/binary hashes unchanged; runner cleanup
-passed. B4 EVIDENCE review pending; no production/new scenario/harness/fault-matrix/
-long cold/B5. No further project run is authorized here; cold remains1 and all
-checkboxes/earlier accepted packets remain unchanged.
+passed. Independent Astra XHigh scoped EVIDENCE ACCEPTED13019464eb146e7979aae56740b85ff50bbd16a3
+without findings; coordinator21artifact/26source/6binary/13raw/14cleanup readback passed.
+No further B4 run; cold remains1 and all checkboxes/earlier packets are unchanged.
+
+B5 test-only WIP retains two nonbinding position methods/three cases with only
+existing output/strict cleanup (three roots), original mutation/reduction assertions
+unchanged; two existing GM entrypoint/example-coverage Facts remain unchanged.
+New finite owners `spiritual-cutover-position-compatibility` and
+`documentation-afterlife-entrypoints-coverage` move exactly four selectors from two
+old owners; full multiset/other owners/global selection/CI preserved. Task-local
+`tests/selections/1536-binding-compatibility-gm.json`: five cases/four methods/two
+descriptors, integration3/unit2,10+10/default25 bounds. No build/discovery/runtime
+for this candidate. SOURCE review precedes separately released fresh preparation
+and matching first actual; coherent B2–B5 EVIDENCE review/root acceptance follows.
+Current plan maps all six rev1 rules to retained B2/B3/B4/warm/cold evidence and
+limits. Reuse accepted GREEN binding docs/example2PASS: five pinned source hashes
+and four further consumed documents unchanged from b03e. No new GM capability or
+Mortal/afterlife prompt/example edit; coverage mapping is not all-scenario execution.
+No production/new scenario/harness/long cold/feature work. B2–B5/#1536 checkboxes
+remain OPEN; distinct FR-063/native/C5/T070/healing/UI obligations remain open.
 
 Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and
 remaining spiritual consumers, lawful T107 initial-stage coexistence/healing,
