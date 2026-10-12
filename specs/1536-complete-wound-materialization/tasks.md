@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (FIRST FIXTURE BLOCKER PUBLISHED; OWNERSHIP FIXTURE CORRECTION WIP)
+## Current T070 boundary — 2026-10-12 (CORRECTED FIXTURE ACTUAL1FAIL; STORY-CONTINUITY DIAGNOSIS)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -126,6 +126,37 @@ Next is root correction WIP publication and focused independent SOURCE review, t
 one-case PlanOnly rebuild and a new actual attempt, under unchanged5/default overall10. No production/producer is authorized by
 this failure. Admission51 GREEN/original31 RED, all task checkboxes and historical B2–B5/
 cold evidence remain unchanged; full T070/#1536 and finalized-health vertical remain OPEN.
+
+
+### Corrected fixture first actual — existing story-continuity blocker, before harm
+
+Focused independent Astra XHigh SOURCE/FIXTURE accepted runtime source
+`9b1d44484d7d26bcb0bff92dc5a5cd4c16af4d88`; first fixture-blocker EVIDENCE at59fb65f6
+was accepted too, no blockers. Fresh selected PlanOnly110032 rebuilt integration with0
+errors/75 warnings, selected exactly1 method/1 case/1 descriptor and executed0 tests.
+No repeated catalog or accepted51 rerun. Corrected-source first actual110308 completed
+**1/1 executed,0 PASS/1 FAIL**, complete selection, no duplicate/skips/timeout,12.544s.
+It used24 immutable source pins and5 fresh selected integration binary pins. Across the
+finalization control there are2 actual invocations: the original incomplete timeout,
+then this completed single FAIL; the former has0 completed cases and remains immutable.
+
+Official signed reader42/health160, correlated offline GM ready and accepted frozen QTE
+action were reached, with both branch declarations retained and protected health bytes
+unchanged before action. Engine failed at existing QteSceneService terminal validation:
+`client_owned_story_continuity_created_by_gm at stories/mortal_life_2.jsonl`.
+This occurs before finalized health Damage and missing-occurrence assertions, both
+UNREACHED. It is an ordinary/QTE pipeline prerequisite blocker, NOT causal producer RED.
+[The immutable story-blocker packet](./recovery/qte-physical-injury-finalization-story-blocker-20261012)
+retains full summary/TRX/logs, source/binary pins and root full readback. One strict fixture
+cleanup receipt and actual owned-root absence were confirmed. No manual cleanup was needed.
+
+After two failed first attempts, no third expensive run or producer code follows blindly.
+Next is read-only minimal source/provenance diagnosis of client story publication between
+ordinary acceptance and QTE versus the snapshot used by story validation. Determine fixture
+omission versus existing pipeline phase mismatch before choosing one lawful correction.
+Do not waive story validation, enable allowPreexistingStateIssues, relax assertions, fabricate
+baseline or increase budgets. Production remains unchanged; causal occurrence RED/GREEN,
+next-turn consumer/replay/rollback/save-load remain UNRUN. T070/#1536 and all checkboxes OPEN.
 
 The plan now fixes the proposed optional QTE `physicalInjury` declaration: closed
 exactly five fields: schemaVersion1, one-based resource command ordinal, explicit maximum1–4, bounded cause

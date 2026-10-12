@@ -1,0 +1,125 @@
+{
+  "source": "9b1d44484d7d26bcb0bff92dc5a5cd4c16af4d88",
+  "files": [
+    {
+      "path": "BookOfEternityClient/Services/QtePhysicalInjuryContract.cs",
+      "sha256": "adad7785f4aa239913d36375533f8626823fdb43dd163c566a63678e3ccece76",
+      "bytes": 10819
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "sha256": "7d4154294045a2ef31debf2a2ea54cf8c069bad6c5af58e56b591714a1beea98",
+      "bytes": 261015
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "sha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+      "bytes": 379285
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "b5dc43ee382ab683e5a5553bfb084688645c291ba148cdc74a9f6dd4954a45e7",
+      "bytes": 282282
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "sha256": "660ee721a0b60d6eee3bcc478f52c625c75d427967bd31725683c6d31d0e60fd",
+      "bytes": 111583
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+      "sha256": "c9bd53f0ad72d1135cbe630b44150793a29c4dabe8a2e3cda41b90174a2e4894",
+      "bytes": 46958
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d",
+      "bytes": 42609
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceBootstrapStateBuilder.cs",
+      "sha256": "67e824df0d6f0e0ec890d52a969e9291d433bab7c01ab51c2afd3c6c207eb433",
+      "bytes": 9350
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs",
+      "sha256": "d5fc891f57028828b17a391085cd2bb76b89c15de1a06058782d3ac29f65f805",
+      "bytes": 26546
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92",
+      "bytes": 584183
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "bytes": 7722
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "87e42062f427cf8c91ec31b208934386ed556c6c87822bdf0dd66e03f3b7983c",
+      "bytes": 1766165
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "bytes": 81688
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryFinalization.cs",
+      "sha256": "ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f",
+      "bytes": 17914
+    },
+    {
+      "path": "tests/selections/1536-qte-physical-injury-finalization.json",
+      "sha256": "daa877fa604ec4e0a6cdc4c4160ad904e98e76af64f5cf5299a0d9a2af847628",
+      "bytes": 1416
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs",
+      "sha256": "5dd7ed260a0b83a9c72d532ef28d91af7b6c63577ba77d6cb59ee1a000e3557a",
+      "bytes": 53565
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOccurrenceState.cs",
+      "sha256": "8429906352687b5e54b2d85b620187d9083778303d497de3aa811648395e5e9d",
+      "bytes": 66193
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOccurrenceProducer.cs",
+      "sha256": "fb47dc0aeb162712d5852b5a6db586434e450830718986c36b6b452f138f5c4d",
+      "bytes": 22303
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.AgentConsole.cs",
+      "sha256": "c431577c2400369f7b2c9a4344f55497eb8a639110750867b0e0e9ce2f8d41ba",
+      "bytes": 7895
+    },
+    {
+      "path": "BookOfEternityClient/AgentConsole/AgentConsoleLiveInputSource.cs",
+      "sha256": "3a1f932bc800a229357bf307fb8e01f0f110f340c6f308f350c4bcf5eb3eca9f",
+      "bytes": 42395
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.LoreRealmOutcome.cs",
+      "sha256": "5f4784534abbe3c0fdce981a93207eb30ddedb6347be815de665498bf8be691f",
+      "bytes": 17479
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "bytes": 241343
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8",
+      "bytes": 22597
+    }
+  ]
+}

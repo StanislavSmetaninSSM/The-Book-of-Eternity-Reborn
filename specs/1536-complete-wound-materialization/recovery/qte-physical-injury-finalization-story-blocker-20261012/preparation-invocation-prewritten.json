@@ -1,0 +1,22 @@
+{
+  "source": "9b1d44484d7d26bcb0bff92dc5a5cd4c16af4d88",
+  "recordedUtc": "2026-10-12T10:59:18.442140+00:00",
+  "commandAfterFocusedSourceGate": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-qte-physical-injury-finalization.json",
+    "-PlanOnly"
+  ],
+  "plannedMethods": 1,
+  "plannedCases": 1,
+  "expectedDescriptors": 1,
+  "categoryMinutes": 5,
+  "defaultOverallMinutes": 10,
+  "timeoutOverride": false,
+  "testsExecuted": 0,
+  "catalogRuling": "Same method/category/selector. Fullinventory684categories11514methods validated first53preparation; no newinventory, no repeatedcatalog. Fresh selected integration build required for modifiedfixture."
+}
