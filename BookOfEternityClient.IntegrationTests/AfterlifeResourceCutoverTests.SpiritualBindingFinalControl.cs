@@ -92,16 +92,28 @@ public sealed partial class AfterlifeResourceCutoverTests
                 BindingRawActive(invalidCost, wrapper)["exchangeLog"]![1]!["after"]!["controlState"]));
             var invalidBytes = Encoding.UTF8.GetBytes(invalidCost.ToJsonString());
             await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath, invalidBytes);
+            // Ordinary source diagnostics and public evaluation have different result envelopes.
+            // Probe this exact physical candidate without projecting or advancing its continuation.
+            var probe = await validator.OpenC2PrivateSessionAsync(lease);
+            using (var probeSession = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(probe.Session))
+            {
+                _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, wrapper, mixed,
+                    phase = "ordinary_invalid_cost_probe", PolicyAllows = true, probe.Disposition, probe.Issues }));
+                Assert.Equal("dependent_continuation", probe.Disposition);
+                var costError = Assert.Single(probe.Issues, issue => issue.Code == "afterlife_conflict_action_cost_mismatch");
+                Assert.Equal(IssueSeverity.Error, costError.Severity);
+                Assert.Equal("activeConflict.exchangeLog[1].actionCostAudit.player.effectiveCost", costError.FilePath);
+                Assert.Equal("baseCost=4, minCost=2, effectiveCost=3", costError.Expected);
+                Assert.Equal("baseCost=4, minCost=2, effectiveCost=2", costError.Actual);
+            }
+            Assert.Equal(invalidBytes, await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath));
+            await AssertPrivateAndCanonicalBytesAsync(checkpointBefore);
             var invalid = await validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, a, responseA);
             _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, wrapper, mixed,
                 phase = "invalid_cost_with_held_echo", PolicyAllows = true,
                 disposition = invalid.Disposition.ToString(), invalid.Issues }));
             Assert.Equal(ValidationService.SpiritualWoundContinuationDisposition.Rejected, invalid.Disposition);
-            var costError = Assert.Single(invalid.Issues, issue => issue.Code == "afterlife_conflict_action_cost_mismatch");
-            Assert.Equal(IssueSeverity.Error, costError.Severity);
-            Assert.Equal("activeConflict.exchangeLog[1].actionCostAudit.player.effectiveCost", costError.FilePath);
-            Assert.Equal("baseCost=4, minCost=2, effectiveCost=3", costError.Expected);
-            Assert.Equal("baseCost=4, minCost=2, effectiveCost=2", costError.Actual);
+            Assert.Contains(invalid.Issues, issue => issue.Severity == IssueSeverity.Error);
             Assert.Null(invalid.NextRequest);
             Assert.Equal(invalidBytes, await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath));
             await AssertPrivateAndCanonicalBytesAsync(checkpointBefore);

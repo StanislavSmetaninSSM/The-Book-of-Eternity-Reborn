@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip"></a>
-## Current #1536 completion checkpoint — 2026-10-12 (B2 ACCEPTED; B3 FIRST FAIL FROZEN)
+## Current #1536 completion checkpoint — 2026-10-12 (B2 ACCEPTED; B3 CORRECTED TEST-ONLY WIP)
 
 Lorian accepted the bounded force_binding restoration through
 `ceedbe496a0ecc3a3e3cd96518675ba128989099` and resumed original #1536 completion.
@@ -21,7 +21,9 @@ Independent B2 EVIDENCE ACCEPTED on3839309554d916994abf9be9fc129c15bcb79b20;
 coordinator verified all22 artifacts/source pins,10 binaries and13 raw cases.
 The B3 test-only refinement passed independent SOURCE review on84a5; coordinator
 released one fresh selected preparation and one matching actual. That first actual
-failed as recorded below; no retry, correction or dependent B4/B5 work is released.
+failed as recorded below. Independent consultation then identified an overconstrained
+test oracle; coordinator releases the test-only correction below, not preparation,
+actual retry, production change or dependent B4/B5 work.
 The prior block's code, three immutable packets and cold invocation count1 remain
 accepted and unchanged. Use the same Linux task branch,
 existing RESULT-CLOSURE-BINDING rev1 and exact
@@ -169,16 +171,20 @@ Independent Astra XHigh EVIDENCE ACCEPTED without findings on
 hashes, actual cases and cleanup. This first result remains immutable. B2–B5/#1536
 checkboxes remain OPEN; the coordinator separately released the next block below.
 
-### Current B3 test-only block — first failure frozen; cause unresolved
+### Current B3 test-only block — corrected oracle; first failure preserved
 
 Retain the two existing Facts in `SpiritualBindingFinalControl.cs`: mixed direct
 binding and force-binding replacement carrier. The shared original-admission helper
 passes its genuine saved-choice policy into this owner; exact Fields must match
 issued A, and policy.Allows must accept the existing wrong-cost candidate while
-its terminal echo stays held. Actual ordinary evaluation must reject with
-`afterlife_conflict_action_cost_mismatch` at
-`activeConflict.exchangeLog[1].actionCostAudit.player.effectiveCost`, expected3/
-actual2; no suppressed diagnostics, private/canonical mutation or new scenario.
+its terminal echo stays held. The genuine ordinary private-session probe of that
+same physical candidate must return dependent_continuation with a retained session
+and `afterlife_conflict_action_cost_mismatch` at
+`activeConflict.exchangeLog[1].actionCostAudit.player.effectiveCost`, expected
+baseCost4/minCost2/effectiveCost3 versus actual2. Dispose that probe before actual
+Evaluate, which must return Rejected/no next request and retain its raw diagnostics.
+Assert unchanged private/canonical/submitted bytes after both operations; no new
+scenario or source normalization.
 
 Existing A Advanced, distinct committed B, single accepted-A progress row,
 reconstructed accepted A/B, rejected changed-A proposal and final raw B Resolved
@@ -230,7 +236,8 @@ collapses the result to the observed generic proposal-invalid. The frozen run pr
 only the external mismatch, not the internal throw location; original bad-cost
 rejection safety remains intact.
 
-Minimal proposal for independent review: after current-envelope authentication and
+Deferred optional production proposal (not required by rev1 and not implemented):
+after current-envelope authentication and
 whole-candidate preservation, consult the retained genuine policy's existing
 RequiresActualBindingResult proof through a narrow read-only session query. For
 that originally lawful LAST-binding frontier only, return Rejected with the exact
@@ -243,9 +250,22 @@ test. The existing mixed and wrapper Facts remain the bounded rejection/success
 checks; fresh selected preparation and a matching first corrected run would need
 separate release after source review. No duplicate scenario or audit infrastructure.
 
-Next action is independent causal/design review of this proposal. No production
-defect/fix acceptance is claimed from the static trace. Keep the oracle strong;
-no instrumentation/project run, retry or production/test correction is released here. Do not start B4/B5 or
+Independent consultation and coordinator review distinguish the contract from the
+new oracle: rev1 requires ordinary invalid-cost rejection/non-suppression; it does
+not require that Evaluate return the ordinary source's named diagnostic. The first
+run proved no unsafe advancement. Therefore no functional production defect is
+established, and the optional guard above is deferred without implementation.
+
+The released test-only correction uses `OpenC2PrivateSessionAsync` on the unchanged
+bad-cost physical draft. Its pending-submission branch reads genuine current-source
+diagnostics before continuation projection; require the real session/disposition
+and exact cost Error/path/expected/actual, then dispose it. Full byte assertions
+prove this probe did not repair/change the scenario before Evaluate. Keep actual
+Evaluate Rejected/no next request/Error and raw generic diagnostics, followed by
+all existing valid A/B, carrier, replay and final B checks. Earlier first-FAIL packet
+remains immutable. Corrected two-case selection is UNRUN; finding-focused independent
+SOURCE review precedes separately released fresh preparation and actual. No build,
+discovery, runtime, production change or retry occurred for this corrected candidate. Do not start B4/B5 or
 broad replay/transport owners. B2–B5/#1536 checkboxes remain OPEN; cold stays1.
 
 ### Accepted recovery and cold-blocker context — 2026-10-12

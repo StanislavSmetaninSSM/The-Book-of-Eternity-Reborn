@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (B2 ACCEPTED; B3 FIRST FAIL FROZEN)
+## Current original-completion boundary — 2026-10-12 (B2 ACCEPTED; B3 CORRECTED TEST-ONLY WIP)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Lorian subsequently accepted
@@ -14,7 +14,8 @@ implementation/publication. Following SOURCE acceptance on06e133, coordinator
 released one fresh selected preparation and one matching actual; both are frozen.
 B2 evidence is independently accepted on383930; coordinator now releases only
 the B3 test-only refinement below. Its first separately released matching actual
-failed; no retry, correction or B4/B5 work is released.
+failed. Independent consultation identifies an overconstrained named-on-Evaluate
+oracle; only the test correction is now released, with no preparation/runtime/B4/B5.
 The [current plan](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
 separates source coverage, historical PASS without available raw artifacts and
 retained raw-verified evidence for exact RESULT-CLOSURE-BINDING B2–B5.
@@ -56,8 +57,10 @@ confirmed22 artifacts/source pins,10 binaries,13 raw cases and9 cleanups.
 
 B3 test-only source retains the existing mixed and wrapper Facts. The genuine
 saved-choice policy must match issued A fields and allow the same wrong-cost edit;
-ordinary evaluation must reject exact action-cost mismatch/path expected3/actual2
-while preserving the held terminal echo, private/canonical and submitted bytes.
+the genuine ordinary private-session probe must expose exact action-cost Error/path
+expected3/actual2 on the same physical draft, then dispose before actual Evaluate
+Rejected/no next request. Preserve held echo/private/canonical/submitted bytes after
+both operations and retain actual evaluation diagnostics.
 Existing A/B, carrier, accepted-result replay and final raw B assertions remain;
 existing output records diagnostics/milestones and strict cleanup is reused.
 Task-local `tests/selections/1536-binding-final-control.json`: two existing owners,
@@ -78,8 +81,12 @@ then the transport/evaluation catch yields the generic rejection. The inner thro
 was not observed. Proposed narrow guard uses the retained last-binding policy proof
 to return current nonterminal diagnostics before preview; only the supported terminal
 echo retains the existing validated preview. Preserve all authority/commit/ordinary
-rules and the strong existing oracle. Independent causal/design review must precede
-any separately released correction; see the current plan for exact source locations. No retry/instrumentation/project
+rules and the strong existing oracle. Independent consultation/coordinator review found no unsafe advancement and no
+rev1 requirement for the exact named diagnostic on Evaluate. The production guard
+is optional/deferred. Released test-only correction keeps the exact cost oracle on
+the genuine same-candidate ordinary probe and actual rejection/preservation after
+probe disposal. FirstFAIL remains immutable; corrected selection UNRUN and pending
+finding-focused SOURCE review before any preparation/actual release. No retry/instrumentation/project
 run or B4/B5 work; all checkboxes and earlier accepted packets remain unchanged.
 
 Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and
