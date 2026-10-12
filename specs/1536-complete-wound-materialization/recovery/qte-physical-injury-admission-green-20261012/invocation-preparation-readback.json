@@ -1,0 +1,12 @@
+{
+  "source": "141c69617fcb731eb219605d4acbded28cf45983",
+  "planRun": "20261012-100721-537-279401-8675c37c684040d09b15cdd3384fdfaa-categories",
+  "methods": 9,
+  "cases": 51,
+  "descriptors": 4,
+  "freshBuildErrors": 0,
+  "sourcePins": 24,
+  "binaryPins": 10,
+  "testsExecuted": 0,
+  "rootSummaryAndBuildLogsRead": true
+}

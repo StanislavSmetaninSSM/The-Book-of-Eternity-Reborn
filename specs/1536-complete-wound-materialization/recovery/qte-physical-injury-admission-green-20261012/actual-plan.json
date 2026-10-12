@@ -1,0 +1,145 @@
+{
+  "Categories": [
+    "qte-physical-injury-admission",
+    "qte-physical-injury-compatibility",
+    "qte-physical-injury-documentation"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-physical-injury-admission",
+      "reason": "#1536 T070 minimum declaration admission/freeze GREEN after immutable31-case RED: original three methods plus two new outer-alias negatives total33 cases; no finalized-harm/producer implementation.",
+      "contracts": [
+        "Approved exact five-field optional physicalInjury contract; no declaration preserves resource-only QTE; malformed raw input cannot be normalized into authority",
+        "Genuine GameEngine ordinary signed snapshot plus physical request, canonical health owner and actual pending-snapshot reader; no anonymous prevalidated manifest",
+        "Both lawful branch declarations survive typed read/bind/freeze and the existing continuation fingerprint rejects a changed maximum",
+        "First declaration-control RED remains separate from later finalized-health-harm missing-occurrence chain RED; protected source/resource/control bytes and strict owned-root cleanup"
+      ]
+    },
+    {
+      "category": "qte-physical-injury-compatibility",
+      "reason": "Preserve existing undeclared resource-only admission and generic strict raw offer authority: four finite existing methods/16 cases, no full qte-rules or validation-pipeline run.",
+      "contracts": [
+        "Existing closed QTE resource Damage parser/admission and negative amount",
+        "Operation/owner/source/event and unselected-branch resource refusals",
+        "Generic raw duplicate, malformed turn authority, empty and null offer refusals remain fail closed"
+      ]
+    },
+    {
+      "category": "qte-physical-injury-documentation",
+      "reason": "Same coherent admission/freeze block synchronizes six affected GM surfaces and one complete worked declaration/manifest through two existing guards/two cases.",
+      "contracts": [
+        "Exact optional five-field physicalInjury authoring and honest occurrence-production-pending boundary",
+        "Production raw grammar, canonical health lookup, actual existing resource commands and exact typed declaration retention",
+        "Equal health Damage carries different explicit source maxima; absence preserves prior resource-only example"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "141c69617fcb731eb219605d4acbded28cf45983",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.4846972,
+  "Descriptors": [
+    {
+      "Name": "qte-physical-injury-admission-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "qte-physical-injury-admission",
+      "Categories": [
+        "qte-physical-injury-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_FrozenMaximumCannotChangeBeforeTerminalSelection|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 33,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_FrozenMaximumCannotChangeBeforeTerminalSelection",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration",
+          "Cases": 29
+        }
+      ]
+    },
+    {
+      "Name": "qte-physical-injury-compatibility-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "qte-physical-injury-compatibility",
+      "Categories": [
+        "qte-physical-injury-compatibility"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer|FullyQualifiedName=BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_AcceptsClosedQteV1ResourceDamage|FullyQualifiedName=BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsNegativeTerminalResourceDamage|FullyQualifiedName=BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 16,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_AcceptsClosedQteV1ResourceDamage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsNegativeTerminalResourceDamage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract",
+          "Cases": 9
+        }
+      ]
+    },
+    {
+      "Name": "qte-physical-injury-documentation-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "qte-physical-injury-documentation",
+      "Categories": [
+        "qte-physical-injury-documentation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ExampleDocumentationValidationTests.UnifiedResourceMaterializationManifest_CoversMortalAndAfterlifeWorkedFamilies",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.UnifiedResourceMaterializationManifest_CoversMortalAndAfterlifeWorkedFamilies",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "qte-physical-injury-documentation-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "qte-physical-injury-documentation",
+      "Categories": [
+        "qte-physical-injury-documentation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

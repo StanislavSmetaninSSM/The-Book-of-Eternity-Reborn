@@ -1,0 +1,2208 @@
+{
+  "source": "141c69617fcb731eb219605d4acbded28cf45983",
+  "run": "20261012-101140-602-279704-c8a45b7c3b37460ca8d698380731cdca-categories",
+  "actualInvocationsAtSource": 1,
+  "planned": 51,
+  "executed": 51,
+  "passed": 51,
+  "failed": 0,
+  "descriptors": 4,
+  "groups": {
+    "qte-physical-injury-admission-integration-001.trx": 33,
+    "qte-physical-injury-compatibility-integration-002.trx": 16,
+    "qte-physical-injury-documentation-integration-003.trx": 1,
+    "qte-physical-injury-documentation-unit-004.trx": 1
+  },
+  "genuineSignedAdmissionContexts": 33,
+  "strictCleanupDistinctRootsAbsent": 33,
+  "frozenTamperPredicate": "REACHED/PASS actual offer_mismatch",
+  "finalizedHealthDamageOccurrenceChain": "UNRUN",
+  "rootFullTRXSummaryReadback": true,
+  "sourcePinsMatched": 24,
+  "binaryPinsMatched": 10,
+  "rows": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"missing_ordinal\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "56323F11AE933691D08695F5AD8E510D30E86F026DBD913BF885020D774FA483",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "missing_ordinal",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.resourceCommandOrdinal",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..512",
+                "Actual": "Undefined",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-99360cff87a04a6eb374c5ef9a013d95",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"locations_null\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "BECC680C8648AF5D65E751DF92D7906272A20E18FE1E890F003C6417245CA834",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "locations_null",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.allowedLocationKinds",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "1..5 unique exact legal location kinds",
+                "Actual": "Null",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-8828764007f240f2971fb003dbe69590",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"locations_unknown\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "052ED51F61D728682DEEFA5A7C8951DA7F27C12B1B71D6D782D9E91BA20205DA",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "locations_unknown",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.allowedLocationKinds",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "unique anatomical|systemic|mental|spiritual_axis|other",
+                "Actual": "\"head\"",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-1a83427a48f34f4c9099aab38e2e00fd",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"cause_padded\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "05417392F7D59069A382EAB050E927B48B9798230318D3AE11C5677CB4644AEB",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "cause_padded",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.cause",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "trimmed nonempty readable string, at most 2000 characters, no controls",
+                "Actual": "String",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-5739583df9cf441cb1ef940fc564c472",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"cause_long\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "02E4BE5C9189A821AD8D56179E67A96CFFFAA816955E89A69459F67FCA36AFB4",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "cause_long",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.cause",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "trimmed nonempty readable string, at most 2000 characters, no controls",
+                "Actual": "String",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-c01afb58f28e472882759f63647057e0",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"unknown_field\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "A993C16CE0435947880F778B2593F1DBD9D320FFD45CC9C936103E574B27D5CD",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "unknown_field",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.hardMaximumSeverityRank",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "one exact registered declaration field",
+                "Actual": "hardMaximumSeverityRank",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d24bd882129a41979777891dc48d06d7",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"maximum_zero\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "D887E03B3484CB411B5751BD86A1EC42B49120B32C7DEEADAC15B9F6CBD6FE26",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "maximum_zero",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.maximumSeverityRank",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..4",
+                "Actual": "Number",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-cc7cecd72563475caba1ac68f28e2fde",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches(declared: True, maximum: 4)",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "4E26E111355635B113D806C4426926931B2BCC25AD2C19EE73BA253051271A10",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "lawful_admission",
+          "Observation": {
+            "declared": true,
+            "maximum": 4,
+            "issues": []
+          }
+        },
+        {
+          "Boundary": "frozen_offer",
+          "Observation": {
+            "declared": true,
+            "maximum": 4,
+            "FrozenBranches": [
+              {
+                "outcomeId": "outcome_1",
+                "title": "Каменный удар",
+                "finalNarrative": "Камень задевает героя.",
+                "gmSummary": "Выбранный исход обвала.",
+                "responseFragment": {
+                  "response": "Камень задевает героя.",
+                  "experienceGained": 1,
+                  "resourceChanges": [
+                    {
+                      "operation": "damage",
+                      "target": {
+                        "kind": "player",
+                        "targetId": "player_current"
+                      },
+                      "resourceKey": "health",
+                      "amount": 5,
+                      "source": {
+                        "kind": "narrative_outcome"
+                      },
+                      "eventRef": "turn_42:qte_terminal:1:resource:1",
+                      "reason": "Прямой удар камня."
+                    }
+                  ]
+                },
+                "physicalInjury": {
+                  "schemaVersion": 1,
+                  "resourceCommandOrdinal": 1,
+                  "maximumSeverityRank": 4,
+                  "cause": "Прямой удар камня.",
+                  "allowedLocationKinds": [
+                    "anatomical",
+                    "other"
+                  ]
+                }
+              },
+              {
+                "outcomeId": "outcome_2",
+                "title": "Каменный удар",
+                "finalNarrative": "Камень задевает героя.",
+                "gmSummary": "Выбранный исход обвала.",
+                "responseFragment": {
+                  "response": "Камень задевает героя.",
+                  "experienceGained": 0,
+                  "resourceChanges": [
+                    {
+                      "operation": "damage",
+                      "target": {
+                        "kind": "player",
+                        "targetId": "player_current"
+                      },
+                      "resourceKey": "health",
+                      "amount": 5,
+                      "source": {
+                        "kind": "narrative_outcome"
+                      },
+                      "eventRef": "turn_42:qte_terminal:2:resource:1",
+                      "reason": "Прямой удар камня."
+                    }
+                  ]
+                },
+                "physicalInjury": {
+                  "schemaVersion": 1,
+                  "resourceCommandOrdinal": 1,
+                  "maximumSeverityRank": 1,
+                  "cause": "Прямой удар камня.",
+                  "allowedLocationKinds": [
+                    "anatomical",
+                    "other"
+                  ]
+                }
+              }
+            ],
+            "ContinuationState": "armed",
+            "OfferFingerprint": "sha256:11d892f41848dfc50bf17fb0b5895c142e00932f8ed124b48ff8ac5895827498",
+            "AuthorityFingerprint": "sha256:caa9462594627480b5ee743616937640995717ed24145de8e779d3f939bd845a",
+            "AcceptedSourceTurn": 42
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 58
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-04489b82eca544dabd14f0d9437ed2e4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"ordinal_outside\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "629DB9DBB6FFBD5D6542D288FEA336A15CDEA744125C242330E437549388264B",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "ordinal_outside",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.resourceCommandOrdinal",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "one-based index into the actual responseFragment.resourceChanges array",
+                "Actual": "2",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ef06080463ef458d861952b36ecaf51e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches(declared: True, maximum: 1)",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "468B765331E911A29D779D86284D86D36A0F0D3BCA0525C68282531904A09825",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "lawful_admission",
+          "Observation": {
+            "declared": true,
+            "maximum": 1,
+            "issues": []
+          }
+        },
+        {
+          "Boundary": "frozen_offer",
+          "Observation": {
+            "declared": true,
+            "maximum": 1,
+            "FrozenBranches": [
+              {
+                "outcomeId": "outcome_1",
+                "title": "Каменный удар",
+                "finalNarrative": "Камень задевает героя.",
+                "gmSummary": "Выбранный исход обвала.",
+                "responseFragment": {
+                  "response": "Камень задевает героя.",
+                  "experienceGained": 1,
+                  "resourceChanges": [
+                    {
+                      "operation": "damage",
+                      "target": {
+                        "kind": "player",
+                        "targetId": "player_current"
+                      },
+                      "resourceKey": "health",
+                      "amount": 5,
+                      "source": {
+                        "kind": "narrative_outcome"
+                      },
+                      "eventRef": "turn_42:qte_terminal:1:resource:1",
+                      "reason": "Прямой удар камня."
+                    }
+                  ]
+                },
+                "physicalInjury": {
+                  "schemaVersion": 1,
+                  "resourceCommandOrdinal": 1,
+                  "maximumSeverityRank": 1,
+                  "cause": "Прямой удар камня.",
+                  "allowedLocationKinds": [
+                    "anatomical",
+                    "other"
+                  ]
+                }
+              },
+              {
+                "outcomeId": "outcome_2",
+                "title": "Каменный удар",
+                "finalNarrative": "Камень задевает героя.",
+                "gmSummary": "Выбранный исход обвала.",
+                "responseFragment": {
+                  "response": "Камень задевает героя.",
+                  "experienceGained": 0,
+                  "resourceChanges": [
+                    {
+                      "operation": "damage",
+                      "target": {
+                        "kind": "player",
+                        "targetId": "player_current"
+                      },
+                      "resourceKey": "health",
+                      "amount": 5,
+                      "source": {
+                        "kind": "narrative_outcome"
+                      },
+                      "eventRef": "turn_42:qte_terminal:2:resource:1",
+                      "reason": "Прямой удар камня."
+                    }
+                  ]
+                },
+                "physicalInjury": {
+                  "schemaVersion": 1,
+                  "resourceCommandOrdinal": 1,
+                  "maximumSeverityRank": 4,
+                  "cause": "Прямой удар камня.",
+                  "allowedLocationKinds": [
+                    "anatomical",
+                    "other"
+                  ]
+                }
+              }
+            ],
+            "ContinuationState": "armed",
+            "OfferFingerprint": "sha256:12bcfb48625cd040e3c4281be0ceeee54f18585f533891ce73db088f752be73e",
+            "AuthorityFingerprint": "sha256:83526afaf5282bfef9b74cf5829b717f65b5da20ced2e12431975f8dab0a092d",
+            "AcceptedSourceTurn": 42
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 58
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-3ae5c5f5164641c7be24ccd5d776f952",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"unselected_invalid\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "0132ADDA9F82C49FA0A6EA764C7923FA912A6ACDE0B7CC7532032C824D6821CA",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "unselected_invalid",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[1].physicalInjury.maximumSeverityRank",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..4",
+                "Actual": "Number",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-8d41cf117c3f481f91d519854052ff0e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"confusable_field\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "BBD74329944A64C9C3F970DAF7A45CD3340D9EABFD78D54883DB9E6AB8FD07B1",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "confusable_field",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.MaximumSeverityRank",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "one exact registered declaration field",
+                "Actual": "MaximumSeverityRank",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-fca385e5076844cb834c6e8dd91d2ef1",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"maximum_string\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "12AB7C294048CB55BB6202E72F6602667E514677E280C6FE80B4F875637A4436",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "maximum_string",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.maximumSeverityRank",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..4",
+                "Actual": "String",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-f1436be78f9f4ab4b1c830305a2a0731",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"missing_locations\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "CA2A1587103509181AF8DC2EF06DDD46FF93BA4C0FE5CCA363156554730BD0E2",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "missing_locations",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.allowedLocationKinds",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "1..5 unique exact legal location kinds",
+                "Actual": "Undefined",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-83f38cfb75ec4e34b729de8a08a1b94d",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"schema_two\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "64384BA802F6E5DBC4BD89716428CDFAC6EDBCECF31A9BCCE8C5B9D681CBE627",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "schema_two",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.schemaVersion",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..1",
+                "Actual": "Number",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-2ccca1bd408b43c5a462607be10c0eb6",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches(declared: False, maximum: 0)",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "CC2EE4B33039A491AB8DC907ED679700382E1127CBA576B0A1ED2203D5E4D560",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "lawful_admission",
+          "Observation": {
+            "declared": false,
+            "maximum": 0,
+            "issues": []
+          }
+        },
+        {
+          "Boundary": "frozen_offer",
+          "Observation": {
+            "declared": false,
+            "maximum": 0,
+            "FrozenBranches": [
+              {
+                "outcomeId": "outcome_1",
+                "title": "Каменный удар",
+                "finalNarrative": "Камень задевает героя.",
+                "gmSummary": "Выбранный исход обвала.",
+                "responseFragment": {
+                  "response": "Камень задевает героя.",
+                  "experienceGained": 1,
+                  "resourceChanges": [
+                    {
+                      "operation": "damage",
+                      "target": {
+                        "kind": "player",
+                        "targetId": "player_current"
+                      },
+                      "resourceKey": "health",
+                      "amount": 5,
+                      "source": {
+                        "kind": "narrative_outcome"
+                      },
+                      "eventRef": "turn_42:qte_terminal:1:resource:1",
+                      "reason": "Прямой удар камня."
+                    }
+                  ]
+                }
+              },
+              {
+                "outcomeId": "outcome_2",
+                "title": "Каменный удар",
+                "finalNarrative": "Камень задевает героя.",
+                "gmSummary": "Выбранный исход обвала.",
+                "responseFragment": {
+                  "response": "Камень задевает героя.",
+                  "experienceGained": 0,
+                  "resourceChanges": [
+                    {
+                      "operation": "damage",
+                      "target": {
+                        "kind": "player",
+                        "targetId": "player_current"
+                      },
+                      "resourceKey": "health",
+                      "amount": 5,
+                      "source": {
+                        "kind": "narrative_outcome"
+                      },
+                      "eventRef": "turn_42:qte_terminal:2:resource:1",
+                      "reason": "Прямой удар камня."
+                    }
+                  ]
+                }
+              }
+            ],
+            "ContinuationState": "armed",
+            "OfferFingerprint": "sha256:b6c4f5e84ef08b5b2470a6ae007d36ed0e850efc52b7a88588568af009ac72fa",
+            "AuthorityFingerprint": "sha256:6989e50116be74e5fbeb823107c72810625e0dcd1bcd58ee6697f0b74bce1a04",
+            "AcceptedSourceTurn": 42
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 58
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-38b52c3dd590453cac204401cade63b8",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"wrong_case_envelope\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "801ACB904A3B33289BD7CDC88D957B93A2F02A54AB676D5A14BBC45B6E2A032F",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "wrong_case_envelope",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "one exact physicalInjury property, or omission",
+                "Actual": "PhysicalInjury",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-1371a61a42cb41019faf5ace7ec04b39",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"ordinal_zero\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "DC9FEB2B6AA3EFACE6AED4E19AE7CFD9AAD308B4AAC1F6DAA103D3EDF654914F",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "ordinal_zero",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.resourceCommandOrdinal",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..512",
+                "Actual": "Number",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b0f5e9d6d1d74142a4654327d413161b",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"locations_empty\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "7E630406D4EAE8B1DB0FB137EB0BAAB6AE5ADBDFDE7BC68054E4BB3798D7FCD5",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "locations_empty",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.allowedLocationKinds",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "1..5 unique exact legal location kinds",
+                "Actual": "Array",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-98fa5ba204bd4c1e88edfe118c0c2984",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"locations_duplicate\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "39BB05D0F2EEA622C2610252A0D25E4993A1F143781A8A175DEB50FA4B71C810",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "locations_duplicate",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.allowedLocationKinds",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "unique anatomical|systemic|mental|spiritual_axis|other",
+                "Actual": "\"anatomical\"",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-1fa4b6882a38498bab08b9f79236a4ad",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"missing_maximum\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "AE1AF0E132FBCAA34079850071D1A76ACE69DBA95736EEE58EBECAEB2608F8CC",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "missing_maximum",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.maximumSeverityRank",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..4",
+                "Actual": "Undefined",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-6eb68cf084f249b792687503a5c902e1",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_FrozenMaximumCannotChangeBeforeTerminalSelection",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "09418AAF1995DF4341FDB8A57F4C9DFFCBD196A6E7A0957933CB37D7C137E703",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "tamper_admission",
+          "Observation": {
+            "issues": []
+          }
+        },
+        {
+          "Boundary": "tamper_frozen_offer",
+          "Observation": {
+            "FrozenBranches": [
+              {
+                "outcomeId": "outcome_1",
+                "title": "Каменный удар",
+                "finalNarrative": "Камень задевает героя.",
+                "gmSummary": "Выбранный исход обвала.",
+                "responseFragment": {
+                  "response": "Камень задевает героя.",
+                  "experienceGained": 1,
+                  "resourceChanges": [
+                    {
+                      "operation": "damage",
+                      "target": {
+                        "kind": "player",
+                        "targetId": "player_current"
+                      },
+                      "resourceKey": "health",
+                      "amount": 5,
+                      "source": {
+                        "kind": "narrative_outcome"
+                      },
+                      "eventRef": "turn_42:qte_terminal:1:resource:1",
+                      "reason": "Прямой удар камня."
+                    }
+                  ]
+                },
+                "physicalInjury": {
+                  "schemaVersion": 1,
+                  "resourceCommandOrdinal": 1,
+                  "maximumSeverityRank": 2,
+                  "cause": "Прямой удар камня.",
+                  "allowedLocationKinds": [
+                    "anatomical",
+                    "other"
+                  ]
+                }
+              },
+              {
+                "outcomeId": "outcome_2",
+                "title": "Каменный удар",
+                "finalNarrative": "Камень задевает героя.",
+                "gmSummary": "Выбранный исход обвала.",
+                "responseFragment": {
+                  "response": "Камень задевает героя.",
+                  "experienceGained": 0,
+                  "resourceChanges": [
+                    {
+                      "operation": "damage",
+                      "target": {
+                        "kind": "player",
+                        "targetId": "player_current"
+                      },
+                      "resourceKey": "health",
+                      "amount": 5,
+                      "source": {
+                        "kind": "narrative_outcome"
+                      },
+                      "eventRef": "turn_42:qte_terminal:2:resource:1",
+                      "reason": "Прямой удар камня."
+                    }
+                  ]
+                },
+                "physicalInjury": {
+                  "schemaVersion": 1,
+                  "resourceCommandOrdinal": 1,
+                  "maximumSeverityRank": 3,
+                  "cause": "Прямой удар камня.",
+                  "allowedLocationKinds": [
+                    "anatomical",
+                    "other"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Boundary": "frozen_tamper_rejected",
+          "Observation": {
+            "Failure": "System.IO.InvalidDataException: qte_deferred_continuation_offer_mismatch: active QTE offer differs from its accepted fingerprint.\n   at BookOfEternityClient.Services.QteDeferredEffectContinuation.ValidateAsync(FileSystemManager fileSystem, CanonicalWriteLease writeLease, ActiveQteSceneState activeScene, QteOffer offer, Int32 acceptedSourceTurn, IReadOnlySet`1 allowedStates, IReadOnlySet`1 evolvedSealedPaths) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/QteDeferredEffectContinuation.cs:line 449\n   at Xunit.Assert.RecordExceptionAsync(Func`1 testCode) in /_/src/xunit.assert/Asserts/Record.cs:line 114"
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-de7bdc8831cf4e6b9111d85df30cf2a4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"cause_control\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "5A0F9159AF4C4613B9FF02F14E518F854231F235C855BAC257EEA388BA73EA6C",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "cause_control",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.cause",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "trimmed nonempty readable string, at most 2000 characters, no controls",
+                "Actual": "String",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-cf4639fac72e478494bfa1ba758384ee",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"null\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "CC40EFDFF35BF26DEF39E300162B2DF429410C5BED2021756FBCE922C2636CE4",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "null",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "closed non-null physicalInjury object",
+                "Actual": "Null",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-96d60e8ef6b547148401d0650b288ff5",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"cause_empty\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "4AF18C96BCCA48F695674C20C2876AAB4EE08A613B1010F9E292DAE5DE2AE140",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "cause_empty",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.cause",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "trimmed nonempty readable string, at most 2000 characters, no controls",
+                "Actual": "String",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-82a2158119894d6c9ac579415cb1fc2a",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"ordinal_fraction\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "AC0CC89407D89A712DB9903214AABBE30128AC3A1AA3E1221423BD14EC353004",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "ordinal_fraction",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.resourceCommandOrdinal",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..512",
+                "Actual": "Number",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-3e22c9e4e2254643882c68d628f4bdfd",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"maximum_five\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "6747050274D39542934F4EF0AACFB09E1DF25435C40558B877EAFFB9B5B41EAF",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "maximum_five",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.maximumSeverityRank",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..4",
+                "Actual": "Number",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-6994313ac048410ca5105f7d8f15f8cb",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"confusable_envelope\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "B69B9E25EB8F496F59592E23E5CFFB18FD67076EB1BCC2088EB49D0AE1575F20",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "confusable_envelope",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "one exact physicalInjury property, or omission",
+                "Actual": "physіcalInjury",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d8b73c2c249444e1a2f59c11027b6074",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"non_health\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "43EBDAE85055E85275FB7526F643B13428CD935C10F4F312854618981BF3030D",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "non_health",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.resourceCommandOrdinal",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "existing exact damage command for player/player_current health",
+                "Actual": "invalid or non-health resource command",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4bccae404d7849c19ec242b014498235",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"duplicate_field\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "179805A64A82B218920DCAF4AC9ACCF1E0D3CBE43DD13A756D7F300357C5EEB6",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "duplicate_field",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.maximumSeverityRank",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "one exact registered declaration field",
+                "Actual": "maximumSeverityRank",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4a171220bbfe4c8d8165b14917bb6fa2",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"missing_cause\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "53224B84EDFCE5A24020478BD2BD021E0478E4B1A1851CAB868B3042A882D171",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "missing_cause",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.cause",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "trimmed nonempty readable string, at most 2000 characters, no controls",
+                "Actual": "Undefined",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-0c2baecbe4a04a05ac297e25dabfcfa5",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"missing_schema\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "73C093E26B273C3B500E9215DB6F339BA7EA9591E454712AD07D28975D5CBDE3",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "missing_schema",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.schemaVersion",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..1",
+                "Actual": "Undefined",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b2808a6a95564992bf5a774d26affd27",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration(mutation: \"wrong_case_field\")",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "genuine_snapshot",
+          "Observation": {
+            "SessionId": "session_physical_injury_admission",
+            "RequestId": "request_physical_injury_admission",
+            "SnapshotToken": "CFB247A4D25C335F56F0FC4C215A53BB1C85F4291D7B4EABC2DBAAFE49469C9C",
+            "TurnNumber": 42,
+            "SourceLabel": "обработки хода",
+            "Health": {
+              "Realm": "mortal_world",
+              "OwnerKind": 0,
+              "ResourceOwnerId": "player_current",
+              "ResourceKey": "health"
+            },
+            "Current": 160
+          }
+        },
+        {
+          "Boundary": "malformed_admission",
+          "Observation": {
+            "mutation": "wrong_case_field",
+            "issues": [
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.MaximumSeverityRank",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "one exact registered declaration field",
+                "Actual": "MaximumSeverityRank",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              },
+              {
+                "FilePath": "output/qte_offer.json.terminalOutcomes[0].physicalInjury.maximumSeverityRank",
+                "Severity": 2,
+                "Message": "QTE physicalInjury declaration rejected before selection.",
+                "Category": 0,
+                "Code": "qte_physical_injury_invalid",
+                "Actor": null,
+                "Section": "QTE",
+                "Expected": "integer 1..4",
+                "Actual": "Undefined",
+                "RepairHint": "Omit physicalInjury for a resource-only outcome, or supply the exact five-field declaration for existing player health damage."
+              }
+            ],
+            "ParseFailure": null
+          }
+        },
+        {
+          "Boundary": "protected_bytes_unchanged",
+          "Observation": {
+            "Count": 61
+          }
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-12f46cc434c6432bbfd060f9ff79e8bd",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract(mutation: \"sourceId\", expectedCode: \"qte_terminal_resource_source_forbidden\", expectedPathSuffix: \"terminalOutcomes[0].responseFragment.resourceChang\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract(mutation: \"restore\", expectedCode: \"qte_terminal_resource_operation_forbidden\", expectedPathSuffix: \"terminalOutcomes[0].responseFragment.resourceChang\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract(mutation: \"npcTarget\", expectedCode: \"qte_terminal_resource_target_forbidden\", expectedPathSuffix: \"terminalOutcomes[0].responseFragment.resourceChang\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract(mutation: \"wrongEventRef\", expectedCode: \"qte_terminal_resource_event_ref_mismatch\", expectedPathSuffix: \"terminalOutcomes[0].responseFragment.resourceChang\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract(mutation: \"actionCost\", expectedCode: \"qte_terminal_resource_source_forbidden\", expectedPathSuffix: \"terminalOutcomes[0].responseFragment.resourceChang\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract(mutation: \"invalidSecondOutcome\", expectedCode: \"qte_terminal_resource_operation_forbidden\", expectedPathSuffix: \"terminalOutcomes[1].responseFragment.resourceChang\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer(invalidOfferJson: \"{\\\"qteId\\\":\\\"qte_malformed_turn\\\",\\\"sourceTurnNumb\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_AcceptsClosedQteV1ResourceDamage",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract(mutation: \"definitionSurface\", expectedCode: \"qte_terminal_resource_surface_forbidden\", expectedPathSuffix: \"terminalOutcomes[0].responseFragment.resourceDefin\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract(mutation: \"targetRef\", expectedCode: \"qte_terminal_resource_target_forbidden\", expectedPathSuffix: \"terminalOutcomes[0].responseFragment.resourceChang\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsResourceAuthorityOutsideClosedQteV1Contract(mutation: \"capacitySurface\", expectedCode: \"qte_terminal_resource_surface_forbidden\", expectedPathSuffix: \"terminalOutcomes[0].responseFragment.resourceCapac\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer(invalidOfferJson: \"null\")",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ValidationServiceQteTests.ValidateAcceptedTurnQteOfferAsync_RejectsNegativeTerminalResourceDamage",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer(invalidOfferJson: \"{\\n  \\\"qteId\\\": \\\"qte_duplicate_turn\\\",\\n  \\\"sourc\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer(invalidOfferJson: \"{\\n  \\\"qteId\\\": \\\"qte_wrong_turn_type\\\",\\n  \\\"sour\"···)",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.TryReadOfferAsync_InvalidTurnAuthorityIsDistinctFromMissingOffer(invalidOfferJson: \"   \")",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.UnifiedResourceMaterializationManifest_CoversMortalAndAfterlifeWorkedFamilies",
+      "outcome": "Passed",
+      "observations": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces",
+      "outcome": "Passed",
+      "observations": []
+    }
+  ]
+}

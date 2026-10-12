@@ -1,0 +1,26 @@
+{
+  "source": "141c69617fcb731eb219605d4acbded28cf45983",
+  "startedUtc": "2026-10-12T10:07:20.947868+00:00",
+  "command": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-qte-physical-injury-admission.json",
+    "-PlanOnly"
+  ],
+  "plannedMethods": 9,
+  "plannedCases": 51,
+  "expectedDescriptors": 4,
+  "categoryMinutes": {
+    "admission": 5,
+    "compatibility": 3,
+    "documentation": 2
+  },
+  "defaultOverallMinutes": 15,
+  "timeoutOverride": false,
+  "testsExecuted": 0,
+  "catalogRuling": "original selectors preserved; only two theory rows added/no new methods; prior full inventory valid; new finite overlap selectors checked by selected planning"
+}
