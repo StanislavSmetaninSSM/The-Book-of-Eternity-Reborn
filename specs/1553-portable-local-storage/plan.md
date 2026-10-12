@@ -1,3 +1,14 @@
+## T068 Windows path equivalence — actual operand causal RED confirmed, 2026-10-12
+
+Postboot00764cf SOURCE PASS/freshbuild81.5986464s/PlanOnly95.9694994s2planned0exec;
+sole focusedNoBuild2=1ordinaryPASS1extendedcausalFAIL23.2297020s,budgets3/8,
+allcleanup/1629source157DLLPDB/42originalZIPentries. Raw opened path EXACTLY equals
+extended intentDestination; compared path is raw[4..], other intent operands
+remain extended. Same failure confirms asymmetric spelling before equality fix.
+[Actual operands and originals](recovery/windows-path-equivalence-20261012/observe/manifest.json).
+Productpatch/GREEN UNRUN; use existing bounded canonical spelling helper only,
+mandatory identity/hash/authority/reparse/race/unknown-path guards unchanged.
+Reboot interrupted no new build/runtime; all historical outcomes remain intact.
 ## T068 Windows path equivalence — actual operand observation WIP, 2026-10-12
 
 Coordinator accepted93ffa98/29PASS1extendedProductFAIL and authorized narrow

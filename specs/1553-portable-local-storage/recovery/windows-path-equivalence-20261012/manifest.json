@@ -1,0 +1,250 @@
+{
+  "SchemaVersion": 1,
+  "TrackedTask": "#1553/T068 Windows path equivalence",
+  "WorkingBranch": "1553-storage-migration-windows-f18-20261011T235650Z",
+  "State": "WIP",
+  "Stages": [
+    {
+      "Stage": "observe",
+      "Manifest": "observe/manifest.json",
+      "CompiledSource": "00764cf90bdc96c93c1c4c922a3bc25a918ee4d0",
+      "Passed": 1,
+      "Failed": 1
+    }
+  ],
+  "Archives": [
+    {
+      "Path": "observe/prepare-original.zip",
+      "Bytes": 202910,
+      "SHA256": "bd399c07ad0ec6226b9c387727f91f573ae8cbb62264470bd990aabe34a6c3bc",
+      "Entries": [
+        {
+          "Path": "runner/Build-integration.log",
+          "Bytes": 80783,
+          "SHA256": "cda371db96eec053c1293d330f323adaa07662e5faec2a5f5180e8a733c06c51"
+        },
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1769887,
+          "SHA256": "53f41abb17700e28507b958ca7b3fa2deffabd67017c82b8983d224cd6508aaf"
+        },
+        {
+          "Path": "runner/owned-process-5163005a46c342599c5b8562e15a5b77.json",
+          "Bytes": 259,
+          "SHA256": "962b0da0df8a09784a49b9e1e7762ba8024df441bf87ffb7af504d3f1b3e3e24"
+        },
+        {
+          "Path": "runner/owned-process-7de519f80fe1432ab689e434f8c6cd4e.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-7f1874d4f64849ab982121f793aefeba.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-94e3ef460bb44bbbb3a6573ff40568c3.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-ee0ab1f8c2024857889b0b52ff28544f.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 1234,
+          "SHA256": "52082362be0cb280a462e4bde6dc48431c98c88dcc9670f43b4343b7746082fd"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1568,
+          "SHA256": "9fdbe4344a78c9ee4c3f981924d727edfb0e95eeebea0c68a6d9be9781231538"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2476,
+          "SHA256": "3667d7ae86c6a8a76f91689fb59d145e4c51b244f40722e2c12be5a92526a675"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 1409,
+          "SHA256": "b0df21a9e8a9f199849a5576bc9b6cf052c0bf44ebe8ab65b7c59cd722a2081a"
+        }
+      ]
+    },
+    {
+      "Path": "observe/actual-original.zip",
+      "Bytes": 197229,
+      "SHA256": "917a9341c65f5090d14597a7ad9837dc0ca58f181be256c21451b4d345951592",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1695729,
+          "SHA256": "883e6dd45687799c75be998b892d3a524527ce14b62f823c4e0bb64b01c5d7c0"
+        },
+        {
+          "Path": "runner/native-original-six-path-causal-windows-integration-001.trx",
+          "Bytes": 14914,
+          "SHA256": "291f3ad7782afe1d180e5c1b722de66305e88bee0f591779214db469382fe6b7"
+        },
+        {
+          "Path": "runner/owned-process-2253f6b3d3b6409ab544801f47adb94a.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-71d5efecb63b4df4b29d754bba050ea0.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-881045b474f047cc86e965960996e42a.json",
+          "Bytes": 650,
+          "SHA256": "e5a846d02aee9f48b711afccc9a99aeb0c7a61ae2441cf35fffe8081bcd5a98c"
+        },
+        {
+          "Path": "runner/owned-process-c523edc1a7a04f3a883ca100aa444c10.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-de02fb64ba9c46cc80ba73e365e62b8d.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 1233,
+          "SHA256": "cc7a4532eb727b1a2feaa195565092a0b2e7188d1d8990444ca4e7feff9aa553"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1451,
+          "SHA256": "ba75a899f43bc6fb7ee86bcf652c7ad63e844f52ff411116a0d527349a43a0f6"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2469,
+          "SHA256": "6278290727fa95dbfdc55d1d462639d1be27883a43e5b7e0f6d3cccd350c814c"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 174,
+          "SHA256": "d03b11d1b7977319368a4f961ebe394323a9ca6d1278aa7abcc93436c2a675a7"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 6915,
+          "SHA256": "417590aeef58521e7e9576b647f0bcd02d17b63bcb7792458729864bd3dc5467"
+        }
+      ]
+    },
+    {
+      "Path": "observe/execution-provenance.zip",
+      "Bytes": 583484,
+      "SHA256": "a49bf5b9de6aeed28c3e37d5f895d40f5d8d8d39469a0b05aa5390d9c042d384",
+      "Entries": [
+        {
+          "Path": "path-inputs.py",
+          "Bytes": 5135,
+          "SHA256": "62bb2d15d7f657e45bd9383bb92d7e1391df3678f32a8d53aaed40eadf7c2d57"
+        },
+        {
+          "Path": "freeze-path.py",
+          "Bytes": 7077,
+          "SHA256": "bc9b09d88277d98002146aef547691030eec65b710c34637dd427e63c0824a87"
+        },
+        {
+          "Path": "run-path-observe-phase.ps1",
+          "Bytes": 4432,
+          "SHA256": "0c988d8e24a058d8de0435ced878aaea5884b8134bf7a77d2758962ad2bf9517"
+        },
+        {
+          "Path": "evidence/path-observe-config.json",
+          "Bytes": 605,
+          "SHA256": "8967c9306bbc70b26507424de38be60d1f36c6635463be22e85cfa3e40177143"
+        },
+        {
+          "Path": "evidence/path-observe-source-review.json",
+          "Bytes": 189,
+          "SHA256": "10bd1cde88cced93bd61f644fb528b697892c473f88cd8dd9402309d4c4f713e"
+        },
+        {
+          "Path": "evidence/path-observe-inputs-before-prepare.json",
+          "Bytes": 480514,
+          "SHA256": "ee4aefc48e4c4f49e0837b1541c516a98c5c509f412f93e84beca487415e5141"
+        },
+        {
+          "Path": "evidence/path-observe-inputs-before-actual.json",
+          "Bytes": 481788,
+          "SHA256": "fac4dd8c30a8def0d519eda70cf2a89eb5a59ad50c9770131af5d8c9805a3444"
+        },
+        {
+          "Path": "evidence/path-observe-inputs-after-actual.json",
+          "Bytes": 481403,
+          "SHA256": "5a4fe2d9afedc244f33609cf6612ab56ad90f654c56e1d38fc4821a8c6c74764"
+        },
+        {
+          "Path": "evidence/path-observe-prepare-gate.json",
+          "Bytes": 741,
+          "SHA256": "5081f2dba8b0dd7d93797462d4a26f871569c484d4da705611749f87ef4b0b61"
+        },
+        {
+          "Path": "evidence/path-observe-post-run.json",
+          "Bytes": 999,
+          "SHA256": "87a158bd3a452f3b58b087deafb67c75662ec66bd0870bac3a5b2ad6a00177bc"
+        },
+        {
+          "Path": "evidence/post-reboot-recovery-20261012T0151.json",
+          "Bytes": 3931,
+          "SHA256": "2692a6dddaf07c86fdff47f8b8c76083168334328de807d592bbe5ad0dfe4e76"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/ReversibleFilePublication.cs",
+          "Bytes": 72796,
+          "SHA256": "872fba57ba7a87dc944541ac753212ef5c89cb21288c211540b9ea82c3c8614d"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+          "Bytes": 17671,
+          "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.cs",
+          "Bytes": 12103,
+          "SHA256": "c2da7ea7eaa91bbba5cc1e93a7731f0bc9b0d76781fa09fee142c3a442bbb609"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.Windows.cs",
+          "Bytes": 17903,
+          "SHA256": "ed91b90a10b98469c3c411b09f3db31b1a2391c52d3ec211676247b7877bc5f3"
+        },
+        {
+          "Path": "repo/tests/categories.json",
+          "Bytes": 1746189,
+          "SHA256": "727c180dafd5cbb0c64caa39a404d03b666c2cb7bc88946bc306c81c1f6c75cc"
+        }
+      ]
+    }
+  ],
+  "FreshProcessColdRestartQualified": false,
+  "PreviousHistory": "../windows-browser-protocol-bom-20261012/manifest.json"
+}
