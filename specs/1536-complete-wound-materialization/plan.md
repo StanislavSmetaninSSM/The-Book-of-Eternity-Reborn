@@ -9,8 +9,74 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (FINDING2 SOURCE CLOSED; TYPED RETRY3 SOURCE MIDPOINT WIP; REAL CONTROLS/LOCATION3 UNWRITTEN; 4 UNWRITTEN)
+## Current T070 first vertical — 2026-10-12 (FINDING2 CLOSED; TYPED3 STATIC READBACK COHERENT; FINDING4 RECORD/PUBLICATION SOURCE MIDPOINT WIP; CONTROLS UNWRITTEN)
 
+Typed3 midpoint publishedaacc1ad228b9a189d693a5d20956da3e597b6598; ROOT verified exact remote/clean
+primary and570-file GitHub-only selected recovery/all37 connected paths. Actual retained
+Astra XHigh focused typed3 production-source readback found no confirmed Important/Critical
+defect: real opportunity/input provenance, issued-command capture before revocation,
+BEFORE-staging constraints, original obligation lifetime and legacy branch are statically
+coherent. Full SOURCE remains held for finite MAIN-GM full-resubmission controls, bounded
+LOCATION packet handling/affected legacy selection, and finding4. The proposed rollback-to-
+worker draft bridge was withdrawn after actual caller tracing: full wound resubmission uses
+the MAIN-GM repair route. No such bridge or new worker protocol is added.
+
+Current stopped finding4 SOURCE midpoint adds one closed client-private local completion
+record at game_state/wounds/mortal_qte_decision_publication.json. Only the existing taken
+validated common-plan publisher constructs its payload. It binds physical generation,
+ACTUAL N43 session/request/token/turn, exact original manifest/authority hashes, the existing
+QTE receipt/decision/operation fingerprints, signed resource-quartet before digests and the
+exact serialized published fixed mechanical footprint plus consumed command inventory.
+Domain-separated SHA256 is local checkpoint integrity, not a new issuer/key or anti-owner
+scheme. It excludes its own bytes and PreparedFingerprint; no new receipt/ID/allocation.
+
+For completed Mortal decision plans, ALL prepared common writes/deletes and the new record
+are published in ONE existing PublishLocalFilesAsync batch, with exact current before-images,
+committed-disposition requirement and byte-exact member readback. Prepared JSON uses the
+same pretty UnsafeRelaxed UTF8/BOM representation as the existing normalizer. Pending/other
+ordinary publication paths retain their existing writer. Retained committed changes support
+SAME-batch compensation including the record: current bytes must be the known before or
+published after-image; UNKNOWN bytes refuse. Prior record bytes are restored with the other
+members. Top-level accepted-turn post-normalization failure invokes this compensation before
+its existing remaining baseline restoration. No separate postcommit record writer.
+
+Read-only genuine adapter exact-decision classification now precedes original resource-
+quartet continuity and command staging. Only a validated current exact receipt plus matching
+record, unchanged actual original N43/physical generation, complete fixed current mechanical
+footprint, original quartet digests, consumed command inventory and no new raw command may
+select the recorded completed quartet. Receipt/record presence alone never waives continuity.
+New decision admission requires the marker itself byte-exact to its officially observed
+before-image. Later ordinary owner/effect/no-new-work checks remain. Record before-images,
+touched path, normalizer rollback inventory, fixed feature-private target classification and
+client-owned output classification are connected. Current signed presence adds this exact
+optional path (22); existing16/18/19/21 ordinary readers stay supported without granting
+unobserved marker absence. No normal SaveLoad/archive transport change; new generation/source
+makes the old record inert. No copied/re-signed original snapshot, key or broad storage protocol.
+
+This is uncompiled/unaccepted connected SOURCE WIP, not a runtime completion guarantee.
+Necessary next source/API review: exact replay common assembly must preserve mechanics/record
+and avoid re-executing original mechanical work; direct publication and outer failure/recovery
+paths must prove complete compensation. Finite record/presence/parser/current-byte/resource-
+work controls, MAIN-GM real repair round-trips, bounded LOCATION packet and exact affected
+legacy selections remain UNWRITTEN/UNRUN. No new test/category/selector was added in this
+midpoint. Existing static selections remain preparation17 methods/44 cases/8 descriptors/
+default30 and remainder15/42/6/default20, excluding two causal Facts; catalog707/11543 is
+static, not fresh discovery. Required final inventory will be updated when controls are authored.
+
+NONE4010 and CREATEc7 proper causal REDs remain independently evidence accepted: each1
+executed/0 PASS/1 FAIL after completed actual N43. Producer1b23 executed/22 PASS/1 FAIL and
+projection4d4 actual/28 executed/26 PASS/2 FAIL remain separate and unchanged. Protected
+ce955/NONE/CREATE/projection Facts, selectors/global CI, old packets and every checkbox are
+unchanged. Build/discovery/catalog/runtime/complete SOURCE gate remain PENDING/UNRUN.
+Baseline NONE/CREATE first GREENs follow the complete finite four-finding SOURCE gate and
+fresh preparation; later pending/consumed actual archive/newroot/freshprocess qualification
+must not hold those first runs. Full consumer/T070/FR-063/parent/#1536 remain OPEN.
+
+Mutations STOPPED at this coherent record/publication/continuity SOURCE midpoint for immediate
+ROOT WIP publication/recovery before remaining finite source/control authoring. No project
+execution/build/commit/push by the sole writer.
+
+Historical typed3 source midpoint (focused production-source readback supersedes pending):
 Class/narration midpoint publisheda5afe49700411a0d6996aca333c66da1d7433488; ROOT verified
 exact remote/clean primary and569-file selected GitHub-only recovery/all36 connected paths.
 Actual retained Astra XHigh focused a5 SOURCE verdict ACCEPTED the class2 correction,

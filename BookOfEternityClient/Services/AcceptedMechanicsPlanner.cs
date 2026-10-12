@@ -4671,6 +4671,7 @@ internal static partial class AcceptedMechanicsPlanner
         }
         if (ownerCompanionAfterImages.ContainsKey(MortalWoundOpportunityReceiptState.StatePath))
         {
+            touched.Add(MortalQteDecisionPublication.StatePath);
             var mortalControls = input.WoundCommands is not null
                 ? new[] { MortalWoundOpportunityAdapter.DecisionPath, AcceptedMechanicsPlan.WoundCommandPath }
                 : new[] { MortalWoundOpportunityAdapter.DecisionPath };

@@ -1852,6 +1852,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     issues.AddRange(spiritualOutput.Issues);
                 if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
                 {
+                    await boundNormalizer.CompensateMortalQteCommonPublicationAsync();
                     await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
                     if (spiritualReceipt is not null)
                         AcceptedMechanicsPlanAuthority.FailSpiritualPublication(fs, writeLease, spiritualReceipt);
@@ -1879,7 +1880,10 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 try
                 {
                     if (spiritualPreflight is null || spiritualWritesStarted)
+                    {
+                        await boundNormalizer.CompensateMortalQteCommonPublicationAsync();
                         await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
+                    }
                 }
                 catch (CoordinatedStatePublicationUncertainException uncertain)
                 {

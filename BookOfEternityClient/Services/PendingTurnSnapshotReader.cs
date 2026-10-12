@@ -39,10 +39,13 @@ internal static class PendingTurnSnapshotPathPresenceV1
             .Concat([SpiritualWoundOpportunityReceiptState.StatePath])
             .ToArray());
 
-    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
+    private static readonly ReadOnlyCollection<string> BeforeCompletionClosedLogicalPaths =
         Array.AsReadOnly(BeforeMortalClosedLogicalPaths
             .Concat([MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath])
             .ToArray());
+
+    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
+        Array.AsReadOnly(BeforeCompletionClosedLogicalPaths.Concat([MortalQteDecisionPublication.StatePath]).ToArray());
 
     internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;
     /// <summary>
@@ -57,6 +60,8 @@ internal static class PendingTurnSnapshotPathPresenceV1
     internal static IReadOnlyList<string> PreviousLogicalPaths => PreviousClosedLogicalPaths;
     // Retains the existing unrelated-reader contract; it grants no new Mortal absence.
     internal static IReadOnlyList<string> BeforeMortalLogicalPaths => BeforeMortalClosedLogicalPaths;
+    // Prior original turns remain readable; this grants no completion-marker absence.
+    internal static IReadOnlyList<string> BeforeCompletionLogicalPaths => BeforeCompletionClosedLogicalPaths;
 
     internal static Dictionary<string, bool> Create(
         IReadOnlyDictionary<string, string> files,
@@ -508,9 +513,12 @@ internal static class PendingTurnSnapshotReader
             .ToHashSet(StringComparer.Ordinal);
         var beforeMortal = PendingTurnSnapshotPathPresenceV1.BeforeMortalLogicalPaths
             .ToHashSet(StringComparer.Ordinal);
+        var beforeCompletion = PendingTurnSnapshotPathPresenceV1.BeforeCompletionLogicalPaths
+            .ToHashSet(StringComparer.Ordinal);
         var actual = manifest.OriginalPathPresenceV1.Keys
             .ToHashSet(StringComparer.Ordinal);
         if (!((manifest.OriginalPathPresenceV1.Count == expected.Count && actual.SetEquals(expected)) ||
+              (manifest.OriginalPathPresenceV1.Count == beforeCompletion.Count && actual.SetEquals(beforeCompletion)) ||
               (manifest.OriginalPathPresenceV1.Count == beforeMortal.Count && actual.SetEquals(beforeMortal)) ||
               (manifest.OriginalPathPresenceV1.Count == previous.Count && actual.SetEquals(previous)) ||
               (manifest.OriginalPathPresenceV1.Count == legacy.Count && actual.SetEquals(legacy))))

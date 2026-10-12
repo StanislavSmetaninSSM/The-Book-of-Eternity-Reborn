@@ -236,7 +236,7 @@ public partial class GameEngine
     private static bool IsMortalQtePrivateCanonicalIssue(ValidationIssue issue)
     {
         if (issue.Category == IssueCategory.ClientOwnedSurface) return true;
-        var privatePaths = new[] { MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath,
+        var privatePaths = new[] { MortalQteDecisionPublication.StatePath, MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath,
             WoundIdentityState.StatePath, WoundHistoryState.HistoryPath, WoundCarrierCatalog.PlayerPath,
             WoundCarrierCatalog.NpcPath, WoundCarrierCatalog.EnemiesPath, WoundCarrierCatalog.AlliesPath,
             WoundCarrierCatalog.AfterlifeProfilesPath, EffectIdentityState.StatePath, EffectCarrierCatalog.PlayerPath,

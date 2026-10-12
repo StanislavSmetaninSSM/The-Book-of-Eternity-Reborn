@@ -314,9 +314,36 @@ public partial class ValidationService
             pendingResolutionState = pendingResult.State;
         }
 
-        await ValidateResourceSnapshotContinuityAsync(
-            manifest,
-            issues, currentInputs);
+        var completedMortalReplay = false;
+        if (stageMortalQteDecision is not null && currentInputs is null && spiritualCapture is null && mortalCapture is null)
+        {
+            // Read-only classification precedes staging and original-quartet continuity.
+            // A current receipt alone cannot authorize changed canonical resource bytes.
+            try
+            {
+                var draft = await _fs.ReadFileAsync(writeLease, MortalWoundOpportunityAdapter.DecisionPath);
+                var narrative = await _fs.ReadFileAsync(writeLease, "output/narrative_response.json");
+                var scene = narrative is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(narrative.TrimStart('\uFEFF'),
+                    Configuration.SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "Mortal exact replay scene");
+                var classified = MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse(_fs, writeLease, draft,
+                    scene?["response"]?.GetValue<string>(), out var exact);
+                if (classified is { Success: true } && exact is not null)
+                {
+                    await MortalQteDecisionPublication.ValidateExactReplayAsync(_fs, writeLease, exact);
+                    completedMortalReplay = true;
+                }
+                else if (classified is not null && exact is null)
+                    await MortalQteDecisionPublication.ValidateUnchangedMarkerBeforeAsync(_fs, writeLease);
+            }
+            catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or DecoderFallbackException)
+            {
+                issues.Add(MortalWoundOpportunityAdapter.PrivateSourceIssue(new ValidationIssue(MortalQteDecisionPublication.StatePath,
+                    IssueSeverity.Error, failure.Message, "mortal_qte_completed_publication_invalid")));
+                return issues;
+            }
+        }
+        if (!completedMortalReplay)
+            await ValidateResourceSnapshotContinuityAsync(manifest, issues, currentInputs);
         var commands = ResourceAcceptedTurnInputComposer.Parse(commandJson);
         issues.AddRange(commands.Issues);
         var acceptedCommands = commands;
@@ -724,6 +751,7 @@ public partial class ValidationService
         }
         if (mortalReceipt is not null)
         {
+            beforePaths.Add(MortalQteDecisionPublication.StatePath);
             beforePaths.Add(MortalWoundOpportunityAdapter.DecisionPath);
             beforePaths.Add(AcceptedMechanicsPlan.WoundCommandPath);
             beforePaths.Add("output/narrative_response.json");

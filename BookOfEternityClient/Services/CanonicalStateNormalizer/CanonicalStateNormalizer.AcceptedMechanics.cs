@@ -1,12 +1,14 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 
 namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
+    private IReadOnlyList<CanonicalLocalFileChange>? _mortalQteCommittedChanges;
     internal abstract record AcceptedMechanicsNormalizationPreflight
     {
         internal sealed record NoPlan : AcceptedMechanicsNormalizationPreflight;
@@ -274,20 +276,42 @@ public partial class CanonicalStateNormalizer
                 writes.Keys,
                 deletePaths);
 
-        foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+        var mortalQtePublication = !plan.AwaitsPendingResolution &&
+            plan.OwnerCompanionAfterImages.ContainsKey(MortalWoundOpportunityReceiptState.StatePath);
+        if (mortalQtePublication)
         {
-            var publicationRoot = exactItemPublicationAfterImages.TryGetValue(
-                pair.Key,
-                out var exactItemRoot)
-                ? exactItemRoot
-                : pair.Value;
-            await WriteCanonicalFileAtomicAsync(
-                pair.Key,
-                publicationRoot.ToJsonString(JsonOpts));
+            var prepared = new List<CanonicalLocalFileChange>();
+            foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+            {
+                var root = exactItemPublicationAfterImages.TryGetValue(pair.Key, out var exactRoot) ? exactRoot : pair.Value;
+                prepared.Add(new(pair.Key, await _fs.ReadFileBytesAsync(_writeLease, pair.Key),
+                    MortalQteDecisionPublication.SerializePublicationRoot(root)));
+            }
+            foreach (var path in deletePaths)
+            {
+                if (writes.ContainsKey(path)) throw new InvalidDataException("A Mortal common member cannot be written and consumed together.");
+                prepared.Add(new(path, await _fs.ReadFileBytesAsync(_writeLease, path), null));
+            }
+            var completion = await MortalQteDecisionPublication.CreateAsync(_fs, _writeLease, plan, validated.Binding, prepared);
+            if (completion is not null)
+                prepared.Add(new(MortalQteDecisionPublication.StatePath,
+                    await _fs.ReadFileBytesAsync(_writeLease, MortalQteDecisionPublication.StatePath), completion));
+            _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, prepared));
+            _mortalQteCommittedChanges = prepared;
+            foreach (var change in prepared)
+            {
+                var actual = await _fs.ReadFileBytesAsync(_writeLease, change.RelativePath);
+                if (!ExactBytes(actual, change.After)) throw new InvalidDataException("Mortal common batch readback differs at " + change.RelativePath);
+            }
         }
-        foreach (var path in deletePaths)
+        else
         {
-            _fs.DeleteFile(_writeLease, path);
+            foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+            {
+                var publicationRoot = exactItemPublicationAfterImages.TryGetValue(pair.Key, out var exactItemRoot) ? exactItemRoot : pair.Value;
+                await WriteCanonicalFileAtomicAsync(pair.Key, publicationRoot.ToJsonString(JsonOpts));
+            }
+            foreach (var path in deletePaths) _fs.DeleteFile(_writeLease, path);
         }
 
         await ValidateAcceptedMechanicsPublicationAgreementAsync(
@@ -319,6 +343,27 @@ public partial class CanonicalStateNormalizer
         }
         return plan;
     }
+
+    internal async Task CompensateMortalQteCommonPublicationAsync()
+    {
+        if (_mortalQteCommittedChanges is not { } published) return;
+        var lease = _writeLease ?? throw new InvalidOperationException("Common compensation requires its original held lease.");
+        var restore = new List<CanonicalLocalFileChange>();
+        foreach (var change in published)
+        {
+            var current = await _fs.ReadFileBytesAsync(lease, change.RelativePath);
+            if (!ExactBytes(current, change.After) && !ExactBytes(current, change.Before))
+                throw new InvalidDataException("Mortal common compensation refuses unknown bytes at " + change.RelativePath);
+            restore.Add(new(change.RelativePath, current, change.Before));
+        }
+        _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(lease, restore));
+        foreach (var change in restore)
+            if (!ExactBytes(await _fs.ReadFileBytesAsync(lease, change.RelativePath), change.After))
+                throw new InvalidDataException("Mortal common compensation readback differs at " + change.RelativePath);
+        _mortalQteCommittedChanges = null;
+    }
+
+    private static bool ExactBytes(byte[]? left, byte[]? right) => left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
 
     private static IReadOnlyDictionary<string, JsonNode>
         CloneExactTreatmentItemPublicationAfterImages(

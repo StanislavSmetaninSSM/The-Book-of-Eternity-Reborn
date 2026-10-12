@@ -4929,6 +4929,7 @@ public partial class ValidationService
     private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
     {
         return MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
+               normalizedPath.Equals(MortalQteDecisionPublication.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(SpiritualWoundCaptureCheckpointState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(SpiritualWoundDecisionPendingState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(SpiritualWoundOpportunityReceiptState.StatePath, StringComparison.OrdinalIgnoreCase) ||
