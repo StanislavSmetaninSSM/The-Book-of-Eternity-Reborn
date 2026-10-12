@@ -1,3 +1,13 @@
+## T068 original Windows owner recipe bridge/a1 — bounded evidence accepted, 2026-10-12
+
+Actual independent gpt-6-astra/xhigh EVIDENCE PASS ata006185af37c6eb63f833552265b8b7b20b15031, no findings.
+`gm-main-bridge-native-windows` 3/3PASS/00:00:41.0058180;
+scope: Native Windows required bodies. Source/DLL/PDB/raw/cleanup and original budgets retained.
+[Reviewed originals](recovery/windows-owner-recipes-20261012/bridge/a1/manifest.json).
+Only this recipe accepted; subsequent recipes require their own PlanOnly/gates/evidence.
+No new code/runtime repeated. Parent #1553/T067/T068/T061–T065 remains OPEN.
+The following pending status for this same attempt is historical and superseded.
+
 ## T068 original Windows owner recipe bridge/a1 — PASS runtime, independent evidence pending, 2026-10-12
 
 `gm-main-bridge-native-windows` actual3PASS/0FAIL,
