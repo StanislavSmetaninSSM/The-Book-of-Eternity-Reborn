@@ -1,4 +1,4 @@
-## F04/F05 Windows browser protocol30 — exact BOM corrected, 29PASS1FAIL_EvidenceReviewPending_HOLD, 2026-10-12
+## F04/F05 Windows browser protocol30 — exact BOM corrected, reviewed29PASS1NativeProductFAIL_HOLD, 2026-10-12
 
 SOURCE PASS 6473dda217717b1d37500e215d701292ae5a77a6 by actual Astra XHigh; exact physical BOM removal/
 strictUTF8/unchanged product and all original assertions. Physical parser controls
@@ -15,7 +15,9 @@ neutralretention/journal+manifestabsence UNREACHED. Prefix equivalence source
 candidate: GetOpenedPath strips extended prefix, intent retains it, PathsEqual
 compares GetFullPath without symmetric normalization. Product proposal ONLY/no
 edit/runtime HOLD; native compared strings/intent image not exported.
-Independent EVIDENCE review pending. First2failurecarriers/F18PASS preserved;
+Actual Astra XHigh EVIDENCE/CAUSAL PRODUCT PROPOSAL PASS reviewed0dd05a9;
+38entries/30rows/pins/cleanup/DLLPDB GUID+source binding verified; categoryFAIL29/1.
+First2failurecarriers/F18PASS preserved;
 parentOPEN/same-processFresh/no UI/fullgame/coldrestart/performance claim.
 [Complete original evidence](recovery/windows-browser-protocol-bom-20261012/manifest.json).
 

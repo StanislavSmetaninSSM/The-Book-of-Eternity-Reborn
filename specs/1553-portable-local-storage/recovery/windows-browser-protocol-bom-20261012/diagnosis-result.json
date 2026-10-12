@@ -1,5 +1,5 @@
 {
-  "State": "NativeExtendedProductRecoveryFailure_SourceSupportedPrefixMismatch_ReviewPending_HOLD",
+  "State": "IndependentEvidenceAndCausalProductProposalPASS_NativeExtendedRecoveryFAIL_HOLD",
   "ActualResult": "29 PASS / 1 FAIL; all30executed; ordinary authentic6 fullyPASS; extended authentic6 production recoveryFAIL",
   "CompiledRuntime": "6473dda217717b1d37500e215d701292ae5a77a6",
   "Failure": {
@@ -44,5 +44,6 @@
   "F18Prior6PASSPreserved": true,
   "Parent1553": "OPEN",
   "FreshProcessColdRestartQualified": false,
-  "IndependentEvidenceDiagnosisReview": "PENDING"
+  "IndependentEvidenceDiagnosisReview": "PASS_EvidenceAndCausalProductProposalOnly",
+  "IndependentReview": "independent-review.json"
 }
