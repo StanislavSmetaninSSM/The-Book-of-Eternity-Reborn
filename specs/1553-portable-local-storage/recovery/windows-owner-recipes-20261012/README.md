@@ -35,3 +35,13 @@ Compile origins: {"integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c"}.
 Qualification: Portable component executed on Windows; native Windows qualification expressly excluded. Full immutable originals: `console/a1/manifest.json`.
 
 Independent actual gpt-6-astra/xhigh EVIDENCE PASS at `2b504bb0392d9d2d9ed4f7f73174bfac48cc1e3d` for `console/a1`, no actionable findings. Accepted scope remains: Portable component executed on Windows; native Windows qualification expressly excluded.
+
+## metadata/a1 — PASS runtime, independent evidence pending
+
+`gm-main-metadata-native-windows`: 32PASS/0FAIL, 32executed/32planned;
+PlanOnly 00:01:10.4753697 / zero execution; actual 00:00:19.2356370.
+Category/runner budgets 3/8minutes unchanged.
+Runtime checkout `5dfa9f03f47ba28e27649bb814034a83fcfe888a`, source1629 original +539 selected
+extra unit/Bridge/CrashHost pins, 290 DLL/PDB equal before/after.
+Compile origins: {"integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c", "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a", "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"}.
+Qualification: Native Windows required bodies. Full immutable originals: `metadata/a1/manifest.json`.
