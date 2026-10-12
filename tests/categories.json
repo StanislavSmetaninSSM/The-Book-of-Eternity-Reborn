@@ -2,6 +2,75 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-documentation",
+            "responsibility": "#1536 exact four GM documentation/example Facts after common NONE/CREATE wiring: two existing prompt guards across six actual surfaces, existing closed safe projection example, and one new closed public NONE/materialize/response+timestamp example guard with verbatim acquisition narration. Intentional narrow overlap with existing prompt/projection owners; examples prove authoring grammar only, not runtime/receipt/archive qualification.",
+            "excludes": "No full prompt/example/afterlife categories, previously qualified unrelated producer/projection runtime repeats, implementation claims in GM prose, fabricated source authority or archive/new-root/fresh-process proof.",
+            "changeHints": [
+                "CLI_API_Specification.md",
+                "CLI_Agent_Daemon_Specification.md",
+                "Rules/Block_CLI_QTE.txt",
+                "TaskGuides/CLI_Step_Main.txt",
+                "Examples/E_CLI_QTE_Offer.txt",
+                "Examples/example_validation_manifest.json",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs",
+                "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs"
+            ],
+            "related": [],
+            "timeoutMinutes": 2,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QtePhysicalOpportunityProjection_IsDocumentedAsClosedReadOnlyInput",
+                        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces"
+                    ]
+                },
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.QtePhysicalOpportunityProjectionExample_IsClosedSafeClientInput",
+                        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.QtePhysicalDecisionDraftExamples_UseOnlyClosedPublicFieldsAndVerbatimScene"
+                    ]
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "expectedSeconds": null
+        },
+        {
+            "id": "qte-physical-injury-consumer-worker-scope",
+            "responsibility": "#1536 exact worker-scope dependency: existing validation-repair default-template theory/two rows accepts only the additional literal Mortal decision draft output; one new scoped proposal Fact checks exact selected draft, pinned read-only public request/realm, private command/wound/history/receipt and foreign-output refusal, afterlife/spiritual isolation and missing-context refusal. Two methods/three cases; intentional overlap with the existing profile owner. Permission/component coverage only; no worker process/model call.",
+            "excludes": "No whole worker category, output/** broadening, saved-profile auto-expansion, client canonical/command authority, new access/provider/model call, afterlife contract change or live consumer/archive qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+                "BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs",
+                "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+                "BookOfEternityClient.Tests/GmWorkerProfileTemplateTests.cs",
+                "BookOfEternityClient.Tests/GmWorkerValidationRepairTests.cs"
+            ],
+            "related": [],
+            "timeoutMinutes": 1,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmWorkerProfileTemplateTests.ValidationRepairTemplates_AllowExactNarrativeWithoutOtherOutputAccess",
+                        "BookOfEternityClient.Tests.GmWorkerValidationRepairTests.MortalQteDecisionRepair_ProposesOnlyExactDraftWithReadOnlyPublicContext"
+                    ]
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "expectedSeconds": null
+        },
+        {
             "id": "qte-physical-injury-consumer-common-controls",
             "responsibility": "#1536 source-aware component common publication controls: four theories/11 rows. Genuine actual QTE42 followed by actual StagePlayerTurn43/official Reader, held-source validation and existing common normalizer. NONE/CREATE first publication and retained genuine snapshot exact/changed replay preserve once-only durable state and client IDs. Staged draft/scene/foreign-command drift refuses old cache/guarded publication; legal scene resubmission issues a new common fingerprint. Controlled actual receipt-member publication failure proves whole-tree rollback and exact revalidation/retry once. Source severity/location bounds refuse before publication. All component calls are labelled; full real ProcessPlayerTurn NONE/CREATE proof belongs to separate unchanged causal Facts.",
             "excludes": "No fabricated valid occurrence/receipt/binding/hash, copied or resigned original snapshot, new allocator/writer/harness, component call labelled full engine proof, archive/new-root/fresh-process qualification, passing producer/projection broad repeats, Windows/C5/journal/provider/model/aggregate checks.",

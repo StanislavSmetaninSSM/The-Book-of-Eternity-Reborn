@@ -1180,14 +1180,14 @@
       "description": "Closed optional five-field source declaration with two equal-damage branches carrying different explicit maxima; selected positive finalized health source publishes a pending occurrence in the common transaction. N+1 decision/consumer is outside this worked example.",
       "validationKind": "production-validator",
       "validationRoute": "ExampleDocumentationValidationTests.UnifiedResourceMaterializationManifest_CoversMortalAndAfterlifeWorkedFamilies -> QtePhysicalInjuryContract.ValidateRawOffer/ValidateCanonicalHealth + QteSceneService.QteOffer + ResourceAcceptedTurnInputComposer.Parse",
-      "coverageLimit": "The worked grammar/canonical health binding/resource commands/typed retention are checked here; genuine ordinary source/finalized health/occurrence publication is separately covered by GameEngineTurnLifecycleTests.QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence and QtePhysicalInjuryProducer_* controls. N+1 wound decision/consumer remains pending.",
+      "coverageLimit": "The worked grammar/canonical health binding/resource commands/typed retention are checked here; genuine ordinary source/finalized health/occurrence publication is separately covered by GameEngineTurnLifecycleTests.QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence and QtePhysicalInjuryProducer_* controls. The ordinary single NONE/materialize draft is covered separately; source/example grammar does not qualify full consumer/archive behavior.",
       "requiredText": [
         "mortal_qte_physical_injury_declaration_v1",
         "\"physicalInjury\"",
         "\"maximumSeverityRank\": 1",
         "\"maximumSeverityRank\": 3",
         "mortal_qte_terminal_health_damage_v1",
-        "N+1 wound decision/consumer remains pending"
+        "single closed NONE/materialize draft"
       ]
     },
     {
@@ -2849,6 +2849,18 @@
     "file": "E_CLI_QTE_Offer.txt",
     "inputSurface": "input/turn_request.json.woundOpportunities",
     "validationRoute": "ExampleDocumentationValidationTests.QtePhysicalOpportunityProjectionExample_IsClosedSafeClientInput",
-    "coverageLimit": "Closed public JSON grammar and explicit example maximum/cause/location subset only; official snapshot, complete canonical batch and browser proof behavior are covered by the focused projection controls. N+1 wound decision/consumer remains pending."
+    "coverageLimit": "Closed public JSON grammar and explicit example maximum/cause/location subset only; official snapshot, complete canonical batch and browser proof behavior are covered by the focused projection controls. The ordinary single NONE/materialize draft is covered separately; source/example grammar does not qualify full consumer/archive behavior."
+  },
+  "qtePhysicalDecisionDraftCoverage": {
+    "contractId": "mortal_qte_physical_decision_draft_v1",
+    "file": "E_CLI_QTE_Offer.txt",
+    "outputSurface": "output/mortal_wound_decisions.json",
+    "examples": [
+      "mortal_qte_physical_none_decision_v1",
+      "mortal_qte_physical_materialize_decision_v1",
+      "mortal_qte_physical_materialize_scene_v1"
+    ],
+    "validationRoute": "ExampleDocumentationValidationTests.QtePhysicalDecisionDraftExamples_UseOnlyClosedPublicFieldsAndVerbatimScene",
+    "coverageLimit": "Closed public JSON grammar, explicit severity/location subset and verbatim acquisition narration only. Real ordinary NONE/CREATE acceptance, common receipt/wound publication and component replay/rollback controls are selected separately; actual save-load/new-root/fresh-process remains unqualified."
   }
 }

@@ -41,6 +41,47 @@ public sealed partial class ExampleDocumentationValidationTests
             manifest["qtePhysicalOpportunityProjectionCoverage"]!["validationRoute"]!.GetValue<string>().Split('.').Last());
     }
 
+    [Fact]
+    public void QtePhysicalDecisionDraftExamples_UseOnlyClosedPublicFieldsAndVerbatimScene()
+    {
+        var safe = Assert.Single(ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_opportunity_projection_v1")
+            ["woundOpportunities"]!.AsArray())!.AsObject();
+        var none = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_none_decision_v1");
+        var create = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_materialize_decision_v1");
+        var scene = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_materialize_scene_v1");
+        Assert.Equal(new[] { "response", "timestamp" }, scene.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.True(DateTimeOffset.TryParse(scene["timestamp"]!.GetValue<string>(), out _));
+        Assert.Equal(new[] { "decision", "opportunityRef" }, none.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.Equal(new[] { "decision", "opportunityRef", "proposal", "woundRef" }, create.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.Equal("none", none["decision"]!.GetValue<string>());
+        Assert.Equal("materialize", create["decision"]!.GetValue<string>());
+        Assert.Equal(safe["opportunityRef"]!.GetValue<string>(), none["opportunityRef"]!.GetValue<string>());
+        Assert.Equal(safe["opportunityRef"]!.GetValue<string>(), create["opportunityRef"]!.GetValue<string>());
+        var proposal = create["proposal"]!.AsObject();
+        Assert.Equal(new[] { "classification", "complications", "consequenceDefinitions", "display", "recovery", "severity", "treatment" },
+            proposal.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.Equal("I", proposal["severity"]!.GetValue<string>());
+        Assert.Equal("III", safe["maximumSeverity"]!.GetValue<string>());
+        var kind = proposal["classification"]!["locationProfile"]!["kind"]!.GetValue<string>();
+        Assert.Contains(kind, safe["safeContext"]!["allowedLocationKinds"]!.AsArray().Select(value => value!.GetValue<string>()));
+        Assert.Contains(proposal["display"]!["acquisitionNarration"]!.GetValue<string>(), scene["response"]!.GetValue<string>(), StringComparison.Ordinal);
+        var forbidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        { "woundId", "transitionId", "owner", "carrierPath", "source", "snapshotToken", "sessionId", "requestId",
+            "binding", "seal", "profileKey", "maximumSeverityRank", "recoveryAnchor", "deteriorationAnchor", "afterImage" };
+        Check(create);
+        var manifest = JsonNode.Parse(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", "example_validation_manifest.json")))!;
+        Assert.Equal(nameof(QtePhysicalDecisionDraftExamples_UseOnlyClosedPublicFieldsAndVerbatimScene),
+            manifest["qtePhysicalDecisionDraftCoverage"]!["validationRoute"]!.GetValue<string>().Split('.').Last());
+        Assert.Equal(MortalWoundOpportunityAdapter.DecisionPath, manifest["qtePhysicalDecisionDraftCoverage"]!["outputSurface"]!.GetValue<string>());
+
+        void Check(JsonNode? node)
+        {
+            if (node is JsonObject root)
+                foreach (var field in root) { Assert.DoesNotContain(field.Key, forbidden); Check(field.Value); }
+            else if (node is JsonArray array) foreach (var child in array) Check(child);
+        }
+    }
+
     private static readonly JsonDocumentOptions DocumentOptions = new()
     {
         AllowTrailingCommas = true,

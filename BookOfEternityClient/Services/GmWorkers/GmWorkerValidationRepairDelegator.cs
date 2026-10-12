@@ -301,6 +301,7 @@ public sealed class GmWorkerValidationRepairDelegator
         string? expectedSessionGeneration,
         SpiritualWoundContinuationRequest? continuation)
     {
+        GmWorkerTaskPacketBuilder.RefuseMortalQtePrivateSourceRepair(prioritizedErrors);
         var targetPaths = continuation is not null
             ? GmWorkerTaskPacketBuilder.ResolveSpiritualContinuationPaths(continuation)
             : prioritizedErrors
@@ -316,6 +317,9 @@ public sealed class GmWorkerValidationRepairDelegator
             targetPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) ||
             (continuation is null && prioritizedErrors.Any(IsAfterlifeActorMaterializationIssue));
         var contextPaths = targetPaths.AsEnumerable();
+        var requiresMortalQteDecision = targetPaths.Contains(MortalWoundOpportunityAdapter.DecisionPath, StringComparer.Ordinal);
+        if (requiresMortalQteDecision)
+            contextPaths = contextPaths.Concat(new[] { "input/turn_request.json", "game_state/meta/soul_state.json" });
         if (requiresCharacteristicAuthority)
             contextPaths = contextPaths.Append(MortalCharacteristicAuthorityContract.StatePath);
         if (requiresAfterlifeRealmAuthority)
@@ -360,6 +364,13 @@ public sealed class GmWorkerValidationRepairDelegator
             foreach (var path in contextPaths.Distinct(GmWorkerContractValidator.CanonicalPathComparer))
             {
                 var content = await _fs.ReadFileBytesAsync(writeLease, path);
+                if (requiresMortalQteDecision && path == "game_state/meta/soul_state.json")
+                {
+                    var soul = Core.StrictJsonAuthority.Deserialize<System.Text.Json.Nodes.JsonObject>(DecodeUtf8(content) ?? string.Empty,
+                        Configuration.SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "Mortal decision repair realm");
+                    if (soul?["currentRealm"]?.GetValue<string>() is not ("Mortal World" or "mortal_world"))
+                        throw new InvalidOperationException("Mortal QTE decision repair requires the current Mortal realm.");
+                }
                 if (path == MortalCharacteristicAuthorityContract.StatePath)
                 {
                     var authorityJson = DecodeUtf8(content);

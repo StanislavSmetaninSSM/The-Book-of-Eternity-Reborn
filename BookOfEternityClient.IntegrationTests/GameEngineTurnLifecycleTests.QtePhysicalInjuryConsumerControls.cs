@@ -5,6 +5,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -179,6 +180,26 @@ public sealed partial class GameEngineTurnLifecycleTests
         var before = await CaptureMortalComponentImagesAsync();
         var issues = await ValidateMortalDecisionComponentAsync(component.Engine);
         Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error);
+        var semantic = Assert.Single(issues.Where(issue => issue.FilePath == MortalWoundOpportunityAdapter.DecisionPath &&
+            issue.Message.StartsWith("woundDecisions[0].proposal", StringComparison.Ordinal)));
+        Assert.NotNull(semantic.Code);
+        Assert.NotNull(semantic.RepairHint);
+        var profile = GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate();
+        string generation;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync()) generation = _fs.GetOrCreateSessionGeneration(lease);
+        var repair = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(profile, "actual_semantic_decision_repair",
+            new WorkerTurnReference { SessionId = component.Snapshot.SessionId, RequestId = component.Snapshot.RequestId,
+                TurnNumber = component.Snapshot.TurnNumber }, [semantic],
+            new Dictionary<string, string>
+            {
+                [MortalWoundOpportunityAdapter.DecisionPath] = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+                    (await _fs.ReadFileBytesAsync(MortalWoundOpportunityAdapter.DecisionPath))!)),
+                ["input/turn_request.json"] = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+                    (await _fs.ReadFileBytesAsync("input/turn_request.json"))!)),
+                ["game_state/meta/soul_state.json"] = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+                    (await _fs.ReadFileBytesAsync("game_state/meta/soul_state.json"))!))
+            }, "2026-10-12T00:00:00Z", generation);
+        Assert.Equal(new[] { MortalWoundOpportunityAdapter.DecisionPath }, repair.AllowedProposalPaths);
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync()) Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
         Assert.False(_fs.FileExists(AcceptedMechanicsPlan.WoundCommandPath));
         foreach (var image in before) Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(image.Key));

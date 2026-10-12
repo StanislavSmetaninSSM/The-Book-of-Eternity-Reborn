@@ -19,6 +19,7 @@ internal static class MortalWoundOpportunityAdapter
     private const int MaximumAcceptedEventOrdinal = 159;
     private const int MaximumReadableLength = 2_000;
     internal const string DecisionPath = "output/mortal_wound_decisions.json";
+    internal const string PrivateSourceIssueSection = "mortal_qte_private_source";
     private const string EmptyReceiptJson = "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}";
     private const string EmptyHistoryJson = "{\"schemaVersion\":1,\"nextOrdinal\":1,\"transitions\":[]}";
 
@@ -35,17 +36,28 @@ internal static class MortalWoundOpportunityAdapter
     {
         exactReplay = null;
         fs.EnsureCanonicalWriteLeaseActive(lease);
+        PendingTurnSnapshotReadAuthority snapshot;
+        JsonArray offered;
         try
         {
-            var snapshot = MortalQteWoundOpportunityProjection.ReadSnapshot(fs, lease);
-            var offered = MortalQteWoundOpportunityProjection.Project(snapshot);
+            snapshot = MortalQteWoundOpportunityProjection.ReadSnapshot(fs, lease);
+            offered = MortalQteWoundOpportunityProjection.Project(snapshot);
+        }
+        catch (Exception error) when (error is JsonException or InvalidDataException or DecoderFallbackException)
+        {
+            return SourceFailure(error);
+        }
+        JsonElement draft;
+        JsonElement reference;
+        try
+        {
             if (offered.Count == 0)
             {
                 if (rawDraft is null) return null;
                 throw new InvalidDataException("No signed physical QTE opportunity permits a decision draft.");
             }
             if (rawDraft is null) throw new InvalidDataException("The signed physical QTE opportunity requires one decision draft.");
-            var draft = StrictJsonAuthority.Deserialize<JsonElement>(rawDraft,
+            draft = StrictJsonAuthority.Deserialize<JsonElement>(rawDraft,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "Mortal wound decision draft");
             if (draft.ValueKind != JsonValueKind.Object ||
                 !draft.TryGetProperty("decision", out var decision) || decision.ValueKind != JsonValueKind.String)
@@ -58,7 +70,7 @@ internal static class MortalWoundOpportunityAdapter
             };
             if (draft.EnumerateObject().Count() != fields.Count ||
                 draft.EnumerateObject().Any(property => !fields.Contains(property.Name)) ||
-                !draft.TryGetProperty("opportunityRef", out var reference) || reference.ValueKind != JsonValueKind.String ||
+                !draft.TryGetProperty("opportunityRef", out reference) || reference.ValueKind != JsonValueKind.String ||
                 reference.GetString() != offered[0]!["opportunityRef"]!.GetValue<string>())
                 throw new InvalidDataException("The exact decision fields and signed offered reference are required.");
             if (decision.GetString() == "materialize" &&
@@ -67,10 +79,18 @@ internal static class MortalWoundOpportunityAdapter
                  draft.GetProperty("proposal").ValueKind != JsonValueKind.Object))
                 throw new InvalidDataException("Materialize requires a local woundRef and one proposal object.");
 
+        }
+        catch (Exception error) when (error is JsonException or InvalidDataException)
+        {
+            return Failure(new[] { new ValidationIssue(DecisionPath, IssueSeverity.Error,
+                "Mortal wound decision refused: " + error.Message, "mortal_wound_decision_draft_invalid") });
+        }
+        try
+        {
             var signed = MortalWoundOccurrenceState.Parse(
                 MortalQteWoundOpportunityProjection.ReadObservedRoot(snapshot, MortalWoundOccurrenceState.StatePath),
                 MortalWoundOccurrenceState.StatePath);
-            if (!signed.IsValid || signed.State is null) return Failure(signed.Issues);
+            if (!signed.IsValid || signed.State is null) return Failure(signed.Issues.Select(PrivateSourceIssue));
             var occurrence = signed.State.Occurrences.Single(row => row.OpportunityRef == reference.GetString());
             var correlation = JsonSerializer.SerializeToElement(new
             {
@@ -78,15 +98,36 @@ internal static class MortalWoundOpportunityAdapter
                 occurrence.Owner, occurrence.Domain, occurrence.ProfileKey, occurrence.Source, occurrence.Outcome,
                 occurrence.SafeContext
             }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
-            return ComposeAcceptedResponseCore(fs, lease, correlation,
+            var result = ComposeAcceptedResponseCore(fs, lease, correlation,
                 new GameResponse { Response = scene ?? string.Empty, WoundDecisions = [draft] }, out exactReplay);
+            return result.Success ? result : Failure(result.Issues.Select(issue =>
+                issue.FilePath == "woundDecisions[0]" || issue.FilePath.StartsWith("woundDecisions[0].", StringComparison.Ordinal)
+                    ? issue : PrivateSourceIssue(issue)));
         }
-        catch (Exception error) when (error is JsonException or InvalidDataException)
+        catch (Exception error) when (error is JsonException or InvalidDataException or DecoderFallbackException)
         {
-            return Failure(new[] { new ValidationIssue(DecisionPath, IssueSeverity.Error,
-                "Mortal wound decision refused: " + error.Message, "mortal_wound_decision_draft_invalid") });
+            return SourceFailure(error);
         }
+
+        static WoundResponseInputCompositionResult SourceFailure(Exception error) => Failure(new[]
+        {
+            new ValidationIssue(MortalWoundOccurrenceState.StatePath, IssueSeverity.Error,
+                "Mortal wound source authority refused: " + error.Message, "mortal_wound_decision_source_authority_invalid",
+                actor: "Client", section: PrivateSourceIssueSection)
+        });
     }
+
+    private static ValidationIssue PrivateSourceIssue(ValidationIssue issue) => new(
+        issue.FilePath, issue.Severity, issue.Message, issue.Code, actor: "Client", section: PrivateSourceIssueSection,
+        expected: issue.Expected, actual: issue.Actual, repairHint: issue.RepairHint, category: issue.Category,
+        repairTargetFiles: issue.RepairTargetFiles)
+    {
+        FactionRepairClassification = issue.FactionRepairClassification,
+        MortalItemRepairContext = issue.MortalItemRepairContext,
+        MortalLocationRepairContext = issue.MortalLocationRepairContext,
+        EffectRepairContext = issue.EffectRepairContext,
+        WoundRepairContext = issue.WoundRepairContext?.Clone()
+    };
 
     private static readonly IReadOnlySet<string> RootFields = Set(
         "schemaVersion",

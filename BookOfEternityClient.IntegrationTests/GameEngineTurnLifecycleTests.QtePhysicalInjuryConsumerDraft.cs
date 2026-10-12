@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -99,6 +100,16 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.False(result.Success);
                 Assert.Null(result.CommandRoot);
                 Assert.NotEmpty(result.Issues);
+                if (mutation is "receipt_null" or "history_null" or "missing_candidate" or "event_order")
+                {
+                    Assert.DoesNotContain(result.Issues, issue => issue.FilePath == MortalWoundOpportunityAdapter.DecisionPath);
+                    Assert.All(result.Issues, issue => Assert.Equal(MortalWoundOpportunityAdapter.PrivateSourceIssueSection, issue.Section));
+                    var refused = Assert.Throws<ArgumentException>(() => GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+                        GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate(), "private_source_repair",
+                        new WorkerTurnReference { SessionId = read.SessionId, RequestId = read.RequestId, TurnNumber = read.TurnNumber },
+                        result.Issues, new Dictionary<string, string>(), "2026-10-12T00:00:00Z", _fs.GetOrCreateSessionGeneration(lease)));
+                    Assert.Contains("not worker proposal targets", refused.Message, StringComparison.Ordinal);
+                }
             }
             WritePhysicalInjuryDiagnostic("qte_consumer_component_draft_admission", new
             { mutation, read.SessionId, read.RequestId, read.SnapshotToken, read.TurnNumber, read.AbsentLogicalPaths,

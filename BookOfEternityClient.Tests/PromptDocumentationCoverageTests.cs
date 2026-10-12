@@ -24,8 +24,11 @@ public sealed partial class PromptDocumentationCoverageTests
             foreach (var token in new[] { "woundOpportunities", "default `[]`", "canonical pending order",
                          "complete pending/consumed batch", "ordered accepted-event", "official new-turn snapshot",
                          "opportunityRef", "maximumSeverity", "safeContext", "allowedLocationKinds",
-                         "signed observed absence", "no live fallback", "N+1 wound decision/consumer remains pending" })
+                         "signed observed absence", "no live fallback", "single closed NONE/materialize draft",
+                         "output/mortal_wound_decisions.json", "acquisitionNarration verbatim", "same resource/effect/wound transaction",
+                         "NONE consumes the occurrence", "exact durable replay", "Mortal-only", "excluded from save/import archives" })
                 Assert.Contains(token, text, StringComparison.Ordinal);
+            Assert.DoesNotContain("N+1 wound decision/consumer remains pending", text, StringComparison.Ordinal);
         }
         var manifest = JsonNode.Parse(ReadRepoFile("Examples", "example_validation_manifest.json"))!;
         var entry = manifest["qtePhysicalOpportunityProjectionCoverage"]!;
@@ -192,7 +195,7 @@ public sealed partial class PromptDocumentationCoverageTests
                          "allowedLocationKinds", "2000", "anatomical", "systemic", "mental", "spiritual_axis", "other",
                          "no default IV", "before selection", "mortal_qte_terminal_health_damage_v1",
                          "same resource/effect transaction", "complete ordered accepted sibling events",
-                         "awaiting receipt and preallocation publish no occurrence", "N+1 wound decision/consumer remains pending"
+                         "awaiting receipt and preallocation publish no occurrence", "single closed NONE/materialize draft"
                      })
                 Assert.Contains(token, document, StringComparison.Ordinal);
             Assert.DoesNotContain("occurrence production remains pending", document, StringComparison.Ordinal);
@@ -200,7 +203,7 @@ public sealed partial class PromptDocumentationCoverageTests
         Assert.Contains("mortal_qte_physical_injury_declaration_v1", qteExample, StringComparison.Ordinal);
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
         Assert.Contains("mortal_qte_terminal_health_damage_v1", manifest, StringComparison.Ordinal);
-        Assert.Contains("N+1 wound decision/consumer remains pending", manifest, StringComparison.Ordinal);
+        Assert.Contains("single closed NONE/materialize draft", manifest, StringComparison.Ordinal);
         foreach (var token in new[] { "clientStoryAppend", "exact client-written row", "same-root paused/deferred resume", "every other story/history guard stays enabled", "never offer fields or GM receipt authority", "corruption/correlation checks" })
             Assert.Contains(token, qteRules, StringComparison.Ordinal);
     }

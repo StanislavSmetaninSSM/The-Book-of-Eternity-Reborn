@@ -9,59 +9,94 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (COMMON NONE/CREATE CONSUMER FIFTH SOURCE MIDPOINT WIP; FINITE CONTROLS WRITTEN; GM DOCS/GUARDS UNFINISHED)
+## Current T070 first vertical — 2026-10-12 (COMMON NONE/CREATE CONNECTED SOURCE READY; FINITE CONTROLS/GM DOCS/WORKER SCOPE WRITTEN; REVIEW/CHECKS UNRUN)
 
-COMMON NONE/CREATE consumer remains SOURCE WIP. Fourth replay source midpoint was
-publishedcbd99a6fccff41cea78eb23556459c7c3a6afe2c; ROOT verified exact remote and560-file
-clean recovery/source readback without build/review/runtime. Actual NONE4010 and CREATEc7
+COMMON NONE/CREATE connected consumer candidate is SOURCE READY for ROOT publication and
+mandatory actual retained Astra XHigh SOURCE/FIXTURE/SELECTION review of the full c7..candidate
+change. This is source readiness, not acceptance or qualification. Fifth controls midpoint
+published50ed77cf9bcff913523b8922d671510246e98864; ROOT verified exact remote and564-file
+clean recovery/source readback. No project build/discovery/catalog/runtime executed by the
+writer. Existing cached binaries do not verify this candidate. Actual NONE4010 and CREATEc7
 proper causal REDs remain separately accepted1 actual/1 executed/0 PASS/1 FAIL; protected
-Facts and later UNREACHED oracles unchanged. Producer accepted1b23 executed/22 PASS/1 FAIL
-and projection accepted4d4 actual/28 executed/26 PASS/2 FAIL remain unchanged.
+Facts and their later UNREACHED oracles unchanged. Producer accepted1b23 executed/22 PASS/
+1 FAIL and projection accepted4d4 actual/28 executed/26 PASS/2 FAIL remain separate.
 
-Fifth stopped midpoint authors finite component controls without new production changes.
-New existing-engine partial has four common-control theories/11 rows: NONE/CREATE first
-common publication and exact/changed retained-snapshot replay(4); staged draft/scene/foreign
-command drift and cache/guard preservation(3); actual receipt-member publication failure,
-whole-tree rollback and exact revalidation/retry(2); sealed severity/location proposal bounds(2).
-Every case first completes a real independently owned QTE42 with original occurrence, then
-uses actual StagePlayerTurn43/official Reader and existing resource/wound validation/common
-normalizer. These later calls are explicitly COMPONENT proof, not full ProcessPlayerTurn/
-child/archive proof. Permanent IDs and receipt/history are observed from actual publication;
-no valid occurrence/receipt/binding/hash is authored and original authority is never copied/
-re-signed. Existing owned fixture cleanup and publication hooks are reused, with observer
-removed before cleanup. Source/API compatibility is statically checked, actual behavior UNRUN.
+Connected production reuses official signed N43 full pending/consumed/event/history/carrier
+validation and strict raw single decision grammar; only signed-observed absence is pristine.
+After ordinary upstream owner/resource admission, the held-lease command-only distributor
+stages the internally reconstructed command; changed/rejected input revokes owned command
+and caches while foreign replacements are preserved. Semantic woundDecisions[0] proposal
+issues map only at this file-GM seam to the exact public DecisionPath, retaining code, field
+diagnostic and repair context. Feature-owned source/receipt/history failures carry an explicit
+client/private-source classification; both worker dispatch and task building refuse them
+before proposal-target selection, despite the existing general game_state/** profile scope. Existing1535 Prepare→effect→Finalize
+supplies final typed history to PlanConsumeAndAppend. Receipt/pending companions, raw draft/
+ordinary scene/owned command before-images and input fingerprints join the same common
+plan/cache/seal/publisher. NONE has zero allocation/history transition and no WoundPublication,
+yet consumes the draft/command and publishes its receipt. Exact retained-source replay uses
+validated current receipt/history and preserves IDs/history/receipt once; changed replay
+refuses. No separate receipt writer, second allocator, cloned/re-signed original source or
+new authority framework. Exact transient draft is in ordinary cleanup/rollback inventory and
+SaveLoad ephemeral save/import/cleanup policy. All these new runtime claims await execution.
 
-Raw owner adds candidate-count/event-order batch corruption and proposal-null, retaining
-all original10 assertions/rows. One actual-stage empty-offer/single-draft theory adds absent/
-unsolicited/multiple(3). Raw owner now2 methods/16 cases/budget5; common owner4 methods/11
-cases/budget5. Exact affected existing compatibility owner2 methods/4 cases/budget2 selects
-only original Mortal capture pending/terminal/unknown theory(3) and existing adapter NONE
-cold-replay/stale-next-snapshot Fact(1). The former Reflection.Invoke explicitly supplies all
-six Core arguments; only that call changes, preserving every old refusal/cache/byte oracle.
-Intentional old-owner overlap is limited to these exact affected methods.
+Finite component controls are written, UNRUN, not newly observed RED: four common theories/
+11 rows cover NONE/CREATE first publication and exact/changed replay(4), staged draft/scene/
+foreign-command/cache guards(3), actual receipt-member rollback and exact revalidation/retry(2),
+and sealed severity/location bounds(2). Raw owner has two theories/16 rows: original strict
+admission plus candidate-count/event-order/proposal-null and actual-stage empty/unsolicited/
+multiple boundary. Each first completes its own actual QTE42, then uses real StagePlayerTurn43/
+official Reader and existing validation/common normalizer. These later calls are explicitly
+COMPONENT proof, not full ProcessPlayerTurn/child/archive proof. No valid occurrence/receipt/
+binding/hash is authored. Existing own strict cleanup/publication hooks are reused. Exact
+compatibility owner2 methods/4 cases selects only original Mortal capture pending/terminal/
+unknown(3), with all six Reflection.Invoke arguments, and existing adapter NONE cold replay/
+stale-next-snapshot Fact(1); old rejection/cache/byte oracles remain intact.
 
-Source-only current preparation selection is10 methods/33 cases/5 integration descriptors,
-category budgets5+5+5+5+2/default27, including unchanged first NONE/CREATE causal Facts.
-Controls remainder excludes those two and all qualified unrelated producer/projection cohorts:
-8 methods/31 cases/3 integration descriptors,budgets5+5+2/default17.
-[Preparation selection](../../tests/selections/1536-qte-physical-injury-consumer-preparation.json)
-[Controls remainder](../../tests/selections/1536-qte-physical-injury-consumer-controls.json)
-Both are WIP: affected GM documentation guards still need to be added after guidance is
-written. Planned final docs add4 Facts across unit/integration,budget2; final target14 methods/
-37 cases/7 descriptors/default29, remainder12 methods/35 cases/5 descriptors/default19.
-These are finite source accounting, NOT actual discovery/execution. Static current inventory
-705 categories/11540 methods; original702 catalog suffix remains byte exact, draft owner's
-changed membership is documented, global selection/CI and checkboxes unchanged.
+Six actual GM surfaces and example manifest/guards are synchronized: CLI API/daemon, QTE
+rules, ordinary step guide, QTE worked examples and runtime main prompt describe one offered
+public NONE/materialize draft, client-private source/max/IDs/command/receipt, same common
+transaction and transient archive policy. New lawful NONE/materialize examples contain no
+private fields; ordinary scene has exactly response/timestamp and acquisitionNarration
+verbatim; draft has no timestamp. Example/manifest coverage is public grammar only, distinct
+from runtime/archive proof. Exact four affected documentation Facts (two prompt, two example,
+including the existing safe projection example) have budget2 and deliberate narrow overlap.
 
-Six actual GM surfaces, worked NONE/materialize examples, manifest/docguards/runtime prompt/
-worker output scope are UNFINISHED. Actual after-terminal pending+consumed save-load/new-root/
-fresh-registry/fresh-process proof remains required and OPEN/UNRUN. Connected production from
-prior checkpoints is unverified; all new controls are UNRUN preservation/behavior controls,
-not newly observed RED. SOURCE/FIXTURE/SELECTION review, build/discovery/catalog/runtime
-remain PENDING/UNRUN; cached binaries do not verify this candidate. Mutations STOPPED for
-immediate ROOT tests/controls WIP publication/recovery before long GM-doc authoring. Next
-step is coherent GM guidance/manifest/guards and final finite source selection from the
-published checkpoint. T070/fullFR-063/parent/#1536 stay OPEN; no qualification claim.
+Necessary worker dependency adds only literal output/mortal_wound_decisions.json to ordinary
+repair default-template read/proposal scope, never output/** or another output. Existing saved
+profiles are not auto-expanded. Selected draft tasks pin public request and Mortal realm as
+read-only context; command/canonical wound/history/receipt/private authority and afterlife/
+spiritual targets remain forbidden. Delegator reads current realm under existing source/lease/
+generation checks and accepts the same Mortal World/mortal_world values as official Reader.
+Static API inspection corrected an unexecuted use of the afterlife-only normalizer; no runtime
+failure or new RED is claimed. Existing severity/location component rows additionally send
+real emitted proposal diagnostics through exact worker task building; existing covered-null/
+missing-candidate/event-order rows additionally prove private source classification and task
+refusal. No method/row is added and none of these preservation controls is observed RED.
+Exact existing profile theory2 rows plus one scoped proposal
+Fact1 have budget1:2 methods/3 cases, intentional old-owner overlap, no worker/model process.
+Mortal-only rationale: physical QTE opportunity producer/projection are Mortal-only; unsolicited
+Mortal drafts on afterlife/spiritual tasks refuse. No afterlife grammar/pending/receipt/prompt
+contract is broadened, so its matrix/examples/aggregate categories are unchanged.
+
+[Full preparation selection](../../tests/selections/1536-qte-physical-injury-consumer-preparation.json)
+is exactly16 methods/40 cases/8 descriptors, budgets5+5+5+5+2+2+1/default30, including the two
+unchanged first actual causal Facts. ROOT first matches each causal GREEN separately, freezes/
+reviews it, then [controls remainder](../../tests/selections/1536-qte-physical-injury-consumer-controls.json)
+excludes both:14 methods/38 cases/6 descriptors,budgets5+5+2+2+1/default20. No unchanged
+qualified producer/projection runtime cohort is selected. Counts are STATIC source accounting,
+not discovery/execution. Static catalog707 categories/11542 methods; two final exact owners
+are prepended, old702 nodes/suffix remain unchanged; owned draft membership change is recorded.
+Global CI/selection, original ce955 source Fact, NONE/CREATE Facts, first projection Fact/
+selectors, historical packets and every checkbox remain unchanged. Reflective Core caller
+compatibility and called worker proposal/record/constructor APIs were checked from source;
+fresh both-project preparation, inventory audit and every new behavior control remain UNRUN.
+
+Actual after-terminal pending+consumed SaveGame→child LoadGame into a new root, fresh registries
+and fresh process remains required and OPEN/UNRUN/unqualified. Source replay/rollback controls
+do not prove that archive boundary. No full consumer/T070/fullFR-063/parent/#1536 closure or
+checkbox change. Mutations STOPPED at this coherent source/test/GM-doc/selection boundary for
+immediate ROOT publication/recovery, then mandatory independent full-source review before
+any project execution. No additional source/consumer/archive work is released in this stop.
 
 Historical CREATE first-result metadata below records its pre-EVIDENCE boundary;
 publication/EVIDENCE pending wording there is historical, superseded by acceptedc7 above.

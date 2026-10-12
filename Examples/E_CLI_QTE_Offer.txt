@@ -80,8 +80,8 @@
 - A bounded terminal penalty uses only `responseFragment.resourceChanges[]` with `operation=damage`, exact target `player/player_current`, an existing active `resourceKey`, positive exact `amount`, `source.kind=narrative_outcome`, non-empty `reason`, and no GM-authored `sourceId`.
 - Its exact event identity is `turn_{sourceTurn}:qte_terminal:{one-based terminal outcome ordinal}:resource:{one-based command ordinal}`. The worked payloads below assume accepted source turn 42.
 - Every terminal branch is validated, but only the selected branch is applied through the common resource reducer/quartet. Exact retry is replay; definition/capacity commands and legacy `current*Change` aliases are forbidden in QTE.
-- Optional `terminalOutcomes[].physicalInjury` declares a potential player-health injury before selection. Omission preserves resource-only QTE. When present it has exactly five fields: `schemaVersion` = 1; `resourceCommandOrdinal` is a one-based index into that outcome's actual `responseFragment.resourceChanges[]` (existing mutation limit 512) and must name exact `damage` on canonical `health` for `player/player_current`; `maximumSeverityRank` is an explicit integer 1..4, independent of damage amount, with no default IV; `cause` is trimmed nonempty text of at most 2000 characters without controls; `allowedLocationKinds` contains 1..5 unique exact tokens from `anatomical`, `systemic`, `mental`, `spiritual_axis`, `other`. Explicit null, missing/unknown/duplicate/case-confusable or wrong-case fields reject as raw input in every terminal branch, including unselected branches. Do not supply owner/domain, source/profile IDs, hard caps, guarantees, worsening or seals. The client retains the declaration in the frozen offer and its existing continuation fingerprint before selection. After finalized positive Applied canonical health Damage from the selected declared branch, the client publishes one pending occurrence under mortal_qte_terminal_health_damage_v1 in the same resource/effect transaction. The explicit source maximum stays separate from the global hard cap IV; original session/request/snapshot/turn and complete ordered accepted sibling events remain bound to the occurrence. Exact retry preserves occurrence identity across pending or consumed receipts; resource-only/unselected declarations, zero applied damage, replay-only execution, awaiting receipt and preallocation publish no occurrence. N+1 wound decision/consumer remains pending; do not author a wound decision, occurrence, receipt, source coordinate or seal for this QTE route.
-- The next ordinary Mortal World request exposes client-owned `woundOpportunities`: default `[]`, or one first eligible player physical opportunity in canonical pending order after complete pending/consumed batch and ordered accepted-event validation against the official new-turn snapshot. A row has exactly `opportunityRef`, `domain`, `maximumSeverity`, `safeContext`; `safeContext` has exactly `target`, `cause`, `allowedLocationKinds`. The maximum is the explicit source bound I..IV, never a damage formula or default IV. The opaque reference is comparison data; the GM must copy no private occurrence ID, owner, carrier path, profile, source coordinates, event vector or fingerprint into it. This safe projection is read-only input: N+1 wound decision/consumer remains pending; do not author a wound decision or canonical occurrence/receipt for this route. Missing optional roots count as pristine only with signed observed absence; no live fallback.
+- Optional `terminalOutcomes[].physicalInjury` declares a potential player-health injury before selection. Omission preserves resource-only QTE. When present it has exactly five fields: `schemaVersion` = 1; `resourceCommandOrdinal` is a one-based index into that outcome's actual `responseFragment.resourceChanges[]` (existing mutation limit 512) and must name exact `damage` on canonical `health` for `player/player_current`; `maximumSeverityRank` is an explicit integer 1..4, independent of damage amount, with no default IV; `cause` is trimmed nonempty text of at most 2000 characters without controls; `allowedLocationKinds` contains 1..5 unique exact tokens from `anatomical`, `systemic`, `mental`, `spiritual_axis`, `other`. Explicit null, missing/unknown/duplicate/case-confusable or wrong-case fields reject as raw input in every terminal branch, including unselected branches. Do not supply owner/domain, source/profile IDs, hard caps, guarantees, worsening or seals. The client retains the declaration in the frozen offer and its existing continuation fingerprint before selection. After finalized positive Applied canonical health Damage from the selected declared branch, the client publishes one pending occurrence under mortal_qte_terminal_health_damage_v1 in the same resource/effect transaction. The explicit source maximum stays separate from the global hard cap IV; original session/request/snapshot/turn and complete ordered accepted sibling events remain bound to the occurrence. Exact retry preserves occurrence identity across pending or consumed receipts; resource-only/unselected declarations, zero applied damage, replay-only execution, awaiting receipt and preallocation publish no occurrence. On the next ordinary Mortal request use only the current offered public decision draft; never author an occurrence, receipt, source coordinate or seal.
+- The next ordinary Mortal World request exposes client-owned `woundOpportunities`: default `[]`, or one first eligible player physical opportunity in canonical pending order after complete pending/consumed batch and ordered accepted-event validation against the official new-turn snapshot. A row has exactly `opportunityRef`, `domain`, `maximumSeverity`, `safeContext`; `safeContext` has exactly `target`, `cause`, `allowedLocationKinds`. The maximum is the explicit source bound I..IV, never a damage formula or default IV. The opaque reference is comparison data; the GM must copy no private occurrence ID, owner, carrier path, profile, source coordinates, event vector or fingerprint into it. This safe projection is read-only input. Return a single closed NONE/materialize draft in `output/mortal_wound_decisions.json`: exactly {opportunityRef, decision: none}, or {opportunityRef, decision: materialize, woundRef, proposal}. Copy the exact currently offered reference. With default `[]`, write no decision file. The proposal uses the existing Mortal creation grammar: severity I..offered maximum, a location kind from allowedLocationKinds, and acquisitionNarration verbatim in the ordinary scene. No wrapper, timestamp, source/binding/seal/max fields, permanent IDs or canonical state. The client owns commands, allocation, anchors, history and durable receipts, and consumes the draft only in the same resource/effect/wound transaction; NONE consumes the occurrence without a wound/history transition. Missing/unsolicited/stale/foreign/multiple/null/unknown/duplicate/case-confusable/wrong-case input refuses; changed replay refuses and exact durable replay preserves IDs/history/receipt once. The draft is transient and excluded from save/import archives. Ordinary repair workers may propose only this exact selected draft path with the public request read-only; never client wound commands, canonical wounds/history/receipts or private source authority, and never broaden output/**. This is Mortal-only; afterlife/spiritual contracts stay unchanged and unsolicited Mortal drafts there refuse. Missing optional roots count as pristine only with signed observed absence; no live fallback.
 - Successful terminal outcomes must include positive `experienceGained`.
 - For validation purposes, a successful terminal outcome is any outcome reachable by following `success` branches from `startChapterId`.
 - The client will convert a successful QTE `experienceGained` into a real increase of the authoritative XP counter in `game_state/player/experience.json`.
@@ -95,7 +95,7 @@
 
 ### mortal_qte_physical_injury_declaration_v1
 
-For accepted source turn 42, both branches damage the same existing active player health instance by 5. The source declares maximum I for a glancing impact and III for a direct impact; equal damage does not derive a severity maximum. The client validates both declarations before selection, retains their exact cause/location subset and maximum in the frozen offer, and rejects a changed maximum against the existing continuation fingerprint. Omitting `physicalInjury` gives the resource-only example below. After actual selection and finalized positive Applied health Damage, this declaration supplies the selected pending occurrence maximum through mortal_qte_terminal_health_damage_v1. The client retains the complete sibling event vector and original source coordinates and publishes the occurrence in the common resource/effect transaction; awaiting receipt and preallocation publish no occurrence. This worked offer describes source publication only. N+1 wound decision/consumer remains pending; no GM decision or physical wound publication is claimed.
+For accepted source turn 42, both branches damage the same existing active player health instance by 5. The source declares maximum I for a glancing impact and III for a direct impact; equal damage does not derive a severity maximum. The client validates both declarations before selection, retains their exact cause/location subset and maximum in the frozen offer, and rejects a changed maximum against the existing continuation fingerprint. Omitting `physicalInjury` gives the resource-only example below. After actual selection and finalized positive Applied health Damage, this declaration supplies the selected pending occurrence maximum through mortal_qte_terminal_health_damage_v1. The client retains the complete sibling event vector and original source coordinates and publishes the occurrence in the common resource/effect transaction; awaiting receipt and preallocation publish no occurrence. This worked offer describes source publication only. The separate ordinary-turn NONE/materialize examples below show public decision drafts; source publication does not itself create a wound.
 
 ```json
 {
@@ -1142,5 +1142,89 @@ The same request without an eligible opportunity carries `"woundOpportunities": 
       }
     }
   ]
+}
+```
+
+## Ordinary N+1 physical decision drafts
+
+Use only the current `woundOpportunities[0]` reference. Write exactly one of the two decision objects to `output/mortal_wound_decisions.json`, then publish the ordinary matching scene/interface/debug and correlated ready last. These examples contain no source coordinates, private authority, permanent IDs or canonical anchors. The materialize example uses I below the offered III and the allowed other locus. Empty consequenceDefinitions is lawful; when mechanical consequences are needed, use the existing owned consequence grammar. The ordinary scene must contain response/timestamp and include acquisitionNarration verbatim; the decision draft itself has no timestamp.
+
+### mortal_qte_physical_none_decision_v1
+
+```json
+{
+  "opportunityRef": "mortal_wound_0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "decision": "none"
+}
+```
+
+### mortal_qte_physical_materialize_decision_v1
+
+```json
+{
+  "opportunityRef": "mortal_wound_0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "decision": "materialize",
+  "woundRef": "impact",
+  "proposal": {
+    "classification": {
+      "woundType": "superficial_laceration",
+      "locationProfile": {
+        "kind": "other",
+        "readableLocus": "поверхностный порез на боку"
+      }
+    },
+    "display": {
+      "name": "Поверхностный порез",
+      "description": "Край камня оставил неглубокий порез.",
+      "visibleSymptoms": [
+        "полоска крови",
+        "жжение"
+      ],
+      "prognosis": "Порез требует очистки и стабилизации.",
+      "visibility": "known_to_player",
+      "acquisitionNarration": "Край камня оставляет поверхностный порез на боку."
+    },
+    "severity": "I",
+    "complications": [],
+    "consequenceDefinitions": [],
+    "treatment": {
+      "diagnosisPaths": [],
+      "routes": [],
+      "knownRouteIds": [],
+      "completedRouteIds": []
+    },
+    "recovery": {
+      "mode": "requires_stabilization",
+      "clockKind": "mortal_world_time",
+      "cadence": 86400,
+      "currentStepProgress": 0,
+      "currentStepThreshold": 3,
+      "lastTickKey": null,
+      "blockers": [
+        "not_stabilized"
+      ],
+      "carryOverflow": true,
+      "deteriorationPolicy": {
+        "policyRef": "untreated_cut",
+        "unmetConditions": [
+          "not_stabilized"
+        ],
+        "graceMinutes": 30,
+        "cadenceMinutes": 10,
+        "result": {
+          "kind": "increase_severity"
+        }
+      }
+    }
+  }
+}
+```
+
+### mortal_qte_physical_materialize_scene_v1
+
+```json
+{
+  "response": "Край камня оставляет поверхностный порез на боку. Вы очищаете порез и отходите от обвала.",
+  "timestamp": "2026-10-12T00:00:00Z"
 }
 ```

@@ -51,7 +51,19 @@ public partial class GameEngine
             var scene = sceneRoot?["response"] is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;
             var composed = MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse(_fs, lease, raw, scene, out var replay);
             if (composed is null) return Array.Empty<ValidationIssue>();
-            if (!composed.Success) return composed.Issues;
+            if (!composed.Success) return composed.Issues.Select(issue =>
+                issue.FilePath == "woundDecisions[0]" || issue.FilePath.StartsWith("woundDecisions[0].", StringComparison.Ordinal)
+                    ? new ValidationIssue(MortalWoundOpportunityAdapter.DecisionPath, issue.Severity,
+                        issue.FilePath + ": " + issue.Message, issue.Code, issue.Actor, issue.Section,
+                        issue.Expected, issue.Actual, issue.RepairHint, issue.Category, issue.RepairTargetFiles)
+                    {
+                        FactionRepairClassification = issue.FactionRepairClassification,
+                        MortalItemRepairContext = issue.MortalItemRepairContext,
+                        MortalLocationRepairContext = issue.MortalLocationRepairContext,
+                        EffectRepairContext = issue.EffectRepairContext,
+                        WoundRepairContext = issue.WoundRepairContext?.Clone()
+                    }
+                    : issue).ToArray();
             var decision = StrictJsonAuthority.Deserialize<JsonElement>(raw!,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "accepted Mortal wound decision");
             _mortalQteOwnedCommand = await StateDistributor.StageAcceptedWoundCommandAsync(_fs, lease,

@@ -67,6 +67,7 @@ public static class GmWorkerTaskPacketBuilder
                 nameof(contextFileHashes));
         }
 
+        RefuseMortalQtePrivateSourceRepair(validationIssues);
         ValidateMortalContinuityDispatchPolicy(validationIssues);
         ValidateRealmIsolationBeforeFiltering(validationIssues);
 
@@ -109,6 +110,9 @@ public static class GmWorkerTaskPacketBuilder
 
         if (allowedPaths.Length == 0)
             throw new ArgumentException("Validation issues do not map to any safe worker proposal path.", nameof(validationIssues));
+        var requiresMortalQteDecision = allowedPaths.Contains(MortalWoundOpportunityAdapter.DecisionPath, StringComparer.Ordinal);
+        if (requiresMortalQteDecision && (afterlifeContract is not null || spiritualWoundContinuation is not null))
+            throw new ArgumentException("Mortal QTE decision drafts are unavailable to afterlife/spiritual repair.", nameof(validationIssues));
         if (requiresAfterlifeRealmAuthority &&
             allowedPaths.Contains(AfterlifeRealmAuthorityContract.StatePath, GmWorkerContractValidator.CanonicalPathComparer))
         {
@@ -129,6 +133,13 @@ public static class GmWorkerTaskPacketBuilder
             contextPaths = contextPaths.Append(MortalCharacteristicAuthorityContract.StatePath);
         if (requiresAfterlifeRealmAuthority)
             contextPaths = contextPaths.Append(AfterlifeRealmAuthorityContract.StatePath);
+        if (requiresMortalQteDecision)
+        {
+            foreach (var path in new[] { "input/turn_request.json", "game_state/meta/soul_state.json" })
+                if (!TryGetPathHash(contextFileHashes, path, out var hash) || string.IsNullOrWhiteSpace(hash) || hash == "missing")
+                    throw new ArgumentException("Mortal QTE draft repair requires pinned read-only public request/realm context.", nameof(contextFileHashes));
+            contextPaths = contextPaths.Concat(new[] { "input/turn_request.json", "game_state/meta/soul_state.json" });
+        }
         var contextFiles = contextPaths
             .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
             .Order(GmWorkerContractValidator.CanonicalPathComparer)
@@ -155,6 +166,11 @@ public static class GmWorkerTaskPacketBuilder
             "Do not rewrite untargeted actor fields, untargeted actors, or unrelated canonical root data.",
             "Do not create terminal signals or validation ready files manually."
         };
+        if (requiresMortalQteDecision)
+        {
+            acceptanceCriteria.Add("Return only the single closed NONE/materialize draft for the currently offered public physical opportunity; acquisitionNarration must remain verbatim in the ordinary scene.");
+            forbiddenActions.Add("The public request/realm context is read-only. Never propose client wound commands, canonical wound/history/receipt roots, permanent IDs, source coordinates, binding or seals.");
+        }
         if (requiresAfterlifeRealmAuthority)
         {
             acceptanceCriteria.Add(
@@ -252,6 +268,12 @@ public static class GmWorkerTaskPacketBuilder
 
         hash = string.Empty;
         return false;
+    }
+
+    internal static void RefuseMortalQtePrivateSourceRepair(IReadOnlyList<ValidationIssue> issues)
+    {
+        if (issues.Any(issue => issue.Section == MortalWoundOpportunityAdapter.PrivateSourceIssueSection))
+            throw new ArgumentException("Mortal QTE client-owned source/receipt/history failures are not worker proposal targets.", nameof(issues));
     }
 
     internal static string ResolveValidationTargetPath(ValidationIssue issue)
