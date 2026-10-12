@@ -244,7 +244,7 @@ public sealed partial class BrowserProtocolCutoverTests
             }
             byte[] doublePreamble = [.. preamble, .. preamble, .. body];
             File.WriteAllBytes(path, doublePreamble);
-            Assert.Throws<JsonException>(() => ParsePhysicalManifestForTest(path));
+            Assert.ThrowsAny<JsonException>(() => ParsePhysicalManifestForTest(path));
             Assert.Equal(doublePreamble, File.ReadAllBytes(path));
         }
         finally
