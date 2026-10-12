@@ -5,8 +5,33 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (PRODUCER QUALIFIED1b4739bb; FIRST CONSUMER1FAIL PREREQUISITE UTF8-BOM BLOCKER; PROJECTION PREDICATE UNREACHED)
+## Current T070 boundary — 2026-10-12 (PRODUCER QUALIFIED1b4739bb; CONSUMER FIRST BOM BLOCKER PRESERVEDb529; MINIMUM TEST-ONLY CORRECTION READY; CORRECTED CHECKS UNRUN)
 
+Root published first consumer BOM blocker packet/two-doc metadata at
+b52958a57644265d764f18b3f4c06630a2dad049, remote exact/clean;415 selected recovery files
+and all25 native/original/stored hashes,83 immutable195 source pins/10 fresh binaries checked.
+First consumer1 FAIL remains a fixture prerequisite blocker before the projection predicate,
+not consumer RED; independent BLOCKER EVIDENCE acceptance remains PENDING. Producer qualified
+1b4739bb and its current3-cohort23 executed/22 PASS/1 FAIL/22 unique cases remain separate.
+
+Current authorized correction is ONLY new-test:74 request parser:
+JsonDocument.Parse(Encoding.UTF8.GetString(requestBytes!).TrimStart('\uFEFF')). The actual
+FS writer/preamble and existing QTE transport decoding pattern are already source-proved.
+Captured exact raw bytes and every Reader/source/request/closed safe-row/cleanup assertion
+stay unchanged. No speculative encoding policy, production/source-lifetime/offer/authority
+change or new tests. Static full-body comparison reversing this single substitution must
+match the published old test byte exactly. Production/catalog/old/new selectors/checkboxes/
+original ce955 causal hash stay untouched. One method/one case/one integration descriptor,
+category5/default10 unchanged; body-only fix needs no new catalog audit.
+
+Mutations STOPPED at minimal test-only SOURCE READY for root WIP publication and ONE combined
+retained Astra XHigh SOURCE/FIXTURE readback plus first25-artifact BLOCKER EVIDENCE review.
+Corrected selected integration build/discovery/PlanOnly/actual and SOURCE acceptance remain
+UNRUN/PENDING. No author project execution/commit/push; no full consumer claim. Full N+1
+none/create/receipt/replay/atomicity/after-terminal save-load/fresh-process goal and all T070/
+parent/#1536 checkboxes remain OPEN.
+
+Historical first consumer BOM prerequisite outcome (packet now publishedb529):
 First consumer test-only SOURCE/FIXTURE/SELECTION accepted
 195bbd60b178cad6fa462601719569663985538f. Fresh selected preparation173856 completed
 116.1774600s,integration77 warnings/0 errors,1 method/1 case/1 descriptor and0 tests.
@@ -31,7 +56,7 @@ all4 native boundary observations (source client append, null engine failure, on
 capture hook),83 source/10 fresh195 binary pins matched before/after, and one strict owned
 root /tmp/boe-gameengine-turnlifecycle-a0235922d8cd4e8bae2f3338607462c2 actually absent. Root
 froze25 artifacts plus manifest in the [first consumer blocker packet](./recovery/qte-physical-consumer-projection-first-blocker-20261012);
-publication/independent EVIDENCE acceptance pending.
+publication confirmedb529; independent EVIDENCE acceptance pending.
 
 Read-only exact source proof: FileSystemManager.WriteFileAtomicAsync:764–774 calls
 EncodeUtf8WithPreamble:4322–4330; the staged request bytes therefore include the real UTF8
@@ -40,8 +65,8 @@ before JSON parsing; the new test already follows that pattern for signed occurr
 but not the actual request. Minimum proposed correction is ONLY UTF8 decode plus that BOM
 trim before request JsonDocument.Parse, retaining captured exact bytes and every official
 Reader/source/row/cleanup oracle. No random parser/production/schema/source-lifetime change,
-projection manufacture or assertion relaxation. Source correction is not yet authorized or
-written; fresh corrected preparation/actual/source gate UNRUN. Metadata edits STOPPED for
+projection manufacture or assertion relaxation. That first read-only proposal is now authorized and minimally written above; corrected
+preparation/actual/source gate remain UNRUN. Metadata edits STOPPED for
 root immediate packet publication before source work. All producer evidence, old packets,
 checkboxes and causal ce955 hash stay exact; N+1 consumer remains unimplemented/UNRUN.
 

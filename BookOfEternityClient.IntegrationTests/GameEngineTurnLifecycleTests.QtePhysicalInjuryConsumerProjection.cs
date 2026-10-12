@@ -71,7 +71,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(occurrence.SourceRequestId, retained.SourceRequestId);
         Assert.Equal(occurrence.SourceSnapshotToken, retained.SourceSnapshotToken);
         Assert.Equal(PhysicalInjurySourceTurn, retained.SourceTurn);
-        using var request = JsonDocument.Parse(requestBytes!);
+        using var request = JsonDocument.Parse(Encoding.UTF8.GetString(requestBytes!).TrimStart('\uFEFF'));
         var raw = request.RootElement;
         Assert.Equal(next.SessionId, raw.GetProperty("sessionId").GetString());
         Assert.Equal(next.RequestId, raw.GetProperty("requestId").GetString());
