@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED SOURCE READY / CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED SOURCE ACCEPTED / BUILD-DISCOVERY-RUNTIME UNRUN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -462,6 +462,28 @@ Build/discovery/runtime remain UNRUN; combined SOURCE/FIXTURE/SELECTION is not y
 Root publishes this three-path correction and requests focused recheck while the reviewer
 continues the immutablecd4 remainder. Original causal Fact/hash and all checkboxes unchanged;
 no producer/cold success claim. Stop mutations at this source-only READY boundary.
+
+### Combined SOURCE/FIXTURE/SELECTION accepted — 2026-10-12
+
+Fresh retained independent actual Astra XHigh accepted the whole bounded story prerequisite
+at1969223f594193a48516d70b0819d8a0d866515d, incorporating immutablecd4 production review.
+The only confirmed Important finding (queued cold child reaching ANSI menu) is closed by the
+existing live AgentConsole input correction. Remaining confirmed Critical/Important findings0;
+no independent improvement requires expansion. Private writer issuance, exact one-story delta,
+original history/source/generation/crosslink/replay guards and required pause/receipt/cold
+original-source cleanup meet bounded source/spec/engineering criteria. Selection9 methods/
+15 planned cases is accepted; unchanged causal Fact hash confirmed. This is SOURCE acceptance,
+not a passing runtime claim. Remote196 ref and134 selected GitHub file bytes/blob hashes were
+verified; source-only selected recovery does not prove complete checkout/build/runtime.
+
+Next authorized step: fresh `scripts/test-csharp.ps1 -ValidateCatalog` ownership audit (new
+methods;0 executed tests), exact task-local `-PlanOnly` preparation, then unchanged causal
+`1536-qte-physical-injury-finalization.json`1/1 first. Freeze its first outcome and prerequisite
+reachability before any correction; guards/lifetime/docs selected controls follow within this
+same bounded prerequisite. Use isolated env.sh and matching fresh binaries, no broad selection
+or budget increase. Build/discovery/runtime at this source acceptance remain UNRUN. Producer
+still forbidden until genuine finalized health Damage followed by missing-occurrence RED;
+new preservation/cold controls and later wound consumer/save-load still UNRUN. Checkboxes unchanged.
 
 ### Established contract and field ownership
 

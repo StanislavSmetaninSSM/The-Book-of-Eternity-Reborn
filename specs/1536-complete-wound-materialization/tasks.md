@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED SOURCE READY / CHECKS UNRUN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; BOUNDED SOURCE ACCEPTED / BUILD-DISCOVERY-RUNTIME UNRUN)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -255,6 +255,15 @@ retained in existing TRX diagnostics. Inventory9 methods/15 cases, selectors, bu
 production and causal Fact/hash stay unchanged. Build/discovery/runtime UNRUN; full SOURCE/
 FIXTURE/SELECTION still pending. Root publishes the three-path correction and requests focused
 recheck; reviewer continues immutablecd4 remainder. No producer or successful cold proof claim.
+
+Fresh actual independent Astra XHigh combined SOURCE/FIXTURE/SELECTION ACCEPTED at
+1969223f594193a48516d70b0819d8a0d866515d (cd4 production plus child correction). Confirmed
+Important cold-input finding closed; remaining Critical/Important0, no independent expansion.
+Accepted selection9 methods/15 planned cases. Remote/source-only selected134-file recovery
+verified; no build/discovery/runtime claim. Next fresh catalog ownership audit and exact
+PlanOnly preparation (0 tests), then unchanged causal1/1 first, immutable first-outcome capture
+and finite guard/lifetime/documentation controls. Original source/hash/checkboxes untouched;
+producer remains forbidden until actual health Damage then missing-occurrence RED.
 
 The plan now fixes the proposed optional QTE `physicalInjury` declaration: closed
 exactly five fields: schemaVersion1, one-based resource command ordinal, explicit maximum1–4, bounded cause
