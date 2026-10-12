@@ -17,26 +17,31 @@ internal static class MortalQteWoundOpportunityProjection
         WoundCarrierCatalog.AfterlifeProfilesPath
     ];
 
-    internal static JsonArray ReadCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+    internal static JsonArray ReadCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease) =>
+        Project(ReadSnapshot(files, lease));
+
+    internal static PendingTurnSnapshotReadAuthority ReadSnapshot(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
     {
         var read = PendingTurnSnapshotReader.ReadCurrent(files, lease,
             PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
                 ["game_state/meta/soul_state.json"], Paths));
         if (!read.Success || read.Snapshot is null) throw Failure(read.Issues);
-        return Project(read.Snapshot);
+        return read.Snapshot;
+    }
+
+    internal static string? ReadObservedRoot(PendingTurnSnapshotReadAuthority snapshot, string path)
+    {
+        if (snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))
+            return new UTF8Encoding(false, true).GetString(snapshot.ReadRequiredBytes(path)).TrimStart('\uFEFF');
+        if (snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal)) return null;
+        throw new InvalidDataException("mortal_qte_projection_uncovered_root: " + path);
     }
 
     internal static JsonArray Project(PendingTurnSnapshotReadAuthority snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         if (snapshot.Realm != "mortal_world") return new JsonArray();
-        string? Read(string path)
-        {
-            if (snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))
-                return new UTF8Encoding(false, true).GetString(snapshot.ReadRequiredBytes(path)).TrimStart('\uFEFF');
-            if (snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal)) return null;
-            throw new InvalidDataException("mortal_qte_projection_uncovered_root: " + path);
-        }
+        string? Read(string path) => ReadObservedRoot(snapshot, path);
         JsonObject? Object(string path)
         {
             var json = Read(path);
