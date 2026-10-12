@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
@@ -20,6 +21,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("foreign")]
     [InlineData("receipt_null")]
     [InlineData("history_null")]
+    [InlineData("missing_candidate")]
+    [InlineData("event_order")]
+    [InlineData("proposal_null")]
     public async Task QtePhysicalInjuryConsumer_ComponentDraftRequiresExactSignedOfferAndObservedAbsence(string mutation)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
@@ -34,6 +38,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             await _fs.WriteFileAtomicAsync(MortalWoundOpportunityReceiptState.StatePath, "null");
         if (mutation == "history_null")
             await _fs.WriteFileAtomicAsync(WoundHistoryState.HistoryPath, "null");
+        if (mutation is "missing_candidate" or "event_order")
+        {
+            var root = JsonNode.Parse((await _fs.ReadFileAsync(MortalWoundOccurrenceState.StatePath))!)!.AsObject();
+            var row = Assert.Single(root["occurrences"]!.AsArray())!.AsObject();
+            if (mutation == "missing_candidate") row["producerCandidateCount"] = 2;
+            else row["acceptedEvents"] = new JsonArray(row["acceptedEvents"]!.AsArray().Reverse().Select(value => value!.DeepClone()).ToArray());
+            await _fs.WriteFileAtomicAsync(MortalWoundOccurrenceState.StatePath, root.ToJsonString());
+        }
 
         // Component admission control. The production baseline writer observes the real
         // finalized occurrence and any deliberately corrupt root; no source or hash is authored.
@@ -56,6 +68,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             "wrong_case" => "{\"opportunityRef\":" + reference + ",\"Decision\":\"none\"}",
             "unknown" => "{\"opportunityRef\":" + reference + ",\"decision\":\"none\",\"owner\":\"player\"}",
             "foreign" => "{\"opportunityRef\":\"foreign_opportunity\",\"decision\":\"none\"}",
+            "proposal_null" => "{\"opportunityRef\":" + reference + ",\"decision\":\"materialize\",\"woundRef\":\"impact\",\"proposal\":null}",
             _ => "{\"opportunityRef\":" + reference + ",\"decision\":\"none\"}"
         };
         var before = BrowserRecoveryTree();

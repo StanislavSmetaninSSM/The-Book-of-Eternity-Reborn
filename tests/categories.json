@@ -2,13 +2,76 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-common-controls",
+            "responsibility": "#1536 source-aware component common publication controls: four theories/11 rows. Genuine actual QTE42 followed by actual StagePlayerTurn43/official Reader, held-source validation and existing common normalizer. NONE/CREATE first publication and retained genuine snapshot exact/changed replay preserve once-only durable state and client IDs. Staged draft/scene/foreign-command drift refuses old cache/guarded publication; legal scene resubmission issues a new common fingerprint. Controlled actual receipt-member publication failure proves whole-tree rollback and exact revalidation/retry once. Source severity/location bounds refuse before publication. All component calls are labelled; full real ProcessPlayerTurn NONE/CREATE proof belongs to separate unchanged causal Facts.",
+            "excludes": "No fabricated valid occurrence/receipt/binding/hash, copied or resigned original snapshot, new allocator/writer/harness, component call labelled full engine proof, archive/new-root/fresh-process qualification, passing producer/projection broad repeats, Windows/C5/journal/provider/model/aggregate checks.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-draft",
+                    "when": "Strict raw/no-offer controls share genuine source setup but have separate ownership; common controls exercise actual accepted cache/publisher boundaries."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentStagedInputDriftRevokesCacheAndPreservesForeignCommand",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentReceiptMemberFailureRollsBackAndExactResubmissionPublishesOnce",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentProposalCannotExceedSealedMaximumOrLocation"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-injury-consumer-source-compatibility",
+            "responsibility": "#1536 exact affected source/API consumers: existing original Mortal capture theory/three rows must pass all six reflection arguments after Core gains its optional internal staging/seal/replay callbacks, preserving pending/terminal/unknown refusal codes, cache and byte boundaries. Existing adapter NONE cold-replay/stale-next-snapshot Fact verifies retained source/current receipt semantics after the replay-plan join. Two methods/four cases; deliberate narrow overlap with existing owners.",
+            "excludes": "No whole resource-pending/mortal-wounds-state category, new synthetic live engine proof, resource/event policy change, broad original/spiritual/C5 suite or repeat of unrelated passing qualifiers.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+                "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.OriginalMortalCapturePipeline_RejectsActualPendingAndTerminalReceiptReplay",
+                        "BookOfEternityClient.Tests.MortalWoundOpportunityAdapterTests.ComposeAcceptedResponse_ColdReplaysTheCurrentReceiptAndRejectsTheOldEventAfterNextSnapshot"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-draft",
-            "responsibility": "#1536 common NONE/CREATE consumer raw draft component admission: one theory/ten rows. Every case first completes an independently owned actual declared QTE source42/maxII with health155 and original occurrence. The production baseline writer and official Reader then provide real next43 signed state. Lawful NONE composes with authenticated pristine receipt/history absence; missing/null/duplicate/case-alias/wrong-case/unknown/foreign draft and signed-present null receipt/history refuse. Exact file tree remains unchanged by composition. This is component admission evidence, not full actual next-turn consumer publication.",
+            "responsibility": "#1536 common NONE/CREATE raw admission components: two theories/16 rows. Actual independently owned QTE42/health155/original occurrence precedes production N43 baseline writer/official Reader or actual StagePlayerTurn. Lawful NONE composes from signed pristine absence; missing/null/duplicate/case alias/wrong-case/unknown/foreign/proposal-null and covered receipt/history null refuse. Complete signed batch event order/candidate count validates before draft. Empty signed offer permits no file; unsolicited or multiple decisions refuse. Composition/validation preserves canonical roots. Component coverage is not full ProcessPlayerTurn consumer publication.",
             "excludes": "No fabricated occurrence/source/binding/hash, canonical empty-root initialization, direct component call labelled full engine proof, selected repetition of passing producer/projection cohorts, receipt publication/replay/atomicity/archive qualification, provider/model/native Windows/C5/journal/broad suite.",
             "changeHints": [
                 "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
                 "BookOfEternityClient/Services/MortalQteWoundOpportunityProjection.cs",
-                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerDraft.cs"
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerDraft.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs"
             ],
             "related": [
                 {
@@ -31,7 +94,8 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDraftRequiresExactSignedOfferAndObservedAbsence"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDraftRequiresExactSignedOfferAndObservedAbsence",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary"
                     ]
                 }
             ]
