@@ -68,11 +68,24 @@ No actual producer is registered yet; common input still uses its old continuati
 path. Full captured wound validation, event projection, finalized reduction/append/LAST reseal,
 finite new controls/catalog/selector and GM publication guidance remain unfinished. No build,
 discovery/runtime has run. Source is WIP, not SOURCE accepted or full implementation READY.
-Known affected consumer: QtePhysicalInjuryAdmission.cs:37/146 directly BeginAcceptedScene on
-genuine engine-staged sources; explicit declared-source requirement needs those lawful/tamper
-fixtures adapted to an internal original-source overload, preserving their exact oracles.
-That finite affected selection must be accounted for before final SOURCE gate; no blanket
-accepted51 rerun. Original causal Fact/hash, all old packets/checklists remain unchanged.
+First bridge WIP is published22f3e32b226a8e9483c132ab10820b16a50172bb with268 exact selected
+GitHub recovery files, no recovery execution. Current second source WIP adapts only the two
+lawful/frozen admission calls to an internal original-source overload using their existing
+genuine staged Reader/context. All three lawful rows, raw declarations and frozen-tamper
+oracles stay exact; public declared calls without source still fail closed. New narrow
+producer-admission owner selects2 methods/4 cases, category3/default8, intentional old-owner
+overlap; malformed/admission51 neighbors are excluded. Full producer selection is now planned
+15 methods/21 cases; remaining new controls/owners/task-local selector are unfinished.
+
+Capsule lifetime now distinguishes active source from historical terminal data. Exact
+original Reader/request/snapshot/generation agreement remains required while any original
+artifact exists, rejecting a partial missing or later foreign source. After actual complete
+original cleanup it requires same-generation canonical terminal continuation/body/source/
+terminal fingerprint, closed runtime and one matching QTE history row; detached coordinates
+remain usable as historical data, without permission for another selection/reduction.
+No new active-QTE archive rebind or owner anti-tamper authority is introduced. All behavior
+checks remain UNRUN and this source path is not accepted yet. Original causal Fact/hash,
+all old packets/checklists remain unchanged.
 Stop all mutations for immediate root WIP publication; resume only after root signal.
 
 Base4c2466dafc569ab8b85316de588a847f3371911d is published/recoverable; selected GitHub
@@ -164,8 +177,10 @@ implementation; old-owner overlap is explicit, global CI unchanged, no aggregate
 | New qte-physical-injury-producer-contracts2/default7 | New QtePhysicalInjuryProducerTests.FinalizedProjection_ZeroOrReplayCannotCreateNewHarm2; FinalCompletion_MissingOriginalSourceOrChangedSiblingCannotPublish2; existing MortalWoundOccurrenceProducerTests.RegisteredProducerSeam_IsTheOnlyProductionCallerOfTheReducer1 and RegisteredProducerSeam_ProjectsOnlyAgainstTheFinalizedResourceEffectBoundary1; MortalWoundOccurrenceStateTests.PlanAppend_RequiresACompleteBatchAndCoalescesOnlyAnExactSourceRetryAcrossConsumedReceipts1 |
 | New qte-physical-injury-producer-continuation3/default8 | Existing QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite1 and BoundedReceipt_AfterSecondRestartFinalizesWithoutOrdinaryTurnReplay1; affected capture/rehydration/selection/awaiting contracts |
 | New qte-physical-injury-producer-documentation2/default7 | Existing PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces1 |
+| New qte-physical-injury-producer-admission3/default8 | Existing GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches3 and QtePhysicalInjury_FrozenMaximumCannotChangeBeforeTerminalSelection1; genuine source-overload adaptation only, exact old oracles |
 
-Total13 methods/17 cases in separate finite cohorts. Registration source guard retains
+Total15 methods/21 cases in separate finite cohorts (original13/17 plus the authorized
+affected admission2/4). Registration source guard retains
 planner-only reducer callers and expects exactly one real implementor at
 Services/QtePhysicalWoundOccurrenceProducer.cs instead of its old zero assertion.
 Pure append controls cover pending/consumed replay without claiming a consumer journey.

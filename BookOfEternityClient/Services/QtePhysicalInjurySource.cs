@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -69,8 +70,51 @@ internal sealed class QtePhysicalInjurySource
         files.EnsureCanonicalWriteLeaseActive(lease);
         if (Turn != acceptedTurn || !files.IsCurrentSessionGeneration(lease, Generation))
             throw Invalid("generation_or_turn_mismatch");
+        if (!files.FileExists("input/turn_request.json") &&
+            !files.FileExists("game_state/control/pending_turn_snapshot.json") &&
+            !files.FileExists(PendingTurnSnapshotAuthority.AuthorityPath))
+        {
+            await ValidateCompletedCleanupAsync(files, lease);
+            return;
+        }
         var current = await CaptureCurrentAsync(files, lease, SessionId, RequestId, SnapshotToken, Turn);
         if (!JsonNode.DeepEquals(_projection, current._projection)) throw Invalid("original_source_changed");
+    }
+
+    // Detached historical data survives actual terminal cleanup. This is not permission
+    // to select or reduce again: active/awaiting states still require all original files.
+    private async Task ValidateCompletedCleanupAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease)
+    {
+        var json = await files.ReadFileAsync(lease, QteDeferredEffectContinuation.StatePath) ??
+            throw Invalid("original_source_missing");
+        var continuation = StrictJsonAuthority.Deserialize<JsonObject>(json,
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "completed QTE source lifetime") ??
+            throw Invalid("original_source_invalid");
+        var fingerprint = continuation["authorityFingerprint"]?.GetValue<string>();
+        var detached = continuation.DeepClone().AsObject();
+        if (!ResourceMaterializationContract.IsAuthorityFingerprint(fingerprint) ||
+            QteDeferredEffectContinuation.RefreshAuthorityFingerprint(detached) != fingerprint ||
+            continuation["state"]?.GetValue<string>() != "terminal" ||
+            continuation["sessionGeneration"]?.GetValue<string>() != Generation ||
+            continuation["acceptedSourceTurn"]?.GetValue<int>() != Turn ||
+            !JsonNode.DeepEquals(continuation["physicalInjurySource"], _projection) ||
+            !ResourceMaterializationContract.IsAuthorityFingerprint(continuation["terminalFingerprint"]?.GetValue<string>()))
+            throw Invalid("completed_source_lifetime_invalid");
+        var runtime = StrictJsonAuthority.Deserialize<JsonObject>(
+            (await files.ReadFileAsync(lease, QteSceneService.QteRuntimePath))!,
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "completed QTE runtime");
+        var history = StrictJsonAuthority.Deserialize<JsonArray>(
+            (await files.ReadFileAsync(lease, QteSceneService.QteHistoryPath))!,
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "completed QTE history");
+        if (runtime is null || runtime["activeScene"] is not null ||
+            continuation["selectedTerminalBinding"] is not JsonObject selected || history is null ||
+            history.Count(row => row is JsonObject entry &&
+                entry["qteId"]?.GetValue<string>() == continuation["qteId"]?.GetValue<string>() &&
+                entry["acceptedAtTurn"]?.GetValue<int>() == Turn &&
+                entry["outcomeId"]?.GetValue<string>() == selected["outcomeId"]?.GetValue<string>() &&
+                entry["grade"]?.GetValue<string>() == selected["grade"]?.GetValue<string>()) != 1)
+            throw Invalid("completed_source_lifetime_invalid");
     }
 
     // The caller must already have validated the continuation body and active runtime crosslink.

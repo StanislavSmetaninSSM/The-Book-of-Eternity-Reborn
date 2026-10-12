@@ -46,9 +46,16 @@ closed canonical recovery/current original validation and copied frozen selected
 on real/preallocation routes; selected response fingerprint binds declaration without
 changing undeclared shape. No real producer registration, event vector, append/LAST reseal,
 new controls/catalog/selection/GM guidance yet; full wound validation/stitching unfinished.
-Build/discovery/runtime UNRUN; not accepted/complete. Existing admission fixture37/146 uses
-direct BeginAcceptedScene after genuine staging; lawful/tamper calls need explicit original-
-source adaptation and finite affected selection, exact oracles preserved/no accepted51 rerun.
+Build/discovery/runtime UNRUN; not accepted/complete. First bridge WIP is published22f3e32b
+with268 selected recovery files exact/no execution. Second source WIP adapts only lawful/
+tamper admission calls to internal source acceptance from their existing genuine staged
+Reader/context; all3 lawful rows/raw/oracles and public missing-source refusal preserved.
+Narrow producer-admission owner2 methods/4 cases3/default8 adds intentional old-owner overlap,
+no malformed/accepted51 rerun. Capsule retains detached historical coordinates after fully
+completed original cleanup only with same-generation canonical terminal body/source/terminal
+fingerprints, closed runtime and one matching QTE history row. Any original artifact requires
+exact original Reader agreement; partial/later foreign source rejects. This historical-data
+lifetime permits no new active selection/reduction and introduces no archive/owner authority.
 Original causal hash/checklists/packets unchanged. Stop mutations for immediate WIP publication,
 resume only after root signal; no commit/push/execution by implementation owner.
 
@@ -78,12 +85,14 @@ once with existing661–708 checks; no second reduction/allocation or arbitrary 
 Resource/effect/occurrence publish together through exact touched guards/common writer and
 actual rollback, no second writer. Profile/explicit max/hard4/null ordinary fields stay approved.
 
-Planned exact13 methods/17 cases (unwritten/undiscovered/UNRUN), full selectors in plan table:
+Planned exact15 methods/21 cases (remaining new controls unwritten, all undiscovered/UNRUN), full selectors in plan table:
 existing causal1/1 qte-physical-injury-finalization5/default10; new actual producer4methods6cases
 qte-physical-injury-producer5/default10; new unit2methods4cases plus existing registration,
 finalized-boundary and consumed-replay3Facts =5methods7cases producer-contracts2/default7;
 existing byte-different terminal and bounded second-restart2Facts producer-continuation3/default8;
-existing QteTerminalResourcePenaltyContract documentation1Fact producer-documentation2/default7.
+existing QteTerminalResourcePenaltyContract documentation1Fact producer-documentation2/default7;
+affected existing lawful3/frozen1 producer-admission2 methods/4 cases3/default8. This authorized
+dependency adds2/4 to original planned13/17; admission raw/malformed/old compatibility untouched.
 Task-local1536-qte-physical-injury-producer.json/catalog will be authored with implementation;
 intentional old-owner overlaps/global CI unchanged, no broad mortal-wounds-state/qte-rules/
 accepted51 or aggregate rerun. New controls have no prior RED. Source guard changes zero

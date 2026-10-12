@@ -679,6 +679,14 @@ public sealed partial class QteSceneService
             offer,
             currentTurnNumber);
 
+    internal Task<QteRuntimeState> BeginAcceptedSceneAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        QteOffer offer,
+        int currentTurnNumber,
+        QtePhysicalInjurySource physicalSource) =>
+        BeginAcceptedSceneCoreAsync(writeLease, offer, currentTurnNumber,
+            acceptedStoryAppend: null, physicalSource: physicalSource);
+
     private async Task<QteRuntimeState> BeginAcceptedSceneCoreAsync(
         FileSystemManager.CanonicalWriteLease? writeLease,
         QteOffer offer,

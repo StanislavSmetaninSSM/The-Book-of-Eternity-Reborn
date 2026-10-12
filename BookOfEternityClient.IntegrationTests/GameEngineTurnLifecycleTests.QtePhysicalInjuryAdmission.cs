@@ -34,7 +34,8 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         var offer = Assert.IsType<QteSceneService.QteOffer>(await fixture.Service.TryReadOfferAsync());
         offer = await fixture.Service.BindAcceptedTurnAuthorityAsync(offer, PhysicalInjurySourceTurn);
-        await fixture.Service.BeginAcceptedSceneAsync(offer, PhysicalInjurySourceTurn);
+        if (declared) await BeginPhysicalInjuryAdmissionWithOriginalSourceAsync(fixture.Service, offer);
+        else await fixture.Service.BeginAcceptedSceneAsync(offer, PhysicalInjurySourceTurn);
 
         var runtime = JsonNode.Parse((await _fs.ReadFileAsync(QteSceneService.QteRuntimePath))!)!.AsObject();
         var frozen = Assert.IsType<JsonObject>(runtime["activeScene"]?["offer"]);
@@ -143,7 +144,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
         var offer = Assert.IsType<QteSceneService.QteOffer>(await fixture.Service.TryReadOfferAsync());
         offer = await fixture.Service.BindAcceptedTurnAuthorityAsync(offer, PhysicalInjurySourceTurn);
-        await fixture.Service.BeginAcceptedSceneAsync(offer, PhysicalInjurySourceTurn);
+        await BeginPhysicalInjuryAdmissionWithOriginalSourceAsync(fixture.Service, offer);
         var runtime = await fixture.Service.ReadRuntimeStateAsync();
         var active = Assert.IsType<QteSceneService.ActiveQteSceneState>(runtime.ActiveScene);
         var frozen = JsonSerializer.SerializeToNode(active.Offer, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!.AsObject();
@@ -164,6 +165,19 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Contains("qte_deferred_continuation_offer_mismatch", failure.Message, StringComparison.Ordinal);
         }
         await AssertPhysicalInjuryProtectedBytesAsync(before);
+    }
+
+    private async Task BeginPhysicalInjuryAdmissionWithOriginalSourceAsync(QteSceneService service,
+        QteSceneService.QteOffer offer)
+    {
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var original = PendingTurnSnapshotReader.ReadCurrent(_fs, lease,
+            [ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath]);
+        Assert.True(original.Success, JsonSerializer.Serialize(original.Issues));
+        var source = original.Snapshot!;
+        var detached = await QtePhysicalInjurySource.CaptureCurrentAsync(_fs, lease,
+            source.SessionId, source.RequestId, source.SnapshotToken, source.TurnNumber);
+        await service.BeginAcceptedSceneAsync(lease, offer, PhysicalInjurySourceTurn, detached);
     }
 
     /// <summary>Uses the real engine snapshot owner and actual physical request; never injects a prevalidated manifest.</summary>

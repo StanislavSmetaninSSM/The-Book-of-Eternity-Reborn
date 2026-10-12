@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-producer-admission",
+            "responsibility": "#1536 producer original-source bridge's affected admission consumers only: two existing integration methods/four cases (absent/declared max1/declared max4 and frozen maximum tamper). Declared fixture acceptance passes its already genuine engine-staged official Reader coordinates through the internal source overload; raw rows and admission/freeze/tamper oracles remain unchanged. Intentional exact overlap with qte-physical-injury-admission.",
+            "excludes": "No malformed admission neighbors or prior full51 rerun, new harm/occurrence assertion, producer/consumer proof from direct Begin alone, fabricated snapshot/token or relaxed missing-source behavior, provider/native Windows/archive-QTE.",
+            "changeHints": [
+                "BookOfEternityClient/Services/QtePhysicalInjurySource.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-admission",
+                    "when": "Select the old complete admission owner only when raw declaration/ingress changes; this source-bridge fixture adaptation affects the two exact lawful/frozen methods alone."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_FrozenMaximumCannotChangeBeforeTerminalSelection"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-story-append-receipt",
             "responsibility": "#1536 affected bounded receipt fixture only: one existing integration Fact/one case. Matching canonical active-skill mastery and the settled six-root pre-staging baseline use the existing indented UnsafeRelaxed serializer; accumulated full skills omit only empty removeActiveSkills, preserving poiseDamage/definition/identity/trigger and the consistent effect carrier. Actual ordinary ProcessPlayerTurn/QTE handoff, no-receipt engine idle, genuine correlated bounded receipt, resumed finalized Damage, exact story and original artifact cleanup. Existing early-return diagnostics preserve every oracle. Intentional exact overlap with qte-story-append-lifetime; select only this owner for the isolated correction.",
             "excludes": "No production/producer/authority/snapshot changes, bypassed validators, fabricated source/continuation/accepted receipt, unrelated passing lifetime/cold/guards/docs/admission rerun, provider/Windows, anti-owner or archive-QTE feature.",
