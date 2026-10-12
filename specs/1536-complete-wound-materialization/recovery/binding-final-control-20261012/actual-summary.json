@@ -1,0 +1,85 @@
+{
+  "Categories": [
+    "spiritual-binding-final-control",
+    "spiritual-binding-wrapper-control"
+  ],
+  "Reasons": [
+    {
+      "category": "spiritual-binding-final-control",
+      "reason": "#1536 B3 existing mixed owner: prove issued A policy allows the wrong-cost edit while ordinary cost validation rejects it beside held terminal echo, then exact A/B progression and final raw validation.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B3 / RESULT-CLOSURE-BINDING rev1",
+        "Genuine saved-choice policy provenance; exact ordinary action-cost mismatch expected3/actual2 with no private/canonical mutation",
+        "Distinct A/B, one committed A, reconstructed accepted A/B, changed-A rejection, final B Resolved without final publication"
+      ]
+    },
+    {
+      "category": "spiritual-binding-wrapper-control",
+      "reason": "Retain the existing force-binding effective replacement-carrier neighbor through the shared strengthened A/B and preservation helper.",
+      "contracts": [
+        "T081-D-POSITION-RESULT-CLOSURE-B3 / RESULT-CLOSURE-BINDING rev1",
+        "Effective raw replacement carrier and ignored sibling precedence, exact B pointer, immutable accepted A and saved choice",
+        "Same-process reconstructed ValidationService evidence only; existing GameEngine cold/warm packets reused without rerun"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "84a5b69f47f2967d4a171ba2e7ab5f0533f2077f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "spiritual-binding-final-control",
+      "Seconds": 7.6748687,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0346069,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0413102,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0904641,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:00:10.1869543",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [
+      "spiritual-binding-wrapper-control-integration-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

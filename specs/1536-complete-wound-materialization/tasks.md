@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (B2 EVIDENCE ACCEPTED; B3 TEST-ONLY WIP)
+## Current original-completion boundary — 2026-10-12 (B2 ACCEPTED; B3 FIRST FAIL FROZEN)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Lorian subsequently accepted
@@ -13,7 +13,8 @@ and resumed original #1536 completion. Lorian subsequently accepted
 implementation/publication. Following SOURCE acceptance on06e133, coordinator
 released one fresh selected preparation and one matching actual; both are frozen.
 B2 evidence is independently accepted on383930; coordinator now releases only
-the B3 test-only refinement below, with no B3 build/discovery/runtime yet.
+the B3 test-only refinement below. Its first separately released matching actual
+failed; no retry, correction or B4/B5 work is released.
 The [current plan](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
 separates source coverage, historical PASS without available raw artifacts and
 retained raw-verified evidence for exact RESULT-CLOSURE-BINDING B2–B5.
@@ -53,7 +54,7 @@ No production/cold change or B2 closure. Independent Astra XHigh EVIDENCE
 ACCEPTED3839309554d916994abf9be9fc129c15bcb79b20 without findings; coordinator
 confirmed22 artifacts/source pins,10 binaries,13 raw cases and9 cleanups.
 
-B3 test-only WIP retains the existing mixed and wrapper Facts. The genuine
+B3 test-only source retains the existing mixed and wrapper Facts. The genuine
 saved-choice policy must match issued A fields and allow the same wrong-cost edit;
 ordinary evaluation must reject exact action-cost mismatch/path expected3/actual2
 while preserving the held terminal echo, private/canonical and submitted bytes.
@@ -62,9 +63,18 @@ existing output records diagnostics/milestones and strict cleanup is reused.
 Task-local `tests/selections/1536-binding-final-control.json`: two existing owners,
 two methods/cases/descriptors, integration only, budgets5/5/default15. No new
 scenario/category/harness, production/spec/contract change or warm/cold rerun.
-SOURCE/fixture/selection review is pending before coordinator fresh preparation
-and matching actual release. No B3 build/discovery/test ran. Freeze first failure
-before any proposed correction; B4/B5 are not started.
+Independent SOURCE/fixture/selection ACCEPTED84a5 without findings, followed by
+coordinator-released fresh integration PlanOnly055613 (2/2/2,zero execution) and
+first matching actual055908: mixed1FAIL, wrapper1UNRUN after fail-fast. Packet
+[recovery/binding-final-control-20261012/manifest.json](./recovery/binding-final-control-20261012/manifest.json)
+freezes19 artifacts,21 source pins,6 DLL/PDB pins, full raw failure and one strict
+cleanup receipt/observed absent root. PolicyAllows=true and EvaluateRejected, but
+only generic `spiritual_continuation_proposal_invalid` occurred at the private
+checkpoint path; exact ordinary-cost diagnostic assertion failed. No causal cost
+RED/product-defect claim or A/B milestone evidence; underlying cause unresolved.
+Read-only diagnosis/minimal proposal follows durable freeze, before independent
+review and any separately released correction. No retry/instrumentation/project
+run or B4/B5 work; all checkboxes and earlier accepted packets remain unchanged.
 
 Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and
 remaining spiritual consumers, lawful T107 initial-stage coexistence/healing,

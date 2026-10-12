@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip"></a>
-## Current #1536 completion checkpoint — 2026-10-12 (B2 EVIDENCE ACCEPTED; B3 TEST-ONLY WIP)
+## Current #1536 completion checkpoint — 2026-10-12 (B2 ACCEPTED; B3 FIRST FAIL FROZEN)
 
 Lorian accepted the bounded force_binding restoration through
 `ceedbe496a0ecc3a3e3cd96518675ba128989099` and resumed original #1536 completion.
@@ -19,8 +19,9 @@ acceptance on `06e133381a26e6c50b4d8051f9aa106c5e0d9b44`, coordinator released o
 fresh selected PlanOnly and then one matching actual; both are now frozen below.
 Independent B2 EVIDENCE ACCEPTED on3839309554d916994abf9be9fc129c15bcb79b20;
 coordinator verified all22 artifacts/source pins,10 binaries and13 raw cases.
-Sequential authorization now releases only the B3 test-only refinement below;
-its build/discovery/runtime gates remain unreleased.
+The B3 test-only refinement passed independent SOURCE review on84a5; coordinator
+released one fresh selected preparation and one matching actual. That first actual
+failed as recorded below; no retry, correction or dependent B4/B5 work is released.
 The prior block's code, three immutable packets and cold invocation count1 remain
 accepted and unchanged. Use the same Linux task branch,
 existing RESULT-CLOSURE-BINDING rev1 and exact
@@ -168,7 +169,7 @@ Independent Astra XHigh EVIDENCE ACCEPTED without findings on
 hashes, actual cases and cleanup. This first result remains immutable. B2–B5/#1536
 checkboxes remain OPEN; the coordinator separately released the next block below.
 
-### Current B3 test-only block — source/selection review pending
+### Current B3 test-only block — first failure frozen; cause unresolved
 
 Retain the two existing Facts in `SpiritualBindingFinalControl.cs`: mixed direct
 binding and force-binding replacement carrier. The shared original-admission helper
@@ -191,10 +192,36 @@ Task-local `tests/selections/1536-binding-final-control.json` selects only
 `spiritual-binding-final-control` and `spiritual-binding-wrapper-control`: two
 existing methods/cases/descriptors, integration only; budgets5/5/default15 with no
 override. No category/global selection, production, specification or contract edit.
-Publish test-only WIP for independent SOURCE/fixture/selection review before fresh
-selected preparation and a matching actual are separately released. No build,
-discovery or runtime has run for this B3 candidate. Freeze a first owning failure
-before any source correction; do not start B4/B5 or broad replay/transport owners.
+Independent Astra XHigh SOURCE/fixture/selection ACCEPTED without findings on
+`84a5b69f47f2967d4a171ba2e7ab5f0533f2077f`; coordinator full diff/remote readback
+passed. Fresh integration-only PlanOnly
+`20261012-055613-402-258195-69a43f0ee0e64b6bb5551fce20a32ef4-categories`
+planned2 cases/2 methods/2 descriptors, zero execution; build109.6518561s with
+73 warnings/0 errors, cleanup passed. No unit build/catalog/repeated preparation.
+
+First actual is immutable in
+[the final-control packet](./recovery/binding-final-control-20261012/manifest.json):
+19 stored/raw-hash-verified artifacts,21 source pins and6 selected DLL/PDB pins;
+compile/runtime are clean84a5. Run
+`20261012-055908-780-258695-ff419f1d1507494f8bf308db63aa38d1-categories`
+planned2 but executed1: mixed1FAIL, wrapper1UNRUN after fail-fast;10.1869543s wall,
+5.4444450s failed case, no timeout/duplicate. One strict cleanup receipt and observed
+absent root, runner cleanup and unchanged source/binary hashes are retained.
+
+The genuine policy allowed the invalid cost, and actual evaluation returned
+Rejected, but its sole issue was `spiritual_continuation_proposal_invalid` at
+`game_state/control/spiritual_wound_capture_checkpoint.json` with message
+"The current private spiritual decision is unavailable." The expected ordinary
+`afterlife_conflict_action_cost_mismatch` was absent, so the exact diagnostic
+assertion failed. This is not accepted causal ordinary-cost RED or an established
+production defect. The underlying caught failure is unresolved. A commit, distinct
+B IDs/pointers, cumulative/replay/final-preservation milestones were not reached;
+no new proof of those obligations is claimed. The prior B2 evidence remains accepted.
+
+Next step after durable freeze is read-only causal diagnosis and independent review
+of a concrete minimal proposal. Keep the oracle strong; no instrumentation/project
+run, retry or production/test correction is released here. Do not start B4/B5 or
+broad replay/transport owners. B2–B5/#1536 checkboxes remain OPEN; cold stays1.
 
 ### Accepted recovery and cold-blocker context — 2026-10-12
 

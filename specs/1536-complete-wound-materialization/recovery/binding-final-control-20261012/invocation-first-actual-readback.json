@@ -1,0 +1,60 @@
+{
+  "source": "84a5b69f47f2967d4a171ba2e7ab5f0533f2077f",
+  "compileSource": "84a5b69f47f2967d4a171ba2e7ab5f0533f2077f",
+  "runtimeSource": "84a5b69f47f2967d4a171ba2e7ab5f0533f2077f",
+  "run": "20261012-055908-780-258695-ff419f1d1507494f8bf308db63aa38d1-categories",
+  "plannedCases": 2,
+  "caseCount": 1,
+  "passed": 0,
+  "failed": 1,
+  "unrun": [
+    "OriginalSpiritualC2_ForceBindingWrapperClosesAThenFinalControl"
+  ],
+  "distinctCleanupReceipts": 1,
+  "allObservedOwnedRootsAbsent": true,
+  "runtimeBinaryHashesUnchanged": true,
+  "sourceHashesUnchanged": true,
+  "sourceCleanAtReadback": true,
+  "actualInvocations": 1,
+  "priorAcceptedColdCount": 1,
+  "classification": "Expected ordinary-cost diagnostic not reached: policy allows, Evaluate Rejected returns only generic spiritual_continuation_proposal_invalid. Inner cause unresolved. Not accepted as causal ordinary-cost RED; A commit/B/replay/final preservation assertions not reached.",
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingClosesAThenSeparatelyCorrectsFinalControl",
+      "outcome": "Failed",
+      "duration": "00:00:05.4444450",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-9fe07370f92d4e2aa894afe9145660ae",
+          "wrapper": false,
+          "mixed": true,
+          "phase": "invalid_cost_with_held_echo",
+          "PolicyAllows": true,
+          "disposition": "Rejected",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_continuation_proposal_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-9fe07370f92d4e2aa894afe9145660ae",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ],
+      "errorMessage": "Assert.Single() Failure: The collection did not contain any matching items\nExpected:   (predicate expression)\nCollection: [[Error/ClientOwnedSurface] game_state/control/spiritual_wound_capture_checkpoint.json: The current private spiritual decision is unavailable.]",
+      "stackTrace": "   at BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.VerifyBindingFinalControlAsync(ResourceMaterializationTestContext context, CanonicalWriteLease lease, JsonObject correctedA, Byte[] selectedCommand, IReadOnlyDictionary`2 preserved, Boolean wrapper, Boolean mixed, SpiritualWoundDependentDraftPolicy policy) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingFinalControl.cs:line 100\n   at BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.VerifyOriginalLastBindingAsync(Boolean strong, String alternative, Boolean continueFinalControl, Boolean wrapper) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs:line 320\n   at BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.VerifyOriginalLastBindingAsync(Boolean strong, String alternative, Boolean continueFinalControl, Boolean wrapper) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs:line 321\n--- End of stack trace from previous location ---"
+    }
+  ]
+}
