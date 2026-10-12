@@ -5,7 +5,57 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (ORIGINAL B2–B5 CHILDREN ACCEPTED; PARENT #1536 OPEN)
+## Current T070 boundary — 2026-10-12 (SOURCE/DESIGN ONLY; BLOCKED_FOR_IMPLEMENTATION)
+
+Existing T070 owns the [first-vertical source/design checkpoint](./plan.md#t070-first-vertical-source-design-2026-10-12)
+on accepted ea0f5e6809bb87a70d5dcfd08b39d5c7a54dbac7. No implementation/build/
+discovery/runtime or checkbox closure is authorized. B2–B5 remain accepted33PASS;
+first B3 oracle FAIL, all packets and GameEngine cold count1 stay unchanged.
+
+QTE is the recommended real terminal owner: existing validated offer, preselection
+freeze and finalized exact player resource damage (not necessarily health). The
+proposed physical projection must check the sealed canonical definition/instance,
+player owner, exact typed health key and MortalHealthCapacityV1 authority; it cannot
+treat energy or other resource loss as injury. Combat/narrative source labels
+and formal/hazard effect presence supply no stronger physical-injury authority.
+None currently provides trusted physical profile/location/severity semantics.
+The **single unresolved decision** is whether a narrow closed physical-result
+declaration in the existing preselection QTE offer may establish those semantics,
+and which client-owned bounded-ceiling authority constrains severity. This grammar
+is proposed, not already approved by #1536. No HP formula, fixed cap, raw current-GM
+harm/cap trust, generic registry or producer stub fills the gap. FR-007 permits
+explicit causal/severity declarations in principle; FR-004/FR-005 retain GM choice
+within, and client enforcement of, the sealed envelope. They do not already approve
+or implement this QTE grammar or ceiling derivation.
+
+The plan separates existing fields from the proposed one-owner extension; traces
+real source-N authority freeze (original request/snapshot missing today), final
+resource/effect result → registered draft → pure reducer → live pending/consumed
+PlanAppend/common atomic publication → next signed snapshot → existing Mortal
+adapter/StateDistributor/raw validator → Prepare/effect/Finalize/canonical anchor →
+one consume/receipt and readable output. FR-008 requires wound/effect/resource/
+history/narration/notification/projection publication in the same real common
+transaction. After the authority decision, the same implementation block must update
+the existing QTE guide/runtime and daemon prompts, worked example/manifest and
+affected guards listed in the plan; no game capability or GM example changes now.
+Seven supported adapter tokens still have
+zero production implementations; pure helpers and an unreachable adapter are not a
+working vertical. First recommended scope is player create/none, no inferred
+worsening/guarantee, existing wounds/effects/recovery preserved and a complete lawful
+treatment route required at creation. Treatment/healing remains outside this slice.
+
+Planned bounded cohorts are real-route causal create/none, source/owner negatives,
+identity/rollback/replay and actual save-loader/new-root/fresh-registry recovery;
+no test IDs/counts/results are asserted. FR-066 governs occurrence/decision replay;
+FR-063 full treatment request/reservation/T067 re-resolution/six-argument publication
+requirements remain mandatory when that work is added, not waived by binding evidence.
+Next is independent review of this published blocked-design/provenance checkpoint
+now; the coordinator authority decision must precede concrete grammar finalization
+and separate implementation release. Full T070/#1536 remain OPEN; no further project
+run, paid provider, Windows/HOME-PC or other feature work. No spec/contract/data-model,
+code, category, existing packet or global CI changes in this checkpoint.
+
+## Accepted original-completion boundary — 2026-10-12 (B2–B5 CHILDREN; PARENT #1536 OPEN)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Lorian subsequently accepted

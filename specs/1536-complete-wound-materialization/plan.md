@@ -8,8 +8,157 @@ plus the approved Superpowers design at
 `docs/superpowers/specs/2026-08-26-complete-wound-materialization-design.md`.
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
+<a id="t070-first-vertical-source-design-2026-10-12"></a>
+## Current T070 first vertical — 2026-10-12 (SOURCE/DESIGN ONLY; BLOCKED_FOR_IMPLEMENTATION)
+
+Base is accepted `ea0f5e6809bb87a70d5dcfd08b39d5c7a54dbac7` on the same Linux
+`1536-wound-b2-cloud-20261012` branch. This checkpoint records read-only findings
+under existing T070; it authorizes no implementation, build, discovery, runtime,
+installation or feature closure. Original B2–B5 remain accepted below:33PASS,
+immutable first B3 oracle FAIL, retained authority/GM/warm evidence and cold count1.
+Full T070, parent RESULT-CLOSURE and #1536 remain OPEN.
+
+### Candidate owners and the single authority decision
+
+| Candidate | Existing source fact | First-vertical assessment |
+| --- | --- | --- |
+| QTE terminal | `GameEngine.TurnLifecycle.cs:2224` handles a validated ordinary-turn offer; `QteSceneService.cs:635,692,1735` accepts/freezes the offer before play, then selects an exact chapter/action/grade/outcome. `QteTerminalResourceOutcome.cs:823` admits exact player damage commands and checks applied/replayed resource transitions. | Recommended real owner: generic player resource Damage with a preselection freeze. Current projection does not require health; energy/other resource loss is not physical injury. Profile/location/severity authority is also absent. |
+| Ordinary combat/narrative | `ResourceAcceptedTurnInputComposer.cs:174` admits `combat_outcome`/`narrative_outcome` source kinds and the common reducer finalizes damage. `GameResponse.CombatLogMarkdown` is prose. | No traced typed finalized physical-harm owner supplies the missing injury semantics; a source label or health change cannot substitute. |
+| Formal/hazard effect source | Existing `EffectSourceAuthority` binds source/target authority; the common resource/effect boundary finalizes effects and resource changes. | Source presence or an applied effect is not proof of a particular physical injury, location or ceiling. No real Mortal producer implementation exists for these kinds. |
+
+**Unresolved decision:** may a narrowly defined, validated **preselection QTE
+physical-result declaration** establish the missing causal profile/location semantics,
+and which client-owned bounded-ceiling authority must constrain its severity?
+The approved #1536 occurrence contract does not itself approve this new authoring
+grammar. FR-007 permits explicit causal/severity declarations in principle; FR-004
+reserves the GM choice of none through the permitted maximum, and FR-005 requires
+client rejection outside the sealed envelope. These rules do not already implement
+or approve this QTE schema or its missing ceiling derivation. No existing trusted
+source found in these paths answers that decision.
+Coordinator approval of this one-owner authority contract is required before an
+implementation design can claim those fields are derivable. Do not invent an
+HP-to-severity formula, a fixed cap, a wound catalog, a producer stub, or trust a
+new current GM response's harm/cap merely because it is well-shaped.
+
+The proposed extension belongs to the **existing** `output/qte_offer.json` terminal
+outcome, ordinary `ValidationService.PlayerAndInventory.cs` QTE offer/terminal
+validator (terminal loop around718–804; resource checks953), typed
+`QteSceneService.QteTerminalOutcome` and existing deferred continuation. It is not
+a new registry or parallel pipeline. Its closed field responsibilities, pending
+that decision, are:
+
+| Value | Existing authority or proposed responsibility |
+| --- | --- |
+| Selected command/target | Bind one exact terminal `responseFragment.resourceChanges` command using its existing ordinal/event identity and `mortal_world/player/player_current` owner. Proposed physical eligibility must additionally resolve the sealed exact definition/instance with typed `ResourceKey == "health"`, `MortalHealthCapacityV1` capacity authority and player binding (`ResourceDefinitionCatalog.cs:1563–1588`, `ResourceBootstrapStateBuilder.cs:104–139`). Current QTE accepts generic resource Damage; resource names/prose, energy or other resource damage grant no physical authority. |
+| Physical profile, readable cause/target, allowed location kinds | Currently absent. Proposed declaration must be validated before acceptance under the approved one-owner causal rules; later source-shaped GM correlation cannot establish or broaden them. Exact field names/grammar await the authority decision. |
+| Outcome maximum and hard ceiling | Currently absent. A declaration may not grant its own unrestricted authority. The approved client-owned rule must establish the ceiling and constrain the selected physical outcome; no conversion from HP amount is assumed. |
+| Source and replay identity | Derive from frozen accepted QTE/terminal/damage identity and genuine source context, never caller event IDs, hashes or arbitrary source strings. Preserve complete ordered accepted-event projection and candidate ordinal/count. |
+| Worsening/minimum/guarantee | First slice is create/none only: no inferred worsening, no guaranteed minimum or guarantee. Reject supplied unsupported coordinates/guarantees; retain other active wounds unchanged. Wider T070 support remains open. |
+
+### Existing freeze, finalization and missing connections
+
+1. GM authors the offer file through the ordinary file-GM turn; offer validation
+   precedes `TryReadOfferCoreAsync`/`StrictJsonAuthority.Deserialize<QteOffer>`
+   (`QteSceneService.cs:225–245`). `GameEngine.TurnLifecycle.cs:2255` binds the
+   accepted source turn. `StartAcceptedSceneAsync` then calls
+   `QteDeferredEffectContinuation.CaptureAsync` before any action/grade selection;
+   it freezes offer hash and source/target/resource roots, atomically persists
+   continuation/runtime and removes the public offer (`QteSceneService.cs:692–750`).
+   The proposed physical declaration must participate in that same validation/freeze.
+2. Preserve genuine source-N session/request/snapshot/turn authority at acceptance.
+   Current continuation root (`QteDeferredEffectContinuation.cs:243–277`) retains
+   session/generation/source turn and sealed roots, but not the original validated
+   player request ID/snapshot token. `QteDeferredAcceptedMechanicsPlanner.cs:721`
+   currently uses continuation-derived request/token and an empty accepted-event
+   array. Those existing resource-continuation coordinates are not proof of the
+   original FR-066 source binding; the producer must not fabricate a replacement.
+3. After actual terminal selection and **complete** common resource/effect
+   finalization, a real registered `IMortalWoundOccurrenceProducerDraft.Project`
+   may project the exact canonical health definition/instance/player-bound Damage
+   transition plus approved frozen physical authority. This is a new eligibility
+   check over existing typed resource authority, not a new health-role grammar.
+   Positive applied damage is necessary, not sufficient. Unselected,
+   declined/practice, harmless/zero-applied or awaiting-effect-receipt paths produce
+   no occurrence. Exact replay reuses prior pending/consumed identity; changed
+   semantics under its producer key conflict. No occurrence is published at the
+   earlier terminal-selection call or from requested damage alone.
+4. `AcceptedMechanicsPlanner.ReduceMortalWoundOccurrenceProducers:3274` currently
+   has no production caller/implementation registration. Its reducer's `PlanAppend`
+   call validates a batch against empty state, not live publication. Wire the real
+   registered draft after finalized effects/resources, then live
+   `MortalWoundOccurrenceState.PlanAppend:126` against signed pending **and consumed**
+   roots; append the complete batch in the same common atomic source publication.
+   No second reducer/writer. QTE common-plan input/publication must include exact
+   occurrence/receipt before-images and event authority, not today's missing wound
+   fingerprints/empty events in `QteDeferredAcceptedMechanicsPlanner.BuildCommonPlan`.
+5. Only the next ordinary signed snapshot N+1 exposes that committed occurrence.
+   `WoundAcceptedTurnSnapshotContract:61–67` already inventories occurrence/receipt
+   roots; source-N coordinates remain provenance while active N+1 authorizes the
+   decision. Add the missing reachable dispatch to
+   `MortalWoundOpportunityAdapter.ComposeAcceptedResponse:56` (currently no production
+   caller), then the existing typed `StateDistributor` overload. Raw `woundDecisions`
+   without that accepted input must continue to reject (`StateDistributor.cs:256`).
+6. Keep independent signed-evidence checks in `ValidationService.WoundMaterialization`.
+   For materialize, reuse `WoundAcceptedTurnPlanner.Prepare → effect batch → Finalize`
+   and `MortalWoundCanonicalAnchorPlan` from canonical world minutes; do not write
+   carrier/identity/history by hand. Connect the currently uncalled live
+   `MortalWoundOpportunityReceiptState.PlanConsumeAndAppend:246` so one common
+   transaction consumes one occurrence and appends exactly one receipt. `none`
+   creates no wound/history row; materialize agrees with exactly one create history
+   transition. Under FR-008, wound creation, linked effects, resources, physical history,
+   narration, notification and projections must publish in that same real common
+   transaction; readable output cannot be a later independent write.
+
+### First-slice criteria and bounded future checks
+
+Recommend a genuine Mortal-player physical create/none vertical, preserving existing
+wounds, effect lineage and recovery state. The freely authored new wound still needs
+its complete lawful treatment route (FR-057), exact consequence envelope and explicit
+recovery policy; client-owned anchors come only from accepted creation. No healing,
+re-trauma, diagnosis, new provider/UI flow or other producer kind is implemented here.
+After the authority decision, the same implementation block must synchronize the
+existing QTE offer/terminal guidance in `CLI_API_Specification.md`, the runtime
+`GameEngine.TurnLifecycle.cs` prompt and `CLI_Agent_Daemon_Specification.md`, plus
+`Examples/E_CLI_QTE_Offer.txt`, its `example_validation_manifest.json` entry and
+affected existing prompt/example/source guards. This docs-only checkpoint changes
+no game capability and therefore needs no new GM example now.
+The following are planned cohorts, not new test IDs/counts or observed results:
+
+- Real-route causal controls: accepted QTE input/selection and actual finalized health
+  damage through source publication, next signed snapshot, real none/materialize
+  adapter/distributor/validator, one receipt and readable output. No hand-built
+  candidate, binding, occurrence, fingerprint, carrier or receipt as proof.
+- Owner/negative controls: absent/unapproved physical semantics, wrong target/domain/
+  location/cap, non-health damage or mismatched health definition/instance/owner,
+  changed frozen offer/command, unselected or harmless/zero-applied
+  result, effect wait, forged raw decision, unsupported guarantee/worsening, incomplete
+  or changed source batch, and preservation of pre-existing wounds/effects.
+- Identity/atomicity controls: exact source retry before/after consumption; exact
+  decision replay and conflicting decision; stale correlation after a later snapshot;
+  failures during source and decision publication restore all owned state/output and
+  do not duplicate resource damage, occurrence, wound, history or receipt.
+- Save/load controls: use actual published save bytes and the actual save loader into
+  a new root with fresh process-local registries; prove pending and consumed replay,
+  signed-snapshot validation and once-only output. New filesystem instances alone
+  do not establish absence of old registry authority; choose the required isolated
+  process evidence in the reviewed fixture design, not a binding-fixture waiver.
+
+FR-066 governs this occurrence/decision cold replay. FR-063 specifically requires
+pre-resolution treatment reservation, the complete immutable request, reconstruction
+under a new root/fresh registries, ordinary T067 re-resolution, and typed six-argument
+T070 publication/rollback. Those treatment operations are outside create/none; their
+requirements remain mandatory when treatment/healing is added and are not accepted
+by this slice. No imported same-process/Format1 concession from B2–B5 waives them.
+
+Next: publish this docs WIP for independent review of the current blocked design
+and source provenance now. The coordinator must resolve the single physical-result/
+ceiling-authority decision before finalizing the concrete grammar and separately
+releasing implementation. No current build/test/runtime is planned or authorized, no broad audit or
+new evidence infrastructure. Windows evidence remains user-provided; no paid provider,
+Windows/HOME-PC, main/PR/issue/CI or optimization work.
+
 <a id="current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip"></a>
-## Current #1536 completion checkpoint — 2026-10-12 (ORIGINAL B2–B5 CHILDREN ACCEPTED; PARENT #1536 OPEN)
+## Accepted B2–B5 completion checkpoint — 2026-10-12 (PARENT #1536 OPEN)
 
 Lorian accepted the bounded force_binding restoration through
 `ceedbe496a0ecc3a3e3cd96518675ba128989099` and resumed original #1536 completion.
