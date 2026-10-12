@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "spiritual-binding-authority-preflight",
+      "reason": "#1536 B2 GREEN: all21 raw-profile and signed-cost cases must pass after the force_binding-only gate alignment; preserve first causal RED packet.",
+      "contracts": [
+        "#1536/T081-D-POSITION-RESULT-CLOSURE-B2 / RESULT-CLOSURE-BINDING rev1",
+        "MetaMiscStateFiles exact raw soul profile, no normalization; force_binding tier3, unknown-art exclusion, integer0..5 and required wound arts",
+        "Signed original exact force_binding authority; player6->3->1 and guardian6->4->2; unchanged actors, four spend intents, no applied publication"
+      ]
+    },
+    {
+      "category": "spiritual-binding-authority-documentation",
+      "reason": "Two existing changed binding documentation/example guards validate exact authority terminology, ordinary cost arithmetic, existing A/B boundaries and truthful fragment coverage without unrelated documentation matrices.",
+      "contracts": [
+        "#1536/T081-D-POSITION-RESULT-CLOSURE-B2 / existing force_binding authority clarification",
+        "GM matrix and binding worked example/manifest synchronized with raw soul validation",
+        "No new art acquisition/UI/schema; fragments do not prove signed admission or publication"
+      ]
+    }
+  ]
+}

@@ -17,8 +17,8 @@ ordinary-profile preflight → source/fixture gate → fresh selected PlanOnly b
 on `d6284c72b3d5d67deed9027b893de4c4627b144a`; coordinator diff/remote/clean-tree/
 diff-check verification also passed. The subsequent staged implementation release
 is recorded below. First causal RED and preparation are now preserved in the
-current plan/packet; independent causal-RED/evidence review is next before any
-production correction. No B2–B5 checkbox changes or gameplay acceptance.
+current plan/packet and independently accepted; the narrow correction's
+SOURCE/selection review is next before build/GREEN execution. No B2–B5 checkbox changes or gameplay acceptance.
 
 The old cold-UNRUN statement is historical: #1553's preserved packet has composed
 9 PASS, cold force-binding 1 FAIL (`afterlife_combat_profile_unknown_art`) and
@@ -27,6 +27,18 @@ its tier/cost/strong prerequisites and actual committed B cut; same-process fres
 engine recovery does not prove a new process. Earlier pauses are superseded only
 for this authorized recovery/design work. Remaining #1536 producers, treatment,
 spiritual healing/recovery and UI work remain open; category-only policy applies.
+
+Narrow correction WIP 2026-10-12: accepted/published first RED packet5f46c6a4
+permits only the existing soul whitelist's `force_binding` addition. Shared strict
+checks and original seed/cost/strong/cold boundaries remain unchanged. Existing GM
+matrix, binding example/manifest and two existing guards now clarify exact tier3,
+cost2 and AP chronology; no new schema/UI/art registry. Task-local GREEN selection
+`tests/selections/1536-binding-authority-green.json` contains authority21 plus two
+existing binding docs/example Facts through a finite owner. Publish before SOURCE/
+selection review; no corrected-source build/GREEN/cold execution yet. After review,
+fresh selected preparation, one changed-owner audit and exact PlanOnly using matching fresh binaries;
+coordinator gates actual. Details and no-update Mortal/prompt rationale are in plan.
+B2–B5 stay OPEN; the first RED packet is immutable.
 
 First RED checkpoint 2026-10-12: SOURCE/FIXTURE/SELECTION accepted6236a736;
 one fresh catalog audit PASS676categories/11510methods (zero execution), then

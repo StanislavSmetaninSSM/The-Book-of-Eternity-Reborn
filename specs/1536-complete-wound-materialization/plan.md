@@ -37,6 +37,60 @@ are not build/runtime qualification. Preserve WorldQuest/Meta optimizations and
 all accepted correctness fixes. No main/merge/issue closure, HOME-PC, paid provider,
 timeout increase or performance redesign belongs to this block.
 
+### B2 narrow correction / GREEN-source WIP — 2026-10-12
+
+First RED packet checkpoint `5f46c6a4113b5cf3a49308c7823f867c6dcd9136` is now
+published and independently accepted for causal-RED/evidence content. Coordinator
+verified all23 artifact hashes,12 source pins,10 binary pins and21 case/cleanup
+readbacks. The initial plain push failed with “could not read Username”; existing
+authenticated gh access restored non-force persistence through a transient helper,
+without stored credential/config changes. The earlier failure's cause is not
+established. The first packet remains immutable.
+
+Current production diff is only `allowedArtIds.Add("force_binding")` after the
+existing SpiritualArts-derived soul whitelist in
+`ValidationService.AfterlifeSpiritualConflict.cs::ValidateAfterlifeCombatProfile`.
+Unknown keys, integer0..5, required wound arts and existing arts retain their
+shared checks. No registry/SpiritualArts/UI/acquisition/recover_spiritual_power,
+seed, rank, cost, leverage, A/B/cold fixture, storage hook or timeout change.
+The only test-authority adjustment is equivalent Assert.Single predicate syntax
+for the newly reported xUnit2031 warning; first RED assertions/evidence are retained.
+
+Synchronized `OtherGuides/Afterlife_Contract_Matrix.md`, the existing
+`spiritual_wound_binding_result_closure_v1` worked example and its manifest entry:
+exact pre-turn soul/player force_binding tier3, separate binding tier0, guardian
+pressure1/actor identity, last cost2, player6→3→1 and guardian6→4→2. Three added
+partial JSON fragments are existing-file/audit excerpts, not a new response
+schema, tier grant or claimed full turn. Existing binding documentation and example
+Facts now check the clarification, exact profile keys, cost-rule arithmetic,
+chronology and required manifest text; signed authority/publication limits remain
+explicit. Mortal World surfaces require no update because only afterlife soul
+validation changes. CLI/daemon/worker prompt entrypoints already direct the GM to
+the afterlife matrix and exact existing response fields; no command, action,
+transport, receipt or authoring envelope changed, so no entrypoint change is needed.
+The approved #1536 spec/data-model/live contract stay unchanged.
+
+Finite GREEN selection `tests/selections/1536-binding-authority-green.json` contains
+`spiritual-binding-authority-preflight` (21cases/5methods) and new
+`spiritual-binding-authority-documentation` (the two existing Facts, one unit and
+one integration). Total23cases/7methods, three descriptors, no frontend; unchanged
+preflight5-minute and documentation2-minute bounds. Broad documentation owners
+retain these methods but are not selected; no test method is added/removed.
+No result-dependency/warm rerun is selected: this diff changes profile admission,
+not saved-wound/result permission construction; accepted B1 and archived direct
+controls remain evidence for unchanged algorithms. Reviewer must assess that
+selection sufficiency rather than infer it from file names.
+
+Publish this coherent WIP before independent SOURCE/selection review. No build,
+catalog or GREEN/cold test has run on this correction. After SOURCE acceptance,
+fresh selected integration+unit preparation precedes one ownership audit with
+`-ValidateCatalog -NoBuild` for the changed finite owner, then exact task-local
+`-PlanOnly -NoBuild` uses those unchanged fresh binaries. Pin source and
+compiled/runtime DLL/PDB bytes before the matching actual. Do not repeat builds,
+PlanOnly or the audit without a relevant change or unresolved failure. Coordinator gates cheap GREEN; only reviewed complete GREEN releases the
+one existing cold owner, with its15-minute/8+8 limits and immutable first result.
+B2–B5 remain OPEN; no parent acceptance follows from a whitelist correction.
+
 ### B2 first causal RED preserved — 2026-10-12
 
 Independent SOURCE/FIXTURE/SELECTION review and coordinator inspection accepted
@@ -274,9 +328,9 @@ or rerun of unchanged passes. After two unsuccessful corrections of the same
 problem, stop and revisit the hypothesis. A real tool/security denial stops the
 operation with its exact text/ID recorded; no bypass. B2–B5 stay OPEN even if this
 one blocker passes until their existing coherent review/evidence obligations are
-met. The next bounded action is independent causal-RED/evidence review of the
-published packet above. Preserve first outcomes before correction; production and
-the single cold owner remain gated by the reviewed RED/GREEN prerequisites.
+met. The next bounded action is independent SOURCE/selection review of the
+published narrow correction above. Preserve the accepted first RED packet;
+GREEN execution and the single cold owner retain their stated gates.
 
 ## Historical completion checkpoint — resumed 2026-09-30
 

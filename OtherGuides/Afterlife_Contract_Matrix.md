@@ -911,6 +911,18 @@ evidence does not independently authorize execution or publication.
 
 ### spiritual_wound_binding_result_closure_v1
 
+Existing player `force_binding` authority uses the exact pre-turn
+`soul_state.afterlifeCombatProfile.artTiers.force_binding` and the corresponding
+player profile `standardArts.force_binding`; it is not an alias for `binding`.
+Ordinary raw soul validation accepts this supported key and still requires integer
+0..5 tiers and explicit `spiritual_resilience` / `spiritual_healing`; unknown art
+keys remain invalid. This does not add an upgrade, acquisition rule or UI entry.
+Read existing authority; do not grant or rename a tier to repair an exchange.
+At force_binding tier 3, baseCost 5 / minCost 2 gives effectiveCost 2: player AP
+3→1. The worked strong example preserves player AP 6→3→1 and guardian AP 6→4→2,
+with guardian pressure tier 1 and the same actor mirror. Strong leverage and the
+separate A/B response boundary below remain unchanged.
+
 This narrower case uses the same `dependent_draft` transport for a last
 `binding`/`force_binding` whose saved position wound removes its control
 prerequisite. Response A changes only client-proved arithmetic, independently

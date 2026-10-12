@@ -9,9 +9,9 @@
       "realms": ["Chaos Sea", "Shining Abode"],
       "description": "Saved position wound removes a last binding prerequisite while dice remain in player_success; GM corrects exchange result and final control in separate responses.",
       "validationKind": "focused-fragment",
-      "focusedFragmentReason": "SpiritualBindingResultClosureWorkedExample_ValidatesArithmeticControlAndSeparateResponses checks the authored fragments with retained dice validation and the strict continuation parser.",
+      "focusedFragmentReason": "SpiritualBindingResultClosureWorkedExample_ValidatesArithmeticControlAndSeparateResponses checks the authored fragments with retained dice validation, the strict continuation parser, and exact-key force_binding profile/cost arithmetic.",
       "coverageLimit": "Partial fragments do not prove original owner authority, issued permissions, cold journal replay, raw cumulative admission or final publication; genuine GameEngine integration owns those boundaries.",
-      "requiredText": ["spiritual_wound_binding_result_closure_v1", "saved wound choice", "13/10", "15/10", "margin5", "margin3", "player_success", "no_effect", "before.controlState", "dependentDraftFields", "continuationId", "woundDecisions", "Ready", "detached final-control echo", "zero original exchanges remaining"]
+      "requiredText": ["spiritual_wound_binding_result_closure_v1", "saved wound choice", "13/10", "15/10", "margin5", "margin3", "player_success", "no_effect", "before.controlState", "dependentDraftFields", "continuationId", "woundDecisions", "Ready", "detached final-control echo", "zero original exchanges remaining", "artTiers.force_binding", "standardArts.force_binding", "player AP 6→3→1", "guardian AP 6→4→2", "unknown arts remain invalid", "No new art upgrade or UI entry"]
     },
     {
       "contractId": "spiritual_wound_dependent_frontiers_v1",

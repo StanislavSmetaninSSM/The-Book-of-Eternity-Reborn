@@ -13162,3 +13162,72 @@ response order applies to force_binding after effective +2 falls to +1 when
 boolean setup:true is its only setup; ready setup or decisive success can retain
 the strong prerequisite. These fragments check authorable arithmetic and response
 shape; genuine GameEngine tests own issuance, replay and publication.
+
+Strong force_binding authority and cost excerpt (same existing contract): these
+are partial reads of already validated pre-turn files and authored exchange audits,
+not a new response envelope or permission to grant tiers. Read the exact
+artTiers.force_binding and matching player standardArts.force_binding, never a
+binding alias. Integer 0..5 and required spiritual_resilience/spiritual_healing
+checks still apply; unknown arts remain invalid. No new art upgrade or UI entry
+is introduced. The original strong prerequisite is still player_dominant, ready
+setup or decisive success; boolean setup:true alone does not preserve force_binding
+after effective +2 falls to +1. Preserve its saved wound and signed dice5/15/13/11.
+
+Existing soul_state.json excerpt:
+
+```json
+{
+  "currentRealm": "Chaos Sea",
+  "afterlifeCombatProfile": {
+    "spiritFocusTier": 0,
+    "artTiers": { "pressure": 0, "binding": 0, "force_binding": 3, "spiritual_resilience": 0, "spiritual_healing": 0 }
+  }
+}
+```
+
+Existing afterlife_entity_profiles.json excerpts; retain exact player and guardian
+identities and the guardian's matching pressure-tier actorArtTierSnapshot in the
+conflict. These partial profiles do not replace complete canonical profiles:
+
+```json
+{
+  "profiles": [
+    { "actorType": "player_soul", "actorId": "player_soul", "standardArts": { "pressure": 0, "binding": 0, "force_binding": 3 } },
+    { "actorType": "guardian", "actorId": "guardian_frame", "standardArts": { "pressure": 1 } }
+  ]
+}
+```
+
+Current exchange audit excerpts preserve player AP 6→3→1 and guardian AP 6→4→2.
+Last force_binding baseCost 5 minus exact tier 3, bounded by minCost 2, costs 2;
+3→1 is the balance transition. The earlier pressure costs 3 for the player and
+2 for the guardian; the guardian's last pressure also costs 2. The saved position
+wound does not rewrite these original expenses. GM authors the audits, while the
+client validates their exact pre-turn authority and owns resource publication.
+
+```json
+{
+  "activeConflict": {
+    "exchangeLog": [
+      {
+        "exchangeId": "exchange_conflict_frame_42", "operationType": "pressure",
+        "actionCostAudit": {
+          "player": { "operationType": "pressure", "baseCost": 3, "minCost": 1, "artTier": 0, "effectiveCost": 3, "before": 6, "after": 3 },
+          "opposition": { "operationType": "pressure", "baseCost": 3, "minCost": 1, "artTier": 1, "effectiveCost": 2, "before": 6, "after": 4 }
+        }
+      },
+      {
+        "exchangeId": "last_binding_result", "operationType": "force_binding",
+        "actionCostAudit": {
+          "player": { "operationType": "force_binding", "baseCost": 5, "minCost": 2, "artTier": 3, "effectiveCost": 2, "before": 3, "after": 1 },
+          "opposition": { "operationType": "pressure", "baseCost": 3, "minCost": 1, "artTier": 1, "effectiveCost": 2, "before": 4, "after": 2 }
+        }
+      }
+    ]
+  }
+}
+```
+
+The focused fragment check covers exact art keys, profile agreement and ordinary
+cost arithmetic. Signed source admission and full cold publication remain separate
+runtime evidence; this excerpt does not prove them.

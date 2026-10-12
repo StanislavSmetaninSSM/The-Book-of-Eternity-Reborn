@@ -137,8 +137,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         {
             Assert.Null(prepared.Session);
             var operationMismatch = variant == "audit_operation";
-            var error = Assert.Single(prepared.Issues.Where(issue => issue.Code == (operationMismatch
-                ? "afterlife_conflict_action_cost_mismatch" : "afterlife_conflict_action_cost_art_tier_authority_mismatch")));
+            var error = Assert.Single(prepared.Issues, issue => issue.Code == (operationMismatch
+                ? "afterlife_conflict_action_cost_mismatch" : "afterlife_conflict_action_cost_art_tier_authority_mismatch"));
             Assert.EndsWith(".actionCostAudit.player." + (operationMismatch ? "operationType" : "artTier"), error.FilePath);
             Assert.Equal(operationMismatch ? "force_binding" : variant == "audit_tier" ? "3" : "0", error.Expected);
             Assert.Equal(operationMismatch ? "binding" : variant == "audit_tier" ? "2" : "3", error.Actual);

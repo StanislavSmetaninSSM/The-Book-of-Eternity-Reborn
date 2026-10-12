@@ -15734,6 +15734,44 @@
             ]
         },
         {
+            "id": "spiritual-binding-authority-documentation",
+            "responsibility": "#1536 B2 exact force_binding raw soul/player authority, ordinary cost chronology and unchanged two-response boundary in the existing GM matrix and worked example.",
+            "excludes": "Other afterlife documentation/examples, full-turn authority, applied resource publication, cold/native runtime and art acquisition/UI. Broad documentation owners retain coverage but are not implied selections.",
+            "changeHints": [
+                "OtherGuides/Afterlife_Contract_Matrix.md",
+                "Examples/E_CLI_Afterlife_Turns.txt",
+                "Examples/example_validation_manifest.json",
+                "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualBinding.cs",
+                "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.SpiritualBinding.cs"
+            ],
+            "related": [
+                {
+                    "id": "spiritual-binding-authority-preflight",
+                    "when": "Ordinary raw admission or exact operation-cost authority changes."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.SpiritualBindingResultClosureDocumentation_PinsTwoResponseBoundary"
+                    ]
+                },
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.SpiritualBindingResultClosureWorkedExample_ValidatesArithmeticControlAndSeparateResponses"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "spiritual-binding-authority-preflight",
             "responsibility": "#1536 B2 raw ordinary soul-profile force_binding admission, strict art/tier negatives, and signed original exact-key action-cost authority with chronological audits and emitted spend intents.",
             "excludes": "Saved wound insertion, dependent A/B correction, applied resource publication, GameEngine/cold transport, native workers, other art acquisition and UI. No normalizer in raw-profile cases.",

@@ -525,6 +525,8 @@ public partial class ValidationService
         var allowedArtIds = AfterlifeSpiritualConflictState.SpiritualArts
             .Select(art => art.ArtId)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        // Existing force-binding authority is supported independently of the upgrade catalog.
+        allowedArtIds.Add("force_binding");
         foreach (var art in artTiers.EnumerateObject())
         {
             if (!allowedArtIds.Contains(art.Name))
