@@ -9,8 +9,47 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (BOUNDED PRODUCER QUALIFICATION EVIDENCE ACCEPTED1b4739bb; FIRST N+1 SAFE-PROJECTION TEST-ONLY SOURCE READY; CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-12 (PRODUCER QUALIFIED1b4739bb; FIRST CONSUMER1FAIL PREREQUISITE UTF8-BOM BLOCKER; PROJECTION PREDICATE UNREACHED)
 
+First consumer test-only SOURCE/FIXTURE/SELECTION accepted
+195bbd60b178cad6fa462601719569663985538f. Fresh selected preparation173856 completed
+116.1774600s,integration77 warnings/0 errors,1 method/1 case/1 descriptor and0 tests.
+Matching catalog174153 validates695 categories/11526 methods,0 stale/unmapped/issues,
+28.1464245s and0 tests. No discovery-only count is presented as an executed PASS.
+
+FIRST ACTUAL consumer invocation native
+20261012-174354-954-332698-bfca1fa97ec94bffad917d01c4ffc158-categories,
+runtime/compile/source195bbd60,exit1,15.8559796s,1 executed/0 PASS/1 FAIL,complete1 descriptor,
+no timeout/duplicates. Actual N42 health155/one original physical occurrence/terminal cleanup
+and real N43 official Reader/control-OCE/source/byte prerequisites passed. Failure at new
+test:74 is JsonDocument.Parse(requestBytes!) throwing JsonReaderException:0xEF is an invalid
+start of a value. Raw capture hook reports ReaderSuccess=true/Issues=[] and the actual request
+text begins U+FEFF. The missing woundOpportunities predicate is UNREACHED; this is a fixture
+UTF8-BOM prerequisite BLOCKER, NOT consumer causal RED. Actual sourceN42 request
+c26e6db045cd4f19a650229de317d446/snapshot
+8D82789D7C06B3296FBC0BD9E77072C010CF47270F387D6F5AD9E44EA061BA62 is retained in native output.
+Raw captured N43 request is session_qte_story_append/requestfffcb99ef55c4b6f81904abf452666f1,
+turn43 and lacks woundOpportunities; the executed predicate is still UNREACHED. Exact new N43
+snapshot token was not serialized by the later observation; none is invented. Root verified
+all4 native boundary observations (source client append, null engine failure, one occurrence,
+capture hook),83 source/10 fresh195 binary pins matched before/after, and one strict owned
+root /tmp/boe-gameengine-turnlifecycle-a0235922d8cd4e8bae2f3338607462c2 actually absent. Root
+froze25 artifacts plus manifest in the [first consumer blocker packet](./recovery/qte-physical-consumer-projection-first-blocker-20261012);
+publication/independent EVIDENCE acceptance pending.
+
+Read-only exact source proof: FileSystemManager.WriteFileAtomicAsync:764–774 calls
+EncodeUtf8WithPreamble:4322–4330; the staged request bytes therefore include the real UTF8
+preamble. Existing QTE transport ParseObject:821–829 decodes UTF8 and TrimStart('\uFEFF')
+before JSON parsing; the new test already follows that pattern for signed occurrence bytes,
+but not the actual request. Minimum proposed correction is ONLY UTF8 decode plus that BOM
+trim before request JsonDocument.Parse, retaining captured exact bytes and every official
+Reader/source/row/cleanup oracle. No random parser/production/schema/source-lifetime change,
+projection manufacture or assertion relaxation. Source correction is not yet authorized or
+written; fresh corrected preparation/actual/source gate UNRUN. Metadata edits STOPPED for
+root immediate packet publication before source work. All producer evidence, old packets,
+checkboxes and causal ce955 hash stay exact; N+1 consumer remains unimplemented/UNRUN.
+
+Historical consumer source READY (first prerequisite blocker recorded above):
 Actual retained Astra XHigh correction EVIDENCE/status and bounded producer qualification
 accepted1b4739bbacd562a4f0aec4b1df611cf7158a66db. Root verified remote/387 selected recovery
 files exact; no recovery execution. Current producer cohorts remain23 executed/22 PASS/1 FAIL
