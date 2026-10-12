@@ -447,6 +447,22 @@ original packets, accepted B2–B5 and historical cold count1 remain unchanged. 
 isolated tool environment is `/workspace/boe-cloud-tools-20261011/env.sh`; platform Debian13.6
 x86_64, SDK10.0.401/runtime8.0.31, PowerShell7.6.6. No provider calls or Windows proof.
 
+### Source review correction — child live input, runtime UNRUN
+
+Root published source READY candidatecd4ea5afe6b3e9935f54f1efc3b677c834385b8e with
+verified remote/clean checkout. Combined independent Astra XHigh review found an Important
+fixture error before execution: cold child QueuedConsoleInputSource takes the non-live
+AnsiConsole.Prompt branch in QteSceneService.AgentConsole.cs:20–26 under redirected input.
+Only WriteQteStoryResumeProbeAsync now uses the same existing AgentConsoleLiveInputSource/
+ActiveReadRegistered Enter queue as the parent, still through actual engine idle with original
+session/turn42. Child screen IDs join the existing parent/TRX diagnostics; all original source,
+health, story, terminal and cleanup oracles remain intact. No resolver/harness/authority or
+production change. Exact inventory9 methods/15 cases and all selectors/budgets are unchanged.
+Build/discovery/runtime remain UNRUN; combined SOURCE/FIXTURE/SELECTION is not yet accepted.
+Root publishes this three-path correction and requests focused recheck while the reviewer
+continues the immutablecd4 remainder. Original causal Fact/hash and all checkboxes unchanged;
+no producer/cold success claim. Stop mutations at this source-only READY boundary.
+
 ### Established contract and field ownership
 
 `contracts/wound-materialization-command.md:22–39` assigns the owning producer the

@@ -158,7 +158,22 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var factory = new GameEngineTurnLifecycleTests();
         using var ownedFactory = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
-        var input = new QueuedConsoleInputSource([]);
+        var console = new AgentConsoleStateStore();
+        var screens = new List<string>();
+        AgentConsoleLiveInputSource? live = null;
+        using var input = live = new AgentConsoleLiveInputSource(console, TimeSpan.FromSeconds(10),
+            AgentConsoleLiveInputSource.DefaultMaxQueueLength, new AgentConsoleLiveInputSourceHooks
+            {
+                ActiveReadRegistered = kind =>
+                {
+                    Assert.Equal(AgentConsoleInputKind.Key, kind);
+                    var screen = console.GetSnapshot();
+                    Assert.NotNull(screen);
+                    Assert.StartsWith("qte-", screen!.ScreenId, StringComparison.Ordinal);
+                    screens.Add(screen.ScreenId);
+                    Assert.True(live!.EnqueueKey(Key(ConsoleKey.Enter)).Accepted);
+                }
+            });
         var engine = factory.CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; }, fileSystem: files);
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
         var qte = GetPrivateField<QteSceneService>(engine, "_qteSceneService");
@@ -180,9 +195,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(session, turn);
         var handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
         var completed = JsonNode.Parse((await files.ReadFileAsync(QteDeferredEffectContinuation.StatePath))!)!.AsObject();
+        Assert.NotEmpty(screens);
         await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new { processId = Environment.ProcessId,
             handledByActualIdleCaller = handled, continuationState = completed["state"]!.GetValue<string>(),
-            requestId = original["requestId"]!.GetValue<string>(), snapshotToken = token, generation }));
+            requestId = original["requestId"]!.GetValue<string>(), snapshotToken = token, generation, screens }));
     }
 
     private async Task<Dictionary<string, byte[]>> CaptureQteStoryOriginalArtifactsAsync()

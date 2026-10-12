@@ -246,6 +246,16 @@ predicate still UNREACHED/UNRUN and producer forbidden. Root publishes and reque
 independent SOURCE/FIXTURE/SELECTION before fresh bounded preparation/actual. No checkbox or
 historical evidence change; current9b story prerequisite RED remains immutable.
 
+Combined review of remote sourcecd4ea5afe6b3e9935f54f1efc3b677c834385b8e found an
+Important child-input fixture error before runtime: non-live queued input routes actual QTE
+idle resume to redirected AnsiConsole.Prompt. Source-only correction changes that one child
+input to the parent's existing live Agent Console Enter hook and preserves actual idle,
+original session/turn42, source/harm/story/terminal/cleanup assertions. Child screen IDs are
+retained in existing TRX diagnostics. Inventory9 methods/15 cases, selectors, budgets,
+production and causal Fact/hash stay unchanged. Build/discovery/runtime UNRUN; full SOURCE/
+FIXTURE/SELECTION still pending. Root publishes the three-path correction and requests focused
+recheck; reviewer continues immutablecd4 remainder. No producer or successful cold proof claim.
+
 The plan now fixes the proposed optional QTE `physicalInjury` declaration: closed
 exactly five fields: schemaVersion1, one-based resource command ordinal, explicit maximum1–4, bounded cause
 and unique subset of the five existing location kinds. It binds one exact player-health
