@@ -1,3 +1,20 @@
+## T068 Windows path equivalence — native36 PASS, evidence review pending, 2026-10-12
+
+SOURCE + CAUSAL RED EVIDENCE actual Astra XHigh PASS at13e17a3. Confirmed native
+operand mismatch before minimal four-line PathsEqual reuse of existing trusted
+spelling helper on both Windows operands. Guards/namespace policy retained;
+observer removed. Fresh build76.2472392s/PlanOnly36-13methods-2descriptors,
+zero execution/00:01:28.1546530; sole NoBuild GREEN36/36 = native30
+30/30 +F18native6 6/6, 00:01:51.1851158;3minute categories/explicit8runner.
+Two path controls witnesses20comparisons/18refusals both sides; two strict physical
+parser witnesses,30 browser cleanup witnesses;1629sources157DLLPDB stable/four
+fresh selected outputs/all cleanup. Raw RED42+GREEN46 entries retained.
+[Complete originals](recovery/windows-path-equivalence-20261012/manifest.json).
+Independent GREEN evidence/final metadata pending; all following WIP/HOLD/UNRUN
+statuses are historical for this bounded sequence. Prior four carriers immutable.
+No fresh-process cold/UNCnative/casesensitivefolder/fullgame/performance claim;
+parents #1553/T067/T068/T061–T065 OPEN, other five Windows recipes UNRUN/B2–B5paused.
+
 ## T068 Windows path equivalence — minimal bounded product correction WIP, 2026-10-12
 
 Actual causalRED6e55756/compiled00764cf: raw opened path equals extended intent

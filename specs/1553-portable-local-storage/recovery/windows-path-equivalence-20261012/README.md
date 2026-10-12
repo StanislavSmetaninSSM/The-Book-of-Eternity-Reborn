@@ -1,24 +1,46 @@
-# Windows path equivalence — actual operand RED preserved
+# Windows path equivalence — native GREEN, evidence review pending
 
-Tracked #1553/T068. HOME-PC reboot recovery boot01:47:25.5UTC verified:
-localremote00764cf90bdc96c93c1c4c922a3bc25a918ee4d0 clean; all historical
-phases exited before boot,12archives/1626unchangedsources/157oldDLLPDB preserved.
-No new build/actual had started before recovery summary; no interrupted runtime
-was labelled complete. Fresh observation SOURCE PASS actual Astra XHigh00764cf.
-Build81.5986464s/PlanOnly95.9694994s/2planned0executed;1629source157DLLPDB.
-One focused authentic6 NoBuild2cases=1ordinaryPASS1extendedcausalFAIL,
-23.2297020s,3min/8min unchanged,cleanupcomplete.42ZIPentries preserve originals.
+Tracked #1553/T068 on `1553-storage-migration-windows-f18-20261011T235650Z`.
+Compiled source `13e17a3eb446b02e3d136b0214b52b00e730e25c`. Native HOME-PC Windows 11/NTFS,
+.NET SDK10.0.401. Fresh build 76.2472392s; PlanOnly36 cases/13methods,
+two exclusive integration descriptors, zero execution, 00:01:28.1546530.
+One NoBuild GREEN: native30 30/30 and affected F18native6 6/6, total36/36 PASS,
+00:01:51.1851158, category3minutes each/runner8minutes explicit unchanged.
+Zero skips/duplicates/timeouts; complete selection and both runtime/tree cleanup.
+1629 source pins and157 DLL/PDB equal before/after; Client/Integration four outputs fresh.
+GREEN46 original ZIP entries and causal RED42 entries retain raw CRLF/localized logs.
 
-Actual NativeRollbackPathOperands trace: raw GetFinalPath equals intent
-DestinationPath byte-for-byte in extended drive form, while compared path is
-exactly raw[4..] (ordinary drive form). Source and failed-source operands remain
-extended. Original unknown-path decision/primary error unchanged. This confirms
-one-sided spelling normalization in the same native failure, before any fix.
-Full operands are in observe/manifest.json and original TRX; file IDs/fullintent
-image are not separately claimed. Product equality fix/GREEN remain UNRUN.
+Actual pre-fix causal RED compiled00764cf: one ordinaryPASS/one extendedFAIL,
+23.2297020s. The same failing native opened-handle path equals extended intent
+DestinationPath exactly; the compared path equals raw[4..]. Source and failed-source
+paths remain extended. Full operands are preserved in observe/manifest.json/TRX.
+File IDs/full intent image are not separately exported or claimed.
 
-Existing TrustedLocalFileScope.NormalizeWindowsPathSpelling is the bounded
-candidate:drive/UNC spelling, device/ambiguous/dot components refused. It does
-not grant authority; ID/hash/containment/reparse/race/unknown-path checks stay.
-UNC tests will be string-only; no UNC native/network filesystem qualification.
-No fresh-process cold restart; prior3browserFAILcarriers/F18PASS preserved.
+Product delta versus93ffa98 is four lines: both Windows PathsEqual operands use
+existing TrustedLocalFileScope.NormalizeWindowsPathSpelling before existing
+GetFullPath/OrdinalIgnoreCase. Linux unchanged. Temporary observer removed.
+No new normalizer/trim/device-prefix stripping/namespace grant/journal format;
+identity/hash/authority/containment/reparse/race/unknown-path guards retained.
+
+Two existing authentic6 rows each exercise20 actual private-comparer comparisons
+and18 refused spellings on both operand sides. Drive/extended and UNC aliases,
+case/slash and unequal name/drive/server/share/outside paths are checked. Device,
+GLOBALROOT/Volume/pipe/ADS/reserved/trailing dot-space/dot-segment forms refuse.
+Directory trailing separators remain significant. UNC controls are strings only,
+no filesystem/network grant; case-sensitive Windows folders remain unqualified.
+Both rows pass original schema6/physicalAfter/receipt/identity/neutral backup,
+fresh same-process recovery/restored bytes/absence assertions. Physical BOM/noBOM,
+strict malformedUTF8 and doubleBOM controls emit two successful witnesses.
+
+Independent actual gpt-6-astra/xhigh SOURCE + CAUSAL RED EVIDENCE PASS at13e17a3;
+GREEN evidence/final metadata pending. No extra pure-controls RED was required:
+the original product defect was reproduced natively before the patch.
+
+Boot01:47:25.5UTC recovery verified previous007 head clean/localremote equal;
+all historical phases had exited before boot,12 archives/1626 unchanged sources/
+157 old DLL/PDB intact. No new build/actual had begun; no interrupted run labelled
+complete. All three prior browser failure carriers and original F18 PASS preserved.
+No fresh-process cold restart, UNC native/filesystem, case-sensitive directory,
+full game/UI/provider, other five Windows recipes or performance qualification.
+Parent #1553/T067/T068/T061–T065 OPEN; ordinary40FAIL/performanceUNQUALIFIED and
+B2–B5 paused remain unchanged. No main/merge/PR/issues/installation/security change.

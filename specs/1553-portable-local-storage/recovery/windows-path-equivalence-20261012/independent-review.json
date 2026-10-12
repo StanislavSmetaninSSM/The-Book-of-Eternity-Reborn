@@ -1,0 +1,30 @@
+{
+  "SchemaVersion": 1,
+  "Reviewer": "Actual gpt-6-astra/xhigh",
+  "SourceAndCausalRed": {
+    "Verdict": "SOURCE PASS",
+    "ReviewedSha": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+    "Reviewer": "gpt-6-astra",
+    "Effort": "xhigh",
+    "Findings": [],
+    "CausalRedEvidenceReview": "PASS",
+    "ReviewedRedCarrier": "6e5575682eb0f93f05732958821447983198f89c",
+    "RedCompiledSource": "00764cf90bdc96c93c1c4c922a3bc25a918ee4d0",
+    "RealOperandsConfirmed": true,
+    "RedEntriesVerified": 42,
+    "RedResult": "1ordinaryPASS1extendedFAIL",
+    "RedSourcePins": 1629,
+    "RedDllPdbPins": 157,
+    "SourcePdbGuidChecksumsVerified": true,
+    "ProductDelta": "Windows private comparer canonical helper BOTH operands; all other guards unchanged, temporary observation removed",
+    "Controls": "20comparisons18refusalsBothSides/noFileOrGrant",
+    "NamespacePolicy": "Existing trusted-local drive/UNC spelling; device/dot/ambiguous names refused; no trim",
+    "Cases": 36,
+    "Methods": 13,
+    "RunnerBudgetExplicit8": true,
+    "ArchitectureStopRequired": false,
+    "Limits": "UNCstringonly/casesensitivefoldernotqualified/freshprocesscoldnotqualified"
+  },
+  "GreenEvidence": "Pending",
+  "FinalMetadata": "Pending"
+}
