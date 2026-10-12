@@ -1,3 +1,13 @@
+## T068 original Windows owner recipe owner/a1 — bounded evidence accepted, 2026-10-12
+
+Actual independent gpt-6-astra/xhigh EVIDENCE PASS at339301e9bb55fbc82268422a5fd24d2a9f446b9e, no findings.
+`gm-main-owner-native-windows` 27/27PASS/00:00:18.8742302;
+scope: Native Windows required bodies. Source/DLL/PDB/raw/cleanup and original budgets retained.
+[Reviewed originals](recovery/windows-owner-recipes-20261012/owner/a1/manifest.json).
+Only this recipe accepted; subsequent recipes require their own PlanOnly/gates/evidence.
+No new code/runtime repeated. Parent #1553/T067/T068/T061–T065 remains OPEN.
+The following pending status for this same attempt is historical and superseded.
+
 ## T068 original Windows owner recipe owner/a1 — PASS runtime, independent evidence pending, 2026-10-12
 
 `gm-main-owner-native-windows` actual27PASS/0FAIL,

@@ -57,3 +57,5 @@ Runtime checkout `e937adbb5bef67e28029987993d658e911370af2`, source1629 original
 extra unit/Bridge/CrashHost pins, 290 DLL/PDB equal before/after.
 Compile origins: {"integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c", "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a", "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"}.
 Qualification: Native Windows required bodies. Full immutable originals: `owner/a1/manifest.json`.
+
+Independent actual gpt-6-astra/xhigh EVIDENCE PASS at `339301e9bb55fbc82268422a5fd24d2a9f446b9e` for `owner/a1`, no actionable findings. Accepted scope remains: Native Windows required bodies.

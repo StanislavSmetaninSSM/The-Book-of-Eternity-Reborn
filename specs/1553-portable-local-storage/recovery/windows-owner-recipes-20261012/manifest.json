@@ -233,16 +233,70 @@
       "FixturePrefixes": [
         "main-owner-native-"
       ],
-      "State": "EvidenceReviewPending",
+      "State": "BoundedRecipeReviewedPass",
       "Attempts": [
         {
           "Manifest": "owner/a1/manifest.json",
           "Passed": 27,
           "Failed": 0,
           "CompleteGreen": true,
-          "CheckoutHead": "e937adbb5bef67e28029987993d658e911370af2"
+          "CheckoutHead": "e937adbb5bef67e28029987993d658e911370af2",
+          "State": "BoundedRecipeReviewedPass"
         }
-      ]
+      ],
+      "IndependentEvidenceReview": {
+        "SchemaVersion": 1,
+        "Reviewer": "Actual gpt-6-astra/xhigh",
+        "Verdict": "PASS",
+        "FullVerdict": "PASS_OWNER27_EVIDENCE_AND_COHERENCE",
+        "ReviewedHead": "339301e9bb55fbc82268422a5fd24d2a9f446b9e",
+        "Category": "gm-main-owner-native-windows",
+        "Findings": [],
+        "Checks": {
+          "Archives": 3,
+          "Entries": 45,
+          "CRCSizeShaAndOriginalBytes": true,
+          "PlanOnlySeconds": 11.7380269,
+          "PlanOnlyCases": 27,
+          "Methods": 3,
+          "Descriptors": 1,
+          "PlanOnlyExecuted": 0,
+          "ActualAttempts": 1,
+          "Passed": 27,
+          "Failed": 0,
+          "SkipsDuplicatesTimeouts": 0,
+          "Quiescent": 6,
+          "Inventory": 9,
+          "Nonterminal": 12,
+          "Ordinary": 9,
+          "Extended": 9,
+          "DriveCase": 9,
+          "RunnerSeconds": 18.8742302,
+          "CategorySeconds": 6.7450903,
+          "CategoryBudgetMinutes": 3,
+          "RunnerBudgetMinutes": 8,
+          "SourcePins": 2168,
+          "DllPdbPins": 290,
+          "AllGatesAndLiveBytesEqual": true,
+          "UnitBridgeBuildOrigin": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+          "PdbDllGuidAndChecksumsDocuments": [
+            "GmMainOwnerWindowsAdmissionTests.cs",
+            "GmSessionRunCoordinator.cs",
+            "FileSystemManager.MainRunFence.cs"
+          ],
+          "WindowsBodyGuardReleaseNoInventoryGenerationOriginalBytesAssertions": true,
+          "ExternalOwnedRootAndProcessReadback": true,
+          "SourceCatalogHelpersAndPriorCarriersUnchanged": true,
+          "MetadataCoherent": true
+        },
+        "Qualification": "Native Windows owner admission with explicitly labelled fixture startup observation",
+        "Limits": [
+          "Not WMI/ConPTY/Job lifecycle/production workers/status/Load/fresh-process restart/wholegame qualification",
+          "Bridge3/contention3 UNRUN",
+          "Parents OPEN"
+        ],
+        "ReviewerBuildTestProbeOrMutation": false
+      }
     },
     {
       "Key": "bridge",
@@ -322,7 +376,7 @@
     "No arbitrary extra cold/UNC/case-sensitive/fullgame/performance task",
     "No main/merge/PR/issues/paidcalls/securitychange/install/speedredesign/budgetrelaxation"
   ],
-  "State": "WIPSequentialRecipeEvidence",
+  "State": "WIPSequentialAcceptedRecipes",
   "Archives": [
     {
       "Path": "console/a1/prepare-original.zip",
@@ -1158,6 +1212,7 @@
   },
   "AcceptedRecipes": [
     "console",
-    "metadata"
+    "metadata",
+    "owner"
   ]
 }
