@@ -1,0 +1,61 @@
+{
+  "Categories": [
+    "qte-story-append-lifetime"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-story-append-lifetime",
+      "reason": "#1536 Exact actual client story delta across recovered-ready/late-ready, bounded receipt resume and true same-root child process, plus two named existing continuation consumers; six cases, category5/default10.",
+      "contracts": [
+        "Original ProcessPlayerTurn stages genuine source; recovered/late-ready uses actual existing engine caller, never a fabricated snapshot",
+        "Receipt data binds the actual pending request; actual engine idle resumed terminal finalizes health160->155 plus bounded2 where applicable without reappending story and removes all observed original request/snapshot/backups",
+        "Child process uses existing TestSupport reflection transport after actual original engine handoff/pause and clean owner close; actual engine idle caller with original session/turn42 and same root/generation, no active-QTE archive rebind",
+        "Two named existing direct continuation compatibility Facts keep absent-witness and sealed restart consumers accounted for"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "d2fede0c15b587aa3a8488122a808becbebc141a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 2.2305606,
+  "Descriptors": [
+    {
+      "Name": "qte-story-append-lifetime-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "qte-story-append-lifetime",
+      "Categories": [
+        "qte-story-append-lifetime"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_DeferredReceiptResumeRetainsExactDelta|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_FreshProcessPersistedDeltaKeepsAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_RecoveredOrdinarySourceRetainsExactDelta|FullyQualifiedName=BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptedTerminalDamage_AfterRestartUsesSealedEffectTriggerAndClosesContinuation|FullyQualifiedName=BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_DeferredReceiptResumeRetainsExactDelta",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_FreshProcessPersistedDeltaKeepsAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_RecoveredOrdinarySourceRetainsExactDelta",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptedTerminalDamage_AfterRestartUsesSealedEffectTriggerAndClosesContinuation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.AcceptOffer_SealsGenerationOfferTurnAndExactEffectRootWithoutLiveRebuild",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

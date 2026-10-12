@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME/DOCS UNRUN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS UNRUN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -462,6 +462,34 @@ Build/discovery/runtime remain UNRUN; combined SOURCE/FIXTURE/SELECTION is not y
 Root publishes this three-path correction and requests focused recheck while the reviewer
 continues the immutablecd4 remainder. Original causal Fact/hash and all checkboxes unchanged;
 no producer/cold success claim. Stop mutations at this source-only READY boundary.
+
+### Story lifetime first outcome — 2026-10-12,5 PASS/1 pre-QTE blocker
+
+Runtime d2fede0c15b587aa3a8488122a808becbebc141a, unchanged compile174aabad; PlanOnly125440
+selected5 methods/6 cases/1 descriptor,0 tests. First actual125523
+`1536-qte-story-append-lifetime.json -NoBuild` (category5/default10) completed **6 executed,
+5 PASS,1 FAIL**, complete/no timeout/skips/duplicates, wall34.8310528s. Both actual recovered/
+late-ready cases, same-root true child through real engine idle and2 existing continuation
+compatibility cases PASS. Cold parent296090/child296190 retains original request/token/
+generation, terminal continuation, exact unchanged story and original artifact absence.
+This same-root Linux cold proof is not an active-QTE archive or Windows proof.
+
+Only `QteStoryAppend_DeferredReceiptResumeRetainsExactDelta` fails at line74
+`Assert.True(run.ActionObserved)`: actual ordinary engine returns null failure without reaching
+QTE action. Bounded fixture's QTE handoff/no-receipt idle/receipt resume/cleanup predicates
+are UNREACHED, never a lifecycle RED/GREEN claim. Exact ordinary rejection cause remains
+UNDIAGNOSED; source-only investigation checks seeded effect/skill fixture validity through
+ordinary admission. No retry or code correction yet. Do not waive/re-sign snapshot, relax
+oracles, bypass the ordinary engine or add a general harness.
+
+Root inspected all full raw6 TRX stdout/error results, matched35 source/10 binary pins and
+verified6 distinct strict cleanup roots absent (including seed and nested child receipts;
+not a6-test equal-root claim). Frozen [15-artifact first lifetime packet](./recovery/qte-story-append-lifetime-first-outcome-20261012)
+all stored/raw/original hashes match. Guard7PASS and genuine causal missing-occurrence RED
+remain immutable. Next smallest evidenced receipt-fixture correction/source gate and exactly
+its affected finite rerun; unrelated accepted cases should not be rerun. Documentation1 is
+still UNRUN. Producer remains NOT IMPLEMENTED while this necessary prerequisite stays open.
+No independent expansion; all checkboxes unchanged.
 
 ### Story preservation first GREEN7 — 2026-10-12
 

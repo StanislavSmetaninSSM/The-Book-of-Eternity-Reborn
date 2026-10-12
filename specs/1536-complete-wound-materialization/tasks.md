@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME/DOCS UNRUN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS UNRUN)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -255,6 +255,18 @@ retained in existing TRX diagnostics. Inventory9 methods/15 cases, selectors, bu
 production and causal Fact/hash stay unchanged. Build/discovery/runtime UNRUN; full SOURCE/
 FIXTURE/SELECTION still pending. Root publishes the three-path correction and requests focused
 recheck; reviewer continues immutablecd4 remainder. No producer or successful cold proof claim.
+
+First lifetime actual125523, runtime d2fede0c15b587aa3a8488122a808becbebc141a/compile174aabad,
+completed6 cases **5 PASS/1 FAIL** after exact5-method6-case PlanOnly1254400 tests, no timeout/
+skip/duplicate/underfill. Recovered/late-ready, true same-root child actual idle plus2 existing
+compatibility Facts PASS. Cold parent296090/child296190 and original correlation/token/
+generation/terminal/story/cleanup are observed. Only deferred receipt fixture fails line74:
+ActionObserved=false, engine Failure=null, QTE action UNREACHED. No-receipt/receipt lifecycle
+predicates are UNREACHED; exact ordinary rejection cause UNDIAGNOSED. Source-only seed/admission
+investigation, no retry/correction yet. [15-artifact immutable first lifetime packet](./recovery/qte-story-append-lifetime-first-outcome-20261012)
+full6 raw outputs/35 source/10 binary pins/6 distinct strict cleanup roots read back and hashes
+verified. Next evidenced minimal fixture correction + source gate + affected finite rerun;
+passing neighbors stay retained. Docs1 UNRUN, producer NOT IMPLEMENTED, all checkboxes unchanged.
 
 First story guard actual125028 at runtime09c9e8f4c7f38299978c612a6b8cb8201c10d110,
 compile174aabad (only checkpoint/packet changes since build) completed **7/7 PASS** after

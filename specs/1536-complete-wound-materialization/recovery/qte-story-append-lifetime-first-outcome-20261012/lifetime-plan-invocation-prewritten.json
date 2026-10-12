@@ -1,0 +1,9 @@
+{
+  "source": "d2fede0c15b587aa3a8488122a808becbebc141a",
+  "compileSource": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-qte-story-append-lifetime.json -PlanOnly -NoBuild",
+  "expectedMethods": 5,
+  "expectedCases": 6,
+  "testsExecuted": 0,
+  "timeBefore": "2026-10-12T12:54:40.165812+00:00"
+}
