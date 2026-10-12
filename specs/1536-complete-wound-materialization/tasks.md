@@ -5,14 +5,15 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (B2 FIRST 13 PASS — EVIDENCE REVIEW PENDING)
+## Current original-completion boundary — 2026-10-12 (B2 EVIDENCE ACCEPTED; B3 TEST-ONLY WIP)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Lorian subsequently accepted
 81105a6bd487bc6077279aa12af79dbc301a16d9 and released the first B2 test-only
 implementation/publication. Following SOURCE acceptance on06e133, coordinator
 released one fresh selected preparation and one matching actual; both are frozen.
-No further execution is released.
+B2 evidence is independently accepted on383930; coordinator now releases only
+the B3 test-only refinement below, with no B3 build/discovery/runtime yet.
 The [current plan](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
 separates source coverage, historical PASS without available raw artifacts and
 retained raw-verified evidence for exact RESULT-CLOSURE-BINDING B2–B5.
@@ -48,8 +49,22 @@ freezes fresh PlanOnly054322 (13/3/2,0 execution) and first actual054653
 exact Rejected/blocked diagnostics; original-incoming positive returned Advanced
 with only the held terminal diagnostic. All byte assertions passed;9 distinct
 strict cleanup receipts/observed absent roots,22 source pins and10 binary pins match.
-No production/cold change or B2 closure. EVIDENCE review is pending; preserve this
-first outcome and stop dependent B3 work until coordinator acceptance/scope.
+No production/cold change or B2 closure. Independent Astra XHigh EVIDENCE
+ACCEPTED3839309554d916994abf9be9fc129c15bcb79b20 without findings; coordinator
+confirmed22 artifacts/source pins,10 binaries,13 raw cases and9 cleanups.
+
+B3 test-only WIP retains the existing mixed and wrapper Facts. The genuine
+saved-choice policy must match issued A fields and allow the same wrong-cost edit;
+ordinary evaluation must reject exact action-cost mismatch/path expected3/actual2
+while preserving the held terminal echo, private/canonical and submitted bytes.
+Existing A/B, carrier, accepted-result replay and final raw B assertions remain;
+existing output records diagnostics/milestones and strict cleanup is reused.
+Task-local `tests/selections/1536-binding-final-control.json`: two existing owners,
+two methods/cases/descriptors, integration only, budgets5/5/default15. No new
+scenario/category/harness, production/spec/contract change or warm/cold rerun.
+SOURCE/fixture/selection review is pending before coordinator fresh preparation
+and matching actual release. No B3 build/discovery/test ran. Freeze first failure
+before any proposed correction; B4/B5 are not started.
 
 Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and
 remaining spiritual consumers, lawful T107 initial-stage coexistence/healing,

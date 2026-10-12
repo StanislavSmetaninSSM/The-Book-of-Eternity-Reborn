@@ -317,7 +317,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         if (continueFinalControl)
         {
             restoredSession.Dispose();
-            await VerifyBindingFinalControlAsync(context, lease, corrected, selectedCommand, preserved, wrapper, mixed);
+            await VerifyBindingFinalControlAsync(context, lease, corrected, selectedCommand, preserved, wrapper, mixed, policy);
         }
 
         async Task AssertUnpublishedAsync()

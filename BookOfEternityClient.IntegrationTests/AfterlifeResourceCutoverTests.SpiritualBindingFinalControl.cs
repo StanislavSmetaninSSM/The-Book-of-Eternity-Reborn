@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -54,18 +55,25 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="mixed">
     /// Whether A independently permits the additional cost fields exercised by the invalid-payment check.
     /// </param>
+    /// <param name="policy">
+    /// Frozen policy derived from the genuine saved-choice owner in the original-admission helper.
+    /// </param>
     /// <returns>
-    /// A task completing after the separate responses resolve, or a failing assertion at the unimplemented boundary.
+    /// A task completing after the separate responses resolve and preserve the original private/canonical authority.
     /// </returns>
-    private static async Task VerifyBindingFinalControlAsync(ResourceMaterializationTestContext context,
+    private async Task VerifyBindingFinalControlAsync(ResourceMaterializationTestContext context,
         FileSystemManager.CanonicalWriteLease lease, JsonObject correctedA, byte[] selectedCommand,
-        IReadOnlyDictionary<string, byte[]?> preserved, bool wrapper, bool mixed)
+        IReadOnlyDictionary<string, byte[]?> preserved, bool wrapper, bool mixed, SpiritualWoundDependentDraftPolicy policy)
     {
         var validator = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
         var issued = await validator.ReadSpiritualWoundContinuationAsync(lease);
         Assert.Equal("dependent_draft", issued.Disposition);
         var a = Assert.IsType<SpiritualWoundContinuationRequest>(issued.Request);
         Assert.Equal(mixed ? 7 : 5, a.DependentDraftFields.Count);
+        Assert.True(policy.RequiresActualBindingResult);
+        Assert.False(policy.IsTerminalControl);
+        Assert.Equal(JsonSerializer.Serialize(policy.Fields), JsonSerializer.Serialize(a.DependentDraftFields));
+        Assert.True(policy.Allows(correctedA));
         var responseA = CreateSpiritualStagedEmptyResponse(a);
         var checkpointBefore = await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundCaptureCheckpointState.StatePath);
         var pendingBefore = await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundDecisionPendingState.StatePath);
@@ -77,20 +85,38 @@ public sealed partial class AfterlifeResourceCutoverTests
             var cost = BindingRawActive(invalidCost, wrapper)["exchangeLog"]![1]!["actionCostAudit"]!["player"]!;
             cost["effectiveCost"] = 2;
             cost["after"] = 1;
-            await WriteDraftAsync(invalidCost);
+            Assert.True(policy.Allows(invalidCost));
+            Assert.True(JsonNode.DeepEquals(BindingRawActive(correctedA, wrapper)["controlState"],
+                BindingRawActive(invalidCost, wrapper)["controlState"]));
+            Assert.False(JsonNode.DeepEquals(BindingRawActive(invalidCost, wrapper)["controlState"],
+                BindingRawActive(invalidCost, wrapper)["exchangeLog"]![1]!["after"]!["controlState"]));
+            var invalidBytes = Encoding.UTF8.GetBytes(invalidCost.ToJsonString());
+            await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath, invalidBytes);
             var invalid = await validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, a, responseA);
+            _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, wrapper, mixed,
+                phase = "invalid_cost_with_held_echo", PolicyAllows = true,
+                disposition = invalid.Disposition.ToString(), invalid.Issues }));
             Assert.Equal(ValidationService.SpiritualWoundContinuationDisposition.Rejected, invalid.Disposition);
-            Assert.Equal(checkpointBefore, await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundCaptureCheckpointState.StatePath));
+            var costError = Assert.Single(invalid.Issues, issue => issue.Code == "afterlife_conflict_action_cost_mismatch");
+            Assert.Equal(IssueSeverity.Error, costError.Severity);
+            Assert.Equal("activeConflict.exchangeLog[1].actionCostAudit.player.effectiveCost", costError.FilePath);
+            Assert.Equal("baseCost=4, minCost=2, effectiveCost=3", costError.Expected);
+            Assert.Equal("baseCost=4, minCost=2, effectiveCost=2", costError.Actual);
+            Assert.Null(invalid.NextRequest);
+            Assert.Equal(invalidBytes, await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath));
+            await AssertPrivateAndCanonicalBytesAsync(checkpointBefore);
         }
 
         await WriteDraftAsync(correctedA);
         var advanced = await validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, a, responseA);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { wrapper, mixed, phase = "a_evaluated",
+            disposition = advanced.Disposition.ToString(), advanced.Issues }));
         Assert.True(advanced.Disposition == ValidationService.SpiritualWoundContinuationDisposition.Advanced,
             advanced.Disposition + ": " + string.Join("\n", advanced.Issues.Select(issue => issue.Code + " " + issue.FilePath)));
         Assert.Null(advanced.NextRequest);
         Assert.True(JsonNode.DeepEquals(correctedA,
             JsonNode.Parse((await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath))!)));
-        Assert.Equal(checkpointBefore, await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundCaptureCheckpointState.StatePath));
+        await AssertPrivateAndCanonicalBytesAsync(checkpointBefore);
         Assert.Equal(JsonSerializer.Serialize(a), JsonSerializer.Serialize((await validator.ReadSpiritualWoundContinuationAsync(lease)).Request));
 
         var committed = await validator.CommitSpiritualWoundDependentProgressAsync(lease, a, responseA);
@@ -108,6 +134,11 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(a.ContinuationId, progress[0]!["acceptedContinuationId"]!.GetValue<string>());
         Assert.Equal(pendingBefore, await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundDecisionPendingState.StatePath));
 
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { wrapper, mixed, phase = "a_committed_b_issued",
+            a = a.ContinuationId, b = b.ContinuationId, b.DependentDraftFields, progressCount = progress.Count,
+            committed.Issues }));
+        await AssertPrivateAndCanonicalBytesAsync(checkpointAfterA);
+
         var cold = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
         var recovered = await cold.ReadSpiritualWoundContinuationAsync(lease);
         Assert.Equal(JsonSerializer.Serialize(b), JsonSerializer.Serialize(recovered.Request));
@@ -119,18 +150,34 @@ public sealed partial class AfterlifeResourceCutoverTests
         finalActive["controlState"] = finalActive["exchangeLog"]![1]!["after"]!["controlState"]!.DeepClone();
         var changedA = correctedB.DeepClone().AsObject();
         BindingRawActive(changedA, wrapper)["exchangeLog"]![1]!["outcome"] = "blocked";
-        Assert.NotEmpty(await cold.ValidateSpiritualWoundContinuationDraftAsync(lease, b, responseB,
-            new Dictionary<string, byte[]?> { [AfterlifeSpiritualConflictState.StatePath] = Encoding.UTF8.GetBytes(changedA.ToJsonString()) }));
+        var changedAIssues = await cold.ValidateSpiritualWoundContinuationDraftAsync(lease, b, responseB,
+            new Dictionary<string, byte[]?> { [AfterlifeSpiritualConflictState.StatePath] = Encoding.UTF8.GetBytes(changedA.ToJsonString()) });
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { wrapper, mixed, phase = "b_recovered_changed_a_rejected",
+            recoveredA = recovered.AcceptedRequest!.ContinuationId, recoveredB = recovered.Request!.ContinuationId,
+            issues = changedAIssues }));
+        Assert.NotEmpty(changedAIssues);
         await WriteDraftAsync(correctedB);
         var resolved = await cold.EvaluateSpiritualWoundContinuationDraftAsync(lease, b, responseB);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { wrapper, mixed, phase = "b_evaluated",
+            disposition = resolved.Disposition.ToString(), resolved.Issues }));
         Assert.True(resolved.Disposition == ValidationService.SpiritualWoundContinuationDisposition.Resolved,
             resolved.Disposition + ": " + string.Join("\n", resolved.Issues));
         Assert.Empty(resolved.Issues);
         Assert.Null(resolved.NextRequest);
-        Assert.Equal(checkpointAfterA, await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundCaptureCheckpointState.StatePath));
-        Assert.Equal(selectedCommand, await context.FileSystem.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
-        foreach (var image in preserved)
-            Assert.Equal(image.Value, await context.FileSystem.ReadFileBytesAsync(lease, image.Key));
+        Assert.Equal(Encoding.UTF8.GetBytes(correctedB.ToJsonString()),
+            await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath));
+        await AssertPrivateAndCanonicalBytesAsync(checkpointAfterA);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { wrapper, mixed, phase = "preservation_complete",
+            SavedChoiceAndCanonicalBytesPreserved = true, ExactlyOneCommittedA = true, FinalBUncommitted = true }));
+
+        async Task AssertPrivateAndCanonicalBytesAsync(byte[]? checkpoint)
+        {
+            Assert.Equal(checkpoint, await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundCaptureCheckpointState.StatePath));
+            Assert.Equal(pendingBefore, await context.FileSystem.ReadFileBytesAsync(lease, SpiritualWoundDecisionPendingState.StatePath));
+            Assert.Equal(selectedCommand, await context.FileSystem.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+            foreach (var image in preserved)
+                Assert.Equal(image.Value, await context.FileSystem.ReadFileBytesAsync(lease, image.Key));
+        }
 
         Task WriteDraftAsync(JsonObject draft) => context.FileSystem.WriteFileAtomicBytesAsync(lease,
             AfterlifeSpiritualConflictState.StatePath, Encoding.UTF8.GetBytes(draft.ToJsonString()));
