@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT FIXTURE SOURCE READY)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT SOURCE/EVIDENCE ACCEPTED; CORRECTED RUNTIME UNRUN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -35,7 +35,7 @@ Actual finalized health Damage now reaches the missing-occurrence RED; guards7 P
 lifetime5 PASS/1 pre-QTE fixture failure and documentation1 PASS are retained below.
 These first actual cohorts total15 executed:13 PASS/2 FAIL (missing occurrence after finalized
 health Damage, and the bounded receipt fixture before QTE action); no aggregate rerun is implied.
-Current source READY on published4e53c7d3 changes only the bounded receipt fixture's
+Current corrected sourcef7d901b925ceb0a9f05bc74bc795313423e56a07 changes only the bounded receipt fixture's
 canonical mastery seed, early-refusal diagnostics and exact one-case selection. Its fresh
 catalog/build/PlanOnly/runtime remain UNRUN pending publication and focused source gate.
 No occurrence producer or canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
@@ -506,6 +506,22 @@ Next is only the evidenced receipt-fixture correction/source gate and its affect
 rerun; unrelated accepted cases are retained. Producer remains NOT IMPLEMENTED while this
 necessary prerequisite stays open.
 No independent expansion; all checkboxes unchanged.
+
+### Receipt SOURCE and initial EVIDENCE accepted — 2026-10-12
+
+Fresh retained actual independent Astra XHigh ACCEPTED atf7d901b925ceb0a9f05bc74bc795313423e56a07:
+minimal canonical mastery seed/observer and exact receipt1 selection have no confirmed
+Critical/Important blocker. Independent readback verifies68 stored/decompressed/original
+packet artifacts, each35 source/10 binary pins, all15 initial TRX outcomes and strict cleanup.
+Genuine missing-occurrence causal RED after finalized Applied health Damage is accepted;
+guards7 PASS, lifetime5 PASS/1 pre-QTE fixture failure, docs1 PASS are scoped correctly.
+Actual cold child removes92 retained original artifacts. Missing mastery remains source-backed
+inference about the unlogged first refusal, not an observed first runtime code. No full GREEN.
+
+Next fresh selected integration PlanOnly receipt1, metadata-only catalog ownership audit
+for the new owner and only that corrected1-case actual; no passing-neighbor rerun or budget
+increase. Current corrected behavior/build/discovery/runtime remain UNRUN. Producer and
+prerequisite closure stay pending; all previous packets/checkboxes remain immutable.
 
 ### Receipt fixture correction — source READY, exact1-case runtime UNRUN
 

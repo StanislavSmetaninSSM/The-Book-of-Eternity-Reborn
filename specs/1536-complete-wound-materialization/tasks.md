@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT FIXTURE SOURCE READY)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT SOURCE/EVIDENCE ACCEPTED; CORRECTED RUNTIME UNRUN)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -19,8 +19,8 @@ story-validation phase bug. Story SOURCE/FIXTURE/SELECTION acceptance1969223f an
 compile174aabad precede actual finalized-health missing-occurrence RED, guards7 PASS,
 lifetime5 PASS/1 pre-QTE fixture failure and documentation1 PASS. The first actual cohorts
 total15 executed/13 PASS/2 FAIL: finalized-health missing occurrence
-and pre-QTE bounded receipt fixture, with no aggregate rerun. Current source READY on
-published4e53c7d3 corrects only that receipt fixture's canonical mastery seed and observational
+and pre-QTE bounded receipt fixture, with no aggregate rerun. Current corrected source
+f7d901b925ceb0a9f05bc74bc795313423e56a07 corrects only that receipt fixture's canonical mastery seed and observational
 early-refusal diagnostics, with an exact one-case owner/selection; its fresh catalog/build/
 PlanOnly/runtime remain UNRUN pending publication and focused source gate;
 fresh independent bounded DESIGN acceptance incorporates the latest user trusted-checkpoint
@@ -280,6 +280,15 @@ first actual130315 at runtime4e53c7d3/compile174aabad completed1 PASS/0 FAIL, co
 [14-artifact first documentation GREEN packet](./recovery/qte-story-append-documentation-first-green-20261012)
 retains35 source/10 binary pins and no mutable fixture roots. Producer NOT IMPLEMENTED,
 all checkboxes unchanged.
+
+Actual independent Astra XHigh receipt SOURCE/FIXTURE/SELECTION and initial EVIDENCE
+ACCEPTEDf7d901b925ceb0a9f05bc74bc795313423e56a07, no confirmed Critical/Important blocker.
+68 artifacts/35 source+10 binary pins per packet/all15 TRX/cleanup independently verified;
+causalRED valid after real harm, guard7PASS/lifetime5PASS1pre-QTEFAIL/docs1PASS retained,
+true cold original-artifact count92. First mastery refusal code remains unobserved inference.
+Next fresh integration receipt1 PlanOnly, metadata-only new-owner catalog audit0 tests and
+only corrected1 actual. Its behavior/build/discovery/runtime remain UNRUN; no producer or
+prerequisite closure claim, old packets/checkboxes unchanged.
 
 Receipt fixture correction is source READY on published4e53c7d303daacf8d4305b3ce4217f2e688d4a96:
 seed canonical matching Кровавый след mastery (existing skillId/active_skill_mastery,
