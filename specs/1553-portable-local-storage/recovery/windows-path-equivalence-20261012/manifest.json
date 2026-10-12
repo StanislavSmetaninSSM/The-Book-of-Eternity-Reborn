@@ -2,7 +2,7 @@
   "SchemaVersion": 1,
   "TrackedTask": "#1553/T068 Windows path equivalence",
   "WorkingBranch": "1553-storage-migration-windows-f18-20261011T235650Z",
-  "State": "Native36PassEvidenceReviewPending",
+  "State": "BoundedWindowsPathEquivalenceReviewedPass",
   "Stages": [
     {
       "Stage": "observe",
@@ -522,7 +522,7 @@
   },
   "MinimalProductDelta": "Four PathsEqual lines reuse existing TrustedLocalFileScope.NormalizeWindowsPathSpelling on both Windows operands; Linux unchanged",
   "GuardScope": "Identity/hash/authority/containment/reparse/race/unknown-path refusals retained; observation removed",
-  "SourceAndCausalRedReview": "PASS actual gpt-6-astra/xhigh; independent GREEN evidence pending",
+  "SourceAndCausalRedReview": "PASS actual gpt-6-astra/xhigh at13e17a3; GREEN evidence PASS at393318d",
   "Exclusions": [
     "Fresh-process cold restart",
     "UNC filesystem/native device access",
@@ -532,5 +532,54 @@
     "Performance/full C5"
   ],
   "ParentIssueClosed": false,
-  "PriorFourCarriersUnchanged": true
+  "PriorFourCarriersUnchanged": true,
+  "IndependentGreenReview": {
+    "SchemaVersion": 1,
+    "Reviewer": "Actual gpt-6-astra/xhigh",
+    "Verdict": "PASS",
+    "FullVerdict": "PASS_GREEN_EVIDENCE_AND_FINAL_COHERENCE",
+    "ReviewedHead": "393318db091cb90b75d3f0b70cce56cb91dd7b6a",
+    "CompiledSource": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+    "Findings": [],
+    "Checks": {
+      "Passed": 36,
+      "BrowserNative": 30,
+      "F18Native": 6,
+      "Methods": 13,
+      "Descriptors": 2,
+      "RunnerSeconds": 111.1851158,
+      "ExplicitRunnerBudgetMinutes": 8,
+      "CategoryBudgetMinutes": 3,
+      "GreenArchiveEntries": 46,
+      "RedArchiveEntries": 42,
+      "CRCSizesHashesAndOriginalBytes": true,
+      "SourcePins": 1629,
+      "DllPdbPins": 157,
+      "FreshSelectedOutputs": 4,
+      "PdbSourceDocuments": 6,
+      "ClientPdbGuid": "c616ce55-92b3-45fa-b821-5eb50aea842a",
+      "IntegrationPdbGuid": "5cd62e0d-747c-4f05-ae36-f7fd1f640fbf",
+      "BothAuthenticSixComplete": true,
+      "ParserWitnesses": 2,
+      "PathControlWitnesses": 2,
+      "BrowserCleanupWitnesses": 30,
+      "F18LegacyEnteredAndFlagRestored": 6,
+      "F18StrictCleanupTrueNull": 6,
+      "OwnedRootsAbsent": true,
+      "ProductDeltaOnlySymmetricExistingWindowsComparerHelper": true,
+      "TemporaryObservationRemoved": true,
+      "PriorFourCarriersRedCommonSelectionRunnerUnchanged": true,
+      "MetadataCoherentAndCheckoutClean": true
+    },
+    "Limits": [
+      "No process cold restart",
+      "No UNC filesystem qualification",
+      "No case-sensitive Windows directory qualification",
+      "No full-game or performance qualification",
+      "Other five Windows recipes UNRUN",
+      "Parents OPEN; ordinary40FAIL and B2-B5 paused retained"
+    ],
+    "ReviewerBuildTestProbeOrMutation": false
+  },
+  "FinalWriterClosure": "Exact final SHA, bounded final-carrier delta review and GitHub recovery receipts are recorded in the external local handoff without a self-referential commit"
 }

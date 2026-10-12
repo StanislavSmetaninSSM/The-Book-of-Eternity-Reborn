@@ -1,4 +1,4 @@
-# Windows path equivalence — native GREEN, evidence review pending
+# Windows path equivalence — native36 reviewed PASS
 
 Tracked #1553/T068 on `1553-storage-migration-windows-f18-20261011T235650Z`.
 Compiled source `13e17a3eb446b02e3d136b0214b52b00e730e25c`. Native HOME-PC Windows 11/NTFS,
@@ -33,7 +33,7 @@ fresh same-process recovery/restored bytes/absence assertions. Physical BOM/noBO
 strict malformedUTF8 and doubleBOM controls emit two successful witnesses.
 
 Independent actual gpt-6-astra/xhigh SOURCE + CAUSAL RED EVIDENCE PASS at13e17a3;
-GREEN evidence/final metadata pending. No extra pure-controls RED was required:
+GREEN EVIDENCE PASS at393318db091cb90b75d3f0b70cce56cb91dd7b6a, no actionable findings. Final exact-tip publication/readback/GitHub recovery and bounded carrier delta review belong to writer closure; receipts are in the local handoff without a self-referential SHA. No extra pure-controls RED was required:
 the original product defect was reproduced natively before the patch.
 
 Boot01:47:25.5UTC recovery verified previous007 head clean/localremote equal;

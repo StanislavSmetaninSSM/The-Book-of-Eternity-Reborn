@@ -1,3 +1,24 @@
+## T068 Windows path equivalence — bounded native36 reviewed PASS, 2026-10-12
+
+Actual independent gpt-6-astra/xhigh SOURCE + CAUSAL RED EVIDENCE PASS13e17a3,
+GREEN EVIDENCE PASS393318d/no actionable findings. Actual native pre-fix mismatch
+raw==extended intentDestination/compared==raw[4..] is retained in RED1PASS1FAIL.
+Minimal four-line existing trusted spelling helper both Windows comparer operands,
+unchanged Linux/case/identity/hash/authority/reparse/race/unknown-path guards;
+observer removed. Fresh build76.2472392s/PlanOnly36cases13methods2descriptors0exec
+88.1546530s, one NoBuild111.1851158sGREEN native30=30PASS/F18native6=6PASS.
+Two20comparison/18refusal-bothside path witnesses +two strict physical parser;
+30browser cleanups/six legacy entered+flagRestored+strict cleanup;1629source157
+DLLPDB/four fresh outputs, original RED42+GREEN46 ZIP entries independently checked.
+Budgets3each/explicit8runner unchanged; common C5 and priorfourcarrier bytes intact.
+[Reviewed evidence](recovery/windows-path-equivalence-20261012/manifest.json).
+Only this bounded child accepted; parents #1553/T067/T068/T061–T065 OPEN.
+Fresh same-process is not processcold; UNC string controls not UNCfilesystem,
+no casesensitivefolder/fullgame/UI/provider/perf/otherfiveWindows qualification.
+Final-carrier delta review/ordinary publication/exact-tip existing-copy GitHub
+restoration are writer closure, no new runtime. Following pending/HOLD/UNRUN
+paragraphs are historical checkpoints and grant no further execution.
+
 ## T068 Windows path equivalence — native36 PASS, evidence review pending, 2026-10-12
 
 SOURCE + CAUSAL RED EVIDENCE actual Astra XHigh PASS at13e17a3. Confirmed native
