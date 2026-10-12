@@ -9,8 +9,56 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (READ-ONLY PROJECTION QUALIFICATION ACCEPTED4d; FIRST NONE CONSUMER TEST-ONLY SOURCE WIP; CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-12 (FIRST GENUINE NONE CONSUMER CAUSAL RED ROOT-VERIFIEDa4; PUBLICATION/EVIDENCE PENDING; CONSUMER PRODUCTION UNIMPLEMENTED)
 
+FIRST genuine NONE consumer causal RED is ROOT raw-verified at SOURCE/FIXTURE/SELECTION
+accepted runtime/compilea4f720969d35cfccaef1b908756dca69829e5a67. Native
+20261012-200832-736-359223-2631dd614ad14bf6826e2e1c7b7c5a4c-categories:
+exit1,21.7258911s,1 method/1 case/1 descriptor,COMPLETE1 executed/0 PASS/1 FAIL,
+no timeout/skip/duplicates,runner cleanup=true. Exact first causal failure at new Fact:102:
+"Completed actual N43 NONE turn did not publish the durable opportunity receipt."
+Full ROOT TRX/error/stack/stdout/6-observation readback confirms every prerequisite reached
+and passed before this predicate: actual source42 health155/one original occurrence, official
+signed N43/ref/pristine absence, exact ordinary draft/ready, full ProcessPlayerTurn return,
+accepted pre-materialization checkpoint AND actual loop43/story43/typed resource-history
+agreement. This is proper missing durable receipt RED, not a fixture or pre-normalization
+publication blocker. Reader Success=true/Issues=[],gmAuthored/ordinaryValidated=true,
+EngineFailure=null. Source session_qte_story_append request9601fa6e4ae142d18b7bafd6838aaf7c/
+snapshotF449B47C120932B77A037F07E7551EE3394E7588D65DED974C9F5A477664A2EE/turn42;
+genuine next request68f5bcd00401478482e64ba94c78c6b8/snapshot
+544206039E2E48F37A57D4C526F50FB06808011300F17D76BB2C2CB194DBB826/turn43,
+same session/Mortal. ReceiptBefore/After absent, pendingBefore==After, exact two-field NONE
+draft persists and WoundCommand absent are raw observations. Later valid-receipt correlation,
+pending-consume and wound-unchanged assertions are UNREACHED; none is claimed passed. All7
+wound baseline paths were genuinely absent, with no empty canonical initialization.
+
+One strict root /tmp/boe-gameengine-turnlifecycle-19157ba8828b4fd291864671eaaa69c8 emitted
+removed=true/failure=null and root checked actual absence. All98 source pins/10 fresh
+binaries matched PRE/POST actual BEFORE these metadata edits. Read frozen manifest and
+decompressed root readback before editing. The locally frozen24 gz artifacts plus manifest
+[NONE consumer causal RED packet](./recovery/qte-physical-consumer-none-causal-red-20261012)
+retains raw original evidence; publication and independent EVIDENCE/status review are PENDING.
+No production fix is released before that gate. Original ce955 Fact, first projection
+Fact/selectors, all old packets/global selection and parent checkboxes remain unchanged.
+
+Fresh selected preparation native
+20261012-200444-606-358792-489bffc7838b48c28ab458275c50f230-categories:
+exit0,126.1053259s; exact native PhaseResults Build-integration123.4577603s,
+77 warnings/0 errors,actual1 method/1 case/1 descriptor,0 tests. Matching full ownership audit
+native20261012-200723-336-358986-68123e8286d7485cb801d0d03af3144b-categories:
+exit0,28.9539682s,701 categories/11533 methods,valid/0 unmapped/0 stale,0 tests;
+both fresh selected project build logs exist. Preparation/catalog counts are discovery,
+not passing test assertions. NONE is a new separate cohort:1 actual/1 executed/0 PASS/1 FAIL.
+Projection accepted4d remains4 actual/28 executed/26 PASS/2 FAIL/26 unique passed cases;
+producer accepted1b remains23 executed/22 PASS/1 FAIL, separately preserved.
+
+CREATE test-only causal proof and NONE/CREATE production wiring, consumer replay/rollback/
+atomicity and actual after-terminal save-load/new-root/fresh-process remain pending; full
+T070/FR-063/parent/#1536 remain OPEN. No source/test/catalog/selector/prompt/packet change or
+project execution in this metadata-only checkpoint. Mutations STOPPED at two-doc READY for
+immediate root frozen-packet publication/recovery and independent EVIDENCE gate.
+
+Historical first NONE test-only source boundary (SOURCE accepteda4; first actual RED above):
 Bounded read-only PROJECTION QUALIFICATION/EVIDENCE/status accepted by actual retained
 Astra XHigh at4d34e291aeaa5a1821544b952f7b5adcdb5bf69f, no findings. Root exact remote/clean
 selected492-file recovery verified. Projection historical4 actual runs/28 executed/26 PASS/
@@ -18,7 +66,7 @@ selected492-file recovery verified. Projection historical4 actual runs/28 execut
 18 methods and separately accepted producer1b23 executed/22 PASS/1 FAIL remain unchanged.
 Frozen historical pre-review manifests retain their bytes; acceptance is active metadata.
 
-Current bounded TEST-ONLY NONE consumer WIP adds exactly one Fact in the existing engine
+The bounded TEST-ONLY NONE consumer source added exactly one Fact in the existing engine
 partial fixture and one category/selector, budget5/default10. Genuine actual declared QTE
 source42 finalizes health160→155 and one original-source occurrence before a new engine on
 the same root/session executes real ProcessPlayerTurn43. TerminalWaitStarted under the original
@@ -41,10 +89,10 @@ are genuine source/ordinary acceptance requirements, not a waiver of receipt cor
 Then require exactly one strict valid durable receipt with original source42 and decision43/
 offered occurrence correlation, decision none/null woundID/null transitionID, pending empty,
 identity/carrier/wound-history roots byte unchanged (including real absence), and draft plus
-WoundCommand consumed by common publication. First actual may show a prerequisite blocker;
-no new consumer RED has been executed or claimed. NONE source/fixture/selection review, fresh
-selected integration build/PlanOnly, catalog audit and runtime ALL UNRUN. Static new inventory
-is1 method/1 case/1 descriptor,701 categories/11533 methods predicted; not discovery evidence.
+WoundCommand consumed by common publication. These later oracles remain UNREACHED after the
+first missing receipt predicate. SOURCE accepteda4 and fresh build/PlanOnly/catalog completed;
+first actual proper NONE RED is recorded above. Exact discovered inventory is1 method/1 case/
+1 descriptor,701 categories/11533 methods;0-test discovery is separate from the actual1 FAIL.
 [Exact first NONE selection](../../tests/selections/1536-qte-physical-injury-consumer-none.json)
 selects only its5-minute category/default10. Existing700 catalog nodes/suffix, passed cohort
 selectors/global CI/selection and every parent checkbox remain unchanged. No passing producer/
@@ -53,8 +101,8 @@ prerequisite. No GM prompt/docs capability update: production is unchanged, only
 future single NONE protocol is authored in offline test data; current GM capability limits
 remain accurate. CREATE, consumer replay/rollback/atomicity and actual archive/save-load/new-root/
 fresh-process are still UNIMPLEMENTED/UNRUN; T070/full FR-063/parent/#1536 stay OPEN.
-Mutations STOPPED at this coherent five-path TEST-ONLY SOURCE WIP for root publication/recovery
-and mandatory independent SOURCE/FIXTURE/SELECTION gate before any project execution.
+The coherent five-path TEST-ONLY source checkpoint was published and SOURCE accepteda4 before
+fresh preparation/first actual; no production consumer implementation followed before evidence.
 
 Historical accepted finite read-only projection outcome:
 FIRST finite projection remainder GREEN is ROOT raw-verified, runtime source
