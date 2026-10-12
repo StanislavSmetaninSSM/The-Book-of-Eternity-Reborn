@@ -9,8 +9,48 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; BOUNDED PRODUCER SOURCE/FIXTURE/SELECTION READY; PRODUCER SOURCE ACCEPTED423aed; SECOND PREPARATION COMPILE BLOCKER; WHOLE SCOPED API PROOF; EMPTY-KEYS FIXTURE CORRECTION READY; FRESH CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-12 (PRODUCER SOURCE ACCEPTED674e; FIRST CAUSAL GREEN1/1 ROOT VERIFIED; EVIDENCE PENDING; REMAINDER21 ACTUAL UNRUN)
 
+Current first genuine physical-producer boundary: actual retained Astra XHigh
+SOURCE/FIXTURE/SELECTION accepted674e30a6441854e88454c89c48652005e57d4236; both immutable
+preparation-blocker packets have independent EVIDENCE acceptance. Third fresh both-project
+remainder PlanOnly163042 completed exit0: integration77/unit35 warnings,0 errors,
+15 methods/21 cases/6 descriptors,151.7313778s and0 tests. Matching catalog163452 validates
+693 categories/11525 methods,0 stale/unmapped and0 tests. Separate causal PlanOnly163642
+selects1 method/1 case/1 descriptor, exit0/0 tests. Root matched79 source/10 fresh binary pins
+to compile/source674e before and after actual execution; preparation/catalog are no executed
+PASS claims. Metadata-only NoBuild use remains root-owned and requires unchanged matching
+code/tests/rules/catalog/selectors plus this fresh both-project proof.
+
+FIRST ACTUAL unchanged causal Fact GREEN: native run
+20261012-163850-183-321505-00fb497bbe21484c9de5b5c05199d35e-categories,
+exit0,13.8926812s,1 executed/1 PASS/0 FAIL,complete1 descriptor,no timeout/duplicates.
+Root parsed all8 native observations: genuine original session_qte_physical_finalization,
+request43f3838a787b4032936bc376f2b8bb26, snapshot
+DF8F211C8565B049CDCC3244ECB5650574316A49F12BD6F6B066E57501E971C4,turn42;
+actual canonical Applied Damage5 health160→155; one physical QTE occurrence with
+mortal_qte_terminal_health_damage_v1, explicit maximum2,candidate0/count1 and the same
+original source coordinates. EngineFailure/FixtureFailure null. One strict owned-root cleanup
+receipt names /tmp/boe-gameengine-turnlifecycle-5a1f5f07104a417d885635a5d09bccba; root checked
+actual absence. The unchanged causal Fact SHA256 remains
+ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f; original174 finalized-health
+missing-occurrence RED stays immutable/valid and was not repeated. Native evidence is being
+frozen in the [first causal GREEN packet](./recovery/qte-physical-producer-causal-first-green-20261012);
+root publication and independent EVIDENCE acceptance remain PENDING.
+
+A coordinator environment-disconnected notice occurred at16:38; the same selected cloud
+shell/git/remote were available and root resumed the existing owned session93981 to its
+exit0 result. No test was restarted/repeated. Cause of the notice remains unknown; current
+tool availability is observed, not a recovery execution or reconstructed runtime claim.
+This proves only the first actual ordinary QTE→finalized canonical health Damage→pending
+physical occurrence boundary. Remainder15 methods/21 actual cases are UNRUN; replay/sibling/
+cache/awaited/atomic qualification remains pending. N+1 decision/consumer and after-terminal
+actual save-load remain unimplemented/UNRUN. All T070/parent/#1536 checkboxes remain OPEN;
+old packets/outcomes, B2–B5 accepted33PASS and GameEngine cold count1 unchanged. Current
+metadata-only delta is plan/tasks; all source/fixture/catalog/selector bytes remain674e.
+Mutations STOPPED for root publication with the forthcoming packet before long review.
+
+Historical second preparation checkpoint (superseded by the fresh preparation above):
 Import SOURCE/FIXTURE/SELECTION accepted1f1e11b2a2b1961663ddacad0caee8d63a0e70d9 and first
 six-artifact/77-pin preparation BLOCKER EVIDENCE accepted;78 current source pins/recovery309
 exact, no recovery execution. Second fresh remainder PlanOnly preparation (0 tests) failed
