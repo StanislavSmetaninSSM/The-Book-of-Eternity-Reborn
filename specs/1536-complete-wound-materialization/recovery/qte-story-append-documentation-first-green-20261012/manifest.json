@@ -1,0 +1,109 @@
+{
+  "scope": "#1536 story lifecycle documentation/source guard first1PASS; receipt unresolved",
+  "runtimeSource": "4e53c7d303daacf8d4305b3ce4217f2e688d4a96",
+  "compileSource": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "runs": {
+    "plan": "20261012-130231-654-297029-1c12f71222174f40b1fa67bfc5b1c55f-categories",
+    "actual": "20261012-130315-658-297164-cf50d81f35eb423f89130d3e4c004140-categories"
+  },
+  "firstActualInvocations": 1,
+  "counts": {
+    "methods": 1,
+    "plannedCases": 1,
+    "executed": 1,
+    "passed": 1,
+    "failed": 0,
+    "descriptors": 1,
+    "complete": true
+  },
+  "timedOut": false,
+  "sourcePins": 35,
+  "binaryPins": 10,
+  "mutableFixtureRoots": 0,
+  "artifacts": [
+    {
+      "path": "plan-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-130231-654-297029-1c12f71222174f40b1fa67bfc5b1c55f-categories/summary.json",
+      "sha256": "8e331b399ea4e359e5b62f16263a5050b6fd08de1f078ddffbe032030cb0ceda",
+      "originalSha256": "8e331b399ea4e359e5b62f16263a5050b6fd08de1f078ddffbe032030cb0ceda"
+    },
+    {
+      "path": "plan-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-130231-654-297029-1c12f71222174f40b1fa67bfc5b1c55f-categories/plan.json",
+      "sha256": "5f879275d9e5404892f6c25ef919a00b04372b7ed46726a10e4e8367f9052b00",
+      "originalSha256": "5f879275d9e5404892f6c25ef919a00b04372b7ed46726a10e4e8367f9052b00"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-130231-654-297029-1c12f71222174f40b1fa67bfc5b1c55f-categories/dotnet-test.log",
+      "sha256": "4a2b2350120360f207a668a5b927d2243eff298094294aae161e5986c3fcf195",
+      "originalSha256": "3c682c5f369d307192744fcae0a953a9ac6008ecf002321cfea291238dd9bbab"
+    },
+    {
+      "path": "actual-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-130315-658-297164-cf50d81f35eb423f89130d3e4c004140-categories/summary.json",
+      "sha256": "0a14e638bed8428e55bd70af8a0889659b22b32841c19e9537bedec73e5ecaec",
+      "originalSha256": "0a14e638bed8428e55bd70af8a0889659b22b32841c19e9537bedec73e5ecaec"
+    },
+    {
+      "path": "actual-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-130315-658-297164-cf50d81f35eb423f89130d3e4c004140-categories/plan.json",
+      "sha256": "20c2aafc905f5f38dd2fadb868c0af1fa9530c8bf0f493e063664f436051ef55",
+      "originalSha256": "20c2aafc905f5f38dd2fadb868c0af1fa9530c8bf0f493e063664f436051ef55"
+    },
+    {
+      "path": "actual-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-130315-658-297164-cf50d81f35eb423f89130d3e4c004140-categories/dotnet-test.log",
+      "sha256": "0a7f76fa2eaf73fedaeddc1363bc7c3d35106643ea59755b867738bc10d6d476",
+      "originalSha256": "bc3791a9dff8e5c366ce15193a228a5e495080c9f92eec67dfaa67c1ee43bcee"
+    },
+    {
+      "path": "actual-qte-story-append-documentation-unit-001.trx.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-130315-658-297164-cf50d81f35eb423f89130d3e4c004140-categories/qte-story-append-documentation-unit-001.trx",
+      "sha256": "62093f438d5a11d309641b8d34fdc1f9d621ceb23975d39201b870245d19eb65",
+      "originalSha256": "9bab9d2e33fa96c05210a151437f86d3f5ef3b48d4d3da43ca81c7788cba7507"
+    },
+    {
+      "path": "documentation-source-pins.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/documentation-source-pins.json",
+      "sha256": "4f081b3c486a76a4aa86560f2f214cd674ce847f17257d07d32b9b208eca042b",
+      "originalSha256": "4f081b3c486a76a4aa86560f2f214cd674ce847f17257d07d32b9b208eca042b"
+    },
+    {
+      "path": "fresh-build-binaries.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/fresh-build-binaries.json",
+      "sha256": "a4a4bbdd2c65b96d9e49fa71eaa0b1370c04b7fdc996cf3773d8071a3a763923",
+      "originalSha256": "a4a4bbdd2c65b96d9e49fa71eaa0b1370c04b7fdc996cf3773d8071a3a763923"
+    },
+    {
+      "path": "documentation-plan-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/documentation-plan-invocation-prewritten.json",
+      "sha256": "555009ae49325219c010a09f2035fa273a7c1d69ae65815276af0ac41ce0de97",
+      "originalSha256": "555009ae49325219c010a09f2035fa273a7c1d69ae65815276af0ac41ce0de97"
+    },
+    {
+      "path": "documentation-actual-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/documentation-actual-invocation-prewritten.json",
+      "sha256": "3a646306293e2db098f668972dcb1500294608717304a4c9904197ca24d78581",
+      "originalSha256": "3a646306293e2db098f668972dcb1500294608717304a4c9904197ca24d78581"
+    },
+    {
+      "path": "documentation-first-actual-readback.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/documentation-first-actual-readback.json",
+      "sha256": "47f0a363e76ded0f89db4fc1f2339bb57cf28fec97609eeda687c06e84deacee",
+      "originalSha256": "47f0a363e76ded0f89db4fc1f2339bb57cf28fec97609eeda687c06e84deacee"
+    },
+    {
+      "path": "documentation-plan-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/documentation-plan-console.log",
+      "sha256": "aec5563a95234c9d4a162bc54e46cb11327ca59b277060ba9a5a02d78600351c",
+      "originalSha256": "6b252d4e4ec563d032d1dcb0c0e19fef8f326b3bc90dd1cdf23f8fb03d3f4101"
+    },
+    {
+      "path": "documentation-actual-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/documentation-actual-console.log",
+      "sha256": "55a22bb90b5e86e5913a7e5fc9d0ace9b75bd1c9be8b230427793829cd5223ec",
+      "originalSha256": "5853d1488977bc1157f967df633f8a82e46ac94daa5ff2676584a2c021fc7c75"
+    }
+  ]
+}

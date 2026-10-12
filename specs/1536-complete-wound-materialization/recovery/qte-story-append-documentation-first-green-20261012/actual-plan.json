@@ -1,0 +1,43 @@
+{
+  "Categories": [
+    "qte-story-append-documentation"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-story-append-documentation",
+      "reason": "#1536 One affected existing documentation/source guard, category2/default7, checks the exact private continuity lifecycle and unchanged GM offer/receipt boundary.",
+      "contracts": [
+        "Rules/Block_CLI_QTE.txt documents exact client-owned story delta, continued unrelated history guards, same-root resume and trusted portable checkpoint boundary",
+        "No new GM authored witness/schema, worked offer change, anti-owner architecture or active-QTE archive capability is introduced"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "4e53c7d303daacf8d4305b3ce4217f2e688d4a96",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 2.1556238,
+  "Descriptors": [
+    {
+      "Name": "qte-story-append-documentation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "qte-story-append-documentation",
+      "Categories": [
+        "qte-story-append-documentation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

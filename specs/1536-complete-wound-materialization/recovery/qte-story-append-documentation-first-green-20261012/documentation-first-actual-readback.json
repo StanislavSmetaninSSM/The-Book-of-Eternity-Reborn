@@ -1,0 +1,20 @@
+{
+  "runtimeSource": "4e53c7d303daacf8d4305b3ce4217f2e688d4a96",
+  "compileSource": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "run": "20261012-130315-658-297164-cf50d81f35eb423f89130d3e4c004140-categories",
+  "firstActualInvocations": 1,
+  "plannedMethods": 1,
+  "plannedCases": 1,
+  "executed": 1,
+  "passed": 1,
+  "failed": 0,
+  "complete": true,
+  "descriptors": 1,
+  "timedOut": false,
+  "wallTime": "00:00:04.6559215",
+  "sourcePinsMatchedToImmutableGit": 35,
+  "binaryPinsMatched": 10,
+  "method": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces",
+  "mutableFixtureRoots": 0,
+  "claim": "documentation/source guard only; deferred receipt remains blocked"
+}

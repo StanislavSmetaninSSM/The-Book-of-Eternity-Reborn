@@ -1,0 +1,72 @@
+{
+  "Categories": [
+    "qte-story-append-documentation"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-story-append-documentation",
+      "reason": "#1536 One affected existing documentation/source guard, category2/default7, checks the exact private continuity lifecycle and unchanged GM offer/receipt boundary.",
+      "contracts": [
+        "Rules/Block_CLI_QTE.txt documents exact client-owned story delta, continued unrelated history guards, same-root resume and trusted portable checkpoint boundary",
+        "No new GM authored witness/schema, worked offer change, anti-owner architecture or active-QTE archive capability is introduced"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "4e53c7d303daacf8d4305b3ce4217f2e688d4a96",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0353477,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0341269,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0868399,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0031853,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 7,
+  "WallTime": "00:00:02.2985422",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 1,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "qte-story-append-documentation-unit-001"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

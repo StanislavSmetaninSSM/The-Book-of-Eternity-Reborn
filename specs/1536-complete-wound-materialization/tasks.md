@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS UNRUN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT FIXTURE SOURCE READY)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -15,7 +15,14 @@ has SOURCE/selection acceptance and matching51-case GREEN EVIDENCE accepted880ef
 First one-case fixture attempt is a published59fb65f6 pre-harm timeout. The minimal
 owner-callback correction received SOURCE acceptance9b1d4448; its completed1 FAIL before
 harm is publishedcf14c4f8 with independent EVIDENCE acceptance and confirmed production
-story-validation phase bug. Current authorized prerequisite is source READY for publication/combined SOURCE-FIXTURE-SELECTION review; build/discovery/runtime UNRUN, exact ordinary-ready handoff and resumed terminal cleanup controls are authored;
+story-validation phase bug. Story SOURCE/FIXTURE/SELECTION acceptance1969223f and fresh
+compile174aabad precede actual finalized-health missing-occurrence RED, guards7 PASS,
+lifetime5 PASS/1 pre-QTE fixture failure and documentation1 PASS. The first actual cohorts
+total15 executed/13 PASS/2 FAIL: finalized-health missing occurrence
+and pre-QTE bounded receipt fixture, with no aggregate rerun. Current source READY on
+published4e53c7d3 corrects only that receipt fixture's canonical mastery seed and observational
+early-refusal diagnostics, with an exact one-case owner/selection; its fresh catalog/build/
+PlanOnly/runtime remain UNRUN pending publication and focused source gate;
 fresh independent bounded DESIGN acceptance incorporates the latest user trusted-checkpoint
 scope ruling. The eec3c36e unresolved anti-owner proposal is historical WIP, not whole accepted design.
 Prior4085 source facts
@@ -262,11 +269,30 @@ skip/duplicate/underfill. Recovered/late-ready, true same-root child actual idle
 compatibility Facts PASS. Cold parent296090/child296190 and original correlation/token/
 generation/terminal/story/cleanup are observed. Only deferred receipt fixture fails line74:
 ActionObserved=false, engine Failure=null, QTE action UNREACHED. No-receipt/receipt lifecycle
-predicates are UNREACHED; exact ordinary rejection cause UNDIAGNOSED. Source-only seed/admission
-investigation, no retry/correction yet. [15-artifact immutable first lifetime packet](./recovery/qte-story-append-lifetime-first-outcome-20261012)
+predicates are UNREACHED. First emitted runtime issue code was not captured. Source tracing
+identifies mandatory active-skill mastery initialization omitted by the bounded seed and full
+ordinary preflight's null return; that first invocation's specific code remains a source
+inference. [15-artifact immutable first lifetime packet](./recovery/qte-story-append-lifetime-first-outcome-20261012)
 full6 raw outputs/35 source/10 binary pins/6 distinct strict cleanup roots read back and hashes
 verified. Next evidenced minimal fixture correction + source gate + affected finite rerun;
-passing neighbors stay retained. Docs1 UNRUN, producer NOT IMPLEMENTED, all checkboxes unchanged.
+passing neighbors stay retained. Documentation PlanOnly1302311 method/1 case/0 tests then
+first actual130315 at runtime4e53c7d3/compile174aabad completed1 PASS/0 FAIL, complete/no timeout;
+[14-artifact first documentation GREEN packet](./recovery/qte-story-append-documentation-first-green-20261012)
+retains35 source/10 binary pins and no mutable fixture roots. Producer NOT IMPLEMENTED,
+all checkboxes unchanged.
+
+Receipt fixture correction is source READY on published4e53c7d303daacf8d4305b3ce4217f2e688d4a96:
+seed canonical matching Кровавый след mastery (existing skillId/active_skill_mastery,
+newMasteryLevel1/newCurrentMasteryProgress0/newMasteryProgressNeeded100/masteryLeveledUp=false),
+retain activeSkillChanges/poiseDamage/effect source, and observe real full-validator codes only
+when bounded actual source/action is unreached. Engine outcome and all lifecycle/harm/cleanup
+oracles remain unchanged; no production/authority/snapshot/GM contract edits. New category
+qte-story-append-receipt and task-local1536-qte-story-append-receipt.json select only existing
+QteStoryAppend_DeferredReceiptResumeRetainsExactDelta:1 method/1 case, category5/default10.
+Intentional overlap with old lifetime owner is documented; prior catalog/selectors/CI unchanged.
+Root publication, focused SOURCE/FIXTURE/SELECTION and fresh catalog/build/PlanOnly/actual are
+required next; correction execution UNRUN, first6 lifetime result remains immutable5 PASS/1 FAIL.
+Original causal Fact/hash, all packets and checkboxes unchanged; no unrelated passing rerun.
 
 First story guard actual125028 at runtime09c9e8f4c7f38299978c612a6b8cb8201c10d110,
 compile174aabad (only checkpoint/packet changes since build) completed **7/7 PASS** after

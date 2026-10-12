@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-story-append-receipt",
+            "responsibility": "#1536 affected bounded receipt fixture only: one existing integration Fact/one case. Matching canonical active-skill mastery is seeded before actual ordinary ProcessPlayerTurn; actual QTE handoff, no-receipt engine idle, genuine correlated bounded receipt, resumed finalized Damage, exact story and original artifact cleanup. Early refusal diagnostics expose actual full-validator issue codes without weakening any oracle. Intentional exact overlap with qte-story-append-lifetime; select only this owner for the isolated correction.",
+            "excludes": "No production/producer/authority/snapshot changes, bypassed validators, fabricated source/continuation/accepted receipt, unrelated passing lifetime/cold/guards/docs/admission rerun, provider/Windows, anti-owner or archive-QTE feature.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-story-append-lifetime",
+                    "when": "The existing broad six-case lifetime owner remains intact; select it only for a change affecting its other consumers, not this isolated receipt seed/diagnostic correction."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QteStoryAppend_DeferredReceiptResumeRetainsExactDelta"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-story-append-guards",
             "responsibility": "#1536 story-phase prerequisite preservation: two integration methods/seven cases. Actual ProcessPlayerTurn stages official source; preaccept GM create/change is refused. Actual accepted client story/handoff precedes altered authorized story, unrelated new story, mismatched runtime crosslink, stale source and duplicate-story replay negatives. Exact resource/wound byte boundary and strict owned cleanup.",
             "excludes": "No physical occurrence producer/consumer, fabricated source/binding/afterimage, anti-owner whole-save rewriting, active-QTE archive generation rebind, provider/native Windows/C5, broad qte-rules or accepted admission51 rerun. Original signed envelope and client-owned controls remain intact.",

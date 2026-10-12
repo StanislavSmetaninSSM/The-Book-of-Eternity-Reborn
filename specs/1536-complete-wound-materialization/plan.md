@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS UNRUN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT FIXTURE SOURCE READY)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -29,7 +29,16 @@ before harm; its immutable packet is publishedcf14c4f8 with independent EVIDENCE
 Read-only provenance review confirmed a production story-validation phase bug. The current
 checkpoint specifies its narrowly authorized prerequisite design. Fresh independent Astra XHigh
 bounded DESIGN acceptance incorporates the latest user scope ruling; the earlier unresolved
-anti-owner proposal at eec3c36e is historical WIP, not accepted as a whole. The current source/tests/docs/selection block is source READY for publication and combined SOURCE/FIXTURE/SELECTION review: exact ordinary-ready handoff consumption, actual idle resumed terminal cleanup and their existing Fact controls are authored. Build/discovery/runtime for this block remain UNRUN. No occurrence producer or canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
+anti-owner proposal at eec3c36e is historical WIP, not accepted as a whole. The story source
+received focused SOURCE/FIXTURE/SELECTION acceptance1969223f and fresh compile174aabad.
+Actual finalized health Damage now reaches the missing-occurrence RED; guards7 PASS,
+lifetime5 PASS/1 pre-QTE fixture failure and documentation1 PASS are retained below.
+These first actual cohorts total15 executed:13 PASS/2 FAIL (missing occurrence after finalized
+health Damage, and the bounded receipt fixture before QTE action); no aggregate rerun is implied.
+Current source READY on published4e53c7d3 changes only the bounded receipt fixture's
+canonical mastery seed, early-refusal diagnostics and exact one-case selection. Its fresh
+catalog/build/PlanOnly/runtime remain UNRUN pending publication and focused source gate.
+No occurrence producer or canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
 
@@ -477,19 +486,52 @@ This same-root Linux cold proof is not an active-QTE archive or Windows proof.
 Only `QteStoryAppend_DeferredReceiptResumeRetainsExactDelta` fails at line74
 `Assert.True(run.ActionObserved)`: actual ordinary engine returns null failure without reaching
 QTE action. Bounded fixture's QTE handoff/no-receipt idle/receipt resume/cleanup predicates
-are UNREACHED, never a lifecycle RED/GREEN claim. Exact ordinary rejection cause remains
-UNDIAGNOSED; source-only investigation checks seeded effect/skill fixture validity through
-ordinary admission. No retry or code correction yet. Do not waive/re-sign snapshot, relax
-oracles, bypass the ordinary engine or add a general harness.
+are UNREACHED, never a lifecycle RED/GREEN claim. The first emitted validator code was not
+captured in that TRX. Source tracing now identifies the omitted mastery initialization:
+StagePlayerTurnAsync's full preflight returns null on validation failure, while the mandatory
+active-skill rule requires matching mastery for the seeded Кровавый след. This remains a
+source inference about that first invocation, not an observed runtime issue code. Its frozen
+outcome is unchanged. Do not waive/re-sign snapshot, relax oracles, bypass the ordinary engine
+or add a general harness.
 
 Root inspected all full raw6 TRX stdout/error results, matched35 source/10 binary pins and
 verified6 distinct strict cleanup roots absent (including seed and nested child receipts;
 not a6-test equal-root claim). Frozen [15-artifact first lifetime packet](./recovery/qte-story-append-lifetime-first-outcome-20261012)
 all stored/raw/original hashes match. Guard7PASS and genuine causal missing-occurrence RED
-remain immutable. Next smallest evidenced receipt-fixture correction/source gate and exactly
-its affected finite rerun; unrelated accepted cases should not be rerun. Documentation1 is
-still UNRUN. Producer remains NOT IMPLEMENTED while this necessary prerequisite stays open.
+remain immutable. Documentation PlanOnly130231 selected1 method/1 case/1 descriptor,0 tests;
+first actual130315 at runtime4e53c7d3/unchanged compile174aabad completed1 PASS/0 FAIL,
+complete/no timeout, with35 source/10 binary pins and no mutable fixture roots. Root froze the
+[14-artifact first documentation GREEN packet](./recovery/qte-story-append-documentation-first-green-20261012).
+Next is only the evidenced receipt-fixture correction/source gate and its affected one-case
+rerun; unrelated accepted cases are retained. Producer remains NOT IMPLEMENTED while this
+necessary prerequisite stays open.
 No independent expansion; all checkboxes unchanged.
+
+### Receipt fixture correction — source READY, exact1-case runtime UNRUN
+
+Base4e53c7d303daacf8d4305b3ce4217f2e688d4a96 is published and remote verified.
+ValidationService.AcceptedTurnAndInkFeathers.cs:3153–3183 requires mastery initialization
+for newly visible active skills; GameEngine.TurnLifecycle.cs:1534 runs that validator before
+staging the original request. The bounded seed omitted matching skillMasteryChanges.
+The correction writes the existing canonical mastery row for Кровавый след with the supported
+skillId/targetKind=active_skill_mastery and newMasteryLevel=1,
+newCurrentMasteryProgress=0, newMasteryProgressNeeded=100, masteryLeveledUp=false.
+The existing activeSkillChanges container, required poiseDamage and effect source stay intact.
+Only if the bounded actual engine returns before action, observational diagnostics read the
+real full validator issues and preserve the original engine outcome; no oracle or validator
+is weakened. No production, authority, snapshot or GM contract change is made.
+
+New task-local owner qte-story-append-receipt selects exactly the existing integration method
+QteStoryAppend_DeferredReceiptResumeRetainsExactDelta:1 method/1 case, protective category5
+minutes/default overall10, through tests/selections/1536-qte-story-append-receipt.json.
+Its overlap with the unchanged qte-story-append-lifetime owner is intentional and documented;
+all previous catalog entries/selectors and global CI remain intact. No new test method is
+introduced. The no-receipt actual idle, genuine correlated receipt, resumed Damage5+2,
+exact story/source artifact cleanup and strict owned cleanup oracles are unchanged.
+Root publishes this source then obtains focused SOURCE/FIXTURE/SELECTION review and fresh
+catalog/build/PlanOnly/one matching actual. All such correction checks are UNRUN here;
+the immutable first6 result stays5 PASS/1 FAIL and receipt lifecycle predicates UNREACHED.
+The original physical causal Fact/hash and all checkboxes remain unchanged.
 
 ### Story preservation first GREEN7 — 2026-10-12
 

@@ -351,6 +351,28 @@ public sealed partial class GameEngineTurnLifecycleTests
             run.Failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(run.Engine,
                 mode == "recovered_ready" ? "WaitForGmResponse" : "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
         }
+        if (bounded && !run.ActionObserved)
+        {
+            // Preserve the actual engine outcome; expose full current-state refusal codes only
+            // for this bounded fixture's unreached source/action boundary.
+            try
+            {
+                var issues = await GetPrivateField<ValidationService>(run.Engine!, "_validator").ValidateGameStateAsync();
+                WritePhysicalInjuryDiagnostic("qte_story_bounded_early_refusal", new
+                {
+                    SourceObserved = run.Source != null, run.ActionObserved,
+                    EngineFailure = run.Failure?.ToString(), Issues = issues
+                });
+            }
+            catch (Exception diagnosticFailure)
+            {
+                WritePhysicalInjuryDiagnostic("qte_story_bounded_early_refusal_diagnostic_failure", new
+                {
+                    SourceObserved = run.Source != null, run.ActionObserved,
+                    EngineFailure = run.Failure?.ToString(), DiagnosticFailure = diagnosticFailure.ToString()
+                });
+            }
+        }
         WritePhysicalInjuryDiagnostic("qte_story_actual_engine_result", new { Mode = mode, preacceptMutation, postHandoffMutation, run.ActionObserved, Failure = run.Failure?.ToString() });
         return run;
     }
@@ -391,6 +413,19 @@ public sealed partial class GameEngineTurnLifecycleTests
         definition["triggers"] = new JsonArray(trigger.DeepClone());
         await context.SeedPlayerSkillSourceAsync(definition);
         await _fs.WriteFileAtomicAsync(EffectMaterializationTestContext.MaterializableSkillPath, (await context.ReadJsonAsync(EffectMaterializationTestContext.MaterializableSkillPath))!.ToJsonString());
+        await WriteJsonAsync("game_state/player/skill_mastery.json", new
+        {
+            skillMasteryChanges = new[]
+            {
+                new
+                {
+                    skillId = EffectMaterializationTestContext.MaterializableSkillId,
+                    skillName = "Кровавый след", targetKind = "active_skill_mastery",
+                    newMasteryLevel = 1, newCurrentMasteryProgress = 0,
+                    newMasteryProgressNeeded = 100, masteryLeveledUp = false
+                }
+            }
+        });
         var effect = EffectMaterializationTestContext.CreateSkillCanonicalEffect(profile: "periodic_damage");
         effect["lifetime"] = new JsonObject { ["mode"] = "uses", ["remainingUses"] = 1, ["consumingTriggerIds"] = new JsonArray("on_resource_damaged") };
         effect["triggers"] = new JsonArray(trigger.DeepClone());
