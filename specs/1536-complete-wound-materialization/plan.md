@@ -67,7 +67,8 @@ timeout increase or performance redesign belongs to this block.
   it. `ValidationService.AfterlifeSpiritualConflict.cs::ValidateAfterlifeCombatProfile`
   derives its whitelist from the latter, while `ResolveAuthoritativeActionCostArtTier`
   uses the exact operation key. Removing/renaming the seed changes authority and
-  force-binding AP cost 3→1; it is not a faithful fixture correction.
+  invalidates the preserved force-binding payment: AP balance 3→1, cost 2.
+  It is not a faithful fixture correction.
 - Current `GameEngineTurnLifecycleTests.SpiritualBindingContinuation.cs` uses
   `LocalPublicationObserver` and `SpiritualLifecyclePublicationWitness` against
   actual BOELP3 `trusted-local-publication-v1/active.json` MemberPublished/Committed
@@ -103,8 +104,13 @@ Do not infer a new unlock/rank/acquisition rule from a missing catalog entry.
    Record first RED specifically at unknown `force_binding`; unrelated invalid
    profile errors must be resolved in the reproduction before claiming this cause.
    Negative controls retain rejection of an unknown art and invalid/noninteger/
-   out-of-range tiers, plus existing required wound-art checks. This preflight is
-   a prerequisite; it cannot prove cold publication or all original admission.
+   out-of-range tiers, plus existing required wound-art checks. Alongside raw-profile
+   admission, require a cheap check through the existing authoritative action-cost
+   consumer with exact `force_binding` tier 3: player AP 6→3→1, guardian AP 6→4→2,
+   and the same actor mirror. The last force-binding payment is cost 2; all other
+   original costs remain unchanged. No `binding` alias or normalized-only shortcut
+   can satisfy this check. Both checks must pass before the costly owner; neither
+   proves cold publication or all original admission.
 2. Correct only the existing supported `force_binding` soul-profile authority gate
    if that regression and review confirm the diagnosis. Primary candidate is the
    whitelist construction in `ValidationService.AfterlifeSpiritualConflict.cs`;

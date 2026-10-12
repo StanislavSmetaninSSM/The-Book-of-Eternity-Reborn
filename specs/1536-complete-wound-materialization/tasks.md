@@ -5530,7 +5530,11 @@ they are not additional required work. Full T069/T070 and FRONTIER remain open.
   final echo. Legal alternatives expose no result fields; strong binding remains distinct.
   Resumption design 2026-10-12: use the current plan's bounded ordinary soul-profile
   preflight and narrow existing force_binding authority-gate correction proposal;
-  preserve original AP3/tier3 and negatives. Docs-only plan/tasks WIP awaits
+  preserve tier 3, last force-binding cost 2 (AP balance 3→1) and negatives.
+  Before the costly owner, prove raw-profile admission and the actual exact-key
+  authoritative cost consumer: player 6→3→1, guardian 6→4→2, same actor mirror,
+  unchanged other costs; no binding alias or normalized-only shortcut.
+  Docs-only plan/tasks WIP awaits
   independent Astra XHigh design review before implementation/runtime release.
   Cold owner is existing spiritual-binding-cold-publication (one Fact); retain
   actual LocalPublicationObserver B cut, 15-minute category and strong 8/8 phases.
