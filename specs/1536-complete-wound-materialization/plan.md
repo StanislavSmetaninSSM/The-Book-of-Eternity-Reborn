@@ -9,8 +9,53 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (CAUSAL GREEN EVIDENCE ACCEPTED673; REMAINDER FIRST6 ACTUAL5PASS1FAIL; PENDING-CORRELATION DIAGNOSIS; OTHER15 UNRUN)
+## Current T070 first vertical — 2026-10-12 (CAUSAL1/REMAINDER FIRST5PASS1FAIL EVIDENCE ACCEPTED; MINIMAL PENDING-CORRELATION SOURCE READY; NEXT12METHODS16CASES UNRUN)
 
+First remainder EVIDENCE accepted by actual retained Astra XHigh at published
+4a4aac1cd837de57fb1a6755a5d48f435c140907; root verified357 selected recovery files exact,
+no recovery execution. Native first6=5 PASS/1 FAIL and other15 UNRUN remain immutable;
+accepted causal1 is not repeated. Read-only full dependency proof confirms the production
+mismatch: declared BuildCommonPlan:599–602/623/732 uses genuine original capsule request,
+and ResolvePendingBoundary:4923–4926 copies Input.RequestId into canonical AcceptedRequestId.
+Transport initial:564 and receipt:763 still demanded continuationId + _terminal. Transport
+was unchanged from accepted6552; old undeclared receipt used that coordinate. The pending
+request value is source-derived in the failed run, not a separately serialized raw fact;
+actual original request/snapshot/action and the exact failure are retained above/below.
+Pending DTO/receipt transport have no SnapshotToken field; genuine token remains capsule/
+common-input/validated canonical continuation authority, checked against original Reader
+through active/awaiting source lifetime.
+
+Current bounded correction changes ONLY those two expected acceptedRequestId comparisons.
+Both use existing QtePhysicalInjurySource.ReadValidatedContinuation from the canonical
+already-validated continuation: declared capsule.RequestId; undeclared exact old suffix.
+Initial preparation validates pair/offer/capsule/current source before BuildCommonPlan;
+receipt PrepareResume:86 calls ValidateForReceiptResume before reading request/pending.
+The accessor checks closed capsule schema/session/generation/turn; no raw GM/caller expected
+string or new helper authority. All session/generation/turn/full/semantic/wave/pending/packet/
+root/hash/receipt checks and planner/source lifetime stay unchanged. Acceptance preallocation74,
+simulation350 and receipt replay282 already use the same source input; no fingerprint/hash
+formula/ledger identity/allocation/schema/registration/reduction/publication change.
+
+The existing failed receipt Fact adds actual canonical pending session/acceptedRequest/turn
+and capsule snapshot agreement assertions/JSON observation before its genuine offline GM
+receipt; every prior awaiting/no-occurrence/no-receipt idle/final siblings/cleanup oracle stays
+intact. Narrow qte-physical-injury-producer-receipt owner selects just that existing1 Fact/1
+case,5 minutes, intentional overlap with original4methods6cases owner. Task-local producer
+selector replaces only its first owner; the other four owners'15 UNRUN cases remain exact.
+Next finite selection12 methods/16 cases/6 descriptors across five categories, budgets
+5+2+3+2+3/default20: corrected receipt1/1, contracts6/8, continuation2/2, documentation1/1,
+admission2/4. Passed5 and accepted causal1 excluded; whole unique inventory16/22 unchanged.
+New catalog owner requires discovery audit0 tests, then fresh both-project PlanOnly before
+actual. These preparation and corrected actual checks are UNRUN, SOURCE review pending.
+
+GM guidance/example/manifest require no update: this corrects an internal canonical pending
+coordinate check; public QTE/receipt shapes, GM correlation fields, source maxima/profile and
+source-publication boundary remain unchanged. No new GM authority is requested. Mutations
+STOPPED at bounded SOURCE/FIXTURE/SELECTION READY for root publication/independent review;
+no author project execution/commit/push. All old packets/checkboxes/causal hash unchanged;
+no full producer qualification or N+1/consumer/after-terminal save-load claim.
+
+Historical first remainder outcome (EVIDENCE accepted4a4aac1 above):
 Current runtime carrier673796227c24a74c149b64bc431ff01a9bceab99/compile674e:
 first causal1 PASS packet has independent actual Astra XHigh EVIDENCE acceptance; no repeat
 of that accepted case. First exact remainder actual run
@@ -31,7 +76,7 @@ awaiting state/real receipt/final complete sibling batch remained UNREACHED. Nat
 source request5ff19d026ba44695a2db6b17eeeb2d94/snapshot
 9308C63FF9F0069498DDED76FF81A84A2DA60F382B10D2F60F6C9AE9B7842D52/turn42 were observed.
 The [immutable first remainder outcome packet](./recovery/qte-physical-producer-remainder-first-outcome-20261012)
-is frozen by root with11 artifacts; publication and independent EVIDENCE review pending.
+was frozen with11 artifacts and is now published/EVIDENCE accepted4a4aac1 as recorded above.
 
 Current work is read-only source/pending/transport/full-turn/identity/replay diagnosis.
 BuildCommonPlan now binds declared original request into actual common input/pending authority,

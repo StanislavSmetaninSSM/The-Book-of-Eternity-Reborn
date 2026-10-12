@@ -560,8 +560,11 @@ internal static class QteDeferredEffectResolutionTransport
         var selectedFingerprint = ReadFingerprint(
             selectedTerminalBinding,
             "fingerprint");
+        var physicalSource = QtePhysicalInjurySource.ReadValidatedContinuation(
+            continuation, continuation.ContainsKey("physicalInjurySource"));
+        var expectedAcceptedRequestId = physicalSource?.RequestId ?? continuationId + "_terminal";
         if (sessionId != pendingSessionId ||
-            continuationId + "_terminal" != pendingAcceptedRequestId ||
+            expectedAcceptedRequestId != pendingAcceptedRequestId ||
             acceptedSourceTurn != pendingTurn ||
             !JsonNode.DeepEquals(safePacket, pending.BuildSafeGmPacket()))
         {
@@ -755,12 +758,16 @@ internal static class QteDeferredEffectResolutionTransport
         var requestTurn = Single(
             pending.Requests.Select(static value => value.RequestTurn),
             "pending request turn");
+        var physicalSource = QtePhysicalInjurySource.ReadValidatedContinuation(
+            continuation, continuation.ContainsKey("physicalInjurySource"));
+        var expectedAcceptedRequestId = physicalSource?.RequestId ??
+            ReadExact(continuation, "continuationId") + "_terminal";
         if (ReadFingerprint(request, "pendingStateFingerprint") != pending.Fingerprint ||
             ReadFingerprint(request, "fullTurnFingerprint") != fullTurnFingerprint ||
             ReadFingerprint(request, "semanticTurnFingerprint") != semanticTurnFingerprint ||
             ReadInt(request, "waveOrdinal") != waveOrdinal ||
             ReadExact(request, "sessionId") != sessionId ||
-            acceptedRequestId != ReadExact(continuation, "continuationId") + "_terminal" ||
+            acceptedRequestId != expectedAcceptedRequestId ||
             requestTurn != ReadInt(continuation, "acceptedSourceTurn") ||
             request["safePacket"] is not JsonObject safePacket ||
             !JsonNode.DeepEquals(safePacket, pending.BuildSafeGmPacket()))

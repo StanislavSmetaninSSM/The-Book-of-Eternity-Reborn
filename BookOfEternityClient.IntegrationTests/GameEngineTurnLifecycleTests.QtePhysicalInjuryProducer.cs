@@ -60,6 +60,31 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(_fs.FileExists(MortalWoundOccurrenceState.StatePath));
         Assert.Equal(run.StoryAtHandoff, await _fs.ReadFileBytesAsync(QteStoryPath));
         foreach (var image in originals) Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(image.Key));
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            await _fs.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath), false).Catalog!;
+        var pending = ResourcePendingResolutionState.ParseCanonical(
+            await _fs.ReadFileAsync(ResourcePendingResolutionState.PendingPath), definitions, false);
+        Assert.True(pending.IsValid, JsonSerializer.Serialize(pending.Issues));
+        Assert.NotEmpty(pending.State!.Requests);
+        Assert.All(pending.State.Requests, request =>
+        {
+            Assert.Equal(run.Source!.SessionId, request.SessionId);
+            Assert.Equal(run.Source.RequestId, request.AcceptedRequestId);
+            Assert.Equal(run.Source.TurnNumber, request.RequestTurn);
+        });
+        var continuation = JsonNode.Parse((await _fs.ReadFileAsync(QteDeferredEffectContinuation.StatePath))!)!.AsObject();
+        var original = QtePhysicalInjurySource.ReadValidatedContinuation(continuation, declared: true)!;
+        Assert.Equal(run.Source!.SessionId, original.SessionId);
+        Assert.Equal(run.Source.RequestId, original.RequestId);
+        Assert.Equal(run.Source.TurnNumber, original.Turn);
+        Assert.Equal(run.SnapshotToken, original.SnapshotToken);
+        WritePhysicalInjuryDiagnostic("qte_physical_actual_pending_correlation", new
+        {
+            OriginalSource = original.Persisted,
+            Pending = pending.State.Requests.Select(request => new
+            { request.SessionId, request.AcceptedRequestId, request.RequestTurn, request.FullTurnFingerprint, request.SemanticTurnFingerprint }),
+            ContinuationId = continuation["continuationId"]!.GetValue<string>()
+        });
         await WriteActualPhysicalBoundedReceiptAsync();
         var resumed = CreateGameEngine(new QueuedConsoleInputSource([]), settings =>
         { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; });

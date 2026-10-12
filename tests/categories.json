@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-producer-receipt",
+            "responsibility": "#1536 exact failed producer receipt Fact/one case after first remainder outcome5PASS1FAIL: declared canonical pending acceptedRequestId must equal the existing validated original-source capsule at initial and resumed wave transport checks. Actual pending session/request/turn and capsule snapshot observations precede genuine GM receipt; actual awaiting/no-receipt idle/final complete sibling batch/strict cleanup remain required. Intentional exact overlap with qte-physical-injury-producer; select only this owner for the correction, keeping its five passing neighbors preserved.",
+            "excludes": "No passed max/absent/unselected/rollback neighbors or accepted causal1 rerun, broader QTE transport suite, new source/token/receipt authority, weakened correlation/validator, new harness/provider/native Windows, N+1 consumer/save-load or archive-QTE.",
+            "changeHints": [
+                "BookOfEternityClient/Services/QteDeferredEffectResolutionTransport.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-producer",
+                    "when": "Original four-method/six-case owner retains its accepted first actual5PASS1FAIL evidence; only the failed awaiting receipt Fact is repeated after this correction."
+                },
+                {
+                    "id": "qte-physical-injury-producer-continuation",
+                    "when": "The two previously unrun exact continuation controls cover sealed-root refusal and undeclared second-restart receipt semantics."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer_ActualAwaitingReceiptPublishesOneCompleteFinalBatch"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-producer-contracts",
             "responsibility": "#1536 exact producer/source/seal dependency owner: integration two theories/four cases use genuine engine-staged source, actual canonical pre-source damage/replay and issued completed owner; zero applied/replay cannot produce harm, missing original source and changed sibling refuse before publication. Four existing unit Facts cover exact real registration, complete finalized boundary, pending/consumed exact retry and shared typed reservation-prefix binding. Six methods/eight cases; intentional exact existing-owner overlap.",
             "excludes": "No claim that component controls are a full GameEngine vertical, forged source/capsule/issued result, owner rewrite, consumer/save-load, broad prefix/planner/afterlife/mortal-wounds-state or old51 rerun.",
