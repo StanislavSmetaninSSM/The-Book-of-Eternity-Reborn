@@ -10,7 +10,7 @@
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
 first real scenario through exact design, independent review, causal RED, minimum
-implementation and GREEN; this phase edits only design docs. Prior4085 source facts
+implementation and GREEN; this phase edits only tests, selection metadata and design status. Prior4085 source facts
 and bef700/076ecc compatible-contract acceptance remain retained; the old product-policy
 blocker was superseded by normative engineering classification. No checkbox changes:
 T070/parent/#1536 remain OPEN; B2–B5 accepted33PASS, first B3 oracle FAIL, all immutable
@@ -28,6 +28,12 @@ serialization; those are predicted declaration-control failures, not observed RE
 finalized-harm proof. No build/discovery/test has run; production/global selection/CI
 and old evidence are untouched. SOURCE/fixture/selection review precedes official
 fresh preparation and the first matching actual.
+
+SOURCE/fixture review of56ea2689 found the shared raw `BranchChoice` check lacked
+mandatory `primaryCharacteristic`, causing unrelated `missing_required_string` before
+declaration controls. The test-only fixture now supplies canonical `dexterity`;
+focused source readback is pending. Caught before runtime, with0 executions and no
+observed RED; methods/cases/category budget and all checkbox statuses are unchanged.
 
 The plan now fixes the proposed optional QTE `physicalInjury` declaration: closed
 exactly five fields: schemaVersion1, one-based resource command ordinal, explicit maximum1–4, bounded cause
@@ -75,8 +81,8 @@ ordinary GM guides, prompts, example/manifest, output policy and guards with imp
 Next is test-only WIP publication and independent SOURCE/fixture/selection review,
 then bounded fresh preparation/first actual and authorized RED/minimal
 implementation/GREEN/source-test-evidence gates without another human permission cycle.
-No project execution in this docs phase; no paid providers, Windows/HOME-PC, main/PR/issues/
-CI, optimization or other feature. Existing spec/contracts and code remain unchanged here.
+No project execution in this test-only phase; no paid providers, Windows/HOME-PC, main/PR/issues/
+CI, optimization or other feature. Existing spec/contracts and production remain unchanged here.
 
 ## Accepted original-completion boundary — 2026-10-12 (B2–B5 CHILDREN; PARENT #1536 OPEN)
 

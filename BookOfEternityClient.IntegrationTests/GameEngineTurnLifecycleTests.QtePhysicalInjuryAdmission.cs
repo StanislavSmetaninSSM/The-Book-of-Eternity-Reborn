@@ -275,7 +275,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 {
                     ["actionId"] = "brace", ["label"] = "Укрыться", ["successText"] = "Удар ослаблен.",
                     ["partialText"] = "Укрытие не помогло.", ["failText"] = "Камень попал в героя.",
-                    ["check"] = new JsonObject { ["type"] = "BranchChoice", ["baseDifficulty"] = 1,
+                    ["check"] = new JsonObject { ["type"] = "BranchChoice", ["primaryCharacteristic"] = "dexterity", ["baseDifficulty"] = 1,
                         ["config"] = new JsonObject { ["choiceGrade"] = "success" } },
                     ["routing"] = new JsonObject { ["success"] = Route(1), ["partial"] = Route(2), ["fail"] = Route(2) }
                 })

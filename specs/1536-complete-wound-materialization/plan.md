@@ -20,8 +20,8 @@ accepted evidence; only its blanket requirement for new user authority approval 
 superseded. Missing implementation did not mean missing approved requirements.
 Lorian has authorized completion of this bounded first scenario through reviewed
 design, causal RED, minimal implementation and GREEN. This checkpoint specifies the
-proposed serialization and fixture design for independent review; it executes no
-build/discovery/runtime and introduces no code or canonical schema change. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
+accepted serialization design and first test-only admission/freeze cohort; it executes no
+build/discovery/runtime and introduces no production or canonical schema change. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
 
@@ -29,7 +29,7 @@ Independent Astra XHigh **SOURCE/COMPATIBLE CONTRACT DESIGN ACCEPTED** on
 `bef70094605d46f27b606f82365f24a4cc7e8aa7`, with no blocking findings. The verdict
 confirms the existing authority model and this bounded internal contract/plan;
 that earlier verdict did not select external serialization. The concrete proposal
-below is the next authorized engineering design and awaits its own independent review.
+below subsequently received the exact-design verdict recorded next.
 
 Independent fresh Astra XHigh **EXACT DESIGN ACCEPTED** on
 `5445ddfe360e7d7a2b044045128623a0a1dcf206`, with no blocking findings. Current T070
@@ -39,6 +39,12 @@ and task-local `tests/selections/1536-qte-physical-injury-admission.json`; categ
 27 malformed,1 frozen-tamper), budget5 minutes/default overall10. Existing selectors,
 global selection/CI, production and prior packets are unchanged. No build, discovery
 or actual execution has occurred; exact inventory still needs official preparation.
+
+SOURCE/fixture review of56ea2689 caught one fixture blocker before any execution:
+the shared raw `BranchChoice` check omitted ordinary mandatory `primaryCharacteristic`,
+which would trigger `missing_required_string` before declaration controls. The test-only
+correction supplies canonical `dexterity`; focused source readback remains pending.
+The3-method/31-case inventory and5-minute budget are unchanged; this is no observed RED.
 
 Source readback predicts **ignored malformed fields or lost lawful declarations**, not
 necessarily refused lawful offers: the current terminal validator lacks this contract,
