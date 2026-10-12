@@ -5,8 +5,54 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (PROJECTION CAUSAL RED EVIDENCE ACCEPTED87b5; FIRST PREPARATION COMPILE BLOCKER; EXPLICIT CONSTRUCTOR SOURCE READY; FRESH CHECKS UNRUN)
+## Current T070 boundary — 2026-10-12 (FIRST MATCHING CAUSAL PROJECTION GREEN ROOT-VERIFIED7bc; PUBLICATION/EVIDENCE PENDING; REMAINDER CONTROLS UNRUN)
 
+First matching unchanged causal projection GREEN is ROOT raw-verified at SOURCE accepted/
+compile/runtime7bc8c0b90a68cb4afa2e9ea4995fb87a653a6869. Native
+20261012-192518-113-349915-9c3d58314eda4e59a3229085a2603721-categories:
+exit0,13.4719683s,1 method/1 case/1 descriptor,complete1 executed/1 PASS/0 FAIL,
+no timeout/duplicates. Root parsed all5 native observations: actual source session_qte_story_append,
+request7c9999fb004a4d6c9be5b8b259a60afa/snapshot
+244B71FA6316FEC30FE8802BBD7B4EC068D720729D0497E61BEEE3742DB2DAA1/turn42,
+health155/max2/one original occurrence precedes genuine next request
+725ac59294904507a09a84f4d02a9a65/snapshot
+2BCB05B704C2B1378791C090CB0B9BEDB643FE4EF0BAE25A1DAF5C537F4AAE69/turn43/Mortal.
+Official Reader Success=true/Issues=[]; exact ControlledPause=true. Actual request exposes
+one closed4-field row, refmortal_wound_45088b1a48607967c2f3aa7512cfe57f11210511a0d46fd7581d804dd4f92e01,
+domainphysical/maximumII/context targetвы/causeПрямой удар камня./kindsanatomical,other,
+all exact original source comparison values. One strict cleanup root
+/tmp/boe-gameengine-turnlifecycle-e141b217c2744bf9850e577109eaf836 emitted removed=true/
+failure=null and root verified actual absence. Root verified all93 source pins and10 fresh
+selected binaries PRE/POST actual BEFORE these metadata edits; no post-run pin ambiguity.
+
+Corrected fresh full preparation native
+20261012-191903-530-349430-cfdf6cfb5d484485a4a49d53b15835a5-categories:
+exit0,146.5313204s; integration112.8184416s/76 warnings/0 errors,
+unit28.7557573s/35 warnings/0 errors; actual discovered18 methods/26 cases/8 descriptors,
+0 tests. Matching NoBuild inventory audit native
+20261012-192349-185-349726-248c02b6c2db4c92a30cdb34e97af2b2-categories:
+exit0,5.5650373s,700 categories/11532 methods,0 unmapped/0 stale,0 tests.
+Preparation/catalog are discovery evidence only, not passing test execution.
+
+Root locally froze24 gz artifacts plus manifest in the
+[first projection GREEN packet](./recovery/qte-physical-opportunity-projection-first-green-20261012),
+all stored/decompressed/native original hashes checked, immutable93 source7bc pins/10 fresh
+binaries/raw full TRX/5 observations. Publication and independent first-GREEN EVIDENCE/status
+review are PENDING; this is root-verified evidence, not accepted evidence yet. Explicit
+constructor SOURCE and first7-artifact preparation blocker EVIDENCE accepted7bc separately;
+all older packets/outcomes remain immutable. Consumer current cohorts3 actual runs/3 executed/
+1 PASS/2 FAIL (first BOM blocker + proper projection causal RED + first matching GREEN),
+separate from accepted producer23 executed/22 PASS/1 FAIL/22 unique PASS cases.
+
+Controls remainder17 methods/25 cases/7 descriptors/default19 is UNRUN until first-GREEN
+EVIDENCE acceptance; it excludes the passed causal method, which must not be repeated.
+Only this actual safe projection boundary is verified. None/create decision consumption,
+live receipt materialization, replay/atomic wound publication and actual after-terminal
+archive/fresh-process remain UNIMPLEMENTED/UNRUN; T070/full FR-063/parent/#1536 stay OPEN.
+Metadata-only two-doc updates are STOPPED for immediate root publication/recovery/EVIDENCE
+gate; source/tests/catalog/selectors/checkboxes and original ce955 Fact remain unchanged.
+
+Historical first preparation compiler blocker (EVIDENCE accepted7bc):
 Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION accepted exact700757bb; the sole signed-
 present-null Important finding on4e was closed. Root verified442 selected recovery files and
 93 current source pins before preparation. First fresh full preparation attempted18 methods/
@@ -17,7 +63,8 @@ runtime/compile/source700757bb, definiteexit1,50.3886469s. Build-integration inc
 single target-typed new(...) was passed to params PlannedWrite[]; C# treated the array as
 the target type. The diagnostic appears twice in presentation but counts as one compiler
 error. Native directory contains ONLY dotnet-test.log and summary.json, no separate
-Build-integration.log, plan or TRX. Native planned0 methods/cases/descriptors;0 tests,
+Build-integration.log, plan or TRX. Native planned0 cases/descriptors; method discovery
+unreached (no native Methods field);0 tests,
 0 PASS/0 FAIL, no timeout; unit build/catalog/discovery/actual UNRUN. This is a preparation
 compile blocker, not a test FAIL or new causal RED. Runner cleanup complete; no application
 fixture/strict-root receipt is claimed.
@@ -26,17 +73,15 @@ Root completed raw native/source post-readback BEFORE metadata/source correction
 source pins matched pre/post and metadata was untouched through that check. Locally frozen
 [projection first preparation blocker packet](./recovery/qte-physical-opportunity-projection-preparation-first-blocker-20261012)
 contains7 gz artifacts plus manifest, all stored/decompressed/original hashes checked by root;
-publication and independent PREPARATION EVIDENCE review remain PENDING. Current source fix
-is ONLY the explicit new CoordinatedStateWriteHelper.PlannedWrite(...) on the console single
+publication and independent PREPARATION EVIDENCE acceptance completed7bc. The source fix
+was ONLY the explicit new CoordinatedStateWriteHelper.PlannedWrite(...) on the console single
 argument, retaining every argument, exact before-image, lease and identity condition. Browser
 has two args and no compiler diagnostic; it is unchanged. Public GM grammar, tests, catalog,
-selectors, original causal Fact and historical packets remain unchanged. Corrected SOURCE
-review and fresh preparation/catalog/runtime remain UNRUN/PENDING; no old compile4b binary
-qualifies this candidate. Inventory remains static18/26/8/default24 preparation and17/25/7/
-default19 remainder,700 categories/11532 methods predicted, not actual discovery. Consumer
-historical2 actual runs/2 executed/0 PASS/2 FAIL and producer qualification remain separate.
-Mutations STOPPED at this minimum three-path correction SOURCE READY for root combined
-blocker+fix publication and focused SOURCE/PREPARATION EVIDENCE gates before fresh retry.
+selectors, original causal Fact and historical packets remained unchanged. Corrected SOURCE
+review/PREPARATION EVIDENCE accepted7bc; successful fresh preparation/catalog and first causal
+actual followed as recorded above, with fresh7bc binaries. The old compile4b binaries were
+never used for this candidate. This first preparation blocker remains distinct from the
+historical2 actual consumer failures and from the current first GREEN/controls remainder.
 
 Actual retained Astra XHigh proper consumer projection causal RED EVIDENCE/status accepted
 87b5e355a2e6bbec7c2edc803462e2dd275e27f6; historical17-artifact packet and pre-review manifest
@@ -52,8 +97,9 @@ signed-present-null player-carrier row joins the existing bounded full-batch the
 proves genuine original QTE+receipt/positive occurrence and official next snapshot coverage
 of exact JSON null, then requires authority-invalid refusal. This is an unrun preservation
 control/component snapshot-writer check, not newly observed RED or an engine vertical claim.
-First preparation failed during compilation as recorded above; discovery/catalog/runtime are
-UNRUN and cached compile4b binaries are not fresh for this correction.
+First preparation failed during compilation; corrected source/preparation followed with
+fresh7bc binaries, successful discovery/catalog and first actual causal GREEN as recorded
+above. The signed-present-null control itself remains UNRUN in the separate remainder.
 
 TurnRequest.woundOpportunities defaults to[]; write-free projection uses only the genuine
 new ordinary snapshot and exact signed present/observed-absent roots, complete strict
@@ -76,8 +122,8 @@ not substitutes for the unchanged actual ProcessPlayerTurn causal Fact.
 
 Finite preparation inventory:18 methods/26 cases/8 descriptors across6 categories, protective
 default24 minutes (5 preparation +5 causal +14 remainder). FIRST matching actual causal GREEN
-must use the original unchanged1-method/1-case/1-descriptor selector, category5/default10,
-then freeze/review its outcome. Controls remainder excludes that method:17 methods/25 cases/
+used the original unchanged1-method/1-case/1-descriptor selector, category5/default10,
+and its frozen outcome awaits publication/EVIDENCE review. Controls remainder excludes that method:17 methods/25 cases/
 7 descriptors across5 categories, default19 (5 + budgets14); no passing causal rerun.
 
 | Task-local owner | Exact methods / cases / descriptors | Budget minutes |
@@ -93,8 +139,8 @@ Exact method lists/reasons/exclusions are recorded in tests/categories.json and
 [full preparation selection](../../tests/selections/1536-qte-physical-opportunity-projection-preparation.json)
 is for fresh selected build/PlanOnly only. Five task-local owners intentionally overlap
 existing consumers; old catalog suffix and global CI/selection stay unchanged. Six new
-methods plus one method rename predict11532 discovered methods/700 categories; this is
-static inventory, not discovery evidence. New controls include signed pristine/explicit
+methods plus one method rename were confirmed by the fresh0-test audit:11532 discovered
+methods/700 categories; runtime remainder evidence is still UNRUN. New controls include signed pristine/explicit
 empty roots versus later live corruption, successful actual bounded sibling projection,
 corrupt event order/missing candidate/later invalid sibling/receipt/signed-present-null carrier refusal before safe
 selection, prior19 uncovered absence, exact console/browser request/proof, and named
@@ -112,8 +158,8 @@ browser/C5/native bridge/afterlife/wound suite, passing producer cohort, or glob
 is included. No provider calls, project execution or author commit/push.
 
 Producer qualification accepted1b remains23 executed/22 PASS/1 FAIL across3 current cohorts,
-22 unique cases/16 methods; consumer historical2 actual runs remain0 PASS/2 FAIL (separate
-BOM blocker + genuine projection RED). No historical packet/checkbox/ce955 source Fact or
+22 unique cases/16 methods; consumer current3 actual runs/3 executed remain1 PASS/2 FAIL
+(separate BOM blocker + genuine projection RED + first matching causal GREEN). No historical packet/checkbox/ce955 source Fact or
 first projection Fact/selector changed. New preservation controls have not been represented
 as previously observed RED. None/create decision consumer, live receipt materialization,
 replay/atomic wound publication and after-terminal archive/fresh-process remain unimplemented/
