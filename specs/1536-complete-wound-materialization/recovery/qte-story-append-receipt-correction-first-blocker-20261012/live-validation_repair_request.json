@@ -1,0 +1,73 @@
+﻿{
+  "sessionId": "session_qte_story_append",
+  "requestId": "c833a388c84846c09e78323ab71ce0b4",
+  "turnNumber": 42,
+  "metadataDiagnosticOnly": false,
+  "source": "обработки хода",
+  "detectedAtUtc": "2026-10-12T13:26:05.2196215Z",
+  "revalidationAttempt": 1,
+  "fullTurnResubmissionRequired": false,
+  "gmInstructions": "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. После исправлений создай game_state/control/validation_repair_ready.json с sessionId/requestId/turnNumber. Если ошибка касается canonical accumulated state (guardians/quests/factions/rival_soul_arcs и т.п.), правь итоговое canonical состояние явно: нужное удаление или замена должны остаться и после повторной нормализации. Если клиент переписал этот repair request повторно, используй ТОЛЬКО самые свежие metadata из текущего файла.",
+  "summaryGroups": [
+    "Protocol / QTE: 6"
+  ],
+  "harnessRepairPackets": [],
+  "resubmissionObligations": [],
+  "requiredResubmissionPaths": [],
+  "errors": [
+    {
+      "code": "qte_offer_mixed_turn_state_mutation",
+      "filePath": "game_state/effects/effect_identity_index.json",
+      "severity": "Error",
+      "category": "ProtocolViolation",
+      "message": "QTE-offer turn не должен одновременно менять обычное состояние мира/игрока/NPC. Разрешены только output/narrative_response.json, output/interface_updates.json, output/debug_logs.json и output/qte_offer.json.",
+      "section": "QTE",
+      "repairHint": "Убери обычные state changes из этого хода и оставь только QTE offer + UI/output-описание."
+    },
+    {
+      "code": "qte_offer_mixed_turn_state_mutation",
+      "filePath": "game_state/player/skills_active.json",
+      "severity": "Error",
+      "category": "ProtocolViolation",
+      "message": "QTE-offer turn не должен одновременно менять обычное состояние мира/игрока/NPC. Разрешены только output/narrative_response.json, output/interface_updates.json, output/debug_logs.json и output/qte_offer.json.",
+      "section": "QTE",
+      "repairHint": "Убери обычные state changes из этого хода и оставь только QTE offer + UI/output-описание."
+    },
+    {
+      "code": "qte_offer_mixed_turn_state_mutation",
+      "filePath": "game_state/resources/resource_definitions.json",
+      "severity": "Error",
+      "category": "ProtocolViolation",
+      "message": "QTE-offer turn не должен одновременно менять обычное состояние мира/игрока/NPC. Разрешены только output/narrative_response.json, output/interface_updates.json, output/debug_logs.json и output/qte_offer.json.",
+      "section": "QTE",
+      "repairHint": "Убери обычные state changes из этого хода и оставь только QTE offer + UI/output-описание."
+    },
+    {
+      "code": "qte_offer_mixed_turn_state_mutation",
+      "filePath": "game_state/resources/resource_history.json",
+      "severity": "Error",
+      "category": "ProtocolViolation",
+      "message": "QTE-offer turn не должен одновременно менять обычное состояние мира/игрока/NPC. Разрешены только output/narrative_response.json, output/interface_updates.json, output/debug_logs.json и output/qte_offer.json.",
+      "section": "QTE",
+      "repairHint": "Убери обычные state changes из этого хода и оставь только QTE offer + UI/output-описание."
+    },
+    {
+      "code": "qte_offer_mixed_turn_state_mutation",
+      "filePath": "game_state/resources/resource_owner_authority.json",
+      "severity": "Error",
+      "category": "ProtocolViolation",
+      "message": "QTE-offer turn не должен одновременно менять обычное состояние мира/игрока/NPC. Разрешены только output/narrative_response.json, output/interface_updates.json, output/debug_logs.json и output/qte_offer.json.",
+      "section": "QTE",
+      "repairHint": "Убери обычные state changes из этого хода и оставь только QTE offer + UI/output-описание."
+    },
+    {
+      "code": "qte_offer_mixed_turn_state_mutation",
+      "filePath": "game_state/resources/resource_state.json",
+      "severity": "Error",
+      "category": "ProtocolViolation",
+      "message": "QTE-offer turn не должен одновременно менять обычное состояние мира/игрока/NPC. Разрешены только output/narrative_response.json, output/interface_updates.json, output/debug_logs.json и output/qte_offer.json.",
+      "section": "QTE",
+      "repairHint": "Убери обычные state changes из этого хода и оставь только QTE offer + UI/output-описание."
+    }
+  ]
+}

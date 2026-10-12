@@ -1,0 +1,104 @@
+﻿{
+  "activeSkillChanges": [
+    {
+      "skillId": "skill_test_bleeding",
+      "skillName": "Кровавый след",
+      "skillDescription": "Полный материализуемый источник для проверки эффектов.",
+      "rarity": "common",
+      "actionCost": "Main",
+      "combatEffect": {
+        "isActivatedEffect": true,
+        "actionName": "Кровавый след",
+        "actionCost": "Main",
+        "effects": [
+          {
+            "effectType": "Damage",
+            "value": "10%",
+            "targetType": "enemy",
+            "effectDescription": "Навык оставляет проверяемый кровавый след.",
+            "poiseDamage": "5%"
+          }
+        ]
+      },
+      "activeEffectDefinitions": [
+        {
+          "schemaVersion": 1,
+          "definitionKey": "bleeding_consequence",
+          "display": {
+            "name": "Кровотечение",
+            "description": "Рана продолжает отнимать силы.",
+            "category": "debuff",
+            "visibility": "visible"
+          },
+          "allowedRealms": [
+            "mortal_world"
+          ],
+          "allowedTargetKinds": [
+            "player",
+            "npc",
+            "combatant"
+          ],
+          "components": [
+            {
+              "componentId": "component_001",
+              "profile": "periodic_damage",
+              "priority": 100,
+              "payload": {
+                "resource": "health",
+                "amount": 3,
+                "damageType": "bleeding",
+                "floorPolicy": "registered_resource_floor"
+              }
+            }
+          ],
+          "parameterBounds": {
+            "amount": {
+              "kind": "number",
+              "minimum": 1,
+              "maximum": 10
+            }
+          },
+          "stacking": {
+            "stackKey": "bleeding",
+            "policy": "stack",
+            "maxStacks": 3,
+            "atMaximum": "no_change",
+            "refreshMode": null,
+            "mergeRule": null
+          },
+          "lifetime": {
+            "mode": "uses",
+            "initialUses": 1,
+            "consumingEventTypes": [
+              "resource_damaged"
+            ]
+          },
+          "triggers": [
+            {
+              "triggerId": "on_resource_damaged",
+              "eventType": "resource_damaged",
+              "priority": 100,
+              "componentIds": [
+                "component_001"
+              ],
+              "consumeUses": true,
+              "resolutionMode": "bounded_receipt"
+            }
+          ],
+          "removal": {
+            "dispelCategories": [
+              "physical_treatment"
+            ],
+            "cureKinds": [
+              "stop_bleeding"
+            ],
+            "onSourceLoss": "expire",
+            "onConditionLoss": null,
+            "manualAuthorities": []
+          },
+          "links": []
+        }
+      ]
+    }
+  ]
+}

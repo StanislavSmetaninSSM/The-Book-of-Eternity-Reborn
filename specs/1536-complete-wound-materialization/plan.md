@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT SOURCE/EVIDENCE ACCEPTED; CORRECTED RUNTIME UNRUN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT CORRECTION TIMED OUT AFTER MIXED-MUTATION REFUSAL; PREREQUISITE OPEN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -506,6 +506,44 @@ Next is only the evidenced receipt-fixture correction/source gate and its affect
 rerun; unrelated accepted cases are retained. Producer remains NOT IMPLEMENTED while this
 necessary prerequisite stays open.
 No independent expansion; all checkboxes unchanged.
+
+### Corrected receipt first actual — 2026-10-12, mixed-mutation refusal/timeout
+
+Compile/runtimecaa3c5d8940cc7b6bcb8298a1005c98bc3fe5cc4; focused Source/Evidencef7d901b9.
+Fresh selected integration PlanOnly132154 built0 errors77 warnings, exactly1 method/1 case/
+1 descriptor,0 tests. Metadata-only NoBuild catalog132445 valid688 categories/11519 methods,
+0 tests. First corrected actual132555 `1536-qte-story-append-receipt.json -NoBuild` used
+unchanged category5/default10 cap; runner exited124 after category300.1132566s/wall302.6186196s.
+**0 completed/reported executed,0 PASS,0 FAIL**, selection incomplete, no TRX. Raw generic
+runner message says10-minute timeout; preserve it while reporting the actual5-minute category cap.
+This is second receipt-fixture invocation total; no third attempt yet, no lifecycle RED/GREEN.
+
+Read-only live diagnostic verified exact own root/session/request42
+c833a388c84846c09e78323ab71ce0b4 and preserved actual validation_repair_request plus original
+snapshot/current files BEFORE cleanup. Mastery correction now reaches a real original request.
+Actual repair refusal at13:26:05 has6 `qte_offer_mixed_turn_state_mutation` issues on
+`game_state/effects/effect_identity_index.json`, `game_state/player/skills_active.json` and
+resource definitions/history/owner_authority/state. Five before/current JSONs have0 semantic
+diffs, compact→pretty serialization differs; skills additionally removes empty removeActiveSkills.
+The seeded baseline is rewritten by the existing client normalization; do not claim GM authored
+these changes or loosen its guard. QTE action, awaiting/no-receipt/receipt/harm predicates remain
+UNREACHED. No receipt success or passing corrected test may be claimed.
+
+Root matched40 source/5 fresh binary pins; runner-owned process-tree cleanup complete.
+Killed fixture emitted NO strict cleanup receipt. Root independently verified exact unique
+root/session/request/turn and no owned project processes, preserved15 live files, then removed
+ONLY its170 own files and verified actual root absence. This manual root cleanup is not the
+fixture strict receipt. Immutable [37-artifact corrected first BLOCKER packet](./recovery/qte-story-append-receipt-correction-first-blocker-20261012)
+all stored/decompressed/original hashes match. Initial15 completed13PASS2FAIL/68-artifact
+accepted evidence, causalRED and successful neighbors remain unchanged. Current total is
+those15 completed plus this1 incomplete invocation, not16 executed tests.
+
+After2 failed receipt-fixture attempts, next is read-only whole baseline/source normalization
+investigation and a smallest lawful canonical pre-staging seed (all6 paths, exact existing
+serialization/empty-command semantics). Publish/review any evidenced correction and prove
+its directed admission before another actual. No afterimage copying into source, snapshot
+re-sign, guard waiver, bigger timer, new protocol/harness or producer. Parent/T070/#1536 open;
+all checkboxes unchanged.
 
 ### Receipt SOURCE and initial EVIDENCE accepted — 2026-10-12
 

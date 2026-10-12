@@ -1,0 +1,12 @@
+{
+  "root": "/tmp/boe-gameengine-turnlifecycle-a392ae170e6942938d15935b44aabbf9",
+  "operation": "root-owned manual cleanup ONLY after exact path/session/request/turn match and runner owned process-tree exit",
+  "requestId": "c833a388c84846c09e78323ab71ce0b4",
+  "sessionId": "session_qte_story_append",
+  "turnNumber": 42,
+  "ownedFixtureFiles": 170,
+  "actualRootAbsent": true,
+  "fixtureStrictCleanupReceipt": "NOT_EMITTED process killed before finally",
+  "projectOwnedProcessesAfterRunner": [],
+  "time": "2026-10-12T13:36:52.921686+00:00"
+}

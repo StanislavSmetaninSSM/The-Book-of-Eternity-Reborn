@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT SOURCE/EVIDENCE ACCEPTED; CORRECTED RUNTIME UNRUN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT CORRECTION TIMED OUT AFTER MIXED-MUTATION REFUSAL; PREREQUISITE OPEN)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -280,6 +280,22 @@ first actual130315 at runtime4e53c7d3/compile174aabad completed1 PASS/0 FAIL, co
 [14-artifact first documentation GREEN packet](./recovery/qte-story-append-documentation-first-green-20261012)
 retains35 source/10 binary pins and no mutable fixture roots. Producer NOT IMPLEMENTED,
 all checkboxes unchanged.
+
+Corrected receipt firstactual132555 compile/runtimecaa3c5d8940cc7b6bcb8298a1005c98bc3fe5cc4:
+fresh selected PlanOnly1321540errors77warnings/1method1case/0tests; NoBuild catalog132445
+688/11519 valid/0tests. Actual protective5-minute cap ended exit124 after300.113s/wall302.619s:
+0 completed/reportedExecuted0PASS0FAIL, incomplete/noTRX. Second receipt-fixture invocation,
+no third. Actual own live repair request42/reqc833a388c84846c09e78323ab71ce0b4 contains6
+qte_offer_mixed_turn_state_mutation errors: effect identity, skills active and4 resource roots.
+Preserved before/current show5 semantic-equal compact→pretty differences and empty removeActiveSkills
+removal in skills. QTE action/awaiting/no-receipt/receipt predicates UNREACHED. Do not label it
+receipt RED/GREEN or inflate completed count. [37-artifact immutable corrected BLOCKER](./recovery/qte-story-append-receipt-correction-first-blocker-20261012)
+40source/5binary/raw/live15file hashes verified. Runner tree cleanup complete; strictfixture
+receipt NOTEMITTED. Root exactuniqueown path/session/request/turn/noownedprocess proof then
+170ownfile cleanup/actualabsence, distinct from strictfixture receipt. Initial15/13PASS2FAIL
+accepted evidence and all neighbors unchanged. Next read-only whole baseline normalization
+proof before minimum lawful pre-staging canonical fixture correction/review/another actual;
+no guard/snapshot/budget/harness expansion or producer. All checkboxes unchanged.
 
 Actual independent Astra XHigh receipt SOURCE/FIXTURE/SELECTION and initial EVIDENCE
 ACCEPTEDf7d901b925ceb0a9f05bc74bc795313423e56a07, no confirmed Critical/Important blocker.
