@@ -1281,12 +1281,7 @@ internal static class ReversibleFilePublication
         sourceEvidenceRetained = false;
         if (sourceHandle != null)
         {
-#if DEBUG
-            var sourceOpenedPath = PhysicalFileAuthority.GetFinalPath(sourceHandle);
-            var sourceCurrentPath = NormalizeWindowsHandlePath(sourceOpenedPath);
-#else
             var sourceCurrentPath = GetOpenedPath(sourceHandle);
-#endif
             if (PathsEqual(sourceCurrentPath, intent.DestinationPath))
             {
                 PhysicalFileAuthority.EnsureExactFileIdentity(
@@ -1312,16 +1307,8 @@ internal static class ReversibleFilePublication
             if (!PathsEqual(sourceCurrentPath, intent.SourcePath) &&
                 !PathsEqual(sourceCurrentPath, intent.FailedSourcePath))
             {
-                var failure = new InvalidDataException(
+                throw new InvalidDataException(
                     $"{intent.AuthorityName} rollback source identity is at an unknown path.");
-#if DEBUG
-                failure.Data["RollbackSourceOpenedPath"] = sourceOpenedPath;
-                failure.Data["RollbackSourceComparedPath"] = sourceCurrentPath;
-                failure.Data["RollbackIntentDestinationPath"] = intent.DestinationPath;
-                failure.Data["RollbackIntentSourcePath"] = intent.SourcePath;
-                failure.Data["RollbackIntentFailedSourcePath"] = intent.FailedSourcePath;
-#endif
-                throw failure;
             }
         }
 
@@ -1883,8 +1870,10 @@ internal static class ReversibleFilePublication
 
     private static bool PathsEqual(string left, string right) =>
         string.Equals(
-            Path.GetFullPath(left),
-            Path.GetFullPath(right),
+            Path.GetFullPath(OperatingSystem.IsWindows()
+                ? TrustedLocalFileScope.NormalizeWindowsPathSpelling(left) : left),
+            Path.GetFullPath(OperatingSystem.IsWindows()
+                ? TrustedLocalFileScope.NormalizeWindowsPathSpelling(right) : right),
             OperatingSystem.IsWindows()
                 ? StringComparison.OrdinalIgnoreCase
                 : StringComparison.Ordinal);

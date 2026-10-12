@@ -1,3 +1,23 @@
+## T068 Windows path equivalence — minimal bounded product correction WIP, 2026-10-12
+
+Actual causalRED6e55756/compiled00764cf: raw opened path equals extended intent
+DestinationPath, compared ordinary form differs exactly4prefixcharacters.
+Minimal product delta vs93ffa98: PathsEqual uses existing
+TrustedLocalFileScope.NormalizeWindowsPathSpelling on BOTH Windows operands
+before existing GetFullPath/OrdinalIgnoreCase; Linux path equality unchanged.
+No new normalizer/globaldeviceprefix strip/trim/namespace grants/journal format,
+identity/hash/authority/reparse/race/unknown-path checks unchanged. Temporary
+DEBUG observation and catch removed; actual operands remain immutable in RED.
+Directed real comparer controls inside existing2authentic6 bodies:20spelling
+comparisons and18refused spellings on both sides, drive/UNC aliases/case/separators,
+different names/drive/server/share/outside path/trailingseparator distinction;
+device/volume/GLOBALROOT/pipe/ADS/reserved/trailingdots-spaces/dotsegments refused
+by existing trusted-local namespace policy. Directory trailing separators remain
+significant; no case-sensitive-folder qualification. UNC STRING ONLY/no network.
+Existing1Theory2cases owner focused+native30; final fullnative30+F18native6 selected
+via task-owned selection, category3min each/runner8min explicit; commonC5 untouched.
+Independent SOURCE/evidenceRED review and GREEN freshbuild/PlanOnly/runtime UNRUN.
+GM/player contract unchanged; correctness restores supported alias recovery only.
 ## T068 Windows path equivalence — actual operand causal RED confirmed, 2026-10-12
 
 Postboot00764cf SOURCE PASS/freshbuild81.5986464s/PlanOnly95.9694994s2planned0exec;

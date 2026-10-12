@@ -173,6 +173,7 @@ public sealed partial class BrowserProtocolCutoverTests
         Assert.True(OperatingSystem.IsWindows(), "Native original schema6 body required.");
         await InitializeAsync(extended);
         AssertPhysicalManifestParserControls();
+        AssertNativePublicationPathEquivalenceControls();
         await _files.WriteFileAtomicBytesAsync(Member, Before);
         Directory.CreateDirectory(Path.GetDirectoryName(ProfilePath)!); File.WriteAllBytes(ProfilePath, Before);
         var commonMembers = 0;
@@ -204,26 +205,70 @@ public sealed partial class BrowserProtocolCutoverTests
             Assert.NotNull(manifest["externalEntries"]![0]!["publishedIdentity"]);
             neutral = AddNeutralBackup();
         }
-        try
-        {
-            await using (var lease = await Fresh().AcquireCanonicalWriteLeaseAsync()) { }
-        }
-        catch (InvalidDataException failure)
-        {
-            output.WriteLine("NativeRollbackPathOperands=" + JsonSerializer.Serialize(new
-            {
-                Extended = extended,
-                OpenedPath = failure.Data["RollbackSourceOpenedPath"] as string,
-                ComparedPath = failure.Data["RollbackSourceComparedPath"] as string,
-                IntentDestinationPath = failure.Data["RollbackIntentDestinationPath"] as string,
-                IntentSourcePath = failure.Data["RollbackIntentSourcePath"] as string,
-                IntentFailedSourcePath = failure.Data["RollbackIntentFailedSourcePath"] as string
-            }));
-            throw;
-        }
+        await using (var lease = await Fresh().AcquireCanonicalWriteLeaseAsync()) { }
         Assert.Equal(Before, File.ReadAllBytes(_files.ResolvePath(Member))); Assert.Equal(Before, File.ReadAllBytes(ProfilePath));
         Assert.Equal(Before, File.ReadAllBytes(neutral)); Assert.False(File.Exists(JournalPath));
         Assert.Empty(Directory.GetFiles(_files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "browser_write_manifest.json", SearchOption.AllDirectories));
+    }
+
+    private void AssertNativePublicationPathEquivalenceControls()
+    {
+        var equality = typeof(ReversibleFilePublication).GetMethod("PathsEqual",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
+        bool Same(string left, string right)
+        {
+            try { return (bool)equality.Invoke(null, [left, right])!; }
+            catch (System.Reflection.TargetInvocationException failure) when (failure.InnerException != null)
+            {
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure.InnerException).Throw();
+                throw;
+            }
+        }
+        var ordinary = Path.Combine(_root, "policy", "State.bin");
+        var extended = @"\\?\" + ordinary;
+        var differentDrive = char.ToUpperInvariant(ordinary[0]) == 'C' ? "D:" : "C:";
+        var ordinaryParent = Path.GetDirectoryName(ordinary)!;
+        var extendedParent = @"\\?\" + ordinaryParent;
+        const string unc = @"\\server\share\policy\State.bin";
+        const string extendedUnc = @"\\?\UNC\server\share\policy\State.bin";
+        (string Left, string Right, bool Expected)[] comparisons =
+        [
+            (ordinary, ordinary, true), (ordinary, extended, true), (extended, ordinary, true),
+            (extended, extended, true), (ordinary, extended.ToUpperInvariant(), true),
+            (ordinary.Replace('\\', '/'), extended, true),
+            (unc, extendedUnc, true), (extendedUnc, unc, true), (unc, extendedUnc.ToUpperInvariant(), true),
+            (ordinary, ordinary + "other", false), (extended, extended + "other", false),
+            (ordinary, differentDrive + ordinary[2..], false),
+            (unc, @"\\server\other-share\policy\State.bin", false),
+            (unc, @"\\other-server\share\policy\State.bin", false),
+            (ordinary, Path.Combine(Path.GetDirectoryName(_root)!, "outside", "policy", "State.bin"), false),
+            (ordinary, ordinary + "\\", false), (extended, extended + "\\", false),
+            (ordinaryParent, extendedParent, true),
+            (ordinaryParent + "\\", extendedParent + "\\", true),
+            (ordinaryParent, extendedParent + "\\", false)
+        ];
+        foreach (var (left, right, expected) in comparisons)
+            Assert.Equal(expected, Same(left, right));
+        string[] refused =
+        [
+            @"\\.\C:\policy\State.bin", @"\\.\PhysicalDrive0",
+            @"\\?\GLOBALROOT\Device\HarddiskVolume1\State.bin",
+            @"\\?\Volume{00000000-0000-0000-0000-000000000000}\State.bin",
+            @"\??\C:\policy\State.bin", @"\\?\pipe\boe-policy",
+            ordinary + ".", extended + ".", ordinary + " ", extended + " ", ordinary + ":stream",
+            Path.Combine(_root, "policy", "NUL.json"), Path.Combine(_root, "policy", "COM1"),
+            Path.Combine(_root, ".", "policy", "State.bin"),
+            @"\\?\" + Path.Combine(_root, ".", "policy", "State.bin"),
+            Path.Combine(_root, "policy", "..", "policy", "State.bin"),
+            @"\\?\" + Path.Combine(_root, "policy", "..", "policy", "State.bin"),
+            @"\\?\UNC\server\share\policy\..\State.bin"
+        ];
+        foreach (var path in refused)
+        {
+            Assert.Throws<InvalidDataException>(() => Same(path, ordinary));
+            Assert.Throws<InvalidDataException>(() => Same(ordinary, path));
+        }
+        output.WriteLine($"NativePathPolicyControls=True; Comparisons={comparisons.Length}; RefusedSpellings={refused.Length}; BothSides=True; UNC=StringOnly; NoFilesystemOrGrant=True");
     }
 
     private static JsonNode ParsePhysicalManifestForTest(string path)
