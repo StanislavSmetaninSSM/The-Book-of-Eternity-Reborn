@@ -435,16 +435,72 @@
         "boe-gm-worker-inbox-",
         "boe-filesystem-manager-"
       ],
-      "State": "EvidenceReviewPending",
+      "State": "BoundedRecipeReviewedPass",
       "Attempts": [
         {
           "Manifest": "contention/a1/manifest.json",
           "Passed": 3,
           "Failed": 0,
           "CompleteGreen": true,
-          "CheckoutHead": "d69c37c0594e0d02f5e0e5b41a1338a1095e856b"
+          "CheckoutHead": "d69c37c0594e0d02f5e0e5b41a1338a1095e856b",
+          "State": "BoundedRecipeReviewedPass"
         }
-      ]
+      ],
+      "IndependentEvidenceReview": {
+        "SchemaVersion": 1,
+        "Reviewer": "Actual gpt-6-astra/xhigh",
+        "Verdict": "PASS",
+        "FullVerdict": "PASS_CONTENTION3_EVIDENCE_AND_COHERENCE",
+        "ReviewedHead": "5bd28de6dfea0fde5a7601994b30824b420a443c",
+        "Category": "portable-native-runtime-contention-windows",
+        "Findings": [],
+        "Checks": {
+          "Archives": 3,
+          "Entries": 48,
+          "CRCSizeShaAndOriginalBytes": true,
+          "PlanOnlySeconds": 25.9473955,
+          "PlanOnlyCases": 3,
+          "Methods": 3,
+          "Descriptors": 2,
+          "PlanOnlyExecuted": 0,
+          "ActualAttempts": 1,
+          "Passed": 3,
+          "Failed": 0,
+          "SkipsDuplicatesTimeouts": 0,
+          "RunnerSeconds": 36.1462237,
+          "CategorySeconds": 14.5829867,
+          "CategoryBudgetMinutes": 2,
+          "RunnerBudgetMinutes": 7,
+          "PositiveRawTraces": 3,
+          "PausedEach": 1,
+          "MainContentionsEach": 1,
+          "CanonicalContentionsEach": 0,
+          "PublisherAndReaderStartedSettledEach": true,
+          "CleanupReceipts": 3,
+          "IntegrationCleanupFailureNull": true,
+          "ExactRootsAbsent": true,
+          "NativeDescriptorCreateOnlyReachedOriginalLeaseAndFinalAssertions": true,
+          "SourcePins": 2168,
+          "DllPdbPins": 290,
+          "AllGatesAndLiveBytesEqual": true,
+          "UnitBuildOrigin": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+          "IntegrationBuildOrigin": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+          "PdbSelectedUnitAndIntegrationChecksums": true,
+          "ProcessStartBootCleanupMetadataAndPriorCarriersCoherent": true,
+          "SourceCatalogHelpersUnchanged": true,
+          "FiveRecipeCountsValid": {
+            "SelectedPass": 81,
+            "PortableComponentWindows": 16,
+            "NativeAtDistinctBoundedScopes": 65
+          }
+        },
+        "Qualification": "Three native runtime descriptor-bound publication contention cases",
+        "Limits": [
+          "Not external-owner/live-GM/global-worker/fullgame/cold-process/performance qualification",
+          "Parents and expanded acceptance/checklists OPEN"
+        ],
+        "ReviewerBuildTestProbeOrMutation": false
+      }
     }
   ],
   "Sequence": [
@@ -460,7 +516,7 @@
     "No arbitrary extra cold/UNC/case-sensitive/fullgame/performance task",
     "No main/merge/PR/issues/paidcalls/securitychange/install/speedredesign/budgetrelaxation"
   ],
-  "State": "WIPSequentialRecipeEvidence",
+  "State": "FiveOriginalWindowsOwnerRecipesBoundedReviewedPass",
   "Archives": [
     {
       "Path": "console/a1/prepare-original.zip",
@@ -1810,6 +1866,119 @@
     "console",
     "metadata",
     "owner",
-    "bridge"
-  ]
+    "bridge",
+    "contention"
+  ],
+  "FinalResults": [
+    {
+      "Category": "portable-console-rollback-preparation",
+      "Passed": 16,
+      "Failed": 0,
+      "Scope": "Portable component executed on Windows; native Windows qualification expressly excluded",
+      "RuntimeCheckout": "4ef0b8c22257d61f531aa9ea338997b7e907a8bb",
+      "CompiledProjectOrigins": {
+        "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c"
+      },
+      "PlanOnlyWallTime": "00:00:18.7673120",
+      "ActualWallTime": "00:01:24.9528980",
+      "CategoryBudgetMinutes": 5,
+      "RunnerBudgetMinutes": 10,
+      "Manifest": "console/a1/manifest.json"
+    },
+    {
+      "Category": "gm-main-metadata-native-windows",
+      "Passed": 32,
+      "Failed": 0,
+      "Scope": "Native Windows required bodies",
+      "RuntimeCheckout": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+      "CompiledProjectOrigins": {
+        "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+        "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+        "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+      },
+      "PlanOnlyWallTime": "00:01:10.4753697",
+      "ActualWallTime": "00:00:19.2356370",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Manifest": "metadata/a1/manifest.json"
+    },
+    {
+      "Category": "gm-main-owner-native-windows",
+      "Passed": 27,
+      "Failed": 0,
+      "Scope": "Native Windows required bodies",
+      "RuntimeCheckout": "e937adbb5bef67e28029987993d658e911370af2",
+      "CompiledProjectOrigins": {
+        "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+        "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+        "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+      },
+      "PlanOnlyWallTime": "00:00:11.7380269",
+      "ActualWallTime": "00:00:18.8742302",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Manifest": "owner/a1/manifest.json"
+    },
+    {
+      "Category": "gm-main-bridge-native-windows",
+      "Passed": 3,
+      "Failed": 0,
+      "Scope": "Native Windows required bodies",
+      "RuntimeCheckout": "8ddcc6de5823039115d0494116c27703bb690aa3",
+      "CompiledProjectOrigins": {
+        "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+        "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+        "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+      },
+      "PlanOnlyWallTime": "00:00:12.3687033",
+      "ActualWallTime": "00:00:41.0058180",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Manifest": "bridge/a1/manifest.json"
+    },
+    {
+      "Category": "portable-native-runtime-contention-windows",
+      "Passed": 3,
+      "Failed": 0,
+      "Scope": "Native Windows required bodies",
+      "RuntimeCheckout": "d69c37c0594e0d02f5e0e5b41a1338a1095e856b",
+      "CompiledProjectOrigins": {
+        "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+        "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+        "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+      },
+      "PlanOnlyWallTime": "00:00:25.9473955",
+      "ActualWallTime": "00:00:36.1462237",
+      "CategoryBudgetMinutes": 2,
+      "RunnerBudgetMinutes": 7,
+      "Manifest": "contention/a1/manifest.json"
+    }
+  ],
+  "OriginalSevenRecipeTableRemainingUNRUN": [],
+  "PreviousAcceptedRecipes": {
+    "legacy-physical-publication-windows": {
+      "Cases": 6,
+      "Evidence": "../windows-f18-native-20261012/manifest.json"
+    },
+    "portable-browser-protocol-native-windows": {
+      "Cases": 30,
+      "Evidence": "../windows-path-equivalence-20261012/green/manifest.json"
+    }
+  },
+  "NoCodeCatalogSelectionGuardOrBudgetChange": true,
+  "NoProviderCalls": true,
+  "NoNewStageStarted": true,
+  "ParentIssueClosed": false,
+  "NextOriginalBoundary": "Original handoff names no next automatic runtime; T053 Windows owner-run checklist remains open in tasks.md, broader parent acceptance requires its own scope",
+  "KnownUnqualifiedScopes": [
+    "Process cold restart",
+    "UNC filesystem/native device access",
+    "Case-sensitive Windows directories",
+    "Production worker/quarantine lifecycle beyond these recipes",
+    "Live provider/CLI readiness/full gameplay/save-load acceptance",
+    "Hardware/audio/default device",
+    "Performance/full C5",
+    "Real Linux systemd/ordinary WorkerRelease gates"
+  ],
+  "FinalWriterClosure": "Exact final metadata delta review and GitHub recovery receipts belong to external local handoff, without a self-referential commit"
 }

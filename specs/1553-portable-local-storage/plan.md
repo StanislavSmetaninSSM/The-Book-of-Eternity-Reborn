@@ -1,3 +1,35 @@
+## T068 original five remaining Windows recipes — bounded reviewed PASS, 2026-10-12
+
+Actual independent Astra XHigh accepted each original recipe separately:
+console16 component-only Windows; native metadata32; native owner27 with labelled
+fixture observation; native Bridge3 real WMI/ConPTY/Job empty CLI; native contention3
+unit+integration with positive publication/main-contention/zero canonical lock
+and original joins. Five actual attempts,81distinct selected cases, scopes differ;
+no full-game aggregate qualification. Source/catalog/selection/guards/budgets and
+prior carriers unchanged; no extra build after successful metadata unit/Bridge,
+original integration13e17 / unitBridge5dfa9 origins retained. Source1629+539unique
+extras=2168,290DLLPDB stable; per-stage source/PDB binding/raw/cleanup accepted.
+[Final scopes and originals](recovery/windows-owner-recipes-20261012/manifest.json).
+Together with previously accepted F18native6/browsernative30, the original
+seven-row Windows recipe table has no remaining UNRUN entry. It chooses no next
+automatic runtime. Original T053 owner-run checklist still OPEN; processcold,
+UNCfilesystem/casesensitivefolder/fullgame/provider/worker/audiohardware/perf and
+real Linux systemd/ordinaryWorkerRelease gates remain separate, not new tasks.
+Parent #1553/T067/T068/T061–T065 OPEN; B2–B5paused/ordinary40FAIL unchanged.
+Final metadata delta review/exact-tip remote and isolated GitHub recovery are
+writer closure. No additional runtime or next scope starts; older pending statuses
+below are preserved historical checkpoints with their exact source/evidence.
+
+## T068 original Windows owner recipe contention/a1 — bounded evidence accepted, 2026-10-12
+
+Actual independent gpt-6-astra/xhigh EVIDENCE PASS at5bd28de6dfea0fde5a7601994b30824b420a443c, no findings.
+`portable-native-runtime-contention-windows` 3/3PASS/00:00:36.1462237;
+scope: Native Windows required bodies. Source/DLL/PDB/raw/cleanup and original budgets retained.
+[Reviewed originals](recovery/windows-owner-recipes-20261012/contention/a1/manifest.json).
+Only this recipe accepted; subsequent recipes require their own PlanOnly/gates/evidence.
+No new code/runtime repeated. Parent #1553/T067/T068/T061–T065 remains OPEN.
+The following pending status for this same attempt is historical and superseded.
+
 ## T068 original Windows owner recipe contention/a1 — PASS runtime, independent evidence pending, 2026-10-12
 
 `portable-native-runtime-contention-windows` actual3PASS/0FAIL,

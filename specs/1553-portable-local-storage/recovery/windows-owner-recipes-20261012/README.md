@@ -1,3 +1,43 @@
+# Original remaining Windows owner recipes — bounded reviewed PASS
+
+All five original remaining recipes completed once and independently accepted by
+actual gpt-6-astra/xhigh; no source/catalog/selection/guard/budget change or retry.
+
+| Category | PASS | Scope |
+| --- | --- | --- |
+| `portable-console-rollback-preparation` | 16/16 | Portable component executed on Windows; native Windows qualification expressly excluded |
+| `gm-main-metadata-native-windows` | 32/32 | Native Windows required bodies |
+| `gm-main-owner-native-windows` | 27/27 | Native Windows required bodies |
+| `gm-main-bridge-native-windows` | 3/3 | Native Windows required bodies |
+| `portable-native-runtime-contention-windows` | 3/3 | Native Windows required bodies |
+
+Previous F18native6 and browsernative30 remain accepted at their original scopes;
+no recipe in the original seven-row table remains UNRUN. Console is expressly
+portable component verification on Windows, not native Windows qualification.
+Owner uses labelled fixture startup observation; Bridge uses real WMI/ConPTY/Job
+with empty CLI, status/participating write/close/shutdown and original retirement.
+Contention requires three positive publication/main-contention traces, separate
+canonical-lock zero and actual original publication/reader joins and root removal.
+
+Integration compile origin13e17a3 retained; new unit/Bridge compile origin5dfa9f0,
+official Build-unit53.4326316s. Original1629 Client/Integration/TestSupport pins
+plus539 unique unit/Bridge/CrashHost pins =2168; source snapshot541 has2 overlaps.
+290 DLL/PDB unchanged after that build across the four native recipes. Earlier
+console157 pins were checked before unit build changed dependency outputs.
+Each stage preserves its own original command/plan/TRX/process/source/DLL/PDB,
+compile origin and independent review. All historical carriers remain intact.
+
+No whole-game/provider/readiness/worker-quarantine/coldprocess/UNCfilesystem/
+casesensitivefolder/audio-hardware/performance qualification follows. Original
+handoff chooses no next automatic runtime; T053 owner-run checklist remains open.
+Parent #1553/T067/T068/T061–T065 OPEN; ordinary40FAIL/B2–B5paused unchanged.
+Final exact-tip publication/readback/existing isolated GitHub restoration and
+bounded metadata delta review are writer closure; receipts live in local handoff
+without a self-referential final SHA. No new stage or runtime starts here.
+
+The following per-stage pending paragraphs preserve historical checkpoints and
+are superseded only by their recorded independent accepted verdicts.
+
 # Remaining Windows owner recipes — authorized WIP
 
 Source #1553/T068; continue from accepted806dd54 on the same isolated HOME-PC
@@ -81,3 +121,5 @@ Runtime checkout `d69c37c0594e0d02f5e0e5b41a1338a1095e856b`, source1629 original
 extra unit/Bridge/CrashHost pins, 290 DLL/PDB equal before/after.
 Compile origins: {"integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c", "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a", "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"}.
 Qualification: Native Windows required bodies. Full immutable originals: `contention/a1/manifest.json`.
+
+Independent actual gpt-6-astra/xhigh EVIDENCE PASS at `5bd28de6dfea0fde5a7601994b30824b420a443c` for `contention/a1`, no actionable findings. Accepted scope remains: Native Windows required bodies.
