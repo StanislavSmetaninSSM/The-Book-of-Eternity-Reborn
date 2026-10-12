@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "qte-physical-injury-admission",
+      "reason": "#1536 T070 staged TDD: only raw declaration admission and preselection freeze controls before any producer/publication implementation; exact three methods/31 cases under unchanged production.",
+      "contracts": [
+        "Approved exact five-field optional physicalInjury contract; no declaration preserves resource-only QTE; malformed raw input cannot be normalized into authority",
+        "Genuine GameEngine ordinary signed snapshot plus physical request, canonical health owner and actual pending-snapshot reader; no anonymous prevalidated manifest",
+        "Both lawful branch declarations survive typed read/bind/freeze and the existing continuation fingerprint rejects a changed maximum",
+        "First declaration-control RED remains separate from later finalized-health-harm missing-occurrence chain RED; protected source/resource/control bytes and strict owned-root cleanup"
+      ]
+    }
+  ]
+}

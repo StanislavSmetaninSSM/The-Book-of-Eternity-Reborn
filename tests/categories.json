@@ -2,6 +2,35 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-admission",
+            "responsibility": "#1536 T070 first declaration-control cohort: real engine ordinary signed snapshot, raw physicalInjury admission, exact preselection branch freeze and immutable maximum binding. Three integration methods/31 cases: three lawful/absent rows, 27 malformed rows and one frozen-tamper control.",
+            "excludes": "No finalized-harm/occurrence chain claim, wound decision/materialization, save/load, long binding cold, QTE practice/Daren/minigame matrices, full validation pipeline, providers or performance claims. Existing duplicate-property refusal is retained; unknown/malformed declarations cannot gain authority by typed field loss.",
+            "changeHints": [
+                "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+                "BookOfEternityClient/Services/QteSceneService.cs",
+                "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_FrozenMaximumCannotChangeBeforeTerminalSelection"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "portable-treatment-probe-owned-close-linux",
             "responsibility": "#1553/T067 original acquisition #110: actual held-treatment refresh/take receipt and real Probe canonical owner; valid and own-close controls, physical malformed generation parser primary with/without own-close, exact hot cut and separate-process authoritative generation/read/refusal before any fixture restoration. One Theory/four Linux rows; no assumed RED before original-state/cleanup controls pass.",
             "excludes": "No publication inside Probe, fabricated receipt/grant/CSP, native FileStream-close fault, cold in-memory treatment token resurrection, active GM/full game/C5/B2-B5/Windows/performance/timer changes. Actual ExternalPublicationContext owning-disposal seam only; FirstChance filters actual invocation and production stack. Registry monitor is test-only scheduling, never authority.",

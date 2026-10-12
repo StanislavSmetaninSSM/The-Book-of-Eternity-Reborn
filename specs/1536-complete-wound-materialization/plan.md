@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (PRECISE CONTRACT/FIXTURE DESIGN WIP; SOURCE/RUNTIME GATES PENDING)
+## Current T070 first vertical — 2026-10-12 (EXACT DESIGN ACCEPTED; FIRST TEST-ONLY WIP, SOURCE/RUNTIME GATES PENDING)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -30,6 +30,26 @@ Independent Astra XHigh **SOURCE/COMPATIBLE CONTRACT DESIGN ACCEPTED** on
 confirms the existing authority model and this bounded internal contract/plan;
 that earlier verdict did not select external serialization. The concrete proposal
 below is the next authorized engineering design and awaits its own independent review.
+
+Independent fresh Astra XHigh **EXACT DESIGN ACCEPTED** on
+`5445ddfe360e7d7a2b044045128623a0a1dcf206`, with no blocking findings. Current T070
+work is test-only admission/freeze WIP: `GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs`
+and task-local `tests/selections/1536-qte-physical-injury-admission.json`; category
+`qte-physical-injury-admission` selects3 integration methods/31 cases (3 lawful/absent,
+27 malformed,1 frozen-tamper), budget5 minutes/default overall10. Existing selectors,
+global selection/CI, production and prior packets are unchanged. No build, discovery
+or actual execution has occurred; exact inventory still needs official preparation.
+
+Source readback predicts **ignored malformed fields or lost lawful declarations**, not
+necessarily refused lawful offers: the current terminal validator lacks this contract,
+and typed `QteTerminalOutcome` has no property. The first controls assert actual raw
+refusal (retaining existing duplicate-property diagnostics) or semantic declaration
+retention in the real preselection freeze. No expected outcome is reported as observed
+RED. The existing engine snapshot creator and actual physical signed reader establish
+ordinary source context; this narrow fixture does not claim a full `ProcessPlayerTurn`
+or finalized-harm chain. It avoids the old anonymous `test-prevalidated` manifest and
+poise-only resource fixture, bootstraps genuine health, preserves owned bytes, and uses
+strict `CleanupOwnedFixture` receipts. No new harness or production DTO is introduced.
 
 ### Established contract and field ownership
 
@@ -191,8 +211,8 @@ kinds still have zero production implementations.
 ### Bounded future checks and review boundary
 
 Use staged TDD without fabricating an undeclared injury. First publish test-only raw
-`physicalInjury` admission/freeze controls. An actual ordinary refusal of the lawful
-new declaration is a **declaration-control RED**, not complete-chain RED; compilation,
+`physicalInjury` admission/freeze controls. Actual loss of a lawful declaration at typed admission/freeze, or absence of a
+required malformed-input refusal, is a **declaration-control RED**, not complete-chain RED; compilation,
 setup or unrelated fixture failure is only a blocker. Preserve its first outcome, review
 and implement only the minimum declaration admission/freeze support it requires.
 Then the genuine producer-chain RED must reach an accepted selected terminal result,
@@ -263,9 +283,9 @@ The implementation block must synchronize existing QTE API/runtime/daemon guidan
 `Examples/E_CLI_QTE_Offer.txt`, its validation manifest and affected existing guards.
 This docs-only checkpoint changes no game capability or GM example.
 
-Next: root readback/publication and independent review of this precise serialization/
-fixture design, then the already-authorized declaration-control RED/minimum admission
-support → finalized-harm chain RED/minimum producer and consumer implementation →
+Next: publish this test-only WIP for independent SOURCE/fixture/selection review,
+then fresh selected preparation/ownership audit and matching first actual declaration
+controls before minimum admission support → finalized-harm chain RED/minimum producer and consumer implementation →
 GREEN → independent SOURCE/test/evidence sequence. Preserve each first outcome before
 correction; no broad rerun or new human permission cycle. This docs checkpoint has zero
 project executions; future bounded reviewed execution is authorized. No paid provider,

@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (PRECISE CONTRACT/FIXTURE DESIGN WIP; SOURCE/RUNTIME GATES PENDING)
+## Current T070 boundary — 2026-10-12 (EXACT DESIGN ACCEPTED; FIRST TEST-ONLY WIP, SOURCE/RUNTIME GATES PENDING)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -15,6 +15,19 @@ and bef700/076ecc compatible-contract acceptance remain retained; the old produc
 blocker was superseded by normative engineering classification. No checkbox changes:
 T070/parent/#1536 remain OPEN; B2–B5 accepted33PASS, first B3 oracle FAIL, all immutable
 packets and GameEngine cold count1 are unchanged.
+
+Fresh independent Astra XHigh EXACT DESIGN ACCEPTED5445ddfe360e7d7a2b044045128623a0a1dcf206,
+no blocking findings. First test-only WIP adds3 integration methods/31 cases under
+`qte-physical-injury-admission` (5-minute category/default overall10) and task-local
+`1536-qte-physical-injury-admission.json`: lawful/absent freeze3, malformed raw27,
+frozen-maximum tamper1. Actual GameEngine snapshot creation and signed-reader context,
+health bootstrap, byte preservation and strict owned-root cleanup are required; no
+anonymous prevalidated manifest or poise fixture is used as physical authority.
+Source may ignore malformed declaration fields and lose lawful ones through typed
+serialization; those are predicted declaration-control failures, not observed RED or
+finalized-harm proof. No build/discovery/test has run; production/global selection/CI
+and old evidence are untouched. SOURCE/fixture/selection review precedes official
+fresh preparation and the first matching actual.
 
 The plan now fixes the proposed optional QTE `physicalInjury` declaration: closed
 exactly five fields: schemaVersion1, one-based resource command ordinal, explicit maximum1–4, bounded cause
@@ -59,7 +72,8 @@ same-process waiver. FR057 creation treatment completeness, FR065 explicit recov
 canonical anchors, FR063 later treatment reservation/full request/re-resolution/publication
 and FR066 occurrence/decision replay remain required. Synchronize affected existing QTE/
 ordinary GM guides, prompts, example/manifest, output policy and guards with implementation.
-Next is root publication and independent exact-design review, then authorized RED/minimal
+Next is test-only WIP publication and independent SOURCE/fixture/selection review,
+then bounded fresh preparation/first actual and authorized RED/minimal
 implementation/GREEN/source-test-evidence gates without another human permission cycle.
 No project execution in this docs phase; no paid providers, Windows/HOME-PC, main/PR/issues/
 CI, optimization or other feature. Existing spec/contracts and code remain unchanged here.
