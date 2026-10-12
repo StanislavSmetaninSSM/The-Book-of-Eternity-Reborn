@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; STORY CONTROLS UNRUN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME/DOCS UNRUN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -462,6 +462,23 @@ Build/discovery/runtime remain UNRUN; combined SOURCE/FIXTURE/SELECTION is not y
 Root publishes this three-path correction and requests focused recheck while the reviewer
 continues the immutablecd4 remainder. Original causal Fact/hash and all checkboxes unchanged;
 no producer/cold success claim. Stop mutations at this source-only READY boundary.
+
+### Story preservation first GREEN7 — 2026-10-12
+
+Runtime source09c9e8f4c7f38299978c612a6b8cb8201c10d110, fresh compile174aabad; intervening
+changes only plan/tasks and immutable causal packet, all code/tests/catalog/selectors/rules
+and10 binary pins match the fresh build. Guards PlanOnly124939 selected2 methods/7 cases/
+1 descriptor,0 tests. First actual125028 (`1536-qte-story-append-guards.json -NoBuild`,
+category3/default8) completed **7/7 PASS,0 FAIL**, complete/no timeout/skips/duplicates,
+wall40.3968687s. Both original GM create/change refusals and all5 post-handoff altered story,
+unrelated new story, crosslink mismatch, stale source and replay controls are REACHED/PASS.
+Protected resource/wound bytes remain unchanged. Root read full7 raw TRX outputs, matched35
+source/10 binary pins and verified7 distinct strict cleanup receipts plus actual root absence.
+Immutable [15-artifact first guard packet](./recovery/qte-story-append-guards-first-green-20261012)
+all stored/raw/original bytes and hashes match. No repeat of prior accepted51. Lifetime6 and
+documentation1 remain UNRUN; next exact finite lifecycle selection/PlanOnly on the same fresh
+unchanged binary. Producer still NOT IMPLEMENTED; combined outcome EVIDENCE gate follows the
+whole limited story block. Original causal RED and all earlier packets/checklists unchanged.
 
 ### First genuine finalized-harm causal RED — 2026-10-12
 

@@ -1,0 +1,12 @@
+{
+  "source": "09c9e8f4c7f38299978c612a6b8cb8201c10d110",
+  "compileSource": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "planRun": "20261012-124939-071-294912-6f27b5795fe54485a8878f4b473f0f82-categories",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-qte-story-append-guards.json -NoBuild",
+  "expectedCases": 7,
+  "expectedMethods": 2,
+  "thisCohortActualInvocation": 1,
+  "categoryBudgetMinutes": 3,
+  "defaultOverallMinutes": 8,
+  "timeBefore": "2026-10-12T12:50:28.316466+00:00"
+}

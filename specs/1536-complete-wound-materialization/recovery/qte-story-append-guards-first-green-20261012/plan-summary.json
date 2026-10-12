@@ -1,0 +1,73 @@
+{
+  "Categories": [
+    "qte-story-append-guards"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-story-append-guards",
+      "reason": "#1536 Original GM history refusals plus exact post-handoff corruption/source/crosslink/replay controls; seven preservation cases, category3/default8. Existing story prerequisite RED is distinct from these new UNRUN controls.",
+      "contracts": [
+        "Actual original engine request and official snapshot precede GM create/change admission checks",
+        "Real client story append and frozen QTE handoff must precede directed history/source/crosslink/replay tamper",
+        "Rejected terminal preserves exact canonical resource state/history and wound identity/history/receipts/commands; each unique owned root is strictly removed"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "09c9e8f4c7f38299978c612a6b8cb8201c10d110",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0338703,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0385821,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0908771,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0033075,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:02.4569646",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 7,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "qte-story-append-guards-integration-001"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

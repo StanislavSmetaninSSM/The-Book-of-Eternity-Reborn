@@ -1,0 +1,78 @@
+{
+  "Categories": [
+    "qte-story-append-guards"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-story-append-guards",
+      "reason": "#1536 Original GM history refusals plus exact post-handoff corruption/source/crosslink/replay controls; seven preservation cases, category3/default8. Existing story prerequisite RED is distinct from these new UNRUN controls.",
+      "contracts": [
+        "Actual original engine request and official snapshot precede GM create/change admission checks",
+        "Real client story append and frozen QTE handoff must precede directed history/source/crosslink/replay tamper",
+        "Rejected terminal preserves exact canonical resource state/history and wound identity/history/receipts/commands; each unique owned root is strictly removed"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "09c9e8f4c7f38299978c612a6b8cb8201c10d110",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "qte-story-append-guards",
+      "Seconds": 37.7446886,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0348806,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0373284,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0900872,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0031084,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:40.3968687",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 7,
+    "CompletedCases": 7,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 7,
+    "Executed": 7,
+    "Passed": 7,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
