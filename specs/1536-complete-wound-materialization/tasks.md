@@ -50,8 +50,10 @@ identity/rollback/replay and actual save-loader/new-root/fresh-registry recovery
 no test IDs/counts/results are asserted. FR-066 governs occurrence/decision replay;
 FR-063 full treatment request/reservation/T067 re-resolution/six-argument publication
 requirements remain mandatory when that work is added, not waived by binding evidence.
-Next is independent review of this published blocked-design/provenance checkpoint
-now; the coordinator authority decision must precede concrete grammar finalization
+Independent Astra XHigh DESIGN/provenance ACCEPTED on
+`8e81a49793a63fdfab51fe0650387be6a127a270`, no open documentation findings;
+this accepts the blocked checkpoint, not the proposed grammar or implementation.
+The coordinator authority decision must precede concrete grammar finalization
 and separate implementation release. Full T070/#1536 remain OPEN; no further project
 run, paid provider, Windows/HOME-PC or other feature work. No spec/contract/data-model,
 code, category, existing packet or global CI changes in this checkpoint.

@@ -18,6 +18,12 @@ installation or feature closure. Original B2–B5 remain accepted below:33PASS,
 immutable first B3 oracle FAIL, retained authority/GM/warm evidence and cold count1.
 Full T070, parent RESULT-CLOSURE and #1536 remain OPEN.
 
+Independent Astra XHigh **DESIGN/provenance ACCEPTED** on
+`8e81a49793a63fdfab51fe0650387be6a127a270`, with no open documentation findings.
+The retained-request provenance correction below was source-verified. This accepts
+the blocked source/design checkpoint, not the proposed QTE grammar or implementation.
+Source, immutable B2–B5 evidence and every task checkbox remain unchanged.
+
 ### Candidate owners and the single authority decision
 
 | Candidate | Existing source fact | First-vertical assessment |
@@ -154,8 +160,8 @@ T070 publication/rollback. Those treatment operations are outside create/none; t
 requirements remain mandatory when treatment/healing is added and are not accepted
 by this slice. No imported same-process/Format1 concession from B2–B5 waives them.
 
-Next: publish this docs WIP for independent review of the current blocked design
-and source provenance now. The coordinator must resolve the single physical-result/
+Next: the current blocked design/provenance review is accepted as recorded above.
+The coordinator must resolve the single physical-result/
 ceiling-authority decision before finalizing the concrete grammar and separately
 releasing implementation. No current build/test/runtime is planned or authorized, no broad audit or
 new evidence infrastructure. Windows evidence remains user-provided; no paid provider,
