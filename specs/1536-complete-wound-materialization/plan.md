@@ -9,7 +9,38 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (PROJECTION CAUSAL RED EVIDENCE ACCEPTED87b5; ONE IMPORTANT SIGNED-PRESENT-NULL FINDING CORRECTED; NARROW SOURCE READY; CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-12 (PROJECTION CAUSAL RED EVIDENCE ACCEPTED87b5; FIRST PREPARATION COMPILE BLOCKER; EXPLICIT CONSTRUCTOR SOURCE READY; FRESH CHECKS UNRUN)
+
+Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION accepted exact700757bb; the sole signed-
+present-null Important finding on4e was closed. Root verified442 selected recovery files and
+93 current source pins before preparation. First fresh full preparation attempted18 methods/
+26 cases/8 descriptors (default24), but compile failed BEFORE discovery/runtime: native
+20261012-190724-535-347129-3e5b568796d141a7a2eaf1179c31f4e1-categories,
+runtime/compile/source700757bb, definiteexit1,50.3886469s. Build-integration incomplete after
+50.1246094s,3 warnings/1 compiler error CS8752 at GameEngine.TurnLifecycle.cs1616,25. The
+single target-typed new(...) was passed to params PlannedWrite[]; C# treated the array as
+the target type. The diagnostic appears twice in presentation but counts as one compiler
+error. Native directory contains ONLY dotnet-test.log and summary.json, no separate
+Build-integration.log, plan or TRX. Native planned0 methods/cases/descriptors;0 tests,
+0 PASS/0 FAIL, no timeout; unit build/catalog/discovery/actual UNRUN. This is a preparation
+compile blocker, not a test FAIL or new causal RED. Runner cleanup complete; no application
+fixture/strict-root receipt is claimed.
+
+Root completed raw native/source post-readback BEFORE metadata/source correction: all93
+source pins matched pre/post and metadata was untouched through that check. Locally frozen
+[projection first preparation blocker packet](./recovery/qte-physical-opportunity-projection-preparation-first-blocker-20261012)
+contains7 gz artifacts plus manifest, all stored/decompressed/original hashes checked by root;
+publication and independent PREPARATION EVIDENCE review remain PENDING. Current source fix
+is ONLY the explicit new CoordinatedStateWriteHelper.PlannedWrite(...) on the console single
+argument, retaining every argument, exact before-image, lease and identity condition. Browser
+has two args and no compiler diagnostic; it is unchanged. Public GM grammar, tests, catalog,
+selectors, original causal Fact and historical packets remain unchanged. Corrected SOURCE
+review and fresh preparation/catalog/runtime remain UNRUN/PENDING; no old compile4b binary
+qualifies this candidate. Inventory remains static18/26/8/default24 preparation and17/25/7/
+default19 remainder,700 categories/11532 methods predicted, not actual discovery. Consumer
+historical2 actual runs/2 executed/0 PASS/2 FAIL and producer qualification remain separate.
+Mutations STOPPED at this minimum three-path correction SOURCE READY for root combined
+blocker+fix publication and focused SOURCE/PREPARATION EVIDENCE gates before fresh retry.
 
 Actual retained Astra XHigh proper consumer projection causal RED EVIDENCE/status accepted
 87b5e355a2e6bbec7c2edc803462e2dd275e27f6; historical17-artifact packet and pre-review manifest
@@ -18,14 +49,15 @@ exact remote/clean435-file selected GitHub recovery checked by root; that public
 SOURCE acceptance. Full source/fixtures/selection published4e5268d91bea3ff01f4962761752504d769e37e4 was reviewed
 by actual retained Astra XHigh: BLOCKED by exactly one Important finding, signed-present JSON
 null carrier conflated with observed absence; all other full source/staging/fixture/selection
-checks were statically acceptable. Current narrow correction is SOURCE READY for publication
-and focused independent re-review: only Read(path)==null (official observed absence) may return
+checks were statically acceptable. The narrow null-carrier correction was SOURCE accepted700757bb before the first preparation
+blocker recorded above:  only Read(path)==null (official observed absence) may return
 null; a covered carrier must deserialize to a non-null JsonObject or refuse authority. One
 signed-present-null player-carrier row joins the existing bounded full-batch theory; it first
 proves genuine original QTE+receipt/positive occurrence and official next snapshot coverage
 of exact JSON null, then requires authority-invalid refusal. This is an unrun preservation
-control/component snapshot-writer check, not newly observed RED or an engine vertical claim. Build/discovery/catalog/PlanOnly/
-runtime for this candidate are ALL UNRUN; cached compile4b binaries are not fresh for it.
+control/component snapshot-writer check, not newly observed RED or an engine vertical claim.
+First preparation failed during compilation as recorded above; discovery/catalog/runtime are
+UNRUN and cached compile4b binaries are not fresh for this correction.
 
 TurnRequest.woundOpportunities defaults to[]; write-free projection uses only the genuine
 new ordinary snapshot and exact signed present/observed-absent roots, complete strict

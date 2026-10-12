@@ -1613,7 +1613,7 @@ public partial class GameEngine
                     throw new InvalidDataException("Ordinary provisional request disappeared."));
                 requestJson = ProjectOrdinaryWoundOpportunities(stagingLease, requestJson);
                 if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, stagingLease,
-                        new("input/turn_request.json", null, requestJson, RequireCurrentBaseline: true, ExactPrevious: provisional)))
+                        new CoordinatedStateWriteHelper.PlannedWrite("input/turn_request.json", null, requestJson, RequireCurrentBaseline: true, ExactPrevious: provisional)))
                     throw new InvalidOperationException("Ordinary request changed before safe opportunity projection.");
                 await RequireFinalOrdinaryWoundProjectionAsync(stagingLease, requestJson);
             }
