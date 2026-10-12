@@ -9,8 +9,54 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (FINITE PROJECTION REMAINDER GREEN ROOT-VERIFIED3e; EVIDENCE/QUALIFICATION PENDING; NONE/CREATE UNIMPLEMENTED)
+## Current T070 first vertical — 2026-10-12 (READ-ONLY PROJECTION QUALIFICATION ACCEPTED4d; FIRST NONE CONSUMER TEST-ONLY SOURCE WIP; CHECKS UNRUN)
 
+Bounded read-only PROJECTION QUALIFICATION/EVIDENCE/status accepted by actual retained
+Astra XHigh at4d34e291aeaa5a1821544b952f7b5adcdb5bf69f, no findings. Root exact remote/clean
+selected492-file recovery verified. Projection historical4 actual runs/28 executed/26 PASS/
+2 FAIL (BOM prerequisite blocker + genuine missing-projection RED),26 unique passed cases/
+18 methods and separately accepted producer1b23 executed/22 PASS/1 FAIL remain unchanged.
+Frozen historical pre-review manifests retain their bytes; acceptance is active metadata.
+
+Current bounded TEST-ONLY NONE consumer WIP adds exactly one Fact in the existing engine
+partial fixture and one category/selector, budget5/default10. Genuine actual declared QTE
+source42 finalizes health160→155 and one original-source occurrence before a new engine on
+the same root/session executes real ProcessPlayerTurn43. TerminalWaitStarted under the original
+owner/lease reads official signed N43 roots, authentic present/observed-absent wound/control
+roots and physical closed offered ref, then writes legitimate ordinary prose/interface/debug,
+single strict {opportunityRef,decision:"none"} and matching ready. No state delta is authored;
+pristine receipt/history/wound roots are not initialized. No direct Stage/Compose/Adapter/
+normalizer substitute, manufactured occurrence/source/binding/hash, new worker or harness.
+
+Pre-materialization acceptance checkpoint is only admission evidence. Full actual engine
+return, GameLoop43, appended story43 and original QTE source/next request/ref/ready prerequisites
+must pass before the FIRST missing durable NONE receipt assertion. Native diagnostics preserve
+actual source42/new43 coordinates, raw request/draft/ready, pending/receipt/wound baselines and
+post-state, actual failure/admission/turn/story before the oracle. Signed resource bytes are
+compared at capture. After ordinary normalization, exact typed resource entries/health155 and
+existing immutable history transitions/state agreement are compared, avoiding an incidental
+formatting prerequisite: the normalizer republishes plan JSON through its serializer. These
+are genuine source/ordinary acceptance requirements, not a waiver of receipt correlation.
+
+Then require exactly one strict valid durable receipt with original source42 and decision43/
+offered occurrence correlation, decision none/null woundID/null transitionID, pending empty,
+identity/carrier/wound-history roots byte unchanged (including real absence), and draft plus
+WoundCommand consumed by common publication. First actual may show a prerequisite blocker;
+no new consumer RED has been executed or claimed. NONE source/fixture/selection review, fresh
+selected integration build/PlanOnly, catalog audit and runtime ALL UNRUN. Static new inventory
+is1 method/1 case/1 descriptor,701 categories/11533 methods predicted; not discovery evidence.
+[Exact first NONE selection](../../tests/selections/1536-qte-physical-injury-consumer-none.json)
+selects only its5-minute category/default10. Existing700 catalog nodes/suffix, passed cohort
+selectors/global CI/selection and every parent checkbox remain unchanged. No passing producer/
+projection test selection is repeated; the actual source helper is a new independent fixture
+prerequisite. No GM prompt/docs capability update: production is unchanged, only the accepted
+future single NONE protocol is authored in offline test data; current GM capability limits
+remain accurate. CREATE, consumer replay/rollback/atomicity and actual archive/save-load/new-root/
+fresh-process are still UNIMPLEMENTED/UNRUN; T070/full FR-063/parent/#1536 stay OPEN.
+Mutations STOPPED at this coherent five-path TEST-ONLY SOURCE WIP for root publication/recovery
+and mandatory independent SOURCE/FIXTURE/SELECTION gate before any project execution.
+
+Historical accepted finite read-only projection outcome:
 FIRST finite projection remainder GREEN is ROOT raw-verified, runtime source
 3e1ded3d488e756ebd608bdc662751db76691134 / fresh compile+SOURCE gate
 7bc8c0b90a68cb4afa2e9ea4995fb87a653a6869. Native
@@ -27,20 +73,20 @@ Read locally frozen manifest and root readback before these two-doc edits. The
 [first finite projection remainder GREEN packet](./recovery/qte-physical-opportunity-projection-remainder-first-green-20261012)
 contains16 gz artifacts plus manifest, immutable full results/observations/pins. Publication
 and actual retained Astra XHigh remainder EVIDENCE/status and bounded projection qualification
-are PENDING. Separately accepted first causal1 PASS at3e was not repeated. Current projection
+completed at4d34e291aeaa5a1821544b952f7b5adcdb5bf69f. Separately accepted first causal1 PASS at3e was not repeated. Current projection
 cohorts:4 actual runs/28 executed/26 PASS/2 FAIL (BOM prerequisite blocker + genuine missing-
 projection RED remain preserved);26 unique passed cases/18 methods. Producer accepted1b
 qualification remains separate23 executed/22 PASS/1 FAIL/22 unique PASS cases.
 
 This finite read-only projection boundary has root-verified first causal and remainder GREEN;
-acceptance is limited by the pending independent remainder evidence/qualification gate.
+bounded read-only projection evidence/qualification is independently accepted4d. This does
+not qualify the pending none/create decision consumer.
 None/create decision consumer and live receipt materialization remain UNIMPLEMENTED/UNRUN;
 consumer replay/rollback/atomicity and actual after-terminal archive/save-load/new-root/
 fresh-process remain pending. T070/full FR-063/parent/#1536 checkboxes remain OPEN. Next work,
-after the evidence gate, is a bounded TEST-ONLY genuine none-consumer causal cohort using the
-approved exact output/mortal_wound_decisions.json contract; no consumer production change or
-new test is authorized in this metadata-only checkpoint. Mutations STOPPED for immediate
-root two-doc+frozen-packet publication/recovery/EVIDENCE gate.
+now authorized after that evidence gate, is the one bounded TEST-ONLY genuine none-consumer
+causal cohort recorded above, using approved exact output/mortal_wound_decisions.json. No
+consumer production code is released in this test-only checkpoint.
 
 Separately accepted first matching causal GREEN (EVIDENCE accepted3e):
 First matching unchanged causal projection GREEN is ROOT raw-verified at SOURCE accepted/
@@ -84,7 +130,8 @@ The current4-run total adds only the first25-case remainder above; producer qual
 
 Controls remainder17 methods/25 cases/7 descriptors/default19 executed once after first-GREEN
 EVIDENCE acceptance:25 PASS as recorded above; it excluded the passed causal method.
-Root-verified bounded safe projection qualification still awaits independent remainder evidence. None/create decision consumption,
+Bounded safe projection qualification is independently accepted4d; NONE consumer remains
+unimplemented and its new Fact UNRUN. None/create decision consumption,
 live receipt materialization, replay/atomic wound publication and actual after-terminal
 archive/fresh-process remain UNIMPLEMENTED/UNRUN; T070/full FR-063/parent/#1536 stay OPEN.
 Metadata-only two-doc updates are STOPPED for immediate root publication/recovery/EVIDENCE
@@ -138,7 +185,7 @@ control/component snapshot-writer check, not newly observed RED or an engine ver
 First preparation failed during compilation; corrected source/preparation followed with
 fresh7bc binaries, successful discovery/catalog and first actual causal GREEN as recorded
 above. The signed-present-null control passed in the first finite remainder; full evidence
-acceptance remains pending.
+acceptance completed4d for the projection remainder.
 
 TurnRequest.woundOpportunities defaults to[]; write-free projection uses only the genuine
 new ordinary snapshot and exact signed present/observed-absent roots, complete strict
@@ -163,7 +210,7 @@ Finite preparation inventory:18 methods/26 cases/8 descriptors across6 categorie
 default24 minutes (5 preparation +5 causal +14 remainder). FIRST matching actual causal GREEN
 used the original unchanged1-method/1-case/1-descriptor selector, category5/default10,
 and its frozen outcome is separately EVIDENCE accepted3e. The remainder then ran once,
-25 PASS with independent remainder EVIDENCE/qualification pending. Controls remainder excludes that method:17 methods/25 cases/
+25 PASS with independent remainder EVIDENCE/qualification accepted4d. Controls remainder excludes that method:17 methods/25 cases/
 7 descriptors across5 categories, default19 (5 + budgets14); no passing causal rerun.
 
 | Task-local owner | Exact methods / cases / descriptors | Budget minutes |
@@ -181,7 +228,7 @@ is for fresh selected build/PlanOnly only. Five task-local owners intentionally 
 existing consumers; old catalog suffix and global CI/selection stay unchanged. Six new
 methods plus one method rename were confirmed by the fresh0-test audit:11532 discovered
 methods/700 categories; runtime remainder is now root-verified25 PASS, independent EVIDENCE
-and bounded projection qualification pending. New controls include signed pristine/explicit
+and bounded projection qualification accepted4d. New controls include signed pristine/explicit
 empty roots versus later live corruption, successful actual bounded sibling projection,
 corrupt event order/missing candidate/later invalid sibling/receipt/signed-present-null carrier refusal before safe
 selection, prior19 uncovered absence, exact console/browser request/proof, and named

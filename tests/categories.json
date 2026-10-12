@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-none",
+            "responsibility": "#1536 first test-only NONE consumer causal Fact/one case. Genuine actual declared ordinary QTE N42 finalizes health160->155 and one original-source occurrence, then a new engine executes complete ordinary ProcessPlayerTurn N43 on the same root/session. TerminalWaitStarted reads the official signed current snapshot including real observed absence and the physical closed offered row; offline GM authors only ordinary prose/interface/debug, strict single {opportunityRef,decision:none} and matching ready. Actual pre-materialization acceptance checkpoint, returned engine, GameLoop43, story43 and source/health/history prerequisites precede the first durable NONE receipt assertion. Expected receipt retains original42 plus decision43 correlation, consumes pending without wound allocation/transition and consumes draft/command under common publication.",
+            "excludes": "No production consumer/normalizer/adapter invocation substitute, fabricated original source/occurrence/binding/hash, initialized pristine receipt/history/wound roots, direct Stage-only proof, pre-normalization publication assertion, new worker/harness, CREATE/replay/rollback/archive/fresh-process cases, provider/model/Windows/C5/broad suite or repeat of passed projection/producer selections. Prerequisite failure is a blocker, not consumer causal RED.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerNone.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient/Services/MortalWoundOpportunityReceiptState.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-projection",
+                    "when": "Bounded projection qualification accepted4d34e29 is reused as a real fixture prerequisite; its passing tests are not selected again in this first consumer cohort."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualNextOrdinaryNoneConsumesOnceWithoutWound"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-opportunity-projection-controls",
             "responsibility": "#1536 minimum read-only physical opportunity projection controls: three integration theories/ten cases. Genuine baseline writer/official Reader prove signed pristine or explicit-empty roots and no borrowing later live data. Actual declared QTE plus actual bounded receipt completion proves full ordered finalized siblings before new-snapshot projection; valid batch projects and event-order/missing-candidate/corrupt-later-sibling/receipt/signed-present-null player carrier corruption refuse the whole batch before selection. Actual ordinary staging checks final in-memory/physical request identity and closed safe row in console and browser, with exact staged proof. These are component/source controls; the separate original causal Fact remains the actual ProcessPlayerTurn N+1 vertical.",
             "excludes": "No none/create decision consumer, canonical wound writes, fabricated valid occurrence/source/hash, broad producer/QTE/afterlife suite, provider or original causal repeat.",
