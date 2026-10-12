@@ -37,7 +37,17 @@ are not build/runtime qualification. Preserve WorldQuest/Meta optimizations and
 all accepted correctness fixes. No main/merge/issue closure, HOME-PC, paid provider,
 timeout increase or performance redesign belongs to this block.
 
-### B2 first cold owner PASS preserved / final EVIDENCE review pending — 2026-10-12
+### B2 cold-blocker restoration / scoped SOURCE-EVIDENCE ACCEPTED — 2026-10-12
+
+Independent Astra XHigh final scoped SOURCE/EVIDENCE **ACCEPTED**, no findings,
+on reviewed carrier `29a972e0af91e5d0229496af57713f05d638241e`. Coordinator direct
+remote/raw readback also passed: all 67 artifacts across RED/GREEN/cold packets,
+12+18+36 source pins, current 6 binary pins, exact raw counts, warm member-after
+hashes, owned cleanup and protected-scope diff. This accepts the bounded
+force_binding cold-blocker restoration only. Report this result to Lorian;
+B2–B5 and parent #1536 remain OPEN. The next decision belongs to the coordinator:
+B2 acceptance against its existing obligations or a newly bounded scope. Do not
+automatically begin B3 or further runtime/work after this report.
 
 Independent Astra XHigh GREEN EVIDENCE ACCEPTED without findings on carrier
 `1445dc28d33ebead5b51e9867bdf40373f000877`; coordinator verified26 raw/stored
@@ -100,10 +110,11 @@ integration DLL SHA256
 client DLL `43a731c05aa59449863487ad42b6cde80bc83a1d615087f352f6683052a51993`;
 matching PDB/project copies are retained in the packet.
 
-Next bounded action is independent final cold EVIDENCE review and coordinator
-published-carrier/raw readback, with these explicit limits. This scoped owner PASS
-is not parent #1536 or blanket B2–B5 acceptance. No B3–B5, later physical producers,
-spiritual healing/recovery, UI, native/provider or performance work was started.
+Final scoped review and coordinator readback are complete with these explicit
+limits. Report the accepted restoration to Lorian and stop this block; no further
+runtime is needed or authorized by this checkpoint. This is not parent #1536 or
+blanket B2–B5 acceptance. No B3–B5, later physical producers, spiritual healing/
+recovery, UI, native/provider or performance work was started.
 
 ### Historical B2 first GREEN preserved / EVIDENCE review pending — 2026-10-12
 
@@ -458,9 +469,10 @@ or rerun of unchanged passes. After two unsuccessful corrections of the same
 problem, stop and revisit the hypothesis. A real tool/security denial stops the
 operation with its exact text/ID recorded; no bypass. B2–B5 stay OPEN even if this
 one blocker passes until their existing coherent review/evidence obligations are
-met. The next bounded action is independent final cold EVIDENCE review of the
-published packet above. Preserve all first outcomes; the one authorized cold
-owner has run once and passed within the stated evidence limits.
+met. Final scoped SOURCE/EVIDENCE review and coordinator readback are accepted
+on 29a972e0. Preserve all first outcomes and report to Lorian; the one authorized
+cold owner ran once and passed within the stated limits. Further B2 acceptance
+or a new scope is the coordinator's decision; no automatic next work.
 
 ## Historical completion checkpoint — resumed 2026-09-30
 

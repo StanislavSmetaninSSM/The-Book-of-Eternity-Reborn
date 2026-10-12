@@ -19,7 +19,9 @@ diff-check verification also passed. The subsequent staged implementation releas
 is recorded below. First causal RED and preparation are now preserved in the
 current plan/packet and independently accepted. SOURCE/SELECTION accepted b03e;
 GREEN EVIDENCE accepted1445dc28; the one cold owner PASS is preserved below.
-Independent final cold EVIDENCE review is next. No B2–B5 checkbox changes or gameplay acceptance.
+Independent final scoped SOURCE/EVIDENCE ACCEPTED without findings on
+`29a972e0af91e5d0229496af57713f05d638241e`; coordinator remote/raw readback passed.
+This accepts the cold-blocker restoration only; no B2–B5 checkbox or parent closure.
 
 The old cold-UNRUN statement is historical: #1553's preserved packet has composed
 9 PASS, cold force-binding 1 FAIL (`afterlife_combat_profile_unknown_art`) and
@@ -44,8 +46,12 @@ settled witness repeats warm events; final canonical resources/control/once-only
 idle behavior is asserted by the passing existing Fact, without a separate cold
 journal trace or exported final canonical snapshot. Same-process engine recovery
 only; no fresh OS/native-worker qualification. RED/GREEN packets unchanged.
-Next: independent final cold EVIDENCE review and coordinator published-carrier/raw
-readback. B2–B5 remain OPEN; this is no blanket parent acceptance.
+Final scoped SOURCE/EVIDENCE ACCEPTED on 29a972e0, no findings; coordinator verified
+all 67 packet artifacts,12+18+36 source pins/current 6 binaries, raw counts, warm
+member hashes and protected scope. Report accepted restoration to Lorian and stop.
+Cold count remains 1; Format 1/same-OS/no separate final cold trace or exported final
+snapshots remain explicit limits. B2–B5/#1536 remain OPEN. Coordinator decides B2
+acceptance or a new bounded scope; no automatic B3 or further runtime/work.
 
 Historical first GREEN checkpoint 2026-10-12: SOURCE/SELECTION ACCEPTED without findings
 on b03e6239; clean compile/runtime source matches. Fresh selected PlanOnly044517
