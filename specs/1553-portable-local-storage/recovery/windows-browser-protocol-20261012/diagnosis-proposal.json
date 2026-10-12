@@ -1,0 +1,24 @@
+{
+  "State": "ReadOnlyDiagnosis_IndependentReviewPending_NoFixApplied",
+  "FirstActualResult": "28 PASS / 2 FAIL; all 30 executed; no timeout; both cleanups complete",
+  "FailedBoundary": "Two WindowsAuthenticOriginalSix rows fail at the physical File.ReadAllBytes(ProfilePath) assertion inside the still-active write lease, Windows.cs:190.",
+  "ObservedException": "System.IO.IOException sharing violation, original TRX/stack preserved",
+  "SourceMechanism": [
+    "DarenRewardProfileRollbackTransaction.PublishAsync retains its sourceStream in _sourceStream until transaction disposal.",
+    "PhysicalFileAuthority.CreateNewWritableFile opens Windows GenericRead|GenericWrite plus DeleteAccess by default; published source handle remains owned.",
+    "System.IO.File.ReadAllBytes opens a new reader with FileShare.Read, incompatible with the existing write/delete access.",
+    "The source-proven deterministic reader/owner sharing incompatibility is sufficient to explain both observed failures; no new handle trace or repro was executed."
+  ],
+  "Classification": "Fixture/oracle physical-read sharing mismatch; no demonstrated production defect. Source/evidence classification awaits independent review.",
+  "ReachedBeforeFailure": "Pinned unchanged source shows Windows assertion, authentic schema6 transaction/legacy context, profile/member publication and zero common-member assertion completed before the failing read.",
+  "NotReached": [
+    "Post-read manifest publicationReceipt/publishedIdentity assertions",
+    "Neutral backup creation",
+    "Fresh-object authentic6 recovery and exact restored/retained bytes assertions"
+  ],
+  "MinimalProposalNotApplied": "In only the authentic6 held-lease physical-byte assertion, read the actual file through a test-only FileStream(FileMode.Open, FileAccess.Read, FileShare.ReadWrite|FileShare.Delete), copy its bytes and retain Assert.Equal(After,...). Keep product writer shares, original before/after byte oracles, transaction/receipts/recovery and cleanup unchanged. Do not move the assertion after disposal.",
+  "RejectedShortcut": "Replacing the physical-byte assertion with store.ReadExactBytesAsync alone is not proposed: the legacy transaction validates but returns a copied _publishedBytes buffer.",
+  "FurtherRuntime": "HOLD: first actual is immutable; no rerun/fix without coordinator decision.",
+  "ProductChanged": false,
+  "TestChanged": false
+}

@@ -1,3 +1,30 @@
+## F04/F05 Windows browser protocol30 — FIRST complete28PASS/2FAIL frozen, review pending, 2026-10-12
+
+Source #1553; same Windows branch `1553-storage-migration-windows-f18-20261011T235650Z`.
+Checkout5d9f822195a2d4788dadcf483eee742e3ae7e766; compiled/runtime source unchanged8c2ecdfa.
+[Complete first originals/provenance](recovery/windows-browser-protocol-20261012/manifest.json).
+Reused fresh selected F18 build after1629 current source/data/recipe +157 DLL/PDB
+equality before prepare/before actual/after actual; only two journal docs differ.
+NoBuildPlanOnly1descriptor7Theory30planned0executed13.4988788s/exit0/cleanupcomplete.
+Sole NoBuildactual30complete=28PASS2FAIL, category84.4173681s/runner97.6990411s/exit1;
+no skips/duplicates/timeouts, both cleanups and all30 strict root outputs complete,
+no owned operations/browser roots/runtime remaining. Existing3min/8min budgets unchanged.
+
+Failed original authentic schema6 ordinary+extended rows: direct physical profile
+File.ReadAllBytes at Windows.cs190 throws sharing IOException while source write/
+delete handle is still retained. Authentic6/context/publications/common-member-zero
+prefix reached; later publicationReceipt/publishedIdentity, neutral backup and
+authentic6 recovery assertions UNREACHED. These2 are not passing schema6 controls.
+28 passing rows cover8schema7/members+2alias+4externalpending+4cleanup+8order+2neutral.
+Neutral rows retain cut1/recoveryEvents3/exactSnapshot. Source-proven sufficient
+fixture/oracle sharing mechanism and test-only compatible physical-read proposal
+saved separately; independent classification/evidence review PENDING. No code fix,
+retry, timer change or new actual; product defect not demonstrated. Further runtime HOLD.
+First raw is published before long review. Category remains FAIL/unqualified as a
+whole; parent #1553/F04/F05 open, original F18 native6 PASS preserved. Fresh-object
+recovery is same-process, not fresh-process cold restart; original remaining5 new
+Windows recipes UNRUN, ordinary40FAIL/performanceUNQUALIFIED/B2–B5paused unchanged.
+
 ## T064/F18 native Windows physical publication6 — FINAL bounded ACCEPTED, 2026-10-12
 
 Source #1553; exact compiled/runtime `8c2ecdfaa1003e49bf15ba83693788e9b19dd10f`,

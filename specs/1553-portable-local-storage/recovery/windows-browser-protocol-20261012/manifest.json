@@ -1,0 +1,550 @@
+{
+  "SchemaVersion": 1,
+  "RecordedUtc": "2026-10-12T00:43:44.695960+00:00",
+  "State": "FirstWindowsBrowser28Pass2FailFrozen_ReviewPending",
+  "TrackedTask": "#1553 / F04-F05 Windows protocol30",
+  "CheckoutHead": "5d9f822195a2d4788dadcf483eee742e3ae7e766",
+  "CompiledSource": "8c2ecdfaa1003e49bf15ba83693788e9b19dd10f",
+  "WorkingBranch": "1553-storage-migration-windows-f18-20261011T235650Z",
+  "Category": "portable-browser-protocol-native-windows",
+  "PreparationCommand": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category portable-browser-protocol-native-windows -NoBuild -PlanOnly",
+  "ActualCommand": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category portable-browser-protocol-native-windows -NoBuild",
+  "PreparationWallTime": "00:00:13.4988788",
+  "PreparationPlannedCases": 30,
+  "PreparationExecutedCases": 0,
+  "Methods": 7,
+  "MethodCounts": [
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAliasMember_RecordsOneBaselineAndRestoresExactBytes",
+      "Cases": 2
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup",
+      "Cases": 2
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler",
+      "Cases": 4
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers",
+      "Cases": 8
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsNeutralPendingBackup_RecoversWithoutBrowserManifest",
+      "Cases": 2
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence",
+      "Cases": 4
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+      "Cases": 8
+    }
+  ],
+  "ActualAttempts": 1,
+  "ActualWallTime": "00:01:37.6990411",
+  "CategorySeconds": 84.4173681,
+  "CategoryCompletedFlag": false,
+  "SelectionComplete": true,
+  "CategoryBudgetMinutes": 3,
+  "RunnerBudgetMinutes": 8,
+  "Planned": 30,
+  "Executed": 30,
+  "Passed": 28,
+  "Failed": 2,
+  "Skipped": 0,
+  "TimedOut": false,
+  "DuplicateTests": 0,
+  "ExitCode": 1,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "StrictCleanupReceipts": 30,
+  "BrowserRootRemainders": 0,
+  "WorkerRuntimeRemainders": 0,
+  "ActiveOwnedOperations": 0,
+  "SourcePinsVerifiedBeforePrepareBeforeActualAndAfterActual": 1629,
+  "MetadataOnlySourceExclusions": [
+    "specs/1553-portable-local-storage/plan.md",
+    "specs/1553-portable-local-storage/tasks.md"
+  ],
+  "DllPdbPinsVerifiedBeforePrepareBeforeActualAndAfterActual": 157,
+  "NewBuildExecuted": false,
+  "ReusedFreshBuildEvidence": "../windows-f18-native-20261012/manifest.json",
+  "Cases": [
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: False, rollback: False, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.4379219",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: True, rollback: False, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:04.3670554",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler(legacy: True, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.7575638",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"mixed-manifest\", extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.7665346",
+      "OriginalStdOut": "Protocol=mixed-manifest; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"malformed-current-intent\", extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.6364474",
+      "OriginalStdOut": "Protocol=malformed-current-intent; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler(legacy: True, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.8412307",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(extended: False)",
+      "Outcome": "Failed",
+      "Duration": "00:00:01.0349384",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "System.IO.IOException : The process cannot access the file 'C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-browser-protocol-9087b0e08d534fe38fc503b8db688b81\\client_profile\\qte_showcase_rewards.json' because it is being used by another process.",
+      "ErrorStackTrace": "   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\r\n   at System.IO.File.ReadAllBytes(String path)\r\n   at BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(Boolean extended) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient.IntegrationTests\\BrowserProtocolCutoverTests.Windows.cs:line 190\r\n   at BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(Boolean extended) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient.IntegrationTests\\BrowserProtocolCutoverTests.Windows.cs:line 196\r\n--- End of stack trace from previous location ---"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: True, rollback: True, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:04.6093052",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"mixed-manifest\", extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.7160083",
+      "OriginalStdOut": "Protocol=mixed-manifest; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAliasMember_RecordsOneBaselineAndRestoresExactBytes(extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.9482956",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: False, rollback: True, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.8464676",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(extended: True)",
+      "Outcome": "Failed",
+      "Duration": "00:00:00.9367005",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "System.IO.IOException : The process cannot access the file 'C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\tmp\\boe-browser-protocol-31d4d88a3f944e9ca73018fc041d4f7d\\client_profile\\qte_showcase_rewards.json' because it is being used by another process.",
+      "ErrorStackTrace": "   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\r\n   at System.IO.File.ReadAllBytes(String path)\r\n   at BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(Boolean extended) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient.IntegrationTests\\BrowserProtocolCutoverTests.Windows.cs:line 190\r\n   at BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(Boolean extended) in C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\repo\\BookOfEternityClient.IntegrationTests\\BrowserProtocolCutoverTests.Windows.cs:line 196\r\n--- End of stack trace from previous location ---"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence(existed: True, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.0330750",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsNeutralPendingBackup_RecoversWithoutBrowserManifest(extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.9788261",
+      "OriginalStdOut": "NeutralOnly=True; cut=1; recoveryEvents=3; exactSnapshot=True\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"malformed-current-intent\", extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.6494560",
+      "OriginalStdOut": "Protocol=malformed-current-intent; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"empty-old-intent\", extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.5571945",
+      "OriginalStdOut": "Protocol=empty-old-intent; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"empty-old-intent\", extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.7615407",
+      "OriginalStdOut": "Protocol=empty-old-intent; cut=1; recoveryEvents=0; mutations=0\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: True, rollback: False, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:04.1082545",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: False, rollback: False, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:02.8386676",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler(legacy: False, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.9837055",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence(existed: True, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.5747395",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"neutral\", extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.0183052",
+      "OriginalStdOut": "Protocol=neutral; cut=1; recoveryEvents=4; mutations=6\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: True, rollback: True, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:04.3525305",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery(mode: \"neutral\", extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.2910365",
+      "OriginalStdOut": "Protocol=neutral; cut=1; recoveryEvents=4; mutations=6\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler(legacy: False, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.9448356",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAliasMember_RecordsOneBaselineAndRestoresExactBytes(extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.8406400",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence(existed: False, extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.0454340",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsNeutralPendingBackup_RecoversWithoutBrowserManifest(extended: True)",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.9834575",
+      "OriginalStdOut": "NeutralOnly=True; cut=1; recoveryEvents=3; exactSnapshot=True\r\nOwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers(existed: False, rollback: True, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.9802860",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence(existed: False, extended: False)",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.9218240",
+      "OriginalStdOut": "OwnedFixtureRemoved=True",
+      "OwnedFixtureRemovedReceipt": true,
+      "ErrorMessage": "",
+      "ErrorStackTrace": ""
+    }
+  ],
+  "Archives": [
+    {
+      "Path": "prepare-original.zip",
+      "Bytes": 190803,
+      "SHA256": "dc08f243daab7fc051baa95d83006ae3448c305e3d9363e3b2c1a29a857155de",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1688775,
+          "SHA256": "40a1d42d455d541dfd6e2e68a5fe83382b29c39c261227f00d2e0b86265c6505"
+        },
+        {
+          "Path": "runner/owned-process-07e20475f6704e7c99ef8c6bef5a7b04.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-0c599ab4f3d646c89f418943e18374f4.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-5820da9524934f90abbf0401ce06cfe9.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-766fadfbcb2743b6b5e1dbcb0f1daaf8.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 3101,
+          "SHA256": "fba380a72f0565f8f03dc7b76f2ae47a3fee62705b96b38855ba7464c1c0023a"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1465,
+          "SHA256": "eb1819211e4e76193cf4191af12cb6f350c29514944c03d398b9f9968dfc2745"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2449,
+          "SHA256": "d75547ee2b2b5963d2f4dfc88af1599d17c4f71449ae631a3c29f1de82724dc2"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 3003,
+          "SHA256": "76e6cf2fb366f64a90594eee05f770cb31a50c6bee3a0c0798d49add7995bd95"
+        }
+      ]
+    },
+    {
+      "Path": "actual-original.zip",
+      "Bytes": 200627,
+      "SHA256": "35ab5b3235c8c9ad0b33badcfec9b722b2ed13d4b576c5bdb3347d0be1e914ca",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1694776,
+          "SHA256": "cf6f22c4428dd177dc86144322d0eb10baf9a0fb5368c31e9c236288613c2683"
+        },
+        {
+          "Path": "runner/owned-process-0df801fe12f04938bf727f6fa165d132.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-19db7c93c8a74e8cbdeb12da1dacff64.json",
+          "Bytes": 1440,
+          "SHA256": "0368f7be9dfac2c1c5e48f59a405a8dcd4838236416f63311f6a70ab754c4475"
+        },
+        {
+          "Path": "runner/owned-process-7a1001d0b98941a5b161a620d29f8b64.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-85e2a6a42d2449d8b316c23b317ec7ab.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-8c44a437c2c14f2281fc42d67aa6d68a.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 3102,
+          "SHA256": "fc0f61f2bb6d9ae680c9005b0faa6f6dad8cb7c4fb3acd28f73e2b860d62fa8d"
+        },
+        {
+          "Path": "runner/portable-browser-protocol-native-windows-integration-001.trx",
+          "Bytes": 59877,
+          "SHA256": "a9b5f315d368ad2081114f89e67d9081ac7d7c1c8a95152931ca5e24c23182bc"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1459,
+          "SHA256": "22c692f6d33ecac4fcef426452af6e02253bd86072469419e68d37fc1a05997a"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2418,
+          "SHA256": "bcb58e152b426f059acfda794e656cb83cf253907bfebc00192d56666fc0a9cb"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 349,
+          "SHA256": "53060afb1b239ce77df18fb22ad20b2e378b45c0f37919772ab9ffa6a832a1af"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 7118,
+          "SHA256": "48f1a6974c32d8ef089aa4e0adcc732446aa75da1ee3a85f83ed1a5a72fac52d"
+        }
+      ]
+    },
+    {
+      "Path": "execution-provenance.zip",
+      "Bytes": 419701,
+      "SHA256": "27c86bdff21db1726cca994b77db39416fec03d85b7fa260ca4700e5c8b26339",
+      "Entries": [
+        {
+          "Path": "browser-inputs.py",
+          "Bytes": 2206,
+          "SHA256": "b9bfd26a8ac1a305245f1afe3885adbd3be96247c5a6dbeba602c7f4414951e4"
+        },
+        {
+          "Path": "browser-prepare-gate.py",
+          "Bytes": 2737,
+          "SHA256": "7e80e9a59c24757c390dd349e4a24c9e227408e12a024f1a919c65df0ad8fadb"
+        },
+        {
+          "Path": "run-browser-phase.ps1",
+          "Bytes": 4013,
+          "SHA256": "8a5b52f9a523573f473ae828ba6035ca4767a13168b0bb3189e119ef69ee866e"
+        },
+        {
+          "Path": "freeze-browser.py",
+          "Bytes": 10141,
+          "SHA256": "b60117cf49ff0794266ce3e9eb2cfd401c6e509bb16e9c51067a2353ca84fd33"
+        },
+        {
+          "Path": "evidence/browser-inputs-before-prepare.json",
+          "Bytes": 387886,
+          "SHA256": "026aa3f61b5b8ed5c9a4a4c5d9294f8de2021b505221552f27567f60031e876e"
+        },
+        {
+          "Path": "evidence/browser-inputs-before-actual.json",
+          "Bytes": 387886,
+          "SHA256": "d2247405e9065fc268a0c2a25339ab01d8d960e89192c747304635cc37478540"
+        },
+        {
+          "Path": "evidence/browser-inputs-after-actual.json",
+          "Bytes": 387886,
+          "SHA256": "156f17828b8803cfb55b0fc133b341180818ffe4fb34eaddb3060dfdbcf2956e"
+        },
+        {
+          "Path": "evidence/browser-prepare-gate.json",
+          "Bytes": 1790,
+          "SHA256": "a1aa4b5fa32083a6ad02cf943859ec8bacacc4da156b391cd30974ec475442ac"
+        },
+        {
+          "Path": "evidence/browser-post-run-process-readback.json",
+          "Bytes": 319,
+          "SHA256": "1f7e85d0f79e9dbcb7b74f1c1220a2119a7e9b7a6ea34df9d8003c76b63b3765"
+        },
+        {
+          "Path": "evidence/prepare-gate.json",
+          "Bytes": 389012,
+          "SHA256": "74eab10ed74b72073b6f4b73bf7e1e619da496329900cad8bf4cafcb8c7d6766"
+        }
+      ]
+    }
+  ],
+  "DiagnosisProposal": "diagnosis-proposal.json",
+  "Limits": [
+    "Authentic schema6 recovery2 remains UNQUALIFIED; neither is a passing control",
+    "Fresh() uses a new FileSystemManager within the same process; no fresh-process cold restart",
+    "Protocol component assertions only; no browser DOM/UI, full gameplay or whole migration",
+    "No product/test/runner/catalog/budget/security/architecture change or paid game-provider call",
+    "F18 native6 prior acceptance and historical ordinary40 FAIL remain unchanged"
+  ],
+  "ProductSourceChanged": false,
+  "TestSourceChanged": false
+}
