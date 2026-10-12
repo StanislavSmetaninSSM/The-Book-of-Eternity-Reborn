@@ -5,8 +5,40 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (FIRST MATCHING CAUSAL PROJECTION GREEN ROOT-VERIFIED7bc; PUBLICATION/EVIDENCE PENDING; REMAINDER CONTROLS UNRUN)
+## Current T070 boundary — 2026-10-12 (FINITE PROJECTION REMAINDER GREEN ROOT-VERIFIED3e; EVIDENCE/QUALIFICATION PENDING; NONE/CREATE UNIMPLEMENTED)
 
+FIRST finite projection remainder GREEN is ROOT raw-verified, runtime source
+3e1ded3d488e756ebd608bdc662751db76691134 / fresh compile+SOURCE gate
+7bc8c0b90a68cb4afa2e9ea4995fb87a653a6869. Native
+20261012-193703-504-353170-26c821dbcf0d414b80c15467ee264d5e-categories,
+PTY99112 definiteexit0,78.7696496s:17 methods/25 cases/7 descriptors,
+25 executed/25 PASS/0 FAIL/0 skip,complete, no timeout/duplicates,runner cleanup=true.
+Root read full native summary/plan/all7 TRX/all25 results/stdout and parsed37 observations.
+All16 emitted strict fixture roots were verified actually absent. Existing browser/presence
+methods without strict emits have no invented strict-receipt assertion. All93 source3e pins
+and10 fresh7bc binary pins matched PRE/POST actual BEFORE metadata edits;91 runtime code/
+contract pins equal compile7bc. Original ce955 Fact remains byte unchanged.
+
+Read locally frozen manifest and root readback before these two-doc edits. The
+[first finite projection remainder GREEN packet](./recovery/qte-physical-opportunity-projection-remainder-first-green-20261012)
+contains16 gz artifacts plus manifest, immutable full results/observations/pins. Publication
+and actual retained Astra XHigh remainder EVIDENCE/status and bounded projection qualification
+are PENDING. Separately accepted first causal1 PASS at3e was not repeated. Current projection
+cohorts:4 actual runs/28 executed/26 PASS/2 FAIL (BOM prerequisite blocker + genuine missing-
+projection RED remain preserved);26 unique passed cases/18 methods. Producer accepted1b
+qualification remains separate23 executed/22 PASS/1 FAIL/22 unique PASS cases.
+
+This finite read-only projection boundary has root-verified first causal and remainder GREEN;
+acceptance is limited by the pending independent remainder evidence/qualification gate.
+None/create decision consumer and live receipt materialization remain UNIMPLEMENTED/UNRUN;
+consumer replay/rollback/atomicity and actual after-terminal archive/save-load/new-root/
+fresh-process remain pending. T070/full FR-063/parent/#1536 checkboxes remain OPEN. Next work,
+after the evidence gate, is a bounded TEST-ONLY genuine none-consumer causal cohort using the
+approved exact output/mortal_wound_decisions.json contract; no consumer production change or
+new test is authorized in this metadata-only checkpoint. Mutations STOPPED for immediate
+root two-doc+frozen-packet publication/recovery/EVIDENCE gate.
+
+Separately accepted first matching causal GREEN (EVIDENCE accepted3e):
 First matching unchanged causal projection GREEN is ROOT raw-verified at SOURCE accepted/
 compile/runtime7bc8c0b90a68cb4afa2e9ea4995fb87a653a6869. Native
 20261012-192518-113-349915-9c3d58314eda4e59a3229085a2603721-categories:
@@ -37,16 +69,18 @@ Preparation/catalog are discovery evidence only, not passing test execution.
 Root locally froze24 gz artifacts plus manifest in the
 [first projection GREEN packet](./recovery/qte-physical-opportunity-projection-first-green-20261012),
 all stored/decompressed/native original hashes checked, immutable93 source7bc pins/10 fresh
-binaries/raw full TRX/5 observations. Publication and independent first-GREEN EVIDENCE/status
-review are PENDING; this is root-verified evidence, not accepted evidence yet. Explicit
+binaries/raw full TRX/5 observations. Root published this first-causal packet and actual
+retained Astra XHigh first-GREEN EVIDENCE/status accepted3e1ded3d488e756ebd608bdc662751db76691134.
+Frozen pre-review packet metadata remains unchanged; acceptance is recorded in active status. Explicit
 constructor SOURCE and first7-artifact preparation blocker EVIDENCE accepted7bc separately;
-all older packets/outcomes remain immutable. Consumer current cohorts3 actual runs/3 executed/
-1 PASS/2 FAIL (first BOM blocker + proper projection causal RED + first matching GREEN),
-separate from accepted producer23 executed/22 PASS/1 FAIL/22 unique PASS cases.
+all older packets/outcomes remain immutable. These first-three consumer cohorts were3 actual
+runs/3 executed/1 PASS/2 FAIL (BOM blocker + proper projection RED + first matching GREEN).
+The current4-run total adds only the first25-case remainder above; producer qualification
+23 executed/22 PASS/1 FAIL/22 unique PASS cases remains separate.
 
-Controls remainder17 methods/25 cases/7 descriptors/default19 is UNRUN until first-GREEN
-EVIDENCE acceptance; it excludes the passed causal method, which must not be repeated.
-Only this actual safe projection boundary is verified. None/create decision consumption,
+Controls remainder17 methods/25 cases/7 descriptors/default19 executed once after first-GREEN
+EVIDENCE acceptance:25 PASS as recorded above; it excluded the passed causal method.
+Root-verified bounded safe projection qualification still awaits independent remainder evidence. None/create decision consumption,
 live receipt materialization, replay/atomic wound publication and actual after-terminal
 archive/fresh-process remain UNIMPLEMENTED/UNRUN; T070/full FR-063/parent/#1536 stay OPEN.
 Metadata-only two-doc updates are STOPPED for immediate root publication/recovery/EVIDENCE
@@ -95,11 +129,12 @@ blocker recorded above:  only Read(path)==null (official observed absence) may r
 null; a covered carrier must deserialize to a non-null JsonObject or refuse authority. One
 signed-present-null player-carrier row joins the existing bounded full-batch theory; it first
 proves genuine original QTE+receipt/positive occurrence and official next snapshot coverage
-of exact JSON null, then requires authority-invalid refusal. This is an unrun preservation
+of exact JSON null, then requires authority-invalid refusal. This is a preservation
 control/component snapshot-writer check, not newly observed RED or an engine vertical claim.
 First preparation failed during compilation; corrected source/preparation followed with
 fresh7bc binaries, successful discovery/catalog and first actual causal GREEN as recorded
-above. The signed-present-null control itself remains UNRUN in the separate remainder.
+above. The signed-present-null control passed in the first finite remainder; full evidence
+acceptance remains pending.
 
 TurnRequest.woundOpportunities defaults to[]; write-free projection uses only the genuine
 new ordinary snapshot and exact signed present/observed-absent roots, complete strict
@@ -123,7 +158,8 @@ not substitutes for the unchanged actual ProcessPlayerTurn causal Fact.
 Finite preparation inventory:18 methods/26 cases/8 descriptors across6 categories, protective
 default24 minutes (5 preparation +5 causal +14 remainder). FIRST matching actual causal GREEN
 used the original unchanged1-method/1-case/1-descriptor selector, category5/default10,
-and its frozen outcome awaits publication/EVIDENCE review. Controls remainder excludes that method:17 methods/25 cases/
+and its frozen outcome is separately EVIDENCE accepted3e. The remainder then ran once,
+25 PASS with independent remainder EVIDENCE/qualification pending. Controls remainder excludes that method:17 methods/25 cases/
 7 descriptors across5 categories, default19 (5 + budgets14); no passing causal rerun.
 
 | Task-local owner | Exact methods / cases / descriptors | Budget minutes |
@@ -140,7 +176,8 @@ Exact method lists/reasons/exclusions are recorded in tests/categories.json and
 is for fresh selected build/PlanOnly only. Five task-local owners intentionally overlap
 existing consumers; old catalog suffix and global CI/selection stay unchanged. Six new
 methods plus one method rename were confirmed by the fresh0-test audit:11532 discovered
-methods/700 categories; runtime remainder evidence is still UNRUN. New controls include signed pristine/explicit
+methods/700 categories; runtime remainder is now root-verified25 PASS, independent EVIDENCE
+and bounded projection qualification pending. New controls include signed pristine/explicit
 empty roots versus later live corruption, successful actual bounded sibling projection,
 corrupt event order/missing candidate/later invalid sibling/receipt/signed-present-null carrier refusal before safe
 selection, prior19 uncovered absence, exact console/browser request/proof, and named
@@ -158,8 +195,8 @@ browser/C5/native bridge/afterlife/wound suite, passing producer cohort, or glob
 is included. No provider calls, project execution or author commit/push.
 
 Producer qualification accepted1b remains23 executed/22 PASS/1 FAIL across3 current cohorts,
-22 unique cases/16 methods; consumer current3 actual runs/3 executed remain1 PASS/2 FAIL
-(separate BOM blocker + genuine projection RED + first matching causal GREEN). No historical packet/checkbox/ce955 source Fact or
+22 unique cases/16 methods; consumer current4 actual runs/28 executed remain26 PASS/2 FAIL,
+26 unique passed cases/18 methods (BOM blocker + projection RED + first causal GREEN + remainder). No historical packet/checkbox/ce955 source Fact or
 first projection Fact/selector changed. New preservation controls have not been represented
 as previously observed RED. None/create decision consumer, live receipt materialization,
 replay/atomic wound publication and after-terminal archive/fresh-process remain unimplemented/
