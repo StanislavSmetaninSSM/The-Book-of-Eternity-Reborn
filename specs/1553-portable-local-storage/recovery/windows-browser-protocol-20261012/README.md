@@ -22,7 +22,7 @@ Pinned source shows authentic6/context/profile+member publication and zero curre
 common-member check reached first. The manifest receipt assertions, neutral backup
 creation and subsequent authentic6 Fresh() recovery are UNREACHED/UNQUALIFIED.
 
-Read-only diagnosis/proposal is separate and pending independent review. Product
+Read-only diagnosis/proposal independently reviewed PASS atfbb13797; no material findings. Product
 retains its source stream with write/delete access; a new default File.ReadAllBytes
 reader shares only Read. This sufficient source mechanism explains self-sharing
 incompatibility without claiming a new raw handle trace. Proposed correction is
@@ -44,4 +44,11 @@ Fresh() is a new FileSystemManager in the SAME process; no fresh-process cold
 restart is qualified here or by F18. No browser DOM/UI, full turn/whole migration,
 other Windows recipes, B2–B5, paid game-provider calls, new product/architecture/
 security/CI change. F18 prior6/6 and historical ordinary40 FAIL remain unchanged.
-Independent first-evidence/diagnosis review pending; parent tasks stay open.
+Independent actual Astra XHigh source/evidence/diagnosis review PASS for
+`fbb13797e8992fed577f9f101359e6bb3e1a97f1`:3ZIP/34entries/30unique rows
+(15ordinary+15extended),30cleanup,1629source157DLL verified. Primary .NET8.0.31
+File.ReadAllBytes source/Win32 sharing contract support the fixture diagnosis and
+minimal same-lease physical-reader proposal. Category remains FAIL/authentic6
+recovery2 unqualified/further runtime HOLD; no fix applied. Direct GitHub-only
+recovery exactfbb clean/noalternates verifies8changed files/34entries, no build/test.
+Parent tasks stay open.

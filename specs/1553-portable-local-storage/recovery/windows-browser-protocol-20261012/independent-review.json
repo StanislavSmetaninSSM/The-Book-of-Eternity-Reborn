@@ -1,0 +1,48 @@
+{
+  "SchemaVersion": 1,
+  "RecordedUtc": "2026-10-12T00:54:08.569066+00:00",
+  "ReviewerAgent": "/root/review_f18_windows_evidence",
+  "Model": "gpt-6-astra",
+  "ReasoningEffort": "xhigh",
+  "Verdict": "PASS_SourceEvidenceAndDiagnosisOnly",
+  "ReviewedCarrier": "fbb13797e8992fed577f9f101359e6bb3e1a97f1",
+  "ActualCategoryResult": "FAIL_28PASS_2FAIL",
+  "CompiledSource": "8c2ecdfaa1003e49bf15ba83693788e9b19dd10f",
+  "MaterialEvidenceFindings": [],
+  "ProductDefectDemonstrated": false,
+  "ArchiveCount": 3,
+  "ArchiveEntriesVerified": 34,
+  "UniqueTrxRows": 30,
+  "OrdinaryRows": 15,
+  "ExtendedRows": 15,
+  "CleanupReceipts": 30,
+  "SourcePinsVerified": 1629,
+  "DllPdbPinsVerified": 157,
+  "RepeatedPdbAudit": false,
+  "CategoryBudgetsUnchangedMinutes": [
+    3,
+    8
+  ],
+  "Classification": "Fixture/oracle physical-read sharing mismatch",
+  "SourceBasedCausality": "Published transaction sourceStream retains write/delete access; File.ReadAllBytes reader FileShare.Read is incompatible. Sufficient source mechanism verified, not a new runtime handle trace.",
+  "PrimaryReferences": [
+    "https://github.com/dotnet/runtime/blob/v8.0.31/src/libraries/System.Private.CoreLib/src/System/IO/File.cs#L587-L591",
+    "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew"
+  ],
+  "UnreachedAuthentic6Assertions": [
+    "post-read publicationReceipt/publishedIdentity",
+    "neutral backup creation",
+    "fresh-object recovery/restored bytes"
+  ],
+  "MinimalProposalAcceptedInPrinciple_NotImplemented": "Test-only actual physical reader Open/Read/FileShare.ReadWrite|Delete, disposed under SAME held lease with existing Assert.Equal(After,...), preserving all later oracles and product shares.",
+  "DisallowedShortcuts": [
+    "cached publishedBytes substitution",
+    "moving assertion after lease disposal",
+    "changing product handle shares",
+    "retry/sleep/timer increase"
+  ],
+  "FurtherRuntime": "HOLD",
+  "FreshProcessColdRestartQualified": false,
+  "ReadOnlyReview": true,
+  "BuildTestRepeatOrMutationByReviewer": false
+}

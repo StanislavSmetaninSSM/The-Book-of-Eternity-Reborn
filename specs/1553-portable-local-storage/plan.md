@@ -1,4 +1,4 @@
-## F04/F05 Windows browser protocol30 — FIRST complete28PASS/2FAIL frozen, review pending, 2026-10-12
+## F04/F05 Windows browser protocol30 — FIRST28PASS/2FAIL reviewed, fixture proposal HOLD, 2026-10-12
 
 Source #1553; same Windows branch `1553-storage-migration-windows-f18-20261011T235650Z`.
 Checkout5d9f822195a2d4788dadcf483eee742e3ae7e766; compiled/runtime source unchanged8c2ecdfa.
@@ -18,7 +18,12 @@ authentic6 recovery assertions UNREACHED. These2 are not passing schema6 control
 28 passing rows cover8schema7/members+2alias+4externalpending+4cleanup+8order+2neutral.
 Neutral rows retain cut1/recoveryEvents3/exactSnapshot. Source-proven sufficient
 fixture/oracle sharing mechanism and test-only compatible physical-read proposal
-saved separately; independent classification/evidence review PENDING. No code fix,
+saved separately; actual Astra XHigh SOURCE/EVIDENCE/DIAGNOSIS PASS reviewedfbb13797:
+all3ZIP/34entries/30unique15ordinary15extended/30cleanup/source1629DLL157 verified;
+primary.NET8/Win32 share contracts support the diagnosis, no production defect
+demonstrated. Direct GitHub-only restorefbb verifies8changed files/34entries,
+clean/noalternates/no restoredbuildtest. This accepts the first evidence and
+fixture proposal only; authentic6recovery2 and category remain FAIL. No code fix,
 retry, timer change or new actual; product defect not demonstrated. Further runtime HOLD.
 First raw is published before long review. Category remains FAIL/unqualified as a
 whole; parent #1553/F04/F05 open, original F18 native6 PASS preserved. Fresh-object

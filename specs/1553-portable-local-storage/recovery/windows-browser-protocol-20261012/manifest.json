@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "RecordedUtc": "2026-10-12T00:43:44.695960+00:00",
-  "State": "FirstWindowsBrowser28Pass2FailFrozen_ReviewPending",
+  "State": "First28PASS2FAIL_EvidenceAndDiagnosisReviewedPass_RuntimeHOLD",
   "TrackedTask": "#1553 / F04-F05 Windows protocol30",
   "CheckoutHead": "5d9f822195a2d4788dadcf483eee742e3ae7e766",
   "CompiledSource": "8c2ecdfaa1003e49bf15ba83693788e9b19dd10f",
@@ -546,5 +546,22 @@
     "F18 native6 prior acceptance and historical ordinary40 FAIL remain unchanged"
   ],
   "ProductSourceChanged": false,
-  "TestSourceChanged": false
+  "TestSourceChanged": false,
+  "IndependentReview": {
+    "Path": "independent-review.json",
+    "ReviewedCarrier": "fbb13797e8992fed577f9f101359e6bb3e1a97f1",
+    "Verdict": "PASS_EvidenceAndDiagnosisOnly",
+    "CategoryRemainsFail": true,
+    "Model": "gpt-6-astra",
+    "ReasoningEffort": "xhigh"
+  },
+  "FirstDirectGitHubRecovery": {
+    "Path": "first-github-recovery.json",
+    "Head": "fbb13797e8992fed577f9f101359e6bb3e1a97f1",
+    "ChangedFilesVerified": 8,
+    "ArchiveEntriesVerified": 34,
+    "Clean": true,
+    "AlternatesPresent": false,
+    "BuildTestFromRestore": false
+  }
 }

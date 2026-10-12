@@ -1,5 +1,5 @@
 {
-  "State": "ReadOnlyDiagnosis_IndependentReviewPending_NoFixApplied",
+  "State": "IndependentSourceEvidenceDiagnosisPASS_FixtureSharingMismatch_NoFixApplied",
   "FirstActualResult": "28 PASS / 2 FAIL; all 30 executed; no timeout; both cleanups complete",
   "FailedBoundary": "Two WindowsAuthenticOriginalSix rows fail at the physical File.ReadAllBytes(ProfilePath) assertion inside the still-active write lease, Windows.cs:190.",
   "ObservedException": "System.IO.IOException sharing violation, original TRX/stack preserved",
@@ -9,7 +9,7 @@
     "System.IO.File.ReadAllBytes opens a new reader with FileShare.Read, incompatible with the existing write/delete access.",
     "The source-proven deterministic reader/owner sharing incompatibility is sufficient to explain both observed failures; no new handle trace or repro was executed."
   ],
-  "Classification": "Fixture/oracle physical-read sharing mismatch; no demonstrated production defect. Source/evidence classification awaits independent review.",
+  "Classification": "Independent source/evidence review confirms sufficient fixture/oracle physical-reader sharing incompatibility; no production defect demonstrated.",
   "ReachedBeforeFailure": "Pinned unchanged source shows Windows assertion, authentic schema6 transaction/legacy context, profile/member publication and zero common-member assertion completed before the failing read.",
   "NotReached": [
     "Post-read manifest publicationReceipt/publishedIdentity assertions",
@@ -20,5 +20,10 @@
   "RejectedShortcut": "Replacing the physical-byte assertion with store.ReadExactBytesAsync alone is not proposed: the legacy transaction validates but returns a copied _publishedBytes buffer.",
   "FurtherRuntime": "HOLD: first actual is immutable; no rerun/fix without coordinator decision.",
   "ProductChanged": false,
-  "TestChanged": false
+  "TestChanged": false,
+  "IndependentReviewedCarrier": "fbb13797e8992fed577f9f101359e6bb3e1a97f1",
+  "PrimaryReferences": [
+    "https://github.com/dotnet/runtime/blob/v8.0.31/src/libraries/System.Private.CoreLib/src/System/IO/File.cs#L587-L591",
+    "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew"
+  ]
 }
