@@ -5,58 +5,59 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (SOURCE/DESIGN ONLY; BLOCKED_FOR_IMPLEMENTATION)
+## Current T070 boundary — 2026-10-12 (SOURCE/COMPATIBLE CONTRACT DESIGN ONLY; IMPLEMENTATION UNRELEASED)
 
-Existing T070 owns the [first-vertical source/design checkpoint](./plan.md#t070-first-vertical-source-design-2026-10-12)
-on accepted ea0f5e6809bb87a70d5dcfd08b39d5c7a54dbac7. No implementation/build/
-discovery/runtime or checkbox closure is authorized. B2–B5 remain accepted33PASS;
-first B3 oracle FAIL, all packets and GameEngine cold count1 stay unchanged.
+Existing T070 owns the [compatible first-vertical checkpoint](./plan.md#t070-first-vertical-source-design-2026-10-12)
+on4085efa97d331244941eb8033efb16f8236238f2. Source investigation and independent Astra XHigh
+normative readback classify the gap as engineering, with no new product-policy
+question. Prior4085/8e81 accepted source/provenance facts remain historical; only the
+blanket new-user-authority blocker is superseded. No external JSON grammar, spec/
+contract/data-model or code change is introduced. Implementation/build/discovery/
+runtime remain unreleased. All checkbox statuses remain unchanged; B2–B5 accepted33PASS,
+first B3 oracle FAIL, immutable packets and GameEngine cold count1 are retained.
 
-QTE is the recommended real terminal owner: existing validated offer, preselection
-freeze and finalized exact player resource damage (not necessarily health). The
-proposed physical projection must check the sealed canonical definition/instance,
-player owner, exact typed health key and MortalHealthCapacityV1 authority; it cannot
-treat energy or other resource loss as injury. Combat/narrative source labels
-and formal/hazard effect presence supply no stronger physical-injury authority.
-None currently provides trusted physical profile/location/severity semantics.
-The **single unresolved decision** is whether a narrow closed physical-result
-declaration in the existing preselection QTE offer may establish those semantics,
-and which client-owned bounded-ceiling authority constrains severity. This grammar
-is proposed, not already approved by #1536. No HP formula, fixed cap, raw current-GM
-harm/cap trust, generic registry or producer stub fills the gap. FR-007 permits
-explicit causal/severity declarations in principle; FR-004/FR-005 retain GM choice
-within, and client enforcement of, the sealed envelope. They do not already approve
-or implement this QTE grammar or ceiling derivation.
+The existing `MortalWoundAcceptedHarmResult` is the compatible internal contract:
+producer-owned exact causal `ProfileKey`, owner/domain/source and complete event/batch
+coordinates; bounded `SafeContext` with a unique subset of the five existing location
+kinds; explicit accepted source outcome maximum1–4; separate hard maximum4 only when
+no narrower restriction applies; effective maximum is their minimum. Ordinary create
+has null minimum/guarantee and no worsening target. Outcome maximum is not defaultIV
+or derived from HP. The GM chooses none or a legal wound severity/location/name inside
+that envelope. Causal profile, actual wound location and closed consequence profiles
+are distinct; no new anatomy/material/body catalogue is required.
 
-The plan separates existing fields from the proposed one-owner extension; traces
-real source-N authority freeze (request bytes are already sealed, but validated
-typed request/snapshot authority is not projected into the common-plan input), final
-resource/effect result → registered draft → pure reducer → live pending/consumed
-PlanAppend/common atomic publication → next signed snapshot → existing Mortal
-adapter/StateDistributor/raw validator → Prepare/effect/Finalize/canonical anchor →
-one consume/receipt and readable output. FR-008 requires wound/effect/resource/
-history/narration/notification/projection publication in the same real common
-transaction. After the authority decision, the same implementation block must update
-the existing QTE guide/runtime and daemon prompts, worked example/manifest and
-affected guards listed in the plan; no game capability or GM example changes now.
-Seven supported adapter tokens still have
-zero production implementations; pure helpers and an unreachable adapter are not a
-working vertical. First recommended scope is player create/none, no inferred
-worsening/guarantee, existing wounds/effects/recovery preserved and a complete lawful
-treatment route required at creation. Treatment/healing remains outside this slice.
+First owner remains real QTE. Its missing preselection source-envelope serialization,
+strict admission/freeze and typed projection are implementer-owned engineering design
+for independent review, not a request for new physics or author permission. The plan
+introduces no external property names. Narrative upstream causal permission cannot be
+obtained merely from resource `source.kind=narrative_outcome`. Absent physical declaration
+preserves resource-only QTE without a wound opportunity; malformed injury-enabled input
+rejects before admission/freeze. Only selected finalized exact canonical player-health
+Damage plus the accepted envelope may project harm; positive damage does not set severity.
 
-Planned bounded cohorts are real-route causal create/none, source/owner negatives,
-identity/rollback/replay and actual save-loader/new-root/fresh-registry recovery;
-no test IDs/counts/results are asserted. FR-066 governs occurrence/decision replay;
-FR-063 full treatment request/reservation/T067 re-resolution/six-argument publication
-requirements remain mandatory when that work is added, not waived by binding evidence.
-Independent Astra XHigh DESIGN/provenance ACCEPTED on
-`8e81a49793a63fdfab51fe0650387be6a127a270`, no open documentation findings;
-this accepts the blocked checkpoint, not the proposed grammar or implementation.
-The coordinator authority decision must precede concrete grammar finalization
-and separate implementation release. Full T070/#1536 remain OPEN; no further project
-run, paid provider, Windows/HOME-PC or other feature work. No spec/contract/data-model,
-code, category, existing packet or global CI changes in this checkpoint.
+Ordered work is source-envelope admission/freeze → genuine source-N typed request/
+snapshot projection (raw request bytes already retained) → registered finalized harm
+projection → pure reducer/live pending+consumed append in common source publication →
+N+1 signed adapter/StateDistributor/ordinary validator → Prepare/effect/Finalize/
+canonical anchor → one consume/receipt and FR-008 atomic readable output. Existing
+fixture owners and bounded causal, owner/harmless, complete-event/batch, replay/conflict,
+rollback and actual save-loader/new-root/fresh-registry checks are listed in the plan;
+equal-damage/different-source-maximum and changed-damage/unchanged-sealed-maximum
+controls prove the minimum rule without inventing an HP formula; proposal location
+must belong to the frozen1–5-kind subset, and later correlation cannot supply a missing
+maximum. No new framework, fake counts or broad runtime lane. Seven adapter tokens still do not
+constitute real producers. No project execution is authorized by this checkpoint.
+
+FR-057 complete treatment route and FR-065 explicit recovery policy/canonical anchors
+remain creation requirements. FR-063 treatment reservation/full immutable request/T067
+re-resolution/typed publication and recovery obligations remain mandatory when healing
+is added; FR-066 occurrence/decision replay cannot borrow the binding-fixture waiver.
+Future implementation includes the affected existing QTE guides/prompts/example/manifest/
+guards in the same block. Next is independent review of this reconciled checkpoint,
+then detailed serialization/fixture design and separate coordinator implementation
+release, without a new gameplay-policy permission cycle. Full T070/parent/#1536 remain
+OPEN; no paid provider, Windows/HOME-PC, main/PR/issues/CI, optimization or other feature
+work. Existing accepted evidence and every other task remain unchanged.
 
 ## Accepted original-completion boundary — 2026-10-12 (B2–B5 CHILDREN; PARENT #1536 OPEN)
 
