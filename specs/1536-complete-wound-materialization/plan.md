@@ -8,7 +8,8 @@ plus the approved Superpowers design at
 `docs/superpowers/specs/2026-08-26-complete-wound-materialization-design.md`.
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
-## Current recovery / B2 design checkpoint — 2026-10-12 (docs-only WIP)
+<a id="current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip"></a>
+## Current recovery / B2 design checkpoint — 2026-10-12 (DESIGN ACCEPTED)
 
 Source: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
 existing `T081-D-POSITION-RESULT-CLOSURE-B2`–`B5`. Dedicated branch
@@ -26,8 +27,11 @@ B2 design review only. This entry supersedes historical pauses for that planning
 work and stale cold-UNRUN wording below; it does not release runtime execution.
 No project code, build, test, discovery, game, native worker or provider process
 was run for this block. Only plan/tasks change; no spec, GM contract, catalog,
-selection or global CI change. Independent Astra XHigh review is pending; publish
-this WIP before review. Installed version reads (SDK 10.0.401 / PowerShell 7.6.6)
+selection or global CI change. **Independent Astra XHigh DESIGN ACCEPTED**, no
+findings, on reviewed `d6284c72b3d5d67deed9027b893de4c4627b144a`; the coordinator
+also verified the actual full docs-only diff, remote SHA, clean tree and diff check.
+Implementation/runtime remain unreleased; this verdict accepts the design only.
+Installed version reads (SDK 10.0.401 / PowerShell 7.6.6)
 are not build/runtime qualification. Preserve WorldQuest/Meta optimizations and
 all accepted correctness fixes. No main/merge/issue closure, HOME-PC, paid provider,
 timeout increase or performance redesign belongs to this block.
@@ -174,8 +178,11 @@ or rerun of unchanged passes. After two unsuccessful corrections of the same
 problem, stop and revisit the hypothesis. A real tool/security denial stops the
 operation with its exact text/ID recorded; no bypass. B2–B5 stay OPEN even if this
 one blocker passes until their existing coherent review/evidence obligations are
-met. Next action for this published docs WIP: independent Astra XHigh design
-review of this exact plan/tasks diff; implementation remains unreleased.
+met. Next bounded action, only after coordinator implementation/runtime release:
+add and observe the cheap faithful ordinary-profile RED and exact-key authoritative
+cost-consumer prerequisite in step 1, preserving first outcomes before correction.
+The source/fixture gate and single cold owner follow only when their prerequisites
+pass. Implementation/runtime remain unreleased at this checkpoint.
 
 ## Historical completion checkpoint — resumed 2026-09-30
 

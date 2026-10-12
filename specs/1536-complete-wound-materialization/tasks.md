@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current execution boundary — 2026-10-12 (docs-only WIP)
+## Current execution boundary — 2026-10-12 (DESIGN ACCEPTED)
 
 Recovery/design work is tracked under existing
 `T081-D-POSITION-RESULT-CLOSURE-B2`–`B5`, all OPEN. The current
@@ -13,10 +13,13 @@ Recovery/design work is tracked under existing
 records accepted base `caa3f923c39b82aa0eb62edf251acebacaac7fb0`, original evidence,
 current LocalPublicationObserver compatibility and the minimal force_binding
 ordinary-profile preflight → source/fixture gate → fresh selected PlanOnly build
-→ one cold owner sequence, only after independent design review and coordinator
-implementation/runtime release. No runtime/build/test/discovery is authorized in
-this docs block. Save plan/tasks WIP to `1536-wound-b2-cloud-20261012` before
-independent Astra XHigh review; no B2–B5 checkbox changes or gameplay acceptance.
+→ one cold owner sequence. Independent Astra XHigh DESIGN ACCEPTED with no findings
+on `d6284c72b3d5d67deed9027b893de4c4627b144a`; coordinator diff/remote/clean-tree/
+diff-check verification also passed. Implementation/runtime remain unreleased.
+After coordinator release, the next bounded action is step 1's cheap faithful
+ordinary-profile RED and exact-key authoritative cost-consumer prerequisite,
+preserving first outcomes. No runtime/build/test/discovery occurred in this docs
+block; no B2–B5 checkbox changes or gameplay acceptance.
 
 The old cold-UNRUN statement is historical: #1553's preserved packet has composed
 9 PASS, cold force-binding 1 FAIL (`afterlife_combat_profile_unknown_art`) and
@@ -5534,8 +5537,9 @@ they are not additional required work. Full T069/T070 and FRONTIER remain open.
   Before the costly owner, prove raw-profile admission and the actual exact-key
   authoritative cost consumer: player 6→3→1, guardian 6→4→2, same actor mirror,
   unchanged other costs; no binding alias or normalized-only shortcut.
-  Docs-only plan/tasks WIP awaits
-  independent Astra XHigh design review before implementation/runtime release.
+  Independent Astra XHigh DESIGN ACCEPTED on
+  d6284c72b3d5d67deed9027b893de4c4627b144a with no findings; implementation/runtime
+  remain unreleased. After coordinator release, begin the cheap prerequisites above.
   Cold owner is existing spiritual-binding-cold-publication (one Fact); retain
   actual LocalPublicationObserver B cut, 15-minute category and strong 8/8 phases.
   Cold blocker resolution alone does not accept B2 or downstream B3–B5.
