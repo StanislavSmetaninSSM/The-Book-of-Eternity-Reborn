@@ -2291,10 +2291,19 @@ public partial class GameEngine
             return (true, response, false);
         }
 
+        QtePhysicalInjurySource? physicalSource = null;
+        if (QtePhysicalInjurySource.IsDeclared(offer))
+        {
+            await using var sourceLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            physicalSource = await QtePhysicalInjurySource.CaptureCurrentAsync(
+                _fs, sourceLease, snapshotContext.SessionId, snapshotContext.RequestId,
+                snapshotContext.Manifest.ManifestPayloadHash, snapshotContext.TurnNumber);
+        }
         var completion = await _qteSceneService.StartAcceptedSceneAsync(
             offer,
             sourceTurnNumber,
-            acceptedStoryAppend);
+            acceptedStoryAppend,
+            physicalSource);
         if (completion.AwaitingEffectResolution)
             return (true, completion.Response, true);
         await ProcessMortalProgressionAfterAcceptedTurnAsync();

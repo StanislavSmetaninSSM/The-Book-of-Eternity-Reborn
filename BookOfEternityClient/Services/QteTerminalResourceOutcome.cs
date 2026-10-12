@@ -16,7 +16,8 @@ internal sealed class QteTerminalResourceSelection
         string grade,
         int outcomeOrdinal,
         string outcomeId,
-        JsonObject? responseFragment)
+        JsonObject? responseFragment,
+        QteSceneService.QtePhysicalInjury? physicalInjury = null)
     {
         if (sourceTurn <= 0)
             throw new ArgumentOutOfRangeException(nameof(sourceTurn));
@@ -30,6 +31,14 @@ internal sealed class QteTerminalResourceSelection
         OutcomeOrdinal = outcomeOrdinal;
         OutcomeId = outcomeId ?? throw new ArgumentNullException(nameof(outcomeId));
         _responseFragment = responseFragment?.DeepClone().AsObject() ?? new JsonObject();
+        _physicalInjury = physicalInjury is null ? null : new QteSceneService.QtePhysicalInjury
+        {
+            SchemaVersion = physicalInjury.SchemaVersion,
+            ResourceCommandOrdinal = physicalInjury.ResourceCommandOrdinal,
+            MaximumSeverityRank = physicalInjury.MaximumSeverityRank,
+            Cause = physicalInjury.Cause,
+            AllowedLocationKinds = physicalInjury.AllowedLocationKinds.ToList()
+        };
     }
 
     internal int SourceTurn { get; }
@@ -40,6 +49,16 @@ internal sealed class QteTerminalResourceSelection
     internal int OutcomeOrdinal { get; }
     internal string OutcomeId { get; }
     internal JsonObject ResponseFragment => _responseFragment.DeepClone().AsObject();
+    private readonly QteSceneService.QtePhysicalInjury? _physicalInjury;
+    internal QteSceneService.QtePhysicalInjury? PhysicalInjury => _physicalInjury is null ? null :
+        new QteSceneService.QtePhysicalInjury
+        {
+            SchemaVersion = _physicalInjury.SchemaVersion,
+            ResourceCommandOrdinal = _physicalInjury.ResourceCommandOrdinal,
+            MaximumSeverityRank = _physicalInjury.MaximumSeverityRank,
+            Cause = _physicalInjury.Cause,
+            AllowedLocationKinds = _physicalInjury.AllowedLocationKinds.ToList()
+        };
 }
 
 internal sealed record QteTerminalResourceWorkStatistics(

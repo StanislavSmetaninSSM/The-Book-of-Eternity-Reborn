@@ -399,7 +399,8 @@ internal static class QteDeferredAcceptedMechanicsPlanner
                         grade,
                         outcomeOrdinal,
                         outcome.OutcomeId,
-                        outcome.ResponseFragment);
+                        outcome.ResponseFragment,
+                        outcome.PhysicalInjury);
                 }
             }
         }
@@ -861,6 +862,14 @@ internal static class QteDeferredAcceptedMechanicsPlanner
         QteTerminalResourceSelection selection,
         string? resourceDraftFingerprint)
     {
+        var selectedResponse = selection.ResponseFragment;
+        if (selection.PhysicalInjury is { } injury)
+            selectedResponse = new JsonObject
+            {
+                ["responseFragment"] = selectedResponse,
+                ["physicalInjury"] = JsonSerializer.SerializeToNode(injury,
+                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
+            };
         var binding = new JsonObject
         {
             ["schemaVersion"] = 1,
@@ -873,7 +882,7 @@ internal static class QteDeferredAcceptedMechanicsPlanner
             ["outcomeId"] = selection.OutcomeId,
             ["responseFingerprint"] = HashNode(
                 "qte-deferred-terminal-response-v1",
-                selection.ResponseFragment),
+                selectedResponse),
             ["resourceDraftFingerprint"] = resourceDraftFingerprint
         };
         binding["fingerprint"] = HashNode(

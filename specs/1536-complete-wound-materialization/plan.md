@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER PLAN READY; PRODUCER/NEW CONTROLS UNWRITTEN AND UNRUN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER SOURCE HANDOFF WIP; PROJECTION/RESEAL/NEW CONTROLS UNWRITTEN; CHECKS UNRUN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -54,7 +54,26 @@ No occurrence producer or canonical wound schema is changed. T070, parent RESULT
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
 
-### Bounded physical producer — PLAN READY, code/new controls UNWRITTEN and UNRUN
+### Bounded physical producer — published plan6114a083, source handoff WIP/checks UNRUN
+
+Root published/recovery-verified plan6114a0833bf774c54c926bf67b9f0e4c823bc78f and authorized
+the coherent producer block. First stopped source WIP adds private QtePhysicalInjurySource:
+official original Reader/request/context/generation capture, detached closed coordinates,
+canonical continuation recovery with current original agreement, actual engine/internal QTE
+handoff, declared-only exact wound/occurrence/receipt root capture, and defensive selected
+PhysicalInjury copies in real/preallocation selections. Selected response fingerprint binds
+that declaration; undeclared selected response shape/fingerprint stays unchanged.
+
+No actual producer is registered yet; common input still uses its old continuation/empty-event
+path. Full captured wound validation, event projection, finalized reduction/append/LAST reseal,
+finite new controls/catalog/selector and GM publication guidance remain unfinished. No build,
+discovery/runtime has run. Source is WIP, not SOURCE accepted or full implementation READY.
+Known affected consumer: QtePhysicalInjuryAdmission.cs:37/146 directly BeginAcceptedScene on
+genuine engine-staged sources; explicit declared-source requirement needs those lawful/tamper
+fixtures adapted to an internal original-source overload, preserving their exact oracles.
+That finite affected selection must be accounted for before final SOURCE gate; no blanket
+accepted51 rerun. Original causal Fact/hash, all old packets/checklists remain unchanged.
+Stop all mutations for immediate root WIP publication; resume only after root signal.
 
 Base4c2466dafc569ab8b85316de588a847f3371911d is published/recoverable; selected GitHub
 recovery267 exact files executes no project. Source174aabad already proved actual original

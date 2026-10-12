@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER PLAN READY; PRODUCER/NEW CONTROLS UNWRITTEN AND UNRUN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER SOURCE HANDOFF WIP; PROJECTION/RESEAL/NEW CONTROLS UNWRITTEN; CHECKS UNRUN)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -29,7 +29,8 @@ the same exact one-case selection; fresh preparation completed and first actual1
 Astra XHigh EVIDENCE accepted (17 artifacts/44 source/5 binary pins/native1 PASS/100 original
 artifacts retained then removed/two strict roots). Guards7+other lifetime5+docs1+receipt1
 complete the bounded story prerequisite; selected GitHub recovery267 exact files verified,
-no recovery execution. Producer plan below READY, code/new tests/checks UNWRITTEN/UNRUN;
+no recovery execution. Producer source handoff below is WIP; projection/reseal/new controls
+remain UNWRITTEN and all project checks UNRUN;
 fresh independent bounded DESIGN acceptance incorporates the latest user trusted-checkpoint
 scope ruling. The eec3c36e unresolved anti-owner proposal is historical WIP, not whole accepted design.
 Prior4085 source facts
@@ -38,9 +39,22 @@ blocker was superseded by normative engineering classification. No checkbox chan
 T070/parent/#1536 remain OPEN; B2–B5 accepted33PASS, first B3 oracle FAIL, all immutable
 packets and GameEngine cold count1 are unchanged.
 
-Bounded producer [source plan](./plan.md#bounded-physical-producer--plan-ready-codenew-controls-unwritten-and-unrun)
-is READY on accepted4c2466da; no production/new tests/catalog/selection edits or execution
-at this checkpoint. The genuine unchanged source174aabad finalized-health missing-occurrence
+Root published/recovery-verified6114a083 and authorized producer implementation. First
+stopped source WIP adds private genuine Reader/context/request/generation source capsule,
+actual engine/internal QTE/continuation handoff, declared wound-root byte/absence capture,
+closed canonical recovery/current original validation and copied frozen selected declaration
+on real/preallocation routes; selected response fingerprint binds declaration without
+changing undeclared shape. No real producer registration, event vector, append/LAST reseal,
+new controls/catalog/selection/GM guidance yet; full wound validation/stitching unfinished.
+Build/discovery/runtime UNRUN; not accepted/complete. Existing admission fixture37/146 uses
+direct BeginAcceptedScene after genuine staging; lawful/tamper calls need explicit original-
+source adaptation and finite affected selection, exact oracles preserved/no accepted51 rerun.
+Original causal hash/checklists/packets unchanged. Stop mutations for immediate WIP publication,
+resume only after root signal; no commit/push/execution by implementation owner.
+
+Bounded producer [source plan](./plan.md#bounded-physical-producer--published-plan6114a083-source-handoff-wipchecks-unrun)
+is retained from published6114a083; partial production handoff WIP is recorded above.
+Projection/reseal/new tests/catalog/selection remain unwritten; project execution UNRUN. The genuine unchanged source174aabad finalized-health missing-occurrence
 RED is accepted and valid; original causal Fact SHA256
 ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f stays exact, no repeat RED.
 Focused Astra ruling: include LastUse and AfterCurrentReaction reservations as distinct

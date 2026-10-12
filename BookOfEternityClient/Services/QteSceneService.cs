@@ -652,9 +652,10 @@ public sealed partial class QteSceneService
     }
 
     internal async Task<QteSceneCompletion> StartAcceptedSceneAsync(QteOffer offer, int currentTurnNumber,
-        StoryService.AcceptedStoryAppend? acceptedStoryAppend)
+        StoryService.AcceptedStoryAppend? acceptedStoryAppend,
+        QtePhysicalInjurySource? physicalSource = null)
     {
-        var state = await BeginAcceptedSceneCoreAsync(null, offer, currentTurnNumber, acceptedStoryAppend);
+        var state = await BeginAcceptedSceneCoreAsync(null, offer, currentTurnNumber, acceptedStoryAppend, physicalSource);
         return await ExecuteActiveSceneAsync(state, currentTurnNumber);
     }
 
@@ -682,7 +683,8 @@ public sealed partial class QteSceneService
         FileSystemManager.CanonicalWriteLease? writeLease,
         QteOffer offer,
         int currentTurnNumber,
-        StoryService.AcceptedStoryAppend? acceptedStoryAppend = null)
+        StoryService.AcceptedStoryAppend? acceptedStoryAppend = null,
+        QtePhysicalInjurySource? physicalSource = null)
     {
         if (writeLease == null)
         {
@@ -694,7 +696,8 @@ public sealed partial class QteSceneService
                     ownedLease,
                     offer,
                     currentTurnNumber,
-                    acceptedStoryAppend);
+                    acceptedStoryAppend,
+                    physicalSource);
             }
             catch (CoordinatedStatePublicationUncertainException failure) { owningPublicationUncertainty = failure; throw; }
             finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, ownedLease, false, owningPublicationUncertainty); }
@@ -716,7 +719,8 @@ public sealed partial class QteSceneService
             writeLease,
             offer,
             currentTurnNumber,
-            acceptedStoryAppend);
+            acceptedStoryAppend,
+            physicalSource);
         state.PendingOffer = offer;
         state.ActiveScene = new ActiveQteSceneState
         {
@@ -1787,7 +1791,8 @@ public sealed partial class QteSceneService
             grade.ToString().ToLowerInvariant(),
             outcomeOrdinal,
             outcome.OutcomeId,
-            outcome.ResponseFragment);
+            outcome.ResponseFragment,
+            outcome.PhysicalInjury);
         QteDeferredAcceptedMechanicsPreparation? deferredPreparation = null;
         QteDeferredEffectReceiptResume? receiptResume = null;
         if (!string.IsNullOrWhiteSpace(
