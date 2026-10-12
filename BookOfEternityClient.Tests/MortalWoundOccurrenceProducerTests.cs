@@ -230,7 +230,7 @@ public sealed class MortalWoundOccurrenceProducerTests
                 .Replace('\\', '/'))
             .OrderBy(path => path, StringComparer.Ordinal)
             .ToArray();
-        Assert.Empty(productionImplementors);
+        Assert.Equal(new[] { "BookOfEternityClient/Services/QtePhysicalWoundOccurrenceProducer.cs" }, productionImplementors);
     }
 
     [Fact]

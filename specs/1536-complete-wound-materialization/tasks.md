@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER SOURCE HANDOFF WIP; PROJECTION/RESEAL/NEW CONTROLS UNWRITTEN; CHECKS UNRUN)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER PROJECTION/FINAL SEAL SOURCE WIP; NEW CONTROLS/GUIDANCE UNFINISHED; CHECKS UNRUN)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -58,6 +58,20 @@ exact original Reader agreement; partial/later foreign source rejects. This hist
 lifetime permits no new active selection/reduction and introduces no archive/owner authority.
 Original causal hash/checklists/packets unchanged. Stop mutations for immediate WIP publication,
 resume only after root signal; no commit/push/execution by implementation owner.
+
+Second handoff WIP029f56d5 is published/recovery verified268 exact files/no execution.
+Third stopped source WIP wires one actual issued-owner QTE draft, captured wound/pending/
+consumed validation, positive selected Applied health harm and complete accepted transcript
+projection (same old prefix builder bytes; associated mutation once, both reservation kinds).
+Source guard exact1 implementor/planner-only reducer retained. Genuine declared input coords,
+preallocation74/350 suppression and awaiting exclusion feed completed planner-owned append/
+companion join; LAST private existing-key-issued clone replaces events/internal proof+both
+hashes/ComputePlanningInput, unchanged Resources/Effects, final cache/assembly once.
+Captured wound/original-request guards use common touched paths; no second publisher.
+Terminal historical source data cannot reopen active selection/reduction. New behavior tests,
+remaining owners/selector/GM guidance unfinished; all project/source checks UNRUN/PENDING.
+Replay/event/identity/cache/wave/rollback risks await focused full source gate. Stop mutations
+for immediate root source WIP publication; all old evidence/checklists/causal hash retained.
 
 Bounded producer [source plan](./plan.md#bounded-physical-producer--published-plan6114a083-source-handoff-wipchecks-unrun)
 is retained from published6114a083; partial production handoff WIP is recorded above.

@@ -119,9 +119,10 @@ internal sealed class QtePhysicalInjurySource
 
     // The caller must already have validated the continuation body and active runtime crosslink.
     internal static QtePhysicalInjurySource? ReadValidatedContinuation(JsonObject continuation,
-        QteSceneService.QteOffer offer)
+        QteSceneService.QteOffer offer) => ReadValidatedContinuation(continuation, IsDeclared(offer));
+
+    internal static QtePhysicalInjurySource? ReadValidatedContinuation(JsonObject continuation, bool declared)
     {
-        var declared = IsDeclared(offer);
         if (!continuation.ContainsKey("physicalInjurySource"))
         {
             if (declared) throw Invalid("original_source_missing");

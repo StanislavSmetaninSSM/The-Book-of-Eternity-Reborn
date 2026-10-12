@@ -76,7 +76,8 @@ internal static class QteDeferredAcceptedMechanicsPlanner
                 roots,
                 rehydrated,
                 selectedBinding,
-                ledger);
+                ledger,
+                publishPhysicalOccurrences: false);
             if (plan.AwaitsPendingResolution)
             {
                 PreallocateReceiptReplayIdentities(
@@ -357,7 +358,8 @@ internal static class QteDeferredAcceptedMechanicsPlanner
                 new CanonicalBeforeImage(
                     true,
                     Encoding.UTF8.GetBytes(pendingJson)),
-                receipts);
+                receipts,
+                publishPhysicalOccurrences: false);
             selectedLedger.MergeReservationsFrom(simulationLedger);
         }
     }
@@ -591,8 +593,13 @@ internal static class QteDeferredAcceptedMechanicsPlanner
         QtePersistentIdentityLedger ledger,
         ResourcePendingResolutionState? pendingStateOverride = null,
         CanonicalBeforeImage? pendingBeforeImageOverride = null,
-        JsonArray? receiptsOverride = null)
+        JsonArray? receiptsOverride = null,
+        bool publishPhysicalOccurrences = true)
     {
+        var physicalSource = QtePhysicalInjurySource.ReadValidatedContinuation(continuation,
+            continuation.ContainsKey("physicalInjurySource") || rehydrated.Selection.PhysicalInjury is not null);
+        var sourceRequestId = physicalSource?.RequestId ?? ReadExact(continuation, "continuationId");
+        var sourceSnapshotToken = physicalSource?.SnapshotToken ?? ReadExact(continuation, "continuationId");
         var effectFactory = new LedgerEffectIdentityFactory(ledger);
         var publicationRoots = roots;
         if (pendingBeforeImageOverride != null)
@@ -613,7 +620,7 @@ internal static class QteDeferredAcceptedMechanicsPlanner
         }
         var effectInput = EffectAcceptedTurnInputComposer.Compose(
             ReadExact(continuation, "sessionId"),
-            ReadExact(continuation, "continuationId"),
+            sourceRequestId,
             ReadPositiveInt(continuation, "acceptedSourceTurn"),
             EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot(),
             rehydrated.Carriers,
@@ -693,13 +700,14 @@ internal static class QteDeferredAcceptedMechanicsPlanner
                 internalInputs),
             WoundCarriers: HashText(
                 "accepted-mechanics-wound-carriers-v1",
-                "<missing>"),
+                physicalSource is null ? "<missing>" : string.Join("\n", QtePhysicalInjurySource.WoundRootPaths
+                    .OrderBy(static path => path, StringComparer.Ordinal).Select(path => path + "=" + roots[path].Fingerprint))),
             WoundIdentityIndex: HashText(
                 "accepted-mechanics-wound-index-v1",
-                "<missing>"),
+                physicalSource is null ? "<missing>" : ReadJson(roots[WoundIdentityState.StatePath]) ?? "<missing>"),
             WoundHistory: HashText(
                 "accepted-mechanics-wound-history-v1",
-                "<missing>"));
+                physicalSource is null ? "<missing>" : ReadJson(roots[WoundHistoryState.HistoryPath]) ?? "<missing>"));
         var registered = rehydrated.ResourceDraft?.RegisteredOutcome == null
             ? Array.Empty<IResourceRegisteredSystemOutcomeDraft>()
             : new[] { rehydrated.ResourceDraft.RegisteredOutcome };
@@ -721,8 +729,8 @@ internal static class QteDeferredAcceptedMechanicsPlanner
                 rehydrated.ResourceDraft?.ExecutionSequenceOffset ?? 0);
         var input = new AcceptedMechanicsInput(
             ReadExact(continuation, "sessionId"),
-            ReadExact(continuation, "continuationId") + "_terminal",
-            ReadExact(continuation, "continuationId"),
+            physicalSource?.RequestId ?? ReadExact(continuation, "continuationId") + "_terminal",
+            sourceSnapshotToken,
             Realm,
             ReadPositiveInt(continuation, "acceptedSourceTurn"),
             acceptedEvents,
@@ -734,9 +742,29 @@ internal static class QteDeferredAcceptedMechanicsPlanner
             publicationRoots,
             Array.Empty<ValidationIssue>(),
             context);
-        var commonResult = new AcceptedMechanicsPlanCache(
-                AcceptedMechanicsPlanner.BuildAcceptedPlan)
-            .GetOrBuildValidated(input);
+        AcceptedMechanicsPlanningResult commonResult;
+        if (physicalSource is not null && publishPhysicalOccurrences)
+        {
+            var reduction = AcceptedMechanicsPlanner.ReduceAcceptedPlan(input,
+                AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input));
+            if (reduction.Kind == AcceptedMechanicsPlanner.AcceptedMechanicsReductionKind.CompletedOrdinaryReduction)
+            {
+                var producer = QtePhysicalWoundOccurrenceProducer.Create(physicalSource,
+                    rehydrated.Selection, reduction.Completed!);
+                reduction = AcceptedMechanicsPlanner.CompleteQtePhysicalWoundOccurrenceReduction(reduction, producer, publicationRoots);
+            }
+            if (reduction.Completed is { } completed)
+            {
+                var assembled = AcceptedMechanicsPlanner.CompleteAcceptedReduction(reduction);
+                commonResult = new AcceptedMechanicsPlanCache((_, _) => assembled).GetOrBuildValidated(completed.Input);
+            }
+            else
+            {
+                var awaitingOrRejected = AcceptedMechanicsPlanner.CompleteAcceptedReduction(reduction);
+                commonResult = new AcceptedMechanicsPlanCache((_, _) => awaitingOrRejected).GetOrBuildValidated(input);
+            }
+        }
+        else commonResult = new AcceptedMechanicsPlanCache(AcceptedMechanicsPlanner.BuildAcceptedPlan).GetOrBuildValidated(input);
         if (!commonResult.Success || commonResult.Plan == null)
             throw PlanningFailure("common", commonResult.Issues);
         return commonResult.Plan;
@@ -855,7 +883,8 @@ internal static class QteDeferredAcceptedMechanicsPlanner
             effectIdentityRoot,
             new ReadOnlyDictionary<string, JsonNode?>(sourceRoots),
             currentWorldTime,
-            pendingResult.State);
+            pendingResult.State,
+            selection);
     }
 
     private static JsonObject CreateSelectedTerminalBinding(
@@ -1053,7 +1082,8 @@ internal static class QteDeferredAcceptedMechanicsPlanner
         JsonObject EffectIdentityRoot,
         IReadOnlyDictionary<string, JsonNode?> SourceRoots,
         long? CurrentWorldTime,
-        ResourcePendingResolutionState? Pending);
+        ResourcePendingResolutionState? Pending,
+        QteTerminalResourceSelection Selection);
 
     private sealed class LedgerResourceIdentityFactory :
         AcceptedMechanicsIdentityFactory

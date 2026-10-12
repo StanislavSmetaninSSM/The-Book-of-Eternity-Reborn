@@ -249,6 +249,55 @@ internal sealed class AcceptedEffectBoundaryTranscript
     internal IReadOnlyDictionary<long, string>
         CreateActivationPrefixFingerprints()
     {
+        var events = CreatePrefixEventFingerprints(includeCloses: true);
+
+        var result = new Dictionary<long, string>();
+        string? priorPrefix = null;
+        foreach (var mechanicsEvent in events
+                     .OrderBy(static value => value.Ordinal))
+        {
+            using var builder = new ResourceFingerprintBuilder(
+                "effect-boundary-transcript-prefix-v1");
+            AppendNullable(builder, priorPrefix);
+            AppendLong(builder, mechanicsEvent.Ordinal);
+            builder.Append(mechanicsEvent.Fingerprint);
+            priorPrefix = builder.Build();
+            var accepted = _acceptedActivations.FirstOrDefault(value =>
+                value.MechanicsOrdinal == mechanicsEvent.Ordinal);
+            if (accepted != null)
+            {
+                result.Add(
+                    accepted.Activation.Stamp.ActivationOrdinal,
+                    priorPrefix);
+            }
+        }
+        return new ReadOnlyDictionary<long, string>(result);
+    }
+
+    private static EffectBoundaryCausalClosureStamp Clone(
+        EffectBoundaryCausalClosureStamp value) =>
+        value with
+        {
+            OperationIds = Array.AsReadOnly(value.OperationIds.ToArray()),
+            ReplayStableOperationKeys = Array.AsReadOnly(
+                value.ReplayStableOperationKeys.ToArray())
+        };
+
+    private static EffectReactionExecution CloneReaction(
+        EffectReactionExecution value) =>
+        value with
+        {
+            DownstreamSource = value.DownstreamSource is { } source
+                ? source with
+                {
+                    Definition = source.Definition.DeepClone().AsObject()
+                }
+                : null,
+            Parameters = value.Parameters?.DeepClone().AsObject()
+        };
+
+    private List<(long Ordinal, string Fingerprint)> CreatePrefixEventFingerprints(bool includeCloses)
+    {
         var acceptedByIdentity = _acceptedActivations.ToDictionary(
             static accepted => accepted.Activation.Stamp.Identity,
             static accepted => accepted);
@@ -383,7 +432,7 @@ internal sealed class AcceptedEffectBoundaryTranscript
             builder.Append(release.Stage.ToString());
             events.Add((release.MechanicsOrdinal, builder.Build()));
         }
-        foreach (var close in _boundaryCloses)
+        foreach (var close in includeCloses ? _boundaryCloses : Array.Empty<EffectEventBoundaryCloseStamp>())
         {
             using var builder = new ResourceFingerprintBuilder(
                 "effect-boundary-prefix-close-v1");
@@ -394,50 +443,30 @@ internal sealed class AcceptedEffectBoundaryTranscript
             events.Add((close.MechanicsOrdinal, builder.Build()));
         }
 
-        var result = new Dictionary<long, string>();
-        string? priorPrefix = null;
-        foreach (var mechanicsEvent in events
-                     .OrderBy(static value => value.Ordinal))
-        {
-            using var builder = new ResourceFingerprintBuilder(
-                "effect-boundary-transcript-prefix-v1");
-            AppendNullable(builder, priorPrefix);
-            AppendLong(builder, mechanicsEvent.Ordinal);
-            builder.Append(mechanicsEvent.Fingerprint);
-            priorPrefix = builder.Build();
-            var accepted = _acceptedActivations.FirstOrDefault(value =>
-                value.MechanicsOrdinal == mechanicsEvent.Ordinal);
-            if (accepted != null)
-            {
-                result.Add(
-                    accepted.Activation.Stamp.ActivationOrdinal,
-                    priorPrefix);
-            }
-        }
-        return new ReadOnlyDictionary<long, string>(result);
+        return events;
     }
 
-    private static EffectBoundaryCausalClosureStamp Clone(
-        EffectBoundaryCausalClosureStamp value) =>
-        value with
+    /// <summary>Projects the complete accepted causal vector without closure bookkeeping.</summary>
+    internal IReadOnlyList<(long MechanicsOrdinal, string Kind, string AuthorityId,
+        ResourceOperationKey? Mutation)> ProjectAcceptedWoundEvents()
+    {
+        if (!IsComplete) throw new InvalidOperationException("Incomplete effect boundaries cannot produce wound events.");
+        var result = new List<(long, string, string, ResourceOperationKey?)>();
+        foreach (var row in CreatePrefixEventFingerprints(includeCloses: false).OrderBy(static row => row.Ordinal))
         {
-            OperationIds = Array.AsReadOnly(value.OperationIds.ToArray()),
-            ReplayStableOperationKeys = Array.AsReadOnly(
-                value.ReplayStableOperationKeys.ToArray())
-        };
-
-    private static EffectReactionExecution CloneReaction(
-        EffectReactionExecution value) =>
-        value with
-        {
-            DownstreamSource = value.DownstreamSource is { } source
-                ? source with
-                {
-                    Definition = source.Definition.DeepClone().AsObject()
-                }
-                : null,
-            Parameters = value.Parameters?.DeepClone().AsObject()
-        };
+            var mutation = _resourceMutations.SingleOrDefault(value => value.MechanicsOrdinal == row.Ordinal);
+            var reservation = _terminalAvailabilityReservations.SingleOrDefault(value => value.MechanicsOrdinal == row.Ordinal);
+            var kind = mutation is not null ? "resource_mutation" :
+                reservation is not null ? reservation.Kind == EffectTerminalAvailabilityReservationKind.LastUse
+                    ? "effect_terminal_last_use" : "effect_terminal_after_reaction" :
+                _boundaries.Any(value => value.OpenMechanicsOrdinal == row.Ordinal) ? "effect_boundary" :
+                _acceptedActivations.Any(value => value.MechanicsOrdinal == row.Ordinal) ? "effect_activation" :
+                _releasedReactions.Any(value => value.MechanicsOrdinal == row.Ordinal) ? "effect_release" :
+                throw new InvalidOperationException("An accepted event lost its typed transcript owner.");
+            result.Add((row.Ordinal, kind, row.Fingerprint, mutation?.Mutation));
+        }
+        return result.AsReadOnly();
+    }
 
     private static string CreateFingerprint(
         EffectAcceptedPlanAuthorityStamp? planAuthority,

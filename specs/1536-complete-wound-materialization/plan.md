@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER SOURCE HANDOFF WIP; PROJECTION/RESEAL/NEW CONTROLS UNWRITTEN; CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER PROJECTION/FINAL SEAL SOURCE WIP; NEW CONTROLS/GUIDANCE UNFINISHED; CHECKS UNRUN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -87,6 +87,32 @@ No new active-QTE archive rebind or owner anti-tamper authority is introduced. A
 checks remain UNRUN and this source path is not accepted yet. Original causal Fact/hash,
 all old packets/checklists remain unchanged.
 Stop all mutations for immediate root WIP publication; resume only after root signal.
+
+Root published/recovery-verified second handoff WIP029f56d5dd8fa02b039303c0ce0f1053832e492c,
+268 exact selected files/no recovery execution. Current stopped third source WIP authors one
+real QtePhysicalWoundOccurrenceProducer from the issued completed owner, verifies original
+source/input correspondence, full captured canonical wound/pending/consumed agreement and
+selected positive Applied health transition, and projects the complete accepted transcript.
+Private prefix-event builder extraction preserves existing include-closes prefix bytes;
+accepted projection excludes closes/bookkeeping and emits component-associated mutation,
+boundary, activation, reaction and both reservation siblings in actual order. Source guard
+now expects exactly that one implementor and still permits reducer calls only in the planner.
+
+Declared BuildCommonPlan uses original request/token; acceptance/simulated receipt preallocation
+explicitly suppress registration, and awaiting results never enter the completed helper.
+Planner-owned helper performs actual pending+consumed append and exact captured companion
+join, then LAST private-key-issued completed clone reseals full AcceptedEvents/InternalInputs
+and both authority hashes with ComputePlanningInput. Resources/Effects remain the same,
+final cache receives the final input/assembled result and no second reduction occurs.
+Declared wound fingerprints/read guards and original request join the common touched paths.
+Historical terminal source data does not reopen selection: existing terminal state gates
+reject it before completed producer registration; active/awaiting still require originals.
+
+This is source WIP, not verified implementation or GREEN. New finite behavior controls,
+remaining owners/task-local selector and coherent GM guidance/example/manifest are unfinished.
+Actual replay-only semantics, event/identity stability, cache/awaited-wave seals and atomic
+rollback remain UNRUN source-gate risks. Old packets/checklists/causal hash are unchanged.
+Stop all source mutations for immediate root publication before further test/docs authoring.
 
 Base4c2466dafc569ab8b85316de588a847f3371911d is published/recoverable; selected GitHub
 recovery267 exact files executes no project. Source174aabad already proved actual original

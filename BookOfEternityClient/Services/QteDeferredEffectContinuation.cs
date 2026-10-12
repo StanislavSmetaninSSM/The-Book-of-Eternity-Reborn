@@ -152,6 +152,7 @@ internal static class QteDeferredEffectContinuation
                 path,
                 new CanonicalBeforeImage(bytes != null, bytes));
         }
+        if (declared) _ = QtePhysicalWoundOccurrenceProducer.ValidateCapturedWounds(sealedRoots);
 
         if (acceptedStoryAppend != null)
         {

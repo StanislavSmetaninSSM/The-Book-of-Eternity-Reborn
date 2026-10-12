@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 
 namespace BookOfEternityClient.Services;
 
@@ -3318,6 +3319,51 @@ internal static partial class AcceptedMechanicsPlanner
                 issues);
     }
 
+    /// <summary>Completes only the actual issued QTE owner, before one common assembly/publication.</summary>
+    internal static AcceptedMechanicsReduction CompleteQtePhysicalWoundOccurrenceReduction(
+        AcceptedMechanicsReduction reduction, QtePhysicalWoundOccurrenceProducer producer,
+        IReadOnlyDictionary<string, CanonicalBeforeImage> capturedRoots)
+    {
+        if (reduction.Kind != AcceptedMechanicsReductionKind.CompletedOrdinaryReduction || reduction.Completed is not { } completed)
+            throw new InvalidOperationException("Only the completed ordinary owner can register a physical QTE producer.");
+        var prior = QtePhysicalWoundOccurrenceProducer.ValidateCapturedWounds(capturedRoots);
+        var reduced = ReduceMortalWoundOccurrenceProducers(completed.Resources, [producer]);
+        if (!reduced.Success) return AcceptedMechanicsReduction.Rejected(reduced.Issues);
+        var batchFingerprints = new JsonArray();
+        foreach (var batch in reduced.HarmfulBatches)
+        {
+            var append = MortalWoundOccurrenceState.PlanAppend(prior.Pending, batch, prior.Consumed);
+            if (append.Issues.Count != 0 || append.State is null)
+                return AcceptedMechanicsReduction.Rejected(append.Issues);
+            completed = completed.WithOwnerCompanionAfterImage(MortalWoundOccurrenceState.StatePath,
+                capturedRoots[MortalWoundOccurrenceState.StatePath],
+                JsonNode.Parse(MortalWoundOccurrenceState.SerializeCanonical(append.State))!.AsObject());
+            batchFingerprints.Add(append.BatchFingerprint);
+        }
+        var projection = producer.FinalizedProjection;
+        var selected = projection.Harms.Select(harm => new WoundSelectedEventEvidence(harm.AcceptedEventOrdinal,
+            new WoundOpportunityEventEvidence("qte", projection.AcceptedResponse!.Events[harm.AcceptedEventOrdinal].Kind,
+                projection.AcceptedResponse.Events[harm.AcceptedEventOrdinal].AuthorityId, harm.Outcome.Kind,
+                harm.Outcome.MaximumSeverityRank, harm.Outcome.ReadableCause))).ToArray();
+        var events = WoundAcceptedEventAuthorityComposer.Compose(projection.AcceptedResponse!, selected);
+        if (!events.Success) return AcceptedMechanicsReduction.Rejected(events.Issues);
+        var eventRoot = new JsonObject
+        {
+            ["acceptedEvents"] = JsonSerializer.SerializeToNode(events.Events, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
+        };
+        var proof = new JsonObject
+        {
+            ["originalSource"] = producer.OriginalSource.Persisted,
+            ["producerOperationKey"] = producer.ProducerOperationKey,
+            ["sourceResultFingerprint"] = reduced.ProducerResults.Single().SourceResultFingerprint,
+            ["acceptedEventsFingerprint"] = events.EventsFingerprint,
+            ["batchFingerprints"] = batchFingerprints,
+            ["effectBoundaryTranscriptFingerprint"] = completed.Resources.EffectBoundaryTranscript!.Fingerprint
+        };
+        completed = new CompletedOrdinaryMechanicsReduction(completed, eventRoot, proof, CompletedOrdinaryIssuanceKey);
+        return AcceptedMechanicsReduction.CompletedOrdinary(completed, reduction.DiscoveryResources!);
+    }
+
     private sealed record PendingBoundaryDecision(
         bool AwaitingReceipt,
         ResourcePendingResolutionState? StateAfterImage,
@@ -3750,6 +3796,8 @@ internal static partial class AcceptedMechanicsPlanner
     /// </summary>
     internal sealed class CompletedOrdinaryMechanicsReduction
     {
+        private readonly bool _hasMortalProducerCompletion;
+        internal bool HasMortalProducerCompletion => _hasMortalProducerCompletion;
         private readonly Dictionary<string, JsonObject> _ownerCompanionAfterImages;
         private readonly AcceptedMechanicsOwnerTransition[] _ownerTransitions;
         private readonly JsonObject? _pendingAfterImage;
@@ -3861,7 +3909,13 @@ internal static partial class AcceptedMechanicsPlanner
                 original._liveWoundCompletion is null && original._satisfactionReceiptIdentity is null &&
                 receiptProof is not null)
                 throw new InvalidOperationException("The live wound receipt does not bind this owner result.");
-            Input = original.Input.WithBeforeImage(path, beforeImage);
+            if (original.Input.BeforeImages.TryGetValue(path, out var captured))
+            {
+                if (captured.Fingerprint != beforeImage.Fingerprint)
+                    throw new InvalidOperationException("The companion differs from its captured exact before-image.");
+                Input = original.Input;
+            }
+            else Input = original.Input.WithBeforeImage(path, beforeImage);
             InputFingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(Input.CreateBinding());
             Definitions = original.Definitions;
             Resources = original.Resources;
@@ -3990,6 +4044,7 @@ internal static partial class AcceptedMechanicsPlanner
             string path, CanonicalBeforeImage beforeImage, JsonObject afterImage,
             SpiritualWoundDeclineReceiptReducer.ValidatedReceiptProof? receiptProof = null)
         {
+            if (_hasMortalProducerCompletion) throw new InvalidOperationException("Final producer input is already sealed.");
             ArgumentException.ThrowIfNullOrWhiteSpace(path);
             ArgumentNullException.ThrowIfNull(beforeImage);
             ArgumentNullException.ThrowIfNull(afterImage);
@@ -4011,9 +4066,46 @@ internal static partial class AcceptedMechanicsPlanner
         internal CompletedOrdinaryMechanicsReduction WithBeforeImage(
             string path, CanonicalBeforeImage beforeImage)
         {
+            if (_hasMortalProducerCompletion) throw new InvalidOperationException("Final producer input is already sealed.");
             ArgumentException.ThrowIfNullOrWhiteSpace(path);
             ArgumentNullException.ThrowIfNull(beforeImage);
             return new(this, path, beforeImage);
+        }
+
+        // The existing private issuance key permits this LAST rebind only in this planner's
+        // completed typed-owner path; arbitrary caller event JSON cannot issue a completion.
+        internal CompletedOrdinaryMechanicsReduction(CompletedOrdinaryMechanicsReduction original,
+            JsonObject finalizedEvents, JsonObject producerProof, object issuanceKey)
+        {
+            if (!ReferenceEquals(issuanceKey, CompletedOrdinaryIssuanceKey) || original._hasMortalProducerCompletion)
+                throw new InvalidOperationException("Only the completed owner can seal finalized producer input once.");
+            var prior = original.Input;
+            var internalInputs = prior.InternalInputs;
+            internalInputs["mortalWoundProducer"] = producerProof.DeepClone();
+            var authorities = prior.AuthorityFingerprints with
+            {
+                AcceptedEvents = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+                { "qte-finalized-accepted-events-v1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(finalizedEvents) }),
+                InternalInputs = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+                { "qte-finalized-producer-input-v1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(internalInputs) })
+            };
+            Input = new AcceptedMechanicsInput(prior.SessionId, prior.RequestId, prior.SnapshotToken,
+                prior.Realm, prior.Turn, finalizedEvents, prior.ResourceCommands, prior.EffectCommands,
+                prior.PendingInput, internalInputs, authorities, prior.BeforeImages, prior.ValidationIssues,
+                prior.PlanningContext, prior.WoundCommands, prior.WoundInput);
+            InputFingerprint = AcceptedMechanicsPlanFingerprints.ComputePlanningInput(Input);
+            Definitions = original.Definitions;
+            Resources = original.Resources;
+            Effects = original.Effects;
+            _pendingAfterImage = original._pendingAfterImage?.DeepClone().AsObject();
+            _ownerCompanionAfterImages = original._ownerCompanionAfterImages.ToDictionary(
+                static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
+            _ownerTransitions = original._ownerTransitions.Select(static value => value.Clone()).ToArray();
+            _liveWoundCompletion = original._liveWoundCompletion;
+            _hasLiveWoundWork = original._hasLiveWoundWork;
+            _satisfactionReceiptIdentity = original._satisfactionReceiptIdentity;
+            _hasLiveDecisionReceipt = original._hasLiveDecisionReceipt;
+            _hasMortalProducerCompletion = true;
         }
 
         internal AcceptedMechanicsInput Input { get; }
@@ -4544,6 +4636,11 @@ internal static partial class AcceptedMechanicsPlanner
             touched.Add(WoundHistoryState.HistoryPath);
         }
         touched.UnionWith(ownerCompanionAfterImages.Keys);
+        if (completed.HasMortalProducerCompletion)
+        {
+            touched.UnionWith(QtePhysicalInjurySource.WoundRootPaths);
+            touched.Add("input/turn_request.json");
+        }
         touched.UnionWith(ownerTransitions.Select(static value => value.Path));
         if (pendingAfterImage != null)
             touched.Add(ResourcePendingResolutionState.PendingPath);
