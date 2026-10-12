@@ -9,7 +9,99 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip"></a>
-## Current recovery / B2 design checkpoint — 2026-10-12 (DESIGN ACCEPTED)
+## Current #1536 completion checkpoint — 2026-10-12 (docs-only DESIGN WIP)
+
+Lorian accepted the bounded force_binding restoration through
+`ceedbe496a0ecc3a3e3cd96518675ba128989099` and resumed original #1536 completion.
+This phase authorizes read-only design and this plan/tasks checkpoint only: no
+implementation, build, discovery, tests or project runtime. The prior block's stop
+is superseded only for this phase; its code, three immutable packets and cold
+invocation count1 remain accepted and unchanged. Use the same Linux task branch,
+existing RESULT-CLOSURE-BINDING rev1 and exact
+`T081-D-POSITION-RESULT-CLOSURE-B2`–`B5`; do not confuse earlier C4 B2/B3 IDs.
+All four tasks remain OPEN. No new specification or evidence framework is needed.
+
+### Original acceptance gaps and retained evidence
+
+| Existing task | Source/coverage and evidence status | Remaining bounded obligation |
+| --- | --- | --- |
+| B2 | `SpiritualBindingDependency.cs` and `SpiritualBindingResultClosure.cs` implement owner-derived result fields, eight original-policy variants and immutable-input checks. `SpiritualBindingCorrectionBoundaryTests.cs` covers four presence/carrier cases. Historical PASS84efd5c4/db70c216/c3b2ddc3 is recorded below; matching raw artifacts are unavailable in this checkout. Current authority21 GREEN is retained raw proof of its narrower gate/cost scope. | Distinguish policy permission from actual ordinary `blocked` admission; first block below. Preserve both strong prerequisites and independent mixed-cost permissions. |
+| B3 | `SpiritualBindingTerminalControlCorrection.cs` plus `SpiritualBindingFinalControl.cs` cover detached echo, actual A/B, mixed invalid-cost rejection and wrapper precedence. Historical PASS4636aa27/da4b50cf is prose-recorded, not currently raw-reverified. | Reconcile exact final carrier/value/presence and unrelated ordinary-error rejection. Refine the existing mixed invalid-cost diagnostic assertion later only if needed; no duplicate scenario. |
+| B4 | The #1553 `storage-migration-spiritual-lifecycle-20261009` packet retains hash-verified warm binding PASS with matching relevant fixture pins. The current cold packet retains one force-binding PASS; shared `SpiritualStagedHistory.cs` source covers forged B, while `SpiritualBindingFinalControl.cs` covers changed accepted A. | Reconcile shared negative evidence and cumulative A/B/replay obligations; reuse accepted warm/cold instead of repeating them. Source coverage alone is not a new passing result. |
+| B5 | Existing GM matrix/guide/CLI-worker/example/manifest changes and no-update rationales are recorded below; two changed docs/example guards have current retained GREEN. | Complete only still-relevant nonbinding compatibility/GM final controls and coherent independent B2–B5 review; no broad documentation matrix or retired aggregate lanes. |
+
+Rev1 requires genuine saved choice, ordinary-valid correction, sequential public
+GameEngine replies and cold reconstruction before final B response. Fresh OS
+processes, separately exported final snapshots and BOELP3 framing are not additional
+mandatory gates for this bounded binding contract. The accepted cold evidence's
+same-process/JSON Format1/no separate final cold journal trace or snapshot-export
+limits remain explicit; this does not waive the distinct Mortal FR-063 obligation.
+
+### First functional block: B2 actual blocked-result admission
+
+Read-only finding: `WriteOriginalLastBindingDraftAsync` clones pressure into the
+last binding without an `incomingAction`. Its policy permits `blocked`, but ordinary
+validation (`ValidationService.AfterlifeSpiritualConflict.cs`, blocked prerequisite)
+requires that action and emits `afterlife_conflict_blocked_missing_incoming_action`.
+The existing actual A/B path submits `no_effect`. This is an acceptance-oracle gap,
+not an established production defect or permission to weaken the ordinary rule.
+
+Future test-only scope is the existing `SpiritualBindingResultClosure.cs` fixture:
+retain all eight current policy variants and four unit boundary cases. On both
+existing lost rows, submit actual `blocked` through the real issued A and ordinary
+`EvaluateSpiritualWoundContinuationDraftAsync`; require Rejected with the exact
+missing-incoming-action diagnostic at `activeConflict.exchangeLog[1].incomingAction`
+and unchanged checkpoint, saved command,
+canonical bytes and submitted raw draft. Do not commit progress or synthesize B.
+Add exactly one ordinary-binding theory row whose lawful incoming action is
+written into the ORIGINAL draft before ordinary admission and wound selection.
+After genuine saved choice, its actual `blocked` A must evaluate Advanced without
+commit, preserve the original held terminal echo, checkpoint/command/canonical
+bytes, and expose no next request until the existing commit boundary. Never add
+incomingAction during A; keep signed dice, actors, prefix, costs and all other
+original authority unchanged. Reuse the accepted no_effect warm/cold path and
+force-binding prerequisites/cost proof; no duplicate positive force-binding row.
+
+Planned selection: existing `spiritual-binding-result-dependency` (nine integration
+rows) plus `spiritual-binding-control-boundaries` (four unit rows), total13 cases.
+No new method, category, harness or cold owner; preserve existing category bounds
+of5minutes and2minutes, with no timeout override.
+After design acceptance and a separate implementation release: publish test-only
+WIP, independent source/fixture/selection review, then fresh selected preparation
+and bounded execution only when released. Preserve the first actual result. Any
+owning failure freezes its exact cause before a separately reviewed minimal source
+correction; no speculative production change or repeated passed controls. Nothing
+in this checkpoint authorizes those future executions now.
+
+### Ordered completion after this block
+
+1. Finish original B2 acceptance, then B3 detached/raw validation, B4 durable/live
+   replay and B5 relevant compatibility/GM final controls plus coherent review.
+   Close no checklist here; retain accepted force_binding correction and cold1.
+2. Finish actual source→wound consumers: T070 first real Mortal finalized harmful
+   producer→complete occurrence batch→common publication→next signed-snapshot
+   opportunity→none/materialize receipt and wound transition. Current production
+   has zero `IMortalWoundOccurrenceProducerDraft` implementors; the seven adapter
+   names are a reducer language, not seven functional producers. Choose one real
+   finalized harm owner before implementation; no generic registry or placeholders.
+   Reuse accepted treatment/recovery parts, then finish T063/T070–T075 journeys.
+3. Reconcile remaining T081-D/E spiritual source/consumer and C5 obligations without
+   redoing accepted source-ceiling/cost/terminal work. T081-C3-R2B initial-stage
+   coexistence depends on a lawful afterlife producer in T107, not an invented
+   stage. Complete T093/T095–T099/T101–T112 real healing, safe-cycle/natural recovery
+   and entity common publication; the existing math helpers and registered arts
+   are prerequisites, not working healing. Return to coexistence after T107.
+4. Complete T113–T130 shared private-safe wound commands and console/browser flows,
+   T131–T147 provider/access/payment journeys, then remaining isolation/privacy/
+   rollback/GM/example and T177 obligations using affected categories only.
+   No speed redesign, Fast/PreMerge/whole-suite gate, paid provider, main/PR/merge
+   or issue action belongs to this phase.
+
+Next action: publish this docs WIP, then independent Astra XHigh DESIGN review of
+this exact first block and ordered backlog. Implementation/runtime remain unreleased.
+
+### Accepted recovery and cold-blocker context — 2026-10-12
+
 
 Source: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
 existing `T081-D-POSITION-RESULT-CLOSURE-B2`–`B5`. Dedicated branch

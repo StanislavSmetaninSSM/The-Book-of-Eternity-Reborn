@@ -5,7 +5,39 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current execution boundary — 2026-10-12 (DESIGN ACCEPTED)
+## Current original-completion boundary — 2026-10-12 (docs-only DESIGN WIP)
+
+Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
+and resumed original #1536 completion. Current authorization is read-only design
+plus plan/tasks publication only; no implementation/build/discovery/test/runtime.
+The [current plan](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
+separates source coverage, historical PASS without available raw artifacts and
+retained raw-verified evidence for exact RESULT-CLOSURE-BINDING B2–B5.
+
+First proposed block stays in B2: current lost drafts lack incomingAction, so
+policy.Allows(blocked) does not prove ordinary admission. Keep the eight existing
+policy rows/four unit boundary cases; use real issued A to reject actual blocked
+on both lost rows with exact `afterlife_conflict_blocked_missing_incoming_action`
+at `activeConflict.exchangeLog[1].incomingAction` and byte preservation. Add one
+ordinary-binding row with lawful incomingAction
+in the original draft before admission/selection; actual blocked evaluates
+Advanced without commit, preserving held terminal echo and private/canonical bytes.
+Never add the action during A or change dice/actors/prefix/cost authority. Planned
+existing finite owners: result-dependency9 + control-boundaries4 =13 cases, no new
+methods/categories/harness/cold run. No production defect is asserted. Independent
+DESIGN review follows published docs; source/fixture review and runtime releases
+remain future gates. First outcomes must be preserved before any minimal correction.
+
+Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and
+remaining spiritual consumers, lawful T107 initial-stage coexistence/healing,
+shared UI, providers and affected final guards. Existing seven producer kinds have
+zero production implementors; math helpers/registered arts are not healing flows.
+Reuse accepted no_effect warm/cold and exact-force controls. Cold count stays1;
+same-process/Format1/no final journal trace or exported snapshots are limits, not
+new rev1 gates; separate Mortal FR-063 stays open. All B2–B5/#1536 boxes stay OPEN.
+
+## Accepted recovery/cold-blocker boundary — 2026-10-12
+
 
 Recovery/design work is tracked under existing
 `T081-D-POSITION-RESULT-CLOSURE-B2`–`B5`, all OPEN. The current
