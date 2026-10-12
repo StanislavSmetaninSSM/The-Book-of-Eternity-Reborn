@@ -1,0 +1,40 @@
+{
+  "source": "53a823eba1bf3dcef8d4af412a74594eda311bba",
+  "recordedUtc": "2026-10-12T10:38:18.290776+00:00",
+  "commandsAfterSourceGate": [
+    {
+      "kind": "catalog",
+      "command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-ValidateCatalog"
+      ],
+      "testsExecuted": 0
+    },
+    {
+      "kind": "plan",
+      "command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-SelectionFile",
+        "tests/selections/1536-qte-physical-injury-finalization.json",
+        "-NoBuild",
+        "-PlanOnly"
+      ],
+      "testsExecuted": 0
+    }
+  ],
+  "plannedMethods": 1,
+  "plannedCases": 1,
+  "expectedDescriptors": 1,
+  "categoryMinutes": 5,
+  "defaultOverallMinutes": 10,
+  "timeoutOverride": false,
+  "catalogRuling": "One new Fact/method requires complete inventory ownership audit through discovery only. No test execution; selected one-case PlanOnly after fresh successful builds. No accepted51 rerun."
+}

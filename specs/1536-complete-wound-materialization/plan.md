@@ -177,6 +177,40 @@ established. All T070/#1536 checkboxes remain OPEN; original31 RED, accepted51 G
 historical B2–B5/cold evidence remain immutable. This test-only checkpoint changes no GM
 capability, so the already synchronized admission guidance/example need no further update.
 
+
+### First finalized-harm fixture attempt — BLOCKED, not causal producer RED
+
+Compile/runtime source `53a823eba1bf3dcef8d4af412a74594eda311bba` received independent
+Astra XHigh SOURCE/FIXTURE/SELECTION acceptance before execution. Fresh catalog104303
+built integration/unit with0 errors (75/35 warnings), validated684 categories/11514
+methods and executed0 tests. Matching NoBuild PlanOnly104542 selected exactly1 method/
+1 case/1 descriptor,0 tests. First actual104621 used the same fresh pinned binaries and
+unchanged source, one invocation: category5/default overall10, no timeout override.
+It reached the protective five-minute category timeout: exit124, incomplete selection,
+0 completed descriptors/cases, reported0 executed/0 PASS/0 FAIL, no TRX. This is a
+fixture blocker before finalized harm, never causal producer RED or test acceptance.
+
+Read-only live diagnostics found the real physical ordinary request/snapshot42 with
+matching session/request and sourceLabel, but no GM offer/ready/repair output. Official
+signed-reader, offer admission, finalized canonical health Damage and missing-occurrence
+predicate remain UNREACHED/UNPROVED. Source diagnosis: external Task.Run was started
+outside the engine's continuous participating main owner. Public missing reads, explicit
+canonical lease, direct validator and atomic writes each can seek a competing main
+admission. The exact blocked call was not recorded; no single-call assertion follows.
+Correct the fixture using the existing TerminalWaitStarted callback inside the original
+owner; do not alter production ownership, release its lock or raise budgets.
+
+[The immutable first-attempt packet](./recovery/qte-physical-injury-finalization-first-fixture-blocker-20261012)
+retains full catalog/plan/actual summaries/logs,21 immutable source pins,10 fresh binary
+pins and live/root readback. Runner owned-process-tree cleanup completed. Test fixture
+strict cleanup emitted no receipt because its process was killed; root then matched its
+unique owned directory and exact session/request/turn, removed only that directory and
+confirmed absence. This manual cleanup is distinct from a strict fixture receipt.
+Next is one minimal fixture correction and focused independent SOURCE review, then fresh
+selected preparation and a new actual attempt. No production/producer is authorized by
+this failure. Admission51 GREEN/original31 RED, all task checkboxes and historical B2–B5/
+cold evidence remain unchanged; full T070/#1536 and finalized-health vertical remain OPEN.
+
 ### Established contract and field ownership
 
 `contracts/wound-materialization-command.md:22–39` assigns the owning producer the

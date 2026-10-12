@@ -1,0 +1,19 @@
+{
+  "source": "53a823eba1bf3dcef8d4af412a74594eda311bba",
+  "catalogRun": "20261012-104303-239-283666-c1a201bb158c40788c96d93ac84a454b-categories",
+  "planRun": "20261012-104542-055-283997-b7f56befe6464c67b723f061af8d5e19-categories",
+  "catalogValid": true,
+  "catalogCategories": 684,
+  "catalogMethods": 11514,
+  "freshBuildErrors": 0,
+  "warnings": {
+    "integration": 75,
+    "unit": 35
+  },
+  "plannedMethods": 1,
+  "plannedCases": 1,
+  "descriptors": 1,
+  "testsExecuted": 0,
+  "sourcePinsMatched": 21,
+  "binaryPinsMatched": 10
+}
