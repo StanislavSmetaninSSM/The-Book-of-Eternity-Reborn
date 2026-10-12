@@ -1,0 +1,35 @@
+{
+  "source": "6d21c6ceb71f27db1c37c5b888cd51e5035d1377",
+  "compileSource": "6d21c6ceb71f27db1c37c5b888cd51e5035d1377",
+  "runtimeSource": null,
+  "argv": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-binding-compatibility-gm.json",
+    "-PlanOnly"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "environmentSource": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "startedUtc": "2026-10-12T06:46:01.772589+00:00",
+  "scope": "B5 fresh selected integration+unit preparation and exact PlanOnly only; no catalog/actual tests",
+  "expected": {
+    "methods": 4,
+    "cases": 5,
+    "descriptors": 2,
+    "integrationCases": 3,
+    "unitCases": 2,
+    "actualTests": 0
+  },
+  "budgetsMinutes": {
+    "positionCompatibility": 10,
+    "gmEntrypointsCoverage": 10,
+    "overallDefault": 25
+  },
+  "actualInvocations": 0,
+  "priorAcceptedColdCount": 1,
+  "exitCode": 0,
+  "finishedUtc": "2026-10-12T06:48:26.393300+00:00"
+}

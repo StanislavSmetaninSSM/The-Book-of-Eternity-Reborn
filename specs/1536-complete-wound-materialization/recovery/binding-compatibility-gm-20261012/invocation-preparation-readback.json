@@ -1,0 +1,82 @@
+{
+  "source": "6d21c6ceb71f27db1c37c5b888cd51e5035d1377",
+  "compileSource": "6d21c6ceb71f27db1c37c5b888cd51e5035d1377",
+  "planRun": "20261012-064602-488-264733-022213832f8b4217aa8529dd374e74c2-categories",
+  "planWallTime": "00:02:23.8527700",
+  "phaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0376842,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0518777,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0957556,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 104.6431597,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 34.363761,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0034899,
+      "Completed": true
+    }
+  ],
+  "planSelection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 5,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "documentation-afterlife-entrypoints-coverage-unit-001",
+      "spiritual-cutover-position-compatibility-integration-002"
+    ],
+    "Complete": false
+  },
+  "methodCount": 4,
+  "planTests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "freshBinaryPinsMatchAfter": true,
+  "sourcePinsMatchAfter": true,
+  "sourceCleanAfter": true,
+  "sourcePinCount": 42,
+  "binaryPinCount": 10,
+  "cleanup": {
+    "planOwnedTree": true,
+    "planRuntime": true
+  },
+  "warnings": {
+    "integration": 73,
+    "unit": 35
+  },
+  "errors": {
+    "integration": 0,
+    "unit": 0
+  },
+  "unitBuilt": true,
+  "catalogRun": false,
+  "budgetsMinutes": {
+    "positionCompatibility": 10,
+    "gmEntrypointsCoverage": 10,
+    "overallDefault": 25
+  },
+  "actualTestsRun": 0,
+  "priorAcceptedColdCount": 1
+}

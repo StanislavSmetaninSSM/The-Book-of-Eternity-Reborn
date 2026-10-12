@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (B2/B3/B4 EVIDENCE ACCEPTED; B5 TEST-ONLY WIP)
+## Current original-completion boundary — 2026-10-12 (B2/B3/B4 EVIDENCE ACCEPTED; B5 FIRST 5 PASS — COHERENT REVIEW PENDING)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Lorian subsequently accepted
@@ -19,7 +19,8 @@ oracle. Corrected SOURCE d5b2 and separately released fresh preparation/first
 corrected actual are complete2PASS, scoped EVIDENCE ACCEPTED45dfda. Coordinator
 accepted B4 SOURCE24dba and separately released fresh preparation/first actual:
 13PASS scoped EVIDENCE ACCEPTED130194. Coordinator now releases B5 test-only
-compatibility/GM controls; preparation/runtime and coherent child acceptance gated.
+compatibility/GM controls. SOURCE6d21 and separately released preparation/first
+actual now complete5PASS; coherent B2–B5 EVIDENCE review/acceptance remains gated.
 The [current plan](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
 separates source coverage, historical PASS without available raw artifacts and
 retained raw-verified evidence for exact RESULT-CLOSURE-BINDING B2–B5.
@@ -126,16 +127,23 @@ passed. Independent Astra XHigh scoped EVIDENCE ACCEPTED13019464eb146e7979aae567
 without findings; coordinator21artifact/26source/6binary/13raw/14cleanup readback passed.
 No further B4 run; cold remains1 and all checkboxes/earlier packets are unchanged.
 
-B5 test-only WIP retains two nonbinding position methods/three cases with only
+B5 test-only block retains two nonbinding position methods/three cases with only
 existing output/strict cleanup (three roots), original mutation/reduction assertions
 unchanged; two existing GM entrypoint/example-coverage Facts remain unchanged.
 New finite owners `spiritual-cutover-position-compatibility` and
 `documentation-afterlife-entrypoints-coverage` move exactly four selectors from two
 old owners; full multiset/other owners/global selection/CI preserved. Task-local
 `tests/selections/1536-binding-compatibility-gm.json`: five cases/four methods/two
-descriptors, integration3/unit2,10+10/default25 bounds. No build/discovery/runtime
-for this candidate. SOURCE review precedes separately released fresh preparation
-and matching first actual; coherent B2–B5 EVIDENCE review/root acceptance follows.
+descriptors, integration3/unit2,10+10/default25 bounds. Independent SOURCE/selection/
+coherent-scope ACCEPTED6d21 without blocking findings. Fresh preparation064602 on
+clean6d21 built both selected projects104.6431597/34.363761s,73/35warnings/0errors,
+exact5/4/2 and zero execution. First matching actual064941:5/5PASS,29.7729317s,
+2/2complete,no timeout/duplicate/underfill. Three saved-choice/immutable-byte
+preservation/private-reduction rows and two GM mapping Facts passed; three strict
+roots absent, runner cleanup passed,42source/10binary pins unchanged. Immutable
+[B5 packet](./recovery/binding-compatibility-gm-20261012/manifest.json) retains22
+full/raw-hashed artifacts including9 reused binding guard/document checks.
+Coherent B2–B5 EVIDENCE review/root acceptance remains pending; no further execution.
 Current plan maps all six rev1 rules to retained B2/B3/B4/warm/cold evidence and
 limits. Reuse accepted GREEN binding docs/example2PASS: five pinned source hashes
 and four further consumed documents unchanged from b03e. No new GM capability or

@@ -1,0 +1,446 @@
+{
+  "source": "6d21c6ceb71f27db1c37c5b888cd51e5035d1377",
+  "compileSource": "6d21c6ceb71f27db1c37c5b888cd51e5035d1377",
+  "runtimeSource": "6d21c6ceb71f27db1c37c5b888cd51e5035d1377",
+  "run": "20261012-064941-853-265205-f3e9518886634318920bfd8d4897dc54-categories",
+  "caseCount": 5,
+  "passed": 5,
+  "failed": 0,
+  "distinctCleanupReceipts": 3,
+  "all3OwnedRootsAbsent": true,
+  "runtimeBinaryHashesUnchanged": true,
+  "sourceHashesUnchanged": true,
+  "sourceCleanAtReadback": true,
+  "actualInvocations": 1,
+  "priorAcceptedColdCount": 1,
+  "scope": "Three existing nonbinding position private-reduction compatibility rows; two GM entrypoint/manifest mapping Facts. No new GameEngine/canonical publication or all-example execution.",
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption",
+      "outcome": "Passed",
+      "duration": "00:00:00.0658000",
+      "structuredOutput": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples",
+      "outcome": "Passed",
+      "duration": "00:00:00.0052373",
+      "structuredOutput": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionDependencyReplaysSavedChoiceAndCorrectsOnlyLaterArithmetic(playerWound: False)",
+      "outcome": "Passed",
+      "duration": "00:00:05.5751818",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-02523cc296ce4ad0879d02160eaa7b28",
+          "playerWound": false,
+          "phase": "cold_position_reopened",
+          "Disposition": "dependent_continuation",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown.player",
+              "Severity": 2,
+              "Message": "diceAudit \u0434\u043e\u043b\u0436\u0435\u043d \u044f\u0432\u043d\u043e \u0443\u0447\u0438\u0442\u044b\u0432\u0430\u0442\u044c non-contested conflictPosition \u043a\u0430\u043a \u043f\u043e\u0437\u0438\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u043c\u043e\u0434\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440.",
+              "Category": 1,
+              "Code": "afterlife_conflict_dice_missing_position_modifier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "modifierBreakdown.player[] item { modifierType: \"conflict_position\", position: \"player_advantaged\", value: 2 }",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "playerWound": false,
+          "mutation": "independent_modifier",
+          "phase": "mutated_draft_open",
+          "Disposition": "dependent_continuation",
+          "Issues": []
+        },
+        {
+          "playerWound": false,
+          "mutation": "independent_modifier",
+          "phase": "forbidden_resume",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_c2_dependent_correction_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "playerWound": false,
+          "mutation": "signed_die",
+          "phase": "mutated_draft_open",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
+              "Severity": 2,
+              "Message": "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0434\u043e\u043a\u0430\u0437\u0430\u0442\u044c \u0438\u0441\u0445\u043e\u0434\u043d\u043e\u0435 \u0434\u0443\u0445\u043e\u0432\u043d\u043e\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435.",
+              "Category": 1,
+              "Code": "spiritual_source_continuation_invalid",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "exact original-turn spiritual source authority",
+              "Actual": "retained source context cannot change",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "playerWound": false,
+          "mutation": "closed_exchange",
+          "phase": "mutated_draft_open",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
+              "Severity": 2,
+              "Message": "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0434\u043e\u043a\u0430\u0437\u0430\u0442\u044c \u0438\u0441\u0445\u043e\u0434\u043d\u043e\u0435 \u0434\u0443\u0445\u043e\u0432\u043d\u043e\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435.",
+              "Category": 1,
+              "Code": "spiritual_source_continuation_invalid",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "exact original-turn spiritual source authority",
+              "Actual": "known exchange and side evidence cannot change",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "root": "/tmp/boe-resource-materialization-02523cc296ce4ad0879d02160eaa7b28",
+          "playerWound": false,
+          "phase": "position_compatibility_complete",
+          "continuationId": "sha256:dd2a0758084cfc86bd8d714e4b0439d14f12df6913283a9bcf1d164a0f845b8f",
+          "opportunityRef": "spiritual_wound_78e43ba602fc7c832fcfa346de2013e22e935f80a021a1b4444dcdc3f1926ca3",
+          "Disposition": "completed_unpublished",
+          "Success": true,
+          "Issues": [],
+          "WoundId": "wound_bee5d0df98c0a077fced706c2f4fb34444bd0c68342f2446d81578d72697b9f6",
+          "owner": "guardian_frame",
+          "decisionCount": 2,
+          "spends": [
+            {
+              "AppliedAmount": 3,
+              "before": 6,
+              "after": 3
+            },
+            {
+              "AppliedAmount": 3,
+              "before": 6,
+              "after": 3
+            },
+            {
+              "AppliedAmount": 3,
+              "before": 3,
+              "after": 0
+            },
+            {
+              "AppliedAmount": 3,
+              "before": 3,
+              "after": 0
+            }
+          ],
+          "SavedChoiceAndImmutableBytesPreserved": true,
+          "CanonicalPublication": false
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-02523cc296ce4ad0879d02160eaa7b28",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionCriticalNarrationRetainsCurrentFrontierAndResumesCold",
+      "outcome": "Passed",
+      "duration": "00:00:12.8897774",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-7d3d43ad36ee455a89c6de180d74e98a",
+          "phase": "critical_position_reopened",
+          "Disposition": "dependent_continuation",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown.opposition",
+              "Severity": 2,
+              "Message": "diceAudit \u0434\u043e\u043b\u0436\u0435\u043d \u044f\u0432\u043d\u043e \u0443\u0447\u0438\u0442\u044b\u0432\u0430\u0442\u044c non-contested conflictPosition \u043a\u0430\u043a \u043f\u043e\u0437\u0438\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u043c\u043e\u0434\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440.",
+              "Category": 1,
+              "Code": "afterlife_conflict_dice_missing_position_modifier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "modifierBreakdown.opposition[] item { modifierType: \"conflict_position\", position: \"opposition_advantaged\", value: 2 }",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "mutation": "critical_scalar",
+          "phase": "mutated_critical_open",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].diceAudit.criticalResult.playerNaturalRoll",
+              "Severity": 2,
+              "Message": "criticalResult \u0434\u043e\u043b\u0436\u0435\u043d \u043f\u043e\u0432\u0442\u043e\u0440\u044f\u0442\u044c \u0444\u0430\u043a\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0435 natural d20 rolls \u0438\u0437 diceUsed[].",
+              "Category": 1,
+              "Code": "afterlife_conflict_dice_critical_roll_mismatch",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "20",
+              "Actual": "19",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "mutation": "independent_modifier",
+          "phase": "mutated_critical_open",
+          "Disposition": "dependent_continuation",
+          "Issues": []
+        },
+        {
+          "mutation": "independent_modifier",
+          "phase": "forbidden_critical_resume",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_c2_dependent_correction_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "phase": "critical_a_committed_b_issued",
+          "a": "sha256:0cf684f17b84b917ca36e98133037d0e712b9decbd5bff19b3be2b8290f5ef3a",
+          "b": "sha256:57f3dc38674a8a2831182f051bf8c9e06db2d8812308d4e93beff1625abf1126",
+          "Disposition": "committed",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[2].diceAudit.modifierBreakdown.opposition",
+              "Severity": 2,
+              "Message": "diceAudit \u0434\u043e\u043b\u0436\u0435\u043d \u044f\u0432\u043d\u043e \u0443\u0447\u0438\u0442\u044b\u0432\u0430\u0442\u044c non-contested conflictPosition \u043a\u0430\u043a \u043f\u043e\u0437\u0438\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u043c\u043e\u0434\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440.",
+              "Category": 1,
+              "Code": "afterlife_conflict_dice_missing_position_modifier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "modifierBreakdown.opposition[] item { modifierType: \"conflict_position\", position: \"opposition_advantaged\", value: 2 }",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "root": "/tmp/boe-resource-materialization-7d3d43ad36ee455a89c6de180d74e98a",
+          "phase": "critical_position_compatibility_complete",
+          "opportunityRef": "spiritual_wound_58e049f5b123736396dd8408f50f2b9d273ddbe6d68bdcb05cbdfc4be4808303",
+          "a": "sha256:0cf684f17b84b917ca36e98133037d0e712b9decbd5bff19b3be2b8290f5ef3a",
+          "b": "sha256:57f3dc38674a8a2831182f051bf8c9e06db2d8812308d4e93beff1625abf1126",
+          "Disposition": "completed_unpublished",
+          "Success": true,
+          "Issues": [],
+          "decisionId": "spiritual_decision_a38c25d0f9019fe45c1d09a170f5668872d953572b125bd496ce3c96f484888d",
+          "spends": [
+            {
+              "AppliedAmount": 1,
+              "before": 6,
+              "after": 5
+            },
+            {
+              "AppliedAmount": 1,
+              "before": 6,
+              "after": 5
+            },
+            {
+              "AppliedAmount": 1,
+              "before": 5,
+              "after": 4
+            },
+            {
+              "AppliedAmount": 1,
+              "before": 5,
+              "after": 4
+            },
+            {
+              "AppliedAmount": 1,
+              "before": 4,
+              "after": 3
+            },
+            {
+              "AppliedAmount": 1,
+              "before": 4,
+              "after": 3
+            }
+          ],
+          "SavedChoiceAndImmutableBytesPreserved": true,
+          "CanonicalPublication": false
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-7d3d43ad36ee455a89c6de180d74e98a",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionDependencyReplaysSavedChoiceAndCorrectsOnlyLaterArithmetic(playerWound: True)",
+      "outcome": "Passed",
+      "duration": "00:00:02.0431301",
+      "structuredOutput": [
+        {
+          "root": "/tmp/boe-resource-materialization-a60a2759af844d368711675a5529c74c",
+          "playerWound": true,
+          "phase": "cold_position_reopened",
+          "Disposition": "dependent_continuation",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].diceAudit.modifierBreakdown.opposition",
+              "Severity": 2,
+              "Message": "diceAudit \u0434\u043e\u043b\u0436\u0435\u043d \u044f\u0432\u043d\u043e \u0443\u0447\u0438\u0442\u044b\u0432\u0430\u0442\u044c non-contested conflictPosition \u043a\u0430\u043a \u043f\u043e\u0437\u0438\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u043c\u043e\u0434\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440.",
+              "Category": 1,
+              "Code": "afterlife_conflict_dice_missing_position_modifier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "modifierBreakdown.opposition[] item { modifierType: \"conflict_position\", position: \"opposition_advantaged\", value: 2 }",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "playerWound": true,
+          "mutation": "independent_modifier",
+          "phase": "mutated_draft_open",
+          "Disposition": "dependent_continuation",
+          "Issues": []
+        },
+        {
+          "playerWound": true,
+          "mutation": "independent_modifier",
+          "phase": "forbidden_resume",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/control/spiritual_wound_capture_checkpoint.json",
+              "Severity": 2,
+              "Message": "The current private spiritual decision is unavailable.",
+              "Category": 2,
+              "Code": "spiritual_c2_dependent_correction_invalid",
+              "Actor": null,
+              "Section": "AcceptedTurnWoundMaterialization",
+              "Expected": null,
+              "Actual": null,
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "playerWound": true,
+          "mutation": "signed_die",
+          "phase": "mutated_draft_open",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
+              "Severity": 2,
+              "Message": "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0434\u043e\u043a\u0430\u0437\u0430\u0442\u044c \u0438\u0441\u0445\u043e\u0434\u043d\u043e\u0435 \u0434\u0443\u0445\u043e\u0432\u043d\u043e\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435.",
+              "Category": 1,
+              "Code": "spiritual_source_continuation_invalid",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "exact original-turn spiritual source authority",
+              "Actual": "retained source context cannot change",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "playerWound": true,
+          "mutation": "closed_exchange",
+          "phase": "mutated_draft_open",
+          "Disposition": "blocked",
+          "Issues": [
+            {
+              "FilePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
+              "Severity": 2,
+              "Message": "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0434\u043e\u043a\u0430\u0437\u0430\u0442\u044c \u0438\u0441\u0445\u043e\u0434\u043d\u043e\u0435 \u0434\u0443\u0445\u043e\u0432\u043d\u043e\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435.",
+              "Category": 1,
+              "Code": "spiritual_source_continuation_invalid",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "exact original-turn spiritual source authority",
+              "Actual": "known exchange and side evidence cannot change",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "root": "/tmp/boe-resource-materialization-a60a2759af844d368711675a5529c74c",
+          "playerWound": true,
+          "phase": "position_compatibility_complete",
+          "continuationId": "sha256:4b87cb88cb5919cb88c8ca7e0c564a0610009456b058056c12f8c2d4f0873bc1",
+          "opportunityRef": "spiritual_wound_94220677eb7fb0f49860dcb458497000d630904bc196d94aa6c88db7d266615d",
+          "Disposition": "completed_unpublished",
+          "Success": true,
+          "Issues": [],
+          "WoundId": "wound_efae00b958291cc804f3c6d6b0bb6bb83e14db998f62aaa09e6660c151333e95",
+          "owner": "player_soul",
+          "decisionCount": 1,
+          "spends": [
+            {
+              "AppliedAmount": 3,
+              "before": 6,
+              "after": 3
+            },
+            {
+              "AppliedAmount": 3,
+              "before": 6,
+              "after": 3
+            },
+            {
+              "AppliedAmount": 3,
+              "before": 3,
+              "after": 0
+            },
+            {
+              "AppliedAmount": 3,
+              "before": 3,
+              "after": 0
+            }
+          ],
+          "SavedChoiceAndImmutableBytesPreserved": true,
+          "CanonicalPublication": false
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-a60a2759af844d368711675a5529c74c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    }
+  ]
+}
