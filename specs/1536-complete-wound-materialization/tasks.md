@@ -33,7 +33,11 @@ The implemented13 cases remain unexecuted. Task-local selection
 bounds, three methods/two descriptors; no category/global-selection change. Positive
 Advanced explicitly retains only the held terminal-control diagnostic; rejected lost
 rows assert the exact missing-action Error. All actual A evaluations assert unchanged
-private/canonical/submitted bytes, no next request and the same re-read A. Existing
+private/canonical/submitted bytes and no next request. The positive row re-reads A;
+rejected physical drafts read blocked/null, then exact pre-submission byte restoration
+recovers the same A with private/canonical preservation rechecked. This corrects
+90e22 SOURCE review's overconstrained negative re-read; reader diagnostics are traced.
+Existing
 strict fixture cleanup/output supplies future raw diagnostics and root-absence receipts.
 SOURCE/fixture/selection review is pending before coordinator preparation/runtime
 release. No build/discovery/test ran, no production/cold change, no B2 closure.

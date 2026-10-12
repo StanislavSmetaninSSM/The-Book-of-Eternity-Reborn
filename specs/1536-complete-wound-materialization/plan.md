@@ -112,14 +112,23 @@ Error/path through actual issued A. The positive row requires Advanced with only
 `afterlife_conflict_control_snapshot_missing` at `activeConflict.controlState`:
 that diagnostic describes the deliberately held B echo, not a resolved turn.
 All three evaluations require no next request, identical checkpoint/pending/command,
-canonical and submitted bytes, and the same re-read A; no progress commit occurs.
+canonical and submitted bytes. Positive Advanced re-reads the same A directly.
+For rejected lost rows, the invalid physical draft must read blocked/null; only
+restoring the exact bytes captured immediately before submission permits the same
+A again. Reader diagnostics are traced without prescribing an unproved issue set;
+private/canonical bytes are rechecked before and after that explicit rollback.
+No progress commit occurs.
 The existing strict `OriginalFixtureCompletion` supplies owned-root absence receipts
 for the per-row fixtures, with lease/session disposal preceding context cleanup.
 Actual disposition/issues and completed preservation checks use existing test output.
 The shared helper's existing final-control callers retain their scenarios; its
 cleanup/preservation assertions are strengthened without selecting those later owners.
 
-SOURCE/fixture/selection review is pending on the published test-only candidate.
+SOURCE review of `90e22b0c6e160ef4670f6bb68b7d1938ed1090ed` found that
+re-reading A directly over a rejected physical draft overconstrained the reader.
+This test-only correction implements blocked/null then exact-byte restoration as
+above; production behavior is unchanged. Final SOURCE/fixture/selection review is
+pending on the published corrected candidate.
 No build, discovery or test was run;13 cases are static expectations, not observed
 passes. After SOURCE acceptance, coordinator releases fresh selected PlanOnly and
 pins before a matching bounded actual. Freeze any first failure before proposing

@@ -251,6 +251,8 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.False(JsonNode.DeepEquals(correctedBinding["after"]!["controlState"],
                 BindingRawActive(corrected, wrapper)["controlState"]));
             var submitted = Encoding.UTF8.GetBytes(corrected.ToJsonString());
+            var beforeSubmission = await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath);
+            Assert.NotNull(beforeSubmission);
             await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath, submitted);
             var evaluated = await context.Validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, a, responseA);
             _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, strong, alternative,
@@ -273,18 +275,44 @@ public sealed partial class AfterlifeResourceCutoverTests
             }
             Assert.Null(evaluated.NextRequest);
             Assert.Equal(submitted, await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath));
-            Assert.Equal(checkpointBefore, await context.FileSystem.ReadFileBytesAsync(lease,
-                SpiritualWoundCaptureCheckpointState.StatePath));
-            Assert.Equal(pendingBefore, await context.FileSystem.ReadFileBytesAsync(lease,
-                SpiritualWoundDecisionPendingState.StatePath));
-            Assert.Equal(selectedCommand, await context.FileSystem.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
-            foreach (var image in preserved)
-                Assert.Equal(image.Value, await context.FileSystem.ReadFileBytesAsync(lease, image.Key));
+            await AssertPrivateAndCanonicalBytesAsync();
+            if (alternative == "lost")
+            {
+                // A rejected physical proposal cannot furnish a continuation until its exact input is restored.
+                var blockedRead = await context.Validator.ReadSpiritualWoundContinuationAsync(lease);
+                _storageOutput.WriteLine(JsonSerializer.Serialize(new { strong, alternative,
+                    readerPhase = "rejected_physical_draft", blockedRead.Disposition, blockedRead.Issues }));
+                Assert.Equal("blocked", blockedRead.Disposition);
+                Assert.Null(blockedRead.Request);
+                Assert.Equal(submitted, await context.FileSystem.ReadFileBytesAsync(lease,
+                    AfterlifeSpiritualConflictState.StatePath));
+                await AssertPrivateAndCanonicalBytesAsync();
+                await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath,
+                    beforeSubmission);
+            }
             var stillIssued = await context.Validator.ReadSpiritualWoundContinuationAsync(lease);
+            _storageOutput.WriteLine(JsonSerializer.Serialize(new { strong, alternative,
+                readerPhase = alternative == "lost" ? "exact_draft_restored" : "advanced_uncommitted_draft",
+                stillIssued.Disposition, stillIssued.Issues }));
             Assert.Equal("dependent_draft", stillIssued.Disposition);
             Assert.Equal(JsonSerializer.Serialize(a), JsonSerializer.Serialize(stillIssued.Request));
+            Assert.Equal(alternative == "lost" ? beforeSubmission : submitted,
+                await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath));
+            await AssertPrivateAndCanonicalBytesAsync();
             _storageOutput.WriteLine(JsonSerializer.Serialize(new { strong, alternative,
-                NoncommittingBytesPreserved = true, SameIssuedA = true, NextRequestAbsent = true }));
+                NoncommittingBytesPreserved = true, SameIssuedA = true, NextRequestAbsent = true,
+                ExactPreSubmissionDraftRestored = alternative == "lost" }));
+
+            async Task AssertPrivateAndCanonicalBytesAsync()
+            {
+                Assert.Equal(checkpointBefore, await context.FileSystem.ReadFileBytesAsync(lease,
+                    SpiritualWoundCaptureCheckpointState.StatePath));
+                Assert.Equal(pendingBefore, await context.FileSystem.ReadFileBytesAsync(lease,
+                    SpiritualWoundDecisionPendingState.StatePath));
+                Assert.Equal(selectedCommand, await context.FileSystem.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath));
+                foreach (var image in preserved)
+                    Assert.Equal(image.Value, await context.FileSystem.ReadFileBytesAsync(lease, image.Key));
+            }
         }
         if (continueFinalControl)
         {
