@@ -22,19 +22,68 @@ Original #1536 WIP `1fc5e59b253c358a8622df66a4e9459f5f3fe78b` was already merged
 through PR #1554; there is no old-only implementation to cherry-pick or recreate.
 The original spec, plan, tasks and accepted child evidence remain authoritative.
 
-Current authorization is recovery, source/evidence reconciliation and independent
-B2 design review only. This entry supersedes historical pauses for that planning
-work and stale cold-UNRUN wording below; it does not release runtime execution.
+The completed recovery/design phase superseded historical pauses for planning
+and stale cold-UNRUN wording below. The coordinator's subsequent bounded B2
+implementation release and current execution gates are recorded immediately below.
 No project code, build, test, discovery, game, native worker or provider process
 was run for this block. Only plan/tasks change; no spec, GM contract, catalog,
 selection or global CI change. **Independent Astra XHigh DESIGN ACCEPTED**, no
 findings, on reviewed `d6284c72b3d5d67deed9027b893de4c4627b144a`; the coordinator
 also verified the actual full docs-only diff, remote SHA, clean tree and diff check.
-Implementation/runtime remain unreleased; this verdict accepts the design only.
+This verdict accepts the design only; the subsequent implementation release is
+separate and follows the staged source/fixture and execution gates below.
 Installed version reads (SDK 10.0.401 / PowerShell 7.6.6)
 are not build/runtime qualification. Preserve WorldQuest/Meta optimizations and
 all accepted correctness fixes. No main/merge/issue closure, HOME-PC, paid provider,
 timeout increase or performance redesign belongs to this block.
+
+### B2 implementation release / test-only WIP — 2026-10-12
+
+The coordinator accepted the published design checkpoint `95497c0a37019d781129aa6ee467900374bdd583`
+and released this bounded implementation. The prior unreleased statements describe
+that completed design phase; the current release follows this staged sequence.
+This first block changes only tests, the finite category owner/task-local selection,
+and plan/tasks. Production and the original cold fixture are unchanged. Publish
+before independent source/fixture review; actual cheap execution awaits that gate
+and a fresh matching build. No runtime verification has occurred in this block.
+
+New `AfterlifeResourceCutoverTests.SpiritualBindingAuthority.cs` owns five methods,
+21 cases: raw exact tier3 admission (binding/force_binding, 2), unsupported keys
+(unknown_binding/recover_spiritual_power, 2), invalid tiers (-1/6/1.5/string/null
+for each binding family, 10), missing required wound arts (2), signed cost authority
+(exact/missing/binding_alias/audit_tier/audit_operation, 5). Raw cases use ordinary
+`MetaMiscStateFiles` and only the exact soul path, no normalizer or mocked whitelist,
+with unchanged raw bytes and strict owned-root cleanup. The minimal raw soul isolates
+force_binding from the complete-frame helper's separate entity-only keys.
+Expected RED is six failures: force_binding tier3 returns unknown-art, and its five
+invalid tiers return unknown-art before the tier predicate is reached. Those five
+tier checks remain UNREACHED on RED; the five known binding invalid-tier cases
+independently require the exact existing tier diagnostic. Other 15 cases are
+expected controls, not reported passes before execution. Preserve all diagnostics.
+
+The signed-cost theory reuses the unchanged strong fixture before real snapshot
+capture, including soul/player tier3, guardian pressure1 and its actor snapshot,
+original +2/setup:true and dice5/15/13/11. Missing/alias authority negatives are
+separate fresh signed originals; forged audit tier/operation negatives must emit
+their exact ordinary mismatch diagnostics. Positive acquisition must check both
+new exchanges, all four dice, no pending requirement, chronological player6→3→1
+and guardian6→4→2 audits, and four exact owner/event spend intents3/2/2/2. This is
+real authoritative cost validation plus emitted intents, not applied ledger or
+publication evidence; those remain the existing cold owner's responsibility.
+
+Finite owner `spiritual-binding-authority-preflight` has five exact method selectors,
+integration only, independent per-case roots, 5-minute category bound, no frontend.
+Task-local `tests/selections/1536-binding-authority-preflight.json` supplies reason
+and contracts; global `tests/selection.json` and CI remain unchanged. Source review
+must confirm the raw entrypoint, exact authority consumer and nonvacuous negatives.
+Then perform one fresh bounded selected preparation/PlanOnly and one new-membership
+catalog audit (zero test execution), recording exact source/planned methods/DLLs.
+The coordinator releases the matching cheap actual after that evidence. Freeze
+its full first invocation/summary/TRX/log/hash/cleanup before any production fix.
+Only reviewed causal RED permits the narrow force_binding gate/GM synchronization;
+after reviewed GREEN prerequisites, the current release permits exactly one
+existing cold owner with unchanged bounds. Preserve its first outcome, and stop
+on incompleteness/new product defect without an automatic long rerun. B2–B5 stay OPEN.
 
 ### Evidence reconciliation and fixture compatibility
 
@@ -178,11 +227,10 @@ or rerun of unchanged passes. After two unsuccessful corrections of the same
 problem, stop and revisit the hypothesis. A real tool/security denial stops the
 operation with its exact text/ID recorded; no bypass. B2–B5 stay OPEN even if this
 one blocker passes until their existing coherent review/evidence obligations are
-met. Next bounded action, only after coordinator implementation/runtime release:
-add and observe the cheap faithful ordinary-profile RED and exact-key authoritative
-cost-consumer prerequisite in step 1, preserving first outcomes before correction.
-The source/fixture gate and single cold owner follow only when their prerequisites
-pass. Implementation/runtime remain unreleased at this checkpoint.
+met. The next bounded action is source/fixture review of the published test-only
+WIP described above, followed by fresh selected preparation and coordinator-released
+cheap actual. Preserve first outcomes before correction; production and the single
+cold owner remain gated by the reviewed RED/GREEN prerequisites.
 
 ## Historical completion checkpoint — resumed 2026-09-30
 

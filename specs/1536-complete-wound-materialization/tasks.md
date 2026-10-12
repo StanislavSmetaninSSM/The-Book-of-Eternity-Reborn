@@ -15,11 +15,11 @@ current LocalPublicationObserver compatibility and the minimal force_binding
 ordinary-profile preflight → source/fixture gate → fresh selected PlanOnly build
 → one cold owner sequence. Independent Astra XHigh DESIGN ACCEPTED with no findings
 on `d6284c72b3d5d67deed9027b893de4c4627b144a`; coordinator diff/remote/clean-tree/
-diff-check verification also passed. Implementation/runtime remain unreleased.
-After coordinator release, the next bounded action is step 1's cheap faithful
-ordinary-profile RED and exact-key authoritative cost-consumer prerequisite,
-preserving first outcomes. No runtime/build/test/discovery occurred in this docs
-block; no B2–B5 checkbox changes or gameplay acceptance.
+diff-check verification also passed. The subsequent staged implementation release
+is recorded below. Next: source/fixture review of the published test-only WIP,
+then fresh selected preparation and coordinator-released cheap actual, preserving
+first outcomes. No runtime/build/test/discovery occurred in the design or current
+test-authoring block; no B2–B5 checkbox changes or gameplay acceptance.
 
 The old cold-UNRUN statement is historical: #1553's preserved packet has composed
 9 PASS, cold force-binding 1 FAIL (`afterlife_combat_profile_unknown_art`) and
@@ -28,6 +28,19 @@ its tier/cost/strong prerequisites and actual committed B cut; same-process fres
 engine recovery does not prove a new process. Earlier pauses are superseded only
 for this authorized recovery/design work. Remaining #1536 producers, treatment,
 spiritual healing/recovery and UI work remain open; category-only policy applies.
+
+Implementation release 2026-10-12: the coordinator accepted design checkpoint
+95497c0a and authorized the bounded B2 sequence. Current test-only WIP adds
+`AfterlifeResourceCutoverTests.SpiritualBindingAuthority.cs` (five methods/21 cases),
+finite owner `spiritual-binding-authority-preflight` and task-local
+`tests/selections/1536-binding-authority-preflight.json`. Production is unchanged.
+Publish → source/fixture review → fresh selected build/PlanOnly and one ownership
+inventory audit → coordinator-released cheap actual. Preserve first causal RED
+before any narrow production correction. Expected RED6/controls15 are expectations,
+not results; force-key invalid-tier predicates are UNREACHED behind unknown-art on
+RED. Real signed cost validation/emitted intents do not claim applied publication.
+After reviewed GREEN, one unchanged cold owner is authorized; no automatic long
+rerun after incomplete/new product failure. B2–B5 remain OPEN.
 
 ## Historical execution boundary — 2026-09-30
 
@@ -5538,8 +5551,9 @@ they are not additional required work. Full T069/T070 and FRONTIER remain open.
   authoritative cost consumer: player 6→3→1, guardian 6→4→2, same actor mirror,
   unchanged other costs; no binding alias or normalized-only shortcut.
   Independent Astra XHigh DESIGN ACCEPTED on
-  d6284c72b3d5d67deed9027b893de4c4627b144a with no findings; implementation/runtime
-  remain unreleased. After coordinator release, begin the cheap prerequisites above.
+  d6284c72b3d5d67deed9027b893de4c4627b144a with no findings. Coordinator subsequently
+  released bounded implementation; current test-only WIP and execution gates are
+  recorded at the top of this file. Preserve first causal RED before production.
   Cold owner is existing spiritual-binding-cold-publication (one Fact); retain
   actual LocalPublicationObserver B cut, 15-minute category and strong 8/8 phases.
   Cold blocker resolution alone does not accept B2 or downstream B3–B5.

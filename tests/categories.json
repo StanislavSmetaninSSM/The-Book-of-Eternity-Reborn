@@ -15734,6 +15734,43 @@
             ]
         },
         {
+            "id": "spiritual-binding-authority-preflight",
+            "responsibility": "#1536 B2 raw ordinary soul-profile force_binding admission, strict art/tier negatives, and signed original exact-key action-cost authority with chronological audits and emitted spend intents.",
+            "excludes": "Saved wound insertion, dependent A/B correction, applied resource publication, GameEngine/cold transport, native workers, other art acquisition and UI. No normalizer in raw-profile cases.",
+            "changeHints": [
+                "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+                "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingAuthority.cs"
+            ],
+            "related": [
+                {
+                    "id": "spiritual-binding-cold-publication",
+                    "when": "After reviewed cheap authority controls pass, qualify the existing committed-B same-process recovery owner once."
+                },
+                {
+                    "id": "spiritual-binding-result-dependency",
+                    "when": "Changed leverage/cost permissions or insufficient retained evidence require original binding and immutable-input compatibility."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": true
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileAcceptsExactTierThree",
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsUnsupportedArt",
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier",
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRequiresExplicitWoundArts",
+                        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_SignedOriginalUsesExactCostAuthority"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "spiritual-binding-result-dependency",
             "responsibility": "Original lawful last binding losing leverage after a saved wound: exact arithmetic and failed-result permissions, with immutable input and terminal-echo boundaries.",
             "excludes": "Generic C2 replay, full GameEngine transport/cold publication, other operation result chains and spiritual healing.",
