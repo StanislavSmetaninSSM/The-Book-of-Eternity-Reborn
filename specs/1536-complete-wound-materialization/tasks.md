@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current original-completion boundary — 2026-10-12 (docs-only DESIGN WIP)
+## Current original-completion boundary — 2026-10-12 (DESIGN ACCEPTED)
 
 Lorian accepted the narrow restoration at ceedbe496a0ecc3a3e3cd96518675ba128989099
 and resumed original #1536 completion. Current authorization is read-only design
@@ -25,8 +25,12 @@ Advanced without commit, preserving held terminal echo and private/canonical byt
 Never add the action during A or change dice/actors/prefix/cost authority. Planned
 existing finite owners: result-dependency9 + control-boundaries4 =13 cases, no new
 methods/categories/harness/cold run. No production defect is asserted. Independent
-DESIGN review follows published docs; source/fixture review and runtime releases
-remain future gates. First outcomes must be preserved before any minimal correction.
+DESIGN ACCEPTED without findings on19aeaab55eb1e34bdcafe771df31c5ebb44d34f7 by
+independent Astra XHigh; coordinator full diff/remote/clean/diff-check readback passed.
+The proposed13 cases remain unexecuted. Implementation/build/discovery/tests/runtime
+are unreleased: coordinator review/design approval and explicit first-test-block
+release must precede dependent work, followed by source/fixture and execution gates.
+This is no new owner approval or B2 closure. Preserve first outcomes before correction.
 
 Order: B2→B3→B4→B5 original acceptance, then real Mortal producer/consumer T070 and
 remaining spiritual consumers, lawful T107 initial-stage coexistence/healing,
