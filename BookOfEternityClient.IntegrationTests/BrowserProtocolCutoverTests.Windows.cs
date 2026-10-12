@@ -187,7 +187,13 @@ public sealed partial class BrowserProtocolCutoverTests
             Assert.Equal(Before, await store.ReadExactBytesAsync(lease));
             await store.WriteExactBytesAtomicAsync(lease, After);
             await _files.WriteFileAtomicBytesAsync(lease, Member, After);
-            Assert.Equal(0, commonMembers); Assert.Equal(After, File.ReadAllBytes(ProfilePath));
+            Assert.Equal(0, commonMembers);
+            using (var reader = new FileStream(ProfilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+            using (var image = new MemoryStream())
+            {
+                reader.CopyTo(image);
+                Assert.Equal(After, image.ToArray());
+            }
             var manifest = JsonNode.Parse(File.ReadAllBytes(_files.ResolvePath(transaction.ManifestPath)))!;
             Assert.Equal(6, manifest["schemaVersion"]!.GetValue<int>());
             Assert.NotNull(manifest["entries"]![0]!["publicationReceipt"]);

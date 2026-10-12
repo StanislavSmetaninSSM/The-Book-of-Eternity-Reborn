@@ -1,3 +1,15 @@
+## F04/F05 Windows browser protocol30 — approved fixture reader correction WIP, 2026-10-12
+
+Coordinator accepted first28PASS/2fixtureFAIL at9bb4e646 and authorized only the
+physical test-reader correction: Open/Read with FileShare.ReadWrite|Delete,
+copy actual bytes and dispose under the same lease; After/receipt/identity/
+neutral backup/authentic6 assertions and product sharing remain unchanged.
+Independent SOURCE review precedes fresh selected integration build/PlanOnly,
+then exactly one full30-case repeat, unchanged category3min/runner8min budgets.
+SOURCE review, fresh build, PlanOnly and repeat are UNRUN at this checkpoint.
+First failure/raw3ZIP34entries and F18 native6PASS remain preserved below.
+Parent #1553/F04/F05 open; Fresh same-process/no cold restart qualification.
+No global CI selection, product changes or other category runtime authorized.
 ## F04/F05 Windows browser protocol30 — FIRST28PASS/2FAIL reviewed, fixture proposal HOLD, 2026-10-12
 
 Source #1553; same Windows branch `1553-storage-migration-windows-f18-20261011T235650Z`.
