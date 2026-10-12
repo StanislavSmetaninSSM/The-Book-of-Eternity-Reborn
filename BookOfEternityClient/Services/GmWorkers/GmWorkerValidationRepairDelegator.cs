@@ -317,9 +317,14 @@ public sealed class GmWorkerValidationRepairDelegator
             targetPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) ||
             (continuation is null && prioritizedErrors.Any(IsAfterlifeActorMaterializationIssue));
         var contextPaths = targetPaths.AsEnumerable();
-        var requiresMortalQteDecision = targetPaths.Contains(MortalWoundOpportunityAdapter.DecisionPath, StringComparer.Ordinal);
+        var requiresMortalQteDecision = targetPaths.Contains(MortalWoundOpportunityAdapter.DecisionPath, StringComparer.Ordinal) ||
+            prioritizedErrors.Any(GmWorkerTaskPacketBuilder.IsMortalQteSceneRepairIssue);
         if (requiresMortalQteDecision)
+        {
             contextPaths = contextPaths.Concat(new[] { "input/turn_request.json", "game_state/meta/soul_state.json" });
+            if (prioritizedErrors.Any(GmWorkerTaskPacketBuilder.IsMortalQteSceneRepairIssue))
+                contextPaths = contextPaths.Append(MortalWoundOpportunityAdapter.DecisionPath);
+        }
         if (requiresCharacteristicAuthority)
             contextPaths = contextPaths.Append(MortalCharacteristicAuthorityContract.StatePath);
         if (requiresAfterlifeRealmAuthority)

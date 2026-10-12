@@ -110,7 +110,8 @@ public static class GmWorkerTaskPacketBuilder
 
         if (allowedPaths.Length == 0)
             throw new ArgumentException("Validation issues do not map to any safe worker proposal path.", nameof(validationIssues));
-        var requiresMortalQteDecision = allowedPaths.Contains(MortalWoundOpportunityAdapter.DecisionPath, StringComparer.Ordinal);
+        var requiresMortalQteDecision = allowedPaths.Contains(MortalWoundOpportunityAdapter.DecisionPath, StringComparer.Ordinal) ||
+            validationIssues.Any(IsMortalQteSceneRepairIssue);
         if (requiresMortalQteDecision && (afterlifeContract is not null || spiritualWoundContinuation is not null))
             throw new ArgumentException("Mortal QTE decision drafts are unavailable to afterlife/spiritual repair.", nameof(validationIssues));
         if (requiresAfterlifeRealmAuthority &&
@@ -139,6 +140,13 @@ public static class GmWorkerTaskPacketBuilder
                 if (!TryGetPathHash(contextFileHashes, path, out var hash) || string.IsNullOrWhiteSpace(hash) || hash == "missing")
                     throw new ArgumentException("Mortal QTE draft repair requires pinned read-only public request/realm context.", nameof(contextFileHashes));
             contextPaths = contextPaths.Concat(new[] { "input/turn_request.json", "game_state/meta/soul_state.json" });
+            if (validationIssues.Any(IsMortalQteSceneRepairIssue))
+            {
+                if (!TryGetPathHash(contextFileHashes, MortalWoundOpportunityAdapter.DecisionPath, out var draftHash) ||
+                    string.IsNullOrWhiteSpace(draftHash) || draftHash == "missing")
+                    throw new ArgumentException("Narration-only Mortal repair requires the unchanged pinned public decision draft.", nameof(contextFileHashes));
+                contextPaths = contextPaths.Append(MortalWoundOpportunityAdapter.DecisionPath);
+            }
         }
         var contextFiles = contextPaths
             .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
@@ -168,7 +176,9 @@ public static class GmWorkerTaskPacketBuilder
         };
         if (requiresMortalQteDecision)
         {
-            acceptanceCriteria.Add("Return only the single closed NONE/materialize draft for the currently offered public physical opportunity; acquisitionNarration must remain verbatim in the ordinary scene.");
+            acceptanceCriteria.Add(allowedPaths.Contains(MortalWoundOpportunityAdapter.DecisionPath, StringComparer.Ordinal)
+                ? "Return only the single closed NONE/materialize draft for the currently offered public physical opportunity; acquisitionNarration must remain verbatim in the ordinary scene."
+                : "Keep the entire pinned decision proposal unchanged; correct only ordinary scene response/timestamp so its unchanged acquisitionNarration appears verbatim.");
             forbiddenActions.Add("The public request/realm context is read-only. Never propose client wound commands, canonical wound/history/receipt roots, permanent IDs, source coordinates, binding or seals.");
         }
         if (requiresAfterlifeRealmAuthority)
@@ -275,6 +285,11 @@ public static class GmWorkerTaskPacketBuilder
         if (issues.Any(issue => issue.Section == MortalWoundOpportunityAdapter.PrivateSourceIssueSection))
             throw new ArgumentException("Mortal QTE client-owned source/receipt/history failures are not worker proposal targets.", nameof(issues));
     }
+
+    internal static bool IsMortalQteSceneRepairIssue(ValidationIssue issue) =>
+        issue.FilePath == "output/narrative_response.json.response" && issue.WoundRepairContext is not null &&
+        WoundRepairPacketBuilder.IsRepairableIssue(issue) &&
+        issue.RepairTargetFiles.SequenceEqual(new[] { "output/narrative_response.json", MortalWoundOpportunityAdapter.DecisionPath });
 
     internal static string ResolveValidationTargetPath(ValidationIssue issue)
     {

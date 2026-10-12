@@ -170,14 +170,15 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("player")]
     [InlineData("identity")]
     [InlineData("replay_player")]
+    [InlineData("replay_duplicate")]
     public async Task QtePhysicalInjuryConsumer_ComponentPostAdmissionCanonicalMutationCannotDelegate(string mutation)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
-        var component = await PrepareMortalDecisionComponentAsync(mutation != "replay_player");
+        var component = await PrepareMortalDecisionComponentAsync(!mutation.StartsWith("replay_", StringComparison.Ordinal));
         var path = mutation != "identity" ? WoundCarrierCatalog.PlayerPath : WoundIdentityState.StatePath;
         Assert.False(_fs.FileExists(path));
         var injected = false;
-        if (mutation == "replay_player")
+        if (mutation.StartsWith("replay_", StringComparison.Ordinal))
         {
             Assert.Empty(await ValidateMortalDecisionComponentAsync(component.Engine));
             Assert.NotNull(await GetPrivateField<CanonicalStateNormalizer>(component.Engine, "_normalizer").NormalizeAcceptedMechanicsAsync(null));
@@ -185,7 +186,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(receipts.IsValid);
             Assert.Equal("none", Assert.Single(receipts.State!.Receipts).Decision);
             await _fs.WriteFileAtomicAsync(MortalWoundOpportunityAdapter.DecisionPath, component.Decision.ToJsonString());
-            File.WriteAllText(_fs.ResolvePath(path), "null");
+            File.WriteAllText(_fs.ResolvePath(path), mutation == "replay_duplicate"
+                ? "{\"schemaVersion\":1,\"schemaVersion\":1,\"activeWounds\":[]}"
+                : "null");
             injected = true;
         }
         _consoleMutationObserver = observed =>
@@ -201,7 +204,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         try { issues = await ValidateMortalDecisionComponentAsync(component.Engine); }
         finally { _consoleMutationObserver = null; }
         Assert.True(injected);
-        var actual = Assert.Single(issues.Where(issue => issue.Code == (mutation == "replay_player" ? "wound_carrier_invalid_root" : "wound_materialization_client_owned_root_mutated") && issue.FilePath == path));
+        var expectedCode = mutation switch { "replay_player" => "wound_carrier_invalid_root",
+            "replay_duplicate" => "wound_carrier_duplicate_property", _ => "wound_materialization_client_owned_root_mutated" };
+        var actual = Assert.Single(issues.Where(issue => issue.Code == expectedCode &&
+            (issue.FilePath == path || issue.FilePath.StartsWith(path + ".", StringComparison.Ordinal))));
         Assert.Equal(MortalWoundOpportunityAdapter.PrivateSourceIssueSection, actual.Section);
         Assert.Equal("Client", actual.Actor);
         Assert.False(_fs.FileExists(AcceptedMechanicsPlan.WoundCommandPath));
@@ -223,7 +229,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Null(dispatched.RunResult);
         Assert.False(dispatched.ReadySignalCreated);
         Assert.False(_fs.FileExists(GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath));
-        Assert.Equal("null", await _fs.ReadFileAsync(path));
+        Assert.Equal(mutation == "replay_duplicate" ? "{\"schemaVersion\":1,\"schemaVersion\":1,\"activeWounds\":[]}" : "null", await _fs.ReadFileAsync(path));
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync()) Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
         WritePhysicalInjuryDiagnostic("qte_consumer_component_downstream_private_refusal", new { mutation, injected, actual, dispatched });
     }

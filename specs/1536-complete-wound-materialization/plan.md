@@ -9,8 +9,76 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (FINDING1 SOURCE CLOSED; RESIDUAL2/LOGICAL3 CORRECTION MIDPOINT WIP; TYPED RETRY3 UNFINISHED/4 DESIGN ACCEPTED, SOURCE UNWRITTEN)
+## Current T070 first vertical — 2026-10-12 (CLASS2/NARRATION3 SOURCE MIDPOINT WIP; TYPED RETRY/REAL CONTROLS3 UNWRITTEN; 4 DESIGN ACCEPTED/SOURCE UNWRITTEN)
 
+Logical3/residual2 midpoint published8e75b9124416d4f1ae9cd0db56ab8e8e250dd4eb; ROOT verified
+exact remote/clean primary and569-file GitHub-only selected recovery/all36 connected paths.
+Actual retained Astra XHigh confirmed null-carrier replay classification but found the same
+class gap for shared duplicate parser diagnostics: wound_carrier_duplicate_property has
+UnifiedResourceAuthority/StateConsistency provenance. Full SOURCE remains BLOCKED2–4; no
+project build/discovery/catalog/runtime has occurred for any correction.
+
+Current stopped class correction uses fixed canonical wound/identity/history/effect roots
+and a CURRENT admitted Mortal validation pass, independent of parser Section. Root equality
+or structured dot/bracket suffixes establish the target; public proposal/scene logical
+coordinates remain outside those roots. It does not globally forbid NPC/afterlife workflows
+or tag unrelated resource issues. Existing post-publication replay control adds a genuinely
+corrupt duplicate-property player carrier after real component NONE publication/receipt and
+same actual retained N43. The control requires the actual shared-parser diagnostic plus task/
+dispatch refusal/no worker execution. Null and first-publication player/identity assertions
+remain; four-row control is UNRUN, not observed RED or passed qualification. Source inspection
+covers baseline ClientOwnedSurface, strict/null canonical parse, shared duplicate parser and
+final guarded canonical path provenance; none relies only on diagnostic Section.
+
+Narration-only finding3 source target is corrected: preserve logical response coordinates and
+bind existing output/narrative_response.json, with the unchanged public draft/request/realm
+pinned read-only. Proposal issues still target only exact DecisionPath. Task building and
+actual dispatch include these feature pins for scene-only repair; the ordinary scene target
+never permits proposal drift or canonical/command writes. Six GM surfaces and existing prompt
+guard received the same one-line clarification: narration response/timestamp correction
+preserves the entire pinned decision/proposal. No public JSON grammar or afterlife contract
+changes. All new routing/source behavior remains UNRUN/unaccepted; direct task assertions
+are not claimed as real round-trip proof.
+
+Typed retry3 and REAL bounded repair round-trips remain UNWRITTEN/UNRUN. Confirmed route uses
+existing WoundRepairContext/Packet and opportunity proof from actual adapter admission for raw
+semantic refusal; no accepted command exists and none may be synthesized. Downstream actual
+issued typed command/exact bytes must be captured before exact owned revocation. A narrowly
+private transport-discriminated retry constraint must survive revocation and enforce original
+source/generation plus bounded raw correction BEFORE accepted command staging. Existing late
+HasExactWoundRepairResubmission alone is insufficient. Proposal field repairs preserve all
+other proposal data; narration-only preserves entire draft/proposal and scene siblings.
+Actual resource/skill proposal failure is covered only where genuine issued-command provenance
+is reachable. Real repair decision/wait/resubmission and single publication controls remain
+required and excluded from source inventory until authored. No new authority framework.
+
+Finding4 bounded completion-sidecar DESIGN is independently ACCEPTED by actual retained Astra
+XHigh; source and finite controls remain UNWRITTEN/UNRUN. After this WIP is published, implement
+from the TAKEN validated common plan's exact serialized bytes into ONE existing atomic batch
+with all common writes/deletes/marker and complete compensation/recovery/readback. Marker
+presence or Mortal receipt alone cannot waive original resource-quartet continuity. Same-root
+fresh process retains ACTUAL N43 in place; separate ordinary archive/new-root recovery stages
+a genuine NEW decision turn. No copied/re-signed snapshot, SaveLoad transport change, key,
+postcommit marker writer or process-local-only proof. No finding4 source patch in this stop.
+
+Current STATIC preparation17 methods/44 cases/8 descriptors/default30; controls remainder15
+methods/42 cases/6 descriptors/default20, excluding protected NONE/CREATE causal Facts.
+Existing budgets unchanged; common owner5 methods/15 rows. Catalog707 categories/11543 methods,
+NOT discovery. Old702 catalog nodes/suffix/global CI/selection unchanged; only the task-local
+common owner row wording/count changes. Raw-draft theory uses canonical baseline writer;
+other components actual StagePlayerTurn43/official Reader, not full ordinary/archive proof.
+[Preparation](../../tests/selections/1536-qte-physical-injury-consumer-preparation.json)
+[Controls remainder](../../tests/selections/1536-qte-physical-injury-consumer-controls.json)
+
+NONE4010/CREATEc7 accepted proper causal REDs remain separately1 executed/0 PASS/1 FAIL;
+producer1b23 executed/22 PASS/1 FAIL and projection4d4 actual/28 executed/26 PASS/2 FAIL
+unchanged. ce955/NONE/CREATE/projection Facts, old packets and every checkbox unchanged.
+Fixed SOURCE gate, new preparation/audit/runtime, complete consumer, durable-session replay,
+actual pending+consumed archive/newroot/freshregistries/freshprocess and full T070/FR-063/
+parent/#1536 qualification remain OPEN/PENDING/UNRUN. Writer performed static checks only.
+Mutations STOPPED for immediate ROOT WIP publication/recovery before more typed retry/4 work.
+
+Historical8e75 partial routing/class midpoint (shared-parser/narration gaps superseded above):
 First correction midpoint published201eb1ec318d2b415853c28b39fd5312217b6e26; ROOT verified
 exact remote, clean primary and569-file GitHub-only selected recovery/all36 connected paths.
 Actual retained Astra XHigh focused SOURCE readback statically CLOSED finding1 and accepted

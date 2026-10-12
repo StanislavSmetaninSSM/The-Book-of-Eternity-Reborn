@@ -25,7 +25,7 @@ public sealed partial class PromptDocumentationCoverageTests
                          "complete pending/consumed batch", "ordered accepted-event", "official new-turn snapshot",
                          "opportunityRef", "maximumSeverity", "safeContext", "allowedLocationKinds",
                          "signed observed absence", "no live fallback", "single closed NONE/materialize draft",
-                         "output/mortal_wound_decisions.json", "acquisitionNarration verbatim", "same resource/effect/wound transaction",
+                         "output/mortal_wound_decisions.json", "acquisitionNarration verbatim", "narration-only repair", "entire pinned decision/proposal", "same resource/effect/wound transaction",
                          "NONE consumes the occurrence", "exact durable replay", "Mortal-only", "excluded from save/import archives" })
                 Assert.Contains(token, text, StringComparison.Ordinal);
             Assert.DoesNotContain("N+1 wound decision/consumer remains pending", text, StringComparison.Ordinal);

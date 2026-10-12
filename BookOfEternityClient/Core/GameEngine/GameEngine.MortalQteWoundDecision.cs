@@ -90,10 +90,10 @@ public partial class GameEngine
             WoundCarrierCatalog.AfterlifeProfilesPath, EffectIdentityState.StatePath, EffectCarrierCatalog.PlayerPath,
             EffectCarrierCatalog.NpcPath, EffectCarrierCatalog.EnemiesPath, EffectCarrierCatalog.AlliesPath,
             EffectCarrierCatalog.AfterlifeProfilesPath, EffectCarrierCatalog.SpiritualConflictPath };
-        return (issue.Section is "wound_materialization" or "effect_materialization" ||
-                issue.FilePath.StartsWith(MortalWoundOccurrenceState.StatePath, StringComparison.Ordinal) ||
-                issue.FilePath.StartsWith(MortalWoundOpportunityReceiptState.StatePath, StringComparison.Ordinal)) &&
-            privatePaths.Any(path => issue.FilePath == path || issue.FilePath.StartsWith(path + ".", StringComparison.Ordinal));
+        // Ownership comes from this admitted Mortal pass and the fixed canonical
+        // root, including diagnostics emitted by shared strict/duplicate parsers.
+        return privatePaths.Any(path => issue.FilePath == path || issue.FilePath.StartsWith(path + ".", StringComparison.Ordinal) ||
+            issue.FilePath.StartsWith(path + "[", StringComparison.Ordinal));
     }
 
     private static ValidationIssue BindMortalQteDraftRepairTarget(ValidationIssue issue)
@@ -101,10 +101,13 @@ public partial class GameEngine
         if (issue.FilePath != "woundDecisions[0]" && !issue.FilePath.StartsWith("woundDecisions[0].", StringComparison.Ordinal) &&
             !(issue.WoundRepairContext is not null && WoundRepairPacketBuilder.IsRepairableIssue(issue))) return issue;
         // Logical proposal/scene coordinates remain available to the existing bounded
-        // repair packet. Only its client-issued file target is the public draft.
+        // repair packet. Proposal errors target the draft; narration-only errors
+        // target the ordinary scene with the unchanged draft as read-only context.
         return new ValidationIssue(issue.FilePath, issue.Severity, issue.Message, issue.Code, issue.Actor,
             issue.Section, issue.Expected, issue.Actual, issue.RepairHint, issue.Category,
-            [MortalWoundOpportunityAdapter.DecisionPath])
+            issue.FilePath == WoundNarrativeOutputPath + ".response"
+                ? [WoundNarrativeOutputPath, MortalWoundOpportunityAdapter.DecisionPath]
+                : [MortalWoundOpportunityAdapter.DecisionPath])
         {
             FactionRepairClassification = issue.FactionRepairClassification,
             MortalItemRepairContext = issue.MortalItemRepairContext,
