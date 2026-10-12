@@ -1,0 +1,24 @@
+{
+  "source": "76d702c635f63bc2cc5bee0e180b7f001890d366",
+  "startedUtc": "2026-10-12T09:17:43.016725+00:00",
+  "command": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-qte-physical-injury-admission.json",
+    "-NoBuild"
+  ],
+  "preparationCatalogRun": "20261012-090908-915-276398-08dbe8fb0149493f8dc58708a52fae3d-categories",
+  "preparationPlanRun": "20261012-091657-374-276776-603513705e16434b8d9d8220395e80d5-categories",
+  "expectedMethods": 3,
+  "expectedCases": 31,
+  "expectedDescriptors": 1,
+  "categoryMinutes": 5,
+  "defaultOverallMinutes": 10,
+  "noTimeoutIncrease": true,
+  "actualInvocationsThisCohort": 1,
+  "expectedScope": "first declaration-control only; no finalized-harm chain claim"
+}

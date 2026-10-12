@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (EXACT DESIGN ACCEPTED; FIRST TEST-ONLY WIP, SOURCE/RUNTIME GATES PENDING)
+## Current T070 first vertical — 2026-10-12 (EXACT DESIGN/SOURCE ACCEPTED; FIRST DECLARATION-CONTROL RED OBSERVED)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -20,8 +20,8 @@ accepted evidence; only its blanket requirement for new user authority approval 
 superseded. Missing implementation did not mean missing approved requirements.
 Lorian has authorized completion of this bounded first scenario through reviewed
 design, causal RED, minimal implementation and GREEN. This checkpoint specifies the
-accepted serialization design and first test-only admission/freeze cohort; it executes no
-build/discovery/runtime and introduces no production or canonical schema change. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
+accepted serialization design and first admission/freeze result; selected preparation
+and one actual invocation are complete, with no production or canonical schema change. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
 
@@ -32,30 +32,33 @@ that earlier verdict did not select external serialization. The concrete proposa
 below subsequently received the exact-design verdict recorded next.
 
 Independent fresh Astra XHigh **EXACT DESIGN ACCEPTED** on
-`5445ddfe360e7d7a2b044045128623a0a1dcf206`, with no blocking findings. Current T070
-work is test-only admission/freeze WIP: `GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs`
-and task-local `tests/selections/1536-qte-physical-injury-admission.json`; category
-`qte-physical-injury-admission` selects3 integration methods/31 cases (3 lawful/absent,
-27 malformed,1 frozen-tamper), budget5 minutes/default overall10. Existing selectors,
-global selection/CI, production and prior packets are unchanged. No build, discovery
-or actual execution has occurred; exact inventory still needs official preparation.
+`5445ddfe360e7d7a2b044045128623a0a1dcf206`; focused SOURCE/fixture acceptance on
+`76d702c635f63bc2cc5bee0e180b7f001890d366`, both without blocking findings. Review
+caught the shared raw `BranchChoice` fixture's missing `primaryCharacteristic` before
+runtime; canonical `dexterity` corrected that unrelated admission blocker.
 
-SOURCE/fixture review of56ea2689 caught one fixture blocker before any execution:
-the shared raw `BranchChoice` check omitted ordinary mandatory `primaryCharacteristic`,
-which would trigger `missing_required_string` before declaration controls. The test-only
-correction supplies canonical `dexterity`; focused source readback remains pending.
-The3-method/31-case inventory and5-minute budget are unchanged; this is no observed RED.
+First declaration-control actual used compile/runtime source
+`76d702c635f63bc2cc5bee0e180b7f001890d366`, task-local
+`tests/selections/1536-qte-physical-injury-admission.json`, category
+`qte-physical-injury-admission`: 3 integration methods/31 cases, budget5 minutes/default
+overall10. Catalog090908 validated681 categories/11513 methods with zero test execution;
+fresh integration/unit builds had0 errors (75/35 warnings). PlanOnly091657 selected
+exactly1 descriptor/3 methods/31 cases and executed0 tests. Actual091751 was the **first
+and only invocation: 31/31 executed, 2 PASS/29 FAIL**, complete selection, no timeout or
+duplicates. The full first outcome is frozen locally; remote publication is pending:
+[`recovery/qte-physical-injury-admission-red-20261012`](./recovery/qte-physical-injury-admission-red-20261012).
 
-Source readback predicts **ignored malformed fields or lost lawful declarations**, not
-necessarily refused lawful offers: the current terminal validator lacks this contract,
-and typed `QteTerminalOutcome` has no property. The first controls assert actual raw
-refusal (retaining existing duplicate-property diagnostics) or semantic declaration
-retention in the real preselection freeze. No expected outcome is reported as observed
-RED. The existing engine snapshot creator and actual physical signed reader establish
-ordinary source context; this narrow fixture does not claim a full `ProcessPlayerTurn`
-or finalized-harm chain. It avoids the old anonymous `test-prevalidated` manifest and
-poise-only resource fixture, bootstraps genuine health, preserves owned bytes, and uses
-strict `CleanupOwnedFixture` receipts. No new harness or production DTO is introduced.
+The 26 malformed failures had ordinary `issues=[]` and no required refusal. Three
+failures lost lawful `physicalInjury` before selection at the frozen-offer assertion
+(two lawful declared rows and the tamper fixture's prerequisite). The undeclared legacy
+QTE row and `duplicate_field` via existing `StrictJsonAuthority` passed. Thus the
+**frozen-tamper predicate is UNREACHED**, and finalized health Damage/occurrence chain
+is **UNRUN**. These are declaration admission/retention REDs, not finalized-harm proof.
+All31 fixtures established genuine engine signed health contexts (current160, turn42);
+31 distinct strict cleanup receipts and actual owned-root absence were confirmed in
+root's full TRX readback and `first-actual-readback.json`. No broad `ProcessPlayerTurn`
+or full physical publication claim follows from these controls. Existing selectors,
+global selection/CI, production and prior packets remain unchanged.
 
 ### Established contract and field ownership
 
@@ -287,14 +290,15 @@ reconstruction, ordinary T067 re-resolution and typed T070 publication/rollback 
 mandatory for later treatment/healing; this create/none slice does not satisfy them.
 The implementation block must synchronize existing QTE API/runtime/daemon guidance,
 `Examples/E_CLI_QTE_Offer.txt`, its validation manifest and affected existing guards.
-This docs-only checkpoint changes no game capability or GM example.
+The current test/evidence checkpoint changes no game capability or GM example.
 
-Next: publish this test-only WIP for independent SOURCE/fixture/selection review,
-then fresh selected preparation/ownership audit and matching first actual declaration
-controls before minimum admission support → finalized-harm chain RED/minimum producer and consumer implementation →
-GREEN → independent SOURCE/test/evidence sequence. Preserve each first outcome before
-correction; no broad rerun or new human permission cycle. This docs checkpoint has zero
-project executions; future bounded reviewed execution is authorized. No paid provider,
+Next: publish the immutable first declaration-control RED packet and this status
+before minimum admission/freeze implementation. Then follow the authorized reviewed
+sequence: selected GREEN for that boundary → genuine finalized-harm chain RED before
+minimum producer/publication and consumer implementation → GREEN → independent
+SOURCE/test/evidence review. Preserve each first outcome before correction; no broad
+rerun or new human permission cycle. The first31-case actual invocation is recorded
+above; no additional execution is performed by this status update. No paid provider,
 Windows/HOME-PC, main/PR/issue/CI or optimization work; Windows evidence remains user-provided.
 
 <a id="current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip"></a>

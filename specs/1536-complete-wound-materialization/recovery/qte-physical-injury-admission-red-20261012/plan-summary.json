@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "qte-physical-injury-admission"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-physical-injury-admission",
+      "reason": "#1536 T070 staged TDD: only raw declaration admission and preselection freeze controls before any producer/publication implementation; exact three methods/31 cases under unchanged production.",
+      "contracts": [
+        "Approved exact five-field optional physicalInjury contract; no declaration preserves resource-only QTE; malformed raw input cannot be normalized into authority",
+        "Genuine GameEngine ordinary signed snapshot plus physical request, canonical health owner and actual pending-snapshot reader; no anonymous prevalidated manifest",
+        "Both lawful branch declarations survive typed read/bind/freeze and the existing continuation fingerprint rejects a changed maximum",
+        "First declaration-control RED remains separate from later finalized-health-harm missing-occurrence chain RED; protected source/resource/control bytes and strict owned-root cleanup"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "76d702c635f63bc2cc5bee0e180b7f001890d366",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0393884,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0422257,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1042779,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0034744,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:02.7206537",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 31,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "qte-physical-injury-admission-integration-001"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

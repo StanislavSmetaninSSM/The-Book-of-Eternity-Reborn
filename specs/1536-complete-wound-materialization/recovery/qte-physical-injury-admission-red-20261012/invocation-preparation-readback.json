@@ -1,0 +1,13 @@
+{
+  "source": "76d702c635f63bc2cc5bee0e180b7f001890d366",
+  "catalogValid": true,
+  "catalogMethods": 11513,
+  "catalogCategories": 681,
+  "sourcePins": 13,
+  "binaryPins": 10,
+  "planMethods": 3,
+  "planCases": 31,
+  "planDescriptors": 1,
+  "testsExecuted": 0,
+  "rootReadback": true
+}
