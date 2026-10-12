@@ -26,10 +26,14 @@ decode proposal is NOT applied and further runtime is HOLD.
 All three ZIPs are byte-verified immutable originals; manifest records every
 entry SHA256/size and full30row outcomes/stdout/errors. Source bodies are archived
 with execution provenance; no separately serialized native manifest image is
-claimed. Independent EVIDENCE/DIAGNOSIS review is pending at this checkpoint.
+claimed. Independent actual gpt-6-astra/xhigh EVIDENCE/DIAGNOSIS PASS reviewedf3031ae: all38entries/30rows/pins/cleanup and fresh DLL/PDB GUID/source checksum binding verified. Category remains FAIL.
 
 First28PASS/2sharingFAIL and3ZIP34entries remain immutable in
 ../windows-browser-protocol-20261012; F18 prior6PASS preserved. Parent #1553/F04/F05
 OPEN. Fresh() means a new FileSystemManager in the same process; no fresh-process
 cold restart, browser DOM/UI, full gameplay, whole migration or performance claim.
 No other categories, global CI selection, game providers, settings or installs.
+
+The preferred unimplemented decoder proposal removes only a verified UTF8 BOM
+from physically read bytes and retains strict JSON parsing. Existing production
+recovery already applies exact BOM removal and strict UTF8 decoding.

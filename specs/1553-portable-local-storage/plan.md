@@ -1,4 +1,4 @@
-## F04/F05 Windows browser protocol30 — reader fixed, repeat28PASS/2BOMFAIL frozen, 2026-10-12
+## F04/F05 Windows browser protocol30 — reader fixed, reviewed repeat28PASS/2BOMFAIL HOLD, 2026-10-12
 
 SOURCE PASS be02e0f998cf440ff5c14a6218d6dcb8cedc9113 by actual Astra XHigh;
 test-only physical FileStream/Open/Read/ReadWrite|Delete under same lease,
@@ -10,8 +10,10 @@ runner103.1837133s,exit1; budgets3/8,no skip/dup/timeout,bothcleanup/30roots abs
 Physical After now reached/pass for both authentic6 paths; subsequent raw manifest
 JsonNode.Parse Windows.cs197 fails0xEF byte0. Source writer includes UTF8 preamble:
 fixture decode mismatch, no production defect demonstrated. Receipt/identity/
-neutral/authentic6 recovery remain UNREACHED/UNQUALIFIED. Category FAIL; independent
-EVIDENCE/DIAGNOSIS pending, test-only BOM decode proposal NOT applied/runtime HOLD.
+neutral/authentic6 recovery remain UNREACHED/UNQUALIFIED. Category FAIL; actual Astra XHigh EVIDENCE/DIAGNOSIS PASS reviewedf3031ae,
+3ZIP38entries/30rows/cleanup/pins and DLLPDB GUID/source checksums verified.
+Existing production recovery exact-BOM/strictUTF8 decode confirmed by source;
+preferred test-only exact-BOM decoder proposal NOT applied/runtime HOLD.
 [Full repeat originals/provenance/diagnosis](recovery/windows-browser-protocol-reader-20261012/manifest.json).
 First28P2sharingFAIL below immutable; F18PASS/parentOPEN/same-process Fresh limits
 and ordinary40FAIL/performanceUNQUALIFIED/B2-B5paused/other5WindowsUNRUN preserved.
