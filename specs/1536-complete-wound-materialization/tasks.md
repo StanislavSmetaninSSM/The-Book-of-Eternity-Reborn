@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT BLOCKER EVIDENCE ACCEPTED; CANONICAL BASELINE SOURCE ACCEPTED; RECEIPT1 PASS; EVIDENCE PENDING)
+## Current T070 boundary — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER PLAN READY; PRODUCER/NEW CONTROLS UNWRITTEN AND UNRUN)
 
 Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
 on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
@@ -25,7 +25,11 @@ six mixed-state refusals and protective timeout/0 completed/no TRX. Independent3
 BLOCKER EVIDENCE acceptanced0482fa945616c3afa429bb882c69df9f94e44fb is retained.
 Canonical-baseline source6552e488c60fe8cca9458e280bb39f7acb1f38a6 is SOURCE accepted with
 the same exact one-case selection; fresh preparation completed and first actual140225 PASS1/1,
-17-artifact evidence frozen/publication and EVIDENCE gate pending;
+17-artifact evidence published4c2466dafc569ab8b85316de588a847f3371911d and independent
+Astra XHigh EVIDENCE accepted (17 artifacts/44 source/5 binary pins/native1 PASS/100 original
+artifacts retained then removed/two strict roots). Guards7+other lifetime5+docs1+receipt1
+complete the bounded story prerequisite; selected GitHub recovery267 exact files verified,
+no recovery execution. Producer plan below READY, code/new tests/checks UNWRITTEN/UNRUN;
 fresh independent bounded DESIGN acceptance incorporates the latest user trusted-checkpoint
 scope ruling. The eec3c36e unresolved anti-owner proposal is historical WIP, not whole accepted design.
 Prior4085 source facts
@@ -33,6 +37,48 @@ and bef700/076ecc compatible-contract acceptance remain retained; the old produc
 blocker was superseded by normative engineering classification. No checkbox changes:
 T070/parent/#1536 remain OPEN; B2–B5 accepted33PASS, first B3 oracle FAIL, all immutable
 packets and GameEngine cold count1 are unchanged.
+
+Bounded producer [source plan](./plan.md#bounded-physical-producer--plan-ready-codenew-controls-unwritten-and-unrun)
+is READY on accepted4c2466da; no production/new tests/catalog/selection edits or execution
+at this checkpoint. The genuine unchanged source174aabad finalized-health missing-occurrence
+RED is accepted and valid; original causal Fact SHA256
+ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f stays exact, no repeat RED.
+Focused Astra ruling: include LastUse and AfterCurrentReaction reservations as distinct
+accepted siblings; attach shared component associations to one mutation row using transcript
+prefix representation327–355, stable ordering/no double count; exclude rejected/close/final
+bookkeeping. New harm requires actual Applied positive selected canonical player health Damage.
+Detach genuine original source before cleanup, fail closed for missing declared source,
+retain declared-only exact occurrence/receipt/wound before-images and frozen declaration;
+legacy undeclared calls stay supported. Never use raw request/continuation IDs as source token.
+
+Reduce actual completed common Resources once; only final CompletedOrdinaryReduction registers
+one QTE draft through the planner-owned reducer helper. Preallocation74/simulated receipt350/
+all awaiting paths register none, preserving existing receipt/wave/identity fingerprints.
+Append against actual pending AND consumed roots via existing pure PlanAppend and companion
+ownership; exact replay retains identity, changed source-key semantics conflict, replay-only
+execution adds no new harm. Final immutable completed-copy reseal is LAST after every input
+addition: same Resources/Effects/transcript, full vector/original source/source-result/batch/
+transcript proof in AcceptedEvents and InternalInputs, BOTH authority hashes updated,
+ComputePlanningInput(finalInput), no later ComputeInput overwrite. Assemble/cache finalInput
+once with existing661–708 checks; no second reduction/allocation or arbitrary caller authority.
+Resource/effect/occurrence publish together through exact touched guards/common writer and
+actual rollback, no second writer. Profile/explicit max/hard4/null ordinary fields stay approved.
+
+Planned exact13 methods/17 cases (unwritten/undiscovered/UNRUN), full selectors in plan table:
+existing causal1/1 qte-physical-injury-finalization5/default10; new actual producer4methods6cases
+qte-physical-injury-producer5/default10; new unit2methods4cases plus existing registration,
+finalized-boundary and consumed-replay3Facts =5methods7cases producer-contracts2/default7;
+existing byte-different terminal and bounded second-restart2Facts producer-continuation3/default8;
+existing QteTerminalResourcePenaltyContract documentation1Fact producer-documentation2/default7.
+Task-local1536-qte-physical-injury-producer.json/catalog will be authored with implementation;
+intentional old-owner overlaps/global CI unchanged, no broad mortal-wounds-state/qte-rules/
+accepted51 or aggregate rerun. New controls have no prior RED. Source guard changes zero
+implementors to exact1 Services/QtePhysicalWoundOccurrenceProducer.cs, retaining planner-only
+reducer callers. Existing GM guidance/worked offer/manifest/guard describe source publication
+only, no new fields or claimed consumer. Root publishes plan then authorizes coherent block;
+combined source/fixture/selection gate precedes fresh root preparation/actual. Producer and
+N+1 none/create consumer/wound/receipt/archive-save-load remain UNIMPLEMENTED/UNRUN; all
+checklists/immutable outcomes/historical B2–B5 and cold count1 remain unchanged.
 
 Fresh independent Astra XHigh EXACT DESIGN ACCEPTED5445ddfe360e7d7a2b044045128623a0a1dcf206
 and focused SOURCE/fixture ACCEPTED76d702c635f63bc2cc5bee0e180b7f001890d366 precede
@@ -339,9 +385,9 @@ Actual no-receipt idle retains100 original artifacts; real correlated receipt/re
 finalizes Damage5+bounded2 health160→153, exact story and100 original artifacts removed.
 Root44 source/5 binary pins/fullTRX/two strict root cleanup receipts/actual absence matched.
 [17-artifact first GREEN packet](./recovery/qte-story-append-receipt-settled-first-green-20261012)
-is locally frozen, publication/EVIDENCE gate pending. Old15 completed13PASS2FAIL plus1incomplete
+is published4c2466da with independent EVIDENCE acceptance. Old15 completed13PASS2FAIL plus1incomplete
 retained; separate1PASS gives16 completed14PASS2FAIL across six invocations including incomplete.
-Bounded prerequisite verification observed, acceptance pending; producer/next-snapshot none/create
+Bounded story prerequisite verification/EVIDENCE accepted; producer/next-snapshot none/create
 NOT IMPLEMENTED; every checkbox retained.
 
 First story guard actual125028 at runtime09c9e8f4c7f38299978c612a6b8cb8201c10d110,

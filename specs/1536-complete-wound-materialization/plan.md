@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE RED ACCEPTED; FINALIZED HEALTH CAUSAL RED REACHED; GUARDS7 PASS; LIFETIME5 PASS/1 PRE-QTE BLOCKER; DOCS1 PASS; RECEIPT BLOCKER EVIDENCE ACCEPTED; CANONICAL BASELINE SOURCE ACCEPTED; RECEIPT1 PASS; EVIDENCE PENDING)
+## Current T070 first vertical — 2026-10-12 (STORY PREREQUISITE EVIDENCE ACCEPTED; FINALIZED HEALTH CAUSAL RED VALID; PRODUCER PLAN READY; PRODUCER/NEW CONTROLS UNWRITTEN AND UNRUN)
 
 Base is accepted `076ecc95963557c5b297ceb9862ef8a3e13fe982` on the same Linux
 `1536-wound-b2-cloud-20261012` branch. Source investigation and independent Astra XHigh
@@ -41,13 +41,127 @@ source42 but timed out after six real mixed-state refusals. Independent BLOCKER 
 accepted the37-artifact packet publishedd0482fa945616c3afa429bb882c69df9f94e44fb.
 Canonical-baseline fixture source6552e488c60fe8cca9458e280bb39f7acb1f38a6 received focused
 SOURCE/FIXTURE/SELECTION acceptance. Fresh preparation completed and first affected actual
-140225 passed1/1; its17-artifact GREEN packet is frozen below, EVIDENCE review pending.
+140225 passed1/1; its17-artifact GREEN packet is published at
+4c2466dafc569ab8b85316de588a847f3371911d with independent Astra XHigh EVIDENCE acceptance.
+All17 artifacts/44 source/5 binary pins, native1 PASS,100 retained-then-removed original
+artifacts and two strict roots/actual absence were checked. Bounded story prerequisite
+acceptance combines guards7, other lifetime5, documentation1 and corrected receipt1;
+the first lifetime pre-QTE FAIL and subsequent incomplete invocation remain historical.
 Prior15 completed13PASS2FAIL plus1 incomplete remain unchanged; this separate1 PASS makes
 16 completed14PASS2FAIL plus one incomplete outcome across six invocations total.
 No aggregate GREEN run is implied.
 No occurrence producer or canonical wound schema is changed. T070, parent RESULT-CLOSURE and #1536 remain OPEN; every checkbox
 is unchanged. Original B2–B5 remain accepted33PASS, with immutable first B3 oracle FAIL,
 retained authority/GM/warm evidence and GameEngine cold count1.
+
+### Bounded physical producer — PLAN READY, code/new controls UNWRITTEN and UNRUN
+
+Base4c2466dafc569ab8b85316de588a847f3371911d is published/recoverable; selected GitHub
+recovery267 exact files executes no project. Source174aabad already proved actual original
+source42, finalized canonical Applied health Damage5 (160→155), terminal/history/source
+cleanup and then missing occurrence. That accepted causal RED remains valid; original Fact
+SHA256 ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f stays byte exact.
+Do not rerun unchanged RED. Focused retained Astra XHigh source consultation resolved the
+event mapping and final-input sealing below. This is the next producer-only engineering
+block, with no new product approval, keys, anti-owner contract or archive-QTE feature.
+
+1. **Detach genuine source-N before cleanup.** Ordinary/recovered/late-ready
+   HandleAcceptedQteOfferAsync passes the official Reader/validated context's detached
+   session/request/snapshot token/turn/realm/source label/generation into internal QTE
+   acceptance/capture. Verify original context/request/generation under the held lease;
+   seal the projection in the existing continuation/runtime pair. Raw TurnRequest has no
+   snapshot token; continuationId cannot substitute for original request/token. Missing or
+   foreign original source fails closed for declared outcomes. Undeclared callers retain
+   old behavior. Same-root paused/deferred/cold recovery uses the canonical handoff and
+   original Reader agreement while artifacts remain; never reconstruct/re-sign a snapshot.
+2. **Capture actual before-images and frozen declaration.** Declared capture adds pending
+   occurrence/consumed receipt, wound identity/history and dedicated player/NPC wound roots;
+   reuse existing captured resource/effect/shared combat/afterlife roots. Validate their
+   complete canonical authority and retain exact bytes/actual absence before play. Carry
+   PhysicalInjury into every real terminal selection and preallocation enumerator. Suppress
+   registration in acceptance identity preallocation (QteDeferredAcceptedMechanicsPlanner:74),
+   simulated receipt-wave preallocation (:350), and all awaiting/non-completed paths.
+   Preserve existing receipt/wave fingerprints and identity reservation semantics.
+3. **Register one actual finalized QTE draft.** Project only from the issued completed
+   Resources and its complete transcript. Match selected frozen resource command ordinal/
+   event to exact canonical player health definition, MortalHealthCapacityV1 and owner/
+   instance. New harm requires ExecutionKind.Applied, Damage, Outcome.Applied and positive
+   AppliedAmount. Zero/harmless/non-health/unselected/resource-only/practice/declined/
+   awaiting and replay-only execution create no new harm. Effect reaction Damage remains
+   a sibling, never a second candidate. Candidate0/count1 seals physical domain, exact
+   mortal_world/player/player_current wound carrier, mortal_qte_terminal_health_damage_v1,
+   target вы, explicit frozen maximum1–4/cause/location subset, hard maximum4 and null
+   minimum/guarantee/worsening. No HP formula or default outcomeIV. Stable producer key/source
+   identity derive from original source and selected QTE/command coordinates; mutable
+   declaration semantics stay outside replay key. Existing reducer derives seals/identities.
+4. **Map every accepted sibling once.** From the same finalized transcript preserve ordered
+   resource mutations, emitted boundaries, accepted activations, released reactions, and
+   distinct LastUse and AfterCurrentReaction terminal reservation events. One mutation row
+   attaches component associations sharing MechanicsOrdinal/transition; no duplicate
+   component mutation event. Reuse AcceptedEffectBoundaryTranscript:327–355 prefix
+   representation and stable component/activation order. Actual mechanics order determines
+   the vector; event refs/kinds/authority derive internally from actual typed evidence and
+   full semantics, including non-wound siblings. Reject duplicates/missing authority or
+   vectors outside1–160 without dropping rows. Rejected activations, closes and final
+   bookkeeping are excluded. The selected zero-based row is the direct health transition.
+5. **Append through completed common ownership.** BuildCommonPlan:585–742 currently starts
+   with empty AcceptedEvents and continuation-derived coordinates. Use genuine declared
+   source coordinates and ReduceAcceptedPlan. ONLY CompletedOrdinaryReduction reaches an
+   AcceptedMechanicsPlanner-owned helper calling ReduceMortalWoundOccurrenceProducers:3274
+   with the one real draft. PlanAppend:126 uses captured pending AND consumed roots, never
+   the reducer's empty validation state. Exact pending/consumed retries resolve existing
+   identity; changed semantics under the same source key conflict. Replay-only execution
+   preserves/validates the retained source group without a new harm/append. Add the
+   occurrence after-image via completed.WithOwnerCompanionAfterImage:3989; add every exact
+   before-image/read guard first. No consumer or decision receipt is produced in this block.
+6. **Reseal final common input LAST.** Companion copying alone does not change AcceptedEvents.
+   Add one narrow planner-owned immutable completed-copy seam after ALL companion and
+   before-image additions. It uses the same Completed.Resources transcript, unchanged
+   Resources/Effects and original source; final AcceptedEvents/InternalInputs include the
+   full vector/source-result/batch/transcript proof. Update BOTH corresponding authority
+   fingerprints and ComputePlanningInput(finalInput). Accept owner-issued typed completion,
+   never arbitrary caller JSON/hash authority. No later WithBeforeImage/WithOwnerCompanion
+   may replace this final seal with ComputeInput. No second reduction/allocation. Assemble
+   once; existing cache receives finalInput and that owner-assembled result, with
+   PlanCache:661–708 final input/authority/before-image/prepared checks. Never cache under
+   preliminary empty-event input. Awaiting/receipt-wave fingerprint semantics remain intact.
+7. **Publish atomically through the existing writer.** CreatePublicationWrites:436–515
+   already publishes companion after-images with exact touched-path guards through
+   CoordinatedStateWriteHelper. Health/effects/occurrence share that transaction; extend
+   actual rollback membership to occurrence and receipt read guards. No post-publication
+   occurrence writer, partial batch, after-cleanup source rediscovery or second allocator.
+
+Finite selection is PLANNED, unwritten/undiscovered/UNRUN. All exact methods below use
+namespace BookOfEternityClient.Tests. New integration controls reuse the actual engine/
+official source/offline GM/live input/strict owned-root fixture, not a new harness. They
+have no previously observed RED; the unchanged accepted causal Fact supplies the real gap.
+Catalog owners and task-local1536-qte-physical-injury-producer.json will be authored with
+implementation; old-owner overlap is explicit, global CI unchanged, no aggregate/broad run.
+
+| Planned owner / protective minutes | Exact selectors and case counts |
+| --- | --- |
+| Existing qte-physical-injury-finalization5/default10 | GameEngineTurnLifecycleTests.QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence1; matching GREEN after production, byte unchanged |
+| New qte-physical-injury-producer5/default10 | New GameEngineTurnLifecycleTests.QtePhysicalInjuryProducer_ActualSelectedDeclarationBoundsOccurrence2 (max1/max4, equal Damage5); QtePhysicalInjuryProducer_ActualResourceOnlyOrUnselectedDeclarationCreatesNoOccurrence2; QtePhysicalInjuryProducer_ActualAwaitingReceiptPublishesOneCompleteFinalBatch1 (real awaiting/receipt, Damage2 sibling); QtePhysicalInjuryProducer_PublicationFailureRestoresSourceThenRetryPublishesOnce1 |
+| New qte-physical-injury-producer-contracts2/default7 | New QtePhysicalInjuryProducerTests.FinalizedProjection_ZeroOrReplayCannotCreateNewHarm2; FinalCompletion_MissingOriginalSourceOrChangedSiblingCannotPublish2; existing MortalWoundOccurrenceProducerTests.RegisteredProducerSeam_IsTheOnlyProductionCallerOfTheReducer1 and RegisteredProducerSeam_ProjectsOnlyAgainstTheFinalizedResourceEffectBoundary1; MortalWoundOccurrenceStateTests.PlanAppend_RequiresACompleteBatchAndCoalescesOnlyAnExactSourceRetryAcrossConsumedReceipts1 |
+| New qte-physical-injury-producer-continuation3/default8 | Existing QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite1 and BoundedReceipt_AfterSecondRestartFinalizesWithoutOrdinaryTurnReplay1; affected capture/rehydration/selection/awaiting contracts |
+| New qte-physical-injury-producer-documentation2/default7 | Existing PromptDocumentationCoverageTests.QteTerminalResourcePenaltyContract_IsDocumentedAcrossGmSurfaces1 |
+
+Total13 methods/17 cases in separate finite cohorts. Registration source guard retains
+planner-only reducer callers and expects exactly one real implementor at
+Services/QtePhysicalWoundOccurrenceProducer.cs instead of its old zero assertion.
+Pure append controls cover pending/consumed replay without claiming a consumer journey.
+Directed actual controls prove explicit source bounds, absent/unselected suppression,
+awaiting versus final complete sibling batch, and atomic failure/retry without duplicates.
+Update existing six GM surfaces/worked offer/manifest/guard for client source publication
+only; no new GM fields/afterlife changes or claim of next-turn offer/decision/wound consumer.
+
+Source-gate risks are exact original-source lifetime, ordered association/event bounds,
+LAST final cache reseal, receipt-wave suppression, replay classification and whole touched-
+path rollback. Root publishes this plan, then authorizes coherent code/tests/GM guidance;
+mandatory combined SOURCE/FIXTURE/SELECTION precedes root fresh inventory/build/PlanOnly/
+matching actual. Producer/new tests/checks remain UNWRITTEN/UNRUN here. N+1 safe offer/
+none/create consumer, wound/history/receipt publication and pending/consumed actual archive
+save/load remain outside this block and UNRUN. T070/#1536 remain OPEN; every checkbox is unchanged.
 
 Independent Astra XHigh **SOURCE/COMPATIBLE CONTRACT DESIGN ACCEPTED** on
 `bef70094605d46f27b606f82365f24a4cc7e8aa7`, with no blocking findings. The verdict
@@ -621,7 +735,7 @@ preparation/first actual are recorded next; prior15 completed13PASS2FAIL plus1 i
 invocation and strict-versus-manual cleanup classifications are preserved. Producer remains NOT IMPLEMENTED;
 all checkboxes and original causal Fact/hash remain unchanged.
 
-### Settled receipt first GREEN1 — 2026-10-12, EVIDENCE review pending
+### Settled receipt first GREEN1 — 2026-10-12, EVIDENCE accepted4c2466da
 
 Compile/runtime/source gate6552e488c60fe8cca9458e280bb39f7acb1f38a6; independent actual
 retained Astra XHigh SOURCE/FIXTURE/SELECTION accepted, zero Important/Critical findings.
@@ -643,11 +757,14 @@ TRX stdout/error and both distinct strict cleanup receipts with actual root abse
 No manual cleanup or project-runtime security refusal occurred.
 
 The immutable [17-artifact first GREEN packet](./recovery/qte-story-append-receipt-settled-first-green-20261012)
-is locally frozen; root publication and independent EVIDENCE acceptance remain next.
+is published at4c2466dafc569ab8b85316de588a847f3371911d with independent Astra XHigh
+EVIDENCE acceptance: all17 artifacts/44 source/5 binary pins, native1 PASS,100 retained and
+removed original artifacts and two strict roots checked. Selected GitHub recovery267 exact
+files is verified without project execution. The bounded story prerequisite is accepted.
 Initial15 completed13PASS2FAIL and the separate incomplete timeout are preserved. This
 separate1 PASS yields16 completed14PASS2FAIL across six actual invocations total including
 one incomplete; no rewritten first outcome or aggregate GREEN claim. Bounded story
-prerequisite verification is observed, acceptance pending its EVIDENCE gate. Occurrence
+prerequisite verification and EVIDENCE are accepted. Occurrence
 producer/next-snapshot none/create are NOT IMPLEMENTED; T070/#1536 and every checkbox stay open.
 
 ### Story preservation first GREEN7 — 2026-10-12
