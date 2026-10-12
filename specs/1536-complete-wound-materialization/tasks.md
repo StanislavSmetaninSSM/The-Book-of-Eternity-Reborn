@@ -5,7 +5,28 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current execution boundary — 2026-09-30
+## Current execution boundary — 2026-10-12 (docs-only WIP)
+
+Recovery/design work is tracked under existing
+`T081-D-POSITION-RESULT-CLOSURE-B2`–`B5`, all OPEN. The current
+[plan checkpoint](./plan.md#current-recovery--b2-design-checkpoint--2026-10-12-docs-only-wip)
+records accepted base `caa3f923c39b82aa0eb62edf251acebacaac7fb0`, original evidence,
+current LocalPublicationObserver compatibility and the minimal force_binding
+ordinary-profile preflight → source/fixture gate → fresh selected PlanOnly build
+→ one cold owner sequence, only after independent design review and coordinator
+implementation/runtime release. No runtime/build/test/discovery is authorized in
+this docs block. Save plan/tasks WIP to `1536-wound-b2-cloud-20261012` before
+independent Astra XHigh review; no B2–B5 checkbox changes or gameplay acceptance.
+
+The old cold-UNRUN statement is historical: #1553's preserved packet has composed
+9 PASS, cold force-binding 1 FAIL (`afterlife_combat_profile_unknown_art`) and
+native worker 1 UNRUN, plus separate extra-five controls. Retain force_binding,
+its tier/cost/strong prerequisites and actual committed B cut; same-process fresh
+engine recovery does not prove a new process. Earlier pauses are superseded only
+for this authorized recovery/design work. Remaining #1536 producers, treatment,
+spiritual healing/recovery and UI work remain open; category-only policy applies.
+
+## Historical execution boundary — 2026-09-30
 
 Owner resumed development on 2026-09-30 and approved the completion strategy:
 Astra owns implementation, one independent Astra XHigh reviewer checks each
@@ -5507,6 +5528,13 @@ they are not additional required work. Full T069/T070 and FRONTIER remain open.
   proved cost permissions and mixed-cost regression. Reject setup/operation/dice/
   actor/prefix changes, successful control, unrelated after fields and premature
   final echo. Legal alternatives expose no result fields; strong binding remains distinct.
+  Resumption design 2026-10-12: use the current plan's bounded ordinary soul-profile
+  preflight and narrow existing force_binding authority-gate correction proposal;
+  preserve original AP3/tier3 and negatives. Docs-only plan/tasks WIP awaits
+  independent Astra XHigh design review before implementation/runtime release.
+  Cold owner is existing spiritual-binding-cold-publication (one Fact); retain
+  actual LocalPublicationObserver B cut, 15-minute category and strong 8/8 phases.
+  Cold blocker resolution alone does not accept B2 or downstream B3–B5.
 - [ ] T081-D-POSITION-RESULT-CLOSURE-B3 [US3] After B2, validate actual A with only
   an independently proved exact final-control mismatch projected in a detached
   view; never suppress another ordinary error. Derive separate B for the unique

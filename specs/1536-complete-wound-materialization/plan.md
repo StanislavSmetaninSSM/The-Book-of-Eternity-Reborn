@@ -8,7 +8,170 @@ plus the approved Superpowers design at
 `docs/superpowers/specs/2026-08-26-complete-wound-materialization-design.md`.
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
-## Current completion checkpoint — resumed 2026-09-30
+## Current recovery / B2 design checkpoint — 2026-10-12 (docs-only WIP)
+
+Source: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+existing `T081-D-POSITION-RESULT-CLOSURE-B2`–`B5`. Dedicated branch
+`1536-wound-b2-cloud-20261012` starts at accepted Windows F18 checkpoint
+`caa3f923c39b82aa0eb62edf251acebacaac7fb0`, verified against remote
+`1553-storage-migration-windows-f18-20261011T235650Z`; accepted cloud checkpoint
+`8c2ecdfaa1003e49bf15ba83693788e9b19dd10f` is its ancestor. The coordinator used
+standard fetch in the existing shallow checkout, preserving both source branches.
+Original #1536 WIP `1fc5e59b253c358a8622df66a4e9459f5f3fe78b` was already merged
+through PR #1554; there is no old-only implementation to cherry-pick or recreate.
+The original spec, plan, tasks and accepted child evidence remain authoritative.
+
+Current authorization is recovery, source/evidence reconciliation and independent
+B2 design review only. This entry supersedes historical pauses for that planning
+work and stale cold-UNRUN wording below; it does not release runtime execution.
+No project code, build, test, discovery, game, native worker or provider process
+was run for this block. Only plan/tasks change; no spec, GM contract, catalog,
+selection or global CI change. Independent Astra XHigh review is pending; publish
+this WIP before review. Installed version reads (SDK 10.0.401 / PowerShell 7.6.6)
+are not build/runtime qualification. Preserve WorldQuest/Meta optimizations and
+all accepted correctness fixes. No main/merge/issue closure, HOME-PC, paid provider,
+timeout increase or performance redesign belongs to this block.
+
+### Evidence reconciliation and fixture compatibility
+
+- Accepted recovery R1–R3, RUNTIME-UNBLOCK, T069, FRONTIER, B0 and B1 retain the
+  evidence recorded below. Existing B2/B3/B4 code and B5 documentation are WIP;
+  their lower-level passes do not accept B2–B5 or close #1536. Physical producers,
+  remaining treatment/recovery, spiritual healing and shared player UI remain open.
+- The historical [2026-10-08 audit](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/13c820294df2bf7e824b06eb41ddc73bd18b87c0/specs/1536-complete-wound-materialization/audit-2026-10-08.md)
+  was read at its pinned source by the coordinator; it is absent from this tree.
+  Current evidence is in [#1553 plan](../1553-portable-local-storage/plan.md),
+  “F18 original lifecycle11”, and the existing
+  [packet manifest](../1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json).
+  Preserve its composed **9 PASS / cold binding 1 FAIL / native worker 1 UNRUN**;
+  the extra five shared-helper passes are a separate selection. Neither packet
+  composition nor Windows storage acceptance is a new #1536 gameplay pass.
+- [Binding history](../1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/binding-cold-contract-history.json)
+  pins source `3fe28a9df69cd943d0f920260ff3882274a0841e` and actual run
+  `20261009-150152-683-376907-8110859540b24ba48f49a78c1508b94a-categories`.
+  Archived summary/TRX/log show committed B, warm interruption and three
+  correlated responses, then an ordinary repair whose sole code is
+  `afterlife_combat_profile_unknown_art` for soul
+  `afterlifeCombatProfile.artTiers.force_binding` (continuation=null). The callback
+  then reports `InvalidDataException: Continuation objects must have a closed shape`
+  because the responder tries to parse that ordinary refusal as a continuation;
+  it is secondary, not the primary product RED. The archived case took 45.2715796s;
+  the partial command completed six cases (5 PASS / 1 FAIL) in 200.5563053s.
+  Coordinator readback verified all 31 transport artifact hashes and all four
+  history source hashes against the current base. Warm storage cut/cleanup evidence is not final cold
+  business acceptance. Preserve this first outcome before any correction.
+- `AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs` seeds exact
+  soul `artTiers.force_binding=3` and player `standardArts.force_binding=3`, with
+  guardian pressure tier 1. `AfterlifeEntityProfileState.StandardArtIds` already
+  supports `force_binding`; `AfterlifeSpiritualConflictState.SpiritualArts` omits
+  it. `ValidationService.AfterlifeSpiritualConflict.cs::ValidateAfterlifeCombatProfile`
+  derives its whitelist from the latter, while `ResolveAuthoritativeActionCostArtTier`
+  uses the exact operation key. Removing/renaming the seed changes authority and
+  force-binding AP cost 3→1; it is not a faithful fixture correction.
+- Current `GameEngineTurnLifecycleTests.SpiritualBindingContinuation.cs` uses
+  `LocalPublicationObserver` and `SpiritualLifecyclePublicationWitness` against
+  actual BOELP3 `trusted-local-publication-v1/active.json` MemberPublished/Committed
+  bytes and hashes. B is recognized only at Committed for the one
+  `/activeConflict/controlState` request; `BeforeCanonicalWriteLockOpenAsync`
+  cancels once after that real boundary. Fresh FileSystemManager/GameEngine
+  instances reconstruct pending B in the **same process**. No fresh OS process,
+  native worker or full cold-process qualification is claimed. Legacy publication
+  hooks must not be reintroduced. Witness settlement checks generation and no
+  current journal after actor drain; later acceptance must inspect those receipts.
+- `GameEngineTurnLifecycleTests.SpiritualFileGmTransport.cs` already writes
+  physical UTF8-noBOM atomic rename on only narrative response, conflict state and
+  repair Ready. The responder publishes Ready last with observed correlation,
+  without a competing client lease. Preserve these current storage-compatible
+  helpers and original joins/cleanup; no fixture rewrite is established as needed.
+
+### Minimal B2 resumption design (review before implementation)
+
+The approved RESULT-CLOSURE-BINDING rev1 in [spec.md](./spec.md), [data-model.md](./data-model.md)
+and [live-turn contract](./contracts/spiritual-wound-live-turn-boundary.md) remains
+unchanged. The GM authority in `OtherGuides/Afterlife_Contract_Matrix.md` already
+distinguishes force binding: effective +2 versus +1, ready setup rather than
+boolean `setup:true` alone, or decisive success, and at least two restrictions.
+Do not infer a new unlock/rank/acquisition rule from a missing catalog entry.
+
+1. After independent design review and coordinator implementation/runtime release,
+   add the cheapest faithful ordinary-profile regression beside
+   `AfterlifeSpiritualConflictValidationTests` using the actual ordinary soul
+   validation path (`ValidationService.NpcWorldAndMeta.cs` →
+   `ValidateAfterlifeCombatProfile`), not a hand-built whitelist assertion or full
+   GameEngine run. Reuse the valid profile required by the original strong fixture:
+   soul/player tier 3, required wound arts, rank/realm and exact authority agree.
+   Record first RED specifically at unknown `force_binding`; unrelated invalid
+   profile errors must be resolved in the reproduction before claiming this cause.
+   Negative controls retain rejection of an unknown art and invalid/noninteger/
+   out-of-range tiers, plus existing required wound-art checks. This preflight is
+   a prerequisite; it cannot prove cold publication or all original admission.
+2. Correct only the existing supported `force_binding` soul-profile authority gate
+   if that regression and review confirm the diagnosis. Primary candidate is the
+   whitelist construction in `ValidationService.AfterlifeSpiritualConflict.cs`;
+   keep every existing art and tier check and admit only this proved additional
+   key. The entire entity art list would also newly admit `recover_spiritual_power`,
+   a separate delta outside this blocker; do not substitute it or expand SpiritualArts/UI/
+   acquisition/schema as a side effect. Keep exact seed, cost, rank and effective
+   prerequisites. Any ambiguity requiring a new gameplay rule stops this bounded
+   correction for explicit design resolution; do not guess. Synchronize the real
+   validation clarification with relevant GM guide/example/manifest/guards in
+   that later code change, recording Mortal/prompt no-update decisions as needed.
+3. Before the costly owner, review the actual source/fixture diff and negative
+   results: immutable dice `[5,15,13,11]`, actors, setup, closed pressure prefix,
+   saved choice and command bytes; retained +2→+1 strong prerequisite loss;
+   independently proved expense permissions and mixed-cost behavior. A permits
+   only proved arithmetic/cost plus exact outcome/after.controlState, with ordinary
+   valid no_effect/blocked and exact before-control value/presence. B remains a
+   separate terminal echo/Ready; no permissive diagnostic suppression, synthetic
+   progress row, journal format change or premature publication is allowed.
+   Original-invalid and nonmatching cases must still receive no result permission.
+   If responder diagnostics need correction, report ordinary repair as ordinary
+   refusal; never coerce a missing continuation into a binding response or hide it.
+4. Define a finite category owner for the new cheap regression/necessary negatives
+   in the later implementation block; inspect current `spiritual-conflict-rules`
+   membership and split only affected profile/cost/strong-binding neighbors if
+   its broad selection is unsuitable. `spiritual-binding-result-dependency`
+   owns original leverage/mixed-cost/immutable controls; add it only when that
+   behavior is affected or its evidence remains insufficient. Control-boundary,
+   warm publication and documentation owners are conditional on actual changes,
+   not an automatic category sequence. Independent review checks sufficiency.
+   No catalog/selection edit or discovery occurs in this docs phase.
+5. Once those gates pass, use PowerShell 7 and a **fresh selected build** via
+   `./scripts/test-csharp.ps1 -Category spiritual-binding-cold-publication -PlanOnly`.
+   Confirm exactly one Fact,
+   `GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady`,
+   no duplicates/unrelated methods, matching source/binary hashes and successful
+   selected-project build. Only then run **one** matching owning attempt with
+   `./scripts/test-csharp.ps1 -Category spiritual-binding-cold-publication -NoBuild`.
+   Keep category 15 minutes and strong warm/cold phases 8/8 unchanged. Do not
+   launch tests, build, PlanOnly or catalog discovery before coordinator release.
+
+Cold acceptance requires actual committed B after durable A, one interruption,
+turn still 41, two pre-cut responses, exact A progress/command and original
+unpublished canonical resources/history/wound/effect/receipt/story images, no
+Ready, and the exact sole terminal pointer. Reconstructed B must retain its
+correlation and require its own Ready distinct from A, yielding exactly three
+requests/responses. Full ordinary raw validation must pass after B. Then require
+one wound/decision/effect/history/story publication, exact corrected exchange and
+final-control equality, unchanged canonical player_dominant position, turn 42,
+four original spends (strong case sorted 2/2/2/3), player balance 1 and exact
+opposition-side owner balance 2; idle replay must preserve accepted bytes. Require
+joined actors, unchanged generation/no journal, cleared pending/control surfaces,
+owned resource/runtime-root cleanup and complete planned/completed result counts.
+Inspect summary, TRX, logs and receipts together; compile/discovery is not a PASS.
+
+On failure, preserve the first summary/TRX/log, exact source/build, diagnostic and
+reached boundary before edits. A timeout, unknown-art persistence, different
+ordinary error, transport/Ready drift, duplicate publication or cleanup debt stops
+acceptance and triggers the smallest reproduction; no automatic expensive retry
+or rerun of unchanged passes. After two unsuccessful corrections of the same
+problem, stop and revisit the hypothesis. A real tool/security denial stops the
+operation with its exact text/ID recorded; no bypass. B2–B5 stay OPEN even if this
+one blocker passes until their existing coherent review/evidence obligations are
+met. Next action for this published docs WIP: independent Astra XHigh design
+review of this exact plan/tasks diff; implementation remains unreleased.
+
+## Historical completion checkpoint — resumed 2026-09-30
 
 GitHub preservation checkpoint requested by the owner (2026-09-30): save the
 current implementation, tests, GM documentation and category definitions on
