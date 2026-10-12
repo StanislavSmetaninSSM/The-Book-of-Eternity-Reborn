@@ -5,63 +5,64 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (SOURCE/COMPATIBLE CONTRACT DESIGN ONLY; IMPLEMENTATION UNRELEASED)
+## Current T070 boundary — 2026-10-12 (PRECISE CONTRACT/FIXTURE DESIGN WIP; SOURCE/RUNTIME GATES PENDING)
 
-Existing T070 owns the [compatible first-vertical checkpoint](./plan.md#t070-first-vertical-source-design-2026-10-12)
-on4085efa97d331244941eb8033efb16f8236238f2. Source investigation and independent Astra XHigh
-normative readback classify the gap as engineering, with no new product-policy
-question. Prior4085/8e81 accepted source/provenance facts remain historical; only the
-blanket new-user-authority blocker is superseded. No external JSON grammar, spec/
-contract/data-model or code change is introduced. Implementation/build/discovery/
-runtime remain unreleased. All checkbox statuses remain unchanged; B2–B5 accepted33PASS,
-first B3 oracle FAIL, immutable packets and GameEngine cold count1 are retained.
+Existing T070 owns the [first-vertical design](./plan.md#t070-first-vertical-source-design-2026-10-12)
+on accepted076ecc95963557c5b297ceb9862ef8a3e13fe982. Lorian authorized the bounded
+first real scenario through exact design, independent review, causal RED, minimum
+implementation and GREEN; this phase edits only design docs. Prior4085 source facts
+and bef700/076ecc compatible-contract acceptance remain retained; the old product-policy
+blocker was superseded by normative engineering classification. No checkbox changes:
+T070/parent/#1536 remain OPEN; B2–B5 accepted33PASS, first B3 oracle FAIL, all immutable
+packets and GameEngine cold count1 are unchanged.
 
-Independent Astra XHigh SOURCE/COMPATIBLE CONTRACT DESIGN ACCEPTED on
-`bef70094605d46f27b606f82365f24a4cc7e8aa7`, no blocking findings; external grammar
-and project execution remain unreleased.
+The plan now fixes the proposed optional QTE `physicalInjury` declaration: closed
+exactly five fields: schemaVersion1, one-based resource command ordinal, explicit maximum1–4, bounded cause
+and unique subset of the five existing location kinds. It binds one exact player-health
+Damage command and freezes before selection; malformed/null/unknown/duplicate/confusable
+input rejects before acceptance. No declaration preserves resource-only QTE. Source-owned
+maximum remains independent of damage amount and separate from hardIV when no narrower
+restriction exists; effective maximum is their minimum. Existing internal harm/source/
+outcome/safe-context types are reused, client-derived causal profile/identity/seals remain
+private, and actual GM wound/location/consequence profiles stay distinct.
 
-The existing `MortalWoundAcceptedHarmResult` is the compatible internal contract:
-producer-owned exact causal `ProfileKey`, owner/domain/source and complete event/batch
-coordinates; bounded `SafeContext` with a unique subset of the five existing location
-kinds; explicit accepted source outcome maximum1–4; separate hard maximum4 only when
-no narrower restriction applies; effective maximum is their minimum. Ordinary create
-has null minimum/guarantee and no worsening target. Outcome maximum is not defaultIV
-or derived from HP. The GM chooses none or a legal wound severity/location/name inside
-that envelope. Causal profile, actual wound location and closed consequence profiles
-are distinct; no new anatomy/material/body catalogue is required.
+The ordinary request exposes zero or one safe pending offer in `woundOpportunities` only
+after a real signed N+1 snapshot and physical request context exist. Proposed
+`output/mortal_wound_decisions.json` is one existing closed none/materialize decision,
+with no source/authority fields; exact currently offered ref and scene agreement are
+mandatory. Ordinary raw admission precedes existing adapter composition and a narrow
+accepted-command-only distributor stage, then ordinary validator/planner/cache/common
+publication. No general response redistribution, raw-authority fabrication or alternate
+writer. Receipt/occurrence consumption must publish even for none with no wound transitions;
+command and transient draft are consumed with the same publication. Save/load must exclude
+that exact draft path: existing saves archive ordinary output, not input/active snapshot.
 
-First owner remains real QTE. Its missing preselection source-envelope serialization,
-strict admission/freeze and typed projection are implementer-owned engineering design
-for independent review, not a request for new physics or author permission. The plan
-introduces no external property names. Narrative upstream causal permission cannot be
-obtained merely from resource `source.kind=narrative_outcome`. Absent physical declaration
-preserves resource-only QTE without a wound opportunity; malformed injury-enabled input
-rejects before admission/freeze. Only selected finalized exact canonical player-health
-Damage plus the accepted envelope may project harm; positive damage does not set severity.
+Six concrete seams are detailed in the plan: genuine accepted source-N projection before
+snapshot cleanup → preselection envelope freeze → finalized selected canonical health
+harm → registered pure producer/live complete-batch append in QTE common publication →
+real N+1 signed consumer → Prepare/effects/Finalize/anchor and one atomic receipt/output.
+Full event vectors retain siblings; existing wounds/recovery and exact pending/consumed
+source replays remain protected. Proposed tests use existing QTE/continuation, Mortal
+producer/adapter/receipt, wound validation/replay/rollback and save-loader fixture owners;
+no invented candidate authority, new harness or broad category. Exact finite methods/counts/
+budgets will accompany test-only WIP before SOURCE review, followed by fresh selected
+preparation and matching actual evidence. First raw declaration-control RED gates only
+minimum admission/freeze support; then accepted finalized canonical health Damage with
+missing occurrence is the genuine chain RED before producer/publication implementation.
+Parser/setup failure is not chain RED, and undeclared legacy QTE never becomes an injury
+positive. Preserve these separate causal first outcomes before fixes.
 
-Ordered work is source-envelope admission/freeze → genuine source-N typed request/
-snapshot projection (raw request bytes already retained) → registered finalized harm
-projection → pure reducer/live pending+consumed append in common source publication →
-N+1 signed adapter/StateDistributor/ordinary validator → Prepare/effect/Finalize/
-canonical anchor → one consume/receipt and FR-008 atomic readable output. Existing
-fixture owners and bounded causal, owner/harmless, complete-event/batch, replay/conflict,
-rollback and actual save-loader/new-root/fresh-registry checks are listed in the plan;
-equal-damage/different-source-maximum and changed-damage/unchanged-sealed-maximum
-controls prove the minimum rule without inventing an HP formula; proposal location
-must belong to the frozen1–5-kind subset, and later correlation cannot supply a missing
-maximum. No new framework, fake counts or broad runtime lane. Seven adapter tokens still do not
-constitute real producers. No project execution is authorized by this checkpoint.
-
-FR-057 complete treatment route and FR-065 explicit recovery policy/canonical anchors
-remain creation requirements. FR-063 treatment reservation/full immutable request/T067
-re-resolution/typed publication and recovery obligations remain mandatory when healing
-is added; FR-066 occurrence/decision replay cannot borrow the binding-fixture waiver.
-Future implementation includes the affected existing QTE guides/prompts/example/manifest/
-guards in the same block. Next is detailed serialization/fixture design with bounded
-independent review, followed by separate coordinator implementation
-release, without a new gameplay-policy permission cycle. Full T070/parent/#1536 remain
-OPEN; no paid provider, Windows/HOME-PC, main/PR/issues/CI, optimization or other feature
-work. Existing accepted evidence and every other task remain unchanged.
+Archive recovery uses actual save/new-root child-process load and a genuinely new decision
+turn; consumed saves expose no old opportunity. Exact same-decision cold replay separately
+uses the real retained durable active snapshot. No fabricated archive snapshot or binding
+same-process waiver. FR057 creation treatment completeness, FR065 explicit recovery and
+canonical anchors, FR063 later treatment reservation/full request/re-resolution/publication
+and FR066 occurrence/decision replay remain required. Synchronize affected existing QTE/
+ordinary GM guides, prompts, example/manifest, output policy and guards with implementation.
+Next is root publication and independent exact-design review, then authorized RED/minimal
+implementation/GREEN/source-test-evidence gates without another human permission cycle.
+No project execution in this docs phase; no paid providers, Windows/HOME-PC, main/PR/issues/
+CI, optimization or other feature. Existing spec/contracts and code remain unchanged here.
 
 ## Accepted original-completion boundary — 2026-10-12 (B2–B5 CHILDREN; PARENT #1536 OPEN)
 
