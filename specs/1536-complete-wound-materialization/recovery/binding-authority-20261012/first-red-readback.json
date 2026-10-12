@@ -1,0 +1,671 @@
+{
+  "source": "6236a7367dd0384ca7707b03ea8a99d4810b6afc",
+  "caseCount": 21,
+  "passed": 15,
+  "failed": 6,
+  "unexpectedFailures": 0,
+  "all21OwnedRootsAbsent": true,
+  "runtimeBinaryHashesUnchanged": true,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsUnsupportedArt(operation: \"recover_spiritual_power\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0415545",
+      "structuredOutput": [
+        {
+          "operation": "recover_spiritual_power",
+          "tierJson": "3",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.recover_spiritual_power",
+              "Severity": 2,
+              "Message": "afterlifeCombatProfile.artTiers содержит неизвестный spiritual art id.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_unknown_art",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "binding/break_binding/champion_coordination/counter/guard/incarnation_resistance/maneuver/pressure/spiritual_healing/spiritual_resilience",
+              "Actual": "recover_spiritual_power",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-365a8651ead94f71ba6d3a501ee1cac4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_SignedOriginalUsesExactCostAuthority(variant: \"binding_alias\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.2302157",
+      "structuredOutput": [
+        {
+          "variant": "binding_alias",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].actionCostAudit.player.artTier",
+              "Severity": 2,
+              "Message": "actionCostAudit.player.artTier должен совпадать с pre-turn authority профилем, а не задаваться GM произвольно.",
+              "Category": 1,
+              "Code": "afterlife_conflict_action_cost_art_tier_authority_mismatch",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "0",
+              "Actual": "3",
+              "RepairHint": null
+            },
+            {
+              "FilePath": "activeConflict.exchangeLog[1].actionCostAudit.player.effectiveCost",
+              "Severity": 2,
+              "Message": "Стоимость ОД должна соответствовать формуле effectiveCost = max(minCost, baseCost - artTier).",
+              "Category": 1,
+              "Code": "afterlife_conflict_action_cost_mismatch",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "baseCost=5, minCost=2, effectiveCost=5",
+              "Actual": "baseCost=5, minCost=2, effectiveCost=2",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-6ccf3b478ffb496e9bca88e5f2b3bd26",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_SignedOriginalUsesExactCostAuthority(variant: \"audit_operation\")",
+      "outcome": "Passed",
+      "duration": "00:00:01.0890773",
+      "structuredOutput": [
+        {
+          "variant": "audit_operation",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].actionCostAudit.player.operationType",
+              "Severity": 2,
+              "Message": "actionCostAudit.player.operationType должен совпадать с exchange.operationType.",
+              "Category": 1,
+              "Code": "afterlife_conflict_action_cost_mismatch",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "force_binding",
+              "Actual": "binding",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-665c839f69614c858f1f65488e75cf14",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_SignedOriginalUsesExactCostAuthority(variant: \"exact\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.5139209",
+      "structuredOutput": [
+        {
+          "variant": "exact",
+          "Issues": []
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-0624e284b103406c8cb29b4a652edbdd",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier(operation: \"binding\", tierJson: \"null\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0316148",
+      "structuredOutput": [
+        {
+          "operation": "binding",
+          "tierJson": "null",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.binding",
+              "Severity": 2,
+              "Message": "spiritual art tier должен быть integer 0..5.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_invalid_art_tier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "integer 0..5",
+              "Actual": "Null",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-c96f0fcb227440b681ed918b8f5e3f8e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsUnsupportedArt(operation: \"unknown_binding\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0604469",
+      "structuredOutput": [
+        {
+          "operation": "unknown_binding",
+          "tierJson": "3",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.unknown_binding",
+              "Severity": 2,
+              "Message": "afterlifeCombatProfile.artTiers содержит неизвестный spiritual art id.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_unknown_art",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "binding/break_binding/champion_coordination/counter/guard/incarnation_resistance/maneuver/pressure/spiritual_healing/spiritual_resilience",
+              "Actual": "unknown_binding",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-7cf3863416454f97bbd621caaa63ea25",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier(operation: \"force_binding\", tierJson: \"1.5\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.0299479",
+      "structuredOutput": [
+        {
+          "operation": "force_binding",
+          "tierJson": "1.5",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.force_binding",
+              "Severity": 2,
+              "Message": "afterlifeCombatProfile.artTiers содержит неизвестный spiritual art id.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_unknown_art",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "binding/break_binding/champion_coordination/counter/guard/incarnation_resistance/maneuver/pressure/spiritual_healing/spiritual_resilience",
+              "Actual": "force_binding",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-7389dd3ce32443848d63180f9de09863",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier(operation: \"binding\", tierJson: \"\\\"3\\\"\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0277659",
+      "structuredOutput": [
+        {
+          "operation": "binding",
+          "tierJson": "\"3\"",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.binding",
+              "Severity": 2,
+              "Message": "spiritual art tier должен быть integer 0..5.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_invalid_art_tier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "integer 0..5",
+              "Actual": "String",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-7fadf792a0ff4c4c855da79438cdf78d",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier(operation: \"force_binding\", tierJson: \"6\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.0398099",
+      "structuredOutput": [
+        {
+          "operation": "force_binding",
+          "tierJson": "6",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.force_binding",
+              "Severity": 2,
+              "Message": "afterlifeCombatProfile.artTiers содержит неизвестный spiritual art id.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_unknown_art",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "binding/break_binding/champion_coordination/counter/guard/incarnation_resistance/maneuver/pressure/spiritual_healing/spiritual_resilience",
+              "Actual": "force_binding",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-8456a277447e4ed88157739a441d2fc2",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier(operation: \"binding\", tierJson: \"6\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0538192",
+      "structuredOutput": [
+        {
+          "operation": "binding",
+          "tierJson": "6",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.binding",
+              "Severity": 2,
+              "Message": "spiritual art tier должен быть integer 0..5.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_invalid_art_tier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "integer 0..5",
+              "Actual": "6",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-d3ab5f164909434d8d66a40ac5dbf1c1",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_SignedOriginalUsesExactCostAuthority(variant: \"missing\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.2235992",
+      "structuredOutput": [
+        {
+          "variant": "missing",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].actionCostAudit.player.artTier",
+              "Severity": 2,
+              "Message": "actionCostAudit.player.artTier должен совпадать с pre-turn authority профилем, а не задаваться GM произвольно.",
+              "Category": 1,
+              "Code": "afterlife_conflict_action_cost_art_tier_authority_mismatch",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "0",
+              "Actual": "3",
+              "RepairHint": null
+            },
+            {
+              "FilePath": "activeConflict.exchangeLog[1].actionCostAudit.player.effectiveCost",
+              "Severity": 2,
+              "Message": "Стоимость ОД должна соответствовать формуле effectiveCost = max(minCost, baseCost - artTier).",
+              "Category": 1,
+              "Code": "afterlife_conflict_action_cost_mismatch",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "baseCost=5, minCost=2, effectiveCost=5",
+              "Actual": "baseCost=5, minCost=2, effectiveCost=2",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-591c118cb8604da69fee46eff66fd8ce",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRequiresExplicitWoundArts(missingArt: \"spiritual_healing\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.1820136",
+      "structuredOutput": [
+        {
+          "operation": "binding",
+          "tierJson": "3",
+          "missingArt": "spiritual_healing",
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.spiritual_healing",
+              "Severity": 2,
+              "Message": "Профиль должен явно содержать тир духовной стойкости и духовного исцеления.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_missing_art_tier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "integer 0..5",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-6f9e5874ecd348eeb2da26dfbc3d6975",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier(operation: \"binding\", tierJson: \"-1\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0294929",
+      "structuredOutput": [
+        {
+          "operation": "binding",
+          "tierJson": "-1",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.binding",
+              "Severity": 2,
+              "Message": "spiritual art tier должен быть integer 0..5.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_invalid_art_tier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "integer 0..5",
+              "Actual": "-1",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-f01b76d71fa046dc945384344b56f2cc",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier(operation: \"force_binding\", tierJson: \"\\\"3\\\"\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.0304507",
+      "structuredOutput": [
+        {
+          "operation": "force_binding",
+          "tierJson": "\"3\"",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.force_binding",
+              "Severity": 2,
+              "Message": "afterlifeCombatProfile.artTiers содержит неизвестный spiritual art id.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_unknown_art",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "binding/break_binding/champion_coordination/counter/guard/incarnation_resistance/maneuver/pressure/spiritual_healing/spiritual_resilience",
+              "Actual": "force_binding",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-9cd2c44612794dfebbd6e0532f94c8fe",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileAcceptsExactTierThree(operation: \"binding\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0331799",
+      "structuredOutput": [
+        {
+          "operation": "binding",
+          "tierJson": "3",
+          "missingArt": null,
+          "issues": []
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-047f50a62c4f4db9ab6ef143edcb894d",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileAcceptsExactTierThree(operation: \"force_binding\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.0366108",
+      "structuredOutput": [
+        {
+          "operation": "force_binding",
+          "tierJson": "3",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.force_binding",
+              "Severity": 2,
+              "Message": "afterlifeCombatProfile.artTiers содержит неизвестный spiritual art id.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_unknown_art",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "binding/break_binding/champion_coordination/counter/guard/incarnation_resistance/maneuver/pressure/spiritual_healing/spiritual_resilience",
+              "Actual": "force_binding",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-15b8e3dd862841bdb72f366c00157b96",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier(operation: \"binding\", tierJson: \"1.5\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0305078",
+      "structuredOutput": [
+        {
+          "operation": "binding",
+          "tierJson": "1.5",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.binding",
+              "Severity": 2,
+              "Message": "spiritual art tier должен быть integer 0..5.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_invalid_art_tier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "integer 0..5",
+              "Actual": "1.5",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-ab149bd5b9d64bb9a1cb8efaa2c13808",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier(operation: \"force_binding\", tierJson: \"-1\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.0303456",
+      "structuredOutput": [
+        {
+          "operation": "force_binding",
+          "tierJson": "-1",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.force_binding",
+              "Severity": 2,
+              "Message": "afterlifeCombatProfile.artTiers содержит неизвестный spiritual art id.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_unknown_art",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "binding/break_binding/champion_coordination/counter/guard/incarnation_resistance/maneuver/pressure/spiritual_healing/spiritual_resilience",
+              "Actual": "force_binding",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-32415acc240d4e45bde66afa28df9e00",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_SignedOriginalUsesExactCostAuthority(variant: \"audit_tier\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.2218623",
+      "structuredOutput": [
+        {
+          "variant": "audit_tier",
+          "Issues": [
+            {
+              "FilePath": "activeConflict.exchangeLog[1].actionCostAudit.player.artTier",
+              "Severity": 2,
+              "Message": "actionCostAudit.player.artTier должен совпадать с pre-turn authority профилем, а не задаваться GM произвольно.",
+              "Category": 1,
+              "Code": "afterlife_conflict_action_cost_art_tier_authority_mismatch",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "3",
+              "Actual": "2",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-cdefc45776bc49d7bc8e423c08bc91bc",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRequiresExplicitWoundArts(missingArt: \"spiritual_resilience\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0439536",
+      "structuredOutput": [
+        {
+          "operation": "binding",
+          "tierJson": "3",
+          "missingArt": "spiritual_resilience",
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.spiritual_resilience",
+              "Severity": 2,
+              "Message": "Профиль должен явно содержать тир духовной стойкости и духовного исцеления.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_missing_art_tier",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "integer 0..5",
+              "Actual": "missing",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-e77454ed1dbb45798bc34d052d828424",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.BindingAuthority_RawProfileRejectsInvalidTier(operation: \"force_binding\", tierJson: \"null\")",
+      "outcome": "Failed",
+      "duration": "00:00:00.0301932",
+      "structuredOutput": [
+        {
+          "operation": "force_binding",
+          "tierJson": "null",
+          "missingArt": null,
+          "issues": [
+            {
+              "FilePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers.force_binding",
+              "Severity": 2,
+              "Message": "afterlifeCombatProfile.artTiers содержит неизвестный spiritual art id.",
+              "Category": 1,
+              "Code": "afterlife_combat_profile_unknown_art",
+              "Actor": null,
+              "Section": "AfterlifeSpiritualConflict",
+              "Expected": "binding/break_binding/champion_coordination/counter/guard/incarnation_resistance/maneuver/pressure/spiritual_healing/spiritual_resilience",
+              "Actual": "force_binding",
+              "RepairHint": null
+            }
+          ]
+        },
+        {
+          "CleanupOwnedRoot": "/tmp/boe-resource-materialization-b84dbc8a8d214edaba34966ecfec6a14",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null,
+          "ObservedAbsentAfterRun": true
+        }
+      ]
+    }
+  ]
+}

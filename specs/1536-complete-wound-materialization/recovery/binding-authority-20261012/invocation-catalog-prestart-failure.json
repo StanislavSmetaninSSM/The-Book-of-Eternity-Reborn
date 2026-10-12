@@ -1,0 +1,16 @@
+{
+  "source": "6236a7367dd0384ca7707b03ea8a99d4810b6afc",
+  "argv": [
+    "pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-ValidateCatalog"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "startedUtc": "2026-10-12T04:28:09.581200+00:00",
+  "scope": "official new-membership discovery only; zero test execution",
+  "launchError": "FileNotFoundError: [Errno 2] No such file or directory: 'pwsh'",
+  "runnerStarted": false,
+  "testExecutionCount": 0
+}

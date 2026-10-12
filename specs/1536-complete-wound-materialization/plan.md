@@ -25,9 +25,9 @@ The original spec, plan, tasks and accepted child evidence remain authoritative.
 The completed recovery/design phase superseded historical pauses for planning
 and stale cold-UNRUN wording below. The coordinator's subsequent bounded B2
 implementation release and current execution gates are recorded immediately below.
-No project code, build, test, discovery, game, native worker or provider process
-was run for this block. Only plan/tasks change; no spec, GM contract, catalog,
-selection or global CI change. **Independent Astra XHigh DESIGN ACCEPTED**, no
+The completed design phase ran no project code, build, test, discovery, game,
+native worker or provider process and changed only plan/tasks. Subsequent bounded
+preparation and first RED are recorded below; global selection and CI are unchanged. **Independent Astra XHigh DESIGN ACCEPTED**, no
 findings, on reviewed `d6284c72b3d5d67deed9027b893de4c4627b144a`; the coordinator
 also verified the actual full docs-only diff, remote SHA, clean tree and diff check.
 This verdict accepts the design only; the subsequent implementation release is
@@ -37,7 +37,54 @@ are not build/runtime qualification. Preserve WorldQuest/Meta optimizations and
 all accepted correctness fixes. No main/merge/issue closure, HOME-PC, paid provider,
 timeout increase or performance redesign belongs to this block.
 
-### B2 implementation release / test-only WIP — 2026-10-12
+### B2 first causal RED preserved — 2026-10-12
+
+Independent SOURCE/FIXTURE/SELECTION review and coordinator inspection accepted
+`6236a7367dd0384ca7707b03ea8a99d4810b6afc`. On that unchanged source, preparation
+and the coordinator-released first cheap actual produced the expected result.
+Full immutable evidence is in [binding-authority packet](./recovery/binding-authority-20261012/manifest.json):
+23 original artifacts with stored/raw SHA-256 pins, 12 source-file pins, exact
+compile/run source, fresh selected DLL/PDB hashes, invocation/console logs, full
+summary/TRX and all cleanup receipts. No production correction or cold run yet.
+
+Commands use retained `/workspace/boe-cloud-tools-20261011/env.sh`, PowerShell 7:
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog`: run
+  `20261012-042838-097-244546-af551100ff684de4930347037d009510-categories`, PASS,
+  fresh integration/unit builds, 676 categories / 11,510 methods/files, zero unmapped
+  or stale selectors, **zero tests**, 163.4182200s. This is the one new-membership
+  audit; do not repeat it on unchanged membership. Integration has 74 warnings,
+  unit 35, zero errors; one new xUnit2031 at the filtered Assert.Single is recorded.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-binding-authority-preflight.json -PlanOnly -NoBuild`:
+  run `20261012-043139-789-244996-217422d7f81e4387bf9529fa04583cd3-categories`, PASS,
+  2.4849171s, exactly five methods / 21 cases / one descriptor, **zero tests**.
+  It uses the audit's fresh build with all ten DLL/PDB pins unchanged.
+- Same task-local command with `-NoBuild` and without `-PlanOnly`: first actual
+  `20261012-043243-674-245278-36d2cd6cead64d3badbdac9003338956-categories`,
+  **15 PASS / 6 FAIL**, all 21 executed, one descriptor completed, 7.7581896s.
+  All six failures have the sole ordinary raw soul `force_binding` unknown-art
+  diagnostic at the exact artTiers path. Tier3 admission is the causal RED;
+  the five force-key invalid-tier predicates remain UNREACHED behind that gate.
+  Known binding tier bounds, both unknown/excluded keys, both required wound arts,
+  and all five signed exact-key cost-authority scenarios pass. This is expected
+  test-first failure, not a GREEN category or gameplay acceptance.
+
+All commands retain category5/default runner10 bounds where applicable; no timeout,
+duplicate IDs, underfill or skipped cases. Runner-owned tree/runtime cleanup passed;
+21 distinct fixture receipts and subsequent physical root absence were checked.
+Selected integration DLL SHA-256 `b0ef8868921e5c38fe537ccf9574c60069a2134edc029d7a3601c15b03697892`;
+selected runtime DLL `4634ddd44882ccfdb5fbb00793e7e7191b1096e67a93dce77515fd5b8c6d88eb`.
+All ten compiled-file pins matched immediately before and after actual execution.
+A prior bare-PATH launcher FileNotFoundError for pwsh occurred before any runner
+started; its separate receipt is retained and is not a build/test/cold attempt.
+
+Coordinator independently read all summary/TRX outcomes, causal diagnostics,
+21 cleanup receipts and actual root absence; the packet's independent causal-RED/
+evidence gate is next. Freeze this packet before any correction. Only that gate
+permits the minimal force_binding whitelist fix, focused GM clarification/example/
+guards and the small analyzer cleanup, followed by fresh selected GREEN. The
+single cold owner remains unrun; B2–B5 remain OPEN and no #1536 acceptance is claimed.
+
+### Historical B2 implementation release / test-only WIP — 2026-10-12
 
 The coordinator accepted the published design checkpoint `95497c0a37019d781129aa6ee467900374bdd583`
 and released this bounded implementation. The prior unreleased statements describe
@@ -227,10 +274,9 @@ or rerun of unchanged passes. After two unsuccessful corrections of the same
 problem, stop and revisit the hypothesis. A real tool/security denial stops the
 operation with its exact text/ID recorded; no bypass. B2–B5 stay OPEN even if this
 one blocker passes until their existing coherent review/evidence obligations are
-met. The next bounded action is source/fixture review of the published test-only
-WIP described above, followed by fresh selected preparation and coordinator-released
-cheap actual. Preserve first outcomes before correction; production and the single
-cold owner remain gated by the reviewed RED/GREEN prerequisites.
+met. The next bounded action is independent causal-RED/evidence review of the
+published packet above. Preserve first outcomes before correction; production and
+the single cold owner remain gated by the reviewed RED/GREEN prerequisites.
 
 ## Historical completion checkpoint — resumed 2026-09-30
 

@@ -16,10 +16,9 @@ ordinary-profile preflight → source/fixture gate → fresh selected PlanOnly b
 → one cold owner sequence. Independent Astra XHigh DESIGN ACCEPTED with no findings
 on `d6284c72b3d5d67deed9027b893de4c4627b144a`; coordinator diff/remote/clean-tree/
 diff-check verification also passed. The subsequent staged implementation release
-is recorded below. Next: source/fixture review of the published test-only WIP,
-then fresh selected preparation and coordinator-released cheap actual, preserving
-first outcomes. No runtime/build/test/discovery occurred in the design or current
-test-authoring block; no B2–B5 checkbox changes or gameplay acceptance.
+is recorded below. First causal RED and preparation are now preserved in the
+current plan/packet; independent causal-RED/evidence review is next before any
+production correction. No B2–B5 checkbox changes or gameplay acceptance.
 
 The old cold-UNRUN statement is historical: #1553's preserved packet has composed
 9 PASS, cold force-binding 1 FAIL (`afterlife_combat_profile_unknown_art`) and
@@ -29,7 +28,21 @@ engine recovery does not prove a new process. Earlier pauses are superseded only
 for this authorized recovery/design work. Remaining #1536 producers, treatment,
 spiritual healing/recovery and UI work remain open; category-only policy applies.
 
-Implementation release 2026-10-12: the coordinator accepted design checkpoint
+First RED checkpoint 2026-10-12: SOURCE/FIXTURE/SELECTION accepted6236a736;
+one fresh catalog audit PASS676categories/11510methods (zero execution), then
+exact PlanOnly PASS5methods/21cases (zero execution, matching fresh binaries).
+Coordinator-released first cheap actual043243 completes21/21:15PASS/6causalFAIL,
+sole raw force_binding unknown-art on each failure, tier predicates UNREACHED
+there; all signed-cost controls PASS. No timeout/duplicates/skip/underfill; runner
+cleanup and21/21 owned-root receipts/physical absence confirmed. Full immutable
+[packet](./recovery/binding-authority-20261012/manifest.json) preserves23artifacts,
+12source pins and10DLL/PDB pins, commands/summary/TRX/first diagnostics, plus the
+separate pre-start missing-pwsh receipt. No production or cold changes/runs.
+Independent causal-RED/evidence review gates the narrow correction and finite GM
+clarification/guards; B2–B5 stay OPEN. One new analyzer warning is retained for
+small cleanup after this first outcome is frozen; catalog membership is unchanged.
+
+Historical implementation release 2026-10-12: the coordinator accepted design checkpoint
 95497c0a and authorized the bounded B2 sequence. Current test-only WIP adds
 `AfterlifeResourceCutoverTests.SpiritualBindingAuthority.cs` (five methods/21 cases),
 finite owner `spiritual-binding-authority-preflight` and task-local

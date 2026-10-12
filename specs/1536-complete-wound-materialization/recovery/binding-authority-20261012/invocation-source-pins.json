@@ -1,0 +1,53 @@
+{
+  "source": "6236a7367dd0384ca7707b03ea8a99d4810b6afc",
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingAuthority.cs",
+      "sha256": "1450d62c32d976126a56c4dba78351b32e66791e2a8cfaadf73d4f4a14efc1b1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs",
+      "sha256": "5eb7c6b3e08dd6e3c8893ff848703be497dc976aafb1251328b3646694b7a0c1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrame.cs",
+      "sha256": "0b8d6a57e013566e6ae4782821d161a6f101dd7c53916af88d472a662f1904fa"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSourceTransaction.cs",
+      "sha256": "ce2ad1cd2270ebc3912e1d327dcbdb7f6d303f279d95e1f81d45128e47d1a828"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+      "sha256": "5eb03db7c9b75486404bb4219d79b62d8c6981d63f06af31a8e4dd07529e1e6f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs",
+      "sha256": "9c05faa1fe96fa41a119a9938802d273bf31b717333904d52826c7c4aa299baf"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentCostProjection.cs",
+      "sha256": "0345d8a44b3e87dd196a78fc1b56fbb7ce0249f88ad71cbf81efb9a8c9ef5e3b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceMissingAudit.cs",
+      "sha256": "c4efa1cbb09d481f701c7ffdcddbc633c5884f90c00587597618af6e65b8cbff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs",
+      "sha256": "5d6b770bdf7a4bde1429addbb89cd8354fee99303716dc4ef8106e128eec5ebc"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "75c6ed68f80d682bde437c94a033351c4c19e2386f07f8e5f9cd8a41e287833c"
+    },
+    {
+      "path": "tests/selections/1536-binding-authority-preflight.json",
+      "sha256": "992e6744aa3b70743659617f6b6a787ad71157a9f1504cf503b4f0bb52215cc5"
+    }
+  ]
+}
