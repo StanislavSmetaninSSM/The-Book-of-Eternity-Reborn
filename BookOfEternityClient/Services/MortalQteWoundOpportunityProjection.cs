@@ -37,9 +37,14 @@ internal static class MortalQteWoundOpportunityProjection
             if (snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal)) return null;
             throw new InvalidDataException("mortal_qte_projection_uncovered_root: " + path);
         }
-        JsonObject? Object(string path) => Read(path) is { } json
-            ? StrictJsonAuthority.Deserialize<JsonObject>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed,
-                "Mortal QTE opportunity signed carrier") : null;
+        JsonObject? Object(string path)
+        {
+            var json = Read(path);
+            if (json is null) return null; // Only the official snapshot's observed absence.
+            return StrictJsonAuthority.Deserialize<JsonObject>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed,
+                "Mortal QTE opportunity signed carrier") ??
+                throw new InvalidDataException("mortal_qte_projection_authority_invalid: signed_present_carrier_null@" + path);
+        }
         var pending = MortalWoundOccurrenceState.Parse(Read(MortalWoundOccurrenceState.StatePath) ??
             "{\"schemaVersion\":1,\"occurrences\":[]}", MortalWoundOccurrenceState.StatePath);
         var receipts = MortalWoundOpportunityReceiptState.Parse(Read(MortalWoundOpportunityReceiptState.StatePath) ??

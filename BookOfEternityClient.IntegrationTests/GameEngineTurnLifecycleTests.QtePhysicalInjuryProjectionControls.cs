@@ -45,6 +45,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("missing_candidate")]
     [InlineData("corrupt_later_sibling")]
     [InlineData("receipt")]
+    [InlineData("signed_present_null_carrier")]
     public async Task QtePhysicalProjection_ValidatesTheEntireSignedBatchBeforeSelectingFirst(string mutation)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
@@ -81,6 +82,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             case "receipt":
                 await _fs.WriteFileAtomicAsync(MortalWoundOpportunityReceiptState.StatePath, "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[{}]}");
                 break;
+            case "signed_present_null_carrier":
+                await _fs.WriteFileAtomicAsync(WoundCarrierCatalog.PlayerPath, "null");
+                break;
         }
         await _fs.WriteFileAtomicAsync(MortalWoundOccurrenceState.StatePath, root.ToJsonString());
         // Component control: the production baseline writer observes the deliberately corrupted
@@ -115,6 +119,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             else
             {
+                if (mutation == "signed_present_null_carrier")
+                {
+                    var covered = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, [WoundCarrierCatalog.PlayerPath]);
+                    Assert.True(covered.Success, JsonSerializer.Serialize(covered.Issues));
+                    Assert.DoesNotContain(WoundCarrierCatalog.PlayerPath, covered.Snapshot!.AbsentLogicalPaths);
+                    Assert.Equal("null", Encoding.UTF8.GetString(covered.Snapshot.ReadRequiredBytes(WoundCarrierCatalog.PlayerPath)).TrimStart('\uFEFF'));
+                }
                 var failure = Assert.Throws<InvalidDataException>(() => MortalQteWoundOpportunityProjection.ReadCurrent(_fs, lease));
                 Assert.Contains("mortal_qte_projection_authority_invalid", failure.Message, StringComparison.Ordinal);
                 WritePhysicalInjuryDiagnostic("qte_projection_full_batch_refusal", new { mutation, failure.Message });

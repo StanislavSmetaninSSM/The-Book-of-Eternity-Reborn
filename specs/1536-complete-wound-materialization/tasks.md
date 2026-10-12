@@ -5,14 +5,22 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (PROJECTION CAUSAL RED EVIDENCE ACCEPTED87b5; MINIMUM SAFE-PROJECTION SOURCE/FIXTURES/SELECTION READY; CHECKS UNRUN)
+## Current T070 boundary — 2026-10-12 (PROJECTION CAUSAL RED EVIDENCE ACCEPTED87b5; ONE IMPORTANT SIGNED-PRESENT-NULL FINDING CORRECTED; NARROW SOURCE READY; CHECKS UNRUN)
 
 Actual retained Astra XHigh proper consumer projection causal RED EVIDENCE/status accepted
 87b5e355a2e6bbec7c2edc803462e2dd275e27f6; historical17-artifact packet and pre-review manifest
 remain byte unchanged. First production/staging WIP published1f03ec9417a9a7dc84eddc04333237b1c711a2fe,
 exact remote/clean435-file selected GitHub recovery checked by root; that publication is not
-SOURCE acceptance. Current source/test/docs/selection candidate is READY for root publication
-and mandatory independent SOURCE/FIXTURE/SELECTION review. Build/discovery/catalog/PlanOnly/
+SOURCE acceptance. Full source/fixtures/selection published4e5268d91bea3ff01f4962761752504d769e37e4 was reviewed
+by actual retained Astra XHigh: BLOCKED by exactly one Important finding, signed-present JSON
+null carrier conflated with observed absence; all other full source/staging/fixture/selection
+checks were statically acceptable. Current narrow correction is SOURCE READY for publication
+and focused independent re-review: only Read(path)==null (official observed absence) may return
+null; a covered carrier must deserialize to a non-null JsonObject or refuse authority. One
+signed-present-null player-carrier row joins the existing bounded full-batch theory; it first
+proves genuine original QTE+receipt/positive occurrence and official next snapshot coverage
+of exact JSON null, then requires authority-invalid refusal. This is an unrun preservation
+control/component snapshot-writer check, not newly observed RED or an engine vertical claim. Build/discovery/catalog/PlanOnly/
 runtime for this candidate are ALL UNRUN; cached compile4b binaries are not fresh for it.
 
 TurnRequest.woundOpportunities defaults to[]; write-free projection uses only the genuine
@@ -34,15 +42,15 @@ browser also observes actual staged-proof request/manifest/authority agreement. 
 browser guard or capsule lifetime change. Direct stage controls are component evidence,
 not substitutes for the unchanged actual ProcessPlayerTurn causal Fact.
 
-Finite preparation inventory:18 methods/25 cases/8 descriptors across6 categories, protective
+Finite preparation inventory:18 methods/26 cases/8 descriptors across6 categories, protective
 default24 minutes (5 preparation +5 causal +14 remainder). FIRST matching actual causal GREEN
 must use the original unchanged1-method/1-case/1-descriptor selector, category5/default10,
-then freeze/review its outcome. Controls remainder excludes that method:17 methods/24 cases/
+then freeze/review its outcome. Controls remainder excludes that method:17 methods/25 cases/
 7 descriptors across5 categories, default19 (5 + budgets14); no passing causal rerun.
 
 | Task-local owner | Exact methods / cases / descriptors | Budget minutes |
 | --- | --- | --- |
-| qte-physical-opportunity-projection-controls | 3 new integration theories / 9 cases / 1 | 5 |
+| qte-physical-opportunity-projection-controls | 3 new integration theories / 10 cases / 1 | 5 |
 | qte-physical-opportunity-snapshot-presence | 1 changed unit Fact + 2 changed integration methods (1 Fact/2-row theory) + 1 new prior19 Fact / 5 cases / 2 | 2 |
 | qte-physical-opportunity-browser-staging | 5 exact existing browser Facts / 5 cases / 1 | 3 |
 | qte-physical-opportunity-event-order | 3 exact existing typed behavior Facts / 3 cases / 1 | 2 |
@@ -56,7 +64,7 @@ existing consumers; old catalog suffix and global CI/selection stay unchanged. S
 methods plus one method rename predict11532 discovered methods/700 categories; this is
 static inventory, not discovery evidence. New controls include signed pristine/explicit
 empty roots versus later live corruption, successful actual bounded sibling projection,
-corrupt event order/missing candidate/later invalid sibling/receipt refusal before safe
+corrupt event order/missing candidate/later invalid sibling/receipt/signed-present-null carrier refusal before safe
 selection, prior19 uncovered absence, exact console/browser request/proof, and named
 competing request/staged consumer/rollback failure controls. Named pure dependencies prove
 canonical candidate ordinal order and full historical event rebind; they do not fabricate
