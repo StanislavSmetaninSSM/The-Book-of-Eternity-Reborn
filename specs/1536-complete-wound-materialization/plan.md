@@ -9,8 +9,51 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (CAUSAL1/REMAINDER FIRST5PASS1FAIL EVIDENCE ACCEPTED; MINIMAL PENDING-CORRELATION SOURCE READY; NEXT12METHODS16CASES UNRUN)
+## Current T070 first vertical — 2026-10-12 (PRODUCER CORRECTION GREEN16/16 ROOT VERIFIED; EVIDENCE PENDING; CURRENT22 UNIQUE CASES PASSED; N+1 CONSUMER UNRUN)
 
+Current producer correction SOURCE/FIXTURE/SELECTION accepted625640bc; root verified
+matching80 source/10 fresh binary pins before/after. Fresh both-project PlanOnly171124
+completed0 errors,integration77/unit35 warnings,141.2152915s,12 methods/16 cases/6 descriptors
+and0 tests. Matching catalog171436 validates694 categories/11525 methods,0 stale/unmapped,
+5.3501567s and0 tests. Preparation/catalog counts are discovery-only, not runtime PASS.
+
+FIRST MATCHING CORRECTION ACTUAL native run
+20261012-171542-112-327818-7c30b659fcb748569b2a87f86d94241c-categories,
+runtime/compile625640bc,exit0,33.2444267s,12 methods/16 cases/6 descriptors complete:
+16 executed/16 PASS/0 FAIL,no timeout/duplicates. Root parsed all6 TRX files and34 native
+Boundary JSON observations. Ten distinct emitted strict owned roots, including bounded seed,
+were actually gone; the two unchanged continuation controls emitted no stdout root receipts,
+so none are invented for them. Actual bounded canonical pending session/request/turn agrees
+with the validated source capsule: session_qte_story_append,
+requestb453f580401e4dd8acd5a39891853106,snapshot
+7B323BC95223BC15382A951905B2E942AF66157DAB0A7BBCBB5F6531BAF447FC,source turn42.
+Final physical occurrence retains the same original coordinates, explicit maximum2,
+candidate0/count1 and all6 ordered accepted events: resource_mutation,effect_boundary,
+effect_activation,effect_terminal_last_use,resource_mutation,effect_boundary. Actual selected
+Damage5 plus bounded receipt Damage2 gives canonical health160→153. The [28-artifact first
+correction GREEN packet](./recovery/qte-physical-producer-correction-first-green-20261012)
+is being frozen by root; remote publication and independent EVIDENCE review remain PENDING.
+
+CURRENT producer qualification cohorts are causal1 PASS + first remainder5 PASS/1 FAIL +
+correction16 PASS:23 executed,22 PASS/1 FAIL across3 actual runs;22 unique cases in16 methods
+have now passed. The first correlation FAIL remains immutable. Passed5 and accepted causal1
+were not repeated. These are current producer cohorts only, not counts of all historical
+#1536 runs; original174 causal RED, story/admission/preparation packets and all prior evidence
+stay separate and unchanged. Producer runtime coverage is root verified at this boundary;
+independent correction EVIDENCE acceptance is pending, no full T070/#1536 closure.
+
+The next consumer proposal is read-only/unwritten/UNRUN: one real N42 finalized QTE source →
+normal N43 ProcessPlayerTurn/official snapshot → missing safe woundOpportunities projection
+causal Fact, proposed5/default10. No consumer test/source/category/selector has been authored.
+N+1 none/create/live receipt consumption/replay/atomic publication and after-terminal archive
+save/load with fresh process remain future required work. Old terminal capsule lifetime is
+only a source reachability hypothesis, with no verified unconditional next-turn caller or
+patch. All checkboxes/full first vertical remain OPEN; historical B2–B5 accepted33PASS,
+GameEngine cold count1 and original causal SHA256 remain unchanged. This current checkpoint
+changes ONLY plan/tasks metadata; source/tests/rules/catalog/selectors remain625640bc.
+Mutations STOPPED for root immediate publication with the forthcoming packet before review.
+
+Historical correction source READY (fresh checks completed above):
 First remainder EVIDENCE accepted by actual retained Astra XHigh at published
 4a4aac1cd837de57fb1a6755a5d48f435c140907; root verified357 selected recovery files exact,
 no recovery execution. Native first6=5 PASS/1 FAIL and other15 UNRUN remain immutable;
