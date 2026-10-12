@@ -62,6 +62,25 @@ public class StateDistributor
         return await DistributeWithOwnedLeaseAsync(response, acceptedWoundInput);
     }
 
+    // File-GM admission stages only the independently parsed accepted wound command.
+    // General response fields and output files are never redistributed by this seam.
+    internal static async Task<byte[]?> StageAcceptedWoundCommandAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput)
+    {
+        files.EnsureCanonicalWriteLeaseActive(lease);
+        var command = ResolveAcceptedWoundCommand(response, acceptedWoundInput);
+        if (command is null) return null;
+        var path = AcceptedMechanicsPlan.WoundCommandPath;
+        if (await files.ReadFileBytesAsync(lease, path) is not null)
+            throw new InvalidDataException("mortal_wound_decision_competing_command: preserve the existing command before-image.");
+        var committed = await CoordinatedStateWriteHelper.TryCommitAsync(files, lease,
+            new CoordinatedStateWriteHelper.PlannedWrite(path, null, command.Root.ToJsonString(JsonOpts),
+                RequireCurrentBaseline: true, ExactPrevious: new CanonicalBeforeImage(false, null)));
+        if (!committed) throw new InvalidDataException("mortal_wound_decision_command_changed: staging before-image changed.");
+        return await files.ReadFileBytesAsync(lease, path);
+    }
+
     private async Task<List<string>> DistributeWithOwnedLeaseAsync(
         GameResponse response, WoundResponseInputCompositionResult? acceptedWoundInput)
     {

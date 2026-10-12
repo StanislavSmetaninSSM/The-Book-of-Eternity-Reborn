@@ -5,59 +5,54 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (COMMON NONE/CREATE CONSUMER FIRST SOURCE MIDPOINT WIP; BOTH CAUSAL RED EVIDENCE ACCEPTED; STAGING/PUBLICATION UNFINISHED)
+## Current T070 boundary — 2026-10-12 (COMMON NONE/CREATE CONSUMER SECOND SOURCE MIDPOINT WIP; STAGING/PRISTINE READS WRITTEN; RECEIPT ASSEMBLY UNFINISHED)
 
-COMMON NONE/CREATE consumer implementation is SOURCE WIP on published base
-c7b99a85de7df775ffe2c46c187c8f70ddd9d58c. Actual retained Astra XHigh accepted CREATE
-causal RED EVIDENCE/status at that carrier; NONE causal RED EVIDENCE/status remains
-accepted4010b6584a9ddabb5cea5352198ca32dff5d2102. Both unchanged actual engine Facts
-remain separately1 actual/1 executed/0 PASS/1 FAIL; later receipt/complete-wound oracles
-remain UNREACHED. Producer qualification accepted1b23 executed/22 PASS/1 FAIL and
-projection qualification accepted4d4 actual/28 executed/26 PASS/2 FAIL are unchanged.
-All frozen first-outcome packets and original ce955 producer causal Fact remain immutable.
+COMMON NONE/CREATE consumer implementation remains SOURCE WIP. First strict-draft/
+signed-pristine component midpoint was published436a9e0db13c3816c781f633ec92c1d21e4c431d;
+ROOT verified exact remote and556-file selected recovery without project execution or source
+acceptance. Both genuine causal REDs remain accepted: NONE4010 missing durable receipt and
+CREATEc7 missing complete canonical player wound after full actual N43 completion. Both
+unchanged Facts remain separate1 actual/1 executed/0 PASS/1 FAIL; later oracles UNREACHED.
+Producer accepted1b23 executed/22 PASS/1 FAIL and projection accepted4d4 actual/28 executed/
+26 PASS/2 FAIL are unchanged. All historical packets/checklists/protected causal Facts stay
+immutable; no previously passing cohort is repeated.
 
-First stopped source midpoint: existing MortalQteWoundOpportunityProjection now exposes
-its same official Reader/observed-root reads; projection authority and selection semantics
-are unchanged. MortalWoundOpportunityAdapter admits only one strict raw closed NONE or
-materialize object and the exact signed first eligible offered reference. Recursive raw
-duplicate/case-confusable detection precedes conversion; exact field names/shape reject
-single wrong-case, unknown/missing/null/foreign input. Source correlation is reconstructed
-internally from the official signed occurrence after full existing projection/batch/carrier/
-history checks, never supplied by GM JSON. An empty signed projection permits no draft.
-Existing adapter receipt/history reads now accept virtual empty values ONLY for official
-signed-observed absence; covered null/corruption/deletion never becomes pristine and the
-live partition still checks signed prefixes and exact pending/receipt/history agreement.
-These virtual values are in memory: no empty canonical roots are written.
+Second stopped source midpoint adds the actual GameEngine validation/repair callback under
+the existing canonical lease after resource/owner admission and before effect→wound planning.
+Only already-successful upstream admission invokes Mortal draft staging. StateDistributor
+now has an accepted-command-only seam reusing its strict command/response/scene checks;
+it never redistributes general response fields or output files and refuses existing foreign
+commands. The engine records only command bytes it actually issued; each repair iteration
+revokes matching owned bytes, invalidates common/effect cache, and preserves a foreign
+replacement. Resource-validation refusal likewise revokes the owned command. New wound-planning
+reads use official observed-optional roots; only signed-observed absence becomes in-memory
+pristine identity/history/pending/receipt values. Exact missing-before versus present-before
+client-owned checks remain enforced; covered null/corruption is not treated as absence.
+The exact transient output/mortal_wound_decisions.json path is excluded through existing
+SaveLoad EphemeralControlFiles, shared by save/import/cleanup. Archive behavior is UNRUN.
 
-Tests were authored before this midpoint's production changes, using the already observed
-NONE/CREATE engine causal REDs as the implementation basis. One new component theory has
-10 rows: valid_none, missing, json_null, duplicate, case_alias, wrong_case, unknown, foreign,
-receipt_null, history_null. Every row first uses an independently owned actual QTE source42
-with health155/real occurrence, then the production next43 baseline writer and official
-Reader. It observes genuine pristine absence or deliberately covered null and requires
-composition/refusal with an exact unchanged file tree. This is component admission coverage,
-not full actual N43 consumer publication or a newly observed RED. Exact owner
-qte-physical-injury-consumer-draft has budget5/default10 and one task-local selection;
-all prior702 catalog nodes/global selection/CI are unchanged. Static expected inventory is
-703 categories/11535 methods; discovery has NOT run for this WIP. New category selection
-is1 method/10 cases/1 descriptor by source accounting, all UNRUN.
-[Draft component selection](../../tests/selections/1536-qte-physical-injury-consumer-draft.json)
+The existing first-midpoint component control remains1 theory/10 rows, budget5/default10,
+[exact draft selection](../../tests/selections/1536-qte-physical-injury-consumer-draft.json).
+It uses independently owned actual QTE42/health155/occurrence then production N43 baseline
+writer/official Reader: valid_none/missing/json_null/duplicate/case_alias/wrong_case/unknown/
+foreign/receipt_null/history_null. Component admission is not full N43 engine publication.
+All703 catalog nodes/source-planned11535 methods are unchanged by this second midpoint;
+new discovery/catalog has NOT run. Old702 catalog suffix, global selection/CI, original
+ce955 and NONE/CREATE/projection Facts/selectors remain unchanged. All new controls UNRUN;
+no newly authored negative is claimed as an observed RED.
 
-Engine validation/repair staging, accepted-command-only StateDistributor seam, signed
-pristine support inside wound planning, final typed-history PlanConsumeAndAppend/common
-receipt companion publication/zero-transition draft+command consumption, transient archive
-exclusion, remaining finite controls/combined selectors and six GM guidance/example/guard
-surfaces are UNFINISHED at this midpoint. The actual resource-validation call already enters
-wound planning, so staging must join that existing pipeline after resource admission and
-before wound planning, rather than run after a completed resource-plan cache. No producer
-or projection behavioral patch, separate writer, re-signed snapshot, HP-derived severity,
-new authority architecture or archive generation rebind is introduced. SOURCE review,
-build, discovery/catalog and runtime for this entire WIP are UNRUN/PENDING. No project
-execution by the writer. Mutations STOPPED for immediate ROOT WIP publication/recovery;
-resume remaining connected wiring/controls/docs only from ROOT's published checkpoint.
-
-Full consumer replay/rollback/atomicity and actual after-terminal save-load/new-root/
-fresh-process remain unimplemented/unrun; T070/FR-063/parent/#1536 checkboxes stay OPEN.
+Common receipt/pending companion assembly after final typed wound history, exact raw draft/
+scene/owned-command checks at final common input sealing, NONE zero-transition draft+command
+consumption without WoundPublication, connected retry/rollback/resubmission controls and
+combined preparation/remainder selectors are UNFINISHED. Six actual GM guidance/example/
+manifest/guard/runtime-prompt surfaces are UNFINISHED and no new capability is claimed.
+Existing Prepare→effect→Finalize and sole1535 allocator/FR057+FR065 anchors are retained;
+no separate receipt writer, second reduction, re-signed snapshot or new authority framework.
+SOURCE/FIXTURE/SELECTION review, build, discovery and runtime for both WIP midpoints remain
+UNRUN/PENDING. Mutations STOPPED for immediate ROOT source WIP publication/recovery, then
+resume remaining connected assembly/controls/docs only from ROOT's published checkpoint.
+Full consumer replay/atomicity and actual after-terminal save-load/new-root/fresh-process
+remain unimplemented/unrun; T070/FR-063/parent/#1536 checkboxes stay OPEN.
 
 Historical CREATE first-result metadata below records its pre-EVIDENCE boundary;
 publication/EVIDENCE pending wording there is historical, superseded by acceptedc7 above.

@@ -198,7 +198,8 @@ public partial class ValidationService
         var snapshotRead = PendingTurnSnapshotReader.ReadCurrent(
             _fs,
             writeLease,
-            CanonicalWoundSnapshotReadPaths);
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
+                ["game_state/meta/soul_state.json"], CanonicalWoundSnapshotReadPaths));
         if (!snapshotRead.Success || snapshotRead.Snapshot is null)
         {
             issues.AddRange(snapshotRead.Issues);
@@ -246,7 +247,8 @@ public partial class ValidationService
 
         var preTurnBytes = CanonicalWoundSnapshotReadPaths.ToDictionary(
             static path => path,
-            snapshot.ReadRequiredBytes,
+            path => snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal)
+                ? snapshot.ReadRequiredBytes(path) : null,
             StringComparer.Ordinal);
         foreach (var path in new[]
                  {
@@ -267,19 +269,32 @@ public partial class ValidationService
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return null;
 
-        var preTurnJson = new Dictionary<string, string>(StringComparer.Ordinal);
+        var preTurnJson = new Dictionary<string, string?>(StringComparer.Ordinal);
         foreach (var (path, bytes) in preTurnBytes)
         {
+            if (bytes is null)
+            {
+                if (!snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal))
+                {
+                    issues.Add(WoundIssue(path, "wound_materialization_unobserved_absence",
+                        "official signed observed absence", "root is not covered or observed absent"));
+                    return null;
+                }
+                preTurnJson[path] = null;
+                continue;
+            }
             var json = DecodeWoundSnapshotJson(bytes, path, issues);
             if (json is not null)
                 preTurnJson[path] = json;
         }
         if (preTurnJson.Count != preTurnBytes.Count)
             return null;
-        var preTurnIdentityJson = preTurnJson[WoundIdentityState.StatePath];
-        var preTurnHistoryJson = preTurnJson[WoundHistoryState.HistoryPath];
-        var signedOccurrenceJson = preTurnJson[MortalWoundOccurrenceState.StatePath];
-        var signedReceiptJson = preTurnJson[MortalWoundOpportunityReceiptState.StatePath];
+        // Only the official reader's authenticated absence reaches these in-memory
+        // pristine values. Covered null/corruption remains the original non-null JSON.
+        var preTurnIdentityJson = preTurnJson[WoundIdentityState.StatePath] ?? "{\"schemaVersion\":1,\"entries\":[]}";
+        var preTurnHistoryJson = preTurnJson[WoundHistoryState.HistoryPath] ?? "{\"schemaVersion\":1,\"nextOrdinal\":1,\"transitions\":[]}";
+        var signedOccurrenceJson = preTurnJson[MortalWoundOccurrenceState.StatePath] ?? "{\"schemaVersion\":1,\"occurrences\":[]}";
+        var signedReceiptJson = preTurnJson[MortalWoundOpportunityReceiptState.StatePath] ?? "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}";
 
         var preTurnCarriers = new WoundCarrierCatalogInput(
             ParseWoundCarrierRoot(
@@ -975,15 +990,14 @@ public partial class ValidationService
 
     private async Task ValidateWoundClientOwnedBaselineAsync(
         string path,
-        byte[] preTurnBytes,
+        byte[]? preTurnBytes,
         FileSystemManager.CanonicalWriteLease writeLease,
         List<ValidationIssue> issues)
     {
-        ArgumentNullException.ThrowIfNull(preTurnBytes);
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
         var currentBytes = await _fs.ReadFileBytesAsync(writeLease, path);
-        if (currentBytes is not null &&
+        if (preTurnBytes is null ? currentBytes is null : currentBytes is not null &&
             currentBytes.AsSpan().SequenceEqual(preTurnBytes))
         {
             return;

@@ -468,7 +468,8 @@ public partial class GameEngine
 #if DEBUG
             using var diagnosticAcceptedCaller = _fs.BrowserDiagnosticLogical(null, "accepted-validation-loop");
 #endif
-            rawIssues.AddRange(await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
+            rawIssues.AddRange(await ValidateResourceAndMortalQteDecisionAsync(
+                !rawIssues.Any(static issue => issue.Severity == IssueSeverity.Error)));
             if (spiritualAdmission == SpiritualContinuationAdmission.RequiresInitialResourceValidation &&
                 !rawIssues.Any(issue => issue.Severity == IssueSeverity.Error))
             {
@@ -1539,7 +1540,8 @@ public partial class GameEngine
         var upstreamValidation = await CollectAcceptedTurnUpstreamRawStateIssuesAsync();
         var issues = upstreamValidation.Issues.ToList();
         if (!upstreamValidation.RejectSpiritualBoundary)
-            issues.AddRange(await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
+            issues.AddRange(await ValidateResourceAndMortalQteDecisionAsync(
+                !issues.Any(static issue => issue.Severity == IssueSeverity.Error)));
         return issues;
     }
 

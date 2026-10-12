@@ -17,7 +17,8 @@ public partial class ValidationService
 
     internal async Task<IReadOnlyList<ValidationIssue>>
         ValidateAcceptedTurnRawResourceMaterializationAsync(
-            FileSystemManager.CanonicalWriteLease writeLease)
+            FileSystemManager.CanonicalWriteLease writeLease,
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -37,7 +38,7 @@ public partial class ValidationService
         try
         {
             var issues = await ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
-                writeLease);
+                writeLease, stageMortalQteDecision: stageMortalQteDecision);
             keepCommonHandoff = AcceptedMechanicsPlanAuthority.HasValidated(
                 _fs,
                 writeLease);
@@ -183,7 +184,8 @@ public partial class ValidationService
         ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
             FileSystemManager.CanonicalWriteLease writeLease,
             SpiritualOriginalInputSink? spiritualCapture = null,
-            MortalOriginalInputSink? mortalCapture = null)
+            MortalOriginalInputSink? mortalCapture = null,
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -439,6 +441,11 @@ public partial class ValidationService
             return issues;
         }
         var effectIssues = new List<ValidationIssue>();
+        if (stageMortalQteDecision is not null)
+        {
+            issues.AddRange(await stageMortalQteDecision(writeLease));
+            if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+        }
         var woundHandoffSink = new AcceptedTurnWoundHandoffSink();
         await ValidateAcceptedTurnRawEffectMaterializationAsync(
             effectIssues,

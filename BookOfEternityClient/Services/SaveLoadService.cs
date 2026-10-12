@@ -82,6 +82,7 @@ public partial class SaveLoadService
         "game_state/control/gm_bridge_status.json",
         LocalUiSessionLockService.LockPath,
         ResourceMaterializationContract.CommandPath,
+        MortalWoundOpportunityAdapter.DecisionPath,
         "output/ink_feather_action_result.json",
         ExplorerLocalTurnRollbackArtifacts.Root,
         ConsoleLocalTurnRollbackArtifacts.Root
