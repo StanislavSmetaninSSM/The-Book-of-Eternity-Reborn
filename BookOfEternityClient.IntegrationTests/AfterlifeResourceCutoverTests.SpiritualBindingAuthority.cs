@@ -184,7 +184,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 Assert.Equal(player ? "player_soul" : "afterlife_conflict_side_cost", mutation.Coordinate.ResourceOwnerId);
                 Assert.Equal("spiritual_action_points", mutation.Coordinate.ResourceKey);
                 Assert.Equal("chaos_sea", mutation.Coordinate.Realm);
-                Assert.Equal(ResourceTransitionOperation.Spend, mutation.Source.Operation);
+                Assert.Equal(ResourceOperation.Spend, mutation.Source.Operation);
                 Assert.Equal((decimal)(before - after), mutation.Amount);
                 Assert.Equal($"turn_42:afterlife_conflict:{batch.ExchangeId}:{side}", mutation.EventRef);
             }
