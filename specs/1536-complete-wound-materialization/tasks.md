@@ -5,57 +5,55 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (COMMON NONE/CREATE CONSUMER THIRD SOURCE MIDPOINT WIP; PENDING RECEIPT JOIN WRITTEN; REPLAY/CONTROLS/DOCS UNFINISHED)
+## Current T070 boundary — 2026-10-12 (COMMON NONE/CREATE CONSUMER FOURTH SOURCE MIDPOINT WIP; REPLAY JOIN WRITTEN; CONTROLS/DOCS UNFINISHED)
 
-COMMON NONE/CREATE consumer remains SOURCE WIP. Second staging/signed-pristine source
-midpoint was published8eeeca4a0997620e0dc74ec1989d528ddb2c7114; ROOT verified exact remote,
-clean560-file selected recovery and full source readback without acceptance or execution.
-Both actual causal REDs remain separately evidence accepted: NONE4010 missing receipt and
-CREATEc7 missing complete wound after complete N43. Their unchanged Facts remain separate
-1 actual/1 executed/0 PASS/1 FAIL; later postconditions UNREACHED. Producer accepted1b23
-executed/22 PASS/1 FAIL and projection accepted4d4 actual/28 executed/26 PASS/2 FAIL remain
-unchanged. Frozen packets, protected causal Facts, global selection and checkboxes unchanged.
+COMMON NONE/CREATE consumer remains SOURCE WIP. Third pending-receipt source midpoint
+was publishedae57378a196526c215ed4387c9a7cd557731c0d4; ROOT verified exact remote, clean
+560-file recovery and full source readback without build/review/runtime. Actual NONE4010
+and CREATEc7 causal REDs remain separately accepted1 actual/1 executed/0 PASS/1 FAIL;
+protected Facts and later UNREACHED oracles unchanged. Producer qualification1b23 executed/
+22 PASS/1 FAIL and projection4d4 actual/28 executed/26 PASS/2 FAIL remain unchanged.
 
-Third stopped source midpoint writes the pending-decision common join. Existing sole1535
-Prepare→effect→Finalize supplies the final typed wound history and allocated IDs; the private
-wound handoff calls actual PlanConsumeAndAppend with the genuine signed pending/receipt
-partition and reconstructed decision authority. Canonical pending/receipt after-images join
-OwnerCompanionAfterImages BEFORE the one common input/cache/reduction/publication. Complete
-ordered original accepted-event vector is bound alongside the ordinary accepted events;
-receipt/pending/history agreement and exact draft/scene/issued-command inputs enter internal
-fingerprints and before-images before final input construction. The GameEngine's internal
-final guard requires captured common bytes AND current bytes to equal its actual staged
-inputs. Rejected/changed input cannot gain this final common seal. No standalone receipt
-writer, second identity allocator/reduction or new source/capture framework is introduced.
+Fourth stopped source midpoint writes the verified zero-command replay join. The existing
+adapter validates the actual current receipt/history/pending partition against the original
+official decision snapshot, then carries an actual PlanConsumeAndAppend exact_replay result
+from that validated live partition. Materialize's expected permanent IDs now come from the
+unique accepted typed create/worsen history transition at exact decision operationKey;
+local GM wound references never stand in for accepted client IDs. Existing strict source,
+decision fingerprint, operation, coordinates, receipt and history comparisons remain active.
+The result exposes no caller JSON authority and invokes no new identity allocator.
 
-NONE's exact zero-transition stage retains unchanged identity/history and zero allocated IDs/
-carrier contributions; its typed composition has no WoundPublication and consumes raw draft+
-owned command with durable receipt/pending after-images. CREATE may plan the first player
-wound carrier in memory ONLY after official observed absence and one accepted actual QTE
-materialize command; that carrier is written only with the complete wound/history/effect/
-receipt common publication and existing FR057/FR065 anchors. Generic unrelated zero-stage
-publication behavior is retained. The exact draft path now participates in existing transient
-cleanup before a new ordinary request and existing wound output/rollback/browser inventory;
-its SaveLoad ephemeral exclusion from the second midpoint is unchanged.
+GameEngine retains this factory-issued replay result only within its current admission;
+rejection/revocation clears it together with owned-input proof. Existing resource/owner
+admission still precedes it. Replay validates current canonical wound/effect agreement and
+joins unchanged pending/receipt OwnerCompanionAfterImages into the same common input/cache/
+publisher without another wound stage, effect lifecycle execution or registered system
+outcome. New raw resource/effect/full-party/capacity/terminal mutation on a consumed source
+refuses; it needs a new ordinary source. Original full accepted source events are re-bound
+from the same official retained snapshot, fingerprinted with common internal proof; exact
+raw draft/scene/absent-command and relevant current wound/effect roots are before-image
+guarded. Replay consumes the draft; an already absent command is guarded rather than
+reallocated or republished. A competing existing command is refused even on commands=[].
+Changed decisions fail the existing exact replay comparison before common publication.
+No snapshot copy/re-sign/new key, receipt allocation, history transition or wound allocator
+is used by the replay join. This source behavior is UNRUN, not observed GREEN evidence.
 
-A verified remaining branch is OPEN: exact replay against retained active pre-consumption
-snapshot validates the current durable receipt, then existing Composer returns commands=[]
-and distributor returns null. It requires bounded once-only completion/final input guards/
-transient consumption without a second allocation/history/receipt; that zero-command branch
-is UNFINISHED and no replay qualification is claimed. Remaining meaningful staging-change/
-foreign-command/cache/rollback/resubmission controls, combined finite preparation/remainder
-selectors and all six GM guidance/example/manifest/guard/runtime surfaces are UNFINISHED.
-Actual after-terminal save-load/new-root/fresh-process remains required and UNRUN.
+Pending first-decision NONE/CREATE common receipt/history/anchor/effect publication from the
+third midpoint remains written but unverified. Meaningful finite NONE/CREATE/changed replay,
+staging-change/foreign-command/cache/rollback/resubmission controls are still UNWRITTEN,
+along with combined preparation/remainder selectors and six GM guidance/example/manifest/
+guard/runtime surfaces. Archive exclusion/import cleanup and actual after-terminal pending+
+consumed SaveGame/LoadGame/new-root/fresh-registry/fresh-process proof remain OPEN/UNRUN.
+Current component draft owner remains1 theory/10 cases/budget5/default10; all703 catalog
+nodes/static-planned11535 methods, global selection, checkbox lines and ce955/NONE/CREATE/
+projection Facts/selectors stay unchanged. No new control is claimed as observed RED.
 
-Existing new component owner qte-physical-injury-consumer-draft remains1 theory/10 cases,
-budget5/default10, [exact selection](../../tests/selections/1536-qte-physical-injury-consumer-draft.json).
-It uses real QTE42 then production next43 baseline writer/official Reader, never fabricated
-source/binding/hash. All703 catalog nodes/static-planned11535 methods remain unchanged by
-this midpoint; no fresh discovery/catalog/build/runtime has run, and old cached binaries do
-not verify new source. SOURCE/FIXTURE/SELECTION review for the connected candidate is PENDING;
-no newly authored control is claimed as observed RED. Mutations STOPPED for immediate ROOT
-WIP publication/recovery; next source step is the verified zero-command replay branch plus
-finite controls/docs. T070/fullFR-063/parent/#1536 checkboxes stay OPEN.
+SOURCE/FIXTURE/SELECTION review and all build/discovery/runtime for this connected WIP are
+PENDING/UNRUN; previous binaries cannot verify it. Mutations STOPPED for immediate ROOT WIP
+publication/recovery before long remaining finite-control/docs authoring. Next step is
+source-aware component replay/ownership/atomicity controls plus coherent GM guidance and
+exact finite owners/combined selectors from the published checkpoint. T070/fullFR-063/
+parent/#1536 remain OPEN, with no checkbox closure or full consumer qualification.
 
 Historical CREATE first-result metadata below records its pre-EVIDENCE boundary;
 publication/EVIDENCE pending wording there is historical, superseded by acceptedc7 above.

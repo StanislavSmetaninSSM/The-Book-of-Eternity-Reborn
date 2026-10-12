@@ -19,7 +19,8 @@ public partial class ValidationService
         ValidateAcceptedTurnRawResourceMaterializationAsync(
             FileSystemManager.CanonicalWriteLease writeLease,
             Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null,
-            Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null)
+            Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null,
+            Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -39,7 +40,8 @@ public partial class ValidationService
         try
         {
             var issues = await ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
-                writeLease, stageMortalQteDecision: stageMortalQteDecision, sealMortalQteDecision: sealMortalQteDecision);
+                writeLease, stageMortalQteDecision: stageMortalQteDecision, sealMortalQteDecision: sealMortalQteDecision,
+                readMortalQteReplay: readMortalQteReplay);
             keepCommonHandoff = AcceptedMechanicsPlanAuthority.HasValidated(
                 _fs,
                 writeLease);
@@ -187,7 +189,8 @@ public partial class ValidationService
             SpiritualOriginalInputSink? spiritualCapture = null,
             MortalOriginalInputSink? mortalCapture = null,
             Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null,
-            Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null)
+            Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null,
+            Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -448,8 +451,24 @@ public partial class ValidationService
             issues.AddRange(await stageMortalQteDecision(writeLease));
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
         }
+        var mortalReplay = readMortalQteReplay?.Invoke();
         var woundHandoffSink = new AcceptedTurnWoundHandoffSink();
-        await ValidateAcceptedTurnRawEffectMaterializationAsync(
+        if (mortalReplay is not null)
+        {
+            // An already-consumed decision may finish its transient publication only.
+            // New raw mechanical work requires a new ordinary source, never replay.
+            if (mortalReplay.Disposition != "exact_replay" || !commands.IsMissing || effectCommandJson is not null ||
+                hasStagedFullPartyResourcePackets || ownerComposition.CapacityDrafts.Count != 0 ||
+                ownerComposition.TerminalOwners.Count != 0 || ownerComposition.OwnerTransitions.Count != 0)
+            {
+                issues.Add(WoundIssue(MortalWoundOpportunityAdapter.DecisionPath, "mortal_qte_replay_additional_mutation",
+                    "exact durable decision replay without new raw mechanical work", "new mechanical work on consumed source"));
+                return issues;
+            }
+            await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(effectIssues, writeLease);
+            await ValidateAcceptedTurnCanonicalEffectMaterializationAsync(effectIssues, writeLease);
+        }
+        else await ValidateAcceptedTurnRawEffectMaterializationAsync(
             effectIssues,
             ownerComposition,
             definitions,
@@ -465,7 +484,7 @@ public partial class ValidationService
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
         var woundHandoff = woundHandoffSink.Value;
-        var mortalReceipt = woundHandoff?.MortalQteReceipt;
+        var mortalReceipt = woundHandoff?.MortalQteReceipt ?? mortalReplay;
         var ownerCompanionAfterImages = ownerComposition.OwnerCompanionAfterImages.ToDictionary(
             static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
         if (mortalReceipt is not null)
@@ -509,7 +528,7 @@ public partial class ValidationService
             }
             effectPlan = effectResult.Plan;
         }
-        var registeredSystemOutcomes = await ComposeRegisteredResourceOutcomesAsync(
+        var registeredSystemOutcomes = mortalReplay is not null ? Array.Empty<IResourceRegisteredSystemOutcomeDraft>() : await ComposeRegisteredResourceOutcomesAsync(
             manifest,
             preTurnAfterlifeOwners,
             acceptedAfterlifeOwners,
@@ -528,7 +547,7 @@ public partial class ValidationService
             ownerComposition.OwnerCompanionAfterImages.Count == 0 &&
             ownerComposition.OwnerTransitions.Count == 0 &&
             !acceptedItemOwners.Any(static owner => owner.SameTurn) &&
-            woundHandoff is null && spiritualCapture == null && mortalCapture == null)
+            woundHandoff is null && mortalReceipt is null && spiritualCapture == null && mortalCapture == null)
             return issues;
 
         var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
@@ -640,15 +659,41 @@ public partial class ValidationService
         var commonAcceptedEvents = events.Root.DeepClone().AsObject();
         if (mortalReceipt is not null)
         {
+            var sourceEvents = woundHandoff?.Input.Binding.AcceptedEvents;
+            if (sourceEvents is null)
+            {
+                var signed = MortalQteWoundOpportunityProjection.ReadSnapshot(_fs, writeLease);
+                var originalPending = MortalWoundOccurrenceState.Parse(MortalQteWoundOpportunityProjection.ReadObservedRoot(signed,
+                    MortalWoundOccurrenceState.StatePath), MortalWoundOccurrenceState.StatePath);
+                var originalReceipts = MortalWoundOpportunityReceiptState.Parse(MortalQteWoundOpportunityProjection.ReadObservedRoot(signed,
+                    MortalWoundOpportunityReceiptState.StatePath) ?? "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}", MortalWoundOpportunityReceiptState.StatePath);
+                if (!originalPending.IsValid || originalPending.State is null || !originalReceipts.IsValid || originalReceipts.State is null ||
+                    signed.SessionId != manifest.SessionId || signed.RequestId != manifest.RequestId ||
+                    signed.SnapshotToken != manifest.ManifestPayloadHash || signed.TurnNumber != manifest.TurnNumber)
+                {
+                    issues.AddRange(originalPending.Issues.Concat(originalReceipts.Issues));
+                    AddMissingWoundStageIssue(issues, "mortal_qte_replay_source_mismatch", "the original official decision snapshot");
+                    return issues;
+                }
+                var original = originalPending.State.Occurrences.Single(row => row.OccurrenceId == mortalReceipt.Receipt!.OpportunityId);
+                var rebound = WoundAcceptedEventAuthorityComposer.RebindMortalOccurrence(original,
+                    originalPending.State.Occurrences.Where(row => row.ProducerOperationKey == original.ProducerOperationKey).ToArray(),
+                    originalReceipts.State.Receipts.Where(row => row.ProducerOperationKey == original.ProducerOperationKey).ToArray(),
+                    signed.SessionId, signed.RequestId, signed.SnapshotToken, signed.TurnNumber);
+                issues.AddRange(rebound.Issues);
+                if (!rebound.Success) return issues;
+                sourceEvents = rebound.Events;
+            }
             commonAcceptedEvents["mortalWoundSourceAcceptedEvents"] = JsonSerializer.SerializeToNode(
-                woundHandoff!.Input.Binding.AcceptedEvents, Configuration.SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+                sourceEvents, Configuration.SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
             internalInputs["mortalQteDecisionReceipt"] = new JsonObject
             {
                 ["pendingAfter"] = ownerCompanionAfterImages[MortalWoundOccurrenceState.StatePath].DeepClone(),
                 ["receiptsAfter"] = ownerCompanionAfterImages[MortalWoundOpportunityReceiptState.StatePath].DeepClone(),
                 ["historyAgreement"] = JsonSerializer.SerializeToNode(mortalReceipt.HistoryAgreement,
                     Configuration.SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
-                ["finalWoundPlanFingerprint"] = woundHandoff!.StageBundle.FinalPlan.WoundFinalPlanFingerprint
+                ["finalWoundPlanFingerprint"] = woundHandoff?.StageBundle.FinalPlan.WoundFinalPlanFingerprint,
+                ["exactReplay"] = mortalReplay is not null
             };
         }
         if (_spiritualWoundSourceSession is { HasWork: true } sourceSessionInput)
@@ -682,6 +727,14 @@ public partial class ValidationService
             beforePaths.Add(MortalWoundOpportunityAdapter.DecisionPath);
             beforePaths.Add(AcceptedMechanicsPlan.WoundCommandPath);
             beforePaths.Add("output/narrative_response.json");
+            beforePaths.UnionWith(CanonicalWoundSnapshotReadPaths);
+            if (mortalReplay is not null)
+            {
+                beforePaths.UnionWith(EffectAcceptedTurnInputComposer.SourceAuthorityPaths);
+                beforePaths.UnionWith(new[] { EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath,
+                    EffectCarrierCatalog.EnemiesPath, EffectCarrierCatalog.AlliesPath, EffectCarrierCatalog.AfterlifeProfilesPath,
+                    EffectCarrierCatalog.SpiritualConflictPath });
+            }
         }
         if (_spiritualWoundSourceSession is { HasWork: true } sourceSessionForBinding)
             beforePaths.UnionWith(sourceSessionForBinding.SelectedPaths);

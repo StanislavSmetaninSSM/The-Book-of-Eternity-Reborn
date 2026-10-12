@@ -26,8 +26,14 @@ internal static class MortalWoundOpportunityAdapter
     // from the same official snapshot used to project the single safe opportunity.
     // Null means the signed projection is empty and no draft was supplied.
     internal static WoundResponseInputCompositionResult? ComposeQteAcceptedResponse(
-        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, string? rawDraft, string? scene)
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, string? rawDraft, string? scene) =>
+        ComposeQteAcceptedResponse(fs, lease, rawDraft, scene, out _);
+
+    internal static WoundResponseInputCompositionResult? ComposeQteAcceptedResponse(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, string? rawDraft, string? scene,
+        out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay)
     {
+        exactReplay = null;
         fs.EnsureCanonicalWriteLeaseActive(lease);
         try
         {
@@ -72,8 +78,8 @@ internal static class MortalWoundOpportunityAdapter
                 occurrence.Owner, occurrence.Domain, occurrence.ProfileKey, occurrence.Source, occurrence.Outcome,
                 occurrence.SafeContext
             }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
-            return ComposeAcceptedResponse(fs, lease, correlation,
-                new GameResponse { Response = scene ?? string.Empty, WoundDecisions = [draft] });
+            return ComposeAcceptedResponseCore(fs, lease, correlation,
+                new GameResponse { Response = scene ?? string.Empty, WoundDecisions = [draft] }, out exactReplay);
         }
         catch (Exception error) when (error is JsonException or InvalidDataException)
         {
@@ -121,8 +127,13 @@ internal static class MortalWoundOpportunityAdapter
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease,
         JsonElement sourceEvent,
-        GameResponse gameResponse)
+        GameResponse gameResponse) => ComposeAcceptedResponseCore(fs, lease, sourceEvent, gameResponse, out _);
+
+    private static WoundResponseInputCompositionResult ComposeAcceptedResponseCore(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, JsonElement sourceEvent,
+        GameResponse gameResponse, out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay)
     {
+        exactReplay = null;
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(lease);
         ArgumentNullException.ThrowIfNull(gameResponse);
@@ -320,6 +331,16 @@ internal static class MortalWoundOpportunityAdapter
                         "mortal_wound_opportunity_adapter_receipt_replay_mismatch")
                 });
             }
+            if (expectedDecision == "materialize")
+            {
+                if (!currentHistory!.TryResolveExactOperation(expectedReceipt!.OperationKey, out var acceptedTransition) ||
+                    acceptedTransition is null || acceptedTransition.Kind != (occurrence.WorseningTarget is null ? "create" : "worsen"))
+                    return Failure(new[] { new ValidationIssue(WoundHistoryState.HistoryPath, IssueSeverity.Error,
+                        "The replay operation has no exact accepted materialization transition.",
+                        "mortal_wound_opportunity_adapter_receipt_replay_mismatch") });
+                expectedWoundId = acceptedTransition.WoundId;
+                expectedTransitionId = acceptedTransition.TransitionId;
+            }
             var replayIssues = MortalWoundOpportunityReceiptState.ValidateExactReplay(
                 currentReceipts,
                 opportunityResult.Opportunity,
@@ -331,6 +352,17 @@ internal static class MortalWoundOpportunityAdapter
                 currentHistory!);
             if (replayIssues.Count != 0)
                 return Failure(replayIssues);
+            var currentPending = MortalWoundOccurrenceState.Parse(fs.ReadFileSync(MortalWoundOccurrenceState.StatePath),
+                MortalWoundOccurrenceState.StatePath);
+            if (!currentPending.IsValid || currentPending.State is null) return Failure(currentPending.Issues);
+            var replay = MortalWoundOpportunityReceiptState.PlanConsumeAndAppend(currentPending.State, currentReceipts,
+                new(new(snapshot.SessionId, snapshot.RequestId, snapshot.SnapshotToken, snapshot.TurnNumber),
+                    opportunityResult.Opportunity.OpportunityId, opportunityResult.Opportunity.AuthorityFingerprint,
+                    expectedDecision!, expectedReceipt!.DecisionFingerprint, expectedReceipt.OperationKey,
+                    expectedWoundId, expectedTransitionId), currentHistory!);
+            if (replay.Disposition != "exact_replay" || replay.Issues.Count != 0 ||
+                replay.OccurrenceState is null || replay.ReceiptState is null) return Failure(replay.Issues);
+            exactReplay = replay;
         }
         return WoundResponseInputComposer.Compose(
             binding,

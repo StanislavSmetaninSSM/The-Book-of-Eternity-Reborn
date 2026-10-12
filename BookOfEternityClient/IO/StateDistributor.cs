@@ -70,10 +70,10 @@ public class StateDistributor
     {
         files.EnsureCanonicalWriteLeaseActive(lease);
         var command = ResolveAcceptedWoundCommand(response, acceptedWoundInput);
-        if (command is null) return null;
         var path = AcceptedMechanicsPlan.WoundCommandPath;
         if (await files.ReadFileBytesAsync(lease, path) is not null)
             throw new InvalidDataException("mortal_wound_decision_competing_command: preserve the existing command before-image.");
+        if (command is null) return null;
         var committed = await CoordinatedStateWriteHelper.TryCommitAsync(files, lease,
             new CoordinatedStateWriteHelper.PlannedWrite(path, null, command.Root.ToJsonString(JsonOpts),
                 RequireCurrentBaseline: true, ExactPrevious: new CanonicalBeforeImage(false, null)));

@@ -4671,7 +4671,9 @@ internal static partial class AcceptedMechanicsPlanner
         }
         if (ownerCompanionAfterImages.ContainsKey(MortalWoundOpportunityReceiptState.StatePath))
         {
-            var mortalControls = new[] { MortalWoundOpportunityAdapter.DecisionPath, AcceptedMechanicsPlan.WoundCommandPath };
+            var mortalControls = input.WoundCommands is not null
+                ? new[] { MortalWoundOpportunityAdapter.DecisionPath, AcceptedMechanicsPlan.WoundCommandPath }
+                : new[] { MortalWoundOpportunityAdapter.DecisionPath };
             touched.UnionWith(mortalControls);
             consumed.UnionWith(mortalControls);
             touched.Add("output/narrative_response.json");

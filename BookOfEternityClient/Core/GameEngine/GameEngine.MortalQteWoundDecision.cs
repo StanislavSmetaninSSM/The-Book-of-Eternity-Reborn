@@ -14,6 +14,7 @@ public partial class GameEngine
     // A foreign command is always preserved and refused by the command-only distributor.
     private byte[]? _mortalQteOwnedCommand;
     private IReadOnlyDictionary<string, CanonicalBeforeImage>? _mortalQteDecisionImages;
+    private MortalWoundOpportunityReceiptConsumePlanResult? _mortalQteExactReplay;
 
     private async Task<IReadOnlyList<ValidationIssue>> ValidateResourceAndMortalQteDecisionAsync(bool ordinaryUpstreamAccepted = true)
     {
@@ -23,7 +24,8 @@ public partial class GameEngine
             if (!ordinaryUpstreamAccepted) await RevokeOwnedMortalQteCommandAsync(lease);
             var issues = await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync(lease,
                 ordinaryUpstreamAccepted ? StageMortalQteDecisionAsync : null,
-                ordinaryUpstreamAccepted ? SealMortalQteDecisionAsync : null);
+                ordinaryUpstreamAccepted ? SealMortalQteDecisionAsync : null,
+                ordinaryUpstreamAccepted ? () => _mortalQteExactReplay : null);
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
                 await RevokeOwnedMortalQteCommandAsync(lease);
             return issues;
@@ -47,13 +49,14 @@ public partial class GameEngine
             var sceneRoot = narrative is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(
                 narrative.TrimStart('\uFEFF'), new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "Mortal wound ordinary scene");
             var scene = sceneRoot?["response"] is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;
-            var composed = MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse(_fs, lease, raw, scene);
+            var composed = MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse(_fs, lease, raw, scene, out var replay);
             if (composed is null) return Array.Empty<ValidationIssue>();
             if (!composed.Success) return composed.Issues;
             var decision = StrictJsonAuthority.Deserialize<JsonElement>(raw!,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "accepted Mortal wound decision");
             _mortalQteOwnedCommand = await StateDistributor.StageAcceptedWoundCommandAsync(_fs, lease,
                 new GameResponse { Response = scene ?? string.Empty, WoundDecisions = [decision] }, composed);
+            _mortalQteExactReplay = replay;
             _mortalQteDecisionImages = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal)
             {
                 [MortalWoundOpportunityAdapter.DecisionPath] = new(rawBytes is not null, rawBytes),
@@ -92,6 +95,7 @@ public partial class GameEngine
         AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, lease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, lease);
         _mortalQteDecisionImages = null;
+        _mortalQteExactReplay = null;
         if (_mortalQteOwnedCommand is not { } issued) return;
         var current = await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
         if (current is not null && current.AsSpan().SequenceEqual(issued))
