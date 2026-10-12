@@ -1,3 +1,17 @@
+## F04/F05 Windows browser protocol30 — exact BOM fixture parser WIP, 2026-10-12
+
+Coordinator accepted bb485e1112355402fa119a24b2178bcfbf83667c and approved
+physical manifest read, one exact UTF8 preamble removal, strict UTF8 decode and
+unchanged JsonNode/schema/receipt/identity/neutral/authentic6 assertions.
+Test-only helper/physical BOM/no-BOM/malformedUTF8 with/withoutBOM/doubleBOM
+controls run inside existing ordinary/extended authentic6 rows;7Theory30cases
+and category3min/runner8min unchanged. Control file bytes asserted unchanged,
+owned control file removed; authentic manifest on-disk bytes/product unchanged.
+SOURCE review/build/PlanOnly/one full repeat UNRUN at this checkpoint.
+First sharingFAIL and second BOMFAIL originals/F18PASS preserved below.
+Proven new simple fixture blockers may be fixed only after independent review;
+product failure/substantial contract change stops with evidence/proposal.
+No whole suite/global selection/extra categories/product edits/timer increase.
 ## F04/F05 Windows browser protocol30 — reader fixed, reviewed repeat28PASS/2BOMFAIL HOLD, 2026-10-12
 
 SOURCE PASS be02e0f998cf440ff5c14a6218d6dcb8cedc9113 by actual Astra XHigh;

@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -169,7 +171,9 @@ public sealed partial class BrowserProtocolCutoverTests
     public async Task WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup(bool extended)
     {
         Assert.True(OperatingSystem.IsWindows(), "Native original schema6 body required.");
-        await InitializeAsync(extended); await _files.WriteFileAtomicBytesAsync(Member, Before);
+        await InitializeAsync(extended);
+        AssertPhysicalManifestParserControls();
+        await _files.WriteFileAtomicBytesAsync(Member, Before);
         Directory.CreateDirectory(Path.GetDirectoryName(ProfilePath)!); File.WriteAllBytes(ProfilePath, Before);
         var commonMembers = 0;
         _publication = (phase, index) => {
@@ -194,7 +198,7 @@ public sealed partial class BrowserProtocolCutoverTests
                 reader.CopyTo(image);
                 Assert.Equal(After, image.ToArray());
             }
-            var manifest = JsonNode.Parse(File.ReadAllBytes(_files.ResolvePath(transaction.ManifestPath)))!;
+            var manifest = ParsePhysicalManifestForTest(_files.ResolvePath(transaction.ManifestPath));
             Assert.Equal(6, manifest["schemaVersion"]!.GetValue<int>());
             Assert.NotNull(manifest["entries"]![0]!["publicationReceipt"]);
             Assert.NotNull(manifest["externalEntries"]![0]!["publishedIdentity"]);
@@ -204,6 +208,51 @@ public sealed partial class BrowserProtocolCutoverTests
         Assert.Equal(Before, File.ReadAllBytes(_files.ResolvePath(Member))); Assert.Equal(Before, File.ReadAllBytes(ProfilePath));
         Assert.Equal(Before, File.ReadAllBytes(neutral)); Assert.False(File.Exists(JournalPath));
         Assert.Empty(Directory.GetFiles(_files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "browser_write_manifest.json", SearchOption.AllDirectories));
+    }
+
+    private static JsonNode ParsePhysicalManifestForTest(string path)
+    {
+        var bytes = File.ReadAllBytes(path);
+        var preamble = Encoding.UTF8.GetPreamble();
+        var offset = bytes.AsSpan().StartsWith(preamble) ? preamble.Length : 0;
+        var json = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true)
+            .GetString(bytes, offset, bytes.Length - offset);
+        return JsonNode.Parse(json)!;
+    }
+
+    private void AssertPhysicalManifestParserControls()
+    {
+        var path = Path.Combine(ConfiguredRoot, "manifest-parser-control.json");
+        var body = Encoding.UTF8.GetBytes("{\"schemaVersion\":6,\"value\":\"Д\"}");
+        var preamble = Encoding.UTF8.GetPreamble();
+        try
+        {
+            foreach (var bytes in new byte[][] { body, [.. preamble, .. body] })
+            {
+                File.WriteAllBytes(path, bytes);
+                var parsed = ParsePhysicalManifestForTest(path);
+                Assert.Equal(6, parsed["schemaVersion"]!.GetValue<int>());
+                Assert.Equal("Д", parsed["value"]!.GetValue<string>());
+                Assert.Equal(bytes, File.ReadAllBytes(path));
+            }
+            byte[] malformed = [.. Encoding.UTF8.GetBytes("{\"value\":\""), 0xFF, .. Encoding.UTF8.GetBytes("\"}")];
+            foreach (var bytes in new byte[][] { malformed, [.. preamble, .. malformed] })
+            {
+                File.WriteAllBytes(path, bytes);
+                Assert.Throws<DecoderFallbackException>(() => ParsePhysicalManifestForTest(path));
+                Assert.Equal(bytes, File.ReadAllBytes(path));
+            }
+            byte[] doublePreamble = [.. preamble, .. preamble, .. body];
+            File.WriteAllBytes(path, doublePreamble);
+            Assert.Throws<JsonException>(() => ParsePhysicalManifestForTest(path));
+            Assert.Equal(doublePreamble, File.ReadAllBytes(path));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+        Assert.False(File.Exists(path));
+        output.WriteLine("ManifestParserControls=True; BOM=True; NoBOM=True; MalformedUtf8Rejected=True; DoubleBOMRejected=True; PhysicalBytesUnchanged=True");
     }
 
     [Theory]
