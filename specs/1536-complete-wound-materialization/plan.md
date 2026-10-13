@@ -9,33 +9,60 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (MIGRATED CREATE INCOMPLETE; PRIVATE CARRIER OWNER REFUSAL; EVIDENCE PENDING)
+## Current T070 first vertical — 2026-10-13 (CREATE PRISTINE OWNER BASELINE CORRECTION READY; CHECKS UNRUN)
 
-First current-contract full CREATE invocation onSOURCE4ed1ca8104a82d5fb78c57fb6630f85a0ef3ab40
-ended INCOMPLETE at category5-minute budget:302.611s,exit124/TimedOut=true,1 planned descriptor/
-case,0 completed,0 executed/0 PASS/0 FAIL, no TRX or completed native observations. Read-only
-actual N43 repair request contains two private source diagnostics at game_state/player/wounds.json.owner:
-wound_carrier_invalid_field (strict player owner missing) and wound_carrier_invalid_root
-(required schemaVersion/owner/activeWounds fields missing). Harness packets=[] and fullTurn
-resubmission=false. Physical player carrier remains ABSENT in captured runtime images, so the
-origin of the reported carrier shape is UNPROVED; planned/live-source boundary needs tracing.
-Full ordinary completion and causal wound/receipt predicates were not confirmed/reached. This
-is not proper causal RED, CREATE GREEN or qualification of the migrated fixture.
+Actual retained Astra XHigh EVIDENCE/status ACCEPTED8afbd9eb31f6c38bc6a699b5177edb9155c6ba03:
+[incomplete migrated CREATE packet](./recovery/qte-physical-consumer-create-incomplete-20261013/manifest.json)
+retains25 artifacts/148 immutable4ed source pins/10 fresh binaries, native logs/plan/summary and
+actual N43 repair/public-input/session images. Frozen pre-review PENDING/origin-UNPROVED fields
+remain immutable. First migrated CREATE invocation4ed was INCOMPLETE at category5 minutes:
+302.611s,exit124,1 planned descriptor/case,0 completed/0 reported executed/0 PASS/0 FAIL, no TRX
+or completed native observations. Two actual private errors at player/wounds.json.owner require
+strict owner and schemaVersion/owner/activeWounds root fields. Physical player carrier/identity/
+history/receipt/completion record were absent in the captured images; ordinary completion and
+causal wound/receipt predicates remain UNCONFIRMED/UNREACHED. This is a prerequisite timeout,
+not CREATE causal RED/GREEN or qualification. Runner cleanup succeeded; strict fixture receipt
+was UNEMITTED and physical fixture root remained at frozen readback, without a cleanup claim.
+Fresh BOTH-build PlanOnly28/67/12,154.085s,85/35 warnings0 errors and catalog711/11548,5.300s
+executed0 tests before that invocation. All source/binary PRE/POST pins matched before metadata.
 
-[Incomplete CREATE packet](./recovery/qte-physical-consumer-create-incomplete-20261013/manifest.json)
-freezes25 artifacts/native summary/plan/logs/actual request+public proposal and repair diagnostics.
-148 source/10 fresh binaries PRE/POST exact BEFORE metadata edits. Runner process/runtime cleanup
-succeeded; fixture strict cleanup receipt UNEMITTED, physical owned root remains; no strict fixture
-cleanup claim. EVIDENCE gate PENDING before source correction/retry. Fresh BOTH-build PlanOnly
-28/67/12,154.085s,85/35 warnings0 errors and valid711/11548 catalog5.300s each executed0 tests.
+Verified source cause is the existing guarded in-memory baseline, not a physically published
+invalid root: ValidationService.WoundMaterialization's official signed-absent/materialize/QTE
+player branch created schemaVersion+activeWounds but omitted owner. The immediate
+WoundAcceptedOwnerCarrierAuthority.Compose calls WoundCarrierCatalog.Build, whose strict player
+root reader emits both observed missing-owner diagnostics before wound Prepare/effect/Finalize
+or common publication. Generic repair wait receives these private non-actionable diagnostics
+with no harness packet/full resubmission; no new repair/harness/budget behavior is added here.
 
-First migrated CREATE has1 actual incomplete invocation/0 reported tests; historical c7 CREATE
-RED1 executed/0 PASS/1 FAIL stays immutable/separate and not byte-matched. Accepted unchanged
-NONE36256 baseline1PASS was not repeated. Remaining controls (except old four failed diagnostic
-rows)/archive/newroot/fresh-process UNRUN. Next bounded step after evidence acceptance: source
-trace actual carrier-owner diagnostic and repair only the proven materialization boundary,
-without GM canonical writes/invented root/validator relaxation/budget increase/general protocol.
-ParentT070/FR-063/#1536 OPEN; all checkboxes unchanged.
+Current bounded correction retains the exact existing signed-absent/materialize/profile/player
+existential guard, selects its matched already validated typed command using the same predicate,
+and adds ONLY a closed owner object realm/ownerKind/ownerId from command.Opportunity.Owner.
+The source-bound opportunity authority already restricts this carrier to mortal_world/player/
+player_current. No raw GM coordinate, default owner, inferred path, generated whole coordinate,
+carrierPath serialization or new authority/fallback is used. This is detached planning data only;
+no physical wound root initialization occurs. NONE, present/null/corrupt carrier, other/spiritual
+profiles keep their existing branches; strict catalog/bindings/sole allocations/anchors/complete
+CREATE publication/readback, common receipt/completion/batch/compensation remain unchanged.
+This internal owner-wrapper correction changes no public GM authoring grammar or afterlife
+contract, so existing synchronized prompts/worked examples need no change in this source block.
+
+SOURCE READY for ROOT publication/recovery and mandatory focused source/selection gate; fresh
+BOTH-build preparation/catalog and ONE unchanged migrated CREATE retry remain UNRUN. Existing
+CREATE selector1 method/1 case/1 descriptor/category5/default10 is unchanged. Full preparation
+28/67/12/default30, remainder26/65/10/default30, catalog711/11548 and all owner/selector/globalCI
+membership remain unchanged; inventory is prior discovery, not a fresh audit for this correction.
+No fixture/example/selector/catalog/checklist/frozen packet/protected ce955/NONE/projection/CREATE
+migration bytes changed. Writer project execution/commit/push not performed; mutations STOPPED.
+
+Current migrated CREATE remains1 incomplete invocation/0 reported tests. Historical c7 proper
+CREATE RED1 executed/0 PASS/1 FAIL and its raw proposal/source pins stay separate/immutable:
+current treatment proposal migrated at4ed and is not byte-matched to old c7. Accepted unchanged
+NONE36256 baseline1 PASS is retained with no relevant rerun. Finite NONE3 invocations/report2
+executed/1 PASS/1 FAIL+1 incomplete; accepted8448 component diagnostic4 executed/0 PASS/4 FAIL
+is separate. Producer1b23 executed/22 PASS/1 FAIL and projection4d4 actual/28 executed/26 PASS/
+2 FAIL remain unchanged. Remaining finite controls except old four diagnostic failures and
+CREATE/replay/atomicity/archive/newroot/fresh-process qualification remain UNRUN. All parent
+T070/FR-063/#1536 checkboxes remain OPEN.
 
 Historical4ed current-contract fixture checkpoint (accepted before first migrated CREATE):
 Actual retained Astra XHigh EVIDENCE/status ACCEPTED36256b7afb6b734741116339f800da7d1cca24b0:

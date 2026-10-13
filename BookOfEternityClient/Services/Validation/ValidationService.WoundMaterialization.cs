@@ -629,8 +629,22 @@ public partial class ValidationService
         {
             // This null came only from the official reader's observed absence. A real
             // CREATE may plan the first carrier in memory; NONE never creates an empty root.
+            var playerOwner = draft.ParsedCommands.Commands.First(command =>
+                draft.SignedOccurrences.Occurrences.Any(row => row.OccurrenceId == command.Opportunity.OpportunityId && row.AdapterKind == "qte") &&
+                command.Opportunity.ProfileKey == "mortal_qte_terminal_health_damage_v1" &&
+                command.Opportunity.Owner.CarrierPath == WoundCarrierCatalog.PlayerPath &&
+                command.Decision.GetProperty("decision").GetString() == "materialize").Opportunity.Owner;
             carrierBaseline = carrierBaseline with { PlayerWounds = new JsonObject
-                { ["schemaVersion"] = 1, ["activeWounds"] = new JsonArray() } };
+            {
+                ["schemaVersion"] = 1,
+                ["owner"] = new JsonObject
+                {
+                    ["realm"] = playerOwner.Realm,
+                    ["ownerKind"] = playerOwner.OwnerKind,
+                    ["ownerId"] = playerOwner.OwnerId
+                },
+                ["activeWounds"] = new JsonArray()
+            } };
         }
         var acceptedOwnerCarriers = WoundAcceptedOwnerCarrierAuthority.Compose(
             carrierBaseline,
