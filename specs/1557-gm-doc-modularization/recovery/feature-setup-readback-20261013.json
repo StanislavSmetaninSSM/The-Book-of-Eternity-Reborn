@@ -1,0 +1,63 @@
+{
+  "base": "e8bbbf3948637bc4dbd1153be68673e0653b0f42",
+  "branch": "1557-gm-doc-modularization-cloud-20261013",
+  "sourceSpecSHA256": "27735ec49aeb39eec51e1764ebff15ffe2e9c2c3cc150138659564587116bace",
+  "specMetadataReversible": true,
+  "semanticCounts": {
+    "FR": 13,
+    "userStories": 3,
+    "afterlifePairs": 10,
+    "block5Pairs": 7
+  },
+  "planningCopies": [
+    {
+      "source": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-planning-draft-20261013/plan.md",
+      "destination": "specs/1557-gm-doc-modularization/plan.md",
+      "sourceSHA256": "7a4a611e3506cf8f4a9dabb14d269da47ac46e99d7df603363b325f303fb3ee2",
+      "change": "header/current execution context only; planned body preserved"
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-planning-draft-20261013/research.md",
+      "destination": "specs/1557-gm-doc-modularization/research.md",
+      "sourceSHA256": "fcf798b2f5623188661c2f8126a8d3571b69e32459d07511a5b76f2455194f40",
+      "change": "header/current execution context only; planned body preserved"
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-planning-draft-20261013/data-model.md",
+      "destination": "specs/1557-gm-doc-modularization/data-model.md",
+      "sourceSHA256": "bcc085232dba4e4bad3444f0df965ce9673141a24102bea656d664e25e4b8aa1",
+      "change": "header/current execution context only; planned body preserved"
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-planning-draft-20261013/quickstart.md",
+      "destination": "specs/1557-gm-doc-modularization/quickstart.md",
+      "sourceSHA256": "bc2fcb8891855f59c2b47de4001e7796211f52a674c134f43e247eb1a989d298",
+      "change": "header/current execution context only; planned body preserved"
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-planning-draft-20261013/tasks.md",
+      "destination": "specs/1557-gm-doc-modularization/tasks.md",
+      "sourceSHA256": "bc8e3ba985b55410dbe2ff2a26ccc0a25628fc204b8f663118d2eea21a1e4dd4",
+      "change": "header/current execution context only; planned body preserved"
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-planning-draft-20261013/analysis.md",
+      "destination": "specs/1557-gm-doc-modularization/analysis.md",
+      "sourceSHA256": "60ae9576674941d15cf5d4ddc9218b4858256b1509d2ebcd84edfd1f04188c13",
+      "change": "header/current execution context only; planned body preserved"
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-planning-draft-20261013/contracts/gm-reading-and-preservation.md",
+      "destination": "specs/1557-gm-doc-modularization/contracts/gm-reading-and-preservation.md",
+      "sourceSHA256": "6f9b080538213ff161d2f354dfa27909641ab2a3a751ce5591068c09c82b4e27",
+      "change": "header/current execution context only; planned body preserved"
+    }
+  ],
+  "T001T002": "performed metadata, independent review pending; checkboxes unchanged",
+  "newProjectChecks": "UNRUN",
+  "contentMoves": "UNRUN",
+  "D01": "resolved existing source-read ban normalplay/repair",
+  "primaryFeature": "specs/1553-portable-local-storage unchanged",
+  "A": "source authoring released only isolated feature",
+  "B": "after independent A acceptance"
+}

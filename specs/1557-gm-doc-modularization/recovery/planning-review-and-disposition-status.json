@@ -1,0 +1,30 @@
+{
+  "fixedOriginalPlanningPacket": "08844dfa7a0cb2a4ad1dbca3224fbb88fc088c40",
+  "original7DraftPinsUnchanged": true,
+  "planningIndependentReview": "ACCEPTED actualretainedAstraXHigh; planningonly",
+  "coordinatorReview": "CONDITIONAL_RELEASE blockA afterverifiedFR063freeze/finalbase; BafterindependentAacceptance",
+  "D01": "RESOLVED existingcodeaccessban normalplay/validationrepair; explicitbeforeafter+guard; noliveexception",
+  "beforeFreeze": "READONLYreconciliation/inventory/fixturedesign",
+  "releaseConditions": [
+    "realLinuxproductionwriterandexistingstoragepublicationprerequisites,noproviderdispatch",
+    "realpackagedroot->session: independentexpectedinventory/bytes/missingcopy/linknegatives",
+    "7exactroutepredicates|requiredexcluded|dependencyclosure|10topicactivationcoverage;receiptbootstrapunchanged"
+  ],
+  "files": [
+    {
+      "path": "coordinator-review-and-D01-disposition.md",
+      "bytes": 3292,
+      "sha256": "473740647f40276ff00616c3d80915b17d42d160627d140198f1e7f42add5989"
+    },
+    {
+      "path": "independent-planning-review.md",
+      "bytes": 7322,
+      "sha256": "d02a64e7d4cc6df322010af2d4783a1614bfc59569d68db9e22cf94aa10170b8",
+      "originalExternalBytes": 7323,
+      "originalExternalSHA256": "de3018cd772e8ac510095bede746b1007650fe4db60add67ad672d2abdb74399",
+      "publishedNormalization": "Remove extra blank line at EOF only; allbodybytes unchanged"
+    }
+  ],
+  "implementation": "UNRUN; no1557worktree/feature/contentmoves yet",
+  "recordedUtc": "2026-10-13T17:30:37.233366+00:00"
+}

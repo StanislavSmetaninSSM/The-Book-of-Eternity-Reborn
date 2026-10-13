@@ -1,0 +1,12 @@
+# Coordinator review and D01 disposition
+
+Source: coordinator delegation from thread01a118b2-51cc-732e-9138-6474686600eb, 2026-10-13; exact instruction preserved below.
+Current status: D01 RESOLVED by existing authority; conditional blockA release AFTER verifiedFR063freeze/finalbase; noGMimplementationyet.
+
+Координаторский read-only review planning packet 08844dfa завершён: условно готов к release в утверждённом пользователем объёме после FR063 freeze и сверки финального base. Новый концептуальный вопрос пользователю не нужен.
+D01 разрешается существующей authority: сохранить запрет чтения implementation code в normal play и validation repair. Основания на этом SHA: AGENTS.md117–122; TaskGuides/CLI_Step_Main.txt23; game_master_daemon.ps1:2662–2663 с включением в actual prompts5892/6314. Синхронизировать конфликтующие matrix37, TaskGuide432, CLI_Agent_Daemon_Specification71–81 и fallback-pinning test AfterlifeDocumentationCoverageTests3647–3671. Зафиксировать это явным D01 disposition с before/after и изменённым guard, не маскировать под path substitution. Никаких новых исключений для live-GM source access.
+Условия реализации/review:
+1. Рано доказать Linux delivery seam: существующий test с powershell.exe не достаточен. Использовать реальный production writer с требуемыми storage/publication prerequisites, без provider dispatch. Если нужны несвязанные runtime изменения, вынести вопрос координатору.
+2. Реальный packaged-root→session case, а не раздельные static package check и запуск daemon из checkout. Независимый expected inventory, bytes, missing-copy/link negatives.
+3. Семь route families до SOURCE acceptance должны иметь точные predicates, required/excluded modules, dependency closure и activation coverage каждой темы. Проверить отсутствие расширения receipt-only/bootstrap.
+До FR063 freeze только read-only reconciliation/inventory/fixture design. После проверенного freeze разрешаю координировать isolated published #1557 branch и реализацию блока A в рамках утверждённой spec с проектным workflow и независимым Astra review. Блок B после независимой приёмки A. Не менять механику/схемы/FR063/history evidence, не делать PR/merge. Если repo workflow требует отдельного непокрытого подтверждения пользователя для конкретного плана, пришли точный пункт и артефакт; зависимый шаг отложи, остальные разрешённые продолжай. Сохрани этот review/disposition в planning packet.
