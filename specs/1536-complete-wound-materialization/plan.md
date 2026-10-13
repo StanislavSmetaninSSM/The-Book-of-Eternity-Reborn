@@ -9,6 +9,46 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## Final bounded acceptance — 2026-10-13 (ARCHIVE4 + DURABLE4 QUALIFIED; FULL T070 OPEN)
+
+Actual retained independent Astra XHigh EVIDENCE/status ACCEPTED at
+`3acc267d5a7ca20c3a162c87bb8680e4f3a7d8ff`: changed durable2 and aggregate bounded8
+QUALIFIED, no confirmed blockers. Final status supersedes the frozen packets' historical PENDING
+wording; the packets themselves remain immutable. This closes ONLY this bounded eight-case gate.
+
+| Qualified cohort | Unique cases | Evidence checkpoint |
+| --- | ---: | --- |
+| Archive NONE/CREATE x pending/consumed | 4 | fb1a17c02f76c378148f54eea685dfc5bfcaa01f |
+| Durable NONE/CREATE x exact | 2 | 8e4e1f769872a267424366a8786b7988326f632d |
+| Durable NONE/CREATE x changed, held preservation | 2 | 3acc267d5a7ca20c3a162c87bb8680e4f3a7d8ff |
+
+[Archive4 evidence](./recovery/qte-physical-consumer-archive-green-20261013/manifest.json),
+[exact2 GREEN / changed2 causal RED](./recovery/qte-physical-consumer-durable-cancellation-causal-red-20261013/manifest.json),
+[changed2 held GREEN](./recovery/qte-physical-consumer-durable-held-changed-green-20261013/manifest.json).
+Bounded history remains9actual invocations34executions8PASS26FAIL including retries,not34uniquecases.
+Proof20 is independentlyQUALIFIED atc793c8aa across prior19+generation1,with separate history
+2invocations21executions20PASS1fixture-prerequisiteFAIL; finite68/baselines retain prior acceptance.
+No accepted archive4/exact2/finite68/baseline or passing19 cohort was rerun without dependency.
+
+Production now holds a conflicting already-completed Mortal retry before repair/staging/rollback,
+preserving committed mechanics/receipt/marker and originalN43/Ready/output. Changed input grants
+no accepted authority or new allocation/story; exact input keeps strict genuine replay proof.
+Native changed2 actualsourcec793c8aa/compile82144b38 passed2/2 in32.9454795s; all29mechanicalpaths,
+4outputs,109originalartifacts+Ready preserved,Escape queued,loop/story42. ROOT173source/171compile-
+equivalent nonmetadata inputs/11binaries and4strict cleanup roots verified; independent43artifact
+review confirms the complete chain. Fresh preparation/discovery/catalog remain zero-execution work.
+
+Final recording is metadata-only; no additional project run is required for this bounded gate.
+Publish/verify actualremote and GitHub-only selected recovery before handoff. FullT070/FR-063/parent/
+#1536 and protected boxes stayOPEN/unchanged. Historicalfd15 timeout cause,managedresult andfactory
+cleanup remainUNKNOWN/UNQUALIFIED. C5fulloptimization isUNQUALIFIED;journalcausalruntimeRED UNRUN;
+historicalactive.json/intent.tmp actor/helperwarningorigin UNKNOWN; Windows not provided/tested.
+CloudLinux Debian13.6/kernel6.18.44 x86_64,SDK10.0.401,NET8.0.31/10.0.12,pwsh7.6.6,
+Node24.19.0,Python3.12.14 freshly read back. No main/merge/CI/issues/PR/provider/package/key operation.
+No actual tool security refusal observed. Existing GM grammar/prompts/examples remain applicable to
+this client-owned held refusal; no new GM authoring contract. Next action is coordinator handoff
+of this bounded acceptance; broader T070/other runtime work requires its separately bounded release.
+
 ## Bounded archive4 + durable4 final native candidate — 2026-10-13 (CHANGED2 GREEN; FINAL EVIDENCE PENDING)
 
 Proof20 dependency independently QUALIFIED by actual retained Astra XHigh at
