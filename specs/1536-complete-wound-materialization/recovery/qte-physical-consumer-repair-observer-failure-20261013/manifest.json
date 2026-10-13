@@ -1,0 +1,612 @@
+{
+  "source": "16aa4ed8293c59a99a6af7f39d23d9621e17920f",
+  "classification": "CORRECTED_TERMINAL_REPAIR8_RESPONDER_FILE_NOT_FOUND_PREREQUISITE_FAILURE",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 142103,
+      "uncompressedSha256": "9207eb922a2992d2d55510cdc5345691393e6dcb43de06c508194c06ba8826d8",
+      "compressedBytes": 12527,
+      "compressedSha256": "1ac25c99efde6b7dafe041f0de6767a5ce03b65c952c50d0a276e6c8cdb8fe19"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 120793,
+      "uncompressedSha256": "a95238c864e8818b7f4ae28eead6abc1ab0ff36b8456aad8a84bbb597174cf17",
+      "compressedBytes": 11221,
+      "compressedSha256": "e27ed47431d91e3e08ce6bfdeea72daacad7ecf1919ad533981325ec88fdb186"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 538,
+      "uncompressedSha256": "99881c412f5cd4a907e5a11074bfdaba3f30c0206245dd354f4fe7c107abd1d2",
+      "compressedBytes": 327,
+      "compressedSha256": "bd346858c9d8c1add5dcc8073d179031a664fdbd5c081245337c2b9f41d16114"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 125675,
+      "uncompressedSha256": "94213dfd4e766e39709e39b7cddc9969e192e53b1026aea1a9f4f7352073457b",
+      "compressedBytes": 11511,
+      "compressedSha256": "b08f4b340e963f68cc8d4199f006d5ea1c1154aca4ef30dc516a901e6c6af596"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 46959,
+      "uncompressedSha256": "99c1107f9dcaf4c40cfab17c540d99c990f0ac463273b43e5afc21c67be0f0c4",
+      "compressedBytes": 6332,
+      "compressedSha256": "b188826683b19e0ab2c012604e1fce556ccbd8c02c680679eabd17a52ce64b55"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "4a5988eebf67f78ec49c485fb459de5a94a26f9efc3429046b397360c153d18e",
+      "compressedBytes": 270,
+      "compressedSha256": "f62709d56d717c966b8e1a22c54ccccb24a695a0a65a6f64386c5abd4465b33a"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 30696,
+      "uncompressedSha256": "a1cbf2186be8d72b8d55cfe1047348fbb6a5557fd0497e364f32098dcf92f40d",
+      "compressedBytes": 9126,
+      "compressedSha256": "dced0040ff35822d4f2d7dc9c36d05e4123ab7aa6f6bc1edd4b1f728e35d89bc"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 1426,
+      "uncompressedSha256": "164e370411cef0552b1700e4df01bffa9830f9996b64f3a575abd28cf6caedb0",
+      "compressedBytes": 637,
+      "compressedSha256": "d4c9828f55f96575cc3bd8e2c1b14bf5447e1eb506d45e75835522cf10357d5d"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 555,
+      "uncompressedSha256": "9e838a3e4ac1a60a6c479458a03bcf4cd29d6ab07c682aa9f47e040f53911632",
+      "compressedBytes": 333,
+      "compressedSha256": "4dcc6c04c03ba92c9c18c2811c7f3e177c66f6f0003c23a0be36a165db19b3d0"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 1269,
+      "uncompressedSha256": "1fee3b1c7b97ea194a74aa851e8eacc64ce35666f2f8830b0dbde69ec64aea0a",
+      "compressedBytes": 632,
+      "compressedSha256": "bfe3835f2e8f6208ddee9c5176179a5bd3afa093461328a7f86162345912b0d2"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "20c6b199a713e924e0ab006239259ea1d1c70d46214e00af3d21d32f510ce196",
+      "compressedBytes": 269,
+      "compressedSha256": "3b387d0acd23ca038db296f0e70739ca9baf922f4140d3dbeca940a8800e7619"
+    },
+    {
+      "name": "fixture-root-source-readback.json.gz",
+      "uncompressedBytes": 1462,
+      "uncompressedSha256": "0916e3f2d1b0eea31bcaa8a5c56a5b7f6af472958aa242cc820a1ec8de96c371",
+      "compressedBytes": 841,
+      "compressedSha256": "feb0ce842405f4779fc9e60ca3902bf24df93792e6e38f2beb37d4859ee504d2"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2495,
+      "uncompressedSha256": "b8df20e7d4c96b0c74190f1e69f55c1868d6adb44cf55ac9adc71725c7e063fc",
+      "compressedBytes": 655,
+      "compressedSha256": "35245f7dca5ea6c1860dee0c0d6108e251e5eeee28b1bdf59eec55765d1e1b81"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 15440,
+      "uncompressedSha256": "16d8e3b56be3be2ec15cfee3706b5d5aea6a994b996dac61c24ac510beb087bf",
+      "compressedBytes": 2172,
+      "compressedSha256": "f6d288fca8dcd77962248c80276dc48f344dda8888c10706659686eaaeb963c9"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 530,
+      "uncompressedSha256": "dc8e03f10f40a1e6ffa371003a58b8b699d0c907aa6173e74c4ea048af20d3ca",
+      "compressedBytes": 323,
+      "compressedSha256": "cee22d3c985742cb23fd29ed9669b18115a286fc9f5fe3d4b9dbaa7dbcd4f6f3"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 2119,
+      "uncompressedSha256": "af1cd7d8328f450de05f921f1f29df15109f72c7ebba2cae56cd6e2590caca4e",
+      "compressedBytes": 792,
+      "compressedSha256": "2847df2e27a0892dea8153e8d33b9ccb2caaaafbcbcc1990c6c2440714f6fd2e"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "c5cbd6194734c41089c77fde8d5cf274f1e28b8c8e09bebabce3a319701d34de",
+      "compressedBytes": 269,
+      "compressedSha256": "33389160e444a2e055186fcb2db51ce9f158f47be7963014b71fb3909ceb9978"
+    },
+    {
+      "name": "repair8-selection.json.gz",
+      "uncompressedBytes": 514,
+      "uncompressedSha256": "31d4bb7c24d38cae93de39c516a1c5e10adc56a7b665738cd0f2c73b669d6846",
+      "compressedBytes": 344,
+      "compressedSha256": "4a9daa60cbc4dc880258bb6b1ffa5e1c8e4a6c0e7a6ea25222cf7bc487deb445"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 1796993,
+      "uncompressedSha256": "a2477d2605a6cccf3dbe0fde7e9526e39f0fb466df84a9daaaee497ea5e31481",
+      "compressedBytes": 196742,
+      "compressedSha256": "bf49409ac2c023994be70c3df1b42d6297e9234f336f5f25ad3c64db4b26179a"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 1659,
+      "uncompressedSha256": "dc96b63d670af1010f3a545213e1ec82ccf6bef9bbee635f259ee612903f22c3",
+      "compressedBytes": 768,
+      "compressedSha256": "5626803f6b758ecdcbd79f113f8357d30a88477225894ccf0f04423471040a57"
+    },
+    {
+      "name": "actual-qte-physical-injury-consumer-repair-integration-001.trx.gz",
+      "uncompressedBytes": 327912,
+      "uncompressedSha256": "763fd2ef075bd1d992df880a743958f2c61604bca66ff41a13bf60b73bc9c918",
+      "compressedBytes": 23807,
+      "compressedSha256": "08b368f35d1d5696e850d587ea17d503b9d3eda53200da61a5006796c16edace"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 1851,
+      "uncompressedSha256": "aa4a0dfba79c21580965e597f0f8667ab527e377eec2c0264f505977b94d67e3",
+      "compressedBytes": 842,
+      "compressedSha256": "f7773e1e65be3d71e00051933ad05d9e82a8cdffb9a5bd4da6b62860bc2f53fb"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1655886,
+      "uncompressedSha256": "7d72f143245d43402725f428e465db95f5fe714bb1102d47ff7da0bae55e1992",
+      "compressedBytes": 184364,
+      "compressedSha256": "8a9ba783ff30555d1ea192c2848659e0077a434cdbda0b4b9e95c15eebdf258d"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 1659,
+      "uncompressedSha256": "09837adfd77f80d285ab3ad79f97fe5c6cf7584980a090c0c7f34c43fa516f75",
+      "compressedBytes": 769,
+      "compressedSha256": "e0e5a2f230fd99da08a5edbe0c86532b2ea12ef0457e5cceac591f3cc5f453e0"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 1862,
+      "uncompressedSha256": "1187c1a54d25d3392ea90084f9a911de9cd8f969bcdd847942dca44aa142cb9a",
+      "compressedBytes": 854,
+      "compressedSha256": "0a92b2a14a171a89605867acdef6be681eb9332ccdb6887194c3e9fd71e32834"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 82265,
+      "uncompressedSha256": "d7cf99d87f45d9c7ba78ff2fcf2e58617cde40e5893e79c4dec80db5464dcee3",
+      "compressedBytes": 5982,
+      "compressedSha256": "632afb8aa1d9fb841ae665dae456b86c0d9e649944756d0cd679a2a06c06401a"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 30113,
+      "uncompressedSha256": "1dfb428dac43b40a802a698fcafb3bf5363d43a52994cc7c5c68b7b75b4dc0f7",
+      "compressedBytes": 1749,
+      "compressedSha256": "bc0c7a4d332a2169093ab3462306d44cf4ab7fac4efbf1b6c3c5a75544e2e2c2"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3436201,
+      "uncompressedSha256": "c924cd405640ceb711db7674f173ecfdd23be221942c3c0682564439f9704e27",
+      "compressedBytes": 376018,
+      "compressedSha256": "353c47311f6a2cc53363630c767af00bf19e4f706c53bf1f0c34e14e2332b669"
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "uncompressedBytes": 24530,
+      "uncompressedSha256": "643e19c9a4db5d23f5035319b5aaffa9835d1b021af92f9886800aa37ba13aa1",
+      "compressedBytes": 4496,
+      "compressedSha256": "fcd5f1a56aa292352d1117a3bb73ba0ee00dbc8cd780a652bcd44258b39fdda4"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 9527,
+      "uncompressedSha256": "88bf91ff094220c43de59430f53ef852723311711b907f8e7907cdb9608d09a2",
+      "compressedBytes": 3290,
+      "compressedSha256": "d52bbd0d5a7e9f7774f68c3043cfb61a1e221d75c7a91c97dc37e048f74ebed1"
+    }
+  ],
+  "frozenUtc": "2026-10-13T04:52:46.501517+00:00",
+  "preparation": {
+    "source": "16aa4ed8293c59a99a6af7f39d23d9621e17920f",
+    "compileSource": "16aa4ed8293c59a99a6af7f39d23d9621e17920f",
+    "run": "20261013-044734-587-468687-44b6be9c608c4b72813cba920a39dc2d-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-044734-587-468687-44b6be9c608c4b72813cba920a39dc2d-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T04:49:54.032581+00:00",
+    "classification": "FRESH_BOTH_PREPARATION_ZERO_EXECUTED",
+    "wallTime": "00:02:19.3917351",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 12,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 70,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "qte-physical-injury-consumer-common-controls-integration-001",
+        "qte-physical-injury-consumer-completion-presence-integration-002",
+        "qte-physical-injury-consumer-completion-presence-unit-003",
+        "qte-physical-injury-consumer-create-integration-004",
+        "qte-physical-injury-consumer-documentation-integration-005",
+        "qte-physical-injury-consumer-documentation-unit-006",
+        "qte-physical-injury-consumer-draft-integration-007",
+        "qte-physical-injury-consumer-none-integration-008",
+        "qte-physical-injury-consumer-publication-integration-009",
+        "qte-physical-injury-consumer-repair-integration-010",
+        "qte-physical-injury-consumer-source-compatibility-integration-011",
+        "qte-physical-injury-consumer-worker-scope-unit-012"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 152,
+    "freshBinaryPinsPrePostMatched": 10,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T04:50:06.597848+00:00",
+    "methods": 30,
+    "cases": 70,
+    "descriptors": 12,
+    "warnings": {
+      "Build-integration.log": 85,
+      "Build-unit.log": 35
+    },
+    "errors": {
+      "Build-integration.log": 0,
+      "Build-unit.log": 0
+    }
+  },
+  "exact-plan": {
+    "source": "16aa4ed8293c59a99a6af7f39d23d9621e17920f",
+    "compileSource": "16aa4ed8293c59a99a6af7f39d23d9621e17920f",
+    "run": "20261013-045007-347-469003-7027d7cc0b5f4f9a90016af48b8891a4-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-045007-347-469003-7027d7cc0b5f4f9a90016af48b8891a4-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T04:50:09.869962+00:00",
+    "classification": "EXACT_REPAIR8_PLAN_ZERO_EXECUTED",
+    "wallTime": "00:00:02.4692256",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 8,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "qte-physical-injury-consumer-repair-integration-001"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 152,
+    "freshBinaryPinsPrePostMatched": 10,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T04:50:28.132854+00:00",
+    "methods": 1,
+    "cases": 8,
+    "descriptors": 1,
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "16aa4ed8293c59a99a6af7f39d23d9621e17920f",
+    "compileSource": "16aa4ed8293c59a99a6af7f39d23d9621e17920f",
+    "run": "20261013-045028-947-469154-d9e815db90ea4fad8bb821b04c58131c-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-045028-947-469154-d9e815db90ea4fad8bb821b04c58131c-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-13T04:51:51.791309+00:00",
+    "classification": "FIRST_CORRECTED_REPAIR8_ACTUAL",
+    "wallTime": "00:01:22.8001878",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 8,
+      "Executed": 8,
+      "Passed": 0,
+      "Failed": 8
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 8,
+      "CompletedCases": 8,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 152,
+    "freshBinaryPinsPrePostMatched": 10,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T04:52:00.925458+00:00",
+    "methods": 1,
+    "cases": 8,
+    "descriptors": 1,
+    "allNativeResults": [
+      {
+        "executionId": "e5d46642-c580-4162-aac6-4d8db943e297",
+        "testId": "4ffcdce1-a8cd-9fb1-110d-d64f4cd97db7",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(rejection: \"resource\", siblingDrift: True)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:08.2271006",
+        "startTime": "2026-10-13T04:51:16.5044831+00:00",
+        "endTime": "2026-10-13T04:51:16.5044833+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "e5d46642-c580-4162-aac6-4d8db943e297",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   System.IO.FileNotFoundException: Could not find file '/tmp/boe-gameengine-turnlifecycle-64879dc9488f4a8f946fc1d18ff7370f/game_session/game_state/control/validation_repair_request.json'.\nFile name: '/tmp/boe-gameengine-turnlifecycle-64879dc9488f4a8f946fc1d18ff7370f/game_session/game_state/control/validation_repair_request.json'\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.File.ReadAllText(String path, Encoding encoding)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass551_0.<QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal>g__RespondToMainRepair|3(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 134",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(String rejection, Boolean siblingDrift) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 57\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "38886e57-2f42-4f43-a745-59593fb848ec",
+        "testId": "a4586943-c9dd-1418-f6bf-a2eb9fe170c0",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(rejection: \"location\", siblingDrift: True)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:12.3119147",
+        "startTime": "2026-10-13T04:51:00.1529208+00:00",
+        "endTime": "2026-10-13T04:51:00.1529209+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "38886e57-2f42-4f43-a745-59593fb848ec",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   System.IO.FileNotFoundException: Could not find file '/tmp/boe-gameengine-turnlifecycle-294a9e17373f478d8c5cd5164ae18ebc/game_session/game_state/control/validation_repair_request.json'.\nFile name: '/tmp/boe-gameengine-turnlifecycle-294a9e17373f478d8c5cd5164ae18ebc/game_session/game_state/control/validation_repair_request.json'\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)\n   at System.IO.File.ReadAllText(String path, Encoding encoding)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass551_0.<QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal>g__RespondToMainRepair|3(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 134",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(String rejection, Boolean siblingDrift) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 57\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "2777eef2-0c39-479e-9b32-124a0a0d2c2b",
+        "testId": "1b305862-2d90-c29b-5512-60d226febf18",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(rejection: \"narration\", siblingDrift: False)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:08.1194009",
+        "startTime": "2026-10-13T04:51:08.2802516+00:00",
+        "endTime": "2026-10-13T04:51:08.2802518+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "2777eef2-0c39-479e-9b32-124a0a0d2c2b",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   System.IO.FileNotFoundException: Could not find file '/tmp/boe-gameengine-turnlifecycle-a352561eb2fe4872b705e041a89f0d78/game_session/game_state/control/validation_repair_request.json'.\nFile name: '/tmp/boe-gameengine-turnlifecycle-a352561eb2fe4872b705e041a89f0d78/game_session/game_state/control/validation_repair_request.json'\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)\n   at System.IO.File.ReadAllText(String path, Encoding encoding)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass551_0.<QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal>g__RespondToMainRepair|3(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 134",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(String rejection, Boolean siblingDrift) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 57\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "c0600d89-d472-48c6-9c74-7670d49a084e",
+        "testId": "56d81b14-e3bf-c7cc-4c4c-2b6ec20a4c1c",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(rejection: \"severity\", siblingDrift: False)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:09.1397372",
+        "startTime": "2026-10-13T04:51:25.6454048+00:00",
+        "endTime": "2026-10-13T04:51:25.6454050+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "c0600d89-d472-48c6-9c74-7670d49a084e",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   System.IO.FileNotFoundException: Could not find file '/tmp/boe-gameengine-turnlifecycle-5c8d7f8ae61941de878cbc88b6dad890/game_session/game_state/control/validation_repair_request.json'.\nFile name: '/tmp/boe-gameengine-turnlifecycle-5c8d7f8ae61941de878cbc88b6dad890/game_session/game_state/control/validation_repair_request.json'\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.File.ReadAllText(String path, Encoding encoding)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass551_0.<QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal>g__RespondToMainRepair|3(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 134",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(String rejection, Boolean siblingDrift) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 57\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "61e9ace5-90f9-4e60-a8cd-e20d70f40157",
+        "testId": "0a8822ee-5951-5ff1-530c-5efb2d75f061",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(rejection: \"location\", siblingDrift: False)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:08.4184655",
+        "startTime": "2026-10-13T04:51:42.8179134+00:00",
+        "endTime": "2026-10-13T04:51:42.8179136+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "61e9ace5-90f9-4e60-a8cd-e20d70f40157",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   System.IO.FileNotFoundException: Could not find file '/tmp/boe-gameengine-turnlifecycle-4c85c216653441db8eaf206cbbff79f6/game_session/game_state/control/validation_repair_request.json'.\nFile name: '/tmp/boe-gameengine-turnlifecycle-4c85c216653441db8eaf206cbbff79f6/game_session/game_state/control/validation_repair_request.json'\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.File.ReadAllText(String path, Encoding encoding)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass551_0.<QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal>g__RespondToMainRepair|3(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 134",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(String rejection, Boolean siblingDrift) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 57\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "1dd67d4f-d2f4-42f5-8c5f-bb88716baf19",
+        "testId": "473e3963-a579-3857-1dfd-9cae763ae543",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(rejection: \"narration\", siblingDrift: True)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:08.7485216",
+        "startTime": "2026-10-13T04:51:34.3958828+00:00",
+        "endTime": "2026-10-13T04:51:34.3958830+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "1dd67d4f-d2f4-42f5-8c5f-bb88716baf19",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   System.IO.FileNotFoundException: Could not find file '/tmp/boe-gameengine-turnlifecycle-03bc72b470804683913a6c87474d22fb/game_session/game_state/control/validation_repair_request.json'.\nFile name: '/tmp/boe-gameengine-turnlifecycle-03bc72b470804683913a6c87474d22fb/game_session/game_state/control/validation_repair_request.json'\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.File.ReadAllText(String path, Encoding encoding)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass551_0.<QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal>g__RespondToMainRepair|3(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 134",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(String rejection, Boolean siblingDrift) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 57\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "5e9ad8cc-8f13-443b-bb29-a68ecc28fb75",
+        "testId": "a706c6df-8efd-9be0-9469-c5ef9aea90a0",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(rejection: \"resource\", siblingDrift: False)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:08.7600415",
+        "startTime": "2026-10-13T04:51:51.5784912+00:00",
+        "endTime": "2026-10-13T04:51:51.5784914+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "5e9ad8cc-8f13-443b-bb29-a68ecc28fb75",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   System.IO.FileNotFoundException: Could not find file '/tmp/boe-gameengine-turnlifecycle-0040c2fbb1b34c728809bdaffff7f2b0/game_session/game_state/control/validation_repair_request.json'.\nFile name: '/tmp/boe-gameengine-turnlifecycle-0040c2fbb1b34c728809bdaffff7f2b0/game_session/game_state/control/validation_repair_request.json'\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.File.ReadAllText(String path, Encoding encoding)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass551_0.<QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal>g__RespondToMainRepair|3(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 134",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(String rejection, Boolean siblingDrift) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 57\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "f34f2516-7d57-4621-b57a-3cf16d3588ba",
+        "testId": "992143fd-b16b-a596-2d7b-414f141dc769",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(rejection: \"severity\", siblingDrift: True)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:14.3885524",
+        "startTime": "2026-10-13T04:50:47.8538191+00:00",
+        "endTime": "2026-10-13T04:50:47.8538295+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "f34f2516-7d57-4621-b57a-3cf16d3588ba",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   System.IO.FileNotFoundException: Could not find file '/tmp/boe-gameengine-turnlifecycle-41dbc0dd34a948bbbd6c337fa451bb7a/game_session/game_state/control/validation_repair_request.json'.\nFile name: '/tmp/boe-gameengine-turnlifecycle-41dbc0dd34a948bbbd6c337fa451bb7a/game_session/game_state/control/validation_repair_request.json'\n   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Encoding encoding, Int32 bufferSize)\n   at System.IO.File.ReadAllText(String path, Encoding encoding)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass551_0.<QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal>g__RespondToMainRepair|3(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 134",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(String rejection, Boolean siblingDrift) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs:line 57\n--- End of stack trace from previous location ---"
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 32,
+    "nativeObservationBoundaries": {
+      "qte_story_actual_client_append": 8,
+      "qte_story_actual_engine_result": 8,
+      "qte_physical_actual_occurrence": 8,
+      "qte_consumer_actual_main_repair": 8
+    },
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-64879dc9488f4a8f946fc1d18ff7370f",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-294a9e17373f478d8c5cd5164ae18ebc",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-a352561eb2fe4872b705e041a89f0d78",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-5c8d7f8ae61941de878cbc88b6dad890",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4c85c216653441db8eaf206cbbff79f6",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-03bc72b470804683913a6c87474d22fb",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-0040c2fbb1b34c728809bdaffff7f2b0",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-41dbc0dd34a948bbbd6c337fa451bb7a",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allEmittedStrictRootsActuallyAbsent": true,
+    "evidenceReview": "PENDING",
+    "failureBoundary": "All8 Assert.Null(responderFailure) atRepair57; responderFileNotFound readingvalidation_repair_request.json at134. Truecause/observedpublicationkindUNPROVED; laterrepair assertionsUNREACHED",
+    "initialReadyContract": "All8 physicalrawready captured;fouractualauthoredfilesModifiedexact; actualNextsession/request/turn43 match",
+    "actualRepairDiagnosticSummary": [
+      {
+        "rejection": "resource",
+        "siblingDrift": true,
+        "repairCount": 0,
+        "accepted": false,
+        "EngineFailure": null,
+        "ActualTurn": 42,
+        "actualIssuedCommand": "{\n  \"schemaVersion\": 1,\n  \"sessionId\": \"session_qte_story_append\",\n  \"requestId\": \"444d995e67254e19973db4f8ffa12738\",\n  \"snapshotToken\": \"E48892B3F0C89A5B4DB3A09E79E6C0EF2156ACC5A411E7DEF734701DDDE7A27B\",\n  \"commands\": [\n    {\n      \"kind\": \"opportunity_decision\",\n      \"opportunity\": {\n        \"schemaVersion\": 1,\n        \"sessionId\": \"session_qte_story_append\",\n        \"requestId\": \"444d995e67254e19973db4f8ffa12738\",\n        \"snapshotToken\": \"E48892B3F0C89A5B4DB3A09E79E6C0EF2156ACC5A411E7DEF734701DDDE7A27B\",\n        \"opportunityId\": \"mortal_wound_occurrence_a11b8cef0b9a176b2a3a2d3291560eeef59a82f36f3237d05444f7fa5b465021\",\n        \"publicRef\": \"mortal_wound_a11b8cef0b9a176b2a3a2d3291560eeef59a82f36f3237d05444f7fa5b465021\",\n        \"eventRef\": \"turn_42:qte_terminal:1:resource:1\",\n        \"eventKind\": \"resource_mutation\",\n        \"eventAuthorityId\": \"sha256:7eab9f532e997af61c6d92171cf753dde5a52ace35823420d596b0be5340d179\",\n        \"acceptedEventsFingerprint\": \"sha256:71dd017ad447178b801e22bdf3a5b17e6db03f7e4a788d68518898e24081a7d5\",\n        \"owner\": {\n          \"realm\": \"mortal_world\",\n          \"ownerKind\": \"player\",\n          \"ownerId\": \"player_current\",\n          \"carrierPath\": \"game_state/player/wounds.json\"\n        },\n        \"domain\": \"physical\",\n        \"profileKey\": \"mortal_qte_terminal_health_damage_v1\",\n        \"sourceKind\": \"qte_terminal_health_damage\",\n        \"sourceId\": \"qte_health_damage_cff5bdd37e6334d424ec8f3102bf6eff42906116157ee8c91a0e4f48987d0ed0\",\n        \"sourceState\": \"accepted\",\n        \"minimumSeverityRank\": null,\n        \"maximumSeverityRank\": 2,\n        \"guaranteedTrigger\": null,\n        \"worseningTarget\": null,\n        \"safeContext\": {\n          \"target\": \"вы\",\n          \"cause\": \"Прямой удар камня.\",\n          \"allowedLocationKinds\": [\n            \"anatomical\",\n            \"other\"\n          ]\n        },\n        \"inputEvidenceFingerprint\": \"sha256:3ed1304ed863e6792cfa0554862df7e154ed79a7eacaa80c9cc4071e8efd11c8\",\n        \"authorityFingerprint\": \"sha256:448999a176395cd829af25d3be4472b86ef315173c0ee12a5a6f815f20ae0389\"\n      },\n      \"decision\": {\n        \"opportunityRef\": \"mortal_wound_a11b8cef0b9a176b2a3a2d3291560eeef59a82f36f3237d05444f7fa5b465021\",\n        \"decision\": \"materialize\",\n        \"woundRef\": \"local_repair_cut\",\n        \"proposal\": {\n          \"classification\": {\n            \"woundType\": \"superficial_laceration\",\n            \"locationProfile\": {\n              \"kind\": \"other\",\n              \"readableLocus\": \"поверхностный порез на боку\"\n            }\n          },\n          \"display\": {\n            \"name\": \"Поверхностный порез\",\n            \"description\": \"Край камня оставил неглубокий порез.\",\n            \"visibleSymptoms\": [\n              \"полоска крови\",\n              \"жжение\"\n            ],\n            \"prognosis\": \"Порез требует очистки и стабилизации.\",\n            \"visibility\": \"known_to_player\",\n            \"acquisitionNarration\": \"Край камня оставляет поверхностный порез на боку.\"\n          },\n          \"severity\": \"I\",\n          \"complications\": [],\n          \"consequenceDefinitions\": [\n            {\n              \"definitionRef\": \"bleeding_root\",\n              \"definition\": {\n                \"schemaVersion\": 1,\n                \"definitionKey\": \"wound_bleeding_root\",\n                \"display\": {\n                  \"name\": \"Кровотечение\",\n                  \"description\": \"Рана продолжает отнимать силы.\",\n                  \"category\": \"debuff\",\n                  \"visibility\": \"visible\"\n                },\n                \"allowedRealms\": [\n                  \"mortal_world\"\n                ],\n                \"allowedTargetKinds\": [\n                  \"player\"\n                ],\n                \"components\": [\n                  {\n                    \"componentId\": \"component_001\",\n                    \"profile\": \"periodic_damage\",\n                    \"priority\": 100,\n                    \"payload\": {\n                      \"resource\": \"unbound_cut_resource\",\n                      \"amount\": 3,\n                      \"damageType\": \"bleeding\",\n                      \"floorPolicy\": \"registered_resource_floor\"\n                    }\n                  }\n                ],\n                \"parameterBounds\": {},\n                \"stacking\": {\n                  \"stackKey\": \"stack_wound_bleeding_root\",\n                  \"policy\": \"independent\",\n                  \"maxStacks\": 1,\n                  \"atMaximum\": \"no_change\",\n                  \"refreshMode\": null,\n                  \"mergeRule\": null\n                },\n                \"lifetime\": {\n                  \"mode\": \"turns\",\n                  \"initialTurns\": 3,\n                  \"advancePhase\": \"owner_turn_end\"\n                },\n                \"triggers\": [\n                  {\n                    \"triggerId\": \"on_owner_turn_end\",\n                    \"eventType\": \"owner_turn_end\",\n                    \"priority\": 100,\n                    \"componentIds\": [\n                      \"component_001\"\n                    ],\n                    \"consumeUses\": false,\n                    \"resolutionMode\": \"deterministic\"\n                  }\n                ],\n                \"removal\": {\n                  \"dispelCategories\": [\n                    \"physical_treatment\"\n                  ],\n                  \"cureKinds\": [\n                    \"stop_bleeding\"\n                  ],\n                  \"onSourceLoss\": \"expire\",\n                  \"onConditionLoss\": null,\n                  \"manualAuthorities\": []\n                },\n                \"links\": []\n              },\n              \"root\": {\n                \"ownership\": {\n                  \"kind\": \"base_wound\",\n                  \"complicationRef\": null\n                },\n                \"slots\": [\n                  {\n                    \"profileKey\": \"periodic_damage\",\n                    \"readableSummary\": \"Свежий порез продолжает кровоточить.\"\n                  }\n                ]\n              }\n            }\n          ],\n          \"treatment\": {\n            \"diagnosisPaths\": [],\n            \"routes\": [\n              {\n                \"routeId\": \"clean_cut_v1\",\n                \"displayName\": \"Очистить и прижать порез\",\n                \"visibility\": \"known_to_player\",\n                \"mode\": \"procedure\",\n                \"requirements\": [],\n                \"resourcePolicy\": {\n                  \"reserveBeforeResolution\": true,\n                  \"consumeOn\": [\n                    \"success\",\n                    \"failed_attempt\"\n                  ],\n                  \"refundOn\": [\n                    \"cancelled\",\n                    \"validation_failed\",\n                    \"rolled_back\"\n                  ],\n                  \"mutations\": []\n                },\n                \"resolution\": {\n                  \"formulaKey\": \"mortal_wound_procedure_v1\",\n                  \"difficulty\": 10,\n                  \"rollSource\": \"accepted_d20\",\n                  \"criticalPolicy\": \"natural_20_first_natural_1_last\",\n                  \"modifierSource\": {\n                    \"kind\": \"fixed_zero\"\n                  }\n                },\n                \"outcomes\": [\n                  {\n                    \"bandId\": \"stabilized\",\n                    \"minimumMargin\": 0,\n                    \"maximumMargin\": null,\n                    \"category\": \"success\",\n                    \"result\": [\n                      {\n                        \"kind\": \"stabilize\"\n                      }\n                    ]\n                  },\n                  {\n                    \"bandId\": \"unimproved\",\n                    \"minimumMargin\": null,\n                    \"maximumMargin\": -1,\n                    \"category\": \"failed_attempt\",\n                    \"result\": [\n                      {\n                        \"kind\": \"no_improvement\"\n                      }\n                    ]\n                  }\n                ],\n                \"interruption\": null\n              }\n            ],\n            \"knownRouteIds\": [\n              \"clean_cut_v1\"\n            ],\n            \"completedRouteIds\": []\n          },\n          \"recovery\": {\n            \"mode\": \"requires_stabilization\",\n            \"clockKind\": \"mortal_world_time\",\n            \"cadence\": 86400,\n            \"currentStepProgress\": 0,\n            \"currentStepThreshold\": 3,\n            \"lastTickKey\": null,\n            \"blockers\": [\n              \"not_stabilized\"\n            ],\n            \"carryOverflow\": true,\n            \"deteriorationPolicy\": {\n              \"policyRef\": \"untreated_cut\",\n              \"unmetConditions\": [\n                \"not_stabilized\"\n              ],\n              \"graceMinutes\": 30,\n              \"cadenceMinutes\": 10,\n              \"result\": {\n                \"kind\": \"increase_severity\"\n              }\n            }\n          }\n        }\n      },\n      \"finalSceneText\": \"Край камня оставляет поверхностный порез на боку.\"\n    }\n  ]\n}"
+      },
+      {
+        "rejection": "location",
+        "siblingDrift": true,
+        "repairCount": 0,
+        "accepted": false,
+        "EngineFailure": null,
+        "ActualTurn": 42,
+        "actualIssuedCommand": null
+      },
+      {
+        "rejection": "narration",
+        "siblingDrift": false,
+        "repairCount": 0,
+        "accepted": false,
+        "EngineFailure": null,
+        "ActualTurn": 42,
+        "actualIssuedCommand": null
+      },
+      {
+        "rejection": "severity",
+        "siblingDrift": false,
+        "repairCount": 0,
+        "accepted": false,
+        "EngineFailure": null,
+        "ActualTurn": 42,
+        "actualIssuedCommand": null
+      },
+      {
+        "rejection": "location",
+        "siblingDrift": false,
+        "repairCount": 0,
+        "accepted": false,
+        "EngineFailure": null,
+        "ActualTurn": 42,
+        "actualIssuedCommand": null
+      },
+      {
+        "rejection": "narration",
+        "siblingDrift": true,
+        "repairCount": 0,
+        "accepted": false,
+        "EngineFailure": null,
+        "ActualTurn": 42,
+        "actualIssuedCommand": null
+      },
+      {
+        "rejection": "resource",
+        "siblingDrift": false,
+        "repairCount": 0,
+        "accepted": false,
+        "EngineFailure": null,
+        "ActualTurn": 42,
+        "actualIssuedCommand": "{\n  \"schemaVersion\": 1,\n  \"sessionId\": \"session_qte_story_append\",\n  \"requestId\": \"bfa8ba8f45684221a3b72e111fc4dad4\",\n  \"snapshotToken\": \"FCF0ED81C9664887AA0E1761962B833A276D6A479EBBF911DDDDFBF6E8F2C665\",\n  \"commands\": [\n    {\n      \"kind\": \"opportunity_decision\",\n      \"opportunity\": {\n        \"schemaVersion\": 1,\n        \"sessionId\": \"session_qte_story_append\",\n        \"requestId\": \"bfa8ba8f45684221a3b72e111fc4dad4\",\n        \"snapshotToken\": \"FCF0ED81C9664887AA0E1761962B833A276D6A479EBBF911DDDDFBF6E8F2C665\",\n        \"opportunityId\": \"mortal_wound_occurrence_cb30b9099ff5deb24a5bada6f7ff1cd4a153e73d125b9db5b63c6e7e9cc31f8f\",\n        \"publicRef\": \"mortal_wound_cb30b9099ff5deb24a5bada6f7ff1cd4a153e73d125b9db5b63c6e7e9cc31f8f\",\n        \"eventRef\": \"turn_42:qte_terminal:1:resource:1\",\n        \"eventKind\": \"resource_mutation\",\n        \"eventAuthorityId\": \"sha256:7eab9f532e997af61c6d92171cf753dde5a52ace35823420d596b0be5340d179\",\n        \"acceptedEventsFingerprint\": \"sha256:71dd017ad447178b801e22bdf3a5b17e6db03f7e4a788d68518898e24081a7d5\",\n        \"owner\": {\n          \"realm\": \"mortal_world\",\n          \"ownerKind\": \"player\",\n          \"ownerId\": \"player_current\",\n          \"carrierPath\": \"game_state/player/wounds.json\"\n        },\n        \"domain\": \"physical\",\n        \"profileKey\": \"mortal_qte_terminal_health_damage_v1\",\n        \"sourceKind\": \"qte_terminal_health_damage\",\n        \"sourceId\": \"qte_health_damage_a970bd12b84c9508a533617cc9a3c81a1c55227797c549b2f89fbc27c52961b5\",\n        \"sourceState\": \"accepted\",\n        \"minimumSeverityRank\": null,\n        \"maximumSeverityRank\": 2,\n        \"guaranteedTrigger\": null,\n        \"worseningTarget\": null,\n        \"safeContext\": {\n          \"target\": \"вы\",\n          \"cause\": \"Прямой удар камня.\",\n          \"allowedLocationKinds\": [\n            \"anatomical\",\n            \"other\"\n          ]\n        },\n        \"inputEvidenceFingerprint\": \"sha256:3ed1304ed863e6792cfa0554862df7e154ed79a7eacaa80c9cc4071e8efd11c8\",\n        \"authorityFingerprint\": \"sha256:daef94dc62f4796eb14bfc7603f6fde48fb2654eb0a4eea173e4dda55f2f7906\"\n      },\n      \"decision\": {\n        \"opportunityRef\": \"mortal_wound_cb30b9099ff5deb24a5bada6f7ff1cd4a153e73d125b9db5b63c6e7e9cc31f8f\",\n        \"decision\": \"materialize\",\n        \"woundRef\": \"local_repair_cut\",\n        \"proposal\": {\n          \"classification\": {\n            \"woundType\": \"superficial_laceration\",\n            \"locationProfile\": {\n              \"kind\": \"other\",\n              \"readableLocus\": \"поверхностный порез на боку\"\n            }\n          },\n          \"display\": {\n            \"name\": \"Поверхностный порез\",\n            \"description\": \"Край камня оставил неглубокий порез.\",\n            \"visibleSymptoms\": [\n              \"полоска крови\",\n              \"жжение\"\n            ],\n            \"prognosis\": \"Порез требует очистки и стабилизации.\",\n            \"visibility\": \"known_to_player\",\n            \"acquisitionNarration\": \"Край камня оставляет поверхностный порез на боку.\"\n          },\n          \"severity\": \"I\",\n          \"complications\": [],\n          \"consequenceDefinitions\": [\n            {\n              \"definitionRef\": \"bleeding_root\",\n              \"definition\": {\n                \"schemaVersion\": 1,\n                \"definitionKey\": \"wound_bleeding_root\",\n                \"display\": {\n                  \"name\": \"Кровотечение\",\n                  \"description\": \"Рана продолжает отнимать силы.\",\n                  \"category\": \"debuff\",\n                  \"visibility\": \"visible\"\n                },\n                \"allowedRealms\": [\n                  \"mortal_world\"\n                ],\n                \"allowedTargetKinds\": [\n                  \"player\"\n                ],\n                \"components\": [\n                  {\n                    \"componentId\": \"component_001\",\n                    \"profile\": \"periodic_damage\",\n                    \"priority\": 100,\n                    \"payload\": {\n                      \"resource\": \"unbound_cut_resource\",\n                      \"amount\": 3,\n                      \"damageType\": \"bleeding\",\n                      \"floorPolicy\": \"registered_resource_floor\"\n                    }\n                  }\n                ],\n                \"parameterBounds\": {},\n                \"stacking\": {\n                  \"stackKey\": \"stack_wound_bleeding_root\",\n                  \"policy\": \"independent\",\n                  \"maxStacks\": 1,\n                  \"atMaximum\": \"no_change\",\n                  \"refreshMode\": null,\n                  \"mergeRule\": null\n                },\n                \"lifetime\": {\n                  \"mode\": \"turns\",\n                  \"initialTurns\": 3,\n                  \"advancePhase\": \"owner_turn_end\"\n                },\n                \"triggers\": [\n                  {\n                    \"triggerId\": \"on_owner_turn_end\",\n                    \"eventType\": \"owner_turn_end\",\n                    \"priority\": 100,\n                    \"componentIds\": [\n                      \"component_001\"\n                    ],\n                    \"consumeUses\": false,\n                    \"resolutionMode\": \"deterministic\"\n                  }\n                ],\n                \"removal\": {\n                  \"dispelCategories\": [\n                    \"physical_treatment\"\n                  ],\n                  \"cureKinds\": [\n                    \"stop_bleeding\"\n                  ],\n                  \"onSourceLoss\": \"expire\",\n                  \"onConditionLoss\": null,\n                  \"manualAuthorities\": []\n                },\n                \"links\": []\n              },\n              \"root\": {\n                \"ownership\": {\n                  \"kind\": \"base_wound\",\n                  \"complicationRef\": null\n                },\n                \"slots\": [\n                  {\n                    \"profileKey\": \"periodic_damage\",\n                    \"readableSummary\": \"Свежий порез продолжает кровоточить.\"\n                  }\n                ]\n              }\n            }\n          ],\n          \"treatment\": {\n            \"diagnosisPaths\": [],\n            \"routes\": [\n              {\n                \"routeId\": \"clean_cut_v1\",\n                \"displayName\": \"Очистить и прижать порез\",\n                \"visibility\": \"known_to_player\",\n                \"mode\": \"procedure\",\n                \"requirements\": [],\n                \"resourcePolicy\": {\n                  \"reserveBeforeResolution\": true,\n                  \"consumeOn\": [\n                    \"success\",\n                    \"failed_attempt\"\n                  ],\n                  \"refundOn\": [\n                    \"cancelled\",\n                    \"validation_failed\",\n                    \"rolled_back\"\n                  ],\n                  \"mutations\": []\n                },\n                \"resolution\": {\n                  \"formulaKey\": \"mortal_wound_procedure_v1\",\n                  \"difficulty\": 10,\n                  \"rollSource\": \"accepted_d20\",\n                  \"criticalPolicy\": \"natural_20_first_natural_1_last\",\n                  \"modifierSource\": {\n                    \"kind\": \"fixed_zero\"\n                  }\n                },\n                \"outcomes\": [\n                  {\n                    \"bandId\": \"stabilized\",\n                    \"minimumMargin\": 0,\n                    \"maximumMargin\": null,\n                    \"category\": \"success\",\n                    \"result\": [\n                      {\n                        \"kind\": \"stabilize\"\n                      }\n                    ]\n                  },\n                  {\n                    \"bandId\": \"unimproved\",\n                    \"minimumMargin\": null,\n                    \"maximumMargin\": -1,\n                    \"category\": \"failed_attempt\",\n                    \"result\": [\n                      {\n                        \"kind\": \"no_improvement\"\n                      }\n                    ]\n                  }\n                ],\n                \"interruption\": null\n              }\n            ],\n            \"knownRouteIds\": [\n              \"clean_cut_v1\"\n            ],\n            \"completedRouteIds\": []\n          },\n          \"recovery\": {\n            \"mode\": \"requires_stabilization\",\n            \"clockKind\": \"mortal_world_time\",\n            \"cadence\": 86400,\n            \"currentStepProgress\": 0,\n            \"currentStepThreshold\": 3,\n            \"lastTickKey\": null,\n            \"blockers\": [\n              \"not_stabilized\"\n            ],\n            \"carryOverflow\": true,\n            \"deteriorationPolicy\": {\n              \"policyRef\": \"untreated_cut\",\n              \"unmetConditions\": [\n                \"not_stabilized\"\n              ],\n              \"graceMinutes\": 30,\n              \"cadenceMinutes\": 10,\n              \"result\": {\n                \"kind\": \"increase_severity\"\n              }\n            }\n          }\n        }\n      },\n      \"finalSceneText\": \"Край камня оставляет поверхностный порез на боку.\"\n    }\n  ]\n}"
+      },
+      {
+        "rejection": "severity",
+        "siblingDrift": true,
+        "repairCount": 0,
+        "accepted": false,
+        "EngineFailure": null,
+        "ActualTurn": 42,
+        "actualIssuedCommand": null
+      }
+    ],
+    "remainingUnrun": "5methods8cases2descriptors/default8 compatibility5+worker3",
+    "currentFiniteControlsTotals": {
+      "actualInvocations": 9,
+      "reportedExecutions": 87,
+      "passed": 64,
+      "failed": 23,
+      "failedRepairCasesLatest": 8,
+      "remainingUnrunCases": 8,
+      "includesRepetitions": true
+    },
+    "archiveFreshProcess": "UNRUN/onhold"
+  }
+}

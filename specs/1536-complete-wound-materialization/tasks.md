@@ -5,7 +5,52 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (REPAIR READY FIXTURE SOURCE READY; RETRY8 + UNRUN8)
+## Current T070 boundary — 2026-10-13 (REPAIR RESPONDER 8 FAIL; COMPATIBILITY/WORKER 8 UNRUN)
+
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED exact
+`16aa4ed8293c59a99a6af7f39d23d9621e17920f`; prior70842cc prerequisite-failure EVIDENCE remains
+accepted. The [corrected-terminal repair observer failure packet](./recovery/qte-physical-consumer-repair-observer-failure-20261013/manifest.json)
+freezes actual `20261013-045028-947-469154-d9e815db90ea4fad8bb821b04c58131c-categories`,
+source/compile16aa4ed:1 method/8 cases/1 descriptor,8 executed/0 PASS/8 FAIL,82.8001878s,
+complete,exit1,no timeout/skips/duplicate IDs. These are the same eight failed repair rows;
+no earlier passing cohort was repeated. Compatibility5/worker3 remain5 methods/8 cases/2 descriptors/
+two categories/default8 UNRUN,including strengthened worker guard.
+
+All eight failures now stop EARLIER in final assertions at Repair.cs57 Assert.Null(responderFailure):
+FileNotFoundException reading game_state/control/validation_repair_request.json in existing
+RespondToMainRepair callback line134. The committed publication's member list contained that path;
+the packet does not identify its publication kind/afterimage or prove why the file was absent.
+Do not conflate it with historical unknown active.json/intent.tmp disappearance. READONLY source/
+publication caller diagnosis is running; no further observer/production correction is released.
+
+All eight native InitialReady values now physically contain the exact four authored filesModified
+paths and match genuine Next43 session/request/turn. Native output reports EngineFailure=null,
+loop42,acceptedfalse,repairCount0,repairPacket=null. The two resource rows captured real issued client
+wound command JSON before revocation; other six rows did not. The failing responder assertion means
+later engine/next/count/full-resubmit/bounded-repair/retry/sibling/publication assertions are UNREACHED.
+No proper production causal RED or complete repair qualification is claimed by this fixture failure.
+
+ROOT checked152 source/10 fresh binary PRE/POST pins BEFORE metadata, all eight native results/full
+TRX/stdout/32 observations, and eight strict cleanup receipts removed=true/failure=null with roots
+physically absent. Runner-owned tree/runtime cleanup succeeded. Frozen30 artifacts include all exact
+source/binary pins, raw InitialReady/commands/observations and preparation/actual originals. Fresh
+BOTH PlanOnly `20261013-044734-587-468687-44b6be9c608c4b72813cba920a39dc2d-categories` built both
+projects with85/35 warnings,0 errors,30 methods/70 cases/12 descriptors,139.3917351s,0 executed;
+exact1/8/1 PlanOnly took2.4692256s,0 executed. Catalog714/11550 was not repeated: unchanged inventory/
+selectors/declarations and no repeat explicitly accepted by independent SOURCE gate. Preparation
+and prior catalog are not actual test qualification. Historical packets remain immutable.
+
+Finite controls nine actual invocations report87 executions/64 PASS/23 FAIL,including repetitions;
+earlier positives remain accepted and retained. Complete controls/consumer/archive/newroot/fresh-
+process/T070/FR-063/parent/#1536 remain OPEN. Next: publish/recover this frozen failure packet,
+mandatory EVIDENCE/status gate, then only source-proven concrete bounded correction with mandatory
+SOURCE/FIXTURE/SELECTION before matching preparation/runtime. No catch-and-ignore/count/authority/
+private-context/command-revocation/retained-proposal/sibling-preservation weakening is authorized.
+Archive8 remains retained,unwritten/UNRUN/on hold; protected causal Facts/ce955/checklists/global CI/
+runner/selection/budgets/GM grammar and old evidence remain unchanged. Current EVIDENCE is PENDING.
+
+Historical initial-ready fixture SOURCE READY checkpoint:
+
 
 Retained actual Astra XHigh EVIDENCE/status ACCEPTED at
 `70842cc9645a549b16ef4091b3a8b606b103cce5` for the
