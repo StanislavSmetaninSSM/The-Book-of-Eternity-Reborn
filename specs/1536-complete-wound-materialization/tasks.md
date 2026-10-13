@@ -5,33 +5,61 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (FOUR COMPONENT DIAGNOSTIC FAILURES OBSERVED; EVIDENCE PENDING)
+## Current T070 boundary — 2026-10-13 (NONE RECEIPT-ONLY SOURCE CORRECTION READY; CHECKS UNRUN)
 
-Exact diagnostic selection/status accepted75e62186ac9bb3f2e1228f0cb79105c4e0aa1514 by actual
-retained Astra XHigh. Matching NoBuild PlanOnly confirmed1 existing method/4 cases/1 descriptor,
-2.389s,0 executed; catalog valid711/11548,5.309s,0 executed.147 source and10 compiled391d
-binary pins PRE/POST exact BEFORE metadata edits; code had no changes.
+Actual retained Astra XHigh EVIDENCE/status ACCEPTED8448c364e795b0d0cb4752100d0d52530a6083df:
+[component diagnostic packet](./recovery/qte-physical-consumer-admission-diagnostic-20261013/manifest.json)
+retains22 artifacts/147 immutable source pins/10 compiled391d binaries, four native results/
+16 observations and four strict cleanup receipts with removed=true/failure=null/actual absence.
+Frozen pre-review PENDING metadata remains unchanged. Diagnostic selection accepted75e; matching
+NoBuild PlanOnly1 method/4 cases/1 descriptor and catalog711/11548 executed0 tests.
 
-ONE component diagnostic actual completed4/4 cases:4 executed/0 PASS/4 FAIL,42.149s,exit1,
-no timeout/skips/duplicate IDs. All four independently reached realQTE42 and actual Stage43/
-official source. Two NONE rows passed direct admission then failed at testline27/publication:
-"A complete wound publication has no identity after-image." Native stack identifies
-ComposeWoundPublicationWrites→AddWoundPublicationWrites→PublishAcceptedMechanicsAsync.
-Two materialize rows failed earlier at testline26/admission on proposal.treatment.routes:
-"Mortal wound treatment violates the complete current materialization contract."
-No receipt/replay/postcondition success was established. These materialize component rows are
-separate from the protected full CREATE Fact, still UNRUN on this candidate. The NONE component
-exception is observed; full ordinary391d rejection diagnostic remains unobserved pending
-source correlation, and is not assumed identical merely from the component result.
+ONE component diagnostic completed4 executed/0 PASS/4 FAIL,42.149s,exit1, no timeout/skips/
+duplicate IDs. Two NONE rows passed direct admission and failed at testline27/common publication:
+"A complete wound publication has no identity after-image." Two materialize rows failed earlier
+at testline26/admission on proposal.treatment.routes. Receipt/publication/replay postconditions
+were not reached. This component evidence is not a full ordinary engine consumer qualification.
+The exact full ordinary391d admission diagnostic remains UNOBSERVED; source correlation with
+the component exception does not establish that it was the emitted cause of the prior failure.
 
-[Component diagnostic packet](./recovery/qte-physical-consumer-admission-diagnostic-20261013/manifest.json)
-freezes22 artifacts/native TRX4 results/16 observations/four strict cleanup receipts with
-removed=true/failure=null/physical roots absent. Runner cleanup also succeeded. EVIDENCE gate
-PENDING before source correction or another actual. No third protected NONE. Remaining controls
-UNRUN except this one method/four failed rows; protected CREATE/archive/newroot/fresh-process
-UNRUN. Next bounded step after evidence acceptance: source-correlate observed NONE identity
-requirement and separately correct only proven component treatment fixture/contract issue.
-Historical causal REDs/incomplete timeout/admission failure remain separate; T070/FR-063/#1536 OPEN.
+Current bounded source correction exposes ONLY the constructor-validated mortalNoneComposition
+branch as IsMortalReceiptOnlyWoundPublication. Existing validation requires a completed,
+nonpending Mortal receipt composition with no WoundPublication/live/direct/treatment authority,
+zero transitions/wound IDs/transition IDs/carrier contributions, unchanged typed identity/history
+and exact effect/owner maps. The writer does not reconstruct authority from receipt presence or
+null after-images. ComposeWoundPublicationWrites emits zero wound writes for this accepted branch.
+ValidatePublishedWoundAfterImagesAsync checks all five wound carriers plus identity/history using
+existing sealed before-images and exact byte/presence readback, including authenticated retained
+absence, and requires the consumed wound command absent. It creates no empty canonical roots,
+identity, history, allocation or parse fallback. CREATE/pending/spiritual/general complete wound
+branches retain their existing mandatory identity/history validation. Common receipt/pending/
+completion record, batch publication/compensation, source authority and ordinary canonical
+validation are unchanged. This internal publication correction changes no public GM grammar,
+worker scope or afterlife behavior; existing synchronized GM guidance requires no update here.
+
+CREATE treatment is a separate fixture-contract issue: both the component proposal helper and
+the protected full CREATE Fact author empty treatment.routes. The current Mortal treatment
+contract requires at least one mechanically complete route; the response composer copies and
+validates treatment rather than deriving a missing route. No missing naturalRecovery field is
+required by the closed proposal grammar. No CREATE fixture, protected Fact or validator is changed
+in this NONE block; a bounded lawful fixture decision remains pending before CREATE execution.
+
+Source correction READY for ROOT publication/recovery and mandatory focused SOURCE review;
+new selected builds/PlanOnly/catalog/actual checks UNRUN. Existing unchanged NONE selector remains
+EXACT1 method/1 case/1 descriptor, category5/default10; ROOT performs its first matching retry only
+after the gate and fresh preparation, before any component or CREATE follow-up. No third protected
+NONE actual has run. Diagnostic owner1/4/1/default7 and full preparation28/67/12/default30,
+remainder26/65/10/default30 retain their exact selectors/budgets. Catalog711/11548 is the prior
+verified inventory, not fresh discovery for this correction. No test/category/selector/globalCI/
+frozen packet/protected8/ce955/checkbox change; no project execution by the writer.
+
+Current finite NONE history remains two actual invocations:178e incomplete timeout0 reported
+tests, then391d completed prerequisite1 executed/0 PASS/1 FAIL. The component diagnostic is a
+separate actual4 executed/0 PASS/4 FAIL. Historical4010 NONE/c7 CREATE proper causal REDs remain
+accepted separately; producer1b23 executed/22 PASS/1 FAIL and projection4d4 actual/28 executed/
+26 PASS/2 FAIL are unchanged. Remaining controls except the four failed diagnostic rows,
+CREATE/replay qualification/archive/newroot/fresh-process remain UNRUN; full consumer/T070/
+FR-063/parent/#1536 remain OPEN. Writer mutations STOPPED at this four-path source checkpoint.
 
 Historical75e diagnostic selection checkpoint (accepted before component execution):
 Admission failure evidence published9c4719d399bc158ced3814c942ba470f640dacd9; ROOT verified exact

@@ -1398,6 +1398,7 @@ internal sealed class AcceptedMechanicsPlan
                 "A complete wound plan requires one successful typed carrier composition; a pending-only plan may retain stages but cannot expose one.",
                 nameof(woundStageBundle));
         }
+        IsMortalReceiptOnlyWoundPublication = mortalNoneComposition;
         _woundPublication = woundPublication?.DetachedCopy();
         _directWoundPublicationAuthority =
             directWoundPublicationAuthority?.DetachedCopy();
@@ -1554,6 +1555,8 @@ internal sealed class AcceptedMechanicsPlan
 
     internal AcceptedMechanicsWoundStageBundle? WoundStageBundle =>
         _woundStageBundle?.DetachedCopy();
+
+    internal bool IsMortalReceiptOnlyWoundPublication { get; }
 
     /// <summary>
     /// Gets the ordered owner-sealed live wound proof fingerprint, when present.
