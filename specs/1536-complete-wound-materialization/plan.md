@@ -9,6 +9,24 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## Genuine pending2 minimal import correction SOURCE READY — 2026-10-13
+
+Base42fad6505e60a849b95bed83b28908ca708ef535. Independent retained actual AstraXHigh
+EVIDENCE/classification29db5540 accepts the frozen first preparation compile-prerequisite
+failure: CS0103 SharedJsonOptions,0executed; no runtime RED or coalescing result. The7-chain
+packet/manifest and original source/history below remain immutable. Corrected source adds
+ONLY using BookOfEternityClient.Configuration to PendingWave.cs, where the existing type is
+declared. Removing that one import restores prior9098e671 file byte-exact; every theory row,
+fixture/prerequisite/oracle/helper/serializer/body is unchanged. No production change.
+
+Current correction SOURCE-ready pending publication/recovery and mandatory focused SOURCE
+recheck; fresh BOTH/exact discovery/catalog/actual2 all UNRUN. Prior failed preparation grants
+no matching binary/NoBuild permission. Catalog728/11568 and dedicated1method2cases1descriptor
+budget5/default10 are unchanged; no qualified ordinary13/APInegative5/QTE repeats. Component2,
+live pending producer/newroot/UI/fullFR063/T070/#1536 remain OPEN. All checkboxes and earlier
+history bodies are preserved. Isolated #1557 map/navigation WIP is separately stopped; no GM
+source or branch/CI/global selection changes are included here.
+
 ## Genuine pending2 first preparation COMPILE FAIL; actual UNRUN — 2026-10-13
 
 Accepted static SOURCE3ef; pinned clean source/compile attempt30b4fd0cc850fe497399eb8b24874c678f33c6ba.
