@@ -9,6 +9,43 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## FR-063 reflection/warm four first outcome — 2026-10-13 (ACTUAL COMPLETE4PASS; EVIDENCE PENDING)
+
+Carrier7c48fdbae764e3b0faec3a9d02f6c19d93501170; compiled source14d037d82198659c509066759dcbb02e32b2b5f7.
+Independent retained actual Astra XHigh accepted late first-outcome EVIDENCE and exactUNRUN4
+SOURCE/selection: [gate](./recovery/fr063-reflection-warm-four-first-green-20261013/manifest.json).
+All242 nonmetadata existing paths match14d; only prior plan/tasks and new exactselection differ.
+Fresh successful14d BOTH/catalog retained, not repeated. Exact NoBuild PlanOnly2methods4cases/
+2descriptors2.8688921s,0exec. Actual20261013-192302-079-21836-05b39367ddc84d9bb77ee895a7ef2c4d-categories:
+4executed4PASS0FAIL,COMPLETE2/2descriptors4/4cases,19.5076124s,exit0,notimedout/skips/duplicateIDs.
+Three reflected pending/terminal/unknown controls plus warm real-pipeline restart replay.
+245source/11binary POST matched beforemetadata. Runner ownedtree/runtimecleanuptrue; these
+cases emit no strict cleanup receipts/native observations, so no per-fixture physical-root
+absence claim is made. FullTRX/results/stdout/plan/equivalence/PREPOST frozen23chains at the
+linked manifest. This actual4PASS awaits independent EVIDENCE qualification.
+
+Prior native1/postseal1/negative6 remain accepted; four observed positives are not yet counted
+as accepted. Lateguard1 OPEN: actual exactnpc_skills preflight refusal and complete physical
+bytes passed, publication-lineage IsValid failed. The readonly source diagnosis establishes
+that preflight deliberately clears publication handoff/lineage BEFORE its oldprobe reaches
+ProbeConfirmed, without resource release on that path. Native probe Issues/State were not
+captured; no measured hold loss. [Diagnosis](./recovery/fr063-late-guard-live-probe-readonly-diagnosis-20261013.md)
+proposes a separately reviewed registry-owned existing-slot nonmutating confirmed-claim read;
+no patch or diagnostic retry released. Preserve all old publication guards, request/energy/
+history oracles; no guard waiver/private capability reflection/new claim/export to fake proof.
+
+Mandatory genuine pending2 corresponding contour remains proposed-for-authoring accepted,
+unwritten/UNRUN; original15/fullFR063/T070/#1536/newroot remainOPEN. No15GREEN or aggregate13GREEN.
+Immediate own-Mortal wound baseline/recommendations remain mandatory and unimplemented:
+[finiteRED readiness](./recovery/immediate-wound-baseline-admission-finite-red-readonly-plan-20261013.md)
+records ownership-aware baseline gate, two actualvalid allhidden diagnosis fixtures to migrate,
+intentionalnegatives preserved, and cheap schema-policy RED before presentation/actualCREATE.
+Read-only report only, no UI execution. GM1557 A still requires verifiedFRfreeze/finalbase;
+no GM runtime/new optimization/journal8/Windows/provider/broadsuite started.
+
+Next: independent actual4 EVIDENCE gate plus narrow readonly late-guard seam design. Then one
+sole retainedSol author may proceed on accepted bounded source scope; publish WIP before review.
+
 ## FR-063 late-guard preflight first outcome — 2026-10-13 (ACTUAL1/PLANNED5; EVIDENCE PENDING)
 
 SOURCE14d037d82198659c509066759dcbb02e32b2b5f7 independently accepted; same source freshly
