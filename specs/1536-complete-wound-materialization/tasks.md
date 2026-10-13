@@ -5,6 +5,34 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## First pending2 failure EVIDENCE accepted; one fixture leaf correction next — 2026-10-13
+
+Independent retained actual AstraXHigh [EVIDENCE/diagnosis](./recovery/fr063-genuine-pending2-first-actual-evidence-and-fixture-review-20261013.md)
+SHA2569c12a986c660256182cf478fae44a8ecd29a409b3fd691e779b64e450de5b58e ACCEPTED atc7d187ff.
+All35stored/raw/nativechains,267source/11binary metadata-equivalence,completeactual2FAIL,
+8observations/2physicallyabsentstrictroots verified. This accepts failure classification,
+NOTcomponentGREEN: full request/confirmedclaim/repairwave/pendingcatalog/recovery UNREACHED.
+Nativeoutererrorguaranteed_result_inapplicable is distinct from source-tracedinner physical
+zero-slot/no-lifecycle-impact condition after stabilized care. Existing unitexample993–1005
+supports stabilizedemptygraph/no_natural_recovery; it was read, not executed here.
+
+ROOT bounded next correction: soleSol sets ONLY new pre-original wound.recovery.mode to
+no_natural_recovery BEFORE SeedHeldTreatmentAuthorityAsync. Preserve stabilize result/route,
+requirements/energy2, effect-free QTE10->5, genuine originals/authority, alllaterassertions.
+No production parser/simulator/guard, no already-stabilized care, no post-original rewrite.
+Publish WIP +focusedSOURCE, fresh BOTH/exactpair discovery, retryonly failed2. Validunchanged
+728/11568 catalog audit is retained if attributes/category/selectorinventory remainexact;
+no passingcatalog or qualifiedordinary/QTE repeat. Correction/checks not yetauthored/UNRUN.
+Sol must firstfinish/saveisolatedGMpure-sourcecheckpoint; oneglobalwriter remainsrequired.
+
+[JointDESIGNv2](./recovery/fr063-joint-repair-owner-v2-independent-design-review-20261013.md)
+SHA256a1ef7443214b6dea263b67422fd72792ccdf0969f1e3429f7252fac78d7b4e45 ACCEPTED, proposal9c1a.
+OnlyII restrictionclosed; actualadapter-validpacketI–II allowed, IIonlyfirstfixture. Old8309/
+7d55BLOCKEDreport stayhistorical. Nextjointrelease boundary J0/J1 contract/test-only realowner
+causalRED withSOURCE/firstactual/EVIDENCE. ProductionJ2–J6 NOTRELEASED/UNIMPLEMENTED; no new
+policyquestion required for existingnormative owningextension. Componentfailure cannot
+qualifyliveproducer/cold/newroot. Immediateown-woundguidance/UI/fullFR063/T070/#1536 OPEN.
+
 ## Genuine pending2 FIRST ACTUAL COMPLETE2FAIL; intended boundary UNREACHED — 2026-10-13
 
 SOURCE/fresh compile5beae2675eb1ce6d2a55a5e125dcde319c3cd76f; import-only SOURCE9cb accepted.
