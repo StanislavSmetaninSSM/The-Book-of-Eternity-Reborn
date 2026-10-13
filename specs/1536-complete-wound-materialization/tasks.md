@@ -5,8 +5,41 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (NONE RECEIPT-ONLY SOURCE CORRECTION READY; CHECKS UNRUN)
+## Current T070 boundary — 2026-10-13 (FIRST UNCHANGED FULL NONE GREEN; EVIDENCE GATE PENDING)
 
+FIRST unchanged full ordinary NONE GREEN observed onSOURCE028cad0122b2b6e266d026a225304431cfcec1ca:
+1 method/1 case/1 descriptor,1 executed/1 PASS/0 FAIL,20.785s,exit0; no timeout/skips/duplicates.
+Source42 genuine physicalQTE finalizedHealth155/oneoccurrence; actual signed N43 Reader success,
+GM raw NONE/ready authoring, ordinaryValidated=true, full ProcessPlayerTurn return/loop43 and
+story42+43 precede one durable NONE receipt. Receipt binds source42+decision43/event/occurrence,
+woundId/transitionId null; pending consumes, seven wound roots retain exact bytes/absence,
+resources remain typedHealth155/history agreement, public draft/WoundCommand consumed. All
+protected NONE assertions reached/passed; original Fact bytes remain unchanged from4010 RED.
+This is baseline NONE behavior, not replay/atomicity/CREATE/archive/fresh-process qualification.
+
+[First NONE GREEN packet](./recovery/qte-physical-consumer-none-green-20261013/manifest.json)
+freezes25 artifacts/native TRX/six observations/strict cleanup receipt removed=true/failure=null
+and physical root absent; runner cleanup also succeeded.148 source/10 fresh binary PRE/POST
+pins matched BEFORE metadata edits. Mandatory EVIDENCE gate PENDING before the CREATE fixture
+follow-up. Fresh BOTH-build PlanOnly28/67/12,137.388s,85/35 warnings0 errors; catalog valid711/
+11548,5.428s; each preparation/discovery executed0 tests.
+
+Current finite NONE cohort3 actual invocations:178e incomplete0 reported tests,391d completed
+prerequisite1 executed/0 PASS/1 FAIL,028c GREEN1 executed/1 PASS/0 FAIL; totalreported2 executed/
+1 PASS/1 FAIL plus1 incomplete. Historical4010 proper NONE RED1 executed/0 PASS/1 FAIL remains
+separate. Accepted8448 component diagnostic4 executed/0 PASS/4 FAIL and c7 CREATE historical
+RED remain unchanged. No repeat of this passing NONE without a relevant source change.
+
+CREATE currentfixture treatment.routes=[] remains a known current-contract authoring issue;
+its lawful minimal local procedure route is prepared read-only. No CREATE fixture/oracle,
+validator or GM example has changed yet. Any fixture migration must preserve old c7 bytes/
+packet and all causal assertions and explicitly state that new proposal bytes differ from c7;
+no false exact matched-fixture claim. ProtectedfullCREATE onthiscandidate/remainer controls
+(except four faileddiagnostic rows)/archive/newroot/fresh-process remain UNRUN. T070/FR-063/
+parent/#1536 OPEN. Nextafter evidencegate: bounded current-contract CREATE authoring correction,
+mandatory source/fixture/example/selection review, fresh preparation, one real full CREATE.
+
+Historical028c receipt-only correction source checkpoint (accepted before first NONE GREEN):
 Actual retained Astra XHigh EVIDENCE/status ACCEPTED8448c364e795b0d0cb4752100d0d52530a6083df:
 [component diagnostic packet](./recovery/qte-physical-consumer-admission-diagnostic-20261013/manifest.json)
 retains22 artifacts/147 immutable source pins/10 compiled391d binaries, four native results/
