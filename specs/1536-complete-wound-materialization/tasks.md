@@ -5,7 +5,53 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (CREATE RESOURCE REPLAY FIXTURE SOURCE READY; 1 RETRY + 16 UNRUN)
+## Current T070 boundary — 2026-10-13 (CREATE RESOURCE REPLAY 1 PASS; 16 UNRUN; EVIDENCE PENDING)
+
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED exact
+`8a051c56636f454a255fe2763f5143f7146fe523`. The
+[corrected CREATE resource-replay packet](./recovery/qte-physical-consumer-created-resource-replay-green-20261013/manifest.json)
+freezes first isolated actual `20261013-042737-386-459640-55bfa159932e4a81a8521b8f847e041e-categories`,
+source/compile8a051:1 method/1 case/1 descriptor,1 executed/1 PASS,16.9094677s,exit0,
+complete/no timeout/skips/duplicate IDs. No passing NONE or six publication neighbors repeated.
+
+Native evidence now proves the signed health155 prerequisite, client-created wound/effect backlink
+and actual accepted_application authority. The exact owner_turn_end effect_component AppliedDamage3
+has executionSequence0 and health155->152; independent turn_43:resource:1 narrative AppliedDamage1
+has sequence1 and health152->151. Canonical health151 agrees with the complete typed history.
+All original later marker/output-authority/null replay wound-stage/history/whole-mechanics byte-exact
+replay/one receipt/draft-woundcommand-resourcecommand consumption assertions were reached and PASS.
+This is component consumer replay proof, not a new full ProcessPlayerTurn/archive/fresh-child claim.
+
+ROOT verified152 source and10 fresh binary PRE/POST pins BEFORE metadata, read the complete native
+TRX/stdout/six observations and one strict cleanup receipt removed=true/failure=null with actual
+root absence. Runner-owned tree/runtime cleanup succeeded. Frozen37 artifacts include exact source/
+binary pins, all preparation/actual originals and additive owned-tick diagnostic. Historical failures,
+source-ready statuses inside prewritten preparation records and old packets remain immutable.
+
+Fresh BOTH PlanOnly `20261013-042406-498-458946-aab10a433bbd471fbd564821612eadf4-categories`
+built integration+unit with85/35 warnings,0 errors,30 methods/70 cases/12 descriptors,154.2151543s,
+0 executed. Exact PlanOnly1/1/1 took2.4500118s. Catalog
+`20261013-042701-969-459430-10cf35bbd246484fb82c4d3b481fa909-categories` is VALID714 categories/
+11550 discovered methods/files,unmapped/stale0,5.0824770s,0 executed. Preparation/catalog are not
+actual tests. All binary pins come from fresh8a051 BOTH builds.
+
+Finite controls seven actual invocations now report71 executions/64 PASS/7 FAIL,including repetitions;
+all six earlier accepted publication positives are retained. Remaining repair8/compatibility5/
+worker-scope3 are exactly6 methods/16 cases/3 descriptors/3 categories,category budgets8/default13,
+all UNRUN. Complete controls/consumer/archive/newroot/fresh-process/T070/FR-063/parent/#1536 remain
+OPEN. No protected checkbox/global CI/runner/source/grammar/authority or immutable packet changed.
+
+Next: publish/recover this frozen GREEN packet and mandatory focused EVIDENCE/status gate. After
+acceptance, execute only the unchanged16 UNRUN cases on matching inputs/binaries; passing common/
+bounds/event/draft/producer/projection/full NONE/CREATE neighbors remain excluded. Archive8 authoring
+is still on hold until controls qualify. Its retained READONLY consult requires genuine load/rebind
+and story-derived loop; NEW44 may lawfully tick CREATE effects, while SAME-active-N43 durable replay
+must preserve committed mechanics bytes. Changed late-idle outer rollback is a static risk only,
+requiring actual refusal plus committed mechanics/receipt/marker preservation before any patch.
+This packet's EVIDENCE review is PENDING; no aggregate closure or archive execution is claimed.
+
+Historical CREATE resource-replay fixture SOURCE READY checkpoint:
+
 
 Retained actual Astra XHigh EVIDENCE/status ACCEPTED at
 `09e5f7e47bd03e2bb39100bb46e7123e5986d4ac` for the
