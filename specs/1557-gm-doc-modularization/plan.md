@@ -1,5 +1,32 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Pure test-first SOURCE accepted; first execution UNRUN — 2026-10-13
+
+Independent retained actual Astra XHigh accepted isolated source
+29bd2e860ba068c7ce22f60115348fe1571032cd in the focused
+[closure report](recovery/A-pure-oracle-focused-source-review-20261013.md),
+SHA256 81f476156bb3f1a1e2a4167b3fa2b207aaa1e6ec7ea2fa2dcc441c45da12193d.
+Both Important oracle findings are closed: independent activation predicates and
+mapped D01 active-owner/old-grant refusal. No remaining confirmed Important/Critical
+finding in the focused delta. Historical BLOCKED report remains unchanged.
+
+ROOT releases fresh BOTH compilation/catalog discovery (zero test executions),
+exact finite NoBuild PlanOnly, then the FIRST pure selection attempt:
+10 methods / 44 authored cases / 2 unit descriptors, category budgets 2+2,
+default total 9. Catalog 729/11578 remains provisional until actual discovery.
+The actual destination/manifest/router/D01 positives target unimplemented moves;
+no observed RED or expected completed/pass count is claimed before execution.
+Freeze native results, actual completeness/fail-fast boundary and cleanup, publish
+WIP, then independent EVIDENCE before implementation. Existing GM bodies, manifest,
+daemon, production and Block_5 remain byte-exact. Delivery final AST/dataflow and
+real packaged writer-to-session adapter are UNWRITTEN and need a separate connected
+SOURCE gate. No content moves, full A/B acceptance or production release follows.
+
+Same Linux cloud environment and isolated branch; primary sole Sol independently
+authors J0/J1 TEST-only live-owner causal source. This record is status metadata;
+all task/acceptance checkboxes remain unchanged. Project execution is UNRUN here.
+
+
 ## Focused pure-oracle correction SOURCE READY; review pending — 2026-10-13
 
 Retained sole Sol completed the released two-finding TEST-only correction from isolated
