@@ -9,6 +9,44 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## FR-063 corrected same-root native — 2026-10-13 (OBSERVED PASS; EVIDENCE PENDING)
+
+Oracle-only source `9532e386e8fa66a84a964f57a49900cc9a0e562e` is published/remoteexact,
+GitHubselected recovery1729tracked/1190connected paths byte/blob exact; recovery executionUNRUN.
+Independent retained actual Astra XHigh accepted its narrow SOURCE/FIXTURE/SELECTION.
+Only Turn42 was added to Spend Single; all other strict assertions and production remain.
+Prior ce83 FAIL is EVIDENCEACCEPTED and immutable; it is a historical-row oracle defect,
+not duplicate-current spending or missing-treatment RED.
+
+Fresh BOTH12methods/18cases/5descriptors preparation147.8489482s,0executed,0errors,
+96integration/35unit warnings; exactnative1/1/1 discovery2.6932368s and validcatalog724/11567
+5.3972854s,unmapped0/stale0,also0executed. Preparation18 is selected15INTEGRATION plus3unit
+methods solely for fresh build/discovery; it authorizes no additional actual unit run.
+
+Corrected actual `20261013-172655-762-676310-7eb0a503273b46e29a8370ae841804c6-categories`
+completed1/1/1,1executed1PASS0FAIL,16.4224052s,exit0,no timeout/skips/duplicateIDs.
+Fresh child676504 passed actual original42/heldrequest/Ready/cacheempty prerequisites,
+entered the real ordinary caller, and passed ALL strict publication oracles: loop/story42,
+energy2->0/one Spend42amount2, ordinary health10->7/one Damage42amount3, one typed treatment
+history/receipt/care stabilization/finalized hold, command consumption and second idle false
+with exact inert mechanics. Derived completion accepted=true; unrelated hook remainsfalse.
+No helper Restore/Compose precedes actual entry. Original historical Spend2amount8 survives.
+
+242source/11binary PREPOST,5declaredpins/3actualDefaultbindings and2strictphysicallyabsentroots
+were checked BEFORE metadata. Complete raw/context/managedresult/logs/availableimages and
+immutable41artifact chains are preserved in
+[the corrected first GREEN packet](./recovery/fr063-guaranteed-native-corrected-oracle-first-green-20261013/manifest.json).
+This is observed nativePASS pending independent EVIDENCE, not full FR063/T070/#1536 acceptance.
+
+Next: publish/remote/recovery and independent GREEN EVIDENCE before EXACT remainder8methods/
+14cases/3descriptors (component10, reflectedcompatibility3, namedwarm1; default14). No other
+actual test is selected. New-root qualification and mandatory immediate-guidance implementation
+remain UNRUN; new-root is explicitly prepublication durable-fixture relocation, not SaveLoad.
+GM1557 planning independently reviewed and coordinator conditionally released blockA AFTER
+verified FR063 freeze/finalbase; before that only readonly reconciliation/inventory/fixturedesign.
+D01 uses existing normalplay/repair source-code ban, no new liveGMexception. No GMcontentmoves,
+main/PR/merge/CI/Windows/provider/newkey; full parent boxes and prior evidence remain unchanged.
+
 ## FR-063 native spend oracle correction — 2026-10-13 (SOURCE READY; NEW CHECKS UNRUN)
 
 Independent retained actual Astra XHigh accepted first connected EVIDENCE/status at
