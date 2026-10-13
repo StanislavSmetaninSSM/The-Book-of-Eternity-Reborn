@@ -5,7 +5,44 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE4 ACTUAL GREEN; EVIDENCE PENDING; DURABLE4 UNRUN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE4 QUALIFIED; DURABLE4 PARENT FIXTURE FAILURE FROZEN)
+
+Archive4 EVIDENCE/status ACCEPTED and bounded archive qualification accepted by actual retained
+Astra XHigh at `fb1a17c02f76c378148f54eea685dfc5bfcaa01f`, no blocking findings. All33 chains,
+168 source/11 binaries/four PASS/26 observations/12 physically absent strict roots verified.
+Four unique archive cases QUALIFIED; historical20 executions4 PASS16 FAIL includes repetitions.
+Finite68/baselines/archive4 retain acceptance without reruns.
+
+[First durable4 snapshot-selection failure](./recovery/qte-physical-consumer-durable-snapshot-selection-failure-20261013/manifest.json)
+freezes actual `20261013-091318-101-547839-30b592476a58481a985d7ca389f0161c-categories`,
+sourcefb1/compile31b:4 executed/0 PASS/4 FAIL,1 method/4 cases/1 complete descriptor,43.2800373s,
+exit1,no timeout/skips/duplicates. Exact durable PlanOnly1/4/1 took2.5038305s,0 execution;
+166 nonmetadata pins exactly equivalent to accepted31b build,168 SOURCE/11 binary PRE/POST matched
+BEFORE metadata. Fresh BOTH preparation and catalog are retained provenance,not repeated execution.
+
+All four genuine QTE42/health155/physical occurrence prerequisites pass. All four parent N43 authors
+then throw KeyNotFoundException at Archive.cs497: Required snapshot path
+'game_state/resources/resource_definitions.json' was not validated. Parent Accepted=false,expected
+controlled OperationCanceledException pause unreached; child launch, durable original-reader binding,
+late-idle replay/refusal and resource-work publication UNREACHED. No current production rollback
+failure is observed. This is a scoped fixture snapshot-read misuse: its MortalQte projection reader
+validates soul+wound roots,then resourceWork reads resource definitions/state outside that selection.
+Existing consumer publication fixture uses the official PendingTurnSnapshotReader.ReadCurrent with
+explicit resource definitions/state/history paths and validates identical request/token.
+
+ROOT parsed16 native observations/four parent failure chains/four strict SOURCE cleanup receipts,
+all4 roots physically absent,runner cleanup true. No child cleanup qualification is claimed because
+no child started. Frozen22 artifacts preserve native TRX/afterimages/exact plan/retained fresh build,
+catalog/source equivalence and pins. Durable history1 actual invocation4 executions0 PASS4 FAIL.
+Independent first-outcome EVIDENCE/status PENDING before any fixture/production correction. Next
+publish/GitHub-only recover and EVIDENCE gate,then minimum fixture-only official resource snapshot
+read/identity agreement under the existing lease if accepted; preserve155 and ownedtick/narrative
+Damage1 causal checks. Do not change snapshot guard/production policy,strict replay oracles or rerun
+qualified archive4/finite68/baselines. Full T070/FR-063/parent/#1536 OPEN; frozen histories/checklists
+unchanged. Project exception is not a tool security refusal; no real tool denial observed.
+
+Historical archive4 pre-review GREEN checkpoint follows; its pending wording is superseded by the
+accepted archive scope above. Durable changed late-idle rollback risk remains unobserved.
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `31bcbf7c347c8d24899d88c5af417e3ae9c58323`, no findings. Fresh BOTH PlanOnly33/78/14
