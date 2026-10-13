@@ -5,6 +5,38 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## FR-063 ordinary13 scoped evidence accepted; pending2 next — 2026-10-13
+
+Independent retained actual AstraXHigh EVIDENCE/status ACCEPTED at0005e4ff28bd63c5374cb4734942ba480b30d10d:
+[finalsixreview](./recovery/fr063-confirmed-claim-six-first-green-evidence-review-20261013.md).
+OriginalexternalSHA256c466cb6b6b5fe0eb5381443beead9ecaa2782932264c69cc27bb4227c98ba77b;
+publishedcopySHA256c466cb6b6b5fe0eb5381443beead9ecaa2782932264c69cc27bb4227c98ba77b, EOFnewline normalizationonlyifneeded.
+All43artifactchains/255source11binary/currentmetadata equivalence/fullnativeTRX8observations/
+9strictphysicallyabsentroots verified;actual6PASS29.4747553s complete6/6cases2/2descriptors.
+Late1 nowqualified preflightrefusal+retainedConfirmedHeld+unchangedbytes/request/energy2/history;
+APInegative5qualifiedSEPARATELY. Retained12+late1qualify narrowordinary13 ACROSS CHECKPOINTS,
+notoneaggregate13run and notoriginal15GREEN. Existingpassingcohorts require no repetition.
+Current internalreader source/compile6f1eb1bf remainsunchanged; freeze43 historicalpending
+manifest isuntouched, acceptance resides here/review. No publication/take/rearm authority.
+
+Transportprecision nonblockingreviewnote addressed in metadata record: rejectionRecordedUtc
+20:09:18UTC is firstclockreading aftererror; oldrejectionUtc preservedwith explicitmeaning,
+nottoolprovidedtimestamp. OriginalrecordSHA96dda2888c5754d0062d8ddee4df38a2643c8c258092ea3e1d8284342034be84
+retained; exacterror/missingcallID/sameboot/read-onlyrecovery proof unchanged. No actualrepeat.
+
+NextROOTrelease after thispublication: sole retainedSol genuinepending2 test-source block
+from [queuedbrief](./recovery/fr063-pending2-author-brief-queued-20261013.md) +proposed19459d/
+actualAstraXHigh96f approvalconditions. One realQTE42/actual43 sameG/nonemptyrepairwave/full
+heldcommand →privatependingwriter →catalog exactcoalescing or oldsealnestedcopyrefusal →
+freshleaseautomaticExportrestoration/confirmedclaiminspection. Rehome misplacedtwo-rowtheory,
+oldordinaryowner5methods8cases/newdedicatedpendingowner, preserve allhistoricalFAIL/oldplans.
+No fakepacket/binding/emptywave/guardwaiver, no mixedordinarypub/livewriter qualification.
+Newsource/fixture/selector need publishedWIP +independentactualAstraXHigh SOURCE and finite
+freshpreparation/catalog/actual2/EVIDENCE. Sourceauthoring currentlyNOTYETSTARTED; checkboxes
+unchanged. Fullmandatorypending2/newroot/immediateownMortalUI/FR063/T070/#1536 remainOPEN.
+GM1557A stillneedsverifiedFRfreeze/finalbase;BafterA. Linuxcurrentenvironment only, Windows/
+journal8/newC5optimization/provider/broadsuite remainUNRUN. No main/merge/CI/PR/issueclosure.
+
 ## FR-063 confirmed-claim six first outcome — 2026-10-13 (COMPLETE6PASS; EVIDENCE PENDING)
 
 Source/compile6f1eb1bff31cd9cf61d7352283ce04302812cbba, SOURCE/FIXTURE/SELECTION independently

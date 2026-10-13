@@ -17,5 +17,8 @@
   "strict9RootsActuallyAbsent": true,
   "runningOwnedProjectTestProcesses": [],
   "environmentCreationAttempted": false,
-  "cybersecurityCause": "not established; observed failure exec-server transport"
+  "cybersecurityCause": "not established; observed failure exec-server transport",
+  "rejectionRecordedUtc": "2026-10-13 20:09:18 UTC",
+  "rejectionUtcMeaning": "Legacy field preserved; value is first clock reading recorded immediately after rejection, not a timestamp returned by the tool. No tool event timestamp/session/cell ID returned.",
+  "originalTransportRecordSHA256": "96dda2888c5754d0062d8ddee4df38a2643c8c258092ea3e1d8284342034be84"
 }
