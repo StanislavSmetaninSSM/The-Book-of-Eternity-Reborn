@@ -5,6 +5,22 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## Recovery-mode focused SOURCE accepted; failed-pair retry UNRUN — 2026-10-13
+
+Retained independent actual AstraXHigh accepted a9854149f591aa5f1024ced2c453392ee87ad809:
+[focused SOURCE](./recovery/fr063-genuine-pending2-recovery-mode-source-review-20261013.md)
+SHA256679e374836852080f0067f3c8e281383845e6cdef6bf0282cf9e5e755c65881b.
+Single pre-original mode assignment restores exactce554f54 whenremoved; everyother executable
+byte/attribute/oracle/route/requirements/energy2/effectfree10->5 unchanged. No production or
+sharedhelper change. Corrected runtime remainsUNRUN; earlier COMPLETE2FAIL/source diagnosis
+and compileFAIL stayimmutable. ROOT nowreleases newpinned freshBOTH4/5/2 zero-execution,
+exactpair1/2/1 discovery, then ONLYfailed2 actualwith completePOST/strictcleanup/frozenoutcome.
+Validcatalog728/11568 from5be firstpacket isretained, notrerun: methodattributes/category/
+selectors/inventory byteexact. Recordretained audit source explicitly; no freshcatalogclaim.
+No qualifiedoldcohort repeat. Component/livemixedowner/cold/newroot/UI/fullFR063 stillOPEN.
+GMcebb puretestsource remainsUNRUN/unaccepted with confirmedpredicate/D01ownerguard findings;
+no GMruntime orcontentmove. OneglobalSol sourcewriter; primaryfrozen during ROOTpin/runs.
+
 ## Pending2 pre-original recovery leaf correction SOURCE READY — 2026-10-13
 
 Retained sole Sol completed the exact one-leaf fixture correction from published
