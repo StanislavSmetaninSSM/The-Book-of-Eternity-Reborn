@@ -5,46 +5,69 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (REMAINING PARTIAL 26 PASS / 1 PREREQUISITE FAIL; 23 UNRUN)
+## Current T070 boundary — 2026-10-13 (EVENT-ORDER FIXTURE SOURCE READY; 1 RETRY + 23 UNRUN)
 
-Actual retained Astra XHigh accepted corrected bounds EVIDENCE/status at
-`f976845799e4074c121ca71195e68828c90912f9`:2 PASS closes the prior common's two failed rows
-alongside retained16 PASS. First seven-category50-case invocation then stopped on a draft prerequisite.
-[Remaining50 partial packet](./recovery/qte-physical-consumer-remaining50-partial-20261013/manifest.json)
-freezes run `20261013-032031-460-443455-9f545e69c9e14d19af30ed9556f8f6e7-categories`,
-sourcef976/compile820:planned21 methods/50 cases/9 descriptors/seven categories;
-completed5 descriptors/27 cases,27 executed/26 PASS/1 FAIL,110.0548806s,exit1,
-no timeout/skips/duplicate IDs. Presence7/documentation4/draft15 PASS; fail-fast leaves four
-categories(publication7/repair8/source-compatibility5/worker-scope3),four descriptors/23 cases UNRUN.
+Actual retained Astra XHigh EVIDENCE/status ACCEPTED at
+`3570aa1c3c20df9cd76777d214fa7a203f47714a` for the
+[remaining50 partial packet](./recovery/qte-physical-consumer-remaining50-partial-20261013/manifest.json).
+Run `20261013-032031-460-443455-9f545e69c9e14d19af30ed9556f8f6e7-categories`,sourcef976/compile820,
+planned21 methods/50 cases/9 descriptors/seven categories; completed5 descriptors/27 cases,
+27 executed/26 PASS/1 FAIL,110.0548806s,exit1,no timeout/skips/duplicate IDs. Presence7/docs4/draft15
+PASS. Four categories(publication7/repair8/source-compatibility5/worker-scope3),four descriptors/
+nine methods/23 cases remain UNRUN. Corrected bounds EVIDENCE acceptedf976 retains2 PASS alongside
+common16 PASS. Protected full NONE36256/current-contract CREATEb76/projection/producer qualifiers
+remain accepted and were excluded; no passing26/common/baseline qualifier is repeated here.
 
-The event_order row fails at Draft.cs:54 before its event-reordering refusal oracle:
-expected second array entry eventRef turn_42:qte_terminal:1:resource:2; actual printed value starts
-qte_health_damage_02f1c08… . This is a fixture/source-shape prerequisite failure, not a proper causal
-production RED or proof of reordered-source refusal. Source cause is unproved by this packet;
-read-only source/event metadata diagnosis precedes any bounded correction. Later event_order
-snapshot/admission/cache/command/canonical-preservation assertions remain UNREACHED.
+The historical event_order failure at Draft.cs54 occurred before the reordering refusal oracle;
+it is a fixture/source-shape prerequisite failure, not a proper production causal RED. ROOT's native
+observation records actual source42 request6bbe48fcfd90406797997def263ff02f and snapshot
+62172B6751FF05D9FB3E8E7B1BB5CEE147B3908B55425A7F57177D7AA64B58D2. Exactly two distinct
+resource_mutation events are ordered selected raw turn_42:qte_terminal:1:resource:1 then the genuine
+qte_health_damage_02f1c08da4a8da91003138e7cb4cfbb38e846574c7960b9e18ea4d85f33aa9ad:accepted:1.
+Producer73-76 intentionally keeps the selected raw reference only; sibling references derive from
+ProducerOperationKey plus their zero-based accepted-vector ordinal. The old expected resource:2
+raw command reference was the fixture error. Later admission/refusal/cache/state oracles were
+UNREACHED in that frozen result. No production defect or weakened authority is inferred.
 
-ROOT matched149 source/10 fresh binary PRE/POST pins BEFORE metadata edits, parsed27 native results/
-five TRXs/full stdout/64 observations, and verified all16 emitted strict physical-fixture cleanup
-receipts removed=true/failure=null with roots actually absent. Older presence/doc fixtures do not
-emit that strict receipt format; this is not an all27 strict-cleanup claim. Runner-owned process/
-runtime cleanup succeeded. Matching NoBuild PlanOnly21/50/9/seven categories took4.6515140s,
-executed0 tests;147 nonmetadata compile inputs/10 binary pins remained exact to fresh820 BOTH builds.
-Catalog712/11548 remains the preceding fresh discovery, not a new audit/test run.
+ROOT matched149 source/10 fresh binary PRE/POST pins before metadata, parsed27 results/five TRXs/
+64 observations, verified all16 emitted strict fixture receipts removed=true/failure=null with
+actual root absence. Older presence/doc fixtures emitted no such strict receipt; no all27 claim.
+Runner cleanup succeeded. NoBuild PlanOnly21/50/9 took4.6515140s and executed0 tests;147 nonmetadata
+compile inputs/10 binary pins matched fresh820 BOTH builds. Catalog712/11548 is preceding fresh
+discovery. Finite controls four actual invocations total62 reported executions/56 PASS/6 FAIL,
+including repetitions(15/12/3 +18/16/2 +2/2/0 +27/26/1),not unique coverage. Historical packets stay
+immutable; producer/projection/historical c7 CREATE/non-byte-matched migration counts remain separate.
 
-Finite controls four actual invocations now report62 executions/56 PASS/6 FAIL, including repeated
-cases (15/12/3 +18/16/2 +2/2/0 +27/26/1). Common16/bounds2 and full NONE36256/current-contract
-CREATEb76 positive evidence remain accepted and were not repeated. Current controls still have one
-failed prerequisite and23 UNRUN cases, including strengthened worker guard. Historical c7 CREATE
-RED/non-byte-matched migration, producer/projection and old packets remain separate/immutable.
+Current bounded fixture-only migration derives the sibling expected reference from the already
+validated genuine occurrence.ProducerOperationKey + ":accepted:1". Exactly two resource events,
+distinct IDs, exact selected raw reference and an effective DeepEquals-different reversal are
+required before the existing signed full-batch private refusal/nondelegable task/root-source tree
+preservation assertions. Only event_order InlineData was removed from the13-row theory; its other12
+rows now call the same private async body once, and one dedicated Fact calls that body once for
+event_order. No new case, test-to-test call, shared mutable fixture or general harness. Except for
+authorized event-order prerequisites, the helper body is byte-exact to the original body; all
+other12 rows retain behavior/lifetime/cleanup/hooks/oracles. No production/authority/parser/runner
+or public GM grammar changed; no GM prompt/example update is needed for this fixture migration.
 
-Next: publish/recover this partial packet, mandatory EVIDENCE/status gate, source-proven minimal
-current-contract event_order fixture correction and focused selection gate, then only failed/affected
-coverage plus23 UNRUN cases. No production parser/authority relaxation or inferred repair is included
-here. This evidence review is PENDING; no passing26/common/baseline qualifier repeat is automatically
-selected. Complete controls/consumer/archive/newroot/fresh-process/full T070/FR-063/parent/#1536 remain
-OPEN. Global selections/budgets/protected causal Facts/checklists and historical packets unchanged;
-archive implementation remains unwritten/UNRUN/on hold.
+SOURCE READY for ROOT publication/recovery and mandatory SOURCE/FIXTURE/SELECTION gate. Fresh
+BOTH builds/discovery/catalog/actual checks are UNRUN; current820 binaries are not fresh for this
+fixture. New intentional-overlap qte-physical-injury-consumer-event-order owner/selector selects
+one dedicated Fact/one case/one descriptor,budget2/default7. Existing draft owner now3 methods/16
+cases(original theory12 +empty-offer3 +event Fact1),preserving all cases. Catalog STATIC expected
+713 categories/11549 methods,one new discovered method/owner and no added case; only the genuinely
+affected draft responsibility/membership changes among prior712 owners. Full preparation keeps
+IDs/category membership/budgets/default30 and70 cases/12 descriptors,now29 methods; controls likewise
+keep68 cases/10 descriptors/default30,now27 methods. New overlap owner is excluded from both full
+selectors to avoid duplication; global CI/selection remains unchanged.
+
+Next after SOURCE gate: ROOT fresh BOTH preparation/catalog, first corrected exact1-case run,
+freeze/EVIDENCE gate, then unchanged four categories/nine methods/23 cases/four descriptors,
+category budgets11/default16. No passing26/common18/protected baseline repeats. Corrected1case plus
+remaining23 is10 methods/24 cases/5 descriptors,budgets13/default18 if explicitly combined later.
+This candidate proves no runtime success yet. Complete controls/consumer/replay/atomicity/archive/
+newroot/fresh-process/full T070/FR-063/parent/#1536 stay OPEN. Archive8-case proposal remains retained,
+unwritten/UNRUN/on hold. Protected causal Facts/ce955,checkboxes,other old owners and frozen packets
+are unchanged.
 
 Historical corrected bounds GREEN checkpoint (accepted before remaining50 invocation):
 

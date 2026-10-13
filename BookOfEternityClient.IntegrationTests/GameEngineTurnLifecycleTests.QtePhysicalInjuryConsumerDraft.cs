@@ -23,9 +23,15 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("receipt_null")]
     [InlineData("history_null")]
     [InlineData("missing_candidate")]
-    [InlineData("event_order")]
     [InlineData("proposal_null")]
-    public async Task QtePhysicalInjuryConsumer_ComponentDraftRequiresExactSignedOfferAndObservedAbsence(string mutation)
+    public Task QtePhysicalInjuryConsumer_ComponentDraftRequiresExactSignedOfferAndObservedAbsence(string mutation) =>
+        AssertMortalDraftRequiresExactSignedOfferAsync(mutation);
+
+    [Fact]
+    public Task QtePhysicalInjuryConsumer_ComponentReorderedActualMultiEventSourceRefuses() =>
+        AssertMortalDraftRequiresExactSignedOfferAsync("event_order");
+
+    private async Task AssertMortalDraftRequiresExactSignedOfferAsync(string mutation)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var source = await RunActualQteStorySourceAsync(physicalDeclaration: true, physicalMaximum: 2,
@@ -49,9 +55,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 var events = row["acceptedEvents"]!.AsArray();
                 Assert.True(events.Count >= 2, "The real selected QTE must publish distinct ordered siblings before an order mutation.");
+                Assert.Equal(2, events.Count);
+                Assert.All(events, value => Assert.Equal("resource_mutation", value!["kind"]!.GetValue<string>()));
                 Assert.Equal(events.Count, events.Select(value => value!["eventRef"]!.GetValue<string>()).Distinct(StringComparer.Ordinal).Count());
                 Assert.Equal($"turn_{PhysicalInjurySourceTurn}:qte_terminal:1:resource:1", events[0]!["eventRef"]!.GetValue<string>());
-                Assert.Equal($"turn_{PhysicalInjurySourceTurn}:qte_terminal:1:resource:2", events[1]!["eventRef"]!.GetValue<string>());
+                Assert.Equal(occurrence.ProducerOperationKey + ":accepted:1", events[1]!["eventRef"]!.GetValue<string>());
                 var reversed = new JsonArray(events.Reverse().Select(value => value!.DeepClone()).ToArray());
                 Assert.False(JsonNode.DeepEquals(events, reversed));
                 row["acceptedEvents"] = reversed;

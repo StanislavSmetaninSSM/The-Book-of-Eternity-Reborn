@@ -26,7 +26,7 @@
     },
     {
       "category": "qte-physical-injury-consumer-draft",
-      "reason": "Two component methods/16 rows, budget5; strict raw grammar, full signed batch, authenticated pristine versus covered-null, no-offer/unsolicited/multiple boundary.",
+      "reason": "Three component methods/16 cases, budget5: unchanged12-row raw-draft theory,3-row empty-offer theory and the dedicated event-order Fact extracted without adding a case. Strict raw grammar/full signed batch/pristine-versus-null/refusal oracles remain; full category IDs/membership/budgets and total case counts are unchanged.",
       "contracts": [
         "Public single none/materialize object; no wrapper/source/private authority and no raw duplicate/case-confusable conversion.",
         "Official observed absence alone is pristine; corrupted full batch refuses before offered-ref selection; source max/location remain sealed."

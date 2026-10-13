@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-event-order",
+            "responsibility": "#1536 exact migrated event_order prerequisite/control only: one dedicated integration Fact extracted from the existing13-row draft theory, without adding a case. Genuine independently owned QTE42 with selected healthDamage5 plus actual siblingDamage1 must finalize health154 and exactly two distinct resource_mutation events. The validated occurrence supplies the producer operation key for its sibling accepted:1 reference; selected raw eventRef stays resource:1. Effective event reversal precedes official component baseline capture and full-batch private-source refusal, nondelegable task refusal and whole-tree preservation. Intentional overlap with qte-physical-injury-consumer-draft, allowing only the prior failed row to run without repeating its12 passing siblings.",
+            "excludes": "No production/authority/parser/runner change, fabricated occurrence/hash/binding, copied/re-signed snapshot, test-to-test call/new harness, repeat of26 passing remaining cases/common18/protected baseline qualifiers, full-engine causal RED claim, archive/newroot/freshprocess/worker/model/provider or aggregate qualification.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerDraft.cs",
+                "BookOfEternityClient/Services/QtePhysicalWoundOccurrenceProducer.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-draft",
+                    "when": "Intentional exact one-Fact overlap. Existing draft owner includes the migrated Fact to preserve all16 cases; task-local retry selects only this Fact and excludes the12 passing theory rows and other draft controls."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentReorderedActualMultiEventSourceRefuses"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-bounds-repair",
             "responsibility": "#1536 exact two failed severity/location component rows only. Genuine QTE42/health155/occurrence precedes actual StagePlayerTurn43 and official Reader; current pinned soul bytes must agree with that Mortal snapshot. Actual actionable WoundRepairContext refusal then builds the closed Mortal public-draft repair task, with required SHA-pinned read-only request/realm, preserving command/cache/canonical before-images. One existing integration method/two cases; intentional overlap with qte-physical-injury-consumer-common-controls. The published2ac common18 outcome has16 PASS/two task prerequisite failures; this owner avoids repeating its16 passing rows.",
             "excludes": "No common18 aggregate, replay7 repeat, protected NONE/CREATE/projection/producer rerun, afterlife wrapper fabrication, broad realm/context whitelist, canonical proposal permission, worker/model/provider execution, archive/newroot/freshprocess or broad suite qualification.",
@@ -297,7 +327,7 @@
         },
         {
             "id": "qte-physical-injury-consumer-draft",
-            "responsibility": "#1536 common NONE/CREATE raw admission components: two theories/16 rows. Actual independently owned QTE42/health155/original occurrence precedes production N43 baseline writer/official Reader or actual StagePlayerTurn. Lawful NONE composes from signed pristine absence; missing/null/duplicate/case alias/wrong-case/unknown/foreign/proposal-null and covered receipt/history null refuse. Complete signed batch event order/candidate count validates before draft. Empty signed offer permits no file; unsolicited or multiple decisions refuse. Composition/validation preserves canonical roots. Component coverage is not full ProcessPlayerTurn consumer publication.",
+            "responsibility": "#1536 common NONE/CREATE raw admission components: three methods/16 cases:12-row original theory,3-row empty-offer theory and one dedicated event-order Fact. The event-order case alone migrated to current sibling reference semantics; both original wrappers share the unchanged private body. Actual independently owned QTE42/health155/original occurrence precedes production N43 baseline writer/official Reader or actual StagePlayerTurn. Lawful NONE composes from signed pristine absence; missing/null/duplicate/case alias/wrong-case/unknown/foreign/proposal-null and covered receipt/history null refuse. Complete signed batch event order/candidate count validates before draft. Empty signed offer permits no file; unsolicited or multiple decisions refuse. Composition/validation preserves canonical roots. Component coverage is not full ProcessPlayerTurn consumer publication.",
             "excludes": "No fabricated occurrence/source/binding/hash, canonical empty-root initialization, direct component call labelled full engine proof, selected repetition of passing producer/projection cohorts, receipt publication/replay/atomicity/archive qualification, provider/model/native Windows/C5/journal/broad suite.",
             "changeHints": [
                 "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
@@ -327,6 +357,7 @@
                     "project": "integration",
                     "tests": [
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDraftRequiresExactSignedOfferAndObservedAbsence",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentReorderedActualMultiEventSourceRefuses",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary"
                     ]
                 }
