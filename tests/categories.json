@@ -2,6 +2,98 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-repair",
+            "responsibility": "#1536 finding3 actual MAIN-GM full-resubmission control: one theory/eight rows (severity/location/narration/downstream consequence-resource × lawful correction/unrelated proposal drift). Real QTE42/health155/occurrence precedes actual ProcessPlayerTurn43 and official signed safe offer. Existing committed repair-request observer authors only public full ordinary outputs and matching repair-ready. Actual source/packet/generation, pre-revocation issued-command where reachable, rollback, bounded correction and once-only publication/refusal are asserted. Location repair is only the existing Mortal QTE profile; narration keeps the whole proposal pinned.",
+            "excludes": "No TaskBuilder-only roundtrip claim, fabricated accepted command or source, worker/model/provider call, rollback-to-worker draft bridge, skill failure before command staging, archive/child qualification or aggregate suite.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+                "BookOfEternityClient/Services/WoundRepairPacketBuilder.cs",
+                "BookOfEternityClient/Services/WoundResponseInputComposer.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-injury-consumer-publication",
+            "responsibility": "#1536 finding4 three component theories/seven rows: real QTE42 then actual StagePlayerTurn43/official source; a positive ordinary health Damage1/history transition changes the quartet before NONE/CREATE publication. Exact retained-source replay preserves mechanics/record/IDs/counts and consumes only transient draft. Missing/null/foreign-generation completion evidence refuses; no checkpoint seal is fabricated. Direct unbound-normalizer child postcommit retained-output failure compensates the whole atomic common batch/marker/owned inputs before exact resubmission. Planned consumed draft output authority is checked for both NONE and CREATE.",
+            "excludes": "Component calls are not full ProcessPlayerTurn or durable child/archive proof. No separate completion/receipt writer, snapshot copy/resign, new allocator, generic storage protocol, extra fault matrix, provider/model/native Windows/aggregate run.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs",
+                "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+                "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+                "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 3,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletedResourceWorkReplaysExactMechanicalBytes",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentReplayRequiresExactDurableCompletion",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-injury-consumer-completion-presence",
+            "responsibility": "#1536 exact completion-presence dependency: six methods/seven cases (unit2 Facts, integration3 Facts+one two-row theory). Publisher exact closed set is22; explicit prior21 set remains readable without marker-absence authority. Existing old16/18/19 reader fixtures remove the new key to retain their precise intended closed set. The new prior21 negative is an explicitly component snapshot-writer/reader check, not gameplay authority. Intentional narrow overlap with existing presence owners; historical TwentyOne method name retained to preserve catalog inventory.",
+            "excludes": "No whole presence/afterlife/browser category, older-save fallback/migration, unobserved absence authority, copied/resigned gameplay original, broad suite or archive qualification.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/PendingTurnSnapshotPresenceContractTests.cs",
+                "BookOfEternityClient.IntegrationTests/PendingTurnSnapshotPresenceIntegrationTests.cs",
+                "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceContractTests.ClosedObservationContract_PreservesLegacySetsAndEmitsCurrentTwentyOnePaths",
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceContractTests.Create_DerivesExactPresenceAndRejectsUntrustworthyCoverage"
+                    ]
+                },
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.LegacyPresenceMap_OrdinaryReadSucceedsButMissingSpiritualObservationFails",
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.PriorNineteenPresence_OrdinaryReadCannotAuthorizeUnobservedMortalAbsence",
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.PreviousPresenceMap_ReceiptRequiresCoverageOrSignedObservation",
+                        "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.PriorTwentyOnePresence_OrdinaryReadCannotAuthorizeUnobservedCompletionMarkerAbsence"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-documentation",
             "responsibility": "#1536 exact four GM documentation/example Facts after common NONE/CREATE wiring: two existing prompt guards across six actual surfaces, existing closed safe projection example, and one new closed public NONE/materialize/response+timestamp example guard with verbatim acquisition narration. Intentional narrow overlap with existing prompt/projection owners; examples prove authoring grammar only, not runtime/receipt/archive qualification.",
             "excludes": "No full prompt/example/afterlife categories, previously qualified unrelated producer/projection runtime repeats, implementation claims in GM prose, fabricated source authority or archive/new-root/fresh-process proof.",
@@ -108,7 +200,7 @@
         },
         {
             "id": "qte-physical-injury-consumer-source-compatibility",
-            "responsibility": "#1536 exact affected source/API consumers: existing original Mortal capture theory/three rows must pass all six reflection arguments after Core gains its optional internal staging/seal/replay callbacks, preserving pending/terminal/unknown refusal codes, cache and byte boundaries. Existing adapter NONE cold-replay/stale-next-snapshot Fact verifies retained source/current receipt semantics after the replay-plan join. Two methods/four cases; deliberate narrow overlap with existing owners.",
+            "responsibility": "#1536 exact affected source/API consumers: existing original Mortal capture theory/three rows must pass all six reflection arguments after Core gains its optional internal staging/seal/replay callbacks, preserving pending/terminal/unknown refusal codes, cache and byte boundaries. Existing adapter NONE cold-replay/stale-next-snapshot Fact verifies retained source/current receipt semantics after the replay-plan join. Three methods/five cases; exact legacy wound-retry Fact verifies the unchanged command-root branch after optional private Mortal provenance and nullable root handling; deliberate narrow overlap with existing owners.",
             "excludes": "No whole resource-pending/mortal-wounds-state category, new synthetic live engine proof, resource/event policy change, broad original/spiritual/C5 suite or repeat of unrelated passing qualifiers.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
@@ -128,7 +220,8 @@
                     "project": "integration",
                     "tests": [
                         "BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.OriginalMortalCapturePipeline_RejectsActualPendingAndTerminalReceiptReplay",
-                        "BookOfEternityClient.Tests.MortalWoundOpportunityAdapterTests.ComposeAcceptedResponse_ColdReplaysTheCurrentReceiptAndRejectsTheOldEventAfterNextSnapshot"
+                        "BookOfEternityClient.Tests.MortalWoundOpportunityAdapterTests.ComposeAcceptedResponse_ColdReplaysTheCurrentReceiptAndRejectsTheOldEventAfterNextSnapshot",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WoundMaterializationRollbackTests_ExactRetryPreservesUnrelatedWoundCommands"
                     ]
                 }
             ]

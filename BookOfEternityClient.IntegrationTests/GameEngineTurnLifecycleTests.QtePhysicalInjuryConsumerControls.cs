@@ -346,6 +346,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
             ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            MortalQteDecisionPublication.StatePath,
             EffectAcceptedTurnPlan.IdentityIndexPath, EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath,
             EffectCarrierCatalog.EnemiesPath, EffectCarrierCatalog.AlliesPath, EffectCarrierCatalog.AfterlifeProfilesPath,
             EffectCarrierCatalog.SpiritualConflictPath, "input/turn_request.json", "game_state/control/pending_turn_snapshot.json",

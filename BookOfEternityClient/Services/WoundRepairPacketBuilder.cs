@@ -453,6 +453,7 @@ internal static partial class WoundRepairPacketBuilder
         {
             "wound_response_unknown_field",
             "wound_severity_above_opportunity",
+            "mortal_qte_wound_location_kind_forbidden",
             "wound_consequence_slot_budget_exceeded",
             "wound_materialization_effect_binding_invalid",
             "wound_materialization_missing_field",
@@ -873,6 +874,11 @@ internal static partial class WoundRepairPacketBuilder
                 StringComparison.Ordinal)
                 ? minimumSeverity
                 : minimumSeverity + "-" + maximumSeverity;
+            return true;
+        }
+        if (path == "proposal.classification.locationProfile.kind" && code == "mortal_qte_wound_location_kind_forbidden")
+        {
+            expected = "one location kind permitted by this original sealed Mortal QTE opportunity";
             return true;
         }
         if (path.EndsWith(".root.slots", StringComparison.Ordinal) &&

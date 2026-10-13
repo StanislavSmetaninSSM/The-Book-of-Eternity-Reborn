@@ -43,12 +43,18 @@ public sealed class PendingTurnSnapshotPresenceContractTests
         "game_state/control/pending_spiritual_wound_decisions.json"
     ];
 
-    private static readonly string[] CurrentExpectedPaths =
+    private static readonly string[] BeforeCompletionExpectedPaths =
     [
         .. PreviousExpectedPaths,
         "game_state/wounds/spiritual_wound_opportunity_receipts.json",
         "game_state/control/pending_mortal_wound_occurrences.json",
         "game_state/wounds/wound_opportunity_receipts.json"
+    ];
+
+    private static readonly string[] CurrentExpectedPaths =
+    [
+        .. BeforeCompletionExpectedPaths,
+        "game_state/wounds/mortal_qte_decision_publication.json"
     ];
 
     [Fact]
@@ -72,6 +78,12 @@ public sealed class PendingTurnSnapshotPresenceContractTests
                 BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null));
 
         Assert.Equal(CurrentExpectedPaths, logicalPaths);
+        Assert.Equal(22, logicalPaths.Count);
+        var beforeCompletion = Assert.IsAssignableFrom<IReadOnlyList<string>>(helper.GetProperty(
+            "BeforeCompletionLogicalPaths", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null));
+        Assert.Equal(BeforeCompletionExpectedPaths, beforeCompletion);
+        Assert.Equal(21, beforeCompletion.Count);
+        Assert.DoesNotContain(MortalQteDecisionPublication.StatePath, beforeCompletion);
         Assert.Equal(ExpectedPaths, legacyLogicalPaths);
         Assert.Equal(PreviousExpectedPaths, previousLogicalPaths);
         Assert.Throws<NotSupportedException>(

@@ -20,10 +20,11 @@
     },
     {
       "category": "qte-physical-injury-consumer-source-compatibility",
-      "reason": "Exact affected existing two methods/four cases, budget2, intentional old-owner overlap; six reflection arguments and legacy adapter NONE replay/stale source.",
+      "reason": "Exact affected three methods/five cases, budget2, intentional old-owner overlap: six reflection arguments, legacy adapter NONE replay/stale source, and legacy exact wound-command retry after optional private Mortal provenance.",
       "contracts": [
         "Reflection.Invoke must explicitly supply all six arguments; existing refused original-capture pipeline code/cache/byte assertions stay unchanged.",
-        "Current receipt replay and next-source stale rejection retain old API behavior."
+        "Current receipt replay and next-source stale rejection retain old API behavior.",
+        "Legacy command-root retry remains unchanged; actual private Mortal provenance never grants acceptance or changes unrelated wound commands."
       ]
     },
     {
@@ -40,6 +41,27 @@
       "contracts": [
         "Only output/mortal_wound_decisions.json is additionally permitted, never output/** or another output; saved profiles remain unchanged.",
         "Task-selected exact draft and hash-pinned public context; no canonical or command proposal, no Mortal decision target on afterlife/spiritual task."
+      ]
+    },
+    {
+      "category": "qte-physical-injury-consumer-repair",
+      "reason": "One actual MAIN-GM repair theory/eight rows, budget5; full genuine N43 ordinary engine route plus bounded corrections/drift denial, no worker dispatch substitute.",
+      "contracts": [
+        "Original signed source/packet and raw full resubmission; narration keeps entire draft; downstream actual issued command captured before revocation; one publication or refusal."
+      ]
+    },
+    {
+      "category": "qte-physical-injury-consumer-publication",
+      "reason": "Three completion/publication component methods/seven rows, budget3; real ordinary resource work, retained-source exact bytes, invalid checkpoint refusal and direct child compensation.",
+      "contracts": [
+        "One common atomic record/mechanics batch, exact readback, known-byte compensation, no receipt/record-presence continuity waiver."
+      ]
+    },
+    {
+      "category": "qte-physical-injury-consumer-completion-presence",
+      "reason": "Six exact presence methods/seven rows across unit/integration, budget2; exact current22, prior21 absence refusal and precise old16/18/19 fixtures only.",
+      "contracts": [
+        "Only officially covered bytes/observed absence grant marker authority; old reader sets remain unrelated-reader compatibility."
       ]
     }
   ]

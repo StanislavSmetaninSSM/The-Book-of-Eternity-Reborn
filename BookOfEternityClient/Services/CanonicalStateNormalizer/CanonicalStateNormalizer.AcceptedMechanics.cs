@@ -114,6 +114,7 @@ public partial class CanonicalStateNormalizer
         }
 
         var plan = validated.Plan;
+        _mortalQteCommittedChanges = null;
         if (spiritualPublicationReceipt is not null)
         {
             RequireCurrentSpiritualPublication(spiritualPublicationReceipt, plan);
@@ -270,14 +271,12 @@ public partial class CanonicalStateNormalizer
             .Distinct(StringComparer.Ordinal)
             .OrderBy(static path => path, StringComparer.Ordinal)
             .ToArray();
-        var retainedPublicationBeforeImages =
-            await CaptureRetainedPublicationAgreementBeforeImagesAsync(
-                plan,
-                writes.Keys,
-                deletePaths);
+        IReadOnlyDictionary<string, CanonicalBeforeImage> retainedPublicationBeforeImages;
 
         var mortalQtePublication = !plan.AwaitsPendingResolution &&
             plan.OwnerCompanionAfterImages.ContainsKey(MortalWoundOpportunityReceiptState.StatePath);
+        try
+        {
         if (mortalQtePublication)
         {
             var prepared = new List<CanonicalLocalFileChange>();
@@ -296,6 +295,8 @@ public partial class CanonicalStateNormalizer
             if (completion is not null)
                 prepared.Add(new(MortalQteDecisionPublication.StatePath,
                     await _fs.ReadFileBytesAsync(_writeLease, MortalQteDecisionPublication.StatePath), completion));
+            retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan,
+                completion is null ? writes.Keys : writes.Keys.Append(MortalQteDecisionPublication.StatePath), deletePaths);
             _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, prepared));
             _mortalQteCommittedChanges = prepared;
             foreach (var change in prepared)
@@ -306,6 +307,7 @@ public partial class CanonicalStateNormalizer
         }
         else
         {
+            retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan, writes.Keys, deletePaths);
             foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
             {
                 var publicationRoot = exactItemPublicationAfterImages.TryGetValue(pair.Key, out var exactItemRoot) ? exactItemRoot : pair.Value;
@@ -342,6 +344,14 @@ public partial class CanonicalStateNormalizer
             await ValidatePublishedSpiritualReceiptAsync(plan);
         }
         return plan;
+        }
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
+        {
+            try { await CompensateMortalQteCommonPublicationAsync(); }
+            catch (CoordinatedStatePublicationUncertainException) { throw; }
+            catch (Exception compensation) { throw new AggregateException("Mortal common publication failed and compensation refused.", failure, compensation); }
+            throw;
+        }
     }
 
     internal async Task CompensateMortalQteCommonPublicationAsync()

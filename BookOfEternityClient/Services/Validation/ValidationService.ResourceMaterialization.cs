@@ -329,6 +329,14 @@ public partial class ValidationService
                     scene?["response"]?.GetValue<string>(), out var exact);
                 if (classified is { Success: true } && exact is not null)
                 {
+                    var canonicalReplayIssues = new List<ValidationIssue>();
+                    await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(canonicalReplayIssues, writeLease);
+                    await ValidateAcceptedTurnCanonicalEffectMaterializationAsync(canonicalReplayIssues, writeLease);
+                    if (canonicalReplayIssues.Any(static issue => issue.Severity == IssueSeverity.Error))
+                    {
+                        issues.AddRange(canonicalReplayIssues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue));
+                        return issues;
+                    }
                     await MortalQteDecisionPublication.ValidateExactReplayAsync(_fs, writeLease, exact);
                     completedMortalReplay = true;
                 }

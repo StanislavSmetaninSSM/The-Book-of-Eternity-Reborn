@@ -669,6 +669,7 @@ internal static partial class WoundResponseInputComposer
                 source,
                 decisionIndex,
                 proposal,
+                opportunity,
                 out var projectedPath,
                 out var projectedCode))
         {
@@ -831,6 +832,7 @@ internal static partial class WoundResponseInputComposer
         ValidationIssue issue,
         int decisionIndex,
         JsonObject proposal,
+        WoundOpportunityAuthority opportunity,
         out string path,
         out string code)
     {
@@ -841,6 +843,13 @@ internal static partial class WoundResponseInputComposer
         if (code == "wound_severity_above_opportunity")
         {
             path = prefix + "severity";
+            return true;
+        }
+        if (code == "wound_response_location_kind_forbidden" &&
+            opportunity.ProfileKey == "mortal_qte_terminal_health_damage_v1" && opportunity.Owner.Realm == "mortal_world" &&
+            issue.FilePath == prefix + "classification.locationProfile.kind")
+        {
+            code = "mortal_qte_wound_location_kind_forbidden";
             return true;
         }
         if (code is

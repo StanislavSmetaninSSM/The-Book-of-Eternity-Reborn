@@ -174,6 +174,21 @@ internal static class WoundAcceptedTurnSnapshotContract
         {
             var beforeImage = beforeImages[path];
             var current = await readCurrentBytesAsync(path);
+            if (path == MortalWoundOpportunityAdapter.DecisionPath && current is null && !plan.AwaitsPendingResolution &&
+                plan.ConsumedPaths.Contains(path, StringComparer.Ordinal) && plan.WoundStageBundle is { } mortalStages &&
+                plan.OwnerCompanionAfterImages.TryGetValue(MortalWoundOpportunityReceiptState.StatePath, out var receiptRoot))
+            {
+                var receipts = MortalWoundOpportunityReceiptState.Parse(receiptRoot.ToJsonString(), MortalWoundOpportunityReceiptState.StatePath);
+                var binding = mortalStages.Input.Binding;
+                var expected = receipts.State?.Receipts.Where(row => row.SessionId == binding.SessionId && row.RequestId == binding.RequestId &&
+                    row.SnapshotToken == binding.SnapshotToken && row.Turn == binding.Turn && row.ConsumedEventSelection.Evidence.AdapterKind == "qte").ToArray();
+                var publishedBytes = await readCurrentBytesAsync(MortalWoundOpportunityReceiptState.StatePath);
+                var published = MortalWoundOpportunityReceiptState.Parse(publishedBytes is null ? null :
+                    System.Text.Encoding.UTF8.GetString(publishedBytes).TrimStart('\uFEFF'), MortalWoundOpportunityReceiptState.StatePath);
+                if (beforeImage.Existed && beforeImage.Bytes is not null && receipts.IsValid && expected is { Length: 1 } && published.IsValid &&
+                    published.State!.Receipts.Any(row => row.ReceiptId == expected[0].ReceiptId && row.ReceiptFingerprint == expected[0].ReceiptFingerprint))
+                    continue; // Only this sealed, receipted public draft was planned consumed.
+            }
             var exact = beforeImage.Existed == (current != null) &&
                         (beforeImage.Bytes == null
                             ? current == null

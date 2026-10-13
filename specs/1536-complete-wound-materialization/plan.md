@@ -9,8 +9,95 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-12 (FINDING2 CLOSED; TYPED3 STATIC READBACK COHERENT; FINDING4 RECORD/PUBLICATION SOURCE MIDPOINT WIP; CONTROLS UNWRITTEN)
+## Current T070 first vertical — 2026-10-13 (FINITE FINDING3/4 SOURCE READY; FULL SOURCE GATE/BUILD/RUNTIME UNRUN)
 
+Final finite SOURCE candidate checkpoint2026-10-13; this connected block began2026-10-12.
+Finding4 midpoint published8db419061046629ca591e4799273d1e4bbad09d1; ROOT verified exact remote/clean
+primary and573-file GitHub-only selected recovery/all42 connected paths. Actual retained
+Astra XHigh review confirmed three Important/no Critical publication dependencies: marker
+misclassified retained, planned consumed draft rejected by output checker for BOTH NONE and
+CREATE, and direct unbound-normalizer child losing compensation state after known postcommit
+failure. First NONE eligibility and no new marker on exact replay were confirmed correct;
+these conditions are preserved. No build/discovery/runtime occurred.
+
+Current coherent SOURCE candidate corrects those three precise findings. Produced-marker
+classification now precedes retained inventory capture; all prepared member after-images,
+including a newly minted marker, have exact readback. No-mint replay retains the old marker
+byte guard. Output authority allows ABSENT only for the specific sealed planned-consumed
+Mortal public draft with matching original N43 typed stage and actual published QTE receipt;
+ordinary narration/interface/debug and any unconsumed draft remain exact to sealed images.
+The owning bound publisher compensates known postcommit failures before child state is lost;
+uncertain publication and UNKNOWN member bytes refuse. Outer compensation remains for later
+canonical-refresh failure. Existing atomic whole-common batch/record/source/footprint controls
+are preserved. Read-only exact replay first validates live canonical wound/effect roots so
+actual shared-parser private diagnostics remain nondelegable before footprint verification.
+No new completion writer, key, allocator or general storage protocol.
+
+Typed3 production midpoint aacc had no confirmed Important/Critical source defect. Its
+remaining bounded LOCATION route is now authored ONLY for profile
+mortal_qte_terminal_health_damage_v1 with Mortal owner: existing logical kind coordinates,
+sealed source context and preserved proposal feed one existing bounded repair packet; every
+corrected proposal still passes full ordinary admission. Other/afterlife profiles keep their
+existing behavior. No rollback-to-worker draft bridge: that earlier requirement was withdrawn
+because the actual wound repair path requests MAIN-GM full ordinary resubmission.
+
+REAL repair controls are now authored: one eight-row actual ProcessPlayerTurn43 theory, after
+independent genuine QTE42/health155/occurrence. Existing committed repair-request observer
+reads real original N43/packet/full-resubmission metadata and authors ONLY public full ordinary
+scene/interface/debug/decision plus matching repair-ready. Severity/location/narration and an
+actually issued downstream consequence-resource error each cover lawful correction and
+unrelated proposal drift. Resource rows observe genuine issued command before revocation;
+narration correction preserves the entire draft. A matching accepted turn publishes once;
+drift refuses before accepted-command staging/publication. No TaskBuilder-only roundtrip
+claim, fake accepted command, new worker, model/provider call or canonical GM write.
+
+Finding4 component controls are three theories/seven rows. Real QTE42 and actual Stage43/
+official Reader precede positive ordinary health Damage1/history transition (155→154 in that
+transition), then first NONE/CREATE completion. Exact retained-source replay preserves all
+mechanics/record/IDs/counts and consumes the public draft. Missing/null/foreign-generation
+checkpoint refuses without minting a valid seal. Direct normalizer child postcommit retained-
+scene drift restores the complete known common cohort, marker and owned inputs; exact corrected
+resubmission publishes once. Planned consumed-draft output agreement is checked for BOTH
+NONE and CREATE. These are component controls, not full engine/child/archive qualification.
+Existing protected NONE/CREATE causal Facts remain unchanged as separate first matching GREENs.
+
+Presence/API dependencies are finite: exact current publisher set22 plus explicitly retained
+prior21; new component prior21 reader negative cannot authenticate unobserved marker absence.
+Existing16/18/19 component fixtures remove only the new key to remain their intended closed
+sets. Only six presence methods/seven cases are selected (unit2 Facts, integration3 Facts and
+one two-row theory), with deliberate narrow existing-owner overlap. Historical TwentyOne
+method name is retained; its current assertion is22 and explicit prior assertion21. Exact
+legacy WoundMaterializationRollbackTests_ExactRetryPreservesUnrelatedWoundCommands Fact joins
+the existing narrow source-compatibility owner to protect the unchanged command-root retry
+branch. No broad presence/browser/wound-state run or compatibility fallback.
+
+STATIC inventory is now28 methods/67 cases/12 descriptors across10 categories, default30
+preparation (runner ceiling30 applies to the summed category budgets plus preparation); remainder26 methods/65 cases/10 descriptors across8 categories, default30,
+excluding two protected causal Facts after their separate GREENs. Budgets: NONE5, CREATE5,
+common5, draft5, compatibility2, docs2, worker1, repair5, publication3, completion-presence2.
+Catalog710 categories/11548 methods is expected STATIC inventory, not fresh discovery. Three
+new exact owners were prepended; only one existing task-local compatibility node gained the
+exact legacy dependency. Original702 nodes/suffix and global CI/selection remain unchanged.
+[Preparation](../../tests/selections/1536-qte-physical-injury-consumer-preparation.json)
+[Controls remainder](../../tests/selections/1536-qte-physical-injury-consumer-controls.json)
+
+Six GM surfaces/example/manifest/guards from the connected consumer block remain coherent.
+The current correction changes internal repair/publication/presence behavior, not public
+single NONE/materialize grammar, worker output permissions or afterlife contract; no extra GM
+capability/archive claim is added. Every new control remains UNRUN, not previously observed RED.
+Source/API/static selector checks only; compile/build/discovery/catalog/runtime and mandatory
+full SOURCE/FIXTURE/SELECTION acceptance remain PENDING/UNRUN. Existing NONE4010/CREATEc7
+proper causal REDs each1 executed/0 PASS/1 FAIL remain accepted and unchanged, producer1b23
+executed/22 PASS/1 FAIL and projection4d4 actual/28 executed/26 PASS/2 FAIL remain separate.
+Protected ce955/NONE/CREATE/projection Facts, old packets and all checkboxes are unchanged.
+
+Mutations STOPPED at coherent SOURCE READY for ROOT publication/recovery then focused complete
+four-finding SOURCE/FIXTURE/SELECTION recheck and fresh bounded preparation. No project
+execution/build/commit/push by the writer. Actual archive/newroot/full fresh-process qualification
+follows baseline NONE/CREATE GREENs; it is not claimed or a pre-first-runtime gate. Full
+consumer/T070/FR-063/parent/#1536 remain OPEN.
+
+Historical8db record/publication source midpoint (three confirmed publication findings corrected above):
 Typed3 midpoint publishedaacc1ad228b9a189d693a5d20956da3e597b6598; ROOT verified exact remote/clean
 primary and570-file GitHub-only selected recovery/all37 connected paths. Actual retained
 Astra XHigh focused typed3 production-source readback found no confirmed Important/Critical
