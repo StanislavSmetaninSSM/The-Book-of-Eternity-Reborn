@@ -5,7 +5,52 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (EVENT-ORDER 1 PASS; 23 UNRUN)
+## Current T070 boundary — 2026-10-13 (PUBLICATION 6 PASS / 1 CREATE HEALTH FAIL; 16 UNRUN)
+
+Retained actual Astra XHigh EVIDENCE/status accepted corrected event-order packet at
+`024813550aa7e97dc1fbd0815fb24afc7f629ed8`:one PASS after actual two-event reversal and private
+accepted-event fingerprint refusal. Precision: its command/tree/source and task-refusal assertions
+passed; it has no separate cache assertion. The twelve passing theory rows are INCLUDED within the
+prior26 PASS. Frozen historical evidence remains unchanged.
+
+First remaining23 actual stopped after publication category. [Remaining23 partial packet](./recovery/qte-physical-consumer-remaining23-partial-20261013/manifest.json)
+freezes run `20261013-035758-524-452234-9b7d237c87e54c7c9595d30b2cb4b743-categories`,
+source0248/compile6f:planned9 methods/23 cases/4 descriptors/four categories;
+completed1 descriptor/7 cases,7 executed/6 PASS/1 FAIL,64.8965020s,exit1,
+no timeout/skips/duplicate IDs. Fail-fast leaves repair8/compatibility5/worker-scope3:
+three descriptors/seven methods/16 cases UNRUN, including strengthened worker protection Fact.
+
+CREATE CompletedResourceWorkReplaysExactMechanicalBytes fails at Publication.cs35:
+Expected155/Actual152 on its initial resource-health prerequisite. Later resource-work/exact-replay
+byte assertions in that row are UNREACHED. The packet does not establish the cause of that health
+delta or whether it reflects lawful owned wound consequence work. Production/source/fixture are
+unchanged in this evidence block; read-only resource/effect timeline diagnosis precedes correction.
+The other six publication rows PASS, including NONE completed-resource replay, three missing/null/
+foreign completion proof refusals and two direct postcommit whole-batch compensation/retry cases.
+No full publication qualification or blanket unchanged-CREATE-resource claim is made.
+
+ROOT matched150 source and10 fresh binary PRE/POST pins BEFORE metadata edits, parsed all seven
+native results/full TRX/stdout/34 observations, and verified all seven strict receipts removed=true/
+failure=null with physical root absence. Runner-owned process/runtime cleanup succeeded. Matching
+NoBuild PlanOnly9/23/4 took4.5988175s,executed0 tests;148 nonmetadata compile inputs/10 binaries matched
+fresh6f BOTH builds. Catalog713/11549 is preceding fresh discovery, not a new audit or test execution.
+
+Finite controls six actual invocations now report70 executions/63 PASS/7 FAIL, including repetitions
+(15/12/3 +18/16/2 +2/2/0 +27/26/1 +1/1/0 +7/6/1). Prior26/common18/event-order1/full NONE36256/
+current-contract CREATEb76 positive evidence remains accepted and excluded/not repeated. Historical
+c7 CREATE RED/non-byte-matched treatment migration and producer/projection qualifiers stay separate.
+Current controls still have one failed CREATE resource prerequisite and16 UNRUN cases. Complete
+consumer/archive/newroot/fresh-process/full T070/FR-063/parent/#1536 remain OPEN.
+
+Next: publish/recover this frozen partial packet, mandatory focused EVIDENCE/status gate, then only
+a source-proven bounded current-contract resource/effect fixture correction preserving causal damage1
+and exact mechanics/replay proof, with focused SOURCE/FIXTURE/SELECTION before execution. No passing
+six/neighbors/common/baselines repeats are automatically selected, no production relaxation or
+observed-baseline substitution is authorized. This evidence review is PENDING. Global selectors/
+budgets/protected ce955/checklists and old packets remain unchanged; archive8-case implementation
+is unwritten/UNRUN/on hold behind controls qualification.
+
+Historical isolated event-order GREEN checkpoint (accepted before remaining23 invocation):
 
 SOURCE/FIXTURE/SELECTION accepted by retained actual Astra XHigh at
 `6f703319e36531a3ccb68353656d899d1cccfdde`; first corrected isolated event-order Fact is GREEN.
