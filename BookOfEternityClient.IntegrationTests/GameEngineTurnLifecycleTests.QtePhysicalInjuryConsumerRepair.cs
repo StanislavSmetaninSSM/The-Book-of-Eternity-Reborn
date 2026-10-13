@@ -31,6 +31,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         JsonObject? rejectedDraft = null, correctedDraft = null;
         byte[]? originalRequest = null, originalManifest = null, originalAuthority = null;
         string? rejectedScene = null, repairPacket = null, actualIssuedCommand = null, initialReady = null;
+        var repairPublications = new List<object>();
         var repairCount = 0;
         var accepted = false;
         Exception? responderFailure = null;
@@ -49,6 +50,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Source = new { source.Source.SessionId, source.Source.RequestId, source.SnapshotToken, source.Source.TurnNumber },
             Next = next is null ? null : new { next.SessionId, next.RequestId, next.SnapshotToken, next.TurnNumber },
             RejectedDraft = rejectedDraft, CorrectedDraft = correctedDraft, rejectedScene, repairPacket, actualIssuedCommand, InitialReady = initialReady,
+            RepairPublications = repairPublications,
             ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, Receipt = receiptJson,
             DraftAfter = await _fs.ReadFileAsync(MortalWoundOpportunityAdapter.DecisionPath),
             CommandAfter = await _fs.ReadFileAsync(AcceptedMechanicsPlan.WoundCommandPath),
@@ -130,8 +132,27 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var members = journal.RootElement.GetProperty("Members").EnumerateArray().Select(row => row.GetProperty("Path").GetString()).ToArray();
                 if (repairCount == 0 && members.Contains(_fs.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)) && File.Exists(_fs.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)))
                     actualIssuedCommand ??= File.ReadAllText(_fs.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath));
-                if (!members.Contains(_fs.ResolvePath("game_state/control/validation_repair_request.json"))) return;
-                repairPacket = File.ReadAllText(_fs.ResolvePath("game_state/control/validation_repair_request.json"));
+                var requestPath = _fs.ResolvePath("game_state/control/validation_repair_request.json");
+                var requestMembers = journal.RootElement.GetProperty("Members").EnumerateArray()
+                    .Where(row => row.GetProperty("Path").GetString() == requestPath).ToArray();
+                if (requestMembers.Length == 0) return;
+                var member = Assert.Single(requestMembers);
+                var after = member.GetProperty("After");
+                var afterExists = after.GetProperty("Exists").GetBoolean();
+                var afterLength = after.GetProperty("Length").GetInt64();
+                var afterSha256 = after.GetProperty("Sha256").GetString();
+                var committed = journal.RootElement.GetProperty("Committed").GetBoolean();
+                repairPublications.Add(new
+                {
+                    TransactionId = journal.RootElement.GetProperty("TransactionId").GetString(), Committed = committed,
+                    MemberPath = member.GetProperty("Path").GetString(), After = new { Exists = afterExists, Length = afterLength, Sha256 = afterSha256 }
+                });
+                Assert.True(committed);
+                if (!afterExists) return; // A declared deletion is not a newly published repair request.
+                var publishedBytes = File.ReadAllBytes(requestPath);
+                Assert.Equal(afterLength, publishedBytes.LongLength);
+                Assert.Equal(afterSha256, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(publishedBytes)));
+                repairPacket = Encoding.UTF8.GetString(publishedBytes);
                 using var packet = JsonDocument.Parse(repairPacket.TrimStart('\uFEFF'));
                 var repair = packet.RootElement;
                 Assert.Equal(next.SessionId, repair.GetProperty("sessionId").GetString());

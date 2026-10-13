@@ -5,49 +5,67 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (REPAIR RESPONDER 8 FAIL; COMPATIBILITY/WORKER 8 UNRUN)
+## Current T070 boundary — 2026-10-13 (REPAIR OBSERVER SOURCE READY; RETRY8 + UNRUN8)
 
-Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED exact
-`16aa4ed8293c59a99a6af7f39d23d9621e17920f`; prior70842cc prerequisite-failure EVIDENCE remains
-accepted. The [corrected-terminal repair observer failure packet](./recovery/qte-physical-consumer-repair-observer-failure-20261013/manifest.json)
-freezes actual `20261013-045028-947-469154-d9e815db90ea4fad8bb821b04c58131c-categories`,
-source/compile16aa4ed:1 method/8 cases/1 descriptor,8 executed/0 PASS/8 FAIL,82.8001878s,
-complete,exit1,no timeout/skips/duplicate IDs. These are the same eight failed repair rows;
-no earlier passing cohort was repeated. Compatibility5/worker3 remain5 methods/8 cases/2 descriptors/
-two categories/default8 UNRUN,including strengthened worker guard.
+Retained actual Astra XHigh EVIDENCE/status ACCEPTED at
+`f589bd12849126e32afad438672d553d3196d73c` for the
+[corrected-terminal repair observer failure packet](./recovery/qte-physical-consumer-repair-observer-failure-20261013/manifest.json).
+SOURCE/FIXTURE/SELECTION was accepted16aa before actual
+`20261013-045028-947-469154-d9e815db90ea4fad8bb821b04c58131c-categories`,source/compile16aa:
+1 method/8 cases/1 descriptor complete,8 executed/0 PASS/8 FAIL,82.8001878s,exit1,no timeout/skips/
+duplicate IDs. All eight rows fail Repair.cs57 Assert.Null(responderFailure): FileNotFound reading
+validation_repair_request.json at observer134 after a Committed membership match. The frozen packet
+contains no member afterimage/kind or caller diagnostic, so its originating publication remains
+UNPROVED. Do not conflate this file with historical unknown active.json/intent.tmp disappearance.
+This is fixture prerequisite failure, not production causal RED or complete MAIN-GM repair proof.
 
-All eight failures now stop EARLIER in final assertions at Repair.cs57 Assert.Null(responderFailure):
-FileNotFoundException reading game_state/control/validation_repair_request.json in existing
-RespondToMainRepair callback line134. The committed publication's member list contained that path;
-the packet does not identify its publication kind/afterimage or prove why the file was absent.
-Do not conflate it with historical unknown active.json/intent.tmp disappearance. READONLY source/
-publication caller diagnosis is running; no further observer/production correction is released.
+All native InitialReady values contain the exact four authored filesModified paths and genuine
+Next43 session/request/turn. EngineFailure=null,loop42,acceptedfalse,repairCount0/repairPacketnull;
+actual issued command JSON was captured ONLY for resource2 rows before revocation,other six null.
+Later repair/packet/source/private/bounded correction/retry/sibling/publication assertions were
+UNREACHED. ROOT matched152 source/10 fresh binaries PRE/POST before metadata,parsed8 results/full
+native TRX/stdout/32 observations,verified8 strict receipts removed=true/failure=null and actual
+root absence. Runner cleanup succeeded. Frozen30 artifacts retain original inputs/results/pins.
+Fresh BOTH PlanOnly139.3917351s,85/35 warnings0 errors,30 methods/70 cases/12 descriptors,0 executed;
+exact1/8/1 PlanOnly2.4692256s,0 executed. Catalog714/11550 was unchanged and not repeated by the
+accepted source gate. Controls nine invocations report87 executions/64 PASS/23 FAIL,including
+repetitions; all prior positive qualifiers stay accepted,retained and excluded.
 
-All eight native InitialReady values now physically contain the exact four authored filesModified
-paths and match genuine Next43 session/request/turn. Native output reports EngineFailure=null,
-loop42,acceptedfalse,repairCount0,repairPacket=null. The two resource rows captured real issued client
-wound command JSON before revocation; other six rows did not. The failing responder assertion means
-later engine/next/count/full-resubmit/bounded-repair/retry/sibling/publication assertions are UNREACHED.
-No proper production causal RED or complete repair qualification is claimed by this fixture failure.
+Read-only source proof identifies an observer-class mismatch,not a proven old native caller.
+WriteValidationRepairRequestForSessionAsync3890 deletes existing ready/request/stall before its
+new request write4016. DeleteValidationRepairFilesForSessionAsync8133-8136 calls FS.DeleteFile2327
+with desired=null; ordinary trusted publication carries the declared member even for observed
+absence. TrustedLocalFilePublication295-306 deletes when After.Exists=false; CommitMembers315-326
+preflights/marksCommitted/notifies for BOTH deletion and write. A separate fail-closed cleanup3154
+can also delete that path. Thus delete-before-write is a source-backed explanation/hypothesis for
+the old callback,not evidence that actual3890 ran. The old path-only observer attempted ReadAllText
+without checking the declared afterimage. Future actual member metadata must establish the kind.
 
-ROOT checked152 source/10 fresh binary PRE/POST pins BEFORE metadata, all eight native results/full
-TRX/stdout/32 observations, and eight strict cleanup receipts removed=true/failure=null with roots
-physically absent. Runner-owned tree/runtime cleanup succeeded. Frozen30 artifacts include all exact
-source/binary pins, raw InitialReady/commands/observations and preparation/actual originals. Fresh
-BOTH PlanOnly `20261013-044734-587-468687-44b6be9c608c4b72813cba920a39dc2d-categories` built both
-projects with85/35 warnings,0 errors,30 methods/70 cases/12 descriptors,139.3917351s,0 executed;
-exact1/8/1 PlanOnly took2.4692256s,0 executed. Catalog714/11550 was not repeated: unchanged inventory/
-selectors/declarations and no repeat explicitly accepted by independent SOURCE gate. Preparation
-and prior catalog are not actual test qualification. Historical packets remain immutable.
+Current bounded fixture-only correction selects the exact repair-request journal MEMBER,records
+actual TransactionId/Committed/member Path/After.Exists-Length-Sha256 in the existing native
+RepairPublications observation,including declared deletions. It asserts Committed and responds
+ONLY to After.Exists=true. Declared DELETE is skipped explicitly; it does not skip a missing file
+for a declared PRESENT image. ReadAllBytes must match declared length and uppercase SHA-256 before
+UTF8 decode/BOM trim/existing packet checks. Missing/mismatched present bytes still flow to the
+existing responderFailure plus queued Escape/first failure assertion. No catch-ignore,poll,timing,
+new hook,source/authority/parser/production change or broader publication contract is introduced.
+Actual command pre-revocation capture and ALL eight rows/count1/candidate/full-resubmit/session/
+request/manifest/authority bytes/private guards/corrected field/sibling/receipt/marker/cleanup and
+initial-ready prerequisite remain unchanged. This local diagnostic grants no authority. Public GM
+rules are unchanged; no GM prompt/example update is needed for the fixture observer correction.
 
-Finite controls nine actual invocations report87 executions/64 PASS/23 FAIL,including repetitions;
-earlier positives remain accepted and retained. Complete controls/consumer/archive/newroot/fresh-
-process/T070/FR-063/parent/#1536 remain OPEN. Next: publish/recover this frozen failure packet,
-mandatory EVIDENCE/status gate, then only source-proven concrete bounded correction with mandatory
-SOURCE/FIXTURE/SELECTION before matching preparation/runtime. No catch-and-ignore/count/authority/
-private-context/command-revocation/retained-proposal/sibling-preservation weakening is authorized.
-Archive8 remains retained,unwritten/UNRUN/on hold; protected causal Facts/ce955/checklists/global CI/
-runner/selection/budgets/GM grammar and old evidence remain unchanged. Current EVIDENCE is PENDING.
+SOURCE READY for ROOT publication/recovery and mandatory SOURCE/FIXTURE/SELECTION gate; all fresh
+BOTH build/discovery/PlanOnly/actual checks on this correction UNRUN. Catalog714/11550,declarations,
+selectors/category IDs-membership-budgets/global CI/full preparation30/70/12/default30 unchanged.
+ROOT's local reduced selection remains repair exactly1 method/8 cases/1 descriptor,budget5/default10.
+After first corrected8 freeze/EVIDENCE gate,the untouched compatibility5+worker3 remain5 methods/
+8 cases/2 descriptors/two categories,budgets3/default8 UNRUN,including strengthened worker guard.
+Current16aa binaries are not fresh for this fixture. No passing prior qualifier is repeated.
+
+Complete controls/consumer/archive/newroot/fresh-process/T070/FR-063/parent/#1536 stay OPEN.
+Archive8 remains retained,unwritten/UNRUN/on hold behind controls. Protected causal Facts/ce955,
+checkboxes,other fixture behavior,frozen packets,global selections/runner and GM grammar unchanged.
+No runtime success or proved old publication kind/caller is claimed for this candidate.
 
 Historical initial-ready fixture SOURCE READY checkpoint:
 
