@@ -1,5 +1,25 @@
 # Tasks: GM Documentation Modularization
 
+## Pure test-source SOURCE BLOCKED; two focused corrections — 2026-10-13
+
+Retained actual independent AstraXHigh reviewed cebb8835c06a1a4a74df68a9c1994eb71ad22e0d:
+[report](recovery/A-pure-red-independent-source-review-20261013.md)
+SHA256e1fa31828d74667ed004df70e5075dec34a30fe61ee4a99f20016f0ac2525bba.
+No pureactual39 release. Important1: VerifyRoute checks topic/exclusion/core cells but not
+activationpredicatecolumn2, so due=false/staleprivate/activeinactivepredicate drift canpass.
+Important2: D01N002 readsoldMatrix instead ofitsmappedA005 ownerGM_Common_Core; a correct
+compactrouter wouldfail or require forbidden duplicatedbody. Both are source-confirmed
+oracle defects, not observedtest failures; allprojectchecksUNRUN.
+
+ROOT release issoleSol TEST-onlyfix for these twofindings: independent acceptedpredicate/
+precedence oracles +condition-only negativefixtures; movededitD01 actualsoleowner vsoldpath
+forunmovedN001/N003, withexactafter/oldgrantabsence and owner-loss/restored-grant controls.
+Preserve originals/unappliednavigation/production/B; no newruntime selector/framework or
+contentmove/deliveryadapter. Updatefinitecounts/selectorsonlyasactualsource requires, WIP
+beforefocusedindependentSOURCE, then freshselectedprep/discovery/catalog/firstpureRED.
+No acceptancecheckboxes. DeliveryAST/package/session remainsUNWRITTEN; fullA/B OPEN.
+FRprimaryf849 freshprep isindependent andpinned; no primaryedit bythiswriterblock.
+
 ## A pure RED test-source candidate — 2026-10-13
 
 Retained sole Sol source author completed this bounded candidate from isolated published
