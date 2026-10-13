@@ -11,6 +11,28 @@ plus the approved Superpowers design at
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
 ## Current T070 first vertical — 2026-10-13 (ARCHIVE4/EXACT2 QUALIFIED; COMPLETED-PUBLICATION HELD REJECTION SOURCE READY)
 
+Actual retained Astra XHigh full SOURCE/FIXTURE/SELECTION review of published
+`6aaaf1b1c19cae122851143b5fdcd7b845592d71` is BLOCKED by exactly one Important legacy21
+applicability finding,with no Critical or other confirmed blocker. Source verification confirms
+ordinary active Mortal callers enter completion inspection; the supported prior21 map allows
+ordinary reads but cannot authenticate completion-marker absence. The previous inspector converted
+that deliberate absence_unproven refusal into IntegrityConflict/held rejection for unrelated turns.
+This is a confirmed SOURCE regression,not an observed runtime failure or tool/security denial.
+
+The minimum six-path correction keeps the observed-absence Reader and completed-proof/replay guards
+unchanged. ONLY a fixed-root absence_unproven inspection refusal can enter a separate official
+optional-COVERAGE read under the SAME lease and exact caller session/request/token/turn/Mortal binding.
+Marker must be neither signed-covered nor currently present; every signed-covered pending/receipt/
+history root must exactly match current bytes,while any uncovered partition root must be currently
+absent. This yields non-authorizing NotApplicable/MayResubmit=false,never signed absence,VerifiedCompleted
+or replay permission. Present marker,changed current partition/receipt/history,invalid original/context/
+coverage or other Reader errors remain strict conflicts. Actual completed-source missing-marker and
+receipt/history-drift controls remain unchanged. The legacy Fact explicitly uses the existing fixture-
+authority writer pattern on unrelated ordinary staging,not an edited/re-signed genuine completion source.
+It proves ordinary entry acceptance without wound/receipt/marker allocation and held preservation for
+present malformed marker or changed current partition. New correction/control SOURCE READY; focused
+closure review,fresh builds/discovery/catalog/runtime are all PENDING/UNRUN.
+
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `afbe58181cbc9d83e8f8ced900a9ce68535e7d7e`, no blocking findings. Fresh BOTH PlanOnly33/78/14
 succeeded143.6282092s,88/35 warnings,0/0 errors,0 execution; exact durable1/4/1 took2.6727051s,
@@ -86,11 +108,12 @@ is used to grant acceptance or new publication. Genuine uncommitted refusal reta
 No new publication writer/reduction/allocation/source framework/storage transport/keys or access.
 
 Tests were authored FIRST in this coherent source block; the accepted actual changed2 RED supplies
-TDD regression evidence. One new focused partial has four methods/nineteen cases: exact/changed/
+TDD regression evidence. One new focused partial has five methods/twenty cases: exact/changed/
 malformed past-versus-current controls2; independent marker/null/hash/generation/binding/manifest/
 authority/original-quartet/receipt-source/history/published-quartet/wound/effect conflicts13; foreign
-Resource/Effect/Wound commands3; actual uncommitted refusal restores original canonical bytes1.
-Every completed fixture uses genuine QTE source,actual ordinary staging/official Reader and owner-
+Resource/Effect/Wound commands3; actual uncommitted refusal restores original canonical bytes1;
+prior21 legacy unrelated component-entry/strict-conflict preservation1.
+Every completed-publication fixture uses genuine QTE source,actual ordinary staging/official Reader and owner-
 taken common publication. Genuine adapter-issued exact replay exercises the factored strict wrapper;
 no fake receipt/replay/context. Component proof calls are labelled component,not fresh-child proof.
 All new preservation controls UNRUN; they are not represented as previously observed REDs.
@@ -103,10 +126,10 @@ and original/backups/Ready/submitted output bytes retained. Exact cleanup/second
 unchanged. Full child log/raw result/context/available artifacts/PID/generation/ownership and45s bound
 remain. No alias is combined with the original durable owner,so no semantic double execution.
 
-Two new narrow owners/selectors: completed-proof4 methods19 cases1 descriptor,budget5/default10;
+Two new narrow owners/selectors: completed-proof5 methods20 cases1 descriptor,budget5/default10;
 failed changed alias1 method2 existing rows1 descriptor,budget5/default10. New selection inventory
-5 methods21 listed cases2 descriptors/default15,including2 aliases of old semantic cases. Catalog
-static expectation719 categories11558 methods (+2 owners/+5 methods); runtime discovery UNRUN.
+6 methods22 listed cases2 descriptors/default15,including2 aliases of old semantic cases. Catalog
+static expectation719 categories11559 methods (+2 owners/+6 methods); runtime discovery UNRUN.
 Old full preparation33/78/14,all old catalog nodes/globalCI/selections and their budgets remain exact.
 Selectors are [completed proof](../../tests/selections/1536-qte-physical-injury-consumer-completed-proof.json)
 and [failed changed2](../../tests/selections/1536-qte-physical-injury-consumer-durable-changed.json).

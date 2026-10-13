@@ -191,6 +191,97 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(_fs.FileExists(MortalQteDecisionPublication.StatePath));
     }
 
+    // Legacy component entry only: the existing explicit fixture authority writer models
+    // the supported prior21 map. No genuine completed QTE source is edited or re-signed.
+    [Fact]
+    public async Task QtePhysicalInjuryConsumer_ComponentPriorTwentyOneOrdinaryEntryDoesNotGrantCompletionAuthority()
+    {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", JsonSerializer.Serialize(
+            Characteristics.All.ToDictionary(name => name, _ => 20), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync("game_state/player/experience.json", "{\"level\":1,\"experience\":0,\"experienceForNextLevel\":100}");
+        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(2, 42, 20, 20, 20, 20, 20);
+        Assert.True(resources.IsValid, JsonSerializer.Serialize(resources.Issues));
+        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.DefinitionsPath, resources.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.StatePath, resources.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.HistoryPath, resources.History!.ToCanonicalJson());
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(resources.Definitions,
+            path => _fs.ReadFileAsync(path), resources.State, resources.History, CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(authority.IsValid, JsonSerializer.Serialize(authority.Issues));
+        await _fs.WriteFileAtomicAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath, authority.CanonicalAuthorityJson!);
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([Key(ConsoleKey.Escape)]), settings =>
+        { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; });
+        GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession("session_prior21_ordinary", 42);
+        await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        {
+            Assert.NotNull(await InvokePrivateTaskNullableResultAsync(engine, "StagePlayerTurnAsync", "Спокойно осмотреться.", null, null));
+            return true;
+        });
+        const string manifestPath = "game_state/control/pending_turn_snapshot.json";
+        var manifestRoot = JsonNode.Parse((await _fs.ReadFileAsync(manifestPath))!)!.AsObject();
+        Assert.True(manifestRoot["originalPathPresenceV1"]!.AsObject().Remove(MortalQteDecisionPublication.StatePath));
+        Assert.Equal(21, manifestRoot["originalPathPresenceV1"]!.AsObject().Count);
+        manifestRoot["manifestPayloadHash"] = string.Empty;
+        manifestRoot["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifestRoot);
+        await _fs.WriteFileAtomicAsync(manifestPath, manifestRoot.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+        PendingTurnSnapshotReadAuthority snapshot;
+        PendingTurnSnapshotReadResult absence;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var ordinary = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, ["game_state/meta/soul_state.json"]);
+            Assert.True(ordinary.Success, JsonSerializer.Serialize(ordinary.Issues));
+            snapshot = Assert.IsType<PendingTurnSnapshotReadAuthority>(ordinary.Snapshot);
+            absence = PendingTurnSnapshotReader.ReadCurrent(_fs, lease,
+                PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(["game_state/meta/soul_state.json"], [MortalQteDecisionPublication.StatePath]));
+            Assert.False(absence.Success);
+            Assert.Contains(absence.Issues, issue => issue.Code == "pending_turn_snapshot_reader_absence_unproven" &&
+                issue.FilePath == MortalQteDecisionPublication.StatePath);
+        }
+        var unrelated = await InspectMortalCompletionProofAsync(snapshot);
+        Assert.Equal(MortalQteDecisionPublication.CurrentPublicationState.NotApplicable, unrelated.State);
+        Assert.False(unrelated.MayResubmit);
+        var timestamp = DateTime.UtcNow.ToString("O");
+        await _fs.WriteFileAtomicAsync("output/narrative_response.json", JsonSerializer.Serialize(new { response = "Герой спокойно осматривается.", timestamp }));
+        await _fs.WriteFileAtomicAsync("output/interface_updates.json", JsonSerializer.Serialize(new { dialogueOptions = Array.Empty<object>(), timestamp }));
+        await _fs.WriteFileAtomicAsync("output/debug_logs.json", JsonSerializer.Serialize(new { timestamp,
+            gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n- Why relevant: Спокойный осмотр без участия NPC.\n- Actors outside scope: нет\n- Why outside scope: В сцене нет других акторов.\n\n## Reasoning\n- Unrelated ordinary prose; no wound decision or mechanical delta." }));
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", JsonSerializer.Serialize(new
+        { sessionId = snapshot.SessionId, requestId = snapshot.RequestId, turnNumber = snapshot.TurnNumber, status = "success", timestamp,
+            filesModified = new[] { "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" } }));
+        var woundBefore = await CaptureMortalArchiveImagesAsync(_fs, QtePhysicalInjurySource.WoundRootPaths);
+        var manifest = await InvokePrivateTaskNullableResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var original = await InvokePrivateTaskNullableResultAsync(engine, "LoadValidatedPendingTurnSnapshotContextAsync", manifest, true);
+        Assert.NotNull(original);
+        var accepted = Assert.IsType<AcceptedTurnValidationDisposition>(await InvokePrivateTaskResultAsync(engine,
+            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync", "legacy component ordinary entry", original, null, snapshot.TurnNumber, null));
+        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, accepted);
+        foreach (var pair in woundBefore) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+        Assert.False(_fs.FileExists(MortalQteDecisionPublication.StatePath));
+        Assert.False(_fs.FileExists(MortalWoundOpportunityReceiptState.StatePath));
+        Assert.False(_fs.FileExists(AcceptedMechanicsPlan.WoundCommandPath));
+        await _fs.WriteFileAtomicAsync(MortalQteDecisionPublication.StatePath, "null");
+        var markerConflict = await InspectMortalCompletionProofAsync(snapshot);
+        Assert.Equal(MortalQteDecisionPublication.CurrentPublicationState.IntegrityConflict, markerConflict.State);
+        Assert.False(markerConflict.MayResubmit);
+        var markerBefore = await CaptureMortalComponentImagesAsync();
+        await AssertMortalCompletionEntryHeldAsync(engine);
+        foreach (var pair in markerBefore) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+        _fs.DeleteFile(MortalQteDecisionPublication.StatePath);
+        await _fs.WriteFileAtomicAsync(MortalWoundOpportunityReceiptState.StatePath, "null");
+        var partitionConflict = await InspectMortalCompletionProofAsync(snapshot);
+        Assert.Equal(MortalQteDecisionPublication.CurrentPublicationState.IntegrityConflict, partitionConflict.State);
+        Assert.False(partitionConflict.MayResubmit);
+        var partitionBefore = await CaptureMortalComponentImagesAsync();
+        await AssertMortalCompletionEntryHeldAsync(engine);
+        foreach (var pair in partitionBefore) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+        WritePhysicalInjuryDiagnostic("qte_completion_legacy_component_entry", new
+        { snapshot.SessionId, snapshot.RequestId, snapshot.SnapshotToken, snapshot.TurnNumber, snapshot.Realm,
+            ObservedAbsenceIssues = absence.Issues, unrelated, accepted, markerConflict, partitionConflict });
+    }
+
     private async Task<(GameEngine Engine, PendingTurnSnapshotReadAuthority Snapshot, JsonObject Decision)> PreparePublishedMortalCompletionProofAsync(bool materialize)
     {
         var component = await PrepareMortalDecisionComponentAsync(materialize);

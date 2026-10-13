@@ -103,7 +103,7 @@ internal static class MortalQteDecisionPublication
         return SerializePublicationRoot(root);
     }
 
-    internal enum CurrentPublicationState { NotCommitted, VerifiedCompleted, IntegrityConflict }
+    internal enum CurrentPublicationState { NotCommitted, VerifiedCompleted, IntegrityConflict, NotApplicable }
     internal sealed record CurrentPublicationInspection(CurrentPublicationState State, bool MayResubmit, string Reason);
     private sealed record CompletedProof(JsonObject Root, MortalWoundOpportunityReceipt Receipt);
     private static readonly string[] PartitionPaths =
@@ -125,7 +125,15 @@ internal static class MortalQteDecisionPublication
             if (!realmRead.Success || realmRead.Snapshot is null) throw Invalid("snapshot");
             if (realmRead.Snapshot.Realm != "mortal_world")
                 return new(CurrentPublicationState.NotCommitted, false, "non_mortal_original");
-            var snapshot = ReadInspectionSnapshot(fs, lease);
+            var inspection = PendingTurnSnapshotReader.ReadCurrent(fs, lease,
+                PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(["game_state/meta/soul_state.json"], PartitionPaths.Prepend(StatePath)));
+            if (!inspection.Success || inspection.Snapshot is null)
+            {
+                if (await IsUnrelatedLegacyTurnAsync(fs, lease, inspection, sessionId, requestId, snapshotToken, turn))
+                    return new(CurrentPublicationState.NotApplicable, false, "legacy_unrelated_turn_without_completion_evidence");
+                throw Invalid("snapshot");
+            }
+            var snapshot = inspection.Snapshot;
             if (snapshot.SessionId != sessionId || snapshot.RequestId != requestId ||
                 snapshot.SnapshotToken != snapshotToken || snapshot.TurnNumber != turn)
                 throw Invalid("inspection_binding");
@@ -150,6 +158,33 @@ internal static class MortalQteDecisionPublication
         {
             return new(CurrentPublicationState.IntegrityConflict, false, error.Message);
         }
+    }
+
+    // Optional coverage is used ONLY for applicability after an absence-unproven refusal.
+    // It grants neither original absence nor completion/resubmission authority.
+    private static async Task<bool> IsUnrelatedLegacyTurnAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
+        PendingTurnSnapshotReadResult observed, string sessionId, string requestId, string snapshotToken, int turn)
+    {
+        if (observed.Issues.Count == 0 || observed.Issues.Any(issue =>
+                issue.Code != "pending_turn_snapshot_reader_absence_unproven" ||
+                !PartitionPaths.Prepend(StatePath).Contains(issue.FilePath, StringComparer.Ordinal))) return false;
+        var read = PendingTurnSnapshotReader.ReadCurrent(fs, lease,
+            new PendingTurnSnapshotPathSelection(["game_state/meta/soul_state.json"], PartitionPaths.Prepend(StatePath)));
+        if (!read.Success || read.Snapshot is not { } snapshot || snapshot.Realm != "mortal_world" ||
+            snapshot.SessionId != sessionId || snapshot.RequestId != requestId ||
+            snapshot.SnapshotToken != snapshotToken || snapshot.TurnNumber != turn ||
+            snapshot.CoveredLogicalPaths.Contains(StatePath, StringComparer.Ordinal) ||
+            await fs.ReadFileBytesAsync(lease, StatePath) is not null) return false;
+        foreach (var path in PartitionPaths)
+        {
+            var current = await fs.ReadFileBytesAsync(lease, path);
+            if (snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))
+            {
+                if (!Same(snapshot.ReadRequiredBytes(path), current)) return false;
+            }
+            else if (current is not null) return false;
+        }
+        return true;
     }
 
     internal static async Task ValidateExactReplayAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
