@@ -1,0 +1,36 @@
+{
+  "status": "REVIEWABLE_DRAFT_NOT_USER_APPROVED; SOURCE_TRACKER_TBD; NO_ISSUE_CREATED_OR_IMPLEMENTATION",
+  "taskRecord": "Existing#1536cloudhandoff metadata preservation only; does not expand#1536implementation scope",
+  "approvedDesignCheckpoint": "9abaf73a3352b3c7ad08f99c5bb1256ce2fbe668",
+  "structureApproval": "Sentinel_956b26d890e8819197aee2df392a8657 2026-10-13 14:10UTC coversafterlifetenpairs/core/order thenBlock5",
+  "unshownDetailsNowProposed": "SpecificsevenwayBlock5partition shown forspecapproval; no retroactiveapprovalclaim",
+  "sourceIssue": "TBD; boundedrelated-title/body search found no confirmedapplicabletracker, not exhaustiveabsence",
+  "specificationApprovalRule": "docs/development-workflow.md:39 mandatory user approval of specification",
+  "issuePermissionRule": "originalusernoissuesmutation; one concreteunsent issue draft requiresnarrowexception",
+  "contentEditClarifications": "Root clarified proposedBlock5details and explicitlyinventoried approvednavigationchanges vs preservedgameplaypayload; checklistrelativepreflightlinkcorrected",
+  "files": [
+    {
+      "path": "spec.md",
+      "bytes": 18686,
+      "sha256": "27735ec49aeb39eec51e1764ebff15ffe2e9c2c3cc150138659564587116bace"
+    },
+    {
+      "path": "checklists/requirements.md",
+      "bytes": 2588,
+      "sha256": "0e676d2e1bfe3dcacdad98e5987a6ad151faaaa2e13c5514c6127d9f9880eb5b"
+    },
+    {
+      "path": "issue-draft.md",
+      "bytes": 3652,
+      "sha256": "819bdb601fae94248a569d4ae7101a7ee23239d4ef254a499fa7c986b6860d24"
+    },
+    {
+      "path": "workflow-preflight.md",
+      "bytes": 13811,
+      "sha256": "991f194bb74ecc5fe27d6054427caaf1ed2e9149d5c8bf8651d99ba888e50c39"
+    }
+  ],
+  "projectChecks": "NONE; draft qualitycheckmarks notruntime results",
+  "implementation": "UNRUN; no GM content moved/loaderchanged/no feature/worktreecreated",
+  "checkpointedUtc": "2026-10-13T14:54:32.666363+00:00"
+}
