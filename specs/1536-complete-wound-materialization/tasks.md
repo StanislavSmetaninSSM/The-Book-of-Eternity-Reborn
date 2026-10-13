@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE4 TARGET INITIALIZATION FAILURE; DURABLE4 UNRUN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE EMPTY-TARGET INITIALIZATION SOURCE READY; RETRY4 + DURABLE4 UNRUN)
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `d93d6c468eb15b0f1d6a2b44fbaa7e563749f367`. Fresh BOTH PlanOnly33/78/14 succeeded
@@ -36,14 +36,30 @@ Runner-owned process/runtime cleanup is true. Cleanup is qualified within that o
 load/newturn is UNQUALIFIED. Frozen31 artifacts retain exact source/binary/preparation/actual/TRX/
 child diagnostics and retained-catalog provenance. No successful archive case is implied.
 
-Archive history now two invocations/eight executions/0 PASS/8 FAIL including retries. This failure
-EVIDENCE is PENDING; first ee025 fixture-selection failure EVIDENCE accepted and immutable. Durable4
-UNRUN; finite68/baselines remain accepted without repetition. Next: publish/recover,then sole-writer
-minimal ordinary target EnsureDirectoryStructure only in new-root archive child,focused independent
-EVIDENCE/SOURCE and fresh preparation/retry failed archive4. Preserve strict Load/rebind/newrequest/
-original-source/receipt/history/legitimate NEW44 tick/durable mechanics oracles. No production patch,
-new key/architecture/transport exception. Archive4 freeze/EVIDENCE before durable4; parents remain OPEN.
-Earlier candidate/failure statuses below are historical and superseded by this actual checkpoint.
+Archive history remains two invocations/eight executions/0 PASS/8 FAIL including retries. The
+immutable31-artifact target-initialization failure is published at
+`d9aab638331f458e20074d14d13b68e2b395c39e`; retained actual Astra XHigh EVIDENCE/status ACCEPTED
+all31 chains/162 source/10 binaries/native failures/22 observations and all12 cleanup roots. First ee025 fixture-selection failure
+EVIDENCE accepted and immutable. Durable4 UNRUN; finite68/baselines remain accepted without repetition.
+
+Current minimum archive NEW-root child correction invokes existing files.EnsureDirectoryStructure
+immediately after FileSystemManager construction,before engine construction/actual load. Existing
+initializer619-660 owns an ordinary lease,recovers interrupted load,then creates only required
+stable directories; it copies no template/session/snapshot or canonical JSON and does not mint keys.
+The freshly owned target has no incoming recovery transaction. Native pre-load witness records
+actual GameSessionPath/existence/relative directories/files and requires an existing EMPTY canonical
+session; the same witness enters child result. Normal runtime lease/generation infrastructure may be
+created outside game_session by existing lifecycle logic,not fixture source authority. No private
+root initialization,namespace guard relaxation,TrustedLocalScope/SaveLoad policy or helper change.
+SAME-root durable branch stays byte-exact,as do all eight cases and later strict load/rebind/newrequest/
+source/receipt/history/legitimate NEW44 tick/replay/cleanup oracles.
+
+Correction SOURCE READY for ROOT publication/recovery and focused SOURCE gate; all corrected build/
+discovery/actual archive4 checks UNRUN. Existing33/78/14 preparation,exact archive1/4/1 budget5/default10,
+retained accepted219 catalog717/11553 and all selectors/membership/budgets stay unchanged. Next fresh
+BOTH/exact plan before retry FAILED4 only,no passing baseline/finite repeats; archive4 freeze/EVIDENCE
+before durable4. No production patch,new key/architecture/transport exception. T070/FR-063/parent/#1536
+OPEN; historical tails/checklists/frozen packets unchanged. No author project execution/git operations.
 
 Historical ZIP-selection correction checkpoint:
 

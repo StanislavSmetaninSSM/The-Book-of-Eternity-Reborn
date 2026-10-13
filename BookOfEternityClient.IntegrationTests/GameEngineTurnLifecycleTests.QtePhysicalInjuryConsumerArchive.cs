@@ -193,6 +193,18 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var factoryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
         using var loadedOwned = new CleanupOwnedFixture(root, Console.WriteLine);
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        files.EnsureDirectoryStructure();
+        var targetInitialization = new
+        {
+            GameSessionPath = files.GameSessionPath, GameSessionExists = Directory.Exists(files.GameSessionPath),
+            Directories = Directory.GetDirectories(files.GameSessionPath, "*", SearchOption.AllDirectories)
+                .Select(path => Path.GetRelativePath(files.GameSessionPath, path)).OrderBy(path => path, StringComparer.Ordinal).ToArray(),
+            Files = Directory.GetFiles(files.GameSessionPath, "*", SearchOption.AllDirectories)
+                .Select(path => Path.GetRelativePath(files.GameSessionPath, path)).OrderBy(path => path, StringComparer.Ordinal).ToArray()
+        };
+        Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "qte_archive_child_target_initialized", Observation = targetInitialization }));
+        Assert.True(targetInitialization.GameSessionExists);
+        Assert.Empty(targetInitialization.Files); // Ordinary directories only: no copied source, snapshot or canonical state.
         using var run = factory.CreateMortalArchiveOrdinaryTurn(files, consumed ? null : materialize, false, false);
         Exception? failure = null;
         LoadReplacementResult? load = null;
@@ -284,7 +296,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 processId = Environment.ProcessId, scenario, actualLoadAndRebind = load?.Disposition == LoadReplacementDisposition.Committed && !load.ContinuationBlocked,
                 Load = load is null ? null : new { load.Disposition, load.EstablishedGeneration, load.ContinuationBlocked, Failure = load.Failure?.ToString() },
-                BinaryPins = MortalArchiveBinaryPins(), FreshFactory = true, profileProjection, generation,
+                BinaryPins = MortalArchiveBinaryPins(), FreshFactory = true, targetInitialization, profileProjection, generation,
                 actualTurn = GetPrivateField<GameLoop>(run.Engine, "_gameLoop").TurnNumber,
                 failure = failure?.ToString(), Run = MortalArchiveRunObservation(run), Loaded = loaded is null ? null : MortalArchiveDigests(loaded),
                 After = after is null ? null : MortalArchiveDigests(after), Receipt = await files.ReadFileAsync(MortalWoundOpportunityReceiptState.StatePath),
