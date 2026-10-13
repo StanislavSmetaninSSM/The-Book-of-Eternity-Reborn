@@ -5,7 +5,56 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (BOUNDED REPAIR CORRECTION SOURCE READY; FAILED5 + UNRUN8)
+## Current T070 boundary — 2026-10-13 (MAIN-GM REPAIR FAILED5 GREEN; COMPATIBILITY/WORKER 8 UNRUN)
+
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED exact
+`4227ba637422a527359caa9d0d56f98f065dbdca`,including no dependency requiring repeats of three
+accepted a9b57bbd construction-drift rows/full baselines. The
+[corrected MAIN-GM repair GREEN packet](./recovery/qte-physical-consumer-main-gm-repair-green-20261013/manifest.json)
+freezes actual `20261013-055015-278-487027-b07a5c71dfb1476481f866963400eaaa-categories`,
+source/compile4227:1 method/5 cases/1 descriptor,5 executed/5 PASS,74.4702438s,
+complete,exit0,no timeout/skips/duplicate IDs. Only the five previously failed rows executed.
+
+All five original oracles now PASS. Exact severity/location/downstream-resource and exact narration
+perform actual full ProcessPlayerTurn43,observe one MAIN-GM repair request/full ordinary resubmission,
+retain exact original session/request/snapshot/manifest/authority bytes and accept at loop43 with
+single source-correlated receipt/wound-history transition/completion marker and transient cleanup. The
+resource case captures the actual issued command before revocation. Narration proposal-drift sees
+one narrate_acquisition packet and refuses at loop42 without receipt/identity/marker. This fixture
+has no explicit story43 assertion; no new archive/fresh-process or blanket resource-preservation
+claim is made. Accepted three construction-drift rows remain retained/excluded,so all original eight
+repair rows now have positive evidence across the two source-reviewed selections,pending this gate.
+
+Native packets prove construct_wound for the three construction corrections and narrate_acquisition
+for narration exact/drift. None requires GM resubmission of client-owned qte_runtime.json. All five
+report repairCount1,EngineFailure=null,ResponderFailure=null. Committed format1 DELETE/WRITE observations
+and exact present-byte/derived-length/SHA checks precede strict packet parsing. Existing source/private/
+proposal/scene/retained-field and count guards remain active; no second response/count increase/source
+manufacture was used. Earlier failures and their source/native distinctions remain immutable.
+
+ROOT matched154 source/10 fresh binary PRE/POST pins BEFORE metadata,parsed all five native results/
+full TRX/stdout/20 observations and verified five strict cleanup receipts removed=true/failure=null
+with owned roots physically absent. Runner-owned tree/runtime cleanup succeeded. Frozen36 artifacts
+contain exact source/binary pins,actual/preparation/catalog native originals and diagnostic witnesses.
+Fresh BOTH PlanOnly `20261013-054624-999-486364-d79fd431fe1c47cca579b32cfc8e964c-categories`
+built both projects with85/35 warnings,0 errors,31 methods/70 cases/12 descriptors,135.7642163s,
+0 executed. ExactPlan1/5/1 took2.4888656s,0 executed. Catalog
+`20261013-054943-898-486825-28e2ddec9c994fa8b7dbd0bd077d14fd-categories` VALID715/11551,
+unmapped/stale0,5.3583257s,0 executed. Preparation/catalog are not executed tests.
+
+Finite controls eleven actual invocations report100 executions/72 PASS/28 FAIL,including repetitions.
+The remaining compatibility5+worker3 are exactly5 methods/8 cases/2 descriptors/two categories,
+category budgets3/default8 UNRUN,including strengthened worker guard Fact. Complete controls/consumer/
+archive/newroot/fresh-process/T070/FR-063/parent/#1536 remain OPEN. Current EVIDENCE/status is PENDING.
+Next: publish/recover this GREEN packet and focused independent EVIDENCE gate; after acceptance,
+match unchanged inputs/fresh4227 binaries and NoBuild PlanOnly,then only the remaining8 actual cases.
+Prior passing cohorts stay excluded absent concrete dependency. Archive8 authoring/runtime remains
+on hold until finite controls qualify; retained source consult preserves genuine load/new turn versus
+same-active-N43 replay and strict committed-mechanics preservation on changed late-idle refusal.
+No protected causal Facts/ce955/checklists/global CI/runner/selection/budgets/old packet changed.
+
+Historical bounded repair correction SOURCE READY checkpoint:
+
 
 Retained actual Astra XHigh EVIDENCE/status ACCEPTED
 `a9b57bbdd5c64dc892c5fe00edb66c02784815be` for the
