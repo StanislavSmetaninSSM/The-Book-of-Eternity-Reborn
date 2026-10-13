@@ -5,7 +5,49 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (CREATE PRISTINE OWNER BASELINE CORRECTION READY; CHECKS UNRUN)
+## Current T070 boundary — 2026-10-13 (FIRST CURRENT-CONTRACT CREATE GREEN; EVIDENCE REVIEW PENDING)
+
+First current-contract migrated full CREATE is GREEN on production/compile source
+`92aedfb937224d7db9b85a7d6f588460f70d630f`; its focused SOURCE/FIXTURE/SELECTION gate
+was accepted by retained actual Astra XHigh with no blocking findings.
+[First full CREATE GREEN packet](./recovery/qte-physical-consumer-create-green-20261013/manifest.json)
+freezes 25 artifacts, full native TRX/stdout, six observations and strict cleanup. Run
+`20261013-015730-805-425795-099f058369424a45b1fec4d1b2f5d393-categories`
+completed 1 method / 1 case / 1 descriptor: 1 executed / 1 PASS / 0 FAIL,
+20.8641515s, exit 0, no timeout, skips or duplicate test IDs.
+
+Actual QTE42 finalized canonical player health 155 and one occurrence. The genuine signed N43
+passed the official Reader; GM authored the valid current materialize draft/ready, ordinary
+validation succeeded, ProcessPlayerTurn returned without EngineFailure, loop reached 43 and
+story retained turns42+43. All original CREATE assertions were reached and passed: one strict
+player-owned canonical wound (severity I, creation maximum II), one identity, one create history
+transition, client recovery/deterioration anchors, one owned periodic_damage consequence/effect,
+correlated materialize receipt, pending consumption and transient draft/command consumption.
+The sole emitted strict cleanup receipt reports removed=true/failure=null; its physical root
+was absent. Runner-owned process/runtime cleanup succeeded.
+
+ROOT matched all 148 source and 10 fresh binary pins before/after the actual run, BEFORE editing
+metadata. Fresh BOTH-project PlanOnly build/discovery took 139.0256208s (85 integration / 35 unit
+warnings, 0 errors), discovering 28 methods / 67 cases / 12 descriptors with 0 executed tests.
+Matching catalog discovery took 5.3327184s: VALID 711 categories / 11548 methods, no unmapped or
+stale entries and 0 executed tests. Preparation/catalog are not runtime qualification.
+
+This is the second migrated CREATE invocation: one prior incomplete invocation with 0 reported
+results, followed by this 1 executed / 1 PASS / 0 FAIL. Historical c7 CREATE causal RED remains
+separate and immutable (1 executed / 0 PASS / 1 FAIL). Treatment authoring migrated at4ed;
+current CREATE bytes differ from historical c7, although every original assertion/prerequisite/
+hook/cleanup remains unchanged. No byte-matched historical RED/GREEN claim is made.
+
+Accepted unchanged full NONE GREEN36256 remains 1 PASS and is not repeated for this materialize-
+only fix. The finite controls selector still has 26 methods / 65 cases / 10 descriptors across
+8 categories, default overall ceiling30 minutes; full preparation remains28/67/12/default30.
+Controls remain UNRUN except the four separately frozen prior failed diagnostic rows. Replay,
+atomicity, rollback and archive/newroot/fresh-process qualification remain unqualified. The next
+step is the independent EVIDENCE/status gate for this frozen CREATE packet, then the already
+reviewed finite controls. Full consumer/T070/FR-063/parent/#1536 remain OPEN; checkboxes are
+unchanged. WIP evidence publication/recovery and independent evidence acceptance are pending.
+
+Historical owner-baseline source checkpoint (accepted before this CREATE GREEN):
 
 Actual retained Astra XHigh EVIDENCE/status ACCEPTED8afbd9eb31f6c38bc6a699b5177edb9155c6ba03:
 [incomplete migrated CREATE packet](./recovery/qte-physical-consumer-create-incomplete-20261013/manifest.json)

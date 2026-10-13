@@ -1,0 +1,429 @@
+{
+  "source": "92aedfb937224d7db9b85a7d6f588460f70d630f",
+  "compileSource": "92aedfb937224d7db9b85a7d6f588460f70d630f",
+  "run": "20261013-015730-805-425795-099f058369424a45b1fec4d1b2f5d393-categories",
+  "classification": "FIRST_CURRENT_CONTRACT_MIGRATED_FULL_CREATE_GREEN",
+  "thisMigratedCreateActualOrdinal": 2,
+  "methods": 1,
+  "cases": 1,
+  "descriptors": 1,
+  "executed": 1,
+  "passed": 1,
+  "failed": 0,
+  "complete": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "wallTime": "00:00:20.8641515",
+  "skipCount": 0,
+  "duplicateTestIDs": 0,
+  "testResult": {
+    "executionId": "d359da53-be13-4849-9755-629dcb1c67a4",
+    "testId": "4d8cfb21-1768-0a2d-ed38-151b50ef373d",
+    "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualNextOrdinaryCreatePublishesCompleteWound",
+    "computerName": "c52ff4ce1115",
+    "duration": "00:00:15.8578543",
+    "startTime": "2026-10-13T01:57:51.3494898+00:00",
+    "endTime": "2026-10-13T01:57:51.3495052+00:00",
+    "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+    "outcome": "Passed",
+    "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+    "relativeResultsDirectory": "d359da53-be13-4849-9755-629dcb1c67a4"
+  },
+  "sourceCoordinates": {
+    "SessionId": "session_qte_story_append",
+    "RequestId": "584d95d9cf7c428097db3cc42be13a93",
+    "SnapshotToken": "483076398E13256F159ED7B127E13C82324EA413B86B4A571DD903C56AF768B4",
+    "TurnNumber": 42
+  },
+  "nextCoordinates": {
+    "SessionId": "session_qte_story_append",
+    "RequestId": "a48835c2295743609e4e3f2ee063c0fd",
+    "SnapshotToken": "C1BFF9299F3FF9694227D69C776BDED33C652705793B675588AC69CD3EA2C764",
+    "TurnNumber": 43,
+    "Realm": "mortal_world"
+  },
+  "nextOfficialReaderSuccess": true,
+  "ordinaryValidated": true,
+  "engineFailure": null,
+  "actualLoopTurn": 43,
+  "storyTurns": [
+    42,
+    43
+  ],
+  "hookReached": true,
+  "gmAuthored": true,
+  "singleCanonicalPlayerWoundId": "wound_e0103105c3626b2e89c685882b387a302d2b73c9192f536d4e9a5dc8e86f4d29",
+  "strictPlayerCarrierOwner": {
+    "realm": "mortal_world",
+    "ownerKind": "player",
+    "ownerId": "player_current"
+  },
+  "woundSeverity": {
+    "value": "I",
+    "rank": 1,
+    "maximumAtCreation": "II",
+    "lastChangeEventRef": "turn_42:qte_terminal:1:resource:1"
+  },
+  "singleCreateTransitionId": "wound_transition_99ffbec44afa68631785d10c36d6bd084ffba0a0ddca66ade08e459435677507",
+  "recoveryAnchor": {
+    "anchorKind": "creation",
+    "anchorMinute": 480,
+    "anchorTransitionId": "wound_transition_99ffbec44afa68631785d10c36d6bd084ffba0a0ddca66ade08e459435677507"
+  },
+  "deteriorationAnchor": {
+    "conditionKey": "not_stabilized",
+    "anchorMinute": 480,
+    "anchorTransitionId": "wound_transition_99ffbec44afa68631785d10c36d6bd084ffba0a0ddca66ade08e459435677507"
+  },
+  "consequences": {
+    "slotBudget": 1,
+    "slotsUsed": 1,
+    "ownedEffectSources": {
+      "definitions": [
+        {
+          "allowedRealms": [
+            "mortal_world"
+          ],
+          "allowedTargetKinds": [
+            "player"
+          ],
+          "components": [
+            {
+              "componentId": "component_001",
+              "payload": {
+                "amount": 3,
+                "damageType": "bleeding",
+                "floorPolicy": "registered_resource_floor",
+                "resource": "health"
+              },
+              "priority": 100,
+              "profile": "periodic_damage"
+            }
+          ],
+          "definitionKey": "wound_bleeding_root",
+          "display": {
+            "category": "debuff",
+            "description": "Рана продолжает отнимать силы.",
+            "name": "Кровотечение",
+            "visibility": "visible"
+          },
+          "lifetime": {
+            "advancePhase": "owner_turn_end",
+            "initialTurns": 3,
+            "mode": "turns"
+          },
+          "links": [
+            {
+              "kind": "wound",
+              "role": "source",
+              "targetId": "wound_e0103105c3626b2e89c685882b387a302d2b73c9192f536d4e9a5dc8e86f4d29"
+            }
+          ],
+          "parameterBounds": {},
+          "removal": {
+            "cureKinds": [
+              "stop_bleeding"
+            ],
+            "dispelCategories": [
+              "physical_treatment"
+            ],
+            "manualAuthorities": [],
+            "onConditionLoss": null,
+            "onSourceLoss": "expire"
+          },
+          "schemaVersion": 1,
+          "stacking": {
+            "atMaximum": "no_change",
+            "maxStacks": 1,
+            "mergeRule": null,
+            "policy": "independent",
+            "refreshMode": null,
+            "stackKey": "stack_wound_bleeding_root"
+          },
+          "triggers": [
+            {
+              "componentIds": [
+                "component_001"
+              ],
+              "consumeUses": false,
+              "eventType": "owner_turn_end",
+              "priority": 100,
+              "resolutionMode": "deterministic",
+              "triggerId": "on_owner_turn_end"
+            }
+          ]
+        }
+      ],
+      "rootBindings": [
+        {
+          "effectId": "effect_266369e40c3d4896b867a10d91948cbe",
+          "definitionKey": "wound_bleeding_root"
+        }
+      ]
+    },
+    "entries": [
+      {
+        "slot": 1,
+        "profileKey": "periodic_damage",
+        "effectId": "effect_266369e40c3d4896b867a10d91948cbe",
+        "readableSummary": "Свежий порез продолжает кровоточить."
+      }
+    ]
+  },
+  "durableMaterializeReceipt": {
+    "receiptId": "mortal_wound_receipt_e5285968d3453a96ebe9348302dd72a8a419bf77227c8be15b7ecca51321ac05",
+    "ordinal": 1,
+    "opportunityId": "mortal_wound_occurrence_dfa09a6d07fe5962504c3b74ae6c9bda27ae02c84fda531a5364690a01e71d29",
+    "opportunityAuthorityFingerprint": "sha256:a133cd87ae654baef191d9f92cfbc3e72496ca53d344a2ba46f990822929d8fe",
+    "sessionId": "session_qte_story_append",
+    "requestId": "a48835c2295743609e4e3f2ee063c0fd",
+    "snapshotToken": "C1BFF9299F3FF9694227D69C776BDED33C652705793B675588AC69CD3EA2C764",
+    "turn": 43,
+    "eventRef": "turn_42:qte_terminal:1:resource:1",
+    "eventSemanticFingerprint": "sha256:3ed1304ed863e6792cfa0554862df7e154ed79a7eacaa80c9cc4071e8efd11c8",
+    "consumedEventSelection": {
+      "acceptedEventOrdinal": 0,
+      "adapterKind": "qte",
+      "authorityKind": "resource_mutation",
+      "authorityId": "sha256:7eab9f532e997af61c6d92171cf753dde5a52ace35823420d596b0be5340d179",
+      "outcomeKind": "harmful",
+      "maximumSeverityRank": 2,
+      "readableCause": "Прямой удар камня."
+    },
+    "sourceSessionId": "session_qte_story_append",
+    "sourceRequestId": "584d95d9cf7c428097db3cc42be13a93",
+    "sourceSnapshotToken": "483076398E13256F159ED7B127E13C82324EA413B86B4A571DD903C56AF768B4",
+    "sourceTurn": 42,
+    "producerOperationKey": "qte_health_damage_61ad7787910c3c141f59c6351af399ef6e31c2957303713150c16d5715d63896",
+    "producerCandidateOrdinal": 0,
+    "producerCandidateCount": 1,
+    "sourceResultFingerprint": "sha256:dd34e0fa26851b0be9f587455d5e527edb5977ae200c7b218e414fdbdc83bc05",
+    "candidateFingerprint": "sha256:dfa09a6d07fe5962504c3b74ae6c9bda27ae02c84fda531a5364690a01e71d29",
+    "occurrenceFingerprint": "sha256:ae7fea9e38e684606a5e9274126db1124ce6d938a21c48d164932fc033e7df54",
+    "decision": "materialize",
+    "decisionFingerprint": "sha256:1f272e5314209bc68cad435088878c11ebc8958dbfdfb7b8ff7244100d93fc74",
+    "operationKey": "wound_operation_1f272e5314209bc68cad435088878c11ebc8958dbfdfb7b8ff7244100d93fc74",
+    "woundId": "wound_e0103105c3626b2e89c685882b387a302d2b73c9192f536d4e9a5dc8e86f4d29",
+    "transitionId": "wound_transition_99ffbec44afa68631785d10c36d6bd084ffba0a0ddca66ade08e459435677507",
+    "receiptFingerprint": "sha256:7b132e99b868982a77b5d660c51a14cec3ce3bf16c8efcc9fb4de2bc11633bd5"
+  },
+  "pendingConsumed": true,
+  "transientDraftAndCommandConsumed": true,
+  "allOriginalCreateCausalOracles": "REACHED/PASSED unchangedfromhistoricalc7assertions",
+  "fixtureMigration": "treatmentproposalonlymigrated4ed;currentcasebytesdifferentfromc7;notbytematchedREDGREEN",
+  "resourceAfter": "observed/nativeprotectedassertionsallowlawfulCREATEresource/effectwork; no unchangedresourceclaim",
+  "replayAtomicityArchive": "UNQUALIFIED bysinglefullCREATEFact",
+  "nativeObservationCount": 6,
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d77b0582642548329b682cebbfb6659d",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "allEmittedStrictRootsActuallyAbsent": true,
+  "runnerOwnedTreeCleanupSucceeded": true,
+  "runnerRuntimeCleanupSucceeded": true,
+  "sourcePinsPrePostMatched": 148,
+  "freshBinaryPinsPrePostMatched": 10,
+  "metadataEditedBeforeRootPostReadback": false,
+  "currentMigratedCreateTotals": {
+    "actualInvocations": 2,
+    "incompleteInvocations": 1,
+    "reportedExecuted": 1,
+    "passed": 1,
+    "failed": 0
+  },
+  "historicalCreateCausalRed": "unchangedc7 1executed0PASS1FAIL, oldproposalnotbyte-matched",
+  "acceptedNoneGreen": "unchanged36256 1PASS notrerun",
+  "remainingControlsAndArchive": "UNRUN exceptoldfailedcomponent4rows",
+  "verifiedUtc": "2026-10-13T02:00:22.086392+00:00",
+  "issue": 1536,
+  "branch": "1536-wound-b2-cloud-20261012",
+  "sourceReview": "SOURCE_FIXTURE_SELECTION_ACCEPTED actualretainedAstraXHigh92ae /migration4edaccepted",
+  "evidenceReview": "PENDING",
+  "preparation": "20261013-015314-963-425333-1789bcbd20c5450a99ddcba78192a3b0-categories",
+  "catalog": "20261013-015624-370-425613-5e869cd04b894d8f95925fd90fd1c8eb-categories",
+  "preparationExecutedTests": 0,
+  "catalogExecutedTests": 0,
+  "catalogCategories": 711,
+  "catalogMethods": 11548,
+  "scope": "Firstcurrent-contractfullCREATEGREEN genuineQTE42→signed43→completeengine43/story43/singlecanonicalphysicalwound+identity/createhistory/clientanchors/ownedconsequence/receipt/consume. Fixturetreatmentmigrated; no bytematchedc7claim/replayatomicityarchivequalification.",
+  "artifacts": [
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 2006,
+      "uncompressedSha256": "8a1c8480918dca9763f0d0dd2392b25a36624c2d0509888c2706a5dfec2d12d9",
+      "compressedBytes": 923,
+      "compressedSha256": "2b55718dbf1756c1c62708142baafdc9c0f23e7cf5d8dac2c4943096b3f932b4"
+    },
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 2066,
+      "uncompressedSha256": "ed0937ecc4682d43a97fec372b54eeaccf18a311da7b4bf474a8efed6fb3cfbe",
+      "compressedBytes": 793,
+      "compressedSha256": "0f0007293c4821b370708ee9f4291dfe44165e292a9a8403f0003e76e1ae8768"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 9321,
+      "uncompressedSha256": "73e94f6957532ebe1fa68486d3fe0b3fe641cfc49f1f6cdc10ab927d07b5dfb7",
+      "compressedBytes": 3610,
+      "compressedSha256": "de50624a1d1bc465ae3a9d25258371e79501ad1b9e737fe90a57740f5ce01ddc"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 286655,
+      "uncompressedSha256": "7356eec8ec0dee951a6f1350a232a639324a6e297f4c7070a64b68b4fcf703a6",
+      "compressedBytes": 71416,
+      "compressedSha256": "1b0575d2e6fe309f3a34530f1d5b1fdaff863d008618a2853e8e6602196d5bbc"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 257468,
+      "uncompressedSha256": "1e37826e1b91d91f793533fd125af510209b46919207907ac5c502dd2f2d235c",
+      "compressedBytes": 70389,
+      "compressedSha256": "9324ef6d8d162b6c2dfc21a98613cce3a4ee6994db31060858ed532fca2ad752"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 30075,
+      "uncompressedSha256": "edce0fd27748d6f74040f4e3484acd21d933d393b1be36820e713fb791e951e4",
+      "compressedBytes": 9010,
+      "compressedSha256": "054efcaa45699d71982bfd80566254c2023bc4dc043bec84f234c876dfe6e4a0"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2594,
+      "uncompressedSha256": "3355841d06e5cc6e8de7f81aafaa1afa4a4fd08f95f5161d594f5ce310b5cd52",
+      "compressedBytes": 702,
+      "compressedSha256": "78a1626ffeba39fe4731b4b2676119ad3ab0c526a6cf472d1443bf4cbcb1ef59"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 631,
+      "uncompressedSha256": "45f3c3f69b33d0f03158200c26724a1c57cdfef7b815150c81df93664c855fe9",
+      "compressedBytes": 439,
+      "compressedSha256": "5a0d4cef1b4b513228d9f037af365860c6070e62837f38b183dda2ce8b02a336"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 14798,
+      "uncompressedSha256": "57438ab59de443bbd606404e46fa417179097c106d6835bae0cd3b52b0f5d1eb",
+      "compressedBytes": 2115,
+      "compressedSha256": "71232fef6ed6d41013cb31599664661724dca4d859c0f7a023205e821213d6da"
+    },
+    {
+      "name": "preparation-readback.json.gz",
+      "uncompressedBytes": 33148,
+      "uncompressedSha256": "8aad72751a1edfc9f00e077e10ae0fbac8c46179f458ccd1803de9d2df841367",
+      "compressedBytes": 4762,
+      "compressedSha256": "8c250363b362849470ce1a7f1014050594629376a81f2fa82f484e2bd2450146"
+    },
+    {
+      "name": "catalog-invocation-prewritten.json.gz",
+      "uncompressedBytes": 567,
+      "uncompressedSha256": "14505e8388602d0cec6eba9451b4bd184191ed5a71127ce58b358f39c19f7704",
+      "compressedBytes": 414,
+      "compressedSha256": "84d07b6178c7b0f8eeb7914b3a224b49053ef2845063c81e675627c74b3efb9a"
+    },
+    {
+      "name": "catalog-console.log.gz",
+      "uncompressedBytes": 768,
+      "uncompressedSha256": "4dc3acd4c9b257b828bba2cb8131b7a0fbed0c690a42590eeb4ae4de59e58c2b",
+      "compressedBytes": 410,
+      "compressedSha256": "ad2787fdbfd3dc12b25830ef194e03e96de06e113bfc7f5f0ef5b06f0cfd08b6"
+    },
+    {
+      "name": "catalog-readback.json.gz",
+      "uncompressedBytes": 1901,
+      "uncompressedSha256": "832710ddc2b26c12243a440d0236e5d0fa5a051f387a9e1d293a205650133003",
+      "compressedBytes": 736,
+      "compressedSha256": "5af46507789eccdad53c57ad0f4e1c0da9391039b3822f3e965a558b1e8ba2c5"
+    },
+    {
+      "name": "actual-qte-physical-injury-consumer-create-integration-001.trx.gz",
+      "uncompressedBytes": 293466,
+      "uncompressedSha256": "17abc6b9cd72599a98a78ca7bef5a6256da146e83e6806460624baf12f0cf5de",
+      "compressedBytes": 73492,
+      "compressedSha256": "bbc6a1ba49958aa85033fbaa26d1379c78dd9d2f7116206d5c0985acac788036"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 3867,
+      "uncompressedSha256": "ea217941ecda8524620412f63fa16a91977e58acfc7ce469dbcaaa9aa3238089",
+      "compressedBytes": 1850,
+      "compressedSha256": "68fcde21d122f9044f39828b9b447d0aee3941484bd238d9255655d8e87caa98"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 1656290,
+      "uncompressedSha256": "8451868efd3a17e4142b561231837e3c931c3e7da14f099eda6bb0556cf6247e",
+      "compressedBytes": 184584,
+      "compressedSha256": "8f189a9cc06439acc42e45421cd51362fd05499d5c3abcf2ba13b19182338b4b"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 4149,
+      "uncompressedSha256": "221dd45934517efa6d72eeff4e32920726b51d3d3c92bf9a4b98bdef9c15ca9b",
+      "compressedBytes": 1938,
+      "compressedSha256": "2475b83c10e5b14894d012574a5ba36984fe5ee5bc2167e8aa1af7da20c063ad"
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "uncompressedBytes": 22876,
+      "uncompressedSha256": "88b5aebaa2f8c6517aa686f4fdf13bcb55a8384a366bb59a4be1b090e4e4c7e7",
+      "compressedBytes": 4053,
+      "compressedSha256": "7575e0d5471d0158fdc3e23d074f2e4922f3a155b87be98ddbd6531ffae62b19"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 82265,
+      "uncompressedSha256": "9fa697ed04d24e2be8d44c031129b708d057bd6458cab28adbf8c868416d4265",
+      "compressedBytes": 5971,
+      "compressedSha256": "046f35630b713b91886d320675ca37cb185129f3c3f6e7ef5b3fbe1ad2f5fdb5"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3435543,
+      "uncompressedSha256": "eb9d5bd1a5fad3e992f5a5fe630fa8dae23f38fa87d163d5640b1e42da76aa6d",
+      "compressedBytes": 375959,
+      "compressedSha256": "e0eae7d51256802b31d5118b0e9d5e1afd7a940aeeb70f6bc5fb2ecca74289ed"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 8600,
+      "uncompressedSha256": "d2485822137cbd0384a9dfdea15b11d7a6560ad82e9b8e3aceec20f8984c972f",
+      "compressedBytes": 2900,
+      "compressedSha256": "994f2d82b65cdf5f267cf5fcf4758e34302a415e3697326f99f3d5f05ca22d55"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 30113,
+      "uncompressedSha256": "a0dcb7c26405e555f877a9aeba0ae5d43b7af1f55486a4d5f63b75f1cf5ed0b1",
+      "compressedBytes": 1761,
+      "compressedSha256": "bbfc01b3ec631ef74b0280a7a12913621f23e721c6557bc0292f4aeef3376ee0"
+    },
+    {
+      "name": "catalog-dotnet-test.log.gz",
+      "uncompressedBytes": 3322186,
+      "uncompressedSha256": "c9f2c0d2d25644c259f5e0d005b00a97bf7f8b3d3677646f38cb280aa295fd71",
+      "compressedBytes": 367968,
+      "compressedSha256": "005682dacc47980324a0dee75f2d5329db663c8ae5c1b804932c7ae1365d33dc"
+    },
+    {
+      "name": "catalog-summary.json.gz",
+      "uncompressedBytes": 1404,
+      "uncompressedSha256": "07f593e4e13c6bcdc08803a9746e552cb24c6873f2079122f7ca602fe38e28a6",
+      "compressedBytes": 602,
+      "compressedSha256": "44f063cfc6924b3f745fcf540b8c53afc41345dc9b3020f8cf63aa1add523153"
+    },
+    {
+      "name": "catalog-catalog-audit.json.gz",
+      "uncompressedBytes": 103,
+      "uncompressedSha256": "9992b39c464b8c9124ad34844cb0ed5ea129b189b69c3603f5b458a80f9cf077",
+      "compressedBytes": 103,
+      "compressedSha256": "63946504959d71e577eff45d7e90c0d297cfa8fcaa5ef0f34d061c76bfed1875"
+    }
+  ]
+}
