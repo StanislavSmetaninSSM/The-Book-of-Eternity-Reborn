@@ -1,5 +1,53 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J1 first actual live-owner departure frozen — 2026-10-13
+
+Fresh compile/catalog/runtime source09660079344c832f1b06b86f2653382bc2f8f36a,
+accepted J0/J1 implementation source42e916d13a85510bc63d53c635a961b4d39a75de.
+[Immutable native packet](recovery/fr063-live-j1-first-actual-20261013/manifest.json)
+contains28compressed/rawchains+manifest; EVIDENCE PENDING, no production release.
+Official pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog:
+20261013-232523-912-74251-e6e95c9673004544843907c6dec5e698-categories,
+136.3409715s exit0, BOTH fresh builds zero errors/warnings102integration35unit,
+valid729categories11569methods, zero unmapped/stale and zero executions.
+Official -SelectionFile tests/selections/1536-fr063-guaranteed-live-joint-repair-entrance.json
+-NoBuild -PlanOnly:20261013-232808-863-74801-fbcbbc598ed447f38780894b31ef56c4-categories,
+2.5233693s,1method1case1descriptor, zero executions. Initial preparationPOST
+2216source10binary pins; physicalImmutable dependency was added afterwards for11
+runtime pins, not an initial11POST or loaded-binding assertion.
+
+FIRST actual same exactselection -NoBuild:
+20261013-232825-942-74951-e1ee8a1b8dd54e0ca5778751613c9047-categories,
+19.5386536s exit1,1executed0PASS1FAIL COMPLETE1/1descriptor1/1case. Sevennative
+observations retain actualQte42health10->5/maxII, real original43samegeneration,
+full real guaranteed request and validConfirmedHeld beforeentry, energy2health5,
+untreated/history1, exactscene/publicdraft/Ready and no precomposed common plan.
+Actualcaller ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync enteredtrue,
+handledfalse, Failurenull, ObserverFailurenull, finalturn42, Escape consumed.
+Committed actual PRESENT repair2050bytes matches declared journalbytes/hash; two
+DELETE publications are recorded separately and never treated as requests.
+
+First presence oracle and correlated43 tuple pass; actual failure is LiveRepair.cs:189
+fullTurnResubmissionRequired expectedtrue butnativefalse. Actual repair has sole error
+mortal_wound_treatment_ordinary_concurrent_work_unsupported, emptyharnessRepairPackets
+and no privatepending_wound_resolutions. Desiredseverity error/fullwave/checkpoint/
+coalescedpendingcatalog assertions are UNREACHED. At captured dispatch, homogeneous
+woundcommand36966bytes and original/source/resource snapshots match preentry; no registry
+inspection atdispatch or finalcancellation settlement qualification is claimed.
+No setup/observer exception observed; independent EVIDENCE must classify this reached
+live producer departure before any implementation. Expected source refusal is nownative
+emitted, but no production correction/fullFR completion is inferred.
+
+2216source11runtimebinary POST exact; no skip/duplicate/timeout; runnercleanuptrue.
+One strictroot /tmp/boe-gameengine-turnlifecycle-8e97d56954d94d89bdb38e6e08a81c39
+removed, CleanupFailurenull and physicallyabsent. RawfullTRX/source/graphimages and
+allhistoricalpending2failure/GREEN packets preserved. SamecloudLinux environment
+versions remain exact; Windows/freshPID/newroot/immediateUI UNRUN/OPEN.
+Next publishfailedWIP andindependentcausalEVIDENCE; J2–J6production staysunreleased.
+SoleSol independentlyauthors GM TEST-source in separateworktree, notthispinnedsource.
+No task/acceptancecheckbox changes.
+
+
 ## J0/J1 SOURCE accepted; first causal execution UNRUN — 2026-10-13
 
 Retained independent actual Astra XHigh [SOURCE/FIXTURE/SELECTION review](recovery/fr063-live-repair-owner-causal-independent-source-review-20261013.md)
