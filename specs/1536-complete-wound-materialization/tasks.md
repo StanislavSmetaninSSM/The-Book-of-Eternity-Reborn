@@ -5,7 +5,32 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE/DURABLE8 SOURCE ACCEPTED1f8; ASSERTION CLOSURE PENDING, FRESH CHECKS UNRUN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE BUILD PREPARATION FAILED; ACTUAL8 UNRUN)
+
+Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION closure ACCEPTED
+`849d1839cc5ba51130920a567f8cfab08c7b7255`: the one relative-root assertion is closed,
+with no remaining source findings at that gate. The first fresh BOTH-project preparation attempt
+[build failure packet](./recovery/qte-physical-consumer-archive-build-failure-20261013/manifest.json)
+retains native `20261013-072900-410-502588-c866e2b2d6e34be8901e127db493c32e-categories`,
+source849d: PlanOnly intended33 methods/78 cases/14 descriptors, but Build-integration failed
+before discovery in65.6096963s,exit1,no timeout. Actual planned descriptors/cases are0/0,
+executed tests0,not runtime RED or qualification. Compiler log has36 warnings/1 error:
+Archive.cs376 CS0246 for AgentConsoleLiveInputSource. Its existing AgentConsole namespace and
+working partial imports prove the missing `using BookOfEternityClient.AgentConsole` root cause.
+
+ROOT verified162 source PRE/POST pins BEFORE metadata. No fresh BOTH binary qualification or
+NoBuild release exists after this partial production/support build. Native runner-owned tree/runtime
+cleanup is true; no fixture/test ran,so no strict fixture-root cleanup claim. Frozen10 artifacts
+preserve source pins, exact preparation selection/invocation/console/native summary/log and ROOT
+readback. Discovery/catalog/archive4/durable4 remain UNRUN; original failure is immutable.
+
+Next: publish/recover this preparation failure, then sole-writer minimal namespace correction,
+focused independent EVIDENCE/SOURCE review and matching fresh BOTH PlanOnly before exact archive
+PlanOnly/catalog/actual4. No passing finite68/baseline repeat and no production/architecture change.
+Full archive/durable/T070/FR-063/parent/#1536 OPEN. Previous source-ready details below are historical
+and their pre-build UNRUN/pending statuses are superseded by this actual preparation checkpoint.
+
+Historical archive/durable8 SOURCE-ready candidate:
 
 Retained actual Astra XHigh EVIDENCE/status AND bounded finite-cohort qualification ACCEPTED
 `25c8388feac5fba7b3ed1b0683e4494307c3fabf`:29 methods/68 unique passing cases across eight categories
