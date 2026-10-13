@@ -1,5 +1,29 @@
 # Tasks: GM Documentation Modularization
 
+## First pure preservation EVIDENCE accepted; reading-only release — 2026-10-13
+
+Independent retained actual Astra XHigh [EVIDENCE/status report](recovery/A-pure-first-actual-evidence-review-20261013.md)
+SHA2562e4732225513663c718273d0980c1c9a622e4526cf5d0cf3b23f9a12d7dbfc69
+accepts published593375b755e8d2b0542d8b70b025c0007dcc75c8: all28 chains,
+2158 source and10 binary pin provenance; actual16executed14PASS2preservationRED,
+selection INCOMPLETE1/2descriptors16/44cases; reading28UNRUN. Both RED reach
+intended destination.missing/manifest.locator guards. Native xUnit abbreviates issues;
+no complete diagnostic enumeration, full relocation, at-session cleanup or A claim.
+Empty per-test observations/stdout does not mean the full raw TRX has no output.
+Frozen packet remains historical EVIDENCE PENDING; this later closure records acceptance.
+Selected GitHub-only recovery at593375b7:94materialized files+28raw/compressedchains
+match bytes/blobs; sparse only, projectexecutionUNRUN.
+
+Release ONE official -Category gm-doc-afterlife-reading -NoBuild -PlanOnly,
+then matching -NoBuild actual:5methods28cases1unitdescriptor/budget2/default7.
+This already accepted/discovered owner has no execution dependency on preservation.
+Reuse verified fresh a3fcec91 binaries after exact unchanged nonmetadata-source/binary
+checks; do not repeat BOTH build/catalog or preservation cases for metadata-only
+updates. Freeze first reading native outcome and independent EVIDENCE before further
+release. Reading actual UNRUN at this carrier. Content/daemon/delivery/AST/Block_5 and
+full A/B remain unreleased/OPEN. No acceptance/task checkbox changes.
+
+
 ## First actual pure preservation RED frozen; reading28 UNRUN — 2026-10-13
 
 Fresh compiled/discovered/actual source and metadata carrier:
