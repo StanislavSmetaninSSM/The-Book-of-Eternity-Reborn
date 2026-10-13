@@ -1,5 +1,34 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J0/J1 SOURCE accepted; first causal execution UNRUN — 2026-10-13
+
+Retained independent actual Astra XHigh [SOURCE/FIXTURE/SELECTION review](recovery/fr063-live-repair-owner-causal-independent-source-review-20261013.md)
+SHA2563163a7859ffca7985b36d94eee90f30f84856504434c8e3a32e6331f1fd5989d
+accepts published42e916d13a85510bc63d53c635a961b4d39a75de, no confirmedImportant/Critical.
+All24 source/protected/runtime-boundary pins exact, old728catalogsuffix unchanged,
+newFact2a7f448d +exactselectorb913bd39, production unchanged. J0 acceptedbounded
+owning-contract exception remains design recording; J2–J6 UNIMPLEMENTED/unreleased.
+ConfirmedHeld timing is pre-entry only; physical committed dispatch images are
+separately measured. One actual real outer caller must establish reachedprerequisites
+and native diagnostic, not infer causal RED from expected source refusal alone.
+
+ROOT release: fresh BOTH compilation/zero-execution catalog729/11569, exact1method/
+1case/1integrationdescriptor PlanOnly, then ONE first actual with strict cleanup,
+frozen native/source/binary evidence and independent EVIDENCE before production.
+No qualified pending2/ordinary/API/QTE/ce955 run or repeat. Allprojectchecks/actual
+UNRUN here; fullFR063/livecorrection/freshPID/newroot/immediateUI remainOPEN.
+Selected GitHub-only recovery verifies2101materializedfiles and1563connectedchanged
+paths at42e916d1 exact bytes/Gitblobs; sparse selected only, projectexecutionUNRUN.
+The initial recovery exec processcreation reported transportdisconnected; exacterror/
+operation/no returnedID preserved. Sameenvironment harmlesspwd and unchangedrecovery
+HEAD read succeeded before retry; retry recovery succeeded. No security-specific
+refusal, differentenvironment or protection bypass is evidenced.
+
+Parallel isolated GM purefirst outcomes are separate:16exec14PASS2FAIL +28exec10PASS
+18FAIL across2 disjointinvocations, not aggregateGREEN/fullA. SoleSol FINALSTOPPED;
+ROOT preservesmetadata only. No task/acceptancecheckbox changes.
+
+
 **Input**: Design documents from `/specs/1536-complete-wound-materialization/`  
 **Source issue**: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)  
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
