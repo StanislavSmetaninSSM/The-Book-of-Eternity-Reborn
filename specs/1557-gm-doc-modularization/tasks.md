@@ -1,5 +1,43 @@
 # Tasks: GM Documentation Modularization
 
+## First actual pure preservation RED frozen; reading28 UNRUN — 2026-10-13
+
+Fresh compiled/discovered/actual source and metadata carrier:
+a3fcec91f4be3288e1dcb664b4be6df26a0932c4; implementation bytes match accepted29bd.
+[Immutable native packet](recovery/A-pure-first-actual-20261013/manifest.json)
+contains28 compressed raw/source/binary/readback chains plus manifest; EVIDENCE PENDING.
+Official command from isolated branch: pwsh -NoLogo -NoProfile -File
+scripts/test-csharp.ps1 -ValidateCatalog: run
+20261013-231224-517-65721-ade9b659a2d449a9adb404b2676bfaca-categories,
+145.2143652s, exit0, zero executions, BOTH fresh compile zero errors (warnings96/35),
+catalog729/11578 valid, zero unmapped/stale. Exact official -SelectionFile
+tests/selections/1557-gm-doc-afterlife.json -NoBuild -PlanOnly:
+20261013-231455-733-66530-2eb3eb928daf4566861fe22f5e4f72eb-categories,
+2.3233077s,10methods44cases2descriptors, zero executions.
+
+FIRST actual same selection -NoBuild:
+20261013-231506-326-66678-2984b87c1d954647aee5eb55beb0bcf2-categories,
+5.1179436s, exit1,16executed14PASS2FAIL. Completed1of2 descriptors,16of44
+cases: first preservation5methods16cases ran; reading5methods28cases UNRUN
+because runner stops after failed category. Overall selection INCOMPLETE.
+ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority
+fails with destination.missing; ActualManifestRetainsCompleteSemanticsAndNamesTheMovedOwners
+fails with manifest.locator. Other14 preservation fixture/control cases PASS.
+These are native observed RED boundaries, not compilation failures or acceptance.
+No test skips/duplicates/timeout; runner owned-tree/runtime cleanup true.
+2158 source pins and10 fresh BOTH binary pins match PRE/POST; isolated clean
+source remained unchanged until ROOT final readback. Pure cases allocate no
+process/session fixtures; no strict per-session-root receipt is claimed.
+
+ROOT selected GitHub-only recovery at a3fcec91 independently verifies64 materialized
+tracked files by exact bytes and Git blobs; sparse recovery only, projectexecutionUNRUN,
+full checkout not claimed. Current cloud Linux versions remain recorded in feature setup.
+Next: publish this failed partial WIP then independent EVIDENCE classification;
+remainingreading28 require a separate bounded attempt without repeating accepted
+preservation controls. Content/daemon moves and real delivery/AST adapter remain
+UNWRITTEN/UNRUN and unreleased. Full A/B OPEN; no task checkbox changed.
+
+
 ## Pure test-first SOURCE accepted; first execution UNRUN — 2026-10-13
 
 Independent retained actual Astra XHigh accepted isolated source
