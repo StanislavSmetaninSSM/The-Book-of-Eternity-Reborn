@@ -9,7 +9,50 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (CREATE RESOURCE REPLAY 1 PASS; 16 UNRUN; EVIDENCE PENDING)
+## Current T070 first vertical — 2026-10-13 (REPAIR 8 FAIL; COMPATIBILITY/WORKER 8 UNRUN)
+
+Retained actual Astra XHigh EVIDENCE/status ACCEPTED corrected CREATE GREEN packet at
+`efd5719d467738f1190ef770b2133f24d60e9ee4`,1 PASS with ordered ownedDamage3 then narrativeDamage1,
+health155->152->151 and all original byte-exact replay/marker/receipt/consumption assertions.
+No earlier passing cohort was repeated. The
+[remaining16 repair failure packet](./recovery/qte-physical-consumer-remaining16-repair-failure-20261013/manifest.json)
+freezes actual `20261013-043231-768-462490-35636c1bb34d4546bef541a5255b1c48-categories`,
+sourceefd5719/compile8a051:planned6 methods/16 cases/3 descriptors/3 categories/default13;
+completed1 descriptor/8 cases,8 executed/0 PASS/8 FAIL,75.4044148s,exit1,no timeout/skips/duplicate IDs.
+
+All eight severity/location/narration/resource x exact/sibling-drift repair rows stop at
+QtePhysicalInjuryConsumerRepair.cs60: expectedrepairCount1,actual0. Earlier assertions establish
+null responder failure/null engine failure and genuine next43 snapshot. Native observations report
+ordinary ProcessPlayerTurn returned, loop42,acceptedfalse,repairPacket/issued-command/receipt/draft/
+command/completion-marker null after return. Later MAIN-GM packet/bounded correction/retry/acceptance/
+sibling-preservation assertions are UNREACHED. This packet proves the failure boundary, not its
+cause or a proper production causal RED. READONLY source/native departure-path diagnosis is pending;
+no fixture or production correction is released, and no count/oracle weakening is authorized.
+
+Fail-fast leaves compatibility5 and worker-scope3, exactly5 methods/8 cases/2 descriptors/2 categories,
+category budgets3/default8 UNRUN. The strengthened worker protection Fact is still UNRUN. Full finite
+controls/consumer/archive/newroot/fresh-process/T070/FR-063/parent/#1536 stay OPEN. Eight actual controls
+invocations report79 executions/64 PASS/15 FAIL,including repetitions; prior positives remain retained.
+
+Matching NoBuild PlanOnly `20261013-043203-916-462275-8dc63ef296bd4219a2bc5df6f6ea345e-categories`
+reported6/16/3,4.8404940s,0 executed. ROOT matched150 unchanged nonmetadata inputs and10 fresh8a051
+binaries before invoking;152 current source pins and10 binaries matched PRE/POST BEFORE metadata.
+ROOT parsed all eight native results/full TRX/stdout/32 observations, verified eight strict cleanup
+receipts removed=true/failure=null with all owned roots physically absent; runner-owned tree/runtime
+cleanup succeeded. Frozen21 artifacts contain exact source/binary pins and all actual/preparation
+originals. No new build/catalog was needed or claimed; accepted fresh8a051 catalog714/11550 remains
+preceding discovery, not test execution. All historical packets/statuses remain immutable.
+
+Next: publish/recover frozen failure evidence and mandatory focused EVIDENCE/status gate, while the
+sole writer diagnoses READONLY. A concrete source-proven bounded correction must pass independent
+SOURCE/FIXTURE/SELECTION before matching preparation/runtime. No repair-count/authority/private-source/
+command-revocation/sibling-preservation weakening, synthetic authority, passing-neighbor repetition,
+or archive authoring/runtime is authorized by this failure. Archive8 stays unwritten/on hold behind
+finite controls. This packet EVIDENCE is PENDING; no new product decision or scope expansion is needed.
+Protected causal facts/checklists/global CI/runner/budgets/GM grammar/old evidence are unchanged.
+
+Historical corrected CREATE resource-replay GREEN checkpoint:
+
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED exact
 `8a051c56636f454a255fe2763f5143f7146fe523`. The
