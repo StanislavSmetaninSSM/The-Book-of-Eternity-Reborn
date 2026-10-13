@@ -5,6 +5,38 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## Next bounded step — 2026-10-13 (FR-063 GUARANTEED NATIVE COLD ORCHESTRATION)
+
+Coordinator accepts bounded8/proof20 at396c7bdedf3a867d87ed1f8a5ff7c282df691464 and authorizes
+continued autonomous #1536 work in this cloud branch. FullT070 remains open: fresh diagnosis/
+alternative live authority/publication, terminal heal/legacy/death consumption, wider specified
+source/worsen contours and full cross-setting lifecycle. Seven producer names are closed vocabulary,
+not required placeholder registrations; owning finalized typed resolvers must precede registration.
+FR-063 separately requires treatment full-request/claims reconstruction, ordinary re-resolution and
+atomic publication under fresh root/registries; injury decision replay does not qualify it.
+T071cleanup/T072–T075docs/examples/verification and other afterlife/UI parts remain distinct.
+
+[Bounded native guaranteed plan](../../docs/superpowers/plans/2026-10-13-fr063-guaranteed-native-cold-orchestration.md)
+selects one existing guaranteed energy2 held request, real original42, freshPID same-root first
+causal ordinary-caller probe,then new-root qualification. Child cannot precompose/restore through
+a test helper or carry Context/request/Resolution/cache authority. Existing canonical wound bootstrap
+is labelled a precondition,not another QTE source proof. First source block is test-only1/1/1,
+category5/default10/child45s; planned initial catalog721/11561. No project checks run yet.
+Source-only gap: current cold test precomposes in-process; production finalized replay quarantine
+excludes held requests and retained validation requires a cached plan. Actual causal RED is UNRUN;
+no production fix until first frozen EVIDENCE and minimum source-reviewed correction plan.
+
+One concrete diagnosis policy question was sent: for reachable paths currently requiring check:{},
+what client-owned rule determines success/failure and cost? User answer pending; no free success,
+Spiritual Healing/procedure reuse or dependent live diagnosis implementation inferred. Coordinator
+explicitly releases independent specified FR-063 path while that question is pending. No legacy API
+choice, new gameplay schema or architecture is introduced. Keep accepted archive4/durable4/proof20/
+finite68/baselines without reruns unless new changes establish a concrete dependency.
+
+Publish this plan/checkpoint before solewriter test authoring,then independent SOURCE before fresh
+selected preparation/runtime. FullT070/FR063/#1536 OPEN; historical packets/boxes and all earlier
+limits unchanged. No main/merge/CI/issues/PR/Windows/provider/package/key/optimization operation.
+
 ## Final bounded acceptance — 2026-10-13 (ARCHIVE4 + DURABLE4 QUALIFIED; FULL T070 OPEN)
 
 Actual retained independent Astra XHigh EVIDENCE/status ACCEPTED at
