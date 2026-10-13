@@ -5,7 +5,43 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE4 LOAD COMMITTED; LOCAL CHILD DEPENDENCY CORRECTION SOURCE READY; DURABLE4 UNRUN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE4 ACTUAL GREEN; EVIDENCE PENDING; DURABLE4 UNRUN)
+
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
+`31bcbf7c347c8d24899d88c5af417e3ae9c58323`, no findings. Fresh BOTH PlanOnly33/78/14
+completed141.4950558s,88/35 warnings,0/0 errors,0 execution; exact archive1/4/1 completed2.7283469s,
+0 execution. Accepted219 catalog717/11553 remains retained unchanged; catalog is not execution.
+
+[Archive4 actual GREEN](./recovery/qte-physical-consumer-archive-green-20261013/manifest.json)
+freezes `20261013-090529-552-544049-1c9a11519c764b258bc66fd4a0af0741-categories`, source/compile31b:
+4 executed/4 PASS/0 FAIL,1 method/4 unique cases/1 complete descriptor,75.5175423s,exit0,
+no timeout/skips/duplicate IDs. Pending/consumed × NONE/CREATE all pass actual Save archive delta,
+old seeded ZIP hash preservation, excluded transients, fresh physical target/PID/factory, ordinary
+config-only bootstrapG0, typed committed Load/rebindG1 distinct from G0/source, immutable archive
+agreement/client profile projection and genuine NEW43(pending)/NEW44(consumed). Pending consumes
+original source42/ref once; consumed does not reopen it or duplicate receipt/wound/create IDs.
+Consumed CREATE permits its lawful periodic Damage3 progression under the original strict oracle.
+
+Actual children544269/544355/544219/544317 record integration/support/Immutable loaded identities,
+paths/hashes and Default load context; Immutable is Version9.0.0.0 with pinned DLL SHA256
+33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c. Runtimeconfig/depsfile
+and all parent/child five dependency pins agree. This observes the current loaded binding only;
+previous failing child's conflicting loaded version remains UNKNOWN.
+
+ROOT matched168 SOURCE/11 fresh binary PRE/POST pins BEFORE metadata,26 native top-level observations,
+all four result/binding/request/generation chains,4 SOURCE plus8 nested child cleanup receipts;
+all12 roots physically absent,runner-owned cleanup true. Frozen33 artifact byte/compressed chains
+retain native preparation/exact/actual/TRX/observations/readbacks and accepted catalog provenance.
+Archive history5 actual invocations/20 executions/4 PASS/16 FAIL includes retries; current cohort4
+unique PASS. Independent EVIDENCE/status and bounded archive qualification PENDING at this freeze.
+Next publish/GitHub-only recover and mandatory actual retained Astra XHigh EVIDENCE gate,then durable4
+first actual1/4/1 using these exact binaries after matching PlanOnly/source equivalence. No passing
+finite68/baseline/archive repetition. Durable4 remains UNRUN with strict changed late-idle preservation
+risk; its first actual must freeze before any production fix. Full T070/FR-063/parent/#1536 OPEN.
+Frozen packets/history/checklists unchanged; no real tool security denial observed.
+
+Historical dependency correction checkpoint follows; SOURCE-ready/UNRUN wording below is superseded
+only within the current four-case archive scope above.
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `d925ade8c6dc38c88ddcf1bbbfdd80bf94f8b534`. Fresh BOTH PlanOnly33/78/14 succeeded
