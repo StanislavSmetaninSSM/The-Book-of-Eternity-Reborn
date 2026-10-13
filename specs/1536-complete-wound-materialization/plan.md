@@ -9,37 +9,75 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (CONTROLS PARTIAL: 12 PASS / 3 FAIL; 50 UNRUN)
+## Current T070 first vertical — 2026-10-13 (WHOLE-DECISION REPLAY AND ACTIONABLE-BOUNDS CORRECTION READY; CHECKS UNRUN)
 
-First finite controls invocation on published source `b76d051cfe42a02ba5ea6b2abdc235f3c4f4df5a`
-(compiled unchanged production92ae) failed after the first common-controls category.
-[Partial finite controls evidence](./recovery/qte-physical-consumer-controls-partial-20261013/manifest.json)
-records run `20261013-020856-271-428472-f3848a4520154d4f8d9253447c9375f6-categories`:
-planned26 methods/65 cases/10 descriptors/8 categories; completed1 descriptor/15 cases,
-15 executed/12 PASS/3 FAIL, wall123.8663871s, exit1, no timeout/skips/duplicate IDs.
-Runner fail-fast leaves9 descriptors/50 cases UNRUN. This is not completed controls qualification.
+Actual retained Astra XHigh EVIDENCE/status ACCEPTED0973ebde92ddc2b942901fb30488d98f1eb7ef02:
+[partial finite controls packet](./recovery/qte-physical-consumer-controls-partial-20261013/manifest.json)
+retains17 artifacts/148 immutableb76 source pins (146 nonmetadata equivalent to compile92ae)/
+10 fresh binaries,15 native results/72 observations and15 strict cleanup receipts with actual
+absence. Frozen historical review metadata remains unchanged. First controls actual planned26
+methods/65 cases/10 descriptors/8 categories, completed1 descriptor/15 cases:15 executed/12 PASS/
+3 FAIL,123.8663871s,exit1,no timeout/skips/duplicate IDs; nine descriptors/50 cases remain UNRUN.
+This partial result is not complete controls/replay/atomicity/archive qualification.
 
-Two severity/location bound rows fail at Controls.cs:251 because Assert.Single sees two identical
-issues at the same proposal path. The changed materialize replay row fails at Controls.cs:56:
-expected refusal issues are empty. The exact native results, messages/stacks, 72 observations
-and full stdout are frozen; the source cause is not established by these observations alone.
-No production or fixture correction is included in this evidence block. ROOT matched148 source
-and10 fresh binary PRE/POST pins BEFORE metadata edits, read every result, and verified all15
-strict cleanup receipts (removed=true/failure=null) and physical root absence. Runner cleanup
-succeeded. Matching controls NoBuild PlanOnly4.6527918s discovered26/65/10/8 with0 executed tests;
-all146 nonmetadata pinned inputs and10 binaries remained identical to fresh92ae builds.
+Verified source diagnosis separates the failures. Bounds see identical rendered path/message,
+not identical structured issues: AttachRepairContexts retains the original non-actionable error
+and adds the projected actionable issue with distinct Section/code/context; public file targeting
+makes both match the old broad filter. Current fixture selects exactly the actual repairable
+WoundRepairContext via IsRepairableIssue and preserves every refusal/cache/private-state oracle.
+The changed-CREATE description really differs from the recorded original input. Existing generic
+DecisionFingerprint binds opportunity/owner/kind/severity/localRef but excludes proposal payload;
+the prior Mortal replay path could accept valid display drift using only those coordinates and
+accepted history IDs. Occurrence/source/receipt/operation fingerprints and IDs remain unchanged.
 
-Both full baseline cases are independently accepted: unchanged NONE36256 and migrated CREATEb76,
-1 PASS each. Astra XHigh accepted all25 CREATE artifacts,148 immutable92ae source pins/10 binaries,
-full native TRX/six observations/strict cleanup and the current4ed fixture. This controls run
-excluded both passing baseline Facts. Historical c7 CREATE RED remains separate/non-byte-matched;
-prior diagnostic4 FAIL and current finite NONE history remain unchanged. Current controls history
-is one partial actual with15 executed/12 PASS/3 FAIL; remaining50 cases, complete replay/atomicity/
-rollback and archive/newroot/fresh-process qualification remain OPEN/UNRUN. Full T070/FR-063/
-parent/#1536 checkboxes remain OPEN and unchanged. Next: publish/recover this frozen partial packet,
-independent EVIDENCE/status gate, then diagnose the three failures and apply only a reviewed bounded
-correction before the relevant failed/affected selection and still-unrun controls. Evidence review
-for this partial packet is PENDING; no passing selection is repeated without relevant changes.
+Current bounded production correction adds decisionPayloadFingerprint to the EXISTING closed
+MortalQteDecisionPublication record. Only the taken validated common plan's sealed exact draft
+BeforeImage, checked against current bytes under its owning lease, supplies this owner-minted
+proof. Existing strict parser, CanonicalJson and a domain-separated SHA-256 cover the whole public
+decision including display/consequence/treatment/recovery. The field participates in the existing
+record hash and SAME common batch/compensation; no new path/writer/allocator/reducer/framework,
+postcommit authority or current-state blessing is introduced. Current strict public decision is
+compared to that full-payload proof during existing read-only replay validation BEFORE original
+resource continuity, staging or reduction. Missing/mismatched field fails closed; no old-record
+fallback. Exact canonical NONE/CREATE preserves existing record/mechanics/IDs/receipt bytes.
+Public GM grammar and other/afterlife profiles are unchanged; this private proof correction needs
+no GM prompt/example update. Existing acceptance/source/receipt authority hashes are retained.
+
+Tests were extended before the source correction. The same replay theory retains its four prior
+NONE/CREATE x exact/changed scenarios with an explicit mutation label; three added changed-CREATE
+rows change ONLY periodic_damage amount3->4, procedure difficulty10->11, or recovery threshold3->4.
+The existing display row changes description only. Each CREATE drift first passes a genuine
+adapter grammar probe using the retained actual source/receipt, then the common validator must
+refuse with the private completion-proof diagnostic and preserve canonical/source bytes and
+cache/command refusal. This probe grants no publication authority and remains labelled component.
+The three added rows are newly authored UNRUN preservation controls, not previously observed REDs.
+No causal baseline Fact or historical packet is changed; the original display failure is retained.
+
+SOURCE READY for ROOT publication/recovery and mandatory SOURCE/FIXTURE/SELECTION gate; all fresh
+build/discovery/audit/actual correction checks UNRUN. Catalog remains711 categories/11548 methods;
+no new method/category. Existing common owner is now5 methods/18 cases/1 integration descriptor,
+budget5/default10; the two directly corrected methods comprise9 cases (replay7+bounds2). Existing
+diagnostic same-method overlap now selects7 cases/budget2/default7; its historical4-case packet
+stays immutable. Full preparation28/70/12/10 categories/default30 and controls26/68/10/8 categories/
+default30 are STATIC expected counts; IDs/membership/budgets stay unchanged, only responsibilities/
+reasons/counts were refreshed. Current binaries remain compile92ae and are not fresh for this source.
+
+Finite runtime proposal: ROOT/reviewer may select the existing common5-method/18-case category
+for corrected replay/bounds plus relevant passing first-publication/receipt rollback/retained-source
+private-canonical consumers of the new mandatory record field. It is bounded, not an aggregate;
+no extra owner is added merely to narrow it. Minimum direct correction is2 methods/9 cases. The
+seven still-unrun categories separately contain21 methods/50 cases/9 descriptors, budgets total20
+and default25; no passing baseline NONE/CREATE/producer/projection selection is repeated here.
+Reviewer determines the sufficient affected scope before execution. Writer performed no project
+execution/commit/push; mutations STOPPED after this coherent source/tests/catalog/metadata block.
+
+Baseline NONE36256 and current-contract CREATEb76 are independently accepted1 PASS each; historical
+c7 CREATE RED remains immutable/non-byte-matched because treatment authoring migrated at4ed.
+Prior diagnostic4 FAIL, finite NONE3 invocations/report2 executed1 PASS1 FAIL+1 incomplete,
+producer1b23 executed22 PASS1 FAIL and projection4d4 actual28 executed26 PASS2 FAIL stay separate.
+Current controls history remains one partial actual15 executed12 PASS3 FAIL; new rows/correction/
+remaining50 cases/archive/newroot/fresh-process qualification are UNRUN. Full T070/FR-063/parent/
+#1536 and all checklist lines remain OPEN/unchanged. Archive authoring stays on hold.
 
 Historical first CREATE GREEN checkpoint (accepted before this finite controls invocation):
 

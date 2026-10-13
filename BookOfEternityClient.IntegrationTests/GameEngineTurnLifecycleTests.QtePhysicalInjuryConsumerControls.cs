@@ -15,11 +15,14 @@ public sealed partial class GameEngineTurnLifecycleTests
     private const string MortalComponentAcquisition = "Край камня оставляет поверхностный порез на боку.";
 
     [Theory]
-    [InlineData(false, false)]
-    [InlineData(false, true)]
-    [InlineData(true, false)]
-    [InlineData(true, true)]
-    public async Task QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision(bool materialize, bool changed)
+    [InlineData(false, false, "display")]
+    [InlineData(false, true, "display")]
+    [InlineData(true, false, "display")]
+    [InlineData(true, true, "display")]
+    [InlineData(true, true, "consequence")]
+    [InlineData(true, true, "treatment")]
+    [InlineData(true, true, "recovery")]
+    public async Task QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision(bool materialize, bool changed, string mutation)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var component = await PrepareMortalDecisionComponentAsync(materialize);
@@ -45,15 +48,42 @@ public sealed partial class GameEngineTurnLifecycleTests
         var replayDraft = component.Decision.DeepClone().AsObject();
         if (changed)
         {
-            if (materialize) replayDraft["proposal"]!["display"]!["description"] = "Иное описание для того же принятого события.";
+            if (materialize)
+            {
+                var proposal = replayDraft["proposal"]!;
+                switch (mutation)
+                {
+                    case "display": proposal["display"]!["description"] = "Иное описание для того же принятого события."; break;
+                    case "consequence":
+                        Assert.Equal(3, proposal["consequenceDefinitions"]![0]!["definition"]!["components"]![0]!["payload"]!["amount"]!.GetValue<int>());
+                        proposal["consequenceDefinitions"]![0]!["definition"]!["components"]![0]!["payload"]!["amount"] = 4; break;
+                    case "treatment":
+                        Assert.Equal(10, proposal["treatment"]!["routes"]![0]!["resolution"]!["difficulty"]!.GetValue<int>());
+                        proposal["treatment"]!["routes"]![0]!["resolution"]!["difficulty"] = 11; break;
+                    case "recovery":
+                        Assert.Equal(3, proposal["recovery"]!["currentStepThreshold"]!.GetValue<int>());
+                        proposal["recovery"]!["currentStepThreshold"] = 4; break;
+                    default: throw new InvalidOperationException("Unknown public decision mutation.");
+                }
+                await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                // Component grammar probe only: the current receipt and original source
+                // are genuine; this does not grant common replay/publication authority.
+                var grammar = MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse(_fs, lease,
+                    replayDraft.ToJsonString(), MortalComponentAcquisition, out _);
+                Assert.NotNull(grammar);
+                Assert.True(grammar!.Success, JsonSerializer.Serialize(grammar.Issues));
+            }
             else replayDraft = new JsonObject { ["opportunityRef"] = replayDraft["opportunityRef"]!.DeepClone(),
                 ["decision"] = "materialize", ["woundRef"] = "impact", ["proposal"] = CreateMortalComponentProposal() };
+            Assert.False(JsonNode.DeepEquals(component.Decision, replayDraft));
         }
         await _fs.WriteFileAtomicAsync(MortalWoundOpportunityAdapter.DecisionPath, replayDraft.ToJsonString());
         var issues = await ValidateMortalDecisionComponentAsync(component.Engine);
         if (changed)
         {
             Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error);
+            if (materialize) Assert.Contains(issues, issue => issue.Code == "mortal_qte_completed_publication_invalid" &&
+                issue.Section == MortalWoundOpportunityAdapter.PrivateSourceIssueSection);
             await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
             Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
             Assert.False(_fs.FileExists(lease, AcceptedMechanicsPlan.WoundCommandPath));
@@ -71,7 +101,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         foreach (var image in preserved) Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(image.Key));
         Assert.Equal(original, await _fs.ReadFileBytesAsync(PendingTurnSnapshotAuthority.AuthorityPath));
         WritePhysicalInjuryDiagnostic("qte_consumer_component_exact_or_changed_replay", new
-        { materialize, changed, component.Snapshot.RequestId, component.Snapshot.SnapshotToken, receipt, issues, Draft = replayDraft,
+        { materialize, changed, mutation, component.Snapshot.RequestId, component.Snapshot.SnapshotToken, receipt, issues, Draft = replayDraft,
             UnchangedCanonicalPaths = preserved.Keys });
     }
 
@@ -249,7 +279,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var issues = await ValidateMortalDecisionComponentAsync(component.Engine);
         Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error);
         var semantic = Assert.Single(issues.Where(issue => issue.FilePath.StartsWith("woundDecisions[0].proposal", StringComparison.Ordinal) &&
-            issue.RepairTargetFiles.SequenceEqual(new[] { MortalWoundOpportunityAdapter.DecisionPath })));
+            issue.RepairTargetFiles.SequenceEqual(new[] { MortalWoundOpportunityAdapter.DecisionPath }) &&
+            issue.WoundRepairContext is not null && WoundRepairPacketBuilder.IsRepairableIssue(issue)));
         Assert.NotNull(semantic.Code);
         Assert.NotNull(semantic.RepairHint);
         var profile = GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate();

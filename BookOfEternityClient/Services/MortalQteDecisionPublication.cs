@@ -15,6 +15,7 @@ internal static class MortalQteDecisionPublication
 {
     internal const string StatePath = "game_state/wounds/mortal_qte_decision_publication.json";
     private const string HashDomain = "T070-MORTAL-QTE-COMMON-PUBLICATION-V1\n";
+    private const string DecisionPayloadDomain = "T070-MORTAL-QTE-PUBLIC-DECISION-V1\n";
     internal static readonly string[] QuartetPaths =
     [
         ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
@@ -34,7 +35,7 @@ internal static class MortalQteDecisionPublication
     [
         "schemaVersion", "generation", "sessionId", "requestId", "snapshotToken", "turn",
         "manifestHash", "authorityHash", "receiptId", "receiptFingerprint", "decisionFingerprint",
-        "operationKey", "inputFingerprint", "originalQuartet", "publishedFootprint", "consumedCommands", "fingerprint"
+        "decisionPayloadFingerprint", "operationKey", "inputFingerprint", "originalQuartet", "publishedFootprint", "consumedCommands", "fingerprint"
     ];
 
     internal static byte[] SerializePublicationRoot(JsonNode root)
@@ -67,6 +68,11 @@ internal static class MortalQteDecisionPublication
         }
         if (!plan.BeforeImages.TryGetValue(StatePath, out var markerBefore) ||
             !Same(markerBefore.Bytes, await fs.ReadFileBytesAsync(lease, StatePath))) throw Invalid("marker_beforeimage");
+        if (!plan.BeforeImages.TryGetValue(MortalWoundOpportunityAdapter.DecisionPath, out var decisionBefore) ||
+            !decisionBefore.Existed || decisionBefore.Bytes is null ||
+            !Same(decisionBefore.Bytes, await fs.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath)))
+            throw Invalid("decision_beforeimage");
+        var decisionPayloadFingerprint = ComputeDecisionPayloadFingerprint(decisionBefore.Bytes);
         var footprint = new JsonObject();
         foreach (var path in FootprintPaths)
         {
@@ -89,6 +95,7 @@ internal static class MortalQteDecisionPublication
             ["authorityHash"] = Digest(await fs.ReadFileBytesAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath)),
             ["receiptId"] = receipt.ReceiptId, ["receiptFingerprint"] = receipt.ReceiptFingerprint,
             ["decisionFingerprint"] = receipt.DecisionFingerprint, ["operationKey"] = receipt.OperationKey,
+            ["decisionPayloadFingerprint"] = decisionPayloadFingerprint,
             ["inputFingerprint"] = plan.InputFingerprint, ["originalQuartet"] = original,
             ["publishedFootprint"] = footprint, ["consumedCommands"] = consumed
         };
@@ -117,6 +124,9 @@ internal static class MortalQteDecisionPublication
             Text(root, "manifestHash") != Digest(await fs.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath)) ||
             Text(root, "authorityHash") != Digest(await fs.ReadFileBytesAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath)) ||
             string.IsNullOrWhiteSpace(Text(root, "inputFingerprint"))) throw Invalid("source_or_receipt");
+        var currentDecision = await fs.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath) ?? throw Invalid("decision_missing");
+        if (Text(root, "decisionPayloadFingerprint") != ComputeDecisionPayloadFingerprint(currentDecision))
+            throw Invalid("changed_decision_payload");
         var original = ClosedMap(root["originalQuartet"], QuartetPaths);
         foreach (var path in QuartetPaths)
             if (original[path]?.GetValue<string>() != Digest(snapshot.ReadRequiredBytes(path))) throw Invalid("original_quartet");
@@ -156,6 +166,13 @@ internal static class MortalQteDecisionPublication
     private static string Text(JsonObject root, string field) => root[field] is JsonValue value && value.TryGetValue<string>(out var text)
         ? text : throw Invalid("field_" + field);
     private static string Digest(byte[]? bytes) => bytes is null ? "absent" : Convert.ToHexString(SHA256.HashData(bytes));
+    private static string ComputeDecisionPayloadFingerprint(byte[] bytes)
+    {
+        var decision = StrictJsonAuthority.Deserialize<JsonObject>(new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "T070 public decision payload") ?? throw Invalid("decision_null");
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
+            DecisionPayloadDomain + WoundAcceptedTurnFingerprintWriter.CanonicalJson(decision))));
+    }
     private static string Fingerprint(JsonObject payload) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
         HashDomain + payload.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))));
     private static bool Same(byte[]? a, byte[]? b) => a is null ? b is null : b is not null && a.AsSpan().SequenceEqual(b);
