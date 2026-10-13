@@ -9,6 +9,51 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## Corrected generation first outcome — 2026-10-13 (GENERATION1 GREEN; EVIDENCE PENDING)
+
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
+`82144b381c229e2a3b5bae8cb4821df1e086e6cf`, no confirmed blockers.
+[Corrected generation1 first actual outcome](./recovery/qte-physical-consumer-completed-proof-generation-green-20261013/manifest.json)
+freezes `20261013-115331-729-584639-a6440e92d76749ffb6ec9f3707f61f85-categories`,
+source/compile82144b38:1 executed1 PASS0 FAIL,1/1/1 COMPLETE,14.8604549s,exit0,
+no timeout/skips/duplicates. Actual lifecycle/replacement lease rotation changes
+G0 b4e84172ca65430092ef928dda1e3b68 -> G1 6cd334652372406c94ea7d77221d3764.
+All asserted original artifacts/backups and mechanical/receipt/marker bytes remain exact.
+Fresh official Reader succeeds on SAME original session/request/token/turn43/Mortal realm;
+retained marker still bindsG0. Actual inspector is IntegrityConflict/MayResubmit=false,
+reason `mortal_qte_completed_publication_invalid: seal_or_generation`; genuine retained
+exact replay refuses and every current image remains unchanged. This is component proof
+of generation denial,not native changed-retry qualification or a new semantic case.
+
+Fresh BOTH33/78/14 preparation `20261013-114941-677-583817-23ab0e8eb43d482895ee9b95c3b27105-categories`
+148.8078852s,93/35 warnings0/0 errors0 execution. Generation-only plan
+`20261013-115238-519-584148-0be89593052e499fb9596b7e682b8690-categories`1/1/1 took2.5807383s,
+0 execution. Full proof inventory `20261013-115307-191-584297-1c0aab3be2b143599556fc54e991786c-categories`
+6/20/1 took2.6402070s,0 execution; same20 unique cases,passing19 NOT repeated.
+Fresh catalog `20261013-115311-040-584440-235d695679de48358c5c39daf210eb92-categories`
+720/11560 took5.5364669s,unmapped/stale0,0 execution. Frozen exact invocation arrays
+use existing PowerShell runner/task-local selections and NoBuild after fresh BOTH.
+
+ROOT173SOURCE/11freshbinary pins PRE/POST match BEFORE metadata;167priorpins identical,
+only five authorized existing source deltas plus one narrow selector.7native observations,
+1SOURCE strict cleanup receipt/root physically absent,runner owned/runtime cleanup true.
+48artifacts freeze complete preparation/generation/full-proof plans/catalog/actual/TRX/logs/
+stdout/stderr/native readbacks/pins/source audit/prior19 acceptance provenance.
+Immutable same exact251160bytes/33d310... metadata9.0.0.0 is pinned; no actual child-binding
+claim is made for this component-only run. Frozen/current EVIDENCE PENDING until independent review.
+
+Aggregate proof dependency is19 accepted scoped cases at7b831bf2 +thisgeneration1 PASS pendingreview:
+20same unique cases; history2actual invocations21executions20PASS1fixture-prerequisiteFAIL
+includesgeneration retry. First failed packet remains immutable; no productionRED is claimed for it.
+Next: publish/actualremote/GitHub-only selected recovery,independent EVIDENCE/status qualification,
+then ONLY failed changed durable2 using current source and these exact fresh binaries,exact1/2/1
+NoBuild plan,unchanged5/default10 budget and strict byte/original/Ready/no-story/no-input-consumption
+oracles. Changed2 remain UNRUN under hold fix until that gate. Archive4/exact2/finite68/baselines
+retain acceptance without reruns. T070/FR-063/parent/#1536 OPEN; protected boxes/history unchanged.
+Historicalfd15 timeout cause/managed result/factory cleanup remain UNKNOWN/UNQUALIFIED.
+No production change in generation correction; no new GM-authoring contract or prompt/example update.
+No main/merge/CI/issues/PR/Windows/provider/newpackage/global runner operation.
+
 ## Fresh completed-proof outcome — 2026-10-13 (19 PASS ACCEPTED / GENERATION FIXTURE CORRECTION SOURCE READY)
 
 Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
