@@ -5,39 +5,66 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (FIRST UNCHANGED FULL NONE GREEN; EVIDENCE GATE PENDING)
+## Current T070 boundary — 2026-10-13 (NONE GREEN ACCEPTED; CREATE TREATMENT FIXTURE MIGRATION READY, CHECKS UNRUN)
 
-FIRST unchanged full ordinary NONE GREEN observed onSOURCE028cad0122b2b6e266d026a225304431cfcec1ca:
-1 method/1 case/1 descriptor,1 executed/1 PASS/0 FAIL,20.785s,exit0; no timeout/skips/duplicates.
-Source42 genuine physicalQTE finalizedHealth155/oneoccurrence; actual signed N43 Reader success,
-GM raw NONE/ready authoring, ordinaryValidated=true, full ProcessPlayerTurn return/loop43 and
-story42+43 precede one durable NONE receipt. Receipt binds source42+decision43/event/occurrence,
-woundId/transitionId null; pending consumes, seven wound roots retain exact bytes/absence,
-resources remain typedHealth155/history agreement, public draft/WoundCommand consumed. All
-protected NONE assertions reached/passed; original Fact bytes remain unchanged from4010 RED.
-This is baseline NONE behavior, not replay/atomicity/CREATE/archive/fresh-process qualification.
+Actual retained Astra XHigh EVIDENCE/status ACCEPTED36256b7afb6b734741116339f800da7d1cca24b0:
+[unchanged first full NONE GREEN](./recovery/qte-physical-consumer-none-green-20261013/manifest.json)
+retains25 artifacts/148 immutable028c source pins/10 fresh binaries/native six observations and
+strict owned cleanup/actual absence. The frozen manifest's historical PENDING field is unchanged.
+Original NONE Fact remains byte-exact from4010 RED: actual source42 physicalDamage5/health155/
+one occurrence -> genuine signed N43 -> full ordinary acceptance/loop43/story43 -> one correlated
+NONE receipt/pending consume, null wound/transition IDs, seven wound roots retained byte/presence
+exact and public draft/command consumed. Native1 method/1 case/1 descriptor,1 executed/1 PASS/
+0 FAIL,20.785s,exit0, no timeout/skips/duplicates. NONE baseline is accepted; no relevant passing
+NONE rerun is selected. Replay/atomicity/CREATE/archive/fresh-process remain separate.
 
-[First NONE GREEN packet](./recovery/qte-physical-consumer-none-green-20261013/manifest.json)
-freezes25 artifacts/native TRX/six observations/strict cleanup receipt removed=true/failure=null
-and physical root absent; runner cleanup also succeeded.148 source/10 fresh binary PRE/POST
-pins matched BEFORE metadata edits. Mandatory EVIDENCE gate PENDING before the CREATE fixture
-follow-up. Fresh BOTH-build PlanOnly28/67/12,137.388s,85/35 warnings0 errors; catalog valid711/
-11548,5.428s; each preparation/discovery executed0 tests.
+Current bounded fixture correction replaces ONLY authored treatment in the component proposal
+helper, full CREATE Fact and worked materialize example: one local clean_cut_v1 player-known
+procedure route listed in knownRouteIds, empty requirements/mutations, closed resource/refund
+policy, accepted_d20/difficulty10/fixed_zero and two contiguous outcome bands (margin>=0 success
+stabilize; margin<=-1 failed_attempt no_improvement), interruption=null. Existing recovery remains
+requires_stabilization with not_stabilized and its deterioration policy. This is the existing
+current Mortal treatment grammar, not a new mechanic/default/guarantee or validator relaxation.
+The local route reference is authored public wound data; no canonical wound/effect/transition ID,
+anchor, source authority or fabricated inventory/skill requirement is introduced. The existing
+example guard now invokes ParseGmRouteDraftShape on the actual public route and checks exact
+known-route agreement; manifest coverageLimit records this added grammar coverage only.
 
-Current finite NONE cohort3 actual invocations:178e incomplete0 reported tests,391d completed
-prerequisite1 executed/0 PASS/1 FAIL,028c GREEN1 executed/1 PASS/0 FAIL; totalreported2 executed/
-1 PASS/1 FAIL plus1 incomplete. Historical4010 proper NONE RED1 executed/0 PASS/1 FAIL remains
-separate. Accepted8448 component diagnostic4 executed/0 PASS/4 FAIL and c7 CREATE historical
-RED remain unchanged. No repeat of this passing NONE without a relevant source change.
+ROOT explicitly releases this limited treatment-only exception for the formerly protected full
+CREATE fixture. All original source/official N43/offer/raw draft/scene/ready/accepted outcome/turn/
+story/prerequisite/causal assertions/hooks/cleanup stay unchanged; original ce955, NONE and first
+projection Facts stay byte-exact. Old c7 CREATE RED packet/raw proposal/source pins are immutable.
+Corrected CREATE proposal bytes differ from old c7 because its empty routes violated the current
+complete-route requirement; this is a recorded fixture migration, not a byte-matched RED/GREEN
+claim. Current corrected proposal has not been executed or qualified. Existing materialize
+component diagnostic failures at treatment.routes motivated the correction; no production parser,
+allocator, common publication, source authority, serializer, fallback or afterlife behavior changed.
+The worked GM example uses the same route so public authoring is current and actionable.
 
-CREATE currentfixture treatment.routes=[] remains a known current-contract authoring issue;
-its lawful minimal local procedure route is prepared read-only. No CREATE fixture/oracle,
-validator or GM example has changed yet. Any fixture migration must preserve old c7 bytes/
-packet and all causal assertions and explicitly state that new proposal bytes differ from c7;
-no false exact matched-fixture claim. ProtectedfullCREATE onthiscandidate/remainer controls
-(except four faileddiagnostic rows)/archive/newroot/fresh-process remain UNRUN. T070/FR-063/
-parent/#1536 OPEN. Nextafter evidencegate: bounded current-contract CREATE authoring correction,
-mandatory source/fixture/example/selection review, fresh preparation, one real full CREATE.
+Exact existing CREATE selector retains1 method/1 case/1 descriptor, category5/default10; only its
+reason/contract wording changes to explain migration and accepted NONE. ROOT performs fresh
+selected BOTH preparation/catalog and first corrected CREATE after mandatory published SOURCE/
+FIXTURE/EXAMPLE/SELECTION review. All new checks UNRUN. No new method/category; catalog711/
+11548 is prior observed inventory, not fresh discovery for this fixture candidate. Full preparation
+28/67/12/default30 and remainder26/65/10/default30 IDs/membership/budgets stay unchanged, as do
+globalCI/selection. No project execution/commit/push by writer; mutations STOPPED at this checkpoint.
+
+Helper dependency accounting (static, not executed): CommonPublicationReplays4 cases,
+ReceiptMemberFailure2, PostAdmissionCanonicalMutation4, ProposalMaximumOrLocation2,
+CompletedResourceWork2, DirectPostcommitCompensation2 and ActualMainGmRepair8:7 methods/24 cases.
+Other helper users request NONE/no-offer and do not author this treatment. Exact example guard
+adds1 method/1 case; full CREATE adds1/1, giving affected authoring9 methods/26 cases. This is
+source-impact accounting, not a new combined runner selector or a claim those cases passed.
+Later bounded helper/example checks and remaining finite consumer controls follow first CREATE.
+
+Current finite NONE totals remain3 actual invocations:178e incomplete0 reported tests,391d
+prerequisite1 executed/0 PASS/1 FAIL,028c GREEN1 executed/1 PASS/0 FAIL; reported2 executed/
+1 PASS/1 FAIL plus1 incomplete. Historical4010 NONE/c7 CREATE causal REDs remain separate;
+accepted8448 diagnostic4 executed/0 PASS/4 FAIL is separate. Producer1b23 executed/22 PASS/
+1 FAIL and projection4d4 actual/28 executed/26 PASS/2 FAIL remain accepted/unchanged. Remaining
+controls except the four failed diagnostic rows and current full CREATE/archive/newroot/
+fresh-process qualification remain UNRUN. Full consumer/T070/FR-063/parent/#1536 remain OPEN;
+all checklist lines are unchanged.
 
 Historical028c receipt-only correction source checkpoint (accepted before first NONE GREEN):
 Actual retained Astra XHigh EVIDENCE/status ACCEPTED8448c364e795b0d0cb4752100d0d52530a6083df:

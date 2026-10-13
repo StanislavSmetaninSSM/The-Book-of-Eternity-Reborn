@@ -2861,6 +2861,6 @@
       "mortal_qte_physical_materialize_scene_v1"
     ],
     "validationRoute": "ExampleDocumentationValidationTests.QtePhysicalDecisionDraftExamples_UseOnlyClosedPublicFieldsAndVerbatimScene",
-    "coverageLimit": "Closed public JSON grammar, explicit severity/location subset and verbatim acquisition narration only. Real ordinary NONE/CREATE acceptance, common receipt/wound publication and component replay/rollback controls are selected separately; actual save-load/new-root/fresh-process remains unqualified."
+    "coverageLimit": "Closed public JSON grammar, strict current Mortal treatment route and known-route agreement, explicit severity/location subset and verbatim acquisition narration only. Real ordinary NONE/CREATE acceptance, common receipt/wound publication and component replay/rollback controls are selected separately; actual save-load/new-root/fresh-process remains unqualified."
   }
 }

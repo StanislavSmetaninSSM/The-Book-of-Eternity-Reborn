@@ -1189,8 +1189,65 @@ Use only the current `woundOpportunities[0]` reference. Write exactly one of the
     "consequenceDefinitions": [],
     "treatment": {
       "diagnosisPaths": [],
-      "routes": [],
-      "knownRouteIds": [],
+      "routes": [
+        {
+          "routeId": "clean_cut_v1",
+          "displayName": "Очистить и прижать порез",
+          "visibility": "known_to_player",
+          "mode": "procedure",
+          "requirements": [],
+          "resourcePolicy": {
+            "reserveBeforeResolution": true,
+            "consumeOn": [
+              "success",
+              "failed_attempt"
+            ],
+            "refundOn": [
+              "cancelled",
+              "validation_failed",
+              "rolled_back"
+            ],
+            "mutations": []
+          },
+          "resolution": {
+            "formulaKey": "mortal_wound_procedure_v1",
+            "difficulty": 10,
+            "rollSource": "accepted_d20",
+            "criticalPolicy": "natural_20_first_natural_1_last",
+            "modifierSource": {
+              "kind": "fixed_zero"
+            }
+          },
+          "outcomes": [
+            {
+              "bandId": "stabilized",
+              "minimumMargin": 0,
+              "maximumMargin": null,
+              "category": "success",
+              "result": [
+                {
+                  "kind": "stabilize"
+                }
+              ]
+            },
+            {
+              "bandId": "unimproved",
+              "minimumMargin": null,
+              "maximumMargin": -1,
+              "category": "failed_attempt",
+              "result": [
+                {
+                  "kind": "no_improvement"
+                }
+              ]
+            }
+          ],
+          "interruption": null
+        }
+      ],
+      "knownRouteIds": [
+        "clean_cut_v1"
+      ],
       "completedRouteIds": []
     },
     "recovery": {

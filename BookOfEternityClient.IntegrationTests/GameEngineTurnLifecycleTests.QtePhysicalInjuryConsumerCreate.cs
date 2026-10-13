@@ -317,8 +317,31 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }),
                 ["treatment"] = new JsonObject
                 {
-                    ["diagnosisPaths"] = new JsonArray(), ["routes"] = new JsonArray(),
-                    ["knownRouteIds"] = new JsonArray(), ["completedRouteIds"] = new JsonArray()
+                    ["diagnosisPaths"] = new JsonArray(),
+                    ["routes"] = new JsonArray(new JsonObject
+                    {
+                        ["routeId"] = "clean_cut_v1", ["displayName"] = "Очистить и прижать порез",
+                        ["visibility"] = "known_to_player", ["mode"] = "procedure",
+                        ["requirements"] = new JsonArray(),
+                        ["resourcePolicy"] = new JsonObject
+                        {
+                            ["reserveBeforeResolution"] = true, ["consumeOn"] = new JsonArray("success", "failed_attempt"),
+                            ["refundOn"] = new JsonArray("cancelled", "validation_failed", "rolled_back"), ["mutations"] = new JsonArray()
+                        },
+                        ["resolution"] = new JsonObject
+                        {
+                            ["formulaKey"] = "mortal_wound_procedure_v1", ["difficulty"] = 10,
+                            ["rollSource"] = "accepted_d20", ["criticalPolicy"] = "natural_20_first_natural_1_last",
+                            ["modifierSource"] = new JsonObject { ["kind"] = "fixed_zero" }
+                        },
+                        ["outcomes"] = new JsonArray(
+                            new JsonObject { ["bandId"] = "stabilized", ["minimumMargin"] = 0, ["maximumMargin"] = null,
+                                ["category"] = "success", ["result"] = new JsonArray(new JsonObject { ["kind"] = "stabilize" }) },
+                            new JsonObject { ["bandId"] = "unimproved", ["minimumMargin"] = null, ["maximumMargin"] = -1,
+                                ["category"] = "failed_attempt", ["result"] = new JsonArray(new JsonObject { ["kind"] = "no_improvement" }) }),
+                        ["interruption"] = null
+                    }),
+                    ["knownRouteIds"] = new JsonArray("clean_cut_v1"), ["completedRouteIds"] = new JsonArray()
                 },
                 ["recovery"] = new JsonObject
                 {

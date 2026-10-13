@@ -65,6 +65,15 @@ public sealed partial class ExampleDocumentationValidationTests
         var kind = proposal["classification"]!["locationProfile"]!["kind"]!.GetValue<string>();
         Assert.Contains(kind, safe["safeContext"]!["allowedLocationKinds"]!.AsArray().Select(value => value!.GetValue<string>()));
         Assert.Contains(proposal["display"]!["acquisitionNarration"]!.GetValue<string>(), scene["response"]!.GetValue<string>(), StringComparison.Ordinal);
+        var treatment = proposal["treatment"]!.AsObject();
+        var route = Assert.Single(treatment["routes"]!.AsArray())!.AsObject();
+        using var routeDocument = JsonDocument.Parse(route.ToJsonString());
+        var parsedRoute = MortalWoundTreatmentContract.ParseGmRouteDraftShape(
+            routeDocument.RootElement, "woundDecisions[0].proposal.treatment.routes[0]");
+        Assert.True(parsedRoute.IsValid, JsonSerializer.Serialize(parsedRoute.Issues));
+        Assert.Equal(new[] { route["routeId"]!.GetValue<string>() },
+            treatment["knownRouteIds"]!.AsArray().Select(value => value!.GetValue<string>()));
+        Assert.Empty(treatment["completedRouteIds"]!.AsArray());
         var forbidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         { "woundId", "transitionId", "owner", "carrierPath", "source", "snapshotToken", "sessionId", "requestId",
             "binding", "seal", "profileKey", "maximumSeverityRank", "recoveryAnchor", "deteriorationAnchor", "afterImage" };
