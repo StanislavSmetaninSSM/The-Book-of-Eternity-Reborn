@@ -5,7 +5,58 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (MAIN-GM REPAIR FAILED5 GREEN; COMPATIBILITY/WORKER 8 UNRUN)
+## Current T070 boundary — 2026-10-13 (COMPATIBILITY/WORKER 8 GREEN; FINITE68 COHORTS COMPLETE; ARCHIVE UNRUN)
+
+Retained actual Astra XHigh EVIDENCE/status ACCEPTED corrected MAIN-GM repair GREEN packet at
+`c761a86671cd649924ddf6e3eff6aaaada3f0518`:failed5 PASS plus retained3 construction-drift PASS
+accepts the original eight-case bounded repair coverage. The
+[compatibility/worker GREEN packet](./recovery/qte-physical-consumer-compatibility-worker-green-20261013/manifest.json)
+freezes actual `20261013-060033-766-490224-1185143c03b24643a0d810a540a33b8d-categories`,
+sourcec761/compile4227:5 methods/8 cases/2 descriptors/two categories/default8,
+8 executed/8 PASS,12.7816255s,complete,exit0,no timeout/skips/duplicate IDs. No prior positive
+cohort repeated. Matching NoBuild PlanOnly5/8/2 took4.9544347s,0 executed;152 nonmetadata inputs and
+10 binaries matched fresh4227 BOTH builds. Catalog715/11551 is preceding accepted discovery.
+
+All five source compatibility cases and three literal worker-scope cases pass their original
+assertions: six-argument original Mortal capture refusal/pending-terminal replay protections,
+legacy unrelated wound-command exact retry, receipt cold replay/stale-source rejection, two exact
+narrative template rows and strengthened MortalQteDecisionRepair public-only/read-only-context/
+private-afterlife isolation Fact. No real worker/model/provider dispatch or broad suite is implied.
+These existing legacy/unit methods emit zero native boundary observations and zero strict cleanup
+receipts. ROOT does not claim strict fixture-root absence; native runner-owned tree/runtime cleanup
+is true. ROOT matched154 source/10 fresh binary PRE/POST pins BEFORE metadata and parsed all eight
+native TRX results. Frozen22 artifacts retain exact pins,temporary unchanged selection,all native
+preparation/actual plans/logs/TRX/summary and the explicit cleanup-evidence limitation.
+
+Current finite selection remains29 methods/68 cases/10 descriptors/eight categories. Positive
+coverage across bounded source-reviewed cohorts is:common18,presence7,documentation4,draft16,
+publication7,repair8,compatibility5,worker3 =68 cases. This is aggregate coverage across checkpoints,
+not one complete suite invocation; last8 EVIDENCE review is still PENDING. Separate qualified
+producer/projection/full NONE/current-contract full CREATE remain retained; full preparation31/70/12
+includes the two full-engine baselines. Historical c7 CREATE RED/non-byte-matched fixture migration,
+all earlier failed prerequisites and immutable packets stay separate. Twelve finite actual invocations
+report108 executions/80 PASS/28 FAIL,including repetitions; there are zero finite UNRUN cases after
+this last actual. Preparation/catalog are not test execution and historical failures are not erased.
+
+Next: publish/recover this frozen last8 GREEN packet and mandatory focused EVIDENCE/status gate.
+After acceptance,finite controls may be considered qualified within the stated bounded scope and
+the retained authorized archive/durable-session eight-case authoring phase may proceed. Archive4
+must use actual SaveLoad ZIP/load into a unique new root/factory, genuine NEW43/44 and original42
+source/receipt correlation; ordinary NEW44 may lawfully tick CREATE effects,so no blanket mechanical
+byte-equality claim. Durable4 must retain real SAME-active-N43 at loop42, fresh PID/cache/physical
+session and original signed artifacts, exact replay completion/story-once or changed-valid refusal
+preserving already committed mechanics/receipt/marker. Existing outer rollback is a source risk,
+not a new runtime finding; freeze actual outcome before any production patch. Parent fixture Dispose
+must not delete a retained child root; all owned auxiliary roots need explicit cleanup evidence.
+
+Archive8 is retained,unwritten/UNRUN/on hold until this gate; source consult/proposal is not execution.
+Complete consumer/archive/newroot/fresh-process/full T070/FR-063/parent/#1536 remain OPEN. No full
+B2-B5/Windows/storage-journal/C5/optimization/browser/presence suite is released by this checkpoint.
+Protected causal Facts/ce955/checklists/global CI/runner/budgets/GM grammar/old evidence remain
+unchanged. Current last8 EVIDENCE/status is PENDING; no aggregate parent closure is claimed.
+
+Historical corrected MAIN-GM repair GREEN checkpoint:
+
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED exact
 `4227ba637422a527359caa9d0d56f98f065dbdca`,including no dependency requiring repeats of three
