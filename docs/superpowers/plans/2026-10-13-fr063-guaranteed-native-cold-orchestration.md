@@ -355,3 +355,23 @@ Final bounded acceptance combines fresh same-root and new-root guaranteed comple
 ## Initial consistency readback
 
 FR-063 explicitly requires full durable request, fresh-root/fresh-registry re-resolution and ordinary six-argument publication. Existing in-process cold test precomposes via `RestoreHeldTreatmentAndComposeSameSemanticPlanAsync`, while the current production early handler only quarantines finalized replay and retained validation requires cached ownership. These source observations motivate Task1; they are not runtime RED or completed qualification. Spec Kit context is explicitly #1536 (old environment FEATURE_DIRECTORY pointed at#1553 and was overridden for the read-only prerequisite command). No constitution conflict for this bounded native transport/ordinary restoration requirement; initial disclosure policy is now user-clarified; other diagnosis mechanics remain outside this bounded scope.
+
+## Pending-pair applicability amendment — 2026-10-13
+
+Independent actual Astra XHigh disposition atb3 distinguishes the absence-only ordinary
+guaranteed contour from mandatory repair-persistence semantics. Original lines298–301/349
+and historical15-case promise remain. The pendingduplicate theory's pendingfile prerequisite
+is inapplicable without a genuine repair wave; contract1004–1018 requires absence and forbids
+synthetic treatmentrepair. This is a fixture responsibility amendment, not an FR063/FR012
+waiver or a claim that coalescing/divergence are N/A.
+
+Account ordinary cohort separately as8methods13cases: native1+postseal1+capture7+reflection3+
+warm1. Pending-wave obligations are reassignedOPEN until one genuine samebinding original,
+heldrequest, actionablepacketwave, productionpending and catalog-restoration contour is
+sourceproved/reviewed. No fabricated packet, guard/parser weakening, absence renamed as
+duplicatecoverage or original15GREEN. Exact applicability is in
+[the task recovery record](../../../specs/1536-complete-wound-materialization/recovery/fr063-pending2-applicability-disposition-20261013.md).
+
+Corrected actual7 observed6PASS1late-guard coordinator-prerequisiteFAIL; reflection3/warm1
+stillUNRUN, EVIDENCEpending. This amendment qualifies no cases or newroot/replacement source.
+All original task checkboxes and contract commitments remain exact.

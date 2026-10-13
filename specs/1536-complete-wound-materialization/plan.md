@@ -9,6 +9,45 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## FR-063 corrected capture7 first outcome — 2026-10-13 (ACTUAL7/PLANNED11; EVIDENCE PENDING)
+
+SOURCEb3 independently accepted; metadata carrier9fb813df0e7b29db41e0067345edcb5967e2532c
+changes only taskrecords. Fresh persistentworkspace BOTH9methods14cases4descriptors
+145.6546405s,0exec0errors,warnings96integration/35unit. Preparation14 = selected11integration
++3unit build/discoveryONLY, no actualunit expansion. Exact6/11/3 PlanOnly2.6498897s0exec;
+catalog725/11567 valid/unmapped0/stale0,5.4056620s0exec. Unknown181730 attempt remains separately
+frozen/independently EVIDENCEaccepted as UNKNOWN, not reused for NoBuild.
+
+Actual20261013-183414-513-5879-20df29d13f8242f28ae51941bf06581c completed7executed6PASS1FAIL
+of11planned,16.9143276s,exit1,no timeout/skips/duplicateIDs. Only capture descriptor4methods/
+7cases completed; reflection3warm1UNRUN. Selection INCOMPLETE1/3descriptors7/11cases.
+Six negative controls reached/passed exact oracles: nestedrequest/result2, currentcapability1,
+actualconcurrentresource/effect/party3. They are observedPASS pending independent EVIDENCE.
+
+Late-guard passed actualowneradmission/absentNPCskillsplan and realturnover/rawbeforeimage
+mismatch, then direct normalizer call hit InvalidOperationException: held treatment requires
+top-level accepted-turn transaction coordinator (AcceptedMechanics.cs601), while the test
+expectedInvalidDataException. Intended take/finalbyte/fullhold oracles were NOT reached.
+No production regression or publication revalidation success follows. Do not merely relax
+the expected exception to certify unrelated coordinator-prerequisite rejection.
+
+243source/11freshbinary POST matched BEFOREmetadata; all7strict fixture roots physicallyabsent,
+runnerowned/runtime cleanuptrue. FullTRX/stdout13observations/failedstack and allpreparation/
+discovery/pins/process-start evidence preserved in immutable47chains:
+[corrected first capture outcome](./recovery/fr063-capture7-corrected-first-outcome-20261013/manifest.json).
+Next: independent EVIDENCE classification, readonly legitimate coordinator/take seam, then
+narrow source/fix/selection gate. Retain passing6/native1/postseal1 without unsupported repeat.
+Future guard1+reflection3warm1 =5cases only if actualdiff preserves passing dependencies.
+
+Independent applicability separates absence-only ordinary8methods13cases from mandatory
+pending2 persistence/coalescing/divergence obligations. Contract1004-1018 forbids synthetic
+treatmentrepair and submitted requests without genuine nonempty wave; specFR063537/FR012312
+still REQUIRE full command/pending/history and exact/divergent duplicates. Original15 promises
+and historicalFAILs stay preserved; pending2reassignedOPEN, no15GREEN/no guard/parserwaiver.
+[Exact applicability disposition](./recovery/fr063-pending2-applicability-disposition-20261013.md).
+Genuine samebinding repair-persistence/claim-restoration contour remains readonly engineering,
+not approved replacement source/runtime. Newroot/UI/GMruntime/fullFR063/T070/#1536 remainOPEN.
+
 ## FR-063 capture7 preparation transport recovery — 2026-10-13 (UNKNOWN; actual UNRUN)
 
 Published sourceb3bdd4af7547f5dc28ed03c3580e76f2eef14767 independently SOURCE/FIXTURE/
