@@ -5,6 +5,32 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## FR-063 controls evidence disposition — 2026-10-13 (ACCEPTED; fixture retry UNRUN)
+
+Independent retained actual Astra XHigh accepted EVIDENCE/status at `2f670f4fd33c726520808c1dc0bb7269163c8338`:
+all24 frozen chains,242 source pins,11 binaries and10 strict absent cleanup roots verified.
+Observed10executed1PASS9fixtureFAIL/14planned remains INCOMPLETE; reflection3+warm1 UNRUN.
+The passing postseal compensation/completehold/fence/exactretry is retained scoped proof.
+No production regression follows from the nine fixture-prerequisite failures.
+[Exact independent disposition](./recovery/fr063-controls-first-outcome-evidence-review-20261013.md).
+
+Next authorized block: test-only context-aware participating-lease capture/asserts and
+Ordinal-Distinct complete inventories, plus an exact reviewed retry owner for4methods7cases.
+Retain all original oracles and existing production/sharedarchive/postseal/native helpers.
+The two pending-duplicate rows remain BLOCKED until a genuine source-bound NONEMPTY repair
+packet/receipt wave is available under the same originaltuple. An empty pendingroot or
+synthetic source/packet is invalid. Pending2 remains unqualified; all15 is not completed.
+After actual SOURCE gate, fresh BOTH build/discovery and zeroexecution catalog, the bounded
+next actual is6methods11cases3descriptors: affected7+previouslyunrun reflection3/warm1.
+No passing native1/postseal1 repeat is justified by that private capture correction alone.
+
+GM #1557 supplement coordinator follow-up at2f closes the three planning conditions;
+startup-prefix TESTadapter design accepted, literal D01 afterimage/finalbase pins/AST
+boundary/timeout/concurrent pipes/processcleanup/final directions guards still required.
+[Exact follow-up](./recovery/gm-doc-modularization-planning-draft-20261013/coordinator-supplement-followup-review-20261013.md).
+Aimplementation remains conditional on verifiedFR063freeze/finalbase; deliveryUNRUN;
+Bafter independentAacceptance. New-root/UI/GMruntime/fullFR063/T070/#1536 remain OPEN.
+
 ## FR-063 first controls remainder — 2026-10-13 (TARGET14/ACTUAL10; EVIDENCE PENDING)
 
 Corrected same-root native source9532 / carrier2d193effa00185c02a5b9b7aac5085fc19cd847f

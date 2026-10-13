@@ -27,5 +27,14 @@
       "publishedSHA256": "4f4127a51e05ce38c9f820d8817fa63153b2c274287196f4e552cb548e916953",
       "normalization": "NONE"
     }
-  ]
+  ],
+  "coordinatorFollowupReview": {
+    "path": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-planning-draft-20261013/coordinator-supplement-followup-review-20261013.md",
+    "reviewedCheckpoint": "2f670f4fd33c726520808c1dc0bb7269163c8338",
+    "threePlanningConditions": "CLOSED",
+    "blockA": "CONDITIONAL after verified FR063freeze/finalbase",
+    "startupPrefix": "accepted narrow TESTadapter design; SOURCE/runtime UNRUN",
+    "blockB": "after independent Aacceptance",
+    "actualDelivery": "UNRUN"
+  }
 }
