@@ -2,6 +2,78 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-archive",
+            "responsibility": "#1536 retained qualification authoring only: one integration theory/four cases. Actual SaveGame ZIP and fresh child LoadGame/rebind into a unique new root, pending/consumed × NONE/CREATE. Genuine source42 finalizedhealth155/original occurrence precedes Save42 or actual completed ordinary43/story43 then Save43. ZIP entries/hash and exclusions are observed. Child fresh process/factory/binary pins/replacement generation derives loop from actual loaded chat/story and stages genuine NEW43/44. Pending offered original42 source consumes once; consumed offers empty/no draft preserves source/receipt/wound/create-transition identities without reallocation. Resource owner authority and allowed Afterlife profile projection use typed agreement; exact archive-entry/loaded immutable bytes are checked before new turn. New44 CREATE may lawfully tick resource/effect/history; no blanket after-new-turn mechanical byte equality.",
+            "excludes": "No previously qualified baseline/finite-cohort rerun, direct adapter/composer/normalizer substitute, copied/re-signed snapshot, invented receipt/hash/authority, SaveLoad transport exception, new key/framework/harness/provider/model/worker/Windows/C5/journal or full T070 qualification claim. Source/fresh build/discovery/catalog/runtime UNRUN until mandatory independent SOURCE/FIXTURE/SELECTION.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+                "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+                "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-create",
+                    "when": "Uses its genuine QTE source/public proposal grammar via private helpers without selecting or mutating its qualified baseline Fact."
+                },
+                {
+                    "id": "qte-physical-injury-consumer-none",
+                    "when": "Uses the ordinary NONE public grammar and existing engine hooks without selecting or mutating its qualified baseline Fact."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualArchiveLoadsIntoFreshProcessAndStagesNewDecision"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-injury-consumer-durable-session",
+            "responsibility": "#1536 retained qualification authoring only: one integration theory/four cases. Actual same-physical-root fresh child process/factory/cache after controlled parent pause at existing AcceptedOutcomeValidatedBeforeMaterialization, following real common publication but before story43. NONE/CREATE × exact/changed public decision. Genuine originalN43/ready/backups remain in place and are checked, no archive load or source copy. Independently applied ordinaryDamage1 follows captured155 (CREATE ownedDamage3 thenDamage1 to151; NONE to154). Child loop42 runs actual late-idle caller; exact completes43/story-once, second idle no repeat and owned-source/transient cleanup. Changed-valid refusal MUST preserve whole already committed mechanics/receipt/marker and no story43; known outer pre-turn rollback risk stays a strict first-actual oracle, not assumed pass or adapter bypass.",
+            "excludes": "No previously qualified baseline/finite-cohort rerun, direct adapter/composer/normalizer substitute, copied/re-signed snapshot, invented receipt/hash/authority, SaveLoad transport exception, new key/framework/harness/provider/model/worker/Windows/C5/journal or full T070 qualification claim. Source/fresh build/discovery/catalog/runtime UNRUN until mandatory independent SOURCE/FIXTURE/SELECTION.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+                "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+                "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-create",
+                    "when": "Uses its genuine QTE source/public proposal grammar via private helpers without selecting or mutating its qualified baseline Fact."
+                },
+                {
+                    "id": "qte-physical-injury-consumer-none",
+                    "when": "Uses the ordinary NONE public grammar and existing engine hooks without selecting or mutating its qualified baseline Fact."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-repair-failed-five",
             "responsibility": "#1536 exact five previously failed MAIN-GM repair rows only: severity/location/downstream resource lawful corrections plus narration lawful scene-only correction and proposal-drift refusal. One dedicated theory/five unchanged cases extracted into the existing private full-engine body; no added case/test-to-test call/harness. Genuine QTE42/health155/occurrence and actual ProcessPlayerTurn43/official Reader precede exact Format1 repair publication, original-source bytes, bounded correction/retained-sibling/command-revocation/publication or refusal oracles. The accepted a9b57bbd partial outcome retains the other three construction-drift PASS rows without repeating them. Intentional overlap with qte-physical-injury-consumer-repair.",
             "excludes": "No passing construction-drift repetition, broader repair8 category execution, prior producer/projection/NONE/CREATE/common/publication qualifiers, GM rewrite of private QTE runtime, duplicate/private narration classifier bypass, count increase or second responder attempt, new case/authority/harness/provider/worker/model/archive/newroot/freshprocess qualification.",
