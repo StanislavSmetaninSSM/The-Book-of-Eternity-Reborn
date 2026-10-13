@@ -5,6 +5,37 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## FR-063 four-case EVIDENCE accepted; confirmed-read proposal — 2026-10-13
+
+Independent retained actual AstraXHigh accepted b9bd24197f4a1ff694fe2b4125801cd5a020103f:
+[four-case evidence](./recovery/fr063-reflection-warm-four-first-green-evidence-review-20261013.md),
+OriginalexternalSHA256df79d62d190efc91afeaeb58387af4b7f05c5eeeded543a6190078b04c39db59;
+publishedcopy removes only one EOFblankline, SHA25682a8332c7f9d8a4d87ff791a554f93c295e6512d50a9e35398d2a9eb4d4e200a.
+All23chains/245source11binary verified. Qualified4scope: actualpending/terminal/unknown
+original-capture refusal3 plus retained-plan realpipeline/restart replay1. The latter has a
+manual restore/compose prelude and does NOT qualify native no-prelude or physicalnewroot.
+12/13 narrowordinary now have accepted evidence across retained checkpoints, not one fullrun.
+Runner cleanup confirmed, no strictfixture receipts, perfixture physicalabsenceUNQUALIFIED.
+The original mandatorypending2 fullrequest/coalescing/conflict responsibility is separate
+and OPEN; reflectedpending controls do not replace it. No13/15GREEN/fullFR063 closure.
+
+[Concrete confirmed-claim reader proposal](./recovery/fr063-late-guard-confirmed-read-seam-proposal-20261013.md)
+SHA3930f837cab7268615ce08eccf96b6db801aad645e16fa999c55183263325d77:
+one private registry-owned InspectConfirmedMortalWoundTreatmentResourceClaim uses activelease,
+actualexistingG/revision, TryGetValue existingRootSlot, slot→state locks, existingProbeConfirmed.
+Returns detachedscalars, no publication fingerprint/capability/admission authority. Existing
+publicationlineage guards/candidatefilter remain unchanged; no slot/G/claim create/recovery.
+ONE existing guard callsite plus newfive-negative theory, expected2methods6cases2descriptors,
+budgets2+2/default9/catalog727/11568. Proposal UNWRITTEN/UNRUN; readonly architecture consult
+pending, mandatory SOURCE/FIXTURE/SELECTION afterauthor required. [Unreleased author brief](./recovery/fr063-late-guard-confirmed-read-seam-author-brief-20261013.md)
+preserves all byte/request/energy/history/absence/turnover/refusal oracles. ROOT must explicitly
+release accepted engineering scope to sole retainedSol; no blind late-guard rerun or waiver.
+
+Immediate own-Mortal recommendations, mandatorygenuinepending2, separate newroot/fullFR063/
+T070/#1536 remain OPEN. GM1557 A still conditional on verifiedFRfreeze/finalbase, B afterA.
+No provider/broadsuite/journal8/newoptimization/Windows/GM runtime. Next: architecture verdict,
+one narrow sourceblock, WIPpublish then independent actual AstraXHigh SOURCE beforeexecution.
+
 ## FR-063 reflection/warm four first outcome — 2026-10-13 (ACTUAL COMPLETE4PASS; EVIDENCE PENDING)
 
 Carrier7c48fdbae764e3b0faec3a9d02f6c19d93501170; compiled source14d037d82198659c509066759dcbb02e32b2b5f7.
