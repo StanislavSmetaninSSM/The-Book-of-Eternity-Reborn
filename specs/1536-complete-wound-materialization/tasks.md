@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE BUILD PREPARATION FAILED; ACTUAL8 UNRUN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE IMPORT CORRECTION SOURCE READY; BUILD BLOCKER IMMUTABLE, ACTUAL8 UNRUN)
 
 Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION closure ACCEPTED
 `849d1839cc5ba51130920a567f8cfab08c7b7255`: the one relative-root assertion is closed,
@@ -24,9 +24,22 @@ cleanup is true; no fixture/test ran,so no strict fixture-root cleanup claim. Fr
 preserve source pins, exact preparation selection/invocation/console/native summary/log and ROOT
 readback. Discovery/catalog/archive4/durable4 remain UNRUN; original failure is immutable.
 
-Next: publish/recover this preparation failure, then sole-writer minimal namespace correction,
-focused independent EVIDENCE/SOURCE review and matching fresh BOTH PlanOnly before exact archive
-PlanOnly/catalog/actual4. No passing finite68/baseline repeat and no production/architecture change.
+Preparation failure and immutable10-artifact packet are published at
+`766d11d4f55ee6d8997ec2e6b4c1fa9616456199`; retained actual Astra XHigh EVIDENCE/status ACCEPTED
+that checkpoint after checking all10 artifact chains/native originals/162 immutable849d source pins.
+This confirms build preparation failure0 execution,not discovery/binaries/fixture-cleanup qualification.
+Current minimum fixture correction adds ONLY using BookOfEternityClient.AgentConsole. Existing
+AgentConsoleLiveInputSource/StateStore/InputKind/hooks declarations all use that namespace. Source
+inspection of40 newly used production types resolves all remaining types in current Core/Services/
+Configuration imports; no additional missing namespace is established. This is static API/namespace
+proof,not a successful compiler run. The entire fixture is byte-exact after reversing this one import;
+all eight cases/assertions/cleanup/host/catalog/selectors are unchanged.
+
+Import correction SOURCE READY for ROOT publication/recovery and focused minimum-import SOURCE
+gate; first failed-preparation EVIDENCE accepted766d,corrected build/discovery/catalog/archive4/durable4
+UNRUN. ROOT next fresh BOTH PlanOnly33/78/14,exact archive1/4/1,catalog717/11553 (all preparation0 tests),
+then first archive4 freeze/EVIDENCE before durable4. No NoBuild release or passing finite68/baseline
+repeat and no production/architecture/serializer/authority/GM grammar change is introduced.
 Full archive/durable/T070/FR-063/parent/#1536 OPEN. Previous source-ready details below are historical
 and their pre-build UNRUN/pending statuses are superseded by this actual preparation checkpoint.
 

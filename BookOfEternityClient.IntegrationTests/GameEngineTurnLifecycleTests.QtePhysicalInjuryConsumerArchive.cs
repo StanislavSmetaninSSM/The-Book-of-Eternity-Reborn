@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
