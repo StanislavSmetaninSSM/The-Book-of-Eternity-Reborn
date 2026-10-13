@@ -26,15 +26,36 @@ ordinary path and is not called by the late-terminal branch. Correct its test us
 without adding a production hook or relaxing spend/history/typed receipt/care/hold/
 second-idle oracles. No additional diagnostic run is needed to establish this RED.
 
-Next FR-063 source block is the minimum admitted-owner bridge described in the
-[bounded plan](../../docs/superpowers/plans/2026-10-13-fr063-guaranteed-native-cold-orchestration.md):
-under the same canonical lease after raw admission, fresh ExportCurrent ->
-RestorePersistedTreatmentRequests -> existing guaranteed reducer -> existing
-six-argument treatment publisher/common plan. It remains UNWRITTEN/UNRUN, with
-six finite controls and the exact reflective consumer only if its API changes.
-SOURCE review precedes fresh selected preparation and actual execution. Same-root
-GREEN/controls precede a separate genuinely new-root source and runtime proof.
-Full FR063/T070/#1536 remain OPEN; previously accepted cohorts were not repeated.
+Task2 first source midpoint is WIP on base1794470448be75a66227b1988a3cc4262f82aa9b.
+The native child records the unreachable checkpoint separately; actual completion
+is set only after the unchanged strict story/spend/history/receipt/care/finalized-hold
+publication assertions. Second-idle byte identity and all source/Ready/input/cleanup
+prerequisites remain unchanged. No new runtime outcome is claimed.
+
+Four component methods/six cases are authored first in the new OrdinaryOwner partial:
+exact versus changed command/pending duplicate, nested request quantity/seal versus
+resolved-result tamper, actual current required capability loss, and existing
+wound_post_seal compensation/full-held-request/original-fence/exact-retry proof.
+They prepare genuine original42/confirmed energy2 requests with composePublication:false
+and invoke the ordinary owner wrapper with the actual snapshot and turn. No helper
+Restore/Compose prelude grants their plan. The new narrow owner/selector has budget5/
+default10, one component descriptor; static catalog722/11565, not discovered inventory.
+Existing native1/1/1 remains separate. Conditional reflected compatibility3 rows and
+combined preparation selection are still unwritten pending the actual Core API diff.
+
+The admitted bridge and actual mechanical-envelope mapping remain UNWRITTEN. Source
+inspection shows BuildGameResponseFromFiles is a display projection; the existing
+six-argument publisher accepts only supported skill/item mechanical fields. Passing
+that display response would refuse; silently dropping actual mechanics is prohibited.
+Continue with an exact admitted command-member envelope and explicit unsupported-work
+refusal under the same lease, preserving the existing publisher and warm retained gate.
+The callback must close over actual snapshot/turn after resource owner/quartet admission
+and perform fresh ExportCurrent -> RestorePersistedTreatmentRequests -> one guaranteed
+reducer -> six-argument publisher/common cache/revalidation. No default publisher seam
+has been expanded. All Task2 SOURCE review/build/discovery/catalog/runtime checks are
+UNRUN. ROOT publishes this bounded tests/oracle WIP before the remaining bridge work.
+Same-root GREEN/controls precede separate new-root authoring; full FR063/T070/#1536 OPEN.
+Previously accepted cohorts, immutable evidence and parent checkboxes remain unchanged.
 
 GM concrete v1 specification/checklist/single unsent issue draft are
 [available together](./recovery/gm-doc-modularization-spec-draft-20261013/workflow-preflight.md)

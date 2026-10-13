@@ -2,6 +2,40 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "fr063-guaranteed-ordinary-owner-controls",
+            "responsibility": "#1536 FR-063 admitted ordinary-owner component controls: four methods/six cases. Independently owned genuine warm held guaranteed energy2 requests and official original42 are prepared with composePublication:false. The actual GameEngine resource wrapper must restore/issue its common plan after raw resource admission. Exact command/pending duplicates coalesce; changed nested request and resolved-result graphs refuse without cache or canonical mutation. Current required capability loss refuses instead of reusing warm authority. Existing wound_post_seal compensation retains the complete request, confirmed hold and original fence, then one exact retry spends once. Component controls do not establish native cold completion.",
+            "excludes": "No pre-caller Restore/Compose or fabricated request/original/authority; no new-root, other treatment modes, archive/QTE/proof20/finite68/baseline repeats, diagnosis or GM grammar, provider/Windows/CI/global runner changes. These newly authored controls are UNRUN; the connected admitted bridge remains required before review/execution.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs"
+            ],
+            "related": [
+                {
+                    "id": "fr063-guaranteed-native-same-root",
+                    "when": "Independent actual fresh-process ordinary completion owner; no membership overlap. Select separately after source acceptance."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerReadsCurrentRequiredCapabilityInsteadOfHeldWarmAuthority",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerPostSealCompensationRetainsFullHeldRequestAndExactRetry"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "fr063-guaranteed-native-same-root",
             "responsibility": "#1536 FR-063 first test-only native ordinary-caller probe: one integration Fact, one case. Existing canonical wound bootstrap is explicitly a precondition. The real warm producer seals one confirmed held guaranteed target-player energy2 request under genuine original42 without a common plan. Fresh child PID on the same physical root/generation enters actual GameEngine late-terminal completion from loop41 with empty accepted-plan cache and only persisted command/source bytes. Exact completion/story42, energy2->0, one typed treatment receipt/history/stabilization, finalized durable hold and inert second idle are required. Full child logs, managed result, available artifacts, dependency pins and owned cleanup survive failure.",
             "excludes": "No helper ExportCurrent/RestorePersistedTreatmentRequests/reducer/Compose or carried Context/request/Resolution/cache before child entry; no production change, fabricated/copied/re-signed original authority, QTE creation requalification, new-root/archive/control matrix, diagnosis policy, provider/model/Windows/CI/global runner change or accepted archive4/durable4/proof20/finite68/baseline repeat. Initial source/build/discovery/catalog/runtime remain UNRUN until published independent SOURCE/FIXTURE/SELECTION acceptance.",

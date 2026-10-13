@@ -136,6 +136,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             });
         var input = new QueuedConsoleInputSource([Key(ConsoleKey.Escape)]);
         var accepted = false;
+        var acceptedCheckpointObserved = false;
         var engine = factory.CreateGameEngine(input,
             settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
             fileSystem: files,
@@ -144,7 +145,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AtCheckpointAsync = checkpoint =>
                 {
                     if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
-                        accepted = true;
+                        acceptedCheckpointObserved = true;
                     return Task.CompletedTask;
                 }
             });
@@ -204,14 +205,16 @@ public sealed partial class GameEngineTurnLifecycleTests
             handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_guaranteed_native_after_actual_caller", Observation = new
             {
-                accepted, handled, ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber,
+                accepted, acceptedCheckpointObserved, handled, ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber,
                 Artifacts = await CaptureGuaranteedNativeArtifactsAsync(files)
             } }));
             Assert.Null(repairObserverFailure);
             Assert.True(GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber == 42,
                 "The actual native ordinary caller did not complete the confirmed held guaranteed treatment turn42.");
-            Assert.True(accepted);
             await AssertGuaranteedNativePublicationAsync(files, context);
+            // The late ordinary caller has no AcceptedOutcomeValidatedBeforeMaterialization checkpoint.
+            // Its actual story, receipt, resource spend, care and finalized hold establish completion.
+            accepted = true;
             Assert.False(handled);
             var committed = await CaptureMortalArchiveImagesAsync(files, GuaranteedNativeMechanicalPaths);
             var stories = await CaptureGuaranteedNativeStoriesAsync(files);
@@ -228,7 +231,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
                 processId = Environment.ProcessId, generation, scenario, prerequisitesValidated, actualCallerEntered,
-                accepted, handled, secondIdle, actualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber,
+                accepted, acceptedCheckpointObserved, handled, secondIdle, actualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber,
                 failure = failure?.ToString(), AuxiliaryFactoryRoot = factory._rootPath,
                 Source = original is null ? null : new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber, original.Realm },
                 BinaryPins = MortalArchiveBinaryPins(), LoadedDependencies = MortalArchiveLoadedDependencyBindings(),

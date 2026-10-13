@@ -308,6 +308,19 @@ first same-root GREEN/controls, then separate new-root footprint/source proof/ac
 No treatment cost/GM grammar change: restoration is client-owned and needs no new
 GM-authored command. Other treatment modes and full FR063/T070/#1536 remain OPEN.
 
+### Task2 tests/oracle midpoint — 2026-10-13 (WIP; UNRUN)
+
+The native hook is retained as an observation; completion now follows only the unchanged
+strict publication oracles. Four component methods/six cases are authored without a
+precomposed plan, with a narrow5-minute owner/default10. The admitted owner wrapper
+snapshot/turn signature is a pending source dependency, not an already implemented API.
+Bridge wiring, current mechanical command envelope, conditional reflection migration and
+combined preparation remain unfinished. Source-only static inventory is722categories/
+11565methods; no discovery/build/runtime was executed. Existing six-argument publisher,
+authority/reducer/old helpers/runner/selectors and protected accepted cohorts are unchanged.
+ROOT publishes this midpoint before the remaining connected source block; full SOURCE
+acceptance waits for that block. No runtime task or parent checkbox is closed.
+
 ## Conditional continuation after Task1 EVIDENCE
 
 If prerequisites fail, correct only the evidenced fixture seam after frozen EVIDENCE and SOURCE review; do not call it a production RED. If the genuine ordinary entry exposes missing orchestration, record that causal RED, amend this plan with the exact participating lease/context/owner calls, then authorize only the minimum production orchestration. Reuse fresh ExportCurrent -> RestorePersistedTreatmentRequests -> ordinary guaranteed reducer -> existing six-argument T070/common plan inside the ordinary owner. No new authority framework, result shortcuts or generalized mode support.
