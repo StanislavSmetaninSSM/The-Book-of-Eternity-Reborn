@@ -9,7 +9,45 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (WHOLE-DECISION REPLAY AND ACTIONABLE-BOUNDS CORRECTION READY; CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-13 (COMMON 16 PASS / 2 BOUNDS TASK FAIL; 50 UNRUN)
+
+Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED at
+`2ac12c17f1948d60eb524ad2f8aa784c9cbf95ff`; the justified common5-method/18-case category
+ran on fresh matching source/binaries. [Corrected common bounds-failure packet](./recovery/qte-physical-consumer-common-bounds-failure-20261013/manifest.json)
+freezes run `20261013-024444-966-434981-fd6a0e6b0a1a47948e6a005a13631c87-categories`:
+1 descriptor/18 planned and completed cases,18 executed/16 PASS/2 FAIL,134.7377924s,
+exit1,no timeout/skips/duplicate IDs; complete selection, unsuccessful result.
+
+All seven exact/changed replay rows PASS, including the original changed display and three
+new lawful consequence/treatment/recovery changes. Other passing controls cover first publication,
+receipt-member compensation/revalidation, staged input drift and private canonical refusal.
+Both severity/location rows now pass actual actionable semantic-issue selection but throw in
+BuildValidationRepairTask (builder:239, fixture:289): afterlife worker task requires its realm-aware
+wrapper. Later task/dispatch/cache/canonical-preservation assertions in those rows remain UNREACHED.
+The native packet does not establish the source cause of that task prerequisite exception.
+No source or fixture correction is part of this frozen evidence block.
+
+ROOT matched148 source and10 fresh binary PRE/POST pins BEFORE metadata edits, read all18 native
+results/full stdout/88 observations, and verified18 strict cleanup receipts removed=true/failure=null
+with every emitted owned root physically absent. Runner process/runtime cleanup succeeded. Fresh
+BOTH build/discovery28 methods/70 cases/12 descriptors took156.3985481s,85/35 warnings0 errors;
+matching VALID catalog711/11548 took5.7781465s/no unmapped or stale selectors. Both executed0 tests.
+
+Finite controls now have two actual invocations: prior15 executed12 PASS3 FAIL plus this18 executed
+16 PASS2 FAIL =33 reported executions/28 PASS/5 FAIL. Repeated affected cases are counted as repeated
+executions, not unique coverage. Current common18 still has two failed rows; seven categories/
+21 methods/50 cases/nine descriptors remain UNRUN. Accepted full NONE36256 and migrated CREATEb76
+remain1 PASS each and were excluded/not repeated; historical c7 CREATE RED remains separate and
+non-byte-matched. Complete controls/replay/atomicity/archive/newroot/fresh-process and fullT070/
+FR-063/parent/#1536 remain OPEN. Checkboxes/frozen historical packets/protected causal Facts unchanged.
+
+Next: publish/recover this packet, mandatory focused EVIDENCE/status review, then a source-proven
+bounded task-fixture correction/selection gate and only the affected failed rows before the50 UNRUN
+cases. Passing16 common rows must not be repeated for an unrelated fixture-only correction. This
+packet review is PENDING. Archive's accepted separate ordinary save-load/newroot versus retained
+same-root N43 fresh-process design remains unwritten/UNRUN and on hold behind controls qualification.
+
+Historical whole-decision source correction (accepted before this common invocation):
 
 Actual retained Astra XHigh EVIDENCE/status ACCEPTED0973ebde92ddc2b942901fb30488d98f1eb7ef02:
 [partial finite controls packet](./recovery/qte-physical-consumer-controls-partial-20261013/manifest.json)
