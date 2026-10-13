@@ -9,6 +9,42 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## Current FR-063 first native outcome — 2026-10-13 (OBSERVED FAIL; EVIDENCE PENDING)
+
+Test-only source31818f11c597b01409cfb12a9ba07322975c41f0 independently SOURCE/FIXTURE/SELECTION
+ACCEPTED by retained actual Astra XHigh. Production unchanged. Fresh selected BOTH preparation
+33methods78cases14descriptors took140.5591136s,0execution,0build errors; exact1/1/1 plan2.5133227s
+and catalog721categories11561methods5.6753492s were also0execution,valid/unmapped0/stale0.
+
+[First observed native failure](./recovery/fr063-guaranteed-native-first-observed-failure-20261013/manifest.json)
+freezes actual20261013-131124-135-606204-b15a1afe576f4e75b1a574e79b793092-categories:
+1executed0PASS1FAIL,COMPLETE1/1/1,12.8736384s,exit1,no timeout/skip/duplicate ID.
+Fresh child606362,parent606327,same physical root/generation,official original42/request/token,
+command/Ready digests,energy2 and empty common-plan cache passed prerequisites. The actual ordinary
+late-terminal caller entered without test restoration/composition; accepted=false,handled=false,
+loop41. The first assertion is missing turn42 completion (NativeCold.cs:201). Queued Escape then
+cancelled/restored the original state; energy remains2 and resource-state/history,wound-state/history
+are byte-exact. No new accepted treatment/story/spend is established; second idle was not reached.
+Complete logs/managed result/raw before-after artifacts are retained before two strict owned roots
+were removed and independently checked physically absent. ROOT231source/11binary PREPOST match
+preceded metadata; actual loaded IntegrationTests/TestSupport/Immutable9 Default bindings match pins.
+
+Classification is OBSERVED ORDINARY NONCOMPLETION, exact cause PENDING independent EVIDENCE:
+child stdout contains cancellation/restore, not the exact validator/repair issue. The earlier static
+restoration gap is not by itself a proven cause. Freeze/publish/recovery and independent classification
+precede any fixture or production correction; scoped controls/new-root remain UNWRITTEN/UNRUN.
+Historical source-ready/UNRUN records below describe their earlier checkpoint, not current status.
+Accepted bounded8/proof20 remain qualified and unrepeated; fullFR063/T070/#1536 remain OPEN.
+
+User clarification received2026-10-13 13:03UTC: «рана сразу же видна игроку с понятными рекомендациями
+к лечению (как лечить, чем лечить, что нужно для лечения)». This resolves the earlier diagnosis
+question for initial disclosure: no separate paid/chance diagnosis gate for viewing wound/guidance;
+actual treatment requirements/cost remain. Existing diagnosis documents describe hidden complications
+or additional methods; explain that separate purpose before implementing it. A read-only source map
+finds current console name/severity notification, unfinished shared /раны/browser guidance and a
+contract allowing all-hidden routes. Prepare limited synchronized docs/focused-test alignment after
+this native freeze; do not replace FR063 work, invent diagnosis mechanics or claim UI qualification.
+
 ## Next bounded step — 2026-10-13 (FR-063 GUARANTEED NATIVE COLD ORCHESTRATION)
 
 Coordinator accepts bounded8/proof20 at396c7bdedf3a867d87ed1f8a5ff7c282df691464 and authorizes
