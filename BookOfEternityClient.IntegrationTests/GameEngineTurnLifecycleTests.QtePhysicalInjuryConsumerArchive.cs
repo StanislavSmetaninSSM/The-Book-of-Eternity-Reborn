@@ -81,6 +81,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ["source"] = expected, ["archivePath"] = archivePath, ["archiveSha256"] = MortalArchiveHash(File.ReadAllBytes(archivePath)),
             ["saveBefore"] = JsonSerializer.SerializeToNode(saveBefore), ["saveAfter"] = JsonSerializer.SerializeToNode(saveAfter),
             ["archiveEntries"] = JsonSerializer.SerializeToNode(archiveEntries), ["binaryPins"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
+            ["dependencyContext"] = MortalArchiveDependencyContext(),
             ["parentGeneration"] = generation, ["parentProcessId"] = Environment.ProcessId,
             ["completedTurn"] = completedTurn, ["immutableImages"] = JsonSerializer.SerializeToNode(immutable),
             ["receiptBefore"] = await _fs.ReadFileAsync(MortalWoundOpportunityReceiptState.StatePath),
@@ -154,6 +155,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             ["source"] = expected, ["parentGeneration"] = generation, ["parentProcessId"] = Environment.ProcessId,
             ["binaryPins"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
+            ["dependencyContext"] = MortalArchiveDependencyContext(),
             ["requestId"] = run.Snapshot!.RequestId, ["snapshotToken"] = run.Snapshot.SnapshotToken,
             ["originalImages"] = JsonSerializer.SerializeToNode(original), ["mechanicalImages"] = JsonSerializer.SerializeToNode(mechanics),
             ["readyBytes"] = JsonSerializer.SerializeToNode(run.ReadyBytes), ["decision"] = run.Decision!.DeepClone()
@@ -212,6 +214,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Dictionary<string, byte[]?>? loaded = null;
         Dictionary<string, byte[]?>? after = null;
         object? profileProjection = null;
+        object? loadedDependencyBindings = null;
         object? targetBootstrap = null;
         string? bootstrapGeneration = null;
         try
@@ -253,6 +256,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Empty(Directory.GetFiles(files.ResolvePath("game_state/control"), "*", SearchOption.AllDirectories)
                 .Where(path => Path.GetRelativePath(files.GameSessionPath, path).Replace('\\', '/').StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.Ordinal)));
             loaded = await CaptureMortalArchiveImagesAsync(files, MortalArchiveImmutablePaths);
+            loadedDependencyBindings = MortalArchiveLoadedDependencyBindings();
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "qte_archive_child_loaded_dependencies", Observation = loadedDependencyBindings }));
             using (var archive = ZipFile.OpenRead(archivePath))
             {
                 AssertMortalArchiveExcludedEntries(archive);
@@ -314,7 +319,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 processId = Environment.ProcessId, scenario, actualLoadAndRebind = load?.Disposition == LoadReplacementDisposition.Committed && !load.ContinuationBlocked,
                 Load = load is null ? null : new { load.Disposition, load.EstablishedGeneration, load.ContinuationBlocked, Failure = load.Failure?.ToString() },
-                BinaryPins = MortalArchiveBinaryPins(), FreshFactory = true, targetInitialization, targetBootstrap, bootstrapGeneration, profileProjection, generation,
+                BinaryPins = MortalArchiveBinaryPins(), DependencyContext = MortalArchiveDependencyContext(),
+                ProcessArguments = Environment.GetCommandLineArgs(), LoadedDependencyBindings = loadedDependencyBindings,
+                FreshFactory = true, targetInitialization, targetBootstrap, bootstrapGeneration, profileProjection, generation,
                 actualTurn = GetPrivateField<GameLoop>(run.Engine, "_gameLoop").TurnNumber,
                 failure = failure?.ToString(), Run = MortalArchiveRunObservation(run), Loaded = loaded is null ? null : MortalArchiveDigests(loaded),
                 After = after is null ? null : MortalArchiveDigests(after), Receipt = await files.ReadFileAsync(MortalWoundOpportunityReceiptState.StatePath),
@@ -339,6 +346,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         PendingTurnSnapshotReadAuthority? original = null;
         bool? handled = null, secondIdle = null;
         var before = await CaptureMortalArchiveImagesAsync(files, MortalArchiveMechanicalPaths);
+        var loadedDependencyBindings = MortalArchiveLoadedDependencyBindings();
+        Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "qte_durable_child_loaded_dependencies", Observation = loadedDependencyBindings }));
         Dictionary<string, byte[]?>? after = null;
         try
         {
@@ -396,7 +405,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
                 processId = Environment.ProcessId, scenario, generation, handled, secondIdle,
-                BinaryPins = MortalArchiveBinaryPins(), FreshFactory = true,
+                BinaryPins = MortalArchiveBinaryPins(), DependencyContext = MortalArchiveDependencyContext(),
+                ProcessArguments = Environment.GetCommandLineArgs(), LoadedDependencyBindings = loadedDependencyBindings, FreshFactory = true,
                 actualTurn = GetPrivateField<GameLoop>(run.Engine, "_gameLoop").TurnNumber, failure = failure?.ToString(),
                 Original = original is null ? null : new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber },
                 Before = MortalArchiveDigests(before), After = MortalArchiveDigests(after),
@@ -507,9 +517,15 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private Task RunMortalArchiveChildAsync(string mode, string root, string output, int scenario, string contextPath)
     {
-        var support = Path.Combine(Path.GetDirectoryName(typeof(GameEngineTurnLifecycleTests).Assembly.Location)!, "BookOfEternityClient.TestSupport.dll");
-        return RunBrowserColdChildAsync(Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"),
-            [support, mode, typeof(GameEngineTurnLifecycleTests).Assembly.Location, root, output, scenario.ToString(), contextPath], output + ".log", 45);
+        var paths = MortalArchiveDependencyPaths();
+        var executable = Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet");
+        string[] arguments = ["exec", "--runtimeconfig", paths["runtimeconfig"], "--depsfile", paths["depsfile"],
+            paths["support"], mode, paths["integration"], root, output, scenario.ToString(), contextPath];
+        WritePhysicalInjuryDiagnostic("qte_mortal_child_dependency_launch", new
+        {
+            mode, Executable = executable, Arguments = arguments, DependencyContext = MortalArchiveDependencyContext()
+        });
+        return RunBrowserColdChildAsync(executable, arguments, output + ".log", 45);
     }
 
     private static JsonObject MortalArchiveSource(QteStoryRun source, string occurrenceId, string opportunityRef) => new()
@@ -556,11 +572,37 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     private static byte[] MortalArchiveContextBytes(JsonNode node) => Convert.FromBase64String(node.GetValue<string>());
-    private static Dictionary<string, string> MortalArchiveBinaryPins() => new(StringComparer.Ordinal)
+    private static Dictionary<string, string> MortalArchiveDependencyPaths()
     {
-        ["integration"] = MortalArchiveHash(File.ReadAllBytes(typeof(GameEngineTurnLifecycleTests).Assembly.Location)),
-        ["support"] = MortalArchiveHash(File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(typeof(GameEngineTurnLifecycleTests).Assembly.Location)!, "BookOfEternityClient.TestSupport.dll")))
+        var integration = typeof(GameEngineTurnLifecycleTests).Assembly.Location;
+        var directory = Path.GetDirectoryName(integration)!;
+        return new(StringComparer.Ordinal)
+        {
+            ["integration"] = integration, ["support"] = Path.Combine(directory, "BookOfEternityClient.TestSupport.dll"),
+            ["runtimeconfig"] = Path.ChangeExtension(integration, ".runtimeconfig.json"),
+            ["depsfile"] = Path.ChangeExtension(integration, ".deps.json"),
+            ["immutable"] = Path.Combine(directory, "System.Collections.Immutable.dll")
+        };
+    }
+    private static Dictionary<string, string> MortalArchiveBinaryPins() => MortalArchiveDependencyPaths()
+        .ToDictionary(pair => pair.Key, pair => MortalArchiveHash(File.ReadAllBytes(pair.Value)), StringComparer.Ordinal);
+    private static JsonObject MortalArchiveDependencyContext() => new()
+    {
+        ["paths"] = JsonSerializer.SerializeToNode(MortalArchiveDependencyPaths()),
+        ["sha256"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
+        ["immutableAssemblyIdentity"] = System.Reflection.AssemblyName.GetAssemblyName(MortalArchiveDependencyPaths()["immutable"]).FullName
     };
+    private static object MortalArchiveLoadedDependencyBindings() => AppDomain.CurrentDomain.GetAssemblies()
+        .Where(assembly => assembly.GetName().Name is "System.Collections.Immutable" or "BookOfEternityClient.IntegrationTests" or "BookOfEternityClient.TestSupport")
+        .OrderBy(assembly => assembly.FullName, StringComparer.Ordinal)
+        .Select(assembly => new
+        {
+            Identity = assembly.FullName, Path = assembly.Location,
+            Sha256 = MortalArchiveHash(File.ReadAllBytes(assembly.Location)),
+            LoadContext = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly)?.Name,
+            IsDefaultContext = ReferenceEquals(System.Runtime.Loader.AssemblyLoadContext.Default,
+                System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly))
+        }).ToArray();
     private static void AssertMortalArchiveChildBinaries(JsonObject context)
     {
         foreach (var pair in MortalArchiveBinaryPins()) Assert.Equal(context["binaryPins"]![pair.Key]!.GetValue<string>(), pair.Value);

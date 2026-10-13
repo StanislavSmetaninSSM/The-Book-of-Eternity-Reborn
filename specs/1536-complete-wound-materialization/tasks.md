@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE4 COMMITTED LOAD; CHILD DEPENDENCY FAILURE; DURABLE4 UNRUN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE4 LOAD COMMITTED; LOCAL CHILD DEPENDENCY CORRECTION SOURCE READY; DURABLE4 UNRUN)
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `d925ade8c6dc38c88ddcf1bbbfdd80bf94f8b534`. Fresh BOTH PlanOnly33/78/14 succeeded
@@ -37,16 +37,40 @@ cleanup true. Frozen32 artifacts preserve actual/preparation/TRX/child failure/b
 readbacks and retained-catalog provenance. Source package identity is diagnosis,not an earlier
 package-DLL PRE/POST pin or full transport/newturn qualification claim.
 
-History four archive invocations/16 executions/0 PASS/16 FAIL includes retries. Current EVIDENCE
-PENDING; prior960/d9/ee025/766d accepted failures remain immutable. Durable4 UNRUN; finite68 and
-baselines retain acceptance without repetition. Next: publish/recover,focused EVIDENCE and bounded
-sole-writer launch using the SAME existing dotnet-exec/integration dependency context pattern for
-only these two new modes,with explicit dependency binary/manifest readback. Preserve actual Save/
-Load/bootstrap/newturn/replay/receipt/history/tick/cleanup oracles and existing45s kill/join/log.
-Focused SOURCE and matching fresh preparation precede only failed archive4 retry. No dependency
-updates/global NativeHost behavior/custom framework/production changes/new access/keys/providers.
-Full archive/durable/T070/FR-063/parent/#1536 remain OPEN; freeze/review archive outcome beforedurable4.
-Earlier checkpoint statuses below are historical and superseded by this actual result.
+History four archive invocations/16 executions/0 PASS/16 FAIL includes retries. Fourth-failure
+EVIDENCE/status ACCEPTED by actual retained Astra XHigh at
+`871af76afe452dda920ac6792bf857f23719e807`; prior960/d9/ee025/766d accepted failures remain
+immutable. The frozen manifest's pre-review PENDING status stays unchanged. All four committed
+Loads qualify prerequisites only; immutable-entry agreement and genuine NEW43/44 remain unreached.
+Durable4 UNRUN; finite68 and baselines retain acceptance without repetition.
+
+Current bounded test-local correction uses the EXISTING OriginalOwnedLeaseCloseTests.EngineRollback
+launch pattern: dotnet exec --runtimeconfig <integration.runtimeconfig.json> --depsfile
+<integration.deps.json> <existing TestSupport.dll>, for only the two already-declared Mortal archive/
+durable modes. Both projects target net8.0; integration deps declares System.Collections.Immutable/
+9.0.0 with its existing net8 runtime DLL. No package/version/config/global host/resolver changes.
+Existing RunBrowserColdChildAsync and45s kill/join/log behavior remain unchanged.
+
+Parent context and child result extend existing binary pins with exact integration runtimeconfig,
+depsfile and Immutable DLL SHA256. Dependency-context diagnostics retain physical paths, hashes,
+Immutable metadata assembly identity (read-only AssemblyName.GetAssemblyName; no target preload),
+actual launch executable/argument vector and child managed process arguments. After successful
+fixture path-field initialization, native child diagnostics enumerate the actually loaded integration/
+TestSupport/Immutable assembly identities, locations, byte hashes and load contexts. This records
+actual loaded bindings in the next invocation; it does NOT retroactively establish the uncaptured
+conflicting version from the fourth failure. All existing eight rows, Save/Load/bootstrap/generation/
+newturn/replay/receipt/history/tick/cleanup and strict changed-replay oracles remain unchanged.
+
+Correction SOURCE READY for ROOT publication/recovery and focused actual Astra XHigh SOURCE gate;
+corrected build/discovery/catalog/runtime checks UNRUN. Next fresh BOTH PlanOnly33/78/14 and exact
+archive1/4/1 budget5/default10, retained accepted catalog717/11553, then retry FAILED archive4 only.
+Freeze/review that actual outcome before durable4. Archive and durable selectors/owners/counts and
+all protected causal Facts remain unchanged; no qualified-case repetition is requested. This is a
+test-local dependency launch/precondition correction, so public GM grammar/prompts/examples and
+Mortal/afterlife runtime behavior do not change. No production/framework/access/key/provider change.
+Full archive/durable/T070/FR-063/parent/#1536 remain OPEN. Earlier checkpoint statuses below are
+historical; immutable packets, history tails and checkboxes are preserved. No author projectcommand,
+build/runtime/git operation was performed.
 
 Historical ordinary bootstrap correction checkpoint:
 
