@@ -9,8 +9,35 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (NONE GREEN ACCEPTED; CREATE TREATMENT FIXTURE MIGRATION READY, CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-13 (MIGRATED CREATE INCOMPLETE; PRIVATE CARRIER OWNER REFUSAL; EVIDENCE PENDING)
 
+First current-contract full CREATE invocation onSOURCE4ed1ca8104a82d5fb78c57fb6630f85a0ef3ab40
+ended INCOMPLETE at category5-minute budget:302.611s,exit124/TimedOut=true,1 planned descriptor/
+case,0 completed,0 executed/0 PASS/0 FAIL, no TRX or completed native observations. Read-only
+actual N43 repair request contains two private source diagnostics at game_state/player/wounds.json.owner:
+wound_carrier_invalid_field (strict player owner missing) and wound_carrier_invalid_root
+(required schemaVersion/owner/activeWounds fields missing). Harness packets=[] and fullTurn
+resubmission=false. Physical player carrier remains ABSENT in captured runtime images, so the
+origin of the reported carrier shape is UNPROVED; planned/live-source boundary needs tracing.
+Full ordinary completion and causal wound/receipt predicates were not confirmed/reached. This
+is not proper causal RED, CREATE GREEN or qualification of the migrated fixture.
+
+[Incomplete CREATE packet](./recovery/qte-physical-consumer-create-incomplete-20261013/manifest.json)
+freezes25 artifacts/native summary/plan/logs/actual request+public proposal and repair diagnostics.
+148 source/10 fresh binaries PRE/POST exact BEFORE metadata edits. Runner process/runtime cleanup
+succeeded; fixture strict cleanup receipt UNEMITTED, physical owned root remains; no strict fixture
+cleanup claim. EVIDENCE gate PENDING before source correction/retry. Fresh BOTH-build PlanOnly
+28/67/12,154.085s,85/35 warnings0 errors and valid711/11548 catalog5.300s each executed0 tests.
+
+First migrated CREATE has1 actual incomplete invocation/0 reported tests; historical c7 CREATE
+RED1 executed/0 PASS/1 FAIL stays immutable/separate and not byte-matched. Accepted unchanged
+NONE36256 baseline1PASS was not repeated. Remaining controls (except old four failed diagnostic
+rows)/archive/newroot/fresh-process UNRUN. Next bounded step after evidence acceptance: source
+trace actual carrier-owner diagnostic and repair only the proven materialization boundary,
+without GM canonical writes/invented root/validator relaxation/budget increase/general protocol.
+ParentT070/FR-063/#1536 OPEN; all checkboxes unchanged.
+
+Historical4ed current-contract fixture checkpoint (accepted before first migrated CREATE):
 Actual retained Astra XHigh EVIDENCE/status ACCEPTED36256b7afb6b734741116339f800da7d1cca24b0:
 [unchanged first full NONE GREEN](./recovery/qte-physical-consumer-none-green-20261013/manifest.json)
 retains25 artifacts/148 immutable028c source pins/10 fresh binaries/native six observations and
