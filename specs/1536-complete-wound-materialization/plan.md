@@ -9,8 +9,32 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (FINITE SOURCE GATE BLOCKED ONE FIXTURE ISSUE; QUEUED RESPONDER CORRECTION READY; CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-13 (FIRST MATCHING NONE INCOMPLETE; PRIVATE SOURCE REFUSAL; EVIDENCE GATE PENDING)
 
+SOURCE/FIXTURE/SELECTION accepted at178e67f5af28ae63b927e177886ade12d64934c8 by actual retained
+Astra XHigh after the queued responder correction; no remaining confirmed Important/Critical.
+Fresh selected BOTH integration/unit builds and PlanOnly succeeded:28 methods/67 cases/12
+planned descriptors,144.336s,85/35 warnings and0 errors,0 executed tests. Native catalog
+NoBuild after these fresh builds valid710 categories/11548 methods,5.406s,0 executed tests.
+
+FIRST matching NONE invocation on exact178e source/binaries ended INCOMPLETE: category5-minute
+budget, wall302.753s, exit124/TimedOut=true;1 planned descriptor/case,0 completed,0 executed,
+0 PASS/0 FAIL, no TRX or completed test observations. Runner process/runtime cleanup succeeded;
+fixture strict cleanup receipt was UNEMITTED and its root remained, so strict fixture cleanup
+is NOT claimed. Read-only captured actual N43 repair request contains four private safeContext
+errors (malformed and missing allowedLocationKinds/cause/target); harnessRepairPackets empty.
+Full ordinary completion and causal NONE receipt predicate were not confirmed/reached. This is
+NOT a proper consumer causal RED and not qualification. Original NONE4010/CREATEc7 causal REDs
+remain separately accepted/unchanged.146 source and10 fresh binary pins PRE/POST matched BEFORE
+metadata edits. Exact runner failure wording/summary/native logs and generated session images
+are frozen in [the incomplete packet](./recovery/qte-physical-consumer-none-incomplete-20261013/manifest.json).
+
+CREATE/remainder/archive/fresh-process remain UNRUN. Evidence gate is PENDING before any source
+correction or retry. Next bounded step: verify timeout evidence and trace the actual private
+safeContext producer→adapter shape refusal; no budget increase, new optimization or broad run.
+Full consumer/T070/FR-063/parent/#1536 remain OPEN.
+
+Historical178e queued responder source boundary (accepted before fresh preparation):
 Published finite candidate7332c3f794f254e6bf3d8e0fbea50fdf21bf8232; ROOT verified exact remote/clean
 primary and577-file GitHub-only recovery/all48 connected paths. Actual retained Astra XHigh
 full finite SOURCE/FIXTURE/SELECTION gate was BLOCKED by exactly one Important/no Critical
