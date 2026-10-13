@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "fr063-guaranteed-native-same-root",
+            "responsibility": "#1536 FR-063 first test-only native ordinary-caller probe: one integration Fact, one case. Existing canonical wound bootstrap is explicitly a precondition. The real warm producer seals one confirmed held guaranteed target-player energy2 request under genuine original42 without a common plan. Fresh child PID on the same physical root/generation enters actual GameEngine late-terminal completion from loop41 with empty accepted-plan cache and only persisted command/source bytes. Exact completion/story42, energy2->0, one typed treatment receipt/history/stabilization, finalized durable hold and inert second idle are required. Full child logs, managed result, available artifacts, dependency pins and owned cleanup survive failure.",
+            "excludes": "No helper ExportCurrent/RestorePersistedTreatmentRequests/reducer/Compose or carried Context/request/Resolution/cache before child entry; no production change, fabricated/copied/re-signed original authority, QTE creation requalification, new-root/archive/control matrix, diagnosis policy, provider/model/Windows/CI/global runner change or accepted archive4/durable4/proof20/finite68/baseline repeat. Initial source/build/discovery/catalog/runtime remain UNRUN until published independent SOURCE/FIXTURE/SELECTION acceptance.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.NativeCold.cs",
+                "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+                "docs/superpowers/plans/2026-10-13-fr063-guaranteed-native-cold-orchestration.md"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NativeSameRootOrdinaryCompletionSpendsConfirmedEnergyOnce"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-completed-proof-generation",
             "responsibility": "#1536 failed-only fixture correction: one existing generation semantic row extracted into one integration Fact. Actual owner-produced CREATE completion precedes supported lifecycle plus replacement lease rotation. Real changed generation, unchanged original source and mechanical/receipt/marker bytes, fresh official original Reader correlation and stale marker-generation denial are observed. Genuine retained exact replay refuses without authority or mutation. This owner gates only the previously unqualified generation control.",
             "excludes": "No repeat of the nineteen passing completed-proof cases, archive4/exact durable2/finite68/baselines, changed durable2 or full T070 closure. No production/reader/writer/authority/schema/GM grammar/global runner/CI/provider change, snapshot copies/resigning, replacement-exception swallowing, budget increase, new semantic case or general storage control.",

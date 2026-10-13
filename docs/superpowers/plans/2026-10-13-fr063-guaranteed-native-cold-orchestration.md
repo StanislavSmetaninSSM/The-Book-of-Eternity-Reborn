@@ -40,6 +40,16 @@
 - Update only active `specs/1536-complete-wound-materialization/plan.md` and `tasks.md` checkpoint; historical records/checkboxes remain exact.
 - Existing fixture/probe helper files are read-only unless a concrete necessary seam is reported and SOURCE-reviewed first.
 
+**Task1 authoring checkpoint — 2026-10-13:** TEST-ONLY SOURCE READY on
+`417a9cf63c1273f95e2d4a0e3b37a4c8a28caa2e`. One planned Fact/mode/category/selector,
+static1/1/1 and catalog721/11561; existing fixtures/production/old720 category nodes unchanged.
+Called APIs and literal native reflection signature checked from source. No new project execution:
+independent SOURCE/FIXTURE/SELECTION, fresh build/discovery/catalog and first actual remain UNRUN.
+The source-only restoration gap is not an observed RED. ROOT owns publication/recovery/review/runtime;
+first outcome is frozen before any conditional production change. Deferred controls/new-root case
+remain unwritten; all task checkboxes stay open. Full report is outside the repository at
+`/workspace/boe-cloud-tools-20261013/fr063-task1-source-report.md`.
+
 **Interfaces:**
 - Consume `CreateHeldTreatmentPipelineContextAsync(fault:null, withRollbackAuthority:true, composePublication:false)`, existing exact byte/readback helpers and existing native launch/dependency/cleanup pattern.
 - Produce one Fact `GuaranteedTreatment_NativeSameRootOrdinaryCompletionSpendsConfirmedEnergyOnce`.

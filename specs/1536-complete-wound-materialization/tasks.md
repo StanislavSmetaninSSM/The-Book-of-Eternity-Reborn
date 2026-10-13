@@ -21,7 +21,29 @@ selects one existing guaranteed energy2 held request, real original42, freshPID 
 causal ordinary-caller probe,then new-root qualification. Child cannot precompose/restore through
 a test helper or carry Context/request/Resolution/cache authority. Existing canonical wound bootstrap
 is labelled a precondition,not another QTE source proof. First source block is test-only1/1/1,
-category5/default10/child45s; planned initial catalog721/11561. No project checks run yet.
+category5/default10/child45s; static initial catalog721/11561 (+one owner/Fact), not runtime discovery.
+
+Task1 test-only SOURCE READY at published authoring base417a9cf63c1273f95e2d4a0e3b37a4c8a28caa2e:
+`MortalWoundTreatmentResourcePublicationLifecycleTests.NativeCold.cs` authors exactly one Fact
+`GuaranteedTreatment_NativeSameRootOrdinaryCompletionSpendsConfirmedEnergyOnce` and one narrow
+`engine-mortal-guaranteed-treatment-cold` reflection route. Parent uses the existing real warm sealed
+held guaranteed request/claim2 with composePublication:false, labels canonical wound bootstrap as a
+precondition, proves energy2/no common plan and official original42, writes lawful public ordinary
+outputs plus correlated Ready42/filesModified, then releases its lease. Assertion-only metadata carries
+scalars/digests/binary pins; the child reads persisted bytes on the same physical root with fresh PID,
+generation agreement and empty plan cache, then enters actual late-terminal caller at loop41 without
+Export/Restore/reducer/Compose or carried authority. Strict completion/story42/energy2->0/one typed
+treatment receipt/history/stabilization/finalized durable hold precede ordinary false and byte-inert
+second idle. Existing integration dependency context and45s child drain/kill/join are reused; complete
+logs/result/context/available artifacts and strict source/auxiliary cleanup are retained before failure.
+
+[Exact one-case selection](../../tests/selections/1536-fr063-guaranteed-native-same-root.json) owns only
+this new Fact; existing720 category nodes/old selectors/globalCI/production/old fixtures stay unchanged.
+Independent SOURCE/FIXTURE/SELECTION review, fresh preparation/discovery/catalog and first actual are
+UNRUN. Source READY is not test acceptance or observed RED. Freeze/review first outcome before any
+production restoration; deferred finite controls and new-root qualification remain UNWRITTEN/UNRUN.
+No GM prompt/example change: production and the existing public guaranteed-treatment grammar are
+unchanged; this block adds test-only orchestration evidence, not a new game capability.
 Source-only gap: current cold test precomposes in-process; production finalized replay quarantine
 excludes held requests and retained validation requires a cached plan. Actual causal RED is UNRUN;
 no production fix until first frozen EVIDENCE and minimum source-reviewed correction plan.
