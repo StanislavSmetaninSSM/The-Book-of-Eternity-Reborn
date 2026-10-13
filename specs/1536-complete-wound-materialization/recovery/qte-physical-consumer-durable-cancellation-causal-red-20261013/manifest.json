@@ -1,0 +1,2247 @@
+{
+  "source": "afbe58181cbc9d83e8f8ced900a9ce68535e7d7e",
+  "classification": "DURABLE_EXACT_TWO_GREEN_AND_CHANGED_TWO_DESTRUCTIVE_ROLLBACK_CAUSAL_RED",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 2168387,
+      "uncompressedSha256": "5a250df379f0c832e93939c1338f141121fc2b159d4a6390007df4c290b0b2cb",
+      "compressedBytes": 656282,
+      "compressedSha256": "edd5efd4aa76d0b4811c258da1ae4bac4207e5234762181d2a9831fa0dfbfd3f"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 4294582,
+      "uncompressedSha256": "39288b86301389980f753d167cff865249b8352648d8abb325dcfb502dd35c1f",
+      "compressedBytes": 1302051,
+      "compressedSha256": "03f562e5861cebbe669c760088f6752bc017c70b7b194a5a67de0fc000a73868"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 530,
+      "uncompressedSha256": "ef61e7fd4886986042f603ee342f178854ba6f632fee64e727463b3adfb28df4",
+      "compressedBytes": 324,
+      "compressedSha256": "9ca70d2acec8f667ac1aecd20d713eb767254126bd73d1250d59ffb8fbe834bd"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 4313471,
+      "uncompressedSha256": "f0a05987210af07a025a66dbf5f8e32699285ed2d2e0d507d586652db74a2c6b",
+      "compressedBytes": 1303997,
+      "compressedSha256": "bdd5f492fac64a0ffd35f29d31ee75344ac32d7c7d8effb877041c2d325391ab"
+    },
+    {
+      "name": "actual-nested-child-observations.json.gz",
+      "uncompressedBytes": 30401,
+      "uncompressedSha256": "fb9a389569d59fb7dd251cc74cc8b89142fc662acd1d787c2a7ff760998bd4ca",
+      "compressedBytes": 3623,
+      "compressedSha256": "efebe5ce5b77163a4b2d641ec627cace928518c369541f0c696ebdbfdc446e1f"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 95991,
+      "uncompressedSha256": "e0c1e2429abfa0f7536ea0f8838f97aec1293417fd1efc63991b42a0386c633a",
+      "compressedBytes": 10921,
+      "compressedSha256": "9526f7b4d609ef7a3fb203aae35bd693a04714cb70572a889f6a7c27de90a837"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "1b0fac14b2c5db289aa1331a95bdd7c8c6ffb06eff3aabfe7cfb8773e096cf10",
+      "compressedBytes": 269,
+      "compressedSha256": "5e382c386b7bac91f7b3b329c97860e46566b95d7692616eecbe99ebe1350cbd"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 34071,
+      "uncompressedSha256": "5799ab7fa0cedfb23c8ae5535c28f2f1c985a48b1d38dc425964cdf4eeade54b",
+      "compressedBytes": 10096,
+      "compressedSha256": "340222a2bcbb374d9dc94f3831e8d4fb07e7901a109705421336102ff3c46950"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 1524,
+      "uncompressedSha256": "6e170655618ba3b4094a988d58d1656d0b92060788ca1f216b1d5f6866868656",
+      "compressedBytes": 662,
+      "compressedSha256": "adc8364dbe9b412dd6360afd612e8cae5a3a23cb7a412c47bd9c967818a3388c"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 547,
+      "uncompressedSha256": "b7856dc78923bece0fd7b4030e6ef09fba221e900057e8100febddb51487a0a9",
+      "compressedBytes": 330,
+      "compressedSha256": "5e0dfa1771852583464266fcda7ac102e9e0f09123ed0d648e8039f1ba36d84f"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 1303,
+      "uncompressedSha256": "09f8e9b6ca26a3e8d88054d1e69144362136558119acb8b9c7ca7cd18191acc8",
+      "compressedBytes": 663,
+      "compressedSha256": "07a2f1880fd00fa409ce093eeea2049e31b19e5e5c8783d6abd6a72815d23d19"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "3e5760778f9e6239be90a71e54af69a261dc6b633ef02e34da17e9edcef96887",
+      "compressedBytes": 269,
+      "compressedSha256": "458dcf895c455546aecd10701967bd6afd8c52dffc6bd4424d004b368d90f9b8"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2719,
+      "uncompressedSha256": "080013337e6cc70671ccd8d84a3285cdfbf46fb837dbccdcfd80d4d17e418156",
+      "compressedBytes": 728,
+      "compressedSha256": "299ccc40d464c98401b9df6cd72586502fa7506734fdec274590bd0f1352aa13"
+    },
+    {
+      "name": "fresh-both-preparation-selection.json.gz",
+      "uncompressedBytes": 10748,
+      "uncompressedSha256": "b38a56db59416dd8a8b0b9abf7a4eef190701bb5bf56600306a39ed7e04baaf6",
+      "compressedBytes": 3792,
+      "compressedSha256": "66c19c9ea3a38190e3ada6ddee06ff68a3681ab0d86ef9de57bb97abb0c08bd3"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 17366,
+      "uncompressedSha256": "8952419e66594ca8d93892fac2e249f9bce2603fdafbaf04551aa408e3f2c3bc",
+      "compressedBytes": 2335,
+      "compressedSha256": "115f233b09409b996c38d7d47d12e43a85fb01f0f6ed0bd3f47a75d127e58712"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 568,
+      "uncompressedSha256": "18e844e2da02960919c7fba14d98cf5872d893210092f7c69b7deaf319007fe3",
+      "compressedBytes": 353,
+      "compressedSha256": "7b9a7fd829fe00b3693b65133f23eb3e5ba55887b2cadd71eed32b72ec61a2bb"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 2923,
+      "uncompressedSha256": "809c7d8b3aee62bed3f10dc42d53c601a13152b27f187544558a371bf8102469",
+      "compressedBytes": 1134,
+      "compressedSha256": "a526181b2c1b338e054960867f9c7aa4a4c322273585f31b15a93d6651ed0a93"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "1c8da8a374bce48c6ac24b862fa81b81012010fd97784ea7b877aeda8e186f84",
+      "compressedBytes": 269,
+      "compressedSha256": "fd8fd543045ba23194dde238e53390b1f51ab2bcee02492d17d953d970f1da7d"
+    },
+    {
+      "name": "retained-catalog-provenance.json.gz",
+      "uncompressedBytes": 712,
+      "uncompressedSha256": "d9693b1b270ad226519f94738fc6df8c21c9c13d9703f2781bbe4831a0d972bf",
+      "compressedBytes": 495,
+      "compressedSha256": "4c329746823eccaf9a8ed6461914ffa722f8c268847e4d56281b0f2088a6650a"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 3824842,
+      "uncompressedSha256": "b47d6171a8acb43de8809712aea4d668e30a768074e58395df5f4c27d423aba9",
+      "compressedBytes": 839343,
+      "compressedSha256": "6ea5a5b3913aac91efb5ea951f748b7cfb52a536bfa40c7730c9752bebdc09eb"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 3261,
+      "uncompressedSha256": "fbac5d3ced0bd76e4783a3cd903afe959c70964b331561bb63cb5e6e76602c83",
+      "compressedBytes": 1569,
+      "compressedSha256": "47a1a0fad37b4d7c2786f495b7720da61785803f266ea7022ed354ad1d5f923b"
+    },
+    {
+      "name": "actual-qte-physical-injury-consumer-durable-session-integration-001.trx.gz",
+      "uncompressedBytes": 6504102,
+      "uncompressedSha256": "47d59e3b74a4ab5a7bd5b655f18814fc4a1ebb3161563a07a429c7779febd52b",
+      "compressedBytes": 1961999,
+      "compressedSha256": "262b2215f1394182662cc84c1096662e44efb816a3d0408c29a83314f234f2c3"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 3373,
+      "uncompressedSha256": "667809e4bb6c8edb76b0fc1013445937e70445711b5852491684ec8aa85ec79a",
+      "compressedBytes": 1623,
+      "compressedSha256": "edb87909fadfeb307e8135aeb37d3cc740e5780d7f9f903825f59423f0eefe15"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1657513,
+      "uncompressedSha256": "5b0a05f3ba091ecad3a0ea295aa48e714c62d43696c66ca15c5892555eb17d5e",
+      "compressedBytes": 184492,
+      "compressedSha256": "82eca7e38e04949e10f622d4a923dec6bb83eefb5514d4159e3480d16c7e2ea8"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 3261,
+      "uncompressedSha256": "b5e4c83e62c583527542d9f6d11c63df1f130d8db72eee9aebc6d36a7a844b51",
+      "compressedBytes": 1569,
+      "compressedSha256": "abc497f4c1347e61b2cbd95b0b3a13547d345e1d589134d479968d2a356e019c"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 3384,
+      "uncompressedSha256": "1beef3b32045c367dbd08d105348285a6f023b52294f892c179ac26510e6c5f2",
+      "compressedBytes": 1634,
+      "compressedSha256": "cb0701a588018aac29c8be8be5b679b14dfed75ff33561d97c4e859ffc4947ad"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 85693,
+      "uncompressedSha256": "5010e3df1f0b9572e25b1988b10efc2c32db82dad3a3636319580f9ae86a928f",
+      "compressedBytes": 6178,
+      "compressedSha256": "79022eb9818630051f6ed7e145cd589097bf759433d7619db8eec4f9c50b9401"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 30113,
+      "uncompressedSha256": "79e727c8b31a852191a6f2fd29617354d189a0c9d2c15e71274593f333be5b2a",
+      "compressedBytes": 1755,
+      "compressedSha256": "4d93ed73fa6af7467a260481c60d19a75b8170b6be937cacd34f0c195895a66c"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3441331,
+      "uncompressedSha256": "fdc7556a942a64fa47f5ab0ca71c7980e8d921e887fc860471eec65b7a25dfcc",
+      "compressedBytes": 376355,
+      "compressedSha256": "2382ef26708680fe3ce40261884146a2610ffc173e8f7975316a9eb45eb204f0"
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "uncompressedBytes": 30751,
+      "uncompressedSha256": "07fd6ba0f9270cc3cc813040262d011090559110f7b49e12325916d38e7e0e6c",
+      "compressedBytes": 5808,
+      "compressedSha256": "18c00a8b0eac6bb449c3799a4b7e6d10b14f47082c4bbc72908b4da51d93a62d"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 13681,
+      "uncompressedSha256": "f47cf015c5f0f04a028908e695ae5cdb245af03dc93b70f98597da3939b80238",
+      "compressedBytes": 4490,
+      "compressedSha256": "df4ee5f189b36e13710b55042a6754081c52c7f53a992639aa9a3ff211502b72"
+    }
+  ],
+  "frozenUtc": "2026-10-13T09:54:16.430837+00:00",
+  "preparation": {
+    "source": "afbe58181cbc9d83e8f8ced900a9ce68535e7d7e",
+    "compileSource": "afbe58181cbc9d83e8f8ced900a9ce68535e7d7e",
+    "run": "20261013-094814-306-562134-16d973ec8465453abbd568bfb01ad817-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-094814-306-562134-16d973ec8465453abbd568bfb01ad817-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T09:50:37.980022+00:00",
+    "classification": "FRESH_BOTH_DURABLE_CANCEL_DIAGNOSTICS_PREPARATION_ZERO_EXECUTION",
+    "wallTime": "00:02:23.6282092",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 14,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 78,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "qte-physical-injury-consumer-archive-integration-001",
+        "qte-physical-injury-consumer-common-controls-integration-002",
+        "qte-physical-injury-consumer-completion-presence-integration-003",
+        "qte-physical-injury-consumer-completion-presence-unit-004",
+        "qte-physical-injury-consumer-create-integration-005",
+        "qte-physical-injury-consumer-documentation-integration-006",
+        "qte-physical-injury-consumer-documentation-unit-007",
+        "qte-physical-injury-consumer-draft-integration-008",
+        "qte-physical-injury-consumer-durable-session-integration-009",
+        "qte-physical-injury-consumer-none-integration-010",
+        "qte-physical-injury-consumer-publication-integration-011",
+        "qte-physical-injury-consumer-repair-integration-012",
+        "qte-physical-injury-consumer-source-compatibility-integration-013",
+        "qte-physical-injury-consumer-worker-scope-unit-014"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 169,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T09:50:54.098679+00:00",
+    "methods": 33,
+    "cases": 78,
+    "descriptors": 14,
+    "warnings": {
+      "Build-integration.log": 88,
+      "Build-unit.log": 35
+    },
+    "errors": {
+      "Build-integration.log": 0,
+      "Build-unit.log": 0
+    },
+    "additionalFreshImmutablePin": {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+      "bytes": 251160,
+      "sha256": "33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c",
+      "assemblyMetadataIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+      "freshBuildRun": "20261013-094814-306-562134-16d973ec8465453abbd568bfb01ad817-categories",
+      "sameBytesAsMetadataReadAndQualified31bLoadedBinding": true,
+      "newRunActualLoadedBindingNotYetObserved": true,
+      "verifiedUtc": "2026-10-13T09:50:54.182636+00:00"
+    }
+  },
+  "exact-plan": {
+    "source": "afbe58181cbc9d83e8f8ced900a9ce68535e7d7e",
+    "compileSource": "afbe58181cbc9d83e8f8ced900a9ce68535e7d7e",
+    "run": "20261013-095106-285-562461-54867b4a266c41409f6448f652ed864c-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-095106-285-562461-54867b4a266c41409f6448f652ed864c-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T09:51:08.997922+00:00",
+    "classification": "DURABLE_FOUR_CANCEL_DIAGNOSTICS_EXACT_PLAN_ZERO_EXECUTION",
+    "wallTime": "00:00:02.6727051",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 4,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "qte-physical-injury-consumer-durable-session-integration-001"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 169,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T09:51:09.218653+00:00",
+    "methods": 1,
+    "cases": 4,
+    "descriptors": 1,
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "afbe58181cbc9d83e8f8ced900a9ce68535e7d7e",
+    "compileSource": "afbe58181cbc9d83e8f8ced900a9ce68535e7d7e",
+    "run": "20261013-095109-960-562602-d9b7676d8abd4f619c8433e512e86c48-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-095109-960-562602-d9b7676d8abd4f619c8433e512e86c48-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-13T09:52:13.789389+00:00",
+    "classification": "DURABLE_EXACT_TWO_GREEN_AND_CHANGED_TWO_DESTRUCTIVE_ROLLBACK_CAUSAL_RED",
+    "wallTime": "00:01:03.7896704",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 4,
+      "Executed": 4,
+      "Passed": 2,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 4,
+      "CompletedCases": 4,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 169,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T09:52:26.942714+00:00",
+    "methods": 1,
+    "cases": 4,
+    "descriptors": 1,
+    "allNativeResults": [
+      {
+        "executionId": "8f80df7b-6c17-4032-a0f4-019e25ec7717",
+        "testId": "a978f442-5de4-dc16-7932-0870926d91a8",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(materialize: True, changed: False)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:20.7338768",
+        "startTime": "2026-10-13T09:51:35.0492774+00:00",
+        "endTime": "2026-10-13T09:51:35.0492894+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "8f80df7b-6c17-4032-a0f4-019e25ec7717",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "a74d2444-2f00-43ce-afc4-c5b2c9d7f3c4",
+        "testId": "795fffbc-7d00-f787-6d4d-c420c676efb1",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(materialize: False, changed: True)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:12.1556686",
+        "startTime": "2026-10-13T09:52:01.8492170+00:00",
+        "endTime": "2026-10-13T09:52:01.8492172+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "a74d2444-2f00-43ce-afc4-c5b2c9d7f3c4",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   Xunit.Sdk.TrueException: /tmp/boe-gameengine-turnlifecycle-65c726a18336401fb2b0615f193ceacc/durable-child.json.log\n{\"Boundary\":\"qte_durable_child_owned_entry\",\"Observation\":{\"ProcessId\":562821,\"scenario\":2,\"BorrowedDurableRoot\":\"/tmp/boe-gameengine-turnlifecycle-65c726a18336401fb2b0615f193ceacc\",\"AuxiliaryFactoryRoot\":\"/tmp/boe-gameengine-turnlifecycle-810aef14e758482f8ed5277ba6a17179\",\"ParentProcessId\":562719}}\n{\"Boundary\":\"qte_durable_child_loaded_dependencies\",\"Observation\":[{\"Identity\":\"BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll\",\"Sha256\":\"1E3641F166636957FE7029232B32B3E77DD75ED9EDBCEB7ED17C23F66640B886\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true},{\"Identity\":\"BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll\",\"Sha256\":\"8283EF58FFDC6DEE93A5F3A434A44CAB94980E1D468308B20A53CA815B238515\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true},{\"Identity\":\"System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll\",\"Sha256\":\"33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true}]}\n{\"Boundary\":\"qte_durable_child_before_actual_idle\",\"Observation\":{\"ProcessId\":562821,\"scenario\":2,\"BorrowedDurableRoot\":\"/tmp/boe-gameengine-turnlifecycle-65c726a18336401fb2b0615f193ceacc\",\"AuxiliaryFactoryRoot\":\"/tmp/boe-gameengine-turnlifecycle-810aef14e758482f8ed5277ba6a17179\",\"generation\":\"7689c169fe034e83a2b29645491afbb3\",\"SessionId\":\"session_qte_story_append\",\"RequestId\":\"80a61a1c1f1e464eb920814f15457b5c\",\"SnapshotToken\":\"E40B81844ACAC7414660F7B6CC5C966E30DC44F8096A292565D1C3E6528C7749\",\"TurnNumber\":43,\"Realm\":\"mortal_world\",\"InputType\":\"BookOfEternityClient.Tests.GameEngineTurnLifecycleTests\\u002BQueuedConsoleInputSource\",\"KeyAvailable\":true,\"PlannedRepairCancellation\":true,\"MechanicalBefore\":{\"game_state/control/pending_mortal_wound_occurrences.json\":{\"Exists\":true,\"Length\":48,\"Sha256\":\"D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9\"},\"game_state/wounds/wound_opportunity_receipts.json\":{\"Exists\":true,\"Length\":2326,\"Sha256\":\"410EE03D6FBA7206BB4CA7E6516C020C71D33716A39C1CD8A20C1F1736D5418D\"},\"game_state/wounds/wound_identity_index.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/wounds/wound_history.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/player/wounds.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/npcs/npc_wounds.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/combat/enemies.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/combat/allies.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/effects/effect_identity_index.json\":{\"Exists\":true,\"Length\":44,\"Sha256\":\"6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385\"},\"game_state/player/effects.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/wounds/mortal_qte_decision_publication.json\":{\"Exists\":true,\"Length\":3355,\"Sha256\":\"D009C5100CDD9AB08B29BA4ABF3800D6F6A20A590086448FE608C5EE837FE5FF\"},\"game_state/resources/resource_definitions.json\":{\"Exists\":true,\"Length\":9231,\"Sha256\":\"B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A\"},\"game_state/resources/resource_state.json\":{\"Exists\":true,\"Length\":2254,\"Sha256\":\"FF93727EF96787AB5B6ECB68B4A90F43E7F816DBE9336693D3506A07B6A83114\"},\"game_state/resources/resource_history.json\":{\"Exists\":true,\"Length\":8122,\"Sha256\":\"79F32BB12E2564F7013A933B13786DBEEF1AE2D2C7C1EA91E0A394EC207F243E\"},\"game_state/resources/resource_owner_authority.json\":{\"Exists\":true,\"Length\":1304,\"Sha256\":\"D09941ACCD0CFA8F0F71FC79A6F4505AE0C53905FBCCF800139CF7EAA03A855C\"},\"game_state/npcs/npc_effects.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/meta/afterlife_entity_profiles.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/meta/afterlife_spiritual_conflict_state.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/control/pending_effect_resolutions.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/player/skills_active.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/player/skills_passive.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/inventory/items.json\":{\"Exists\":true,\"Length\":4603,\"Sha256\":\"8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61\"},\"game_state/quests/regular_quests.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/quests/soul_quests.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/world/world_map.json\":{\"Exists\":true,\"Length\":5541,\"Sha256\":\"133E03B0ECD39C1396A3C2E3FF4F08ACB49FF3DB8779C06EFBE4B53B2C50279A\"},\"game_state/world/current_location.json\":{\"Exists\":true,\"Length\":5398,\"Sha256\":\"4CC05D5872D856094F0BF110429ACA55E106A59C1698836834CCF70A8182569A\"},\"game_state/world/world_events.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/factions/faction_core.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/npcs/npc_core.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null}}}}\n⏳ Мир ещё не готов продолжить ход... (0с) (Escape = вернуться)\n⏹ Изменения мира не были приняты; состояние до хода будет восстановлено.\n↩ Изменения мира не были приняты; состояние до хода восстановлено.\n{\"CleanupOwnedRoot\":\"/tmp/boe-gameengine-turnlifecycle-810aef14e758482f8ed5277ba6a17179\",\"OwnedFixtureRemoved\":true,\"CleanupFailure\":null}\nUnhandled exception. Xunit.Sdk.EqualException: Assert.Equal() Failure: Collections differ\n                          ↓ (pos 4)\nExpected: [···, 191, 123, 10, 32, 32, ···]\nActual:   [···, 191, 123, 34, 115, 99, ···]\n                          ↑ (pos 4)\n   at Xunit.Assert.Equal[T](T expected, T actual, IEqualityComparer`1 comparer) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 283\n   at Xunit.Assert.Equal[T](T expected, T actual) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 89\n   at Xunit.Assert.Equal[T](T[] expected, T[] actual) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 71\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalQteDurableProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 401\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalQteDurableProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 437\n   at BookOfEternityClient.Tests.NativeHostScenarioDriver.Main(String[] args) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs:line 51\n   at BookOfEternityClient.Tests.NativeHostScenarioDriver.<Main>(String[] args)\n\n   at Xunit.Assert.True(Nullable`1 condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 141\n   at Xunit.Assert.True(Boolean condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 123\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunBrowserColdChildAsync(String executable, String[] args, String log, Int32 seconds) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs:line 240\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(Boolean materialize, Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 181\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "98b0a94c-d881-4e9f-a6cb-16ee1c348ef2",
+        "testId": "1a3c6b09-98e7-04e1-43f9-1447fea687f6",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(materialize: False, changed: False)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:14.6308949",
+        "startTime": "2026-10-13T09:51:49.6806515+00:00",
+        "endTime": "2026-10-13T09:51:49.6806517+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "98b0a94c-d881-4e9f-a6cb-16ee1c348ef2",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "1981a436-c842-4805-adeb-b53e90531c53",
+        "testId": "876c1245-c6c9-7c5a-a864-70a9083a43b7",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(materialize: True, changed: True)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:11.4141882",
+        "startTime": "2026-10-13T09:52:13.2674483+00:00",
+        "endTime": "2026-10-13T09:52:13.2674487+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "1981a436-c842-4805-adeb-b53e90531c53",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   Xunit.Sdk.TrueException: /tmp/boe-gameengine-turnlifecycle-3557203dd56343fe91c647e6098584f9/durable-child.json.log\n{\"Boundary\":\"qte_durable_child_owned_entry\",\"Observation\":{\"ProcessId\":562858,\"scenario\":3,\"BorrowedDurableRoot\":\"/tmp/boe-gameengine-turnlifecycle-3557203dd56343fe91c647e6098584f9\",\"AuxiliaryFactoryRoot\":\"/tmp/boe-gameengine-turnlifecycle-2ccc94a7d4b14755aed6490c0da0c258\",\"ParentProcessId\":562719}}\n{\"Boundary\":\"qte_durable_child_loaded_dependencies\",\"Observation\":[{\"Identity\":\"BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll\",\"Sha256\":\"1E3641F166636957FE7029232B32B3E77DD75ED9EDBCEB7ED17C23F66640B886\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true},{\"Identity\":\"BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll\",\"Sha256\":\"8283EF58FFDC6DEE93A5F3A434A44CAB94980E1D468308B20A53CA815B238515\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true},{\"Identity\":\"System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll\",\"Sha256\":\"33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true}]}\n{\"Boundary\":\"qte_durable_child_before_actual_idle\",\"Observation\":{\"ProcessId\":562858,\"scenario\":3,\"BorrowedDurableRoot\":\"/tmp/boe-gameengine-turnlifecycle-3557203dd56343fe91c647e6098584f9\",\"AuxiliaryFactoryRoot\":\"/tmp/boe-gameengine-turnlifecycle-2ccc94a7d4b14755aed6490c0da0c258\",\"generation\":\"a8cd6a956b554cafa194ccea2ec9feca\",\"SessionId\":\"session_qte_story_append\",\"RequestId\":\"725999173a774092ac7af3e2d6394b46\",\"SnapshotToken\":\"64B2590D05F7BE61D46466CD3A4CE4F81936BB42B3D81838D4B6EEDED94DFB48\",\"TurnNumber\":43,\"Realm\":\"mortal_world\",\"InputType\":\"BookOfEternityClient.Tests.GameEngineTurnLifecycleTests\\u002BQueuedConsoleInputSource\",\"KeyAvailable\":true,\"PlannedRepairCancellation\":true,\"MechanicalBefore\":{\"game_state/control/pending_mortal_wound_occurrences.json\":{\"Exists\":true,\"Length\":48,\"Sha256\":\"D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9\"},\"game_state/wounds/wound_opportunity_receipts.json\":{\"Exists\":true,\"Length\":2480,\"Sha256\":\"7F194E54D4A81839B779E7C6D99ECE70C9AA3F084941A60606701F7817AF09B8\"},\"game_state/wounds/wound_identity_index.json\":{\"Exists\":true,\"Length\":615,\"Sha256\":\"479DE46AA3976D3818A90786CC5BF1B699D65A1292B11557D233D90F93E363FF\"},\"game_state/wounds/wound_history.json\":{\"Exists\":true,\"Length\":1216,\"Sha256\":\"746794513F28DE9A9E94DD6B5A0D2965E3E014609117623B8D8C6FCCD53D5F77\"},\"game_state/player/wounds.json\":{\"Exists\":true,\"Length\":8589,\"Sha256\":\"33CDF314F15693F9F33EB3DD1166AAE15293A2C11E306522E72AD3227008EA16\"},\"game_state/npcs/npc_wounds.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/combat/enemies.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/combat/allies.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/effects/effect_identity_index.json\":{\"Exists\":true,\"Length\":2426,\"Sha256\":\"821A890C393E71992118C4FACF824C7A8CA07E7F8B940BB4C3ED7BA4AC4BF708\"},\"game_state/player/effects.json\":{\"Exists\":true,\"Length\":2547,\"Sha256\":\"F8FADEB59637655A808E71A516C2A7123D60462DED52C6690C87EFC8A416D970\"},\"game_state/wounds/mortal_qte_decision_publication.json\":{\"Exists\":true,\"Length\":3587,\"Sha256\":\"C828918259287FAFFADF67F7FC0390C6896AAC29FFEBC4B7937DBD1398E5BCFF\"},\"game_state/resources/resource_definitions.json\":{\"Exists\":true,\"Length\":9231,\"Sha256\":\"B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A\"},\"game_state/resources/resource_state.json\":{\"Exists\":true,\"Length\":2254,\"Sha256\":\"C40CA24ED59D7777B498C26C8E0E59929828043C8638491E7F26744EEB6754DA\"},\"game_state/resources/resource_history.json\":{\"Exists\":true,\"Length\":10085,\"Sha256\":\"B08AE0236DCA41A5D9DF0340FB9F722DAA742E417617E05A4342767C3252B2AA\"},\"game_state/resources/resource_owner_authority.json\":{\"Exists\":true,\"Length\":1304,\"Sha256\":\"D09941ACCD0CFA8F0F71FC79A6F4505AE0C53905FBCCF800139CF7EAA03A855C\"},\"game_state/npcs/npc_effects.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/meta/afterlife_entity_profiles.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/meta/afterlife_spiritual_conflict_state.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/control/pending_effect_resolutions.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/player/skills_active.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/player/skills_passive.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/inventory/items.json\":{\"Exists\":true,\"Length\":4603,\"Sha256\":\"8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61\"},\"game_state/quests/regular_quests.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/quests/soul_quests.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/world/world_map.json\":{\"Exists\":true,\"Length\":5541,\"Sha256\":\"133E03B0ECD39C1396A3C2E3FF4F08ACB49FF3DB8779C06EFBE4B53B2C50279A\"},\"game_state/world/current_location.json\":{\"Exists\":true,\"Length\":5398,\"Sha256\":\"4CC05D5872D856094F0BF110429ACA55E106A59C1698836834CCF70A8182569A\"},\"game_state/world/world_events.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/factions/faction_core.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null},\"game_state/npcs/npc_core.json\":{\"Exists\":false,\"Length\":null,\"Sha256\":null}}}}\n⏳ Мир ещё не готов продолжить ход... (0с) (Escape = вернуться)\n⏹ Изменения мира не были приняты; состояние до хода будет восстановлено.\n↩ Изменения мира не были приняты; состояние до хода восстановлено.\n{\"CleanupOwnedRoot\":\"/tmp/boe-gameengine-turnlifecycle-2ccc94a7d4b14755aed6490c0da0c258\",\"OwnedFixtureRemoved\":true,\"CleanupFailure\":null}\nUnhandled exception. Xunit.Sdk.EqualException: Assert.Equal() Failure: Collections differ\n                          ↓ (pos 4)\nExpected: [···, 191, 123, 10, 32, 32, ···]\nActual:   [···, 191, 123, 34, 115, 99, ···]\n                          ↑ (pos 4)\n   at Xunit.Assert.Equal[T](T expected, T actual, IEqualityComparer`1 comparer) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 283\n   at Xunit.Assert.Equal[T](T expected, T actual) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 89\n   at Xunit.Assert.Equal[T](T[] expected, T[] actual) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 71\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalQteDurableProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 401\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalQteDurableProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 437\n   at BookOfEternityClient.Tests.NativeHostScenarioDriver.Main(String[] args) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs:line 51\n   at BookOfEternityClient.Tests.NativeHostScenarioDriver.<Main>(String[] args)\n\n   at Xunit.Assert.True(Nullable`1 condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 141\n   at Xunit.Assert.True(Boolean condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 123\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunBrowserColdChildAsync(String executable, String[] args, String log, Int32 seconds) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs:line 240\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(Boolean materialize, Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 181\n--- End of stack trace from previous location ---"
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 32,
+    "nativeObservationBoundaries": {
+      "qte_story_actual_client_append": 4,
+      "qte_story_actual_engine_result": 4,
+      "qte_physical_actual_occurrence": 4,
+      "qte_durable_parent_resource_snapshot": 4,
+      "qte_durable_parent_published_pause": 4,
+      "qte_story_retained_original_artifacts": 4,
+      "qte_mortal_child_dependency_launch": 4,
+      "qte_durable_actual_child": 4
+    },
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-442e264de2c84fdb93b41679da49d370",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-65c726a18336401fb2b0615f193ceacc",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-f23a950cc1544b62833b3b8fccb79628",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-3557203dd56343fe91c647e6098584f9",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allEmittedStrictRootsActuallyAbsent": true,
+    "evidenceReview": "PENDING",
+    "caseChildReadback": [
+      {
+        "materialize": true,
+        "changed": false,
+        "processId": 562758,
+        "generation": "9fd31612fcc54aed89e45baa7671c25f",
+        "original": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "769e3b18b3f343cf9a201dd189c41bea",
+          "SnapshotToken": "6BF70626AC3F808678E1B9716D3B3617182F8206AF344F63C8F61BAD76AAEDDB",
+          "TurnNumber": 43
+        },
+        "actualTurn": 43,
+        "Stories": [
+          42,
+          43
+        ],
+        "handled": false,
+        "secondIdle": false,
+        "inputType": "BookOfEternityClient.AgentConsole.AgentConsoleLiveInputSource",
+        "inputAvailableBefore": false,
+        "inputAvailableAfter": false,
+        "changedMechanicalPaths": [],
+        "markerAndReceiptLost": false,
+        "loadedBindings": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "1E3641F166636957FE7029232B32B3E77DD75ED9EDBCEB7ED17C23F66640B886",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "8283EF58FFDC6DEE93A5F3A434A44CAB94980E1D468308B20A53CA815B238515",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ],
+        "ownedEntry": {
+          "ProcessId": 562758,
+          "scenario": 1,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-442e264de2c84fdb93b41679da49d370",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-36df9d4eedd8476598aeb3af32244aa1",
+          "ParentProcessId": 562719
+        },
+        "preIdle": {
+          "ProcessId": 562758,
+          "scenario": 1,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-442e264de2c84fdb93b41679da49d370",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-36df9d4eedd8476598aeb3af32244aa1",
+          "generation": "9fd31612fcc54aed89e45baa7671c25f",
+          "SessionId": "session_qte_story_append",
+          "RequestId": "769e3b18b3f343cf9a201dd189c41bea",
+          "SnapshotToken": "6BF70626AC3F808678E1B9716D3B3617182F8206AF344F63C8F61BAD76AAEDDB",
+          "TurnNumber": 43,
+          "Realm": "mortal_world",
+          "InputType": "BookOfEternityClient.AgentConsole.AgentConsoleLiveInputSource",
+          "KeyAvailable": false,
+          "PlannedRepairCancellation": false,
+          "MechanicalBefore": {
+            "game_state/control/pending_mortal_wound_occurrences.json": {
+              "Exists": true,
+              "Length": 48,
+              "Sha256": "D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9"
+            },
+            "game_state/wounds/wound_opportunity_receipts.json": {
+              "Exists": true,
+              "Length": 2480,
+              "Sha256": "1CC9740D4934A83DC3B85D35395EF1634CFE30680D1D450E70A704F6BAD90332"
+            },
+            "game_state/wounds/wound_identity_index.json": {
+              "Exists": true,
+              "Length": 615,
+              "Sha256": "498C754C4C70D4FC692FE8D97FBFB91582D34FD5FDFEC474987736B9778ECC02"
+            },
+            "game_state/wounds/wound_history.json": {
+              "Exists": true,
+              "Length": 1216,
+              "Sha256": "C0CB2F9CD241B811617F314DF1BB8D817E0E42C3905FB24FE528320920C9870F"
+            },
+            "game_state/player/wounds.json": {
+              "Exists": true,
+              "Length": 8589,
+              "Sha256": "7E4A1D8027C87BA48D4EF6C5E1766ECD9954531DA9D3BA0867314B9BBC2469FB"
+            },
+            "game_state/npcs/npc_wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/enemies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/allies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/effects/effect_identity_index.json": {
+              "Exists": true,
+              "Length": 2426,
+              "Sha256": "E8C988D209AC15F46BB911F6293505E64C7F74F0ED116E456140A8DA0AEE599A"
+            },
+            "game_state/player/effects.json": {
+              "Exists": true,
+              "Length": 2547,
+              "Sha256": "33BEFE53E3A052B0F2968C64EE4B799955CB7B7E05173E80E4C778D9DC1F3DDD"
+            },
+            "game_state/wounds/mortal_qte_decision_publication.json": {
+              "Exists": true,
+              "Length": 3587,
+              "Sha256": "46E91F0E07E80ED1E1B28F828DA726B76A1A3475D3CB630BCCB952C0F91FD41E"
+            },
+            "game_state/resources/resource_definitions.json": {
+              "Exists": true,
+              "Length": 9231,
+              "Sha256": "B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A"
+            },
+            "game_state/resources/resource_state.json": {
+              "Exists": true,
+              "Length": 2254,
+              "Sha256": "9F9259C08E2E1A2BFA62A6B778236A6F504A4EA52A037D0630455874F164FDEB"
+            },
+            "game_state/resources/resource_history.json": {
+              "Exists": true,
+              "Length": 10085,
+              "Sha256": "66B68C19E731BD40B0D4E82014EE4F2FA5535B502EFF2B97C6272EDD9A67EF9A"
+            },
+            "game_state/resources/resource_owner_authority.json": {
+              "Exists": true,
+              "Length": 1304,
+              "Sha256": "D09941ACCD0CFA8F0F71FC79A6F4505AE0C53905FBCCF800139CF7EAA03A855C"
+            },
+            "game_state/npcs/npc_effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_entity_profiles.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_spiritual_conflict_state.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/control/pending_effect_resolutions.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_active.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_passive.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/inventory/items.json": {
+              "Exists": true,
+              "Length": 4603,
+              "Sha256": "8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61"
+            },
+            "game_state/quests/regular_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/quests/soul_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/world/world_map.json": {
+              "Exists": true,
+              "Length": 5541,
+              "Sha256": "133E03B0ECD39C1396A3C2E3FF4F08ACB49FF3DB8779C06EFBE4B53B2C50279A"
+            },
+            "game_state/world/current_location.json": {
+              "Exists": true,
+              "Length": 5398,
+              "Sha256": "4CC05D5872D856094F0BF110429ACA55E106A59C1698836834CCF70A8182569A"
+            },
+            "game_state/world/world_events.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/factions/faction_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            }
+          }
+        },
+        "fullChildLogUtf8Bytes": 5838,
+        "fullChildLogUtf8Sha256": "3fc59f0ca510d5f777f9c0e58c0fb52e6c75e62f69e475f8f288b59ab200d508",
+        "availableArtifactPaths": [
+          "input/turn_request.json",
+          "ready/turn_complete.json",
+          "ready/turn_error.json",
+          "game_state/control/validation_repair_request.json",
+          "game_state/control/validation_repair_ready.json",
+          "game_state/control/gm_validation_repair_artifact_stall_report.json",
+          "output/mortal_wound_decisions.json"
+        ],
+        "qualification": "EXACT_DURABLE_REPLAY_PASS_PENDING_INDEPENDENT_QUALIFICATION"
+      },
+      {
+        "materialize": false,
+        "changed": true,
+        "processId": 562821,
+        "generation": "7689c169fe034e83a2b29645491afbb3",
+        "original": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "80a61a1c1f1e464eb920814f15457b5c",
+          "SnapshotToken": "E40B81844ACAC7414660F7B6CC5C966E30DC44F8096A292565D1C3E6528C7749",
+          "TurnNumber": 43
+        },
+        "actualTurn": 42,
+        "Stories": [
+          42
+        ],
+        "handled": false,
+        "secondIdle": null,
+        "inputType": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests+QueuedConsoleInputSource",
+        "inputAvailableBefore": true,
+        "inputAvailableAfter": false,
+        "changedMechanicalPaths": [
+          "game_state/control/pending_mortal_wound_occurrences.json",
+          "game_state/wounds/wound_opportunity_receipts.json",
+          "game_state/effects/effect_identity_index.json",
+          "game_state/wounds/mortal_qte_decision_publication.json",
+          "game_state/resources/resource_definitions.json",
+          "game_state/resources/resource_state.json",
+          "game_state/resources/resource_history.json",
+          "game_state/resources/resource_owner_authority.json"
+        ],
+        "markerAndReceiptLost": true,
+        "loadedBindings": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "1E3641F166636957FE7029232B32B3E77DD75ED9EDBCEB7ED17C23F66640B886",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "8283EF58FFDC6DEE93A5F3A434A44CAB94980E1D468308B20A53CA815B238515",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ],
+        "ownedEntry": {
+          "ProcessId": 562821,
+          "scenario": 2,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-65c726a18336401fb2b0615f193ceacc",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-810aef14e758482f8ed5277ba6a17179",
+          "ParentProcessId": 562719
+        },
+        "preIdle": {
+          "ProcessId": 562821,
+          "scenario": 2,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-65c726a18336401fb2b0615f193ceacc",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-810aef14e758482f8ed5277ba6a17179",
+          "generation": "7689c169fe034e83a2b29645491afbb3",
+          "SessionId": "session_qte_story_append",
+          "RequestId": "80a61a1c1f1e464eb920814f15457b5c",
+          "SnapshotToken": "E40B81844ACAC7414660F7B6CC5C966E30DC44F8096A292565D1C3E6528C7749",
+          "TurnNumber": 43,
+          "Realm": "mortal_world",
+          "InputType": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests+QueuedConsoleInputSource",
+          "KeyAvailable": true,
+          "PlannedRepairCancellation": true,
+          "MechanicalBefore": {
+            "game_state/control/pending_mortal_wound_occurrences.json": {
+              "Exists": true,
+              "Length": 48,
+              "Sha256": "D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9"
+            },
+            "game_state/wounds/wound_opportunity_receipts.json": {
+              "Exists": true,
+              "Length": 2326,
+              "Sha256": "410EE03D6FBA7206BB4CA7E6516C020C71D33716A39C1CD8A20C1F1736D5418D"
+            },
+            "game_state/wounds/wound_identity_index.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/wounds/wound_history.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/enemies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/allies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/effects/effect_identity_index.json": {
+              "Exists": true,
+              "Length": 44,
+              "Sha256": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385"
+            },
+            "game_state/player/effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/wounds/mortal_qte_decision_publication.json": {
+              "Exists": true,
+              "Length": 3355,
+              "Sha256": "D009C5100CDD9AB08B29BA4ABF3800D6F6A20A590086448FE608C5EE837FE5FF"
+            },
+            "game_state/resources/resource_definitions.json": {
+              "Exists": true,
+              "Length": 9231,
+              "Sha256": "B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A"
+            },
+            "game_state/resources/resource_state.json": {
+              "Exists": true,
+              "Length": 2254,
+              "Sha256": "FF93727EF96787AB5B6ECB68B4A90F43E7F816DBE9336693D3506A07B6A83114"
+            },
+            "game_state/resources/resource_history.json": {
+              "Exists": true,
+              "Length": 8122,
+              "Sha256": "79F32BB12E2564F7013A933B13786DBEEF1AE2D2C7C1EA91E0A394EC207F243E"
+            },
+            "game_state/resources/resource_owner_authority.json": {
+              "Exists": true,
+              "Length": 1304,
+              "Sha256": "D09941ACCD0CFA8F0F71FC79A6F4505AE0C53905FBCCF800139CF7EAA03A855C"
+            },
+            "game_state/npcs/npc_effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_entity_profiles.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_spiritual_conflict_state.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/control/pending_effect_resolutions.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_active.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_passive.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/inventory/items.json": {
+              "Exists": true,
+              "Length": 4603,
+              "Sha256": "8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61"
+            },
+            "game_state/quests/regular_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/quests/soul_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/world/world_map.json": {
+              "Exists": true,
+              "Length": 5541,
+              "Sha256": "133E03B0ECD39C1396A3C2E3FF4F08ACB49FF3DB8779C06EFBE4B53B2C50279A"
+            },
+            "game_state/world/current_location.json": {
+              "Exists": true,
+              "Length": 5398,
+              "Sha256": "4CC05D5872D856094F0BF110429ACA55E106A59C1698836834CCF70A8182569A"
+            },
+            "game_state/world/world_events.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/factions/faction_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            }
+          }
+        },
+        "fullChildLogUtf8Bytes": 7570,
+        "fullChildLogUtf8Sha256": "0ac73a687163883d30bc857544063c7f475bf42ff1270652a700b7227073e2c2",
+        "availableArtifactPaths": [
+          "input/turn_request.json",
+          "ready/turn_complete.json",
+          "ready/turn_error.json",
+          "game_state/control/validation_repair_request.json",
+          "game_state/control/validation_repair_ready.json",
+          "game_state/control/gm_validation_repair_artifact_stall_report.json",
+          "output/mortal_wound_decisions.json"
+        ],
+        "qualification": "GENUINE_CHANGED_CANCELLATION_DESTRUCTIVE_ROLLBACK_CAUSAL_RED"
+      },
+      {
+        "materialize": false,
+        "changed": false,
+        "processId": 562792,
+        "generation": "b5c8db592972488a8ab740aaea19e7f6",
+        "original": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "f68acea13e6d44cab10ee0bb399ba1ed",
+          "SnapshotToken": "A50E2079F59C6EDB6FA87254CB5DDF40731BEFDD3668581226C523704995013B",
+          "TurnNumber": 43
+        },
+        "actualTurn": 43,
+        "Stories": [
+          42,
+          43
+        ],
+        "handled": false,
+        "secondIdle": false,
+        "inputType": "BookOfEternityClient.AgentConsole.AgentConsoleLiveInputSource",
+        "inputAvailableBefore": false,
+        "inputAvailableAfter": false,
+        "changedMechanicalPaths": [],
+        "markerAndReceiptLost": false,
+        "loadedBindings": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "1E3641F166636957FE7029232B32B3E77DD75ED9EDBCEB7ED17C23F66640B886",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "8283EF58FFDC6DEE93A5F3A434A44CAB94980E1D468308B20A53CA815B238515",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ],
+        "ownedEntry": {
+          "ProcessId": 562792,
+          "scenario": 0,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-f23a950cc1544b62833b3b8fccb79628",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-f3136540f4c94de1bc8c33d60d2e5d68",
+          "ParentProcessId": 562719
+        },
+        "preIdle": {
+          "ProcessId": 562792,
+          "scenario": 0,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-f23a950cc1544b62833b3b8fccb79628",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-f3136540f4c94de1bc8c33d60d2e5d68",
+          "generation": "b5c8db592972488a8ab740aaea19e7f6",
+          "SessionId": "session_qte_story_append",
+          "RequestId": "f68acea13e6d44cab10ee0bb399ba1ed",
+          "SnapshotToken": "A50E2079F59C6EDB6FA87254CB5DDF40731BEFDD3668581226C523704995013B",
+          "TurnNumber": 43,
+          "Realm": "mortal_world",
+          "InputType": "BookOfEternityClient.AgentConsole.AgentConsoleLiveInputSource",
+          "KeyAvailable": false,
+          "PlannedRepairCancellation": false,
+          "MechanicalBefore": {
+            "game_state/control/pending_mortal_wound_occurrences.json": {
+              "Exists": true,
+              "Length": 48,
+              "Sha256": "D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9"
+            },
+            "game_state/wounds/wound_opportunity_receipts.json": {
+              "Exists": true,
+              "Length": 2326,
+              "Sha256": "E3910253E3C81AEF447524E0E040461414C0F9AF2C0CB2477D9C38EB9BED2A94"
+            },
+            "game_state/wounds/wound_identity_index.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/wounds/wound_history.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/enemies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/allies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/effects/effect_identity_index.json": {
+              "Exists": true,
+              "Length": 44,
+              "Sha256": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385"
+            },
+            "game_state/player/effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/wounds/mortal_qte_decision_publication.json": {
+              "Exists": true,
+              "Length": 3355,
+              "Sha256": "3823FD0671D8BB510019C8C42E7F7AE0650D7D9CD339E674A70531415FC6CAAD"
+            },
+            "game_state/resources/resource_definitions.json": {
+              "Exists": true,
+              "Length": 9231,
+              "Sha256": "B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A"
+            },
+            "game_state/resources/resource_state.json": {
+              "Exists": true,
+              "Length": 2254,
+              "Sha256": "6692F217A6F85DC53BC4889A03080C297C2DF831E75E9ECA270017171618EB71"
+            },
+            "game_state/resources/resource_history.json": {
+              "Exists": true,
+              "Length": 8122,
+              "Sha256": "2E0203172DF74A21DD0DB795DEEEFA140388250D26C0766F89938FC1AA27B50A"
+            },
+            "game_state/resources/resource_owner_authority.json": {
+              "Exists": true,
+              "Length": 1304,
+              "Sha256": "D09941ACCD0CFA8F0F71FC79A6F4505AE0C53905FBCCF800139CF7EAA03A855C"
+            },
+            "game_state/npcs/npc_effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_entity_profiles.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_spiritual_conflict_state.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/control/pending_effect_resolutions.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_active.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_passive.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/inventory/items.json": {
+              "Exists": true,
+              "Length": 4603,
+              "Sha256": "8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61"
+            },
+            "game_state/quests/regular_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/quests/soul_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/world/world_map.json": {
+              "Exists": true,
+              "Length": 5541,
+              "Sha256": "133E03B0ECD39C1396A3C2E3FF4F08ACB49FF3DB8779C06EFBE4B53B2C50279A"
+            },
+            "game_state/world/current_location.json": {
+              "Exists": true,
+              "Length": 5398,
+              "Sha256": "4CC05D5872D856094F0BF110429ACA55E106A59C1698836834CCF70A8182569A"
+            },
+            "game_state/world/world_events.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/factions/faction_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            }
+          }
+        },
+        "fullChildLogUtf8Bytes": 5592,
+        "fullChildLogUtf8Sha256": "54b39662995e5799e14f685b60e604970e82be8c834f64de11e62ebd39c65c78",
+        "availableArtifactPaths": [
+          "input/turn_request.json",
+          "ready/turn_complete.json",
+          "ready/turn_error.json",
+          "game_state/control/validation_repair_request.json",
+          "game_state/control/validation_repair_ready.json",
+          "game_state/control/gm_validation_repair_artifact_stall_report.json",
+          "output/mortal_wound_decisions.json"
+        ],
+        "qualification": "EXACT_DURABLE_REPLAY_PASS_PENDING_INDEPENDENT_QUALIFICATION"
+      },
+      {
+        "materialize": true,
+        "changed": true,
+        "processId": 562858,
+        "generation": "a8cd6a956b554cafa194ccea2ec9feca",
+        "original": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "725999173a774092ac7af3e2d6394b46",
+          "SnapshotToken": "64B2590D05F7BE61D46466CD3A4CE4F81936BB42B3D81838D4B6EEDED94DFB48",
+          "TurnNumber": 43
+        },
+        "actualTurn": 42,
+        "Stories": [
+          42
+        ],
+        "handled": false,
+        "secondIdle": null,
+        "inputType": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests+QueuedConsoleInputSource",
+        "inputAvailableBefore": true,
+        "inputAvailableAfter": false,
+        "changedMechanicalPaths": [
+          "game_state/control/pending_mortal_wound_occurrences.json",
+          "game_state/wounds/wound_opportunity_receipts.json",
+          "game_state/wounds/wound_identity_index.json",
+          "game_state/wounds/wound_history.json",
+          "game_state/player/wounds.json",
+          "game_state/effects/effect_identity_index.json",
+          "game_state/player/effects.json",
+          "game_state/wounds/mortal_qte_decision_publication.json",
+          "game_state/resources/resource_definitions.json",
+          "game_state/resources/resource_state.json",
+          "game_state/resources/resource_history.json",
+          "game_state/resources/resource_owner_authority.json"
+        ],
+        "markerAndReceiptLost": true,
+        "loadedBindings": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "1E3641F166636957FE7029232B32B3E77DD75ED9EDBCEB7ED17C23F66640B886",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "8283EF58FFDC6DEE93A5F3A434A44CAB94980E1D468308B20A53CA815B238515",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ],
+        "ownedEntry": {
+          "ProcessId": 562858,
+          "scenario": 3,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-3557203dd56343fe91c647e6098584f9",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-2ccc94a7d4b14755aed6490c0da0c258",
+          "ParentProcessId": 562719
+        },
+        "preIdle": {
+          "ProcessId": 562858,
+          "scenario": 3,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-3557203dd56343fe91c647e6098584f9",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-2ccc94a7d4b14755aed6490c0da0c258",
+          "generation": "a8cd6a956b554cafa194ccea2ec9feca",
+          "SessionId": "session_qte_story_append",
+          "RequestId": "725999173a774092ac7af3e2d6394b46",
+          "SnapshotToken": "64B2590D05F7BE61D46466CD3A4CE4F81936BB42B3D81838D4B6EEDED94DFB48",
+          "TurnNumber": 43,
+          "Realm": "mortal_world",
+          "InputType": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests+QueuedConsoleInputSource",
+          "KeyAvailable": true,
+          "PlannedRepairCancellation": true,
+          "MechanicalBefore": {
+            "game_state/control/pending_mortal_wound_occurrences.json": {
+              "Exists": true,
+              "Length": 48,
+              "Sha256": "D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9"
+            },
+            "game_state/wounds/wound_opportunity_receipts.json": {
+              "Exists": true,
+              "Length": 2480,
+              "Sha256": "7F194E54D4A81839B779E7C6D99ECE70C9AA3F084941A60606701F7817AF09B8"
+            },
+            "game_state/wounds/wound_identity_index.json": {
+              "Exists": true,
+              "Length": 615,
+              "Sha256": "479DE46AA3976D3818A90786CC5BF1B699D65A1292B11557D233D90F93E363FF"
+            },
+            "game_state/wounds/wound_history.json": {
+              "Exists": true,
+              "Length": 1216,
+              "Sha256": "746794513F28DE9A9E94DD6B5A0D2965E3E014609117623B8D8C6FCCD53D5F77"
+            },
+            "game_state/player/wounds.json": {
+              "Exists": true,
+              "Length": 8589,
+              "Sha256": "33CDF314F15693F9F33EB3DD1166AAE15293A2C11E306522E72AD3227008EA16"
+            },
+            "game_state/npcs/npc_wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/enemies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/allies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/effects/effect_identity_index.json": {
+              "Exists": true,
+              "Length": 2426,
+              "Sha256": "821A890C393E71992118C4FACF824C7A8CA07E7F8B940BB4C3ED7BA4AC4BF708"
+            },
+            "game_state/player/effects.json": {
+              "Exists": true,
+              "Length": 2547,
+              "Sha256": "F8FADEB59637655A808E71A516C2A7123D60462DED52C6690C87EFC8A416D970"
+            },
+            "game_state/wounds/mortal_qte_decision_publication.json": {
+              "Exists": true,
+              "Length": 3587,
+              "Sha256": "C828918259287FAFFADF67F7FC0390C6896AAC29FFEBC4B7937DBD1398E5BCFF"
+            },
+            "game_state/resources/resource_definitions.json": {
+              "Exists": true,
+              "Length": 9231,
+              "Sha256": "B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A"
+            },
+            "game_state/resources/resource_state.json": {
+              "Exists": true,
+              "Length": 2254,
+              "Sha256": "C40CA24ED59D7777B498C26C8E0E59929828043C8638491E7F26744EEB6754DA"
+            },
+            "game_state/resources/resource_history.json": {
+              "Exists": true,
+              "Length": 10085,
+              "Sha256": "B08AE0236DCA41A5D9DF0340FB9F722DAA742E417617E05A4342767C3252B2AA"
+            },
+            "game_state/resources/resource_owner_authority.json": {
+              "Exists": true,
+              "Length": 1304,
+              "Sha256": "D09941ACCD0CFA8F0F71FC79A6F4505AE0C53905FBCCF800139CF7EAA03A855C"
+            },
+            "game_state/npcs/npc_effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_entity_profiles.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_spiritual_conflict_state.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/control/pending_effect_resolutions.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_active.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_passive.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/inventory/items.json": {
+              "Exists": true,
+              "Length": 4603,
+              "Sha256": "8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61"
+            },
+            "game_state/quests/regular_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/quests/soul_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/world/world_map.json": {
+              "Exists": true,
+              "Length": 5541,
+              "Sha256": "133E03B0ECD39C1396A3C2E3FF4F08ACB49FF3DB8779C06EFBE4B53B2C50279A"
+            },
+            "game_state/world/current_location.json": {
+              "Exists": true,
+              "Length": 5398,
+              "Sha256": "4CC05D5872D856094F0BF110429ACA55E106A59C1698836834CCF70A8182569A"
+            },
+            "game_state/world/world_events.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/factions/faction_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            }
+          }
+        },
+        "fullChildLogUtf8Bytes": 7816,
+        "fullChildLogUtf8Sha256": "c8b8ff0e6c352fa67329208bd9e7ede4d905ab15f8d5982f53895d20c18fa816",
+        "availableArtifactPaths": [
+          "input/turn_request.json",
+          "ready/turn_complete.json",
+          "ready/turn_error.json",
+          "game_state/control/validation_repair_request.json",
+          "game_state/control/validation_repair_ready.json",
+          "game_state/control/gm_validation_repair_artifact_stall_report.json",
+          "output/mortal_wound_decisions.json"
+        ],
+        "qualification": "GENUINE_CHANGED_CANCELLATION_DESTRUCTIVE_ROLLBACK_CAUSAL_RED"
+      }
+    ],
+    "nestedNativeObservations": [
+      {
+        "Boundary": "qte_durable_child_owned_entry",
+        "Observation": {
+          "ProcessId": 562758,
+          "scenario": 1,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-442e264de2c84fdb93b41679da49d370",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-36df9d4eedd8476598aeb3af32244aa1",
+          "ParentProcessId": 562719
+        }
+      },
+      {
+        "Boundary": "qte_durable_child_loaded_dependencies",
+        "Observation": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "1E3641F166636957FE7029232B32B3E77DD75ED9EDBCEB7ED17C23F66640B886",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "8283EF58FFDC6DEE93A5F3A434A44CAB94980E1D468308B20A53CA815B238515",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ]
+      },
+      {
+        "Boundary": "qte_durable_child_before_actual_idle",
+        "Observation": {
+          "ProcessId": 562758,
+          "scenario": 1,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-442e264de2c84fdb93b41679da49d370",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-36df9d4eedd8476598aeb3af32244aa1",
+          "generation": "9fd31612fcc54aed89e45baa7671c25f",
+          "SessionId": "session_qte_story_append",
+          "RequestId": "769e3b18b3f343cf9a201dd189c41bea",
+          "SnapshotToken": "6BF70626AC3F808678E1B9716D3B3617182F8206AF344F63C8F61BAD76AAEDDB",
+          "TurnNumber": 43,
+          "Realm": "mortal_world",
+          "InputType": "BookOfEternityClient.AgentConsole.AgentConsoleLiveInputSource",
+          "KeyAvailable": false,
+          "PlannedRepairCancellation": false,
+          "MechanicalBefore": {
+            "game_state/control/pending_mortal_wound_occurrences.json": {
+              "Exists": true,
+              "Length": 48,
+              "Sha256": "D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9"
+            },
+            "game_state/wounds/wound_opportunity_receipts.json": {
+              "Exists": true,
+              "Length": 2480,
+              "Sha256": "1CC9740D4934A83DC3B85D35395EF1634CFE30680D1D450E70A704F6BAD90332"
+            },
+            "game_state/wounds/wound_identity_index.json": {
+              "Exists": true,
+              "Length": 615,
+              "Sha256": "498C754C4C70D4FC692FE8D97FBFB91582D34FD5FDFEC474987736B9778ECC02"
+            },
+            "game_state/wounds/wound_history.json": {
+              "Exists": true,
+              "Length": 1216,
+              "Sha256": "C0CB2F9CD241B811617F314DF1BB8D817E0E42C3905FB24FE528320920C9870F"
+            },
+            "game_state/player/wounds.json": {
+              "Exists": true,
+              "Length": 8589,
+              "Sha256": "7E4A1D8027C87BA48D4EF6C5E1766ECD9954531DA9D3BA0867314B9BBC2469FB"
+            },
+            "game_state/npcs/npc_wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/enemies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/allies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/effects/effect_identity_index.json": {
+              "Exists": true,
+              "Length": 2426,
+              "Sha256": "E8C988D209AC15F46BB911F6293505E64C7F74F0ED116E456140A8DA0AEE599A"
+            },
+            "game_state/player/effects.json": {
+              "Exists": true,
+              "Length": 2547,
+              "Sha256": "33BEFE53E3A052B0F2968C64EE4B799955CB7B7E05173E80E4C778D9DC1F3DDD"
+            },
+            "game_state/wounds/mortal_qte_decision_publication.json": {
+              "Exists": true,
+              "Length": 3587,
+              "Sha256": "46E91F0E07E80ED1E1B28F828DA726B76A1A3475D3CB630BCCB952C0F91FD41E"
+            },
+            "game_state/resources/resource_definitions.json": {
+              "Exists": true,
+              "Length": 9231,
+              "Sha256": "B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A"
+            },
+            "game_state/resources/resource_state.json": {
+              "Exists": true,
+              "Length": 2254,
+              "Sha256": "9F9259C08E2E1A2BFA62A6B778236A6F504A4EA52A037D0630455874F164FDEB"
+            },
+            "game_state/resources/resource_history.json": {
+              "Exists": true,
+              "Length": 10085,
+              "Sha256": "66B68C19E731BD40B0D4E82014EE4F2FA5535B502EFF2B97C6272EDD9A67EF9A"
+            },
+            "game_state/resources/resource_owner_authority.json": {
+              "Exists": true,
+              "Length": 1304,
+              "Sha256": "D09941ACCD0CFA8F0F71FC79A6F4505AE0C53905FBCCF800139CF7EAA03A855C"
+            },
+            "game_state/npcs/npc_effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_entity_profiles.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_spiritual_conflict_state.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/control/pending_effect_resolutions.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_active.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_passive.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/inventory/items.json": {
+              "Exists": true,
+              "Length": 4603,
+              "Sha256": "8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61"
+            },
+            "game_state/quests/regular_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/quests/soul_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/world/world_map.json": {
+              "Exists": true,
+              "Length": 5541,
+              "Sha256": "133E03B0ECD39C1396A3C2E3FF4F08ACB49FF3DB8779C06EFBE4B53B2C50279A"
+            },
+            "game_state/world/current_location.json": {
+              "Exists": true,
+              "Length": 5398,
+              "Sha256": "4CC05D5872D856094F0BF110429ACA55E106A59C1698836834CCF70A8182569A"
+            },
+            "game_state/world/world_events.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/factions/faction_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            }
+          }
+        }
+      },
+      {
+        "Boundary": "qte_durable_child_owned_entry",
+        "Observation": {
+          "ProcessId": 562821,
+          "scenario": 2,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-65c726a18336401fb2b0615f193ceacc",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-810aef14e758482f8ed5277ba6a17179",
+          "ParentProcessId": 562719
+        }
+      },
+      {
+        "Boundary": "qte_durable_child_loaded_dependencies",
+        "Observation": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "1E3641F166636957FE7029232B32B3E77DD75ED9EDBCEB7ED17C23F66640B886",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "8283EF58FFDC6DEE93A5F3A434A44CAB94980E1D468308B20A53CA815B238515",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ]
+      },
+      {
+        "Boundary": "qte_durable_child_before_actual_idle",
+        "Observation": {
+          "ProcessId": 562821,
+          "scenario": 2,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-65c726a18336401fb2b0615f193ceacc",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-810aef14e758482f8ed5277ba6a17179",
+          "generation": "7689c169fe034e83a2b29645491afbb3",
+          "SessionId": "session_qte_story_append",
+          "RequestId": "80a61a1c1f1e464eb920814f15457b5c",
+          "SnapshotToken": "E40B81844ACAC7414660F7B6CC5C966E30DC44F8096A292565D1C3E6528C7749",
+          "TurnNumber": 43,
+          "Realm": "mortal_world",
+          "InputType": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests+QueuedConsoleInputSource",
+          "KeyAvailable": true,
+          "PlannedRepairCancellation": true,
+          "MechanicalBefore": {
+            "game_state/control/pending_mortal_wound_occurrences.json": {
+              "Exists": true,
+              "Length": 48,
+              "Sha256": "D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9"
+            },
+            "game_state/wounds/wound_opportunity_receipts.json": {
+              "Exists": true,
+              "Length": 2326,
+              "Sha256": "410EE03D6FBA7206BB4CA7E6516C020C71D33716A39C1CD8A20C1F1736D5418D"
+            },
+            "game_state/wounds/wound_identity_index.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/wounds/wound_history.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/enemies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/allies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/effects/effect_identity_index.json": {
+              "Exists": true,
+              "Length": 44,
+              "Sha256": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385"
+            },
+            "game_state/player/effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/wounds/mortal_qte_decision_publication.json": {
+              "Exists": true,
+              "Length": 3355,
+              "Sha256": "D009C5100CDD9AB08B29BA4ABF3800D6F6A20A590086448FE608C5EE837FE5FF"
+            },
+            "game_state/resources/resource_definitions.json": {
+              "Exists": true,
+              "Length": 9231,
+              "Sha256": "B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A"
+            },
+            "game_state/resources/resource_state.json": {
+              "Exists": true,
+              "Length": 2254,
+              "Sha256": "FF93727EF96787AB5B6ECB68B4A90F43E7F816DBE9336693D3506A07B6A83114"
+            },
+            "game_state/resources/resource_history.json": {
+              "Exists": true,
+              "Length": 8122,
+              "Sha256": "79F32BB12E2564F7013A933B13786DBEEF1AE2D2C7C1EA91E0A394EC207F243E"
+            },
+            "game_state/resources/resource_owner_authority.json": {
+              "Exists": true,
+              "Length": 1304,
+              "Sha256": "D09941ACCD0CFA8F0F71FC79A6F4505AE0C53905FBCCF800139CF7EAA03A855C"
+            },
+            "game_state/npcs/npc_effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_entity_profiles.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_spiritual_conflict_state.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/control/pending_effect_resolutions.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_active.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_passive.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/inventory/items.json": {
+              "Exists": true,
+              "Length": 4603,
+              "Sha256": "8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61"
+            },
+            "game_state/quests/regular_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/quests/soul_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/world/world_map.json": {
+              "Exists": true,
+              "Length": 5541,
+              "Sha256": "133E03B0ECD39C1396A3C2E3FF4F08ACB49FF3DB8779C06EFBE4B53B2C50279A"
+            },
+            "game_state/world/current_location.json": {
+              "Exists": true,
+              "Length": 5398,
+              "Sha256": "4CC05D5872D856094F0BF110429ACA55E106A59C1698836834CCF70A8182569A"
+            },
+            "game_state/world/world_events.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/factions/faction_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            }
+          }
+        }
+      },
+      {
+        "Boundary": "qte_durable_child_owned_entry",
+        "Observation": {
+          "ProcessId": 562792,
+          "scenario": 0,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-f23a950cc1544b62833b3b8fccb79628",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-f3136540f4c94de1bc8c33d60d2e5d68",
+          "ParentProcessId": 562719
+        }
+      },
+      {
+        "Boundary": "qte_durable_child_loaded_dependencies",
+        "Observation": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "1E3641F166636957FE7029232B32B3E77DD75ED9EDBCEB7ED17C23F66640B886",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "8283EF58FFDC6DEE93A5F3A434A44CAB94980E1D468308B20A53CA815B238515",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ]
+      },
+      {
+        "Boundary": "qte_durable_child_before_actual_idle",
+        "Observation": {
+          "ProcessId": 562792,
+          "scenario": 0,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-f23a950cc1544b62833b3b8fccb79628",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-f3136540f4c94de1bc8c33d60d2e5d68",
+          "generation": "b5c8db592972488a8ab740aaea19e7f6",
+          "SessionId": "session_qte_story_append",
+          "RequestId": "f68acea13e6d44cab10ee0bb399ba1ed",
+          "SnapshotToken": "A50E2079F59C6EDB6FA87254CB5DDF40731BEFDD3668581226C523704995013B",
+          "TurnNumber": 43,
+          "Realm": "mortal_world",
+          "InputType": "BookOfEternityClient.AgentConsole.AgentConsoleLiveInputSource",
+          "KeyAvailable": false,
+          "PlannedRepairCancellation": false,
+          "MechanicalBefore": {
+            "game_state/control/pending_mortal_wound_occurrences.json": {
+              "Exists": true,
+              "Length": 48,
+              "Sha256": "D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9"
+            },
+            "game_state/wounds/wound_opportunity_receipts.json": {
+              "Exists": true,
+              "Length": 2326,
+              "Sha256": "E3910253E3C81AEF447524E0E040461414C0F9AF2C0CB2477D9C38EB9BED2A94"
+            },
+            "game_state/wounds/wound_identity_index.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/wounds/wound_history.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/enemies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/allies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/effects/effect_identity_index.json": {
+              "Exists": true,
+              "Length": 44,
+              "Sha256": "6F6F11094B8580A57C975C5FEF49BE32295CCF51AFD4F2D4038B0E77B292F385"
+            },
+            "game_state/player/effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/wounds/mortal_qte_decision_publication.json": {
+              "Exists": true,
+              "Length": 3355,
+              "Sha256": "3823FD0671D8BB510019C8C42E7F7AE0650D7D9CD339E674A70531415FC6CAAD"
+            },
+            "game_state/resources/resource_definitions.json": {
+              "Exists": true,
+              "Length": 9231,
+              "Sha256": "B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A"
+            },
+            "game_state/resources/resource_state.json": {
+              "Exists": true,
+              "Length": 2254,
+              "Sha256": "6692F217A6F85DC53BC4889A03080C297C2DF831E75E9ECA270017171618EB71"
+            },
+            "game_state/resources/resource_history.json": {
+              "Exists": true,
+              "Length": 8122,
+              "Sha256": "2E0203172DF74A21DD0DB795DEEEFA140388250D26C0766F89938FC1AA27B50A"
+            },
+            "game_state/resources/resource_owner_authority.json": {
+              "Exists": true,
+              "Length": 1304,
+              "Sha256": "D09941ACCD0CFA8F0F71FC79A6F4505AE0C53905FBCCF800139CF7EAA03A855C"
+            },
+            "game_state/npcs/npc_effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_entity_profiles.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_spiritual_conflict_state.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/control/pending_effect_resolutions.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_active.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_passive.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/inventory/items.json": {
+              "Exists": true,
+              "Length": 4603,
+              "Sha256": "8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61"
+            },
+            "game_state/quests/regular_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/quests/soul_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/world/world_map.json": {
+              "Exists": true,
+              "Length": 5541,
+              "Sha256": "133E03B0ECD39C1396A3C2E3FF4F08ACB49FF3DB8779C06EFBE4B53B2C50279A"
+            },
+            "game_state/world/current_location.json": {
+              "Exists": true,
+              "Length": 5398,
+              "Sha256": "4CC05D5872D856094F0BF110429ACA55E106A59C1698836834CCF70A8182569A"
+            },
+            "game_state/world/world_events.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/factions/faction_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            }
+          }
+        }
+      },
+      {
+        "Boundary": "qte_durable_child_owned_entry",
+        "Observation": {
+          "ProcessId": 562858,
+          "scenario": 3,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-3557203dd56343fe91c647e6098584f9",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-2ccc94a7d4b14755aed6490c0da0c258",
+          "ParentProcessId": 562719
+        }
+      },
+      {
+        "Boundary": "qte_durable_child_loaded_dependencies",
+        "Observation": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "1E3641F166636957FE7029232B32B3E77DD75ED9EDBCEB7ED17C23F66640B886",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "8283EF58FFDC6DEE93A5F3A434A44CAB94980E1D468308B20A53CA815B238515",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ]
+      },
+      {
+        "Boundary": "qte_durable_child_before_actual_idle",
+        "Observation": {
+          "ProcessId": 562858,
+          "scenario": 3,
+          "BorrowedDurableRoot": "/tmp/boe-gameengine-turnlifecycle-3557203dd56343fe91c647e6098584f9",
+          "AuxiliaryFactoryRoot": "/tmp/boe-gameengine-turnlifecycle-2ccc94a7d4b14755aed6490c0da0c258",
+          "generation": "a8cd6a956b554cafa194ccea2ec9feca",
+          "SessionId": "session_qte_story_append",
+          "RequestId": "725999173a774092ac7af3e2d6394b46",
+          "SnapshotToken": "64B2590D05F7BE61D46466CD3A4CE4F81936BB42B3D81838D4B6EEDED94DFB48",
+          "TurnNumber": 43,
+          "Realm": "mortal_world",
+          "InputType": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests+QueuedConsoleInputSource",
+          "KeyAvailable": true,
+          "PlannedRepairCancellation": true,
+          "MechanicalBefore": {
+            "game_state/control/pending_mortal_wound_occurrences.json": {
+              "Exists": true,
+              "Length": 48,
+              "Sha256": "D33B0852A32AA18421F697370527A571EAB0E4742F323BB782A6F030B8A10FC9"
+            },
+            "game_state/wounds/wound_opportunity_receipts.json": {
+              "Exists": true,
+              "Length": 2480,
+              "Sha256": "7F194E54D4A81839B779E7C6D99ECE70C9AA3F084941A60606701F7817AF09B8"
+            },
+            "game_state/wounds/wound_identity_index.json": {
+              "Exists": true,
+              "Length": 615,
+              "Sha256": "479DE46AA3976D3818A90786CC5BF1B699D65A1292B11557D233D90F93E363FF"
+            },
+            "game_state/wounds/wound_history.json": {
+              "Exists": true,
+              "Length": 1216,
+              "Sha256": "746794513F28DE9A9E94DD6B5A0D2965E3E014609117623B8D8C6FCCD53D5F77"
+            },
+            "game_state/player/wounds.json": {
+              "Exists": true,
+              "Length": 8589,
+              "Sha256": "33CDF314F15693F9F33EB3DD1166AAE15293A2C11E306522E72AD3227008EA16"
+            },
+            "game_state/npcs/npc_wounds.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/enemies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/combat/allies.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/effects/effect_identity_index.json": {
+              "Exists": true,
+              "Length": 2426,
+              "Sha256": "821A890C393E71992118C4FACF824C7A8CA07E7F8B940BB4C3ED7BA4AC4BF708"
+            },
+            "game_state/player/effects.json": {
+              "Exists": true,
+              "Length": 2547,
+              "Sha256": "F8FADEB59637655A808E71A516C2A7123D60462DED52C6690C87EFC8A416D970"
+            },
+            "game_state/wounds/mortal_qte_decision_publication.json": {
+              "Exists": true,
+              "Length": 3587,
+              "Sha256": "C828918259287FAFFADF67F7FC0390C6896AAC29FFEBC4B7937DBD1398E5BCFF"
+            },
+            "game_state/resources/resource_definitions.json": {
+              "Exists": true,
+              "Length": 9231,
+              "Sha256": "B1B9A571109F356C162C06823F898C158283FC8688C0C97E06CFC9ED378C6E1A"
+            },
+            "game_state/resources/resource_state.json": {
+              "Exists": true,
+              "Length": 2254,
+              "Sha256": "C40CA24ED59D7777B498C26C8E0E59929828043C8638491E7F26744EEB6754DA"
+            },
+            "game_state/resources/resource_history.json": {
+              "Exists": true,
+              "Length": 10085,
+              "Sha256": "B08AE0236DCA41A5D9DF0340FB9F722DAA742E417617E05A4342767C3252B2AA"
+            },
+            "game_state/resources/resource_owner_authority.json": {
+              "Exists": true,
+              "Length": 1304,
+              "Sha256": "D09941ACCD0CFA8F0F71FC79A6F4505AE0C53905FBCCF800139CF7EAA03A855C"
+            },
+            "game_state/npcs/npc_effects.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_entity_profiles.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/meta/afterlife_spiritual_conflict_state.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/control/pending_effect_resolutions.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_active.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/player/skills_passive.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/inventory/items.json": {
+              "Exists": true,
+              "Length": 4603,
+              "Sha256": "8C84347A66EA51133CC204A69C115C83324D8B8BE0470C7AE9DE872BB959FA61"
+            },
+            "game_state/quests/regular_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/quests/soul_quests.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/world/world_map.json": {
+              "Exists": true,
+              "Length": 5541,
+              "Sha256": "133E03B0ECD39C1396A3C2E3FF4F08ACB49FF3DB8779C06EFBE4B53B2C50279A"
+            },
+            "game_state/world/current_location.json": {
+              "Exists": true,
+              "Length": 5398,
+              "Sha256": "4CC05D5872D856094F0BF110429ACA55E106A59C1698836834CCF70A8182569A"
+            },
+            "game_state/world/world_events.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/factions/faction_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            },
+            "game_state/npcs/npc_core.json": {
+              "Exists": false,
+              "Length": null,
+              "Sha256": null
+            }
+          }
+        }
+      }
+    ],
+    "nestedNativeObservationCount": 12,
+    "nestedStrictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-36df9d4eedd8476598aeb3af32244aa1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-810aef14e758482f8ed5277ba6a17179",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-f3136540f4c94de1bc8c33d60d2e5d68",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-2ccc94a7d4b14755aed6490c0da0c258",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allStrictCleanupReceiptCount": 8,
+    "allEightKnownStrictRootsActuallyAbsent": true,
+    "childTimeoutCount": 0,
+    "fullChildLogsAndAvailableArtifactsCapturedBeforeCleanup": true,
+    "causalChangedPublicationLoss": "both actual ordinary Escape cancellations restore preturn backup and delete alreadycommitted receipt/marker; CREATE wound identity/history/carrier/effects also lost; numeric postrollback health not directly captured",
+    "durableHistory": {
+      "actualInvocations": 3,
+      "executions": 12,
+      "passed": 2,
+      "failed": 10
+    },
+    "archiveFour": "QUALIFIED fb1 retained",
+    "exactDurableTwoQualification": "ROOT_ACTUAL_PASS_INDEPENDENT_GATE_PENDING",
+    "changedDurableTwo": "CAUSAL_RED_FROZEN_BEFORE_PRODUCTION_PATCH",
+    "historicalFd15TimeoutCauseAndCleanup": "remain UNKNOWN/UNQUALIFIED; current4managedchildren do not retroqualify them",
+    "productionPatch": "NOT_RELEASED"
+  }
+}

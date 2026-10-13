@@ -5,7 +5,56 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE4 QUALIFIED; DURABLE4 BOOLEAN/INPUT/DIAGNOSTIC CORRECTION SOURCE READY)
+## Current T070 boundary — 2026-10-13 (ARCHIVE4 QUALIFIED; DURABLE EXACT2 GREEN + CHANGED2 ROLLBACK CAUSAL RED FROZEN)
+
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
+`afbe58181cbc9d83e8f8ced900a9ce68535e7d7e`, no blocking findings. Fresh BOTH PlanOnly33/78/14
+succeeded143.6282092s,88/35 warnings,0/0 errors,0 execution; exact durable1/4/1 took2.6727051s,
+0 execution. Catalog717/11553 is retained unchanged. Archive4 independently QUALIFIEDfb1/finite68/
+baselines are retained without reruns.
+
+[Durable exact GREEN2 + changed cancellation causal RED2](./recovery/qte-physical-consumer-durable-cancellation-causal-red-20261013/manifest.json)
+freezes actual `20261013-095109-960-562602-d9b7676d8abd4f619c8433e512e86c48-categories`,
+source/compileafbe:4 executed/2 PASS/2 FAIL,1 method/4 cases/1 complete descriptor,63.7896704s,
+exit1,no descriptor/child timeout,skips or duplicate IDs. Exact NONE/CREATE child562792/562758 now
+fully pass SAME physical generation/originalN43 binding/owned resource-work/history/receipt/wound
+byte preservation,actual loop43/story[42,43] exactly once,terminal/original cleanup and second-idle
+no additional mechanics/story. These two native PASS await independent bounded qualification.
+
+Changed NONE/CREATE child562821/562858 now reach the ACTUAL ordinary repair wait and consume queued
+Escape through the existing caller (native KeyAvailable true before/false after). Full drained child
+logs record ordinary cancellation and pre-turn backup restoration. Both return handled=false,
+loop42/story[42],then strict Archive.cs401 committed-byte preservation fails. NONE changes8 mechanical
+paths,CREATE12: already-published completion marker and consumed receipt existed before and are
+absent afterward in both. CREATE's wound identity/history/player carrier and effect state are also
+lost; resource quartet bytes change. Numeric post-rollback health was not directly captured,so no
+exact numeric restoration is claimed. This is actual destructive outer rollback causal RED after
+already committed common publication,not a fixture timeout or qualified changed refusal.
+
+All four native child results/original/generation/binary bindings are retained. Actual integration/
+TestSupport/Immutable9 Default-context hashes agree with parent pins. Child entry/pre-idle witnesses
+show PID,owned auxiliary root,borrowed durable root,original source tuple,actual input type/queue.
+Parent observation preserves complete child stdout/stderr log,raw result,full context and available
+input/terminal/repair/stall/decision artifacts BEFORE SOURCE cleanup. Historicalfd15 timeout cause,
+managed result and factory cleanup remain UNKNOWN/UNQUALIFIED; current managed results do not
+retroactively qualify them or resolve their exact waiting cause.
+
+ROOT matched169 SOURCE/11 fresh binaries PRE/POST BEFORE metadata,32 top-level plus12 nested native
+observations,4 SOURCE+4 child factory strict cleanup receipts,all8 known roots physically absent;
+runner cleanup true. Frozen31 artifacts preserve actual/preparation/exact/TRX/full child logs/native
+artifacts/readbacks/pins/retained catalog provenance. Durable history3 actual invocations12 executions
+2 PASS10 FAIL includes retries; current4 unique outcomes are exact2 PASS/changed2 FAIL. Independent
+EVIDENCE/status and exact2 qualification PENDING; no production patch released. Next publish/GitHub-
+only recover and EVIDENCE gate,then source-supported minimum preservation of VALID alreadycommitted
+publication on changed-decision rejection. Changed public decision stays refused; no presence-only
+bypass or weaker generation/original/wholedecision/receipt/footprint/foreign-command guards. Freeze
+precedes any production fix. Select only failed changed2 afterward using a bounded source-reviewed
+existing-runner-compatible wrapper/extraction if needed; exclude passing exact2/archive4/finite68/
+baselines. Full durable4/T070/FR-063/parent/#1536 OPEN; histories/checklists/frozen packets unchanged.
+No real tool security refusal; project strict byte failure is not a tool denial.
+
+Historical child-input/diagnostic fixture correction checkpoint follows; its UNRUN wording is
+superseded by this genuine cancellation outcome. Earlierfd15 EVIDENCE remains accepted unchanged.
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `f9e9e397c251515e0cb6515df36375c530f6a475`, no blocking findings. Fresh BOTH PlanOnly33/78/14
