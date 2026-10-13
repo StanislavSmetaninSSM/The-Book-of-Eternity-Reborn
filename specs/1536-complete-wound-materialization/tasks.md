@@ -5,6 +5,39 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## Genuine pending2 FIRST corrected COMPLETE2PASS; EVIDENCE pending — 2026-10-13
+
+Source/compile/runtimef849debd7cf3c2ef25ffbbdfc5f083b5d9dae507; focused SOURCE679e/a985 accepted.
+Fresh BOTH4/5/2 143.0008303s0exec0errors,warnings99/35,initialPOST270source10binary.
+Immutable physicaldependency appendedtolater11; initialPOST isnotretrocast11. Exact1/2/1
+PlanOnly2.7299814s0execution. Catalog728/11568 is RETAINED source5be nativeaudit5.5204057s,
+no newcatalogrun; attributes/category/selector unchanged, provenance frozen explicitly.
+
+Actual20261013-225111-673-64006-7269d3175bbf4a3c9a9c31c8f694a164-categories:
+2executed2PASS0FAIL,COMPLETE1/1descriptor2/2cases,29.2512114s,exit0,noskip/dup/timeout.
+RealQTE42/official43 sameG, fullhomogeneousguaranteedrequest distributor-confirmed; genuine
+severityIII-over-II adapterpacket/nonemptywave/fullprivate copiedrequest. Exactrow catalog
+ONErequest/held0finalized, freshleaseExportrestores samefullrequest/reservation and actual
+ConfirmedHeld/currentG/rev/nullpublicationfingerprint. Changedonlynestedquantity2->1 under
+originalseals returns targetedpendingrequestseal_mismatch plus cross-rootset mismatch,
+no acceptedExport/request/held/finalizedauthority. Invalidcandidate neverenters coalescing;
+no independentlyvaliddivergentseal/deepcopy-mismatch branch or globalCoalesce-uninvokedclaim.
+Typed/fullphysical/source/command/wave/energy2/health5/createhistory1/untreatedwound assertions
+passed; zero newtreatmentSpend/commonplan/publication. Componentcodec/catalog/current-lease
+recovery only: no productionComposePendingRootcaller or live correction/completion proved.
+
+ROOT270source11binaryPOST matched beforemetadata.17nativeobservations/fullTRX/completeplans/
+stdout/pins andretainedauditprovenance frozen29stored/rawhashchains plus
+[manifest](./recovery/fr063-genuine-pending2-component-first-green-20261013/manifest.json).
+Runnerowned/runtimecleanuptrue;2strictrootsremoved/noerrors/physicallyabsent. Earlierfirst
+COMPLETE2FAIL30.6404226s andcompileFAIL98.8960467s remainimmutable/separatelyaccepted diagnoses.
+These are correctedfixtureoutcomes, notbytematchedproduction RED/GREEN. Next independent
+EVIDENCE/status acceptance beforecomponentqualification; no passingcase/audit/cohort repeat.
+Thenmandatory liveproducer/restore owner J0/J1 realcausalRED after bounded SOURCE; production
+J2–J6 not yetreleased. Same-rootfreshprocess/newroot andimmediateownwoundguidance staymandatory.
+FullFR063/T070/#1536 OPEN, no original15/aggregate13 run or issueclosure. SoleSol is isolated
+GMtest-oraclefixer, GM runtime/content/AST/deliveryUNRUN; primarysourcefrozen during thisrun.
+
 ## Recovery-mode focused SOURCE accepted; failed-pair retry UNRUN — 2026-10-13
 
 Retained independent actual AstraXHigh accepted a9854149f591aa5f1024ced2c453392ee87ad809:
