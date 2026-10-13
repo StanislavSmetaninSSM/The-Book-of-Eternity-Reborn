@@ -1,0 +1,327 @@
+{
+  "source": "ac3d13dc96f6e14fe944bab00c72413f1daedaa2",
+  "remoteSha": "ac3d13dc96f6e14fe944bab00c72413f1daedaa2",
+  "remoteExact": true,
+  "directory": "/workspace/1557-gm-feature-recovery-ac3d13dc",
+  "acquisition": "fresh GitHub single-branch depth1 filtered sparse clone; no local objects/source/cache copied",
+  "requestedFiles": 52,
+  "materializedTrackedFiles": 52,
+  "allBytesAndGitBlobsMatch": true,
+  "projectExecution": "UNRUN",
+  "fullCheckout": "not claimed: selected recovery",
+  "files": [
+    {
+      "path": ".agents/skills/speckit-analyze/SKILL.md",
+      "bytes": 10866,
+      "sha256": "2740b8aeab8d0104527384ca74106e252e0a20df89355c8f36be25a62130d6d6",
+      "gitBlob": "77fb9bdbc1139368f5f87169332fa48424bc3ed6"
+    },
+    {
+      "path": ".agents/skills/speckit-plan/SKILL.md",
+      "bytes": 7411,
+      "sha256": "b92428f869e93676fc0b77232dd4fecb610294b68bee677d940a239c43766a3d",
+      "gitBlob": "a2cf680c643792ac2116045dd936738d098318a5"
+    },
+    {
+      "path": ".agents/skills/speckit-tasks/SKILL.md",
+      "bytes": 10463,
+      "sha256": "460eddac0fd7521bed8ac2d5821c98fc0dd4ab3ced4a6d94eb04bc155b021ac9",
+      "gitBlob": "04f13518304820c6e0716ea8d5cf914b3add524d"
+    },
+    {
+      "path": ".specify/extensions.yml",
+      "bytes": 4672,
+      "sha256": "5e1ef86bc39cb43001577e895da68b324154a52281565e30ddba62c235c61df1",
+      "gitBlob": "651400d306cf969c8d354beedcab041f729fe8a9"
+    },
+    {
+      "path": ".specify/feature.json",
+      "bytes": 62,
+      "sha256": "a8e6753482a62ae4fcb2a35fb1457aad1b529de7662cceb4db290b3db7d46267",
+      "gitBlob": "5fcc5563a49c22f37de5280bc86902b480116b3b"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d"
+    },
+    {
+      "path": ".specify/templates/plan-template.md",
+      "bytes": 5176,
+      "sha256": "9e30f2f4f60da82326844fe2d0799038f66dbf34ace95f6d69c39672c9706e68",
+      "gitBlob": "1b8c0f8cc0c616a68167f228b74973c5da76a71c"
+    },
+    {
+      "path": ".specify/templates/tasks-template.md",
+      "bytes": 10542,
+      "sha256": "fc061a22f6b52a46e3e12e5d006110e5cfda935824b4eb69b1dac9fbc158435e",
+      "gitBlob": "720e57f32685c434297008c3aca4818bb18ddb7a"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 11661,
+      "sha256": "399dfecdfcdf42f7f0a0bbdd5f9fd540d8c7576d287bc91b8e595dd4a2a2aa80",
+      "gitBlob": "6d1115f2c20ef8f543ea733c561d2ce58412ec1d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs",
+      "bytes": 213635,
+      "sha256": "54369d5978c67a995f47017e7549f2096494ceeb5a5411bae2058af261e188cf",
+      "gitBlob": "bdd249bb75f39e2ee6921d70fc195e862f3aed5e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+      "bytes": 339647,
+      "sha256": "75527de090426482035f5c4e73a55f3efbcc0eb0ae1950579dab8fac598d7a6e",
+      "gitBlob": "05e51a3549c41cdec5cc43ec168a3797033f1a30"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/ExampleDocumentationFixtures.cs",
+      "bytes": 12045,
+      "sha256": "73eb463d5bf9f209755d431a282eaca37254abb4bcf69c66c4c5855f429eef4d",
+      "gitBlob": "ce6efa67b89ae40e191e375cd98bd67f2cdca8d0"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "bytes": 289155,
+      "sha256": "a82fddd96ea243347391022ea5231cdd0b862801ababa70a95e8e66ac1cd06ee",
+      "gitBlob": "f3b1b3ad0d1704abc41c779e6b7790dfb2c180e8"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectMaterializationSourceGuardTests.cs",
+      "bytes": 21572,
+      "sha256": "13342146bf265bb51e4f4824ea2ff00f9936511943ba280cf15962ec98473112",
+      "gitBlob": "8651637026ac9864d455dc29e28404690bd0acf0"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "bytes": 45253,
+      "sha256": "b382a0301c4f56799e2191ffa57739e49c7941734bd96b132923c939fba3bcc9",
+      "gitBlob": "f31da12b405092f2b5c11f1a363479c3e6f1117c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs",
+      "bytes": 29484,
+      "sha256": "9ec838fca12dc682d119bf571fef3985ac1f684e5f9caba7690eb2c07308a52a",
+      "gitBlob": "15d012bda29752a68e5acc8c932661018f566dc9"
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "bytes": 5795,
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+      "gitBlob": "e4f778864060557b6a9c783238c271fa88b63645"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+      "bytes": 30303,
+      "sha256": "e6c2896edf4b227db6742d7d91e26eda3ec1c47fdb3a145b1faa9a8b9d448d39",
+      "gitBlob": "b541cd90bf0129848f473b896645cad8e96fc974"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+      "bytes": 31947,
+      "sha256": "592e6c607df18e5f0935bf4574ba3a861edb39e70c612f7eaf12653d5ddb555d",
+      "gitBlob": "4b6d2e9626f28439a8f80423cd11a98927a3944a"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "bytes": 398600,
+      "sha256": "f1f9fd80e0e26570990a35ad6009429025d4620e31404ae0aad554ca4c9b445d",
+      "gitBlob": "6169453d1d971746dbc79153e4bde01f633787a7"
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "bytes": 247635,
+      "sha256": "8d08213f077e3b1ab63d008973ad0d47fd9bde947ee73152f85129082a960861",
+      "gitBlob": "69f76b6a207ecd35067e64b938f322b1e58fdfad"
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "bytes": 160255,
+      "sha256": "58f19cf556acafec5afe6214ce613f29c64affd085d815620b0252f710ddff5b",
+      "gitBlob": "73e038b4f5310473fcf14ff647e91f86364f9de7"
+    },
+    {
+      "path": "CLI_Rules_Index.md",
+      "bytes": 25781,
+      "sha256": "c33838a3a8a0d1dd5ff3305698d6a9ec861c2e3513775f2d0e7b39881f196f29",
+      "gitBlob": "fe6829cf230ca0503b197bc92e69b4c5d4033e8e"
+    },
+    {
+      "path": "Examples/E_Block_5.txt",
+      "bytes": 268659,
+      "sha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+      "gitBlob": "627d68e9bff28c171cd96e66c0a593612f8b215f"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "bytes": 696885,
+      "sha256": "bef41fb951303d57fa7a9ae1f6cd7ac49ac53653d557ab4f8cddb849814a56a3",
+      "gitBlob": "62bcfcd3f05a9f41825ecb127338cc663ec831b3"
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "bytes": 182495,
+      "sha256": "ca049b16c368726ff7465f6286e3df416b0d9d302008a3faaf219faa934ce3bb",
+      "gitBlob": "866efe2601930cbd0c1f6badbdc5f9b3504ecd49"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "bytes": 253233,
+      "sha256": "e69198e6db8fb00f060184ce48ec9c9aac98b2a5b2301576570bd625092521a5",
+      "gitBlob": "5820390fb8ef96f5f13d16616edddcbf2316e48b"
+    },
+    {
+      "path": "Rules/Block_5.txt",
+      "bytes": 262995,
+      "sha256": "895eebaba31c6d2527354c682067588142b00245d2b750f585923a6c63718d62",
+      "gitBlob": "7cd9650034c2439cd7bb39d280f29688c81e3e8c"
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "bytes": 188300,
+      "sha256": "fab4bd38391965d119438b91c1fc5cb4648828187275a942d7af5c6b421e6fe9",
+      "gitBlob": "89cf1ed611467b04fbc450385289acc0111a6da9"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-spec-draft-20261013/spec.md",
+      "bytes": 18686,
+      "sha256": "27735ec49aeb39eec51e1764ebff15ffe2e9c2c3cc150138659564587116bace",
+      "gitBlob": "76c2c666927892246e72cbe1ff80da51ae27b729"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/gm-documentation-modularization-approved-design-20261013.md",
+      "bytes": 21489,
+      "sha256": "c2d8b7eac8a60cdde1163893904425b132a387dd0c07d54ff12ca4eca52d5ea0",
+      "gitBlob": "2ceb60129562378d34b55b809706639d73bb6aae"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/analysis.md",
+      "bytes": 9621,
+      "sha256": "8a9b8b4af7440717f1b2fbc0ab64a7b5b4fc593893ecbf7e18509a1404db3d0b",
+      "gitBlob": "0fdcbe3a2010a68dfa29abe82f1783a6de017bf1"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/checklists/requirements.md",
+      "bytes": 2588,
+      "sha256": "0e676d2e1bfe3dcacdad98e5987a6ad151faaaa2e13c5514c6127d9f9880eb5b",
+      "gitBlob": "f39f53c976c1ea5fa7e57400c2afb2b6a82e3302"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/contracts/gm-reading-and-preservation.md",
+      "bytes": 10079,
+      "sha256": "ce29041d5ea54f3b3187f3a871a6446387e4c98e9e68c8edae00137f6ca5a498",
+      "gitBlob": "60aa386456eb62d55bdcd6e7b893cde8c4839ab8"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/data-model.md",
+      "bytes": 7660,
+      "sha256": "f0bd98262c2bb388aa2138ed8f74e1b1f38cb2b6a9aa2e7b939f78ef3c9e7cbb",
+      "gitBlob": "460ed949966b776e52926c1947540d88ae565dcc"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/plan.md",
+      "bytes": 16961,
+      "sha256": "8fe6fa77d43e83081b24a2c7a0f7db1d372fcae23fc849f6c76bdbc037860962",
+      "gitBlob": "ec3482d6768d0c5cf2ff34da356bf65d72449f1d"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/quickstart.md",
+      "bytes": 6507,
+      "sha256": "d668d946a9b87428abc34226163397b03ec385e7142ae2363c51f8c72fae92f9",
+      "gitBlob": "f0bf69aaed31988be956e19ba09a09e33446cbbf"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/coordinator-review-and-D01-disposition.md",
+      "bytes": 3292,
+      "sha256": "473740647f40276ff00616c3d80915b17d42d160627d140198f1e7f42add5989",
+      "gitBlob": "781ccfd9125f1ab7d4c2214c3002170a5288eeb6"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/coordinator-supplement-followup-review.md",
+      "bytes": 2351,
+      "sha256": "2131e42ae80e9f957104280ba4409f774efe4cb598d41987270fdaaee2e3bd7a",
+      "gitBlob": "d52e045040ed28bcae94f052f413de5d390be397"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/delivery-routing-disposition-supplement.md",
+      "bytes": 35433,
+      "sha256": "4f4127a51e05ce38c9f820d8817fa63153b2c274287196f4e552cb548e916953",
+      "gitBlob": "cfc06e0ef5937fdd4c0591ab8ab0563400788abe"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/feature-setup-readback-20261013.json",
+      "bytes": 3460,
+      "sha256": "b733e12ca577d485443edf443e1fdb0605d5eb29fc217e4aa4525f52f4532927",
+      "gitBlob": "aed9a953371aa0d347b6c470dbf2baec25522b8e"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/final-source-gate-readonly-supplement.md",
+      "bytes": 22911,
+      "sha256": "6a4041b4a41b61326ce00ba2dcf68ae2a701918a5f9979cadc17ecd74cd5a891",
+      "gitBlob": "4a7b61a9f4e8ae6bcd5ac2459f3a74c76e2ff7a1"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/frozen-base-reconciliation-20261013.json",
+      "bytes": 12367,
+      "sha256": "f09ede2ba7981cb468725474f4fe2481cacc4479ab4ec1633a86645bf1187060",
+      "gitBlob": "c6646cf6f732189dbc5e7db5565cf7b7c9c65330"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/isolated-published-branch-readback-20261013.json",
+      "bytes": 972,
+      "sha256": "09131d9e9b05ce3554fc7b0287987ab5af91a341dc4bbe5982201a0cd1872be3",
+      "gitBlob": "ea74411671da4ce56c03058414d701e920e7ad8f"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/planning-review-and-disposition-status.json",
+      "bytes": 1549,
+      "sha256": "a4b9b05f1bd8a6114d9d9e943b5a77d73d3d9d8ebd04dab141b2c8e9b8e0eb85",
+      "gitBlob": "2897c7ee34d04fb04320e3f6f2d444c1c9ffbb8f"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/specification-approval-and-tracker.json",
+      "bytes": 1961,
+      "sha256": "94df8b8dd67a0d0b2fd832b12c194a1f15afe7632e9f3dc656310a96af347f9b",
+      "gitBlob": "1f3d56d1a8a7ee7062f690d3f33251e1d1c2efa7"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/research.md",
+      "bytes": 15478,
+      "sha256": "e07dc7c5fae10dfcd1681234170ac4ce273f7f806ecc89ffa6e5a872044d9a42",
+      "gitBlob": "c7ce821bfbf6fc2b6668341caf815d31a599977d"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/spec.md",
+      "bytes": 18931,
+      "sha256": "3d6383c71ff9f08b864765ca852f6eb8f6927723726f65ea379b8283264992fd",
+      "gitBlob": "4b1379c173417ac929d8892c289f390571231094"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/tasks.md",
+      "bytes": 13449,
+      "sha256": "2a8114e2ec71be73a4dc8515380060710ef72666d2ff4e3139497ebef7836022",
+      "gitBlob": "14bdd520ae7fd083c1643575822c12d4f680594a"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1875427,
+      "sha256": "6ed08d11d2bc03682d8d173d77e004e955bef64fcdd99a2f364b92513c00d71a",
+      "gitBlob": "8e750f3200e5e46f9a6a1b7283614aa74732ed1c"
+    }
+  ],
+  "verifiedUtc": "2026-10-13T22:06:53.576675+00:00"
+}

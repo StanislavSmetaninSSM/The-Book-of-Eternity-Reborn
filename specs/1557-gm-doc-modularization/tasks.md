@@ -1,5 +1,34 @@
 # Tasks: GM Documentation Modularization
 
+## A preparation WIP: frozen ownership/edit inventory only — 2026-10-13
+
+Retained sole Sol author stopped at a bounded source-metadata checkpoint on isolated
+base ac3d13dc96f6e14fe944bab00c72413f1daedaa2; primary FR063 checkout untouched.
+T003 candidate has a gap-free nonoverlapping exact-byte partition of the three A sources:
+110 planned ownership blocks,187 ordered JSON fences and80 scoped complete manifest row
+records. All ten rule/example topic pairs, compact core and retained routing surfaces have
+planned owners. Matrix row/preamble/table context, separators and whole numbered/named
+examples remain accounted for; corrected Shining faction range11582-12099 is separate
+from the math section11542-11581. Block_5 has source pins ONLY, no moves or B tests.
+T004 candidate records exact reversible before/after payloads for three approved D01
+reconciliations and two conditional-reading replacements, plus49 stable reference sites.
+Actual documents/daemon/production sources remain byte-exact; none of these edits is applied.
+Independent delivery inventory records14 existing prerequisites plus22 new core/router/topic
+files (36 total), without deriving it solely from the daemon list under test.
+
+Static interval/hash/reassembly and edit-before-image checks passed; these are metadata
+checks, not implemented destination/reassembly verification or SOURCE acceptance. Module
+context/wrapper precision, full manifest locator/companion remapping and the finite routing
+truth table still need connected test-source verification before any move. T005–T007 and
+T012–T013 tests, helper, delivery adapter, categories and selectors are UNWRITTEN. All new
+build/discovery/catalog/runtime/AST/package/session-delivery/cleanup checks UNRUN. Catalog
+remains inherited727/11568; no new runtime case count or performance claim is made.
+This partial WIP is for immediate ROOT publication/recovery before continuing authoring.
+No task or acceptance checkbox changes. A still needs complete test-first candidate,
+mandatory independent SOURCE then actual intended RED freeze before content/production
+edits; B requires independent A acceptance. No primary changes, Git mutations, providers,
+new agents, Windows/full suite or new gameplay/authority/source-access exceptions.
+
 ## Active isolated execution context — 2026-10-13
 
 Tracked #1557, exact specification revision1 approved16:17UTC. Coordinator planning
