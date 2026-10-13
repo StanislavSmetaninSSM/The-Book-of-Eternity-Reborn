@@ -1,5 +1,39 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J1 bounded causal RED EVIDENCE accepted; production boundary unopened — 2026-10-13
+
+Retained independent actual Astra XHigh [EVIDENCE/causal report](recovery/fr063-live-j1-first-actual-independent-evidence-review-20261013.md)
+SHA2562aeb2343fad5cc7e8fa2f38fb207c22593c595882da122bffb79fa703687a26f
+accepts published2a989bbcb2551e54ff9d1ea2366dea36ac3ac40b: all28chains/native
+sevenobservations/source2216/binary11/full1case/strictcleanup. Genuine bounded
+J1 causal RED confirmed; no Important/Critical fixture/observer blocker and no
+furtherdiagnostic or passingcohort repeat needed. This is missingjointowner failure
+evidence, not a regression against unchanged homogeneous treatment or acceptance.
+
+First real genericrepair exists; line189 fullTurnResubmissionRequired=false is the
+actual failure. Sole concurrent_work_unsupported issue at pending_mortal_wound_occurrences
+identifies homogeneous intake533–537 returning before QTEstaging584–587. Laterseverity/
+checkpoint/catalog assertions UNREACHED. All219 preentry session-file digests match
+physical dispatch images including36966bytecommand; preentry ConfirmedHeld only.
+No atdispatchregistry or terminalsettlement/cold/newroot/finalpublication claim.
+Frozenmanifest EVIDENCE PENDING remains historical; this laterreport closesclassification.
+GitHub-only selectedrecovery:2133materializedfiles/1595connectedchangedpaths exact
+bytes/blobs, projectexecutionUNRUN/sparseonly. SameLinuxcloud, Windowsunavailable.
+
+Smallest future production boundary per acceptedDESIGNv2: private typed admission
+immediately before homogeneousbranch proving original/generation/existingconfirmed
+request, obtaining realadapter severitywave, coordinatedoriginalbaseline restore plus
+exactcommand/privatepending/checkpoint install/readback before realfullturn dispatch.
+Unaware/out-of-contour callers retain refusal. Singleunionprepared/effect/final/common
+andlifecycle settlement remain separatemandatoryJ4–J6; packet/codec not authority.
+ROOT/coordinator must release a boundedsource/negativefixture block separately and
+obtain independent SOURCE/selection before runtime; currentJ2–J6 UNIMPLEMENTED and
+UNRELEASED. Do not forcefullturnflag/deleteoccurrence/command/relaxguard/manufacturepending.
+FullFR063/livecorrection/sameheldcompletion/freshPID/newroot/immediateUI remainOPEN.
+SoleSol stillauthors isolated GM connecteddelivery TEST-source, no primarywriter/run;
+no task/acceptancecheckbox changed and allpreviousqualifications/packets preserved.
+
+
 ## J1 first actual live-owner departure frozen — 2026-10-13
 
 Fresh compile/catalog/runtime source09660079344c832f1b06b86f2653382bc2f8f36a,
