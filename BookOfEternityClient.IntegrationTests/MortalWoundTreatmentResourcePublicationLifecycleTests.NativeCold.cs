@@ -34,7 +34,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         // Existing canonical bootstrap is a precondition, not a new QTE creation proof.
         await using var held = await CreateHeldTreatmentPipelineContextAsync(
-            fault: null, withRollbackAuthority: true, composePublication: false);
+            fault: null, withRollbackAuthority: true, composePublication: false,
+            configureBeforePreparation: PrepareGuaranteedNativeNpcReceiptShapeAsync);
         using var owned = new CleanupOwnedFixture(held.Root, line => _directGachaOutput?.WriteLine(line));
         var files = held.FileSystem;
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(files, held.Lease));
@@ -286,12 +287,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(sha256, MortalArchiveHash(actualBytes));
                 var rawRequest = MortalArchiveText(actualBytes);
                 using var request = JsonDocument.Parse(rawRequest);
+                var currentNpcBytes = File.ReadAllBytes(files.ResolvePath(NpcCoreChangesContract.NpcCorePath));
                 var requestObservation = new
                 {
                     Sequence = repairPublications.Count, Format = format, TransactionId = transactionId,
                     Committed = committed, MemberPath = requestPath, ActualBytesLength = actualBytes.LongLength,
                     ActualSha256 = MortalArchiveHash(actualBytes), ActualBytes = Convert.ToBase64String(actualBytes),
-                    RawRequest = rawRequest, Request = request.RootElement.Clone()
+                    RawRequest = rawRequest, Request = request.RootElement.Clone(),
+                    CurrentNpcCore = new { Path = NpcCoreChangesContract.NpcCorePath, Bytes = Convert.ToBase64String(currentNpcBytes),
+                        Length = currentNpcBytes.LongLength, Sha256 = MortalArchiveHash(currentNpcBytes) }
                 };
                 repairPublications.Add(requestObservation);
                 Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_guaranteed_native_repair_request", Observation = requestObservation }));
@@ -305,6 +309,36 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_guaranteed_native_repair_capture_failure", Observation = observation }));
             }
         }
+    }
+
+    private async Task PrepareGuaranteedNativeNpcReceiptShapeAsync(FileSystemManager files)
+    {
+        // The existing callback runs after canonical bootstrap and before original/request/claim creation.
+        var beforeBytes = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath));
+        var root = JsonNode.Parse(MortalArchiveText(beforeBytes))!.AsObject();
+        var beforeRoot = root.DeepClone().AsObject();
+        var provider = Assert.IsType<JsonObject>(Assert.Single(root[GuardianPolicyContracts.NpcCoreSceneSectionName]!.AsArray()));
+        Assert.Equal(HeldTreatmentPipelineContext.ProviderId, provider["NPCId"]!.GetValue<string>());
+        Assert.False(root.ContainsKey(NpcTradeRequestState.UpdateReceiptsProperty));
+        Assert.False(provider.ContainsKey(NpcTradeRequestState.UpdateReceiptsProperty));
+        Assert.False(provider.ContainsKey(NpcTradeRequestState.ReceiptsProperty));
+        NpcTradeRequestState.NormalizeNpcTradeReceiptsShape(provider);
+        Assert.Empty(provider[NpcTradeRequestState.ReceiptsProperty]!.AsArray());
+        var withoutReceiptShape = root.DeepClone().AsObject();
+        var unchangedProvider = Assert.IsType<JsonObject>(Assert.Single(withoutReceiptShape[GuardianPolicyContracts.NpcCoreSceneSectionName]!.AsArray()));
+        Assert.True(unchangedProvider.Remove(NpcTradeRequestState.ReceiptsProperty));
+        Assert.True(JsonNode.DeepEquals(beforeRoot, withoutReceiptShape));
+        Assert.Equal(beforeRoot.ToJsonString(), withoutReceiptShape.ToJsonString());
+        await files.WriteFileAtomicAsync(NpcCoreChangesContract.NpcCorePath, root.ToJsonString());
+        var afterBytes = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath));
+        Assert.True(JsonNode.DeepEquals(root, JsonNode.Parse(MortalArchiveText(afterBytes))));
+        WritePhysicalInjuryDiagnostic("fr063_guaranteed_native_pre_original_npc_shape", new
+        {
+            Path = NpcCoreChangesContract.NpcCorePath, ProviderId = HeldTreatmentPipelineContext.ProviderId,
+            BeforeSha256 = MortalArchiveHash(beforeBytes), AfterSha256 = MortalArchiveHash(afterBytes),
+            AddedOnlyEmptyCanonicalReceipts = true, AllOtherProviderAndRootPropertiesUnchanged = true,
+            BeforeOriginalRequestAndClaims = true
+        });
     }
 
     private static async Task WriteGuaranteedNativeOrdinaryOutputsAsync(
@@ -409,7 +443,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             AcceptedMechanicsPlan.WoundCommandPath, ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath,
             "input/turn_request.json", "ready/turn_complete.json", "ready/turn_error.json", "output/narrative_response.json",
             "output/interface_updates.json", "output/debug_logs.json", "game_state/control/validation_repair_request.json",
-            LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,
+            NpcCoreChangesContract.NpcCorePath
         }).Concat((await CaptureGuaranteedNativeOriginalAsync(files)).Keys).Concat((await CaptureGuaranteedNativeStoriesAsync(files)).Keys)
             .Distinct(StringComparer.Ordinal);
         var result = new Dictionary<string, string?>(StringComparer.Ordinal);

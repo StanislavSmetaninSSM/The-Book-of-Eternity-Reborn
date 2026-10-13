@@ -198,6 +198,14 @@ authority reconstruction/correction or immediate-guidance source was authored. N
 
 ## Task 1b: Canonical NPC receipt precondition before genuine original
 
+**Task1b authoring checkpoint:** FIXTURE-ONLY SOURCE READY at base7fce4aa9fa00c191e76871dfff9b737f077a9362.
+Existing callback settles only the exact provider's absent empty tradeInventoryReceipts before real
+original/request/claims; all other properties are deep/order invariant. Current NPC artifact and
+PRESENT repair-time byte/hash witnesses are evidence only, still UNRUN. Existing helper/defaults,
+production, Fact/oracles/input/Ready/observer/selection/bounds/catalog remain unchanged. Independent
+SOURCE review and corrected preparation/runtime remain UNRUN; no restoration RED or fix claimed.
+All historical outcomes/checkboxes remain unchanged; guidance alignment is outside this source block.
+
 - [ ] Reuse only the existing configureBeforePreparation callback in the native parent to initialize
   field_medic_01's empty canonical tradeInventoryReceipts before the genuine original is minted.
   Preserve existing provider identity/capability/stock/currency/state and original/command/held authority.

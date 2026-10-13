@@ -31,6 +31,20 @@ catalog0execution,onlyaffectednativeactual; freeze/publish/EVIDENCE its firstout
 GMdocmodularization staysread-onlyproposal; nofilemovesbeforestructureagreement. Immediatewound
 recommendations policy/docs alignment remains separate; no diagnosis mechanics invented.
 
+Task1b FIXTURE-ONLY SOURCE READY on authoring base7fce4aa9fa00c191e76871dfff9b737f077a9362.
+The existing configureBeforePreparation seam invokes a private native-fixture callback after provider
+bootstrap but BEFORE PrepareAsync/original/backups/request/claims. It requires the single exact
+field_medic_01 provider, absent canonical receipts and no receipt-update input; the existing pure
+NormalizeNpcTradeReceiptsShape adds only[]. Deep/order equality after removing that one property
+proves all root/provider/name/skill/location/stock/capability values unchanged, with physical readback.
+No old warm helper/default or production changes. Currentnpc_core joins the existing artifact capture
+and the committed PRESENT repair witness records its real bytes/hash before rollback. These are
+newly authored UNRUN witnesses; historical currentNPCafterimage remains unobserved. Original/cold
+caller/input/Ready/debug/journal/observer checks and all strict treatment/second-idle assertions remain
+unchanged,one1/1/1 selection/category5/default10/child45s/catalog72111561. SOURCE review and all
+corrected build/discovery/catalog/runtime are UNRUN. Production restoration remains LOCKED until
+actual lawful NPC admission and treatment oracles are observed; old2FAIL history/packets stay exact.
+
 ## FR-063 actual repair diagnostic — 2026-10-13 (NPC ERRORS OBSERVED; EVIDENCE PENDING)
 
 Task1a test-only sourceb08d7750e543d39a1dddbad4ee3cbab9b2a8b1a5 independently SOURCE/FIXTURE/
