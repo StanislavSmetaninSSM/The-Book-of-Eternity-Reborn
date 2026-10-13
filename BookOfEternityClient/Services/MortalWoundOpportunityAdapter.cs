@@ -102,7 +102,10 @@ internal static class MortalWoundOpportunityAdapter
             {
                 SchemaVersion = 1, occurrence.AdapterKind, occurrence.AcceptedEventOrdinal, occurrence.OpportunityRef,
                 occurrence.Owner, occurrence.Domain, occurrence.ProfileKey, occurrence.Source, occurrence.Outcome,
-                occurrence.SafeContext
+                SafeContext = new
+                {
+                    occurrence.SafeContext.Target, occurrence.SafeContext.Cause, occurrence.SafeContext.AllowedLocationKinds
+                }
             }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
             var result = ComposeAcceptedResponseCore(fs, lease, correlation,
                 new GameResponse { Response = scene ?? string.Empty, WoundDecisions = [draft] }, out exactReplay, out repairOpportunity);

@@ -5,30 +5,50 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (FIRST MATCHING NONE INCOMPLETE; PRIVATE SOURCE REFUSAL; EVIDENCE GATE PENDING)
+## Current T070 boundary — 2026-10-13 (SAFE CONTEXT BRIDGE CORRECTION READY; PRIOR INCOMPLETE EVIDENCE ACCEPTED; NEW CHECKS UNRUN)
 
-SOURCE/FIXTURE/SELECTION accepted at178e67f5af28ae63b927e177886ade12d64934c8 by actual retained
-Astra XHigh after the queued responder correction; no remaining confirmed Important/Critical.
-Fresh selected BOTH integration/unit builds and PlanOnly succeeded:28 methods/67 cases/12
-planned descriptors,144.336s,85/35 warnings and0 errors,0 executed tests. Native catalog
-NoBuild after these fresh builds valid710 categories/11548 methods,5.406s,0 executed tests.
+Incomplete NONE evidence publishedde9c953a18900e7ac2323cc9adc1b79052360a15; exact remote/clean
+primary and603-file selected recovery/all74 connected paths verified by ROOT. Actual retained
+Astra XHigh EVIDENCE/status gate ACCEPTED25 artifacts/146 immutable178e source pins/10 fresh
+binary pins: one incomplete prerequisite refusal timeout,0 completed/executed,0 PASS/0 FAIL,
+no TRX/native observations, strict fixture cleanup receipt UNEMITTED and owned root remains.
+Full ordinary completion and causal receipt predicate stay UNCONFIRMED/UNREACHED. Frozen
+[packet](./recovery/qte-physical-consumer-none-incomplete-20261013/manifest.json) is unchanged;
+its historical pre-review PENDING field is not rewritten. Historical NONE4010/CREATEc7 proper
+causal REDs and producer/projection qualification remain separate/unchanged.
 
-FIRST matching NONE invocation on exact178e source/binaries ended INCOMPLETE: category5-minute
-budget, wall302.753s, exit124/TimedOut=true;1 planned descriptor/case,0 completed,0 executed,
-0 PASS/0 FAIL, no TRX or completed test observations. Runner process/runtime cleanup succeeded;
-fixture strict cleanup receipt was UNEMITTED and its root remained, so strict fixture cleanup
-is NOT claimed. Read-only captured actual N43 repair request contains four private safeContext
-errors (malformed and missing allowedLocationKinds/cause/target); harnessRepairPackets empty.
-Full ordinary completion and causal NONE receipt predicate were not confirmed/reached. This is
-NOT a proper consumer causal RED and not qualification. Original NONE4010/CREATEc7 causal REDs
-remain separately accepted/unchanged.146 source and10 fresh binary pins PRE/POST matched BEFORE
-metadata edits. Exact runner failure wording/summary/native logs and generated session images
-are frozen in [the incomplete packet](./recovery/qte-physical-consumer-none-incomplete-20261013/manifest.json).
+Read-only actual captured occurrence and N43 request offer both have the same valid safeContext:
+targetвы, causeПрямой удар камня., kindsanatomical/other; matching public draft is lawful NONE.
+Confirmed source boundary: private ComposeQteAcceptedResponse serializes occurrence.SafeContext
+directly, but WoundOpportunitySafeContext.Target/Cause/AllowedLocationKinds getters are internal.
+Shared DefaultJsonTypeInfoResolver has no internal-member configuration. Empty serialized{}
+is the source-backed inference explaining exact four parser errors, not an observed private
+correlation dump. Other nested correlation Owner/Source/Outcome are positional records with
+public generated getters; no matching serialization defect is present there. Canonical producer
+serialization and public projection already write the exact three fields explicitly.
 
-CREATE/remainder/archive/fresh-process remain UNRUN. Evidence gate is PENDING before any source
-correction or retry. Next bounded step: verify timeout evidence and trace the actual private
-safeContext producer→adapter shape refusal; no budget increase, new optimization or broad run.
-Full consumer/T070/FR-063/parent/#1536 remain OPEN.
+Current minimum correction projects ONLY those actual occurrence safeContext members into an
+anonymous object at the existing private correlation boundary. Internal DTO/global serializer,
+strict closed source parser, original snapshot/batch/candidate checks, profile/maximum/owner,
+producer and public safe projection remain unchanged. No inferred source, default severity,
+HP formula, authority fallback or GM grammar change. No new mirroring test: protected unchanged
+NONE first matching retry verifies this real integration; existing finite controls remain.
+
+The private four diagnostics have no actionable wound packet and bypass the current wound
+fail-closed code condition; the captured ordinary repair request has fullTurnResubmission=false,
+harnessRepairPackets=[] and waits for ready. Task building refuses private source proposals.
+This source-boundary correction does not alter that route, causal fixtures, input harness,
+protective5/default10 timeout or worker policy. No broader repair/storage/archive change.
+
+Correction SOURCE READY for ROOT publication/recovery and mandatory focused source recheck.
+Fresh corrected preparation/catalog and one unchanged NONE retry remain UNRUN. Prior178e
+BOTH-build PlanOnly28 methods/67 cases/12 descriptors0 tests and valid710/11548 catalog are
+accepted preparation evidence, not corrected binaries. Full preparation/remainder selections
+stay28/67/12/default30 and26/65/10/default30; global CI/selection/categories unchanged. CREATE,
+remainder, later archive/newroot/fresh-process remain UNRUN; first baseline GREENs precede
+later qualification. All checkboxes/protected ce955/NONE/CREATE/projection Facts remain exact.
+Full consumer/T070/FR-063/parent/#1536 OPEN. Mutations STOPPED; writer ran no project build,
+discovery/runtime/commit/push.
 
 Historical178e queued responder source boundary (accepted before fresh preparation):
 Published finite candidate7332c3f794f254e6bf3d8e0fbea50fdf21bf8232; ROOT verified exact remote/clean
