@@ -5,6 +5,42 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## Genuine pending2 FIRST ACTUAL COMPLETE2FAIL; intended boundary UNREACHED — 2026-10-13
+
+SOURCE/fresh compile5beae2675eb1ce6d2a55a5e125dcde319c3cd76f; import-only SOURCE9cb accepted.
+Successful NEW BOTH4methods5cases2descriptors88.9630288s,0execution,0compileerrors,warnings99/35.
+Initial preparationPOST267source10binary; subsequent Immutable physicalpin appended to11,
+not retroactively claimed initial11. ExactPlanOnly1/2/1 2.5424926s zeroexecution. Catalog
+728/11568 valid0unmapped0stale5.5204057s zeroexecution; these steps are not tests.
+
+Actual20261013-222431-973-56797-7a3bcd05ae2848379e94196962192e83-categories endedexit1,
+30.6404226s,2executed0PASS2FAIL,COMPLETE1/1descriptor2/2cases,noskip/duplicate/timeout.
+Both rows fail PrepareGuaranteedRequest at PendingWave.cs88 with exact
+mortal_wound_treatment_guaranteed_result_inapplicable@treatmentAttempt.request:
+guaranteed_t070b3_resource. Real QTE42/source-finalization/occurrence and Stage43/Export
+prerequisites were reached; request preparation failed before confirmation/nonemptywave/
+pending/catalog/recovery. No intended persistence causalRED or componentGREEN is established.
+No loss of a confirmed hold is measured: these cases did not create/confirm the request.
+
+ROOT267source11binaryPOST matched beforemetadata;8nativeobservations/fullTRX preserved.
+Runnerowned/runtimecleanuptrue;2strictroots emitted removed/noerror and physicallyabsent.
+Full35 hash chains plus [manifest](./recovery/fr063-genuine-pending2-first-actual-20261013/manifest.json)
+retain firstactual failures. Prior98.8960467s compileFAIL and all historical outcomes remain
+immutable. Next independent EVIDENCE/classification and source-grounded fixture/result
+applicability diagnosis, then only evidenced bounded pre-original fixture correction plus
+SOURCE before actual retry. No production/oracle/guard waiver or broad passing repeat.
+
+Separatejoint DESIGNv1 BLOCKED on severity-onlyII restriction:
+[review](./recovery/fr063-joint-repair-owner-independent-design-review-20261013.md), externalSHA7d55c5a7.
+Byteexact original review retained as gzip; readable copy removes six header hard-break spaces
+and extraEOFblank only. [Proposedv2](./recovery/fr063-joint-repair-owner-implementation-design-v2-20261013.md)
+SHA9c1a7226f0207d097b0328732d2146166363d18eb9d25dfab818fd897433dce3 corrects ONLYthree
+statements: II remains firstexample, production accepts actualadapter-valid sealedrangeI–II.
+Original8309 preserved. v2 independent DESIGN recheckPENDING; eventualrelease J0/J1 test-only
+causalownerRED, no production J2–J6 release before genuine prereqs/evidence. Mandatorylive
+producer/fresh-process/new-root/immediateown-woundUI/fullFR063/T070/#1536 remainOPEN.
+Sol continues isolatedGMpureREDsource; no common idle or primary sourcewriter overlap.
+
 ## Import correction SOURCE accepted; joint-owner design proposed — 2026-10-13
 
 Independent retained actual AstraXHigh accepted import-only d7db15ffb2a033d8996d2e06ad9274b25ac89629:
