@@ -1,0 +1,11 @@
+{
+  "base": "fa4fc1e5ded616df54355966c850bab8fe765852",
+  "stage": "sixpathguardcandidatewritten WIP; finalauthorpins/reversal/reportPENDING; correctedchecksUNRUN",
+  "failure": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: exec-server transport disconnected\\\")\" }",
+  "failedOperation": "author static reversal/protected pin/report script, beforecreation; root harmless file-existence read cell808; reviewerread379; UIreadonlyread185",
+  "newProjectExecution": "NONE",
+  "sameToolSafeRecovery": "HEADfa4 and exact6paths present; node28b8447448e8/boot4e506247-7893-479b-aaef-3d4c72eb71ef same; uptime2052",
+  "cause": "UNKNOWN; no proven security refusal or newenvironmentcreation",
+  "rootChecks": "exact6paths/diffcheck/fixture7linediff/old725catalognodes/existingselectedentryvalues PASS",
+  "evidence": "prior6scopedcontrols accepted; allotherfuturechecksOPEN"
+}

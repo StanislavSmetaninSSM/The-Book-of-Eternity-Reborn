@@ -280,15 +280,16 @@ public sealed partial class GameEngineTurnLifecycleTests
             var issues = await validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
             Assert.Contains(issues, issue => issue.FilePath == path && issue.Code == "accepted_mechanics_wound_live_before_image_mismatch");
             await held.AcquireLeaseAsync();
-            await Assert.ThrowsAsync<InvalidDataException>(() => GetPrivateField<CanonicalStateNormalizer>(engine, "_normalizer")
-                .BindTo(held.Lease).NormalizeAcceptedMechanicsAsync(backups: null));
+            var refusal = await Assert.ThrowsAsync<InvalidDataException>(() => GetPrivateField<CanonicalStateNormalizer>(engine, "_normalizer")
+                .BindTo(held.Lease).PrevalidateTreatmentResourcePublicationTransactionAsync());
+            Assert.Equal($"Accepted mechanics authority at '{path}' changed after validation.", refusal.Message);
             await AssertOrdinaryTreatmentOwnerBytesAsync(held, before);
             await AssertConfirmedHeldLiveRegistryProbeAsync(held);
             Assert.True(await ContainsCurrentExactTreatmentRequestAsync(held));
             Assert.Equal(2, await ReadCurrentTreatmentEnergyAsync(held));
             Assert.Single(ReadCurrentTreatmentHistory(held.FileSystem).State!.Transitions);
             WritePhysicalInjuryDiagnostic("fr063_component_ordinary_guard_lease_turnover", new
-                { path, GuardBefore = plan.BeforeImages[path].Existed, Issues = issues, MechanicsAndRequestUnchanged = true });
+                { path, GuardBefore = plan.BeforeImages[path].Existed, Issues = issues, PreflightRefusal = refusal.Message, MechanicsAndRequestUnchanged = true });
         }
         finally { await held.ReleaseLeaseAsync(); }
     }

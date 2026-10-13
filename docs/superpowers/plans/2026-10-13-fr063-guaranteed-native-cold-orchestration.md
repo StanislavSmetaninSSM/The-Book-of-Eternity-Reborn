@@ -375,3 +375,24 @@ duplicatecoverage or original15GREEN. Exact applicability is in
 Corrected actual7 observed6PASS1late-guard coordinator-prerequisiteFAIL; reflection3/warm1
 stillUNRUN, EVIDENCEpending. This amendment qualifies no cases or newroot/replacement source.
 All original task checkboxes and contract commitments remain exact.
+
+## Late-guard coordinator preflight correction — 2026-10-13
+
+Independent EVIDENCE/status fa4fc1e5 accepts actual7/6PASS1fixture-prerequisiteFAIL and
+retains six scoped negatives plus prior native1/postseal1. Reflection3/warm1 remain
+UNRUN; ordinary13 and original15 are NOT GREEN and genuine pending2 stays OPEN.
+The failed direct normalizer call encounters the mandatory held-treatment coordinator
+before its intended sealed-input check. Only that fixture entry now uses the same
+internal PrevalidateTreatmentResourcePublicationTransactionAsync called by canonical
+refresh at MortalItems.cs1779. Exact npc_skills path-bearing InvalidDataException and
+all original source/turnover/full-byte/fullhold/request/energy/history/cleanup oracles
+are retained; the existing diagnostic records the preflight refusal message.
+This is rejection BEFORE take/publication, not a completed transaction/take claim.
+
+SOURCE-ready candidate and new checks remain UNRUN, pending publication and actual
+independent SOURCE/FIXTURE/SELECTION. New exact late1 owner budget2 plus reflection3
+and warm1 budgets2+2 gives3methods5cases3descriptors/default11, excluding passing6/
+native1/postseal1 and blockedpending2. Static catalog726/expected11567 is not discovery;
+anticipated fresh BOTH6methods8cases4descriptors executes ZERO tests and unit3 is
+build/discovery ONLY. All old nodes/selections/checkboxes/historical promises remain;
+no production/GM contract, new-root or pending-wave implementation is added.

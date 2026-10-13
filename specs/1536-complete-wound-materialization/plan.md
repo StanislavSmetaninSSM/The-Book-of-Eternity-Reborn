@@ -9,6 +9,48 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## FR-063 late-guard coordinator preflight correction — 2026-10-13 (SOURCE READY; NEW CHECKS UNRUN)
+
+Independent retained actual Astra XHigh accepted EVIDENCE/status at fa4fc1e5 for the
+corrected capture7 outcome: actual20261013-183414-513-5879-20df29d13f8242f28ae51941bf06581c,
+7executed6PASS1fixture-prerequisiteFAIL of11planned,16.9143276s,exit1,no timeout/skip/duplicate.
+Only4methods7cases/one descriptor completed; reflection3/warm1 remain UNRUN. Immutable
+[47-chain first-outcome packet](./recovery/fr063-capture7-corrected-first-outcome-20261013/manifest.json)
+retains full TRX/13observations,243source/11freshbinary PRE/POST and seven strict roots
+actually absent. The earlier181730 transport preparation remains UNKNOWN and unreused.
+Fresh BOTH9/14/4 and exact6/11/3 preparation plus catalog725/11567 executed ZERO tests.
+Six scoped negatives are qualified; native1/postseal1 remain separately qualified.
+
+The late-guard's owner admission, sealed npc_skills absence, real lease turnover and
+raw before-image mismatch passed; naked NormalizeAcceptedMechanicsAsync then hit the
+held-treatment coordinator prerequisite. Its later preservation assertions were UNREACHED;
+no production regression, completed take or publication revalidation is established.
+The bounded fixture correction calls existing bound
+PrevalidateTreatmentResourcePublicationTransactionAsync, the actual canonical-refresh
+coordinator seam (MortalItems.cs1779). Its sealed-input check precedes take/publication;
+require exact InvalidDataException naming game_state/npcs/npc_skills.json and retain
+that message in the existing native observation. Every old full byte/request/hold/energy2/
+create-only-history and cleanup oracle is unchanged. Production/shared helpers, qualified
+passing bodies, original QTE/ce955 and all frozen evidence remain exact. No GM or afterlife
+prompt/example change is needed: this changes only a component fixture entry and selection.
+
+New intentional-overlap late1 owner has protective budget2/default7. Combined exact
+[task-local retry](../../tests/selections/1536-fr063-guaranteed-ordinary-owner-late-guard-retry.json)
+selects late1+reflection3+warm1:3methods5cases3descriptors,budgets2+2+2/default11.
+Old725catalog nodes/full selectors remain exact; static catalog726/expected11567methods,
+no new method/case. Anticipated private fresh BOTH6methods8cases4descriptors is ZEROexec;
+the three unit guards are build/discovery ONLY. New SOURCE/FIXTURE/SELECTION review,
+build/discovery/catalog and all corrected runtime remain UNRUN; ROOT publishes/reviews
+before fresh preparation and first actual. Passing6/native1/postseal1 are excluded.
+
+Absence-only ordinary13 has eight accepted positive cases and five unresolved; it is
+NOT GREEN. Original15/fullFR063/T070/#1536 and all parent checkboxes remain OPEN.
+Mandatory command/pending/history exact coalescing/divergence pending2 remains OPEN in a
+real same-binding nonempty repair-wave contour; its readonly feasibility is not authored
+or runtime qualification. No source/authority/parser waiver or synthetic pending root.
+Earlier checkpoint sections below retain their historical status and are superseded by
+this active EVIDENCE acceptance and SOURCE-ready/UNRUN correction record.
+
 ## FR-063 corrected capture7 first outcome — 2026-10-13 (ACTUAL7/PLANNED11; EVIDENCE PENDING)
 
 SOURCEb3 independently accepted; metadata carrier9fb813df0e7b29db41e0067345edcb5967e2532c

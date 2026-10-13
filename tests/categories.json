@@ -2,6 +2,39 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "fr063-guaranteed-ordinary-owner-late-guard-retry",
+            "responsibility": "#1536 exact late-guard fixture correction: one existing ordinary-owner Fact/one case enters the same internal held-treatment coordinator preflight used by canonical refresh. An introduced sealed-absent npc_skills.json after real lease turnover must cause exact path-bearing InvalidDataException before plan take/publication; complete source/mechanical/request bytes and confirmed hold/energy/history remain unchanged. Prior naked-normalizer coordinator-prerequisite failure is retained; corrected execution remains UNRUN.",
+            "excludes": "Qualified capture6, native1 and post-seal compensation1; blocked genuine-wave pending2; no production/shared helper/QTE/GM changes or full dispatcher/take/publication claim. No new semantic method/case, guard bypass, expected-exception relaxation, fabricated settlement, broad warm/compatibility category, runner/global/CI or budget increase.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs"
+            ],
+            "related": [
+                {
+                    "id": "fr063-guaranteed-ordinary-owner-capture7-retry",
+                    "when": "Intentional overlap of ONLY the existing late-guard Fact; this narrow retry excludes its six qualified neighbors and is not added to old full selections."
+                },
+                {
+                    "id": "fr063-guaranteed-ordinary-owner-controls",
+                    "when": "Intentional overlap of the same single existing Fact; the original controls/pending responsibilities and historical counts stay unchanged."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerGuardsAbsentInputAcrossLeaseTurnoverBeforePublication"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "fr063-guaranteed-ordinary-owner-capture7-retry",
             "responsibility": "#1536 exact fixture-prerequisite retry: four existing ordinary-owner component methods/seven cases (nested request and resolved payload tamper2, current capability1, actual resource/effect/full-party concurrent work3, lease-turnover guard1). Only their private byte capture/assert seam now participates through the held context and Ordinal-Distinct complete paths; underlying source mutations, actual admission/refusal/take and preservation oracles stay exact. Independent first outcome retained1PASS9fixtureFAIL; corrected execution remains UNRUN.",
             "excludes": "Qualified native1 and post-seal compensation1; blocked command/pending duplicate2 with no genuine nonempty repair wave; no shared archive/old transaction helper/production/authority changes or accepted QTE/archive/durable/proof cohorts. No new method/case, empty pending root, fake repair packet, lock bypass, shortened inventory, runner/global/CI or budget change.",
