@@ -1,0 +1,124 @@
+{
+  "source": "30b4fd0cc850fe497399eb8b24874c678f33c6ba",
+  "classification": "FIRST PREPARATION COMPILE FAIL CS0103, 0 tests; actual2 UNRUN; source263POST; no fresh BOTH qualification",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 54259,
+      "uncompressedSha256": "18778251419639f5cbf500feb6593dd03553f687be62f138ec5eb02bd2147afe",
+      "compressedBytes": 15410,
+      "compressedSha256": "a9640ebc5551ea94e4c379a244723cf5f6c93205b49f2903e521b650d916d7f0"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 828,
+      "uncompressedSha256": "bb0833cbbfcf8571da9f943f8cf304a31e4f6d6bbe1d792014e79d10684c1ac2",
+      "compressedBytes": 441,
+      "compressedSha256": "2be5696832486c9480bf28f1e6262eda9e19204377125764a8b5dc5ba989547d"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 572,
+      "uncompressedSha256": "a3e51c8f0ed2868a30ac29da772d553ceede683c9240738e93a2076662ba2118",
+      "compressedBytes": 356,
+      "compressedSha256": "c4e78309070202793e3b6d39e3ba1ddf79a8b6bdf4385f35ee8a49487b0d2410"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 2582,
+      "uncompressedSha256": "5ef86d4926c0cfa82b44f9b95bc47c7020f510c8c9fa219788f5c0648fd02768",
+      "compressedBytes": 1133,
+      "compressedSha256": "fb1d358ea0943501500aa90a49a4b67928dcadfbed97a246d29770fcf043e420"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 458,
+      "uncompressedSha256": "4cb2b2625a1d22c3945a6063563785d3c7e9a45cca18b36e734105db108a6547",
+      "compressedBytes": 267,
+      "compressedSha256": "7c4f2de1d86e7ab5f9e2b8f95ef01d37b1cc63a60207fbe62bb5708e37c06014"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 98405,
+      "uncompressedSha256": "d32b02e59813a28c7ba42a15cbd5bbad2092e668e27047667935c4b5c6746f77",
+      "compressedBytes": 7375,
+      "compressedSha256": "3494e9d69621c3e4f62efac48c5b81b3ef79d0be8bd0edab65ba1f13299387bf"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 3129,
+      "uncompressedSha256": "af27e08b9f4dcae874b5d17dc4786bd6796f60c54b66e3caab9e0eaf179c66e4",
+      "compressedBytes": 1411,
+      "compressedSha256": "72ba13d3c5f0daa28cad0235e389f144cac5360680cc9fe77cad5562f91dc6aa"
+    }
+  ],
+  "frozenUtc": "2026-10-13T22:14:35.986505+00:00",
+  "preparation": {
+    "source": "30b4fd0cc850fe497399eb8b24874c678f33c6ba",
+    "compileSource": "30b4fd0cc850fe497399eb8b24874c678f33c6ba",
+    "run": "20261013-221109-467-54109-0671ef99f5614463a989323e1b6e0c1e-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-221109-467-54109-0671ef99f5614463a989323e1b6e0c1e-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-13T22:12:48.418660+00:00",
+    "classification": "FIRST PREPARATION COMPILE FAIL; not runtime RED; actual2 UNRUN",
+    "wallTime": "00:01:38.8960467",
+    "exitCode": 1,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "phaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0362601,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0572285,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0876754,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 98.6492522,
+        "Completed": false
+      }
+    ],
+    "sourcePinsPrePostMatched": 263,
+    "freshMatchingBothBinaries": "NOT ESTABLISHED: integration compilation failed; unit build not started; no NoBuild release",
+    "warnings": {
+      "integration": 98
+    },
+    "errors": {
+      "integration": 1
+    },
+    "compileDiagnostic": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs(293,70): error CS0103: The name 'SharedJsonOptions' does not exist in the current context [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]",
+    "rootCause": "SharedJsonOptions is in BookOfEternityClient.Configuration; the new partial lacks its using. Existing helper has that using; C# imports are file-scoped.",
+    "proposedCorrection": "one using BookOfEternityClient.Configuration; only, after preserving this outcome and reviewer confirmation",
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "nativeFixtureCleanupReceipts": "none: no cases executed",
+    "metadataEditedBeforeRootPostReadback": false,
+    "exactDiscoveryCatalogActual": "UNRUN",
+    "evidenceReview": "PENDING",
+    "verifiedUtc": "2026-10-13T22:14:35.710054+00:00"
+  }
+}

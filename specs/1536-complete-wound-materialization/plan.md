@@ -9,6 +9,26 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## Genuine pending2 first preparation COMPILE FAIL; actual UNRUN — 2026-10-13
+
+Accepted static SOURCE3ef; pinned clean source/compile attempt30b4fd0cc850fe497399eb8b24874c678f33c6ba.
+Fresh BOTH PlanOnly invocation20261013-221109-467-54109-0671ef99f5614463a989323e1b6e0c1e-categories
+ended exit1,98.8960467s. Integration98warnings/1error: PendingWave.cs(293,70) CS0103
+SharedJsonOptions not found. Configuration/SharedJsonOptions.cs declares the existing type;
+new partial lacks file-scoped using BookOfEternityClient.Configuration. This is a compile
+prerequisite failure, NOT runtime RED/coalescing failure or passing preparation. Unit build,
+exact discovery/catalog/actual2 UNRUN;0tests0planneddescriptors0completed, incomplete selection.
+No fresh BOTH binary qualification or NoBuild permission follows from this failed attempt.
+
+ROOT263sourcePOST matched beforemetadata, runnerowned/runtimecleanuptrue; no native fixture
+receipts because zero cases executed. Full original log/summary/sourcepins/invocation/readback
+are frozen in7 hash chains plus [manifest](./recovery/fr063-genuine-pending2-first-preparation-failure-20261013/manifest.json).
+First failure retained before correction; independent bounded EVIDENCE/diagnosis pending.
+Next: after sole Sol stops isolatedGM checkpoint, add only confirmed missing namespace import,
+publish WIP and obtain affected SOURCE check, then retry failed fresh preparation with new
+pins/scratch. No fixture/oracle/production change or qualified passing repeat is released.
+Component2/live producer/fresh-process/new-root/UI/fullFR063/T070/#1536 remain OPEN.
+
 ## Genuine pending2 SOURCE/FIXTURE/SELECTION accepted; first actual UNRUN — 2026-10-13
 
 Retained independent actual AstraXHigh SOURCE gate accepted published WIP3ef3c2777f140818c08013d7c623051b847b7524:
