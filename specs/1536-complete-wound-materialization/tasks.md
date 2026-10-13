@@ -5,7 +5,45 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (CLASSIFIER SOURCE READY; BOUNDS2 + UNRUN50)
+## Current T070 boundary — 2026-10-13 (BOUNDS 2 PASS; COMMON16 RETAINED; 50 UNRUN)
+
+SOURCE/FIXTURE/SELECTION accepted by retained actual Astra XHigh at
+`8209386780bca96584b592e1e6c3ecf5ab90296a`; first corrected bounds is GREEN.
+[Corrected bounds GREEN packet](./recovery/qte-physical-consumer-bounds-green-20261013/manifest.json)
+freezes run `20261013-031401-846-440912-f65e5cc2e01d49cdbb19ea54565fb4c9-categories`:
+1 method/2 cases/1 descriptor planned and completed,2 executed/2 PASS/0 FAIL,
+25.5040462s,exit0,no timeout/skips/duplicate IDs. All original severity/location refusal,
+actionable task construction, exact public proposal scope, cache/command refusal and canonical/
+source preservation assertions were reached and passed. Genuine QTE42 source plus official signed
+Mortal43 and exact current/pinned parsed Mortal soul bytes precede real task construction; no
+worker/provider call or invented realm wrapper was used.
+
+ROOT matched149 source and10 fresh binary PRE/POST pins BEFORE metadata edits, parsed both native
+results/full stdout/10 observations, and verified two strict cleanup receipts removed=true/failure=null
+and actual root absence. Runner-owned process/runtime cleanup succeeded. Fresh BOTH build/discovery
+28 methods/70 cases/12 descriptors took146.1084845s,85/35 warnings0 errors; exact new bounds PlanOnly
+1/2/1 took2.4069784s; VALID catalog712 categories/11548 methods took5.4225449s,no unmapped/stale.
+All three preparation/discovery commands executed0 tests. Binary compile source is82093867.
+
+Accepted a8 common16 PASS are retained and not repeated; these two corrected bounds now supply
+positive evidence for its remaining two rows, pending this packet's EVIDENCE/status gate. Existing
+full NONE36256/current-contract CREATEb76 remain accepted1 PASS each and were excluded/not repeated.
+Historical c7 CREATE RED stays separate/non-byte-matched. Finite controls now have three actual
+invocations:15 executed12 PASS3 FAIL;18 executed16 PASS2 FAIL;2 executed2 PASS0 FAIL =35 reported
+executions/30 PASS/5 FAIL, including repeats. Current seven remaining categories21 methods/50 cases/
+nine descriptors are UNRUN, including the strengthened worker scope/afterlife protection Fact.
+The frozen remaining-selection artifact contains exactly those existing categories, excluding
+common/baseline/narrow bounds; it records future selection, not executed coverage.
+
+Next: publish/recover this frozen packet, mandatory focused EVIDENCE/status gate, then matching
+NoBuild PlanOnly and actual seven-category50-case selection on unchanged compile inputs/binaries.
+Full controls/consumer, archive/newroot/fresh-process and full T070/FR-063/parent/#1536 remain OPEN.
+This packet's evidence review is PENDING. No passing common16/replay7/full NONE/CREATE/producer/
+projection rerun is selected; global selectors, budgets, protected causal Facts/checklists and old
+frozen packets remain unchanged. Archive's separate actual save/load/newroot and same-root retained
+N43 fresh-process proposal remains unwritten/UNRUN/on hold behind controls qualification.
+
+Historical Mortal worker context classifier checkpoint (accepted before this bounds GREEN):
 
 Actual retained Astra XHigh EVIDENCE/status ACCEPTED at
 `a8a7bcfaf1a051c43dd8d6089c7a1fea1cb7b174` for the
