@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-repair-failed-five",
+            "responsibility": "#1536 exact five previously failed MAIN-GM repair rows only: severity/location/downstream resource lawful corrections plus narration lawful scene-only correction and proposal-drift refusal. One dedicated theory/five unchanged cases extracted into the existing private full-engine body; no added case/test-to-test call/harness. Genuine QTE42/health155/occurrence and actual ProcessPlayerTurn43/official Reader precede exact Format1 repair publication, original-source bytes, bounded correction/retained-sibling/command-revocation/publication or refusal oracles. The accepted a9b57bbd partial outcome retains the other three construction-drift PASS rows without repeating them. Intentional overlap with qte-physical-injury-consumer-repair.",
+            "excludes": "No passing construction-drift repetition, broader repair8 category execution, prior producer/projection/NONE/CREATE/common/publication qualifiers, GM rewrite of private QTE runtime, duplicate/private narration classifier bypass, count increase or second responder attempt, new case/authority/harness/provider/worker/model/archive/newroot/freshprocess qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+                "BookOfEternityClient/Services/WoundResponseInputComposer.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-repair",
+                    "when": "Intentional one-wrapper/five-case overlap. Existing repair owner explicitly retains both wrappers/eight cases; this narrow owner is excluded from full preparation/controls to avoid duplicates and selects only the five previously failed rows."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairAcceptsExactCorrectionOrPreservesNarrationProposal"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-created-resource-replay",
             "responsibility": "#1536 exact CREATE completed-resource replay fixture correction: one dedicated Fact extracted from the prior NONE/CREATE theory, no added case. Genuine QTE42/health155/occurrence precedes actual Stage43/official Reader. Prove captured signed resource155, client-created wound/effect backlink, deterministic owned periodicDamage3 exact lifecycle/application authority and unique health tick155->152 before independent narrative AppliedDamage1 health152->151. Final canonical state/history agreement151 precedes all existing completion marker/readback/whole-mechanics byte-exact replay/once-receipt/transient-consumption oracles. Intentional publication-owner overlap avoids repeating its six passing rows, including NONE155->154.",
             "excludes": "No production/authority/parser/runner change, adoption of unexplained observed HP, synthetic effect/source/receipt/hash, test-to-test call/new harness, passing NONE/common/bounds/event/draft/projection/producer qualifier repetition, full-engine causal RED/archive/newroot/freshprocess/worker/model/provider or broad qualification.",
@@ -133,7 +164,7 @@
         },
         {
             "id": "qte-physical-injury-consumer-repair",
-            "responsibility": "#1536 finding3 actual MAIN-GM full-resubmission control: one theory/eight rows (severity/location/narration/downstream consequence-resource × lawful correction/unrelated proposal drift). Real QTE42/health155/occurrence precedes actual ProcessPlayerTurn43 and official signed safe offer. Existing committed repair-request observer authors only public full ordinary outputs and matching repair-ready. Actual source/packet/generation, pre-revocation issued-command where reachable, rollback, bounded correction and once-only publication/refusal are asserted. Location repair is only the existing Mortal QTE profile; narration keeps the whole proposal pinned.",
+            "responsibility": "#1536 finding3 actual MAIN-GM full-resubmission control: two theory wrappers/eight original rows (severity/location/narration/downstream consequence-resource × lawful correction/unrelated proposal drift), sharing one unchanged private body. Three accepted construction-drift rows retain their original wrapper; five failed exact-construction/narration rows use the dedicated wrapper. Real QTE42/health155/occurrence precedes actual ProcessPlayerTurn43 and official signed safe offer. Existing committed format1 repair-request observer authors only public full ordinary outputs and matching repair-ready. Exact source/packet/generation, pre-revocation issued-command where reachable, rollback, bounded correction and once-only publication/refusal remain asserted. Client-owned QTE runtime is not a GM resubmission target; source-bound Mortal narration-only repair retains the whole draft and exact ordinary scene target.",
             "excludes": "No TaskBuilder-only roundtrip claim, fabricated accepted command or source, worker/model/provider call, rollback-to-worker draft bridge, skill failure before command staging, archive/child qualification or aggregate suite.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerRepair.cs",
@@ -153,7 +184,8 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualMainGmRepairAcceptsExactCorrectionOrPreservesNarrationProposal"
                     ]
                 }
             ]

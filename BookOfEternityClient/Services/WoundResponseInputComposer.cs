@@ -556,7 +556,13 @@ internal static partial class WoundResponseInputComposer
                     continue;
                 }
 
-                if (WoundRepairPacketBuilder.IsRepairableIssue(issue) &&
+                var replacesMortalNarration = IsMortalQteAcquisitionNarrationIssue(issue) &&
+                    projected.WoundRepairContext is { } projectedContext &&
+                    ResourceMaterializationContract.IsAuthorityFingerprint(projectedContext.OpportunityAuthorityFingerprint) &&
+                    opportunities.Any(opportunity =>
+                        opportunity.ProfileKey == "mortal_qte_terminal_health_damage_v1" &&
+                        opportunity.AuthorityFingerprint == projectedContext.OpportunityAuthorityFingerprint);
+                if ((WoundRepairPacketBuilder.IsRepairableIssue(issue) || replacesMortalNarration) &&
                     !replacedSourceIssue)
                 {
                     result[issueIndex] = projected;
@@ -587,6 +593,12 @@ internal static partial class WoundResponseInputComposer
         }
         return result;
     }
+
+    private static bool IsMortalQteAcquisitionNarrationIssue(ValidationIssue issue) =>
+        issue.Severity == IssueSeverity.Error &&
+        issue.Section == "wound_acquisition_output" &&
+        issue.FilePath == "woundAcquisition.narration" &&
+        issue.Code is "wound_acquisition_narration_missing" or "wound_acquisition_narration_contradiction";
 
     private static IReadOnlyList<int> ResolveRepairDecisionIndexes(
         ValidationIssue issue,
@@ -707,9 +719,10 @@ internal static partial class WoundResponseInputComposer
                 binding.SessionId,
                 binding.RequestId,
                 binding.SnapshotToken,
-                opportunity.WorseningTarget is null
-                    ? "construct_wound"
-                    : "repair_wound",
+                opportunity.ProfileKey == "mortal_qte_terminal_health_damage_v1" &&
+                allIssues.Count > 0 && allIssues.All(IsMortalQteAcquisitionNarrationIssue)
+                    ? "narrate_acquisition"
+                    : opportunity.WorseningTarget is null ? "construct_wound" : "repair_wound",
                 CreateLocalIdentifier(
                     "candidate_wound_repair",
                     binding.SessionId,

@@ -11,15 +11,22 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Theory]
-    [InlineData("severity", false)]
     [InlineData("severity", true)]
-    [InlineData("location", false)]
     [InlineData("location", true)]
+    [InlineData("resource", true)]
+    public Task QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(string rejection, bool siblingDrift) =>
+        RunActualMainGmBoundedProposalRepairAsync(rejection, siblingDrift);
+
+    [Theory]
+    [InlineData("severity", false)]
+    [InlineData("location", false)]
     [InlineData("narration", false)]
     [InlineData("narration", true)]
     [InlineData("resource", false)]
-    [InlineData("resource", true)]
-    public async Task QtePhysicalInjuryConsumer_ActualMainGmRepairPreservesBoundedProposal(string rejection, bool siblingDrift)
+    public Task QtePhysicalInjuryConsumer_ActualMainGmRepairAcceptsExactCorrectionOrPreservesNarrationProposal(string rejection, bool siblingDrift) =>
+        RunActualMainGmBoundedProposalRepairAsync(rejection, siblingDrift);
+
+    private async Task RunActualMainGmBoundedProposalRepairAsync(string rejection, bool siblingDrift)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var source = await RunActualQteStorySourceAsync(physicalDeclaration: true, physicalMaximum: 2);

@@ -2165,6 +2165,10 @@ public partial class GameEngine
     private static bool IsClientOwnedRepairResubmissionPath(string path) =>
         string.Equals(
             path,
+            QteSceneService.QteRuntimePath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
             SpiritualWoundCaptureCheckpointState.StatePath,
             StringComparison.OrdinalIgnoreCase) ||
         string.Equals(

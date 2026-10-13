@@ -9,61 +9,84 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (BOUNDED REPAIR 3 PASS / 5 FAIL; COMPATIBILITY/WORKER 8 UNRUN)
+## Current T070 first vertical — 2026-10-13 (BOUNDED REPAIR CORRECTION SOURCE READY; FAILED5 + UNRUN8)
 
-Retained actual Astra XHigh focused SOURCE/FIXTURE/SELECTION ACCEPTED exact
-`c4bc8714d9fed5c7d25401d63ec8a7b3c6dd41ed`; prior2c59 Important format-1 mismatch was corrected
-BEFORE any project execution. The [format-1 bounded repair partial packet](./recovery/qte-physical-consumer-repair-bounded-partial-20261013/manifest.json)
-freezes actual `20261013-052114-002-480094-ed980702a2184d2fb37f5154a348775f-categories`,
-source/compilec4bc:1 method/8 cases/1 descriptor,8 executed/3 PASS/5 FAIL,88.5650106s,
-complete,exit1,no timeout/skips/duplicate IDs. No earlier passing cohort repeated.
+Retained actual Astra XHigh EVIDENCE/status ACCEPTED
+`a9b57bbdd5c64dc892c5fe00edb66c02784815be` for the
+[format-1 bounded repair partial packet](./recovery/qte-physical-consumer-repair-bounded-partial-20261013/manifest.json).
+SOURCE/FIXTURE/SELECTION was acceptedc4bc before actual
+`20261013-052114-002-480094-ed980702a2184d2fb37f5154a348775f-categories`,source/compilec4bc:
+1 method/8 cases/1 descriptor complete,8 executed/3 PASS/5 FAIL,88.5650106s,exit1,no timeout/skips/
+duplicate IDs. Three construction-drift positives(severity/location/resource siblingDrift=true)
+reached ALL original source/packet/full-resubmit/command-revocation/retained-sibling/refusal/loop42/
+no receipt-identity-marker/transient cleanup oracles. They remain accepted and excluded from retry.
+Exact construction3 hit a second PRESENT repair request and the unchanged count1 responder oracle;
+narration2 saw no PRESENT request and count0. Successful exact/narration acceptance/publication
+oracles remain UNREACHED; no complete MAIN-GM repair qualification is claimed.
 
-All original assertions PASS for severity/location/resource with siblingDrift=true: one actual
-MAIN-GM repair packet, full-turn resubmission metadata and exact original request/manifest/authority
-bytes, bounded correction authored with deliberate retained-description drift, refusal/loop42/no
-receipt/identity/completion marker and transient cleanup. Resource row captured the real issued
-client command before revocation. These three positives are retained pending EVIDENCE,not automatically
-repeated. They do not establish successful exact repair or narration repair.
+Native corrected-draft observations contain lawful I/other/health values. Last attempt2 packets
+retain the old severity/location/resource codes and explicitly require game_state/control/qte_runtime.json
+alongside four public GM outputs. Source proves the first departure: StagePlayerTurn backs up
+before BuildTurnSystemReminder consumes the preceding QTE reminder; ConsumePendingReminder clears
+that private runtime field client-side. CaptureChangedRollbackTrackedPaths excludes client mechanics
+but omitted QteRuntimePath. Repair restores its original baseline,then the resubmission checker
+requires that private path Changed; loop540 re-adds the original rejection despite the corrected
+public draft. Current minimum source correction adds ONLY QteSceneService.QteRuntimePath to existing
+IsClientOwnedRepairResubmissionPath. It stays in rollback inventory/restore/canonical validation;
+the GM is not granted private write authority and all public resubmission requirements remain.
 
-Exact severity/location/resource rows reach a second actual PRESENT repair request; the original
-Assert.Equal(0,repairCount++) fails expected0/actual1,recording responderFailure and final assertion
-failure at Repair.cs59. Last native packet still carries old rejection codes: severity
-wound_severity_above_opportunity; location mortal_qte_wound_location_kind_forbidden and
-wound_response_location_kind_forbidden; resource wound_consequence_resource_bound_missing.
-Narration exact/drift rows see no PRESENT repair packet and fail Repair.cs62 expectedrepairCount1/
-actual0. Underlying causes for these TWO groups are UNPROVED by the packet; READONLY source/native
-order/cache/restore/repair-admission diagnosis is running. No count increase,re-response,authority/
-private-context/retained-field/oracle weakening or production correction is released.
+Source proves the separate narration departure: WoundPlayerNotification emits the known UI narration
+error at woundAcquisition.narration/section wound_acquisition_output. Existing AttachRepairContexts
+adds its source-bound actionable projection without replacing the unannotated original,whose UI
+section fails IsRepairableIssue. The Mortal adapter classifies that retained original as private;
+RetainMortalQteRejectedRepair refuses the mixed list and no accepted command exists for legacy
+retry capture. This closes before PRESENT publication. The frozen native packet does not directly
+emit that internal diagnostic/capture failure; source provenance and observed no-PRESENT boundary
+are distinguished. The projected context also previously labelled every create construct_wound.
 
-New actual native RepairPublications establish format1 committed DELETE/WRITE distinction:
-passing construction drifts see FALSE/TRUE/FALSE; failed construction exact rows FALSE/TRUE/FALSE/TRUE;
-narration rows only FALSE. Declared deletion has null bytes/hash; every observed PRESENT request
-passed exact physical/declaration byte equality,derived length and SHA before packet parsing.
-These observations validate the corrected observer; they do not retroactively identify the precise
-oldf589 callback/caller. EngineFailure=null,loop42,acceptedfalse for all rows. Later successful
-exact/narration repair acceptance/receipt/publication assertions are UNREACHED. No blanket proper
-production causal RED or complete MAIN-GM repair qualification is claimed.
+Current minimum composer correction is confined to the exact mortal_qte_terminal_health_damage_v1
+profile. ONLY after successful existing source-bound actionable projection, the known UI missing/
+contradiction narration issue(section/path/code exact) is replaced with that projection. Matching
+opportunity authority is required. Existing narrate_acquisition is used ONLY when all candidate
+issues are those narration issues; mixed proposal repairs keep construct_wound/repair_wound.
+Unrelated/private diagnostics remain, and adapter private classification, source fingerprints,
+opportunity/packet/generation, full proposal/scene retry proofs and full ordinary validation are
+unchanged. Narration is still scene-only,with the entire original draft retained. No public grammar,
+GM docs/example/runtime prompt,afterlife/spiritual contract or new authority/repair framework changes.
 
-ROOT checked153 source/10 fresh binary PRE/POST pins BEFORE metadata,all eight native results/full
-TRX/stdout/32 observations,eight strict cleanup receipts removed=true/failure=null with all roots
-physically absent; runner-owned tree/runtime cleanup succeeded. Frozen30 artifacts retain all pins/
-raw InitialReady/repair packets/commands/member observations and preparation/actual originals.
-Fresh BOTH PlanOnly `20261013-051805-881-479633-8db98521ec3541b3b028a4c5de077035-categories` built
-integration+unit with85/35 warnings,0 errors,30 methods/70 cases/12 descriptors,142.3177913s,
-0 executed. ExactPlan1/8/1 took2.5853197s,0 executed. Catalog714/11550 remains unchanged preceding
-accepted discovery; no rerun required by focused gate. Preparation/catalog are not executed tests.
-Critical TrustedLocalFileImage serializer source was newly pinned/recovered through GitHub sparse
-readback; no local file/cached binary was fed into recovery. Historical packets remain immutable.
+The eight original cases/oracles are now two wrappers around one private byte-equivalent body:
+existing wrapper retains the three accepted construction-drift rows; new dedicated theory owns
+severity/location/resource exact plus narration exact/drift(five previously failed rows). No added
+case/test-to-test call/harness, changed count,second response, source manufacture or oracle relaxation.
+The existing repair owner explicitly includes both wrappers:2 methods/8 cases,budget5. New intentional-
+overlap qte-physical-injury-consumer-repair-failed-five owns only the new wrapper,1 method/5 cases/
+1 descriptor,budget5/default10; it is absent from full preparation/controls to avoid duplicates.
+Catalog expected715 categories/11551 methods after discovery; static full preparation31/70/12/default30
+and controls29/68/10 counts preserve all case/category budgets. Only the preparation/controls repair
+reason changes from one theory to two wrappers; IDs/membership/contracts/budgets are unchanged.
 
-Controls ten actual invocations report95 executions/67 PASS/28 FAIL,including repetitions. Five
-failed repair cases remain unqualified; compatibility5/worker3 remain5 methods/8 cases/2 descriptors/
-two categories/default8 UNRUN. Complete controls/consumer/archive/newroot/fresh-process/T070/FR-063/
-parent/#1536 remain OPEN. Next: publish/recover frozen partial evidence and mandatory EVIDENCE/status
-gate,then only concrete source-proven corrections with SOURCE/FIXTURE/SELECTION before matching
-preparation/runtime. Retry should isolate only five failed rows if source changes permit; the three
-new positives/earlier passing qualifiers are excluded absent dependency justification. Archive8 stays
-retained,unwritten/UNRUN/on hold. Protected causal Facts/ce955/checklists/global CI/runner/selection/
-budgets/GM grammar/old evidence unchanged. Current EVIDENCE is PENDING; no new scope decision needed.
+Current actual member observations prove format1 committed DELETE/WRITE distinctions: accepted
+construction drifts FALSE/TRUE/FALSE; failed exacts FALSE/TRUE/FALSE/TRUE;narration FALSE only.
+Null deletion bytes/hash and observed PRESENT exact bytes/derived length/SHA assertions PASS; this
+does NOT retroactively prove oldf589's precise caller/kind. EngineFailure=null/loop42/acceptedfalse
+for all rows. ROOT matched153 source/10 fresh binary PRE/POST before metadata,parsed8 native results/
+32 observations and verified8 strict roots removed/actually absent. Runner cleanup succeeded.
+Frozen30 artifacts are unchanged. Fresh BOTH PlanOnly142.3177913s,85/35 warnings0 errors,30/70/12,
+0 executed; exactPlan1/8/1 took2.5853197s,0 executed. Historical catalog714/11550 remains accepted;
+new715/11551 discovery is UNRUN. Preparation/catalog are not actual tests.
+
+Controls ten invocations remain95 executions/67 PASS/28 FAIL,including repetitions. All accepted
+prior producer/projection/NONE/CREATE/common/publication/three repair-drift positives stay separate
+and excluded absent a concrete source dependency. SOURCE READY for ROOT publication/recovery and
+mandatory actual Astra XHigh SOURCE/FIXTURE/SELECTION review. ALL new build/discovery/catalog/runtime
+checks UNRUN; cachedc4bc binaries are not fresh for this candidate. Next ROOT fresh BOTH preparation/
+catalog and first exact failed5,freeze/EVIDENCE gate,then untouched compatibility+worker5 methods/
+8 cases/2 descriptors/default8 UNRUN. No author project execution or commit/push.
+
+Complete controls/consumer/archive/newroot/fresh-process/T070/FR-063/parent/#1536 stay OPEN. Archive8
+remains retained,unwritten/UNRUN/on hold. Protected causal Facts/ce955,checkboxes/global CI/runner,
+all old catalog nodes except the approved repair-owner membership/reason and immutable packets stay
+unchanged. No proper RED or GREEN is newly claimed for the corrected five.
 
 Historical format-1 observer SOURCE READY checkpoint:
 
