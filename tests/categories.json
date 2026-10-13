@@ -2,6 +2,43 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-bounds-repair",
+            "responsibility": "#1536 exact two failed severity/location component rows only. Genuine QTE42/health155/occurrence precedes actual StagePlayerTurn43 and official Reader; current pinned soul bytes must agree with that Mortal snapshot. Actual actionable WoundRepairContext refusal then builds the closed Mortal public-draft repair task, with required SHA-pinned read-only request/realm, preserving command/cache/canonical before-images. One existing integration method/two cases; intentional overlap with qte-physical-injury-consumer-common-controls. The published2ac common18 outcome has16 PASS/two task prerequisite failures; this owner avoids repeating its16 passing rows.",
+            "excludes": "No common18 aggregate, replay7 repeat, protected NONE/CREATE/projection/producer rerun, afterlife wrapper fabrication, broad realm/context whitelist, canonical proposal permission, worker/model/provider execution, archive/newroot/freshprocess or broad suite qualification.",
+            "changeHints": [
+                "BookOfEternityClient/Services/GmWorkers/GmWorkerContractValidator.cs",
+                "BookOfEternityClient/Services/GmWorkers/GmWorkerTaskPacketBuilder.cs",
+                "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs",
+                "BookOfEternityClient.Tests/GmWorkerValidationRepairTests.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-common-controls",
+                    "when": "Intentional exact one-method/two-row overlap; use this owner to repeat only the two failed bounds rows, excluding the16 passing common cases."
+                },
+                {
+                    "id": "qte-physical-injury-consumer-worker-scope",
+                    "when": "The strengthened existing scoped worker Fact tests typed public-task classification and afterlife/private-target protections; already part of the seven still-UNRUN categories, without another owner or duplicate selection."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentProposalCannotExceedSealedMaximumOrLocation"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-admission-diagnostic",
             "responsibility": "#1536 bounded diagnosis of accepted391d first NONE admission prerequisite failure whose underlying diagnostic is unobserved. Historical first diagnostic selected one existing component method/four rows (NONE/CREATE × exact/changed replay), frozen separately; its current same-method selector includes seven rows after the bounded whole-payload correction adds three lawful changed-CREATE variants, intentionally overlapping qte-physical-injury-consumer-common-controls. Independently owned actual QTE42/health155/occurrence precedes actual StagePlayerTurn43 and official Reader. Existing first Assert.Empty exposes returned ordinary resource/wound admission paths/messages without entering a GM repair wait; subsequent direct common normalizer propagates publication exception/stack if admission succeeds. This is component diagnosis, not a third protected NONE run or proof of full ordinary completion.",
             "excludes": "No source/fixture/protected causal Fact changes, inferred production fix, fabricated source/receipt/hash, new harness/observer, paid/model/provider call, whole common18-row category, unrelated passing qualifiers, archive/newroot/freshprocess/aggregate/Windows/C5/journal qualification.",

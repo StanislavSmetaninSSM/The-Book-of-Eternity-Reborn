@@ -283,6 +283,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             issue.WoundRepairContext is not null && WoundRepairPacketBuilder.IsRepairableIssue(issue)));
         Assert.NotNull(semantic.Code);
         Assert.NotNull(semantic.RepairHint);
+        Assert.Equal("mortal_world", component.Snapshot.Realm);
+        var soulBytes = (await _fs.ReadFileBytesAsync("game_state/meta/soul_state.json"))!;
+        Assert.Equal(component.Snapshot.ReadRequiredBytes("game_state/meta/soul_state.json"), soulBytes);
+        var soul = StrictJsonAuthority.Deserialize<JsonObject>(Encoding.UTF8.GetString(soulBytes).TrimStart('\uFEFF'),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual Mortal repair context");
+        Assert.NotNull(soul);
+        Assert.Contains(soul!["currentRealm"]!.GetValue<string>(), new[] { "Mortal World", "mortal_world" });
         var profile = GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate();
         string generation;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync()) generation = _fs.GetOrCreateSessionGeneration(lease);
@@ -296,7 +303,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ["input/turn_request.json"] = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
                     (await _fs.ReadFileBytesAsync("input/turn_request.json"))!)),
                 ["game_state/meta/soul_state.json"] = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
-                    (await _fs.ReadFileBytesAsync("game_state/meta/soul_state.json"))!))
+                    soulBytes))
             }, "2026-10-12T00:00:00Z", generation);
         Assert.Equal(new[] { MortalWoundOpportunityAdapter.DecisionPath }, repair.AllowedProposalPaths);
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync()) Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));

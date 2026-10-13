@@ -9,43 +9,72 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (COMMON 16 PASS / 2 BOUNDS TASK FAIL; 50 UNRUN)
+## Current T070 first vertical — 2026-10-13 (CLASSIFIER SOURCE READY; BOUNDS2 + UNRUN50)
 
-Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED at
-`2ac12c17f1948d60eb524ad2f8aa784c9cbf95ff`; the justified common5-method/18-case category
-ran on fresh matching source/binaries. [Corrected common bounds-failure packet](./recovery/qte-physical-consumer-common-bounds-failure-20261013/manifest.json)
-freezes run `20261013-024444-966-434981-fd6a0e6b0a1a47948e6a005a13631c87-categories`:
-1 descriptor/18 planned and completed cases,18 executed/16 PASS/2 FAIL,134.7377924s,
-exit1,no timeout/skips/duplicate IDs; complete selection, unsuccessful result.
+Actual retained Astra XHigh EVIDENCE/status ACCEPTED at
+`a8a7bcfaf1a051c43dd8d6089c7a1fea1cb7b174` for the
+[corrected common bounds-failure packet](./recovery/qte-physical-consumer-common-bounds-failure-20261013/manifest.json).
+SOURCE/FIXTURE/SELECTION was accepted at2ac before run
+`20261013-024444-966-434981-fd6a0e6b0a1a47948e6a005a13631c87-categories`:
+5 methods/18 cases/1 descriptor complete,18 executed/16 PASS/2 FAIL,134.7377924s,
+exit1,no timeout/skips/duplicate IDs. All seven exact/changed NONE/CREATE replay rows PASS,
+including display/consequence/treatment/recovery payload drift. Other passing rows cover first
+publication, receipt-member compensation/revalidation, staged drift and private canonical refusal.
+Both bounds rows passed actual actionable semantic selection, then task construction threw at
+builder239/fixture289. Their later task/cache/canonical-preservation assertions remained UNREACHED.
+Frozen evidence and original failures remain unchanged; it did not itself prove the source cause.
 
-All seven exact/changed replay rows PASS, including the original changed display and three
-new lawful consequence/treatment/recovery changes. Other passing controls cover first publication,
-receipt-member compensation/revalidation, staged input drift and private canonical refusal.
-Both severity/location rows now pass actual actionable semantic-issue selection but throw in
-BuildValidationRepairTask (builder:239, fixture:289): afterlife worker task requires its realm-aware
-wrapper. Later task/dispatch/cache/canonical-preservation assertions in those rows remain UNREACHED.
-The native packet does not establish the source cause of that task prerequisite exception.
-No source or fixture correction is part of this frozen evidence block.
+ROOT matched148 source and10 fresh binary PRE/POST pins before metadata, parsed18 native results/
+88 observations, verified18 emitted strict receipts removed=true/failure=null and actual owned-root
+absence. Runner cleanup succeeded. Fresh BOTH-project preparation28/70/12 took156.3985481s,
+85/35 warnings0 errors; catalog VALID711/11548 took5.7781465s,unmapped/stale0. Both executed0 tests.
+Finite controls have two actual invocations:15 executed12 PASS3 FAIL then18 executed16 PASS2 FAIL,
+33 reported executions/28 PASS/5 FAIL; repetitions are executions, not unique coverage. Seven
+categories/21 methods/50 cases/nine descriptors remain UNRUN. Full NONE36256 and migrated CREATEb76
+remain1 accepted PASS each, excluded/not repeated; historical c7 CREATE RED stays separate and
+non-byte-matched. Producer1b and projection4d qualifiers/counts are unchanged.
 
-ROOT matched148 source and10 fresh binary PRE/POST pins BEFORE metadata edits, read all18 native
-results/full stdout/88 observations, and verified18 strict cleanup receipts removed=true/failure=null
-with every emitted owned root physically absent. Runner process/runtime cleanup succeeded. Fresh
-BOTH build/discovery28 methods/70 cases/12 descriptors took156.3985481s,85/35 warnings0 errors;
-matching VALID catalog711/11548 took5.7781465s/no unmapped or stale selectors. Both executed0 tests.
+Verified read-only source cause: WorkerTurnReference has only session/request/turn, no realm field.
+TaskPacketBuilder137-148 requires pinned request+soul context for Mortal public draft/scene repair;
+ContractValidator1519/1545 classifies the mandatory soul context path alone as afterlife. Removing
+that context violates the builder; an invented afterlife wrapper is refused for Mortal repair.
+Existing production Delegator372-377 independently strict-reads the actual pinned soul bytes under
+its held lease and requires Mortal World/mortal_world. The task-context role is the conflict.
 
-Finite controls now have two actual invocations: prior15 executed12 PASS3 FAIL plus this18 executed
-16 PASS2 FAIL =33 reported executions/28 PASS/5 FAIL. Repeated affected cases are counted as repeated
-executions, not unique coverage. Current common18 still has two failed rows; seven categories/
-21 methods/50 cases/nine descriptors remain UNRUN. Accepted full NONE36256 and migrated CREATEb76
-remain1 PASS each and were excluded/not repeated; historical c7 CREATE RED remains separate and
-non-byte-matched. Complete controls/replay/atomicity/archive/newroot/fresh-process and fullT070/
-FR-063/parent/#1536 remain OPEN. Checkboxes/frozen historical packets/protected causal Facts unchanged.
+Current bounded SOURCE correction recognizes only the existing typed validation-repair task with
+one exact public draft or narration-only target, complete exact SHA-pinned public context and matching
+public diagnostics. Only its pinned read-only soul context entry is excluded from the path heuristic.
+Instructions/criteria, other contexts, issue/proposal paths, explicit afterlife/spiritual contracts
+and the actual lease-bound Mortal realm check remain intact. Missing/alias/foreign contexts and
+private Client/source diagnostics do not qualify. No new realm field/schema/flag/wrapper, global
+path whitelist, private authority or canonical write permission. Existing public GM grammar/worker
+scope and afterlife contracts are unchanged; no GM prompt/example update is needed for this internal
+classification correction.
 
-Next: publish/recover this packet, mandatory focused EVIDENCE/status review, then a source-proven
-bounded task-fixture correction/selection gate and only the affected failed rows before the50 UNRUN
-cases. Passing16 common rows must not be repeated for an unrelated fixture-only correction. This
-packet review is PENDING. Archive's accepted separate ordinary save-load/newroot versus retained
-same-root N43 fresh-process design remains unwritten/UNRUN and on hold behind controls qualification.
+Tests were extended before production source. The existing scoped worker Fact now checks the
+closed narration-only task, missing pinned draft, afterlife target/context/diagnostic/instruction/
+criterion, canonical soul write scope, case alias, missing request hash and private-source refusal.
+The two genuine bounds rows additionally verify official snapshot.Realm plus exact current/pinned
+soul-byte agreement and actual Mortal realm before task construction. Original refusal/task/cache/
+canonical-state assertions remain unchanged. New negatives are UNRUN preservation controls, not
+previously observed REDs or actual worker execution.
+
+SOURCE READY for ROOT publication/recovery and mandatory SOURCE/FIXTURE/SELECTION gate; all fresh
+build/discovery/catalog/actual checks on this correction UNRUN. New intentional-overlap
+qte-physical-injury-consumer-bounds-repair owner selects exactly1 existing method/2 cases/1 descriptor,
+budget2/default7 via its task-local selector. Catalog STATIC expected712 categories/11548 methods,
+no new test method/case. Prior711 nodes and global CI/selection are unchanged. Full preparation IDs/
+membership/budgets stay28/70/12/default30; controls stay26/68/10/default30, without adding the duplicate
+bounds owner. The seven UNRUN categories21/50/9/default25 remain unchanged, including the strengthened
+worker Fact. Bounds plus those categories =22 methods/52 cases/10 descriptors,category budgets22,
+default27. ROOT may run bounds first, freeze/review, then50 UNRUN; do not repeat16 passing common or
+baseline NONE/CREATE cases for this scoped dependency. Current2ac binaries are not fresh for this
+C# candidate. Source gate must assess the narrowed classification and protection sufficiency.
+
+Complete controls/replay/atomicity/archive/newroot/fresh-process and full T070/FR-063/parent/#1536
+remain OPEN. Archive qualification is unwritten/UNRUN and on hold behind controls; ordinary actual
+save/load/newroot and retained actual N43 same-root fresh-process replay remain separate. Protected
+causal Facts/ce955, checkbox lines, global selections and historical packets are unchanged.
 
 Historical whole-decision source correction (accepted before this common invocation):
 
