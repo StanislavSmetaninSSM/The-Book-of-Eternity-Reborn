@@ -2,6 +2,37 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-created-resource-replay",
+            "responsibility": "#1536 exact CREATE completed-resource replay fixture correction: one dedicated Fact extracted from the prior NONE/CREATE theory, no added case. Genuine QTE42/health155/occurrence precedes actual Stage43/official Reader. Prove captured signed resource155, client-created wound/effect backlink, deterministic owned periodicDamage3 exact lifecycle/application authority and unique health tick155->152 before independent narrative AppliedDamage1 health152->151. Final canonical state/history agreement151 precedes all existing completion marker/readback/whole-mechanics byte-exact replay/once-receipt/transient-consumption oracles. Intentional publication-owner overlap avoids repeating its six passing rows, including NONE155->154.",
+            "excludes": "No production/authority/parser/runner change, adoption of unexplained observed HP, synthetic effect/source/receipt/hash, test-to-test call/new harness, passing NONE/common/bounds/event/draft/projection/producer qualifier repetition, full-engine causal RED/archive/newroot/freshprocess/worker/model/provider or broad qualification.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs",
+                "BookOfEternityClient/Services/AcceptedMechanicsPlanner.LiveTurn.cs",
+                "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-publication",
+                    "when": "Intentional one-Fact overlap. Existing publication owner retains all seven cases across four methods; this narrow selector repeats only its failed CREATE prerequisite case, not six passing neighbors."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-event-order",
             "responsibility": "#1536 exact migrated event_order prerequisite/control only: one dedicated integration Fact extracted from the existing13-row draft theory, without adding a case. Genuine independently owned QTE42 with selected healthDamage5 plus actual siblingDamage1 must finalize health154 and exactly two distinct resource_mutation events. The validated occurrence supplies the producer operation key for its sibling accepted:1 reference; selected raw eventRef stays resource:1. Effective event reversal precedes official component baseline capture and full-batch private-source refusal, nondelegable task refusal and whole-tree preservation. Intentional overlap with qte-physical-injury-consumer-draft, allowing only the prior failed row to run without repeating its12 passing siblings.",
             "excludes": "No production/authority/parser/runner change, fabricated occurrence/hash/binding, copied/re-signed snapshot, test-to-test call/new harness, repeat of26 passing remaining cases/common18/protected baseline qualifiers, full-engine causal RED claim, archive/newroot/freshprocess/worker/model/provider or aggregate qualification.",
@@ -129,7 +160,7 @@
         },
         {
             "id": "qte-physical-injury-consumer-publication",
-            "responsibility": "#1536 finding4 three component theories/seven rows: real QTE42 then actual StagePlayerTurn43/official source; a positive ordinary health Damage1/history transition changes the quartet before NONE/CREATE publication. Exact retained-source replay preserves mechanics/record/IDs/counts and consumes only transient draft. Missing/null/foreign-generation completion evidence refuses; no checkpoint seal is fabricated. Direct unbound-normalizer child postcommit retained-output failure compensates the whole atomic common batch/marker/owned inputs before exact resubmission. Planned consumed draft output authority is checked for both NONE and CREATE.",
+            "responsibility": "#1536 finding4 four component methods/seven cases: NONE resource-work theory1, dedicated CREATE resource-work Fact1, completion-refusal theory3 and direct-compensation theory2. CREATE resource-work checks the actual owned periodic3 causal lane before independent narrativeDamage1 and proves health155->152->151; NONE remains155->154. No case was added. real QTE42 then actual StagePlayerTurn43/official source; a positive ordinary health Damage1/history transition changes the quartet before NONE/CREATE publication. Exact retained-source replay preserves mechanics/record/IDs/counts and consumes only transient draft. Missing/null/foreign-generation completion evidence refuses; no checkpoint seal is fabricated. Direct unbound-normalizer child postcommit retained-output failure compensates the whole atomic common batch/marker/owned inputs before exact resubmission. Planned consumed draft output authority is checked for both NONE and CREATE.",
             "excludes": "Component calls are not full ProcessPlayerTurn or durable child/archive proof. No separate completion/receipt writer, snapshot copy/resign, new allocator, generic storage protocol, extra fault matrix, provider/model/native Windows/aggregate run.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs",
@@ -150,6 +181,7 @@
                     "project": "integration",
                     "tests": [
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletedResourceWorkReplaysExactMechanicalBytes",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentReplayRequiresExactDurableCompletion",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch"
                     ]

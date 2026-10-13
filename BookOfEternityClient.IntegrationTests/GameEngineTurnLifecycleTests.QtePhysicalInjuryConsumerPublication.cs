@@ -11,13 +11,40 @@ public sealed partial class GameEngineTurnLifecycleTests
 {
     [Theory]
     [InlineData(false)]
-    [InlineData(true)]
-    public async Task QtePhysicalInjuryConsumer_ComponentCompletedResourceWorkReplaysExactMechanicalBytes(bool materialize)
+    public Task QtePhysicalInjuryConsumer_ComponentCompletedResourceWorkReplaysExactMechanicalBytes(bool materialize) =>
+        AssertCompletedMortalResourceWorkReplaysExactMechanicalBytesAsync(materialize);
+
+    [Fact]
+    public Task QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes() =>
+        AssertCompletedMortalResourceWorkReplaysExactMechanicalBytesAsync(true);
+
+    private async Task AssertCompletedMortalResourceWorkReplaysExactMechanicalBytesAsync(bool materialize)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var component = await PrepareMortalDecisionComponentAsync(materialize);
         var stateBefore = await _fs.ReadFileBytesAsync(ResourceMaterializationContract.StatePath);
         var historyBefore = await _fs.ReadFileBytesAsync(ResourceMaterializationContract.HistoryPath);
+        var health = new ResourceCoordinate("mortal_world", ResourceOwnerKind.Player, "player_current", "health");
+        if (materialize)
+        {
+            await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease,
+                [ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
+                    ResourceMaterializationContract.HistoryPath]);
+            Assert.True(read.Success, JsonSerializer.Serialize(read.Issues));
+            Assert.Equal(component.Snapshot.RequestId, read.Snapshot!.RequestId);
+            Assert.Equal(component.Snapshot.SnapshotToken, read.Snapshot.SnapshotToken);
+            Assert.Equal(stateBefore, read.Snapshot.ReadRequiredBytes(ResourceMaterializationContract.StatePath));
+            Assert.Equal(historyBefore, read.Snapshot.ReadRequiredBytes(ResourceMaterializationContract.HistoryPath));
+            var originalDefinitions = ResourceDefinitionCatalog.ParseCanonical(Encoding.UTF8.GetString(
+                read.Snapshot.ReadRequiredBytes(ResourceMaterializationContract.DefinitionsPath)).TrimStart('\uFEFF'), false);
+            Assert.True(originalDefinitions.IsValid);
+            var originalState = ResourceStateContract.ParseCanonical(Encoding.UTF8.GetString(stateBefore!).TrimStart('\uFEFF'),
+                originalDefinitions.Catalog!, false);
+            Assert.True(originalState.IsValid);
+            Assert.True(originalState.Ledger!.TryResolveExact(health, out var originalHealth));
+            Assert.Equal(155m, originalHealth!.Current);
+        }
         await WriteMortalReplayResourceWorkAsync();
         Assert.Empty(await ValidateMortalDecisionComponentAsync(component.Engine));
         var first = await GetPrivateField<CanonicalStateNormalizer>(component.Engine, "_normalizer").NormalizeAcceptedMechanicsAsync(null);
@@ -32,8 +59,60 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(ResourceTransitionOperation.Damage, damage.Operation);
         Assert.Equal(ResourceTransitionOutcome.Applied, damage.Outcome);
         Assert.Equal(1m, damage.AppliedAmount);
-        Assert.Equal(155m, damage.BeforeState!.Current);
-        Assert.Equal(154m, damage.AfterState!.Current);
+        if (materialize)
+        {
+            var player = JsonNode.Parse((await _fs.ReadFileAsync(WoundCarrierCatalog.PlayerPath))!)!.AsObject();
+            var wound = Assert.IsType<JsonObject>(Assert.Single(player["activeWounds"]!.AsArray()));
+            var parsedWound = WoundMaterializationContract.Parse(wound.ToJsonString(), WoundCarrierCatalog.PlayerPath + ".activeWounds[0]");
+            Assert.True(parsedWound.IsValid, JsonSerializer.Serialize(parsedWound.Issues));
+            var rootBinding = Assert.IsType<JsonObject>(Assert.Single(wound["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray()));
+            var effectId = rootBinding["effectId"]!.GetValue<string>();
+            var effects = first!.EffectCarrierAfterImages[EffectCarrierCatalog.PlayerPath];
+            Assert.True(JsonNode.DeepEquals(effects, JsonNode.Parse((await _fs.ReadFileAsync(EffectCarrierCatalog.PlayerPath))!)));
+            var effect = Assert.Single(effects["activeEffects"]!.AsArray().OfType<JsonObject>(), row => row["effectId"]?.GetValue<string>() == effectId);
+            Assert.Equal("wound", effect["source"]!["kind"]!.GetValue<string>());
+            Assert.Equal(parsedWound.Wound!.WoundId, effect["source"]!["sourceId"]!.GetValue<string>());
+            Assert.Equal(rootBinding["definitionKey"]!.GetValue<string>(), effect["source"]!["definitionKey"]!.GetValue<string>());
+            var componentEffect = Assert.Single(effect["components"]!.AsArray().OfType<JsonObject>());
+            Assert.Equal("periodic_damage", componentEffect["profile"]!.GetValue<string>());
+            Assert.Equal("health", componentEffect["payload"]!["resource"]!.GetValue<string>());
+            using var componentDocument = JsonDocument.Parse(componentEffect.ToJsonString());
+            Assert.Equal(3m, componentDocument.RootElement.GetProperty("payload").GetProperty("amount").GetDecimal());
+            var effectAuthority = EffectAcceptedTurnPlanner.ResolvePendingEffectAuthority(effect, 43);
+            Assert.Equal("accepted_application", effectAuthority.BindingKind);
+            var tickRef = EffectAcceptedTurnPlanner.CreateLifecycleResourceTriggerEventRef(
+                "turn_43:lifecycle:owner_turn_end:player_current", effectId, effectAuthority, "on_owner_turn_end");
+            var tick = Assert.Single(history.History.Transitions, row => row.Turn == 43 && row.Coordinate == health &&
+                row.SourceEvidence.SourceKind == "effect_component");
+            Assert.Equal(tickRef, tick.EventRef);
+            Assert.Equal(health, tick.Coordinate);
+            Assert.Equal(43, tick.Turn);
+            Assert.Equal("effect_component", tick.SourceEvidence.SourceKind);
+            Assert.Equal(ResourceMutationPhase.EffectTrigger, tick.Phase);
+            Assert.Equal(ResourceTransitionOperation.Damage, tick.Operation);
+            Assert.Equal(ResourceTransitionOutcome.Applied, tick.Outcome);
+            Assert.Equal(3m, tick.AppliedAmount);
+            Assert.Equal(155m, tick.BeforeState!.Current);
+            Assert.Equal(152m, tick.AfterState!.Current);
+            Assert.True(tick.ExecutionSequence < damage.ExecutionSequence);
+            Assert.Equal(health, damage.Coordinate);
+            Assert.Equal(43, damage.Turn);
+            Assert.Equal("narrative_outcome", damage.SourceEvidence.SourceKind);
+            Assert.Equal(tick.AfterState.Current, damage.BeforeState!.Current);
+            Assert.Equal(151m, damage.AfterState!.Current);
+            var finalState = ResourceStateContract.ParseCanonical(await _fs.ReadFileAsync(ResourceMaterializationContract.StatePath), definitions.Catalog!, false);
+            Assert.True(finalState.IsValid);
+            Assert.True(finalState.Ledger!.TryResolveExact(health, out var finalHealth));
+            Assert.Equal(151m, finalHealth!.Current);
+            Assert.Empty(history.History.ValidateStateAgreement(finalState.Ledger));
+            WritePhysicalInjuryDiagnostic("qte_consumer_component_owned_tick_resource_chain", new
+            { effectId, parsedWound.Wound.WoundId, effectAuthority, tick, damage, Health = finalHealth.Current });
+        }
+        else
+        {
+            Assert.Equal(155m, damage.BeforeState!.Current);
+            Assert.Equal(154m, damage.AfterState!.Current);
+        }
         var marker = await _fs.ReadFileBytesAsync(MortalQteDecisionPublication.StatePath);
         Assert.NotNull(marker);
         var outputAgreement = await WoundAcceptedTurnSnapshotContract.ValidatePublishedOutputAuthorityAsync(first!, path => _fs.ReadFileBytesAsync(path));

@@ -9,50 +9,75 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (PUBLICATION 6 PASS / 1 CREATE HEALTH FAIL; 16 UNRUN)
+## Current T070 first vertical — 2026-10-13 (CREATE RESOURCE REPLAY FIXTURE SOURCE READY; 1 RETRY + 16 UNRUN)
 
-Retained actual Astra XHigh EVIDENCE/status accepted corrected event-order packet at
-`024813550aa7e97dc1fbd0815fb24afc7f629ed8`:one PASS after actual two-event reversal and private
-accepted-event fingerprint refusal. Precision: its command/tree/source and task-refusal assertions
-passed; it has no separate cache assertion. The twelve passing theory rows are INCLUDED within the
-prior26 PASS. Frozen historical evidence remains unchanged.
+Retained actual Astra XHigh EVIDENCE/status ACCEPTED at
+`09e5f7e47bd03e2bb39100bb46e7123e5986d4ac` for the
+[remaining23 partial packet](./recovery/qte-physical-consumer-remaining23-partial-20261013/manifest.json).
+Run `20261013-035758-524-452234-9b7d237c87e54c7c9595d30b2cb4b743-categories`,source0248/compile6f,
+planned9 methods/23 cases/4 descriptors/four categories; completed1 descriptor/7 cases,
+7 executed/6 PASS/1 FAIL,64.8965020s,exit1,no timeout/skips/duplicate IDs. Publication's six passing
+rows include NONE resource-work replay, completion missing/null/foreign proof refusals and direct
+postcommit whole-batch compensation/retry. Fail-fast leaves repair8/compatibility5/worker-scope3,
+three categories/six methods/16 cases/three descriptors UNRUN. Prior event-order EVIDENCE accepted0248
+retains one PASS; prior26/common18/full NONE36256/current-contract CREATEb76/projection/producer
+qualifiers remain accepted, excluded/not repeated.
 
-First remaining23 actual stopped after publication category. [Remaining23 partial packet](./recovery/qte-physical-consumer-remaining23-partial-20261013/manifest.json)
-freezes run `20261013-035758-524-452234-9b7d237c87e54c7c9595d30b2cb4b743-categories`,
-source0248/compile6f:planned9 methods/23 cases/4 descriptors/four categories;
-completed1 descriptor/7 cases,7 executed/6 PASS/1 FAIL,64.8965020s,exit1,
-no timeout/skips/duplicate IDs. Fail-fast leaves repair8/compatibility5/worker-scope3:
-three descriptors/seven methods/16 cases UNRUN, including strengthened worker protection Fact.
+Historical CREATE resource-work row failed at Publication.cs35 expected155/actual152 BEFORE its
+later replay assertions. Initial validation/publication and typed history parsing succeeded;
+Damage1 operation=Damage/outcome=Applied/appliedAmount1 assertions PASSED before that failing
+before-state assertion. Later AfterState/replay oracles remained UNREACHED. It is a fixture
+prerequisite failure, not proper production causal RED. The frozen native original-staging draft
+has one wound_bleeding_root periodic_damage health amount3, deterministic on_owner_turn_end;
+real N43 request7e1f2300ebd8465f8d0aa08e663674c7/token
+89BB02D95C489600E4B8A8811AF827839EACDDE501E61C408DAF5A636396B7BD. Source proof explains ordering:
+EffectAcceptedTurnInputComposer418-433 emits owner_turn_end; EffectAcceptedTurnPlanner1793/1881/
+1928-1955 produces its owned candidate/mutation. AcceptedMechanicsPlanner.LiveTurn.cs845-869
+arbitrates initial producer-null lifecycle candidates, and900-950 drains their exact open causal
+lanes before general raw narrative scheduling. Global source phase ordering alone does not explain
+this boundary precedence. The fixture must prove that owned tick chain, not simply adopt152.
 
-CREATE CompletedResourceWorkReplaysExactMechanicalBytes fails at Publication.cs35:
-Expected155/Actual152 on its initial resource-health prerequisite. Later resource-work/exact-replay
-byte assertions in that row are UNREACHED. The packet does not establish the cause of that health
-delta or whether it reflects lawful owned wound consequence work. Production/source/fixture are
-unchanged in this evidence block; read-only resource/effect timeline diagnosis precedes correction.
-The other six publication rows PASS, including NONE completed-resource replay, three missing/null/
-foreign completion proof refusals and two direct postcommit whole-batch compensation/retry cases.
-No full publication qualification or blanket unchanged-CREATE-resource claim is made.
+ROOT matched150 source/10 fresh binary PRE/POST pins before metadata, read7 results/full native TRX/
+34 observations, verified7 strict receipts removed=true/failure=null and actual owned-root absence.
+Runner cleanup succeeded. Matching NoBuild PlanOnly9/23/4 took4.5988175s,0 tests;148 nonmetadata
+inputs/10 binaries matched fresh6f BOTH builds. Catalog713/11549 is preceding discovery. Controls
+six invocations total70 reported executions/63 PASS/7 FAIL,including repetitions(15/12/3 +18/16/2 +
+2/2/0 +27/26/1 +1/1/0 +7/6/1),not unique coverage. Historical c7 CREATE/non-byte-matched authoring
+migration and producer/projection counts remain separate; frozen packets are unchanged.
 
-ROOT matched150 source and10 fresh binary PRE/POST pins BEFORE metadata edits, parsed all seven
-native results/full TRX/stdout/34 observations, and verified all seven strict receipts removed=true/
-failure=null with physical root absence. Runner-owned process/runtime cleanup succeeded. Matching
-NoBuild PlanOnly9/23/4 took4.5988175s,executed0 tests;148 nonmetadata compile inputs/10 binaries matched
-fresh6f BOTH builds. Catalog713/11549 is preceding fresh discovery, not a new audit or test execution.
+Current fixture-only correction first reads the genuine existing N43 resource snapshot and checks
+same request/token, exact captured state/history and typed health155. After first publication, the
+client-created wound's owned root binding/backlink and exact published effect afterimage identify
+the periodic health3 component and actual accepted-application authority. Existing client lifecycle
+reference derivation must match the unique turn43 health effect_component AppliedDamage3 history
+transition155->152,whose sequence precedes independent turn_43:resource:1 narrative AppliedDamage1
+152->151. Final canonical ledger151 and strict history/state agreement are required. An additive
+raw diagnostic preserves effect/wound/application/tick/damage evidence before replay.
+All original later marker/output-authority/whole-mechanics exact-byte replay/null wound-stage and
+history/once receipt/transient-consumption oracles remain. NONE155->154 assertions are unchanged.
+Only InlineData(true) moved to one dedicated CREATE Fact; existing NONE theory and new Fact call
+the same private async body once. No new case/test-to-test call/shared mutable fixture/new harness,
+production/authority/parser/runner/GM grammar change. No GM prompt/example update is needed.
 
-Finite controls six actual invocations now report70 executions/63 PASS/7 FAIL, including repetitions
-(15/12/3 +18/16/2 +2/2/0 +27/26/1 +1/1/0 +7/6/1). Prior26/common18/event-order1/full NONE36256/
-current-contract CREATEb76 positive evidence remains accepted and excluded/not repeated. Historical
-c7 CREATE RED/non-byte-matched treatment migration and producer/projection qualifiers stay separate.
-Current controls still have one failed CREATE resource prerequisite and16 UNRUN cases. Complete
-consumer/archive/newroot/fresh-process/full T070/FR-063/parent/#1536 remain OPEN.
+SOURCE READY for ROOT publication/recovery and mandatory SOURCE/FIXTURE/SELECTION gate; all fresh
+build/discovery/catalog/runtime checks UNRUN. New intentional-overlap
+qte-physical-injury-consumer-created-resource-replay owner/task-local selector selects exactly
+1 Fact/1 case/1 descriptor,budget2/default7. Existing publication owner4 methods/7 cases preserves
+NONE1/CREATE1/refusal3/compensation2; other713 owners except this explicitly affected owner stay
+unchanged. Catalog STATIC expected714 categories/11550 methods,one new discovered method/owner,
+no added case. Full preparation IDs/category membership/budgets/default30 stay70 cases/12 descriptors,
+now30 methods; controls stay68 cases/10 descriptors/default30,now28 methods. The narrow overlap
+owner is not added to either full selector; only publication reason/count changes there. Global CI/
+selection/protected facts remain unchanged. Current6f binaries are not fresh for this fixture.
 
-Next: publish/recover this frozen partial packet, mandatory focused EVIDENCE/status gate, then only
-a source-proven bounded current-contract resource/effect fixture correction preserving causal damage1
-and exact mechanics/replay proof, with focused SOURCE/FIXTURE/SELECTION before execution. No passing
-six/neighbors/common/baselines repeats are automatically selected, no production relaxation or
-observed-baseline substitution is authorized. This evidence review is PENDING. Global selectors/
-budgets/protected ce955/checklists and old packets remain unchanged; archive8-case implementation
-is unwritten/UNRUN/on hold behind controls qualification.
+Next after SOURCE gate: fresh BOTH preparation/catalog, first exact corrected CREATE1case then
+freeze/EVIDENCE gate, then unchanged three categories/six methods/16 cases/three descriptors,
+category budgets8/default13. Corrected1 plus remaining16 =7 methods/17 cases/4 descriptors,budgets10/
+default15 if explicitly combined later. Passing6/NONE/common/bounds/event/prior26 and baseline
+qualifiers are excluded from retry. Complete controls/consumer/replay/atomicity/archive/newroot/
+fresh-process/full T070/FR-063/parent/#1536 remain OPEN. Archive8-case proposal stays retained,
+unwritten/UNRUN/on hold. Protected ce955/full NONE/full CREATE/projection,checkboxes,other cases and
+immutable evidence packets stay unchanged; no runtime success is claimed for this candidate.
 
 Historical isolated event-order GREEN checkpoint (accepted before remaining23 invocation):
 
