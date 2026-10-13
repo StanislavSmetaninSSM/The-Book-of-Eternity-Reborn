@@ -1,5 +1,37 @@
 # Tasks: GM Documentation Modularization
 
+## First disjoint reading28 RED frozen — 2026-10-13
+
+Actual candidate68416f7d0438cd4a7600f0e3ec9467a5bedfc9dd, retained fresh BOTH
+compile sourcea3fcec91f4be3288e1dcb664b4be6df26a0932c4; 2156 nonmetadata source
+and10 binary pins independently unchanged before run, retention released2e473222.
+Exact official -Category gm-doc-afterlife-reading -NoBuild -PlanOnly:
+20261013-232102-153-72772-9fec14bb72c04c91a53ec302ef14555c-categories,
+2.3037471s,5methods28cases1descriptor, zero executions. FIRST same category
+-NoBuild actual20261013-232116-601-72953-d1c60cf1f72e406495e2de6ab7606b87-categories:
+4.9227251s,28executed10PASS18FAIL, exit1, COMPLETE1/1descriptor28/28cases.
+No preservation/BOTH build/catalog repeat. [Immutable native packet](recovery/A-reading-first-actual-20261013/manifest.json)
+contains20raw/compressed chains+manifest, independent EVIDENCE PENDING.
+
+Seven actual family rows and ten actual topic rows fail route.missing_or_duplicate
+at first required current row; topic inactive-positive assertions after that first
+failure are not reached. Actual D01 body guard fails missing approved after-images/
+active owner and restored grant; xUnit abbreviates the issue list. Eight routing
+mutation controls and two mapped-D01 mutation controls PASS. No unexpected fixture
+or namespace failure observed. 2158 current source/10 retained binary POST match;
+no skip/duplicate/timeout, runner owned-tree/runtime cleanup true. Pure memory/source
+checks allocate no session/native-process root, so no strict root receipt is claimed.
+
+Combined history ACROSS two disjoint invocations:44 unique executions24PASS20FAIL,
+5/16 preservation plus5/28reading; first combined planned44 run was incomplete.
+Do not describe this as a single aggregate44 run, GREEN, completed A or actual move.
+Both raw failure packets and earlier SOURCE/evidence history remain immutable.
+Next independent reading EVIDENCE/coherent pure-RED classification before any
+further SOURCE release. Delivery final AST/dataflow/real packaged writer-to-session
+adapter UNWRITTEN; content/daemon/Block_5 remain unreleased. Full A/B OPEN, no checkbox
+changed; primaryJ0/J1 SOURCE review in separate context, productionJ2-J6 unopened.
+
+
 ## First pure preservation EVIDENCE accepted; reading-only release — 2026-10-13
 
 Independent retained actual Astra XHigh [EVIDENCE/status report](recovery/A-pure-first-actual-evidence-review-20261013.md)
