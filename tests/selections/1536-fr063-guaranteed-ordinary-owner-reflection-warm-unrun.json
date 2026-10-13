@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-guaranteed-ordinary-owner-reflection",
+      "reason": "Exact reflected Core signature dependency only: one method/three existing rows, budget2. No neighboring compatibility cases.",
+      "contracts": [
+        "Seven reflection arguments target the existing private Core; pending/terminal/unknown receipt refusal precedes any capture selection and preserves old state/cache oracles."
+      ]
+    },
+    {
+      "category": "fr063-guaranteed-ordinary-owner-warm-fence",
+      "reason": "One unchanged Fact is necessary solely because fixed guard before-images now join the existing treatment common seal. Budget2; exclude broad turn-lifecycle-core.",
+      "contracts": [
+        "Warm retained plan/fence and exact confirmed hold/restart replay remain once-only with the new before-image inventory."
+      ]
+    }
+  ]
+}

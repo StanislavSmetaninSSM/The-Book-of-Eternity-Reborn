@@ -9,6 +9,43 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## FR-063 late-guard preflight first outcome — 2026-10-13 (ACTUAL1/PLANNED5; EVIDENCE PENDING)
+
+SOURCE14d037d82198659c509066759dcbb02e32b2b5f7 independently accepted; same source freshly
+BOTH6methods8cases4descriptors140.6463936s,0exec0errors,warnings96/35. Unit3 solely build/
+discovery; exact3/5/3 PlanOnly2.5575261s0exec, catalog726/11567valid/unmapped0/stale0,
+5.6190915s0exec. Fresh11binary/current244source pins match POST beforemetadata.
+
+Actual20261013-191200-939-16725-77daa990886440dca6a5716d57e268f8 executed1,0PASS1FAIL of
+5planned,11.4567491s,exit1,no timeout/skips/duplicateIDs. Only late1descriptor completed;
+reflection3warm1UNRUN. Selection INCOMPLETE1/3descriptors1/5cases, not5executed.
+The actual guard case now passes exact npc_skills coordinator-preflight InvalidData refusal
+and complete physical-byte preservation. It then fails livehold probe IsValid=false at
+LifecycleTests3376/OrdinaryOwner287. Probe Issues/State are NOT captured by the failed
+assertion; current resource-hold cause/disposition is UNKNOWN. Later fullrequest/energy/
+history assertions are unreached. Do not weaken the probe or infer holdloss/production
+regression from this boolean alone. Intended full late-guard qualification remainsOPEN.
+
+FullTRX/errorstack/stdout/onepre-original observation, source/binary checks and preparation
+artifacts are frozen in45chains:
+[preflight first outcome](./recovery/fr063-late-guard-preflight-first-outcome-20261013/manifest.json).
+One strict emittedfixture root is physicallyabsent; runnerowned/runtimecleanuptrue.
+Prior six negative/native/postseal acceptance remains; no passing case repeated.
+
+Next: independent EVIDENCE and readonly exactlive-probe/authority invalidation diagnosis;
+stop speculative guard fixture changes. Four independent UNRUN cases can progress after
+review of new exact task-local selection: reflection1method3cases+warm1method1case,
+2methods4cases2descriptors/budgets2+2/default9. No C# or catalog change; existing entries
+copied exactly. Existing fresh14dbinaries may be reused only with reviewed metadata-only
+sourceequivalence and exactdiscovery/PREPOST, no repeated successful preparation needed.
+
+Mandatory pending2 genuine repair-persistence prototype is proposed-design accepted with
+conditions, not authored/SOURCEaccepted/runtimequalified. Canonical preoriginal settling,
+genuine samebinding packet, same scene/freshlease autoRestoreONEconfirmedclaim are required;
+old-seal quantity mutation proves parser-copy refusal beforeCoalesce, not its deep branch.
+Ordinary13 still has8 accepted positive cases and5 unresolved; original15/fullFR063/T070/
+#1536/newroot/UI/GMruntime remainOPEN. No parser/guard/oracle waiver or broadsuite/provider.
+
 ## FR-063 late-guard coordinator preflight correction — 2026-10-13 (SOURCE READY; NEW CHECKS UNRUN)
 
 Independent retained actual Astra XHigh accepted EVIDENCE/status at fa4fc1e5 for the
