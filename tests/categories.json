@@ -34,7 +34,7 @@
         },
         {
             "id": "gm-doc-afterlife-reading",
-            "responsibility": "#1557 A seven family and ten topic active/inactive documentation-reading fixtures, five independent scope/union mutations and one active D01 source-ban guard: four unit methods/twenty-three finite cases. Actual router/D01 positives are intended RED until approved navigation bodies are applied. Fixtures constrain documentation only; no runtime authorization fields. Newly authored UNRUN.",
+            "responsibility": "#1557 A seven family and ten topic active/inactive documentation-reading fixtures independently check actual predicate/precedence and topic/exclusion/core cells. Eight scope/union mutations include three condition-only changes; one mapped-active D01 guard and two owner-loss/restored-grant negatives: five unit methods/twenty-eight finite cases. Actual router/D01 positives remain intended RED until approved navigation bodies are applied. Pure fixtures create no runtime authorization fields. Corrected checks UNRUN.",
             "excludes": "Final AST entry/dataflow and real production package delivery remain a later bounded adapter block. No universal reads, new game/source-reading exception, Block_5, broad existing documentation tests, production dispatch or provider execution.",
             "changeHints": [
                 "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
@@ -57,7 +57,8 @@
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterNamesOnlyTheCurrentFamilyDependencyUnion",
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl",
                         "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion",
-                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActiveD01BodiesContainTheApprovedBanAndSafeRepairAlternatives"
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActiveD01BodiesContainTheApprovedBanAndSafeRepairAlternatives",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.D01MutationFixturesRefuseMissingActiveOwnerAndRestoredGrant"
                     ]
                 }
             ]

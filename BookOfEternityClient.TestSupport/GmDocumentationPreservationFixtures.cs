@@ -259,7 +259,7 @@ internal sealed class GmDocumentationPreservationFixtures
         if (cells.Length != 7) throw new InvalidDataException("route.shape:" + id);
         return cells[column] == "-" ? [] : cells[column].Split(',').Order(StringComparer.Ordinal).ToArray();
     }
-    internal static IReadOnlyList<string> VerifyRoute(string document, string id, string[] required, bool core)
+    internal static IReadOnlyList<string> VerifyRoute(string document, string id, string expectedPredicate, string[] required, bool core)
     {
         var errors = new List<string>();
         try
@@ -267,12 +267,69 @@ internal sealed class GmDocumentationPreservationFixtures
             if (!RouteTopics(document, id, 3).SequenceEqual(required.Order(StringComparer.Ordinal))) errors.Add("route.required:" + id);
             if (!RouteTopics(document, id, 4).SequenceEqual(Topics.Except(required, StringComparer.Ordinal).Order(StringComparer.Ordinal))) errors.Add("route.excluded:" + id);
             var row = document.Split('\n').Single(line => line.StartsWith("| " + id + " |", StringComparison.Ordinal));
+            if (row.Split('|')[2].Trim() != expectedPredicate) errors.Add("route.predicate:" + id);
             if (row.Split('|')[5].Trim() != core.ToString().ToLowerInvariant()) errors.Add("route.core:" + id);
             if (Regex.IsMatch(document, @"(?:read|open)\s+all\s+(?:afterlife\s+)?(?:modules|topic bodies)\s+(?:for|on|every)", RegexOptions.IgnoreCase)) errors.Add("route.universal_read");
             if (id == "wound_frontier" && (!document.Contains("Spiritual frontier core is correlation/terminal only", StringComparison.Ordinal) ||
                 document.Contains("Frontier must read ordinary turn_request", StringComparison.Ordinal))) errors.Add("route.frontier_scope");
+            if (id == "bootstrap" && !document.Contains("Bootstrap reads manifest/README only.", StringComparison.Ordinal)) errors.Add("route.precedence:" + id);
+            if (id == "receipt_only" && !document.Contains("Dedicated receipt-only uses its exact safe packet/helper, without turn_request, ordinary scene/story/progression or module/core bodies.", StringComparison.Ordinal)) errors.Add("route.precedence:" + id);
+            if (id == "repair" && !document.Contains("Validation repair follows the current permitted-read packet and does not become a new ordinary turn.", StringComparison.Ordinal)) errors.Add("route.precedence:" + id);
         }
         catch (InvalidDataException error) { errors.Add(error.Message); }
         return errors;
+    }
+
+    internal IEnumerable<JsonObject> D01Edits => Edits.Where(edit => S(edit, "kind").StartsWith("D01", StringComparison.Ordinal));
+    internal string ActiveEditOwner(JsonObject edit)
+    {
+        var owners = Blocks.Where(block => S(block, "source") == S(edit, "source") &&
+            I(block, "start") <= I(edit, "start") && I(block, "end") >= I(edit, "end")).ToArray();
+        if (owners.Length > 1) throw new InvalidDataException("d01.ambiguous_owner:" + S(edit, "id"));
+        return owners.Length == 1 ? S(owners[0], "destination") : S(edit, "source");
+    }
+    internal Dictionary<string, byte[]> ReadActualD01Scopes()
+    {
+        var actual = ReadActualDestinations();
+        foreach (var source in D01Edits.Select(edit => S(edit, "source")).Distinct(StringComparer.Ordinal))
+            if (File.Exists(Path.Combine(_repo, source))) actual[source] = File.ReadAllBytes(Path.Combine(_repo, source));
+        return actual;
+    }
+    internal Dictionary<string, byte[]> CreateCompleteD01Fixture()
+    {
+        var result = CreateCompleteFixture();
+        foreach (var edit in D01Edits.Where(edit => ActiveEditOwner(edit) == S(edit, "source")))
+        {
+            var source = S(edit, "source"); var raw = File.ReadAllBytes(Path.Combine(_repo, source));
+            var before = Convert.FromBase64String(S(edit, "beforeBase64"));
+            var after = Convert.FromBase64String(S(edit, "afterBase64"));
+            if (raw.AsSpan().IndexOf(before) >= 0)
+            {
+                var offset = I(edit, "start");
+                if (!raw.AsSpan(offset, before.Length).SequenceEqual(before)) throw new InvalidDataException("D01 frozen before-image mismatch.");
+                raw = raw[..offset].Concat(after).Concat(raw[(offset + before.Length)..]).ToArray();
+            }
+            else if (raw.AsSpan().IndexOf(after) < 0) throw new InvalidDataException("D01 seed requires exact approved before/after image.");
+            result[source] = raw;
+        }
+        return result;
+    }
+    internal IReadOnlyList<string> VerifyD01(IReadOnlyDictionary<string, byte[]> candidate)
+    {
+        var issues = new List<string>();
+        foreach (var edit in D01Edits)
+        {
+            var id = S(edit, "id"); var owner = ActiveEditOwner(edit);
+            var after = Convert.FromBase64String(S(edit, "afterBase64"));
+            var before = Convert.FromBase64String(S(edit, "beforeBase64"));
+            if (!candidate.TryGetValue(owner, out var active)) issues.Add("d01.owner_missing:" + id);
+            else if (active.AsSpan().IndexOf(after) < 0) issues.Add("d01.after_missing:" + id);
+            if (!candidate.ContainsKey(S(edit, "source"))) issues.Add("d01.navigation_missing:" + id);
+            foreach (var scope in candidate)
+                if (scope.Value.AsSpan().IndexOf(before) >= 0) issues.Add("d01.restored_grant:" + id + ":" + scope.Key);
+            if (owner != S(edit, "source") && candidate.TryGetValue(S(edit, "source"), out var navigation) &&
+                navigation.AsSpan().IndexOf(after) >= 0) issues.Add("d01.duplicate_active_body:" + id);
+        }
+        return issues;
     }
 }

@@ -9,6 +9,40 @@ public sealed class GmDocumentationModularizationTests
     private static GmDocumentationPreservationFixtures Fixture() => new(TestRepoPaths.RepoRoot);
     private static string Read(string path) => File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
 
+    // Independent contract expectations: approved delivery-routing disposition §2,
+    // not values read back from content-map.json or the router under test.
+    private static string ApprovedPredicate(string id) => id switch
+    {
+        "bootstrap" => "Initial context pack only; no per-turn/repair/terminal task",
+        "ordinary" => "currentRealm=Chaos Sea; no active special contracts or due flags",
+        "scheduler" => "mustEvaluateGuardianProjectProgression=true; no other mutation",
+        "multi_pending" => "Current Guardian social talk AND resident talk; no resource/profile mutation",
+        "receipt_only" => "requestKind=qte_deferred_effect_resolution AND current safePacket; restricted before overlays",
+        "wound_frontier" => "Current issued spiritualWoundContinuation phase=decision or dependent_draft; conflict source",
+        "repair" => "Current guardian trade repair packet; permitted-read scope only; no spiritual continuation",
+        "topic_L_active" => "Resolved ordinary afterlife realm; no handoff",
+        "topic_L_inactive" => "Missing/null/empty realm remains unresolved fault; no ordinary topics",
+        "topic_S_active" => "mustEvaluateGuardianProjectProgression=true",
+        "topic_S_inactive" => "All due flags false and no catchup",
+        "topic_G_active" => "Current nonempty pending_guardian_trade_request",
+        "topic_G_inactive" => "Stale/empty Guardian trade bundle without contract",
+        "topic_A_active" => "Current resident roster/transfer request",
+        "topic_A_inactive" => "Resident mentioned without request/state change",
+        "topic_H_active" => "Active Shining core action; prepared package absent",
+        "topic_H_inactive" => "Valid prepared package handoff blocks ordinary Shining work",
+        "topic_C_active" => "Current explicit active spiritual conflict action",
+        "topic_C_inactive" => "Old conflict mentioned in chronicle, no current action",
+        "topic_E_active" => "Current ordinary bounded resource/effect safe packet",
+        "topic_E_inactive" => "No resource/effect work; not dedicated receipt-only",
+        "topic_P_active" => "Current new durable afterlife actor/profile change",
+        "topic_P_inactive" => "Untouched client Fresh Guardian seed",
+        "topic_M_active" => "Current afterlife threat/story/Saref change",
+        "topic_M_inactive" => "No current story/state delta",
+        "topic_W_active" => "Current issued spiritual frontier with conflict source",
+        "topic_W_inactive" => "Private checkpoint or stale Ready with no issued envelope",
+        _ => throw new ArgumentOutOfRangeException(nameof(id))
+    };
+
     [Fact]
     public void FrozenMapAndExplicitInverseRoundTripEverySourceByte()
     {
@@ -143,7 +177,7 @@ public sealed class GmDocumentationModularizationTests
     public void ActualRouterNamesOnlyTheCurrentFamilyDependencyUnion(string family, string required, bool core)
     {
         var topics = required.Length == 0 ? Array.Empty<string>() : required.Split(',');
-        Assert.Empty(GmDocumentationPreservationFixtures.VerifyRoute(Read("CLI_Rules_Index.md"), family, topics, core));
+        Assert.Empty(GmDocumentationPreservationFixtures.VerifyRoute(Read("CLI_Rules_Index.md"), family, ApprovedPredicate(family), topics, core));
         if (family is "bootstrap" or "receipt_only") Assert.Empty(topics);
         if (family == "wound_frontier") Assert.Equal(new[] { "C", "E", "P", "W" }, topics.Order(StringComparer.Ordinal));
     }
@@ -162,9 +196,10 @@ public sealed class GmDocumentationModularizationTests
     public void ActualRouterPreservesEachTopicActivationAndItsInactiveControl(string topic, string active, string inactive)
     {
         var router = Read("CLI_Rules_Index.md");
-        Assert.Empty(GmDocumentationPreservationFixtures.VerifyRoute(router, "topic_" + topic + "_active", active.Split(','), true));
+        Assert.Empty(GmDocumentationPreservationFixtures.VerifyRoute(router, "topic_" + topic + "_active",
+            ApprovedPredicate("topic_" + topic + "_active"), active.Split(','), true));
         Assert.Empty(GmDocumentationPreservationFixtures.VerifyRoute(router, "topic_" + topic + "_inactive",
-            inactive.Length == 0 ? [] : inactive.Split(','), true));
+            ApprovedPredicate("topic_" + topic + "_inactive"), inactive.Length == 0 ? [] : inactive.Split(','), true));
         var fixture = Fixture();
         Assert.Contains(fixture.Map["topicLegend"]![topic]!["rule"]!.GetValue<string>(), router, StringComparison.Ordinal);
         Assert.Contains(fixture.Map["topicLegend"]![topic]!["example"]!.GetValue<string>(), router, StringComparison.Ordinal);
@@ -176,38 +211,98 @@ public sealed class GmDocumentationModularizationTests
     [InlineData("bootstrap_core")]
     [InlineData("receipt_ordinary")]
     [InlineData("frontier_ordinary")]
+    [InlineData("due_flag_inverse")]
+    [InlineData("frontier_stale_private")]
+    [InlineData("active_inactive_swapped")]
     public void RoutingMutationFixturesRefuseScopeExpansionOrLostUnion(string mutation)
     {
         var fixture = Fixture();
         var router = GmDocumentationPreservationFixtures.Text(fixture.CreateCompleteFixture()["CLI_Rules_Index.md"]);
-        var family = mutation is "bootstrap_core" ? "bootstrap" : mutation is "receipt_ordinary" ? "receipt_only" : mutation == "frontier_ordinary" ? "wound_frontier" : "multi_pending";
-        var required = family == "multi_pending" ? new[] { "L", "G", "A" } : family == "wound_frontier" ? new[] { "W", "C", "P", "E" } : Array.Empty<string>();
-        var core = family is "multi_pending" or "wound_frontier";
-        Assert.Empty(GmDocumentationPreservationFixtures.VerifyRoute(router, family, required, core));
+        var family = mutation switch
+        {
+            "bootstrap_core" => "bootstrap",
+            "receipt_ordinary" => "receipt_only",
+            "frontier_ordinary" or "frontier_stale_private" => "wound_frontier",
+            "due_flag_inverse" => "scheduler",
+            "active_inactive_swapped" => "topic_S_active",
+            _ => "multi_pending"
+        };
+        var required = family switch
+        {
+            "multi_pending" => new[] { "L", "G", "A" },
+            "wound_frontier" => new[] { "W", "C", "P", "E" },
+            "scheduler" or "topic_S_active" => new[] { "L", "S", "G" },
+            _ => Array.Empty<string>()
+        };
+        var core = family is not ("bootstrap" or "receipt_only");
+        var predicate = ApprovedPredicate(family);
+        Assert.Empty(GmDocumentationPreservationFixtures.VerifyRoute(router, family, predicate, required, core));
         var row = router.Split('\n').Single(line => line.StartsWith("| " + family + " |", StringComparison.Ordinal));
-        if (mutation == "frontier_ordinary") router += "\nFrontier must read ordinary turn_request.\n";
+        var conditionOnly = mutation is "due_flag_inverse" or "frontier_stale_private" or "active_inactive_swapped";
+        if (conditionOnly)
+        {
+            var changedPredicate = mutation switch
+            {
+                "due_flag_inverse" => predicate.Replace("=true", "=false", StringComparison.Ordinal),
+                "frontier_stale_private" => ApprovedPredicate("topic_W_inactive"),
+                _ => ApprovedPredicate("topic_S_inactive")
+            };
+            Assert.NotEqual(predicate, changedPredicate);
+            var changedRow = row.Replace("| " + predicate + " |", "| " + changedPredicate + " |", StringComparison.Ordinal);
+            Assert.Equal(row.Split('|')[3..], changedRow.Split('|')[3..]); // Every topics/exclusions/core cell stays exact.
+            router = router.Replace(row, changedRow, StringComparison.Ordinal);
+            if (mutation == "active_inactive_swapped")
+            {
+                var inactive = router.Split('\n').Single(line => line.StartsWith("| topic_S_inactive |", StringComparison.Ordinal));
+                router = router.Replace(inactive, inactive.Replace("| " + ApprovedPredicate("topic_S_inactive") + " |",
+                    "| " + predicate + " |", StringComparison.Ordinal), StringComparison.Ordinal);
+                Assert.Contains(GmDocumentationPreservationFixtures.VerifyRoute(router, "topic_S_inactive",
+                    ApprovedPredicate("topic_S_inactive"), ["L"], true), issue => issue == "route.predicate:topic_S_inactive");
+            }
+        }
+        else if (mutation == "frontier_ordinary") router += "\nFrontier must read ordinary turn_request.\n";
         else if (mutation == "universal_read") router += "\nRead all modules every turn.\n";
         else if (mutation == "second_pending") router = router.Replace(row, row.Replace("A,G,L", "G,L", StringComparison.Ordinal), StringComparison.Ordinal);
         else if (mutation == "bootstrap_core") router = router.Replace(row, row.Replace("false", "true", StringComparison.Ordinal), StringComparison.Ordinal);
         else router = router.Replace(row, row.Replace(" | - | ", " | L | ", StringComparison.Ordinal), StringComparison.Ordinal);
-        Assert.Contains(GmDocumentationPreservationFixtures.VerifyRoute(router, family, required, core), issue => issue.StartsWith("route.", StringComparison.Ordinal));
+        var issues = GmDocumentationPreservationFixtures.VerifyRoute(router, family, predicate, required, core);
+        Assert.Contains(issues, issue => conditionOnly ? issue == "route.predicate:" + family : issue.StartsWith("route.", StringComparison.Ordinal));
+        if (conditionOnly) Assert.DoesNotContain(issues, issue => issue.StartsWith("route.required:", StringComparison.Ordinal) ||
+            issue.StartsWith("route.excluded:", StringComparison.Ordinal) || issue.StartsWith("route.core:", StringComparison.Ordinal));
     }
 
     [Fact]
     public void ActiveD01BodiesContainTheApprovedBanAndSafeRepairAlternatives()
     {
         var fixture = Fixture();
-        foreach (var edit in fixture.Edits.Where(edit => GmDocumentationPreservationFixtures.S(edit, "kind").StartsWith("D01", StringComparison.Ordinal)))
-        {
-            var actual = File.ReadAllBytes(Path.Combine(TestRepoPaths.RepoRoot, GmDocumentationPreservationFixtures.S(edit, "source")));
-            var after = Convert.FromBase64String(GmDocumentationPreservationFixtures.S(edit, "afterBase64"));
-            var before = Convert.FromBase64String(GmDocumentationPreservationFixtures.S(edit, "beforeBase64"));
-            Assert.True(actual.AsSpan().IndexOf(after) >= 0, "D01 approved active after-image missing: " + GmDocumentationPreservationFixtures.S(edit, "source"));
-            Assert.True(actual.AsSpan().IndexOf(before) < 0, "D01 source-reading grant remains active.");
-        }
+        Assert.Empty(fixture.VerifyD01(fixture.ReadActualD01Scopes()));
         var daemon = Read("BookOfEternityClient/game_master_daemon.ps1");
         Assert.Contains("Do not read implementation code such as BookOfEternityClient/**/*.cs during normal play or validation repair", daemon, StringComparison.Ordinal);
         Assert.Contains("$script:GmSourceFallbackDirective", daemon, StringComparison.Ordinal);
         // Final AST/dispatch dataflow and real packaged delivery are separate, still-unwritten adapter guards.
+    }
+
+    [Theory]
+    [InlineData("owner_loss")]
+    [InlineData("restored_grant")]
+    public void D01MutationFixturesRefuseMissingActiveOwnerAndRestoredGrant(string mutation)
+    {
+        var fixture = Fixture(); var candidate = fixture.CreateCompleteD01Fixture();
+        Assert.Empty(fixture.VerifyD01(candidate));
+        var moved = fixture.D01Edits.Single(edit => GmDocumentationPreservationFixtures.S(edit, "id") == "N002");
+        var owner = fixture.ActiveEditOwner(moved);
+        Assert.Equal("OtherGuides/GM_Common_Core.md", owner);
+        Assert.Equal("CLI_Agent_Daemon_Specification.md", fixture.ActiveEditOwner(fixture.D01Edits.Single(edit =>
+            GmDocumentationPreservationFixtures.S(edit, "id") == "N001")));
+        Assert.Equal("TaskGuides/CLI_Step_Main.txt", fixture.ActiveEditOwner(fixture.D01Edits.Single(edit =>
+            GmDocumentationPreservationFixtures.S(edit, "id") == "N003")));
+        var stub = GmDocumentationPreservationFixtures.S(moved, "source");
+        var after = Convert.FromBase64String(GmDocumentationPreservationFixtures.S(moved, "afterBase64"));
+        Assert.True(candidate[stub].AsSpan().IndexOf(after) < 0); // Compact stub does not duplicate the active paragraph.
+        if (mutation == "owner_loss") candidate.Remove(owner);
+        else candidate[stub] = candidate[stub].Concat(Convert.FromBase64String(
+            GmDocumentationPreservationFixtures.S(moved, "beforeBase64"))).ToArray();
+        Assert.Contains(fixture.VerifyD01(candidate), issue => issue.StartsWith(
+            mutation == "owner_loss" ? "d01.owner_missing:N002" : "d01.restored_grant:N002:", StringComparison.Ordinal));
     }
 }

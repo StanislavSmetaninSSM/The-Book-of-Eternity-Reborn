@@ -1,5 +1,36 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Focused pure-oracle correction SOURCE READY; review pending — 2026-10-13
+
+Retained sole Sol completed the released two-finding TEST-only correction from isolated
+published e35d96629debb7f2d8fb834d918846edf40def4e. Independent e1fa318 SOURCE review was
+BLOCKED by two Important/no Critical findings; those source findings are preserved below.
+No observed test failure/RED or project execution is inferred from that review.
+
+Route guard now compares actual column2 to independent unit-side contract literals for all
+seven families and ten active/inactive pairs, with applicable restricted-family precedence.
+Expected policy comes from approved delivery-routing disposition §2, not map/table lookup.
+Three added condition-only negatives reverse due=true, substitute stale/private frontier,
+and swap active/inactive predicates while keeping topic/exclusion/core cells exact. Existing
+union, dependency, restricted-core and universal-read checks remain. This is documentation
+verification, not a new runtime selector, request schema or dispatch authority.
+
+D01 N002 reads its sole mapped A005 active owner OtherGuides/GM_Common_Core.md; unmoved
+N001/N003 retain their original paths. Exact approved after-images and old-grant absence
+are checked across relevant scopes; compact Matrix must not duplicate the active paragraph.
+Two owned-memory negatives remove the actual owner or restore the old grant in the stub.
+Actual GM bodies, map/navigation inventories, manifest, daemon and production stay byte-exact.
+
+Static authoring inventory:10methods44cases/two unit descriptors/default9; preservation
+5/16 unchanged, reading5/28. Category budgets2+2 unchanged; catalog729/11578 provisional
+NOTdiscovery. Only exact new reading owner membership/reasons changed; all inherited727
+nodes/globalselection/CI and historical checkpoint/checkbox bytes remain exact. Corrected
+SOURCE/build/discovery/catalog/test/runtime checks UNRUN/PENDING. ROOT publication/recovery
+and focused SOURCE precede first intended actual RED; no new GREEN/A qualification claim.
+Delivery finalAST/dataflow/real packaged writer→session adapter remains UNWRITTEN/deferred;
+no content moves or Block_5 tests/moves. Full A/B OPEN; primary FR063 untouched.
+The older bodies below remain historical; their39-case/blocked-stage counts are preserved.
+
 ## Pure test-source SOURCE BLOCKED; two focused corrections — 2026-10-13
 
 Retained actual independent AstraXHigh reviewed cebb8835c06a1a4a74df68a9c1994eb71ad22e0d:
