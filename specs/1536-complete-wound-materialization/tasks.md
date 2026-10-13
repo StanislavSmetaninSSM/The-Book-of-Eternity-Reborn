@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (REPAIR OBSERVER SOURCE READY; RETRY8 + UNRUN8)
+## Current T070 boundary — 2026-10-13 (FORMAT-1 OBSERVER SOURCE READY; RETRY8 + UNRUN8)
 
 Retained actual Astra XHigh EVIDENCE/status ACCEPTED at
 `f589bd12849126e32afad438672d553d3196d73c` for the
@@ -41,21 +41,30 @@ can also delete that path. Thus delete-before-write is a source-backed explanati
 the old callback,not evidence that actual3890 ran. The old path-only observer attempted ReadAllText
 without checking the declared afterimage. Future actual member metadata must establish the kind.
 
-Current bounded fixture-only correction selects the exact repair-request journal MEMBER,records
-actual TransactionId/Committed/member Path/After.Exists-Length-Sha256 in the existing native
-RepairPublications observation,including declared deletions. It asserts Committed and responds
-ONLY to After.Exists=true. Declared DELETE is skipped explicitly; it does not skip a missing file
-for a declared PRESENT image. ReadAllBytes must match declared length and uppercase SHA-256 before
-UTF8 decode/BOM trim/existing packet checks. Missing/mismatched present bytes still flow to the
-existing responderFailure plus queued Escape/first failure assertion. No catch-ignore,poll,timing,
-new hook,source/authority/parser/production change or broader publication contract is introduced.
+Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION BLOCKED
+`2c59dc6b6cbb41a9069fc703f1a8b1a6fe59f6a0` by one confirmed Important fixture finding; no project
+execution occurred. The observer requested After.Length, but ordinary PublishCore219-231 constructs
+FromBytes images and publishes journal Format=1. TrustedLocalFileImage exposes public Exists/Bytes/
+Sha256; Length is internal and is not serialized by the default JSON contract. The first matching
+request member would therefore fail before the intended deletion/write guard. This source finding
+does not establish the old native publication kind/caller; those remain UNPROVED.
+
+Current minimum fixture correction requires the matching journal's Format==1, decodes the actual
+After.Bytes base64 (null for declared absence), and records Format/TransactionId/Committed/member
+Path/After.Exists-Sha256 plus separately DERIVED DeclaredBytesLength in RepairPublications. It does
+not describe derived length as a serialized After.Length field. Committed is required; declared
+DELETE requires null bytes/hash and is skipped explicitly. For PRESENT, declared bytes must exist;
+ReadAllBytes must match those exact bytes, their derived length and the declared uppercase SHA-256
+BEFORE UTF8 decode/BOM trim/existing strict packet checks. Missing/mismatched PRESENT still becomes
+responderFailure plus queued Escape/first failure assertion. No missing-file tolerance,catch-ignore,
+poll,timing,new hook,generic format parser,source/authority/production or broader publication change.
 Actual command pre-revocation capture and ALL eight rows/count1/candidate/full-resubmit/session/
 request/manifest/authority bytes/private guards/corrected field/sibling/receipt/marker/cleanup and
 initial-ready prerequisite remain unchanged. This local diagnostic grants no authority. Public GM
-rules are unchanged; no GM prompt/example update is needed for the fixture observer correction.
+rules are unchanged; no GM prompt/example update is needed for this fixture-only correction.
 
-SOURCE READY for ROOT publication/recovery and mandatory SOURCE/FIXTURE/SELECTION gate; all fresh
-BOTH build/discovery/PlanOnly/actual checks on this correction UNRUN. Catalog714/11550,declarations,
+Minimum format-1 correction SOURCE READY for ROOT publication/recovery and focused retained Astra
+SOURCE/FIXTURE/SELECTION recheck; all fresh BOTH build/discovery/PlanOnly/actual checks UNRUN. Catalog714/11550,declarations,
 selectors/category IDs-membership-budgets/global CI/full preparation30/70/12/default30 unchanged.
 ROOT's local reduced selection remains repair exactly1 method/8 cases/1 descriptor,budget5/default10.
 After first corrected8 freeze/EVIDENCE gate,the untouched compatibility5+worker3 remain5 methods/

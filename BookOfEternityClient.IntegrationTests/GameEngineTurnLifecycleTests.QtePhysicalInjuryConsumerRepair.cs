@@ -137,20 +137,31 @@ public sealed partial class GameEngineTurnLifecycleTests
                     .Where(row => row.GetProperty("Path").GetString() == requestPath).ToArray();
                 if (requestMembers.Length == 0) return;
                 var member = Assert.Single(requestMembers);
+                var format = journal.RootElement.GetProperty("Format").GetInt32();
+                Assert.Equal(1, format);
                 var after = member.GetProperty("After");
                 var afterExists = after.GetProperty("Exists").GetBoolean();
-                var afterLength = after.GetProperty("Length").GetInt64();
+                var declaredBytes = after.GetProperty("Bytes").ValueKind == JsonValueKind.Null
+                    ? null : after.GetProperty("Bytes").GetBytesFromBase64();
                 var afterSha256 = after.GetProperty("Sha256").GetString();
                 var committed = journal.RootElement.GetProperty("Committed").GetBoolean();
                 repairPublications.Add(new
                 {
-                    TransactionId = journal.RootElement.GetProperty("TransactionId").GetString(), Committed = committed,
-                    MemberPath = member.GetProperty("Path").GetString(), After = new { Exists = afterExists, Length = afterLength, Sha256 = afterSha256 }
+                    Format = format, TransactionId = journal.RootElement.GetProperty("TransactionId").GetString(), Committed = committed,
+                    MemberPath = member.GetProperty("Path").GetString(), DeclaredBytesLength = declaredBytes?.LongLength,
+                    After = new { Exists = afterExists, Sha256 = afterSha256 }
                 });
                 Assert.True(committed);
-                if (!afterExists) return; // A declared deletion is not a newly published repair request.
+                if (!afterExists)
+                {
+                    Assert.Null(declaredBytes);
+                    Assert.Null(afterSha256);
+                    return; // A declared deletion is not a newly published repair request.
+                }
+                Assert.NotNull(declaredBytes);
                 var publishedBytes = File.ReadAllBytes(requestPath);
-                Assert.Equal(afterLength, publishedBytes.LongLength);
+                Assert.Equal(declaredBytes!.LongLength, publishedBytes.LongLength);
+                Assert.Equal(declaredBytes, publishedBytes);
                 Assert.Equal(afterSha256, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(publishedBytes)));
                 repairPacket = Encoding.UTF8.GetString(publishedBytes);
                 using var packet = JsonDocument.Parse(repairPacket.TrimStart('\uFEFF'));
