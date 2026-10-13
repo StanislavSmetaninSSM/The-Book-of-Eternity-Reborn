@@ -9,7 +9,39 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (FIRST CURRENT-CONTRACT CREATE GREEN; EVIDENCE REVIEW PENDING)
+## Current T070 first vertical — 2026-10-13 (CONTROLS PARTIAL: 12 PASS / 3 FAIL; 50 UNRUN)
+
+First finite controls invocation on published source `b76d051cfe42a02ba5ea6b2abdc235f3c4f4df5a`
+(compiled unchanged production92ae) failed after the first common-controls category.
+[Partial finite controls evidence](./recovery/qte-physical-consumer-controls-partial-20261013/manifest.json)
+records run `20261013-020856-271-428472-f3848a4520154d4f8d9253447c9375f6-categories`:
+planned26 methods/65 cases/10 descriptors/8 categories; completed1 descriptor/15 cases,
+15 executed/12 PASS/3 FAIL, wall123.8663871s, exit1, no timeout/skips/duplicate IDs.
+Runner fail-fast leaves9 descriptors/50 cases UNRUN. This is not completed controls qualification.
+
+Two severity/location bound rows fail at Controls.cs:251 because Assert.Single sees two identical
+issues at the same proposal path. The changed materialize replay row fails at Controls.cs:56:
+expected refusal issues are empty. The exact native results, messages/stacks, 72 observations
+and full stdout are frozen; the source cause is not established by these observations alone.
+No production or fixture correction is included in this evidence block. ROOT matched148 source
+and10 fresh binary PRE/POST pins BEFORE metadata edits, read every result, and verified all15
+strict cleanup receipts (removed=true/failure=null) and physical root absence. Runner cleanup
+succeeded. Matching controls NoBuild PlanOnly4.6527918s discovered26/65/10/8 with0 executed tests;
+all146 nonmetadata pinned inputs and10 binaries remained identical to fresh92ae builds.
+
+Both full baseline cases are independently accepted: unchanged NONE36256 and migrated CREATEb76,
+1 PASS each. Astra XHigh accepted all25 CREATE artifacts,148 immutable92ae source pins/10 binaries,
+full native TRX/six observations/strict cleanup and the current4ed fixture. This controls run
+excluded both passing baseline Facts. Historical c7 CREATE RED remains separate/non-byte-matched;
+prior diagnostic4 FAIL and current finite NONE history remain unchanged. Current controls history
+is one partial actual with15 executed/12 PASS/3 FAIL; remaining50 cases, complete replay/atomicity/
+rollback and archive/newroot/fresh-process qualification remain OPEN/UNRUN. Full T070/FR-063/
+parent/#1536 checkboxes remain OPEN and unchanged. Next: publish/recover this frozen partial packet,
+independent EVIDENCE/status gate, then diagnose the three failures and apply only a reviewed bounded
+correction before the relevant failed/affected selection and still-unrun controls. Evidence review
+for this partial packet is PENDING; no passing selection is repeated without relevant changes.
+
+Historical first CREATE GREEN checkpoint (accepted before this finite controls invocation):
 
 First current-contract migrated full CREATE is GREEN on production/compile source
 `92aedfb937224d7db9b85a7d6f588460f70d630f`; its focused SOURCE/FIXTURE/SELECTION gate
