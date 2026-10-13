@@ -5,6 +5,51 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## Fresh completed-proof outcome — 2026-10-13 (19 PASS / GENERATION FIXTURE LEASE FAILURE)
+
+Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
+`209b994f1f070d62153fc28125421e3a15356b6b`, sole Important legacy21 finding closed.
+[First completed-proof20 outcome](./recovery/qte-physical-consumer-completed-proof-generation-lease-failure-20261013/manifest.json)
+freezes actual `20261013-112942-001-575785-f7578c2fe210413ba842422c8f5840b9-categories`,
+source/compile209b:20 executed/19 PASS/1 FAIL,5 methods20 cases1 COMPLETE descriptor,
+160.4606262s,exit1,no timeout/skips/duplicates. The ONLY failed row is
+`ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: "generation")`:
+`InvalidOperationException: This operation requires a session replacement write lease.`
+at HeldPublication.cs84 -> RotateSessionGeneration -> PublishSessionReplacementAsync ->
+EnsureValidSessionReplacementLease. That row stops at fixture mutation BEFORE inspection,
+so generation conflict proof is UNQUALIFIED; this is not a production-proof failure or tool denial.
+The other19 rows complete,including genuine exact/changed public decision2,12 other integrity
+mutations,foreign commands3,actual ordinary uncommitted rollback1 and labelled legacy21 entry1.
+Their acceptance remains PENDING independent EVIDENCE; no passing19 repeat is authorized by default.
+
+Fresh BOTH preparation `20261013-112347-097-575020-50c5a39cf9f044a7ad9caa4435f30ef2-categories`
+33/78/14 succeeded160.9634212s,93/35 warnings,0/0 errors,0 execution. Exact proof plan
+`20261013-112900-872-575392-1bafb839eb5b4bc2be53970c689c7f4f-categories`5/20/1 took2.7177834s,
+0 execution. Fresh catalog `20261013-112921-580-575558-10bae32209244458bc4d736bf8d80174-categories`
+719 categories11559 methods took5.6692433s,unmapped/stale0,0 execution.
+Commands use `scripts/test-csharp.ps1 -SelectionFile` with the frozen BOTH selection / task-local
+completed-proof selector,PlanOnly for preparation/exact; catalog uses ValidateCatalog/NoBuild;
+actual uses completed-proof selector/NoBuild. Full exact argument arrays are frozen.
+
+ROOT matched172 SOURCE/11 fresh binary pins PRE/POST BEFORE metadata. Immutable exact251160bytes/
+33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c retains metadata9.0.0.0 provenance;
+no fresh-child binding claim is made for component controls.94 native observations,20 SOURCE strict
+cleanup receipts,all20 roots physically absent; runner owned/runtime cleanup true.39 frozen artifacts
+preserve source audits,pins,preparation/plan/catalog/actual JSON/TRX/full stdout/stderr/logs/readbacks.
+Frozen EVIDENCE PENDING; publish/actualremote/GitHub-only selected recovery precede independent review.
+
+Next: EVIDENCE review this precise first outcome,then source-only minimum correction to generation
+mutation using the supported replacement ownership contour and a narrow failed-row selection.
+Inspect preservation and generation-session semantics before authoring; do not bypass the owner.
+Fresh affected-project build and exact failed-only plan precede retry; freeze/review its first outcome
+before ONLY changed durable2. Changed2 remain UNRUN under new hold fix. Archive4/exact durable2/
+finite68/baselines retain qualification without reruns. T070/FR-063/parent/#1536 OPEN; protected boxes
+and historical packets unchanged. Historicalfd15 child timeout cause/managed result/factory cleanup
+remain UNKNOWN/UNQUALIFIED. Environment remains bounded cloud Linux Debian13.6 x86_64,
+SDK10.0.401,NET8.0.31/10.0.12,pwsh7.6.6,Node24.19.0,Python3.12.14 with existing task-local env.sh.
+No new GM authoring surface: completed conflicting retry is client-owned held refusal; existing
+single-decision grammar/prompts/examples remain applicable. No main/CI/issues/PR/Windows/provider calls.
+
 ## Current T070 boundary — 2026-10-13 (ARCHIVE4/EXACT2 QUALIFIED; COMPLETED-PUBLICATION HELD REJECTION SOURCE READY)
 
 Actual retained Astra XHigh full SOURCE/FIXTURE/SELECTION review of published
