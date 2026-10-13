@@ -2,6 +2,77 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-completed-proof",
+            "responsibility": "#1536 bounded completed-publication preservation controls: four integration methods/nineteen cases. Owner-produced genuine QTE source and actual staging/common publisher establish every receipt/marker; component inspection separates strict past completion from current exact/changed/malformed public input. Thirteen independent marker/generation/binding/original authority/quartet/receipt/history/published-byte conflicts never grant verified completion or replay. Three returned raw Resource/Effect/Wound commands remain foreign and are held without staging/deletion. One actual uncommitted ordinary rejection proves its original rollback bytes are still restored. Component calls are explicitly distinct from the native fresh-child changed-two lifecycle proof.",
+            "excludes": "No handbuilt receipt/exact_replay result/snapshot/binding, re-signing, new canonical initialization, general save/storage/authority framework, package/provider/model/Windows/C5/journal changes, previously qualified native exact/archive/baseline/finite68 repetition or full T070 closure. No new producer/allocation/reduction/writer. This owner is separate from the unchanged old full preparation selection.",
+            "changeHints": [
+                "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+                "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-durable-changed",
+                    "when": "These source-bound component/control negatives gate the two failed actual durable changed aliases; they do not substitute for that lifecycle."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommittedPublicationHoldsForeignCommandsWithoutConsuming",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "qte-physical-injury-consumer-durable-changed",
+            "responsibility": "#1536 exact failed changed-only selection: one integration alias theory/two existing semantic rows (NONE/CREATE). The original durable four-row method/category/selector remain unchanged. Real parent source42 and N43 published mechanics precede native fresh-child same-root original43 validation. Changed public draft is held before repair, preserves committed mechanics/receipt/marker plus original request/snapshot/authority/backups/ready/output byte exactly, leaves story/loop42 and queued Escape unconsumed. This is held rejection, never changed-decision acceptance or a new semantic case.",
+            "excludes": "No passing exact-two/archive-four/finite68/baseline repetition, new durable rows, altered original durable category, source copies/resigning/new keys, direct adapter substitute, weak core byte oracles, budget increase/global runner or host change. Alias is excluded from old full preparation/control selectors to avoid duplicate selection.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-durable-session",
+                    "when": "Intentional semantic overlap: changed-only alias delegates to the verbatim original body while original four-row owner/membership remain byte exact."
+                },
+                {
+                    "id": "qte-physical-injury-consumer-completed-proof",
+                    "when": "Run after the focused completed-proof controls are accepted."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualChangedDurableSessionHoldsCommittedPublication"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-archive",
             "responsibility": "#1536 retained qualification authoring only: one integration theory/four cases. Actual SaveGame ZIP and fresh child LoadGame/rebind into a unique new root, pending/consumed × NONE/CREATE. Genuine source42 finalizedhealth155/original occurrence precedes Save42 or actual completed ordinary43/story43 then Save43. ZIP entries/hash and exclusions are observed. Child fresh process/factory/binary pins/replacement generation derives loop from actual loaded chat/story and stages genuine NEW43/44. Pending offered original42 source consumes once; consumed offers empty/no draft preserves source/receipt/wound/create-transition identities without reallocation. Resource owner authority and allowed Afterlife profile projection use typed agreement; exact archive-entry/loaded immutable bytes are checked before new turn. New44 CREATE may lawfully tick resource/effect/history; no blanket after-new-turn mechanical byte equality.",
             "excludes": "No previously qualified baseline/finite-cohort rerun, direct adapter/composer/normalizer substitute, copied/re-signed snapshot, invented receipt/hash/authority, SaveLoad transport exception, new key/framework/harness/provider/model/worker/Windows/C5/journal or full T070 qualification claim. Source/fresh build/discovery/catalog/runtime UNRUN until mandatory independent SOURCE/FIXTURE/SELECTION.",

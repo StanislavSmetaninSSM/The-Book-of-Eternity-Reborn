@@ -116,7 +116,17 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData(true, false)]
     [InlineData(false, true)]
     [InlineData(true, true)]
-    public async Task QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(bool materialize, bool changed)
+    public Task QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(bool materialize, bool changed) =>
+        AssertActualDurableSessionReplayOrHeldRefusalAsync(materialize, changed);
+
+    // Alias of the two already-existing changed semantic rows: the runner selects methods, not individual rows.
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public Task QtePhysicalInjuryConsumer_ActualChangedDurableSessionHoldsCommittedPublication(bool materialize) =>
+        AssertActualDurableSessionReplayOrHeldRefusalAsync(materialize, changed: true);
+
+    private async Task AssertActualDurableSessionReplayOrHeldRefusalAsync(bool materialize, bool changed)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         AgentConsoleLiveInputSource? qteInput = null;
@@ -356,6 +366,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         string? generation = null;
         PendingTurnSnapshotReadAuthority? original = null;
         bool? handled = null, secondIdle = null;
+        Dictionary<string, byte[]?>? submittedOutputs = null;
         var before = await CaptureMortalArchiveImagesAsync(files, MortalArchiveMechanicalPaths);
         var loadedDependencyBindings = MortalArchiveLoadedDependencyBindings();
         Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "qte_durable_child_loaded_dependencies", Observation = loadedDependencyBindings }));
@@ -390,21 +401,33 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.False(files.FileExists(AcceptedMechanicsPlan.WoundCommandPath));
             await GetPrivateField<StateManager>(run.Engine, "_stateManager").RefreshGameStateAsync();
             GetPrivateField<GameLoop>(run.Engine, "_gameLoop").SetSession(original.SessionId, 42);
+            submittedOutputs = await CaptureMortalArchiveImagesAsync(files,
+                [MortalWoundOpportunityAdapter.DecisionPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json"]);
             var idleInput = GetPrivateField<IConsoleInputSource>(run.Engine, "_inputSource");
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "qte_durable_child_before_actual_idle", Observation = new
             { ProcessId = Environment.ProcessId, scenario, BorrowedDurableRoot = root, AuxiliaryFactoryRoot = factory._rootPath,
                 generation, original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber, original.Realm,
                 InputType = idleInput.GetType().FullName, idleInput.KeyAvailable, PlannedRepairCancellation = changed,
-                MechanicalBefore = MortalArchiveDigests(before) } }));
+                MechanicalBefore = MortalArchiveDigests(before), SubmittedOutputBefore = MortalArchiveDigests(submittedOutputs) } }));
             handled = await InvokePrivateAsync<bool>(run.Engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
             after = await CaptureMortalArchiveImagesAsync(files, MortalArchiveMechanicalPaths);
             foreach (var pair in before) Assert.Equal(pair.Value, after[pair.Key]); // Changed refusal must not undo an already committed publication.
             Assert.Equal(changed ? new[] { 42 } : new[] { 42, 43 }, await MortalArchiveStoryTurnsAsync(files));
             Assert.Equal(changed ? 42 : 43, GetPrivateField<GameLoop>(run.Engine, "_gameLoop").TurnNumber);
             await AssertMortalArchiveDecisionAsync(files, context["source"]!.AsObject(), materialize, original);
-            // Ordinary accepted completion or settled cancellation reaches false; it is not an acceptance proof.
-            // Check this only after the strict canonical/story oracles so it cannot mask a destructive rejection.
-            Assert.False(handled);
+            // A held, conflicting replay exits early without accepting it; ordinary exact completion returns false.
+            // This boolean follows the strict canonical/story/receipt checks and cannot replace those proofs.
+            Assert.Equal(changed, handled);
+            if (changed)
+            {
+                Assert.False(GetPrivateFieldValue<bool>(run.Engine, "_inGame"));
+                Assert.True(idleInput.KeyAvailable); // Held rejection never enters repair or consumes queued Escape.
+                foreach (var pair in submittedOutputs) Assert.Equal(pair.Value, await files.ReadFileBytesAsync(pair.Key));
+                foreach (var pair in context["originalImages"]!.AsObject())
+                    Assert.Equal(MortalArchiveContextBytes(pair.Value!), await files.ReadFileBytesAsync(pair.Key));
+                Assert.Equal(MortalArchiveContextBytes(context["readyBytes"]!), await files.ReadFileBytesAsync("ready/turn_complete.json"));
+                Assert.Equal(draft.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed), await files.ReadFileAsync(MortalWoundOpportunityAdapter.DecisionPath));
+            }
             if (!changed)
             {
                 foreach (var pair in context["originalImages"]!.AsObject()) Assert.False(files.FileExists(pair.Key));
@@ -431,6 +454,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 actualTurn = GetPrivateField<GameLoop>(run.Engine, "_gameLoop").TurnNumber, failure = failure?.ToString(),
                 Original = original is null ? null : new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber },
                 Before = MortalArchiveDigests(before), After = MortalArchiveDigests(after),
+                SubmittedOutputBefore = submittedOutputs is null ? null : MortalArchiveDigests(submittedOutputs),
+                SubmittedOutputAfter = submittedOutputs is null ? null : MortalArchiveDigests(await CaptureMortalArchiveImagesAsync(files, submittedOutputs.Keys)),
                 Receipt = await files.ReadFileAsync(MortalWoundOpportunityReceiptState.StatePath),
                 Marker = await files.ReadFileAsync(MortalQteDecisionPublication.StatePath), Stories = await MortalArchiveStoryTurnsAsync(files)
             }));

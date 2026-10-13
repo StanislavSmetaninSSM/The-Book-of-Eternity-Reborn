@@ -103,47 +103,137 @@ internal static class MortalQteDecisionPublication
         return SerializePublicationRoot(root);
     }
 
+    internal enum CurrentPublicationState { NotCommitted, VerifiedCompleted, IntegrityConflict }
+    internal sealed record CurrentPublicationInspection(CurrentPublicationState State, bool MayResubmit, string Reason);
+    private sealed record CompletedProof(JsonObject Root, MortalWoundOpportunityReceipt Receipt);
+    private static readonly string[] PartitionPaths =
+    [MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath, WoundHistoryState.HistoryPath];
+    private static readonly string[] MechanicalCommandPaths =
+    [ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath, AcceptedMechanicsPlan.WoundCommandPath];
+
+    // This inspection grants no command/publication authority. A past commit and permission
+    // to resubmit today's bytes are separate facts, including when foreign commands return.
+    internal static async Task<CurrentPublicationInspection> InspectCurrentAsync(FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease, string sessionId, string requestId, string snapshotToken, int turn)
+    {
+        fs.EnsureCanonicalWriteLeaseActive(lease);
+        try
+        {
+            // Historical Mortal markers must not govern an unrelated afterlife validation loop.
+            // The ordinary official soul read retains the existing older presence-set semantics.
+            var realmRead = PendingTurnSnapshotReader.ReadCurrent(fs, lease, ["game_state/meta/soul_state.json"]);
+            if (!realmRead.Success || realmRead.Snapshot is null) throw Invalid("snapshot");
+            if (realmRead.Snapshot.Realm != "mortal_world")
+                return new(CurrentPublicationState.NotCommitted, false, "non_mortal_original");
+            var snapshot = ReadInspectionSnapshot(fs, lease);
+            if (snapshot.SessionId != sessionId || snapshot.RequestId != requestId ||
+                snapshot.SnapshotToken != snapshotToken || snapshot.TurnNumber != turn)
+                throw Invalid("inspection_binding");
+            var baselinePaths = PartitionPaths.Prepend(StatePath);
+            var unchanged = true;
+            foreach (var path in baselinePaths)
+                unchanged &= Same(ReadObservedBytes(snapshot, path), await fs.ReadFileBytesAsync(lease, path));
+            if (unchanged) return new(CurrentPublicationState.NotCommitted, false, "original_baseline");
+            var proof = await ReadCompletedProofAsync(fs, lease, snapshot);
+            foreach (var path in MechanicalCommandPaths)
+                if (await fs.ReadFileBytesAsync(lease, path) is not null)
+                    return new(CurrentPublicationState.VerifiedCompleted, false, "foreign_mechanical_command");
+            var decision = await fs.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath);
+            var exact = false;
+            try { exact = decision is not null && Text(proof.Root, "decisionPayloadFingerprint") == ComputeDecisionPayloadFingerprint(decision); }
+            catch (Exception error) when (error is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or DecoderFallbackException) { }
+            return new(CurrentPublicationState.VerifiedCompleted, exact, exact ? "exact_public_decision" : "changed_or_malformed_public_decision");
+        }
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                                      error is (System.Text.Json.JsonException or InvalidDataException or DecoderFallbackException or
+                                          InvalidOperationException or KeyNotFoundException or FormatException))
+        {
+            return new(CurrentPublicationState.IntegrityConflict, false, error.Message);
+        }
+    }
+
     internal static async Task ValidateExactReplayAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
         MortalWoundOpportunityReceiptConsumePlanResult replay)
     {
         if (replay.Disposition != "exact_replay" || replay.Receipt is not { } receipt) throw Invalid("not_exact_replay");
+        var proof = await ReadCompletedProofAsync(fs, lease, ReadInspectionSnapshot(fs, lease));
+        if (receipt.SessionId != proof.Receipt.SessionId || receipt.RequestId != proof.Receipt.RequestId ||
+            receipt.SnapshotToken != proof.Receipt.SnapshotToken || receipt.Turn != proof.Receipt.Turn ||
+            receipt.ReceiptId != proof.Receipt.ReceiptId || receipt.ReceiptFingerprint != proof.Receipt.ReceiptFingerprint ||
+            receipt.DecisionFingerprint != proof.Receipt.DecisionFingerprint || receipt.OperationKey != proof.Receipt.OperationKey)
+            throw Invalid("source_or_receipt");
+        var currentDecision = await fs.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath) ?? throw Invalid("decision_missing");
+        if (Text(proof.Root, "decisionPayloadFingerprint") != ComputeDecisionPayloadFingerprint(currentDecision))
+            throw Invalid("changed_decision_payload");
+        foreach (var path in MechanicalCommandPaths)
+            if (await fs.ReadFileBytesAsync(lease, path) is not null) throw Invalid("new_command");
+    }
+
+    private static async Task<CompletedProof> ReadCompletedProofAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
+        PendingTurnSnapshotReadAuthority inspection)
+    {
         var bytes = await fs.ReadFileBytesAsync(lease, StatePath) ?? throw Invalid("missing");
         var root = StrictJsonAuthority.Deserialize<JsonObject>(new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "T070 common publication evidence") ?? throw Invalid("null");
         if (root.Count != Fields.Length || root.Any(pair => !Fields.Contains(pair.Key, StringComparer.Ordinal)) ||
             root["schemaVersion"]?.GetValue<int>() != 1) throw Invalid("shape");
-        var claimed = Text(root, "fingerprint");
         var payload = root.DeepClone().AsObject(); payload.Remove("fingerprint");
-        if (claimed != Fingerprint(payload) || !fs.IsCurrentSessionGeneration(lease, Text(root, "generation"))) throw Invalid("seal_or_generation");
+        if (Text(root, "fingerprint") != Fingerprint(payload) || !fs.IsCurrentSessionGeneration(lease, Text(root, "generation")))
+            throw Invalid("seal_or_generation");
         var snapshot = ReadSnapshot(fs, lease);
-        if (snapshot.Realm != "mortal_world" || Text(root, "sessionId") != snapshot.SessionId || Text(root, "requestId") != snapshot.RequestId ||
+        if (snapshot.Realm != "mortal_world" || inspection.SessionId != snapshot.SessionId || inspection.RequestId != snapshot.RequestId ||
+            inspection.SnapshotToken != snapshot.SnapshotToken || inspection.TurnNumber != snapshot.TurnNumber ||
+            Text(root, "sessionId") != snapshot.SessionId || Text(root, "requestId") != snapshot.RequestId ||
             Text(root, "snapshotToken") != snapshot.SnapshotToken || root["turn"]?.GetValue<int>() != snapshot.TurnNumber ||
-            receipt.SessionId != snapshot.SessionId || receipt.RequestId != snapshot.RequestId || receipt.SnapshotToken != snapshot.SnapshotToken ||
-            receipt.Turn != snapshot.TurnNumber || Text(root, "receiptId") != receipt.ReceiptId || Text(root, "receiptFingerprint") != receipt.ReceiptFingerprint ||
-            Text(root, "decisionFingerprint") != receipt.DecisionFingerprint || Text(root, "operationKey") != receipt.OperationKey ||
             Text(root, "manifestHash") != Digest(await fs.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath)) ||
             Text(root, "authorityHash") != Digest(await fs.ReadFileBytesAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath)) ||
             string.IsNullOrWhiteSpace(Text(root, "inputFingerprint"))) throw Invalid("source_or_receipt");
-        var currentDecision = await fs.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath) ?? throw Invalid("decision_missing");
-        if (Text(root, "decisionPayloadFingerprint") != ComputeDecisionPayloadFingerprint(currentDecision))
-            throw Invalid("changed_decision_payload");
-        var original = ClosedMap(root["originalQuartet"], QuartetPaths);
+        var original = MortalQteWoundOpportunityProjection.ReadSnapshot(fs, lease);
+        if (original.SessionId != snapshot.SessionId || original.RequestId != snapshot.RequestId ||
+            original.SnapshotToken != snapshot.SnapshotToken || original.TurnNumber != snapshot.TurnNumber || original.Realm != snapshot.Realm)
+            throw Invalid("original_binding");
+        var offered = MortalQteWoundOpportunityProjection.Project(original); // Full signed source batches/events/carrier agreement before selection.
+        var issues = new List<ValidationIssue>();
+        if (!MortalWoundOpportunityAdapter.TryReadPublishedReceiptPartition(fs, lease, original, issues, out var receipts) || receipts is null)
+            throw Invalid("receipt_partition: " + string.Join(";", issues.Select(issue => issue.Code)));
+        var matching = receipts.Receipts.Where(row => row.SessionId == snapshot.SessionId && row.RequestId == snapshot.RequestId &&
+            row.SnapshotToken == snapshot.SnapshotToken && row.Turn == snapshot.TurnNumber && row.ReceiptId == Text(root, "receiptId")).ToArray();
+        if (matching.Length != 1) throw Invalid("receipt_binding");
+        var receipt = matching[0];
+        var signedOccurrences = MortalWoundOccurrenceState.Parse(MortalQteWoundOpportunityProjection.ReadObservedRoot(original,
+            MortalWoundOccurrenceState.StatePath), MortalWoundOccurrenceState.StatePath);
+        var source = signedOccurrences.State?.Occurrences.SingleOrDefault(row => row.OccurrenceId == receipt.OpportunityId);
+        if (!signedOccurrences.IsValid || source is null || offered.Count != 1 ||
+            offered[0]!["opportunityRef"]?.GetValue<string>() != source.OpportunityRef || source.AdapterKind != "qte" || source.Domain != "physical" ||
+            source.ProfileKey != "mortal_qte_terminal_health_damage_v1" || source.Owner.Realm != "mortal_world" ||
+            source.Owner.OwnerKind != "player" || source.Owner.OwnerId != "player_current" || source.Owner.CarrierPath != WoundCarrierCatalog.PlayerPath ||
+            Text(root, "receiptFingerprint") != receipt.ReceiptFingerprint || Text(root, "decisionFingerprint") != receipt.DecisionFingerprint ||
+            Text(root, "operationKey") != receipt.OperationKey) throw Invalid("source_or_receipt");
+        var quartet = ClosedMap(root["originalQuartet"], QuartetPaths);
         foreach (var path in QuartetPaths)
-            if (original[path]?.GetValue<string>() != Digest(snapshot.ReadRequiredBytes(path))) throw Invalid("original_quartet");
+            if (quartet[path]?.GetValue<string>() != Digest(snapshot.ReadRequiredBytes(path))) throw Invalid("original_quartet");
         var published = ClosedMap(root["publishedFootprint"], FootprintPaths);
         foreach (var path in FootprintPaths)
             if (published[path]?.GetValue<string>() != Digest(await fs.ReadFileBytesAsync(lease, path))) throw Invalid("published_footprint");
-        var allowedCommands = new[] { ResourceMaterializationContract.CommandPath, EffectAcceptedTurnPlan.CommandPath,
-            AcceptedMechanicsPlan.WoundCommandPath, MortalWoundOpportunityAdapter.DecisionPath };
+        var allowedCommands = MechanicalCommandPaths.Append(MortalWoundOpportunityAdapter.DecisionPath).ToArray();
         if (root["consumedCommands"] is not JsonArray commands || commands.Count is < 2 or > 4 ||
             commands.Select(node => node?.GetValue<string>()).Distinct(StringComparer.Ordinal).Count() != commands.Count ||
             commands.Any(node => !allowedCommands.Contains(node?.GetValue<string>(), StringComparer.Ordinal)) ||
             !commands.Any(node => node?.GetValue<string>() == MortalWoundOpportunityAdapter.DecisionPath) ||
             !commands.Any(node => node?.GetValue<string>() == AcceptedMechanicsPlan.WoundCommandPath)) throw Invalid("consumed_commands");
-        // The identical public decision may be resubmitted; no raw mechanical command may return.
-        foreach (var path in allowedCommands.Where(path => path != MortalWoundOpportunityAdapter.DecisionPath))
-            if (await fs.ReadFileBytesAsync(lease, path) is not null) throw Invalid("new_command");
+        return new(root, receipt);
     }
+
+    private static PendingTurnSnapshotReadAuthority ReadInspectionSnapshot(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
+    {
+        var read = PendingTurnSnapshotReader.ReadCurrent(fs, lease,
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(["game_state/meta/soul_state.json"], PartitionPaths.Prepend(StatePath)));
+        return read.Success && read.Snapshot is not null ? read.Snapshot : throw Invalid("snapshot");
+    }
+
+    private static byte[]? ReadObservedBytes(PendingTurnSnapshotReadAuthority snapshot, string path) =>
+        snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal) ? snapshot.ReadRequiredBytes(path) :
+        snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal) ? null : throw Invalid("unobserved_root");
 
     internal static async Task ValidateUnchangedMarkerBeforeAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
     {

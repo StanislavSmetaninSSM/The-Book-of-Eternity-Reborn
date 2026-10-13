@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE4 QUALIFIED; DURABLE EXACT2 GREEN + CHANGED2 ROLLBACK CAUSAL RED FROZEN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE4/EXACT2 QUALIFIED; COMPLETED-PUBLICATION HELD REJECTION SOURCE READY)
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `afbe58181cbc9d83e8f8ced900a9ce68535e7d7e`, no blocking findings. Fresh BOTH PlanOnly33/78/14
@@ -19,7 +19,7 @@ source/compileafbe:4 executed/2 PASS/2 FAIL,1 method/4 cases/1 complete descript
 exit1,no descriptor/child timeout,skips or duplicate IDs. Exact NONE/CREATE child562792/562758 now
 fully pass SAME physical generation/originalN43 binding/owned resource-work/history/receipt/wound
 byte preservation,actual loop43/story[42,43] exactly once,terminal/original cleanup and second-idle
-no additional mechanics/story. These two native PASS await independent bounded qualification.
+no additional mechanics/story. These two native PASS are independently QUALIFIED at8e4e and excluded from repetition.
 
 Changed NONE/CREATE child562821/562858 now reach the ACTUAL ordinary repair wait and consume queued
 Escape through the existing caller (native KeyAvailable true before/false after). Full drained child
@@ -44,14 +44,80 @@ observations,4 SOURCE+4 child factory strict cleanup receipts,all8 known roots p
 runner cleanup true. Frozen31 artifacts preserve actual/preparation/exact/TRX/full child logs/native
 artifacts/readbacks/pins/retained catalog provenance. Durable history3 actual invocations12 executions
 2 PASS10 FAIL includes retries; current4 unique outcomes are exact2 PASS/changed2 FAIL. Independent
-EVIDENCE/status and exact2 qualification PENDING; no production patch released. Next publish/GitHub-
-only recover and EVIDENCE gate,then source-supported minimum preservation of VALID alreadycommitted
-publication on changed-decision rejection. Changed public decision stays refused; no presence-only
-bypass or weaker generation/original/wholedecision/receipt/footprint/foreign-command guards. Freeze
-precedes any production fix. Select only failed changed2 afterward using a bounded source-reviewed
-existing-runner-compatible wrapper/extraction if needed; exclude passing exact2/archive4/finite68/
-baselines. Full durable4/T070/FR-063/parent/#1536 OPEN; histories/checklists/frozen packets unchanged.
-No real tool security refusal; project strict byte failure is not a tool denial.
+EVIDENCE/status and exact2 bounded qualification ACCEPTED by actual retained Astra XHigh at
+`8e4e1f769872a267424366a8786b7988326f632d`, no report defects. Changed2 are genuine production
+causal REDs; exact2/archive4/finite68/baselines remain qualified. Frozen manifests preserve their
+pre-review status. Actual retained Astra High READONLY source consult confirms the narrow design:
+past committed-publication proof is distinct from current resubmission permission,and the refusal
+must be held BEFORE the repair loop receives the original N43 rollback.
+
+The observed destructive path is late TurnLifecycle901-908 original rollback construction,then
+rejected/cancelled validation1122-1130 -> RollbackRejectedAcceptedTurnAsync343-351 -> original backup
+restoration. The current source correction factors the existing18-field closed record validation
+without schema/writer/ID changes: strict domain hash/current physical generation; fresh official
+originalN43/manifest/authority/session/request/token/turn/original quartet; actual unique canonical
+receipt resolved from signed occurrence partition with unchanged receipt/history prefixes and exact
+remaining partition; full original producer event/source/carrier agreement and complete fixed current
+published footprint. No replay result/receipt/source is manufactured from the submitted draft or
+marker strings. Existing adapter partition checks are reused read-only.
+
+The first official original-realm read confines this inspection to Mortal World; unrelated afterlife
+validation retains its existing behavior. Storage-publication uncertainty and session replacement
+propagate through their established boundaries instead of becoming an integrity classification.
+Current classification distinguishes original-baseline NotCommitted,VerifiedCompleted and private
+IntegrityConflict. Verified past commit grants preservation ONLY; current whole public decision hash
+and absence of raw Resource/Effect/Wound commands independently control resubmission. Exact replay
+retains the genuine exact_replay prerequisite/receipt checks/full public fingerprint/no-new-command
+rule. Changed/malformed draft or foreign raw command on a valid past commit is held,not accepted;
+foreign commands remain untouched. Invalid proof is never VerifiedCompleted or acceptance authority.
+Integrity conflict is held privately without worker delegation or guessed baseline rollback.
+
+The narrow validation-entry disposition runs before EnsureHealthy/repair/staging. Its lifecycle
+preservation seam stops _inGame with an accurate Mortal message and DOES NOT clear Ready,input,
+original manifest/authority/snapshots/backups,submitted output or canonical mechanics/receipt/marker.
+An exact completed retry continues ordinary validation. Later error/repair boundaries freshly inspect
+the original binding/current proof under the participating lease before destructive refusal; they
+hold a previously completed attempt instead of entering repair restoration. No stale cached bool
+is used to grant acceptance or new publication. Genuine uncommitted refusal retains ordinary rollback.
+No new publication writer/reduction/allocation/source framework/storage transport/keys or access.
+
+Tests were authored FIRST in this coherent source block; the accepted actual changed2 RED supplies
+TDD regression evidence. One new focused partial has four methods/nineteen cases: exact/changed/
+malformed past-versus-current controls2; independent marker/null/hash/generation/binding/manifest/
+authority/original-quartet/receipt-source/history/published-quartet/wound/effect conflicts13; foreign
+Resource/Effect/Wound commands3; actual uncommitted refusal restores original canonical bytes1.
+Every completed fixture uses genuine QTE source,actual ordinary staging/official Reader and owner-
+taken common publication. Genuine adapter-issued exact replay exercises the factored strict wrapper;
+no fake receipt/replay/context. Component proof calls are labelled component,not fresh-child proof.
+All new preservation controls UNRUN; they are not represented as previously observed REDs.
+
+Original durable4 InlineData/method/category/selector remain unchanged. Its parent body is moved
+verbatim to one private helper; one changed-only alias has2 existing semantic rows,not new durable
+cases. The owning child now expects changed held=true/exact ordinary completion=false AFTER strict
+mechanics/story/turn/receipt checks. Changed branch proves actual Escape remains queued,_inGame=false,
+and original/backups/Ready/submitted output bytes retained. Exact cleanup/second-idle oracles stay
+unchanged. Full child log/raw result/context/available artifacts/PID/generation/ownership and45s bound
+remain. No alias is combined with the original durable owner,so no semantic double execution.
+
+Two new narrow owners/selectors: completed-proof4 methods19 cases1 descriptor,budget5/default10;
+failed changed alias1 method2 existing rows1 descriptor,budget5/default10. New selection inventory
+5 methods21 listed cases2 descriptors/default15,including2 aliases of old semantic cases. Catalog
+static expectation719 categories11558 methods (+2 owners/+5 methods); runtime discovery UNRUN.
+Old full preparation33/78/14,all old catalog nodes/globalCI/selections and their budgets remain exact.
+Selectors are [completed proof](../../tests/selections/1536-qte-physical-injury-consumer-completed-proof.json)
+and [failed changed2](../../tests/selections/1536-qte-physical-injury-consumer-durable-changed.json).
+ROOT first publishes/recovers and obtains mandatory SOURCE/FIXTURE/SELECTION for the coherent block;
+then fresh selected BOTH build/zero-execution plans/catalog,finite proof controls freeze/EVIDENCE,
+then ONLY failed changed2 native1/2/1 after dependency acceptance. All new build/discovery/catalog/
+runtime checks UNRUN. No passing archive4/exact2/finite68/baseline native repetition is requested;
+cheap focused genuine exact-proof controls cover shared strict-validation factoring.
+
+Correction SOURCE READY,independent source acceptance PENDING. Public GM single-decision grammar,
+examples/private ownership and Mortal/afterlife game mechanics do not change; this is client-owned
+safe refusal of a conflicting completed retry,so no new GM authoring prompt/grammar update is needed.
+Full durable4/T070/FR-063/parent/#1536 remain OPEN; frozen histories/checklists remain unchanged.
+No real tool security refusal; project strict byte failure is not a tool denial. No author project
+build/test/runtime,git mutation,provider/new-package/global-harness operation was performed.
 
 Historical child-input/diagnostic fixture correction checkpoint follows; its UNRUN wording is
 superseded by this genuine cancellation outcome. Earlierfd15 EVIDENCE remains accepted unchanged.

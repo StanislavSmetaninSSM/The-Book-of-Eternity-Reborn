@@ -716,6 +716,31 @@ internal static class MortalWoundOpportunityAdapter
         }
     }
 
+    // Read-only completion inspection reuses the SAME signed-prefix/remaining-partition
+    // checks as admission. No submitted decision or manufactured replay receipt participates.
+    internal static bool TryReadPublishedReceiptPartition(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
+        PendingTurnSnapshotReadAuthority snapshot, List<ValidationIssue> issues,
+        out MortalWoundOpportunityReceiptState? currentReceipts)
+    {
+        fs.EnsureCanonicalWriteLeaseActive(lease);
+        currentReceipts = null;
+        if (!TryParseOccurrenceState(Encoding.UTF8.GetBytes(
+                MortalQteWoundOpportunityProjection.ReadObservedRoot(snapshot, MortalWoundOccurrenceState.StatePath) ??
+                "{\"schemaVersion\":1,\"occurrences\":[]}"), issues, out var signedOccurrences) ||
+            !TryParseReceiptState(Encoding.UTF8.GetBytes(
+                MortalQteWoundOpportunityProjection.ReadObservedRoot(snapshot, MortalWoundOpportunityReceiptState.StatePath) ??
+                EmptyReceiptJson), issues, out var signedReceipts) ||
+            !TryParseHistoryState(Encoding.UTF8.GetBytes(
+                MortalQteWoundOpportunityProjection.ReadObservedRoot(snapshot, WoundHistoryState.HistoryPath) ??
+                EmptyHistoryJson), issues, out var signedHistory))
+            return false;
+        issues.AddRange(MortalWoundOpportunityReceiptState.ValidateConsumedOccurrenceAgreement(signedOccurrences!, signedReceipts!));
+        issues.AddRange(MortalWoundOpportunityReceiptState.ValidateHistoryAgreement(signedReceipts!, signedHistory!));
+        return issues.Count == 0 && TryReadCurrentPartition(fs, snapshot, signedOccurrences!, signedReceipts!, signedHistory!,
+            issues, out currentReceipts, out _);
+    }
+
     /// <summary>
     /// Reads the live pending partition and verifies its signed receipt and history prefixes.
     /// </summary>

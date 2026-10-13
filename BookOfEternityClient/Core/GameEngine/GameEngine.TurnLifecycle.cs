@@ -39,7 +39,7 @@ public partial class GameEngine
     /// </param>
     /// <returns>
     /// <see langword="true"/> when the turn is retained. Treatment retries clear terminal signals;
-    /// spiritual recovery preserves the existing correlation and stops gameplay until the session is reentered.
+    /// spiritual or completed Mortal recovery preserves the existing correlation and stops gameplay until the session is reentered.
     /// Otherwise, <see langword="false"/> lets the caller settle its ordinary outcome.
     /// </returns>
     private bool PreserveAcceptedTurnForTreatmentPublicationRetry(
@@ -48,12 +48,14 @@ public partial class GameEngine
         if (disposition is not (
                 AcceptedTurnValidationDisposition.RetryablePublicationRearmed or
                 AcceptedTurnValidationDisposition.RetryablePublicationHeldBlocked or
-                AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked))
+                AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked or
+                AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked))
         {
             return false;
         }
 
-        if (disposition == AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked)
+        if (disposition is AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked or
+            AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked)
             _inGame = false;
         else
             ClearReadySignals();
@@ -61,6 +63,8 @@ public partial class GameEngine
         {
             AcceptedTurnValidationDisposition.RetryablePublicationRearmed =>
                 "[yellow]⚠ Финальная публикация лечения не завершилась. Ход и удержанный ресурс сохранены для повторного terminal signal.[/]",
+            AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked =>
+                "[yellow]⚠ Уже опубликованное состояние смертного хода сохранено. Повторный ответ не принят; исходный ход удержан для безопасного восстановления.[/]",
             AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked =>
                 "[yellow]⚠ Духовный ход приостановлен. Состояние хода сохранено. Вернитесь в сессию после устранения ошибки, чтобы продолжить.[/]",
             _ => "[yellow]⚠ Финальная публикация лечения заблокирована безопасно. Ход и удержанный ресурс сохранены; требуется перезапуск или восстановление сессии.[/]"

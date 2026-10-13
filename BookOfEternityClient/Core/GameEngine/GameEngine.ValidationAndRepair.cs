@@ -26,7 +26,10 @@ internal enum AcceptedTurnValidationDisposition
     /// <summary>
     /// Preserves the original turn and committed spiritual decision while its pending projection awaits recovery.
     /// </summary>
-    SpiritualContinuationHeldBlocked
+    SpiritualContinuationHeldBlocked,
+
+    /// <summary>Retains a completed Mortal publication and its actual original turn without accepting conflicting resubmission.</summary>
+    MortalCompletedPublicationHeldBlocked
 }
 
 public partial class GameEngine
@@ -402,6 +405,8 @@ public partial class GameEngine
     /// <returns>
     /// Accepted after common publication and validation, or a terminal disposition requiring caller settlement.
     /// </returns>
+    private sealed class MortalCompletedPublicationHoldException : Exception { }
+
     private async Task<AcceptedTurnValidationDisposition>
         ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
         string source,
@@ -409,6 +414,50 @@ public partial class GameEngine
         RollbackSnapshot? rollbackSnapshot,
         int expectedTurn,
         ProgressionControl? progressionControl)
+    {
+        MortalQteDecisionPublication.CurrentPublicationInspection entry;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            entry = activeSnapshotContext is null && !_fs.FileExists(lease, MortalQteDecisionPublication.StatePath)
+                ? new(MortalQteDecisionPublication.CurrentPublicationState.NotCommitted, false, "no_active_completion")
+                : await MortalQteDecisionPublication.InspectCurrentAsync(_fs, lease,
+                    activeSnapshotContext?.SessionId ?? string.Empty, activeSnapshotContext?.RequestId ?? string.Empty,
+                    activeSnapshotContext?.Payload.ManifestPayloadHash ?? string.Empty, expectedTurn);
+        }
+        if (entry.State == MortalQteDecisionPublication.CurrentPublicationState.IntegrityConflict ||
+            entry.State == MortalQteDecisionPublication.CurrentPublicationState.VerifiedCompleted && !entry.MayResubmit)
+        {
+            _logger.LogWarning("Mortal completed publication retained before validation: {Reason}", entry.Reason);
+            return AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked;
+        }
+        async Task BeforeDestructiveRefusalAsync()
+        {
+            if (entry.State != MortalQteDecisionPublication.CurrentPublicationState.VerifiedCompleted) return;
+            // A remembered classification grants no authority: reread the original binding and
+            // complete current footprint under the participating lease before any repair/rollback.
+            await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            var current = await MortalQteDecisionPublication.InspectCurrentAsync(_fs, lease,
+                activeSnapshotContext!.SessionId, activeSnapshotContext.RequestId,
+                activeSnapshotContext.Payload.ManifestPayloadHash, expectedTurn);
+            _logger.LogWarning("Completed Mortal retry cannot enter destructive repair: {State}, {Reason}", current.State, current.Reason);
+            throw new MortalCompletedPublicationHoldException();
+        }
+        try
+        {
+            var result = await ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(source, activeSnapshotContext, rollbackSnapshot,
+                expectedTurn, progressionControl, BeforeDestructiveRefusalAsync);
+            if (result != AcceptedTurnValidationDisposition.Accepted) await BeforeDestructiveRefusalAsync();
+            return result;
+        }
+        catch (MortalCompletedPublicationHoldException)
+        {
+            return AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked;
+        }
+    }
+
+    private async Task<AcceptedTurnValidationDisposition> ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(
+        string source, ValidatedPendingTurnSnapshotContext? activeSnapshotContext, RollbackSnapshot? rollbackSnapshot,
+        int expectedTurn, ProgressionControl? progressionControl, Func<Task> beforeDestructiveRefusal)
     {
         _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
         _acceptedTurnSpiritualOutput = null;
@@ -560,6 +609,7 @@ public partial class GameEngine
             var rawErrors = PrioritizeValidationErrors(rawIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
             if (rawErrors.Count > 0)
             {
+                await beforeDestructiveRefusal();
                 criticalRepairAttempt++;
                 _logger.LogError(
                     "Critical accepted-turn raw state corruption after {Source}: {Count} errors",
@@ -735,6 +785,7 @@ public partial class GameEngine
             }
             catch (Exception exception)
             {
+                await beforeDestructiveRefusal();
                 await FailClosedAcceptedTurnCanonicalRefreshAsync(
                     source,
                     exception,
@@ -747,6 +798,7 @@ public partial class GameEngine
             {
                 if (!canonicalRefresh.BaselineUsable)
                 {
+                    await beforeDestructiveRefusal();
                     criticalRepairAttempt++;
                     var baselineErrors = new List<ValidationIssue>
                     {
@@ -800,6 +852,7 @@ public partial class GameEngine
                     .ToList();
                 if (postSealErrors.Count > 0)
                 {
+                    await beforeDestructiveRefusal();
                     criticalRepairAttempt++;
                     _logger.LogError(
                         "Critical accepted-turn post-seal validation failure after {Source}: {Count} errors",
@@ -865,6 +918,7 @@ public partial class GameEngine
 
                 if (canonicalRefresh.MechanicsPlan is { AwaitsPendingResolution: true } pendingPlan)
                 {
+                    await beforeDestructiveRefusal();
                     if (!pendingPlan.PendingAfterImages.TryGetValue(
                             ResourcePendingResolutionState.PendingPath,
                             out var pendingAfterImage) ||
@@ -927,6 +981,7 @@ public partial class GameEngine
                 var canonicalErrors = PrioritizeValidationErrors(canonicalIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
                 if (canonicalErrors.Count > 0)
                 {
+                    await beforeDestructiveRefusal();
                     criticalRepairAttempt++;
                     _logger.LogError(
                         "Critical accepted-turn canonical state corruption after {Source}: {Count} errors",
@@ -985,16 +1040,18 @@ public partial class GameEngine
                         pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint,
                         beforeRepairMutation: async () =>
                         {
+                            await beforeDestructiveRefusal();
                             guardianMusingsValidationScope.Invalidate();
                             treatmentPublicationCompensatedForRepair =
                                 await CompensateTreatmentResourcePublicationBeforeRepairAsync(
                                     treatmentResourcePublicationTransaction);
                         },
-                        beforeTerminalRepairReturn: () =>
-                            ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
-                                treatmentResourcePublicationTransaction,
-                                rollbackSnapshot,
-                                "validation_failed"),
+                        beforeTerminalRepairReturn: async () =>
+                        {
+                            await beforeDestructiveRefusal();
+                            await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                                treatmentResourcePublicationTransaction, rollbackSnapshot, "validation_failed");
+                        },
                         applyProgressionOnSuccess:
                             treatmentResourcePublicationTransaction is null,
                         treatmentResourcePublicationTransaction:
