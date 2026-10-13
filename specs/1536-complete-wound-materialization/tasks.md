@@ -5,6 +5,32 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## Import correction SOURCE accepted; joint-owner design proposed — 2026-10-13
+
+Independent retained actual AstraXHigh accepted import-only d7db15ffb2a033d8996d2e06ad9274b25ac89629:
+[focused SOURCE](./recovery/fr063-genuine-pending2-import-correction-source-review-20261013.md)
+SHA2569cb3665bc4aaa2ff677a2a2f769f745bd777604266d6c7c0d35db7ce1c97bb04.
+Original two-row component SOURCE carries forward; all executable body/oracles/production/
+catalog/selector/ce955 exact. ROOT releases NEW pinned fresh BOTH4/5/2 zero-execution retry,
+exact1/2/1 discovery and catalog728/11568; firstactual2 only after these succeed. Failed
+98.8960467s compile preparation stays immutable, zero tests; old binaries do not qualify.
+All corrected projectchecks/actual2 still UNRUN at this checkpoint.
+
+Mandatory live path now has [concrete joint-owner proposed design](./recovery/fr063-joint-repair-owner-implementation-design-20261013.md)
+SHA2568309bcf061a038d82f664e3fea3889db9de2e7b106c79f9b30ce2bf6ad2b5fc4, retained AstraHigh.
+ROOT read full design and verified all28 current production/contract pins before metadata.
+Private checkpoint, explicit typed combined family, one union prepared/effect/final/common
+publication, coordinated repair restore/compensation, whole-wave terminal settlement and
+joint v2 completion footprint are PROPOSED engineering choices, not accepted implementation.
+The literal bounded FR063 owning-contract amendment is PROPOSED/UNAPPLIED. Mandatory actual
+AstraXHigh DESIGN gate precedes test-only real-owner causalRED SOURCE/firstactual; no capture-
+only workaround or new generic mixed authority is released. Cold same-root/new-root and
+immediate own-wound guidance remain mandatory, fullFR063/T070/#1536 OPEN.
+
+GM51594aed map/navigation partial is published separately; tests/adapter still UNWRITTEN,
+content/delivery/runtimeUNRUN. Sole Sol resumes isolated A test sources; primary source is
+frozen for pinned ROOT runs. No broad passing repeats/provider/Windows/main/CI/PR/issueclosure.
+
 ## Genuine pending2 minimal import correction SOURCE READY — 2026-10-13
 
 Base42fad6505e60a849b95bed83b28908ca708ef535. Independent retained actual AstraXHigh
