@@ -396,3 +396,21 @@ native1/postseal1 and blockedpending2. Static catalog726/expected11567 is not di
 anticipated fresh BOTH6methods8cases4descriptors executes ZERO tests and unit3 is
 build/discovery ONLY. All old nodes/selections/checkboxes/historical promises remain;
 no production/GM contract, new-root or pending-wave implementation is added.
+
+## Confirmed-claim inspection after handoff cancellation — 2026-10-13
+
+Bounded architecture accepted by retained actual AstraHigh; source candidate READY and all
+new SOURCE/build/discovery/catalog/runtime checks UNRUN. One registry-owned read validates
+active lease, existing physical G and existing RootSlot/state G/revision, then delegates
+existing private ProbeConfirmed. It creates/rebinds/recovers nothing and returns no live
+publication fingerprint/capability. Old publication probes/helpers/candidate set stay exact.
+The affected late guard retains real preflight refusal and all old byte/request/energy/history
+oracles, now measuring the actual confirmed claim after cancelled lineage; byte equality
+extends through inspection. One new five-row component theory covers generation/owner/lease
+gates, explicit ordinary G setup and supported rotation on a separate non-rollback fixture.
+
+Negative5 owner first + old late1 gives2methods6cases2descriptors/default9 (budget2 each),
+static catalog727/expected11568, not discovery. ROOT-private BOTH5/9/3 is zeroexecution,
+unit3 build/discovery only. Qualified12/13 ordinary scopes are retained across checkpoints;
+late1, mandatory genuine pending2, newroot/UI/fullFR063/T070/#1536 remain OPEN. This private
+reader changes no GM/public/durable/gameplay contract; no docs/examples or old promises waived.

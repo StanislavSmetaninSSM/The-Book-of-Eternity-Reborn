@@ -1,8 +1,7 @@
 # Bounded retained-Sol author brief — FR063 cancelled-lineage hold read
 
-STATUS: NOT RELEASED until ROOT confirms concrete architecture disposition.
-Base currently verified remote b9bd24197f4a1ff694fe2b4125801cd5a020103f;
-ROOT may publish metadata-only evidence/proposal update first, then name final base.
+STATUS: RELEASED bounded source authoring by ROOT after retained AstraHigh architecture ACCEPTED; actual/build/runtime remain UNRUN until independent actualAstraXHigh SOURCE.
+Base verified clean remote 03b11cf968dd83d101e991bb21dc835853a42451 (metadata-only; code14d unchanged).
 Primary /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f.
 Tracked #1536 FR063, Linux, exactly one retained Sol source writer.
 
@@ -63,3 +62,6 @@ changed methods/helper boundaries, byte-equivalence checks of old bodies/catalog
 suffix/selector inventory/protectedQTE, known actual checks vs UNRUN, new source SHA
 pins, exact candidate filter proof/authority-neutral lock+generation analysis.
 FINALSTOPPED; ROOT inspect+publish WIP before independent actual AstraXHigh SOURCE.
+
+Architecture conditions (2026-10-13, actual retained AstraHigh, ACCEPTED):
+owner_absent explicitly initialize physical G during fixture preparation; EnsureDirectoryStructure alone does not guarantee G. owner_stale uses a SEPARATE default real held fixture with withRollbackAuthority:false, real lifecycle/session-replacement lease, RotateSessionGeneration(lease), then NO registry recovery. Do not rotate rollback-backed positive fixture: its storage-evidence guard correctly refuses rotation. Inventory snapshots begin AFTER all lease/rotation setup; positive fullbytes readback extends through new inspection. Preserve invalid oldpublication lineage separately; new GenerationFingerprint must stay null.

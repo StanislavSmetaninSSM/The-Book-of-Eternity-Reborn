@@ -284,14 +284,193 @@ public sealed partial class GameEngineTurnLifecycleTests
                 .BindTo(held.Lease).PrevalidateTreatmentResourcePublicationTransactionAsync());
             Assert.Equal($"Accepted mechanics authority at '{path}' changed after validation.", refusal.Message);
             await AssertOrdinaryTreatmentOwnerBytesAsync(held, before);
-            await AssertConfirmedHeldLiveRegistryProbeAsync(held);
+            var generationBeforeInspection = held.FileSystem.ReadLocalGenerationSnapshot(held.Lease);
+            var finalized = MortalWoundTreatmentResourceComposer.Finalize(held.Resolution);
+            Assert.True(finalized.IsValid, DescribeValidationIssues(finalized.Issues));
+            var finalization = Assert.IsType<MortalWoundTreatmentResourceFinalization>(finalized.Finalization);
+            var inspection = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(
+                held.FileSystem, held.Lease, held.Request, finalization);
+            WriteConfirmedClaimInspection("post_preflight", inspection);
+            Assert.True(inspection.IsValid, DescribeValidationIssues(inspection.Issues));
+            Assert.Empty(inspection.Issues);
+            Assert.Equal(0, inspection.ChangedCount);
+            Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, inspection.State);
+            Assert.Equal(held.Request.Coordinates.OperationKey, inspection.OperationKey);
+            Assert.Equal(held.Request.Coordinates.AttemptId, inspection.AttemptId);
+            Assert.Equal(held.Request.RequestFingerprint, inspection.RequestFingerprint);
+            Assert.Equal(finalization.ResourceAuthorityFingerprint, inspection.ResourceAuthorityFingerprint);
+            Assert.Equal(finalization.FinalizationFingerprint, inspection.FinalizationFingerprint);
+            Assert.False(string.IsNullOrWhiteSpace(inspection.AgreementFingerprint));
+            Assert.Equal(held.OriginalSessionGeneration, inspection.SessionGeneration);
+            Assert.Equal(held.OriginalSessionGenerationRevision, inspection.SessionGenerationRevision);
+            Assert.Null(inspection.GenerationFingerprint);
+            var cancelledPublication = AcceptedTurnAuthorityRegistry.ProbeMortalWoundTreatmentResourcePublicationHold(
+                held.FileSystem, held.Lease, held.AcceptedState, held.Request, finalization);
+            Assert.False(cancelledPublication.IsValid);
+            Assert.Equal("mortal_wound_treatment_publication_transaction_token_mismatch",
+                Assert.Single(cancelledPublication.Issues).Code);
+            await AssertOrdinaryTreatmentOwnerBytesAsync(held, before);
+            Assert.Equal(generationBeforeInspection.Bytes,
+                held.FileSystem.ReadLocalGenerationSnapshot(held.Lease).Bytes);
             Assert.True(await ContainsCurrentExactTreatmentRequestAsync(held));
             Assert.Equal(2, await ReadCurrentTreatmentEnergyAsync(held));
             Assert.Single(ReadCurrentTreatmentHistory(held.FileSystem).State!.Transitions);
             WritePhysicalInjuryDiagnostic("fr063_component_ordinary_guard_lease_turnover", new
-                { path, GuardBefore = plan.BeforeImages[path].Existed, Issues = issues, PreflightRefusal = refusal.Message, MechanicsAndRequestUnchanged = true });
+                {
+                    path, GuardBefore = plan.BeforeImages[path].Existed, Issues = issues,
+                    PreflightRefusal = refusal.Message, inspection.IsValid, inspection.State,
+                    inspection.OperationKey, inspection.AttemptId, inspection.RequestFingerprint,
+                    inspection.ResourceAuthorityFingerprint, inspection.FinalizationFingerprint,
+                    inspection.AgreementFingerprint, inspection.SessionGeneration,
+                    inspection.SessionGenerationRevision, inspection.GenerationFingerprint,
+                    CancelledPublicationIssues = cancelledPublication.Issues,
+                    MechanicsAndRequestUnchanged = true
+                });
         }
         finally { await held.ReleaseLeaseAsync(); }
+    }
+
+    [Theory]
+    [InlineData("generation_absent")]
+    [InlineData("owner_absent")]
+    [InlineData("owner_stale")]
+    [InlineData("foreign_lease")]
+    [InlineData("disposed_lease")]
+    public async Task GuaranteedTreatment_ComponentConfirmedClaimInspectionRefusesAbsentStaleOrInvalidLease(string mutation)
+    {
+        // No rollback evidence: only this separate negative fixture may rotate its generation.
+        await using var held = await CreateHeldTreatmentPipelineContextAsync(fault: null, withRollbackAuthority: false);
+        using var owned = new CleanupOwnedFixture(held.Root, line => _directGachaOutput?.WriteLine(line));
+        var finalized = MortalWoundTreatmentResourceComposer.Finalize(held.Resolution);
+        Assert.True(finalized.IsValid, DescribeValidationIssues(finalized.Issues));
+        var finalization = Assert.IsType<MortalWoundTreatmentResourceFinalization>(finalized.Finalization);
+        try
+        {
+            if (mutation == "owner_stale")
+            {
+                var oldGeneration = Assert.IsType<string>(held.FileSystem.ReadExistingSessionGeneration(held.Lease));
+                var oldRevision = held.FileSystem.CanonicalRootAuthorityIdentity.SessionGenerationRevision;
+                await held.ReleaseLeaseAsync();
+                string newGeneration;
+                await using (var lifecycle = await held.FileSystem.AcquireSessionLifecycleLeaseAsync())
+                await using (var replacement = await held.FileSystem.AcquireSessionReplacementWriteLeaseAsync(lifecycle))
+                    newGeneration = held.FileSystem.RotateSessionGeneration(replacement);
+                await held.AcquireLeaseAsync();
+                Assert.NotEqual(oldGeneration, newGeneration);
+                Assert.NotEqual(oldRevision, held.FileSystem.CanonicalRootAuthorityIdentity.SessionGenerationRevision);
+                Assert.Equal(newGeneration, held.FileSystem.ReadExistingSessionGeneration(held.Lease));
+                var before = await CaptureConfirmedClaimReadImagesAsync(held.FileSystem, held.Lease);
+                var inspection = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(
+                    held.FileSystem, held.Lease, held.Request, finalization);
+                WriteConfirmedClaimInspection(mutation, inspection);
+                AssertConfirmedClaimReadRefusal(inspection, "mortal_wound_treatment_confirmed_claim_owner_stale");
+                await AssertConfirmedClaimReadImagesAsync(held.FileSystem, held.Lease, before);
+                Assert.True(await ContainsCurrentExactTreatmentRequestAsync(held));
+                return;
+            }
+
+            if (mutation == "disposed_lease")
+            {
+                var before = await CaptureConfirmedClaimReadImagesAsync(held.FileSystem, held.Lease);
+                var disposed = held.Lease;
+                await held.ReleaseLeaseAsync();
+                var failure = Assert.Throws<InvalidOperationException>(() =>
+                    AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(
+                        held.FileSystem, disposed, held.Request, finalization));
+                Assert.Equal("Canonical write lease is not active for this game session.", failure.Message);
+                await held.AcquireLeaseAsync(); // Readback admission is separate from the refused inspector.
+                await AssertConfirmedClaimReadImagesAsync(held.FileSystem, held.Lease, before);
+                WritePhysicalInjuryDiagnostic("fr063_confirmed_claim_inspection_invalid_lease", new
+                    { mutation, FailureType = failure.GetType().FullName, failure.Message, BytesUnchanged = true });
+                return;
+            }
+
+            Assert.Contains(mutation, new[] { "generation_absent", "owner_absent", "foreign_lease" });
+            var targetRoot = Path.Combine(Path.GetTempPath(), "boe-confirmed-claim-read-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(targetRoot);
+            using var targetOwned = new CleanupOwnedFixture(targetRoot, line => _directGachaOutput?.WriteLine(line));
+            var target = new FileSystemManager(targetRoot,
+                Microsoft.Extensions.Logging.Abstractions.NullLogger<FileSystemManager>.Instance);
+            target.EnsureDirectoryStructure();
+            await using var targetLease = await target.AcquireCanonicalWriteLeaseAsync();
+            if (mutation == "owner_absent")
+                Assert.False(string.IsNullOrWhiteSpace(target.GetOrCreateSessionGeneration(targetLease)));
+            else
+                Assert.Null(target.ReadExistingSessionGeneration(targetLease));
+            var sourceBefore = await CaptureConfirmedClaimReadImagesAsync(held.FileSystem, held.Lease);
+            var targetBefore = await CaptureConfirmedClaimReadImagesAsync(target, targetLease);
+            if (mutation == "foreign_lease")
+            {
+                var failure = Assert.Throws<InvalidOperationException>(() =>
+                    AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(
+                        held.FileSystem, targetLease, held.Request, finalization));
+                Assert.Equal("Canonical write lease is not active for this game session.", failure.Message);
+                WritePhysicalInjuryDiagnostic("fr063_confirmed_claim_inspection_invalid_lease", new
+                    { mutation, FailureType = failure.GetType().FullName, failure.Message });
+            }
+            else
+            {
+                var expectedCode = mutation == "generation_absent"
+                    ? "mortal_wound_treatment_confirmed_claim_generation_absent"
+                    : "mortal_wound_treatment_confirmed_claim_owner_absent";
+                var inspection = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(
+                    target, targetLease, held.Request, finalization);
+                WriteConfirmedClaimInspection(mutation, inspection);
+                AssertConfirmedClaimReadRefusal(inspection, expectedCode);
+                AssertConfirmedClaimReadRefusal(
+                    AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(
+                        target, targetLease, held.Request, finalization), expectedCode);
+            }
+            await AssertConfirmedClaimReadImagesAsync(held.FileSystem, held.Lease, sourceBefore);
+            await AssertConfirmedClaimReadImagesAsync(target, targetLease, targetBefore);
+        }
+        finally { await held.ReleaseLeaseAsync(); }
+    }
+
+    private static void AssertConfirmedClaimReadRefusal(MortalWoundTreatmentPublicationProbeResult inspection, string code)
+    {
+        Assert.False(inspection.IsValid);
+        Assert.Equal(code, Assert.Single(inspection.Issues).Code);
+        Assert.Equal(0, inspection.ChangedCount);
+        Assert.Null(inspection.State);
+        Assert.Null(inspection.OperationKey);
+        Assert.Null(inspection.AttemptId);
+        Assert.Null(inspection.RequestFingerprint);
+        Assert.Null(inspection.ResourceAuthorityFingerprint);
+        Assert.Null(inspection.FinalizationFingerprint);
+        Assert.Null(inspection.AgreementFingerprint);
+        Assert.Null(inspection.GenerationFingerprint);
+    }
+
+    private void WriteConfirmedClaimInspection(string mutation, MortalWoundTreatmentPublicationProbeResult inspection) =>
+        WritePhysicalInjuryDiagnostic("fr063_confirmed_claim_inspection", new
+        {
+            mutation, inspection.IsValid, inspection.Issues, inspection.State, inspection.ChangedCount,
+            inspection.OperationKey, inspection.AttemptId, inspection.RequestFingerprint,
+            inspection.ResourceAuthorityFingerprint, inspection.FinalizationFingerprint,
+            inspection.AgreementFingerprint, inspection.SessionGeneration,
+            inspection.SessionGenerationRevision, inspection.GenerationFingerprint
+        });
+
+    private static async Task<Dictionary<string, byte[]?>> CaptureConfirmedClaimReadImagesAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+    {
+        var result = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        foreach (var path in Directory.EnumerateFiles(files.GameSessionPath, "*", SearchOption.AllDirectories)
+                     .Select(path => Path.GetRelativePath(files.GameSessionPath, path).Replace('\\', '/'))
+                     .OrderBy(path => path, StringComparer.Ordinal))
+            result.Add(path, await files.ReadFileBytesAsync(lease, path));
+        result.Add("$sessionGeneration", files.ReadLocalGenerationSnapshot(lease).Bytes);
+        return result;
+    }
+
+    private static async Task AssertConfirmedClaimReadImagesAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, IReadOnlyDictionary<string, byte[]?> before)
+    {
+        var after = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+        Assert.Equal(before.Keys.OrderBy(path => path, StringComparer.Ordinal),
+            after.Keys.OrderBy(path => path, StringComparer.Ordinal));
+        foreach (var pair in before) Assert.Equal(pair.Value, after[pair.Key]);
     }
 
     private static AcceptedMechanicsPlan AssertOrdinaryTreatmentOwnerPlan(HeldTreatmentPipelineContext held)

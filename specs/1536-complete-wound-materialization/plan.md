@@ -9,6 +9,50 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## FR-063 cancelled-lineage confirmed-claim read — 2026-10-13 (SOURCE READY; CHECKS UNRUN)
+
+Retained actual AstraHigh accepted the bounded architecture after source-grounded diagnosis:
+old publication probe requires the handoff/lineage which the real preflight deliberately
+invalidates. Actual14d/7c48 reached exact npc_skills InvalidData refusal and complete physical
+byte equality, then failed publication IsValid; its native claim State/Issues were unobserved.
+No measured hold loss follows. Both historical failed outcomes and their packets stay exact.
+
+One additive registry-owned InspectConfirmedMortalWoundTreatmentResourceClaim validates the
+actual active lease, READS existing physical G, and finds only existing RootSlots.TryGetValue
+state with exact G/revision under slot→state locks. It delegates the existing private
+ProbeConfirmed and returns the existing read-only diagnostic DTO/scalars; no publication
+GenerationFingerprint/capability or admission authority. No G/slot/state/claim creation,
+Export/Restore/Confirm/Reserve/Take/rearm/invalidation/writes. Malformed physical authority
+and invalid foreign/disposed leases remain strict errors. All old publication/probe bodies
+and shared reflection callers remain byte-equivalent; new names do not enter the static
+'probe' candidate filter. The private resource registry, result DTO and fingerprints stay exact.
+
+Only the existing late-guard post-preflight oracle now uses direct current-claim inspection:
+exact ConfirmedHeld/operation/attempt/request/resource/finalization/agreement/originalG/revision,
+null publication fingerprint, cancelled old lineage still invalid, and full bytes compared
+THROUGH inspection. All old request/energy2/create-only-history/raw refusal/turnover/cleanup
+oracles remain. New one-theory/five-row negatives cover absentG, explicitG/noowner, staleowner
+via real lifecycle/replacement rotation on a SEPARATE fixture without rollback evidence,
+foreignlease and disposedlease. Inventories are captured after setup; no storage-evidence
+bypass or fresh recovery. All six new/affected cases are UNRUN, not newly observed REDs.
+
+New exact negative5 owner budget2 plus unchanged late1 owner budget2 yields
+[task-local2methods6cases2descriptors/default9](../../tests/selections/1536-fr063-guaranteed-confirmed-claim-inspection.json),
+negative5 first. Old726nodes/old/full/global selectors stay exact; static catalog727/expected
+11568methods is not discovery. ROOT-private fresh BOTH5methods9cases3descriptors executes
+ZERO tests, adding only existing unit3 for build/discovery. SOURCE/FIXTURE/SELECTION acceptance,
+new builds/discovery/catalog and runtime remain UNRUN until ROOT publishes/reviews the candidate.
+
+Four-case EVIDENCE b9bd/03b11 accepted reflected pending/terminal/unknown refusal3 and named
+helper-precomposed warm replay1. Native1/postseal1/scopednegatives6 retained:12/13 ordinary
+cases qualified across checkpoints, not one fullrun. Current late1 remains OPEN; mandatory
+real-wave pending2 is separate and OPEN, no original15/fullFR063/T070/#1536 closure. Separate
+newroot/immediate own-Mortal guidance/UI and GM1557 remain OPEN/queued; no paid/provider or
+broadsuite. No GM/afterlife documentation/example change is needed: this is an internal
+non-authorizing diagnostic reader with unchanged public grammar/durable/gameplay contracts.
+Earlier checkpoint sections retain their historical statuses; this active source record supersedes
+proposal-unwritten/architecture-pending language without changing history or parent checkboxes.
+
 ## FR-063 four-case EVIDENCE accepted; confirmed-read proposal — 2026-10-13
 
 Independent retained actual AstraXHigh accepted b9bd24197f4a1ff694fe2b4125801cd5a020103f:

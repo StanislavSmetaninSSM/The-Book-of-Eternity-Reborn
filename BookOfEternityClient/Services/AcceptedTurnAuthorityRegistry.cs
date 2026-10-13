@@ -1614,6 +1614,47 @@ internal static partial class AcceptedTurnAuthorityRegistry
     }
 
     /// <summary>
+    /// Inspects one existing confirmed resource claim without restoring publication authority.
+    /// </summary>
+    internal static MortalWoundTreatmentPublicationProbeResult InspectConfirmedMortalWoundTreatmentResourceClaim(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResourceFinalization finalization)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(finalization);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        var generation = fileSystem.ReadExistingSessionGeneration(writeLease);
+        if (generation is null)
+            return ConfirmedClaimInspectionFailure(
+                "mortal_wound_treatment_confirmed_claim_generation_absent",
+                "physical session generation is absent", null, null);
+
+        var identity = fileSystem.CanonicalRootAuthorityIdentity;
+        var revision = identity.SessionGenerationRevision;
+        if (!RootSlots.TryGetValue(identity, out var slot))
+            return ConfirmedClaimInspectionFailure(
+                "mortal_wound_treatment_confirmed_claim_owner_absent",
+                "no existing resource-claim owner", generation, revision);
+        return slot.InspectConfirmedTreatmentResourceClaim(generation, revision, request, finalization);
+    }
+
+    private static MortalWoundTreatmentPublicationProbeResult ConfirmedClaimInspectionFailure(
+        string code, string actual, string? generation, long? revision) => new(
+        false,
+        new[]
+        {
+            new ValidationIssue("treatmentAttempt.resources", IssueSeverity.Error,
+                "The confirmed treatment resource claim cannot be inspected for this owner.",
+                code, actor: "client", section: "wound_materialization",
+                expected: "one existing generation-bound confirmed resource claim", actual: actual)
+        },
+        null, null, null, null, null, null, null, generation, revision, null);
+
+    /// <summary>
     /// Checks existing physical generation and in-memory claims without creating an authority slot.
     /// </summary>
     /// <param name="fileSystem">
@@ -1680,6 +1721,24 @@ internal static partial class AcceptedTurnAuthorityRegistry
                        string.Equals(_generation, physicalGeneration, StringComparison.Ordinal) &&
                        _state.CanBeginSpiritualOriginalIntake(physicalGeneration, revision,
                            expectedFactory, checkPlansAndItems);
+        }
+
+        internal MortalWoundTreatmentPublicationProbeResult InspectConfirmedTreatmentResourceClaim(
+            string physicalGeneration, long revision,
+            MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResourceFinalization finalization)
+        {
+            lock (_gate)
+            {
+                if (_state is null)
+                    return ConfirmedClaimInspectionFailure(
+                        "mortal_wound_treatment_confirmed_claim_owner_absent",
+                        "no existing resource-claim state", physicalGeneration, revision);
+                if (_revision != revision || !string.Equals(_generation, physicalGeneration, StringComparison.Ordinal))
+                    return ConfirmedClaimInspectionFailure(
+                        "mortal_wound_treatment_confirmed_claim_owner_stale",
+                        "existing resource-claim owner belongs to another generation", physicalGeneration, revision);
+                return _state.InspectConfirmedTreatmentResourceClaim(physicalGeneration, revision, request, finalization);
+            }
         }
 
         internal AcceptedTurnAuthorityState GetForGeneration(
@@ -3951,6 +4010,25 @@ internal static partial class AcceptedTurnAuthorityRegistry
                            TreatmentResourceRegistryCapability,
                            receipt.Request,
                            receipt.Finalization).IsValid;
+            }
+        }
+
+        internal MortalWoundTreatmentPublicationProbeResult InspectConfirmedTreatmentResourceClaim(
+            string physicalGeneration, long revision,
+            MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResourceFinalization finalization)
+        {
+            lock (_gate)
+            {
+                if (!_rootGenerationBound || _sessionGenerationRevision != revision ||
+                    !string.Equals(_sessionGeneration, physicalGeneration, StringComparison.Ordinal))
+                    return ConfirmedClaimInspectionFailure(
+                        "mortal_wound_treatment_confirmed_claim_owner_stale",
+                        "existing resource-claim state belongs to another generation", physicalGeneration, revision);
+                var hold = _treatmentResources.ProbeConfirmed(TreatmentResourceRegistryCapability, request, finalization);
+                return new MortalWoundTreatmentPublicationProbeResult(
+                    hold.IsValid, hold.Issues, hold.State, hold.OperationKey, hold.AttemptId,
+                    hold.RequestFingerprint, hold.ResourceAuthorityFingerprint, hold.FinalizationFingerprint,
+                    hold.AgreementFingerprint, _sessionGeneration, _sessionGenerationRevision, null);
             }
         }
 

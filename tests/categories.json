@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "fr063-guaranteed-confirmed-claim-inspection-negative",
+            "responsibility": "#1536 five-row component owner for the new non-authorizing confirmed-resource-claim reader: absent physical generation, initialized generation without registry owner, stale existing owner after supported lifecycle/replacement rotation, foreign lease and disposed lease. Actual held request/finalization inputs originate from the existing production-held fixture. Each read must refuse at its exact gate without generation/slot/claim reconstruction or byte changes; these are newly authored UNRUN controls.",
+            "excludes": "The affected late-guard positive has its separate existing exact owner. Qualified native/postseal/capture6/reflection3/warm1 and all QTE/archive/proof cohorts are excluded. No registry Export/Restore/Confirm/Reserve/Take/rearm, private capability reflection, rollback-evidence bypass, new-root native qualification, broad suite or global/CI/runner/budget change.",
+            "changeHints": [
+                "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+                "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs"
+            ],
+            "related": [
+                {
+                    "id": "fr063-guaranteed-ordinary-owner-late-guard-retry",
+                    "when": "Select the one affected post-preflight positive separately after these five gate controls; it must inspect the same confirmed claim while cancelled publication lineage stays unusable. No old-node membership or passing cohort repeat."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentConfirmedClaimInspectionRefusesAbsentStaleOrInvalidLease"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "fr063-guaranteed-ordinary-owner-late-guard-retry",
             "responsibility": "#1536 exact late-guard fixture correction: one existing ordinary-owner Fact/one case enters the same internal held-treatment coordinator preflight used by canonical refresh. An introduced sealed-absent npc_skills.json after real lease turnover must cause exact path-bearing InvalidDataException before plan take/publication; complete source/mechanical/request bytes and confirmed hold/energy/history remain unchanged. Prior naked-normalizer coordinator-prerequisite failure is retained; corrected execution remains UNRUN.",
             "excludes": "Qualified capture6, native1 and post-seal compensation1; blocked genuine-wave pending2; no production/shared helper/QTE/GM changes or full dispatcher/take/publication claim. No new semantic method/case, guard bypass, expected-exception relaxation, fabricated settlement, broad warm/compatibility category, runner/global/CI or budget increase.",
