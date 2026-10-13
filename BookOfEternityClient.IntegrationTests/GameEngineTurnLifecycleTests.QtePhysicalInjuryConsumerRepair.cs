@@ -1,7 +1,6 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -27,7 +26,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Null(source.Failure);
         await AssertActualQteStoryFinalizedAsync(_fs, source.Source!, source.StoryAtHandoff!, 155m);
         var occurrence = await AssertActualPhysicalOccurrenceAsync(source, 2);
-        using var live = new AgentConsoleLiveInputSource(new AgentConsoleStateStore(), TimeSpan.FromSeconds(10));
+        var input = new QueuedConsoleInputSource([]);
         PendingTurnSnapshotReadAuthority? next = null;
         JsonObject? rejectedDraft = null, correctedDraft = null;
         byte[]? originalRequest = null, originalManifest = null, originalAuthority = null;
@@ -35,7 +34,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var repairCount = 0;
         var accepted = false;
         Exception? responderFailure = null;
-        var engine = CreateGameEngine(live, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
+        var engine = CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
             finalizationHooks: new GameEngineSessionFinalizationHooks { AtCheckpointAsync = AuthorInitial });
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(source.Source!.SessionId, PhysicalInjurySourceTurn);
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
@@ -160,7 +159,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 WritePhysicalOutput("game_state/control/validation_repair_ready.json", JsonSerializer.Serialize(new
                 { sessionId = next.SessionId, requestId = next.RequestId, turnNumber = 43, updatedAtUtc = timestamp, note = "Полный исходный ход представлен повторно с ограниченной правкой." }));
             }
-            catch (Exception error) { responderFailure = error; live.Enqueue(Key(ConsoleKey.Escape)); }
+            catch (Exception error) { responderFailure = error; input.Enqueue(Key(ConsoleKey.Escape)); }
         }
 
         async Task WriteOutputs(FileSystemManager.CanonicalWriteLease lease, JsonObject decision, string scene)

@@ -5,8 +5,29 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-12 (FINITE FINDING3/4 SOURCE READY; FULL SOURCE GATE/BUILD/RUNTIME UNRUN)
+## Current T070 boundary — 2026-10-12 (FINITE SOURCE GATE BLOCKED ONE FIXTURE ISSUE; QUEUED RESPONDER CORRECTION READY; CHECKS UNRUN)
 
+Published finite candidate7332c3f794f254e6bf3d8e0fbea50fdf21bf8232; ROOT verified exact remote/clean
+primary and577-file GitHub-only recovery/all48 connected paths. Actual retained Astra XHigh
+full finite SOURCE/FIXTURE/SELECTION gate was BLOCKED by exactly one Important/no Critical
+fixture issue: ConsumerRepair called Enqueue on AgentConsoleLiveInputSource; its EnqueueKey
+would also reject while blocked, and repair KeyAvailable polling is not bounded by ReadKey's
+10-second timeout. No other confirmed Important/Critical remained: finding4 publication
+corrections were statically closed and typed3/location/MAIN-GM/legacy/control selection was
+sufficient. No build/discovery/runtime occurred; no runtime outcome is claimed.
+
+Current minimum fixture correction uses existing QueuedConsoleInputSource([]), the existing
+MAIN-GM offline responder pattern. On observer failure it enqueues Escape so the actual repair
+poll can cancel; Assert.Null(responderFailure) remains the first post-execution diagnostic
+assertion. Genuine source/full engine path, all eight rows, raw repair/output observations,
+all existing oracles and cleanup remain unchanged. No production, category, selector,
+public grammar, budget or archive change. Correction SOURCE READY; focused recheck and every
+fresh project check remain PENDING/UNRUN. Exact static preparation28/67/12/default30 (runner
+Min(30,5+sum35)); remainder26/65/10/default30; catalog710/expected11548 unchanged.
+Mutations STOPPED for ROOT publication/recovery and mandatory focused fixture recheck before
+fresh preparation/first NONE. Later archive/child qualification does not hold baseline GREENs.
+
+Historical7332 finite candidate source boundary (sole fixture issue corrected above):
 Final finite SOURCE candidate checkpoint2026-10-13; this connected block began2026-10-12.
 Finding4 midpoint published8db419061046629ca591e4799273d1e4bbad09d1; ROOT verified exact remote/clean
 primary and573-file GitHub-only selected recovery/all42 connected paths. Actual retained
