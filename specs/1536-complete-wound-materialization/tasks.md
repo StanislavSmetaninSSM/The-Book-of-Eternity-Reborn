@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (FIRST ARCHIVE4 FIXTURE FAILURE; DURABLE4 UNRUN)
+## Current T070 boundary — 2026-10-13 (ZIP DELTA CORRECTION SOURCE READY; ARCHIVE RETRY + DURABLE4 UNRUN)
 
 Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `219917e1ba5140f9bdaba22ce8115335ad5b6240`. Corrected fresh BOTH-project PlanOnly
@@ -32,13 +32,26 @@ and roots physically absent; runner-owned tree/runtime cleanup is true. Child/fa
 cleanup is not qualified because no child started. Frozen38 artifacts retain native preparation/
 exactplan/catalog/actual originals,all TRX/stdout/source/binary pins and exact readbacks.
 
-Original failed build766d remains immutable/EVIDENCE accepted. First archive4 failure EVIDENCE is
-PENDING; archive qualification UNQUALIFIED and durable4 UNRUN. Next: publish/recover this outcome,
-then sole-writer minimal actual-save before/after ZIP selection and focused independent EVIDENCE/
-SOURCE gate,fresh matching preparation and retry only failed archive4. Do not delete seeded ZIPs,
-choose an arbitrary file,relax load/replay oracles or alter SaveLoad production policy. No passing
-finite68/baseline repeats. Archive4 freeze/EVIDENCE precedes durable4. T070/FR-063/parent/#1536 OPEN.
-Earlier source-ready/preparation statuses below are historical and superseded by this actual result.
+Original failed build766d remains immutable/EVIDENCE accepted. First archive4 selection failure and
+its38-artifact packet are published at `ee025fd53f74840cc8b8769566ae01519adff063`; actual retained
+Astra XHigh EVIDENCE/status ACCEPTED all38 chains/162 source/10 binaries/native cases and cleanup
+classification. Archive qualification UNQUALIFIED,durable4 UNRUN; no child load/newroot claim is established.
+
+Current minimum fixture correction captures exact manual ZIP path/SHA catalogs BEFORE actual
+SaveGameAsync and AFTER its returned result. The native qte_archive_actual_save_catalog observation
+retains both catalogs,result and created-path set BEFORE assertions/ZIP opening. Every prior ZIP must
+remain present with identical bytes/hash; exactly one new path from set difference selects the actual
+save-created archive. Both catalogs also enter existing native context. No template ZIP deletion,
+first/arbitrary selection,SaveLoad policy,production,authority,helper or output-contract change.
+All later ZIP exclusions/actual child load/new request/generation/source receipt/create-history/
+legitimate NEW44 tick/durable replay/preservation/cleanup oracles remain byte-exact.
+
+Correction SOURCE READY for ROOT publication/recovery and focused SOURCE gate; corrected fresh build/
+discovery/catalog/actual archive4 checks UNRUN. Existing717/11553 inventory,33/78/14 preparation,
+archive1/4/1 budget5/default10,durable1/4/1 budget5/default10 and all catalog/selector memberships stay
+unchanged. Fresh preparation must precede retry of only failed archive4; no passing finite68/baseline
+reruns. First archive4 freeze/EVIDENCE precedes durable4. T070/FR-063/parent/#1536 OPEN. Earlier
+source-ready/preparation statuses below are historical; frozen failure packets/checklists unchanged.
 
 Historical minimum import correction checkpoint:
 

@@ -49,8 +49,24 @@ public sealed partial class GameEngineTurnLifecycleTests
         string generation;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync()) generation = _fs.GetOrCreateSessionGeneration(lease);
         var save = GetPrivateField<SaveLoadService>(source.Engine!, "_saveLoad");
-        Assert.True(await save.SaveGameAsync("qte_archive_qualification", "Actual pending or consumed Mortal QTE decision.", turnNumber: completedTurn));
-        var archivePath = Assert.Single(Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip"));
+        var saveDirectory = _fs.ResolvePath("saves/manual_saves");
+        var saveBefore = Directory.GetFiles(saveDirectory, "*.zip").ToDictionary(path => path,
+            path => MortalArchiveHash(File.ReadAllBytes(path)), StringComparer.Ordinal);
+        var saveSucceeded = await save.SaveGameAsync("qte_archive_qualification", "Actual pending or consumed Mortal QTE decision.", turnNumber: completedTurn);
+        var saveAfter = Directory.GetFiles(saveDirectory, "*.zip").ToDictionary(path => path,
+            path => MortalArchiveHash(File.ReadAllBytes(path)), StringComparer.Ordinal);
+        var createdArchives = saveAfter.Keys.Except(saveBefore.Keys, StringComparer.Ordinal).ToArray();
+        WritePhysicalInjuryDiagnostic("qte_archive_actual_save_catalog", new
+        {
+            materialize, consumed, completedTurn, saveSucceeded, SaveBefore = saveBefore, SaveAfter = saveAfter, CreatedArchives = createdArchives
+        });
+        Assert.True(saveSucceeded);
+        foreach (var pair in saveBefore)
+        {
+            Assert.True(saveAfter.TryGetValue(pair.Key, out var savedHash));
+            Assert.Equal(pair.Value, savedHash);
+        }
+        var archivePath = Assert.Single(createdArchives);
         string[] archiveEntries;
         using (var archive = ZipFile.OpenRead(archivePath))
         {
@@ -63,6 +79,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var context = new JsonObject
         {
             ["source"] = expected, ["archivePath"] = archivePath, ["archiveSha256"] = MortalArchiveHash(File.ReadAllBytes(archivePath)),
+            ["saveBefore"] = JsonSerializer.SerializeToNode(saveBefore), ["saveAfter"] = JsonSerializer.SerializeToNode(saveAfter),
             ["archiveEntries"] = JsonSerializer.SerializeToNode(archiveEntries), ["binaryPins"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
             ["parentGeneration"] = generation, ["parentProcessId"] = Environment.ProcessId,
             ["completedTurn"] = completedTurn, ["immutableImages"] = JsonSerializer.SerializeToNode(immutable),
