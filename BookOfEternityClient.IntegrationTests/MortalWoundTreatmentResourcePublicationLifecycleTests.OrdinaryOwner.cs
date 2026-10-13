@@ -35,19 +35,19 @@ public sealed partial class GameEngineTurnLifecycleTests
             await held.FileSystem.WriteFileAtomicAsync(held.Lease,
                 WoundAcceptedTurnSnapshotContract.PendingResolutionPath, pending.ToJsonString());
             Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(held.FileSystem, held.Lease));
-            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held.FileSystem);
+            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held);
             await held.ReleaseLeaseAsync();
             var (engine, snapshot) = await CreateHeldTreatmentValidationEngineAsync(held);
             var issues = await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(engine,
                 "ValidateResourceAndMortalGuaranteedTreatmentAsync", true, snapshot, HeldTreatmentPipelineContext.Turn);
             WritePhysicalInjuryDiagnostic("fr063_component_ordinary_pending_duplicate", new
-                { changed, Issues = issues, Before = MortalArchiveDigests(before), After = MortalArchiveDigests(await CaptureOrdinaryTreatmentOwnerBytesAsync(held.FileSystem)) });
+                { changed, Issues = issues, Before = MortalArchiveDigests(before), After = MortalArchiveDigests(await CaptureOrdinaryTreatmentOwnerBytesAsync(held)) });
             await held.AcquireLeaseAsync();
             if (changed)
             {
                 Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error);
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(held.FileSystem, held.Lease));
-                await AssertOrdinaryTreatmentOwnerBytesAsync(held.FileSystem, before);
+                await AssertOrdinaryTreatmentOwnerBytesAsync(held, before);
             }
             else
             {
@@ -88,7 +88,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 // Keep every original fingerprint/seal: the resolved payload itself now disagrees.
             }
             await held.FileSystem.WriteFileAtomicAsync(held.Lease, AcceptedMechanicsPlan.WoundCommandPath, root.ToJsonString());
-            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held.FileSystem);
+            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held);
             await held.ReleaseLeaseAsync();
             var (engine, snapshot) = await CreateHeldTreatmentValidationEngineAsync(held);
             var issues = await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(engine,
@@ -97,7 +97,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error);
             await held.AcquireLeaseAsync();
             Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(held.FileSystem, held.Lease));
-            await AssertOrdinaryTreatmentOwnerBytesAsync(held.FileSystem, before);
+            await AssertOrdinaryTreatmentOwnerBytesAsync(held, before);
         }
         finally { await held.ReleaseLeaseAsync(); }
     }
@@ -117,7 +117,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Single(skill["mortalWoundTreatmentCapabilities"]!.AsArray());
             skill["mortalWoundTreatmentCapabilities"] = new JsonArray();
             await held.FileSystem.WriteFileAtomicAsync(held.Lease, NpcCoreChangesContract.NpcCorePath, npc.ToJsonString());
-            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held.FileSystem);
+            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held);
             await held.ReleaseLeaseAsync();
             var (engine, snapshot) = await CreateHeldTreatmentValidationEngineAsync(held);
             var issues = await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(engine,
@@ -126,7 +126,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error);
             await held.AcquireLeaseAsync();
             Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(held.FileSystem, held.Lease));
-            await AssertOrdinaryTreatmentOwnerBytesAsync(held.FileSystem, before);
+            await AssertOrdinaryTreatmentOwnerBytesAsync(held, before);
             Assert.Equal(2, await ReadCurrentTreatmentEnergyAsync(held));
         }
         finally { await held.ReleaseLeaseAsync(); }
@@ -234,7 +234,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 submitted = EffectMaterializationTestFixture.CreateCommandRoot(apply);
             }
             await held.FileSystem.WriteFileAtomicAsync(held.Lease, path, submitted.ToJsonString());
-            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held.FileSystem);
+            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held);
             await held.ReleaseLeaseAsync();
             var (engine, snapshot) = await CreateHeldTreatmentValidationEngineAsync(held);
             var issues = await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(engine,
@@ -244,7 +244,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal("mortal_wound_treatment_ordinary_concurrent_work_unsupported", refusal.Code);
             await held.AcquireLeaseAsync();
             Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(held.FileSystem, held.Lease));
-            await AssertOrdinaryTreatmentOwnerBytesAsync(held.FileSystem, before);
+            await AssertOrdinaryTreatmentOwnerBytesAsync(held, before);
             Assert.True(await ContainsCurrentExactTreatmentRequestAsync(held));
             Assert.Equal(2, await ReadCurrentTreatmentEnergyAsync(held));
             Assert.Single(ReadCurrentTreatmentHistory(held.FileSystem).State!.Transitions);
@@ -275,14 +275,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             await held.ReleaseLeaseAsync(); // The absence proof must survive this real owner lease turnover.
             await held.FileSystem.WriteFileAtomicAsync(path, new JsonObject
                 { ["NPCActiveSkillChanges"] = new JsonArray(), ["NPCPassiveSkillChanges"] = new JsonArray() }.ToJsonString());
-            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held.FileSystem);
+            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held);
             var validator = GetPrivateField<ValidationService>(engine, "_validator");
             var issues = await validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
             Assert.Contains(issues, issue => issue.FilePath == path && issue.Code == "accepted_mechanics_wound_live_before_image_mismatch");
             await held.AcquireLeaseAsync();
             await Assert.ThrowsAsync<InvalidDataException>(() => GetPrivateField<CanonicalStateNormalizer>(engine, "_normalizer")
                 .BindTo(held.Lease).NormalizeAcceptedMechanicsAsync(backups: null));
-            await AssertOrdinaryTreatmentOwnerBytesAsync(held.FileSystem, before);
+            await AssertOrdinaryTreatmentOwnerBytesAsync(held, before);
             await AssertConfirmedHeldLiveRegistryProbeAsync(held);
             Assert.True(await ContainsCurrentExactTreatmentRequestAsync(held));
             Assert.Equal(2, await ReadCurrentTreatmentEnergyAsync(held));
@@ -326,15 +326,22 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Null(await held.FileSystem.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
     }
 
-    private static Task<Dictionary<string, byte[]?>> CaptureOrdinaryTreatmentOwnerBytesAsync(FileSystemManager files) =>
-        CaptureMortalArchiveImagesAsync(files, GuaranteedNativeMechanicalPaths.Concat(AcceptedMechanicsWoundCommonInputComposer.TreatmentOrdinaryGuardPaths).Concat(new[]
-        {
-            AcceptedMechanicsPlan.WoundCommandPath, NpcCoreChangesContract.NpcCorePath,
-            LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath
-        }));
-
-    private static async Task AssertOrdinaryTreatmentOwnerBytesAsync(FileSystemManager files, IReadOnlyDictionary<string, byte[]?> before)
+    private static async Task<Dictionary<string, byte[]?>> CaptureOrdinaryTreatmentOwnerBytesAsync(HeldTreatmentPipelineContext held)
     {
-        foreach (var pair in before) Assert.Equal(pair.Value, await files.ReadFileBytesAsync(pair.Key));
+        var paths = GuaranteedNativeMechanicalPaths
+            .Concat(AcceptedMechanicsWoundCommonInputComposer.TreatmentOrdinaryGuardPaths)
+            .Concat(new[]
+            {
+                AcceptedMechanicsPlan.WoundCommandPath, NpcCoreChangesContract.NpcCorePath,
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath
+            }).Distinct(StringComparer.Ordinal);
+        var result = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        foreach (var path in paths) result.Add(path, await held.ReadFileBytesAsync(path));
+        return result;
+    }
+
+    private static async Task AssertOrdinaryTreatmentOwnerBytesAsync(HeldTreatmentPipelineContext held, IReadOnlyDictionary<string, byte[]?> before)
+    {
+        foreach (var pair in before) Assert.Equal(pair.Value, await held.ReadFileBytesAsync(pair.Key));
     }
 }

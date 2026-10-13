@@ -5,6 +5,30 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## FR-063 private capture7 correction — 2026-10-13 (SOURCE READY; NEW CHECKS UNRUN)
+
+Accepted first-controls EVIDENCE/status2f670f4f retains10executed1PASS9fixtureFAIL of
+14planned,24chains/242source/11binary/10strictabsent roots; compatibility3+warm1 UNRUN.
+The passing postseal fullhold/fence/exactretry and qualified native1 remain retained;
+this test-only source correction changes no production or accepted shared helper.
+
+Private OrdinaryOwner capture/assert now take the held context and call its existing
+active-lease-aware ReadFileBytesAsync. The COMPLETE prior path union is Ordinal-Distinct
+before dictionary insertion. Every old phase/after-diagnostic ordering, underlying
+mutation and refusal/cache/take/state/hold oracle is unchanged. Pending2 receives only
+compile-required helper argument migration; its absent-pending setup remains BLOCKED.
+A genuine same-binding NONEMPTY repair packet/receipt wave is still required; no empty
+root, synthetic authority/packet or production parser change was authored.
+
+New intentional-overlap capture7 owner selects ONLY4existingmethods/7cases/budget5;
+combined task-local retry includes old exactreflection1/3/budget2 and warm1/1/budget2:
+6methods11cases3descriptors/default14. Old full selections/724catalog nodes remain exact;
+static catalog725/expected11567methods, not discovery. Original15 reconciles qualified
+native1+postseal1, blockedpending2 and this corrected/unrun11; full qualification OPEN.
+Correction SOURCE/FIXTURE/SELECTION review, fresh BOTH build/discovery, catalog and
+actual11 remain UNRUN. ROOT publishes/reviews before any execution. New-root/UI/GM/full
+FR063/T070/#1536 and all parent checkboxes remain OPEN; old packets/history are unchanged.
+
 ## FR-063 controls evidence disposition — 2026-10-13 (ACCEPTED; fixture retry UNRUN)
 
 Independent retained actual Astra XHigh accepted EVIDENCE/status at `2f670f4fd33c726520808c1dc0bb7269163c8338`:

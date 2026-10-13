@@ -2,6 +2,38 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "fr063-guaranteed-ordinary-owner-capture7-retry",
+            "responsibility": "#1536 exact fixture-prerequisite retry: four existing ordinary-owner component methods/seven cases (nested request and resolved payload tamper2, current capability1, actual resource/effect/full-party concurrent work3, lease-turnover guard1). Only their private byte capture/assert seam now participates through the held context and Ordinal-Distinct complete paths; underlying source mutations, actual admission/refusal/take and preservation oracles stay exact. Independent first outcome retained1PASS9fixtureFAIL; corrected execution remains UNRUN.",
+            "excludes": "Qualified native1 and post-seal compensation1; blocked command/pending duplicate2 with no genuine nonempty repair wave; no shared archive/old transaction helper/production/authority changes or accepted QTE/archive/durable/proof cohorts. No new method/case, empty pending root, fake repair packet, lock bypass, shortened inventory, runner/global/CI or budget change.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs"
+            ],
+            "related": [
+                {
+                    "id": "fr063-guaranteed-ordinary-owner-controls",
+                    "when": "Intentional exact overlap of only these four methods/seven rows. This retry alias is not added to old full preparation/remainder selections; exclude passing post-seal and blocked pending cases."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerReadsCurrentRequiredCapabilityInsteadOfHeldWarmAuthority",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerGuardsAbsentInputAcrossLeaseTurnoverBeforePublication"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "fr063-guaranteed-ordinary-owner-reflection",
             "responsibility": "#1536 exact affected private-Core reflective consumer: one existing integration theory/three pending, terminal and unknown-receipt rows. Only its reflection argument array migrates six to seven entries for the admitted owner callback; all original source rejection/cache/before-image oracles remain unchanged.",
             "excludes": "No other old compatibility/capture/pending tests, QTE/producer/archive/finite cohorts, runner/global selection or runtime policy change. No new cases or fixture authority.",
