@@ -5,6 +5,50 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## FR-063 connected first actual — 2026-10-13 (OBSERVED ORACLE FAIL; EVIDENCE PENDING)
+
+Connected source `d54ab6b465b68232728b66840f1a97d3488429a1` is published/remoteexact,
+GitHub-only selected recovery1674tracked/1135connected paths byte/blob exact; recovery
+projectexecutionUNRUN. Independent retained actual Astra XHigh accepted its SOURCE/
+FIXTURE/SELECTION gate, including the finite15 integration cases and private BOTH
+zero-execution preparation. No confirmed Important/Critical source finding remained.
+
+Fresh BOTH preparation `20261013-165758-648-662154-61ae910140e14c20ab37218a1bf46f81-categories`
+12methods/18cases/5descriptors completed165.2850647s,0executed,0errors, warnings96integration/
+35unit. Exact native1/1/1 discovery2.5425283s and validcatalog724/11567 audit5.5109168s,
+unmapped0/stale0, also0executed. Preparation/catalog are not test PASS.
+
+First actual `20261013-170229-589-662973-8b0692ef2db449fe9f6cf7b6885fb560-categories`
+completed1/1/1,1executed0PASS1FAIL,16.4847370s,exit1,no timeout/skips/duplicateIDs.
+Fresh child663125(parent663089) passed genuine original42/fullheldrequest/Ready/cacheempty
+prerequisites and entered the actual late caller. Loop42/one story42, energy2->0/ONE Spend42
+amount2, health10->7/ONE Damage42 amount3 and ONE treatment history transition are observed.
+Care untreated->stabilized; command absent. Original3 resource-history rows are semantically
+exact. The first strict failure is NativeCold.cs383: Assert.Single over all energySpends
+also matches the genuine fixture Spend turn2 amount8(10->2), besides treatmentturn42amount2.
+This is observed post-publication oracle scope failure, pending independent classification;
+do not call it a missing-treatment RED, native GREEN or final qualification.
+
+241source/11binary PREPOST,5declared childpins/3actualDefaultbindings and2strict physically
+absent roots were verified BEFORE metadata. Hold-finalization and second-idle assertions
+were UNREACHED; no proof inferred. Complete captured logs/result/context/available images,
+source/preparation/readbacks and immutable41artifact chains are preserved in
+[the first connected outcome](./recovery/fr063-guaranteed-native-admitted-owner-first-outcome-20261013/manifest.json).
+The frozen manifest's PENDING status stays historical; acceptance is recorded separately.
+
+Next: publish/remote/recovery this outcome and independent EVIDENCE gate before a narrow
+oracle-only correction (if confirmed), then source review/fresh exact native retry. The
+remaining14 cases, new-root actual and recommendations implementation remain UNRUN. New-root
+source mapping supports explicit COMPLETE quiescent PRE-publication durable-fixture relocation
+with exact original/rollback/heldrequest/generation, followed by unchanged childscenario0;
+it does not qualify SaveLoad/archive ingress, new epoch, debt transport or finalized replay.
+Full FR063/T070/#1536 and parent boxes remain OPEN. No accepted unrelated cohort was rerun.
+GMspecv1 is approved and exactly one verified issue1557exists; separate plan/tasks are proposed,
+no GMcontent moves. User immediate wound/how/means policy remains accepted and mandatory;
+its presentation/UI are unimplemented. No main/merge/CI/PR/Windows/provider/newkey operation.
+
+The following source-authoring checkpoint is historical at `d54ab6b4`; its UNRUN statements are superseded by the current observed outcome above.
+
 ## FR-063 connected SOURCE candidate; GM v1 approved — 2026-10-13
 
 Independent retained actual Astra XHigh accepted the third FR-063 evidence at
