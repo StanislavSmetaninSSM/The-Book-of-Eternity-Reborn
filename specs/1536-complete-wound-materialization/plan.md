@@ -9,6 +9,30 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## Pending2 pre-original recovery leaf correction SOURCE READY — 2026-10-13
+
+Retained sole Sol completed the exact one-leaf fixture correction from published
+907f64577873d78e7a27c9e701c63dd637e4ffb3, after accepted9c12 failure EVIDENCE/diagnosis.
+ConfigureGenuinePendingTreatmentWorldAsync now sets only wound.recovery.mode to
+no_natural_recovery BEFORE SeedHeldTreatmentAuthorityAsync and genuine original42.
+The existing physical active zero-slot lifecycle guard explicitly recognizes this mode;
+existing Parse_EmptyMortalGraph_AcceptsNoNaturalRecoveryAsLifecycleConstraint covers a
+stabilized empty graph. Those source contracts were read, not executed. This establishes
+lawful pre-original authored recovery intent; it does not waive parser/simulator guards.
+Care, stabilize result, route/requirements, energy2, cleared effects/QTE10->5, all method
+attributes, source/authority, later assertions and cleanup remain byte-exact. Removing the
+single added line restores previous test SHA256ce554f54c3dc526760771374be69c4a763fc3da9fd3505f1f15e61c1e6b70090.
+
+All corrected SOURCE/build/discovery/runtime checks remain UNRUN/PENDING. ROOT must publish
+WIP/recovery, obtain focused SOURCE acceptance, then fresh BOTH/exactpair preparation and
+only failed2 actual. Unchanged valid catalog728/11568 and qualified ordinary/QTE cohorts
+are retained without repeat. Original35-chain COMPLETE2FAIL evidence remains immutable;
+request/confirmedclaim/nonemptywave/catalog/restoration oracles were UNREACHED there.
+This remains component persistence authoring, not a connected live pending producer proof.
+Joint productionJ2–J6/live producer/cold/new-root/UI/fullFR063/T070/#1536 remain OPEN.
+No production, guard, selector/catalog/globalCI, historical body or checkbox changes.
+Isolated GM pure-source checkpoint is STOPPED separately; no GM edit in this block.
+
 ## First pending2 failure EVIDENCE accepted; one fixture leaf correction next — 2026-10-13
 
 Independent retained actual AstraXHigh [EVIDENCE/diagnosis](./recovery/fr063-genuine-pending2-first-actual-evidence-and-fixture-review-20261013.md)

@@ -279,6 +279,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         wound["consequences"]!["entries"]!.AsArray().Clear();
         wound["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().Clear();
         wound["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray().Clear();
+        wound["recovery"]!["mode"] = "no_natural_recovery";
         await SeedHeldTreatmentAuthorityAsync(files, wound);
         await PrepareGuaranteedNativeNpcReceiptShapeAsync(files);
         // Settle only canonical JSON formatting before ProtectedBefore and original minting.
