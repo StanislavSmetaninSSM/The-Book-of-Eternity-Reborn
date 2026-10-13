@@ -9,7 +9,48 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (BOUNDS 2 PASS; COMMON16 RETAINED; 50 UNRUN)
+## Current T070 first vertical — 2026-10-13 (REMAINING PARTIAL 26 PASS / 1 PREREQUISITE FAIL; 23 UNRUN)
+
+Actual retained Astra XHigh accepted corrected bounds EVIDENCE/status at
+`f976845799e4074c121ca71195e68828c90912f9`:2 PASS closes the prior common's two failed rows
+alongside retained16 PASS. First seven-category50-case invocation then stopped on a draft prerequisite.
+[Remaining50 partial packet](./recovery/qte-physical-consumer-remaining50-partial-20261013/manifest.json)
+freezes run `20261013-032031-460-443455-9f545e69c9e14d19af30ed9556f8f6e7-categories`,
+sourcef976/compile820:planned21 methods/50 cases/9 descriptors/seven categories;
+completed5 descriptors/27 cases,27 executed/26 PASS/1 FAIL,110.0548806s,exit1,
+no timeout/skips/duplicate IDs. Presence7/documentation4/draft15 PASS; fail-fast leaves four
+categories(publication7/repair8/source-compatibility5/worker-scope3),four descriptors/23 cases UNRUN.
+
+The event_order row fails at Draft.cs:54 before its event-reordering refusal oracle:
+expected second array entry eventRef turn_42:qte_terminal:1:resource:2; actual printed value starts
+qte_health_damage_02f1c08… . This is a fixture/source-shape prerequisite failure, not a proper causal
+production RED or proof of reordered-source refusal. Source cause is unproved by this packet;
+read-only source/event metadata diagnosis precedes any bounded correction. Later event_order
+snapshot/admission/cache/command/canonical-preservation assertions remain UNREACHED.
+
+ROOT matched149 source/10 fresh binary PRE/POST pins BEFORE metadata edits, parsed27 native results/
+five TRXs/full stdout/64 observations, and verified all16 emitted strict physical-fixture cleanup
+receipts removed=true/failure=null with roots actually absent. Older presence/doc fixtures do not
+emit that strict receipt format; this is not an all27 strict-cleanup claim. Runner-owned process/
+runtime cleanup succeeded. Matching NoBuild PlanOnly21/50/9/seven categories took4.6515140s,
+executed0 tests;147 nonmetadata compile inputs/10 binary pins remained exact to fresh820 BOTH builds.
+Catalog712/11548 remains the preceding fresh discovery, not a new audit/test run.
+
+Finite controls four actual invocations now report62 executions/56 PASS/6 FAIL, including repeated
+cases (15/12/3 +18/16/2 +2/2/0 +27/26/1). Common16/bounds2 and full NONE36256/current-contract
+CREATEb76 positive evidence remain accepted and were not repeated. Current controls still have one
+failed prerequisite and23 UNRUN cases, including strengthened worker guard. Historical c7 CREATE
+RED/non-byte-matched migration, producer/projection and old packets remain separate/immutable.
+
+Next: publish/recover this partial packet, mandatory EVIDENCE/status gate, source-proven minimal
+current-contract event_order fixture correction and focused selection gate, then only failed/affected
+coverage plus23 UNRUN cases. No production parser/authority relaxation or inferred repair is included
+here. This evidence review is PENDING; no passing26/common/baseline qualifier repeat is automatically
+selected. Complete controls/consumer/archive/newroot/fresh-process/full T070/FR-063/parent/#1536 remain
+OPEN. Global selections/budgets/protected causal Facts/checklists and historical packets unchanged;
+archive implementation remains unwritten/UNRUN/on hold.
+
+Historical corrected bounds GREEN checkpoint (accepted before remaining50 invocation):
 
 SOURCE/FIXTURE/SELECTION accepted by retained actual Astra XHigh at
 `8209386780bca96584b592e1e6c3ecf5ab90296a`; first corrected bounds is GREEN.
