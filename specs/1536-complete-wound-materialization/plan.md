@@ -9,7 +9,53 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (ARCHIVE4 QUALIFIED; DURABLE4 RESOURCE SELECTION CORRECTION SOURCE READY)
+## Current T070 first vertical — 2026-10-13 (ARCHIVE4 QUALIFIED; DURABLE4 EXACT BOOLEAN FAILURE + CHANGED TIMEOUT FROZEN)
+
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
+`f9e9e397c251515e0cb6515df36375c530f6a475`, no blocking findings. Fresh BOTH PlanOnly33/78/14
+succeeded132.1714014s,88/35 warnings,0/0 errors,0 execution; exact durable1/4/1 took2.4737266s,
+0 execution. Catalog717/11553 is retained unchanged. Archive4 remains independently QUALIFIEDfb1;
+finite68/baselines are retained with no repeats.
+
+[Durable4 first child outcome failure](./recovery/qte-physical-consumer-durable-child-outcome-failure-20261013/manifest.json)
+freezes actual `20261013-092817-177-555058-38176e35e0f941dea5daf29f791bea7f-categories`,
+source/compilef9e:4 executed/0 PASS/4 FAIL,1 method/4 cases/1 complete descriptor,153.5235358s,
+exit1,no descriptor timeout/skips/duplicates. Two CHILD45s timeouts are distinct from descriptor
+TimedOut=false. All four actual resource snapshot reads succeed with selected root hashes/five-coordinate
+identity agreement; parents reach accepted common publication/controlled OCE pause before story43,
+retain real originalN43/ready/generation and pass resource/receipt/wound prerequisite assertions.
+This resolves the first fixture selection failure; all four child launches are now reached.
+
+Exact NONE/CREATE children555252/555217 bind the actual originalN43 on the SAME physical generation,
+complete story[42,43]/actualTurn43 and preserve Before/After mechanics exactly. They then fail the
+fixture Assert.True(handled) at Archive.cs383 because handled=false. Source ordinary late accepted
+completion falls through returnfalse at TurnLifecycle1180; this boolean is not proof of ordinary
+completion. Second-idle/remaining child assertions are unreached; neither whole case is qualified.
+Their native loaded integration/support/Immutable9 identities/hash/Default contexts match pins.
+
+Changed NONE/CREATE children hit the existing45s kill/join boundary,with Child=null and no managed
+result or cleanup receipt. Parent MechanicalBefore==MechanicalAfter in all four rows after child
+return/kill; no destructive rollback is observed. Changed timeout cause remains UNRESOLVED.
+Auto-Enter input selecting repair retry is a source hypothesis pending read-only diagnosis. No
+production patch is justified from timeout alone. Timeout full child logs were written under the
+SOURCE root but not retained in TRX before fixture cleanup; changed PID/loaded bindings/finalizer
+boundary and auxiliary factory cleanup are UNKNOWN/UNQUALIFIED. Do not infer them from exact rows.
+
+ROOT matched168 SOURCE/11 fresh binaries PRE/POST BEFORE metadata,32 top-level observations/four
+parent pause/resource/original chains/two managed child results. Four SOURCE and TWO emitted child
+factory strict receipts have removed=true/failure=null,all6 known roots physically absent; runner
+cleanup true. Timeout children emitted no factory receipt; no blanket fixture-cleanup claim.
+Frozen30 artifacts preserve native preparation/exact/actual/TRX/observations/readbacks/pins and
+retained catalog provenance. Durable history2 actual invocations8 executions0 PASS8 FAIL. Current
+EVIDENCE/status PENDING. Next publish/GitHub-only recover,mandatory EVIDENCE gate,then a minimum
+fixture contract/ordinary deterministic rejection-input/log-preservation correction only if supported
+by read-only diagnosis. Keep resource155/ownedtick+narrativeDamage1/wholedecision/strict changed
+committed-mechanics/story/receipt/original/binding/cleanup oracles. No passing archive/finite/baseline
+repeat,no broad suite. T070/FR-063/parent/#1536 OPEN; frozen histories/checklists unchanged.
+No real tool security refusal; project assertion/timeout is not a tool denial.
+
+Historical resource snapshot correction checkpoint follows; its UNRUN wording is superseded only
+by this failed four-case outcome. Firstdurable9ff prerequisite failure remains EVIDENCE accepted.
 
 Archive4 EVIDENCE/status ACCEPTED and bounded archive qualification accepted by actual retained
 Astra XHigh at `fb1a17c02f76c378148f54eea685dfc5bfcaa01f`, no blocking findings. All33 chains,
