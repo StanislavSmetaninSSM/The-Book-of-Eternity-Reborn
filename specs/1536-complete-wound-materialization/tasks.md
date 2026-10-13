@@ -5,6 +5,38 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## FR-063 capture7 preparation transport recovery — 2026-10-13 (UNKNOWN; actual UNRUN)
+
+Published sourceb3bdd4af7547f5dc28ed03c3580e76f2eef14767 independently SOURCE/FIXTURE/
+SELECTION ACCEPTED. Exact source/author reports and private BOTH9methods14cases4descriptors
+preparation (unit3 solely build/discovery; actual11 integration) are preserved in
+[the transport-partial packet](./recovery/fr063-capture7-preparation-transport-unknown-20261013/manifest.json).
+
+Attempt20261013-181730-077-696673-13cf566904d04d548c46268523b8cf1a started18:17:30.0854561Z.
+Existingworkspace log proves revisionb3/clean and integrationbuild launch; no completion,
+summary/plan/build output survives. Preparation UNKNOWN, actualUNRUN. Transport error was
+exec-server disconnected/recovery timedout25s, not a proven security rejection or actor.
+Coordinator authorized paused same-executor/read-only recovery. OldPTY6639 now unknown,
+tmp scratch absent; no matching runner/build process. Workspace/reports persist, localb3
+clean and actual remoteheadb3 via connectedGitHub. Source5candidate+14protected pins match.
+No environment-creation command was invoked. Cause of process/tmp reset remainsUNKNOWN.
+
+Safeenvironment recheck: Debian13.6/Linux6.18.44x86_64,SDK10.0.401,runtime8.0.31/10.0.12,
+pwsh7.6.6,Node24.19.0,Python3.12.14. New node28b8447448e8/bootID4e506247-7893-479b-aaef-
+3d4c72eb71ef were observed; no historical boot identity comparison is claimed.
+Next: fresh reviewed zeroexecution BOTH preparation in persistent workspace scratch;
+do not reuse unknown build, then exact6/11/3 discovery/catalog/sourcebinaryPOST before
+actual11. Preserve acceptednative1/postseal1 without repetition. No completed tests/build
+or restoration qualification follows from environment availability or preparation start.
+
+Coordinator confirmed FR063spec537 requires complete command/pending/history and exact
+coalescing/divergence. Current fixture mismatch DOES NOT waive that requirement. Pending2
+applicability/reachable causal contour review remainsOPEN; historicalFAIL and original15
+remain honest. No fabricated wave/parser/guard relaxation or15GREEN claim authorized.
+Readonly newroot quiescence details and literalGM D01/prefix/timeout/drains/cleanup supplement
+are separately preserved; all implementation/AST/delivery/newrootactual remainUNRUN.
+GM AafterverifiedFR063freeze/finalbase, BafterindependentAacceptance; parent#1536OPEN.
+
 ## FR-063 private capture7 correction — 2026-10-13 (SOURCE READY; NEW CHECKS UNRUN)
 
 Accepted first-controls EVIDENCE/status2f670f4f retains10executed1PASS9fixtureFAIL of

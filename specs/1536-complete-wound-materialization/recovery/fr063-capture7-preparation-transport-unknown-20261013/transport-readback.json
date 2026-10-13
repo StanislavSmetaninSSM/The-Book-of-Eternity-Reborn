@@ -1,0 +1,57 @@
+{
+  "source": "b3bdd4af7547f5dc28ed03c3580e76f2eef14767",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "sourceGate": "ACCEPTED retained actual AstraXHigh, report preserved exactly",
+  "preparation": {
+    "status": "UNKNOWN; interrupted transport, no final completion evidence",
+    "run": "20261013-181730-077-696673-13cf566904d04d548c46268523b8cf1a-categories",
+    "startedUtc": "2026-10-13T18:17:30.0854561Z",
+    "runnerPidInRunName": 696673,
+    "pidProvenance": "scripts/test-csharp.ps1:108 includes $PID in directory name; no independent historical OS birth identity captured",
+    "observedLastStage": "Build-integration launch",
+    "summary": "ABSENT",
+    "plan": "ABSENT",
+    "buildCompletion": "ABSENT",
+    "oldPty": 6639,
+    "oldPtyRecovery": "Unknown process id 6639",
+    "tmpScratch": "ABSENT",
+    "currentMatchingProcesses": [],
+    "actual": "UNRUN"
+  },
+  "exactFailure": {
+    "operation": "empty read of existing preparation PTY6639 via write_stdin",
+    "text": "write_stdin failed: Unified exec process failed: exec-server transport disconnected; failed to resume exec-server session: recovery timed out after 25s",
+    "reviewerOperation": "readonly contract/plan/design reads via exec_command",
+    "reviewerText": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: exec-server transport disconnected; failed to resume exec-server session: recovery timed out after 25s\\\")\" }",
+    "rootReadonlyCell": "766 terminated while no result returned; later external ledger write not confirmed",
+    "gmExternalRewriteCell": "179 outcome initially unknown; actual revised report bytes later verified"
+  },
+  "cause": "UNKNOWN; transport text does not establish cybersecurity rejection or actor",
+  "environmentCreationByRoot": "NONE",
+  "recovery": {
+    "authority": "coordinator source thread01a118b2-51cc-732e-9138-6474686600eb explicitly authorized same-session/read-only checkout after pause",
+    "localHead": "b3bdd4af7547f5dc28ed03c3580e76f2eef14767",
+    "localTree": "CLEAN",
+    "remoteHead": "b3bdd4af7547f5dc28ed03c3580e76f2eef14767",
+    "remoteHeadMethod": "connected GitHub.fetch_commit with actual taskbranch after transport",
+    "workspace": "PRESERVED",
+    "tmpAndPriorPty": "ABSENT",
+    "sourcePost": "5 changed +14 protected author pins matched; full clean published tree",
+    "kernel": "Linux6.18.44 x86_64",
+    "os": "Debian13.6",
+    "node": "28b8447448e8",
+    "bootId": "4e506247-7893-479b-aaef-3d4c72eb71ef",
+    "uptimeReadSeconds": 105.28,
+    "sdk": "10.0.401",
+    "runtimes": [
+      "8.0.31",
+      "10.0.12"
+    ],
+    "pwsh": "7.6.6",
+    "nodejs": "24.19.0",
+    "python": "3.12.14"
+  },
+  "next": "fresh zeroexecution BOTH preparation under persistent workspace scratch, source/binary pins and exactdiscovery/catalog before actual11; no reuse of uncertain build",
+  "pending2": "REQUIRED FR063 persistence/coalescing/divergence remains OPEN; fixture contour mismatch is no waiver; independent applicability underway",
+  "utc": "2026-10-13T18:27:25.838960+00:00"
+}

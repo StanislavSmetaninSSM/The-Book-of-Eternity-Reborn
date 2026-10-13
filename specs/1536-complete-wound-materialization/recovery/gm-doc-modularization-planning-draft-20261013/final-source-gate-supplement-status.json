@@ -1,0 +1,22 @@
+{
+  "status": "READONLY proposed SOURCEdetails; AST/implementation/delivery/cleanupUNRUN",
+  "actualReportAfterRecovery": "external shortening write finished; bytes22911 SHA6a4041b4a41b61326ce00ba2dcf68ae2a701918a5f9979cadc17ecd74cd5a891",
+  "D01": "literal completebeforeafter; existingban accepted",
+  "A": "conditionalverifiedFR063freeze/finalbase",
+  "B": "after independentAacceptance",
+  "sourceConditions": "finalbasepins/ASTsingleboundary/exactbytes/fullfinalreadingdispatchguards/commondeadline/concurrentdrains/ownedcleanup",
+  "reports": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-new-root-quiescence-readonly-detail-20261013.md",
+      "originalSHA256": "a66b82facfd2f0c8b53ace4cdbce636b089a7348107e4f2ae549378246933e0f",
+      "publishedSHA256": "a66b82facfd2f0c8b53ace4cdbce636b089a7348107e4f2ae549378246933e0f",
+      "normalization": "NONE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-planning-draft-20261013/final-source-gate-readonly-supplement.md",
+      "originalSHA256": "6a4041b4a41b61326ce00ba2dcf68ae2a701918a5f9979cadc17ecd74cd5a891",
+      "publishedSHA256": "6a4041b4a41b61326ce00ba2dcf68ae2a701918a5f9979cadc17ecd74cd5a891",
+      "normalization": "NONE"
+    }
+  ]
+}
