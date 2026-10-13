@@ -5,7 +5,45 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE EMPTY-TARGET INITIALIZATION SOURCE READY; RETRY4 + DURABLE4 UNRUN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE4 GENERATION-PARENT FAILURE; CAUSE DIAGNOSIS; DURABLE4 UNRUN)
+
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
+`3792d368ba5ab3e50c7703b46060ea7547080262`. Fresh BOTH preparation33/78/14 succeeded
+147.7896714s,88/35 warnings,0/0 errors,0 execution; exact archive PlanOnly1/4/1 took2.4165905s,
+0 execution. Accepted219 catalog717/11553 remains applicable without repetition.
+
+[Archive4 generation-parent failure](./recovery/qte-physical-consumer-archive-generation-parent-failure-20261013/manifest.json)
+freezes actual `20261013-081000-342-524474-d33a4a0e71d844558172687e369d9a76-categories`,
+source/compile3792:4 executed/0 PASS/4 FAIL,1 method/1 complete descriptor,51.8923866s,exit1,
+no timeout/skips/duplicate IDs. All four ZIP-delta/unchanged-old-hash/entry exclusion guards pass.
+Four fresh child PIDs/binary pins and initializer witnesses prove existing GameSessionPath and
+Files=[] before Load. The earlier missing game_session boundary is resolved. All typed Load attempts
+still return NotLoaded at a later boundary: missing .boe_runtime/session-generation parent during
+TrustedLocalFilePublication.NamespaceScratchPath516 / ValidateNamespaceBeforePublication53,
+FileSystemManager.LoadNamespace229/235,SaveLoadService.Loading218. No committed load/rebind,
+replacement generation or new43/44 was reached. This is actual refusal evidence,not qualification.
+
+ROOT matched165 source/10 fresh binary PRE/POST pins BEFORE metadata,parsed22 top-level observations/
+four results/four empty-root witnesses. Four SOURCE and eight child loaded-target/aux-factory cleanup
+receipts are removed=true/failure=null; all12 roots physically absent and runner tree/runtime cleanup
+true. Frozen32 artifacts preserve native preparation/actual/TRX/child afterimages/source/binary pins
+and retained-catalog provenance. Native missing-parent exceptions are project results,not tool security
+refusals. No real tool security denial was observed; historical helper warning remains unresolved.
+
+Archive history now three actual invocations/12 executions/0 PASS/12 FAIL including retries; these
+are successive prerequisite boundaries,not successful qualification. New failure EVIDENCE PENDING;
+prior d9 target-directory failure EVIDENCE accepted and immutable. Durable4 remains UNRUN. Do not
+start a fourth setup guess or relax admission. READONLY lifecycle/generation/publisher diagnosis by
+the retained consult must distinguish a real ordinary target-generation precondition from an absent-
+generation publication defect. No correction or additional runtime released before concrete source
+proof and bounded independent SOURCE review. Existing fresh-root/archive authority requirements and
+SAME-N43 durable branch stay strict; no raw mkdir/generation,source copy,new signing key,archive
+transport exception or architecture change. Finite68/baselines retain status without repetition.
+Next: publish/recover this failure,focused EVIDENCE and complete the READONLY cause diagnosis;
+then only the concrete minimal authorized fix/preparation/failed archive4 retry. Parents remain OPEN.
+Earlier checkpoint statuses below are historical and superseded by this actual result.
+
+Historical ordinary empty-target initialization correction:
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `d93d6c468eb15b0f1d6a2b44fbaa7e563749f367`. Fresh BOTH PlanOnly33/78/14 succeeded
