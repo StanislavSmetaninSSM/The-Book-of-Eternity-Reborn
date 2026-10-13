@@ -188,3 +188,16 @@ Label — принятая читаемая подпись **данного** pr
 Итог: предложенный объект закрывает missing-reference naming без manufacture runtime authority и без зависимости отображения от наличия предмета. Он расширяет **current presentation contract**, поэтому требует coordinated parser/model/writer/clone/example change, но не нового игрового решения пользователя. Дополнительная diagnosis policy, лечения/цены/провайдеры и FR063 остаются вне этого delta.
 
 **FINAL STOPPED (appendix)**: source прочитан только для указанного presentation gap. Изменён только данный внешний report; repository, Git, project execution, tests/runtime и agents не затронуты.
+
+
+---
+
+## Superseding proposed-contract correction — 2026-10-13
+
+Independent retained actual Astra XHigh reviewed immutable carriera966bd277d58bbdd71972a2f213f31fac28990f2. This correction supersedes AppendixA item5 and the hash promise only; the original payload remains verbatim and historical. The immediate how/means/conditions policy is already approved. Presentation grammar/UI/source implementation and runtime qualification remain UNRUN.
+
+Complete sealed `route.presentation` is required at authoring/full-contract admission for **ALL routes of an own-Mortal wound**, including currently hidden routes. Current `MortalWoundTreatmentContract` requires every hidden valid route to be reachable. Existing diagnosis changes `KnownRouteIds` and declared complication visibility while preserving every other canonical wound byte; it cannot attach missing route text. Therefore every route is preauthored before any lawful reveal. Detached route parsers cannot determine ownership and must defer mandatory presence to full-wound validation. Out-of-scope NPC/non-Mortal wounds remain structurally optional; a present value is strictly validated. Display remains own/current-realm/current-known-membership only, with no hidden/private/NPC/provider leakage. No new diagnosis action, fee or policy is introduced.
+
+Preserve existing mechanical route/request/resolution/result **hash algorithms and binding domains**, not a promise that result hashes stay equal after full-source text changes. Presentation enters ordinary full canonical/member serialization and source identity; the mechanical route fingerprint continues excluding display fields. Request authority binds the full source wound fingerprint, and resolution/result bind that request. Result hashes can therefore change indirectly. The negative oracle requires unchanged mechanical route hash and costs/operations, changed full source, and stale source/request refusal. Never remove the full-source dependency to force unchanged result hashes.
+
+All generic/typed/GM writers and explicit detached clones carry presentation. Public projection validates its scope before copying instructions/labels, keeps complete AND requirements/OR alternatives/course sequencing, and does not infer readable means from raw IDs or narrative. Accepted notification uses its validated bundle; persistent readers use a coherent publication-quiescent view. This remains a proposed implementation contract, subject to its later connected SOURCE/FIXTURE/SELECTION gate.
