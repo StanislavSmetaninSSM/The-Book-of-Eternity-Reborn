@@ -9,6 +9,49 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## FR-063 evidence accepted; GM specification ready for approval — 2026-10-13
+
+Independent retained actual Astra XHigh accepted the third FR-063 evidence at
+`f32e14a080e9f1a3ba800dcaa8055e95d3cc6a6c`: the genuine ordinary caller advances
+turn/story42 and removes the command while energy remains2, care remains untreated,
+and no treatment history transition is published. Wound-history JSON is semantically
+unchanged, but bytes differ1060->1062; no byte-equality claim. All55 artifact chains,
+234source/11binary PREPOST, actual child bindings and both strict absent roots were
+verified before metadata. Hold finalization and second idle were not reached.
+The historical pending records below and immutable packet are retained unchanged.
+
+The missing ordinary treatment orchestration is independently confirmed. The first
+failed checkpoint-hook assertion is also unsuitable: that hook belongs to another
+ordinary path and is not called by the late-terminal branch. Correct its test use
+without adding a production hook or relaxing spend/history/typed receipt/care/hold/
+second-idle oracles. No additional diagnostic run is needed to establish this RED.
+
+Next FR-063 source block is the minimum admitted-owner bridge described in the
+[bounded plan](../../docs/superpowers/plans/2026-10-13-fr063-guaranteed-native-cold-orchestration.md):
+under the same canonical lease after raw admission, fresh ExportCurrent ->
+RestorePersistedTreatmentRequests -> existing guaranteed reducer -> existing
+six-argument treatment publisher/common plan. It remains UNWRITTEN/UNRUN, with
+six finite controls and the exact reflective consumer only if its API changes.
+SOURCE review precedes fresh selected preparation and actual execution. Same-root
+GREEN/controls precede a separate genuinely new-root source and runtime proof.
+Full FR063/T070/#1536 remain OPEN; previously accepted cohorts were not repeated.
+
+GM concrete v1 specification/checklist/single unsent issue draft are
+[available together](./recovery/gm-doc-modularization-spec-draft-20261013/workflow-preflight.md)
+at remotely verified `3d7309751b1ab9f4cfdbc2b50df4f5de8ca2a113`. Independent Astra XHigh
+accepted substance and the exact three-link correction; four manifest pins and
+three targets match. GitHub-only selected recovery verified1666 tracked files/
+1127 connected changed paths; source recovery only, project execution UNRUN.
+Structure/order were already approved. The concrete specification and one-issue
+exception still require user approval; no issue, GM feature/worktree or content
+move has been created. Immediate wound-guidance alignment remains separate.
+
+A further transport disconnect affected only reads in functions cell563. The
+coordinator-authorized single HEAD/status retry succeeded at clean6e2947b1;
+remote was then verified before the metadata-only link correction. Exact operations
+and error are appended to the existing [transport record](./recovery/fr063-transport-readback-20261013.json).
+No new environment, runtime, protective bypass, main/CI/PR/issue mutation occurred.
+
 ## FR-063 native ordinary advancement without treatment — 2026-10-13 (OBSERVED; EVIDENCE PENDING)
 
 Task1b fixture-only source4c4f9f11212954c6d12beb86e570b3205a8d3bc1 independently SOURCE/FIXTURE/

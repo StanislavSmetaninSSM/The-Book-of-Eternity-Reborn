@@ -9,5 +9,23 @@
   "clean": true,
   "newRuntimeAfterRecovery": 0,
   "causeOfDisconnection": "UNKNOWN; transportfailuretext not securityapprovalverdict",
-  "verifiedUtc": "2026-10-13T14:33:54.384624+00:00"
+  "verifiedUtc": "2026-10-13T14:33:54.384624+00:00",
+  "parallelPreflightFailedOperation": "gh issue view 1285 --repo StanislavSmetaninSSM/The-Book-of-Eternity-Reborn --json number,title,state,url,body",
+  "laterReadOnlyDisconnect": {
+    "functionsCellId": "563",
+    "exactFailure": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: exec-server transport disconnected\\\")\" }",
+    "operations": [
+      "git ls-remote --heads origin refs/heads/1536-wound-b2-cloud-20261012 && sed -n '1,230p' docs/development-workflow.md",
+      "rg --files specs/1536-complete-wound-materialization | rg 'plan|tasks|checkpoint|handoff|native' && sed -n '1,250p' /workspace/boe-cloud-tools-20261013/fr063-ordinary-bridge-readonly-plan.md && sed -n '1,130p' specs/1553-portable-local-storage/plan.md"
+    ],
+    "chunkOrSessionId": "NOT ISSUED for either rejected operation",
+    "authorizedRecoveryRead": "git rev-parse HEAD && GIT_OPTIONAL_LOCKS=0 git status --short",
+    "recoveryChunkId": "37b884",
+    "recoveryHead": "6e2947b1e45a65f14feb5aaa0d93f8d31a226d3b",
+    "clean": true,
+    "subsequentRemoteRead": "6e2947b1e45a65f14feb5aaa0d93f8d31a226d3b exact match before metadata edits",
+    "newRuntime": 0,
+    "newEnvironment": false,
+    "cause": "UNKNOWN; no cybersecurity or automatic approval reason stated"
+  }
 }

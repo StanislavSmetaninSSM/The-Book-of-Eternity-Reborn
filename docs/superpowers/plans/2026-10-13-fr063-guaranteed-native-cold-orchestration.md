@@ -253,6 +253,61 @@ All historical outcomes/checkboxes remain unchanged; guidance alignment is outsi
   before metadata and strict cleanup; freeze/publish/review its next first outcome. Do not label
   treatment orchestration qualified until its positive oracle passes or patch production speculatively.
 
+## Accepted third outcome and exact next owner bridge — 2026-10-13
+
+Retained actual Astra XHigh accepted f32e14a0 EVIDENCE: original42/held command/Ready/
+empty cache and actual ordinary entry are lawful; one story42/loop42 advances but
+energy2 is not spent, care stays untreated and treatment history is absent. Wound
+history is JSON-equal, not byte-equal1060->1062. Command consumption is observed;
+hold-after and second-idle are unobserved. No additional diagnostic run is required.
+The existing hook is not called in this late-terminal branch; remove its acceptance
+dependency, retaining all strict state/history/receipt/hold and second-idle proofs.
+
+The generic command parser validates treatment wire but returns empty actionable
+transitions; a non-null generic wound publication can consume the command. The
+existing six-argument treatment publisher has no ordinary production caller.
+Bound the next implementation to the existing resource-validation owner-admitted
+point after raw upstream/resource-owner/original-quartet admission and before generic
+wound reduction/selection. An optional internal owner callback closes over the actual
+GameEngine activeSnapshotContext/expectedTurn and participates in the SAME canonical
+lease. It may return only the existing retained issued treatment plan for validation;
+never pre-admit a warm cache or perform a second generic reduction.
+
+Within that lease strictly parse command/pending/typed history, bind the single
+supported guaranteed held request to official original/session/request/token/turn/
+Mortal realm/current generation. Structural sealed provider/target/location coordinates
+select the fresh export; they do not grant authority. Use existing
+MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent ->
+RestorePersistedTreatmentRequests -> CreateGuaranteedAttempt; require exact staged
+request/result semantic agreement and consume actual ordinary response/mechanical
+inputs. Call existing six-argument ComposeMortalWoundTreatmentPublication, then existing
+cache/take/revalidation/normalizer/common publisher and compensation. No new lease,
+raw-result authority, reservation identity, blank-response omission or direct writer.
+No-command/QTE/warm retained/finalized-replay owners remain existing; unsupported,
+malformed or divergent held work refuses instead of silent generic consumption.
+
+Source scope: narrow GameEngine ordinary bridge partial, ValidationAndRepair frame
+plumbing, existing MortalQteWoundDecision resource wrapper only, ResourceMaterialization
+admitted callback/join, NativeCold oracle, finite controls/catalog/task-local selections
+and active contract/checkpoints. Existing reducer/authority/publisher stays unchanged
+unless a concrete necessary API seam is independently proved. ResourcePendingResolution
+IntegrationTests reflects private Core with6 arguments: if changed, migrate only that
+call and select its existing three OriginalMortalCapturePipeline pending/terminal rows.
+No generic reflection framework or accepted-cohort repeat.
+
+Controls are four proposed methods/six UNWRITTEN/UNRUN component cases: exact/changed
+full command+pending duplicate (2); nested request quantity/seal and resolved-result
+tamper (2); stale actual required capability (1); existing wound_post_seal fault with
+exact compensation, full request/confirmed-hold retention and original-fence retry (1).
+With conditional reflection rows the planned inventory is6methods10cases/3descriptors;
+verify authored discovery before claiming counts. Budgets native5/controls5/compat2,
+combined default17, native default10/child45 unchanged. Warm sentinel is selected only
+if the actual diff affects its retained gate/fence. These controls are component proof,
+not native cold proof. Publish/recover/source-review before any fresh build or run;
+first same-root GREEN/controls, then separate new-root footprint/source proof/actual.
+No treatment cost/GM grammar change: restoration is client-owned and needs no new
+GM-authored command. Other treatment modes and full FR063/T070/#1536 remain OPEN.
+
 ## Conditional continuation after Task1 EVIDENCE
 
 If prerequisites fail, correct only the evidenced fixture seam after frozen EVIDENCE and SOURCE review; do not call it a production RED. If the genuine ordinary entry exposes missing orchestration, record that causal RED, amend this plan with the exact participating lease/context/owner calls, then authorize only the minimum production orchestration. Reuse fresh ExportCurrent -> RestorePersistedTreatmentRequests -> ordinary guaranteed reducer -> existing six-argument T070/common plan inside the ordinary owner. No new authority framework, result shortcuts or generalized mode support.
