@@ -5,7 +5,42 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE IMPORT CORRECTION SOURCE READY; BUILD BLOCKER IMMUTABLE, ACTUAL8 UNRUN)
+## Current T070 boundary — 2026-10-13 (FIRST ARCHIVE4 FIXTURE FAILURE; DURABLE4 UNRUN)
+
+Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
+`219917e1ba5140f9bdaba22ce8115335ad5b6240`. Corrected fresh BOTH-project PlanOnly
+`20261013-073927-279-508304-6ea570c63f474bdaa0315d9cb251a3ab-categories` succeeded in
+100.6962263s,33 methods/78 cases/14 descriptors,0 tests executed,88/35 warnings and0/0 errors.
+Exact archive PlanOnly1/4/1 took2.4862881s,0 executed. Catalog717/11553 VALID,unmapped/stale0,
+5.2828346s,0 executed. Preparation/discovery/catalog are not test execution.
+
+[First archive4 actual failure](./recovery/qte-physical-consumer-archive-save-selection-failure-20261013/manifest.json)
+freezes native `20261013-074158-068-508934-8cf0a8f29abd4ba3b269b1a111427885-categories`,
+source/compile219917e1:1 method/4 cases/1 descriptor,4 executed/0 PASS/4 FAIL,53.8646822s,
+complete,exit1,no timeout/skips/duplicate IDs. All four stop at Archive.cs53: unfiltered
+Assert.Single(manual_saves/*.zip) found4 items after actual SaveGameAsync returnedtrue. The
+source fixture copies three existing tracked FileSystemExample manual-save ZIPs; SaveGame creates
+saveName_timestamp.zip. This is a fixture archive-selection prerequisite failure BEFORE child
+LoadGame/newroot continuation,not missing consumer publication RED or archive qualification.
+
+Genuine QTE42/health155/original occurrence precedes all four failures. Both consumed rows first
+complete real ProcessPlayerTurn43,loop/story42+43/receipt/wound assertions; pending rows retain
+actual story42. Four actual save calls returnedtrue. No child process/newroot load was reached.
+ROOT parsed14 native observations/four results and matched162 source/10 fresh binary PRE/POST
+pins BEFORE metadata. Four emitted SOURCE fixture cleanup receipts are removed=true/failure=null
+and roots physically absent; runner-owned tree/runtime cleanup is true. Child/factory/loaded-root
+cleanup is not qualified because no child started. Frozen38 artifacts retain native preparation/
+exactplan/catalog/actual originals,all TRX/stdout/source/binary pins and exact readbacks.
+
+Original failed build766d remains immutable/EVIDENCE accepted. First archive4 failure EVIDENCE is
+PENDING; archive qualification UNQUALIFIED and durable4 UNRUN. Next: publish/recover this outcome,
+then sole-writer minimal actual-save before/after ZIP selection and focused independent EVIDENCE/
+SOURCE gate,fresh matching preparation and retry only failed archive4. Do not delete seeded ZIPs,
+choose an arbitrary file,relax load/replay oracles or alter SaveLoad production policy. No passing
+finite68/baseline repeats. Archive4 freeze/EVIDENCE precedes durable4. T070/FR-063/parent/#1536 OPEN.
+Earlier source-ready/preparation statuses below are historical and superseded by this actual result.
+
+Historical minimum import correction checkpoint:
 
 Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION closure ACCEPTED
 `849d1839cc5ba51130920a567f8cfab08c7b7255`: the one relative-root assertion is closed,
