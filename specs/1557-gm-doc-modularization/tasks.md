@@ -1,5 +1,37 @@
 # Tasks: GM Documentation Modularization
 
+## A pure RED test-source candidate — 2026-10-13
+
+Retained sole Sol source author completed this bounded candidate from isolated published
+51594aed0af8c2e33807265d5d04cbcb0dae4a22. Primary FR063 checkout is untouched.
+T003/T004 source inventories now partition every byte of three frozen A sources into135
+nonoverlapping owners, preserve187 example JSON fences plus one Matrix fence (188 total),
+80 complete affected manifest rows,124 old-anchor navigation routes and27 finite reading
+illustrations. Exact inherited table/header context is declared separately from each sole
+payload owner. The five approved reversible edits remain UNAPPLIED. Original GM bodies,
+daemon, production, source manifest and navigation edit inventory remain byte-exact.
+
+New pure TestSupport verifier and unit guards have9methods/39finite cases in two exact
+owners (5/16 preservation;4/23 reading), two unit descriptors/category2+2/default9.
+Catalog authoring inventory is729categories/11577methods; old727 nodes retain exact
+membership and values. Actual destination/manifest/router/D01 positives are intended RED;
+finite owned-memory mutations establish targeted preservation/scope refusal oracles. Pure
+seed reassembly, topic illustrations and manifest locator records are not runtime authority,
+actual move, daemon dispatch or delivery proof. No new global selection/CI/runner changes.
+
+Static byte partition/frozen hashes, complete edit inverse, per-block JSON fence body/order/
+classification pins, explicit memberships/counts and old-node/history/checkbox preservation
+were checked. SOURCE review, build/discovery/catalog/test execution and all acceptance are
+UNRUN/PENDING. No observed RED or passing case is claimed from source authoring.
+T005–T007/T012 have bounded pure source guards; final AST/dataflow and T013 real packaged
+production-writer→session delivery adapter are UNWRITTEN/UNRUN and must be completed in a
+separate bounded source block before content/production changes. Delivery inventory remains
+36 independent planned entries only. Block_5 has two source pins only, no B tests/moves.
+This is a coherent WIP for immediate ROOT publication/recovery and mandatory SOURCE review.
+A remains OPEN: full test-first candidate and actual intended RED freeze precede moves;
+independent A acceptance precedes B. No task/acceptance checkbox is marked complete.
+The older checkpoint bodies below are historical and superseded by this current record.
+
 ## A preparation WIP: frozen ownership/edit inventory only — 2026-10-13
 
 Retained sole Sol author stopped at a bounded source-metadata checkpoint on isolated

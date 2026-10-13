@@ -2,6 +2,67 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "gm-doc-afterlife-preservation",
+            "responsibility": "#1557 A pure frozen-byte map/inverse, actual destination and complete manifest preservation: five unit methods/sixteen finite cases. Actual destination and manifest locator positives are intended RED before content/locator moves. Independent owned memory mutations target missing/duplicate payload, unlisted edits, fence reorder/classification, companion removal, orphan/context/owner duplication and full manifest semantics. Newly authored UNRUN.",
+            "excludes": "Delivery, packaged DLL/session copy, final daemon AST/dataflow, runtime/provider dispatch, Block_5 and all qualified FR063/QTE/archive/ordinary cohorts. No global selection or source/content moves. Pure fixture round-trip is not actual relocation evidence.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
+                "BookOfEternityClient.TestSupport/GmDocumentationPreservationFixtures.cs",
+                "specs/1557-gm-doc-modularization/content-map.json",
+                "specs/1557-gm-doc-modularization/navigation-edits.json"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.FrozenMapAndExplicitInverseRoundTripEverySourceByte",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualDestinationBodiesReassembleExactFrozenSourcesWithoutDuplicateAuthority",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.IndependentMutationFixturesRefuseTheIntendedPreservationFailure",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualManifestRetainsCompleteSemanticsAndNamesTheMovedOwners",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ManifestMutationFixturesRefuseLostCoverageAndCompanionBehavior"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "gm-doc-afterlife-reading",
+            "responsibility": "#1557 A seven family and ten topic active/inactive documentation-reading fixtures, five independent scope/union mutations and one active D01 source-ban guard: four unit methods/twenty-three finite cases. Actual router/D01 positives are intended RED until approved navigation bodies are applied. Fixtures constrain documentation only; no runtime authorization fields. Newly authored UNRUN.",
+            "excludes": "Final AST entry/dataflow and real production package delivery remain a later bounded adapter block. No universal reads, new game/source-reading exception, Block_5, broad existing documentation tests, production dispatch or provider execution.",
+            "changeHints": [
+                "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
+                "BookOfEternityClient.TestSupport/GmDocumentationPreservationFixtures.cs",
+                "specs/1557-gm-doc-modularization/content-map.json",
+                "specs/1557-gm-doc-modularization/navigation-edits.json"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "unit",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterNamesOnlyTheCurrentFamilyDependencyUnion",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActualRouterPreservesEachTopicActivationAndItsInactiveControl",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.RoutingMutationFixturesRefuseScopeExpansionOrLostUnion",
+                        "BookOfEternityClient.Tests.GmDocumentationModularizationTests.ActiveD01BodiesContainTheApprovedBanAndSafeRepairAlternatives"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "fr063-guaranteed-confirmed-claim-inspection-negative",
             "responsibility": "#1536 five-row component owner for the new non-authorizing confirmed-resource-claim reader: absent physical generation, initialized generation without registry owner, stale existing owner after supported lifecycle/replacement rotation, foreign lease and disposed lease. Actual held request/finalization inputs originate from the existing production-held fixture. Each read must refuse at its exact gate without generation/slot/claim reconstruction or byte changes; these are newly authored UNRUN controls.",
             "excludes": "The affected late-guard positive has its separate existing exact owner. Qualified native/postseal/capture6/reflection3/warm1 and all QTE/archive/proof cohorts are excluded. No registry Export/Restore/Confirm/Reserve/Take/rearm, private capability reflection, rollback-evidence bypass, new-root native qualification, broad suite or global/CI/runner/budget change.",
