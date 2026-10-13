@@ -9,7 +9,47 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (EVENT-ORDER FIXTURE SOURCE READY; 1 RETRY + 23 UNRUN)
+## Current T070 first vertical — 2026-10-13 (EVENT-ORDER 1 PASS; 23 UNRUN)
+
+SOURCE/FIXTURE/SELECTION accepted by retained actual Astra XHigh at
+`6f703319e36531a3ccb68353656d899d1cccfdde`; first corrected isolated event-order Fact is GREEN.
+[Corrected event-order GREEN packet](./recovery/qte-physical-consumer-event-order-green-20261013/manifest.json)
+freezes run `20261013-035031-201-449623-ca2a17f110fb4a3c954e4224af22e4d5-categories`:
+1 method/1 case/1 descriptor planned and completed,1 executed/1 PASS/0 FAIL,
+13.3930306s,exit0,no timeout/skips/duplicate IDs. All original effective-reversal, full-batch private
+refusal, nondelegable-task, cache/command and tree/source preservation assertions were reached/passed.
+Native genuine occurrence has exactly two distinct resource_mutation events: selected resource:1
+and ProducerOperationKey+:accepted:1 sibling; actual N43 component admission returns Success=false,
+CommandRoot=null with private-source refusal. No source/authority witness was fabricated.
+
+The event_order case was extracted from the old theory, not added; current expected sibling ref
+migrated to actual producer grammar. Its old failure was an unreached prerequisite, not proper
+production RED. Private helper/body/oracles retain all other12 theory behavior; those12 and the
+other26 passing remaining cases were not repeated. This is component source-refusal evidence,
+not full ordinary-engine consumer proof or a claimed byte-matched causal RED/GREEN.
+
+ROOT matched150 source and10 fresh binary PRE/POST pins BEFORE metadata edits, read full native
+TRX/stdout/four observations, and verified the sole strict receipt removed=true/failure=null with
+actual root absence. Runner-owned process/runtime cleanup succeeded. Fresh BOTH build/discovery
+29 methods/70 cases/12 descriptors took155.3212061s,85/35 warnings0 errors; exact Fact PlanOnly1/1/1
+2.6124061s; VALID catalog713 categories/11549 methods5.0952468s,no unmapped/stale. All three
+preparation/discovery commands executed0 tests; compile source is6f703319.
+
+Finite controls now have five actual invocations:63 reported executions/57 PASS/6 FAIL, including
+repetitions(15/12/3 +18/16/2 +2/2/0 +27/26/1 +1/1/0). Accepted common16/bounds2/full NONE36256/
+current-contract CREATEb76 and previous26 PASS remain retained, excluded/not repeated. Current four
+categories/nine methods/23 cases/four descriptors remain UNRUN:publication7,repair8,compatibility5,
+worker-scope3 including strengthened afterlife/private protection Fact. Frozen remaining23-selection
+contains exactly those existing entries as future selection, not executed coverage. Parent T070/
+FR-063/#1536, complete consumer and archive/newroot/fresh-process qualification remain OPEN.
+
+Next: publish/recover this frozen packet, mandatory EVIDENCE/status gate, matching NoBuild PlanOnly
+and first actual23-case selection on unchanged compile inputs/binaries. This packet review is PENDING.
+No passing-neighbor/common/baseline/producer/projection repeats; no production/GM grammar change,
+global selector/budget/checklist/protected ce955/frozen historical packet changes. Archive8-case
+proposal remains retained but unwritten/UNRUN/on hold behind complete controls qualification.
+
+Historical isolated event-order source checkpoint (accepted before this GREEN):
 
 Actual retained Astra XHigh EVIDENCE/status ACCEPTED at
 `3570aa1c3c20df9cd76777d214fa7a203f47714a` for the
