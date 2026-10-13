@@ -9,6 +9,41 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## FR-063 native ordinary advancement without treatment — 2026-10-13 (OBSERVED; EVIDENCE PENDING)
+
+Task1b fixture-only source4c4f9f11212954c6d12beb86e570b3205a8d3bc1 independently SOURCE/FIXTURE/
+SELECTION ACCEPTED;production unchanged. FreshBOTH33/78/14 preparation142.4364072s,0execution,
+0errors; exact1/1/1 plan2.5528828s and validcatalog721/115615.2988898s,unmapped0/stale0,also0execution.
+[Immutable55-artifact outcome](./recovery/fr063-guaranteed-native-ordinary-advance-without-treatment-20261013/manifest.json)
+retains actual20261013-141840-858-632040-f7cfd7418f1540e4bfc0c64ac2b13444-categories:
+1executed0PASS1FAIL,COMPLETE1/1/1,14.7065925s,exit1,no timeout/skips/duplicates.
+
+Fresh child632193 passes genuineoriginal42/heldcommand/Ready/emptycache/energy2 and actualcaller
+entry. Loop42 and one story42 were observed, but accepted checkpoint hook remainsfalse; firstfail
+is NativeCold.cs:213 Assert.True(accepted). Strictpublication/hold-finalization/secondidle assertions
+were not reached. Independent rawreadback shows energy2->2,no Spend42,unchanged singlecreate wound
+history and careuntreated->untreated; ordinaryhealth10->7 has one Damage42 quantity3. Submitted
+woundcommand is removed. Actualbefore/afterNPCcore bytes are exact and match the original shape;
+no PRESENT repairrequest or observerfailure. These bytes establish that the expected guaranteed
+outcome is missing despite ordinaryturn/story advancement; exact causalpath/hook suitability still
+requires independent EVIDENCE before any correction. Do not claim treatment qualification.
+
+[Derivedreadback companion](./recovery/fr063-guaranteed-native-ordinary-advance-without-treatment-readback-20261013.json)
+verifies all55stored/decompressed chains and derives BOM-aware story metrics without modifying the
+frozen packet. ROOT234source/11binary PREPOST reconfirmed after transport recovery BEFOREmetadata;
+actualIntegration/TestSupport/Immutable9 Default bindings and2strict physicallyabsent roots verified.
+Executiontransport disconnected during a later scratch parser and separate readonlyghissue lookup;
+exacttext/operation are preserved in [transportrecord](./recovery/fr063-transport-readback-20261013.json).
+Coordinator authorized one safe existingexecutor HEAD/status read; it restored4c4clean. No newtest,
+newenvironment or protective bypass occurred. Initial storyparser hitUTF8BOM; its corrected derived
+readback is a companion,not an alteration of immutable raw. Nativehistory3inv3exec0PASS3FAILONEcase.
+
+Publish/recover/review this existing outcome before any new test/sourcechange. Accepted bounded8/
+proof20 remain qualified and unrepeated. FullFR063/T070/#1536 stayOPEN. GMmapping will be saved as a
+separate approved-design metadata checkpoint; userapproved afterlife10pairs/core/conditionalrouter,
+thenBlock5. No GMfilemove or gameplaycontractchange is included here. Immediatewoundguidance
+alignment remains separate and unimplemented; other diagnosismechanics are not inferred.
+
 ## FR-063 diagnostic accepted; bounded fixture correction — 2026-10-13
 
 Retained actual Astra XHigh EVIDENCE/status ACCEPTED at5d8a26d87cb872492318d7d76ee46a07832f3c3c:

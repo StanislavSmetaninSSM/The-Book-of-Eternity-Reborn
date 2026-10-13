@@ -1,0 +1,13 @@
+{
+  "failedOperation": "decodeexistingnativeartifacts andscratchreadbackwrites",
+  "exactFailure": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: exec-server transport disconnected\\\")\" }",
+  "rootFailedProcessId": "notissued",
+  "parallelPreflightFailureCell": "64",
+  "authorizedRecoveryRead": "git rev-parse HEAD && GIT_OPTIONAL_LOCKS=0 git status --short",
+  "recoveryChunkId": "c99d2d",
+  "head": "4c4f9f11212954c6d12beb86e570b3205a8d3bc1",
+  "clean": true,
+  "newRuntimeAfterRecovery": 0,
+  "causeOfDisconnection": "UNKNOWN; transportfailuretext not securityapprovalverdict",
+  "verifiedUtc": "2026-10-13T14:33:54.384624+00:00"
+}
