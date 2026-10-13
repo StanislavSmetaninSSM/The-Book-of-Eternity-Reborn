@@ -494,9 +494,29 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (resourceWork)
             {
                 Assert.Equal(43, run.Snapshot.TurnNumber);
-                var originalDefinitions = ResourceDefinitionCatalog.ParseCanonical(MortalArchiveText(run.Snapshot.ReadRequiredBytes(ResourceMaterializationContract.DefinitionsPath)), false);
+                string[] resourcePaths = [ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
+                    ResourceMaterializationContract.HistoryPath];
+                var resourceRead = PendingTurnSnapshotReader.ReadCurrent(files, lease, resourcePaths);
+                WritePhysicalInjuryDiagnostic("qte_durable_parent_resource_snapshot", new
+                {
+                    resourceRead.Success, resourceRead.Issues,
+                    Source = resourceRead.Snapshot is null ? null : new
+                    { resourceRead.Snapshot.SessionId, resourceRead.Snapshot.RequestId, resourceRead.Snapshot.SnapshotToken,
+                        resourceRead.Snapshot.TurnNumber, resourceRead.Snapshot.Realm },
+                    SelectedResourceSha256 = resourceRead.Snapshot is null ? null : resourcePaths.ToDictionary(path => path,
+                        path => MortalArchiveHash(resourceRead.Snapshot.ReadRequiredBytes(path)), StringComparer.Ordinal)
+                });
+                Assert.True(resourceRead.Success, JsonSerializer.Serialize(resourceRead.Issues));
+                Assert.NotNull(resourceRead.Snapshot);
+                var resourceSnapshot = resourceRead.Snapshot!;
+                Assert.Equal(run.Snapshot.SessionId, resourceSnapshot.SessionId);
+                Assert.Equal(run.Snapshot.RequestId, resourceSnapshot.RequestId);
+                Assert.Equal(run.Snapshot.SnapshotToken, resourceSnapshot.SnapshotToken);
+                Assert.Equal(run.Snapshot.TurnNumber, resourceSnapshot.TurnNumber);
+                Assert.Equal(run.Snapshot.Realm, resourceSnapshot.Realm);
+                var originalDefinitions = ResourceDefinitionCatalog.ParseCanonical(MortalArchiveText(resourceSnapshot.ReadRequiredBytes(ResourceMaterializationContract.DefinitionsPath)), false);
                 Assert.True(originalDefinitions.IsValid);
-                var originalState = ResourceStateContract.ParseCanonical(MortalArchiveText(run.Snapshot.ReadRequiredBytes(ResourceMaterializationContract.StatePath)), originalDefinitions.Catalog!, false);
+                var originalState = ResourceStateContract.ParseCanonical(MortalArchiveText(resourceSnapshot.ReadRequiredBytes(ResourceMaterializationContract.StatePath)), originalDefinitions.Catalog!, false);
                 Assert.True(originalState.IsValid);
                 Assert.True(originalState.Ledger!.TryResolveExact(new ResourceCoordinate("mortal_world", ResourceOwnerKind.Player, "player_current", "health"), out var originalHealth));
                 Assert.Equal(155m, originalHealth!.Current);

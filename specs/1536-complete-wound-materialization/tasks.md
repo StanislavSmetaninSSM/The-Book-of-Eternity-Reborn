@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE4 QUALIFIED; DURABLE4 PARENT FIXTURE FAILURE FROZEN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE4 QUALIFIED; DURABLE4 RESOURCE SELECTION CORRECTION SOURCE READY)
 
 Archive4 EVIDENCE/status ACCEPTED and bounded archive qualification accepted by actual retained
 Astra XHigh at `fb1a17c02f76c378148f54eea685dfc5bfcaa01f`, no blocking findings. All33 chains,
@@ -34,12 +34,30 @@ ROOT parsed16 native observations/four parent failure chains/four strict SOURCE 
 all4 roots physically absent,runner cleanup true. No child cleanup qualification is claimed because
 no child started. Frozen22 artifacts preserve native TRX/afterimages/exact plan/retained fresh build,
 catalog/source equivalence and pins. Durable history1 actual invocation4 executions0 PASS4 FAIL.
-Independent first-outcome EVIDENCE/status PENDING before any fixture/production correction. Next
-publish/GitHub-only recover and EVIDENCE gate,then minimum fixture-only official resource snapshot
-read/identity agreement under the existing lease if accepted; preserve155 and ownedtick/narrative
-Damage1 causal checks. Do not change snapshot guard/production policy,strict replay oracles or rerun
-qualified archive4/finite68/baselines. Full T070/FR-063/parent/#1536 OPEN; frozen histories/checklists
-unchanged. Project exception is not a tool security refusal; no real tool denial observed.
+Independent first-outcome EVIDENCE/status ACCEPTED by actual retained Astra XHigh at
+`9ff2cf49a6f6c8db89ddd5b6b25082b1b4d7f149`, no report defects. The frozen manifest retains its
+pre-review PENDING wording. The observed first four failures remain fixture prerequisites,not
+qualified durable replay/refusal or production rollback evidence.
+
+Current minimum fixture-only correction retains the original projection read and,ONLY inside the
+resourceWork branch under the SAME existing canonical lease,uses official PendingTurnSnapshotReader.
+ReadCurrent with explicit DefinitionsPath/StatePath/HistoryPath. Success/non-null and exact SessionId,
+RequestId,SnapshotToken,TurnNumber,Realm agreement with the projection authority are required before
+reading selected resource bytes. Native diagnostic records reader success/issues,actual resource
+binding and three selected-root SHA256 values. Existing definition/state parsers now read that
+resource authority; signed health155,authored independent Damage1,owned tick/history/late-idle replay/
+refusal and all eight rows/later assertions remain unchanged. No live resource fallback,new snapshot,
+cloned/re-signed authority,root initialization or production selection/publisher/guard change.
+
+Correction SOURCE READY for ROOT publication/GitHub-only recovery and focused actual Astra XHigh
+SOURCE gate; corrected build/discovery/runtime UNRUN. Next fresh BOTH PlanOnly33/78/14 and exact
+durable1/4/1 budget5/default10,retained accepted catalog717/11553,then retry FAILED durable4 only and
+freeze/review. Qualified archive4/finite68/baselines are excluded from repetition. Existing archive/
+durable owner membership,selectors,budgets and host stay unchanged. No GM prompt/example update is
+required because only the test-local official snapshot selection changes; no public Mortal/afterlife
+contract change. Full T070/FR-063/parent/#1536 OPEN; frozen histories/checklists unchanged. Project
+exception is not a tool security refusal; no real tool denial observed. No author projectcommand,
+build/runtime/git mutation performed.
 
 Historical archive4 pre-review GREEN checkpoint follows; its pending wording is superseded by the
 accepted archive scope above. Durable changed late-idle rollback risk remains unobserved.
