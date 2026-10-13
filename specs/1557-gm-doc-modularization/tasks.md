@@ -1,5 +1,34 @@
 # Tasks: GM Documentation Modularization
 
+## Finite pure RED EVIDENCE accepted; separate delivery TEST-source boundary — 2026-10-13
+
+Retained independent actual Astra XHigh [reading EVIDENCE report](recovery/A-reading-first-actual-evidence-review-20261013.md)
+SHA2562dc0151724e8a29ee02061d2b8b5a860aee474f2e467dd0c855cabec1cd0e19a
+accepts d9899d7ea8abbba85b2b2273928f1a82a07391e5: all20chains/native28 COMPLETE,
+10PASS18intendedRED, source2158/retainedbinary10 provenance and strict scope.
+Inactive/topic-link assertions after first active failure and later D01 daemon directives
+are UNREACHED. Both immutable packets retain original EVIDENCE PENDING; later reports
+close their evidence/status only. Across two disjoint invocations44unique24PASS20FAIL,
+not a single aggregate44run/GREEN/fullA. No pure diagnostic repeat required.
+GitHub-only sparse recovery:117materializedtrackedfiles exact bytes/blobs plus all48
+raw/compressed chains across both packets; projectexecutionUNRUN/fullcheckoutnotclaimed.
+
+Broader approved #1557 A plan now proceeds only to its separately required connected
+TEST-source block T007/T012/T013: final daemon AST/dataflow/source guards and bounded
+actual packaged production-writer-to-session delivery adapter. ROOT releases retained
+sole Sol source authoring in this isolated checkout; not production/content relocation,
+daemon edits or delivery execution. Source criteria: originalBOM UTF16AST-to-UTF8 exact
+actual two-command participating entry, independent complete delivered-file/link/byte
+oracles and missing-copy/link controls; finite60s ownedprocess budget with exactPID/
+birth/argv, concurrently drained retained logs and bounded exit/cleanup evidence.
+WIP publication precedes mandatory independent SOURCE/selection review and any new
+build/runtime. Existing pure fixtures/maps/packets and original docs/daemon/manifest/
+Block_5 remain exact. No new global runtime/context framework or GM code-read exception.
+Full A/B and all checkboxes stay OPEN; primary J1 preparation separately pinned,
+production J2–J6 unreleased. This separate ROOT TEST-source release follows approved
+A planning, not an implementation release from the pure EVIDENCE report.
+
+
 ## First disjoint reading28 RED frozen — 2026-10-13
 
 Actual candidate68416f7d0438cd4a7600f0e3ec9467a5bedfc9dd, retained fresh BOTH
