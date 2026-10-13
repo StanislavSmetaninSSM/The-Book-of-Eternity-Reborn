@@ -9,6 +9,28 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## Genuine pending2 SOURCE/FIXTURE/SELECTION accepted; first actual UNRUN — 2026-10-13
+
+Retained independent actual AstraXHigh SOURCE gate accepted published WIP3ef3c2777f140818c08013d7c623051b847b7524:
+[review](./recovery/fr063-genuine-pending2-source-review-20261013.md).
+ExternalSHA256e0d56480892932307f6e9d3aa88d9df17ffcdf7264df33e81acf3c559ea1fe99, publishedSHA2562425f294e9ff3a86f275151d18fbb8f6a270055f5f1e188b76eb8fa71e689a16. Raw byte-exact report is retained
+in source-review-original-20261013.md.gz; readable copy removes exactly six Markdown hard-break
+spaces from Candidate/Base/Reviewer headers and extra EOFblank if present, no body edit.
+Reviewer release is exactly one new component theory/two cases/one descriptor. Dedicated
+selector excludes every qualified ordinary13/APInegative5/QTE cohort; zero-execution private
+fresh BOTH4/5/2 preparation adds existing unit3 solely for build/discovery. All new preparation,
+exact discovery/catalog728/11568 and actual2 remain UNRUN here; static acceptance is not runtime.
+
+Selected GitHub-only recovery of3ef verified2008 materializedtracked/1469connectedchanged
+files with exactbytes+Gitblobs; recovery projectexecutionUNRUN, fullcheckout not claimed.
+ROOT now releases finite fresh BOTH -> exact PlanOnly -> catalog discovery -> FIRST actual2,
+pinning current clean source and matching binaries with POST before metadata. Preserve any
+first FAIL/partial/cleanup uncertainty, then immutable packet and independent EVIDENCE.
+No passing old cohort repeat or broader category. This component validates genuine private
+representation/current-owner recovery only; production live repair producer/restoration,
+fresh-process/new-root, immediate own-wound guidance, fullFR063/T070/#1536 remain mandatory OPEN.
+Sol is isolated GM A test-first solewriter; primary code is frozen during ROOT pinned runs.
+
 ## ROOT preservation: component versus mandatory live owner; GM A boundary — 2026-10-13
 
 Sole Sol FINALSTOPPED. The eleven-path pending2 source candidate is WIP/UNRUN, preserved
