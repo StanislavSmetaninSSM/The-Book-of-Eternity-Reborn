@@ -9,8 +9,32 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (SAFE CONTEXT BRIDGE CORRECTION READY; PRIOR INCOMPLETE EVIDENCE ACCEPTED; NEW CHECKS UNRUN)
+## Current T070 first vertical — 2026-10-13 (NONE RETRY ADMISSION PREREQUISITE FAIL; EVIDENCE PENDING; NO THIRD RUN)
 
+SafeContext correction SOURCE accepted at391ddff7183b8fbde64bb2678ee891ec701b63b4 by actual
+retained Astra XHigh. Fresh selected BOTH builds/PlanOnly passed28 methods/67 cases/12
+planned descriptors,175.019s,85/35 warnings0 errors; catalogNoBuild valid710/11548,5.345s.
+Each preparation/discovery executed0 tests;146 source and10 new binary pins retained.
+
+ONE unchanged NONE retry on exact391d source/binaries completed selected1 descriptor/case:
+1 executed/0 PASS/1 FAIL,17.178s,exit1,no timeout/skips/duplicates. Native TRX reports prerequisite
+line77: "The actual ordinary outcome was not accepted; prerequisite blocker." Six native
+observations prove genuine source42 and official N43 reader Success=true/Issues=[], authoring
+hook/GM draft reached; ordinaryValidated=false, EngineFailure=null, actual loop42. Full ordinary
+N43 completion and causal receipt/postcondition oracles remain UNREACHED. Underlying admission
+diagnostic was not emitted in these observations; its cause remains UNKNOWN pending source
+trace. This is admission prerequisite failure, NOT consumer causal RED. Strict owned fixture
+cleanup receipt emitted/removed=true/failure=null and physical root absence verified; runner
+cleanup also succeeded.146/10 source/binary PRE/POST matched BEFORE metadata edits.
+
+[Admission failure packet](./recovery/qte-physical-consumer-none-admission-failure-20261013/manifest.json)
+freezes25 artifacts, including native TRX/observations/raw logs. EVIDENCE gate PENDING before
+another source correction/run. Current finite NONE cohort2 actual invocations:1 incomplete
+178e timeout0 reported tests plus1 completed391d prerequisite failure1 executed/0 PASS/1 FAIL.
+Historical4010 NONE/c7 CREATE proper causal REDs remain separate. No third run without diagnosed
+cause. CREATE/remainder/archive/newroot/fresh-process remain UNRUN; parentT070/FR-063/#1536 OPEN.
+
+Historical391d private safeContext correction source boundary (accepted before corrected checks):
 Incomplete NONE evidence publishedde9c953a18900e7ac2323cc9adc1b79052360a15; exact remote/clean
 primary and603-file selected recovery/all74 connected paths verified by ROOT. Actual retained
 Astra XHigh EVIDENCE/status gate ACCEPTED25 artifacts/146 immutable178e source pins/10 fresh
