@@ -203,7 +203,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                          PendingTurnSnapshotAuthority.AuthorityPath, MortalWoundOpportunityAdapter.DecisionPath,
                          ResourceMaterializationContract.CommandPath, AcceptedMechanicsPlan.WoundCommandPath }) Assert.False(files.FileExists(path));
             Assert.Empty(Directory.GetFiles(files.ResolvePath("game_state/control"), "*", SearchOption.AllDirectories)
-                .Where(path => Path.GetRelativePath(files.BasePath, path).Replace('\\', '/').StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.Ordinal)));
+                .Where(path => Path.GetRelativePath(files.GameSessionPath, path).Replace('\\', '/').StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.Ordinal)));
             loaded = await CaptureMortalArchiveImagesAsync(files, MortalArchiveImmutablePaths);
             using (var archive = ZipFile.OpenRead(archivePath))
             {

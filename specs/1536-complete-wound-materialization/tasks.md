@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (FINITE68 QUALIFIED25; ARCHIVE/DURABLE8 SOURCE READY, ALL CHECKS UNRUN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE/DURABLE8 SOURCE ACCEPTED1f8; ASSERTION CLOSURE PENDING, FRESH CHECKS UNRUN)
 
 Retained actual Astra XHigh EVIDENCE/status AND bounded finite-cohort qualification ACCEPTED
 `25c8388feac5fba7b3ed1b0683e4494307c3fabf`:29 methods/68 unique passing cases across eight categories
@@ -17,8 +17,18 @@ drift3 retain repair8 qualification. Separate producer/projection/full NONE/curr
 qualifiers remain accepted. These are bounded checkpoint evidence,not one full suite or parent closure.
 Historical packets/pre-review status inside them remain immutable; no prior positive case is rerun.
 
-Current AUTHORED qualification candidate is exactly two integration theories/eight new cases,all
-SOURCE/fresh-build/discovery/catalog/runtime UNRUN. Archive4 is pending/consumed × NONE/CREATE;
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
+`1f8c49f4471806351cef52fcddb844b04ae48b08`; no confirmed Critical/Important findings remain.
+ROOT elected to correct one nonblocking vacuous fixture assertion BEFORE execution: subtree paths
+were relative to BasePath,which adds a game_session/ prefix,so they could not match the logical
+pending_turn_snapshot/ prefix. FileSystemManager572/574 defines GameSessionPath as BasePath/game_session.
+Only this assertion now uses GameSessionPath; all other fixture bytes/rows/oracles/host/catalog/
+selectors remain unchanged. Narrow correction SOURCE READY,targeted independent closure PENDING;
+no build/discovery/catalog/runtime has occurred on either candidate. All historical evidence stays
+unchanged; this is source assertion sufficiency,not an observed runtime failure.
+
+Current qualification candidate is exactly two integration theories/eight new cases,initial SOURCE
+accepted1f8 and narrow assertion closure pending; fresh-build/discovery/catalog/runtime UNRUN. Archive4 is pending/consumed × NONE/CREATE;
 durable-session4 is exact/changed × NONE/CREATE. They are separate new owners/selectors,budget5 each/
 default10 individually,combined2 methods/8 cases/2 descriptors/category budgets10/default15. Expected
 catalog717/11553 (+2 categories/+2 methods,no other membership changes). Existing full consumer
@@ -77,8 +87,9 @@ separate strict cleanup receipts; durable child cleans only its auxiliary factor
 the retained session until child completes. Save/source root cleanup stays separate. Missing child/
 load/Reader/source/prerequisite failures remain blockers,not manufactured consumer REDs.
 
-SOURCE READY for ROOT stopped diff/publication/remote recovery and mandatory actual Astra XHigh
-SOURCE/FIXTURE/SELECTION before any matching selected build/PlanOnly/catalog/actual. First archive4
+Narrow assertion correction SOURCE READY for ROOT stopped publication/remote recovery and actual
+Astra XHigh targeted closure before fresh BOTH PlanOnly33 methods/78 cases/14 descriptors,exact
+archivePlanOnly1/4/1 and catalog717/11553 (all preparation0 tests). First archive4
 must finish/freeze/EVIDENCE gate before durable4. Cached4227 binaries are not fresh for this candidate.
 API source proof uses current SaveGameAsync,typed load/rebind,existing reflection host/45s child,
 official Reader,original-artifact capture and actual late-idle caller; static checks are not runtime
