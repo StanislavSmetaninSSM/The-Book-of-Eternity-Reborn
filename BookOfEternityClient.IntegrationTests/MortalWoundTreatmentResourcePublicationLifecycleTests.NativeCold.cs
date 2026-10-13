@@ -380,7 +380,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(0m, await ReadGuaranteedNativeEnergyAsync(files));
         var resources = await ReadTreatmentResourceHistoryAsync(files);
         Assert.Equal(1, CountHeldTreatmentEnergySpends(resources));
-        var spend = Assert.Single(resources.Transitions, row => row.Operation == ResourceTransitionOperation.Spend &&
+        var spend = Assert.Single(resources.Transitions, row => row.Turn == 42 && row.Operation == ResourceTransitionOperation.Spend &&
             row.Coordinate.ResourceKey == "energy" && row.Coordinate.ResourceOwnerId == "player_current");
         Assert.Equal(2m, spend.AppliedAmount); Assert.Equal(2m, spend.BeforeState!.Current); Assert.Equal(0m, spend.AfterState!.Current);
         Assert.Equal(42, spend.Turn); Assert.Equal(ResourceTransitionOutcome.Applied, spend.Outcome);

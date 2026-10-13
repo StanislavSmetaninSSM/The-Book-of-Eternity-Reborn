@@ -9,6 +9,25 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## FR-063 native spend oracle correction — 2026-10-13 (SOURCE READY; NEW CHECKS UNRUN)
+
+Independent retained actual Astra XHigh accepted first connected EVIDENCE/status at
+`ce83cdb6a8b639c053247a87610e276c2371df57`: immutable41chains/241source/11binary,
+complete1executed0PASS1FAIL16.4847370s and both strict roots absent. Its exact failure
+is the all-turn energy Spend Single including valid oldturn2amount8; captured current
+publication has ONEturn42Spend2(2->0), ONEturn42Damage3(10->7), ONEtreat/care stabilization
+and story42. This remains FAIL, not native qualification. Later strict receipt/hold/
+cleanup/second-idle assertions were UNREACHED; their passing coverage is not inferred.
+
+Only NativeCold.cs383 adds `row.Turn == 42` to the existing Spend Single predicate.
+Single/count/amount/before-after/applied/periodic/history/care/hold/idle oracles and all
+production, fixture source/history, selections/categories/budgets remain unchanged.
+Correction SOURCE review is pending; new matching preparation/native retry are UNRUN.
+The remaining14 cases stay UNRUN until native GREEN/EVIDENCE; new-root and full FR063/
+T070/#1536/parent boxes remain OPEN. ROOT publishes/reviews this narrow source before
+any project execution. The observed checkpoint below is historical; its EVIDENCE
+PENDING/next-correction wording is superseded here without modifying its raw record.
+
 ## FR-063 connected first actual — 2026-10-13 (OBSERVED ORACLE FAIL; EVIDENCE PENDING)
 
 Connected source `d54ab6b465b68232728b66840f1a97d3488429a1` is published/remoteexact,
