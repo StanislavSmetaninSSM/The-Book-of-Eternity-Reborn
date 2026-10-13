@@ -9,47 +9,68 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (REPAIR 8 FAIL; COMPATIBILITY/WORKER 8 UNRUN)
+## Current T070 first vertical — 2026-10-13 (REPAIR READY FIXTURE SOURCE READY; RETRY8 + UNRUN8)
 
-Retained actual Astra XHigh EVIDENCE/status ACCEPTED corrected CREATE GREEN packet at
-`efd5719d467738f1190ef770b2133f24d60e9ee4`,1 PASS with ordered ownedDamage3 then narrativeDamage1,
-health155->152->151 and all original byte-exact replay/marker/receipt/consumption assertions.
-No earlier passing cohort was repeated. The
-[remaining16 repair failure packet](./recovery/qte-physical-consumer-remaining16-repair-failure-20261013/manifest.json)
-freezes actual `20261013-043231-768-462490-35636c1bb34d4546bef541a5255b1c48-categories`,
-sourceefd5719/compile8a051:planned6 methods/16 cases/3 descriptors/3 categories/default13;
-completed1 descriptor/8 cases,8 executed/0 PASS/8 FAIL,75.4044148s,exit1,no timeout/skips/duplicate IDs.
+Retained actual Astra XHigh EVIDENCE/status ACCEPTED at
+`70842cc9645a549b16ef4091b3a8b606b103cce5` for the
+[remaining16 repair failure packet](./recovery/qte-physical-consumer-remaining16-repair-failure-20261013/manifest.json).
+Run `20261013-043231-768-462490-35636c1bb34d4546bef541a5255b1c48-categories`,sourceefd/compile8a051,
+planned6 methods/16 cases/3 descriptors/three categories/default13; completed1 descriptor/8 cases,
+8 executed/0 PASS/8 FAIL,75.4044148s,exit1,no timeout/skips/duplicate IDs. All severity/location/
+narration/resource x exact/sibling-drift rows stopped at Repair.cs60 expectedrepairCount1/actual0.
+Null responder/engine failure and genuine next43 assertions passed. Native observations report
+loop42,acceptedfalse,repairPacket/issued-command/receipt/draft/command/marker null after return;
+stdout reports restoration of stable state. Later MAIN-GM/bounded correction/retry/sibling-preservation/
+publication/refusal assertions were UNREACHED. This is a fixture prerequisite failure, not proper
+production causal RED; the frozen packet did not capture the underlying emitted terminal diagnostic.
 
-All eight severity/location/narration/resource x exact/sibling-drift repair rows stop at
-QtePhysicalInjuryConsumerRepair.cs60: expectedrepairCount1,actual0. Earlier assertions establish
-null responder failure/null engine failure and genuine next43 snapshot. Native observations report
-ordinary ProcessPlayerTurn returned, loop42,acceptedfalse,repairPacket/issued-command/receipt/draft/
-command/completion-marker null after return. Later MAIN-GM packet/bounded correction/retry/acceptance/
-sibling-preservation assertions are UNREACHED. This packet proves the failure boundary, not its
-cause or a proper production causal RED. READONLY source/native departure-path diagnosis is pending;
-no fixture or production correction is released, and no count/oracle weakening is authorized.
+ROOT matched152 source/10 fresh binaries PRE/POST before metadata, parsed8 results/full native TRX/
+32 observations, verified8 strict receipts removed=true/failure=null and actual owned-root absence.
+Runner cleanup succeeded. Matching NoBuild PlanOnly6/16/3 took4.8404940s,0 executed;150 unchanged
+nonmetadata inputs/10 binaries matched fresh8a051 BOTH builds. Catalog714/11550 is preceding accepted
+discovery, not a new run. Finite controls eight invocations report79 executions/64 PASS/15 FAIL,
+including repetitions. Corrected CREATE resource-replay EVIDENCE acceptedefd retains1 PASS after
+actual ownedDamage3 then independentDamage1,health155->152->151 and exact mechanics replay; six
+other publication positives, prior26/common18/bounds/event/full NONE36256/current-contract CREATEb76/
+projection/producer qualifiers remain accepted and excluded/not repeated. Historical c7 CREATE
+RED/non-byte-matched treatment migration and immutable packets stay separate.
 
-Fail-fast leaves compatibility5 and worker-scope3, exactly5 methods/8 cases/2 descriptors/2 categories,
-category budgets3/default8 UNRUN. The strengthened worker protection Fact is still UNRUN. Full finite
-controls/consumer/archive/newroot/fresh-process/T070/FR-063/parent/#1536 stay OPEN. Eight actual controls
-invocations report79 executions/64 PASS/15 FAIL,including repetitions; prior positives remain retained.
+Source-proven fixture cause: AuthorInitial wrote a correlated success signal with session/request/
+turn/status/timestamp but no required filesModified. SessionAndSnapshots.ParseReadySignalMetadataCore
+1632-1669 yields HasFilesModified=false; HasValidTerminalSignalContract1705-1717 rejects it. Original
+wait only checks terminal-file existence(TurnLifecycle477-485). ResolveFinalActiveTerminalOutcome8664+
+therefore rejects the contract before ordinary accepted-turn/wound validation. Precise fallback:
+HandleRejectedActiveReadySignal calls DiscardMismatchedReadySignalAsync1721+,which returns FALSE for
+the correlated identity; HandleRejected returns FALSE before its failure writer. Resolver falls
+through HandleMissingActiveTerminalOutcome,which writes missing_correlated_terminal_signal_after_wait,
+restores the pre-turn backup/cleans original source and returns failure. This source path matches
+native 'Текущий ход не удалось безопасно завершить'; the old packet did not directly emit/capture
+that diagnostic. Do not claim terminal_success_missing_or_invalid_files_modified or HandleRejected's
+writer actually ran. No debug/input/responder-hook/production defect is proved or patched.
 
-Matching NoBuild PlanOnly `20261013-043203-916-462275-8dc63ef296bd4219a2bc5df6f6ea345e-categories`
-reported6/16/3,4.8404940s,0 executed. ROOT matched150 unchanged nonmetadata inputs and10 fresh8a051
-binaries before invoking;152 current source pins and10 binaries matched PRE/POST BEFORE metadata.
-ROOT parsed all eight native results/full TRX/stdout/32 observations, verified eight strict cleanup
-receipts removed=true/failure=null with all owned roots physically absent; runner-owned tree/runtime
-cleanup succeeded. Frozen21 artifacts contain exact source/binary pins and all actual/preparation
-originals. No new build/catalog was needed or claimed; accepted fresh8a051 catalog714/11550 remains
-preceding discovery, not test execution. All historical packets/statuses remain immutable.
+Current minimum fixture correction adds only filesModified containing the exact four authored public
+outputs(Mortal decision draft,narrative_response,interface_updates,debug_logs) to INITIAL successready.
+It captures the raw InitialReady JSON under the same original hook/lease into the existing native
+qte_consumer_actual_main_repair observation before later cleanup. ALL eight rows/oracles/source
+capture/prerequisites/queued input/responder/private context/command revocation/retained proposal/
+sibling-preservation/publication/refusal/cleanup remain unchanged. No new harness/observer/production/
+parser/runner/authority or GM grammar change; the required terminal grammar already exists in docs
+and qualified NONE/CREATE fixtures, so no GM prompt/example update is needed.
 
-Next: publish/recover frozen failure evidence and mandatory focused EVIDENCE/status gate, while the
-sole writer diagnoses READONLY. A concrete source-proven bounded correction must pass independent
-SOURCE/FIXTURE/SELECTION before matching preparation/runtime. No repair-count/authority/private-source/
-command-revocation/sibling-preservation weakening, synthetic authority, passing-neighbor repetition,
-or archive authoring/runtime is authorized by this failure. Archive8 stays unwritten/on hold behind
-finite controls. This packet EVIDENCE is PENDING; no new product decision or scope expansion is needed.
-Protected causal facts/checklists/global CI/runner/budgets/GM grammar/old evidence are unchanged.
+SOURCE READY for ROOT publication/recovery and mandatory SOURCE/FIXTURE/SELECTION gate; all fresh
+BOTH builds/discovery/catalog/actual checks UNRUN. Catalog714/11550,existing selectors/declarations/
+category IDs-membership-budgets/full preparation30/70/12/default30 remain unchanged. ROOT will create
+its local reduced selection using existing repair owner exactly1 method/8 cases/1 descriptor,
+budget5/default10. First corrected8 then freeze/EVIDENCE gate; remaining compatibility5+worker3
+exactly5 methods/8 cases/2 descriptors/two categories,budgets3/default8 remain UNRUN,including the
+strengthened worker guard Fact. Current8a051 binaries are not fresh for this fixture; no author
+project execution. No earlier positive cohort repeat is selected.
+
+Full finite controls/consumer/archive/newroot/fresh-process/T070/FR-063/parent/#1536 remain OPEN.
+Archive8 stays retained,unwritten/UNRUN/on hold behind controls. Same-root retained actual N43 replay
+must preserve committed mechanics even on changed refusal; genuine archive new-turn progression
+is separate and may legally tick CREATE effects. No archive/rollback source patch is released here.
+Protected causal Facts/ce955,checkboxes,global CI/selection,other cases and frozen evidence unchanged.
 
 Historical corrected CREATE resource-replay GREEN checkpoint:
 

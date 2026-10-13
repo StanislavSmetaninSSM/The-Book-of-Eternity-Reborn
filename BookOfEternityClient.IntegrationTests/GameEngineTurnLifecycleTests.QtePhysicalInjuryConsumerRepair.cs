@@ -30,7 +30,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         PendingTurnSnapshotReadAuthority? next = null;
         JsonObject? rejectedDraft = null, correctedDraft = null;
         byte[]? originalRequest = null, originalManifest = null, originalAuthority = null;
-        string? rejectedScene = null, repairPacket = null, actualIssuedCommand = null;
+        string? rejectedScene = null, repairPacket = null, actualIssuedCommand = null, initialReady = null;
         var repairCount = 0;
         var accepted = false;
         Exception? responderFailure = null;
@@ -48,7 +48,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             rejection, siblingDrift, repairCount, accepted, EngineFailure = failure?.ToString(), ResponderFailure = responderFailure?.ToString(),
             Source = new { source.Source.SessionId, source.Source.RequestId, source.SnapshotToken, source.Source.TurnNumber },
             Next = next is null ? null : new { next.SessionId, next.RequestId, next.SnapshotToken, next.TurnNumber },
-            RejectedDraft = rejectedDraft, CorrectedDraft = correctedDraft, rejectedScene, repairPacket, actualIssuedCommand,
+            RejectedDraft = rejectedDraft, CorrectedDraft = correctedDraft, rejectedScene, repairPacket, actualIssuedCommand, InitialReady = initialReady,
             ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, Receipt = receiptJson,
             DraftAfter = await _fs.ReadFileAsync(MortalWoundOpportunityAdapter.DecisionPath),
             CommandAfter = await _fs.ReadFileAsync(AcceptedMechanicsPlan.WoundCommandPath),
@@ -112,7 +112,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             originalAuthority = await _fs.ReadFileBytesAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath);
             await WriteOutputs(lease, rejectedDraft, rejectedScene);
             await _fs.WriteFileAtomicAsync(lease, "ready/turn_complete.json", JsonSerializer.Serialize(new
-            { sessionId = next.SessionId, requestId = next.RequestId, turnNumber = next.TurnNumber, status = "success", timestamp = DateTime.UtcNow.ToString("O") }));
+            {
+                sessionId = next.SessionId, requestId = next.RequestId, turnNumber = next.TurnNumber,
+                status = "success", timestamp = DateTime.UtcNow.ToString("O"),
+                filesModified = new[] { MortalWoundOpportunityAdapter.DecisionPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" }
+            }));
+            initialReady = await _fs.ReadFileAsync(lease, "ready/turn_complete.json");
         }
 
         void RespondToMainRepair(TrustedLocalPublicationPhase phase, int index)
