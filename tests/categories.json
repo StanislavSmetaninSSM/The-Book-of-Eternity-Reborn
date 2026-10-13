@@ -2,6 +2,42 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "fr063-guaranteed-pending-wave-persistence",
+            "responsibility": "#1536 FR-063/FR-012 genuine pending repair-persistence component: one theory/two cases. A labelled effect-free canonical wound/provider/energy2 bootstrap precedes actual declared QTE42 (health10->5/Damage5/maxII), then actual Stage43 on the same physical root/generation. A production-issued homogeneous guaranteed treatment command is confirmed; the read-only QTE adapter issues genuine actionable severity repair context/nonempty packets from the same official43 occurrence. Existing closed ComposePendingRoot carries the complete real command request. Exact command+pending+history catalog coalesces once, and fresh-lease Export automatically restores one confirmed request without publication lineage. A nested copied quantity changed under original seals is rejected by its parser before that candidate enters coalescing, with no accepted recovered authority/new claim or physical mutation.",
+            "excludes": "Component-only codec/catalog/current-owner recovery, not a live pending writer or mixed ordinary publication. ComposePendingRoot has no production caller; live repair persistence remains OPEN. No fabricated packet, empty wave, original rewrite/re-sign, post-QTE canonical initialization, manual recovery/re-reservation, common publication, provider/model/Windows/global runner/CI change, or qualified ordinary13/native/QTE/archive/proof/finite cohort repeat. Existing qualified helpers and old default QTE caller behavior stay byte-exact.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs",
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs",
+                "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+                "BookOfEternityClient/Services/WoundRepairPacketBuilder.PersistenceValidation.cs"
+            ],
+            "related": [
+                {
+                    "id": "fr063-guaranteed-ordinary-owner-controls",
+                    "when": "The obsolete pending pair is rehomed here. No method overlap; preserve qualified ordinary component evidence and historical failed pending plans/TRX."
+                },
+                {
+                    "id": "fr063-guaranteed-confirmed-claim-inspection-negative",
+                    "when": "Accepted non-authorizing reader is reused only to observe the actual automatically restored claim; no new publication authority or repeat of its five accepted gate cases."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentGenuinePendingWaveCoalescesExactRequestOrRefusesChangedCopy"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "fr063-guaranteed-confirmed-claim-inspection-negative",
             "responsibility": "#1536 five-row component owner for the new non-authorizing confirmed-resource-claim reader: absent physical generation, initialized generation without registry owner, stale existing owner after supported lifecycle/replacement rotation, foreign lease and disposed lease. Actual held request/finalization inputs originate from the existing production-held fixture. Each read must refuse at its exact gate without generation/slot/claim reconstruction or byte changes; these are newly authored UNRUN controls.",
             "excludes": "The affected late-guard positive has its separate existing exact owner. Qualified native/postseal/capture6/reflection3/warm1 and all QTE/archive/proof cohorts are excluded. No registry Export/Restore/Confirm/Reserve/Take/rearm, private capability reflection, rollback-evidence bypass, new-root native qualification, broad suite or global/CI/runner/budget change.",
@@ -157,8 +193,8 @@
         },
         {
             "id": "fr063-guaranteed-ordinary-owner-controls",
-            "responsibility": "#1536 FR-063 admitted ordinary-owner component controls: six methods/ten cases. Genuine original42/held guaranteed energy2 requests are prepared with composePublication:false. The frame-aware actual GameEngine resource wrapper must restore/issue its common plan only after resource-owner/original admission. Exact pending duplicates coalesce; changed nested request and actual resultCategory payload under original seals refuse. Current required capability drift refuses without warm authority reuse. Existing wound_post_seal compensation retains complete request/confirmed hold/original fence, then one exact retry spends once. Three actual concurrent resource/effect/full-party rows must reach the scoped unsupported-work refusal without mutation/consumption. A previously absent npc_skills file introduced across owner lease turnover is rejected by sealed-input/publication revalidation. Component proof is distinct from the native fresh-process case.",
-            "excludes": "No helper Restore/Compose prelude, display-response stripping, fabricated request/original/authority or second reduction; no new-root/other modes/diagnosis/GM grammar, archive/QTE/proof20/finite68/baseline repeats, provider/Windows/global runner/CI change. Effect-row public skill-definition bootstrap is before its genuine original and is labelled component. All new cases and connected source remain UNRUN pending published independent SOURCE/FIXTURE/SELECTION.",
+            "responsibility": "#1536 FR-063 admitted ordinary-owner component controls: five methods/eight cases. Genuine original42/held guaranteed energy2 requests are prepared with composePublication:false. The frame-aware actual GameEngine resource wrapper must restore/issue its common plan only after resource-owner/original admission. Nested request and actual resultCategory payload under original seals refuse. Genuine pending-wave persistence/coalescing is rehomed to its separate dedicated component owner. Current required capability drift refuses without warm authority reuse. Existing wound_post_seal compensation retains complete request/confirmed hold/original fence, then one exact retry spends once. Three actual concurrent resource/effect/full-party rows must reach the scoped unsupported-work refusal without mutation/consumption. A previously absent npc_skills file introduced across owner lease turnover is rejected by sealed-input/publication revalidation. Component proof is distinct from the native fresh-process case.",
+            "excludes": "No helper Restore/Compose prelude, display-response stripping, fabricated request/original/authority or second reduction; no new-root/other modes/diagnosis/GM grammar, archive/QTE/proof20/finite68/baseline repeats, provider/Windows/global runner/CI change. Effect-row public skill-definition bootstrap is before its genuine original and is labelled component. Qualified ordinary13 evidence is retained across checkpoints; this historical selector is not a request to repeat it. Genuine pending-wave persistence and the separate non-authorizing reader negatives belong to their exact owners; no live pending producer qualification.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs",
                 "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
@@ -183,7 +219,6 @@
                 {
                     "project": "integration",
                     "tests": [
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerReadsCurrentRequiredCapabilityInsteadOfHeldWarmAuthority",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerPostSealCompensationRetainsFullHeldRequestAndExactRetry",

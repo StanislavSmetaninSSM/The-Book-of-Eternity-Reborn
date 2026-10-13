@@ -1,0 +1,291 @@
+{
+  "date": "2026-10-13T20:47:18.573866+00:00",
+  "frozenOrdinaryBase": "e8bbbf3948637bc4dbd1153be68673e0653b0f42",
+  "coordinatorNewBoundary": "ordinary13 accepted andfrozen; checkisolatedGMA releaseconditions",
+  "pinCount": 33,
+  "allOriginalGMSourcePinsMatched": true,
+  "drift": [
+    {
+      "path": "tests/categories.json",
+      "bytes": 1875427,
+      "sha256": "6ed08d11d2bc03682d8d173d77e004e955bef64fcdd99a2f364b92513c00d71a",
+      "planningBytes": 1868067,
+      "planningSHA256": "e5473a5c807d166c3bc2d0c42284bbef82a5a33cbb76116f99ee197c2d719cc3",
+      "planningPinMatched": false
+    }
+  ],
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "planningBytes": 11662,
+      "planningSHA256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "planningPinMatched": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "planningBytes": 66432,
+      "planningSHA256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "planningPinMatched": true
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "planningBytes": 14081,
+      "planningSHA256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "planningPinMatched": true
+    },
+    {
+      "path": ".agents/skills/speckit-plan/SKILL.md",
+      "bytes": 7411,
+      "sha256": "b92428f869e93676fc0b77232dd4fecb610294b68bee677d940a239c43766a3d",
+      "planningBytes": 7411,
+      "planningSHA256": "b92428f869e93676fc0b77232dd4fecb610294b68bee677d940a239c43766a3d",
+      "planningPinMatched": true
+    },
+    {
+      "path": ".agents/skills/speckit-tasks/SKILL.md",
+      "bytes": 10463,
+      "sha256": "460eddac0fd7521bed8ac2d5821c98fc0dd4ab3ced4a6d94eb04bc155b021ac9",
+      "planningBytes": 10463,
+      "planningSHA256": "460eddac0fd7521bed8ac2d5821c98fc0dd4ab3ced4a6d94eb04bc155b021ac9",
+      "planningPinMatched": true
+    },
+    {
+      "path": ".agents/skills/speckit-analyze/SKILL.md",
+      "bytes": 10866,
+      "sha256": "2740b8aeab8d0104527384ca74106e252e0a20df89355c8f36be25a62130d6d6",
+      "planningBytes": 10866,
+      "planningSHA256": "2740b8aeab8d0104527384ca74106e252e0a20df89355c8f36be25a62130d6d6",
+      "planningPinMatched": true
+    },
+    {
+      "path": ".specify/templates/plan-template.md",
+      "bytes": 5176,
+      "sha256": "9e30f2f4f60da82326844fe2d0799038f66dbf34ace95f6d69c39672c9706e68",
+      "planningBytes": 5176,
+      "planningSHA256": "9e30f2f4f60da82326844fe2d0799038f66dbf34ace95f6d69c39672c9706e68",
+      "planningPinMatched": true
+    },
+    {
+      "path": ".specify/templates/tasks-template.md",
+      "bytes": 10542,
+      "sha256": "fc061a22f6b52a46e3e12e5d006110e5cfda935824b4eb69b1dac9fbc158435e",
+      "planningBytes": 10542,
+      "planningSHA256": "fc061a22f6b52a46e3e12e5d006110e5cfda935824b4eb69b1dac9fbc158435e",
+      "planningPinMatched": true
+    },
+    {
+      "path": ".specify/extensions.yml",
+      "bytes": 4672,
+      "sha256": "5e1ef86bc39cb43001577e895da68b324154a52281565e30ddba62c235c61df1",
+      "planningBytes": 4672,
+      "planningSHA256": "5e1ef86bc39cb43001577e895da68b324154a52281565e30ddba62c235c61df1",
+      "planningPinMatched": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-spec-draft-20261013/spec.md",
+      "bytes": 18686,
+      "sha256": "27735ec49aeb39eec51e1764ebff15ffe2e9c2c3cc150138659564587116bace",
+      "planningBytes": 18686,
+      "planningSHA256": "27735ec49aeb39eec51e1764ebff15ffe2e9c2c3cc150138659564587116bace",
+      "planningPinMatched": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/gm-documentation-modularization-approved-design-20261013.md",
+      "bytes": 21489,
+      "sha256": "c2d8b7eac8a60cdde1163893904425b132a387dd0c07d54ff12ca4eca52d5ea0",
+      "planningBytes": 21489,
+      "planningSHA256": "c2d8b7eac8a60cdde1163893904425b132a387dd0c07d54ff12ca4eca52d5ea0",
+      "planningPinMatched": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "bytes": 253233,
+      "sha256": "e69198e6db8fb00f060184ce48ec9c9aac98b2a5b2301576570bd625092521a5",
+      "planningBytes": 253233,
+      "planningSHA256": "e69198e6db8fb00f060184ce48ec9c9aac98b2a5b2301576570bd625092521a5",
+      "planningPinMatched": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "bytes": 696885,
+      "sha256": "bef41fb951303d57fa7a9ae1f6cd7ac49ac53653d557ab4f8cddb849814a56a3",
+      "planningBytes": 696885,
+      "planningSHA256": "bef41fb951303d57fa7a9ae1f6cd7ac49ac53653d557ab4f8cddb849814a56a3",
+      "planningPinMatched": true
+    },
+    {
+      "path": "Rules/Block_5.txt",
+      "bytes": 262995,
+      "sha256": "895eebaba31c6d2527354c682067588142b00245d2b750f585923a6c63718d62",
+      "planningBytes": 262995,
+      "planningSHA256": "895eebaba31c6d2527354c682067588142b00245d2b750f585923a6c63718d62",
+      "planningPinMatched": true
+    },
+    {
+      "path": "Examples/E_Block_5.txt",
+      "bytes": 268659,
+      "sha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+      "planningBytes": 268659,
+      "planningSHA256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+      "planningPinMatched": true
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "bytes": 182495,
+      "sha256": "ca049b16c368726ff7465f6286e3df416b0d9d302008a3faaf219faa934ce3bb",
+      "planningBytes": 182495,
+      "planningSHA256": "ca049b16c368726ff7465f6286e3df416b0d9d302008a3faaf219faa934ce3bb",
+      "planningPinMatched": true
+    },
+    {
+      "path": "CLI_Rules_Index.md",
+      "bytes": 25781,
+      "sha256": "c33838a3a8a0d1dd5ff3305698d6a9ec861c2e3513775f2d0e7b39881f196f29",
+      "planningBytes": 25781,
+      "planningSHA256": "c33838a3a8a0d1dd5ff3305698d6a9ec861c2e3513775f2d0e7b39881f196f29",
+      "planningPinMatched": true
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "bytes": 247635,
+      "sha256": "8d08213f077e3b1ab63d008973ad0d47fd9bde947ee73152f85129082a960861",
+      "planningBytes": 247635,
+      "planningSHA256": "8d08213f077e3b1ab63d008973ad0d47fd9bde947ee73152f85129082a960861",
+      "planningPinMatched": true
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "bytes": 160255,
+      "sha256": "58f19cf556acafec5afe6214ce613f29c64affd085d815620b0252f710ddff5b",
+      "planningBytes": 160255,
+      "planningSHA256": "58f19cf556acafec5afe6214ce613f29c64affd085d815620b0252f710ddff5b",
+      "planningPinMatched": true
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "bytes": 188300,
+      "sha256": "fab4bd38391965d119438b91c1fc5cb4648828187275a942d7af5c6b421e6fe9",
+      "planningBytes": 188300,
+      "planningSHA256": "fab4bd38391965d119438b91c1fc5cb4648828187275a942d7af5c6b421e6fe9",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+      "bytes": 30303,
+      "sha256": "e6c2896edf4b227db6742d7d91e26eda3ec1c47fdb3a145b1faa9a8b9d448d39",
+      "planningBytes": 30303,
+      "planningSHA256": "e6c2896edf4b227db6742d7d91e26eda3ec1c47fdb3a145b1faa9a8b9d448d39",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+      "bytes": 31947,
+      "sha256": "592e6c607df18e5f0935bf4574ba3a861edb39e70c612f7eaf12653d5ddb555d",
+      "planningBytes": 31947,
+      "planningSHA256": "592e6c607df18e5f0935bf4574ba3a861edb39e70c612f7eaf12653d5ddb555d",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "bytes": 398600,
+      "sha256": "f1f9fd80e0e26570990a35ad6009429025d4620e31404ae0aad554ca4c9b445d",
+      "planningBytes": 398600,
+      "planningSHA256": "f1f9fd80e0e26570990a35ad6009429025d4620e31404ae0aad554ca4c9b445d",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "bytes": 5795,
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+      "planningBytes": 5795,
+      "planningSHA256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/ExampleDocumentationFixtures.cs",
+      "bytes": 12045,
+      "sha256": "73eb463d5bf9f209755d431a282eaca37254abb4bcf69c66c4c5855f429eef4d",
+      "planningBytes": 12045,
+      "planningSHA256": "73eb463d5bf9f209755d431a282eaca37254abb4bcf69c66c4c5855f429eef4d",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "bytes": 289155,
+      "sha256": "a82fddd96ea243347391022ea5231cdd0b862801ababa70a95e8e66ac1cd06ee",
+      "planningBytes": 289155,
+      "planningSHA256": "a82fddd96ea243347391022ea5231cdd0b862801ababa70a95e8e66ac1cd06ee",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs",
+      "bytes": 213635,
+      "sha256": "54369d5978c67a995f47017e7549f2096494ceeb5a5411bae2058af261e188cf",
+      "planningBytes": 213635,
+      "planningSHA256": "54369d5978c67a995f47017e7549f2096494ceeb5a5411bae2058af261e188cf",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+      "bytes": 339647,
+      "sha256": "75527de090426482035f5c4e73a55f3efbcc0eb0ae1950579dab8fac598d7a6e",
+      "planningBytes": 339647,
+      "planningSHA256": "75527de090426482035f5c4e73a55f3efbcc0eb0ae1950579dab8fac598d7a6e",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs",
+      "bytes": 29484,
+      "sha256": "9ec838fca12dc682d119bf571fef3985ac1f684e5f9caba7690eb2c07308a52a",
+      "planningBytes": 29484,
+      "planningSHA256": "9ec838fca12dc682d119bf571fef3985ac1f684e5f9caba7690eb2c07308a52a",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectMaterializationSourceGuardTests.cs",
+      "bytes": 21572,
+      "sha256": "13342146bf265bb51e4f4824ea2ff00f9936511943ba280cf15962ec98473112",
+      "planningBytes": 21572,
+      "planningSHA256": "13342146bf265bb51e4f4824ea2ff00f9936511943ba280cf15962ec98473112",
+      "planningPinMatched": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "bytes": 45253,
+      "sha256": "b382a0301c4f56799e2191ffa57739e49c7941734bd96b132923c939fba3bcc9",
+      "planningBytes": 45253,
+      "planningSHA256": "b382a0301c4f56799e2191ffa57739e49c7941734bd96b132923c939fba3bcc9",
+      "planningPinMatched": true
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1875427,
+      "sha256": "6ed08d11d2bc03682d8d173d77e004e955bef64fcdd99a2f364b92513c00d71a",
+      "planningBytes": 1868067,
+      "planningSHA256": "e5473a5c807d166c3bc2d0c42284bbef82a5a33cbb76116f99ee197c2d719cc3",
+      "planningPinMatched": false
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "planningBytes": 18979,
+      "planningSHA256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "planningPinMatched": true
+    }
+  ],
+  "daemonFullSHA256": "f1f9fd80e0e26570990a35ad6009429025d4620e31404ae0aad554ca4c9b445d",
+  "historicalPrefixBytes": 198112,
+  "historicalPrefixSHA256": "ffbd62dbd8cf7b391ff5d038c0bd3c65ec71aac6516c562e352f673f81f23919",
+  "ASTandFreshPackagedDLLandActualDelivery": "UNRUN; mustrebindafterA source/test authored",
+  "D01": "existingcodebanaccepted;literal2480Bafterimageavailablein6a404supplement",
+  "GMAcode": "UNSTARTED; no contentmove/featurecontext/globalhook changes",
+  "singleSourceWriter": "Sol activepending2; GMAauthoringmustsequenceorreuseafterFINALSTOPPED",
+  "newRootGuidanceLiveFR": "separatemandatoryOPEN; no FRclosure"
+}

@@ -9,6 +9,80 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## ROOT preservation: component versus mandatory live owner; GM A boundary — 2026-10-13
+
+Sole Sol FINALSTOPPED. The eleven-path pending2 source candidate is WIP/UNRUN, preserved
+before mandatory independent actual AstraXHigh SOURCE/FIXTURE/SELECTION. Author eleven
+pins were verified before this ROOT-only checkpoint insertion; production/protected bytes
+are unchanged. [Source report](./recovery/fr063-genuine-pending2-source-report-20261013.md)
+and [static accounting](./recovery/fr063-genuine-pending2-static-checks-20261013.json) are
+source evidence, not compilation/discovery/runtime. Private BOTH selection anticipates4/5/2
+zero-execution preparation; exact actual selection1/2/1; catalog728/11568 remains provisional.
+
+Coordinator accepted bounded ordinary13 across checkpoints and separate APInegative5 at
+e8bbbf3948637bc4dbd1153be68673e0653b0f42. Passing cohorts stay frozen. Mandatory next live
+responsibility is actual live repair -> private persisted pending -> fresh-process recovery,
+separate from this component pair. [Caller disposition](./recovery/fr063-live-pending-writer-readonly-disposition-20261013.md),
+[entrance ownership](./recovery/fr063-live-pending-owner-proposed-design-20261013.md) and
+[joint-stage ruling](./recovery/fr063-joint-repair-owner-architecture-proposal-20261013.md)
+prove why a capture-only writer is insufficient. One typed combined owner requires a bounded
+design/source gate; existing homogeneous/public mixed guards remain strict. No new audit or
+production implementation is claimed. New-root and immediate own-wound guidance stay mandatory.
+
+Coordinator released GM A boundary after ordinary freeze. Reconciliation of33 planning pins
+at e8 preserved every GM body; catalog-only drift is accounted separately. Isolated branch
+1557-gm-doc-modularization-cloud-20261013/worktree was created and published at exacte8 on
+the same cloud Linux, [readback](./recovery/gm1557-isolated-published-branch-readback-20261013.json).
+Feature1557 setup and all content moves/AST/delivery/runtime are still UNRUN; primary feature1553
+is unchanged. A may proceed there with one global source writer; B only after independent A.
+No FR063 completion, aggregate13/15 run, main/CI/PR/issue closure or Windows qualification.
+
+## FR-063 genuine pending2 component SOURCE READY — 2026-10-13
+
+Base e8bbbf3948637bc4dbd1153be68673e0653b0f42; retained sole Sol author, SOURCE-only.
+Reader SOURCE6f1eb1bf and six-case EVIDENCEc466/0005 are accepted; narrow ordinary13
+is qualified across checkpoints, reader negative5 separately. Those scopes are retained
+without repeat. Original misplaced pending2 failures and all preceding checkpoints below
+remain historical evidence; no exact old-fixture RED-to-GREEN equivalence is claimed.
+
+The obsolete ordinary pending pair is replaced by one dedicated two-row component theory.
+A labelled effect-free canonical wound/provider/energy2 bootstrap and empty NPC trade receipt
+shape are settled BEFORE genuine original QTE42. Actual declared physical maxII produces
+Damage5/health10->5 and one occurrence; actual Stage43 preserves the same physical G and
+creates a genuine new request/token. The qualified shared 160->155 source helper is unchanged;
+new local source assertions retain its story/resource/history/terminal/cleanup checks at10->5.
+The existing homogeneous distributor confirms a complete guaranteed request without common
+publication. A read-only QTE adapter refusal for severityIII above sealedII yields an actual
+source-bound private repair context/nonempty packet wave under the SAME real43 tuple.
+Existing closed ComposePendingRoot copies the actual strict treatment command request.
+
+Exact command+pending+typed history catalog coalesces one full held request. Real lease
+turnover plus fresh Export automatically restores one request/reservation; the accepted
+non-authorizing reader observes ConfirmedHeld and null publication fingerprint. Changed row
+alters ONLY nested copied resource quantity under original seals. The targeted nested parser
+rejects that candidate BEFORE it enters coalescing; other valid command candidates may still
+coalesce. Invalid catalog/export grants no accepted recovered authority/new claim. Complete
+physical bytes/source/original/command/wave, energy2, health5, untreated wound/create history
+and zero new treatment spending/publication are retained outside that authored copied field.
+
+This is COMPONENT repair codec/catalog/coalescing/current-owner recovery only. There is NO
+production caller of ComposePendingRoot: live wound repair retains its retry obligation in
+memory and publishes only GM-safe repair requests. Live submittedTreatmentRequests persistence
+and connected repair restoration remain OPEN; no mixed ordinary acceptance/live writer/full
+FR063 qualification is claimed. Public Mortal/afterlife/GM grammar, validators, production
+owners/readers and all previously qualified fixture bodies remain unchanged; no GM update needed.
+
+Static ownership rehome: old ordinary owner5methods8cases; historical preparation8/13/4 and
+remainder7/12/3 exclude pending2. Dedicated new owner1method2cases1descriptor budget5/default10,
+not added to old ordinary selections. Catalog728/11568 is static expected inventory, NOT discovery.
+ROOT-private fresh BOTH4methods5cases2descriptors is anticipated ZERO execution; unit3 only for
+build/discovery. Callback default-null old QTE paths and protected ce955 remain byte-exact.
+All new SOURCE review/build/discovery/catalog/runtime checks UNRUN; publication/recovery and
+mandatory independent actual AstraXHigh SOURCE/FIXTURE/SELECTION precede first actual2/EVIDENCE.
+Original15/fullmandatory pending persistence/newroot/immediate own-Mortal UI/FR063/T070/#1536
+and all parent checkboxes remain OPEN. GM #1557 A/B stays separately tracked; no main/CI/Git,
+provider/model/Windows/journal/C5 broad execution or issue closure in this block.
+
 ## FR-063 ordinary13 scoped evidence accepted; pending2 next — 2026-10-13
 
 Independent retained actual AstraXHigh EVIDENCE/status ACCEPTED at0005e4ff28bd63c5374cb4734942ba480b30d10d:

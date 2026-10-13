@@ -246,7 +246,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         string? postHandoffMutation = null, string mode = "ordinary", bool pauseAtAction = false, bool bounded = false,
         bool physicalDeclaration = false, int physicalMaximum = 2, bool physicalOnlyUnselected = false,
         Action? observeQteAction = null, Action<AgentConsoleLiveInputSource>? retainLiveInput = null,
-        bool physicalSiblingDamage = false)
+        bool physicalSiblingDamage = false, Func<FileSystemManager, Task>? configureBeforePreparation = null)
     {
         var run = new QteStoryRun();
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
@@ -263,6 +263,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await _fs.WriteFileAtomicAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath, authority.CanonicalAuthorityJson!);
         if (preacceptMutation == "change") await new StoryService(_fs, NullLogger<StoryService>.Instance).AppendTurnAsync(41, "Mortal World", 2, "Предыдущий ход.", "До обвала.");
         if (bounded) await SeedQteStoryBoundedReactionAsync();
+        if (configureBeforePreparation is not null) await configureBeforePreparation(_fs);
         foreach (var path in new[] { ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
                      WoundIdentityState.StatePath, WoundHistoryState.HistoryPath, MortalWoundOpportunityReceiptState.StatePath, AcceptedMechanicsPlan.WoundCommandPath })
             run.ProtectedBefore[path] = await _fs.ReadFileBytesAsync(path);

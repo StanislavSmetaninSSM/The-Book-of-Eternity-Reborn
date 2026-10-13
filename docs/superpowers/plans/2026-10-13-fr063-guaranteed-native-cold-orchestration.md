@@ -414,3 +414,50 @@ static catalog727/expected11568, not discovery. ROOT-private BOTH5/9/3 is zeroex
 unit3 build/discovery only. Qualified12/13 ordinary scopes are retained across checkpoints;
 late1, mandatory genuine pending2, newroot/UI/fullFR063/T070/#1536 remain OPEN. This private
 reader changes no GM/public/durable/gameplay contract; no docs/examples or old promises waived.
+
+## Genuine pending-wave persistence responsibility rehome — 2026-10-13
+
+
+Base e8bbbf3948637bc4dbd1153be68673e0653b0f42; retained sole Sol author, SOURCE-only.
+Reader SOURCE6f1eb1bf and six-case EVIDENCEc466/0005 are accepted; narrow ordinary13
+is qualified across checkpoints, reader negative5 separately. Those scopes are retained
+without repeat. Original misplaced pending2 failures and all preceding checkpoints below
+remain historical evidence; no exact old-fixture RED-to-GREEN equivalence is claimed.
+
+The obsolete ordinary pending pair is replaced by one dedicated two-row component theory.
+A labelled effect-free canonical wound/provider/energy2 bootstrap and empty NPC trade receipt
+shape are settled BEFORE genuine original QTE42. Actual declared physical maxII produces
+Damage5/health10->5 and one occurrence; actual Stage43 preserves the same physical G and
+creates a genuine new request/token. The qualified shared 160->155 source helper is unchanged;
+new local source assertions retain its story/resource/history/terminal/cleanup checks at10->5.
+The existing homogeneous distributor confirms a complete guaranteed request without common
+publication. A read-only QTE adapter refusal for severityIII above sealedII yields an actual
+source-bound private repair context/nonempty packet wave under the SAME real43 tuple.
+Existing closed ComposePendingRoot copies the actual strict treatment command request.
+
+Exact command+pending+typed history catalog coalesces one full held request. Real lease
+turnover plus fresh Export automatically restores one request/reservation; the accepted
+non-authorizing reader observes ConfirmedHeld and null publication fingerprint. Changed row
+alters ONLY nested copied resource quantity under original seals. The targeted nested parser
+rejects that candidate BEFORE it enters coalescing; other valid command candidates may still
+coalesce. Invalid catalog/export grants no accepted recovered authority/new claim. Complete
+physical bytes/source/original/command/wave, energy2, health5, untreated wound/create history
+and zero new treatment spending/publication are retained outside that authored copied field.
+
+This is COMPONENT repair codec/catalog/coalescing/current-owner recovery only. There is NO
+production caller of ComposePendingRoot: live wound repair retains its retry obligation in
+memory and publishes only GM-safe repair requests. Live submittedTreatmentRequests persistence
+and connected repair restoration remain OPEN; no mixed ordinary acceptance/live writer/full
+FR063 qualification is claimed. Public Mortal/afterlife/GM grammar, validators, production
+owners/readers and all previously qualified fixture bodies remain unchanged; no GM update needed.
+
+Static ownership rehome: old ordinary owner5methods8cases; historical preparation8/13/4 and
+remainder7/12/3 exclude pending2. Dedicated new owner1method2cases1descriptor budget5/default10,
+not added to old ordinary selections. Catalog728/11568 is static expected inventory, NOT discovery.
+ROOT-private fresh BOTH4methods5cases2descriptors is anticipated ZERO execution; unit3 only for
+build/discovery. Callback default-null old QTE paths and protected ce955 remain byte-exact.
+All new SOURCE review/build/discovery/catalog/runtime checks UNRUN; publication/recovery and
+mandatory independent actual AstraXHigh SOURCE/FIXTURE/SELECTION precede first actual2/EVIDENCE.
+Original15/fullmandatory pending persistence/newroot/immediate own-Mortal UI/FR063/T070/#1536
+and all parent checkboxes remain OPEN. GM #1557 A/B stays separately tracked; no main/CI/Git,
+provider/model/Windows/journal/C5 broad execution or issue closure in this block.

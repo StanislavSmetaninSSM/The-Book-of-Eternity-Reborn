@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-13T20:49:09.792323+00:00",
+  "frozenBase": "e8bbbf3948637bc4dbd1153be68673e0653b0f42",
+  "branch": "1557-gm-doc-modularization-cloud-20261013",
+  "verifiedRemoteSHA": "e8bbbf3948637bc4dbd1153be68673e0653b0f42",
+  "worktree": "/workspace/1557-gm-doc-modularization-cloud-20261013",
+  "worktreeClean": true,
+  "sameCloudEnvironment": true,
+  "newEnvironmentCreated": false,
+  "primaryBranchUnchanged": "1536-wound-b2-cloud-20261012",
+  "primaryFeatureContextUnchanged": "1553",
+  "isolatedFeatureContext": "inherited1553; future1557setupONLYisolated beforeGMAauthoring",
+  "implementation": "UNSTARTED; noGMcontentmoves/source/test/runtime",
+  "sourceWriter": "sameSol sequencedafterpending2FINALSTOPPED",
+  "frozenGMPins": 33,
+  "expectedDrift": "catalogFRnodesonly; allGMbodies/daemon/prefixmatched",
+  "remainingGates": "isolatedSpecmetadata/setup;sourceTestauthoring;finaleditedASTprefix/packageDLLpins; actualA SOURCE/EVIDENCE; BafterAacceptance"
+}

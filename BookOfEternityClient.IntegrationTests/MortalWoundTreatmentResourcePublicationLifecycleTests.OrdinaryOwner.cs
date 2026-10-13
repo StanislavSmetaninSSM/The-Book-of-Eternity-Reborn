@@ -9,61 +9,6 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph(bool changed)
-    {
-        await using var held = await CreateHeldTreatmentPipelineContextAsync(
-            fault: null, withRollbackAuthority: true, composePublication: false,
-            configureBeforePreparation: PrepareGuaranteedNativeNpcReceiptShapeAsync);
-        using var owned = new CleanupOwnedFixture(held.Root, line => _directGachaOutput?.WriteLine(line));
-        try
-        {
-            var command = ParseJsonObjectBytes(Assert.IsType<byte[]>(await held.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath)));
-            var request = command["commands"]![0]!["authority"]!["request"]!.DeepClone().AsObject();
-            var pending = ParseJsonObjectBytes(Assert.IsType<byte[]>(await held.ReadFileBytesAsync(WoundAcceptedTurnSnapshotContract.PendingResolutionPath)));
-            foreach (var field in new[] { "sessionId", "requestId", "snapshotToken" })
-                pending[field] = command[field]!.DeepClone();
-            pending["submittedTreatmentRequests"] = new JsonArray(new JsonObject
-            {
-                ["operationKey"] = held.Request.Coordinates.OperationKey,
-                ["attemptId"] = held.Request.Coordinates.AttemptId,
-                ["requestFingerprint"] = held.Request.RequestFingerprint,
-                ["request"] = request
-            });
-            if (changed) request["resourceAuthority"]!["claims"]![0]!["quantity"] = 1;
-            await held.FileSystem.WriteFileAtomicAsync(held.Lease,
-                WoundAcceptedTurnSnapshotContract.PendingResolutionPath, pending.ToJsonString());
-            Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(held.FileSystem, held.Lease));
-            var before = await CaptureOrdinaryTreatmentOwnerBytesAsync(held);
-            await held.ReleaseLeaseAsync();
-            var (engine, snapshot) = await CreateHeldTreatmentValidationEngineAsync(held);
-            var issues = await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(engine,
-                "ValidateResourceAndMortalGuaranteedTreatmentAsync", true, snapshot, HeldTreatmentPipelineContext.Turn);
-            WritePhysicalInjuryDiagnostic("fr063_component_ordinary_pending_duplicate", new
-                { changed, Issues = issues, Before = MortalArchiveDigests(before), After = MortalArchiveDigests(await CaptureOrdinaryTreatmentOwnerBytesAsync(held)) });
-            await held.AcquireLeaseAsync();
-            if (changed)
-            {
-                Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error);
-                Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(held.FileSystem, held.Lease));
-                await AssertOrdinaryTreatmentOwnerBytesAsync(held, before);
-            }
-            else
-            {
-                Assert.Empty(issues);
-                AssertOrdinaryTreatmentOwnerPlan(held);
-                await held.ReleaseLeaseAsync();
-                Assert.Equal(AcceptedTurnValidationDisposition.Accepted,
-                    await InvokePrivateAsync<AcceptedTurnValidationDisposition>(engine,
-                        "ValidateAcceptedTurnOutcomeWithRepairLoopAsync", "ordinary duplicate component", snapshot, null, 42, null));
-                await AssertOrdinaryTreatmentOwnerPublishedAsync(held);
-            }
-        }
-        finally { await held.ReleaseLeaseAsync(); }
-    }
-
-    [Theory]
     [InlineData("request_quantity")]
     [InlineData("resolved_result")]
     public async Task GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper(string mutation)
