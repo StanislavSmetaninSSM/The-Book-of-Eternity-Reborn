@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (ARCHIVE4 GENERATION-PARENT FAILURE; CAUSE DIAGNOSIS; DURABLE4 UNRUN)
+## Current T070 first vertical — 2026-10-13 (ARCHIVE ORDINARY BOOTSTRAP SOURCE READY; RETRY4 + DURABLE4 UNRUN)
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `3792d368ba5ab3e50c7703b46060ea7547080262`. Fresh BOTH preparation33/78/14 succeeded
@@ -34,18 +34,39 @@ true. Frozen32 artifacts preserve native preparation/actual/TRX/child afterimage
 and retained-catalog provenance. Native missing-parent exceptions are project results,not tool security
 refusals. No real tool security denial was observed; historical helper warning remains unresolved.
 
-Archive history now three actual invocations/12 executions/0 PASS/12 FAIL including retries; these
-are successive prerequisite boundaries,not successful qualification. New failure EVIDENCE PENDING;
-prior d9 target-directory failure EVIDENCE accepted and immutable. Durable4 remains UNRUN. Do not
-start a fourth setup guess or relax admission. READONLY lifecycle/generation/publisher diagnosis by
-the retained consult must distinguish a real ordinary target-generation precondition from an absent-
-generation publication defect. No correction or additional runtime released before concrete source
-proof and bounded independent SOURCE review. Existing fresh-root/archive authority requirements and
-SAME-N43 durable branch stay strict; no raw mkdir/generation,source copy,new signing key,archive
-transport exception or architecture change. Finite68/baselines retain status without repetition.
-Next: publish/recover this failure,focused EVIDENCE and complete the READONLY cause diagnosis;
-then only the concrete minimal authorized fix/preparation/failed archive4 retry. Parents remain OPEN.
-Earlier checkpoint statuses below are historical and superseded by this actual result.
+Archive history remains three actual invocations/12 executions/0 PASS/12 FAIL including retries;
+these are prerequisite boundaries,not qualification. Immutable32-artifact generation-parent failure
+EVIDENCE/status ACCEPTED by actual retained Astra XHigh at
+`960164fb69cbca81398cf58bb425ab5c8df097f9`; prior failures stay accepted/separate. Durable4 UNRUN.
+
+Retained actual Astra High READONLY consult pinned3792 and ROOT source trace establish the missing
+ORDINARY client startup step: console GameEngine205 BEFORE menu216 and WebUi/LocalWebUiHost95 both
+call public StateManager.BootstrapLocalStorageAsync. StateManager50-64 ensures directories and
+atomically publishes config plus generation through existing TrustedLocalStorage127-147;203-207
+creates validated physical parents. Config belongs at game_session/config.json; generation at
+.boe_runtime/session-generation/current.json. Constructor/directories-only fixture omitted that
+startup. Lower-level LoadNamespace214-217 explicitly supports an absent current.json FILE,while
+NamespaceScratchPath509-516 requires its physical PARENT. Existing absent-generation regression
+removes the file after initialized storage. Bare unbootstrapped-target loader limitation is recorded
+separately; current evidence does not justify a generic storage/namespace guard/publisher patch.
+
+Current minimum archive NEW-root fixture correction awaits the created engine's OWN StateManager.
+BootstrapLocalStorageAsync completely after engine construction and BEFORE private Load,outside any
+generation-bound wrapper. Existing directories-only EMPTY game_session witness stays BEFORE bootstrap.
+Separate pre-load native witness records returned G0,exact config-only canonical path/hash inventory,
+local-generation path/length/hash and actual serialized GenerationId==G0; no wound/source/request/
+snapshot/canonical mechanics are seeded. G0 differs from source parent generation; actual typed
+committed Load/rebind must replace it with G1 distinct from BOTH G0 and source parent. Witness also
+enters child result. No raw mkdir/generation,bare GetOrCreate bootstrap,new key/source copy/archive
+transport exception/production or SaveLoad policy change. SAME physical durable branch and all other
+eight-case/late-oracle/cleanup/host/catalog/selector/budget bytes remain unchanged.
+
+Correction SOURCE READY for ROOT publication/recovery and focused actual Astra XHigh SOURCE gate;
+corrected build/discovery/archive4/runtime UNRUN. Next fresh BOTH33/78/14,exact archive1/4/1 budget5/
+default10,retained accepted catalog717/11553,then retry FAILED4 only/freeze EVIDENCE before durable4.
+No finite68/baseline reruns. T070/FR-063/parent/#1536 remain OPEN; frozen packets/history/checklists
+unchanged. Earlier source-ready/failure statuses below remain historical. No author projectcommands/
+build/runtime/git operations or new product decision.
 
 Historical ordinary empty-target initialization correction:
 

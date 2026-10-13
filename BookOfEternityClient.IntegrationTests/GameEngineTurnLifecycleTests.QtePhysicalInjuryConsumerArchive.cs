@@ -212,10 +212,27 @@ public sealed partial class GameEngineTurnLifecycleTests
         Dictionary<string, byte[]?>? loaded = null;
         Dictionary<string, byte[]?>? after = null;
         object? profileProjection = null;
+        object? targetBootstrap = null;
+        string? bootstrapGeneration = null;
         try
         {
             Assert.NotEqual(Environment.ProcessId, context["parentProcessId"]!.GetValue<int>());
             AssertMortalArchiveChildBinaries(context);
+            bootstrapGeneration = await GetPrivateField<StateManager>(run.Engine, "_stateManager").BootstrapLocalStorageAsync();
+            var bootstrapFiles = Directory.GetFiles(files.GameSessionPath, "*", SearchOption.AllDirectories)
+                .ToDictionary(path => Path.GetRelativePath(files.GameSessionPath, path).Replace('\\', '/'),
+                    path => MortalArchiveHash(File.ReadAllBytes(path)), StringComparer.Ordinal);
+            var localGenerationBytes = File.ReadAllBytes(files.SessionGenerationPath);
+            targetBootstrap = new
+            {
+                BootstrapGeneration = bootstrapGeneration, CanonicalFiles = bootstrapFiles,
+                ConfigPath = files.ResolvePath("config.json"), LocalGenerationPath = files.SessionGenerationPath,
+                LocalGenerationLength = localGenerationBytes.LongLength, LocalGenerationSha256 = MortalArchiveHash(localGenerationBytes)
+            };
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "qte_archive_child_ordinary_bootstrap", Observation = targetBootstrap }));
+            Assert.Equal(new[] { "config.json" }, bootstrapFiles.Keys.OrderBy(path => path, StringComparer.Ordinal));
+            Assert.Equal(bootstrapGeneration, JsonNode.Parse(MortalArchiveText(localGenerationBytes))!["GenerationId"]!.GetValue<string>());
+            Assert.NotEqual(context["parentGeneration"]!.GetValue<string>(), bootstrapGeneration);
             var archivePath = context["archivePath"]!.GetValue<string>();
             Assert.Equal(context["archiveSha256"]!.GetValue<string>(), MortalArchiveHash(File.ReadAllBytes(archivePath)));
             load = await InvokePrivateAsync<LoadReplacementResult>(run.Engine, "LoadSelectedSaveAndRebindRuntimeAsync", archivePath);
@@ -224,6 +241,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Null(load.Failure);
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync()) generation = files.GetOrCreateSessionGeneration(lease);
             Assert.Equal(load.EstablishedGeneration, generation);
+            Assert.NotEqual(bootstrapGeneration, generation);
             Assert.NotEqual(context["parentGeneration"]!.GetValue<string>(), generation);
             var loop = GetPrivateField<GameLoop>(run.Engine, "_gameLoop");
             Assert.Equal(context["source"]!["sessionId"]!.GetValue<string>(), loop.SessionId);
@@ -296,7 +314,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 processId = Environment.ProcessId, scenario, actualLoadAndRebind = load?.Disposition == LoadReplacementDisposition.Committed && !load.ContinuationBlocked,
                 Load = load is null ? null : new { load.Disposition, load.EstablishedGeneration, load.ContinuationBlocked, Failure = load.Failure?.ToString() },
-                BinaryPins = MortalArchiveBinaryPins(), FreshFactory = true, targetInitialization, profileProjection, generation,
+                BinaryPins = MortalArchiveBinaryPins(), FreshFactory = true, targetInitialization, targetBootstrap, bootstrapGeneration, profileProjection, generation,
                 actualTurn = GetPrivateField<GameLoop>(run.Engine, "_gameLoop").TurnNumber,
                 failure = failure?.ToString(), Run = MortalArchiveRunObservation(run), Loaded = loaded is null ? null : MortalArchiveDigests(loaded),
                 After = after is null ? null : MortalArchiveDigests(after), Receipt = await files.ReadFileAsync(MortalWoundOpportunityReceiptState.StatePath),
