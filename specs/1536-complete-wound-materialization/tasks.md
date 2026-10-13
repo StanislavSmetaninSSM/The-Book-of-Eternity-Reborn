@@ -5,7 +5,50 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE ORDINARY BOOTSTRAP SOURCE READY; RETRY4 + DURABLE4 UNRUN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE4 COMMITTED LOAD; CHILD DEPENDENCY FAILURE; DURABLE4 UNRUN)
+
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
+`d925ade8c6dc38c88ddcf1bbbfdd80bf94f8b534`. Fresh BOTH PlanOnly33/78/14 succeeded
+145.4512837s,88/35 warnings,0/0 errors,0 execution; exact archive1/4/1 took2.5352596s,
+0 execution. Prior accepted219 catalog717/11553 remains retained unchanged.
+
+[Archive4 child dependency failure](./recovery/qte-physical-consumer-archive-child-dependency-failure-20261013/manifest.json)
+freezes actual `20261013-083753-157-534224-0b87fb97e3ab4eb696434f27f5d1e938-categories`,
+source/compiled925:4 executed/0 PASS/4 FAIL,1 method/4 cases/1 complete descriptor,52.1416879s,
+exit1,no timeout/skips/duplicates. Ordinary bootstrap config-only/G0 witnesses now pass all four.
+All four actual typed Loads COMMIT with !ContinuationBlocked,Failure=null; new physicalG1 differs
+from bootstrapG0 and original source generation. Actual rebind gives story-derived loop42(pending)
+or43(consumed). This qualifies those prerequisites only,not complete archive/newturn behavior.
+
+All four fail afterward at Archive.cs255 when the fixture's static paths initialize:
+TypeInitializationException/FileLoadException requested System.Collections.Immutable Version9.0.0.0
+through NativeHostScenarioDriver's default AssemblyLoadContext resolver. Immutable archive-entry
+comparison and genuine NEW43/44 are unreached. Source diagnosis: integration deps declares the
+existing9.0 package/DLL; standalone TestSupport deps does not. The already-loaded conflicting
+assembly version was not captured natively,so no exact loaded-version inference is qualified.
+Existing OriginalOwnedLeaseCloseTests.EngineRollback255-256 launches this support DLL with dotnet
+exec plus the integration runtimeconfig/depsfile. No package/version/environment installation or
+new custom load framework is needed; no production SaveLoad/wound defect is established here.
+
+ROOT matched167 source/10 fresh binary PRE/POST pins BEFORE metadata,22 top-level observations,
+four native results/G0-G1 bindings/actual child PIDs. Four SOURCE and eight nested child loaded-target/
+aux-factory receipts are removed=true/failure=null,all12 roots physically absent; runner-owned
+cleanup true. Frozen32 artifacts preserve actual/preparation/TRX/child failure/binding/source/binary
+readbacks and retained-catalog provenance. Source package identity is diagnosis,not an earlier
+package-DLL PRE/POST pin or full transport/newturn qualification claim.
+
+History four archive invocations/16 executions/0 PASS/16 FAIL includes retries. Current EVIDENCE
+PENDING; prior960/d9/ee025/766d accepted failures remain immutable. Durable4 UNRUN; finite68 and
+baselines retain acceptance without repetition. Next: publish/recover,focused EVIDENCE and bounded
+sole-writer launch using the SAME existing dotnet-exec/integration dependency context pattern for
+only these two new modes,with explicit dependency binary/manifest readback. Preserve actual Save/
+Load/bootstrap/newturn/replay/receipt/history/tick/cleanup oracles and existing45s kill/join/log.
+Focused SOURCE and matching fresh preparation precede only failed archive4 retry. No dependency
+updates/global NativeHost behavior/custom framework/production changes/new access/keys/providers.
+Full archive/durable/T070/FR-063/parent/#1536 remain OPEN; freeze/review archive outcome beforedurable4.
+Earlier checkpoint statuses below are historical and superseded by this actual result.
+
+Historical ordinary bootstrap correction checkpoint:
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `3792d368ba5ab3e50c7703b46060ea7547080262`. Fresh BOTH preparation33/78/14 succeeded
