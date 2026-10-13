@@ -5,7 +5,64 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (FORMAT-1 OBSERVER SOURCE READY; RETRY8 + UNRUN8)
+## Current T070 boundary — 2026-10-13 (BOUNDED REPAIR 3 PASS / 5 FAIL; COMPATIBILITY/WORKER 8 UNRUN)
+
+Retained actual Astra XHigh focused SOURCE/FIXTURE/SELECTION ACCEPTED exact
+`c4bc8714d9fed5c7d25401d63ec8a7b3c6dd41ed`; prior2c59 Important format-1 mismatch was corrected
+BEFORE any project execution. The [format-1 bounded repair partial packet](./recovery/qte-physical-consumer-repair-bounded-partial-20261013/manifest.json)
+freezes actual `20261013-052114-002-480094-ed980702a2184d2fb37f5154a348775f-categories`,
+source/compilec4bc:1 method/8 cases/1 descriptor,8 executed/3 PASS/5 FAIL,88.5650106s,
+complete,exit1,no timeout/skips/duplicate IDs. No earlier passing cohort repeated.
+
+All original assertions PASS for severity/location/resource with siblingDrift=true: one actual
+MAIN-GM repair packet, full-turn resubmission metadata and exact original request/manifest/authority
+bytes, bounded correction authored with deliberate retained-description drift, refusal/loop42/no
+receipt/identity/completion marker and transient cleanup. Resource row captured the real issued
+client command before revocation. These three positives are retained pending EVIDENCE,not automatically
+repeated. They do not establish successful exact repair or narration repair.
+
+Exact severity/location/resource rows reach a second actual PRESENT repair request; the original
+Assert.Equal(0,repairCount++) fails expected0/actual1,recording responderFailure and final assertion
+failure at Repair.cs59. Last native packet still carries old rejection codes: severity
+wound_severity_above_opportunity; location mortal_qte_wound_location_kind_forbidden and
+wound_response_location_kind_forbidden; resource wound_consequence_resource_bound_missing.
+Narration exact/drift rows see no PRESENT repair packet and fail Repair.cs62 expectedrepairCount1/
+actual0. Underlying causes for these TWO groups are UNPROVED by the packet; READONLY source/native
+order/cache/restore/repair-admission diagnosis is running. No count increase,re-response,authority/
+private-context/retained-field/oracle weakening or production correction is released.
+
+New actual native RepairPublications establish format1 committed DELETE/WRITE distinction:
+passing construction drifts see FALSE/TRUE/FALSE; failed construction exact rows FALSE/TRUE/FALSE/TRUE;
+narration rows only FALSE. Declared deletion has null bytes/hash; every observed PRESENT request
+passed exact physical/declaration byte equality,derived length and SHA before packet parsing.
+These observations validate the corrected observer; they do not retroactively identify the precise
+oldf589 callback/caller. EngineFailure=null,loop42,acceptedfalse for all rows. Later successful
+exact/narration repair acceptance/receipt/publication assertions are UNREACHED. No blanket proper
+production causal RED or complete MAIN-GM repair qualification is claimed.
+
+ROOT checked153 source/10 fresh binary PRE/POST pins BEFORE metadata,all eight native results/full
+TRX/stdout/32 observations,eight strict cleanup receipts removed=true/failure=null with all roots
+physically absent; runner-owned tree/runtime cleanup succeeded. Frozen30 artifacts retain all pins/
+raw InitialReady/repair packets/commands/member observations and preparation/actual originals.
+Fresh BOTH PlanOnly `20261013-051805-881-479633-8db98521ec3541b3b028a4c5de077035-categories` built
+integration+unit with85/35 warnings,0 errors,30 methods/70 cases/12 descriptors,142.3177913s,
+0 executed. ExactPlan1/8/1 took2.5853197s,0 executed. Catalog714/11550 remains unchanged preceding
+accepted discovery; no rerun required by focused gate. Preparation/catalog are not executed tests.
+Critical TrustedLocalFileImage serializer source was newly pinned/recovered through GitHub sparse
+readback; no local file/cached binary was fed into recovery. Historical packets remain immutable.
+
+Controls ten actual invocations report95 executions/67 PASS/28 FAIL,including repetitions. Five
+failed repair cases remain unqualified; compatibility5/worker3 remain5 methods/8 cases/2 descriptors/
+two categories/default8 UNRUN. Complete controls/consumer/archive/newroot/fresh-process/T070/FR-063/
+parent/#1536 remain OPEN. Next: publish/recover frozen partial evidence and mandatory EVIDENCE/status
+gate,then only concrete source-proven corrections with SOURCE/FIXTURE/SELECTION before matching
+preparation/runtime. Retry should isolate only five failed rows if source changes permit; the three
+new positives/earlier passing qualifiers are excluded absent dependency justification. Archive8 stays
+retained,unwritten/UNRUN/on hold. Protected causal Facts/ce955/checklists/global CI/runner/selection/
+budgets/GM grammar/old evidence unchanged. Current EVIDENCE is PENDING; no new scope decision needed.
+
+Historical format-1 observer SOURCE READY checkpoint:
+
 
 Retained actual Astra XHigh EVIDENCE/status ACCEPTED at
 `f589bd12849126e32afad438672d553d3196d73c` for the
