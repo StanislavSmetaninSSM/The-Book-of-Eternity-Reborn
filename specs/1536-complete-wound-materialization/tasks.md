@@ -5,7 +5,47 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ZIP DELTA CORRECTION SOURCE READY; ARCHIVE RETRY + DURABLE4 UNRUN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE4 TARGET INITIALIZATION FAILURE; DURABLE4 UNRUN)
+
+Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
+`d93d6c468eb15b0f1d6a2b44fbaa7e563749f367`. Fresh BOTH PlanOnly33/78/14 succeeded
+134.0311268s,88/35 warnings,0/0 errors,0 execution; exact archive PlanOnly1/4/1 took2.5716541s,
+0 execution. Prior accepted219 catalog717/11553 is retained unchanged; reviewer required no repeat.
+
+[Archive4 target-initialization failure](./recovery/qte-physical-consumer-archive-target-initialization-failure-20261013/manifest.json)
+freezes actual `20261013-075448-036-515447-191233b7911e453196c3e815c55b8939-categories`,
+source/compiled93:4 executed/0 PASS/4 FAIL,1 method/1 complete descriptor,50.6027148s,exit1,
+no timeout/skips/duplicate IDs. All four actual Save calls now prove exactly one newly created ZIP
+and unchanged hashes of three existing seeded ZIPs. Original ZIP entries/hash/exclusion assertions
+pass before child. Four distinct actual child PIDs match parent integration/support binary pins.
+Actual typed Load is attempted in all four and returns NotLoaded,Failure=InvalidDataException:
+missing target loaded-session-root/game_session during CaptureLoadReplacementNamespace.
+No committed load/rebind, replacement generation or genuine NEW43/44 was reached.
+
+The native failure points to FileSystemManager.LoadNamespace.cs65 requiring GameSessionPath as
+an ordinary directory. FileSystemManager constructor does not initialize it; existing ordinary
+SaveLoadServiceTests29-30 call EnsureDirectoryStructure. The new archive child omits that same
+initializer. This is a target fixture setup prerequisite failure,not a proved SaveLoad production
+policy defect,missing consumer publication RED or archive qualification. Do not relax namespace
+admission,copy a session/snapshot or change the archive transport to avoid the guard.
+
+ROOT verified162 source/10 freshd93 binary PRE/POST pins BEFORE metadata,all four native results,
+22 observations/save catalogs/typed child failures. Four SOURCE receipts and eight nested child
+loaded-target/aux-factory receipts report removed=true/failure=null; all12 roots physically absent.
+Runner-owned process/runtime cleanup is true. Cleanup is qualified within that ownership scope;
+load/newturn is UNQUALIFIED. Frozen31 artifacts retain exact source/binary/preparation/actual/TRX/
+child diagnostics and retained-catalog provenance. No successful archive case is implied.
+
+Archive history now two invocations/eight executions/0 PASS/8 FAIL including retries. This failure
+EVIDENCE is PENDING; first ee025 fixture-selection failure EVIDENCE accepted and immutable. Durable4
+UNRUN; finite68/baselines remain accepted without repetition. Next: publish/recover,then sole-writer
+minimal ordinary target EnsureDirectoryStructure only in new-root archive child,focused independent
+EVIDENCE/SOURCE and fresh preparation/retry failed archive4. Preserve strict Load/rebind/newrequest/
+original-source/receipt/history/legitimate NEW44 tick/durable mechanics oracles. No production patch,
+new key/architecture/transport exception. Archive4 freeze/EVIDENCE before durable4; parents remain OPEN.
+Earlier candidate/failure statuses below are historical and superseded by this actual checkpoint.
+
+Historical ZIP-selection correction checkpoint:
 
 Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `219917e1ba5140f9bdaba22ce8115335ad5b6240`. Corrected fresh BOTH-project PlanOnly
