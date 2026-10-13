@@ -9,7 +9,7 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
-## FR-063 evidence accepted; GM specification ready for approval — 2026-10-13
+## FR-063 connected SOURCE candidate; GM v1 approved — 2026-10-13
 
 Independent retained actual Astra XHigh accepted the third FR-063 evidence at
 `f32e14a080e9f1a3ba800dcaa8055e95d3cc6a6c`: the genuine ordinary caller advances
@@ -26,36 +26,58 @@ ordinary path and is not called by the late-terminal branch. Correct its test us
 without adding a production hook or relaxing spend/history/typed receipt/care/hold/
 second-idle oracles. No additional diagnostic run is needed to establish this RED.
 
-Task2 first source midpoint is WIP on base1794470448be75a66227b1988a3cc4262f82aa9b.
-The native child records the unreachable checkpoint separately; actual completion
-is set only after the unchanged strict story/spend/history/receipt/care/finalized-hold
-publication assertions. Second-idle byte identity and all source/Ready/input/cleanup
-prerequisites remain unchanged. No new runtime outcome is claimed.
+Task2 connected source candidate is authored on metadata-only basea966bd277d58bbdd71972a2f213f31fac28990f2;
+its tests/oracle midpointb3978aee was published/recovered first. SOURCE/FIXTURE/SELECTION,
+compile, discovery, catalog and every new runtime control remain UNRUN/pending. No
+new-root authoring or qualification, public treatment grammar/cost change, GM document
+move or immediate-guidance implementation is included.
 
-Four component methods/six cases are authored first in the new OrdinaryOwner partial:
-exact versus changed command/pending duplicate, nested request quantity/seal versus
-resolved-result tamper, actual current required capability loss, and existing
-wound_post_seal compensation/full-held-request/original-fence/exact-retry proof.
-They prepare genuine original42/confirmed energy2 requests with composePublication:false
-and invoke the ordinary owner wrapper with the actual snapshot and turn. No helper
-Restore/Compose prelude grants their plan. The new narrow owner/selector has budget5/
-default10, one component descriptor; static catalog722/11565, not discovered inventory.
-Existing native1/1/1 remains separate. Conditional reflected compatibility3 rows and
-combined preparation selection are still unwritten pending the actual Core API diff.
+The actual accepted loop now passes its fresh snapshot/expected turn to a distinct
+frame-aware owner entry. The one-bool QTE wrapper, its reflected existing consumer and
+its second diagnostic caller remain available unchanged in signature. Only after raw
+upstream/resource quartet/source/current-owner admission, under the same canonical
+lease, the callback reuses read-only wound/rollback and effect/source intake, proves
+empty concurrent mechanics and current/original agreement, then performs fresh
+ExportCurrent -> RestorePersistedTreatmentRequests -> ONE existing guaranteed reducer
+-> exact full request/result/scene agreement -> unchanged SIX-argument treatment
+publisher. Its issued common cache rejoins retained validation and the existing
+normalizer/take/common publication/known-or-uncertain compensation once. No generic
+second reduction or separate writer occurs; warm retained and finalized owners remain.
 
-The admitted bridge and actual mechanical-envelope mapping remain UNWRITTEN. Source
-inspection shows BuildGameResponseFromFiles is a display projection; the existing
-six-argument publisher accepts only supported skill/item mechanical fields. Passing
-that display response would refuse; silently dropping actual mechanics is prohibited.
-Continue with an exact admitted command-member envelope and explicit unsupported-work
-refusal under the same lease, preserving the existing publisher and warm retained gate.
-The callback must close over actual snapshot/turn after resource owner/quartet admission
-and perform fresh ExportCurrent -> RestorePersistedTreatmentRequests -> one guaranteed
-reducer -> six-argument publisher/common cache/revalidation. No default publisher seam
-has been expanded. All Task2 SOURCE review/build/discovery/catalog/runtime checks are
-UNRUN. ROOT publishes this bounded tests/oracle WIP before the remaining bridge work.
-Same-root GREEN/controls precede separate new-root authoring; full FR063/T070/#1536 OPEN.
-Previously accepted cohorts, immutable evidence and parent checkboxes remain unchanged.
+The first contour supports proved-absent raw resource/effect/QTE drafts and unchanged
+mechanical images only. It refuses staged party/pending/capacity/terminal/owner/system
+work and unsupported changed skill/item/source/clock inputs. The empty mechanical
+GameResponse is derived from this explicit intake proof, never stripped from the display
+response or inferred from canonical arrays. Existing canonical periodic effects still
+run in the sole effect pass; native proof now requires the existing health10->7/one
+Damage42 amount3 alongside confirmed energy2->0. Stabilization changes care/recovery
+anchors without removing that owned consequence. A fixed shared treatment guard
+inventory captures exact current bytes/absence BEFORE common fingerprints/cache, so
+late introduced inputs fail revalidation. Covered original roots are read by the official
+Reader; observed wound absence/rollback coverage remains strict. Uncovered optional
+current absence is only a concurrent-input exclusion, never canonical pristine/source
+authority. Guardian narrative markers retain ordinary cleanup, with effective resource
+outcomes checked by their existing owner and complete current bytes in the fence.
+
+Finite authored inventory: native1 method/1 case; six component methods/10 cases;
+exact reflected Core compatibility1 method/3 old rows (only sixth-to-seventh null argument
+migration); named existing warm fence sentinel1 method/1 case. Preparation selection is
+9 methods/15 cases/4 integration descriptors, budgets5+5+2+2/default19; controls remainder
+excludes the native case after GREEN:8/14/3/default14. ROOT may add a minimal relevant
+unit owner privately for fresh BOTH preparation; these authored counts are integration
+selection, not runtime discovery. Static catalog724/11567 expected; no new discovery.
+Old721 nodes/global/native selectors and all accepted cohorts remain protected.
+
+Component cases cover exact/changed full pending duplicate, nested quantity and real
+resultCategory payload tamper under original seals, actual current capability drift,
+existing post-seal exact compensation/hold/fence/retry, valid concurrent resource/effect/
+party work refusal and absent guard file introduced across lease turnover. The effect
+row's lawful public skill-definition baseline is before its genuine original; no accepted
+authority is manufactured. Stale capability may be refused by original/current guards
+before export; no unobserved runtime reason is claimed. Four newly added risk cases
+have no prior RED claim. Current native hook is observational only; completion follows
+all strict publication oracles. First native GREEN must freeze/review before remainder;
+no passing unrelated cohort repeat. Full FR063/T070/#1536 and parent checkboxes OPEN.
 
 GM concrete v1 specification/checklist/single unsent issue draft are
 [available together](./recovery/gm-doc-modularization-spec-draft-20261013/workflow-preflight.md)
@@ -63,9 +85,12 @@ at remotely verified `3d7309751b1ab9f4cfdbc2b50df4f5de8ca2a113`. Independent Ast
 accepted substance and the exact three-link correction; four manifest pins and
 three targets match. GitHub-only selected recovery verified1666 tracked files/
 1127 connected changed paths; source recovery only, project execution UNRUN.
-Structure/order were already approved. The concrete specification and one-issue
-exception still require user approval; no issue, GM feature/worktree or content
-move has been created. Immediate wound-guidance alignment remains separate.
+This historical pending approval is superseded: on2026-10-13 at16:17UTC the user
+approved GM specv1 and the one-issue exception. ROOT created and verified exactly one
+[#1557](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1557).
+Shown spec3d730975 remains unchanged; no GM worktree/content move or GM source change
+belongs to this FR063 block. Immediate wound-guidance alignment remains separate; its
+presentation is preauthored on all own Mortal routes, displayed only for known routes.
 
 A further transport disconnect affected only reads in functions cell563. The
 coordinator-authorized single HEAD/status retry succeeded at clean6e2947b1;

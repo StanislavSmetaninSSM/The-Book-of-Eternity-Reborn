@@ -28,7 +28,15 @@ public partial class GameEngine
         JsonObject? IssuedCommandRoot, byte[]? IssuedCommandBytes);
 
 
-    private async Task<IReadOnlyList<ValidationIssue>> ValidateResourceAndMortalQteDecisionAsync(bool ordinaryUpstreamAccepted = true)
+    private Task<IReadOnlyList<ValidationIssue>> ValidateResourceAndMortalQteDecisionAsync(bool ordinaryUpstreamAccepted = true) =>
+        ValidateResourceAndMortalQteDecisionCoreAsync(ordinaryUpstreamAccepted, null, null);
+
+    private Task<IReadOnlyList<ValidationIssue>> ValidateResourceAndMortalGuaranteedTreatmentAsync(
+        bool ordinaryUpstreamAccepted, ValidatedPendingTurnSnapshotContext? activeSnapshotContext, int expectedTurn) =>
+        ValidateResourceAndMortalQteDecisionCoreAsync(ordinaryUpstreamAccepted, activeSnapshotContext, expectedTurn);
+
+    private async Task<IReadOnlyList<ValidationIssue>> ValidateResourceAndMortalQteDecisionCoreAsync(
+        bool ordinaryUpstreamAccepted, ValidatedPendingTurnSnapshotContext? activeSnapshotContext, int? expectedTurn)
     {
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         _mortalQteRejectedRepairInput = null;
@@ -44,7 +52,10 @@ public partial class GameEngine
             var issues = await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync(lease,
                 ordinaryUpstreamAccepted ? StageCurrentMortalDecision : null,
                 ordinaryUpstreamAccepted ? SealMortalQteDecisionAsync : null,
-                ordinaryUpstreamAccepted ? () => _mortalQteExactReplay : null);
+                ordinaryUpstreamAccepted ? () => _mortalQteExactReplay : null,
+                ordinaryUpstreamAccepted && activeSnapshotContext is not null && expectedTurn is not null
+                    ? currentLease => PrepareOrdinaryMortalGuaranteedTreatmentAsync(currentLease, activeSnapshotContext, expectedTurn.Value)
+                    : null);
             if (stageRan && _mortalQteDecisionImages is not null)
                 issues = issues.Select(issue => IsMortalQtePrivateCanonicalIssue(issue)
                         ? MortalWoundOpportunityAdapter.PrivateSourceIssue(issue) : BindMortalQteDraftRepairTarget(issue)).ToArray();

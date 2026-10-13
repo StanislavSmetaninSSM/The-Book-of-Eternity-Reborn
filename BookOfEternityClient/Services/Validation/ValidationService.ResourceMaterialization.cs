@@ -20,7 +20,8 @@ public partial class ValidationService
             FileSystemManager.CanonicalWriteLease writeLease,
             Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null,
             Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null,
-            Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null)
+            Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null,
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -41,7 +42,7 @@ public partial class ValidationService
         {
             var issues = await ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
                 writeLease, stageMortalQteDecision: stageMortalQteDecision, sealMortalQteDecision: sealMortalQteDecision,
-                readMortalQteReplay: readMortalQteReplay);
+                readMortalQteReplay: readMortalQteReplay, prepareMortalGuaranteedTreatment: prepareMortalGuaranteedTreatment);
             keepCommonHandoff = AcceptedMechanicsPlanAuthority.HasValidated(
                 _fs,
                 writeLease);
@@ -190,7 +191,8 @@ public partial class ValidationService
             MortalOriginalInputSink? mortalCapture = null,
             Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null,
             Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null,
-            Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null)
+            Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null,
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
@@ -481,6 +483,104 @@ public partial class ValidationService
             return issues;
         }
         var effectIssues = new List<ValidationIssue>();
+        if (currentInputs is null && spiritualCapture is null && mortalCapture is null)
+        {
+            var rawWound = await _fs.ReadFileAsync(writeLease, AcceptedMechanicsPlan.WoundCommandPath);
+            WoundResponseCommandParsingResult? parsedWound = null;
+            if (rawWound is not null)
+            {
+                try
+                {
+                    parsedWound = WoundResponseInputComposer.ParseCommandRoot(StrictJsonAuthority.Deserialize<JsonElement>(
+                        rawWound.TrimStart('\uFEFF'), new JsonSerializerOptions(), "ordinary wound command"));
+                }
+                catch (Exception failure) when (failure is JsonException or InvalidDataException)
+                {
+                    // Classification grants no admission. Malformed/non-treatment input
+                    // retains its existing QTE/generic parser diagnostics below.
+                }
+            }
+            if (prepareMortalGuaranteedTreatment is not null && parsedWound?.TreatmentCommands.Count > 0)
+            {
+                if (commandJson is not null || effectCommandJson is not null || hasStagedFullPartyResourcePackets ||
+                    pendingResolutionState is { Requests.Count: > 0 } || isTerminalReceiptReplay ||
+                    ownerComposition.CapacityDrafts.Count != 0 || ownerComposition.TerminalOwners.Count != 0 || ownerComposition.OwnerTransitions.Count != 0)
+                {
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                        "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "the proved-empty concurrent mechanical contour",
+                        "raw resource/effect/party/pending or owner work requires its ordinary owner"));
+                    return issues;
+                }
+                foreach (var companion in ownerComposition.OwnerCompanionAfterImages)
+                {
+                    var physical = await _fs.ReadFileAsync(writeLease, companion.Key);
+                    if (physical is null || !JsonNode.DeepEquals(companion.Value,
+                            StrictJsonAuthority.Deserialize<JsonNode>(physical.TrimStart('\uFEFF'), new JsonSerializerOptions(), companion.Key)))
+                        issues.Add(WoundIssue(companion.Key, "mortal_wound_treatment_ordinary_concurrent_work_unsupported",
+                            "no effective new owner companion image", "the early treatment return cannot omit a changed owner image"));
+                }
+                // Reuse the original-bound READ-ONLY wound admission (including rollback,
+                // client-owned baselines and occurrence/receipt/history agreement), not its
+                // later Prepare/effect/Finalize reducer.
+                var admittedWound = await LoadAcceptedTurnRawWoundDraftAsync(manifest, writeLease, rawWound!, issues);
+                if (admittedWound is null)
+                {
+                    if (!issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+                        issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath, "mortal_wound_treatment_ordinary_intake_unavailable",
+                            "one original-bound read-only wound intake", "the treatment owner has no admitted wound input"));
+                    return issues;
+                }
+                if (admittedWound.SignedOccurrences.Occurrences.Count != 0)
+                    issues.Add(WoundIssue(MortalWoundOccurrenceState.StatePath,
+                        "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "no competing unconsumed wound occurrence",
+                        "the occurrence/decision owner must handle this original input"));
+                if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+                var originalEffects = await ReadSnapshotEffectCarriersAsync(manifest, issues);
+                var currentEffects = await ReadEffectCarriersAsync(writeLease, issues);
+                ValidateEffectOwnedContinuity(originalEffects, currentEffects,
+                    await ReadValidatedPendingTurnSnapshotFileAsync(manifest, EffectAcceptedTurnPlan.IdentityIndexPath),
+                    await _fs.ReadFileAsync(writeLease, EffectAcceptedTurnPlan.IdentityIndexPath), issues);
+                var originalSources = await ReadSnapshotEffectSourceRootsAsync(manifest, issues);
+                var currentSources = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+                foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
+                    currentSources[path] = ParseEffectNode(await _fs.ReadFileAsync(writeLease, path), path, issues);
+                issues.AddRange(EffectAcceptedTurnInputComposer.ValidateAcceptedSkillComposition(originalSources, currentSources));
+                ValidateEffectSourceDefinitions(currentSources, issues);
+                issues.AddRange(EffectAcceptedTurnInputComposer.ValidateRegisteredSourceOwners(currentSources));
+                issues.AddRange(EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(currentSources).Issues);
+                var registered = await ComposeRegisteredResourceOutcomesAsync(manifest, preTurnAfterlifeOwners,
+                    acceptedAfterlifeOwners, ownerComposition, stateResult.Ledger, issues);
+                if (registered.Count != 0)
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                        "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "no unrelated registered system outcome",
+                        "the early treatment return cannot omit an existing outcome owner"));
+                if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+            }
+            // This callback joins only after original quartet and current owner admission.
+            // Its owner issues the existing treatment common plan under THIS lease;
+            // the generic wound/effect pipeline must not reduce that work a second time.
+            var treatmentIssues = prepareMortalGuaranteedTreatment is null || parsedWound?.TreatmentCommands.Count is not > 0
+                ? null : await prepareMortalGuaranteedTreatment(writeLease);
+            if (treatmentIssues is not null)
+            {
+                issues.AddRange(treatmentIssues);
+                if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+                var retained = await ValidateRetainedMortalWoundTreatmentPublicationAsync(writeLease);
+                if (retained is null)
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                        "mortal_wound_treatment_ordinary_plan_missing", "the admitted owner's issued treatment plan",
+                        "the callback produced no validated treatment publication authority"));
+                else issues.AddRange(retained);
+                return issues;
+            }
+            if (parsedWound?.TreatmentCommands.Count > 0)
+            {
+                issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                    "mortal_wound_treatment_ordinary_owner_unavailable", "a fresh admitted ordinary treatment owner frame",
+                    "held treatment wire alone cannot authorize generic publication"));
+                return issues;
+            }
+        }
         if (stageMortalQteDecision is not null)
         {
             issues.AddRange(await stageMortalQteDecision(writeLease));

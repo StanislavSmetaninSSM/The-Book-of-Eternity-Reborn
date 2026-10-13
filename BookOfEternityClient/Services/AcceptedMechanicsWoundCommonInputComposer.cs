@@ -15,6 +15,30 @@ internal sealed record AcceptedMechanicsWoundCommonInputCompositionResult(
 
 internal static class AcceptedMechanicsWoundCommonInputComposer
 {
+    // Fixed refusal-only inputs for the first ordinary guaranteed-treatment contour.
+    // Capture these BEFORE the common input's fingerprints/cache are issued, including
+    // current absence: a file introduced after the admission lease must fail revalidation.
+    internal static IReadOnlyList<string> TreatmentOrdinaryGuardPaths { get; } = Array.AsReadOnly(
+        EffectAcceptedTurnInputComposer.SourceAuthorityPaths
+            .Concat(EffectAcceptedTurnInputComposer.SameTurnOwnerAuthorityPaths)
+            .Concat(MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
+            .Concat(new[]
+            {
+                EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath,
+                EffectCarrierCatalog.SpiritualConflictPath, EffectAcceptedTurnPlan.IdentityIndexPath,
+                WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
+                MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath,
+                ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
+                ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                ResourceMaterializationContract.CommandPath, ResourcePendingResolutionState.PendingPath,
+                EffectAcceptedTurnPlan.CommandPath, EffectAcceptedTurnInputComposer.WorldTimePath, MortalWoundOpportunityAdapter.DecisionPath,
+                "game_state/player/skill_mastery.json", "game_state/npcs/npc_skills.json",
+                "game_state/inventory/item_movements.json", "game_state/inventory/storage_operations.json",
+                "game_state/misc/player_interactions.json", "game_state/meta/soul_state.json",
+                "game_state/meta/shining_abode_state.json", "game_state/core/game_settings.json",
+                "game_state/control/life_transitions.json", "game_state/meta/guardians.json"
+            }).Distinct(StringComparer.Ordinal).OrderBy(static path => path, StringComparer.Ordinal).ToArray());
+
     internal sealed class PublicationAuthorityProof
     {
         private PublicationAuthorityProof()
@@ -727,6 +751,8 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             requiredPaths.UnionWith(stagedEffectPlan.DeletedPaths);
             requiredPaths.UnionWith(stagedEffectPlan.CarrierBeforeImages.Keys);
             requiredPaths.UnionWith(treatmentSkillBaselines.Keys);
+            if (treatmentCurrentTimeInMinutes is not null)
+                requiredPaths.UnionWith(TreatmentOrdinaryGuardPaths);
             if (treatmentResourcePublicationAuthority is not null)
             {
                 requiredPaths.UnionWith(

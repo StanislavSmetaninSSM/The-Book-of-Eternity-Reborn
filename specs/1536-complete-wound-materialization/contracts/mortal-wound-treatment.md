@@ -10,6 +10,29 @@ mechanical language but does not provide a catalog of wound names, anatomy, medi
 or complete cures. Antibiotics and bandages can be valid in one setting; healing
 crystals and crystalline dust can be valid in another.
 
+## Ordinary held guaranteed restoration — first contour (2026-10-13)
+
+The client restores one production-sealed, confirmed held guaranteed request from the
+actual pending turn under its admitted canonical lease. Fresh official original/current
+source, complete command/pending/history, physical generation, capabilities and actual
+scene must agree. The existing guaranteed reducer resolves it once and the existing
+six-argument publication owns resource spending, wound/effect/history, receipt and hold
+settlement together. A persisted result or caller hash never grants authority.
+
+This first ordinary contour proves concurrent mechanical commands absent and connected
+mechanical images unchanged. Concurrent raw resource/effect commands, another wound/QTE
+draft, staged party or pending/owner/system work, and unsupported skill/item/source/clock
+changes refuse with their inputs retained. Canonical periodic effects still execute in
+the same common reduction. Guard bytes and current absence are sealed before cache
+issuance and revalidated before publication; missing optional original coverage never
+creates canonical pristine/source authority. Existing warm/finalized owners retain their
+own strict fences. No new GM-authored command, display-response interpretation, treatment
+cost or afterlife policy is introduced.
+
+This implementation checkpoint is SOURCE pending and all new runtime checks are UNRUN.
+Same-root native/finite controls precede separate new-root proof; other treatment modes,
+full FR-063/T070 and parent acceptance remain open.
+
 ## Complete Mortal wound requirement
 
 At creation, every Mortal wound must include:

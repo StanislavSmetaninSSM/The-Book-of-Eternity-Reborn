@@ -2,13 +2,74 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "fr063-guaranteed-ordinary-owner-reflection",
+            "responsibility": "#1536 exact affected private-Core reflective consumer: one existing integration theory/three pending, terminal and unknown-receipt rows. Only its reflection argument array migrates six to seven entries for the admitted owner callback; all original source rejection/cache/before-image oracles remain unchanged.",
+            "excludes": "No other old compatibility/capture/pending tests, QTE/producer/archive/finite cohorts, runner/global selection or runtime policy change. No new cases or fixture authority.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
+                "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-source-compatibility",
+                    "when": "Intentional overlap of only the changed reflected theory/three rows; do not combine with the old five-case owner."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.OriginalMortalCapturePipeline_RejectsActualPendingAndTerminalReceiptReplay"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "fr063-guaranteed-ordinary-owner-warm-fence",
+            "responsibility": "#1536 one named existing warm/cold-helper integration sentinel: GuaranteedResourceQuantity_ColdConfirmedCommandRealPipelineCommitThenRestartReplaySpendsOnce. The sole shared source dependency is the treatment-only fixed before-image guard inventory captured before common fingerprints/cache issuance. It preserves the old retained owner/fence, confirmed energy2 spending and restart replay once-only behavior. This is the existing helper-precomposed contour, not new native proof.",
+            "excludes": "No broad turn-lifecycle-core/warm/source-guard/fault/other-mode/QTE/accepted cohort repeat. No new method/case/authority; only the named shared-fence sentinel is selected.",
+            "changeHints": [
+                "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs"
+            ],
+            "related": [
+                {
+                    "id": "turn-lifecycle-core",
+                    "when": "Intentional exact membership overlap for this single source-affected Fact; never select the broad historical owner for this task."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_ColdConfirmedCommandRealPipelineCommitThenRestartReplaySpendsOnce"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "fr063-guaranteed-ordinary-owner-controls",
-            "responsibility": "#1536 FR-063 admitted ordinary-owner component controls: four methods/six cases. Independently owned genuine warm held guaranteed energy2 requests and official original42 are prepared with composePublication:false. The actual GameEngine resource wrapper must restore/issue its common plan after raw resource admission. Exact command/pending duplicates coalesce; changed nested request and resolved-result graphs refuse without cache or canonical mutation. Current required capability loss refuses instead of reusing warm authority. Existing wound_post_seal compensation retains the complete request, confirmed hold and original fence, then one exact retry spends once. Component controls do not establish native cold completion.",
-            "excludes": "No pre-caller Restore/Compose or fabricated request/original/authority; no new-root, other treatment modes, archive/QTE/proof20/finite68/baseline repeats, diagnosis or GM grammar, provider/Windows/CI/global runner changes. These newly authored controls are UNRUN; the connected admitted bridge remains required before review/execution.",
+            "responsibility": "#1536 FR-063 admitted ordinary-owner component controls: six methods/ten cases. Genuine original42/held guaranteed energy2 requests are prepared with composePublication:false. The frame-aware actual GameEngine resource wrapper must restore/issue its common plan only after resource-owner/original admission. Exact pending duplicates coalesce; changed nested request and actual resultCategory payload under original seals refuse. Current required capability drift refuses without warm authority reuse. Existing wound_post_seal compensation retains complete request/confirmed hold/original fence, then one exact retry spends once. Three actual concurrent resource/effect/full-party rows must reach the scoped unsupported-work refusal without mutation/consumption. A previously absent npc_skills file introduced across owner lease turnover is rejected by sealed-input/publication revalidation. Component proof is distinct from the native fresh-process case.",
+            "excludes": "No helper Restore/Compose prelude, display-response stripping, fabricated request/original/authority or second reduction; no new-root/other modes/diagnosis/GM grammar, archive/QTE/proof20/finite68/baseline repeats, provider/Windows/global runner/CI change. Effect-row public skill-definition bootstrap is before its genuine original and is labelled component. All new cases and connected source remain UNRUN pending published independent SOURCE/FIXTURE/SELECTION.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs",
                 "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-                "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs"
+                "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+                "BookOfEternityClient/Core/GameEngine/GameEngine.MortalGuaranteedTreatment.cs",
+                "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs"
             ],
             "related": [
                 {
@@ -30,7 +91,9 @@
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerReadsCurrentRequiredCapabilityInsteadOfHeldWarmAuthority",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerPostSealCompensationRetainsFullHeldRequestAndExactRetry"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerPostSealCompensationRetainsFullHeldRequestAndExactRetry",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerGuardsAbsentInputAcrossLeaseTurnoverBeforePublication"
                     ]
                 }
             ]

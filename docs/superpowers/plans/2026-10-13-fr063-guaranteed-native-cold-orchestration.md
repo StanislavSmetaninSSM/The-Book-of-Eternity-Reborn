@@ -321,6 +321,27 @@ authority/reducer/old helpers/runner/selectors and protected accepted cohorts ar
 ROOT publishes this midpoint before the remaining connected source block; full SOURCE
 acceptance waits for that block. No runtime task or parent checkbox is closed.
 
+### Task2 connected candidate — 2026-10-13 (SOURCE READY; checks UNRUN)
+
+The published b397 tests/oracle midpoint precedes this connected candidate. Actual
+accepted-loop frame/lease plumbing joins only after original/resource-owner admission;
+one-bool QTE entry/reflection/diagnostic callers stay intact. Strict original-bound
+read-only wound/effect/source intake and proved-empty concurrent mechanical envelope
+precede fresh export/restoration/one guaranteed reducer/exact result agreement and the
+unchanged six-argument common publisher. Shared fixed guard paths are captured before
+input/cache sealing, not appended to a sealed plan. Concurrent raw resource/effect/party,
+pending/owner/system work and changed unsupported mechanical images refuse; ordinary
+periodic effects still run once. No reverse mapper, display stripping or authority change.
+
+Author inventory expanded only for the concrete early-return/lifetime dependencies:
+six component methods/10 cases, plus native1, exact reflected Core3 and named unchanged
+warm sentinel1. Preparation9methods/15cases/4integration descriptors/default19; remainder
+8/14/3/default14 excludes native after its GREEN. Static catalog724/11567 expected, not
+discovery. All SOURCE/compile/discovery/catalog/runtime checks UNRUN. ROOT may privately
+add a minimal unit owner solely for fresh BOTH build/discovery. New-root authoring follows
+same-root/controls qualification; no runtime or parent checkbox is closed. Client-owned
+restoration changes no GM grammar/treatment cost, afterlife contract or guidance policy.
+
 ## Conditional continuation after Task1 EVIDENCE
 
 If prerequisites fail, correct only the evidenced fixture seam after frozen EVIDENCE and SOURCE review; do not call it a production RED. If the genuine ordinary entry exposes missing orchestration, record that causal RED, amend this plan with the exact participating lease/context/owner calls, then authorize only the minimum production orchestration. Reuse fresh ExportCurrent -> RestorePersistedTreatmentRequests -> ordinary guaranteed reducer -> existing six-argument T070/common plan inside the ordinary owner. No new authority framework, result shortcuts or generalized mode support.

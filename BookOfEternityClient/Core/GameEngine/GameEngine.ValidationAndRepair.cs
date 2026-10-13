@@ -517,8 +517,8 @@ public partial class GameEngine
 #if DEBUG
             using var diagnosticAcceptedCaller = _fs.BrowserDiagnosticLogical(null, "accepted-validation-loop");
 #endif
-            rawIssues.AddRange(await ValidateResourceAndMortalQteDecisionAsync(
-                !rawIssues.Any(static issue => issue.Severity == IssueSeverity.Error)));
+            rawIssues.AddRange(await ValidateResourceAndMortalGuaranteedTreatmentAsync(
+                !rawIssues.Any(static issue => issue.Severity == IssueSeverity.Error), activeSnapshotContext, expectedTurn));
             if (spiritualAdmission == SpiritualContinuationAdmission.RequiresInitialResourceValidation &&
                 !rawIssues.Any(issue => issue.Severity == IssueSeverity.Error))
             {

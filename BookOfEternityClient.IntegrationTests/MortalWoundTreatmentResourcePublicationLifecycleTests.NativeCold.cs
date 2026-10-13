@@ -384,6 +384,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             row.Coordinate.ResourceKey == "energy" && row.Coordinate.ResourceOwnerId == "player_current");
         Assert.Equal(2m, spend.AppliedAmount); Assert.Equal(2m, spend.BeforeState!.Current); Assert.Equal(0m, spend.AfterState!.Current);
         Assert.Equal(42, spend.Turn); Assert.Equal(ResourceTransitionOutcome.Applied, spend.Outcome);
+        var periodic = Assert.Single(resources.Transitions, row => row.Turn == 42 &&
+            row.Operation == ResourceTransitionOperation.Damage && row.Coordinate.ResourceKey == "health" &&
+            row.Coordinate.ResourceOwnerId == "player_current");
+        Assert.Equal(3m, periodic.AppliedAmount); Assert.Equal(10m, periodic.BeforeState!.Current);
+        Assert.Equal(7m, periodic.AfterState!.Current); Assert.Equal(ResourceTransitionOutcome.Applied, periodic.Outcome);
         var history = ReadCurrentTreatmentHistory(files);
         Assert.Equal(2, history.State!.Transitions.Count);
         var treatment = Assert.Single(history.State.Transitions, row => row.Kind == "treat");

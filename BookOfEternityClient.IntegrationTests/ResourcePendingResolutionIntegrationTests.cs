@@ -52,7 +52,7 @@ public sealed class ResourcePendingResolutionIntegrationTests
         var method = typeof(ValidationService).GetMethod("ValidateAcceptedTurnRawResourceMaterializationCoreAsync",
             System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
         var issues = await Assert.IsAssignableFrom<Task<IReadOnlyList<ValidationIssue>>>(
-            method.Invoke(context.Validator, new object?[] { lease, null, sink, null, null, null }));
+            method.Invoke(context.Validator, new object?[] { lease, null, sink, null, null, null, null }));
         Assert.Contains(issues, issue => issue.Code == "mortal_original_pending_replay_unsupported");
         Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(context.FileSystem, lease, out _));
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
