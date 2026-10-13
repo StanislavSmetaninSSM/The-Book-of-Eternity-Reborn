@@ -66,6 +66,32 @@ remain unwritten; all task checkboxes stay open. Full report is outside the repo
 
 Run via existing `scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-fr063-guaranteed-native-same-root.json`; `-PlanOnly` prepares/discovers, `-NoBuild` actual is allowed only after fresh selected build. Exact invocations/pins go into the frozen packet.
 
+## FR-063 diagnostic accepted; bounded fixture correction — 2026-10-13
+
+Retained actual Astra XHigh EVIDENCE/status ACCEPTED at5d8a26d87cb872492318d7d76ee46a07832f3c3c:
+46artifact chains/native originals,231source/11binary pins,actual repair-request and2strict absent
+roots verified. Classification: NPC FIXTURE-PREREQUISITE FAIL,not proven treatment restoration RED.
+Captured17957byte committedrequest contains only threeTest mentor scope/reasoning/memory errors.
+Firstsource318/diagnosticb08 outcomes and packets remain immutable; ONEunique native case has
+2invocations2executions0PASS2FAIL. FullFR063/T070/parent remainsOPEN; accepted8/proof20 unrepeated.
+
+Source-backed baseline mismatch: SeedHeldTreatmentAuthorityAsync supplies field_medic_01 with
+canonicalnameTest mentor;displayNameField medic does not replace it. The captured original lacks
+tradeInventoryReceipts; ordinaryNormalizeNpcTradeCoreAsync→MortalItemPublicationTailTransforms.NpcTrade
+→NpcTradeRequestState.NormalizeNpcTradeReceiptsShape adds[]. Whole-object unchangedNPC comparison
+then treats canonical object as changed. CurrentNPC afterimage was NOT captured: this explanation
+is source-backed,not a retrospectively measured native diff.
+
+Release Task1b fixture-only SOURCE authoring: existingconfigureBeforePreparation callback settles
+only this empty canonical receipt collection BEFORE PrepareAsync/genuine signed snapshot. Preserve
+provider identity/capabilities,claims/originalcoordinates,NPCvalidators andsourceimmutabilityaftermint.
+Add currentnpc_core.json to existing native artifact capture for actualbefore/after evidence. Keep
+caller/input/Ready/observer/nohelperprelude/all treatmentassertions,ONEcase/selection/budgets unchanged.
+No production correction. Publish/remote/recovery+independentSOURCE, freshselectedBOTH/exactplan/
+catalog0execution,onlyaffectednativeactual; freeze/publish/EVIDENCE its firstoutcome beforeanynextfix.
+GMdocmodularization staysread-onlyproposal; nofilemovesbeforestructureagreement. Immediatewound
+recommendations policy/docs alignment remains separate; no diagnosis mechanics invented.
+
 ## FR-063 actual repair diagnostic — 2026-10-13 (NPC ERRORS OBSERVED; EVIDENCE PENDING)
 
 Task1a test-only sourceb08d7750e543d39a1dddbad4ee3cbab9b2a8b1a5 independently SOURCE/FIXTURE/
@@ -169,6 +195,20 @@ authority reconstruction/correction or immediate-guidance source was authored. N
   invocation, source/binary PREPOST before metadata, strict owned cleanup. Freeze and publish the
   entire first diagnostic result before EVIDENCE and any conditional fix. Do not repeat historical
   accepted cohorts or relabel the first noncompletion as a proven production cause.
+
+## Task 1b: Canonical NPC receipt precondition before genuine original
+
+- [ ] Reuse only the existing configureBeforePreparation callback in the native parent to initialize
+  field_medic_01's empty canonical tradeInventoryReceipts before the genuine original is minted.
+  Preserve existing provider identity/capability/stock/currency/state and original/command/held authority.
+  No original rewrite/re-signing, fixture helper refactor, authority shortcut or validator relaxation.
+- [ ] Include current npc_core.json in native raw artifact capture to observe its actual baseline and
+  post-caller shape; evidence only, no new production input. Keep first Fact, child entry, repair
+  observer, strict completion/energy2/history/second-idle oracles and selection/bounds unchanged.
+- [ ] ROOT publication/remote/recovery and independent SOURCE gate precede fresh matching selected
+  preparation/exact1/1/1/catalog, all zero execution. Run only affected native case, verify PREPOST
+  before metadata and strict cleanup; freeze/publish/review its next first outcome. Do not label
+  treatment orchestration qualified until its positive oracle passes or patch production speculatively.
 
 ## Conditional continuation after Task1 EVIDENCE
 
