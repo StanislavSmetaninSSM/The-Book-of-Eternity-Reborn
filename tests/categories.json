@@ -2,8 +2,37 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "qte-physical-injury-consumer-completed-proof-generation",
+            "responsibility": "#1536 failed-only fixture correction: one existing generation semantic row extracted into one integration Fact. Actual owner-produced CREATE completion precedes supported lifecycle plus replacement lease rotation. Real changed generation, unchanged original source and mechanical/receipt/marker bytes, fresh official original Reader correlation and stale marker-generation denial are observed. Genuine retained exact replay refuses without authority or mutation. This owner gates only the previously unqualified generation control.",
+            "excludes": "No repeat of the nineteen passing completed-proof cases, archive4/exact durable2/finite68/baselines, changed durable2 or full T070 closure. No production/reader/writer/authority/schema/GM grammar/global runner/CI/provider change, snapshot copies/resigning, replacement-exception swallowing, budget increase, new semantic case or general storage control.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs"
+            ],
+            "related": [
+                {
+                    "id": "qte-physical-injury-consumer-completed-proof",
+                    "when": "Intentional exact membership overlap: the standalone generation Fact replaces its former theory row in the full proof union (six methods/twenty same unique cases). Never combine this narrow owner with that owner."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentReplacedGenerationNeverGrantsCompletionReplay"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "qte-physical-injury-consumer-completed-proof",
-            "responsibility": "#1536 bounded completed-publication preservation controls: five integration methods/twenty cases. Owner-produced genuine QTE source and actual staging/common publisher establish every receipt/marker; component inspection separates strict past completion from current exact/changed/malformed public input. Thirteen independent marker/generation/binding/original authority/quartet/receipt/history/published-byte conflicts never grant verified completion or replay. Three returned raw Resource/Effect/Wound commands remain foreign and are held without staging/deletion. One actual uncommitted ordinary rejection proves its original rollback bytes are still restored. One prior21 legacy component-entry Fact uses the existing explicit fixture-authority writer, keeps observed marker absence unproved, accepts unrelated ordinary output without completion authority, and holds present-marker/current-partition conflicts. Component calls are explicitly distinct from the native fresh-child changed-two lifecycle proof.",
+            "responsibility": "#1536 bounded completed-publication preservation controls: six integration methods/twenty unchanged unique cases. Owner-produced genuine QTE source and actual staging/common publisher establish every receipt/marker; component inspection separates strict past completion from current exact/changed/malformed public input. Twelve integrity theory rows plus one standalone real generation-replacement Fact retain the same thirteen marker/generation/binding/original authority/quartet/receipt/history/published-byte conflicts. The generation Fact uses active lifecycle/replacement leases, proves a new generation while original/mechanical bytes remain intact, then requires the stale marker generation to deny verified completion/replay. Three returned raw Resource/Effect/Wound commands remain foreign and are held without staging/deletion. One actual uncommitted ordinary rejection proves its original rollback bytes are still restored. One prior21 legacy component-entry Fact uses the existing explicit fixture-authority writer, keeps observed marker absence unproved, accepts unrelated ordinary output without completion authority, and holds present-marker/current-partition conflicts. Component calls are explicitly distinct from the native fresh-child changed-two lifecycle proof.",
             "excludes": "No handbuilt completion receipt/exact_replay result/source binding or re-signing a genuine completed QTE source; the labelled prior21 contract component alone uses the existing fixture-authority writer. No new canonical initialization, general save/storage/authority framework, package/provider/model/Windows/C5/journal changes, previously qualified native exact/archive/baseline/finite68 repetition or full T070 closure. No new producer/allocation/reduction/writer. This owner is separate from the unchanged old full preparation selection.",
             "changeHints": [
                 "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
@@ -33,7 +62,8 @@
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommittedPublicationHoldsForeignCommandsWithoutConsuming",
                         "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes",
-                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPriorTwentyOneOrdinaryEntryDoesNotGrantCompletionAuthority"
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPriorTwentyOneOrdinaryEntryDoesNotGrantCompletionAuthority",
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentReplacedGenerationNeverGrantsCompletionReplay"
                     ]
                 }
             ]

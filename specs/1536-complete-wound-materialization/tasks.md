@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Fresh completed-proof outcome — 2026-10-13 (19 PASS / GENERATION FIXTURE LEASE FAILURE)
+## Fresh completed-proof outcome — 2026-10-13 (19 PASS ACCEPTED / GENERATION FIXTURE CORRECTION SOURCE READY)
 
 Actual retained Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `209b994f1f070d62153fc28125421e3a15356b6b`, sole Important legacy21 finding closed.
@@ -20,7 +20,8 @@ EnsureValidSessionReplacementLease. That row stops at fixture mutation BEFORE in
 so generation conflict proof is UNQUALIFIED; this is not a production-proof failure or tool denial.
 The other19 rows complete,including genuine exact/changed public decision2,12 other integrity
 mutations,foreign commands3,actual ordinary uncommitted rollback1 and labelled legacy21 entry1.
-Their acceptance remains PENDING independent EVIDENCE; no passing19 repeat is authorized by default.
+Their EVIDENCE/status acceptance is confirmed by actual retained Astra XHigh at
+`7b831bf238b9e677b31de88fc401b3c1fe013eab`; no passing19 repeat is authorized by default.
 
 Fresh BOTH preparation `20261013-112347-097-575020-50c5a39cf9f044a7ad9caa4435f30ef2-categories`
 33/78/14 succeeded160.9634212s,93/35 warnings,0/0 errors,0 execution. Exact proof plan
@@ -36,19 +37,40 @@ ROOT matched172 SOURCE/11 fresh binary pins PRE/POST BEFORE metadata. Immutable 
 no fresh-child binding claim is made for component controls.94 native observations,20 SOURCE strict
 cleanup receipts,all20 roots physically absent; runner owned/runtime cleanup true.39 frozen artifacts
 preserve source audits,pins,preparation/plan/catalog/actual JSON/TRX/full stdout/stderr/logs/readbacks.
-Frozen EVIDENCE PENDING; publish/actualremote/GitHub-only selected recovery precede independent review.
+Frozen manifest keeps its historical pre-review PENDING status. Active EVIDENCE/status is ACCEPTED
+at7b831bf2 after actualremote/GitHub-only recovery and retained independent review; the failed
+generation row remains fixture-prerequisite UNQUALIFIED.
 
-Next: EVIDENCE review this precise first outcome,then source-only minimum correction to generation
-mutation using the supported replacement ownership contour and a narrow failed-row selection.
-Inspect preservation and generation-session semantics before authoring; do not bypass the owner.
-Fresh affected-project build and exact failed-only plan precede retry; freeze/review its first outcome
-before ONLY changed durable2. Changed2 remain UNRUN under new hold fix. Archive4/exact durable2/
+The minimum correction is fixture/selection/metadata only. Actual RotateSessionGeneration delegates
+clearGameState:false publication and requires an active lifecycle lease plus its dedicated replacement
+write lease. The corrected generation row captures real Gbefore and original/mechanical images,uses
+that existing supported contour,requires actual Gafter!=Gbefore and identical retained original,
+mechanics,receipt and marker bytes,then closes replacement scopes. A fresh unbound canonical lease
+proves official Reader success and exact original session/request/token/turn/realm,with the marker
+still binding Gbefore. Existing inspector must report seal_or_generation IntegrityConflict,
+MayResubmit=false,and genuine retained exact replay must refuse without state change. No exception
+is swallowed; no new snapshot/copy/re-signing,production/reader/writer/owner bypass or GM contract.
+
+ONLY generation InlineData is extracted from the thirteen-row theory to a standalone Fact; twelve
+passing theory rows retain their private shared body and all oracles. Full proof union is6 methods/
+20 unchanged unique cases1 descriptor,budget5/default10. A new intentional-overlap failed-generation
+owner/selector selects ONLY1 Fact1 case1 descriptor,budget5/default10 and is never combined with full
+proof. Catalog static expectation720 categories11560 methods (+1 Fact/+1 owner; no added semantic
+case); runtime discovery UNRUN. Existing full preparation33/78/14 and changed alias1/2/1 remain exact.
+The [failed generation selector](../../tests/selections/1536-qte-physical-injury-consumer-completed-proof-generation.json)
+is used after ROOT publication/recovery and mandatory focused SOURCE/FIXTURE/SELECTION closure.
+Corrected SOURCE READY; fresh matching BOTH preparation/exact failed-only plan/catalog and retry
+remain UNRUN. ROOT freezes/reviews the first corrected generation outcome before ONLY changed durable2.
+Changed2 remain UNRUN under new hold fix. Archive4/exact durable2/
 finite68/baselines retain qualification without reruns. T070/FR-063/parent/#1536 OPEN; protected boxes
 and historical packets unchanged. Historicalfd15 child timeout cause/managed result/factory cleanup
 remain UNKNOWN/UNQUALIFIED. Environment remains bounded cloud Linux Debian13.6 x86_64,
 SDK10.0.401,NET8.0.31/10.0.12,pwsh7.6.6,Node24.19.0,Python3.12.14 with existing task-local env.sh.
 No new GM authoring surface: completed conflicting retry is client-owned held refusal; existing
 single-decision grammar/prompts/examples remain applicable. No main/CI/issues/PR/Windows/provider calls.
+
+Historical held-publication source checkpoint follows; current passing19 acceptance and generation
+correction status above supersede its earlier UNRUN counts.
 
 ## Current T070 boundary — 2026-10-13 (ARCHIVE4/EXACT2 QUALIFIED; COMPLETED-PUBLICATION HELD REJECTION SOURCE READY)
 

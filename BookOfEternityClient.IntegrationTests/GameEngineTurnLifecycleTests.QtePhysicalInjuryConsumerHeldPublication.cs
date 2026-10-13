@@ -55,7 +55,6 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("missing_marker")]
     [InlineData("null_marker")]
     [InlineData("marker_hash")]
-    [InlineData("generation")]
     [InlineData("binding")]
     [InlineData("manifest")]
     [InlineData("authority")]
@@ -65,7 +64,14 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("published_quartet")]
     [InlineData("published_wound")]
     [InlineData("published_effect")]
-    public async Task QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(string mutation)
+    public Task QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(string mutation) =>
+        AssertMortalCompletionIntegrityConflictNeverGrantsReplayAsync(mutation);
+
+    [Fact]
+    public Task QtePhysicalInjuryConsumer_ComponentReplacedGenerationNeverGrantsCompletionReplay() =>
+        AssertMortalCompletionIntegrityConflictNeverGrantsReplayAsync("generation");
+
+    private async Task AssertMortalCompletionIntegrityConflictNeverGrantsReplayAsync(string mutation)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var component = await PreparePublishedMortalCompletionProofAsync(true);
@@ -81,7 +87,43 @@ public sealed partial class GameEngineTurnLifecycleTests
                 marker["fingerprint"] = "invalid";
                 await _fs.WriteFileAtomicAsync(MortalQteDecisionPublication.StatePath, marker.ToJsonString()); break;
             case "generation":
-                await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync()) _fs.RotateSessionGeneration(lease); break;
+                var generationImages = await CaptureMortalComponentImagesAsync();
+                var originalImages = await CaptureQteStoryOriginalArtifactsAsync();
+                string previousGeneration, replacementGeneration;
+                await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+                    previousGeneration = Assert.IsType<string>(_fs.ReadExistingSessionGeneration(lease));
+                await using (var lifecycle = await _fs.AcquireSessionLifecycleLeaseAsync())
+                await using (var replacement = await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycle))
+                {
+                    replacementGeneration = _fs.RotateSessionGeneration(replacement);
+                    Assert.NotEqual(previousGeneration, replacementGeneration);
+                    Assert.True(_fs.IsCurrentSessionGeneration(replacement, replacementGeneration));
+                }
+                foreach (var image in generationImages) Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(image.Key));
+                foreach (var image in originalImages) Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(image.Key));
+                // The replacement scopes have closed: this fresh unbound read proves that
+                // generation mismatch, not loss of the original source, causes replay refusal.
+                await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+                {
+                    Assert.Equal(replacementGeneration, _fs.ReadExistingSessionGeneration(lease));
+                    var retained = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, ["game_state/meta/soul_state.json"]);
+                    Assert.True(retained.Success, JsonSerializer.Serialize(retained.Issues));
+                    Assert.NotNull(retained.Snapshot);
+                    Assert.Equal(component.Snapshot.SessionId, retained.Snapshot!.SessionId);
+                    Assert.Equal(component.Snapshot.RequestId, retained.Snapshot.RequestId);
+                    Assert.Equal(component.Snapshot.SnapshotToken, retained.Snapshot.SnapshotToken);
+                    Assert.Equal(component.Snapshot.TurnNumber, retained.Snapshot.TurnNumber);
+                    Assert.Equal(component.Snapshot.Realm, retained.Snapshot.Realm);
+                    var retainedMarker = JsonNode.Parse((await _fs.ReadFileAsync(lease, MortalQteDecisionPublication.StatePath))!)!.AsObject();
+                    Assert.Equal(previousGeneration, retainedMarker["generation"]!.GetValue<string>());
+                    WritePhysicalInjuryDiagnostic("qte_completion_actual_generation_replacement", new
+                    { previousGeneration, replacementGeneration, retained.Success,
+                        Original = new { retained.Snapshot.SessionId, retained.Snapshot.RequestId, retained.Snapshot.SnapshotToken,
+                            retained.Snapshot.TurnNumber, retained.Snapshot.Realm },
+                        MechanicalImages = MortalArchiveDigests(generationImages),
+                        OriginalSha256 = originalImages.ToDictionary(image => image.Key, image => MortalArchiveHash(image.Value), StringComparer.Ordinal) });
+                }
+                break;
             case "binding":
                 var requestRoot = JsonNode.Parse((await _fs.ReadFileAsync("input/turn_request.json"))!)!.AsObject();
                 requestRoot["requestId"] = "foreign_request";
@@ -112,6 +154,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 component.Snapshot.RequestId, component.Snapshot.SnapshotToken, component.Snapshot.TurnNumber);
         Assert.Equal(MortalQteDecisionPublication.CurrentPublicationState.IntegrityConflict, inspected.State);
         Assert.False(inspected.MayResubmit);
+        if (mutation == "generation") Assert.Contains("seal_or_generation", inspected.Reason, StringComparison.Ordinal);
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             Assert.IsType<InvalidDataException>(await Record.ExceptionAsync(() => MortalQteDecisionPublication.ValidateExactReplayAsync(_fs, lease, genuineReplay)));
         foreach (var image in before) Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(image.Key));
