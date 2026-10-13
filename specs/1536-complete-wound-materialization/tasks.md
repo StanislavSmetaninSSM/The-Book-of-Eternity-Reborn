@@ -5,6 +5,35 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## FR-063 actual repair diagnostic — 2026-10-13 (NPC ERRORS OBSERVED; EVIDENCE PENDING)
+
+Task1a test-only sourceb08d7750e543d39a1dddbad4ee3cbab9b2a8b1a5 independently SOURCE/FIXTURE/
+SELECTION ACCEPTED,production unchanged. FreshBOTH33/78/14 preparation145.8733269s,0execution,
+0build errors; exact1/1/1 plan2.6920968s and catalog721/115615.8157472s valid/unmapped0/stale0,
+both0execution. These are preparation/discovery,not executed tests.
+
+[First actual repair diagnostic](./recovery/fr063-guaranteed-native-diagnostic-npc-errors-20261013/manifest.json)
+freezes46artifacts,actual20261013-134527-376-619073-6f5b0f83b6d3486a825ea6df5f200ad8-categories:
+1executed0PASS1FAIL,COMPLETE1/1/1,13.2065029s,exit1,no timeout/skip/duplicate ID.
+Fresh child619230 passed original42/generation/command/Ready/emptycache/energy2 prerequisites
+and entered actual ordinary caller. Existing committedFormat1PRESENT capture retained17957physical
+repair-request bytes before Escape,matching declared image/length/SHA; observer failure=null.
+Actual errors,all forTest mentor: mortal_npc_relevant_actor_missing_thought_journal_delta,
+structured_npc_update_out_of_scope,missing_actor_block. No treatment error was captured. Canonical
+resource/wound state/history remain byte-exact after cancellation/rollback;loop41,acceptedfalse,
+handledfalse,secondidleUNREACHED. ROOT231source/11binary PREPOST beforemetadata,actualdefault
+Integration/TestSupport/Immutable9 bindings and2strict physicallyabsent roots verified.
+
+Independent EVIDENCE/fixture-cause classification PENDING. The captured upstream NPC errors explain
+why this attempt cannot qualify treatment orchestration; a minimal lawful fixture correction must
+be identified/reviewed before a new native attempt. Do not call this a production restoration RED,
+change original authority or relax NPC validation. First observed-noncompletion packet remains
+immutable/EVIDENCEaccepted. Native history is2invocations2executions0PASS2FAIL ofONEunique case;
+not two unique cases or an accepted treatment. Production/controls/newroot remainUNWRITTEN/UNRUN;
+fullFR063/T070/#1536 andUI remainOPEN. Passing bounded8/proof20 were notrerun.
+Separate GM-docmodularization is read-only proposal/external report, no moves before structure
+agreement; no FR063 source/evidence or immediate-guidance scope is mixed into that proposal.
+
 ## FR-063 first EVIDENCE accepted; diagnostic continuation — 2026-10-13
 
 Retained actual Astra XHigh accepts EVIDENCE/status at7aaaf6dcadac5ebb6057d30a104412b1cfaa86b3:
