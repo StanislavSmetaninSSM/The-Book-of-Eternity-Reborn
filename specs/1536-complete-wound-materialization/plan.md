@@ -9,6 +9,65 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## Bounded archive4 + durable4 final native candidate — 2026-10-13 (CHANGED2 GREEN; FINAL EVIDENCE PENDING)
+
+Proof20 dependency independently QUALIFIED by actual retained Astra XHigh at
+`c793c8aae5afa1cb5aa3111b2516aef304c1c453`: nineteen retained scoped PASS at7b831bf2 plus
+corrected generation1 PASS. Same20 unique cases across checkpoints; proof history2actual
+invocations21executions20PASS1fixture-prerequisiteFAIL,includinggeneration retry. Passing19,
+archive4/exact durable2/finite68/baselines were NOT repeated.
+
+[Changed durable2 first held-refusal GREEN](./recovery/qte-physical-consumer-durable-held-changed-green-20261013/manifest.json)
+freezes actual `20261013-120320-105-588932-c1e624634350449fa4498c02a7ffc31c-categories`,
+sourcec793c8aa/compile82144b38:2executed2PASS0FAIL,1method2existingsemanticcases1COMPLETE
+descriptor,32.9454795s,exit0,no child/descriptor timeout,skips or duplicate IDs.
+Exact NoBuild changed-only plan `20261013-120305-599-588785-4e75b4b92be845108b95407b6db1dc3d-categories`
+1/2/1 took2.4696342s,0execution. Original durable owner4rows was not combined with the alias.
+Only failed changed rows ran; category5/default10 and child45s helper bound remained unchanged.
+
+Fresh native NONE child589089 and CREATE child589117 reopen the SAME physical durable source root
+without archive load/snapshot copy/re-signing/carried factory cache. Both bind actual originalN43
+request/token/session and unchanged physical generation. Real late-terminal entry returns held=true,
+_inGame=false,loop42/story[42]; queued Escape remains available before/after,so repair was not entered.
+Every29mechanical path is byte-exact in parent/child Before/After,includingresourcequartet/history,
+consumed receipt,completion marker,CREATE wound/effects. Four submitted output paths remain exact;
+all109original artifacts/backups and Ready are retained by executed strict native assertions.
+ROOT also verifies retained native Ready/input text against exact parent-context bytes. No new
+allocation/mechanical authority/story43/terminal cleanup is accepted for changed input. CREATE
+and NONE keep their separately owned common-publication/resource-work/receipt source checks.
+
+Complete child stdout/stderr,managed raw results,full context and available input/Ready/repair/stall/
+decision artifacts were retained BEFORE SOURCE cleanup. Entry/pre-idle witnesses retain childPID,
+owned auxiliary factory root,borrowed durable root,original tuple/realm/input type/queue. Actual
+integration/TestSupport/Immutable9 Default-context loaded hashes match11fresh82144b38 binaries;
+Immutable is exact251160bytes/33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c.
+
+ROOT173source/11binary pins PRE/POST match BEFORE metadata.171nonmetadata pins equal compile82144b38;
+onlyactiveMD2 differ,so current NoBuild uses actual matching fresh BOTH provenance. Fresh preparation
+33/78/14 and catalog720/11560 are retained from accepted generation packet,not rerun/execution claims.
+16top-level plus6nested native observations;2SOURCE+2child-factory strict cleanup receipts,
+all4roots physically absent; runner owned/runtime cleanup true.43frozen artifacts preserve
+current/sourceequivalence/pins/preparation/catalog provenance/exactplan/actual/TRX/full drained
+childlogs/native results+observations/ROOT readback tool and candidateeight-row qualification index.
+Frozen manifest/index retains pre-review PENDING; publish/actualremote/GitHub-only recovery precede
+mandatory independent EVIDENCE/status and changed2/eight-row bounded qualification.
+
+Current bounded eight unique cases: archiveNONE/CREATE x pending/consumed4 independentlyQUALIFIED
+atfb1a17c02f76c378148f54eea685dfc5bfcaa01f; durableNONE/CREATE x exact2 independentlyQUALIFIED
+at8e4e1f769872a267424366a8786b7988326f632d; changedNONE/CREATE2 now nativeGREEN pendingreview.
+Historyarchive5actual invocations20executions4PASS16FAIL; durable4actual invocations14executions
+4PASS10FAIL. Combinedbounded history9invocations34executions8PASS26FAIL includes retries;
+this is not34unique cases. Proof20/finite68/baselines have separate histories and counts.
+Next: independent review frozen changed2 and aggregate8 evidence; only after acceptance publish
+final bounded status/actualremote/recovery and stop. No additional passing-cohort runtime planned.
+
+FullT070/FR-063/parent/#1536 stayOPEN; protected boxes/historical packets unchanged. Historicalfd15
+changedchild timeout exactcause,managedresult andfactorycleanup remainUNKNOWN/UNQUALIFIED; current
+managedGREEN does not retroqualify them. B2–B5,C5fulloptimization,journalcausalruntimeRED and Windows
+remain outside this run. Existing public GM single-decision grammar/prompts/examples remain valid:
+held conflict preservation is client-owned,not a new GM command or accepted outcome. No main/merge/
+CI/issues/PR/providercalls/newkeys/packages/globalharness/Windows operation. No tool security refusal.
+
 ## Corrected generation first outcome — 2026-10-13 (GENERATION1 GREEN; EVIDENCE PENDING)
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
