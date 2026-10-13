@@ -66,6 +66,23 @@ remain unwritten; all task checkboxes stay open. Full report is outside the repo
 
 Run via existing `scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-fr063-guaranteed-native-same-root.json`; `-PlanOnly` prepares/discovers, `-NoBuild` actual is allowed only after fresh selected build. Exact invocations/pins go into the frozen packet.
 
+## FR-063 first EVIDENCE accepted; diagnostic continuation — 2026-10-13
+
+Retained actual Astra XHigh accepts EVIDENCE/status at7aaaf6dcadac5ebb6057d30a104412b1cfaa86b3:
+all59artifact chains/native originals,231source/11binaries and two strict absent roots verified.
+Classification remains observed ordinary noncompletion; exact cause UNRESOLVED. Neither a
+restoration-defect causal RED nor a concrete unrelated fixture defect is established. Cancellation
+and rollback precede the failed completion assertion. Frozen packets remain immutable.
+
+Authorize one test-only diagnostic seam before any correction: capture actual committed
+validation_repair_request.json bytes through the existing Format1 present-member publication
+observer BEFORE queued Escape deletes them. Keep ordinary input/Ready/caller/assertions,
+no Export/Restore/reducer/Compose prelude, one-case selection and all time bounds unchanged.
+Use the bytes only as evidence; never feed diagnostic data into accepted authority. Publish/review
+SOURCE, fresh selected preparation/exact plan/catalog, run only the affected native case once,
+verify PREPOST/cleanup, then freeze/publish and independently classify that diagnostic outcome.
+Production, new-root and finite controls remain unchanged/unwritten until causal evidence.
+
 ## Current FR-063 first native outcome — 2026-10-13 (OBSERVED FAIL; EVIDENCE PENDING)
 
 Test-only source31818f11c597b01409cfb12a9ba07322975c41f0 independently SOURCE/FIXTURE/SELECTION
@@ -79,8 +96,8 @@ freezes actual20261013-131124-135-606204-b15a1afe576f4e75b1a574e79b793092-catego
 Fresh child606362,parent606327,same physical root/generation,official original42/request/token,
 command/Ready digests,energy2 and empty common-plan cache passed prerequisites. The actual ordinary
 late-terminal caller entered without test restoration/composition; accepted=false,handled=false,
-loop41. The first assertion is missing turn42 completion (NativeCold.cs:201). Queued Escape then
-cancelled/restored the original state; energy remains2 and resource-state/history,wound-state/history
+loop41. Queued Escape cancelled/restored the original state before the first failed assertion,
+missing turn42 completion (NativeCold.cs:201); energy remains2 and resource-state/history,wound-state/history
 are byte-exact. No new accepted treatment/story/spend is established; second idle was not reached.
 Complete logs/managed result/raw before-after artifacts are retained before two strict owned roots
 were removed and independently checked physically absent. ROOT231source/11binary PREPOST match
@@ -101,6 +118,19 @@ or additional methods; explain that separate purpose before implementing it. A r
 finds current console name/severity notification, unfinished shared /раны/browser guidance and a
 contract allowing all-hidden routes. Prepare limited synchronized docs/focused-test alignment after
 this native freeze; do not replace FR063 work, invent diagnosis mechanics or claim UI qualification.
+
+## Task 1a: Evidence-only actual repair rejection capture
+
+- [ ] Add only a test-side observer in the first NativeCold probe: capture the actual committed
+  validation_repair_request.json member bytes from the existing publication callback, using the
+  accepted Format1 present-member pattern. Persist the captured sequence in native stdout and
+  managed result before cleanup, including when assertions fail. No direct validator call or
+  restoration/precomposed authority before ordinary entry; no fixture/input/Ready/assertion changes.
+- [ ] Publish/remote/recovery and independent SOURCE gate for exact diagnostic diff/one-case selection.
+- [ ] Fresh selected preparation, exact plan and catalog (all zero execution); one actual diagnostic
+  invocation, source/binary PREPOST before metadata, strict owned cleanup. Freeze and publish the
+  entire first diagnostic result before EVIDENCE and any conditional fix. Do not repeat historical
+  accepted cohorts or relabel the first noncompletion as a proven production cause.
 
 ## Conditional continuation after Task1 EVIDENCE
 

@@ -5,6 +5,23 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## FR-063 first EVIDENCE accepted; diagnostic continuation — 2026-10-13
+
+Retained actual Astra XHigh accepts EVIDENCE/status at7aaaf6dcadac5ebb6057d30a104412b1cfaa86b3:
+all59artifact chains/native originals,231source/11binaries and two strict absent roots verified.
+Classification remains observed ordinary noncompletion; exact cause UNRESOLVED. Neither a
+restoration-defect causal RED nor a concrete unrelated fixture defect is established. Cancellation
+and rollback precede the failed completion assertion. Frozen packets remain immutable.
+
+Authorize one test-only diagnostic seam before any correction: capture actual committed
+validation_repair_request.json bytes through the existing Format1 present-member publication
+observer BEFORE queued Escape deletes them. Keep ordinary input/Ready/caller/assertions,
+no Export/Restore/reducer/Compose prelude, one-case selection and all time bounds unchanged.
+Use the bytes only as evidence; never feed diagnostic data into accepted authority. Publish/review
+SOURCE, fresh selected preparation/exact plan/catalog, run only the affected native case once,
+verify PREPOST/cleanup, then freeze/publish and independently classify that diagnostic outcome.
+Production, new-root and finite controls remain unchanged/unwritten until causal evidence.
+
 ## Current FR-063 first native outcome — 2026-10-13 (OBSERVED FAIL; EVIDENCE PENDING)
 
 Test-only source31818f11c597b01409cfb12a9ba07322975c41f0 independently SOURCE/FIXTURE/SELECTION
@@ -18,8 +35,8 @@ freezes actual20261013-131124-135-606204-b15a1afe576f4e75b1a574e79b793092-catego
 Fresh child606362,parent606327,same physical root/generation,official original42/request/token,
 command/Ready digests,energy2 and empty common-plan cache passed prerequisites. The actual ordinary
 late-terminal caller entered without test restoration/composition; accepted=false,handled=false,
-loop41. The first assertion is missing turn42 completion (NativeCold.cs:201). Queued Escape then
-cancelled/restored the original state; energy remains2 and resource-state/history,wound-state/history
+loop41. Queued Escape cancelled/restored the original state before the first failed assertion,
+missing turn42 completion (NativeCold.cs:201); energy remains2 and resource-state/history,wound-state/history
 are byte-exact. No new accepted treatment/story/spend is established; second idle was not reached.
 Complete logs/managed result/raw before-after artifacts are retained before two strict owned roots
 were removed and independently checked physically absent. ROOT231source/11binary PREPOST match
