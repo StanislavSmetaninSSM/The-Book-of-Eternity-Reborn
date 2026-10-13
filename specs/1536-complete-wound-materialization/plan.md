@@ -9,8 +9,53 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 <a id="t070-first-vertical-source-design-2026-10-12"></a>
-## Current T070 first vertical — 2026-10-13 (NONE RETRY ADMISSION PREREQUISITE FAIL; EVIDENCE PENDING; NO THIRD RUN)
+## Current T070 first vertical — 2026-10-13 (ADMISSION FAILURE EVIDENCE ACCEPTED; UNKNOWN CAUSE; FOUR-ROW DIAGNOSTIC SELECTION READY)
 
+Admission failure evidence published9c4719d399bc158ced3814c942ba470f640dacd9; ROOT verified exact
+remote/clean primary and629-file GitHub-only selected recovery/all100 connected paths. Actual
+retained Astra XHigh EVIDENCE/status gate ACCEPTED25 artifacts/146 immutable391d source pins/
+10 fresh binaries/native6 observations/strict cleanup. Selected NONE1 executed/0 PASS/1 FAIL
+at ordinary-admission prerequisite line77, not consumer causal RED. Source42/official N43/
+GM authoring were reached; ordinaryValidated=false/loop42/failure=null, receipt/draft/command
+cleaned by the existing refusal path. Full ordinary completion and causal postconditions stay
+UNREACHED; underlying admission diagnostic is UNOBSERVED and cause UNKNOWN. Frozen
+[packet](./recovery/qte-physical-consumer-none-admission-failure-20261013/manifest.json) unchanged;
+historical pre-review PENDING field is not rewritten. No inferred production fix.
+
+Read-only trace excludes recurrence of the private safeContext serialization defect in the
+issued command: existing WoundResponseInputComposer.Serialization explicitly writes all three
+safe fields and StateDistributor independently parses/binds decisions and scene. Remaining
+resource→raw wound source reconstruction→Prepare/effect/Finalize→canonical refresh is before
+ordinaryValidated. Post-refusal empty paths cannot identify which boundary failed. Source
+alone has not established the dynamic cause; no third protected NONE retry is authorized.
+
+Current metadata-only diagnostic owner selects EXACTLY one existing integration component
+method/four previously UNRUN rows: QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision
+(NONE/CREATE × exact/changed replay), budget2/default7, intentional exact common-owner overlap.
+Real QTE42 followed by actual Stage43/official Reader and existing raw source observation
+precedes first Assert.Empty of ValidateResourceAndMortalQteDecisionAsync. ValidationIssue.ToString
+prints Severity/Category, exact path and Message, not Code; observed path/message may then be
+mapped against immutable391d source. If admission passes, the next direct common publisher
+propagates its actual exception/stack. No GM repair wait, new observer/harness, source/fixture/
+authority changes or full engine proof from this component control. All four remain UNRUN.
+[Diagnostic selection](../../tests/selections/1536-qte-physical-injury-consumer-admission-diagnostic.json)
+
+Only one category node is prepended; all prior710 nodes/raw suffix and full preparation/
+remainder/global selectors stay unchanged. Expected catalog711 categories/11548 methods;
+no new test method. Diagnostic planned1 method/4 cases/1 descriptor/default7, not discovery.
+Existing391d BOTH-build fresh binaries can support metadata-only NoBuild preparation/catalog
+ONLY after ROOT verifies all runtime code/contracts byte-equivalent and mandatory focused
+SELECTION gate. Those checks execute0 tests; the selected diagnostic actual remains UNRUN.
+No project execution/commit/push by the writer. Mutations STOPPED for ROOT publication/recovery.
+
+Current finite NONE history remains2 actual invocations:178e incomplete timeout0 reported tests
+and391d completed prerequisite1 executed/0 PASS/1 FAIL. Historical4010 NONE/c7 CREATE proper
+causal REDs remain separately accepted, producer1b23 executed/22 PASS/1 FAIL and projection4d
+4 actual/28 executed/26 PASS/2 FAIL unchanged. CREATE/remainder/archive/newroot/fresh-process
+remain UNRUN, all checkboxes/protected ce955/NONE/CREATE/projection Facts exact; full consumer/
+T070/FR-063/parent/#1536 OPEN.
+
+Historical9c first admission failure checkpoint (EVIDENCE acceptance supersedes pending):
 SafeContext correction SOURCE accepted at391ddff7183b8fbde64bb2678ee891ec701b63b4 by actual
 retained Astra XHigh. Fresh selected BOTH builds/PlanOnly passed28 methods/67 cases/12
 planned descriptors,175.019s,85/35 warnings0 errors; catalogNoBuild valid710/11548,5.345s.
