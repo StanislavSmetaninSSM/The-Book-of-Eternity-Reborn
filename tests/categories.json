@@ -2,6 +2,32 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "fr063-guaranteed-live-joint-repair-entrance",
+            "responsibility": "#1536 J1 single genuine outer ordinary live-owner causal Fact. Actual declared QTE42/maxII/source10->5, official43/same generation, real homogeneous treatment Prepare/Create/distributor-confirmed energy2 request. One severityIII public draft and exact scene/Ready enter the real participating late-idle validation/repair loop. Actual committed public repair or protected diagnostic plus private graph is captured before queued Escape. Required genuine severity wave/full private request persistence is the first owning oracle; authoring UNRUN, not an observed production RED.",
+            "excludes": "Qualified component pending2/ordinary13/API/QTE/archive/baselines; no direct adapter/pending composer/precomposed common plan, synthetic repair packet/authority, repeated reservation, copied original, caller binding bypass or production J2–J6. ConfirmedHeld is witnessed before entry, not inferred as a registry read at dispatch. No correction/completion/compensation/cold/new-root or full-FR qualification in this first case. No broad family/globalCI/runner change.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs",
+                "specs/1536-complete-wound-materialization/spec.md",
+                "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md"
+            ],
+            "related": [],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairPersistsSameConfirmedRequestBeforeDispatch"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "fr063-guaranteed-pending-wave-persistence",
             "responsibility": "#1536 FR-063/FR-012 genuine pending repair-persistence component: one theory/two cases. A labelled effect-free canonical wound/provider/energy2 bootstrap precedes actual declared QTE42 (health10->5/Damage5/maxII), then actual Stage43 on the same physical root/generation. A production-issued homogeneous guaranteed treatment command is confirmed; the read-only QTE adapter issues genuine actionable severity repair context/nonempty packets from the same official43 occurrence. Existing closed ComposePendingRoot carries the complete real command request. Exact command+pending+history catalog coalesces once, and fresh-lease Export automatically restores one confirmed request without publication lineage. A nested copied quantity changed under original seals is rejected by its parser before that candidate enters coalescing, with no accepted recovered authority/new claim or physical mutation.",
             "excludes": "Component-only codec/catalog/current-owner recovery, not a live pending writer or mixed ordinary publication. ComposePendingRoot has no production caller; live repair persistence remains OPEN. No fabricated packet, empty wave, original rewrite/re-sign, post-QTE canonical initialization, manual recovery/re-reservation, common publication, provider/model/Windows/global runner/CI change, or qualified ordinary13/native/QTE/archive/proof/finite cohort repeat. Existing qualified helpers and old default QTE caller behavior stay byte-exact.",

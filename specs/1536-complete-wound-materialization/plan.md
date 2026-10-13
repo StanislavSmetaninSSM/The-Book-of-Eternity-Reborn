@@ -9,6 +9,38 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## Joint J0/J1 live-owner causal TEST source READY; all new checks UNRUN — 2026-10-13
+
+Retained sole Sol authored the released bounded J0/J1 candidate from published
+b5f5675bfe211501ce30626161cd4cb65316b61a. Accepted9c1a/a1ef DESIGNv2 owning exception is now
+recorded in FR-063/FR-012 and treatment private-wave contract; old six-argument/public mixed
+exclusions remain, production J2–J6 is UNIMPLEMENTED. No proposed private API is claimed live.
+Qualified pending component2 EVIDENCE6c51 and ordinary/API/QTE/archive/native source bodies
+remain byte-exact; no passing repeat. New partial has one Fact/one semantic case only.
+
+The case reuses unchanged pre-original noNatural/effect-free world and typed10->5 QTE source
+oracle, actual QTE42/maxII, official staged43/sameG, real guaranteed Prepare/Create and actual
+homogeneous StateDistributor confirmation with energy2. It then authors one public severityIII
+proposal/complete exact scene/Ready and enters the real late-idle participating ordinary/frame/
+validation-repair loop. No test pending composer/direct adapter, precomposed common plan,
+manufactured wave/source, re-reservation, original rewrite/re-sign or production change.
+
+Existing Format1 committed-publication observer retains actual PRESENT repair/diagnostic bytes,
+member hashes and complete physical graph before queued Escape; existing engine logger retains
+actual refusal codes. ConfirmedHeld is measured under the real lease BEFORE entry. At dispatch
+only physical graph/catalog/source/resource images are observed: no fabricated at-dispatch
+registry evidence. First owning oracle requires a real severity repair wave/full private held
+request persistence; source-backed current rejection is an expectation, NOT yet observed RED.
+A genuine upstream or observation failure must be classified separately. All raw outcome data
+is emitted before assertions/owned cleanup. Existing strict root cleanup and input remain.
+
+Exact new owner/selector1method1case1descriptor/category5/default10; catalog authoring inventory
+729/11569 provisional NOTdiscovery, inherited728nodes/oldselectors/globalCI unchanged. SOURCE,
+build/preparation/discovery/catalog/actual UNRUN; ROOT publication/GitHub recovery and mandatory
+SOURCE precede the first single actual freeze/EVIDENCE. No live correction/publication/cold/
+newroot/UI/fullFR063/T070/#1536 qualification. GM branch remains separate and untouched.
+Old active/historical evidence and checkbox bytes are preserved below; no task marked complete.
+
 ## Genuine pending2 component EVIDENCE accepted; mandatory live owner next — 2026-10-13
 
 Retained independent actual AstraXHigh [EVIDENCE](./recovery/fr063-genuine-pending2-component-first-green-evidence-review-20261013.md)

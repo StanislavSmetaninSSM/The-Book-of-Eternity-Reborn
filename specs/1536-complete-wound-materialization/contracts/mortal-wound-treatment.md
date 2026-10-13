@@ -1017,6 +1017,43 @@ coordinate is a conflict. After exact-copy coalescing, operation key, attempt ID
 accepted event ref, and every non-null `(courseId, milestoneOrdinal)` are independently
 exact/confusable unique; exact copies never double-reserve.
 
+### Bounded private joint severity-repair owner (FR-012/FR-063)
+
+Homogeneous treatment continues through the existing six-argument `ComposeMortalWoundTreatmentPublication` entry and its unchanged agreement checks. A single current-Mortal player guaranteed treatment may additionally complete through the private joint-repair entry of that same publication family when one genuine same-original QTE acquisition repair wave is independently admitted and corrected. The joint entry receives freshly reconstructed typed treatment and acquisition authorities, retains the exact sealed treatment request and confirmed agreement, and owns one combined prepared/effect/final/common publication. The acquisition contribution does not become a mixed public wound command. Both contributions, complete treatment history, occurrence consumption, private-wave consumption, resource finalization and lifecycle settlement must agree before completion. This exception grants no generic mixed-command, new reservation, changed original binding, raw-resource/effect, item/course/procedure/diagnosis, party, or public acquisition-plus-treatment authority.
+
+The first closed contour requires one distributor-confirmed guaranteed request for an
+existing current-player physical wound and one genuine same-original physical QTE
+occurrence. Its severity repair uses the actual adapter-issued opportunity/packet range;
+III→II is the first example, not a restriction against another real-adapter-valid value.
+Keep the entire scene and unaffected proposal fields, decision identity and woundRef;
+the acquired and treated wounds are distinct. Item/course/procedure/diagnosis, multiple
+requests/opportunities/packets, narration repair, none substitution, new reservations and
+unrelated mechanical work are outside this entry. Ordinary periodic effects retain their
+single existing schedule. No public command becomes a mixed acquisition/treatment family.
+
+Before real GM repair dispatch, the client owns one coordinated original-baseline restore
+plus exact held command/private pending install and committed readback. Only a genuine
+nonempty adapter repair wave may persist the full submittedTreatmentRequests copy; exact
+command/pending duplicates coalesce into one logical request/claim. The private pending
+root adds a closed jointRepairCheckpoint carrying original/generation, exact retained
+rejected draft/scene, source/request/command and actual packet semantic proofs. It is not
+GM-writable, an accepted acquisition command, a reservation capability or a hash-only
+source substitute. Fresh repair/cold owners reconstruct the actual source and full request
+under the participating lease before accepting a correction or restoring claims.
+
+Retryable restore/publication failure retains the exact full graph and confirmed hold;
+known partial writes compensate through the same owner. Terminal cancellation atomically
+removes only the owned command/pending copies and releases that same confirmed hold, or
+restores removed bytes and retains it if settlement fails. One shared prepared/effect/final/
+common publication and whole-wave cleanup are mandatory for eventual completion; sequential
+acquisition/treatment publication and two independently finalized root merges do not qualify.
+
+This section records accepted DESIGNv2 J0 obligations. Current old six-argument publisher,
+strict codec/public mixed guards and production branches remain unchanged. J2–J6 APIs,
+checkpoint codec/restore/union publication are implementation targets, not current runtime
+support. J1 source tests the actual outer ordinary repair entry; component codec/catalog
+qualification alone does not establish this live producer or cold/new-root completion.
+
 After a true cold restart that copies only durable game-state bytes to a different
 filesystem root and constructs fresh process-local registries, that typed command/pending
 authority supplies the complete detached request plus its client-owned operation key,
