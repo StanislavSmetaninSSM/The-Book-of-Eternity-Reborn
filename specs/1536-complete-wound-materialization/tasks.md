@@ -5,7 +5,7 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ARCHIVE4 QUALIFIED; DURABLE4 EXACT BOOLEAN FAILURE + CHANGED TIMEOUT FROZEN)
+## Current T070 boundary — 2026-10-13 (ARCHIVE4 QUALIFIED; DURABLE4 BOOLEAN/INPUT/DIAGNOSTIC CORRECTION SOURCE READY)
 
 Retained actual Astra XHigh SOURCE/FIXTURE/SELECTION ACCEPTED
 `f9e9e397c251515e0cb6515df36375c530f6a475`, no blocking findings. Fresh BOTH PlanOnly33/78/14
@@ -32,10 +32,14 @@ Their native loaded integration/support/Immutable9 identities/hash/Default conte
 Changed NONE/CREATE children hit the existing45s kill/join boundary,with Child=null and no managed
 result or cleanup receipt. Parent MechanicalBefore==MechanicalAfter in all four rows after child
 return/kill; no destructive rollback is observed. Changed timeout cause remains UNRESOLVED.
-Auto-Enter input selecting repair retry is a source hypothesis pending read-only diagnosis. No
-production patch is justified from timeout alone. Timeout full child logs were written under the
-SOURCE root but not retained in TRX before fixture cleanup; changed PID/loaded bindings/finalizer
-boundary and auxiliary factory cleanup are UNKNOWN/UNQUALIFIED. Do not infer them from exact rows.
+The old auto-Enter retry-menu theory is UNPROVED and is not treated as the actual timeout cause.
+Source trace establishes a reachable different fixture hang: WaitForContractRepairAsync3190+ blocks
+live input,then polls KeyAvailable3249+ BEFORE ReadKey; the existing live hook runs only on active
+ReadKey registration. An empty live queue never triggers that hook,and EnqueueKey while blocked
+refuses NotAwaitingInput. Historical changed wait/diagnostics/PIDs remain UNKNOWN. Timeout full child
+logs were written under the SOURCE root but not retained in TRX before fixture cleanup; changed loaded
+bindings/finalizer boundary and auxiliary factory cleanup remain UNKNOWN/UNQUALIFIED. No production
+patch or destructive rollback finding is justified from timeout alone or inferred from exact rows.
 
 ROOT matched168 SOURCE/11 fresh binaries PRE/POST BEFORE metadata,32 top-level observations/four
 parent pause/resource/original chains/two managed child results. Four SOURCE and TWO emitted child
@@ -43,12 +47,41 @@ factory strict receipts have removed=true/failure=null,all6 known roots physical
 cleanup true. Timeout children emitted no factory receipt; no blanket fixture-cleanup claim.
 Frozen30 artifacts preserve native preparation/exact/actual/TRX/observations/readbacks/pins and
 retained catalog provenance. Durable history2 actual invocations8 executions0 PASS8 FAIL. Current
-EVIDENCE/status PENDING. Next publish/GitHub-only recover,mandatory EVIDENCE gate,then a minimum
-fixture contract/ordinary deterministic rejection-input/log-preservation correction only if supported
-by read-only diagnosis. Keep resource155/ownedtick+narrativeDamage1/wholedecision/strict changed
-committed-mechanics/story/receipt/original/binding/cleanup oracles. No passing archive/finite/baseline
-repeat,no broad suite. T070/FR-063/parent/#1536 OPEN; frozen histories/checklists unchanged.
-No real tool security refusal; project assertion/timeout is not a tool denial.
+EVIDENCE/status ACCEPTED by actual retained Astra XHigh at
+`fd1503a3242e57959accfbbe6804fffa0693527f`, no report defects. The frozen manifest retains its
+pre-review PENDING wording; these four failures do not qualify durable replay/refusal or timeout
+factory cleanup. Archive4/finite68/baselines remain independently accepted without repetition.
+
+Current bounded fixture correction expects false after ordinary late-idle completion. The same
+ordinary repair cancellation returns false from WaitForContractRepairAsync3263-3291; a settled
+rejection then traverses the caller's cleanup and falls through false at TurnLifecycle1180 unless
+an early-exit condition occurs. This return value is NOT acceptance/refusal proof. Its assertion now
+follows ALL strict committed-mechanics/story/turn/receipt checks so it cannot mask an actual mechanical
+rollback. The exact branch retains original artifact cleanup and second actual idle/once-only checks.
+
+ONLY changed durable children select existing QueuedConsoleInputSource([Escape]) through the real
+idle engine/ordinary repair cancellation; the test-local factory's default live input and ALL parent/
+archive/exact behavior remain unchanged. Actual pre-idle native witness records input implementation/
+KeyAvailable,PID,auxiliary factory root,borrowed durable root,generation and genuine originalN43 binding.
+A separate child-entry witness records owned auxiliary root/PID before any wait. Child result records
+actual input type and remaining KeyAvailable. These future observations can establish the actual wait/
+cancellation route; historical timeout cause is not retroactively proved and the new route is UNRUN.
+
+Before parent SOURCE cleanup,existing observation now retains full drained child stdout/stderr log
+(including timeout kill/join result),raw result if available,exact child context and available current
+request/terminal/repair/stall/draft artifacts. Global host/helper and45s bound remain unchanged; no
+cleanup sweep or invented timeout-child receipt. Actual afterimages remain captured even when a
+strict changed-refusal assertion exposes the known outer pre-N43 rollback risk. Keep ALL signed155/
+ownedtick/narrativeDamage1/whole-decision/committed-mechanics/story/no-allocation/receipt/marker/
+original-binding/eight-row cleanup oracles. Any actual production defect must first freeze as observed.
+
+Correction SOURCE READY for ROOT publication/GitHub-only recovery and focused actual Astra XHigh
+SOURCE gate; corrected build/discovery/runtime UNRUN. Next fresh BOTH PlanOnly33/78/14 and exact
+durable1/4/1 budget5/default10,retained catalog717/11553,then FAILED durable4 only/freeze EVIDENCE.
+No archive4/finite68/baseline repetition,no broad suite. Public GM grammar/Mortal/afterlife runtime
+contracts unchanged; no prompt/example or production/authority change. T070/FR-063/parent/#1536 OPEN;
+frozen histories/checklists unchanged. No real tool security refusal; project assertion/timeout is not
+a tool denial. No author projectcommand/build/runtime/git mutation performed.
 
 Historical resource snapshot correction checkpoint follows; its UNRUN wording is superseded only
 by this failed four-case outcome. Firstdurable9ff prerequisite failure remains EVIDENCE accepted.

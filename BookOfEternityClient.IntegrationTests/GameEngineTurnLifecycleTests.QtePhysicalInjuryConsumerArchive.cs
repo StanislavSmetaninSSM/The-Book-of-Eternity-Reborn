@@ -162,12 +162,20 @@ public sealed partial class GameEngineTurnLifecycleTests
         }.ToJsonString());
         var failure = await Record.ExceptionAsync(() => RunMortalArchiveChildAsync("engine-qte-wound-durable", _fs.BasePath, output,
             (materialize ? 1 : 0) + (changed ? 2 : 0), contextPath));
-        var observed = File.Exists(output) ? JsonNode.Parse(File.ReadAllText(output)) : null;
+        var childResultRaw = File.Exists(output) ? File.ReadAllText(output) : null;
+        var childLog = File.Exists(output + ".log") ? File.ReadAllText(output + ".log") : null;
+        var availableChildArtifacts = new Dictionary<string, string?>(StringComparer.Ordinal);
+        foreach (var path in new[] { "input/turn_request.json", "ready/turn_complete.json", "ready/turn_error.json",
+                     "game_state/control/validation_repair_request.json", "game_state/control/validation_repair_ready.json",
+                     "game_state/control/gm_validation_repair_artifact_stall_report.json", MortalWoundOpportunityAdapter.DecisionPath })
+            availableChildArtifacts[path] = await _fs.ReadFileAsync(path);
+        var observed = childResultRaw is null ? null : JsonNode.Parse(childResultRaw);
         var cleanup = MortalArchiveChildCleanup(output + ".log");
         WritePhysicalInjuryDiagnostic("qte_durable_actual_child", new
         {
             materialize, changed, ParentProcessId = Environment.ProcessId, Child = observed, ChildFailure = failure?.ToString(),
-            ChildCleanup = cleanup, OriginalHashes = MortalArchiveDigests(original.ToDictionary(p => p.Key, p => (byte[]?)p.Value)),
+            ChildResultRaw = childResultRaw, ChildLog = childLog, ChildContext = JsonNode.Parse(File.ReadAllText(contextPath)),
+            AvailableChildArtifacts = availableChildArtifacts, ChildCleanup = cleanup, OriginalHashes = MortalArchiveDigests(original.ToDictionary(p => p.Key, p => (byte[]?)p.Value)),
             MechanicalBefore = MortalArchiveDigests(mechanics), MechanicalAfter = MortalArchiveDigests(await CaptureMortalArchiveImagesAsync(_fs, MortalArchiveMechanicalPaths))
         });
         Assert.Null(failure);
@@ -339,8 +347,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         var context = JsonNode.Parse(File.ReadAllText(contextPath))!.AsObject();
         using var factory = new GameEngineTurnLifecycleTests();
         using var factoryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
+        Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "qte_durable_child_owned_entry", Observation = new
+        { ProcessId = Environment.ProcessId, scenario, BorrowedDurableRoot = root, AuxiliaryFactoryRoot = factory._rootPath,
+            ParentProcessId = context["parentProcessId"]!.GetValue<int>() } }));
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
-        using var run = factory.CreateMortalArchiveOrdinaryTurn(files, null, false, false);
+        using var run = factory.CreateMortalArchiveOrdinaryTurn(files, null, false, false, cancelRepair: changed);
         Exception? failure = null;
         string? generation = null;
         PendingTurnSnapshotReadAuthority? original = null;
@@ -379,13 +390,21 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.False(files.FileExists(AcceptedMechanicsPlan.WoundCommandPath));
             await GetPrivateField<StateManager>(run.Engine, "_stateManager").RefreshGameStateAsync();
             GetPrivateField<GameLoop>(run.Engine, "_gameLoop").SetSession(original.SessionId, 42);
+            var idleInput = GetPrivateField<IConsoleInputSource>(run.Engine, "_inputSource");
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "qte_durable_child_before_actual_idle", Observation = new
+            { ProcessId = Environment.ProcessId, scenario, BorrowedDurableRoot = root, AuxiliaryFactoryRoot = factory._rootPath,
+                generation, original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber, original.Realm,
+                InputType = idleInput.GetType().FullName, idleInput.KeyAvailable, PlannedRepairCancellation = changed,
+                MechanicalBefore = MortalArchiveDigests(before) } }));
             handled = await InvokePrivateAsync<bool>(run.Engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
-            Assert.True(handled);
             after = await CaptureMortalArchiveImagesAsync(files, MortalArchiveMechanicalPaths);
             foreach (var pair in before) Assert.Equal(pair.Value, after[pair.Key]); // Changed refusal must not undo an already committed publication.
             Assert.Equal(changed ? new[] { 42 } : new[] { 42, 43 }, await MortalArchiveStoryTurnsAsync(files));
             Assert.Equal(changed ? 42 : 43, GetPrivateField<GameLoop>(run.Engine, "_gameLoop").TurnNumber);
             await AssertMortalArchiveDecisionAsync(files, context["source"]!.AsObject(), materialize, original);
+            // Ordinary accepted completion or settled cancellation reaches false; it is not an acceptance proof.
+            // Check this only after the strict canonical/story oracles so it cannot mask a destructive rejection.
+            Assert.False(handled);
             if (!changed)
             {
                 foreach (var pair in context["originalImages"]!.AsObject()) Assert.False(files.FileExists(pair.Key));
@@ -405,6 +424,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
                 processId = Environment.ProcessId, scenario, generation, handled, secondIdle,
+                AuxiliaryFactoryRoot = factory._rootPath, InputType = GetPrivateField<IConsoleInputSource>(run.Engine, "_inputSource").GetType().FullName,
+                InputKeyAvailableAfter = GetPrivateField<IConsoleInputSource>(run.Engine, "_inputSource").KeyAvailable,
                 BinaryPins = MortalArchiveBinaryPins(), DependencyContext = MortalArchiveDependencyContext(),
                 ProcessArguments = Environment.GetCommandLineArgs(), LoadedDependencyBindings = loadedDependencyBindings, FreshFactory = true,
                 actualTurn = GetPrivateField<GameLoop>(run.Engine, "_gameLoop").TurnNumber, failure = failure?.ToString(),
@@ -440,7 +461,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         public void Dispose() => Input.Dispose();
     }
 
-    private MortalArchiveTurn CreateMortalArchiveOrdinaryTurn(FileSystemManager files, bool? materialize, bool resourceWork, bool pauseAfterPublication)
+    private MortalArchiveTurn CreateMortalArchiveOrdinaryTurn(FileSystemManager files, bool? materialize, bool resourceWork, bool pauseAfterPublication,
+        bool cancelRepair = false)
     {
         var console = new AgentConsoleStateStore();
         AgentConsoleLiveInputSource? live = null;
@@ -451,7 +473,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.True(live!.EnqueueKey(Key(ConsoleKey.Enter)).Accepted);
             }});
         MortalArchiveTurn? run = null;
-        var engine = CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
+        IConsoleInputSource engineInput = cancelRepair ? new QueuedConsoleInputSource([Key(ConsoleKey.Escape)]) : input;
+        var engine = CreateGameEngine(engineInput, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
             fileSystem: files, finalizationHooks: new GameEngineSessionFinalizationHooks { AtCheckpointAsync = Author });
         run = new MortalArchiveTurn { Engine = engine, Input = input };
         return run;
