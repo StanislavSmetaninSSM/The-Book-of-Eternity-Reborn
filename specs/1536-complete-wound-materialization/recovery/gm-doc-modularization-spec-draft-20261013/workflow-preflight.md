@@ -39,9 +39,9 @@ Recommendation: keep Source Issue **TBD** until a suitable existing task is supp
 
 ## Конкретные внешние артефакты
 
-- [Specification v1](gm-doc-modularization-draft/spec.md): complete source/scope disclosure, approved clarification, three user stories, ten exact afterlife path pairs, core/router paths, seven Block_5 pairs, thirteen requirements, edge cases, measurable acceptance, verification boundaries and approval state.
-- [Requirements checklist](gm-doc-modularization-draft/checklists/requirements.md): draft-content review is checked; tracker, user spec approval, FR063 sequencing, isolated worktree, plan/tasks/analysis and implementation release remain explicitly unchecked. This is not runtime evidence.
-- [Single issue title/body draft](gm-doc-modularization-draft/issue-draft.md): concrete proposed tracker; **not sent or created**.
+- [Specification v1](spec.md): complete source/scope disclosure, approved clarification, three user stories, ten exact afterlife path pairs, core/router paths, seven Block_5 pairs, thirteen requirements, edge cases, measurable acceptance, verification boundaries and approval state.
+- [Requirements checklist](checklists/requirements.md): draft-content review is checked; tracker, user spec approval, FR063 sequencing, isolated worktree, plan/tasks/analysis and implementation release remain explicitly unchecked. This is not runtime evidence.
+- [Single issue title/body draft](issue-draft.md): concrete proposed tracker; **not sent or created**.
 
 The spec uses `OtherGuides/GM_Common_Core.md` and existing `CLI_Rules_Index.md`; it adds no second global router. It preserves the exact ten approved flat pairs and the afterlife-first sequence. It contains no paid GM run, timing promise, gameplay policy or new context framework.
 

@@ -26,8 +26,8 @@
     },
     {
       "path": "workflow-preflight.md",
-      "bytes": 13811,
-      "sha256": "991f194bb74ecc5fe27d6054427caaf1ed2e9149d5c8bf8651d99ba888e50c39"
+      "bytes": 13727,
+      "sha256": "961b4b252767c880508e0331e7516d60772db45c541231edb5fe2edbd2d8c0a7"
     }
   ],
   "projectChecks": "NONE; draft qualitycheckmarks notruntime results",
