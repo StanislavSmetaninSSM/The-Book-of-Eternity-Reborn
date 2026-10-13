@@ -1,0 +1,280 @@
+{
+  "source": "75e62186ac9bb3f2e1228f0cb79105c4e0aa1514",
+  "compileSource": "391ddff7183b8fbde64bb2678ee891ec701b63b4",
+  "run": "20261013-005756-436-410792-e3ebf791c7984fef8f91b171906b96eb-categories",
+  "classification": "COMPONENT_DIAGNOSTIC_FAILURES_NONE_IDENTITY_REQUIREMENT_AND_CREATE_TREATMENT_ROUTES",
+  "actualInvocations": 1,
+  "methods": 1,
+  "descriptors": 1,
+  "cases": 4,
+  "executed": 4,
+  "passed": 0,
+  "failed": 4,
+  "selectionComplete": true,
+  "exitCode": 1,
+  "timedOut": false,
+  "wallTime": "00:00:42.1490538",
+  "skipped": 0,
+  "duplicateTestIDs": 0,
+  "rowResults": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision(materialize: False, changed: False)",
+      "outcome": "Failed",
+      "errorMessage": "System.IO.InvalidDataException : A complete wound publication has no identity after-image.",
+      "stackTrace": "   at BookOfEternityClient.Services.CanonicalStateNormalizer.ComposeWoundPublicationWrites(AcceptedMechanicsPlan plan, SpiritualC4PublicationReceipt spiritualPublicationReceipt) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs:line 48\n   at BookOfEternityClient.Services.CanonicalStateNormalizer.AddWoundPublicationWrites(AcceptedMechanicsPlan plan, Dictionary`2 writes, SpiritualC4PublicationReceipt spiritualPublicationReceipt) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs:line 25\n   at BookOfEternityClient.Services.CanonicalStateNormalizer.PublishAcceptedMechanicsAsync(IReadOnlyDictionary`2 backups, MortalLocationAcceptedTurnPlan mortalLocationPlan, AcceptedMechanicsNormalizationPreflight preflight, Boolean normalizedAcceptedCarrierBaselines, MortalWoundTreatmentPublicationTakeReceipt treatmentPublicationReceipt, SpiritualC4PublicationReceipt spiritualPublicationReceipt) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs:line 254\n   at BookOfEternityClient.Services.CanonicalStateNormalizer.NormalizeAcceptedMechanicsAsync(IReadOnlyDictionary`2 backups, MortalLocationAcceptedTurnPlan mortalLocationPlan) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs:line 77\n   at BookOfEternityClient.Services.CanonicalStateNormalizer.NormalizeAcceptedMechanicsAsync(IReadOnlyDictionary`2 backups, MortalLocationAcceptedTurnPlan mortalLocationPlan) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs:line 57\n   at BookOfEternityClient.Services.CanonicalStateNormalizer.NormalizeAcceptedMechanicsAsync(IReadOnlyDictionary`2 backups, MortalLocationAcceptedTurnPlan mortalLocationPlan) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs:line 70\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision(Boolean materialize, Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs:line 27\n--- End of stack trace from previous location ---",
+      "nativeObservationCount": 4,
+      "strictCleanupReceipts": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4d157bf015604640b33bb7a34ddf255c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision(materialize: False, changed: True)",
+      "outcome": "Failed",
+      "errorMessage": "System.IO.InvalidDataException : A complete wound publication has no identity after-image.",
+      "stackTrace": "   at BookOfEternityClient.Services.CanonicalStateNormalizer.ComposeWoundPublicationWrites(AcceptedMechanicsPlan plan, SpiritualC4PublicationReceipt spiritualPublicationReceipt) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs:line 48\n   at BookOfEternityClient.Services.CanonicalStateNormalizer.AddWoundPublicationWrites(AcceptedMechanicsPlan plan, Dictionary`2 writes, SpiritualC4PublicationReceipt spiritualPublicationReceipt) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs:line 25\n   at BookOfEternityClient.Services.CanonicalStateNormalizer.PublishAcceptedMechanicsAsync(IReadOnlyDictionary`2 backups, MortalLocationAcceptedTurnPlan mortalLocationPlan, AcceptedMechanicsNormalizationPreflight preflight, Boolean normalizedAcceptedCarrierBaselines, MortalWoundTreatmentPublicationTakeReceipt treatmentPublicationReceipt, SpiritualC4PublicationReceipt spiritualPublicationReceipt) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs:line 254\n   at BookOfEternityClient.Services.CanonicalStateNormalizer.NormalizeAcceptedMechanicsAsync(IReadOnlyDictionary`2 backups, MortalLocationAcceptedTurnPlan mortalLocationPlan) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs:line 77\n   at BookOfEternityClient.Services.CanonicalStateNormalizer.NormalizeAcceptedMechanicsAsync(IReadOnlyDictionary`2 backups, MortalLocationAcceptedTurnPlan mortalLocationPlan) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs:line 57\n   at BookOfEternityClient.Services.CanonicalStateNormalizer.NormalizeAcceptedMechanicsAsync(IReadOnlyDictionary`2 backups, MortalLocationAcceptedTurnPlan mortalLocationPlan) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs:line 70\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision(Boolean materialize, Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs:line 27\n--- End of stack trace from previous location ---",
+      "nativeObservationCount": 4,
+      "strictCleanupReceipts": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-222dfc028be14ca98bfd95f1c071043d",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision(materialize: True, changed: True)",
+      "outcome": "Failed",
+      "errorMessage": "Assert.Empty() Failure: Collection was not empty\nCollection: [[Error/StateConsistency] woundDecisions[0].proposal.treatment.routes: Mortal wound treatment violates the complete current materialization contract.]",
+      "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision(Boolean materialize, Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs:line 26\n--- End of stack trace from previous location ---",
+      "nativeObservationCount": 4,
+      "strictCleanupReceipts": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e2071352cfc34298a11b4f7346e3a3f9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision(materialize: True, changed: False)",
+      "outcome": "Failed",
+      "errorMessage": "Assert.Empty() Failure: Collection was not empty\nCollection: [[Error/StateConsistency] woundDecisions[0].proposal.treatment.routes: Mortal wound treatment violates the complete current materialization contract.]",
+      "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommonPublicationReplaysOnceOrRejectsChangedDecision(Boolean materialize, Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs:line 26\n--- End of stack trace from previous location ---",
+      "nativeObservationCount": 4,
+      "strictCleanupReceipts": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d89d31a87de945388ed11015c127a66c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ]
+    }
+  ],
+  "noneRows": "2 rows pass direct admissionAssert.Empty then fail commonpublication Normalize attestline27, ComposeWoundPublicationWrites identityrequired; no receiptpublication/replayoraclesreached",
+  "createRows": "2 rows fail direct admissionAssert.Empty attestline26 onproposal.treatment.routes completecurrentcontract; publisher/replayunreached",
+  "noneFullOrdinaryFailureRelation": "componentexception observed; exact fullordinary391d rejection diagnostic remains unobserved pending source correlation, not assumed identical",
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4d157bf015604640b33bb7a34ddf255c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-222dfc028be14ca98bfd95f1c071043d",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e2071352cfc34298a11b4f7346e3a3f9",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d89d31a87de945388ed11015c127a66c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "allEmittedStrictRootsActuallyAbsent": true,
+  "runnerOwnedTreeCleanupSucceeded": true,
+  "runnerRuntimeCleanupSucceeded": true,
+  "sourcePinsPrePostMatched": 147,
+  "freshBinaryPinsPrePostMatched": 10,
+  "metadataEditedBeforeRootPostReadback": false,
+  "thirdProtectedNone": "UNRUN",
+  "protectedCreateFact": "UNRUN oncurrentcandidate; materializecomponent rows are distinct",
+  "remainingControls": "UNRUN except thisexistingmethod4failedrows",
+  "archiveFreshProcess": "UNRUN",
+  "verifiedUtc": "2026-10-13T01:00:20.418436+00:00",
+  "issue": 1536,
+  "branch": "1536-wound-b2-cloud-20261012",
+  "sourceReview": "SELECTION_STATUS_ACCEPTED actualretainedAstraXHigh75e; codeSOURCEaccepted391d",
+  "evidenceReview": "PENDING",
+  "preparation": "20261013-005650-717-410514-69a2f68b2c1844d58138189dbec8944c-categories",
+  "catalog": "20261013-005722-550-410616-9e68c310bffd40daa9eaa78f66852745-categories",
+  "preparationExecutedTests": 0,
+  "catalogExecutedTests": 0,
+  "catalogCategories": 711,
+  "catalogMethods": 11548,
+  "scope": "One existingmethod4case componentdiagnostic, notthirdNONE/fullCREATE/causalRED/qualification; nofixbeforeevidencegate",
+  "artifacts": [
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 1745,
+      "uncompressedSha256": "4701bff68ca9c326d164fd647826cdf635be5ad985fbf3dd9cbc48500521dbc7",
+      "compressedBytes": 793,
+      "compressedSha256": "3585bd8119873cea0777899c7ef5a877e0a1ef731c6d3668005baff42e9bef15"
+    },
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 39596,
+      "uncompressedSha256": "cf24e1de3bb7389a7a4e1c2b239becd264992e5a58ec932b10d66a8dd879314b",
+      "compressedBytes": 5862,
+      "compressedSha256": "c6b3e268303481b1b6473c64149464170afa192e013683d9601d9a8b3e615552"
+    },
+    {
+      "name": "actual-native-results.json.gz",
+      "uncompressedBytes": 41895,
+      "uncompressedSha256": "484c6ff2e8cce32e092113c7eb826f9e7de5aa0d04c48013f645678bf6f21531",
+      "compressedBytes": 5920,
+      "compressedSha256": "147418c058d274d1b3c06cd7c32e806e49f4f3ecff67380b7b54ae9a1324a350"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 11607,
+      "uncompressedSha256": "97fcb51b45697734dd332e92836917950fc134e9302e90b43ff2d3dc78e6a47a",
+      "compressedBytes": 1944,
+      "compressedSha256": "2e0e2fcdd7e22fd8d011228a3821edc4b0c6d567f37f3c67821cb8e4b381fddf"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 29770,
+      "uncompressedSha256": "35d697a652f20f8beadec953bbbb62058341c8b2391640cd0b66d7c9fb300c94",
+      "compressedBytes": 8915,
+      "compressedSha256": "4dadb20c7a0a21b3ece64844956d8b40200b678ab48f868576f1b9c2345fef71"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2824,
+      "uncompressedSha256": "44b91c95ae3bdd81263162a8397b3b14f4cd2526dc1f7f1e2556616a8ec46567",
+      "compressedBytes": 852,
+      "compressedSha256": "6a3578cb4bc3d65ff9b476a6deea040f920fa0997ddbf87bfae53db316829686"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 766,
+      "uncompressedSha256": "8c9a900dc9cb9028bd6dc9f97a37accabb930795b559ea056f640280a341f0ae",
+      "compressedBytes": 504,
+      "compressedSha256": "6fc6379d66836031e3d8670b90792133549238b3201fe1fcc9968ede40ee42a2"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 1519,
+      "uncompressedSha256": "6d545ba396c98417c8b5d1c0a2d6d155aec870d7750437c68368f649dcd710c4",
+      "compressedBytes": 660,
+      "compressedSha256": "dce18aff335050a01ad85994c864c4a4653ac78bedfd01c807f9ba72a106589e"
+    },
+    {
+      "name": "preparation-readback.json.gz",
+      "uncompressedBytes": 6142,
+      "uncompressedSha256": "2b7724309fc6acb523c76548b27f33e20338a7f48cd7c89530f47c28b97a8a34",
+      "compressedBytes": 1788,
+      "compressedSha256": "986ff43b97231cbf987e1696682cfb813b718dcb60acc81bbce2240a3b63616a"
+    },
+    {
+      "name": "catalog-invocation-prewritten.json.gz",
+      "uncompressedBytes": 563,
+      "uncompressedSha256": "9fe335f6e390026e394b88ad9c80d3390e425a1e1de21523467c7fd7b52dbc4b",
+      "compressedBytes": 409,
+      "compressedSha256": "80822a8027de87b16ac7e00563774725dafcb16e4634887f46cac6e88befa429"
+    },
+    {
+      "name": "catalog-console.log.gz",
+      "uncompressedBytes": 768,
+      "uncompressedSha256": "cba66ca0e6a6abefaf48638a825702d56fb9aa2e048a3781f3068507825d179b",
+      "compressedBytes": 409,
+      "compressedSha256": "3217eb8c410a23206b0cae2883a505647bbf550aa19d460865dcb406634ff3d2"
+    },
+    {
+      "name": "catalog-readback.json.gz",
+      "uncompressedBytes": 1979,
+      "uncompressedSha256": "5f90f0e6bc3cf6fccdbd1f4ea9f35292b7441751ff20199822c6b3f312de8d96",
+      "compressedBytes": 775,
+      "compressedSha256": "8ce603b12dcfdb657c2b7854a1cd5b349a0aff9b3ddcb18649b420ac87c58ec9"
+    },
+    {
+      "name": "actual-qte-physical-injury-consumer-admission-diagnostic-integration-001.trx.gz",
+      "uncompressedBytes": 96996,
+      "uncompressedSha256": "5a053774d9af3fafcd3665c48c0b8837c51f65dee405f3a3e0bd2732ceda8e27",
+      "compressedBytes": 10782,
+      "compressedSha256": "3412239e943f87bc2f2c9932dc624f9c6f5adcd12e5a898ceba7ca7c2883574c"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 2698,
+      "uncompressedSha256": "c87c2e5b358588b98b292c6fd25c551bf2e19aefd830f6585714c641bdc87ec0",
+      "compressedBytes": 1261,
+      "compressedSha256": "40fbc428390704774ab4c37abeb89d57e4d6f7a659b8851f1c787c6cb7efc599"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 1693803,
+      "uncompressedSha256": "6a2a9ea951c16a07883d927cc6c6010f999d0fec2e7f41e19c2ae4a3bfc3db3b",
+      "compressedBytes": 189893,
+      "compressedSha256": "772d234e6f51ea232e673ff982b5e9e97bba892dd6d3fd3c929b61c77b3827e5"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 2822,
+      "uncompressedSha256": "d293ce813cd8a07729866c637fe7cfb85617ea09a97eac50c6456c36fab169e0",
+      "compressedBytes": 1322,
+      "compressedSha256": "c0e26a5a3587e79b502dd7aac771442a587cf922bab00ac113a3b84f9388e1a5"
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "uncompressedBytes": 2698,
+      "uncompressedSha256": "7b934928820a0adf273d16580aae405478b0a1b63c2f1b7825e28812087f5994",
+      "compressedBytes": 1259,
+      "compressedSha256": "639a16103b2dfd1075837b7b423ce45f5606e95078cf22bf9b6da4cfb7d1e160"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 1655240,
+      "uncompressedSha256": "4b60ab2a0600d0b82a651efaba5b4ee6054f259775b21f9b2c00993b55ab9d56",
+      "compressedBytes": 184314,
+      "compressedSha256": "db6057820d213fb520af680c168bdf5882e84768578d9980de3f2f730bd6a248"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 2834,
+      "uncompressedSha256": "980ef0785894aa2d0267675fee4c835057bc0dcbc4860a597c1d5c326f12f144",
+      "compressedBytes": 1330,
+      "compressedSha256": "fba5ed9b437ba4e67b4f8e7f4842cf70dd6bc16bb8e7e0707c5c981aa21fb822"
+    },
+    {
+      "name": "catalog-dotnet-test.log.gz",
+      "uncompressedBytes": 3322186,
+      "uncompressedSha256": "752a39955870b17123726b0182355f0446534e51c0ca85b37e5d0e4d57251519",
+      "compressedBytes": 367967,
+      "compressedSha256": "7e46639d00be15ba75e5634cafec2f563ae4aed191d11ad84213fb956f97e9cb"
+    },
+    {
+      "name": "catalog-summary.json.gz",
+      "uncompressedBytes": 1405,
+      "uncompressedSha256": "7dd7bc334082d8484de2a39c8f71f713cddb3e779e6c89819843c3877e25c0ad",
+      "compressedBytes": 603,
+      "compressedSha256": "81ecbf778e188350d1dec54f4e47280a857e3824863d7a552a300e89ee5e9909"
+    },
+    {
+      "name": "catalog-catalog-audit.json.gz",
+      "uncompressedBytes": 103,
+      "uncompressedSha256": "9992b39c464b8c9124ad34844cb0ed5ea129b189b69c3603f5b458a80f9cf077",
+      "compressedBytes": 103,
+      "compressedSha256": "63946504959d71e577eff45d7e90c0d297cfa8fcaa5ef0f34d061c76bfed1875"
+    }
+  ]
+}

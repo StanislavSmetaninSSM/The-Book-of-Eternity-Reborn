@@ -5,15 +5,42 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
-## Current T070 boundary — 2026-10-13 (ADMISSION FAILURE EVIDENCE ACCEPTED; UNKNOWN CAUSE; FOUR-ROW DIAGNOSTIC SELECTION READY)
+## Current T070 boundary — 2026-10-13 (FOUR COMPONENT DIAGNOSTIC FAILURES OBSERVED; EVIDENCE PENDING)
 
+Exact diagnostic selection/status accepted75e62186ac9bb3f2e1228f0cb79105c4e0aa1514 by actual
+retained Astra XHigh. Matching NoBuild PlanOnly confirmed1 existing method/4 cases/1 descriptor,
+2.389s,0 executed; catalog valid711/11548,5.309s,0 executed.147 source and10 compiled391d
+binary pins PRE/POST exact BEFORE metadata edits; code had no changes.
+
+ONE component diagnostic actual completed4/4 cases:4 executed/0 PASS/4 FAIL,42.149s,exit1,
+no timeout/skips/duplicate IDs. All four independently reached realQTE42 and actual Stage43/
+official source. Two NONE rows passed direct admission then failed at testline27/publication:
+"A complete wound publication has no identity after-image." Native stack identifies
+ComposeWoundPublicationWrites→AddWoundPublicationWrites→PublishAcceptedMechanicsAsync.
+Two materialize rows failed earlier at testline26/admission on proposal.treatment.routes:
+"Mortal wound treatment violates the complete current materialization contract."
+No receipt/replay/postcondition success was established. These materialize component rows are
+separate from the protected full CREATE Fact, still UNRUN on this candidate. The NONE component
+exception is observed; full ordinary391d rejection diagnostic remains unobserved pending
+source correlation, and is not assumed identical merely from the component result.
+
+[Component diagnostic packet](./recovery/qte-physical-consumer-admission-diagnostic-20261013/manifest.json)
+freezes22 artifacts/native TRX4 results/16 observations/four strict cleanup receipts with
+removed=true/failure=null/physical roots absent. Runner cleanup also succeeded. EVIDENCE gate
+PENDING before source correction or another actual. No third protected NONE. Remaining controls
+UNRUN except this one method/four failed rows; protected CREATE/archive/newroot/fresh-process
+UNRUN. Next bounded step after evidence acceptance: source-correlate observed NONE identity
+requirement and separately correct only proven component treatment fixture/contract issue.
+Historical causal REDs/incomplete timeout/admission failure remain separate; T070/FR-063/#1536 OPEN.
+
+Historical75e diagnostic selection checkpoint (accepted before component execution):
 Admission failure evidence published9c4719d399bc158ced3814c942ba470f640dacd9; ROOT verified exact
 remote/clean primary and629-file GitHub-only selected recovery/all100 connected paths. Actual
 retained Astra XHigh EVIDENCE/status gate ACCEPTED25 artifacts/146 immutable391d source pins/
 10 fresh binaries/native6 observations/strict cleanup. Selected NONE1 executed/0 PASS/1 FAIL
 at ordinary-admission prerequisite line77, not consumer causal RED. Source42/official N43/
-GM authoring were reached; ordinaryValidated=false/loop42/failure=null, receipt/draft/command
-cleaned by the existing refusal path. Full ordinary completion and causal postconditions stay
+GM authoring were reached; ordinaryValidated=false/loop42/failure=null; receipt remained absent,
+draft/command were absent afterward. Full ordinary completion and causal postconditions stay
 UNREACHED; underlying admission diagnostic is UNOBSERVED and cause UNKNOWN. Frozen
 [packet](./recovery/qte-physical-consumer-none-admission-failure-20261013/manifest.json) unchanged;
 historical pre-review PENDING field is not rewritten. No inferred production fix.
