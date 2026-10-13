@@ -9,6 +9,60 @@ plus the approved Superpowers design at
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 
+## FR-063 confirmed-claim six first outcome — 2026-10-13 (COMPLETE6PASS; EVIDENCE PENDING)
+
+Source/compile6f1eb1bff31cd9cf61d7352283ce04302812cbba, SOURCE/FIXTURE/SELECTION independently
+accepted retained actual AstraXHigh: [sourcegate](./recovery/fr063-confirmed-claim-inspection-source-review-20261013.md).
+OriginalexternalSHA2565fee5b888c4a1096391799dd99144e77d2c109077e262413aaea197b202f3cd7;
+publishedcopySHA256a19a33c213a3d5b0090d44d579c9c4482c4a210e8a0de3da3b3f8883828fcd93 (EOFnewline normalization only ifneeded).
+255source pins include registry/FS/generation/replacement/rootidentity plus report/prepinputs.
+Fresh BOTH5methods9cases3descriptors134.5324353s,0executed0compileerrors,warnings96/35;
+unit3solelypreparation. Exact2/6/2 NoBuildPlanOnly2.5330371s0exec; catalog727/11568valid,
+0unmapped0stale,5.8127937s0exec. Preparation/discovery/catalog are not tests.
+
+Actual20261013-200615-400-36927-0381be5b815f4be1865581f912ec6377-categories:
+6executed6PASS0FAIL,COMPLETE2/2descriptors6/6cases,29.4747553s,exit0,noskip/dup/timeout.
+Negative5 first: exactabsentG/absentowner/staleowner invalid diagnostics, foreign/disposed
+lease exactInvalidOperationExceptions, wholepreparedsource/target inventories unchanged.
+Staleowner uses actualsupportedrotation on separate nonrollbackfixture, no recover/rebind.
+Late1: exactnpc_skills rawbeforeimage mismatch +pathbearingpreflightrefusal, independent
+confirmedreader observedIsValidtrue/ConfirmedHeld=enum1, exactoperation/attempt/request/
+resource/finalization/agreement/originalG/rev; nullpublicationfingerprint. Oldpublication
+probe still invalid with exacttokenmismatch. Completebytes throughinspection, fullpersisted
+request, energy2/create-onlyhistory allpassed. This measures survivinghold; no take/pub/
+newclaim or revival ofcancelledlineage. Historicalinvalidoldprobe didnotmeasureholdloss.
+
+Source255/binary11 POST matched beforemetadata. Runnerowned/runtimecleanuptrue;9strict
+roots emitted removed/noerrors and physicallyabsent. Eight actualobservations/fullTRX/
+stdout/nativefields/preparation/sourcebinarychecks frozen43hashchains:
+[firstsixgreen](./recovery/fr063-confirmed-claim-six-first-green-20261013/manifest.json).
+This actual6PASS awaits independent EVIDENCE/status acceptance. Prior12ordinary accepted
+scopes are preserved;late1notyetaccepted. Newnegative5are extraAPIcontrols outside original
+ordinary13/mandatorypending2, cannotinflate15. No successful oldcohort/build/catalog repeat.
+
+Metadata publication CreateProcess refused at20:09:18UTC with exact exec-server transport
+error, before script creation. No new actual/source accumulation followed. Afterauthorized
+shortpause, same-tool readonlyprobe succeeded with sameboot4e506247-7893-479b-aaef-3d4c72eb71ef;
+connectedGitHubrefstill6f1eb1bf;43chains/255source11binary reverified, actualcomplete6PASS,
+9strictrootsabsent and no projecttestprocess. No newenvironment or securityrestriction bypass;
+cybersecuritycause notestablished. [Exactoperation/error/recovery](./recovery/fr063-confirmed-six-publication-transport-readback-20261013.json)
+retains missing rejected-call sessionID explicitly. Same normal metadata publication resumes.
+
+Next: independentEVIDENCE; then genuinepending2 source rehoming per
+[queued brief](./recovery/fr063-pending2-author-brief-queued-20261013.md), NOTRELEASED.
+Proposeddesign19459d +actualAstraXHigh96f review acceptedFORAUTHORING; realQTE42/43sameG,
+canonicalpreoriginalsettling/actualnonemptypackets, completecommand/pending/history,
+freshleaseautomaticExportrecovery/exactconfirmedreader. Replace misplacedtheory with
+ComponentGenuinePendingWaveCoalescesExactRequestOrRefusesChangedCopy; remove oldordinary
+membership/duplicatecontracts, remainingowner5methods8cases; newdedicatedowner, methodtotal
+unchanged/category+1. Changedoldsealquantity proves parsercopyrefusal beforeCoalesce,
+not itsdeepsemanticbranch. No fabricatedwave/guardwaiver/mixedordinarypub/livewriterclaim.
+
+Mandatorypending2/newroot/immediateownMortalUI/fullFR063/T070/#1536 remainOPEN; no13/15GREEN
+or fullFRfreeze yet. GM1557A needsverifiedFRfreeze/finalbase, BafterA. Journal8/runtime/new
+C5optimization/Windows/provider/broadsuite remainUNRUN. Sourceauthor/reviewersFINALSTOPPED;
+ROOTsinglewriter metadata only after sourcebinaryPOST and completedownedprocesses.
+
 ## FR-063 cancelled-lineage confirmed-claim read — 2026-10-13 (SOURCE READY; CHECKS UNRUN)
 
 Retained actual AstraHigh accepted the bounded architecture after source-grounded diagnosis:

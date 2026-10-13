@@ -1,0 +1,21 @@
+{
+  "utc": "2026-10-13T20:11:10.354328+00:00",
+  "rejectionUtc": "2026-10-13 20:09:18 UTC",
+  "operation": "exec_command CreateProcess of shell cat publication script + python3 metadata commit/push",
+  "exactError": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: exec-server transport disconnected\\\")\" }",
+  "rejectedCallSessionID": "not returned",
+  "sameToolReadOnlyProbeSucceeded": true,
+  "sameBootID": "4e506247-7893-479b-aaef-3d4c72eb71ef",
+  "head": "6f1eb1bff31cd9cf61d7352283ce04302812cbba",
+  "connectedGitHubRemoteSameSHA": true,
+  "primaryUnsaved": "43-chain firstgreenpacket only; no source edits",
+  "publicationScriptExistsAfterRejectedCreateProcess": false,
+  "all43artifactChainsReverified": true,
+  "sourcePinsMatched": 255,
+  "binaryPinsMatched": 11,
+  "actualComplete6PASSRetained": true,
+  "strict9RootsActuallyAbsent": true,
+  "runningOwnedProjectTestProcesses": [],
+  "environmentCreationAttempted": false,
+  "cybersecurityCause": "not established; observed failure exec-server transport"
+}
