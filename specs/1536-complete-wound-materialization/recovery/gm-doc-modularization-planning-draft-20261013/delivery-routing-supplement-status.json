@@ -1,0 +1,31 @@
+{
+  "status": "READONLY proposedfixtures/source-footprints; implementation/runtimeUNRUN",
+  "coordinatorDisposition": "D01RESOLVED; AafterverifiedFR063freeze/finalbase",
+  "supplement": "7exactfamilies/10topicactivation/realpackagedroot->sessionexistingwriter fixture design, not executed",
+  "relatedPreservedReports": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-native-oracle-first-green-evidence-review-20261013.md",
+      "originalSHA256": "4707f59f0aa008a4f0412133c6701778e8256c8daccbb751bf80e622e0d52587",
+      "publishedSHA256": "ea39182ba9407d0f03af68496ad7cc9ffaa46b2adcbd310d7e67f4f2badac1a2",
+      "normalization": "EOFblank only"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-new-root-proposed-fixture-review-20261013.md",
+      "originalSHA256": "52a48d71a08a02168acb5bbc5a4106ed6b0aac28e5d17805f0f0159ea8c4972b",
+      "publishedSHA256": "ee343100e515b9b435276c9824475209f0400a8078e1c718d0cb1138d90f314a",
+      "normalization": "EOFblank only"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/immediate-wound-accepted-create-means-readonly-fixture-20261013.md",
+      "originalSHA256": "0b2704b543205b3d5f0588457693e3bef8bf940cff153cf42305b56ae12331ec",
+      "publishedSHA256": "0b2704b543205b3d5f0588457693e3bef8bf940cff153cf42305b56ae12331ec",
+      "normalization": "NONE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-planning-draft-20261013/delivery-routing-disposition-supplement.md",
+      "originalSHA256": "4f4127a51e05ce38c9f820d8817fa63153b2c274287196f4e552cb548e916953",
+      "publishedSHA256": "4f4127a51e05ce38c9f820d8817fa63153b2c274287196f4e552cb548e916953",
+      "normalization": "NONE"
+    }
+  ]
+}

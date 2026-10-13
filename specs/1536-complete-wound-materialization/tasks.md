@@ -5,6 +5,44 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## FR-063 first controls remainder — 2026-10-13 (TARGET14/ACTUAL10; EVIDENCE PENDING)
+
+Corrected same-root native source9532 / carrier2d193effa00185c02a5b9b7aac5085fc19cd847f
+is independently EVIDENCEACCEPTED for its bounded fresh-process contract. Native1PASS,
+full publication/finalizedhold/inertidle and immutable41chains remain qualified; no rerun.
+Before controls, unchanged code/selectors were byte-compared to compile9532; only MD2
+pinned bytes changed after POST. Exact remainder8methods/14cases/3descriptors PlanOnly
+2.6659213s,0executed; fresh11binary pins retained from accepted BOTH preparation.
+
+Actual `20261013-174038-122-681934-58c63380cbee4880a3e4357ff0c2bab4-categories`
+ended88.5548184s,exit1,no timeout/skips/duplicateIDs:10executed1PASS9FAIL of14planned.
+Only controls descriptor6methods/10cases completed. Runner stopped after its failures;
+reflectedcompatibility3 and namedwarm1 were UNRUN. Selection1/3descriptors,10/14cases,
+INCOMPLETE; do not describe14executed or14completed.
+
+Passed case: existing postseal compensation/fullrequest/confirmedhold/fence/exactretry.
+Nine failures reach three setup/instrumentation families: six unbound capture reads
+attempt MainAdmission/GmMainOwnerGuard while the test holds its admitted lease (archive
+capture618/ordinaryowner91); two pendingduplicate rows assume a non-null pendingfile
+(ordinaryowner24), but guaranteed setup stores the full held request in the command;
+one late-guard case hits duplicate effect_identity_index capture key after admission
+because native paths and the new guard inventory overlap. The intended rejection/take
+boundaries are not proven by those exceptions. No production regression is inferred.
+
+242source/11binary PREPOST and10strictphysicallyabsent fixture roots were checked BEFORE
+metadata. Complete TRX/stdout/observations/failure stacks, exactselection and code/compile
+carrier proof are preserved in immutable24artifact chains:
+[the first controls failure](./recovery/fr063-guaranteed-ordinary-owner-remainder-first-failure-20261013/manifest.json).
+Raw/history and prior GREEN/FAIL packets remain unchanged. This is observed mixed outcome
+pending independent EVIDENCE, not completed controls qualification.
+
+Next: publish/remote/recovery and independent classification; correct only confirmed
+new-test fixture/capture seams, preserve realfullrequests/holds/source/oracles and existing
+production/sharedoldhelpers. Review exact affected/unrun retry inventory from actualdiff;
+do not repeat already passingnative/postseal without a concrete dependency. New-root/UI/
+GMimplementation remain separate; before verified FR063freeze onlyreadonly GMdesign.
+Full FR063/T070/#1536 and parent checkboxes remain OPEN; no broadsuite/provider/Windows/PR.
+
 ## FR-063 corrected same-root native — 2026-10-13 (OBSERVED PASS; EVIDENCE PENDING)
 
 Oracle-only source `9532e386e8fa66a84a964f57a49900cc9a0e562e` is published/remoteexact,

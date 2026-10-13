@@ -1,0 +1,470 @@
+{
+  "source": "2d193effa00185c02a5b9b7aac5085fc19cd847f",
+  "classification": "TARGET14 ACTUAL10:1PASS9FAIL fixture/capture boundaries; reflection3+warm1UNRUN; EVIDENCE PENDING; no production regression claimed",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 42683,
+      "uncompressedSha256": "dbce55c9d1c457ae292452e122e536bd9ce72c61a899457ab4f4408fc8c70723",
+      "compressedBytes": 3548,
+      "compressedSha256": "46caf6986a399355c6799a01e31181ff824dafacfd3353ef1e0971898273a88d"
+    },
+    {
+      "name": "actual-error-family-companion.json.gz",
+      "uncompressedBytes": 32128,
+      "uncompressedSha256": "77f8b62840be7c8585af5d5084528fef40c0de9154e16a54bb75511dc314faf8",
+      "compressedBytes": 2559,
+      "compressedSha256": "2262df9028abf7a755b14cfb2a2df67a63843c2211819644d60845235ffa7953"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 5957,
+      "uncompressedSha256": "5fea83b08d27e54b6889b574ab27ecb9c6f417e44e89d1ff9a4a2ccc43e6ec4a",
+      "compressedBytes": 795,
+      "compressedSha256": "2d1763f15c223fa378e8e31c9b4130a27f618d913dd4307297333469f1f1ea36"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 528,
+      "uncompressedSha256": "3bea20235dc239dec82e11fb7768611750cf8417487d3ac90d6bf62e2a0cb95b",
+      "compressedBytes": 351,
+      "compressedSha256": "dcff4d8c5e3822540ca1cc84ad9f246f62d8000c8461a82c76195ab6a9a21719"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 5442,
+      "uncompressedSha256": "4878da0a9c31b7393678c669431b91834ab13e4572f4f6b3667fcb9328d71c5c",
+      "compressedBytes": 522,
+      "compressedSha256": "2be401785d8ee5ee4163d5d6791cc8d2ad39e0d3841412364f79bb666187c180"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 39189,
+      "uncompressedSha256": "e550f86892dd30f51edb2a70bf3c579c76f89f3ef93cda49a3c7712799ac75b6",
+      "compressedBytes": 3964,
+      "compressedSha256": "f6085164c604d47cc952315bc06670194cdddbe059201de324bd9f3258093deb"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "2dea1155f2f6045475ddfc6a80b550e2c51a63214f41515078492e4e3bff205b",
+      "compressedBytes": 293,
+      "compressedSha256": "4b1894a6b76444f43ddbca272409e7dd0bae4fa54bb0e64584322369b8d9915a"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 49588,
+      "uncompressedSha256": "8bb898f0f11b144ffc5e306caa692befddd1a386f83b961ee8cd67ecc4e413e2",
+      "compressedBytes": 14213,
+      "compressedSha256": "a4c59e44c98c9da0e746a7c3da0f656aabcefac21bf45f869beb348bbca8c62b"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 4764,
+      "uncompressedSha256": "27b3c2171a8a06d1dc6466ad4d9e8e1025d0a46103c66a8164bc55353a6e3ce1",
+      "compressedBytes": 1060,
+      "compressedSha256": "bc2ce0dca206c85a35e34a96061ab4fedadda9d5fcf029ec8256648de591c8ef"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 545,
+      "uncompressedSha256": "017bc261d78e6c9788f59259820adcc1b75c4ab74be71934a7a34d4c4bf001cb",
+      "compressedBytes": 358,
+      "compressedSha256": "5091ebdf53086af9148adcf75cab10c890861de25e6e52f232c8bca5bc16e72f"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 1458,
+      "uncompressedSha256": "b8b5d14cf79d39be6ab4c206bdd856315337df8d4b0b52c6af84446ff562749e",
+      "compressedBytes": 724,
+      "compressedSha256": "253b18de21d46dd49f013e68695c3d912a927e35d7af158805492809aa9fb703"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "6ddfd9e3ab3a53ed61fb8f03012d5337d8cb394b8ac3f7aa3837b571107c1a0c",
+      "compressedBytes": 293,
+      "compressedSha256": "48687cda7b51d5833c29e09df30285ad022d51bd644c833865db6b0b14534d0a"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2802,
+      "uncompressedSha256": "e6c338c28a385e0ae941ac1eabc521137d5c8e402b80cd81d1d99ced1f7a1678",
+      "compressedBytes": 783,
+      "compressedSha256": "3a9f773e73900e16ea1dfc2113819d6d50fdc67708875e0b983dca7ff18e5405"
+    },
+    {
+      "name": "preceding-native-green-evidence-review.md.gz",
+      "uncompressedBytes": 8219,
+      "uncompressedSha256": "4707f59f0aa008a4f0412133c6701778e8256c8daccbb751bf80e622e0d52587",
+      "compressedBytes": 3942,
+      "compressedSha256": "282b100a80c8266d1787ab69d276ad44b0f9f907392b8520934b42d389554e41"
+    },
+    {
+      "name": "preceding-native-green-root-readback.json.gz",
+      "uncompressedBytes": 2568,
+      "uncompressedSha256": "3ab50203d77f5349d11ddda21128bd59f5897e5f8fe3486318206c5cff6f82ea",
+      "compressedBytes": 1205,
+      "compressedSha256": "265bb3bc42a0343aae5c8769be28e08862575ae40516ad7e84ce502e55325093"
+    },
+    {
+      "name": "remainder-selection.json.gz",
+      "uncompressedBytes": 2113,
+      "uncompressedSha256": "4d902b102ee18c1678f12fa7a5ba450cff7897518d333f026d2c4c4c6486f898",
+      "compressedBytes": 1005,
+      "compressedSha256": "5606f52719a3175ba19a84b8b63e6d87046faa96ca804fd29e5774a93d0f2ad2"
+    },
+    {
+      "name": "source-code-compile-carrier-readback.json.gz",
+      "uncompressedBytes": 492,
+      "uncompressedSha256": "d641442cbbfa8c652517ae872f2ae68d96582e782770a9df60081ff51392ba64",
+      "compressedBytes": 341,
+      "compressedSha256": "ccea5b8d082f31697bc4b84edd10e2b08f7fa5fee04689676aefcf84fca0ee2c"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 1701314,
+      "uncompressedSha256": "78f049aed9ac794476e84ed90e6fe3663c3e50066906816900b4a8854fb30cd1",
+      "compressedBytes": 187787,
+      "compressedSha256": "01559acc4d40249302c9e47afbb6fc55b950b803d9e184ebefd73299d9889c9a"
+    },
+    {
+      "name": "actual-fr063-guaranteed-ordinary-owner-controls-integration-001.trx.gz",
+      "uncompressedBytes": 95082,
+      "uncompressedSha256": "2c2d8d85c56461a8c5a686043d1345273dfba4c8d059366bb1706d0376eaa27d",
+      "compressedBytes": 6902,
+      "compressedSha256": "4726e8b0b5dc46bb1c92b9f4056e1f6f9af48e861ffc6be271d92a52dfc3b947"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 7133,
+      "uncompressedSha256": "015f76acc8afd28ccc37a9b09c9f2784505147ba5a638b07a5938401acb51d7f",
+      "compressedBytes": 1803,
+      "compressedSha256": "540db43c1028d08387ab6fa8dc89cd6369f4a8c29ea262c575bbe2ef0e425dc6"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 3704,
+      "uncompressedSha256": "dded4df8e37b3b2d58b2b0270c52626e34afc2fccef35aead932e008bfb08d36",
+      "compressedBytes": 1539,
+      "compressedSha256": "088025f27e4aa464aa98ac6a50668c81b1e83389688d6272bc19d348dc2027df"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1662945,
+      "uncompressedSha256": "7ce1c139f44ed36fafc793b94dbda107b26d41f1c462ee20c80fe672055fc98c",
+      "compressedBytes": 184975,
+      "compressedSha256": "3b6439be46ae4ed8d547a697e8d780e43e7fd2f33fa06b3c759819a2304cddb0"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 7133,
+      "uncompressedSha256": "609f48fa262f61c21d3d5cc7204f1d32955e84f2c7e93d952649985079cd2b6b",
+      "compressedBytes": 1805,
+      "compressedSha256": "4261589caa3380363dfaca87440b487306008120e32b28a6ecb227f7ce42aea8"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 3705,
+      "uncompressedSha256": "26a12aa47dc7f99f1664e49c046bce48c66883446dc19194ed8be86a4b492f4e",
+      "compressedBytes": 1532,
+      "compressedSha256": "7642d164c84edc6a4376f17d94b35974e419bf66979e4013de9a2729268c60fb"
+    }
+  ],
+  "frozenUtc": "2026-10-13T17:46:26.002548+00:00",
+  "exact-plan": {
+    "source": "2d193effa00185c02a5b9b7aac5085fc19cd847f",
+    "compileSource": "9532e386e8fa66a84a964f57a49900cc9a0e562e",
+    "run": "20261013-173827-825-681715-74813b734c9544328902818bcbf7f755-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-173827-825-681715-74813b734c9544328902818bcbf7f755-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T17:38:30.530703+00:00",
+    "classification": "EXACT CONTROLS14 DISCOVERY ONLY; zeroexecution; GREENEVIDENCE gatebeforeactual",
+    "wallTime": "00:00:02.6659213",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 3,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 14,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-guaranteed-ordinary-owner-controls-integration-001",
+        "fr063-guaranteed-ordinary-owner-reflection-integration-002",
+        "fr063-guaranteed-ordinary-owner-warm-fence-integration-003"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 242,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T17:38:30.757608+00:00",
+    "methods": 8,
+    "cases": 14,
+    "descriptors": 3,
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "2d193effa00185c02a5b9b7aac5085fc19cd847f",
+    "compileSource": "9532e386e8fa66a84a964f57a49900cc9a0e562e",
+    "run": "20261013-174038-122-681934-58c63380cbee4880a3e4357ff0c2bab4-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-174038-122-681934-58c63380cbee4880a3e4357ff0c2bab4-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-13T17:42:06.731880+00:00",
+    "classification": "FIRST EXACT CONTROLS14 OBSERVED MIXED/FAIL; EVIDENCE PENDING",
+    "wallTime": "00:01:28.5548184",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 10,
+      "Executed": 10,
+      "Passed": 1,
+      "Failed": 9
+    },
+    "selection": {
+      "PlannedDescriptors": 3,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 14,
+      "CompletedCases": 10,
+      "UnderfilledDescriptors": [
+        "fr063-guaranteed-ordinary-owner-reflection-integration-002",
+        "fr063-guaranteed-ordinary-owner-warm-fence-integration-003"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 242,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T17:42:20.953447+00:00",
+    "methods": 8,
+    "cases": 14,
+    "descriptors": 3,
+    "allNativeResults": [
+      {
+        "executionId": "edbd5f9f-154f-474e-9768-d16a77562b45",
+        "testId": "2267aee5-b993-f63a-d9f1-104a46d8d09e",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper(mutation: \"request_quantity\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:12.4967563",
+        "startTime": "2026-10-13T17:40:55.3165456+00:00",
+        "endTime": "2026-10-13T17:40:55.3165605+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "edbd5f9f-154f-474e-9768-d16a77562b45",
+        "errorMessage": "System.IO.IOException : The process cannot access the file '/tmp/boe-held-treatment-pipeline-ff0047186b3b493d8bab64d153ef4b65/.boe_runtime/locks/gm-main-owner.lock' because it is being used by another process.",
+        "stackTrace": "   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64& fileLength, UnixFileMode& filePermissions)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func`1 contended, Int32 attempts, Nullable`1 retryDelay) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GmSessionRunPersistence.cs:line 165\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 89\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 3767\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesWithPublicationRecoveryAsync(String relativePath, CancellationToken cancellationToken) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1621\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesAsync(String relativePath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1403\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CaptureMortalArchiveImagesAsync(FileSystemManager files, IEnumerable`1 paths) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 618\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper(String mutation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 91\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper(String mutation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 102\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper(String mutation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 102\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "b7944e79-0e2f-44bc-bf3f-604bca450102",
+        "testId": "f78eb217-86a8-40a2-8c81-d09ef93d01cc",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph(changed: True)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:01.0717756",
+        "startTime": "2026-10-13T17:42:05.8912432+00:00",
+        "endTime": "2026-10-13T17:42:05.8912435+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "b7944e79-0e2f-44bc-bf3f-604bca450102",
+        "errorMessage": "Assert.IsType() Failure: Value is null\nExpected: typeof(byte[])\nActual:   null",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph(Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 24\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph(Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 63\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph(Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 63\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "4aab1dbe-3537-4cd5-8442-8d4c96a63c05",
+        "testId": "eb037f79-11b0-23fb-b6bf-f3fd47008a1b",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(surface: \"party\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:11.4973866",
+        "startTime": "2026-10-13T17:41:33.1836089+00:00",
+        "endTime": "2026-10-13T17:41:33.1836091+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "4aab1dbe-3537-4cd5-8442-8d4c96a63c05",
+        "errorMessage": "System.IO.IOException : The process cannot access the file '/tmp/boe-held-treatment-pipeline-68a2ecaf39e144729d79f34524ea4757/.boe_runtime/locks/gm-main-owner.lock' because it is being used by another process.",
+        "stackTrace": "   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64& fileLength, UnixFileMode& filePermissions)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func`1 contended, Int32 attempts, Nullable`1 retryDelay) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GmSessionRunPersistence.cs:line 165\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 89\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 3767\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesWithPublicationRecoveryAsync(String relativePath, CancellationToken cancellationToken) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1621\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesAsync(String relativePath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1403\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CaptureMortalArchiveImagesAsync(FileSystemManager files, IEnumerable`1 paths) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 618\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(String surface) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 237\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(String surface) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 253\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(String surface) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 253\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "d8cac72a-f41c-472e-a832-60b4cbfd4566",
+        "testId": "675355a6-ec22-7b25-4a1d-0d5594c54b23",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(surface: \"resource\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:11.5491442",
+        "startTime": "2026-10-13T17:41:44.7424048+00:00",
+        "endTime": "2026-10-13T17:41:44.7424051+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d8cac72a-f41c-472e-a832-60b4cbfd4566",
+        "errorMessage": "System.IO.IOException : The process cannot access the file '/tmp/boe-held-treatment-pipeline-79aca86f4c6146f1bbdb1a1abd529e35/.boe_runtime/locks/gm-main-owner.lock' because it is being used by another process.",
+        "stackTrace": "   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64& fileLength, UnixFileMode& filePermissions)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func`1 contended, Int32 attempts, Nullable`1 retryDelay) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GmSessionRunPersistence.cs:line 165\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 89\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 3767\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesWithPublicationRecoveryAsync(String relativePath, CancellationToken cancellationToken) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1621\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesAsync(String relativePath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1403\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CaptureMortalArchiveImagesAsync(FileSystemManager files, IEnumerable`1 paths) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 618\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(String surface) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 237\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(String surface) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 253\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(String surface) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 253\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "d73c1de9-1223-4e3e-a11b-a4b9777ea66c",
+        "testId": "b7632b9b-2496-d0c1-b592-66cf111abb48",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerGuardsAbsentInputAcrossLeaseTurnoverBeforePublication",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:04.0703419",
+        "startTime": "2026-10-13T17:41:10.4753149+00:00",
+        "endTime": "2026-10-13T17:41:10.4753151+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d73c1de9-1223-4e3e-a11b-a4b9777ea66c",
+        "errorMessage": "System.ArgumentException : An item with the same key has already been added. Key: game_state/effects/effect_identity_index.json",
+        "stackTrace": "   at System.Collections.Generic.Dictionary`2.TryInsert(TKey key, TValue value, InsertionBehavior behavior)\n   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CaptureMortalArchiveImagesAsync(FileSystemManager files, IEnumerable`1 paths) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 618\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerGuardsAbsentInputAcrossLeaseTurnoverBeforePublication() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 278\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerGuardsAbsentInputAcrossLeaseTurnoverBeforePublication() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 293\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerGuardsAbsentInputAcrossLeaseTurnoverBeforePublication() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 293\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "49da5fc2-93e4-4115-aac2-8d915aad5c1c",
+        "testId": "82e3a48a-bc91-0452-f21f-6f69f7b81a9e",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerReadsCurrentRequiredCapabilityInsteadOfHeldWarmAuthority",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:12.5561888",
+        "startTime": "2026-10-13T17:42:04.8017856+00:00",
+        "endTime": "2026-10-13T17:42:04.8017858+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "49da5fc2-93e4-4115-aac2-8d915aad5c1c",
+        "errorMessage": "System.IO.IOException : The process cannot access the file '/tmp/boe-held-treatment-pipeline-6a641635e040443fa7852196d3a9feeb/.boe_runtime/locks/gm-main-owner.lock' because it is being used by another process.",
+        "stackTrace": "   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64& fileLength, UnixFileMode& filePermissions)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func`1 contended, Int32 attempts, Nullable`1 retryDelay) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GmSessionRunPersistence.cs:line 165\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 89\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 3767\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesWithPublicationRecoveryAsync(String relativePath, CancellationToken cancellationToken) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1621\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesAsync(String relativePath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1403\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CaptureMortalArchiveImagesAsync(FileSystemManager files, IEnumerable`1 paths) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 618\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerReadsCurrentRequiredCapabilityInsteadOfHeldWarmAuthority() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 120\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerReadsCurrentRequiredCapabilityInsteadOfHeldWarmAuthority() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 132\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerReadsCurrentRequiredCapabilityInsteadOfHeldWarmAuthority() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 132\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "9ed18907-0dbe-4f68-b6e1-fa07d6b8cfa4",
+        "testId": "b92adca1-d4ef-95dc-9d80-dce4860b45c8",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper(mutation: \"resolved_result\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:11.0714922",
+        "startTime": "2026-10-13T17:41:06.3924171+00:00",
+        "endTime": "2026-10-13T17:41:06.3924174+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "9ed18907-0dbe-4f68-b6e1-fa07d6b8cfa4",
+        "errorMessage": "System.IO.IOException : The process cannot access the file '/tmp/boe-held-treatment-pipeline-e81fdc48de4b4ab9becad1c776d77f79/.boe_runtime/locks/gm-main-owner.lock' because it is being used by another process.",
+        "stackTrace": "   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64& fileLength, UnixFileMode& filePermissions)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func`1 contended, Int32 attempts, Nullable`1 retryDelay) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GmSessionRunPersistence.cs:line 165\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 89\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 3767\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesWithPublicationRecoveryAsync(String relativePath, CancellationToken cancellationToken) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1621\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesAsync(String relativePath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1403\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CaptureMortalArchiveImagesAsync(FileSystemManager files, IEnumerable`1 paths) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 618\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper(String mutation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 91\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper(String mutation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 102\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesNestedPersistedAuthorityTamper(String mutation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 102\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "cd400b08-cf49-4fec-9f2f-4585493cb7df",
+        "testId": "346e331a-afea-9cac-1a5a-611de2e8ac7d",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(surface: \"effect\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:11.1948988",
+        "startTime": "2026-10-13T17:41:21.6830172+00:00",
+        "endTime": "2026-10-13T17:41:21.6830174+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "cd400b08-cf49-4fec-9f2f-4585493cb7df",
+        "errorMessage": "System.IO.IOException : The process cannot access the file '/tmp/boe-held-treatment-pipeline-106029a03f734e388ae4ef3644c10c91/.boe_runtime/locks/gm-main-owner.lock' because it is being used by another process.",
+        "stackTrace": "   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64& fileLength, UnixFileMode& filePermissions)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func`1 contended, Int32 attempts, Nullable`1 retryDelay) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GmSessionRunPersistence.cs:line 165\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 89\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 3767\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesWithPublicationRecoveryAsync(String relativePath, CancellationToken cancellationToken) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1621\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileBytesAsync(String relativePath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1403\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CaptureMortalArchiveImagesAsync(FileSystemManager files, IEnumerable`1 paths) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 618\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(String surface) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 237\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(String surface) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 253\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerRefusesActualConcurrentMechanicalWork(String surface) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 253\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "2842f959-82c5-4be5-a011-621ca697ea6d",
+        "testId": "e6d3f6fc-e9dc-19d6-1411-9ef535dc358e",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph(changed: False)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:00.5410180",
+        "startTime": "2026-10-13T17:42:06.4354249+00:00",
+        "endTime": "2026-10-13T17:42:06.4354251+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "2842f959-82c5-4be5-a011-621ca697ea6d",
+        "errorMessage": "Assert.IsType() Failure: Value is null\nExpected: typeof(byte[])\nActual:   null",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph(Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 24\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph(Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 63\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerCoalescesExactPendingDuplicateOrRefusesChangedGraph(Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs:line 63\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "098a36db-d636-4e1f-9d8d-d94d8f5f54de",
+        "testId": "96274122-0960-fa01-841b-1495f7983164",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentOrdinaryOwnerPostSealCompensationRetainsFullHeldRequestAndExactRetry",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:07.4970158",
+        "startTime": "2026-10-13T17:41:52.2377510+00:00",
+        "endTime": "2026-10-13T17:41:52.2377516+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "098a36db-d636-4e1f-9d8d-d94d8f5f54de",
+        "errorMessage": "",
+        "stackTrace": ""
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 11,
+    "nativeObservationBoundaries": {
+      "fr063_guaranteed_native_pre_original_npc_shape": 10,
+      "fr063_component_ordinary_post_seal": 1
+    },
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-ff0047186b3b493d8bab64d153ef4b65",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-0d8887a5d0474545beb0cb483f71c27c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-68a2ecaf39e144729d79f34524ea4757",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-79aca86f4c6146f1bbdb1a1abd529e35",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-cfb3a5176a664b6982ad962b04e3c260",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-6a641635e040443fa7852196d3a9feeb",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-e81fdc48de4b4ab9becad1c776d77f79",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-106029a03f734e388ae4ef3644c10c91",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-4e34842b5d7045439ede052ff4da1d65",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-c5201c0557624ef8a37270d915757e2c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allEmittedStrictRootsActuallyAbsent": true,
+    "evidenceReview": "PENDING"
+  }
+}
