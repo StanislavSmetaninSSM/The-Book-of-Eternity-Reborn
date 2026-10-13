@@ -121,6 +121,15 @@ this native freeze; do not replace FR063 work, invent diagnosis mechanics or cla
 
 ## Task 1a: Evidence-only actual repair rejection capture
 
+**Task1a authoring checkpoint:** TEST-ONLY diagnostic SOURCE READY at base53aa4dd74fcc861e09587b169628cf6b41d04e90.
+Existing native child installs a read-only Format1 committed request-member observer immediately
+before actual entry; declares DELETE versus PRESENT, captures exact physical bytes and checks them
+against declared bytes/derived length/SHA, retaining ordered stdout/managed-result evidence. Finally
+resets the observer; failures remain explicit fixture prerequisites. Existing caller/input/assertions/
+selection/bounds are preserved. All corrected SOURCE/preparation/discovery/catalog/runtime checks
+remain UNRUN; first noncompletion EVIDENCE accepted7aa, exact cause still UNRESOLVED. No production,
+authority reconstruction/correction or immediate-guidance source was authored. No checkbox closure.
+
 - [ ] Add only a test-side observer in the first NativeCold probe: capture the actual committed
   validation_repair_request.json member bytes from the existing publication callback, using the
   accepted Format1 present-member pattern. Persist the captured sequence in native stdout and

@@ -125,7 +125,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         var context = JsonNode.Parse(await File.ReadAllTextAsync(contextPath))!.AsObject();
         using var factory = new GameEngineTurnLifecycleTests();
         using var factoryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
-        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        Action<TrustedLocalPublicationPhase, int>? repairObserver = null;
+        var repairPublications = new List<object>();
+        Exception? repairObserverFailure = null;
+        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                LocalPublicationObserver = (phase, index) => repairObserver?.Invoke(phase, index)
+            });
         var input = new QueuedConsoleInputSource([Key(ConsoleKey.Escape)]);
         var accepted = false;
         var engine = factory.CreateGameEngine(input,
@@ -191,6 +198,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 FreshCacheEmpty = true, input.KeyAvailable, Artifacts = await CaptureGuaranteedNativeArtifactsAsync(files)
             } }));
             // No ExportCurrent, RestorePersistedTreatmentRequests, reducer or Compose call occurs before entry.
+            repairObserver = CaptureCommittedRepairRequest;
             actualCallerEntered = true;
             handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_guaranteed_native_after_actual_caller", Observation = new
@@ -198,6 +206,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 accepted, handled, ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber,
                 Artifacts = await CaptureGuaranteedNativeArtifactsAsync(files)
             } }));
+            Assert.Null(repairObserverFailure);
             Assert.True(GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber == 42,
                 "The actual native ordinary caller did not complete the confirmed held guaranteed treatment turn42.");
             Assert.True(accepted);
@@ -214,6 +223,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         catch (Exception error) { failure = error; throw; }
         finally
         {
+            repairObserver = null;
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
                 processId = Environment.ProcessId, generation, scenario, prerequisitesValidated, actualCallerEntered,
@@ -221,8 +231,79 @@ public sealed partial class GameEngineTurnLifecycleTests
                 failure = failure?.ToString(), AuxiliaryFactoryRoot = factory._rootPath,
                 Source = original is null ? null : new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber, original.Realm },
                 BinaryPins = MortalArchiveBinaryPins(), LoadedDependencies = MortalArchiveLoadedDependencyBindings(),
+                RepairPublications = repairPublications, RepairObserverFailure = repairObserverFailure?.ToString(),
                 Artifacts = await CaptureGuaranteedNativeArtifactsAsync(files)
             }));
+        }
+
+        void CaptureCommittedRepairRequest(TrustedLocalPublicationPhase phase, int index)
+        {
+            if (phase != TrustedLocalPublicationPhase.Committed || repairObserverFailure is not null) return;
+            try
+            {
+                var journalPath = Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+                using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(journalPath));
+                var requestPath = files.ResolvePath("game_state/control/validation_repair_request.json");
+                var members = journal.RootElement.GetProperty("Members").EnumerateArray()
+                    .Where(member => member.GetProperty("Path").GetString() == requestPath).ToArray();
+                if (members.Length == 0) return;
+                var member = Assert.Single(members);
+                var format = journal.RootElement.GetProperty("Format").GetInt32();
+                var committed = journal.RootElement.GetProperty("Committed").GetBoolean();
+                var transactionId = journal.RootElement.GetProperty("TransactionId").GetString();
+                Assert.Equal(1, format); // This existing control publication uses the byte-backed Format1 image.
+                var after = member.GetProperty("After");
+                var exists = after.GetProperty("Exists").GetBoolean();
+                var declaredBytes = after.GetProperty("Bytes").ValueKind == JsonValueKind.Null
+                    ? null : after.GetProperty("Bytes").GetBytesFromBase64();
+                var sha256 = after.GetProperty("Sha256").GetString();
+                var memberObservation = new
+                {
+                    Sequence = repairPublications.Count, Format = format, TransactionId = transactionId,
+                    Committed = committed, MemberPath = requestPath, DeclaredBytesLength = declaredBytes?.LongLength,
+                    After = new { Exists = exists, Sha256 = sha256 }
+                };
+                repairPublications.Add(memberObservation);
+                Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_guaranteed_native_repair_member", Observation = memberObservation }));
+                Assert.True(committed);
+                if (!exists)
+                {
+                    Assert.Null(declaredBytes); Assert.Null(sha256);
+                    return; // A declared DELETE is evidence, not a newly published request to read.
+                }
+                Assert.NotNull(declaredBytes);
+                var actualBytes = File.ReadAllBytes(requestPath);
+                var bytesObservation = new
+                {
+                    Sequence = repairPublications.Count, TransactionId = transactionId,
+                    ActualBytesLength = actualBytes.LongLength, ActualSha256 = MortalArchiveHash(actualBytes),
+                    ActualBytes = Convert.ToBase64String(actualBytes), RawRequest = MortalArchiveText(actualBytes)
+                };
+                repairPublications.Add(bytesObservation);
+                Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_guaranteed_native_repair_request_bytes", Observation = bytesObservation }));
+                Assert.Equal(declaredBytes!.LongLength, actualBytes.LongLength);
+                Assert.Equal(declaredBytes, actualBytes);
+                Assert.Equal(sha256, MortalArchiveHash(actualBytes));
+                var rawRequest = MortalArchiveText(actualBytes);
+                using var request = JsonDocument.Parse(rawRequest);
+                var requestObservation = new
+                {
+                    Sequence = repairPublications.Count, Format = format, TransactionId = transactionId,
+                    Committed = committed, MemberPath = requestPath, ActualBytesLength = actualBytes.LongLength,
+                    ActualSha256 = MortalArchiveHash(actualBytes), ActualBytes = Convert.ToBase64String(actualBytes),
+                    RawRequest = rawRequest, Request = request.RootElement.Clone()
+                };
+                repairPublications.Add(requestObservation);
+                Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_guaranteed_native_repair_request", Observation = requestObservation }));
+            }
+            catch (Exception error)
+            {
+                // Keep the original caller/input behavior; the capture failure remains an explicit prerequisite failure.
+                repairObserverFailure = error;
+                var observation = new { Sequence = repairPublications.Count, Failure = error.ToString() };
+                repairPublications.Add(observation);
+                Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_guaranteed_native_repair_capture_failure", Observation = observation }));
+            }
         }
     }
 

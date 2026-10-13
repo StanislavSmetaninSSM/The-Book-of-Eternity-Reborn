@@ -22,6 +22,21 @@ SOURCE, fresh selected preparation/exact plan/catalog, run only the affected nat
 verify PREPOST/cleanup, then freeze/publish and independently classify that diagnostic outcome.
 Production, new-root and finite controls remain unchanged/unwritten until causal evidence.
 
+Task1a TEST-ONLY diagnostic SOURCE READY on authoring base
+53aa4dd74fcc861e09587b169628cf6b41d04e90. Only the existing NativeCold child gains a
+read-only committed-publication observer immediately before ordinary entry. Exact request-member
+Format1 Exists/Bytes/Sha256 metadata and physical PRESENT bytes/digests are captured before queued
+Escape, checked against the declared committed image, parsed, and retained as an ordered native/
+managed-result sequence. Declared DELETE is recorded without a missing-file read; internal Length
+is never treated as a serialized field. The observer is reset in finally; capture failure is retained
+and asserted as a prerequisite failure, not hidden or used as accepted authority. Original Fact,
+Ready/input/caller/completion/history/spend/second-idle assertions,1/1/1 selection and45s/category5/
+default10 remain unchanged. No production or pre-entry validator/Export/Restore/reducer/Compose.
+SOURCE review and all corrected preparation/discovery/catalog/runtime checks are UNRUN. The first
+noncompletion EVIDENCE remains accepted7aaaf6dc; exact rejection cause remains UNRESOLVED until the
+new actual diagnostic outcome is frozen/reviewed. No treatment correction or guidance alignment
+source is authored in this block; fullFR063/T070/UI and parent boxes remain OPEN.
+
 ## Current FR-063 first native outcome — 2026-10-13 (OBSERVED FAIL; EVIDENCE PENDING)
 
 Test-only source31818f11c597b01409cfb12a9ba07322975c41f0 independently SOURCE/FIXTURE/SELECTION
