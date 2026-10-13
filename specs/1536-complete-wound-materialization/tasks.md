@@ -5,6 +5,31 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## Genuine pending2 component EVIDENCE accepted; mandatory live owner next — 2026-10-13
+
+Retained independent actual AstraXHigh [EVIDENCE](./recovery/fr063-genuine-pending2-component-first-green-evidence-review-20261013.md)
+SHA2566c51a590fcd9f6ca81049834bbc3606915101c499231932ee342ff4064945edb accepted dab18c50.
+Native source/compilef849,29fullraw/stored/nativechains,270source/11binary,17observations,
+2strictphysicallyabsentroots verified. Correctedactual2PASS29.2512114sCOMPLETE, no newcatalog
+claim or broadrepeat. Qualified ONLY genuinewavefullrequest codec/catalog/exactcoalescing,
+oldsealnestedcopyrefusal andcurrent freshlease recovery; no liveproducer/freshPID/newroot.
+Historicalpair totals2actualinvocations4executions2PASS2FAIL over2uniquecases, separatecompile
+failure0exec. NotbytematchedproductionRED/GREEN or original15/aggregate13 qualification.
+
+Coordinator's already-approved sequence continuesnowwith soleSol J0/J1 TEST-ONLY liveowner
+causal source, after isolatedGMfixWIP29bd2e86 is published/STOP. JointDESIGNv2a1ef/9c1a accepted;
+record narrowlyspecified owning-contract exception/proposed targets and one genuine realowner
+positive fixture for currentheldrequest+QTEseverityrepair. Reuse actualpreoriginalworld/source
+helpers unchanged, actual43/currentclaim, SAMEscene andreal ordinary/coordinator entry. Do not
+compose pending in the test or precompose common plan; observe actualowner refusal/repair
+beforecancellationcleanup. Required realwave/privatefullrequest persistence assertion remains
+expectedREDuntilowner exists; capture reachedprereqs and exactnativecode. New source/finite
+selectorWIP+independentSOURCE required before FIRSTactual, then freeze/EVIDENCE. No runtime
+or productionJ2–J6 authorized by thisrelease. No new writer or projectrun from channelACK.
+Future cold same-root/newroot and immediateown-woundUI remainmandatory, fullFR063/T070/#1536
+OPEN. GMpure10/44 correctedSourceWIP29bd2e86 stillSOURCEpending, deliveryadapterUNWRITTEN.
+All acceptedpassingcomponent/ordinary/API/QTE/archive cohorts remainfrozen withoutrepeat.
+
 ## Genuine pending2 FIRST corrected COMPLETE2PASS; EVIDENCE pending — 2026-10-13
 
 Source/compile/runtimef849debd7cf3c2ef25ffbbdfc5f083b5d9dae507; focused SOURCE679e/a985 accepted.
