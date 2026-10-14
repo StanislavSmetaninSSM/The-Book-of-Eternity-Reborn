@@ -32,6 +32,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual cold parent original control");
         Assert.NotNull(originalRequest); Assert.NotNull(originalRequest!.ProgressionControl);
         var expectedWorldCycles = originalRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn;
+        var generationRefusal = refusalScenario == "generation_missing";
         var childRoot = newPhysicalRoot ? Path.Combine(Path.GetTempPath(), "boe-fr063-joint-cold-" + Guid.NewGuid().ToString("N")) : _fs.BasePath;
         using var targetOwned = newPhysicalRoot ? new CleanupOwnedFixture(childRoot, Console.WriteLine) : null;
         JointNewRootTransportEvidence? transport = null;
@@ -88,7 +89,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
             failure = await Record.ExceptionAsync(() => RunMortalArchiveChildAsync(
-                "engine-mortal-joint-applied-cold", childRoot, output, refusalScenario is not null ? 2 : expectedPhase == "applied" ? 0 : 1, contextPath));
+                "engine-mortal-joint-applied-cold", childRoot, output, generationRefusal ? 3 : refusalScenario is not null ? 2 : expectedPhase == "applied" ? 0 : 1, contextPath));
         }
         finally
         {
@@ -100,8 +101,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Transport = transport,
                 Child = File.Exists(output) ? await File.ReadAllTextAsync(output) : null,
                 FullChildLog = File.Exists(output + ".log") ? await File.ReadAllTextAsync(output + ".log") : null,
-                PhysicalAfter = MortalArchiveDigests(await CaptureMortalArchiveImagesAsync(_fs,
-                    paused.Keys.Where(path => path != "$sessionGeneration"))),
+                PhysicalAfter = MortalArchiveDigests(generationRefusal
+                    ? await CaptureJointGenerationRefusalRawImagesAsync(_fs)
+                    : await CaptureMortalArchiveImagesAsync(_fs, paused.Keys.Where(path => path != "$sessionGeneration"))),
                 NewRootAfter = newPhysicalRoot && Directory.Exists(childRoot)
                     ? await CaptureJointNewRootDiagnosticAsync(childRoot) : null
             });
@@ -109,7 +111,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Null(failure);
         var child = ParseJsonObjectBytes(await File.ReadAllBytesAsync(output));
         Assert.NotEqual(Environment.ProcessId, child["processId"]!.GetValue<int>());
-        Assert.True(child["actualCallerEntered"]!.GetValue<bool>());
+        Assert.True(child["actualOuterCallerInvoked"]!.GetValue<bool>());
+        Assert.Equal(!generationRefusal, child["actualCallerEntered"]!.GetValue<bool>());
         Assert.Equal(refusalScenario is null, child["completed"]!.GetValue<bool>());
         Assert.Equal(refusalScenario is not null, child["refusalVerified"]!.GetValue<bool>());
         Assert.Null(child["failure"]);
@@ -124,7 +127,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     public static async Task WriteMortalJointAppliedColdProbeAsync(string root, string output, int scenario, string contextPath)
     {
-        Assert.InRange(scenario, 0, 2);
+        Assert.InRange(scenario, 0, 3);
         var context = JsonNode.Parse(await File.ReadAllTextAsync(contextPath))!.AsObject();
         using var factory = new GameEngineTurnLifecycleTests();
         using var factoryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
@@ -148,6 +151,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         bool? handled = null, secondIdle = null;
         var completed = false;
         var refusalVerified = false;
+        var actualOuterCallerInvoked = false;
+        Exception? generationAdmissionFailure = null;
         var refusalScenario = context["refusalScenario"]?.GetValue<string>();
         var sourceExpectedFrameClassification = refusalScenario switch
         {
@@ -228,6 +233,18 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
                 lease.EnsureNoPendingLocalDecision();
             }
+            if (scenario == 3)
+            {
+                Assert.Equal("generation_missing", refusalScenario);
+                intactBeforeTamper = before;
+                var generationPath = new TrustedLocalFileScope([files.RuntimeRootPath]).ValidateFile(files.SessionGenerationPath, allowMissing: false);
+                Assert.Equal(before!["$sessionGeneration"], await File.ReadAllBytesAsync(generationPath));
+                // All issuing/admission leases have closed. This is one negative
+                // physical deletion, not generation rotation or recovery authority.
+                File.Delete(generationPath);
+                before = await CaptureJointGenerationRefusalRawImagesAsync(files);
+                Assert.Null(before["$sessionGeneration"]);
+            }
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_applied_child_before_actual_owner", Observation = new
             { Environment.ProcessId, original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber,
                 FreshCommonCacheEmpty = true, OriginalFromOfficialReader = true, RefusalScenario = refusalScenario,
@@ -236,6 +253,28 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Before = MortalArchiveDigests(before) } }));
             // The first owning call is the real late lifecycle. No Restore,
             // Export, correction, reducer or Compose has run in this process.
+            actualOuterCallerInvoked = true;
+            if (scenario == 3)
+            {
+                var inGameBeforeAdmission = GetPrivateFieldValue<bool>(engine, "_inGame");
+                generationAdmissionFailure = await Record.ExceptionAsync(async () =>
+                {
+                    handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+                });
+                after = await CaptureJointGenerationRefusalRawImagesAsync(files);
+                Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_generation_actual_admission_outcome", Observation = new
+                { actualOuterCallerInvoked, actualCallerEntered, handled, Failure = generationAdmissionFailure?.ToString(),
+                    Before = MortalArchiveDigests(before), After = MortalArchiveDigests(after) } }));
+                AssertJointGenerationRefusalRawImagesEqual(before!, after);
+                Assert.Null(after["$sessionGeneration"]); Assert.Equal(storyBefore, after[QteStoryPath]);
+                Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                Assert.Equal(inGameBeforeAdmission, GetPrivateFieldValue<bool>(engine, "_inGame"));
+                var refused = Assert.IsType<InvalidDataException>(generationAdmissionFailure);
+                Assert.Equal("Console preparation generation is missing.", refused.Message);
+                Assert.False(actualCallerEntered); Assert.Null(handled);
+                refusalVerified = true;
+                return;
+            }
             handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
             if (scenario == 2)
             {
@@ -360,7 +399,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
-                processId = Environment.ProcessId, actualCallerEntered, handled, secondIdle, completed, refusalVerified, refusalScenario,
+                processId = Environment.ProcessId, actualOuterCallerInvoked, actualCallerEntered, handled, secondIdle, completed, refusalVerified, refusalScenario,
+                GenerationAdmissionFailure = generationAdmissionFailure?.ToString(),
+                GenerationRefusalRawBefore = scenario == 3 ? before : null, GenerationRefusalRawAfter = scenario == 3 ? after : null,
                 SourceExpectedFrameClassification = sourceExpectedFrameClassification,
                 AuxiliaryFactoryRoot = factory._rootPath, Root = root, BinaryPins = MortalArchiveBinaryPins(),
                 DependencyContext = MortalArchiveDependencyContext(), LoadedDependencies = MortalArchiveLoadedDependencyBindings(),

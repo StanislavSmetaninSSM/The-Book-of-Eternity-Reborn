@@ -1,0 +1,98 @@
+{
+  "base": "0330792266aa4ff52b97e77f728471a631670019",
+  "scope": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "checks": {
+    "specs/1536-complete-wound-materialization/plan.md:tail_exact": true,
+    "specs/1536-complete-wound-materialization/plan.md:checkboxes_exact": true,
+    "specs/1536-complete-wound-materialization/tasks.md:tail_exact": true,
+    "specs/1536-complete-wound-materialization/tasks.md:checkboxes_exact": true,
+    "one_named_fact": true,
+    "real_nonzero_applied_producer": true,
+    "delete_after_intact_lease_closed": true,
+    "delete_exact_existing_G": true,
+    "no_postdamage_canonical_prelude": true,
+    "first_attempt_real_outer_late": true,
+    "exact_admission_exception": true,
+    "raw_capture_precedes_refusal_oracle": true,
+    "attempt_and_hook_distinct": true,
+    "G_not_recreated": true,
+    "complete_raw_names_and_directories": true,
+    "raw_only_exact_three_lock_contents_excluded": true,
+    "raw_helper_no_granting_API": true,
+    "parent_generation_diagnostics_raw": true,
+    "full_raw_native_before_after_retained": true,
+    "strict_positive_body_exact": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:protected_base_exact": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs:protected_base_exact": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionNewRoot.cs:protected_base_exact": true,
+    "BookOfEternityClient/Core/SessionOperationContext.cs:protected_base_exact": true,
+    "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs:protected_base_exact": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs:protected_base_exact": true,
+    "tests/categories.json:protected_base_exact": true,
+    "readonly_whitespace": true
+  },
+  "checkCount": 28,
+  "allReportedObservationsPassed": true,
+  "pins": {
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs": {
+      "sha256": "5b02a4bcfc50945f0f7a8f8565f0e6fb991d90473a64b4940cdcf8166a581698",
+      "bytes": 2909
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": {
+      "sha256": "4ff8e91eec02976840348725664b46d2ec23debb7d953eea23b1088305c2e129",
+      "bytes": 32642
+    },
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "sha256": "e4493a31f00b9b41d5337576f599bd19ac016d9c640db05d815b364677ea4935",
+      "bytes": 1546006
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "sha256": "2e25969fe5374a8639ec059549a87ee45a76695901de144afc0ef48f4af359b3",
+      "bytes": 1046622
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": {
+      "sha256": "c8543a8086c19cc1bba37e1128fc37765f1c4ba463291f0fcae732e9b5567845",
+      "bytes": 48435
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs": {
+      "sha256": "5da98006e55be54650c8bb284ff77c480d0576b6b090e8fe1dab6963355420ea",
+      "bytes": 7553
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionNewRoot.cs": {
+      "sha256": "6e0ce1fc6b68081c4ae2684bc54c0c24079e7e1a638935907e177a1154616907",
+      "bytes": 8639
+    },
+    "BookOfEternityClient/Core/SessionOperationContext.cs": {
+      "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8",
+      "bytes": 22597
+    },
+    "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs": {
+      "sha256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad",
+      "bytes": 5364
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs": {
+      "sha256": "a42694a2c2428af2f067f476dea6018389f0a9a8ea76dc9dac513287c28d1e9b",
+      "bytes": 5039
+    },
+    "tests/categories.json": {
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da",
+      "bytes": 1883469
+    }
+  },
+  "sourceInventory": {
+    "methods": 8,
+    "cases": 19,
+    "facts": 7,
+    "theoryRows": 12,
+    "discovery": "UNRUN"
+  },
+  "compilerApiActualAdmissionGateFixtureValidity": "UNCHECKED",
+  "projectExecution": "UNRUN",
+  "foreignGeneration": "OPEN; no forged G or target rotation",
+  "whitespaceOutput": ""
+}

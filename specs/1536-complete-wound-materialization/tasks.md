@@ -1,5 +1,34 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J7 actual missing-generation admission refusal SOURCE WIP STOP — 2026-10-14
+
+Owning base `0330792266aa4ff52b97e77f728471a631670019`; recovery2319/1790
+was verified before SOURCE GO. Exactly one separately named Fact reuses genuine nonzero/
+APPLIED producer and fresh child. The child proves intact original/control/phase/cache/
+console cohort first, CLOSES that lease, then deliberately deletes only the real current G
+file. No canonical helper/inspector/proof/recovery follows corruption. Complete raw no-follow
+game_session/runtime/G before/after inventories and bytes are captured; only contents of
+three named inert lock streams are excluded, while their names and all directories remain.
+Unknown/new runtime files are retained by the inventory and cannot be silently filtered.
+
+The first owning attempt after corruption is the actual outer late caller. Source predicts
+InvalidDataException("Console preparation generation is missing.") at console cohort
+admission BEFORE GetOrCreate/callback. Actual exception/full raw evidence is recorded before
+strict preservation assertions. Outer-call attempted, inner checkpoint reached, handled and
+admission failure are separate observations; the expected inner checkpoint is unreached.
+No joint-guard held boolean is invented. Full namespace/bytes/Ready/original/backups/output/
+mechanics/story/turn and gameplay state must remain exact, with G absent. Parent diagnostics
+also use raw capture for this case to avoid a second admission masking available evidence.
+
+Eight source methods/nineteen cases (seven Facts plus unchanged twelve-row Theory) provisional;
+no category/selector/budget change. Compiler/API/fixture validity and expected actual gate
+UNCHECKED; all project/compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/whole
+SOURCE/FIXTURE/SELECTION UNRUN. Foreign G from real donor root remains OPEN, not forged or
+rotated on retained target. Fault/compensation/uncertainty/inactive/story/live/compatibility,
+no-frame/all-traces-erased/partial cleanup and normative/primary-GM synchronization remain
+OPEN. Production, existing theory/positive strict bodies, oldqualified/raw packets and
+prior tails/checkmarks remain unchanged. Raw diagnostics grant no recovery/claim authority.
+
 ## J7 genuine nonzero/APPLIED new-root fresh-PID control SOURCE WIP STOP — 2026-10-14
 
 Owning base `3153a38a3574082cf912bef9ac788bd5e9ab7f30`; recovery2314/1785

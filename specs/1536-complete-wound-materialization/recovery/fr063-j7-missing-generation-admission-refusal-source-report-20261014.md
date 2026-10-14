@@ -1,0 +1,13 @@
+# FR063 J7 missing-generation admission refusal — SOURCE WIP
+
+Owning base `0330792266aa4ff52b97e77f728471a631670019`; recovery2319/1790 verified before GO. Same retained sole writer/environment; backend model/effort telemetry unavailable. Exact four changed paths: new JointCompletionGeneration partial, current Cold partial, active plan/tasks. No production/old theory/shared producer/runner/catalog/budget change.
+
+One separately named Fact uses genuine nonzero/APPLIED producer and fresh child. Intact original/control/phase/cache/console cohort lease closes before deletion of actual current G. After deletion only no-follow RAW session/runtime/name/byte diagnostics run; no canonical helper, classifier, proof, inspector or recovery preempts the actual outer late caller. Full raw namespace includes every session/runtime file and empty directory; only three inert lock-stream contents are excluded, their names remain compared. Unknown/new runtime bytes are retained; no arbitrary debt filter.
+
+Source predicts exact InvalidDataException at ConsoleRollbackEvidence44 before SessionOperationContext125–134 can reach GetOrCreate/callback. Real exception and complete raw before/after are recorded before assertions. Outer invoked, inner checkpoint, handled and exception are distinct; inner must remain unreached, handled null, with no claimed joint held result. Namespace/bytes/original/Ready/output/backups/mechanics/progression/story/turn/gameplay state and G absence remain strict. Native managed result retains raw byte dictionaries for this case, and parent diagnostic uses the raw route to avoid a second admission hiding evidence. Raw bytes are diagnostics, never engine input authority.
+
+Provisional inventory eight methods/nineteen cases (seven Facts plus unchanged twelve-row Theory). 28 bounded text/byte/whitespace observations passed: True. Seven protected paths, strict positive body and prior MD2 tails/checkboxes match base. Current/protected hashes in readback. Tiny async exception-capture callback uses an explicit statement block; compiler/API validity remains unexecuted.
+
+Compiler/API/actual first-admission gate/fixture validity UNCHECKED; ALL project/compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/whole SOURCE/FIXTURE/SELECTION UNRUN. Foreign G from lawful donor root remains OPEN; no forged metadata, target rotation, dropped cohort or storage fence bypass. Fault/compensation/uncertainty/inactive/story/live/compatibility, no-frame/all-traces-erased/partial cleanup and normative/primary-GM synchronization remain OPEN. No observed refusal or full qualification claim.
+
+FINAL STOPPED. No pending tools or writes after handoff.
