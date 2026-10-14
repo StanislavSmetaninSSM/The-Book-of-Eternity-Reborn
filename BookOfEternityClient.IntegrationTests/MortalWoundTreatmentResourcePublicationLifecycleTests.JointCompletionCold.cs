@@ -215,7 +215,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                     foreach (var path in new[] { "input/turn_request.json", "ready/turn_complete.json",
                                  LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
                     {
-                        var expectedRetained = refusalScenario == "input_control" && path == "input/turn_request.json"
+                        var expectedRetained = (refusalScenario == "input_control" && path == "input/turn_request.json") ||
+                            (refusalScenario == "authority_payload_digest" && path == PendingTurnSnapshotAuthority.AuthorityPath)
                             ? before![path] : intactBeforeTamper![path];
                         Assert.Equal(expectedRetained, after[path]);
                     }

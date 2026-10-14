@@ -1,5 +1,34 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J7 null-frame private joint preservation and authority control SOURCE WIP STOP — 2026-10-14
+
+Owning base `fa2be03217dd99addaf6aa0a6ab1ed3362ddfa81`; recovery2305/1776
+was verified before SOURCE GO. Full retained narrow disposition b748fa6a applies within the
+existing approved release. A private hold-only guard now precedes console late reconciliation/
+ResolveConcurrent/Discard only when the validated frame is null and no browser state exists.
+Strict physical v2 marker requires jointTreatment/progression objects and nonempty session/
+request/integer positive turn; at least one actual active manifest OR input header must match.
+Ready/marker alone never qualify. A conflicting other header cannot disable a matching candidate.
+After identification, read/release instability stays held; actual session replacement propagates.
+G is read through ReadLocalGenerationSnapshot only. No frame/phase/receipt/take/completion
+capability, fingerprint trust, reseal, storage admission bypass or generic discard change.
+
+One genuine same-admitted-child refusal row changes the existing portable authority
+payloadSha256 only, retaining payloadJsonBase64. Intact original/control/phase/cache/cohort
+admission precedes corruption; after-tamper whole tree/G precedes the actual late owner.
+The intentionally invalid authority must retain its AFTER-tamper bytes. Full union/history/
+resource/story/turn/original/Ready/output/backups preservation precedes held=true. A fresh
+process with authority already invalid may refuse earlier at storage admission; it is distinct.
+
+Six source methods/thirteen cases (five Facts plus eight-row Theory) remain provisional;
+no discovery/catalog/selector/budget change. Compiler/API/fixture validity UNCHECKED and
+all project/compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/whole SOURCE/FIXTURE/
+SELECTION UNRUN. Finite header/compatibility controls, foreign G/new-root, compensation/
+uncertainty/inactive/story/live cases, no-frame/all-owner-traces-erased/partial-cleanup limits
+and normative/primary-GM synchronization remain OPEN. Validated-frame joint reconciler,
+legacy generic discard, old v1/singletons and protected fixture bodies remain unchanged.
+Both active headers removed after real cleanup keep a stale marker outside this new guard.
+
 ## J7 physical world-time source drift control SOURCE WIP STOP — 2026-10-14
 
 Owning base `fd2340d155d3275a81988ab13aeffeced0723bd9`; recovery2301/1772

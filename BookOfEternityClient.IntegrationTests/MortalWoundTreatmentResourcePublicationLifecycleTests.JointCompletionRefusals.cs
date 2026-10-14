@@ -16,6 +16,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("basis_fingerprint")]
     [InlineData("input_control")]
     [InlineData("world_time")]
+    [InlineData("authority_payload_digest")]
     public Task GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(string corruption) =>
         RunJointCompletionControlAsync(nonzeroProgression: true, pauseAppliedForCold: true, refusalScenario: corruption);
 
@@ -72,6 +73,16 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var worldTime = ParseJsonObjectBytes(Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, target)));
                 worldTime["currentTimeInMinutes"] = checked(worldTime["currentTimeInMinutes"]!.GetValue<int>() + 1);
                 replacement = System.Text.Encoding.UTF8.GetBytes(worldTime.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                break;
+            case "authority_payload_digest":
+                target = PendingTurnSnapshotAuthority.AuthorityPath;
+                var authority = ParseJsonObjectBytes(Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, target)));
+                var payload = authority["payloadJsonBase64"]!.GetValue<string>();
+                var digest = authority["payloadSha256"]!.GetValue<string>();
+                Assert.Equal(64, digest.Length);
+                authority["payloadSha256"] = digest[..^1] + (digest[^1] == '0' ? '1' : '0');
+                Assert.Equal(payload, authority["payloadJsonBase64"]!.GetValue<string>());
+                replacement = System.Text.Encoding.UTF8.GetBytes(authority.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
                 break;
             default:
                 throw new InvalidDataException("Unsupported joint refusal fixture corruption: " + corruption);

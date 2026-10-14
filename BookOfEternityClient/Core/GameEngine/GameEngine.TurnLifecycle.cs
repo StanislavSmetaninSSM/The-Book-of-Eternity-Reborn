@@ -943,6 +943,10 @@ public partial class GameEngine
                     return true;
                 }
             }
+            if (snapshotContext is null && pendingBrowserState is null &&
+                await TryHoldMortalJointWithoutValidatedOriginalAsync())
+                return true;
+
             // The physical joint owner is examined before legacy signal/turn
             // mismatch handling can discard its original or restore mechanics.
             if (lateBrowserStaged == null && await TryReconcileMortalJointStoryTurnAsync(

@@ -1,0 +1,30 @@
+{
+  "sourceBase": "fa2be03217dd99addaf6aa0a6ab1ed3362ddfa81",
+  "consultant": "same retained /root/wound_b2_design_review",
+  "reportedConfiguration": "requested Astra High; independent model/effort telemetry unavailable; no override/substitute",
+  "reportSHA256": "b748fa6a867f29653139d4854bf07502070dd5cda5c1b7f2064650036818e4e3",
+  "readTimePins": {
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "4534ec9dc87c79fd79e87b886cfd8f9870c45b5dcd7a854b57f8c2bc38946348",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs": "782dcc4904f5873060c1f267ef56b35bcc1ab2e52854c0639503b340f95ddb81",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs": "d1c6bd3dab186a097129a792fdee4a8b795aed322cfc8311dc0fbaadbcbdbc21",
+    "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad",
+    "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+    "BookOfEternityClient/Core/FileSystemManager.cs": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.cs": "3ac7e761c514262ddff97158e02fb8646d911cebedc9300e2477e4c7558f9895",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs": "bc2b5de5ff1691e2565be4558656d118b38a2c2dfbcd412d8f78801d2e86f923",
+    "BookOfEternityClient/Models/TurnRequest.cs": "29b21bc0a98bb65fe9139bd835452c614093f04134b67c5911da33806d73c733",
+    "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-amendment-20261014.md": "cbd92b5d14b1bdf5b33e08065842c9689d0c9dcdaa03d4f1c79fe8e60be462ea",
+    "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-implementation-release-20261014.json": "71436d812eded1a1ea60b011fbd2a68a1452db0aa3b389ff6d0673fa7f9d8f51"
+  },
+  "all14PinsMatchCurrent": true,
+  "rootFullReportRead": "645653",
+  "sourceBlocker": "552c085395889d7f6ddb551eb14ced59f4966cb2df15ea1744b6d04393bc700b",
+  "disposition": "compatible engineering within71436d81 approvedprogression/lifecycle release; holdonly claims, no authority; no new gameplay/storage decision",
+  "sourceDirection": "same solewriter minimumconsolelate nullframe hold-only guard plus actual alreadyadmittedchild authority-corruption row; closedmarker+activeheader correlation; completedstale marker withoutbothheaders NotApplicable; old validated completion/storageG guards unchanged",
+  "projectExecution": "UNRUN",
+  "entireIndependentSOURCE_FIXTURE_SELECTION": "UNRUN",
+  "utc": "2026-10-14T15:37:03.217573+00:00"
+}
