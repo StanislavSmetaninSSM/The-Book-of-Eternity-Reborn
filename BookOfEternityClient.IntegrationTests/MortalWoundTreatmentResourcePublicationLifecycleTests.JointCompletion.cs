@@ -14,7 +14,14 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Fact]
-    public async Task GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression()
+    public Task GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression() =>
+        RunJointCompletionControlAsync(nonzeroProgression: false);
+
+    [Fact]
+    public Task GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce() =>
+        RunJointCompletionControlAsync(nonzeroProgression: true);
+
+    private async Task RunJointCompletionControlAsync(bool nonzeroProgression)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -31,6 +38,22 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotNull(source.Source);
         await AssertGenuinePendingQteSourceAsync(source); // Actual effect-free source10->5, not the old160->155 world.
         var occurrence = await AssertActualPhysicalOccurrenceAsync(source, 2);
+
+        if (nonzeroProgression)
+        {
+            await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            Assert.Null(await _fs.ReadFileBytesAsync(lease, "input/turn_request.json"));
+            Assert.Null(await _fs.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+            var clock = ParseJsonObjectBytes(Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, "game_state/world/world_time.json")));
+            var schedule = StrictJsonAuthority.Deserialize<ProgressionScheduleState>(
+                CanonicalJsonUtf8.DecodeOneOptionalBom(Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.SchedulePath))),
+                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual pre-original43 progression schedule");
+            Assert.NotNull(schedule);
+            // Public current world time is a fixture input BEFORE Stage43 signs
+            // its original. Actual BuildControl derives the nonzero obligation.
+            clock["currentTimeInMinutes"] = checked(clock["currentTimeInMinutes"]!.GetValue<int>() + schedule!.WorldCycleMinutes);
+            await _fs.WriteFileAtomicAsync(lease, "game_state/world/world_time.json", clock.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        }
 
         var input = new QueuedConsoleInputSource([]);
         var logger = new SpiritualLifecycleTestLogger();
@@ -139,13 +162,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(scene, treatment.FinalSceneText);
             Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
             await WriteLiveRepairOrdinaryOutputsAsync(lease, original, decision, scene);
+            if (nonzeroProgression) await WriteJointCompletionMatchingReportAsync(lease, original);
             before = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
             var actualRequest = StrictJsonAuthority.Deserialize<TurnRequest>(
                 CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
                 SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual joint original43 request");
             Assert.NotNull(actualRequest);
             Assert.NotNull(actualRequest!.ProgressionControl);
-            Assert.Equal(0, actualRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn);
+            Assert.Equal(nonzeroProgression ? 1 : 0, actualRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn);
             Assert.Equal(0, actualRequest.ProgressionControl.FactionCyclesAlreadyPendingBeforeTurn);
             await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(_fs, lease, original.TurnNumber);
         }
@@ -153,7 +177,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Source = new { source.Source.SessionId, source.Source.RequestId, source.SnapshotToken, source.Source.TurnNumber },
             Original = new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber, original.Realm },
-            generation, occurrence.OpportunityRef, Scene = scene, Draft = decision,
+            nonzeroProgression, generation, occurrence.OpportunityRef, Scene = scene, Draft = decision,
             FullRequest = WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request), Command = heldCommand,
             ConfirmedHeldBeforeEntry = true, EnergyBefore = 2, HealthBefore = 5, NoPrecomposedCommonPlan = true,
             Before = MortalArchiveDigests(before), Ready = MortalArchiveText(before["ready/turn_complete.json"]!)
@@ -163,6 +187,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         const string diagnosticPath = "game_state/control/validation_diagnostic_failure_report.json";
         var publications = new List<object>();
         var repairReplies = 0;
+        var reportDeletions = 0;
         var milestones = new List<(string Path, string Raw, Dictionary<string, byte[]?> Images)>();
         Exception? observerFailure = null;
         _consolePublicationObserver = ObserveActualRepair;
@@ -177,7 +202,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var after = await CaptureMortalArchiveImagesAsync(_fs, before.Keys.Where(path => path != "$sessionGeneration"));
         WritePhysicalInjuryDiagnostic("fr063_joint_completion_actual_owner_outcome", new
         {
-            ActualCaller = "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync", entered, handled,
+            nonzeroProgression, ActualCaller = "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync", entered, handled,
             Failure = failure?.ToString(), ObserverFailure = observerFailure?.ToString(), EngineDiagnostics = logger.Describe(),
             ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, InputKeyAvailable = input.KeyAvailable,
             Publications = publications, Milestones = milestones.Select(m => new { m.Path, Raw = m.Raw,
@@ -225,6 +250,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(before[path], dispatch.Images[path]);
         Assert.Equal(1, repairReplies);
         await AssertJointCompletionPhysicalOutcomeAsync(engine, original, request, occurrence, before, scene, milestones);
+        await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, before, milestones);
+        Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);
         Assert.False(handled); // Ordinary completion is checked after the strict full-union oracles.
         Dictionary<string, byte[]?> complete;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
@@ -252,7 +279,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 foreach (var member in journal.RootElement.GetProperty("Members").EnumerateArray().Where(row =>
                              row.GetProperty("Path").GetString() == _fs.ResolvePath(repairPath) ||
                              row.GetProperty("Path").GetString() == _fs.ResolvePath(diagnosticPath) ||
-                             row.GetProperty("Path").GetString() == _fs.ResolvePath(MortalQteDecisionPublication.StatePath)))
+                             row.GetProperty("Path").GetString() == _fs.ResolvePath(MortalQteDecisionPublication.StatePath) ||
+                             row.GetProperty("Path").GetString() == _fs.ResolvePath(ProgressionScheduleService.ReportPath)))
                 {
                     Assert.Equal(1, journal.RootElement.GetProperty("Format").GetInt32());
                     Assert.True(journal.RootElement.GetProperty("Committed").GetBoolean());
@@ -262,7 +290,16 @@ public sealed partial class GameEngineTurnLifecycleTests
                     var declared = image.GetProperty("Bytes").ValueKind == JsonValueKind.Null ? null : image.GetProperty("Bytes").GetBytesFromBase64();
                     publications.Add(new { Path = path, Exists = exists, DeclaredBytesLength = declared?.LongLength,
                         Sha256 = image.GetProperty("Sha256").GetString(), TransactionId = journal.RootElement.GetProperty("TransactionId").GetString() });
-                    if (!exists) { Assert.Null(declared); Assert.Equal(JsonValueKind.Null, image.GetProperty("Sha256").ValueKind); continue; }
+                    if (!exists)
+                    {
+                        Assert.Null(declared); Assert.Equal(JsonValueKind.Null, image.GetProperty("Sha256").ValueKind);
+                        if (path == _fs.ResolvePath(ProgressionScheduleService.ReportPath) && member.GetProperty("Before").GetProperty("Exists").GetBoolean())
+                        {
+                            Assert.Equal(before[ProgressionScheduleService.ReportPath], member.GetProperty("Before").GetProperty("Bytes").GetBytesFromBase64());
+                            Assert.Equal(0, reportDeletions++);
+                        }
+                        continue;
+                    }
                     var bytes = File.ReadAllBytes(path);
                     Assert.Equal(declared, bytes);
                     Assert.Equal(declared!.LongLength, bytes.LongLength);
@@ -272,8 +309,11 @@ public sealed partial class GameEngineTurnLifecycleTests
                         key => File.Exists(_fs.ResolvePath(key)) ? File.ReadAllBytes(_fs.ResolvePath(key)) : null, StringComparer.Ordinal);
                     images[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] = File.Exists(_fs.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath))
                         ? File.ReadAllBytes(_fs.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath)) : null;
+                    foreach (var progressionPath in new[] { ProgressionScheduleService.SchedulePath, ProgressionScheduleService.ReportPath })
+                        images[progressionPath] = File.Exists(_fs.ResolvePath(progressionPath)) ? File.ReadAllBytes(_fs.ResolvePath(progressionPath)) : null;
                     var relative = path == _fs.ResolvePath(repairPath) ? repairPath :
-                        path == _fs.ResolvePath(MortalQteDecisionPublication.StatePath) ? MortalQteDecisionPublication.StatePath : diagnosticPath;
+                        path == _fs.ResolvePath(MortalQteDecisionPublication.StatePath) ? MortalQteDecisionPublication.StatePath :
+                        path == _fs.ResolvePath(ProgressionScheduleService.ReportPath) ? ProgressionScheduleService.ReportPath : diagnosticPath;
                     milestones.Add((relative, Encoding.UTF8.GetString(bytes), images));
                     if (relative == repairPath)
                     {
@@ -426,5 +466,94 @@ public sealed partial class GameEngineTurnLifecycleTests
             RequestFingerprint = request.RequestFingerprint, receipt, Create = union[0], Treat = union[1], spend, damage,
             Marker = marker, ExactStorySuffix = row, FullOwnerCanonicalValidation = true,
             ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber });
+    }
+
+    private async Task WriteJointCompletionMatchingReportAsync(FileSystemManager.CanonicalWriteLease lease,
+        PendingTurnSnapshotReadAuthority original)
+    {
+        var request = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(
+            Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, "input/turn_request.json"))),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "real nonzero original43 request");
+        Assert.NotNull(request); Assert.NotNull(request!.ProgressionControl);
+        Assert.Equal(original.SessionId, request.SessionId); Assert.Equal(original.RequestId, request.RequestId);
+        Assert.Equal(original.TurnNumber, request.TurnNumber);
+        var control = request.ProgressionControl!;
+        Assert.Equal(1, control.WorldCyclesAlreadyPendingBeforeTurn);
+        Assert.Equal(0, control.FactionCyclesAlreadyPendingBeforeTurn);
+        Assert.True(control.MustEvaluateWorldProgression);
+        var nextLastWorld = checked(control.LastWorldSimulationTimeInMinutes + control.WorldCycleMinutes);
+        Assert.Equal(control.CurrentWorldTimeInMinutes, nextLastWorld);
+        // Offline GM report: actual original correlation and specified arithmetic,
+        // not a fabricated progression control, marker or accepted capability.
+        await _fs.WriteFileAtomicAsync(lease, ProgressionScheduleService.ReportPath, JsonSerializer.Serialize(new
+        {
+            progressionProcessingReport = new { sessionId = original.SessionId, requestId = original.RequestId,
+                turnNumber = original.TurnNumber, worldCyclesProcessed = 1, factionCyclesProcessed = 0,
+                newLastWorldSimulationTimeInMinutes = nextLastWorld }
+        }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var ready = ParseJsonObjectBytes(Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, "ready/turn_complete.json")));
+        var modified = Assert.IsType<JsonArray>(ready["filesModified"]);
+        Assert.DoesNotContain(modified, path => path?.GetValue<string>() == ProgressionScheduleService.ReportPath);
+        modified.Add(ProgressionScheduleService.ReportPath);
+        await _fs.WriteFileAtomicAsync(lease, "ready/turn_complete.json", ready.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private async Task AssertJointProgressionReportOutcomeAsync(bool nonzeroProgression, PendingTurnSnapshotReadAuthority original,
+        IReadOnlyDictionary<string, byte[]?> before, IReadOnlyList<(string Path, string Raw, Dictionary<string, byte[]?> Images)> milestones)
+    {
+        var request = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual progression source request");
+        Assert.NotNull(request); Assert.NotNull(request!.ProgressionControl);
+        var control = request.ProgressionControl!;
+        Assert.Equal(nonzeroProgression ? 1 : 0, control.WorldCyclesAlreadyPendingBeforeTurn);
+        var phases = milestones.Where(m => m.Path == MortalQteDecisionPublication.StatePath)
+            .Select(m => (Marker: ParseJsonObjectBytes(Encoding.UTF8.GetBytes(m.Raw)), m.Images)).ToArray();
+        var unapplied = Assert.Single(phases, row => row.Marker["progression"]!["phase"]!.GetValue<string>() == "unapplied");
+        var applied = Assert.Single(phases, row => row.Marker["progression"]!["phase"]!.GetValue<string>() == "applied");
+        var initial = Assert.IsType<JsonObject>(unapplied.Marker["progression"]);
+        var final = Assert.IsType<JsonObject>(applied.Marker["progression"]);
+        Assert.True(JsonNode.DeepEquals(initial["sourceGuards"], final["sourceGuards"]));
+        Assert.True(JsonNode.DeepEquals(initial["scheduleBefore"], final["scheduleBefore"]));
+        Assert.True(JsonNode.DeepEquals(initial["reportBefore"], final["reportBefore"]));
+        Assert.True(JsonNode.DeepEquals(initial["scheduleAfter"], final["scheduleAfter"]));
+        Assert.True(JsonNode.DeepEquals(initial["reportAfter"], final["reportAfter"]));
+        Assert.Equal(initial["mutationFingerprint"]!.GetValue<string>(), final["mutationFingerprint"]!.GetValue<string>());
+        var scheduleBefore = Assert.IsType<byte[]>(before[ProgressionScheduleService.SchedulePath]);
+        Assert.Equal(scheduleBefore, unapplied.Images[ProgressionScheduleService.SchedulePath]);
+        Assert.Equal(scheduleBefore, Convert.FromBase64String(final["scheduleBefore"]!["bytes"]!.GetValue<string>()));
+        var expectedAfter = Convert.FromBase64String(final["scheduleAfter"]!["bytes"]!.GetValue<string>());
+        Assert.Equal(expectedAfter, applied.Images[ProgressionScheduleService.SchedulePath]);
+        var expectedSchedule = ParseJsonObjectBytes(scheduleBefore);
+        expectedSchedule["currentWorldTimeInMinutes"] = control.CurrentWorldTimeInMinutes;
+        expectedSchedule["lastWorldSimulationTimeInMinutes"] = checked(control.LastWorldSimulationTimeInMinutes +
+            control.WorldCyclesAlreadyPendingBeforeTurn * control.WorldCycleMinutes);
+        expectedSchedule["lastFactionSimulationTimeInMinutes"] = control.LastFactionSimulationTimeInMinutes;
+        expectedSchedule["pendingWorldCycles"] = 0; expectedSchedule["pendingFactionCycles"] = 0;
+        expectedSchedule["lastUpdatedUtc"] = final["preparedAtUtc"]!.GetValue<string>();
+        Assert.True(JsonNode.DeepEquals(expectedSchedule, ParseJsonObjectBytes(expectedAfter)),
+            "Actual schedule afterimage disagrees with independent original-control arithmetic/preserved fields.");
+        var reportBefore = before.TryGetValue(ProgressionScheduleService.ReportPath, out var report) ? report : null;
+        if (nonzeroProgression)
+        {
+            Assert.NotNull(reportBefore);
+            Assert.Equal(reportBefore, unapplied.Images[ProgressionScheduleService.ReportPath]);
+            Assert.Equal(reportBefore, Convert.FromBase64String(final["reportBefore"]!["bytes"]!.GetValue<string>()));
+            var body = ParseJsonObjectBytes(reportBefore!)["progressionProcessingReport"]!;
+            Assert.Equal(original.SessionId, body["sessionId"]!.GetValue<string>());
+            Assert.Equal(original.RequestId, body["requestId"]!.GetValue<string>());
+            Assert.Equal(original.TurnNumber, body["turnNumber"]!.GetValue<int>());
+            Assert.Equal(1, body["worldCyclesProcessed"]!.GetValue<int>());
+        }
+        else Assert.Null(reportBefore);
+        Assert.False(final["reportAfter"]!["exists"]!.GetValue<bool>());
+        Assert.Null(applied.Images[ProgressionScheduleService.ReportPath]);
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Assert.Equal(expectedAfter, await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.SchedulePath));
+        Assert.Null(await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));
+        WritePhysicalInjuryDiagnostic("fr063_joint_progression_phase_report_arithmetic", new
+        { nonzeroProgression, original.SessionId, original.RequestId, OriginalTurn = original.TurnNumber,
+            ActualOriginalControl = control, Unapplied = initial, Applied = final,
+            ScheduleBefore = Convert.ToBase64String(scheduleBefore), ReportBefore = reportBefore is null ? null : Convert.ToBase64String(reportBefore),
+            ExactScheduleAfter = Convert.ToBase64String(expectedAfter), ReportAfterAbsent = true });
     }
 }

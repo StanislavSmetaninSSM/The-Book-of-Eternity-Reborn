@@ -1,5 +1,30 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J7 genuine nonzero matching-report control SOURCE WIP STOP — 2026-10-14
+
+Owning base `b2f44069d983b9d88e8e89147ffdcec290ead8f4`; recovery2277/1747
+was verified before SOURCE GO. The new unqualified completion fixture now has two separate
+Facts over one private fixture body. Zero-cycle setup and its strict full-union/cleanup/repeat
+oracles remain. The second case advances only the public world-time input by one existing
+world-cycle interval AFTER genuine source42 completion and BEFORE Stage43 mints original43.
+Actual BuildControl emits one pending world cycle; the fixture never rewrites signed control,
+original, schedule or source seals after minting. A real GM report matches that original tuple
+and the specified last-world arithmetic, and Ready declares the actual report path.
+
+The committed observer retains actual schedule/report bytes around unapplied/applied marker
+publication and Format1 report-delete metadata. Oracles require exactly one real present-report
+deletion, stable frozen basis/mutation/before-after images, independent original-control schedule
+arithmetic and preserved fields, exact physical afterbytes, absent consumed report, and unchanged
+whole tree/G on a second actual idle. Applied report absence does not substitute for mechanical,
+projection/story/once-turn/cleanup proof; all first-case strict owning assertions remain.
+
+Two methods/two cases are AUTHOR SOURCE INVENTORY only. Category/selector ownership, official
+discovery, actual fixture validity and every compiler/build/discovery/catalog/PlanOnly/test/runtime/
+fault/project check remain UNRUN/OPEN. Remaining finite cold/new-root/fault/negative J7 controls,
+no-frame/all-traces-erased and partial-cleanup limitations, normative FR063/FR012/private lifecycle/
+primary-GM synchronization and entire SOURCE/FIXTURE/SELECTION remain OPEN. Historical J1, all
+qualified helpers/raw evidence, categories/selectors/budgets/history/checkmarks remain exact.
+
 ## J7 first genuine corrected joint completion control SOURCE WIP STOP — 2026-10-14
 
 Owning base `968875747b56bda9c8895c2dedac84dfd79ff157`; recovery2272/1742
