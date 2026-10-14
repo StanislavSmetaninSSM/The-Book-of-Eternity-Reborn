@@ -1,5 +1,44 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Connected delivery focused TEST correction SOURCE READY; checks UNRUN — 2026-10-14
+
+Retained sole Sol authored only the three Important findings from independent actual
+Astra XHigh [blocked SOURCE report](recovery/A-connected-delivery-independent-source-review-20261014.md)
+SHA256b8ed83f60123e781453353743e5a3f58d177735095b9b9f1535e4e9f9d567861,
+from clean published e04139bb47ec98c66599451b7e067e0670b7ad9c. This source checkpoint
+proposes closure; independent focused SOURCE acceptance and all execution remain UNRUN.
+The original blocked candidate/report remain immutable; no new native outcome exists.
+
+Cleanup separates exact authorized pwsh/helper PID-birth-argv identities from observed
+unknown descendants. Only individually revalidated exact identities are signalled; no
+recursive process-tree kill or unknown signal occurs. Unknown observations retain a
+failure/root/log witness even after known child exit. Both partial pipe drains begin
+before identity inspection; root removal requires actual initial identity, both drains,
+initial census, final known exit/EOF/no pipe error, and no unknown ownership. The existing
+45work+15cleanup/60total absolute bound remains; no orphan fault suite/supervisor added.
+
+Full-source guards admit one unconditional early root empty ban initializer before the
+actual startup writer, reject late empty resets, and bind the two named bootstrap/receipt
+builders to their real Dispatch-WithRetry message with closed parameter/statement shapes
+and allowed intervening writes/branch guards. Receipt eligibility and source-hash binding
+remain required; source-only mutation cannot stand in for actual dispatch. Two additional
+owned nonexecuting seed/mutation rows target late empty reset and post-builder receipt
+ordinary-doc injection, using the same one-pwsh/deadline contour per row.
+
+Anchor extraction excludes supported backtick/tilde fences, retains actual aliases and
+real duplicate-heading slugs. One additional owned-memory row first proves real heading,
+duplicate slug and alias links, then refuses two fragments present only inside fences.
+No Markdown crawler, new production contract, source-read exception or content move.
+
+Static inventory6methods15cases2integration descriptors: delivery1/1 and source5/14,
+unchanged budgets2+2/default9. Catalog731/11584 remains provisional NOTdiscovery; only
+these two new owners' responsibility text and exact selector reason/contracts change.
+All inherited729 nodes, pure44 fixtures/selections and historical tails/checkboxes stay
+exact. Original daemon/Launcher/content/manifest/maps/navigation/production and primary
+331a0a57 are untouched. Full A/B and content/daemon/Block_5 remain OPEN/unreleased.
+ROOT publishes WIP/recovery, then mandatory focused SOURCE before any fresh preparation,
+PowerShell parser, delivery process or native test. No build/runtime/PASS claim here.
+
 ## Connected delivery SOURCE BLOCKED; three focused TEST corrections — 2026-10-14
 
 Retained independent actual Astra XHigh [SOURCE report](recovery/A-connected-delivery-independent-source-review-20261014.md)

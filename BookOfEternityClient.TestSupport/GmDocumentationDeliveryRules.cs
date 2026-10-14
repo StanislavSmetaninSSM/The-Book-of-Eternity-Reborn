@@ -15,13 +15,26 @@ internal static class GmDocumentationDeliveryRules
         var writes = ast["writes"]!.AsArray().Select(row => row!.AsObject()).ToArray();
         var calls = ast["calls"]!.AsArray().Select(row => row!.AsObject()).ToArray();
         var returns = ast["returns"]!.AsArray().Select(row => row!.AsObject()).ToArray();
+        var functions = ast["functions"]!.AsArray().Select(row => row!.AsObject()).ToArray();
+        var startup = ast["startupOffset"]!.GetValue<int>();
+        static int Offset(JsonObject row) => row["offset"]!.GetValue<int>();
+        static string Command(string text) => Regex.Replace(text.Replace("`\r\n", " ", StringComparison.Ordinal)
+            .Replace("`\n", " ", StringComparison.Ordinal), @"\s+", " ").Trim();
+        static bool Guard(JsonObject row, string pattern) => row["guards"]!.AsArray()
+            .Any(value => Regex.IsMatch(value!.GetValue<string>(), pattern));
         var sourceWrites = writes.Where(row => S(row, "left") == "$script:GmSourceFallbackDirective").ToArray();
         var authoritative = sourceWrites.Where(row => S(row, "scope") == "Write-GmContextPack").ToArray();
         if (authoritative.Length != 1 || !S(authoritative[0], "right").Contains(
                 "Do not read implementation code such as BookOfEternityClient/**/*.cs during normal play or validation repair", StringComparison.Ordinal))
             issues.Add("source.authoritative_ban_missing");
+        var earlyEmpty = sourceWrites.Where(row => S(row, "scope") == "<root>" && S(row, "operator") == "Equals" &&
+            S(row, "right") == "\"\"" && row["rootStatement"]!.GetValue<bool>() &&
+            row["guards"]!.AsArray().Count == 0 && Offset(row) < startup &&
+            authoritative.Length == 1 && Offset(row) < Offset(authoritative[0])).ToArray();
+        if (earlyEmpty.Length != 1) issues.Add("source.early_initializer_shape");
         foreach (var row in sourceWrites)
-            if (S(row, "scope") != "Write-GmContextPack" && !(S(row, "scope") == "<root>" && S(row, "right") == "\"\""))
+            if (!(authoritative.Length == 1 && ReferenceEquals(row, authoritative[0]) && S(row, "operator") == "Equals") &&
+                !(earlyEmpty.Length == 1 && ReferenceEquals(row, earlyEmpty[0])))
                 issues.Add("source.late_source_override");
         foreach (var row in writes.Where(row => S(row, "left") is "$script:GmContextPackDirective" or "$script:GmDocPathDirective" or
                      "$script:AfterlifeExamplesDirective" or "$script:GmSourceFallbackDirective"))
@@ -57,9 +70,28 @@ internal static class GmDocumentationDeliveryRules
                 issues.Add("source." + label + "_ban_missing");
             if (direct.Length != 1 || new[] { "script:GmDocPathDirective", "script:GmContextPackDirective", "script:GmSafeProbeDirective" }
                     .Any(name => !Refs(direct[0]).Contains(name, StringComparer.OrdinalIgnoreCase))) issues.Add("source." + label + "_reading_flow_missing");
+            if (scope == "Process-TurnCore")
+            {
+                // Closed current caller shape: null -> guarded bootstrap builder -> null-only ordinary fallback.
+                var ordered = messages.OrderBy(Offset).ToArray();
+                const string bootstrapCall = "Build-FirstMortalBootstrapDispatchMessage -TurnRequest $turnRequest -TurnNumber $turnNumber -RequestId $requestId -ExperiencePrompt $experiencePrompt -FirstMortalBootstrapPrompt $firstMortalBootstrapPrompt";
+                const string bootstrapGuard = @"^\s*\(?-not\s+\[string\]::IsNullOrWhiteSpace\(\$firstMortalBootstrapPrompt\)\)?\s*$";
+                const string fallbackGuard = @"^\s*\(?\$null\s+-eq\s+\$message\)?\s*$";
+                if (ordered.Length != 4 || S(ordered[0], "operator") != "Equals" || S(ordered[0], "right") != "$null" ||
+                    S(ordered[1], "operator") != "Equals" || Command(S(ordered[1], "right")) != bootstrapCall ||
+                    !Guard(ordered[1], bootstrapGuard) || !Guard(ordered[2], fallbackGuard) || !Guard(ordered[3], fallbackGuard) ||
+                    direct.Length != 1 || !ReferenceEquals(ordered[2], direct[0]) || S(ordered[3], "operator") != "PlusEquals" ||
+                    !S(ordered[3], "right").StartsWith("\" If a Mortal World turn resolves open combat,", StringComparison.Ordinal) ||
+                    Refs(ordered[3]).Any(name => name != "script:CompactMortalCombatTemplatePath"))
+                    issues.Add("source.bootstrap_dispatch_flow_missing");
+            }
         }
         var bootstrap = returns.Where(row => S(row, "scope") == "Build-FirstMortalBootstrapDispatchMessage").ToArray();
-        if (!bootstrap.Any(row => Refs(row).Contains("script:GmSourceFallbackDirective", StringComparer.OrdinalIgnoreCase))) issues.Add("source.bootstrap_ban_missing");
+        var bootstrapFunctions = functions.Where(row => S(row, "name") == "Build-FirstMortalBootstrapDispatchMessage").ToArray();
+        if (bootstrap.Length != 1 || !Refs(bootstrap[0]).Contains("script:GmSourceFallbackDirective", StringComparer.OrdinalIgnoreCase)) issues.Add("source.bootstrap_ban_missing");
+        if (bootstrapFunctions.Length != 1 || !BuilderShape(bootstrapFunctions[0],
+                ["TurnRequest", "TurnNumber", "RequestId", "ExperiencePrompt", "FirstMortalBootstrapPrompt"], ["ReturnStatementAst"]))
+            issues.Add("source.bootstrap_builder_shape");
         if (bootstrap.Any(row => S(row, "text").Contains("repository source unless validation later names an exact surface", StringComparison.Ordinal)))
             issues.Add("source.bootstrap_source_exception");
         var receipt = returns.Where(row => S(row, "scope") == "Build-QteEffectResolutionDispatchMessage").ToArray();
@@ -73,13 +105,34 @@ internal static class GmDocumentationDeliveryRules
             if (!value.Contains("Use only safePacket.requests", StringComparison.Ordinal) ||
                 !value.Contains("Complete-BoeQteEffectResolution", StringComparison.Ordinal)) issues.Add("source.receipt_contract_missing");
         }
-        var receiptFunction = ast["functions"]!.AsArray().Single(row => S(row!, "name") == "Process-QteEffectResolutionRequestCore")!;
-        if (!S(receiptFunction, "text").Contains("qte_deferred_effect_resolution", StringComparison.Ordinal) ||
-            !S(receiptFunction, "text").Contains("safePacket", StringComparison.Ordinal) ||
-            !S(receiptFunction, "text").Contains("Build-QteEffectResolutionDispatchMessage", StringComparison.Ordinal))
+        var receiptBuilders = functions.Where(row => S(row, "name") == "Build-QteEffectResolutionDispatchMessage").ToArray();
+        if (receiptBuilders.Length != 1 || !BuilderShape(receiptBuilders[0], ["Request"],
+                ["AssignmentStatementAst", "AssignmentStatementAst", "AssignmentStatementAst", "ReturnStatementAst"]) ||
+            !receiptBuilders[0]["statements"]!.AsArray().Take(3).Select(row => Command(S(row!, "text"))).SequenceEqual(
+                ["$requestId = [string]$Request.requestId", "$waveId = [string]$Request.waveId", "$waveOrdinal = [int64]$Request.waveOrdinal"]))
+            issues.Add("source.receipt_builder_shape");
+        var receiptFunctions = functions.Where(row => S(row, "name") == "Process-QteEffectResolutionRequestCore").ToArray();
+        var receiptDispatches = calls.Where(row => S(row, "scope") == "Process-QteEffectResolutionRequestCore").ToArray();
+        if (receiptFunctions.Length != 1 || receiptDispatches.Length != 1 ||
+            !Regex.IsMatch(Command(S(receiptDispatches[0], "text")), @"-Message\s+\$message(?:\s|$)") ||
+            !Regex.IsMatch(Command(S(receiptDispatches[0], "text")), @"-OperationKind\s+qte-effect(?:\s|$)") ||
+            !Regex.IsMatch(Command(S(receiptDispatches[0], "text")), @"-PendingPath\s+\$RequestPath(?:\s|$)") ||
+            !Regex.IsMatch(Command(S(receiptDispatches[0], "text")), @"-ExpectedSourceHash\s+\$pendingSnapshot\.Hash(?:\s|$)") ||
+            !Regex.IsMatch(S(receiptFunctions[0], "text"), @"\$eligibility=Read-QteDaemonEligibility\s+\$RequestPath\s+if\(\$null -eq \$eligibility\)\{return\}\s+\$pendingSnapshot = \$eligibility\.Pending\s+\$request = \$pendingSnapshot\.Request\s+if \(-not \[string\]::Equals\(\s+\[string\]\$request\.requestKind,\s+""qte_deferred_effect_resolution"",\s+\[System\.StringComparison\]::Ordinal\) -or\s+\$null -eq \$request\.safePacket\) \{\s+throw ""Invalid dedicated QTE effect-resolution request\.""\s+\}"))
             issues.Add("source.receipt_dispatch_flow_missing");
+        if (receiptDispatches.Length == 1)
+        {
+            var messages = writes.Where(row => S(row, "scope") == "Process-QteEffectResolutionRequestCore" &&
+                S(row, "left") == "$message" && Offset(row) < Offset(receiptDispatches[0])).ToArray();
+            if (messages.Length != 1 || S(messages[0], "operator") != "Equals" ||
+                Command(S(messages[0], "right")) != "Build-QteEffectResolutionDispatchMessage -Request $request")
+                issues.Add("source.receipt_ordinary_injected");
+        }
         return issues;
     }
+    private static bool BuilderShape(JsonObject function, string[] parameters, string[] statementKinds) =>
+        function["parameters"]!.AsArray().Select(value => value!.GetValue<string>()).SequenceEqual(parameters) &&
+        function["statements"]!.AsArray().Select(row => S(row!, "kind")).SequenceEqual(statementKinds);
 
     internal static IReadOnlyList<string> VerifyClosure(IReadOnlyDictionary<string, byte[]> docs, string? physicalRoot = null)
     {
@@ -130,8 +183,25 @@ internal static class GmDocumentationDeliveryRules
     private static HashSet<string> Anchors(string text)
     {
         var result = new HashSet<string>(StringComparer.Ordinal); var counts = new Dictionary<string, int>(StringComparer.Ordinal);
-        foreach (Match match in Regex.Matches(text, "<a\\s+id=[\"']([^\"']+)[\"']", RegexOptions.IgnoreCase)) result.Add(match.Groups[1].Value);
-        foreach (Match match in Regex.Matches(text, @"(?m)^#{1,6}\s+(.+?)\s*$"))
+        var visible = new StringBuilder(); char fence = '\0'; var width = 0;
+        foreach (var line in text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n'))
+        {
+            var marker = Regex.Match(line, @"^ {0,3}(`{3,}|~{3,})(.*)$");
+            if (fence != '\0')
+            {
+                if (marker.Success && marker.Groups[1].Value[0] == fence && marker.Groups[1].Length >= width &&
+                    string.IsNullOrWhiteSpace(marker.Groups[2].Value)) fence = '\0';
+                continue;
+            }
+            if (marker.Success && (marker.Groups[1].Value[0] != '`' || !marker.Groups[2].Value.Contains('`')))
+            {
+                fence = marker.Groups[1].Value[0]; width = marker.Groups[1].Length; continue;
+            }
+            visible.AppendLine(line);
+        }
+        var rendered = visible.ToString();
+        foreach (Match match in Regex.Matches(rendered, "<a\\s+id=[\"']([^\"']+)[\"']", RegexOptions.IgnoreCase)) result.Add(match.Groups[1].Value);
+        foreach (Match match in Regex.Matches(rendered, @"(?m)^#{1,6}\s+(.+?)\s*$"))
         {
             var heading = Regex.Replace(match.Groups[1].Value.ToLowerInvariant(), @"[^\p{L}\p{N}_\-\s]", string.Empty).Replace(' ', '-');
             var suffix = counts.GetValueOrDefault(heading); counts[heading] = suffix + 1;

@@ -55,6 +55,8 @@ public sealed class GmDocumentationDeliveryTests
     [Theory]
     [InlineData("repair_ban")]
     [InlineData("late_override")]
+    [InlineData("late_empty_reset")]
+    [InlineData("receipt_post_builder")]
     [InlineData("read_all")]
     [InlineData("receipt_ordinary")]
     [InlineData("wrong_boundary")]
@@ -72,7 +74,7 @@ public sealed class GmDocumentationDeliveryTests
         {
             Assert.Null(changed.Failure); Assert.Empty(changed.Issues);
             var expected = mutation switch { "repair_ban" => "source.repair_ban_missing", "late_override" => "source.late_source_override",
-                "read_all" => "source.universal_read", _ => "source.receipt_ordinary_injected" };
+                "late_empty_reset" => "source.late_source_override", "read_all" => "source.universal_read", _ => "source.receipt_ordinary_injected" };
             Assert.Contains(expected, GmDocumentationDeliveryRules.VerifyFullSource(changed.Ast!));
         }
     }
@@ -81,11 +83,27 @@ public sealed class GmDocumentationDeliveryTests
     [InlineData("missing_copy")]
     [InlineData("broken_anchor")]
     [InlineData("escape")]
+    [InlineData("fenced_anchor")]
     public void MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards(string mutation)
     {
         var docs = ClosureSeed();
         Assert.Empty(GmDocumentationDeliveryRules.VerifyClosure(docs));
         string expected;
+        if (mutation == "fenced_anchor")
+        {
+            docs["OtherGuides/Afterlife_Lifecycle.md"] = Encoding.UTF8.GetBytes(
+                "# Anchor\n# Anchor\n<a id='real-alias'></a>\n```markdown\n# Only fenced\n```\n~~~html\n<a id='fenced-alias'></a>\n~~~\n");
+            docs["OtherGuides/GM_Common_Core.md"] = Encoding.UTF8.GetBytes(
+                "# Anchor\n[real](Afterlife_Lifecycle.md#anchor)\n[duplicate](Afterlife_Lifecycle.md#anchor-1)\n[alias](Afterlife_Lifecycle.md#real-alias)\n");
+            Assert.Empty(GmDocumentationDeliveryRules.VerifyClosure(docs));
+            docs["OtherGuides/GM_Common_Core.md"] = docs["OtherGuides/GM_Common_Core.md"].Concat(Encoding.UTF8.GetBytes(
+                "[fenced heading](Afterlife_Lifecycle.md#only-fenced)\n[fenced alias](Afterlife_Lifecycle.md#fenced-alias)\n")).ToArray();
+            var issues = GmDocumentationDeliveryRules.VerifyClosure(docs);
+            Assert.Equal(2, issues.Count);
+            Assert.Contains("delivery.anchor_missing:Afterlife_Lifecycle.md#only-fenced", issues);
+            Assert.Contains("delivery.anchor_missing:Afterlife_Lifecycle.md#fenced-alias", issues);
+            return;
+        }
         if (mutation == "missing_copy") { docs.Remove("OtherGuides/Afterlife_Lifecycle.md"); expected = "delivery.copy_missing:"; }
         else
         {
@@ -149,6 +167,13 @@ public sealed class GmDocumentationDeliveryTests
             text = text[..start] + line.Replace("$($script:GmSourceFallbackDirective)", string.Empty, StringComparison.Ordinal) + text[end..];
         }
         if (mutation == "late_override") text += "\n$script:GmSourceFallbackDirective = 'Read implementation code during repair.'\n";
+        if (mutation == "late_empty_reset") text += "\n$script:GmSourceFallbackDirective = \"\"\n";
+        if (mutation == "receipt_post_builder")
+        {
+            const string receiptAssignment = "$message = Build-QteEffectResolutionDispatchMessage -Request $request";
+            Assert.Equal(1, text.Split(receiptAssignment, StringSplitOptions.None).Length - 1);
+            text = text.Replace(receiptAssignment, receiptAssignment + "\n        $message += $script:GmDocPathDirective", StringComparison.Ordinal);
+        }
         if (mutation == "read_all") text = text.Replace("Conditional situation router CLI_Rules_Index.md selects only applicable topic/dependency union.",
             "Read all modules every turn; CLI_Rules_Index.md.", StringComparison.Ordinal);
         if (mutation == "receipt_ordinary") text = text.Replace("Use only safePacket.requests from that exact request.",

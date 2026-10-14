@@ -75,19 +75,46 @@ try {
         return ,@($node.FindAll({ param($value) $value -is [Management.Automation.Language.VariableExpressionAst] }, $true) |
             ForEach-Object { $_.VariablePath.UserPath } | Sort-Object -Unique)
     }
+    function If-Guards($node) {
+        $guards = @(); $parent = $node.Parent
+        while ($null -ne $parent) {
+            if ($parent -is [Management.Automation.Language.IfStatementAst]) {
+                $matched = $false
+                foreach ($clause in $parent.Clauses) {
+                    if ($node.Extent.StartOffset -ge $clause.Item2.Extent.StartOffset -and $node.Extent.EndOffset -le $clause.Item2.Extent.EndOffset) {
+                        $guards = @($clause.Item1.Extent.Text) + $guards; $matched = $true; break
+                    }
+                }
+                if (!$matched -and $null -ne $parent.ElseClause -and
+                    $node.Extent.StartOffset -ge $parent.ElseClause.Extent.StartOffset -and $node.Extent.EndOffset -le $parent.ElseClause.Extent.EndOffset) {
+                    $guards = @('<else>') + $guards
+                }
+            }
+            $parent = $parent.Parent
+        }
+        return ,$guards
+    }
+    $report.startupOffset = $selected.Extent.StartOffset
     $report.sourceHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($raw))
     $report.prefixHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($prefix))
     $report.bomLength = $bom; $report.endOffsetUtf16 = $end; $report.prefixLength = $length
     $report.selected = $selected.Extent.Text; $report.predecessor = $statements[$index - 1].Name; $report.successor = $next.Extent.Text
     $report.writes = @($ast.FindAll({ param($value) $value -is [Management.Automation.Language.AssignmentStatementAst] }, $true) |
-        ForEach-Object { @{ scope = Scope-Name $_; left = $_.Left.Extent.Text; operator = $_.Operator.ToString(); right = $_.Right.Extent.Text; refs = Refs $_.Right; offset = $_.Extent.StartOffset } })
+        ForEach-Object { @{ scope = Scope-Name $_; left = $_.Left.Extent.Text; operator = $_.Operator.ToString(); right = $_.Right.Extent.Text; refs = Refs $_.Right; guards = If-Guards $_; rootStatement = [object]::ReferenceEquals($_.Parent, $ast.EndBlock); offset = $_.Extent.StartOffset; endOffset = $_.Extent.EndOffset } })
     $report.calls = @($ast.FindAll({ param($value) $value -is [Management.Automation.Language.CommandAst] -and $value.GetCommandName() -eq 'Dispatch-WithRetry' }, $true) |
         ForEach-Object { @{ scope = Scope-Name $_; text = $_.Extent.Text; refs = Refs $_; offset = $_.Extent.StartOffset } })
     $report.returns = @($ast.FindAll({ param($value) $value -is [Management.Automation.Language.ReturnStatementAst] }, $true) |
         ForEach-Object { @{ scope = Scope-Name $_; text = $_.Extent.Text; refs = Refs $_ } })
     $report.functions = @($ast.FindAll({ param($value) $value -is [Management.Automation.Language.FunctionDefinitionAst] -and
         $value.Name -in @('Process-TurnCore','Process-RepairRequestCore','Process-TerminalProtocolFailureRequestCore','Process-QteEffectResolutionRequestCore','Build-QteEffectResolutionDispatchMessage','Build-FirstMortalBootstrapDispatchMessage') }, $true) |
-        ForEach-Object { @{ name = $_.Name; text = $_.Body.Extent.Text } })
+        ForEach-Object {
+            $shape = @(); $parameters = @()
+            if ($_.Name -in @('Build-QteEffectResolutionDispatchMessage','Build-FirstMortalBootstrapDispatchMessage')) {
+                $shape = @($_.Body.EndBlock.Statements | ForEach-Object { @{ kind = $_.GetType().Name; text = $_.Extent.Text } })
+                $parameters = @($_.Body.ParamBlock.Parameters | ForEach-Object { $_.Name.VariablePath.UserPath })
+            }
+            @{ name = $_.Name; text = $_.Body.Extent.Text; offset = $_.Extent.StartOffset; statements = $shape; parameters = $parameters }
+        })
     if ($Mode -eq 'publish') {
         $prefixPath = Join-Path ([IO.Path]::GetDirectoryName($DaemonPath)) ('gm1557-prefix-' + [Guid]::NewGuid().ToString('N') + '.ps1')
         [IO.File]::WriteAllBytes($prefixPath, $prefix)
