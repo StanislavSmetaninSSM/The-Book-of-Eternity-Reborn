@@ -1,5 +1,17 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J6 continuation read-only transport stop — 2026-10-14
+
+At preserved `362d2ae6ffaf74e7211ea846c61339039925e030`, retained Sol stopped
+before new source edits: read-only exec-command creation failed with transport
+disconnected/recovery timed out after25s. Exact operation/error and absent returned
+IDs are retained in recovery/fr063-j6-readonly-transport-stop-20261014.json.
+ROOT same-environment pwd/Git/remote readback succeeds; hostname and boot ID unchanged.
+Author-channel availability is UNCHECKED pending one harmless read-only probe;
+source STOPPED, all project checks UNRUN. No security cause is established.
+No environment replacement, source-command retry or source/run claim. The existing
+J2–J6/J7 release remains; next source boundary is the owning batch/v2 marker/settlement.
+
 ## J6 private take/complete member inventory WIP STOP — 2026-10-14
 
 Retained sole Sol continued from published0c8d980a65d9bbdc0440b47eb30cc0d931c7dfee
