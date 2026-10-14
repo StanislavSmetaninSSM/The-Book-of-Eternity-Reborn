@@ -1,5 +1,32 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Eligible joint terminal cleanup owner API WIP STOP — 2026-10-14
+
+Owning base `8656d87cfb986a45ed31d284f88ea4cf3dcf6880`; recovery2260/1730
+was verified before SOURCE GO. One new dedicated engine partial now defines eligible cleanup
+on the caller's existing participating lease. It rereads fresh applied full original/G/union,
+exact owned story, verified projection, runtime turn and correlated completion without error.
+The actual destructive-original validator proves all declared snapshots/rollback backups and
+hash modes. No serialized path list/ready/marker/story row alone grants cleanup authority.
+
+The explicit cohort comes from signed snapshot/backup/technical paths plus named original/input/
+ready/public-draft/correlated repair controls. Unsupported storage/backup paths, foreign controls,
+unresolved protocol evidence or mechanical-footprint overlap refuse. Before-images and the full
+current retained union/story/projection/output/history inventory are frozen and revalidated in
+one existing trusted deletion publication callback. Exact all-member absence and retained bytes
+read back; existing publisher debt resolves before success classification. No wildcard/global
+sweep, sequential cleaner, mechanics rollback, claim rearm/release or replacement authority.
+The existing StateManager read-only aggregation runs and is checked under the same full proof.
+
+The new API is UNWIRED to the current story/turn caller. Playable completion, display refresh,
+malformed/incomplete applicability closure and final terminal/session/cold behavior remain OPEN.
+Any partial/uncertain/foreign cleanup is blocked and NOT claimed recoverable; all remaining
+evidence is retained. Empty artifact directories may remain; this batch authorizes exact file
+members only. Old cleaner/caller/story/projection/publisher source is byte exact. J7 controls/
+selectors and normative/primary-GM synchronization follow. Every compiler/build/discovery/catalog/
+PlanOnly/test/runtime/fault and whole SOURCE/FIXTURE/SELECTION check remains UNRUN. No fixture,
+category, selector, budget or acceptance-checkbox changes.
+
 ## Actual joint story/turn caller reconciliation WIP STOP — 2026-10-14
 
 Owning base `d7604230bd42cf71a18f45aa510f66d6edd545b4`; recovery2256/1726
