@@ -1,5 +1,25 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J6 later live-source handoff and focused frame readback — 2026-10-14
+
+Published source `626d318b34b301b8c80cce3fd33e38c38e052cd9`, owning source base
+`5bf81a1c2a3aaa3e1ebe90fb3e0ca1d487d0b591`. Later raw source report
+`recovery/fr063-j6-live-repair-terminal-source-report-20261014.md`, SHA256
+`948ee6eff95285557e7928fad454b1b8892254f55b83ae3c359b2700a55c6db6`, and separate focused
+readback `recovery/fr063-j6-live-repair-late-frame-focused-readback-20261014.json`, SHA256
+`ae13ab49598b6328d938aa3bc104a3f3222010522a7ead03527747957d576dae`, are preserved without
+rewriting earlier reports, 186-check raw static or historical ROOT NOT SUPPLIED/UNCHECKED
+receipt. ROOT independently matched all 10 authored and 117 protected current content pins.
+135 focused text/byte checks were reported true; compilation and behavior remain UNRUN.
+
+Corrected intake remains explicitly held-blocked before generic canonical refresh. Next:
+the same retained sole writer reconstructs BOTH owners under the canonical coordinator's
+fresh participating lease and uses the sole joint build/take/publication pipeline, then
+completes typed settlement, v2 exact/changed replay and lifetime/cold source routes. J7
+controls/exact selection, normative FR063/FR012/private lifecycle and J8 primary GM example/
+manifest/guards remain OPEN. Whole independent SOURCE and fresh official preparation/exact
+PlanOnly precede finite actual runtime; no project check or completion is claimed here.
+
 ## J6 live raw intake/whole-wave repair/terminal wiring WIP STOP — 2026-10-14
 
 Retained sole writer continued from verified5bf81a1c2a3aaa3e1ebe90fb3e0ca1d487d0b591
