@@ -30,6 +30,7 @@ internal static partial class MortalQteDecisionPublication
         private readonly byte[] _marker;
         private readonly byte[]? _decision;
         private readonly string _basisFingerprint;
+        private readonly string _preparedAtUtc;
         private readonly ProgressionScheduleService.FrozenMortalCalculation _calculation;
         private int _consumed;
         internal JointProgressionPhaseCapability(object issuer, FileSystemManager files,
@@ -41,11 +42,13 @@ internal static partial class MortalQteDecisionPublication
             _sessionId = Text(root, "sessionId"); _requestId = Text(root, "requestId");
             _snapshotToken = Text(root, "snapshotToken"); _turn = JointInteger(root, "turn");
             _marker = marker.ToArray(); _basisFingerprint = basisFingerprint; Phase = phase;
+            _preparedAtUtc = Text(ClosedMap(root["progression"], JointProgressionFields), "preparedAtUtc");
             _decision = decision?.ToArray();
             _calculation = new(Clone(calculation.ScheduleBefore), Clone(calculation.ReportBefore),
                 Clone(calculation.ScheduleAfter), Clone(calculation.ReportAfter), calculation.MutationFingerprint);
         }
         internal string Phase { get; }
+        internal string PreparedAtUtcForOwner => _preparedAtUtc;
         internal string SessionIdForOwner => _sessionId;
         internal string RequestIdForOwner => _requestId;
         internal string SnapshotTokenForOwner => _snapshotToken;

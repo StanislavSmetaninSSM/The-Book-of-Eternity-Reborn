@@ -1,5 +1,29 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Joint derived-characteristics projection owner WIP STOP — 2026-10-14
+
+Owning base `d36d9e1e91d6f097793c34788aa5c8352714cb80`; recovery2244/1710
+was verified before SOURCE GO. Three code paths now provide a named same-participating-lease
+projection owner and read-only replay verifier. The actual CharacteristicsService.ComputeAsync
+calculation is reused. Its private instance reads current canonical sources explicitly under
+that lease; the existing accepted effect reader uses its existing lease overload and original
+soul coverage uses the official reader. Ordinary instances retain their exact calculation,
+read/fallback branches and writer/UTC behavior; the mechanical dispatch inverse restores the
+prior source exactly. Joint reads refuse malformed/failed sources instead of silent warning
+success, and captured source presence/bytes are rechecked before and after output handling.
+
+Fresh full applied joint physical proof brackets computation and output. The new writer copies
+the existing output shape/encoding and uses authenticated preparedAtUtc; exact physical bytes
+must read back. The replay verifier recomputes current semantics, validates the existing
+_lastComputed timestamp and preserves all current bytes. Typed refusal/uncertainty preserves
+evidence without mechanics rollback, claim settlement or another lease/reduction. These APIs
+are not yet called by post-common/story lifecycle and their result grants no story/turn authority.
+
+Named story owner/suffix proof, phase-aware live/late completion, cold/session lifetime,
+eligible cleanup, J7 genuine controls/selections and normative/primary-GM synchronization remain
+OPEN. No fixture/category/selector/budget/checkbox changes. All compiler/build/discovery/catalog/
+PlanOnly/tests/runtime/fault/provider and whole SOURCE/FIXTURE/SELECTION checks remain UNRUN.
+
 ## Joint inactive-tail admission/physical guard WIP STOP — 2026-10-14
 
 Owning base `86b98f281d03ed2a3bb6ad4fcad122f9ec5f5df8`; verified recovery2240/1706
