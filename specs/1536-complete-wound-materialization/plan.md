@@ -1,5 +1,29 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 real report/basis/input refusal extension SOURCE WIP STOP — 2026-10-14
+
+Owning base `e9092adbd11786f65cc4a5b48c64451654d696b4`; recovery2298/1769
+was verified before SOURCE GO. Three literal rows extend the same genuine nonzero/APPLIED
+fresh-process refusal Theory: restore genuinely present frozen-before report into the consumed
+absent report slot; change sourceGuards.basisFingerprint without resealing; change the actual
+input progressionControl currentWorldTimeInMinutes under the unchanged original seal.
+
+Intact official original/control/phase/cache/report prerequisites remain before corruption.
+Mixed-report setup explicitly proves current absence and frozen reportBefore presence. Every
+row then captures the entire after-tamper tree/G and enters the actual late owner with no
+intervening authority helper. Full tree path/byte equality, unchanged turn42/story and retained
+Ready/output/backups/manifest/authority precede held=true. The intentionally damaged current
+input must remain its AFTER-tamper bytes; this row does not falsely assert intact input.
+
+Six source methods/eleven cases now exist (five Facts plus one six-row Theory); counts are
+provisional until official discovery. Categories/selectors/budgets and production remain
+unchanged. All project/compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/whole
+SOURCE/FIXTURE/SELECTION are UNRUN; compiler/API/fixture validity UNCHECKED. Foreign actual G
+remains OPEN because this rollback-backed fixture cannot bypass the replacement evidence
+guard. Further original/source/basis negatives, compensation/uncertainty/new-root/inactive/
+story/live-caller controls, no-frame/all-traces-erased/partial-cleanup and normative/primary-GM
+sync remain OPEN. Prior history/checkboxes/qualified bodies and raw packets stay unchanged.
+
 ## J7 three real applied-phase refusal controls SOURCE WIP STOP — 2026-10-14
 
 Owning base `5bc4edcf428915ef8b924c1811b1a0d4c8473116`; recovery2293/1764

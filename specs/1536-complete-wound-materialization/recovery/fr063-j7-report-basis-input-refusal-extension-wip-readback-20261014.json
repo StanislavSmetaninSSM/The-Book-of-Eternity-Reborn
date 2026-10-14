@@ -1,0 +1,85 @@
+{
+  "owningBase": "e9092adbd11786f65cc4a5b48c64451654d696b4",
+  "scope": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "checks": {
+    "specs/1536-complete-wound-materialization/plan.md:prior_tail_exact": true,
+    "specs/1536-complete-wound-materialization/plan.md:checkboxes_exact": true,
+    "specs/1536-complete-wound-materialization/tasks.md:prior_tail_exact": true,
+    "specs/1536-complete-wound-materialization/tasks.md:checkboxes_exact": true,
+    "six_exact_rows": true,
+    "one_theory": true,
+    "previous_three_rows_retained": true,
+    "nonzero_applied_producer": true,
+    "genuine_report_before_present": true,
+    "report_after_absent": true,
+    "physical_report_absence_before_corruption": true,
+    "nonvacuous_byte_or_presence_change": true,
+    "basis_field_exists_not_new_schema": true,
+    "current_input_control_delta": true,
+    "intact_official_read_precedes_tamper": true,
+    "after_tamper_tree_precedes_real_caller": true,
+    "input_oracle_preserves_after_tamper": true,
+    "whole_tree_oracle_precedes_held_boolean": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:base_byte_exact": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs:base_byte_exact": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs:base_byte_exact": true,
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs:base_byte_exact": true,
+    "tests/categories.json:base_byte_exact": true,
+    "git_readonly_whitespace": true
+  },
+  "checkCount": 24,
+  "allReportedObservationsPassed": true,
+  "pins": {
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": {
+      "sha256": "5642dc3aaab639961e12ca35e716eec1e28a40272610efd63010ade676f9c784",
+      "bytes": 48341
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs": {
+      "sha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4",
+      "bytes": 21294
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs": {
+      "sha256": "0aea03657d175b4af389fa49532af361e5b7c549359050ba2dc57359a7bcc42a",
+      "bytes": 26937
+    },
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs": {
+      "sha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92",
+      "bytes": 19147
+    },
+    "tests/categories.json": {
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da",
+      "bytes": 1883469
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs": {
+      "sha256": "14c9f88621889bcd31d41a01b24073d70e7845eb94062c050e5f85194340a06c",
+      "bytes": 5320
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": {
+      "sha256": "017dc57c91e124e75279ddee1f2ec6740e9f175d8945fc9d43fade2a84545d27",
+      "bytes": 26657
+    },
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "sha256": "9da526a615b4210dadf9249e71719aa58330c6d0eac3dfe07c904ef6f90c69d2",
+      "bytes": 1535123
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "sha256": "f3408db3d9e8104e9b0e6da5b0a7fbc9fad6252d488c7b6de5280b58466ce054",
+      "bytes": 1035739
+    }
+  },
+  "sourceInventory": {
+    "methods": 6,
+    "cases": 11,
+    "theoryRows": 6,
+    "officialDiscovery": "UNRUN"
+  },
+  "compilerApiFixtureValidity": "UNCHECKED",
+  "allProjectExecution": "UNRUN",
+  "foreignGeneration": "OPEN; no replacement guard bypass",
+  "whitespaceOutput": ""
+}

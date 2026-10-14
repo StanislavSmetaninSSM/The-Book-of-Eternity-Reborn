@@ -214,7 +214,11 @@ public sealed partial class GameEngineTurnLifecycleTests
                     Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
                     foreach (var path in new[] { "input/turn_request.json", "ready/turn_complete.json",
                                  LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
-                        Assert.Equal(intactBeforeTamper![path], after[path]);
+                    {
+                        var expectedRetained = refusalScenario == "input_control" && path == "input/turn_request.json"
+                            ? before![path] : intactBeforeTamper![path];
+                        Assert.Equal(expectedRetained, after[path]);
+                    }
                 }
                 // The boolean means a blocked attempt, after complete preservation.
                 Assert.True(actualCallerEntered); Assert.True(handled);
