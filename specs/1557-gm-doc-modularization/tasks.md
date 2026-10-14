@@ -1,5 +1,46 @@
 # Tasks: GM Documentation Modularization
 
+## Connected delivery/AST TEST source WIP READY; checks UNRUN — 2026-10-13
+
+Retained sole Sol completed this separately released source block from published isolated
+4948671e2878f70bd2aa66b0ec17feb3d2089aa6. Accepted pure SOURCE81f476/preservation2e473222/
+reading2dc01517 and disjoint44unique24PASS20intendedRED remain frozen without repeat.
+No original GM content/map/nav/manifest/daemon/production or pure fixture was changed.
+Primary J1/pinned work remains untouched. Content moves, full daemon/provider and Block_5
+remain unreleased; no new task/acceptance checkbox is checked from authoring.
+
+New local driver parses actual package full source, selects only root EndBlock unique
+Invoke-GmParticipatingConsumer with two direct no-argument commands, complete preceding
+Write-GmContextPack and following compact-directive append. UTF16 extent maps into original
+UTF8/BOM bytes and reparsed complete sibling prefix; runtime uses actual package DLL and
+normal fresh FileSystemManager directory prerequisites, not a checkout fallback/storage mock.
+Actual source/package/DLL/deps/runtimeconfig/Launcher/driver/prefix bindings are retained.
+Historical398600-byte/f1f9 and198112/ffbd are not substituted for fresh final AST/runtime pins.
+
+Independent literal36-document byte/role/source/package/session closure and actual required
+links/anchors/symlink boundaries supply the intended missing-new-module delivery oracle.
+Separate full-source assignment/reference/message-to-dispatch guards cover ordinary/first
+Mortal bootstrap/repair/terminal and restricted safePacket receipt paths; prefix never proves
+full dispatch. Five source/boundary mutations use nonexecuting owned seed+mutation in ONE
+pwsh/deadline. Three memory closure negatives and physical symlink negative are verifier-only.
+Current source bootstrap 'repository source unless validation later names...' is also rejected
+by the existing closed source-ban expectation; no production edit/waiver is made here.
+
+Local process contour uses one monotonic60s total,45s work and<=15s cleanup; every async wait
+uses remaining deadline. Both pipes drain incrementally/concurrently with retained partial
+logs; exact pwsh/helper PID,birth,argv and unique package/root census are retained. Only
+revalidated owned identities may be signaled. Unproved exit/EOF/ownership or cleanup retains
+roots/error evidence, not a success claim. No new process framework or orphan-survival fault
+row: launcher EOF by itself is not independently surviving-child cleanup proof. All actual
+process/deadline/cleanup/AST/package/link behavior is UNRUN and subject to mandatory SOURCE.
+
+Static candidate6methods12cases/two exact integration owners: delivery1/1, source5/11,
+budgets2+2/default9. Catalog731/11584 provisional NOTdiscovery; inherited729 nodes/pure
+selectors/globalCI remain exact. ROOT publishes WIP/recovery before independent SOURCE,
+then fresh exact preparation/first selected native outcomes. No RED/GREEN/A qualification
+claimed from source. Full A still requires coherent final edited-source/package/delivery
+and content/link proof; B follows independent A acceptance. Historical tails preserved.
+
 ## Finite pure RED EVIDENCE accepted; separate delivery TEST-source boundary — 2026-10-13
 
 Retained independent actual Astra XHigh [reading EVIDENCE report](recovery/A-reading-first-actual-evidence-review-20261013.md)
