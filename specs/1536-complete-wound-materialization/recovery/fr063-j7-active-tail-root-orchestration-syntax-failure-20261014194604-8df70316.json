@@ -1,0 +1,14 @@
+{
+  "operation": "functions.exec JavaScript orchestration intended to build active-tail stopped-WIP publication manifest and then invoke external publication helper",
+  "stage": "V8 module parse before any nested tool call",
+  "exactReturnedText": "Script failed\nWall time 0.0 seconds\nScript error:\nSyntaxError: Invalid or unexpected token",
+  "toolChunkId": "NOT PROVIDED",
+  "nativeProcess": "NOT STARTED",
+  "sourceOrGitMutation": "NONE by failed cell",
+  "authorSTOP": "650f71 exit0; FINAL STOPPED; no pending tools/writes",
+  "sourceBase": "20287353cd7af092a365bbc049b94d19f90440ff",
+  "sourceReportUnchanged": true,
+  "projectExecution": "UNRUN",
+  "cause": "ROOT orchestration syntax error; no security/approval rejection; attempted source retained in visible tool input",
+  "correction": "separate well-formed cell; preserve raw record unchanged"
+}

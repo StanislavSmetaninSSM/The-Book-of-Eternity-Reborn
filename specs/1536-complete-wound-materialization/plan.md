@@ -1,5 +1,44 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 three active-tail refusal controls SOURCE WIP STOP — 2026-10-14
+
+Owning base `20287353cd7af092a365bbc049b94d19f90440ff`; recovery2338/1809 was
+verified before SOURCE GO. New finite Theory has three independent inputs: pending
+statsIncreased:[strength], canonical level2/current49/total149/next150 while genuine
+prior42 processed-level1 acknowledgment remains unchanged, and a new uniquely named
+supported raw QTE offer with turn43 outcome refs. Genuine prior42 inactive lifecycle
+observations remain mandatory. Each active input is authored BEFORE real original43;
+all seven resulting original43 tail images must remain exact through Stage43. No
+post-original mutation is relabeled as inactive-tail refusal. Nonoffending prior42
+bytes and actual processed-level acknowledgment remain unchanged; no direct handler,
+fabricated acknowledgment/claim/source or active-work clearing is used.
+
+Actual late caller still receives the real confirmed homogeneous request and genuine
+severityIII rejection/private repair wave followed by the authorized severityII reply.
+The expected source gate is CreateMortalJointRepairMechanicalAdmissionAsync's actual
+RequireInactiveMortalJointTail, after unchanged original/current input comparison and
+BEFORE common input/cache/take. Prepared/effect/final calculation may have occurred
+before this refusal; the control claims no common take/publication or canonical effect/
+history/resource/story/turn settlement, not that no earlier planning ran. It requires
+the exact distinct inactive-tail diagnostic, held canonical outcome, absent common
+validation, complete original/Ready/output/backups/mechanical/source/stat/QTE byte and
+inventory preservation except actual repair transport/correction, plus the same full
+request/pending wave and supported nonauthorizing ConfirmedHeld inspection. Complete
+available caller outcome and full before/after images are emitted before refusal
+assertions; no second owning call or production change is introduced.
+
+Stage43 retention, actual refusal-gate reach, compiler/API/fixture validity are UNCHECKED.
+All project/build/discovery/catalog/PlanOnly/test/runtime/fault and entire connected
+SOURCE/FIXTURE/SELECTION gates remain UNRUN. Provisional source inventory becomes
+12 methods/25 cases (ten Facts and two Theories with12+3 rows); official discovery,
+category ownership/selector/budgets remain future work, unchanged in this block.
+Lawful active stats/level-up/new-QTE joint support remains UNCHECKED/OPEN; these are
+refusal controls only. FreshPID already-bad signed authority remains OPEN and distinct
+from the existing admitted-child theory. Story/live/compatibility controls, normative/
+primary-GM synchronization, final exact selections and whole independent gates remain
+required. Prior raw outcomes, historical tails and acceptance checkboxes are preserved.
+
+
 ## J7 genuine prior42 inactive baseline SOURCE WIP STOP — 2026-10-14
 
 Owning base `499ff5cb20ea28ae35aa2dd707f6cef53bdf05d4`; ownership pause cleared

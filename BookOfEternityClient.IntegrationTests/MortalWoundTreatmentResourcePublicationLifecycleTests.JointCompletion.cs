@@ -22,7 +22,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         RunJointCompletionControlAsync(nonzeroProgression: true);
 
     private async Task RunJointCompletionControlAsync(bool nonzeroProgression, bool pauseAppliedForCold = false, bool pauseUnappliedForCold = false,
-        string? refusalScenario = null, bool newPhysicalRootForCold = false)
+        string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -40,6 +40,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         await AssertGenuinePendingQteSourceAsync(source); // Actual effect-free source10->5, not the old160->155 world.
         var occurrence = await AssertActualPhysicalOccurrenceAsync(source, 2);
         var priorLifecycleTail = await AssertJointPriorLifecycleInactiveBaselineAsync(source);
+        var jointOriginalTail = activeTailScenario is null ? priorLifecycleTail :
+            await AuthorJointActiveTailBeforeOriginalAsync(activeTailScenario, priorLifecycleTail);
 
         if (nonzeroProgression)
         {
@@ -108,7 +110,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             generation = Assert.IsType<string>(_fs.ReadLocalGenerationSnapshot(lease).Binding.Id);
             original = MortalQteWoundOpportunityProjection.ReadSnapshot(_fs, lease);
-            foreach (var image in priorLifecycleTail)
+            foreach (var image in jointOriginalTail)
                 Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(lease, image.Key));
             Assert.Equal(43, original.TurnNumber);
             Assert.Equal(source.Source.SessionId, original.SessionId);
@@ -187,7 +189,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.NotNull(actualRequest!.ProgressionControl);
             Assert.Equal(nonzeroProgression ? 1 : 0, actualRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn);
             Assert.Equal(0, actualRequest.ProgressionControl.FactionCyclesAlreadyPendingBeforeTurn);
-            await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(_fs, lease, original.TurnNumber);
+            if (activeTailScenario is null)
+                await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(_fs, lease, original.TurnNumber);
         }
         WritePhysicalInjuryDiagnostic("fr063_joint_completion_actual_prerequisites", new
         {
@@ -225,6 +228,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Images = m.Images.ToDictionary(pair => pair.Key, pair => pair.Value is null ? null : Convert.ToBase64String(pair.Value)) }),
             After = MortalArchiveDigests(after)
         });
+        if (activeTailScenario is not null)
+        {
+            await AssertJointActiveTailRefusalAsync(activeTailScenario, engine, original, request, finalization,
+                before, heldCommand, milestones, repairReplies, entered, handled, failure, observerFailure);
+            return;
+        }
         Assert.Null(observerFailure);
         Assert.Null(failure);
         Assert.True(entered);
