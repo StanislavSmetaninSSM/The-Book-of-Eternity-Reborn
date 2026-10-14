@@ -22,7 +22,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         RunJointCompletionControlAsync(nonzeroProgression: true);
 
     private async Task RunJointCompletionControlAsync(bool nonzeroProgression, bool pauseAppliedForCold = false, bool pauseUnappliedForCold = false,
-        string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null)
+        string? refusalScenario = null, bool newPhysicalRootForCold = false, string? activeTailScenario = null,
+        bool useLiveCaller = false, bool recoverRetainedStoryRow = false)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -62,14 +63,39 @@ public sealed partial class GameEngineTurnLifecycleTests
         var input = new QueuedConsoleInputSource([]);
         var logger = new SpiritualLifecycleTestLogger();
         var entered = false;
+        var liveWaitEntered = false;
+        var jointOriginalAuthored = false;
         var appliedPauseReached = false;
         var unappliedPauseReached = false;
+        var contextResult = MortalWoundTreatmentAuthority.ParseContext(new JsonObject
+        {
+            ["schemaVersion"] = 1, ["realm"] = "mortal_world", ["targetKind"] = "player",
+            ["targetId"] = "player_current", ["providerKind"] = "npc", ["providerId"] = "field_medic_01",
+            ["currentLocationId"] = "loc_field_clinic_001"
+        }.ToJsonString(), "treatmentContext");
+        Assert.True(contextResult.IsValid, DescribeValidationIssues(contextResult.Issues));
+        var context = Assert.IsType<MortalWoundTreatmentAuthority.Context>(contextResult.Context);
+        var scene = HeldTreatmentPipelineContext.FinalSceneText + " " + MortalComponentAcquisition;
+        MortalWoundTreatmentAttemptRequest request = null!;
+        MortalWoundTreatmentResourceFinalization finalization = null!;
+        WoundResponseInputCompositionResult composition = null!;
+        PendingTurnSnapshotReadAuthority original = null!;
+        JsonObject decision = null!;
+        string generation = null!;
+        Dictionary<string, byte[]?> before = new(StringComparer.Ordinal);
+        JsonObject heldCommand = new();
+
         var engine = CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = checkpoint =>
                 {
                     if (checkpoint == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound) entered = true;
+                    if (useLiveCaller && checkpoint == SessionFinalizationCheckpoint.TerminalWaitStarted && !jointOriginalAuthored)
+                    {
+                        entered = true; liveWaitEntered = true;
+                        return PrepareJointOriginalAsync();
+                    }
                     if (pauseUnappliedForCold && checkpoint == SessionFinalizationCheckpoint.MortalJointCommonReadbackSettledBeforeProgression)
                     {
                         unappliedPauseReached = true;
@@ -85,122 +111,112 @@ public sealed partial class GameEngineTurnLifecycleTests
             }, logger: logger);
         GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(source.Source!.SessionId, 42);
         await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateAsync();
-        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
-        {
-            Assert.NotNull(await InvokePrivateTaskNullableResultAsync(engine, "StagePlayerTurnAsync", "Осмотреть ушиб.", null, null));
-            return true;
-        });
+        if (!useLiveCaller)
+            await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+            {
+                Assert.NotNull(await InvokePrivateTaskNullableResultAsync(engine, "StagePlayerTurnAsync", "Осмотреть ушиб.", null, null));
+                return true;
+            });
 
-        var contextResult = MortalWoundTreatmentAuthority.ParseContext(new JsonObject
-        {
-            ["schemaVersion"] = 1, ["realm"] = "mortal_world", ["targetKind"] = "player",
-            ["targetId"] = "player_current", ["providerKind"] = "npc", ["providerId"] = "field_medic_01",
-            ["currentLocationId"] = "loc_field_clinic_001"
-        }.ToJsonString(), "treatmentContext");
-        Assert.True(contextResult.IsValid, DescribeValidationIssues(contextResult.Issues));
-        var context = Assert.IsType<MortalWoundTreatmentAuthority.Context>(contextResult.Context);
-        var scene = HeldTreatmentPipelineContext.FinalSceneText + " " + MortalComponentAcquisition;
-        MortalWoundTreatmentAttemptRequest request;
-        MortalWoundTreatmentResourceFinalization finalization;
-        WoundResponseInputCompositionResult composition;
-        PendingTurnSnapshotReadAuthority original;
-        JsonObject decision;
-        string generation;
-        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
-        {
-            generation = Assert.IsType<string>(_fs.ReadLocalGenerationSnapshot(lease).Binding.Id);
-            original = MortalQteWoundOpportunityProjection.ReadSnapshot(_fs, lease);
-            foreach (var image in jointOriginalTail)
-                Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(lease, image.Key));
-            Assert.Equal(43, original.TurnNumber);
-            Assert.Equal(source.Source.SessionId, original.SessionId);
-            Assert.NotEqual(source.Source.RequestId, original.RequestId);
-            Assert.NotEqual(source.SnapshotToken, original.SnapshotToken);
-            Assert.Equal("mortal_world", original.Realm);
-            var offer = Assert.Single(MortalQteWoundOpportunityProjection.Project(original));
-            Assert.Equal(occurrence.OpportunityRef, offer["opportunityRef"]!.GetValue<string>());
-            Assert.Equal("II", offer["maximumSeverity"]!.GetValue<string>());
-            var exported = MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(_fs, lease, context, HeldTreatmentPipelineContext.WoundId);
-            Assert.True(exported.IsValid, DescribeValidationIssues(exported.Issues));
-            var accepted = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(exported.Authority);
-            AssertPendingTreatmentTuple(original, accepted.Binding);
-            var history = ReadCurrentTreatmentHistory(_fs);
-            var wound = ReadCurrentTreatmentWound(_fs);
-            var prepared = MortalWoundTreatmentPlanner.PrepareGuaranteedRequest(accepted, history, wound,
-                "operation_fr063_joint_completion", HeldTreatmentPipelineContext.RouteId,
-                Assert.Single(accepted.Binding.AcceptedEvents).EventRef);
-            Assert.True(prepared.IsValid, DescribeValidationIssues(prepared.Issues));
-            request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(prepared.Request);
-            Assert.Equal(2m, Assert.Single(request.ResourceAuthority.Claims).Quantity);
-            var resolved = MortalWoundTreatmentPlanner.CreateGuaranteedAttempt(request, history, wound, accepted);
-            Assert.Equal("Resolved", resolved.Disposition);
-            Assert.Empty(resolved.Issues);
-            var resolution = Assert.IsType<MortalWoundTreatmentResolution>(resolved.Resolution);
-            var finalized = MortalWoundTreatmentResourceComposer.Finalize(resolution);
-            Assert.True(finalized.IsValid, DescribeValidationIssues(finalized.Issues));
-            finalization = Assert.IsType<MortalWoundTreatmentResourceFinalization>(finalized.Finalization);
-            var command = WoundResponseInputComposer.ComposeMortalWoundTreatmentCommandRoot(accepted.Binding, resolution, scene);
-            var parsed = WoundResponseInputComposer.ParseCommandRoot(JsonSerializer.SerializeToElement(command));
-            Assert.True(parsed.Success, DescribeValidationIssues(parsed.Issues));
-            composition = WoundResponseInputComposer.RecomposeCommandRoot(accepted.Binding, parsed, Array.Empty<WoundOpportunityDecisionReceipt>());
-            Assert.True(composition.Success, DescribeValidationIssues(composition.Issues));
-            decision = new JsonObject { ["opportunityRef"] = occurrence.OpportunityRef, ["decision"] = "materialize",
-                ["woundRef"] = "live_pending_impact", ["proposal"] = CreateMortalComponentProposal() };
-            decision["proposal"]!["severity"] = "III"; // Only this public severity leaf contradicts the genuine maximumII.
-        }
-        await new StateDistributor(_fs, NullLogger<StateDistributor>.Instance)
-            .DistributeAsync(new GameResponse { Response = scene }, composition);
+        if (!useLiveCaller) await PrepareJointOriginalAsync();
 
-        Dictionary<string, byte[]?> before;
-        JsonObject heldCommand;
-        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        async Task PrepareJointOriginalAsync()
         {
-            Assert.Equal(generation, _fs.ReadLocalGenerationSnapshot(lease).Binding.Id);
-            var confirmed = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(_fs, lease, request, finalization);
-            WriteConfirmedClaimInspection("joint_completion_before_actual_entry", confirmed);
-            Assert.True(confirmed.IsValid, DescribeValidationIssues(confirmed.Issues));
-            Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, confirmed.State);
-            Assert.Equal(request.RequestFingerprint, confirmed.RequestFingerprint);
-            Assert.Null(confirmed.GenerationFingerprint); // This read is diagnostic, not publication authority.
-            var definitions = ResourceDefinitionCatalog.ParseCanonical(await _fs.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath), false);
-            Assert.True(definitions.IsValid, DescribeValidationIssues(definitions.Issues));
-            var resources = ResourceStateContract.ParseCanonical(await _fs.ReadFileAsync(lease, ResourceMaterializationContract.StatePath), definitions.Catalog!, false);
-            Assert.True(resources.IsValid, DescribeValidationIssues(resources.Issues));
-            Assert.Equal(2m, Assert.Single(resources.Ledger!.Entries, entry => entry.Coordinate.ResourceKey == "energy").Current);
-            Assert.Equal(5m, Assert.Single(resources.Ledger.Entries, entry => entry.Coordinate.ResourceKey == "health").Current);
-            Assert.Single(ReadCurrentTreatmentHistory(_fs).State!.Transitions);
-            Assert.Equal("untreated", ReadCurrentTreatmentWound(_fs).Care.State);
-            heldCommand = ParseJsonObjectBytes(Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath)));
-            var parsed = WoundResponseInputComposer.ParseCommandRoot(JsonSerializer.SerializeToElement(heldCommand));
-            Assert.True(parsed.Success, DescribeValidationIssues(parsed.Issues));
-            Assert.Empty(parsed.Commands);
-            var treatment = Assert.Single(parsed.TreatmentCommands);
-            Assert.Equal(request.RequestFingerprint, treatment.RequestFingerprint);
-            Assert.True(JsonNode.DeepEquals(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request), treatment.Request));
-            Assert.Equal(scene, treatment.FinalSceneText);
-            Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
-            await WriteLiveRepairOrdinaryOutputsAsync(lease, original, decision, scene);
-            if (nonzeroProgression) await WriteJointCompletionMatchingReportAsync(lease, original);
-            before = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
-            var actualRequest = StrictJsonAuthority.Deserialize<TurnRequest>(
-                CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
-                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual joint original43 request");
-            Assert.NotNull(actualRequest);
-            Assert.NotNull(actualRequest!.ProgressionControl);
-            Assert.Equal(nonzeroProgression ? 1 : 0, actualRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn);
-            Assert.Equal(0, actualRequest.ProgressionControl.FactionCyclesAlreadyPendingBeforeTurn);
-            if (activeTailScenario is null)
-                await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(_fs, lease, original.TurnNumber);
+            await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                generation = Assert.IsType<string>(_fs.ReadLocalGenerationSnapshot(lease).Binding.Id);
+                original = MortalQteWoundOpportunityProjection.ReadSnapshot(_fs, lease);
+                foreach (var image in jointOriginalTail)
+                    Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(lease, image.Key));
+                Assert.Equal(43, original.TurnNumber);
+                Assert.Equal(source.Source.SessionId, original.SessionId);
+                Assert.NotEqual(source.Source.RequestId, original.RequestId);
+                Assert.NotEqual(source.SnapshotToken, original.SnapshotToken);
+                Assert.Equal("mortal_world", original.Realm);
+                var offer = Assert.Single(MortalQteWoundOpportunityProjection.Project(original));
+                Assert.Equal(occurrence.OpportunityRef, offer["opportunityRef"]!.GetValue<string>());
+                Assert.Equal("II", offer["maximumSeverity"]!.GetValue<string>());
+                var exported = MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(_fs, lease, context, HeldTreatmentPipelineContext.WoundId);
+                Assert.True(exported.IsValid, DescribeValidationIssues(exported.Issues));
+                var accepted = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(exported.Authority);
+                AssertPendingTreatmentTuple(original, accepted.Binding);
+                var history = ReadCurrentTreatmentHistory(_fs);
+                var wound = ReadCurrentTreatmentWound(_fs);
+                var prepared = MortalWoundTreatmentPlanner.PrepareGuaranteedRequest(accepted, history, wound,
+                    "operation_fr063_joint_completion", HeldTreatmentPipelineContext.RouteId,
+                    Assert.Single(accepted.Binding.AcceptedEvents).EventRef);
+                Assert.True(prepared.IsValid, DescribeValidationIssues(prepared.Issues));
+                request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(prepared.Request);
+                Assert.Equal(2m, Assert.Single(request.ResourceAuthority.Claims).Quantity);
+                var resolved = MortalWoundTreatmentPlanner.CreateGuaranteedAttempt(request, history, wound, accepted);
+                Assert.Equal("Resolved", resolved.Disposition);
+                Assert.Empty(resolved.Issues);
+                var resolution = Assert.IsType<MortalWoundTreatmentResolution>(resolved.Resolution);
+                var finalized = MortalWoundTreatmentResourceComposer.Finalize(resolution);
+                Assert.True(finalized.IsValid, DescribeValidationIssues(finalized.Issues));
+                finalization = Assert.IsType<MortalWoundTreatmentResourceFinalization>(finalized.Finalization);
+                var command = WoundResponseInputComposer.ComposeMortalWoundTreatmentCommandRoot(accepted.Binding, resolution, scene);
+                var parsed = WoundResponseInputComposer.ParseCommandRoot(JsonSerializer.SerializeToElement(command));
+                Assert.True(parsed.Success, DescribeValidationIssues(parsed.Issues));
+                composition = WoundResponseInputComposer.RecomposeCommandRoot(accepted.Binding, parsed, Array.Empty<WoundOpportunityDecisionReceipt>());
+                Assert.True(composition.Success, DescribeValidationIssues(composition.Issues));
+                decision = new JsonObject { ["opportunityRef"] = occurrence.OpportunityRef, ["decision"] = "materialize",
+                    ["woundRef"] = "live_pending_impact", ["proposal"] = CreateMortalComponentProposal() };
+                decision["proposal"]!["severity"] = "III"; // Only this public severity leaf contradicts the genuine maximumII.
+            }
+            await new StateDistributor(_fs, NullLogger<StateDistributor>.Instance)
+                .DistributeAsync(new GameResponse { Response = scene }, composition);
+
+            await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                Assert.Equal(generation, _fs.ReadLocalGenerationSnapshot(lease).Binding.Id);
+                var confirmed = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(_fs, lease, request, finalization);
+                WriteConfirmedClaimInspection("joint_completion_before_actual_entry", confirmed);
+                Assert.True(confirmed.IsValid, DescribeValidationIssues(confirmed.Issues));
+                Assert.Equal(MortalWoundTreatmentResourceReservationState.ConfirmedHeld, confirmed.State);
+                Assert.Equal(request.RequestFingerprint, confirmed.RequestFingerprint);
+                Assert.Null(confirmed.GenerationFingerprint); // This read is diagnostic, not publication authority.
+                var definitions = ResourceDefinitionCatalog.ParseCanonical(await _fs.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath), false);
+                Assert.True(definitions.IsValid, DescribeValidationIssues(definitions.Issues));
+                var resources = ResourceStateContract.ParseCanonical(await _fs.ReadFileAsync(lease, ResourceMaterializationContract.StatePath), definitions.Catalog!, false);
+                Assert.True(resources.IsValid, DescribeValidationIssues(resources.Issues));
+                Assert.Equal(2m, Assert.Single(resources.Ledger!.Entries, entry => entry.Coordinate.ResourceKey == "energy").Current);
+                Assert.Equal(5m, Assert.Single(resources.Ledger.Entries, entry => entry.Coordinate.ResourceKey == "health").Current);
+                Assert.Single(ReadCurrentTreatmentHistory(_fs).State!.Transitions);
+                Assert.Equal("untreated", ReadCurrentTreatmentWound(_fs).Care.State);
+                heldCommand = ParseJsonObjectBytes(Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath)));
+                var parsed = WoundResponseInputComposer.ParseCommandRoot(JsonSerializer.SerializeToElement(heldCommand));
+                Assert.True(parsed.Success, DescribeValidationIssues(parsed.Issues));
+                Assert.Empty(parsed.Commands);
+                var treatment = Assert.Single(parsed.TreatmentCommands);
+                Assert.Equal(request.RequestFingerprint, treatment.RequestFingerprint);
+                Assert.True(JsonNode.DeepEquals(WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request), treatment.Request));
+                Assert.Equal(scene, treatment.FinalSceneText);
+                Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
+                await WriteLiveRepairOrdinaryOutputsAsync(lease, original, decision, scene);
+                if (nonzeroProgression) await WriteJointCompletionMatchingReportAsync(lease, original);
+                before = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
+                var actualRequest = StrictJsonAuthority.Deserialize<TurnRequest>(
+                    CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
+                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual joint original43 request");
+                Assert.NotNull(actualRequest);
+                Assert.NotNull(actualRequest!.ProgressionControl);
+                Assert.Equal(nonzeroProgression ? 1 : 0, actualRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn);
+                Assert.Equal(0, actualRequest.ProgressionControl.FactionCyclesAlreadyPendingBeforeTurn);
+                if (activeTailScenario is null)
+                    await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(_fs, lease, original.TurnNumber);
+            }
+            WritePhysicalInjuryDiagnostic("fr063_joint_completion_actual_prerequisites", new
+            {
+                Source = new { source.Source.SessionId, source.Source.RequestId, source.SnapshotToken, source.Source.TurnNumber },
+                Original = new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber, original.Realm },
+                nonzeroProgression, generation, occurrence.OpportunityRef, Scene = scene, Draft = decision,
+                FullRequest = WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request), Command = heldCommand,
+                ConfirmedHeldBeforeEntry = true, EnergyBefore = 2, HealthBefore = 5, NoPrecomposedCommonPlan = true,
+                Before = MortalArchiveDigests(before), Ready = MortalArchiveText(before["ready/turn_complete.json"]!)
+            });
+            jointOriginalAuthored = true;
         }
-        WritePhysicalInjuryDiagnostic("fr063_joint_completion_actual_prerequisites", new
-        {
-            Source = new { source.Source.SessionId, source.Source.RequestId, source.SnapshotToken, source.Source.TurnNumber },
-            Original = new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber, original.Realm },
-            nonzeroProgression, generation, occurrence.OpportunityRef, Scene = scene, Draft = decision,
-            FullRequest = WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request), Command = heldCommand,
-            ConfirmedHeldBeforeEntry = true, EnergyBefore = 2, HealthBefore = 5, NoPrecomposedCommonPlan = true,
-            Before = MortalArchiveDigests(before), Ready = MortalArchiveText(before["ready/turn_complete.json"]!)
-        });
 
         const string repairPath = "game_state/control/validation_repair_request.json";
         const string diagnosticPath = "game_state/control/validation_diagnostic_failure_report.json";
@@ -212,16 +228,26 @@ public sealed partial class GameEngineTurnLifecycleTests
         _consolePublicationObserver = ObserveActualRepair;
         Exception? failure;
         var handled = false;
+        var liveCallerReturned = false;
         try
         {
             failure = await Record.ExceptionAsync(async () =>
-                handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
+            {
+                if (useLiveCaller)
+                {
+                    await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Осмотреть ушиб.", null);
+                    liveCallerReturned = true;
+                }
+                else handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            });
         }
         finally { _consolePublicationObserver = null; }
         var after = await CaptureMortalArchiveImagesAsync(_fs, before.Keys.Where(path => path != "$sessionGeneration"));
         WritePhysicalInjuryDiagnostic("fr063_joint_completion_actual_owner_outcome", new
         {
-            nonzeroProgression, ActualCaller = "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync", entered, handled,
+            nonzeroProgression, ActualCaller = useLiveCaller ? "ProcessPlayerTurn" : "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+            entered, HandledByActualLateCaller = useLiveCaller ? (bool?)null : handled,
+            liveCallerReturned, liveWaitEntered, jointOriginalAuthored,
             Failure = failure?.ToString(), ObserverFailure = observerFailure?.ToString(), EngineDiagnostics = logger.Describe(),
             ActualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, InputKeyAvailable = input.KeyAvailable,
             Publications = publications, Milestones = milestones.Select(m => new { m.Path, Raw = m.Raw,
@@ -237,6 +263,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Null(observerFailure);
         Assert.Null(failure);
         Assert.True(entered);
+        Assert.True(jointOriginalAuthored);
+        Assert.Equal(useLiveCaller, liveWaitEntered);
         // First owning-contract oracle, after genuine source/frame/held-request and actual caller evidence.
         Assert.True(milestones.Any(m => m.Path == repairPath),
             "Actual ordinary joint repair owner did not dispatch the genuine severity repair wave while preserving the full held request.");
@@ -287,13 +315,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             await RunJointAppliedBeforeStoryColdAsync(engine, original, request.RequestFingerprint, before, scene,
                 expectedPhase: pauseUnappliedForCold ? "unapplied" : "applied", refusalScenario: refusalScenario,
-                newPhysicalRoot: newPhysicalRootForCold);
+                newPhysicalRoot: newPhysicalRootForCold, recoverRetainedStoryRow: recoverRetainedStoryRow);
             return;
         }
         await AssertJointCompletionPhysicalOutcomeAsync(engine, original, request, occurrence, before, scene, milestones);
         await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, before, milestones);
         Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);
-        Assert.False(handled); // Ordinary completion is checked after the strict full-union oracles.
+        if (useLiveCaller) Assert.True(liveCallerReturned);
+        else Assert.False(handled); // Actual caller completion follows the strict full-union oracles.
         Dictionary<string, byte[]?> complete;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             complete = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
@@ -312,7 +341,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         void ObserveActualRepair(TrustedLocalPublicationPhase phase, int index)
         {
-            if (phase != TrustedLocalPublicationPhase.Committed || observerFailure is not null) return;
+            if (!jointOriginalAuthored || phase != TrustedLocalPublicationPhase.Committed || observerFailure is not null) return;
             try
             {
                 using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(Path.Combine(_fs.RuntimeRootPath,

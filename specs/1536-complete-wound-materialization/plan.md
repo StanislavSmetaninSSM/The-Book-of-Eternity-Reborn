@@ -1,5 +1,48 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 actual LIVE and genuine retained-row replay positives SOURCE WIP STOP — 2026-10-14
+
+Owning base `8273a33874da3a04deb2141b91321c5cfe94adf7`; recovery2347/1818 verified
+before SOURCE GO. Two new Facts reuse genuine prior42/inactive bytes, nonzero original43,
+sealed confirmed request and real severityIII→II repair. Actual LIVE is ProcessPlayerTurn,
+not a wait-only helper: it continuously owns Stage43→WaitForTerminalSignal→Finalize.
+Shared43 request/output authoring is narrowly factored into one local async function;
+for LIVE it runs at real TerminalWaitStarted after original43 exists. Captured data is
+initialized before hook construction; staged/Late remains default. Initial authoring
+publications are not mistaken for owner repair milestones. Awaited live-return and actual
+wait-entry evidence replace any pretend boolean return, followed by the existing complete
+union/once charge/create-then-treat/effect/report/arithmetic/story/turn/cleanup/inert oracles.
+
+Retained-row positive calls a shared genuine story_readback_failure seed, never another
+Fact. First fresh child failure retains its complete separate raw actual outcome, real
+Committed journal/one writer-created row and original/Ready/committed applied union. Parent
+requires exact known row bytes, unchanged cohort and raw absence of publication debt before
+launching a SECOND distinct PID/scenario8. Only scalars/digests enter second-child context;
+no accepted row/proof/capability/request graph is carried as authority. Fresh official
+original/G/empty-cache/control/consumed-report/full owner reconstruction remain mandatory.
+Scenario8 compares signed prefix+one exact actual row/request/G/frozenUTC/action/narrative;
+0–7 retain original-prefix equality. Its actual first late owner recognizes AlreadyAppended,
+completes turn/cleanup once, preserves whole mechanics/phase/projection/story bytes and uses
+an append-forbidden existing hook plus full byte oracles; subsequent idle is byte-inert.
+Full raw second-owner outcome precedes assertions/cleanup; no report/projection recreation.
+
+A static text extraction locator failed with AssertionError335e05/exit1 before sharedfile
+write; raw incident retained separately, not a compiler/project/transport/security event.
+Following initial two-Fact scaffold was unqualified until corrected authoring connected it.
+ROOT source finding of unconditional prefix equality for8 was corrected narrowly to exact
+prefix+one genuine row metadata; it was never an executed failure. One new blank-line
+whitespace error from extraction was corrected; raw history remains unchanged.
+
+Actual live/secondPID completion, callback/hook/closing reach, API/definite-assignment/fixture
+validity are UNCHECKED. All project/build/compiler/discovery/catalog/PlanOnly/test/runtime/
+fault and whole independent SOURCE/FIXTURE/SELECTION UNRUN. Provisional15 methods/32 cases
+(twelve Facts and12+3+5 Theory rows); category/selector/budgets unmodified/pending. Existing
+five-row story/other refusal/active controls and qualified unrelated bodies unchanged.
+Lawful active joint combinations, freshPID already-bad signed authority, compatibility/
+default/v1/disjoint boundaries, normative/primary GM and final selections remain OPEN;
+no positive qualification or FR063 closure. Historical raw outcomes/tails/checkmarks preserved.
+
+
 ## J7 five actual story-owner controls SOURCE WIP STOP — 2026-10-14
 
 Owning base `5f930222ab104a99394417a263e6f686846f4402`; recovery2343/1814 verified
