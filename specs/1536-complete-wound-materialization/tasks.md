@@ -1,5 +1,35 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J7 genuine unapplied-common fresh-process control SOURCE WIP STOP — 2026-10-14
+
+Owning base `da4c4daddeb2aae3616c7c49c2c234ede1afdd29`; recovery2287/1757
+was verified before SOURCE GO. One internal checkpoint is appended without changing existing
+enum ordinals. It runs only with an actual active frame and explicit Committed joint result,
+after the common publisher/readback/claim settlement returned with its lease closed, immediately
+before post-publication validation/progression. Null hooks remain no-op; old families never
+enter this branch. The fixture throws named InvalidDataException at that point; the existing
+same-frame joint wrapper retains the union with its held disposition. No publisher throw,
+synthetic marker, second mechanics, rollback or phase-state fabrication is introduced.
+
+One new Fact reuses the genuine corrected producer and shared native child scenario1. Parent
+observes the real unapplied marker/retained original/G/story42 before launching a fresh PID.
+Child enters the actual late owner from empty common cache. Finalized mechanics remain byte
+exact, while actual progression moves unapplied→applied with stable frozen basis/before-after
+images/mutation fingerprint and independently checked original zero-cycle schedule arithmetic.
+Real derived projection must exist, one story/turn/eligible cleanup follows, and actual second
+idle retains the entire tree/G. Existing applied scenario0 still requires marker/schedule/
+projection byte equality. A missing Models import in the unqualified cold partial was corrected
+from the actual GameResponse definition; this was source-only, not an executed compilation failure.
+
+Four source completion Facts/cases now exist; official discovery/category/selector remain
+OPEN. Combined NONZERO matching-report consumption followed by APPLIED fresh-PID continuation
+without recreation remains explicitly OPEN: separate live nonzero and zero-cycle cold cases do
+not prove that combined obligation. All negatives/mixed/original/G/source/basis/missing-marker,
+phase-fault/new-root and cleanup-limits controls, normative/primary-GM sync remain OPEN.
+Every compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/project and entire SOURCE/
+FIXTURE/SELECTION is UNRUN; compilation/API/fixture validity remains UNCHECKED. Historical
+qualified bodies/raw evidence, categories/selectors/budgets/history/checkmarks stay exact.
+
 ## J7 applied-before-story fresh-process control SOURCE WIP STOP — 2026-10-14
 
 Owning base `101fc9fb584e5639c150731769b708f349d57a97`; recovery2280/1750

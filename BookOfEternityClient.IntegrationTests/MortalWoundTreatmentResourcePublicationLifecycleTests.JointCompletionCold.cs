@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -15,8 +16,12 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task GuaranteedTreatment_AppliedBeforeStoryFreshProcessCompletesOnceAndRepeatsInertly() =>
         RunJointCompletionControlAsync(nonzeroProgression: false, pauseAppliedForCold: true);
 
+    [Fact]
+    public Task GuaranteedTreatment_UnappliedCommonFreshProcessAppliesPhaseAndCompletesExactlyOnce() =>
+        RunJointCompletionControlAsync(nonzeroProgression: false, pauseUnappliedForCold: true);
+
     private async Task RunJointAppliedBeforeStoryColdAsync(GameEngine parent, PendingTurnSnapshotReadAuthority original,
-        string requestFingerprint, IReadOnlyDictionary<string, byte[]?> originalBefore, string scene)
+        string requestFingerprint, IReadOnlyDictionary<string, byte[]?> originalBefore, string scene, string expectedPhase = "applied")
     {
         Dictionary<string, byte[]?> paused;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
@@ -25,7 +30,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(originalBefore["$sessionGeneration"], paused["$sessionGeneration"]);
             var marker = ParseJsonObjectBytes(Assert.IsType<byte[]>(paused[MortalQteDecisionPublication.StatePath]));
             Assert.Equal(2, marker["schemaVersion"]!.GetValue<int>());
-            Assert.Equal("applied", marker["progression"]!["phase"]!.GetValue<string>());
+            Assert.Equal(expectedPhase, marker["progression"]!["phase"]!.GetValue<string>());
             Assert.Equal(original.RequestId, marker["requestId"]!.GetValue<string>());
             Assert.Equal(originalBefore[QteStoryPath], paused[QteStoryPath]);
             foreach (var path in new[] { "input/turn_request.json", LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
@@ -39,7 +44,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             ["parentProcessId"] = Environment.ProcessId, ["sessionId"] = original.SessionId,
             ["requestId"] = original.RequestId, ["snapshotToken"] = original.SnapshotToken,
-            ["requestFingerprint"] = requestFingerprint, ["scene"] = scene,
+            ["requestFingerprint"] = requestFingerprint, ["scene"] = scene, ["expectedPhase"] = expectedPhase,
             ["generationSha256"] = MortalArchiveHash(paused["$sessionGeneration"]!),
             ["binaryPins"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
             ["pausedImages"] = JsonSerializer.SerializeToNode(paused.ToDictionary(pair => pair.Key,
@@ -54,7 +59,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
             failure = await Record.ExceptionAsync(() => RunMortalArchiveChildAsync(
-                "engine-mortal-joint-applied-cold", _fs.BasePath, output, 0, contextPath));
+                "engine-mortal-joint-applied-cold", _fs.BasePath, output, expectedPhase == "applied" ? 0 : 1, contextPath));
         }
         finally
         {
@@ -79,7 +84,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     public static async Task WriteMortalJointAppliedColdProbeAsync(string root, string output, int scenario, string contextPath)
     {
-        Assert.Equal(0, scenario);
+        Assert.InRange(scenario, 0, 1);
         var context = JsonNode.Parse(await File.ReadAllTextAsync(contextPath))!.AsObject();
         using var factory = new GameEngineTurnLifecycleTests();
         using var factoryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
@@ -124,6 +129,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(context["snapshotToken"]!.GetValue<string>(), original.SnapshotToken);
                 Assert.Equal(43, original.TurnNumber);
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(files, lease));
+                var observedMarker = ParseJsonObjectBytes(Assert.IsType<byte[]>(before[MortalQteDecisionPublication.StatePath]));
+                Assert.Equal(scenario == 0 ? "applied" : "unapplied", observedMarker["progression"]!["phase"]!.GetValue<string>());
+                Assert.Equal(context["expectedPhase"]!.GetValue<string>(), observedMarker["progression"]!["phase"]!.GetValue<string>());
                 storyBefore = await files.ReadFileBytesAsync(lease, QteStoryPath);
                 Assert.Equal(original.ReadRequiredBytes(QteStoryPath), storyBefore);
                 await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateReadOnlyAsync(lease);
@@ -163,12 +171,45 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(2m, Assert.Single(state.Ledger.Entries, entry => entry.Coordinate.ResourceKey == "health").Current);
                 var marker = ParseJsonObjectBytes(Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, MortalQteDecisionPublication.StatePath)));
                 Assert.Equal("applied", marker["progression"]!["phase"]!.GetValue<string>());
-                foreach (var path in new[] { MortalQteDecisionPublication.StatePath, ResourceMaterializationContract.StatePath,
+                foreach (var path in new[] { ResourceMaterializationContract.StatePath,
                              ResourceMaterializationContract.HistoryPath, WoundHistoryState.HistoryPath, WoundIdentityState.StatePath,
                              WoundCarrierCatalog.PlayerPath, EffectIdentityState.StatePath, EffectCarrierCatalog.PlayerPath,
-                             MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath, ProgressionScheduleService.SchedulePath,
-                             CharacteristicsService.JointDerivedProjectionPath })
-                    Assert.Equal(before[path], after[path]); // Cold completion does not redo finalized mechanics/phase/projection.
+                             MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath })
+                    Assert.Equal(before[path], after[path]); // Neither cold contour redoes finalized mechanics.
+                var previousMarker = ParseJsonObjectBytes(Assert.IsType<byte[]>(before[MortalQteDecisionPublication.StatePath]));
+                var previousPhase = Assert.IsType<JsonObject>(previousMarker["progression"]);
+                var appliedPhase = Assert.IsType<JsonObject>(marker["progression"]);
+                Assert.True(JsonNode.DeepEquals(previousPhase["sourceGuards"], appliedPhase["sourceGuards"]));
+                foreach (var image in new[] { "scheduleBefore", "reportBefore", "scheduleAfter", "reportAfter" })
+                    Assert.True(JsonNode.DeepEquals(previousPhase[image], appliedPhase[image]));
+                Assert.Equal(previousPhase["mutationFingerprint"]!.GetValue<string>(), appliedPhase["mutationFingerprint"]!.GetValue<string>());
+                if (scenario == 0)
+                {
+                    foreach (var path in new[] { MortalQteDecisionPublication.StatePath, ProgressionScheduleService.SchedulePath,
+                                 CharacteristicsService.JointDerivedProjectionPath }) Assert.Equal(before[path], after[path]);
+                }
+                else
+                {
+                    var originalRequest = StrictJsonAuthority.Deserialize<BookOfEternityClient.Models.TurnRequest>(
+                        CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual unapplied cold original control");
+                    Assert.NotNull(originalRequest); Assert.NotNull(originalRequest!.ProgressionControl);
+                    var control = originalRequest.ProgressionControl!;
+                    Assert.Equal(0, control.WorldCyclesAlreadyPendingBeforeTurn); Assert.Equal(0, control.FactionCyclesAlreadyPendingBeforeTurn);
+                    var scheduleBefore = Convert.FromBase64String(previousPhase["scheduleBefore"]!["bytes"]!.GetValue<string>());
+                    Assert.Equal(scheduleBefore, before[ProgressionScheduleService.SchedulePath]);
+                    var scheduleAfter = Convert.FromBase64String(appliedPhase["scheduleAfter"]!["bytes"]!.GetValue<string>());
+                    Assert.Equal(scheduleAfter, after[ProgressionScheduleService.SchedulePath]);
+                    var expected = ParseJsonObjectBytes(scheduleBefore);
+                    expected["currentWorldTimeInMinutes"] = control.CurrentWorldTimeInMinutes;
+                    expected["lastWorldSimulationTimeInMinutes"] = control.LastWorldSimulationTimeInMinutes;
+                    expected["lastFactionSimulationTimeInMinutes"] = control.LastFactionSimulationTimeInMinutes;
+                    expected["pendingWorldCycles"] = 0; expected["pendingFactionCycles"] = 0;
+                    expected["lastUpdatedUtc"] = appliedPhase["preparedAtUtc"]!.GetValue<string>();
+                    Assert.True(JsonNode.DeepEquals(expected, ParseJsonObjectBytes(scheduleAfter)));
+                    Assert.NotNull(await files.ReadFileBytesAsync(lease, CharacteristicsService.JointDerivedProjectionPath));
+                }
+                Assert.Null(await files.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));
                 var story = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, QteStoryPath));
                 Assert.True(story.AsSpan().StartsWith(storyBefore!));
                 var suffix = Encoding.UTF8.GetString(story.AsSpan(storyBefore!.Length)).Split('\n', StringSplitOptions.RemoveEmptyEntries);

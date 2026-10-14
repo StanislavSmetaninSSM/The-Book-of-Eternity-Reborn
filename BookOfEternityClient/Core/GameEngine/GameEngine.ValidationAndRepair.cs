@@ -850,6 +850,11 @@ public partial class GameEngine
             {
                 if (activeSnapshotContext is null)
                     return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+                // The known common batch/readback and original claim settlement
+                // have returned with the issuing lease closed. A configured test
+                // pause cannot throw through the publisher or apply progression.
+                if (jointPublication.Disposition == MortalJointRepairPublicationDisposition.Committed)
+                    await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.MortalJointCommonReadbackSettledBeforeProgression);
                 return await ValidateMortalJointPostPublicationAsync(source, activeSnapshotContext, jointPublication);
             }
             try
