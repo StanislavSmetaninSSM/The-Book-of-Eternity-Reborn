@@ -1,5 +1,36 @@
 # Tasks: GM Documentation Modularization
 
+## Connected delivery SOURCE BLOCKED; three focused TEST corrections — 2026-10-14
+
+Retained independent actual Astra XHigh [SOURCE report](recovery/A-connected-delivery-independent-source-review-20261014.md)
+SHA256b8ed83f60123e781453353743e5a3f58d177735095b9b9f1535e4e9f9d567861
+blocks b7639f1a05bc4e10957cbc8d3f6405fd5ab1aafa with3Important/noCritical.
+All23 pins exact; static6/12/2 and731/11584 remain provisional. No preparation,
+PowerShell parser, runtime or actual delivery execution is released. These are
+source-confirmed fixture/oracle defects, not native test failures. Prior pure44
+and primaryJ1 evidence remain unaffected. GitHub-only sparse recovery verifies125
+materializedtrackedfiles includingall9candidatepaths exactbytes/blobs; project0exec.
+
+Finding1: unknown directchildren enter signalling inventory; recursiveKill delegates
+unvalidateddescendant selection; failed initialidentity/pipe proof may permitrootdelete.
+Required: individually revalidated exactpwsh/helper identities only, no recursivekill;
+unknownownership/initialproof failure remainsfailure withroots/logs retained.
+Finding2: lateempty banreset passes; receipt post-builder ordinarydirective injection
+and bootstrap builder-to-realdispatch flow lackclosedshape/interveningwrite proof.
+Required: earlyinitializer tiedbeforeactualstartup; final namedbootstrap/receipt
+message-to-Dispatch-WithRetry chains plus targetedlateempty/receiptinjection controls.
+Finding3: fencedcode headings/aliases counterfeit realanchor. Required: supported
+fence-aware extraction andtargetedanchor-only-inside-code memory control.
+
+ROOT releases soleSol focused TEST-source corrections only for these3findings,
+with truthfulfinitecounts/selection metadata andunchangedbudgets/pure/sourcepins.
+No genericprocess supervisor/PowerShellanalyser/Markdowncrawler or orphanfaultrow.
+PublishcorrectedWIP beforefocusedindependentSOURCE; no project/AST/runtime beforegate.
+Currentownership/fullsourceflow authorclaims are superseded bythisBLOCKED review,
+not accepted capability. FullA/content/daemon/production/Block_5 remainunreleased;
+no checkbox changes. Primary331a0a57 acceptedcausalRED unchanged/J2-J6unopened.
+
+
 ## Connected delivery/AST TEST source WIP READY; checks UNRUN — 2026-10-13
 
 Retained sole Sol completed this separately released source block from published isolated

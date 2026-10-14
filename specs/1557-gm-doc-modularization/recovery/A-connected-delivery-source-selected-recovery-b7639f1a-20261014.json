@@ -1,0 +1,763 @@
+{
+  "source": "b7639f1a05bc4e10957cbc8d3f6405fd5ab1aafa",
+  "path": "/workspace/1557-gm-feature-recovery-ac3d13dc",
+  "actualGitHubFreshCloneThenFetch": true,
+  "clean": true,
+  "materializedTrackedFiles": 125,
+  "all9CandidatePathsMaterialized": true,
+  "bytesAndBlobsMatch": true,
+  "projectExecution": "UNRUN; sparse selected only",
+  "files": [
+    {
+      "path": ".agents/skills/speckit-analyze/SKILL.md",
+      "bytes": 10866,
+      "sha256": "2740b8aeab8d0104527384ca74106e252e0a20df89355c8f36be25a62130d6d6",
+      "gitBlob": "77fb9bdbc1139368f5f87169332fa48424bc3ed6"
+    },
+    {
+      "path": ".agents/skills/speckit-plan/SKILL.md",
+      "bytes": 7411,
+      "sha256": "b92428f869e93676fc0b77232dd4fecb610294b68bee677d940a239c43766a3d",
+      "gitBlob": "a2cf680c643792ac2116045dd936738d098318a5"
+    },
+    {
+      "path": ".agents/skills/speckit-tasks/SKILL.md",
+      "bytes": 10463,
+      "sha256": "460eddac0fd7521bed8ac2d5821c98fc0dd4ab3ced4a6d94eb04bc155b021ac9",
+      "gitBlob": "04f13518304820c6e0716ea8d5cf914b3add524d"
+    },
+    {
+      "path": ".specify/extensions.yml",
+      "bytes": 4672,
+      "sha256": "5e1ef86bc39cb43001577e895da68b324154a52281565e30ddba62c235c61df1",
+      "gitBlob": "651400d306cf969c8d354beedcab041f729fe8a9"
+    },
+    {
+      "path": ".specify/feature.json",
+      "bytes": 62,
+      "sha256": "a8e6753482a62ae4fcb2a35fb1457aad1b529de7662cceb4db290b3db7d46267",
+      "gitBlob": "5fcc5563a49c22f37de5280bc86902b480116b3b"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d"
+    },
+    {
+      "path": ".specify/templates/plan-template.md",
+      "bytes": 5176,
+      "sha256": "9e30f2f4f60da82326844fe2d0799038f66dbf34ace95f6d69c39672c9706e68",
+      "gitBlob": "1b8c0f8cc0c616a68167f228b74973c5da76a71c"
+    },
+    {
+      "path": ".specify/templates/tasks-template.md",
+      "bytes": 10542,
+      "sha256": "fc061a22f6b52a46e3e12e5d006110e5cfda935824b4eb69b1dac9fbc158435e",
+      "gitBlob": "720e57f32685c434297008c3aca4818bb18ddb7a"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 11661,
+      "sha256": "399dfecdfcdf42f7f0a0bbdd5f9fd540d8c7576d287bc91b8e595dd4a2a2aa80",
+      "gitBlob": "6d1115f2c20ef8f543ea733c561d2ce58412ec1d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs",
+      "bytes": 213635,
+      "sha256": "54369d5978c67a995f47017e7549f2096494ceeb5a5411bae2058af261e188cf",
+      "gitBlob": "bdd249bb75f39e2ee6921d70fc195e862f3aed5e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs",
+      "bytes": 9571,
+      "sha256": "c14f46a3bed6e42568a7df163a280dd392168398c57a12560869df90d573ea92",
+      "gitBlob": "55ec731690a5728f99062b030a596c49b757715c"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+      "bytes": 339647,
+      "sha256": "75527de090426482035f5c4e73a55f3efbcc0eb0ae1950579dab8fac598d7a6e",
+      "gitBlob": "05e51a3549c41cdec5cc43ec168a3797033f1a30"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/ExampleDocumentationFixtures.cs",
+      "bytes": 12045,
+      "sha256": "73eb463d5bf9f209755d431a282eaca37254abb4bcf69c66c4c5855f429eef4d",
+      "gitBlob": "ce6efa67b89ae40e191e375cd98bd67f2cdca8d0"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryRules.cs",
+      "bytes": 10843,
+      "sha256": "4dc077c5faab21b607caae01bee219979dfe96e8633ff82016989c90b493d692",
+      "gitBlob": "c71bcf469bf0f4cf4070f9526c707efcf36221e9"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs",
+      "bytes": 23854,
+      "sha256": "84812e8824bff5b4c2bd2d957722d233d2de93d55cd767a90347930692b15f2f",
+      "gitBlob": "eac007723be2146d8217705daa5e8230c7a5f80d"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/GmDocumentationPreservationFixtures.cs",
+      "bytes": 21943,
+      "sha256": "69f2a451898cc464a9dbef3dccaaa599759ed0770aa2e35c62d91c67a42ef081",
+      "gitBlob": "1b34611a177a29ccb9255c6b4a67e7e1e6bd8c79"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs",
+      "bytes": 289155,
+      "sha256": "a82fddd96ea243347391022ea5231cdd0b862801ababa70a95e8e66ac1cd06ee",
+      "gitBlob": "f3b1b3ad0d1704abc41c779e6b7790dfb2c180e8"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectMaterializationSourceGuardTests.cs",
+      "bytes": 21572,
+      "sha256": "13342146bf265bb51e4f4824ea2ff00f9936511943ba280cf15962ec98473112",
+      "gitBlob": "8651637026ac9864d455dc29e28404690bd0acf0"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmDocumentationModularizationTests.cs",
+      "bytes": 19502,
+      "sha256": "0d70e2b6d67fe00001a8dd1715cd84669a9aa32e4f45b08762d74e121a69adb2",
+      "gitBlob": "3f9c4737d5b7983f6054fb27bea79ec3bd782909"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "bytes": 45253,
+      "sha256": "b382a0301c4f56799e2191ffa57739e49c7941734bd96b132923c939fba3bcc9",
+      "gitBlob": "f31da12b405092f2b5c11f1a363479c3e6f1117c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ResourceContractSourceGuardTests.cs",
+      "bytes": 29484,
+      "sha256": "9ec838fca12dc682d119bf571fef3985ac1f684e5f9caba7690eb2c07308a52a",
+      "gitBlob": "15d012bda29752a68e5acc8c932661018f566dc9"
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "bytes": 5795,
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+      "gitBlob": "e4f778864060557b6a9c783238c271fa88b63645"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+      "bytes": 30303,
+      "sha256": "e6c2896edf4b227db6742d7d91e26eda3ec1c47fdb3a145b1faa9a8b9d448d39",
+      "gitBlob": "b541cd90bf0129848f473b896645cad8e96fc974"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+      "bytes": 31947,
+      "sha256": "592e6c607df18e5f0935bf4574ba3a861edb39e70c612f7eaf12653d5ddb555d",
+      "gitBlob": "4b6d2e9626f28439a8f80423cd11a98927a3944a"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "bytes": 398600,
+      "sha256": "f1f9fd80e0e26570990a35ad6009429025d4620e31404ae0aad554ca4c9b445d",
+      "gitBlob": "6169453d1d971746dbc79153e4bde01f633787a7"
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "bytes": 247635,
+      "sha256": "8d08213f077e3b1ab63d008973ad0d47fd9bde947ee73152f85129082a960861",
+      "gitBlob": "69f76b6a207ecd35067e64b938f322b1e58fdfad"
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "bytes": 160255,
+      "sha256": "58f19cf556acafec5afe6214ce613f29c64affd085d815620b0252f710ddff5b",
+      "gitBlob": "73e038b4f5310473fcf14ff647e91f86364f9de7"
+    },
+    {
+      "path": "CLI_Rules_Index.md",
+      "bytes": 25781,
+      "sha256": "c33838a3a8a0d1dd5ff3305698d6a9ec861c2e3513775f2d0e7b39881f196f29",
+      "gitBlob": "fe6829cf230ca0503b197bc92e69b4c5d4033e8e"
+    },
+    {
+      "path": "Examples/E_Block_5.txt",
+      "bytes": 268659,
+      "sha256": "c244c3051f5e04bb39c973a08cb270a43500f1ba16c29cc451f134ca53a48d04",
+      "gitBlob": "627d68e9bff28c171cd96e66c0a593612f8b215f"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "bytes": 696885,
+      "sha256": "bef41fb951303d57fa7a9ae1f6cd7ac49ac53653d557ab4f8cddb849814a56a3",
+      "gitBlob": "62bcfcd3f05a9f41825ecb127338cc663ec831b3"
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "bytes": 182495,
+      "sha256": "ca049b16c368726ff7465f6286e3df416b0d9d302008a3faaf219faa934ce3bb",
+      "gitBlob": "866efe2601930cbd0c1f6badbdc5f9b3504ecd49"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "bytes": 253233,
+      "sha256": "e69198e6db8fb00f060184ce48ec9c9aac98b2a5b2301576570bd625092521a5",
+      "gitBlob": "5820390fb8ef96f5f13d16616edddcbf2316e48b"
+    },
+    {
+      "path": "Rules/Block_5.txt",
+      "bytes": 262995,
+      "sha256": "895eebaba31c6d2527354c682067588142b00245d2b750f585923a6c63718d62",
+      "gitBlob": "7cd9650034c2439cd7bb39d280f29688c81e3e8c"
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "bytes": 188300,
+      "sha256": "fab4bd38391965d119438b91c1fc5cb4648828187275a942d7af5c6b421e6fe9",
+      "gitBlob": "89cf1ed611467b04fbc450385289acc0111a6da9"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/gm-doc-modularization-spec-draft-20261013/spec.md",
+      "bytes": 18686,
+      "sha256": "27735ec49aeb39eec51e1764ebff15ffe2e9c2c3cc150138659564587116bace",
+      "gitBlob": "76c2c666927892246e72cbe1ff80da51ae27b729"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/gm-documentation-modularization-approved-design-20261013.md",
+      "bytes": 21489,
+      "sha256": "c2d8b7eac8a60cdde1163893904425b132a387dd0c07d54ff12ca4eca52d5ea0",
+      "gitBlob": "2ceb60129562378d34b55b809706639d73bb6aae"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/analysis.md",
+      "bytes": 9621,
+      "sha256": "8a9b8b4af7440717f1b2fbc0ab64a7b5b4fc593893ecbf7e18509a1404db3d0b",
+      "gitBlob": "0fdcbe3a2010a68dfa29abe82f1783a6de017bf1"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/checklists/requirements.md",
+      "bytes": 2588,
+      "sha256": "0e676d2e1bfe3dcacdad98e5987a6ad151faaaa2e13c5514c6127d9f9880eb5b",
+      "gitBlob": "f39f53c976c1ea5fa7e57400c2afb2b6a82e3302"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/content-map.json",
+      "bytes": 390478,
+      "sha256": "af1b314c513bafb2730c27a80b3847b435977df433960ec6f1a8d53df24c8b22",
+      "gitBlob": "b514f52dc2ef3516d5e8a5eda8ed266cd1d7cb4f"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/contracts/gm-reading-and-preservation.md",
+      "bytes": 10079,
+      "sha256": "ce29041d5ea54f3b3187f3a871a6446387e4c98e9e68c8edae00137f6ca5a498",
+      "gitBlob": "60aa386456eb62d55bdcd6e7b893cde8c4839ab8"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/data-model.md",
+      "bytes": 7660,
+      "sha256": "f0bd98262c2bb388aa2138ed8f74e1b1f38cb2b6a9aa2e7b939f78ef3c9e7cbb",
+      "gitBlob": "460ed949966b776e52926c1947540d88ae565dcc"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/navigation-edits.json",
+      "bytes": 29009,
+      "sha256": "d2dedfdefda6fb4030fb6560546d2861b1edaa58f0e19218cec6a0709f5352d7",
+      "gitBlob": "fc66d05edc3011b8a1b1cc93029a5381fc27a910"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/plan.md",
+      "bytes": 38768,
+      "sha256": "20614442e8902fb83ce94eb1cd81141723809c071c2a4bb513e40501b8fe08b3",
+      "gitBlob": "934ad2f6776335ebae52e117a613fd561b879f55"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/quickstart.md",
+      "bytes": 6507,
+      "sha256": "d668d946a9b87428abc34226163397b03ec385e7142ae2363c51f8c72fae92f9",
+      "gitBlob": "f0bf69aaed31988be956e19ba09a09e33446cbbf"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-connected-delivery-test-source-report-20261014.md",
+      "bytes": 10701,
+      "sha256": "43e445e9a4b66914d1b9a7f76c3a617f159318e439058290ee42aa5bdd0a9907",
+      "gitBlob": "5f2927548fe9958474026fd27cc33a8aed6e4c9d"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-first-pure-packet-selected-recovery-593375b7-20261013.json",
+      "bytes": 25426,
+      "sha256": "3fae74234f16c7c0d308c1ecbb433f85f1a22ee3d7e424cc631c919dff682f93",
+      "gitBlob": "7323c88c6fd0a431f9c23239b79c8b94f1786ec3"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-map-navigation-partial-source-report-20261013.md",
+      "bytes": 5203,
+      "sha256": "247d1e4abe166e7e2e7303bd968373b5153170d3e937a7981595c08921e3fe2d",
+      "gitBlob": "40c8489f5495e58df8397c12ed90d728e40e14b2"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-accepted-selected-recovery-a3fcec91-20261013.json",
+      "bytes": 16637,
+      "sha256": "45ce89cbeb274c8d88716769ff9be2a40a8040557e194439c32004e6bf371f8e",
+      "gitBlob": "1f17af227b80b2560fab3f6b72df76ebe35b618e"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/actual-console.log.gz",
+      "bytes": 1639,
+      "sha256": "f8e5c4b991fa69f4558043074246110d9724ff949b5a6902c7c2c23c6be26ef9",
+      "gitBlob": "4eec9ad2a7441a01deadbde3256c150bf0fb5601"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/actual-dotnet-test.log.gz",
+      "bytes": 186140,
+      "sha256": "9c0cb24dbf56dd9803690fac00243422beb3e8613a8d3296704ae23c9c55ba46",
+      "gitBlob": "33f3c1a897e3e8a0b3428b39ec13c8624a098702"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/actual-full-trx-stdout.txt.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/actual-gm-doc-afterlife-preservation-unit-001.trx.gz",
+      "bytes": 3793,
+      "sha256": "73f637df4e51648bccbf931e6c2957adf458fc471d3295479ae09042f2b711a5",
+      "gitBlob": "e25989048b1095a9e32c66bc007fce06e6c1de7f"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/actual-invocation-prewritten.json.gz",
+      "bytes": 304,
+      "sha256": "953275b90a747d1287a729900d01878ecd34d527794b06c9a8407b65ce89fcf0",
+      "gitBlob": "65be700eabeebc1a3aef1ad457dd382767b44a4d"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/actual-native-observations.json.gz",
+      "bytes": 23,
+      "sha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6",
+      "gitBlob": "95890a0fc5a9cb9fb6bbd8f48425a8887b043a6e"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/actual-plan.json.gz",
+      "bytes": 1812,
+      "sha256": "43e4ed53526f5c55535df5d746f6467772f4a98d3346b1ae33d4824a56b4f8ca",
+      "gitBlob": "e59b9915b2eda9a7e3e5c776fcbc2c278953df81"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/actual-root-readback.json.gz",
+      "bytes": 2882,
+      "sha256": "cc8b28f52eea75d18da39f41f0faa8148b833c427a3ef679d628dcb4506708ca",
+      "gitBlob": "a3b7f3544b8f1fd64238aa56c3f899013633069a"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/actual-run-location.json.gz",
+      "bytes": 259,
+      "sha256": "0e7eb2ded91d1b8e5350d643a83fb1acb2e01ca8a10ab141d06e7515f5299a07",
+      "gitBlob": "f5c75f2b725979df9a20fe428ad565fe622f0bc6"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/actual-summary.json.gz",
+      "bytes": 1525,
+      "sha256": "07927d2ffdd8eaf07436034126c023ec74a818f4118f3a40ac94b1a028c8213f",
+      "gitBlob": "c514992177fd04ae5bbadfff5358a1d3fa48ff84"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/candidate-source-pins.json.gz",
+      "bytes": 120164,
+      "sha256": "3fb64bde4ec0c5a769f05f1a78f1234b8c1c1d1466d10e4e597abb4efbe9b6a1",
+      "gitBlob": "816d9267a0eb13b99360bf5ce2be27aacb73bebc"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/exact-plan-console.log.gz",
+      "bytes": 1019,
+      "sha256": "8f89e881bc418b19781ce9312218f2e0a184879988e8eabdf10eca5a90c3f410",
+      "gitBlob": "718de9cac07af6d7352e69d8169f15d708083393"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/exact-plan-dotnet-test.log.gz",
+      "bytes": 185358,
+      "sha256": "a2a8859101693ccb58aa554a43494fe4aed433e04e850bb1b7a1e098956d0923",
+      "gitBlob": "eaf34543a82c8a156c057736ed041fc4eb35848c"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/exact-plan-invocation-prewritten.json.gz",
+      "bytes": 313,
+      "sha256": "a40c7c212aedb57872db0045371183ca2aed39fb4c891bd4fa0674b900359305",
+      "gitBlob": "0918733b3826c8057f688c118006b6eb675dc628"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/exact-plan-plan.json.gz",
+      "bytes": 1813,
+      "sha256": "03f95b377752a3023d1a430b9f1988ad3bae3a0f6ea43789ed66602da3ea5b58",
+      "gitBlob": "543c297f3913a9d79097ad546a66c41c3ef9dcb6"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/exact-plan-root-readback.json.gz",
+      "bytes": 615,
+      "sha256": "ee9cb47574b8cbcae45dade15709f8f49f75f31f2174d716df38f71bee313d90",
+      "gitBlob": "6542cf3ca802633381d421e5317d61d2ce441e61"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/exact-plan-run-location.json.gz",
+      "bytes": 257,
+      "sha256": "10cb85fb36d98cc95581523a9553b27660d80ce7a823f0cd0d69d62dacacc78b",
+      "gitBlob": "2c3f3fa464b02107080a55e5d41c1a413907d082"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/exact-plan-summary.json.gz",
+      "bytes": 1520,
+      "sha256": "d2313cbec920e2e9737789c2a7506db1e894c25ea8eeded38ef6ba4d0c62b09f",
+      "gitBlob": "d07d72d2ddfea3e78f17886529822d9bbb4dffbb"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/fresh-binary-pins.json.gz",
+      "bytes": 655,
+      "sha256": "ee68715cdfe9f36872826b489b10076c50ec418e07b7d0f5506aebed0225ebc8",
+      "gitBlob": "464c87e87c8735687ab997f457d8c7e2adcdcba9"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/manifest.json",
+      "bytes": 27903,
+      "sha256": "8aded30554645cd85094f2f6ebecf2b23aa9a612d9d441c06d61057b70b59ef1",
+      "gitBlob": "b84a733b23b512de57a9602d1476e2b5d26ef423"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/preparation-Build-integration.log.gz",
+      "bytes": 6579,
+      "sha256": "1a2cf38d5ee9c26e17998027f622e3d638778385859c41974749bcd55df7e61a",
+      "gitBlob": "30422d77ef2b0d814621fcc219e4014a5b44d422"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/preparation-Build-unit.log.gz",
+      "bytes": 1777,
+      "sha256": "ec2a4b123304f2cfcf35b6605f477314c9ed40d90245faa64c479743eaafe534",
+      "gitBlob": "56eaa6ed7ef292db23e873953fedb421a40ef2e6"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/preparation-catalog-audit.json.gz",
+      "bytes": 103,
+      "sha256": "98b9940c3b342838de6e2aa7c58eeb8aac2a44531c2a8e9a21f73c8bd60046cc",
+      "gitBlob": "0f86e5420bb8c638e2c1cfc343aaf9e7e6652b6a"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/preparation-console.log.gz",
+      "bytes": 399,
+      "sha256": "d96592a606cb35c4018509fe1ea1c8a1168114f43941a1409e1491600e4aa487",
+      "gitBlob": "246e82863888418f0f1b9b01f39381445164d835"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/preparation-dotnet-test.log.gz",
+      "bytes": 377908,
+      "sha256": "af9bb6862439979160b6e5019fd7510f098ca1ab33e857a7175e7b250750eade",
+      "gitBlob": "b19397f5ffb6afc5691ab4485f537eda48e12b36"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/preparation-invocation-prewritten.json.gz",
+      "bytes": 273,
+      "sha256": "e7a2e7b77ddca05bb6fef6cd96ea6d0bd3965c1f3467bd2a9943b58c194b2944",
+      "gitBlob": "917f8370f5d4e072d357f38e604c0a3089c137fa"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/preparation-root-readback.json.gz",
+      "bytes": 655,
+      "sha256": "4d7f0741b341f238abbe8cbfe8a98fdb374543b0017d228b48e6379fa8d5a8a8",
+      "gitBlob": "bb9ec0a8fc78eb0dbdbd56861703deda8de7ae4c"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/preparation-run-location.json.gz",
+      "bytes": 259,
+      "sha256": "70f4cdb5c73b19ca45a692d0e549b70096408c6131c2e78e0da05b164d0a2092",
+      "gitBlob": "0c000186ff86aea938e1322efa8c5b72b9630c9e"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-20261013/preparation-summary.json.gz",
+      "bytes": 639,
+      "sha256": "83647ea4832c2a3e4516973042bdd4138f12100a28aa77361504bffcfab6e795",
+      "gitBlob": "f22f32ed06f0b750d0143f60e93c013b48d2897f"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-first-actual-evidence-review-20261013.md",
+      "bytes": 5009,
+      "sha256": "2e4732225513663c718273d0980c1c9a622e4526cf5d0cf3b23f9a12d7dbfc69",
+      "gitBlob": "a56b8f17401d692681dc0a1d54e3354a05b77b29"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-oracle-correction-source-report-20261013.md",
+      "bytes": 4748,
+      "sha256": "a2bf0b6dc6f913db9dfebc327dfd3a0f53acc6ddd79f4477bd287b50e673dc96",
+      "gitBlob": "20a396223684d65122f47a2fc8c798c6a8b3a5cf"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-oracle-focused-source-review-20261013.md",
+      "bytes": 5401,
+      "sha256": "81f476156bb3f1a1e2a4167b3fa2b207aaa1e6ec7ea2fa2dcc441c45da12193d",
+      "gitBlob": "be309c735613391283dcb68ab4775b9a64aba2a0"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-red-independent-source-review-20261013.md",
+      "bytes": 8111,
+      "sha256": "e1fa31828d74667ed004df70e5075dec34a30fe61ee4a99f20016f0ac2525bba",
+      "gitBlob": "ce9688b6492e9f2c575a3aa7175e52b9e2a8a5be"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-pure-red-source-report-20261013.md",
+      "bytes": 7296,
+      "sha256": "6cbca0977038513882354e83a0a9e9d765baf271b16e0f6ce8ffea60ec5c6dc8",
+      "gitBlob": "14decaae7b4e4a9cd78a20533028e166ac245b7a"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/actual-console.log.gz",
+      "bytes": 2000,
+      "sha256": "07b1eadf7838f153214eddaab2df03be7afb24a3dd1551f1423936a6069ccd56",
+      "gitBlob": "142fb46201579ae728dafdd61495c324125ac082"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/actual-dotnet-test.log.gz",
+      "bytes": 186785,
+      "sha256": "c6c89c17e258d944973eee50a4b647e976237f2cf33e8fdf9719cb893afd3bad",
+      "gitBlob": "93f4c162fb6d50520488e8c20390a372fda3b15e"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/actual-full-trx-stdout.txt.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/actual-gm-doc-afterlife-reading-unit-001.trx.gz",
+      "bytes": 6882,
+      "sha256": "1d675f83bf02610626faa5f1afa5195975ec5cf8730dc871b745ac8169127c68",
+      "gitBlob": "f7bd7548823398182c4eb2d6f4a470a892f7216e"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/actual-invocation-prewritten.json.gz",
+      "bytes": 322,
+      "sha256": "e6c8b1697a0ebe882a697ec560744478243a0d775fe87e9b2bc9715b91f5a623",
+      "gitBlob": "1756e05593991c7bbed529db3a80b6088842abfe"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/actual-native-observations.json.gz",
+      "bytes": 23,
+      "sha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6",
+      "gitBlob": "95890a0fc5a9cb9fb6bbd8f48425a8887b043a6e"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/actual-plan.json.gz",
+      "bytes": 697,
+      "sha256": "c140de94a530da5ef1edc1f7358994665eae321963516a77c5eada743bce6d16",
+      "gitBlob": "4060f5ed3d05136899f8088c906d458184d4fdeb"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/actual-root-readback.json.gz",
+      "bytes": 4252,
+      "sha256": "033b60ad41c70bbf5aa3f7a182787f9e360886ef392ce69d58b50cb0a4f1ff33",
+      "gitBlob": "86c25bb6df36f15c1557b83985c84e91fbee9f0b"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/actual-run-location.json.gz",
+      "bytes": 285,
+      "sha256": "6f3f6510feda6f56eac98ed0be271d4ba3961f3cc6aa4bfde299eb651f5c5c09",
+      "gitBlob": "4ff9da47a20f5565f1795205a28296547db93dd8"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/actual-summary.json.gz",
+      "bytes": 589,
+      "sha256": "0e5aa837d913ba5651f9e3f46eb73b64e7b195d3476e047ccbe54b1234ef6714",
+      "gitBlob": "ef7be396eef19dbbdc5bd365d7885cefc7e11172"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/candidate-source-pins.json.gz",
+      "bytes": 120170,
+      "sha256": "0abccd18609090119b524fe143b20009dc5d0e8e9f8b7eeab1c406c896db645c",
+      "gitBlob": "818bb43ae3f6228de920974b4483f1f4b06f4830"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/exact-plan-console.log.gz",
+      "bytes": 780,
+      "sha256": "640780e06122133afdcbd12940fe0993206ddc5d92c8f065f358a738c874fb15",
+      "gitBlob": "8a7e10aed4f0216a03e9d09431b4557375a7cd5d"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/exact-plan-dotnet-test.log.gz",
+      "bytes": 185350,
+      "sha256": "68a78c1bb8687f59f8dfee651e6fffa522e58cf1dd47f5fafd8e8d4ad108e5ab",
+      "gitBlob": "34f9d6a74df80b7bc5a44264f50999a60248d043"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/exact-plan-invocation-prewritten.json.gz",
+      "bytes": 331,
+      "sha256": "2cfa9d19f1a096978721a887c6ace09869c562a6b7f444e274819a1b5737e34d",
+      "gitBlob": "12b2ecef157aeca9ab2c705b21a50f4fbb389d7d"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/exact-plan-plan.json.gz",
+      "bytes": 697,
+      "sha256": "a70f9290f0919ec9cc059f9ea099ce3801e70c1484d61ee1df2ef395ee8d2fe4",
+      "gitBlob": "438501657224f8d75863883cec10b92daa6267a5"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/exact-plan-root-readback.json.gz",
+      "bytes": 635,
+      "sha256": "fad80845a438808d067254e98c439a4c43c82f1c3e0a8fba3debeb033e01d442",
+      "gitBlob": "4c7e8e6a25cfbbe73364b8358c71e7c1f594a8c1"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/exact-plan-run-location.json.gz",
+      "bytes": 284,
+      "sha256": "79dc3651cce46fcf52571e22e619b3003844474116d980392f7be4fa44bf032f",
+      "gitBlob": "ba20187d9e72c39fdfa5316e938cae8ba630e13f"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/exact-plan-summary.json.gz",
+      "bytes": 591,
+      "sha256": "b5ab5479229c0598dedc7066d1ad908607c120551bd512e761444ee85a274d28",
+      "gitBlob": "70fa3469fed626525d6fdfc5021a3da82f90648a"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/fresh-binary-pins.json.gz",
+      "bytes": 655,
+      "sha256": "ee68715cdfe9f36872826b489b10076c50ec418e07b7d0f5506aebed0225ebc8",
+      "gitBlob": "464c87e87c8735687ab997f457d8c7e2adcdcba9"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/manifest.json",
+      "bytes": 44259,
+      "sha256": "ccb6e85b01a828246cf8f014fadc5b2cad8e49563fee3813ddbf324525f8a9a5",
+      "gitBlob": "09a745359b3032c8603315d112e3761183591e0d"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-20261013/retained-compile-provenance.json.gz",
+      "bytes": 364,
+      "sha256": "bd417914a6b856697bd5b0642603b33ca94d450423f7b6543fe931c217d11012",
+      "gitBlob": "7cd811f99705721228b17afcb6658d8fb1d79dd0"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-actual-evidence-review-20261013.md",
+      "bytes": 4626,
+      "sha256": "2dc0151724e8a29ee02061d2b8b5a860aee474f2e467dd0c855cabec1cd0e19a",
+      "gitBlob": "6cb79f972c238da3b9c534adfd34318b8390b933"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/A-reading-first-packet-selected-recovery-d9899d7e-20261013.json",
+      "bytes": 32434,
+      "sha256": "f4284fd75f70ef92a8edfa294107bdb6366011d7b367ed21e86e2839ae5a70d0",
+      "gitBlob": "1aa111efefbd5ac55f447d07f6cb5fa4fedd102b"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/coordinator-review-and-D01-disposition.md",
+      "bytes": 3292,
+      "sha256": "473740647f40276ff00616c3d80915b17d42d160627d140198f1e7f42add5989",
+      "gitBlob": "781ccfd9125f1ab7d4c2214c3002170a5288eeb6"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/coordinator-supplement-followup-review.md",
+      "bytes": 2351,
+      "sha256": "2131e42ae80e9f957104280ba4409f774efe4cb598d41987270fdaaee2e3bd7a",
+      "gitBlob": "d52e045040ed28bcae94f052f413de5d390be397"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/delivery-routing-disposition-supplement.md",
+      "bytes": 35433,
+      "sha256": "4f4127a51e05ce38c9f820d8817fa63153b2c274287196f4e552cb548e916953",
+      "gitBlob": "cfc06e0ef5937fdd4c0591ab8ab0563400788abe"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/feature-selected-recovery-ac3d13dc-20261013.json",
+      "bytes": 13454,
+      "sha256": "d21a107e10fe6a66a1fb7a78dfd98b352c15adf829bae475803fb91946657ad9",
+      "gitBlob": "218e7d291b03591f277939f9c080ed015e6e2331"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/feature-setup-readback-20261013.json",
+      "bytes": 3460,
+      "sha256": "b733e12ca577d485443edf443e1fdb0605d5eb29fc217e4aa4525f52f4532927",
+      "gitBlob": "aed9a953371aa0d347b6c470dbf2baec25522b8e"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/final-source-gate-readonly-supplement.md",
+      "bytes": 22911,
+      "sha256": "6a4041b4a41b61326ce00ba2dcf68ae2a701918a5f9979cadc17ecd74cd5a891",
+      "gitBlob": "4a7b61a9f4e8ae6bcd5ac2459f3a74c76e2ff7a1"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/frozen-base-reconciliation-20261013.json",
+      "bytes": 12367,
+      "sha256": "f09ede2ba7981cb468725474f4fe2481cacc4479ab4ec1633a86645bf1187060",
+      "gitBlob": "c6646cf6f732189dbc5e7db5565cf7b7c9c65330"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/isolated-published-branch-readback-20261013.json",
+      "bytes": 972,
+      "sha256": "09131d9e9b05ce3554fc7b0287987ab5af91a341dc4bbe5982201a0cd1872be3",
+      "gitBlob": "ea74411671da4ce56c03058414d701e920e7ad8f"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/map-wip-selected-recovery-51594aed-20261013.json",
+      "bytes": 453,
+      "sha256": "ee9c69c8f90fae07e3ec1e702d3ac37196af4632ed9eef6e9e4e6d665979b1c8",
+      "gitBlob": "4f41c9afba727a9b2bd866bc3853b2f6a90916ed"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/planning-review-and-disposition-status.json",
+      "bytes": 1549,
+      "sha256": "a4b9b05f1bd8a6114d9d9e943b5a77d73d3d9d8ebd04dab141b2c8e9b8e0eb85",
+      "gitBlob": "2897c7ee34d04fb04320e3f6f2d444c1c9ffbb8f"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/recovery/specification-approval-and-tracker.json",
+      "bytes": 1961,
+      "sha256": "94df8b8dd67a0d0b2fd832b12c194a1f15afe7632e9f3dc656310a96af347f9b",
+      "gitBlob": "1f3d56d1a8a7ee7062f690d3f33251e1d1c2efa7"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/research.md",
+      "bytes": 15478,
+      "sha256": "e07dc7c5fae10dfcd1681234170ac4ce273f7f806ecc89ffa6e5a872044d9a42",
+      "gitBlob": "c7ce821bfbf6fc2b6668341caf815d31a599977d"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/spec.md",
+      "bytes": 18931,
+      "sha256": "3d6383c71ff9f08b864765ca852f6eb8f6927723726f65ea379b8283264992fd",
+      "gitBlob": "4b1379c173417ac929d8892c289f390571231094"
+    },
+    {
+      "path": "specs/1557-gm-doc-modularization/tasks.md",
+      "bytes": 35256,
+      "sha256": "c43668f3fe6269bbf139ee21fad30d7965528eab37bab0f629dd80320aabe2ed",
+      "gitBlob": "eda25a382d162bfb7302ce9d9b5326c6e3441ed7"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1884517,
+      "sha256": "660740cda986511095ef4d61fe078503d2e13055dfa1bf318284aa0217cac65f",
+      "gitBlob": "1776aa935d59f54442ff21228507cc40b9355111"
+    },
+    {
+      "path": "tests/fixtures/GmDocumentationDelivery/inspect-and-publish.ps1",
+      "bytes": 7480,
+      "sha256": "556b1ee94cc7c799ff90c9dc91f6cdc956874cfd8809eebce855c14a79987bbe",
+      "gitBlob": "66ffa6516c8e4a71eaf6cf00cefa4695f58c8246"
+    },
+    {
+      "path": "tests/selections/1557-gm-doc-afterlife.json",
+      "bytes": 1951,
+      "sha256": "c1c7fc7f3ddc373cec4386ab35185a8d7199e85939152f0cce2b80c8fed45672",
+      "gitBlob": "54fdad971d26c38ff4936f7a6f8468bdb7091166"
+    },
+    {
+      "path": "tests/selections/1557-gm-doc-connected-delivery.json",
+      "bytes": 1963,
+      "sha256": "c8237bd7a44adf0aef5bba908887a7cf9d363e5cd1871760f42f76f24cf4c924",
+      "gitBlob": "bd5349e096330aee9057f1d3bca9a22a941b80c3"
+    }
+  ],
+  "verifiedUtc": "2026-10-14T00:05:08.394565+00:00"
+}
