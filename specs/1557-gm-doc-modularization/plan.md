@@ -1,5 +1,30 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Owned-observation correction SOURCE accepted; pair-only first retry release — 2026-10-14
+
+Retained independent Astra XHigh [SOURCE/FIXTURE/SELECTION review](recovery/A-connected-owned-observation-fix-independent-source-review-20261014.md)
+SHA256 `53edbe4da2632fe091e872c8bec5628997183a74380ccc667224da9561e81549`
+accepts published `b3207095424dd80cf7d69f27eb77ddd2bc219b78`, no confirmed
+Important/Critical. All18 source/protected pins exact; the complete prior fixture
+is reproduced after reversing only the authorized extraction/prerequisites. ROOT
+read actual diff and verified GitHub-only recovery221 files/all8 paths byte/blob exact.
+
+Release fresh BOTH preparation/catalog (732/11585 expected, discovery only), exact
+failed-pair selector PlanOnly1method2cases1descriptor/budget2/default7, then only
+that pair's first corrected actual. Freeze actual, pins, owned observations/EOF/roots
+and independent EVIDENCE before any next execution. Empty argv alone remains no
+exit proof; terminal recognition does not authorize a signal, conflict stays sticky.
+Real writer1 remains separately gated/UNRUN; full owner7/15/2 is not selected.
+Reviewer requires no extra passing repeat: pair covers normal inspect and intentional
+adapter-failure paths through the changed shared fixture. No pure44, memory/symlink,
+other passing source rows or primary passing repetition. Historical first14 failures
+and unknown OS cause remain immutable. New compilation/runtime outcomes UNRUN here.
+
+ROOT runs only this pinned isolated GM tree; soleSol authors separately authorized
+primary J2-J6/J7 from a4e89d3a, no second source writer. Content moves/daemon/fullA/B/
+Block_5 remain unreleased; no acceptance/task checkbox change or protection bypass.
+
+
 ## Connected source failed-pair fixture correction SOURCE READY; new checks UNRUN — 2026-10-14
 
 Retained sole Sol authored a bounded TEST-only correction from published
