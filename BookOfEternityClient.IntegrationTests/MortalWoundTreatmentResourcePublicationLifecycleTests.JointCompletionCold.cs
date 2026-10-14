@@ -20,9 +20,17 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task GuaranteedTreatment_UnappliedCommonFreshProcessAppliesPhaseAndCompletesExactlyOnce() =>
         RunJointCompletionControlAsync(nonzeroProgression: false, pauseUnappliedForCold: true);
 
+    [Fact]
+    public Task GuaranteedTreatment_NonzeroReportConsumedBeforeAppliedColdCompletesWithoutRecreation() =>
+        RunJointCompletionControlAsync(nonzeroProgression: true, pauseAppliedForCold: true);
+
     private async Task RunJointAppliedBeforeStoryColdAsync(GameEngine parent, PendingTurnSnapshotReadAuthority original,
         string requestFingerprint, IReadOnlyDictionary<string, byte[]?> originalBefore, string scene, string expectedPhase = "applied")
     {
+        var originalRequest = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(originalBefore["input/turn_request.json"]!),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual cold parent original control");
+        Assert.NotNull(originalRequest); Assert.NotNull(originalRequest!.ProgressionControl);
+        var expectedWorldCycles = originalRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn;
         Dictionary<string, byte[]?> paused;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
@@ -31,6 +39,16 @@ public sealed partial class GameEngineTurnLifecycleTests
             var marker = ParseJsonObjectBytes(Assert.IsType<byte[]>(paused[MortalQteDecisionPublication.StatePath]));
             Assert.Equal(2, marker["schemaVersion"]!.GetValue<int>());
             Assert.Equal(expectedPhase, marker["progression"]!["phase"]!.GetValue<string>());
+            if (expectedPhase == "applied")
+            {
+                Assert.Null(await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));
+                if (expectedWorldCycles > 0)
+                {
+                    var realReport = Assert.IsType<byte[]>(originalBefore[ProgressionScheduleService.ReportPath]);
+                    Assert.Equal(realReport, Convert.FromBase64String(marker["progression"]!["reportBefore"]!["bytes"]!.GetValue<string>()));
+                    Assert.False(marker["progression"]!["reportAfter"]!["exists"]!.GetValue<bool>());
+                }
+            }
             Assert.Equal(original.RequestId, marker["requestId"]!.GetValue<string>());
             Assert.Equal(originalBefore[QteStoryPath], paused[QteStoryPath]);
             foreach (var path in new[] { "input/turn_request.json", LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
@@ -44,7 +62,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             ["parentProcessId"] = Environment.ProcessId, ["sessionId"] = original.SessionId,
             ["requestId"] = original.RequestId, ["snapshotToken"] = original.SnapshotToken,
-            ["requestFingerprint"] = requestFingerprint, ["scene"] = scene, ["expectedPhase"] = expectedPhase,
+            ["requestFingerprint"] = requestFingerprint, ["scene"] = scene, ["expectedPhase"] = expectedPhase, ["expectedWorldCycles"] = expectedWorldCycles,
             ["generationSha256"] = MortalArchiveHash(paused["$sessionGeneration"]!),
             ["binaryPins"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
             ["pausedImages"] = JsonSerializer.SerializeToNode(paused.ToDictionary(pair => pair.Key,
@@ -132,6 +150,28 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var observedMarker = ParseJsonObjectBytes(Assert.IsType<byte[]>(before[MortalQteDecisionPublication.StatePath]));
                 Assert.Equal(scenario == 0 ? "applied" : "unapplied", observedMarker["progression"]!["phase"]!.GetValue<string>());
                 Assert.Equal(context["expectedPhase"]!.GetValue<string>(), observedMarker["progression"]!["phase"]!.GetValue<string>());
+                var actualRequest = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
+                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "fresh child actual original progression control");
+                Assert.NotNull(actualRequest); Assert.NotNull(actualRequest!.ProgressionControl);
+                var cycles = context["expectedWorldCycles"]!.GetValue<int>();
+                Assert.Equal(cycles, actualRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn);
+                Assert.Equal(0, actualRequest.ProgressionControl.FactionCyclesAlreadyPendingBeforeTurn);
+                if (scenario == 0)
+                {
+                    Assert.Null(await files.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));
+                    if (cycles > 0)
+                    {
+                        Assert.True(observedMarker["progression"]!["reportBefore"]!["exists"]!.GetValue<bool>());
+                        var frozenReport = ParseJsonObjectBytes(Convert.FromBase64String(observedMarker["progression"]!["reportBefore"]!["bytes"]!.GetValue<string>()))["progressionProcessingReport"]!;
+                        Assert.Equal(original.SessionId, frozenReport["sessionId"]!.GetValue<string>());
+                        Assert.Equal(original.RequestId, frozenReport["requestId"]!.GetValue<string>());
+                        Assert.Equal(original.TurnNumber, frozenReport["turnNumber"]!.GetValue<int>());
+                        Assert.Equal(cycles, frozenReport["worldCyclesProcessed"]!.GetValue<int>());
+                        Assert.Equal(checked(actualRequest.ProgressionControl.LastWorldSimulationTimeInMinutes + cycles * actualRequest.ProgressionControl.WorldCycleMinutes),
+                            frozenReport["newLastWorldSimulationTimeInMinutes"]!.GetValue<int>());
+                        Assert.False(observedMarker["progression"]!["reportAfter"]!["exists"]!.GetValue<bool>());
+                    }
+                }
                 storyBefore = await files.ReadFileBytesAsync(lease, QteStoryPath);
                 Assert.Equal(original.ReadRequiredBytes(QteStoryPath), storyBefore);
                 await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateReadOnlyAsync(lease);

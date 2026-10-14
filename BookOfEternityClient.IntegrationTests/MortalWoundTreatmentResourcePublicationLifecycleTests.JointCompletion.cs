@@ -265,6 +265,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Assert.True(pauseUnappliedForCold ? unappliedPauseReached : appliedPauseReached);
             Assert.True(handled); // Real owning held outcome retains completion evidence.
+            if (pauseAppliedForCold)
+            {
+                // Verify genuine report consumption and frozen schedule arithmetic
+                // BEFORE returning to a fresh process. Unapplied must remain beforephase.
+                await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, before, milestones);
+                Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);
+            }
             await RunJointAppliedBeforeStoryColdAsync(engine, original, request.RequestFingerprint, before, scene,
                 expectedPhase: pauseUnappliedForCold ? "unapplied" : "applied");
             return;

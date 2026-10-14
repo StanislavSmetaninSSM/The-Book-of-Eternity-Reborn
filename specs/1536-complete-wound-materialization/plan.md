@@ -1,5 +1,31 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 combined nonzero-report consumed then applied-cold control SOURCE WIP STOP — 2026-10-14
+
+Owning base `25a9442506c70f9f9efd310bcb6f40aaecb8babe`; recovery2290/1761
+was verified before SOURCE GO. One new Fact runs the actual nonzero matching-report producer,
+consumes its real report, pauses at APPLIED before story, then launches the existing fresh-PID
+actual late owner on retained original/G. Before launch the applied-only branch now runs the
+real Format1 report-deletion count and full frozen before/after schedule arithmetic assertions.
+The unapplied branch does NOT run those applied oracles and remains a genuine beforephase.
+
+Parent confirms exact real reportBefore bytes/after absence and derives expected cycle count
+from the actual original request. Child explicitly reads that retained original control and
+requires the frozen report's exact original tuple/cycle/last-world arithmetic, with report
+already absent before its actual owning call. Existing applied-cold equality covers immutable
+basis, marker, schedule, finalized mechanical union and projection; once story/turn/cleanup
+and full tree/G byte-inert repeat prove report is not recreated. No control/original/phase/
+authority is written by the cold child or carried from parent as a capability.
+
+Five source completion Facts/cases now exist; discovery/category/selector are still OPEN.
+This closes the combined ORACLE AUTHORING gap only, not observed acceptance. Compilation/API/
+fixture validity and all compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/project/
+entire SOURCE/FIXTURE/SELECTION remain UNRUN/UNCHECKED. All finite mixed/foreign/source/original/
+G/basis/missing-marker negatives, known compensation/uncertainty/new-root, inactive/exact-story/
+live-caller controls, no-frame/all-traces-erased/partial-cleanup limits and normative/primary-GM
+sync remain OPEN. Production/oldqualified bodies/helpers/categories/budgets/history/checkmarks
+remain unchanged.
+
 ## J7 genuine unapplied-common fresh-process control SOURCE WIP STOP — 2026-10-14
 
 Owning base `da4c4daddeb2aae3616c7c49c2c234ede1afdd29`; recovery2287/1757
