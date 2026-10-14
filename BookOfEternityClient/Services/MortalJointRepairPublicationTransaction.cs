@@ -84,6 +84,9 @@ internal sealed class MortalJointRepairPublicationTransaction
         try
         {
             EnsureOwner(files, lease);
+            var ownership = AcceptedTurnAuthorityRegistry.ProbeTakenJointRepairPublication(files, lease, Receipt);
+            if (!ownership.IsValid)
+                return new(MortalJointRepairPublicationDisposition.PublicationUncertain, ownership.Issues);
             if (Receipt.IsConsumed || Interlocked.CompareExchange(ref _compensationStarted, 1, 0) != 0)
                 return Uncertain("A closed or already compensating joint transaction cannot restore an accepted cohort.");
             _readback = null;
@@ -102,7 +105,24 @@ internal sealed class MortalJointRepairPublicationTransaction
                 else if (!Same(actual, before.Bytes))
                     throw new InvalidDataException("Joint compensation refuses changed retained authority: " + path);
             }
-            if (restore.Count != 0) files.RequireCommittedLocalPublication(await files.PublishLocalFilesAsync(lease, restore));
+            // Byte inspection awaits cannot stand in for current settlement
+            // ownership. Re-prove the exact receipt/cache fences and original
+            // confirmed agreement after those reads, before any restore writes.
+            EnsureOwner(files, lease);
+            ownership = AcceptedTurnAuthorityRegistry.ProbeTakenJointRepairPublication(files, lease, Receipt);
+            if (!ownership.IsValid)
+                return new(MortalJointRepairPublicationDisposition.PublicationUncertain, ownership.Issues);
+            if (restore.Count != 0)
+                files.RequireCommittedLocalPublication(await files.PublishLocalFilesAsync(lease, restore,
+                    validatePreparedNamespace: () =>
+                    {
+                        EnsureOwner(files, lease);
+                        var current = AcceptedTurnAuthorityRegistry.ProbeTakenJointRepairPublication(files, lease, Receipt);
+                        if (!current.IsValid)
+                            throw new InvalidDataException("Joint compensation ownership changed before commit: " +
+                                string.Join(";", current.Issues.Select(row => row.Code)));
+                        return Task.CompletedTask;
+                    }));
             await Receipt.Preparation.ValidateInventoryCurrentAsync(files, lease);
             return await AcceptedTurnAuthorityRegistry.RearmTakenJointRepairPublicationAsync(files, lease, Receipt);
         }

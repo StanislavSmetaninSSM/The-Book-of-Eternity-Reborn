@@ -106,8 +106,10 @@ public partial class CanonicalStateNormalizer
             var settled = AcceptedTurnAuthorityRegistry.CompleteTakenJointRepairPublication(_fs, lease, transaction.Receipt, proof);
             if (settled.Disposition != MortalJointRepairPublicationDisposition.Committed)
             {
-                var compensation = await transaction.CompensateAndRearmAsync(_fs, lease);
-                return new(compensation.Disposition, null, settled.Issues.Concat(compensation.Issues).ToArray());
+                // Completion refusal may mean stale ownership or a claim that
+                // already advanced. It grants no authority to undo known batch
+                // evidence, even when the current bytes match intended images.
+                return new(MortalJointRepairPublicationDisposition.PublicationUncertain, null, settled.Issues);
             }
             return new(settled.Disposition, plan, settled.Issues);
         }

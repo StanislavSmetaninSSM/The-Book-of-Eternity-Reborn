@@ -1,5 +1,45 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J6 compensation ownership guard and pre-plan terminal source WIP STOP — 2026-10-14
+
+Retained sole writer continued from verified16f3c0bb9f06980e3e8849a07a8bcff0986fac7e
+(metadata-only, sourcea92) under the accepted DESIGNv2/J2-J7 release. Prior raw5049a343
+report,214-check7eee4e00 static and immutable ROOT receipts are historical evidence;
+no historical finding or UNCHECKED field is relabelled.
+
+The compensation-before-claim-proof source gap is corrected in this UNRUN candidate.
+CompleteTaken's uncertain result now returns blocked without rollback. Known-failure
+compensation proves the actual open receipt/state/G/cache fences/reservation and original
+ConfirmedHeld agreement before inventory reads, after those awaits and in the trusted
+publisher's pre-commit callback. The existing shared publisher's v1 catch and stored v1
+compensation cohort are default/null-only; joint failures reach their owning transaction.
+This preserves old v1 behavior rather than running an unproved earlier rollback.
+
+A narrow private pre-plan terminal token is now issued from freshly reconstructed rejected
+provenance, actual homogeneous command/full wave/bounded draft/exact scene/original bytes,
+the existing confirmed claim and PrepareActiveRelease(cancelled|validation_failed).
+A pure locked cache exclusion rejects raw/validated/common spiritual publication without
+invalidating it to obtain admission. Physical generation/accepted-lease/source IO precedes
+state monitors. The owning Engine boundary reconstructs under its acquired lease, validates
+existing rollback backups, binds full before-images and exact command/pending/draft removal,
+publishes ONE existing trusted local batch, proves all-member/closed-inventory readback,
+then uses ReleasePreparedUnchecked for that same agreement. Known removal failure can
+compensate only known whole-cohort bytes while the exact token/confirmed claim remains
+current; unknown member/claim/publication remains blocked with evidence. It creates no
+common receipt, new reservation, scheduler, reducer or generic mixed permission.
+
+This is six code paths plus active MD2, stopped for remote preservation. The terminal
+boundary is not yet called by the real repair loop. Actual normal admission/capture before
+baseline restore, restore/install/dispatch/bounded retry, typed outer settlement, joint
+v2 exact/changed late-idle and cold same/new-root continuation remain OPEN. R2-R7/C1 exact
+controls/selectors, normative FR063/FR012/private lifecycle and J8 GM example/manifest/guards
+remain required before whole SOURCE. No new tests/categories/selections/budgets are claimed;
+current static catalog730 and existing component1/5/1 budget5/default10 remain unchanged.
+Compilation, positive/fault/claim-loss/lease-lifetime behavior, discovery/preparation and
+all new runtime checks are UNRUN/UNCHECKED. Full FR063/T070/UI/parent remain OPEN. Protected
+qualified fixtures/ce955, old receipts/actuals, historical tails/acceptance checkboxes/global
+CI and frozen isolated GM sources stay unchanged. No Git/project/provider/new-agent action.
+
 ## J6 batch/v2 later source handoff and pending compensation guard — 2026-10-14
 
 Published source `a92b3962740e12f5d68b50afd198795ffd454539`, owning diff base

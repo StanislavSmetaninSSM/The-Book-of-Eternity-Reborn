@@ -2,6 +2,18 @@ namespace BookOfEternityClient.Services;
 
 internal sealed partial class AcceptedMechanicsPlanCache
 {
+    // Non-authorizing exclusion: no validation, invalidation or planner call.
+    // A terminal pre-plan token must not erase a raw/invalid common candidate.
+    internal bool HasPlanOrPublicationForJointRelease
+    {
+        get
+        {
+            lock (_gate)
+                return _planningResult?.Plan is not null || _validatedResult is not null ||
+                    _spiritualPublication is not null || _spiritualTaken is not null;
+        }
+    }
+
     internal bool TryTakeValidatedJointPublication(MortalJointRepairPublicationPreparation preparation,
         out AcceptedMechanicsPlanningResult result, out ValidatedPublicationTakeSnapshot snapshot)
     {

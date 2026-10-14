@@ -314,7 +314,9 @@ public partial class CanonicalStateNormalizer
             jointTransaction?.BindIntendedMembers(JointBatchPublicationIssuer, prepared);
             _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, prepared));
             jointTransaction?.ObserveCommittedBatch(JointBatchPublicationIssuer);
-            _mortalQteCommittedChanges = prepared;
+            // Joint compensation belongs exclusively to the typed transaction:
+            // the old v1 outer compensation API has no claim/receipt proof.
+            if (jointTransaction is null) _mortalQteCommittedChanges = prepared;
             foreach (var change in prepared)
             {
                 var actual = await _fs.ReadFileBytesAsync(_writeLease, change.RelativePath);
@@ -363,6 +365,9 @@ public partial class CanonicalStateNormalizer
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
+            // The joint coordinator re-proves its current taken receipt and hold
+            // before any rollback. Never run the v1 compensation ahead of it.
+            if (jointTransaction is not null) throw;
             try { await CompensateMortalQteCommonPublicationAsync(); }
             catch (CoordinatedStatePublicationUncertainException) { throw; }
             catch (Exception compensation) { throw new AggregateException("Mortal common publication failed and compensation refused.", failure, compensation); }
