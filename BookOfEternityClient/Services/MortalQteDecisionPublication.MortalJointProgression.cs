@@ -46,23 +46,52 @@ internal static partial class MortalQteDecisionPublication
                 Clone(calculation.ScheduleAfter), Clone(calculation.ReportAfter), calculation.MutationFingerprint);
         }
         internal string Phase { get; }
+        internal string SessionIdForOwner => _sessionId;
+        internal string RequestIdForOwner => _requestId;
+        internal string SnapshotTokenForOwner => _snapshotToken;
+        internal int TurnForOwner => _turn;
         internal byte[] MarkerBefore => _marker.ToArray();
         internal CanonicalBeforeImage ScheduleBefore => Clone(_calculation.ScheduleBefore);
         internal CanonicalBeforeImage ReportBefore => Clone(_calculation.ReportBefore);
         internal CanonicalBeforeImage ScheduleAfter => Clone(_calculation.ScheduleAfter);
         internal CanonicalBeforeImage ReportAfter => Clone(_calculation.ReportAfter);
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+            => await ValidateCurrentCoreAsync(files, lease, allowConsumedForOwner: false);
+        internal async Task ValidateForPublicationAsync(object issuer, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+        {
+            if (!ReferenceEquals(issuer, JointProgressionPhaseIssuer) || Volatile.Read(ref _consumed) != 1)
+                throw Invalid("joint_progression_publication_capability");
+            await ValidateCurrentCoreAsync(files, lease, allowConsumedForOwner: true);
+        }
+        private async Task ValidateCurrentCoreAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, bool allowConsumedForOwner)
         {
             files.EnsureCanonicalWriteLeaseActive(lease);
-            if (Volatile.Read(ref _consumed) != 0 || !ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) ||
+            if ((!allowConsumedForOwner && Volatile.Read(ref _consumed) != 0) || !ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) ||
                 !files.IsCurrentSessionGeneration(lease, _generation)) throw Invalid("joint_progression_stale_capability");
             var fresh = await ReadJointProgressionPhaseAsync(files, lease, _sessionId, _requestId, _snapshotToken, _turn);
             if (fresh.Phase != Phase || fresh._basisFingerprint != _basisFingerprint || !Same(_marker, fresh._marker) ||
                 !Same(_decision, fresh._decision))
                 throw Invalid("joint_progression_capability_changed");
         }
+        internal async Task<JointProgressionPhaseCapability> ReadFreshAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+        {
+            files.EnsureCanonicalWriteLeaseActive(lease);
+            if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) || !files.IsCurrentSessionGeneration(lease, _generation))
+                throw Invalid("joint_progression_stale_reader");
+            return await ReadJointProgressionPhaseAsync(files, lease, _sessionId, _requestId, _snapshotToken, _turn);
+        }
+        internal bool SameImmutableBasis(JointProgressionPhaseCapability fresh) =>
+            ReferenceEquals(_files, fresh._files) && ReferenceEquals(_lease, fresh._lease) && _generation == fresh._generation &&
+            _sessionId == fresh._sessionId && _requestId == fresh._requestId && _snapshotToken == fresh._snapshotToken && _turn == fresh._turn &&
+            _basisFingerprint == fresh._basisFingerprint && _calculation.MutationFingerprint == fresh._calculation.MutationFingerprint &&
+            _calculation.ScheduleBefore.Fingerprint == fresh._calculation.ScheduleBefore.Fingerprint &&
+            _calculation.ReportBefore.Fingerprint == fresh._calculation.ReportBefore.Fingerprint &&
+            _calculation.ScheduleAfter.Fingerprint == fresh._calculation.ScheduleAfter.Fingerprint &&
+            _calculation.ReportAfter.Fingerprint == fresh._calculation.ReportAfter.Fingerprint;
         internal bool TryConsume(object issuer) => ReferenceEquals(issuer, JointProgressionPhaseIssuer) &&
             Phase == "unapplied" && Interlocked.CompareExchange(ref _consumed, 1, 0) == 0;
+        internal bool TryBeginCompensation(object issuer) => ReferenceEquals(issuer, JointProgressionPhaseIssuer) &&
+            Phase == "unapplied" && Interlocked.CompareExchange(ref _consumed, 2, 1) == 1;
         internal byte[] CreateAppliedMarker(object issuer)
         {
             if (!ReferenceEquals(issuer, JointProgressionPhaseIssuer) || Phase != "unapplied")

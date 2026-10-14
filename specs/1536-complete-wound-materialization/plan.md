@@ -1,5 +1,33 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Joint fixed progression phase-publication/compensation WIP STOP — 2026-10-14
+
+Owning base `c952afea789c912b43c601e5acbea24aa7ae2072`; verified recovery2232/1698
+preceded SOURCE GO. Three code paths now contain the real fixed schedule/report/same-marker
+phase publisher, fresh all-union proof/readback and narrowly guarded phase-only compensation.
+The unchanged report remains exact guard-only. One existing trusted batch writes schedule plus
+marker and, only when changed, report; its callback revalidates current owner/G/source/basis and
+all before-images after namespace boundary awaits. Known rollback must reread the exact unapplied
+triple. Success checks all three images, rereads the complete physical union and returns a fresh
+applied capability plus diagnostic witness; applied replay writes nothing.
+
+Known committed/readback failure can compensate only after fresh complete applied proof, exact
+intended triple and same immutable basis/issuing lease, with a one-attempt private fence and
+another current proof in the restore publisher callback. Only this fixed bookkeeping cohort
+can restore; an unchanged report is never written. Uncertain publication/debt, foreign/mixed
+bytes or failed compensation stay held. No mechanics restore, claim rearm/release, reservation,
+resource/effect reduction or old per-file restore tail runs. The tiny discovered null preparedAtUtc
+shape edge now throws InvalidData before phase authority, rather than NullReference; valid
+calculation and old caller source are unchanged. This finding is source-only, not an actual failure.
+
+The named phase API is still UNWIRED into post-common acceptance/lifecycle. Next block connects
+phase-aware post-common report validation and actual once-owned completion/story/stat/level-up/
+late-idle/session/cold lifecycle, preserving committed mechanics on every fallback. J7 controls/
+selectors and normative/primary-GM synchronization remain OPEN. Compiler/build/discovery/catalog/
+PlanOnly/tests/runtime/faults and whole SOURCE/FIXTURE/SELECTION remain UNRUN. No fixture/category/
+selector/budget/acceptance-checkbox or historical evidence changes; phase success does not attest
+story or separate stats/level-up.
+
 ## Joint closed progression marker/physical phase-reader WIP STOP — 2026-10-14
 
 Owning base `083282b4512fc17022319632e1bad559fe2bafcd`; verified recovery2228/1694

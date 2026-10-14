@@ -60,7 +60,8 @@ public partial class ProgressionScheduleService
         var consumed = ApplyMortalOutcomeFromInputs(schedule, control, report.Report,
             report.State == ProgressionFileReadState.Valid && ProgressionReportMatchesCurrentTurn(report.Report, context), world);
         if (HasResolvedRealm(realm)) schedule.CurrentRealm = realm;
-        var preparedAtUtc = frozen["preparedAtUtc"]!.GetValue<string>();
+        if (frozen["preparedAtUtc"] is not JsonValue preparedAtValue || !preparedAtValue.TryGetValue<string>(out var preparedAtUtc) || preparedAtUtc is null)
+            throw new InvalidDataException("Frozen preparation UTC is missing or malformed.");
         RequireCapturedUtc(preparedAtUtc);
         schedule.LastUpdatedUtc = preparedAtUtc;
         var scheduleAfter = EncodeUtf8WithPreamble(JsonSerializer.Serialize(schedule, JsonOpts));
