@@ -1,0 +1,20 @@
+# FR063 private v2 progression marker/reader WIP
+
+FINAL STOPPED FOR REMOTE PRESERVATION. No pending tools/writes after handoff. Owning base `083282b4512fc17022319632e1bad559fe2bafcd`; two code paths plus identical active plan/tasks prepends are the entire authored repository scope. This is source WIP, not SOURCE acceptance or execution qualification.
+
+The private v2 closed field set now requires progression. CreateJointAsync places the existing common-sealed basis into an unapplied object before computing the same-marker fingerprint and before the sole initial mechanics batch. The object has the ten approved phase fields, fixed closed source guards containing the complete calculation and two original header images, and exact existence/base64/digest images. No older-v2 absent-object/default-phase interpretation exists. Old v1 source is byte-exact.
+
+Full v2 proof retains all prior original/G/quartet/receipt/typed treatment-history/resource/complete footprint and private-wave checks. It additionally resolves existing publication debt, brackets exact marker bytes, recomputes raw frozen calculation, freshly authenticates original/control/signed schedule and current headers, and validates phase-specific schedule/report bytes plus every other source guard. Submitted report/world-time are validated CURRENT inputs rather than forced original equality. Immutable source/basis and diagnostic completion witness normalize only phase; full marker fingerprint includes it.
+
+The new phase reader mints a private-issuer same-files/G/lease capability only after this entire physical proof and no foreign commands. A present changed public decision refuses. An absent consumed draft is past mechanical evidence only, not permission to accept story; actual cold continuation still requires the existing exact output binding. Capability revalidation rereads full proof and exact marker/decision bytes. Its witness is diagnostic, never an authority. The data reader itself issues no cached mechanics plan, hold, resource reservation or scheduler.
+
+Fixed schedule/report/same-marker publication, all-member readback and known three-member-only compensation are NOT implemented in this checkpoint. The builder cannot apply a phase by itself. Unknown retention/application, phase-aware post-common report handling, live/late/story/stat/level-up/session/fresh-PID/new-root lifecycle, J7 controls/selectors and normative/primary-GM synchronization remain OPEN. Applied phase data does not attest story or separate stats/level-up. Compilation/build/discovery/catalog/PlanOnly/tests/runtime/faults and entire independent SOURCE/FIXTURE/SELECTION remain UNRUN. No category/count/budget/fixture/selector changes; no finalized mechanics claim is touched.
+
+| Authored path | SHA256 |
+| --- | --- |
+| BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs | `df3925c953d6180828d20da5cb691059e493fcbe078e4042538858ffc015ef56` |
+| BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs | `3a9779754052019e916d36b85fb18cd37e715277048cfeab52729f703115184f` |
+| specs/1536-complete-wound-materialization/plan.md | `e7a012768b7f4e02a2ea9ee9a3b70115f7265b61abc4f4fc8ce8daba1818edab` |
+| specs/1536-complete-wound-materialization/tasks.md | `b94bb3f9bb86d5a2a34086451b86bc31ed8ee744d8c85597819a9ae8e34b5169` |
+
+26 bounded text/byte observations passed, including ten protected base-byte comparisons, required closed shape, actual initial marker order, full proof before capability, recovery ordering, exact phase pair/decision/lease guards and historical checkbox/body preservation. Readback `/workspace/boe-cloud-tools-20261014/fr063-joint-progression-marker-reader-wip-readback.json`, SHA256 `49453c208240ff51c98f5d21cb60abb6d51a11a0aba03d1c0cd75dab78623566`. These checks do not execute any production function and do not prove compiler/API correctness. Earlier raw reports/receipts/evidence remain unchanged. ROOT alone publishes/runs project checks. No Git mutations, project execution, new agent or model override.

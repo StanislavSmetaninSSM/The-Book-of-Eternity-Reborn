@@ -1,5 +1,33 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Joint closed progression marker/physical phase-reader WIP STOP — 2026-10-14
+
+Owning base `083282b4512fc17022319632e1bad559fe2bafcd`; verified recovery2228/1694
+preceded SOURCE GO under approved amendment cbd92b5d/release71436d81. Two code paths
+now extend ONLY the private v2 marker with a required closed progression object. The initial
+mechanics batch embeds the already-common-sealed basis as unapplied. Old v1 source/fields/domain
+remain byte-exact; older v2 without the required object has no fallback or inferred phase.
+
+The full mechanical completion reader now resolves existing publication recovery, rejects
+marker drift, independently recomputes the frozen calculation, authenticates actual original/
+control/signed schedule/G/header agreement, and checks exact current before-images for unapplied
+or after-images for applied. Other frozen current source guards remain exact; CURRENT report/
+world-time are not forced to equal original baseline. The source basis and diagnostic completion
+witness remain immutable across the phase-only change; the full marker fingerprint covers phase.
+A fresh same-root/G/lease capability requires the entire physical union proof, absent foreign
+commands and an exact public decision whenever one is present. Parsed data/witness/hash alone
+grants no phase authority. Consumed absent draft is permitted only as past mechanical evidence;
+it does not itself accept story or authorize a changed continuation.
+
+The capability/marker builder are SOURCE WIP; no fixed phase publisher has run or been wired.
+Fixed schedule/report/same-marker batch and complete readback, known three-member-only
+compensation/unknown retention, phase-aware validation/application, actual post-common/late/
+story/stat/level-up/session/cold integration, J7 controls/selectors and normative/primary-GM
+synchronization remain OPEN. Next bounded source block connects the fixed phase publication,
+without a second mechanics reduction or any finalized-claim restore/rearm/release. Compilation,
+build/discovery/catalog/PlanOnly/tests/runtime/faults and whole SOURCE/FIXTURE/SELECTION remain
+UNRUN. No fixture, category, selector, budget, acceptance-checkbox or historical evidence change.
+
 ## Joint frozen progression basis/common-seal WIP STOP — 2026-10-14
 
 Owning base `58c2d72d57af7f5351077637060dcdb31b3c7eda`; verified recovery2224/1690

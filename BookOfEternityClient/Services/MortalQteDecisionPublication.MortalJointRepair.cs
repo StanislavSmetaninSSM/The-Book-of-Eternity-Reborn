@@ -11,7 +11,7 @@ namespace BookOfEternityClient.Services;
 internal static partial class MortalQteDecisionPublication
 {
     private const string JointHashDomain = "T070-MORTAL-QTE-JOINT-COMMON-PUBLICATION-V2\n";
-    private static readonly string[] JointFields = Fields.Concat(new[] { "jointTreatment", "consumedPrivatePaths" }).ToArray();
+    private static readonly string[] JointFields = Fields.Concat(new[] { "jointTreatment", "consumedPrivatePaths", "progression" }).ToArray();
     private static readonly string[] JointTreatmentFields = ["operationKey", "attemptId", "requestFingerprint",
         "persistedResultFingerprint", "resourceFinalizationFingerprint", "repairCheckpointFingerprint", "treatmentHistoryOrdinal"];
     private static readonly string[] JointFootprintPaths = FootprintPaths
@@ -34,7 +34,7 @@ internal static partial class MortalQteDecisionPublication
         private readonly int _turn;
         private JointCompletedWitness(FileSystemManager files, JsonObject root)
         {
-            _files = files; _generation = Text(root, "generation"); _fingerprint = Text(root, "fingerprint");
+            _files = files; _generation = Text(root, "generation"); _fingerprint = JointImmutableFingerprint(root);
             _sessionId = Text(root, "sessionId"); _requestId = Text(root, "requestId");
             _snapshotToken = Text(root, "snapshotToken"); _turn = JointInteger(root, "turn");
         }
@@ -190,6 +190,7 @@ internal static partial class MortalQteDecisionPublication
             throw Invalid("joint_wave_consumption");
         root["publishedFootprint"] = footprint;
         root["consumedPrivatePaths"] = new JsonArray(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        root["progression"] = await CreateJointProgressionUnappliedAsync(fs, lease, taken.Authority.Progression);
         root.Remove("fingerprint"); root["fingerprint"] = JointFingerprint(root);
         return SerializePublicationRoot(root);
     }
@@ -197,6 +198,11 @@ internal static partial class MortalQteDecisionPublication
     private static async Task<CompletedProof> ReadJointCompletedProofAsync(FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease, PendingTurnSnapshotReadAuthority inspection, JsonObject root)
     {
+        fs.ResolveBackupPublicationRecovery(lease);
+        var stableMarker = await fs.ReadFileBytesAsync(lease, StatePath) ?? throw Invalid("joint_marker_missing_after_recovery");
+        var recovered = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(stableMarker),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "current recovered joint completion");
+        if (!JsonNode.DeepEquals(root, recovered)) throw Invalid("joint_marker_recovery_changed");
         if (root.Count != JointFields.Length || root.Any(row => !JointFields.Contains(row.Key, StringComparer.Ordinal))) throw Invalid("joint_shape");
         var payload = root.DeepClone().AsObject(); payload.Remove("fingerprint");
         if (Text(root, "fingerprint") != JointFingerprint(payload) || !fs.IsCurrentSessionGeneration(lease, Text(root, "generation")))
@@ -267,6 +273,8 @@ internal static partial class MortalQteDecisionPublication
             source.Owner.CarrierPath != WoundCarrierCatalog.PlayerPath || receipt.Decision != "materialize" ||
             Text(root, "receiptFingerprint") != receipt.ReceiptFingerprint || Text(root, "decisionFingerprint") != receipt.DecisionFingerprint ||
             Text(root, "operationKey") != receipt.OperationKey) throw Invalid("joint_qte_source");
+        await ValidateJointProgressionDataAsync(fs, lease, root);
+        if (!Same(stableMarker, await fs.ReadFileBytesAsync(lease, StatePath))) throw Invalid("joint_marker_changed_during_proof");
         return new(root, receipt);
     }
 
