@@ -71,8 +71,8 @@ public partial class GameEngine
         }
     }
 
-    // Unwired until the admitted joint entry is complete. Its only future caller
-    // is the real resource-admitted validation owner with its private actual frame.
+    // Called by the fresh canonical joint owner after real resource admission.
+    // Its private actual frame never crosses into a caller-supplied envelope.
     private async Task<MortalJointRepairMechanicalAdmission> CreateMortalJointRepairMechanicalAdmissionAsync(
         FileSystemManager.CanonicalWriteLease lease, ValidatedPendingTurnSnapshotContext frame,
         AcceptedMechanicsWoundStageBundle bundle, object continuation)

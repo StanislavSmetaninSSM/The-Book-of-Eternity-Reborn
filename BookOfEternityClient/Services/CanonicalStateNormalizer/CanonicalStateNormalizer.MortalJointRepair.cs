@@ -66,8 +66,8 @@ public partial class CanonicalStateNormalizer
     internal sealed record JointRepairPublicationResult(MortalJointRepairPublicationDisposition Disposition,
         AcceptedMechanicsPlan? Plan, IReadOnlyList<ValidationIssue> Issues);
 
-    // The actual GameEngine entry is connected later. This owner is deliberately
-    // bound to the SAME participating issuing lease, with no independent writes,
+    // The actual GameEngine canonical entry retains this SAME participating
+    // issuing lease through the full pipeline, with no independent writes,
     // accumulated-state normalization, second reduction or second scheduler.
     internal async Task<JointRepairPublicationResult> NormalizeAndValidateJointRepairAsync(
         JointRepairPublicationPreflight preflight, ValidationService validator,

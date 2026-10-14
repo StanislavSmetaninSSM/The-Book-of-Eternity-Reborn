@@ -411,6 +411,7 @@ public partial class GameEngine
     /// Accepted after common publication and validation, or a terminal disposition requiring caller settlement.
     /// </returns>
     private sealed class MortalCompletedPublicationHoldException : Exception { }
+    private sealed class MortalJointRepairPublicationHoldException : Exception { }
 
     private async Task<AcceptedTurnValidationDisposition>
         ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
@@ -437,6 +438,21 @@ public partial class GameEngine
         }
         async Task BeforeDestructiveRefusalAsync()
         {
+            if (_mortalJointRepairCanonicalRefresh is { } joint && MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn))
+            {
+                // A current owning outcome blocks destructive fallback even when
+                // evidence is uncertain. A diagnostic witness grants no authority:
+                // re-read the complete v2 physical proof before reporting continuity.
+                if (joint.Completed is not null)
+                {
+                    await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                    try { await joint.Completed.ValidateCurrentAsync(_fs, lease); }
+                    catch (Exception error) when (error is InvalidDataException or IOException or InvalidOperationException or
+                        System.Text.Json.JsonException or ArgumentException)
+                    { _logger.LogError(error, "Joint post-publication evidence changed; destructive fallback remains blocked."); }
+                }
+                throw new MortalJointRepairPublicationHoldException();
+            }
             if (entry.State != MortalQteDecisionPublication.CurrentPublicationState.VerifiedCompleted) return;
             // A remembered classification grants no authority: reread the original binding and
             // complete current footprint under the participating lease before any repair/rollback.
@@ -457,6 +473,10 @@ public partial class GameEngine
         catch (MortalCompletedPublicationHoldException)
         {
             return AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked;
+        }
+        catch (MortalJointRepairPublicationHoldException)
+        {
+            return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
         }
         catch (Exception error) when (MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn) &&
             error is CoordinatedStatePublicationUncertainException or InvalidDataException or IOException or
@@ -767,12 +787,6 @@ public partial class GameEngine
                 continue;
             }
 
-            // A read-only joint intake is never a generic publication fallback.
-            // The distinct canonical owning bridge is connected next; until then
-            // this partial WIP preserves the complete held wave rather than allow
-            // an ordinary turn to advance without its joint mechanics.
-            if (_mortalJointRepairCorrectionReady)
-                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
             AcceptedTurnCanonicalRefreshResult canonicalRefresh;
             try
             {
@@ -816,6 +830,15 @@ public partial class GameEngine
             }
             await using var treatmentResourcePublicationTransaction =
                 canonicalRefresh.TreatmentResourcePublicationTransaction;
+            if (canonicalRefresh.JointPublication is { } jointPublication)
+            {
+                // The distinct owner has actually attempted its one batch and
+                // settled/read back under its issuing lease. It must never enter
+                // old-transaction compensation or resource-free acceptance.
+                _logger.LogWarning("Joint canonical owner reached {Disposition}; downstream completion remains held in this WIP.",
+                    jointPublication.Disposition);
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+            }
             try
             {
                 if (!canonicalRefresh.BaselineUsable)
@@ -2236,6 +2259,14 @@ public partial class GameEngine
         if (snapshot == null)
             return new AcceptedTurnCanonicalRefreshResult(false, Array.Empty<ValidationIssue>());
 
+        if (_mortalJointRepairCorrectionReady)
+        {
+            if (activeSnapshotContext is null || !MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn))
+                throw new InvalidDataException("Joint canonical refresh requires the exact validated original frame.");
+            var joint = await PublishCurrentMortalJointRepairAsync(activeSnapshotContext, expectedTurn, snapshot);
+            return new AcceptedTurnCanonicalRefreshResult(true, joint.Issues, joint.Plan, JointPublication: joint);
+        }
+
         var refresh = await RefreshCanonicalStateAsync(snapshot);
         if (refresh.TreatmentResourcePublicationTransaction is not null)
         {
@@ -2436,7 +2467,8 @@ public partial class GameEngine
         ValidationService.SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation?
             SpiritualConflictValidation = null,
         ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
-            GuardianMusingsValidation = null)
+            GuardianMusingsValidation = null,
+        MortalJointRepairCanonicalRefresh? JointPublication = null)
     {
         /// <summary>
         /// Gets the ordered accepted notifications, or an empty list when no presentation was supplied.

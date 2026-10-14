@@ -1,5 +1,40 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J6 fresh canonical joint coordinator/publication WIP STOP — 2026-10-14
+
+Retained sole writer continued from verified metadata carrier
+`da8fc29c358353711cd80f94657a825f8ae19985` under the existing accepted DESIGNv2/J2-J7
+release. The source caller now reconstructs BOTH owners from the actual installed wave
+under one fresh participating canonical lease, then invokes prepared/effect/final/anchors,
+actual mechanical/item baseline, joint resource/common final gate, preflight/take and the
+existing one-batch/readback/claim-settlement owner under that SAME lease. No intake plan,
+new resource reservation, second scheduler or old singleton continuation is carried over.
+
+A distinct typed joint canonical-refresh result preserves Committed/RetryableHeld/
+PublicationUncertain outcomes. It never enters the old homogeneous transaction or generic
+resource-free acceptance branch. Committed is retained before a diagnostic v2 witness
+read; the witness is non-authorizing and rereads the complete physical original/G/history/
+receipt/footprint proof when checking continuity. Attempted publication cannot be aborted
+by the pre-take failure path; known compensation remains solely transaction-owned. Runtime
+refresh occurs after successful lease closure. Detached outcome clears with a different
+actual frame; committed/uncertain same-frame state cannot republish through this owner.
+
+This is reachable SOURCE WIP, not runtime qualification or positive completion. Downstream
+ordinary/post-common validation, narrative/story completion and lifecycle still deliberately
+return held-blocked after the typed joint result. Full v2 exact/changed late-idle/session
+replacement/warm/cold source routes, J7 genuine R2-R7/C1 controls/selection, normative
+FR063/FR012/private lifecycle amendment and J8 primary GM example/manifest/guards remain
+OPEN. No new fixture/category/selector or acceptance checkbox is changed. Compilation,
+discovery, catalog, PlanOnly, all tests/runtime and whole independent SOURCE remain UNRUN.
+Historical raw reports, late-frame focused readback and ROOT receipts remain immutable.
+
+ROOT preservation note: raw static166 Boolean checks includes one author-confirmed vacuous
+`witness_not_resubmission_take_permission` check; EXCLUDED, so only165 nonvacuous reported
+text/byte/API observations are retained. All129 current pins (8 authored/121 protected)
+match; no runtime/whole SOURCE implication. Author STOP/no pending tools, raw report
+NOT SUPPLIED for this fresh canonical chunk; prior948ee6ef remains prior-phase report.
+Raw static/root receipt and separate author-stop qualification are preserved in recovery.
+
 ## J6 later live-source handoff and focused frame readback — 2026-10-14
 
 Published source `626d318b34b301b8c80cce3fd33e38c38e052cd9`, owning source base

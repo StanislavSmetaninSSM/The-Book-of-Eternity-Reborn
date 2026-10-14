@@ -20,6 +20,47 @@ internal static partial class MortalQteDecisionPublication
         .Distinct(StringComparer.Ordinal).OrderBy(path => path, StringComparer.Ordinal).ToArray();
     private static readonly object JointHistorySuffixIssuer = new();
 
+    // Diagnostic continuity only. This witness never issues a command, permits
+    // resubmission, takes a plan, or substitutes for the fresh physical proof.
+    internal sealed class JointCompletedWitness
+    {
+        private readonly FileSystemManager _files;
+        private readonly string _generation;
+        private readonly string _fingerprint;
+        private readonly string _sessionId;
+        private readonly string _requestId;
+        private readonly string _snapshotToken;
+        private readonly int _turn;
+        private JointCompletedWitness(FileSystemManager files, JsonObject root)
+        {
+            _files = files; _generation = Text(root, "generation"); _fingerprint = Text(root, "fingerprint");
+            _sessionId = Text(root, "sessionId"); _requestId = Text(root, "requestId");
+            _snapshotToken = Text(root, "snapshotToken"); _turn = JointInteger(root, "turn");
+        }
+        internal static async Task<JointCompletedWitness> ReadAsync(FileSystemManager files,
+            FileSystemManager.CanonicalWriteLease lease, string sessionId, string requestId, string snapshotToken, int turn)
+        {
+            var proof = await ReadCompletedProofAsync(files, lease, ReadInspectionSnapshot(files, lease));
+            if (proof.Root["schemaVersion"]?.GetValue<int>() != 2 || Text(proof.Root, "sessionId") != sessionId ||
+                Text(proof.Root, "requestId") != requestId || Text(proof.Root, "snapshotToken") != snapshotToken ||
+                JointInteger(proof.Root, "turn") != turn)
+                throw Invalid("joint_completed_witness_binding");
+            return new(files, proof.Root);
+        }
+        internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+        {
+            files.EnsureCanonicalWriteLeaseActive(lease);
+            if (!ReferenceEquals(files, _files) || !files.IsCurrentSessionGeneration(lease, _generation))
+                throw Invalid("joint_completed_witness_owner");
+            var current = await ReadAsync(files, lease, _sessionId, _requestId, _snapshotToken, _turn);
+            if (current._fingerprint != _fingerprint) throw Invalid("joint_completed_witness_changed");
+        }
+    }
+
+    internal static Task<JointCompletedWitness> ReadJointCompletedWitnessAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, string sessionId, string requestId, string snapshotToken, int turn) =>
+        JointCompletedWitness.ReadAsync(files, lease, sessionId, requestId, snapshotToken, turn);
+
     // A non-authorizing read capability for exactly the validated typed TREAT row.
     // No ordinary adapter caller or parsed marker string can issue it.
     internal sealed class JointHistorySuffixProof

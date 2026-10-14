@@ -47,6 +47,7 @@ public partial class GameEngine
             // Physical command/wave bytes still undergo their ordinary strict read.
             _mortalJointRepairCheckpoint = null;
             _mortalJointRepairCorrectionReady = false;
+            _mortalJointRepairCanonicalRefresh = null;
         }
         try
         {
