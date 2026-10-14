@@ -2,6 +2,36 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "fr063-guaranteed-joint-checkpoint-provenance",
+            "responsibility": "FR063 J2 foundation only: one genuine source-backed component theory/five rows captures detached private rejected-severity checkpoint from actual finalized QTE42/original43, confirmed homogeneous guaranteed request and real adapter packet; exact roundtrip plus unknown-field/blob-hash/frame-leaf-with-original-seal/fingerprint refusal. Full physical bytes, exact held request/claim and no common plan/private pending write are checked. Newly authored UNRUN; not live joint dispatch/publication proof.",
+            "excludes": "No R1 repeat, engine admission/restore dispatch, corrected union publication, terminal release, completed marker, cold/new-root, GM/UI or full-FR closure. Qualified ordinary13/API5/pending2/QTE/ce955 fixtures remain unchanged/unselected. No synthetic authority, caller reservation/confirmation, original copy/re-sign or test-to-test call.",
+            "changeHints": [
+                "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+                "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCheckpoint.cs"
+            ],
+            "related": [
+                {
+                    "id": "fr063-guaranteed-live-joint-repair-entrance",
+                    "when": "Accepted live R1 supplies causal missing-owner evidence; this component establishes checkpoint codec/capture prerequisites only and does not repeat or replace the real entrance oracle."
+                }
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 5,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ComponentJointCheckpointRetainsGenuineProvenanceOrRefusesTampering"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "fr063-guaranteed-live-joint-repair-entrance",
             "responsibility": "#1536 J1 single genuine outer ordinary live-owner causal Fact. Actual declared QTE42/maxII/source10->5, official43/same generation, real homogeneous treatment Prepare/Create/distributor-confirmed energy2 request. One severityIII public draft and exact scene/Ready enter the real participating late-idle validation/repair loop. Actual committed public repair or protected diagnostic plus private graph is captured before queued Escape. Required genuine severity wave/full private request persistence is the first owning oracle; authoring UNRUN, not an observed production RED.",
             "excludes": "Qualified component pending2/ordinary13/API/QTE/archive/baselines; no direct adapter/pending composer/precomposed common plan, synthetic repair packet/authority, repeated reservation, copied original, caller binding bypass or production J2–J6. ConfirmedHeld is witnessed before entry, not inferred as a registry read at dispatch. No correction/completion/compensation/cold/new-root or full-FR qualification in this first case. No broad family/globalCI/runner change.",

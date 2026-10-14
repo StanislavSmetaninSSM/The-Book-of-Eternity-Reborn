@@ -1,5 +1,75 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## First J2 foundation WIP; ROOT static hash-format blocker — 2026-10-14
+
+SoleSol stopped the first resumable six-path source foundation before long authoring:
+unused non-authorizing checkpoint capture/codec, genuine-source component1/5/1,
+catalog/selector and handoff. [Immutable author report](recovery/fr063-j2-j7-first-foundation-source-report-20261014.md)
+SHA256 `ed9f5d2e099870ff3b8b39a47f8f4b87e0c11cc657fbeed287590619163f169c`
+preserves original author pins/status. ROOT read both new source files and verified
+all20 candidate/protected pins before this subsequent metadata insertion. All checks
+remain UNRUN; no partial connected SOURCE gate or J2 completion claim.
+
+ROOT identified a concrete source blocker after author STOP: Hash() emits bare64hex,
+but Parse validates every *Hash using IsAuthorityFingerprint requiring sha256:+64.
+Actual capture therefore cannot pass originalManifestHash's field validator. The
+bare64zero fingerprint mutation also fails field format before its intended seal
+oracle. These are static/source-confirmed findings, not executed RED or native
+results. On primary resume, align content-hash versus semantic-fingerprint formats
+and use syntactically valid tamper values to reach the intended diagnostics. Preserve
+original report/history; actual corrected complete SOURCE/selection remains required.
+
+Live entry/restore/install/union common publication/settlement/v2marker/cold and GM
+synchronization still unimplemented. First preserve this WIP remotely/recover, then
+sameSol performs the accepted tiny isolated GM catalog fix and resumes J2-J6/J7.
+No compiler/catalog/test/runtime, passing-repeat or task checkbox acceptance here.
+
+
+## J2 checkpoint foundation WIP STOP; connected joint owner still incomplete — 2026-10-14
+
+Retained sole Sol authored a resumable bounded foundation from clean published
+a4e89d3ab1a3d736a34b41cb5cfb766b794d3f94 under the accepted J2-J7 release.
+Accepted DESIGNv2 9c1a7226/closure a1ef and genuine J1 causal RED/2aeb remain exact;
+no prior qualification or native outcome changed. This is WIP, not connected SOURCE
+READY or J2-J6 completion. ROOT preserves it before a separately released tiny GM
+catalog correction; the same sole writer resumes connected primary work afterwards.
+
+New private checkpoint service freshly reads the official original/G and complete
+homogeneous held request, uses existing ExportCurrent/RestorePersistedTreatmentRequests
+and guaranteed reducer/Finalize, reconstructs the exact command and actual scene,
+then obtains a real severity-only refusal and one packet from the genuine QTE adapter.
+It retains exact original/command/draft/scene hashes and rejected bytes, independently
+validated QTE source/opportunity and request fingerprints, ordered packet/receipt
+fingerprints and a domain-separated closed payload seal. Parsed values are explicitly
+non-authorizing provenance: no reservation/publication capability or root path/key.
+Capture writes no file, command, pending wave, accepted plan or finalized history.
+It does not accept a valid acquisition without a prior real repair checkpoint.
+
+One separately owned five-row component theory uses unchanged genuine world/source
+and held-request helpers to prove exact capture/roundtrip and refuse unknown field,
+blob hash, frame-leaf under its original seal or whole-checkpoint seal tampering while preserving physical bytes,
+ConfirmedHeld and no common plan/pending install. This is not a real joint repair-loop,
+coalescence/fresh-process or publication qualification. J1 and all qualified helpers/
+fixtures stay byte-exact; its original causal first predicate remains unchanged.
+
+Still UNIMPLEMENTED: current-entry admitted callback/shared exclusion checks; private
+pending codec integration and cold reconstruction; coordinated baseline/install/
+readback and private writable-target filters; typed retry/release settlement; exclusive
+joint prepared/effect/final/anchor/common family and final guarantee; full-union batch/
+compensation/cleanup; v2 completion proof/preservation; corrected R2-R7/C1 and cold
+fixtures. Do not connect this capture-only value as an accepted working path. Existing
+sixarg publisher, singleton/mixed/disjoint guards, production parser and GameEngine
+callers are untouched. J8 GM worked example/manifest/guard synchronization remains
+required with the connected capability; this client-private foundation alone adds
+no public grammar/gameplay/GM permission, so no GM-facing content changes here.
+
+Provisional new component1method5cases1descriptor/budget5/default10, one exact owner
+and separate task-local selector; catalog730 categories (+1 method, no discovery claim).
+All new build/PlanOnly/catalog/runtime/fault/claim/publication checks UNRUN; no execution
+released on this partial WIP. Historical tails and acceptance checkboxes exact; all
+parent/full FR063/T070/UI remain OPEN. Independent mandatory complete SOURCE/fixture/
+selection gates precede ROOT fresh execution after the connected candidate is authored.
+
 ## Coordinator J2–J6/J7 authoring release received — 2026-10-14
 
 Coordinator Lorian explicitly released bounded J2–J6 production authoring and J7
