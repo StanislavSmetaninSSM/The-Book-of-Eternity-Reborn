@@ -1,5 +1,45 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 five actual story-owner controls SOURCE WIP STOP — 2026-10-14
+
+Owning base `5f930222ab104a99394417a263e6f686846f4402`; recovery2343/1814 verified
+before SOURCE GO. One new five-row Theory reuses genuine nonzero/APPLIED pre-story
+producer and existing fresh child/actual late owner (native scenario7): changed real
+prior42 prefix; changed actual writer-created decision43 narrative row; changed that
+actual row's G binding; real append-boundary failure; real post-commit readback failure.
+Row-G negative data is distinct from physical-G admission, which remains covered by
+the separate missing/foreign-G controls. No accepted row/proof/capability is fabricated.
+
+Hook-bearing filesystem/logger precede engine dependencies. Genuine official original,
+current G/control, consumed report/frozen arithmetic/applied union and empty-cache
+prerequisites precede arming. Prefix change occurs only afterward. Append fault uses
+existing BeforeCanonicalMutationAsync for the exact story path; committed single-story
+Format1 journal supplies actual Before/After bytes and the deterministic Request/G/
+turn/frozen UTC/action/narrative row. Only that actual After row supplies row mutations.
+Readback fault arms only after a real Committed append and fails the first actual
+post-commit story read. No observer exception is used as proof of pre-commit failure.
+
+Actual caller exception/gate diagnostics/counters/committed journal/real row and full
+raw before-after namespace/bytes (including runtime/debt) are retained BEFORE outcome
+assertions/owned cleanup. Exact expected story change is the only physical exception;
+whole committed mechanics/phase/projection/source/original/Ready/output/backups/G stay
+unchanged, turn remains42/held, no second owning caller or authority/recovery reader
+runs after failure. Prefix may refuse before append. Counts supplement complete bytes;
+after append/readback failure the genuine row can remain without attesting turn/story
+completion. Actual writer/readback disposition and hook reach remain source predictions.
+
+Compiler/API/callback/fixture/gate/closing validity UNCHECKED; all project/build/discovery/
+catalog/PlanOnly/test/runtime/fault and entire connected SOURCE/FIXTURE/SELECTION UNRUN.
+Provisional source inventory13 methods/30 cases (ten Facts and12+3+5 Theory rows);
+official discovery/category/selector/budgets unmodified and still pending. Existing
+positive completion/phase/G/refusal/active Theory source bodies are protected; only
+shared cold routing/diagnostic plumbing changes. Lawful active joint support, freshPID
+already-bad signed authority, distinct actual LIVE caller and compatibility/default/v1/
+disjoint controls, normative/primary-GM synchronization and final selections remain
+OPEN. No FR063 closure/positive runtime qualification. Prior raw packets/historical
+tails/checkboxes remain immutable; ROOT owns publication and all project execution.
+
+
 ## J7 three active-tail refusal controls SOURCE WIP STOP — 2026-10-14
 
 Owning base `20287353cd7af092a365bbc049b94d19f90440ff`; recovery2338/1809 was
