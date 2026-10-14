@@ -1,5 +1,25 @@
 # Tasks: GM Documentation Modularization
 
+## Pair catalog schema SOURCE closed; fresh preparation retry released — 2026-10-14
+
+Retained independent Astra XHigh [focused SOURCE/SELECTION closure](recovery/A-connected-pair-related-schema-correction-independent-source-review-20261014.md)
+SHA256 `0eb6972a17b1419d3c7eeeadaf19db7ebbd73f17660424d7ecc98174be558772`
+accepts `4645011fa1745f088b920eec6b4c6a1fd7bd5b51`. Important catalog defect
+closed:257 related objects/targets/nonempty when valid; reverse sole block restores
+old catalog byte-exact; all13 source/protected pins exact. ROOT verified published
+remote and GitHub-only recovery230 materialized files by bytes/blobs. Prior identity
+SOURCE53ed carries forward, historical setup packet/native exit UNKNOWN unchanged.
+
+Release fresh BOTH preparation/catalog expected732/11585 with zero tests, then exact
+pair1method2cases1descriptor PlanOnly and pair-only first corrected actual. No old
+NoBuild premise; fresh binaries/source/package provenance and owned cleanup required.
+Freeze and independent EVIDENCE before separately gated writer1. Full owner7/15/2,
+prior passing controls/pure44/primary are not repeated. All corrected actual checks
+UNRUN at this carrier. Content/daemon/fullA/B/Block_5 remain OPEN/unreleased.
+SoleSol resumes primaryconnectedJ2-J6/J7 from preservedd1; ROOT pins/runs only GMtree.
+No new writer, source/runtime waiver, checkbox acceptance or protection bypass.
+
+
 ## Pair related-schema correction SOURCE READY; fresh checks UNRUN — 2026-10-14
 
 From clean published2e01435a8bee67358d949cb0ee2528f3aed5c753, soleSol replaced
