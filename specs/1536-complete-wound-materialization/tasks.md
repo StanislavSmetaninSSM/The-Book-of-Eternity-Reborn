@@ -1,5 +1,45 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## First staged/Late actual failure frozen — ROOT checkpoint 2026-10-14
+
+Actual source `cd06ecff0423a70e2f4c3d22576fe2142d8335c1`, compiled source
+`c4a7bc1a859bc71a1edc7c6c36b6875b04586390`; project source/fixtures/selectors
+were unchanged by the intervening preparation-evidence/metadata carrier.
+Checkpoint component:5executed/5PASS/0FAIL, complete1/1 in54.7046398s;
+five actual strict cleanup receipts and absent roots were observed. This is only
+component-prerequisite evidence, not joint completion qualification.
+
+The next staged/Late zero/nonzero pair:2executed/0PASS/2FAIL, native exit1,
+complete1/1, no timeout, wall29.5629813s. Source154and binary11 pins match
+before/after. Two actual strict cleanup receipts/absent roots are observed.
+Both failed at the shared jointOriginalTail byte-equality assertion in
+JointCompletion.cs132 after ReadSnapshot130 and before turn43 assertion133,
+guaranteed request/confirmed hold and joint repair publication. The failed
+assertion does not identify the image path; actual bytes are UTF8 BOM plus{}.
+This is an executed fixture prerequisite failure pending independent EVIDENCE;
+it is not established as full joint completion causal RED or a production defect.
+
+Sequence HALTED. All12later actual stages, correction and rerun remain HELD.
+The41-artifact first-actual frozen packet retains native/TRX/stdout/observations,
+source/binary proofs, both outcomes and actual cleanup receipts before metadata.
+Across only these two stages,7unique cases ran:5PASS/2FAIL; no aggregate GREEN.
+Fresh preparation/PlanOnly/catalog and the older compiler failure remain distinct.
+
+Read-only source tracing strongly supports legitimate Stage43 QTE reminder
+consumption as the mismatch cause; the exact path was not directly logged.
+A fixture-only real-consumer/reminder-carry-forward proposal is NOT implemented.
+Production captures backup before consumption and original after it: independent
+review must assess any proposed pre-consume effect on authentic backup/original
+semantics, or leave the natural pending-reminder contour explicitly OPEN.
+Keep all seven paths, genuine prior42 ownership, prompt once-only behavior and
+projection/inactive guards; no manual{}, fabricated acknowledgement, dropped
+path, post-original tautological recapture or sealed authority rewrite.
+
+FullFR063/T070, lawful active combinations, fresh-PID initially bad authority,
+partial cleanup/erased-owner contours remain OPEN. No further project/compiler,
+test/runtime/fault/provider operation occurred after the first actual failure.
+Historical tails, checkboxes, raw failures and provenance remain immutable.
+
 ## Fresh BOTH preparation and official inventory — ROOT checkpoint 2026-10-14
 
 Source/compile checkpoint `c4a7bc1a859bc71a1edc7c6c36b6875b04586390`.

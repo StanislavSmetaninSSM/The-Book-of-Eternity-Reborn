@@ -1,0 +1,63 @@
+{
+  "source": "cd06ecff0423a70e2f4c3d22576fe2142d8335c1",
+  "compileSource": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+  "nativeTests": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "outcome": "Failed",
+      "duration": "00:00:12.1944100",
+      "errorMessage": "Assert.Equal() Failure: Collections differ\n                          ↓ (pos 4)\nExpected: [···, 191, 123, 10, 32, 32, ···]\nActual:   [239, 187, 191, 123, 125]\n                               ↑ (pos 4)",
+      "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass991_1.<<RunJointCompletionControlAsync>g__PrepareJointOriginalAsync|3>d.MoveNext() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 132\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass991_1.<<RunJointCompletionControlAsync>g__PrepareJointOriginalAsync|3>d.MoveNext() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 168\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 123\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "outcome": "Failed",
+      "duration": "00:00:12.4311699",
+      "errorMessage": "Assert.Equal() Failure: Collections differ\n                          ↓ (pos 4)\nExpected: [···, 191, 123, 10, 32, 32, ···]\nActual:   [239, 187, 191, 123, 125]\n                               ↑ (pos 4)",
+      "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass991_1.<<RunJointCompletionControlAsync>g__PrepareJointOriginalAsync|3>d.MoveNext() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 132\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass991_1.<<RunJointCompletionControlAsync>g__PrepareJointOriginalAsync|3>d.MoveNext() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 168\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 123\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "nativeBoundaryCounts": {
+    "fr063_guaranteed_native_pre_original_npc_shape": 2,
+    "qte_story_actual_client_append": 2,
+    "qte_story_actual_engine_result": 2,
+    "qte_physical_actual_occurrence": 2,
+    "fr063_joint_actual_prior42_inactive_tail": 2
+  },
+  "firstFailingSourceAssertion": "JointCompletion.cs132 foreachjointOriginalTail exactbytes; originalReadSnapshotline130 alreadycalled; subsequentturn43/guaranteedrequest/repairchecksnotreached",
+  "whichImagePath": "NOT_IDENTIFIED byAssert.Equal message; source/observationdiagnosis pending; no guess",
+  "actualBytesFromDiagnostic": [
+    239,
+    187,
+    191,
+    123,
+    125
+  ],
+  "expectedImage": "UTF8BOMformattedJSON; exactbytesnotfullyshowninassertmessage",
+  "cleanupActualReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-f20a78bd564f41c88ab8dd471dd08c58",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-9c6470ef3b5a4cf0b942e91e3384fb46",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "parsedReceiptRootsActuallyAbsent": true,
+  "later12Stages": "UNRUN",
+  "classification": "UNCLASSIFIED_PENDING_EVIDENCE; notclaimedjointcompletioncausalRED",
+  "rawEvidenceFrozenBeforeThisSummary": true,
+  "rootReadonlyOutputDiagnostic": {
+    "toolChunk": "08b070",
+    "nativeExitCode": 0,
+    "event": "oversizedlastObservation printed; tooldisplaytruncated; originalrawobservations and frozen41artifactchainintact",
+    "correction": "9102ca boundedscalar/hash/lengthsourceonly; nofurtherfullpayloadprinting",
+    "artifactLoss": false
+  },
+  "readonlyRootSourceRead": "9102ca lines120-148; no repositoryedits orprojectcalls",
+  "writer": "read-onlydiagnosisrunning; no fix released",
+  "newOutcomeNoteSHA256": "995404be7b37847db767cc75311efe2e84769a9fcee62e5db8069952f61f9025"
+}
