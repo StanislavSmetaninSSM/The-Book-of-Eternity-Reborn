@@ -84,7 +84,11 @@ public partial class GameEngine
         await WoundAcceptedTurnPlanner.ValidateJointRepairCurrentAsync(_fs, lease, continuation);
         var binding = bundle.Input.Binding;
         var paths = AcceptedMechanicsWoundCommonInputComposer.TreatmentOrdinaryGuardPaths.Concat(new[]
-            { NpcTradeRequestState.PendingRequestPath, TrainingRequestState.PendingRequestPath })
+            { NpcTradeRequestState.PendingRequestPath, TrainingRequestState.PendingRequestPath, MortalQteDecisionPublication.StatePath })
+            .Concat(bundle.Input.PreTurnCarriers.Keys)
+            .Concat(bundle.EffectBatchPlan.EffectPlan.CarrierBeforeImages.Keys)
+            .Concat(bundle.EffectBatchPlan.EffectPlan.TouchedPaths)
+            .Concat(bundle.EffectBatchPlan.EffectPlan.DeletedPaths)
             .Distinct(StringComparer.Ordinal).ToArray();
         var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new PendingTurnSnapshotPathSelection(
             new[] { "game_state/meta/soul_state.json" }, paths.Where(path => path != "game_state/meta/soul_state.json" &&

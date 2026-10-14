@@ -39,10 +39,22 @@ internal static partial class WoundAcceptedTurnPlanner
             EffectBeforeFingerprint = effectBefore; EffectAfterFingerprint = effectAfter;
             Fingerprint = ComputeFingerprint();
         }
+        private MortalJointRepairCommonAuthority? _commonAuthority;
+        internal MortalJointRepairCommonAuthority GetOrCreateCommonAuthority(object issuer)
+        {
+            if (!ReferenceEquals(issuer, JointCommonAuthorityIssuer))
+                throw new InvalidOperationException("Joint common authority requires its existing private resource owner.");
+            return _commonAuthority ??= new MortalJointRepairCommonAuthority(issuer, this);
+        }
         internal JointCommonBaselineAuthority Baseline { get; }
         internal ResourceOwnerAuthority FinalOwners { get; }
         internal string EffectBeforeFingerprint { get; }
         internal string EffectAfterFingerprint { get; }
+        internal ResourceDefinitionCatalog Definitions => _definitions;
+        internal ResourceStateLedger State => _state;
+        internal ResourceHistoryState History => _history;
+        internal IReadOnlyDictionary<string, JsonObject> Companions => _companions.ToDictionary(
+            row => row.Key, row => row.Value.DeepClone().AsObject(), StringComparer.Ordinal);
         public string Fingerprint { get; }
         public IReadOnlyList<ResourceMutationSourceExport> SourceExports => _resources.SourceExports;
         public IReadOnlyList<ResourceMutationIntent> Mutations => _resources.Mutations;
@@ -98,7 +110,7 @@ internal static partial class WoundAcceptedTurnPlanner
             return new(_companions.ToDictionary(row => row.Key, row => row.Value.DeepClone().AsObject(), StringComparer.Ordinal),
                 projected.OwnerTransitions, issues);
         }
-        internal IReadOnlyList<ValidationIssue> ValidateCandidate(AcceptedMechanicsPlan candidate)
+        internal IReadOnlyList<ValidationIssue> ValidateCandidateResourceProjection(AcceptedMechanicsPlan candidate)
         {
             if (!HasValidSeal() || candidate.WoundStageBundle?.BundleFingerprint != Baseline.Bundle.BundleFingerprint ||
                 candidate.OwnerAuthority.Fingerprint != FinalOwners.Fingerprint)
@@ -107,12 +119,19 @@ internal static partial class WoundAcceptedTurnPlanner
                 if (!candidate.BeforeImages.TryGetValue(row.Key, out var image) || image.Existed != row.Value.Existed ||
                     !(image.Bytes ?? Array.Empty<byte>()).AsSpan().SequenceEqual(row.Value.Bytes ?? Array.Empty<byte>()))
                     return JointPreparationFailure("resource_candidate_before_image_changed", row.Key).Issues;
+            return _resources.ValidateCandidate(candidate);
+        }
+
+        internal IReadOnlyList<ValidationIssue> ValidateCandidate(AcceptedMechanicsPlan candidate)
+        {
+            var issues = ValidateCandidateResourceProjection(candidate);
+            if (issues.Count != 0) return issues;
             var companions = candidate.OwnerCompanionAfterImages;
             foreach (var row in _companions)
                 if (!companions.TryGetValue(row.Key, out var actual) || !JsonNode.DeepEquals(row.Value, actual) ||
                     !candidate.TouchedPaths.Contains(row.Key, StringComparer.Ordinal))
                     return JointPreparationFailure("resource_candidate_item_projection_changed", row.Key).Issues;
-            return _resources.ValidateCandidate(candidate);
+            return Array.Empty<ValidationIssue>();
         }
     }
 

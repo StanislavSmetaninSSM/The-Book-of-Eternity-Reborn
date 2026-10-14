@@ -764,6 +764,8 @@ internal sealed class AcceptedMechanicsPlanningContext
         _directWoundPublicationAuthority;
     private readonly MortalWoundTreatmentResourcePublicationAuthority?
         _treatmentResourcePublicationAuthority;
+    private readonly WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority?
+        _jointRepairCommonAuthority;
 
     internal AcceptedMechanicsPlanningContext(
         JsonObject definitionRoot,
@@ -790,7 +792,8 @@ internal sealed class AcceptedMechanicsPlanningContext
         AcceptedMechanicsDirectWoundPublicationAuthority?
             directWoundPublicationAuthority = null,
         MortalWoundTreatmentResourcePublicationAuthority?
-            treatmentResourcePublicationAuthority = null)
+            treatmentResourcePublicationAuthority = null,
+        WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority? jointRepairCommonAuthority = null)
     {
         _definitionRoot = (definitionRoot ?? throw new ArgumentNullException(nameof(definitionRoot)))
             .DeepClone().AsObject();
@@ -918,6 +921,11 @@ internal sealed class AcceptedMechanicsPlanningContext
         if (executionSequenceOffset < 0)
             throw new ArgumentOutOfRangeException(nameof(executionSequenceOffset));
         ExecutionSequenceOffset = executionSequenceOffset;
+        _jointRepairCommonAuthority = jointRepairCommonAuthority;
+        if ((_woundStageBundle?.PreparedPlan.JointRepairContinuationAuthority is not null || _jointRepairCommonAuthority is not null) &&
+            (_jointRepairCommonAuthority is null || !_jointRepairCommonAuthority.AgreesWithContext(this)))
+            throw new ArgumentException("Joint common context requires its complete private union authority.", nameof(jointRepairCommonAuthority));
+
     }
 
     internal JsonObject DefinitionRoot => _definitionRoot.DeepClone().AsObject();
@@ -936,6 +944,9 @@ internal sealed class AcceptedMechanicsPlanningContext
     internal AcceptedMechanicsDirectWoundPublicationAuthority?
         DirectWoundPublicationAuthority =>
         _directWoundPublicationAuthority?.DetachedCopy();
+    internal WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority? JointRepairCommonAuthority =>
+        _jointRepairCommonAuthority;
+
     internal MortalWoundTreatmentResourcePublicationAuthority?
         TreatmentResourcePublicationAuthority =>
         _treatmentResourcePublicationAuthority;
@@ -975,7 +986,8 @@ internal sealed class AcceptedMechanicsPlanningContext
             _woundStageBundle,
             woundAnchorPlan,
             directWoundPublicationAuthority: null,
-            treatmentResourcePublicationAuthority: null);
+            treatmentResourcePublicationAuthority: null,
+            jointRepairCommonAuthority: _jointRepairCommonAuthority);
     }
 
     internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
@@ -1304,6 +1316,8 @@ internal sealed class AcceptedMechanicsPlan
         _directWoundPublicationAuthority;
     private readonly MortalWoundTreatmentResourcePublicationAuthority?
         _treatmentResourcePublicationAuthority;
+    private readonly WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority?
+        _jointRepairCommonAuthority;
 
     internal AcceptedMechanicsPlan(
         string inputFingerprint,
@@ -1331,7 +1345,8 @@ internal sealed class AcceptedMechanicsPlan
         AcceptedMechanicsDirectWoundPublicationAuthority?
             directWoundPublicationAuthority = null,
         MortalWoundTreatmentResourcePublicationAuthority?
-            treatmentResourcePublicationAuthority = null)
+            treatmentResourcePublicationAuthority = null,
+        WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority? jointRepairCommonAuthority = null)
     {
         if (!ResourceMaterializationContract.IsAuthorityFingerprint(inputFingerprint))
             throw new ArgumentException("Expected a lowercase SHA-256 plan fingerprint.", nameof(inputFingerprint));
@@ -1444,6 +1459,13 @@ internal sealed class AcceptedMechanicsPlan
              _woundPublication?.WoundAnchorPlanFingerprint is not null ||
              !WoundAcceptedTurnPlanner.RecoveryContinuationFinalPlanAgrees(recoveryAuthority, _woundStageBundle)))
             throw new ArgumentException("Recovery publication requires its exact completed recovery stages.", nameof(woundStageBundle));
+        _jointRepairCommonAuthority = jointRepairCommonAuthority;
+        if ((_woundStageBundle?.PreparedPlan.JointRepairContinuationAuthority is not null || _jointRepairCommonAuthority is not null) &&
+            (_pendingGmPacket is not null || _jointRepairCommonAuthority is null || _woundPublication is null ||
+             _treatmentResourcePublicationAuthority is not null || _directWoundPublicationAuthority is not null ||
+             !_jointRepairCommonAuthority.AgreesWith(_woundStageBundle, _jointRepairCommonAuthority.Anchors, OwnerAuthority) ||
+             _woundPublication.WoundAnchorPlanFingerprint != _jointRepairCommonAuthority.Anchors.Fingerprint))
+            throw new ArgumentException("Joint common plan requires its exact complete anchored union authority.", nameof(jointRepairCommonAuthority));
         if (_woundStageBundle is not null && liveWoundCompletion is null &&
             _woundPublication is not null &&
             carrierComposition is not null)
@@ -1581,6 +1603,9 @@ internal sealed class AcceptedMechanicsPlan
     internal AcceptedMechanicsDirectWoundPublicationAuthority?
         DirectWoundPublicationAuthority =>
         _directWoundPublicationAuthority?.DetachedCopy();
+
+    internal WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority? JointRepairCommonAuthority =>
+        _jointRepairCommonAuthority;
 
     internal MortalWoundTreatmentResourcePublicationAuthority?
         TreatmentResourcePublicationAuthority =>
@@ -1980,6 +2005,8 @@ internal static class AcceptedMechanicsPlanFingerprints
         fields.Add(plan.WoundAnchorPlanFingerprint);
         fields.Add(plan.DirectWoundPublicationAuthority?.Fingerprint);
         fields.Add(plan.TreatmentResourcePublicationAuthority?.AuthorityFingerprint);
+        if (plan.JointRepairCommonAuthority is { } jointCommon)
+        { fields.Add("mortal_joint_repair_common"); fields.Add(jointCommon.Fingerprint); }
         AppendObjectMap(fields, plan.WoundCarrierAfterImages);
         AppendOptionalJson(fields, plan.WoundIdentityAfterImage);
         AppendOptionalJson(fields, plan.WoundHistoryAfterImage);
@@ -2016,6 +2043,8 @@ internal static class AcceptedMechanicsPlanFingerprints
             Version,
             ComputeInput(input.CreateBinding())
         };
+        if (input.PlanningContext?.JointRepairCommonAuthority is { } jointCommon)
+        { fields.Add("mortal_joint_repair_common"); fields.Add(jointCommon.Fingerprint); }
         AppendWoundStages(fields, input.PlanningContext?.WoundStageBundle);
         fields.Add(input.PlanningContext?.WoundAnchorPlan?.Fingerprint);
         fields.Add(

@@ -4164,7 +4164,8 @@ internal static partial class AcceptedMechanicsPlanner
             woundStageBundle: context.WoundStageBundle,
             woundAnchorPlan: context.WoundAnchorPlan,
             directWoundPublicationAuthority: context.DirectWoundPublicationAuthority,
-            treatmentResourcePublicationAuthority: context.TreatmentResourcePublicationAuthority));
+            treatmentResourcePublicationAuthority: context.TreatmentResourcePublicationAuthority,
+            jointRepairCommonAuthority: context.JointRepairCommonAuthority));
 
     internal static AcceptedMechanicsPlanningResult BuildAcceptedPlan(
         AcceptedMechanicsInput input,
@@ -4680,6 +4681,12 @@ internal static partial class AcceptedMechanicsPlanner
             touched.Add("output/narrative_response.json");
         }
 
+        if (context.JointRepairCommonAuthority is not null)
+        {
+            touched.Add(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+            consumed.Add(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        }
+
         return new AcceptedMechanicsPlanningResult(
             new AcceptedMechanicsPlan(
                 inputFingerprint,
@@ -4717,7 +4724,8 @@ internal static partial class AcceptedMechanicsPlanner
                 directWoundPublicationAuthority:
                     context.DirectWoundPublicationAuthority,
                 treatmentResourcePublicationAuthority:
-                    context.TreatmentResourcePublicationAuthority),
+                    context.TreatmentResourcePublicationAuthority,
+                jointRepairCommonAuthority: context.JointRepairCommonAuthority),
             Array.Empty<ValidationIssue>());
     }
 

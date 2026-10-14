@@ -9,7 +9,7 @@ internal delegate AcceptedMechanicsPlanningResult AcceptedMechanicsPlanFactory(
     AcceptedMechanicsInput input,
     string inputFingerprint);
 
-internal sealed class AcceptedMechanicsPlanCache
+internal sealed partial class AcceptedMechanicsPlanCache
 {
     internal sealed class ValidatedPublicationTakeSnapshot
     {
@@ -321,6 +321,10 @@ internal sealed class AcceptedMechanicsPlanCache
         ArgumentNullException.ThrowIfNull(input);
         lock (_gate)
         {
+            if (input.PlanningContext?.JointRepairCommonAuthority is not null ||
+                input.PlanningContext?.WoundStageBundle?.PreparedPlan.JointRepairContinuationAuthority is not null)
+                return new(null, JointCacheIssue("generic validation cannot seal the joint family"));
+
             ClearWoundRepairWaveCore();
             InvalidateValidatedCore();
             if (input.ValidationIssues.Count > 0)
@@ -399,6 +403,9 @@ internal sealed class AcceptedMechanicsPlanCache
         var fingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(liveBinding);
         lock (_gate)
         {
+            if (_validatedResult?.Plan?.JointRepairCommonAuthority is not null)
+            { result = null!; return false; }
+
             if (_spiritualPublication is null && _spiritualTaken is null &&
                 _validatedResult != null &&
                 string.Equals(
@@ -429,6 +436,9 @@ internal sealed class AcceptedMechanicsPlanCache
         var fingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(liveBinding);
         lock (_gate)
         {
+            if (expectedPlan.JointRepairCommonAuthority is not null)
+            { result = null!; snapshot = null!; return false; }
+
             if (_spiritualPublication is null && _spiritualTaken is null &&
                 _validatedBinding is not null &&
                 _validatedResult is { Plan: { } plan } current &&
@@ -762,6 +772,7 @@ internal sealed class AcceptedMechanicsPlanCache
                        input.PlanningContext?.WoundAnchorPlan?.Fingerprint,
                        plan.WoundAnchorPlanFingerprint,
                        StringComparison.Ordinal) &&
+                   ReferenceEquals(input.PlanningContext?.JointRepairCommonAuthority, plan.JointRepairCommonAuthority) &&
                    string.Equals(
                        input.PlanningContext?.DirectWoundPublicationAuthority
                            ?.Fingerprint,

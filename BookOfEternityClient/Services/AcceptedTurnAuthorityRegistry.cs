@@ -2869,6 +2869,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
+                if (input.PlanningContext?.JointRepairCommonAuthority is not null ||
+                    input.PlanningContext?.WoundStageBundle?.PreparedPlan.JointRepairContinuationAuthority is not null)
+                    return JointCommonFailure("the generic common entry cannot admit the private joint family");
+
                 var woundMismatch = GetCommonWoundStageMismatch(input);
                 if (woundMismatch is not null)
                 {
@@ -2905,6 +2909,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
             ArgumentNullException.ThrowIfNull(bundle);
             lock (_gate)
             {
+                if (input.PlanningContext?.JointRepairCommonAuthority is not null ||
+                    input.PlanningContext?.WoundStageBundle?.PreparedPlan.JointRepairContinuationAuthority is not null)
+                    return JointCommonFailure("the generic common entry cannot admit the private joint family");
+
                 var supplied = input.PlanningContext?.WoundStageBundle;
                 if (input.WoundInput is null || supplied is null ||
                     !string.Equals(
@@ -4748,6 +4756,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
+                if (_mortalWoundTreatmentPublicationReservation is JointRepairPublicationReservationAuthority ||
+                    (_commonPlan.TryPeekValidated(out _, out var jointPeek) && jointPeek.Plan?.JointRepairCommonAuthority is not null))
+                { result = null!; return false; }
+
                 var taken = _commonPlan.TryTakeValidated(
                     liveBinding,
                     out result);
@@ -5754,6 +5766,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
 
         private void ClearMortalWoundTreatmentPublicationReservationCore()
         {
+            _validatedJointRepairCommonAuthority = null;
+            _validatedJointRepairCommonPlan = null;
             _mortalWoundTreatmentPublicationReservation = null;
             _mortalWoundTreatmentReservedFingerprint = null;
         }

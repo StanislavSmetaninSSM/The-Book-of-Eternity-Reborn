@@ -13,7 +13,7 @@ internal sealed record AcceptedMechanicsWoundCommonInputCompositionResult(
     internal bool Success => Input is not null && Issues.Count == 0;
 }
 
-internal static class AcceptedMechanicsWoundCommonInputComposer
+internal static partial class AcceptedMechanicsWoundCommonInputComposer
 {
     // Fixed refusal-only inputs for the first ordinary guaranteed-treatment contour.
     // Capture these BEFORE the common input's fingerprints/cache are issued, including

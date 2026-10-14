@@ -612,6 +612,9 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
 
+    internal static bool FinalizationMatches(MortalWoundTreatmentResourceFinalization expected,
+        MortalWoundTreatmentResourceFinalization actual) => FinalizationsEqual(expected, actual);
+
     private static bool FinalizationsEqual(
         MortalWoundTreatmentResourceFinalization left,
         MortalWoundTreatmentResourceFinalization right) =>

@@ -80,8 +80,81 @@ internal static partial class AcceptedTurnAuthorityRegistry
         MortalItemAcceptedTurnNormalizationSnapshot expected) =>
         GetState(files, lease).ConfirmsMortalJointRepairItemBaseline(continuation, reservation, expected);
 
+    internal sealed record JointCommonCandidateResult(AcceptedMechanicsPlanningResult Result,
+        AcceptedMechanicsPlanCache.JointCandidateFence? Fence);
+    internal static JointCommonCandidateResult CreateJointRepairCommonCandidate(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsInput input,
+        WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority) =>
+        GetState(files, lease).CreateJointRepairCommonCandidate(input, authority);
+    internal static AcceptedMechanicsPlanningResult SealJointRepairCommonCandidate(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsInput input,
+        WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority,
+        AcceptedMechanicsPlanCache.JointCandidateFence fence, object proof, AcceptedMechanicsPlan candidate) =>
+        GetState(files, lease).SealJointRepairCommonCandidate(input, authority, fence, proof, candidate);
+    internal static void RevokeJointRepairCommonCandidate(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority, AcceptedMechanicsPlanCache.JointCandidateFence fence) =>
+        GetState(files, lease).RevokeJointRepairCommonCandidate(authority, fence);
+
     private sealed partial class AcceptedTurnAuthorityState
     {
+        private WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority? _validatedJointRepairCommonAuthority;
+        private AcceptedMechanicsPlan? _validatedJointRepairCommonPlan;
+        internal JointCommonCandidateResult CreateJointRepairCommonCandidate(AcceptedMechanicsInput input,
+            WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority)
+        {
+            lock (_gate)
+            {
+                if (!OwnsJointRepairPublicationReservation(authority.Continuation, authority.Reservation) ||
+                    !authority.MatchesInput(input) || GetCommonWoundStageMismatch(input) is not null ||
+                    !ReferenceEquals(authority.Accepted, _mortalWoundTreatmentAcceptedState))
+                    return new(JointCommonFailure("current reservation/stages changed"), null);
+                var hold = _treatmentResources.ProbeConfirmed(TreatmentResourceRegistryCapability, authority.Request, authority.Finalization);
+                if (!hold.IsValid) return new(JointConfirmedClaimFailure(hold), null);
+                _validatedJointRepairCommonAuthority = null;
+                _validatedJointRepairCommonPlan = null;
+                var raw = _commonPlan.CreateJointCandidate(input, authority);
+                return new(raw.Result, raw.Fence);
+            }
+        }
+        internal AcceptedMechanicsPlanningResult SealJointRepairCommonCandidate(AcceptedMechanicsInput input,
+            WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority,
+            AcceptedMechanicsPlanCache.JointCandidateFence fence, object proof, AcceptedMechanicsPlan candidate)
+        {
+            lock (_gate)
+            {
+                if (!OwnsJointRepairPublicationReservation(authority.Continuation, authority.Reservation) ||
+                    !ReferenceEquals(authority.Accepted, _mortalWoundTreatmentAcceptedState) || GetCommonWoundStageMismatch(input) is not null ||
+                    !ConfirmsMortalJointRepairItemBaseline(authority.Continuation, authority.Reservation, authority.ItemsForRegistry))
+                {
+                    _commonPlan.RevokeJointCandidate(authority, fence);
+                    return JointCommonFailure("current joint lineage changed before sealing");
+                }
+                var hold = _treatmentResources.ProbeConfirmed(TreatmentResourceRegistryCapability, authority.Request, authority.Finalization);
+                if (!hold.IsValid)
+                { _commonPlan.RevokeJointCandidate(authority, fence); return JointConfirmedClaimFailure(hold); }
+                var result = _commonPlan.SealJointCandidate(input, authority, fence, proof, candidate);
+                if (result.Success)
+                { _validatedJointRepairCommonAuthority = authority; _validatedJointRepairCommonPlan = result.Plan; }
+                return result;
+            }
+        }
+        internal void RevokeJointRepairCommonCandidate(WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority,
+            AcceptedMechanicsPlanCache.JointCandidateFence fence)
+        {
+            lock (_gate)
+            {
+                _commonPlan.RevokeJointCandidate(authority, fence);
+                if (ReferenceEquals(_validatedJointRepairCommonAuthority, authority))
+                { _validatedJointRepairCommonAuthority = null; _validatedJointRepairCommonPlan = null; }
+            }
+        }
+        private static AcceptedMechanicsPlanningResult JointConfirmedClaimFailure(MortalWoundTreatmentResourceConfirmedHoldProbe hold) =>
+            hold.Issues.Count != 0 ? new(null, hold.Issues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue).ToArray()) :
+                JointCommonFailure("confirmed resource claim refused: " + hold.State);
+        private static AcceptedMechanicsPlanningResult JointCommonFailure(string reason) => new(null,
+            [MortalWoundOpportunityAdapter.PrivateSourceIssue(WoundAcceptedTurnPlannerCore.NewIssue(
+                "accepted_mechanics_joint_common_owner_changed", reason, "the exact joint source/reservation/confirmed claim", "refused"))]);
+
         internal MortalItemTreatmentPublicationBaselineSealResult SealMortalJointRepairItemBaseline(
             object continuation, object reservation, AcceptedMechanicsWoundStageBundle bundle,
             IReadOnlyDictionary<string, System.Text.Json.Nodes.JsonNode?> roots, MortalTreatmentItemCommandEnvelope envelope,

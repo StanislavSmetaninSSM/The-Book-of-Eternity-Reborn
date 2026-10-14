@@ -1,5 +1,65 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J5 whole-union common/candidate owner WIP STOP — 2026-10-14
+
+Retained sole Sol continued from published75a224a50b1447c5ddc8cc1f82be95f64fada804
+under the same accepted DESIGNv2/J2-J7 release. This connected common/candidate source
+checkpoint is stopped before J6. It is not full SOURCE READY, J5 runtime qualification
+or live-owner completion. All project checks UNRUN; prior raw reports/ROOT receipts,
+qualified evidence and acceptance checkbox/history bytes remain unchanged.
+
+A distinct privately issued joint common authority now owns the actual complete
+resource/mechanical/item/skill baseline, separate QTE/treatment provenance, full stages,
+joint-created anchors and existing reservation. Its one bound input includes all guarded
+beforeimages and genuine registered spend/item-capacity contribution. Fixed current
+mechanical guards include the existing marker plus actual owner-authenticated wound/
+effect member paths. Public draft remains the previously authenticated owned exemption;
+no bare caller frame/response, singleton impersonation or generic mixed switch issues it.
+The old common composer remains fail-closed for joint work; only the named private entry
+constructs this family. Old null-anchor/singleton/disjoint paths remain unchanged.
+
+Context/plan carry the distinct joint authority and fingerprints extend only for a
+nonnull joint family. Complete context guards bind exact resources, owner/source catalog,
+empty concurrent commands, single registered outcome, full effect stage and anchor union.
+The common cache creates ONE raw candidate with its existing planner/reduction and leaves
+its validated/takeable slot empty. Fresh final capability/source and current-byte IO run
+outside cache/registry monitors. Sealing requires that same immutable plan reference,
+input fingerprint, cache fence, private admission proof and live reservation/current item
+slot/confirmed claim. Actual hold diagnostics are retained. Generic and old registry/cache
+build/validation/take entries explicitly refuse this private family; they cannot validate
+or consume the raw candidate. No second scheduler/reducer or new reservation is added.
+
+The named joint final gate uses the existing private complete-candidate capability Export,
+compares source/proof with the original accepted proof, recomposes Finalize and checks the
+whole typed item/effect/wound carrier assembly and exact resource projection/beforeimages.
+Aggregate bounds now inspect the COMPLETE assembled candidate using existing strict
+ResourceStateContract numeric/quantum/min/max checks, ResourceHistoryState state agreement
+and CanonicalResourceOwnerAuthorityComposer FinalAfterImage capacity-draft agreement over
+its final item/effect/wound roots. This complements original cumulative held quantities
+and registered/capacity transition proof; it is not a second resource reduction. Exact
+item successor array roots are retained and restored through the existing root codec.
+Current authority is checked again before the unchanged candidate fence can be sealed.
+
+Still UNIMPLEMENTED: J6 private owning take/coordinator, full member inventory, single
+batch/readback/whole-union compensation, whole-wave cleanup, terminal release/dispositions,
+v2 completed proof; actual admitted entry/repair dispatch/restore/retry/lifecycle/cold
+reconstruction; genuine R2-R7/C1 fixtures and exact dependencies. Generic take is deliberately
+refused until its private publication owner exists. No canonical write, hold settlement,
+new resource claim or actual engine callback is added. Compilation/API/lifetime/positive
+common behavior remains UNCHECKED/UNRUN; no concrete architecture blocker is established.
+
+The accepted FR063/FR012/private lifecycle normative amendment and GM severity-repair
+worked example/manifest/guards remain required before complete connected SOURCE. Public
+GM grammar/afterlife behavior is unchanged by this unwired private family. Catalog730,
+component1method5cases1descriptor/budget5/default10 and all fixture/selectors/membership/
+budgets remain unchanged; those five missing-wave negatives are not positive common
+coverage. New constructor/cache/candidate/registry/owner-bound checks are narrow C1
+consumers for future exact selection; no broad qualified cohort repeat is proposed.
+Qualified bodies/ce955/globalCI/immutable packets remain protected. Full FR063/T070/UI/
+parents remain OPEN. ROOT preserves this WIP/report/readback before further J6 authoring.
+No author project execution, Git mutation, provider/model call, environment operation
+or new agent. Text/API/byte/JSON/whitespace checks only, with unresolved checks explicit.
+
 ## J5 joint resource/item contribution owner WIP STOP — 2026-10-14
 
 Retained sole Sol continued from published050e846e9f5b3d2be204c1a9f890131932198d93
