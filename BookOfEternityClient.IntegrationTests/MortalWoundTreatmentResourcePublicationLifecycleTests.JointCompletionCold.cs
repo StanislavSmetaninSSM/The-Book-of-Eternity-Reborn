@@ -311,6 +311,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                         await files.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath));
                 }
                 storyBefore = await files.ReadFileBytesAsync(lease, QteStoryPath);
+                var expectedStoryDerivedTurn = 42;
                 if (scenario == 8)
                 {
                     var signedPrefix = original.ReadRequiredBytes(QteStoryPath);
@@ -321,14 +322,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                         Assert.Single(actualSuffix.Split('\n', StringSplitOptions.RemoveEmptyEntries)),
                         SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual retained writer row before fresh owner");
                     Assert.NotNull(retainedRow); Assert.Equal(43, retainedRow!.Turn);
+                    expectedStoryDerivedTurn = retainedRow.Turn;
                     Assert.Equal(original.RequestId, retainedRow.RequestId); Assert.Equal(actualGeneration, retainedRow.SessionGeneration);
                     Assert.Equal(observedMarker["progression"]!["preparedAtUtc"]!.GetValue<string>(), retainedRow.Timestamp);
                     Assert.Equal("Осмотреть ушиб.", retainedRow.Player); Assert.Equal(context["scene"]!.GetValue<string>(), retainedRow.Narrative);
                 }
                 else Assert.Equal(original.ReadRequiredBytes(QteStoryPath), storyBefore);
                 await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateReadOnlyAsync(lease);
-                Assert.Equal(42, GetPrivateField<StateManager>(engine, "_stateManager").CurrentState.TurnNumber);
-                GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(original.SessionId, 42);
+                Assert.Equal(expectedStoryDerivedTurn, GetPrivateField<StateManager>(engine, "_stateManager").CurrentState.TurnNumber);
+                GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(original.SessionId, expectedStoryDerivedTurn);
                 await AssertConfirmedClaimReadImagesAsync(files, lease, before);
                 if (scenario == 2)
                 {

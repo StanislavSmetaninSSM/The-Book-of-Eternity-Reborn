@@ -1,0 +1,25 @@
+{
+  "oldSource": "/workspace/boe-cloud-tools-20261012/t070-root-run.py",
+  "oldSHA256": "8bfcdb01d991b1b4473f46b020d783564395a163d4b81d4f43452a75850d5e8d",
+  "oldUnchanged": true,
+  "newPath": "/workspace/boe-cloud-tools-20261014/fr063-bounded-root-runner-v2-20261014T222648Z-6e4e8db6.py",
+  "newSHA256": "0fb2dac84709d2595bb3467646aa2507816d1749e1933d1078a7dae1d19f7661",
+  "boundedCorrections": [
+    "exclusive JSON artifacts",
+    "explicit gate proof argument",
+    "no claimed gate/model before real proof",
+    "execution checks gates, finite stages, no preparation aggregate actual",
+    "exclusive native stdout",
+    "preserve raw summary before validation",
+    "successful zero-exec preparation required for binary pins",
+    "collect actual nested cleanup receipts",
+    "preserve complete native results/stdout/JSON before validation",
+    "zero receipt means UNOBSERVED, never vacuous absence",
+    "stdout artifact already immutable",
+    "preserve observation then enforce complete pass/native exits/runner cleanup"
+  ],
+  "staticPythonASTParse": "PASS pure syntax only; helper functions not invoked",
+  "projectExecution": "UNRUN",
+  "newHelperExecution": "UNRUN; pin/action cannot proceed without actual accepted corrected-source gate proof",
+  "reviewStatus": "PENDING retained reviewer focused external evidence-adapter assessment with fixture fix review"
+}

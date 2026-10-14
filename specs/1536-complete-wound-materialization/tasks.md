@@ -1,5 +1,35 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Whole-review F1–F3 fixture correction SOURCE WIP STOP — 2026-10-14
+
+Owning base `9f4bbff5c4746eabf8329ac2ee2b1989556b9828`. Complete independent
+review bddc6371 statically ACCEPTED bounded inactive-tail production/normative SOURCE
+and32methods/58cases SELECTION DEFINITIONS, but FIXTURE was BLOCKED by three source-
+confirmed Important findings. No compiler/project/runtime failure was observed and all
+execution remains HELD pending focused independent correction/dependency closure.
+
+One coherent fixture-only candidate addresses F1/F2/F3. Shared J7 responder captures the
+actual authored43 narrative/interface/debug/decision bytes and matching nonzero report,
+then resubmits that complete public set through its existing offline observer AFTER real
+baseline restore, changes only severityIII→II, verifies unchanged sibling/scene/bytes and
+writes correlated repair Ready LAST. No private command/pending/canonical/seal is copied.
+Retained-row cold scenario8 initializes from its actual signed writer row43; genuine
+pre-story scenarios remain42, with all original/G/mechanics/phase/projection/noappend/
+cleanup/once-turn/inert oracles retained. J8 strict-disposer callback now retains AND emits
+the actual cleanup receipt to stdout on disposal, including body-assertion failure paths;
+no fabricated receipt, catch-ignore or general cleanup-helper change is introduced.
+
+Only three new fixture partials plus active plan/tasks change. Production, normative
+content, examples/manifest/guard callers, category/all selection/default/CI, qualified old
+fixture bodies and historical reports/raws/checkboxes remain protected. Membership/counts/
+budgets are unchanged and still provisional until official discovery. Shared-responder
+producer/cold/refusal/generation/newroot/fault/active/story/live dependencies are included
+in the correction review; no actual gate/callback/cleanup/API/fixture PASS is claimed.
+All compiler/build/discovery/catalog/PlanOnly/tests/runtime/fault/provider checks remain
+UNRUN; fullFR063/T070, lawful active combinations, initially damaged signed authority,
+erased traces and partial cleanup remain OPEN. Prior accepted scoped evidence and all
+historical checkpoint tails/acceptance checkboxes stay exact; no acceptance is marked.
+
 ## Connected J2/J7/J8 finite category/selection SOURCE WIP STOP — 2026-10-14
 
 Owning base `a4c9c851a4f6d35b1a10c5d07dbdc9679a7d4b43`; SOURCE GO followed

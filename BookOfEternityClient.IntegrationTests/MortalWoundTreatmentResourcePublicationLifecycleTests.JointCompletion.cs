@@ -83,6 +83,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         JsonObject decision = null!;
         string generation = null!;
         Dictionary<string, byte[]?> before = new(StringComparer.Ordinal);
+        var authoredPublicOutputs = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+        byte[]? authoredProgressionReport = null;
         JsonObject heldCommand = new();
 
         var engine = CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
@@ -195,6 +197,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(_fs, lease));
                 await WriteLiveRepairOrdinaryOutputsAsync(lease, original, decision, scene);
                 if (nonzeroProgression) await WriteJointCompletionMatchingReportAsync(lease, original);
+                // Freeze actual authored43 public bytes before the real repair restores
+                // original baseline. This is a GM response, never private restore authority.
+                foreach (var path in WoundAcceptedTurnSnapshotContract.OutputPaths)
+                    authoredPublicOutputs.Add(path,
+                        Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, path)).ToArray());
+                if (nonzeroProgression)
+                    authoredProgressionReport = Assert.IsType<byte[]>(
+                        await _fs.ReadFileBytesAsync(lease, ProgressionScheduleService.ReportPath)).ToArray();
                 before = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
                 var actualRequest = StrictJsonAuthority.Deserialize<TurnRequest>(
                     CanonicalJsonUtf8.DecodeOneOptionalBom(before["input/turn_request.json"]!),
@@ -397,13 +407,37 @@ public sealed partial class GameEngineTurnLifecycleTests
                         Assert.Equal("construct_wound", packet.GetProperty("candidateKind").GetString());
                         Assert.Equal(original.SnapshotToken, packet.GetProperty("snapshotToken").GetString());
                         Assert.Equal(0, repairReplies++); // Unexpected extra repair is a failure, never automatic retry.
-                        var corrected = decision.DeepClone().AsObject();
+                        var authoredDecision = ParseJsonObjectBytes(authoredPublicOutputs[MortalWoundOpportunityAdapter.DecisionPath]);
+                        Assert.True(JsonNode.DeepEquals(decision, authoredDecision));
+                        var corrected = authoredDecision.DeepClone().AsObject();
                         corrected["proposal"]!["severity"] = "II";
-                        // Offline MAIN-GM authors only the genuine packet's allowed
-                        // public proposal leaf and existing correlation acknowledgement.
-                        // No canonical root, command, pending wave, seal or authority write.
+                        // Offline MAIN-GM resubmits the COMPLETE actual43 public turn
+                        // after real baseline restore, changing only the allowed severity.
+                        // Never copy canonical/private command, pending, source or seal roots.
+                        foreach (var publicOutput in authoredPublicOutputs)
+                        {
+                            if (publicOutput.Key == MortalWoundOpportunityAdapter.DecisionPath) continue;
+                            File.WriteAllBytes(_fs.ResolvePath(publicOutput.Key), publicOutput.Value);
+                        }
                         File.WriteAllText(_fs.ResolvePath(MortalWoundOpportunityAdapter.DecisionPath),
                             corrected.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed), new UTF8Encoding(false));
+                        if (nonzeroProgression)
+                            File.WriteAllBytes(_fs.ResolvePath(ProgressionScheduleService.ReportPath),
+                                Assert.IsType<byte[]>(authoredProgressionReport));
+                        foreach (var publicOutput in authoredPublicOutputs)
+                        {
+                            if (publicOutput.Key != MortalWoundOpportunityAdapter.DecisionPath)
+                                Assert.Equal(publicOutput.Value, File.ReadAllBytes(_fs.ResolvePath(publicOutput.Key)));
+                        }
+                        if (nonzeroProgression)
+                            Assert.Equal(authoredProgressionReport, File.ReadAllBytes(_fs.ResolvePath(ProgressionScheduleService.ReportPath)));
+                        var actualCorrected = ParseJsonObjectBytes(File.ReadAllBytes(_fs.ResolvePath(MortalWoundOpportunityAdapter.DecisionPath)));
+                        Assert.True(JsonNode.DeepEquals(corrected, actualCorrected));
+                        var severityReverted = actualCorrected.DeepClone().AsObject();
+                        severityReverted["proposal"]!["severity"] = "III";
+                        Assert.True(JsonNode.DeepEquals(authoredDecision, severityReverted));
+                        Assert.Equal(scene, ParseJsonObjectBytes(authoredPublicOutputs["output/narrative_response.json"])["response"]!.GetValue<string>());
+                        // Correlated repair Ready is LAST, after complete public readback.
                         File.WriteAllText(_fs.ResolvePath("game_state/control/validation_repair_ready.json"),
                             JsonSerializer.Serialize(new { sessionId = original.SessionId, requestId = original.RequestId,
                                 turnNumber = original.TurnNumber, updatedAtUtc = DateTime.UtcNow.ToString("O"),

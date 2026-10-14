@@ -23,7 +23,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var fixture = new GameEngineTurnLifecycleTests();
         var cleanup = new List<string>();
         JsonObject witness;
-        using (var owned = new CleanupOwnedFixture(fixture._rootPath, cleanup.Add))
+        using (var owned = new CleanupOwnedFixture(fixture._rootPath, receipt =>
+        {
+            cleanup.Add(receipt);
+            Console.WriteLine("JointWorkedExampleActualCleanup=" + receipt);
+        }))
         {
             IDisposable? sourceInput = null;
             QteStoryRun source;

@@ -1,0 +1,11 @@
+{
+  "priorCandidatePath": "/workspace/boe-cloud-tools-20261014/fr063-bounded-root-runner-v2-20261014T222648Z-6e4e8db6.py",
+  "priorCandidateSHA256": "0fb2dac84709d2595bb3467646aa2507816d1749e1933d1078a7dae1d19f7661",
+  "priorCandidateUnchanged": true,
+  "newPath": "/workspace/boe-cloud-tools-20261014/fr063-bounded-root-runner-v3-20261014T223239Z-4c8f3782.py",
+  "newSHA256": "f13355220b508e8804e02e916ad4699f1aa26bbdbff462035b390f491bc4b31e",
+  "reason": "Actual stoppedF3 fixture emits exact JointWorkedExampleActualCleanup= prefix; parser now recognizes that exact native prefix while rawfullstdout remains byte-preserved; no invented receipt",
+  "staticPythonASTParse": "PASS syntaxonly, nohelperaction invoked",
+  "projectExecution": "UNRUN",
+  "independentAssessment": "PENDING samefocusedreview"
+}
