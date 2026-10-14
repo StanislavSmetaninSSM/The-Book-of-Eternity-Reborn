@@ -1,0 +1,11 @@
+{
+  "classification": "external static-script syntax error, not compiler/project/runtime failure",
+  "chunkId": "a2729b",
+  "exitCode": 1,
+  "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "operation": "second python3 stdin external readback script; parser failed before executing script",
+  "completeReturnedOutput": "  File \"<stdin>\", line 18\n    c('no synthetic pending/common/authority composition',not any(x in s for x in ['ComposePendingRoot(', 'ComposeJointRepair(', 'RestorePersistedTreatmentRequests(', 'CreateJointCandidate(', 'SeedHeldTreatmentAuthorityAsync('])) )\n                                                                                                                                                                                                                                      ^\nSyntaxError: unmatched ')'\n",
+  "originalAttemptReport": "NOT PRODUCED",
+  "originalAttemptReadback": "NOT PRODUCED",
+  "originalAttemptChecks": "UNRUN"
+}

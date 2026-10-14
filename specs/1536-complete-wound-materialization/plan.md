@@ -1,5 +1,34 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 first genuine corrected joint completion control SOURCE WIP STOP — 2026-10-14
+
+Owning base `968875747b56bda9c8895c2dedac84dfd79ff157`; recovery2272/1742
+was verified before SOURCE GO. One new separate integration Fact reuses the genuine QTE42
+source10→5/maxII, production Stage43/original/G, planner-issued full guaranteed request and
+StateDistributor-confirmed energy2. Its separate canonical-bootstrap callback settles only
+processed-level coverage and an actual-world-time schedule baseline BEFORE original42 is minted.
+The historical J1 method/body, helper defaults and all qualified source/raw evidence stay exact.
+Actual original43 must retain its genuine nonnull zero-cycle progression control and inactive tail.
+
+The existing Format1 committed observer captures the actual severityIII repair packet/full private
+wave before replying. Only the permitted public severity changes III→II and the existing repair
+correlation acknowledgement is written; no command/pending/checkpoint/authority/common plan is
+authored by the responder. The actual late ordinary owner must reach full joint publication,
+applied progression, verified projection, exact story/once-turn and eligible cleanup. Oracles
+require CREATE then TREAT/consecutive ordinals/full persisted request; one registered energy2
+charge2→0; one newly-created bleeding effect Damage3 companion health5→2; typed canonical
+resource/wound/effect agreement, source receipt/consumption, preserved original history prefix,
+exact one story suffix, all declared snapshots/backups/owned transient cleanup, playable current
+response and a second actual idle with whole-tree/generation byte equality.
+
+This first positive control is AUTHORED/UNRUN, not GREEN or fixture qualification. One method/
+one case is a source inventory only; category/exact selector ownership and official discovery
+remain OPEN until the following finite J7 selection block. Nonzero report/cold/new-root/fault/
+negative controls, no-frame/all-traces-erased and partial-cleanup limits, normative FR063/FR012/
+private lifecycle/primary-GM synchronization remain OPEN. Every compiler/build/discovery/catalog/
+PlanOnly/test/runtime/fault/project and entire SOURCE/FIXTURE/SELECTION is UNRUN. Existing
+categories/selectors/budgets, old bodies/history and acceptance checkboxes are unchanged.
+
 ## Original-bound completion integrity early guard WIP STOP — 2026-10-14
 
 Owning base `6a0b9c23660a06e1b337bf5209084c79437bfeeb`; recovery2269/1739
