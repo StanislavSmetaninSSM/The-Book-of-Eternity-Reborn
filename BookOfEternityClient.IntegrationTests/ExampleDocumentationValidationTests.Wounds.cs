@@ -9,6 +9,26 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class ExampleDocumentationValidationTests
 {
     [Fact]
+    public async Task JointSeverityRepairWorkedExample_UsesRealQteOriginalAndCompletePacket()
+    {
+        var source = Assert.Single(ParseNamedJsonFences("E_CLI_Wound_Materialization.txt",
+            "wound_mortal_joint_severity_repair_source_v1"));
+        var rejected = Assert.Single(ParseNamedJsonFences("E_CLI_Wound_Materialization.txt",
+            "wound_mortal_joint_severity_repair_rejected_v1"));
+        var packetView = Assert.Single(ParseNamedJsonFences("E_CLI_Wound_Materialization.txt",
+            "wound_mortal_joint_severity_repair_packet_view_v1"));
+        var corrected = Assert.Single(ParseNamedJsonFences("E_CLI_Wound_Materialization.txt",
+            "wound_mortal_joint_severity_repair_corrected_v1"));
+        var evidence = await GameEngineTurnLifecycleTests.VerifyJointSeverityRepairWorkedExampleAsync(
+            source, rejected, packetView, corrected);
+        Assert.Equal(42, evidence["sourceTurn"]!.GetValue<int>());
+        Assert.Equal(43, evidence["originalTurn"]!.GetValue<int>());
+        Assert.True(evidence["canonicalFilesUnchanged"]!.GetValue<bool>());
+        Assert.True(evidence["ownedCleanupDiagnostic"]!["OwnedFixtureRemoved"]!.GetValue<bool>());
+        Assert.NotNull(evidence["fullClientIssuedPacket"]);
+    }
+
+    [Fact]
     public void AlternativeTreatmentRepairWorkedExamples_ExecuteRealProjectionAndStrictTransport()
     {
         var rejected = Assert.Single(ParseNamedJsonFences("E_CLI_Wound_Materialization.txt",

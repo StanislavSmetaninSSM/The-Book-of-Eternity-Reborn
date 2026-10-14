@@ -1795,3 +1795,807 @@ maximumAtCreation remains unchanged. All permanent identities and publication au
   }
 }
 ```
+
+## wound_mortal_joint_severity_repair_v1
+
+Same-scene Mortal joint severity repair: this complete source/scene/draft/correction
+walkthrough uses a real QTE42 terminal damage source and the client's next original43.
+The chosen first terminal outcome exposes severity at most II; the second outcome's
+III range is a different unchosen source and cannot authorize this correction. An
+existing client-confirmed guaranteed treatment belongs to the same original43; the GM
+neither serializes nor replaces that request, reservation or private retry graph.
+
+The client alone supplies the current opportunityRef. The only symbolic public binding
+below is <current-client-opportunityRef>; copy it exactly from that actual request.
+Do not construct an original, occurrence, accepted hash, receipt or permanent identity.
+The helper executes genuine source/Stage owners and emits the COMPLETE real client-issued
+packet for diagnostic evidence; the displayed semantic view is not a literal runnable
+packet or full-packet replacement. It excludes exactly sessionId, requestId, snapshotToken,
+candidateRef and semanticFingerprint, which remain unchanged client-issued correlation.
+Every remaining packet member, including issues, safeContext, preservedProposal and
+requiredResponseShape, is compared against the actual builder output.
+
+A packet correctOnly recipe is an instruction, never a submitted proposal member.
+Preserve the entire scene, narration, decision, woundRef, symptom order, all definitions,
+routes, outcome order and recovery fields; change only severity III to II. The real sealed
+I-II range also permits I; this example does not change it. The procedure below describes
+care for the NEW wound and does not replace the separate existing guaranteed treatment.
+Preserve valid unrelated current world-time/report content and do not recreate a matching
+report once the client has consumed it. The client owns one mechanical/progression/story
+settlement; no public mixed command, new hold, private lifecycle acknowledgement or
+clearing active stats/level-up/new-QTE work is allowed. This worked guard covers actual
+source/adapter/builder and exact public repair transport, not connected joint publication,
+resource charge, story, cold/new-root or runtime qualification; those belong to the genuine
+J7 owner controls and the entire independent gate.
+
+### wound_mortal_joint_severity_repair_source_v1
+
+Complete QTE offer authored BEFORE the actual harmful terminal source:
+
+```json
+{
+  "qteId": "qte_physical_injury_admission",
+  "title": "Обвал",
+  "offerText": "Укрыться от камней.",
+  "introNarrative": "Камни падают со свода.",
+  "startChapterId": "impact",
+  "chapters": [
+    {
+      "chapterId": "impact",
+      "title": "Удар",
+      "narrative": "Осколки летят вниз.",
+      "actions": [
+        {
+          "actionId": "brace",
+          "label": "Укрыться",
+          "successText": "Удар ослаблен.",
+          "partialText": "Укрытие не помогло.",
+          "failText": "Камень попал в героя.",
+          "check": {
+            "type": "BranchChoice",
+            "primaryCharacteristic": "dexterity",
+            "baseDifficulty": 1,
+            "config": {
+              "choiceGrade": "success"
+            }
+          },
+          "routing": {
+            "success": {
+              "terminalOutcomeId": "outcome_1"
+            },
+            "partial": {
+              "terminalOutcomeId": "outcome_2"
+            },
+            "fail": {
+              "terminalOutcomeId": "outcome_2"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "terminalOutcomes": [
+    {
+      "outcomeId": "outcome_1",
+      "title": "Каменный удар",
+      "finalNarrative": "Камень задевает героя.",
+      "gmSummary": "Выбранный исход обвала.",
+      "responseFragment": {
+        "response": "Камень задевает героя.",
+        "experienceGained": 1,
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": {
+              "kind": "player",
+              "targetId": "player_current"
+            },
+            "resourceKey": "health",
+            "amount": 5,
+            "source": {
+              "kind": "narrative_outcome"
+            },
+            "eventRef": "turn_42:qte_terminal:1:resource:1",
+            "reason": "Прямой удар камня."
+          }
+        ]
+      },
+      "physicalInjury": {
+        "schemaVersion": 1,
+        "resourceCommandOrdinal": 1,
+        "maximumSeverityRank": 2,
+        "cause": "Прямой удар камня.",
+        "allowedLocationKinds": [
+          "anatomical",
+          "other"
+        ]
+      }
+    },
+    {
+      "outcomeId": "outcome_2",
+      "title": "Каменный удар",
+      "finalNarrative": "Камень задевает героя.",
+      "gmSummary": "Выбранный исход обвала.",
+      "responseFragment": {
+        "response": "Камень задевает героя.",
+        "experienceGained": 0,
+        "resourceChanges": [
+          {
+            "operation": "damage",
+            "target": {
+              "kind": "player",
+              "targetId": "player_current"
+            },
+            "resourceKey": "health",
+            "amount": 5,
+            "source": {
+              "kind": "narrative_outcome"
+            },
+            "eventRef": "turn_42:qte_terminal:2:resource:1",
+            "reason": "Прямой удар камня."
+          }
+        ]
+      },
+      "physicalInjury": {
+        "schemaVersion": 1,
+        "resourceCommandOrdinal": 1,
+        "maximumSeverityRank": 3,
+        "cause": "Прямой удар камня.",
+        "allowedLocationKinds": [
+          "anatomical",
+          "other"
+        ]
+      }
+    }
+  ]
+}
+```
+
+### wound_mortal_joint_severity_repair_rejected_v1
+
+Complete same-scene response, rejected only because III exceeds the selected source maximum:
+
+```json
+{
+  "response": "Лекарь продолжает уже подтверждённую помощь прежней ране; её клиентское обязательство не заменяется. Край камня оставляет поверхностный порез на боку. Герой осматривает новый порез, не меняя выбранный исход обвала.",
+  "woundDecisions": [
+    {
+      "opportunityRef": "<current-client-opportunityRef>",
+      "decision": "materialize",
+      "woundRef": "joint_cut_local",
+      "proposal": {
+        "classification": {
+          "woundType": "superficial_laceration",
+          "locationProfile": {
+            "kind": "other",
+            "readableLocus": "поверхностный порез на боку"
+          }
+        },
+        "display": {
+          "name": "Поверхностный порез",
+          "description": "Край камня оставил неглубокий порез.",
+          "visibleSymptoms": [
+            "полоска крови",
+            "жжение"
+          ],
+          "prognosis": "Порез требует очистки и стабилизации.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Край камня оставляет поверхностный порез на боку."
+        },
+        "severity": "III",
+        "complications": [],
+        "consequenceDefinitions": [
+          {
+            "definitionRef": "bleeding_root",
+            "definition": {
+              "schemaVersion": 1,
+              "definitionKey": "wound_bleeding_root",
+              "display": {
+                "name": "Кровотечение",
+                "description": "Рана продолжает отнимать силы.",
+                "category": "debuff",
+                "visibility": "visible"
+              },
+              "allowedRealms": [
+                "mortal_world"
+              ],
+              "allowedTargetKinds": [
+                "player"
+              ],
+              "components": [
+                {
+                  "componentId": "component_001",
+                  "profile": "periodic_damage",
+                  "priority": 100,
+                  "payload": {
+                    "resource": "health",
+                    "amount": 3,
+                    "damageType": "bleeding",
+                    "floorPolicy": "registered_resource_floor"
+                  }
+                }
+              ],
+              "parameterBounds": {},
+              "stacking": {
+                "stackKey": "stack_wound_bleeding_root",
+                "policy": "independent",
+                "maxStacks": 1,
+                "atMaximum": "no_change",
+                "refreshMode": null,
+                "mergeRule": null
+              },
+              "lifetime": {
+                "mode": "turns",
+                "initialTurns": 3,
+                "advancePhase": "owner_turn_end"
+              },
+              "triggers": [
+                {
+                  "triggerId": "on_owner_turn_end",
+                  "eventType": "owner_turn_end",
+                  "priority": 100,
+                  "componentIds": [
+                    "component_001"
+                  ],
+                  "consumeUses": false,
+                  "resolutionMode": "deterministic"
+                }
+              ],
+              "removal": {
+                "dispelCategories": [
+                  "physical_treatment"
+                ],
+                "cureKinds": [
+                  "stop_bleeding"
+                ],
+                "onSourceLoss": "expire",
+                "onConditionLoss": null,
+                "manualAuthorities": []
+              },
+              "links": []
+            },
+            "root": {
+              "ownership": {
+                "kind": "base_wound",
+                "complicationRef": null
+              },
+              "slots": [
+                {
+                  "profileKey": "periodic_damage",
+                  "readableSummary": "Свежий порез продолжает кровоточить."
+                }
+              ]
+            }
+          }
+        ],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [
+            {
+              "routeId": "clean_cut_v1",
+              "displayName": "Очистить и прижать порез",
+              "visibility": "known_to_player",
+              "mode": "procedure",
+              "requirements": [],
+              "resourcePolicy": {
+                "reserveBeforeResolution": true,
+                "consumeOn": [
+                  "success",
+                  "failed_attempt"
+                ],
+                "refundOn": [
+                  "cancelled",
+                  "validation_failed",
+                  "rolled_back"
+                ],
+                "mutations": []
+              },
+              "resolution": {
+                "formulaKey": "mortal_wound_procedure_v1",
+                "difficulty": 10,
+                "rollSource": "accepted_d20",
+                "criticalPolicy": "natural_20_first_natural_1_last",
+                "modifierSource": {
+                  "kind": "fixed_zero"
+                }
+              },
+              "outcomes": [
+                {
+                  "bandId": "stabilized",
+                  "minimumMargin": 0,
+                  "maximumMargin": null,
+                  "category": "success",
+                  "result": [
+                    {
+                      "kind": "stabilize"
+                    }
+                  ]
+                },
+                {
+                  "bandId": "unimproved",
+                  "minimumMargin": null,
+                  "maximumMargin": -1,
+                  "category": "failed_attempt",
+                  "result": [
+                    {
+                      "kind": "no_improvement"
+                    }
+                  ]
+                }
+              ],
+              "interruption": null
+            }
+          ],
+          "knownRouteIds": [
+            "clean_cut_v1"
+          ],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 3,
+          "lastTickKey": null,
+          "blockers": [
+            "not_stabilized"
+          ],
+          "carryOverflow": true,
+          "deteriorationPolicy": {
+            "policyRef": "untreated_cut",
+            "unmetConditions": [
+              "not_stabilized"
+            ],
+            "graceMinutes": 30,
+            "cadenceMinutes": 10,
+            "result": {
+              "kind": "increase_severity"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+### wound_mortal_joint_severity_repair_packet_view_v1
+
+Complete semantic view of the genuine client-issued packet, excluding only the five correlation fields listed above:
+
+```json
+{
+  "kind": "wound_materialization_repair",
+  "candidateKind": "construct_wound",
+  "issues": [
+    {
+      "path": "proposal.severity",
+      "code": "wound_severity_above_opportunity",
+      "expected": "I-II",
+      "actual": "III"
+    }
+  ],
+  "safeContext": {
+    "event": "Прямой удар камня.",
+    "target": "вы",
+    "realm": "Смертный мир"
+  },
+  "preservedProposal": {
+    "classification": {
+      "woundType": "superficial_laceration",
+      "locationProfile": {
+        "kind": "other",
+        "readableLocus": "поверхностный порез на боку"
+      }
+    },
+    "display": {
+      "name": "Поверхностный порез",
+      "description": "Край камня оставил неглубокий порез.",
+      "visibleSymptoms": [
+        "полоска крови",
+        "жжение"
+      ],
+      "prognosis": "Порез требует очистки и стабилизации.",
+      "visibility": "known_to_player",
+      "acquisitionNarration": "Край камня оставляет поверхностный порез на боку."
+    },
+    "complications": [],
+    "consequenceDefinitions": [
+      {
+        "definitionRef": "bleeding_root",
+        "definition": {
+          "schemaVersion": 1,
+          "definitionKey": "wound_bleeding_root",
+          "display": {
+            "name": "Кровотечение",
+            "description": "Рана продолжает отнимать силы.",
+            "category": "debuff",
+            "visibility": "visible"
+          },
+          "allowedRealms": [
+            "mortal_world"
+          ],
+          "allowedTargetKinds": [
+            "player"
+          ],
+          "components": [
+            {
+              "componentId": "component_001",
+              "profile": "periodic_damage",
+              "priority": 100,
+              "payload": {
+                "resource": "health",
+                "amount": 3,
+                "damageType": "bleeding",
+                "floorPolicy": "registered_resource_floor"
+              }
+            }
+          ],
+          "parameterBounds": {},
+          "stacking": {
+            "stackKey": "stack_wound_bleeding_root",
+            "policy": "independent",
+            "maxStacks": 1,
+            "atMaximum": "no_change",
+            "refreshMode": null,
+            "mergeRule": null
+          },
+          "lifetime": {
+            "mode": "turns",
+            "initialTurns": 3,
+            "advancePhase": "owner_turn_end"
+          },
+          "triggers": [
+            {
+              "triggerId": "on_owner_turn_end",
+              "eventType": "owner_turn_end",
+              "priority": 100,
+              "componentIds": [
+                "component_001"
+              ],
+              "consumeUses": false,
+              "resolutionMode": "deterministic"
+            }
+          ],
+          "removal": {
+            "dispelCategories": [
+              "physical_treatment"
+            ],
+            "cureKinds": [
+              "stop_bleeding"
+            ],
+            "onSourceLoss": "expire",
+            "onConditionLoss": null,
+            "manualAuthorities": []
+          },
+          "links": []
+        },
+        "root": {
+          "ownership": {
+            "kind": "base_wound",
+            "complicationRef": null
+          },
+          "slots": [
+            {
+              "profileKey": "periodic_damage",
+              "readableSummary": "Свежий порез продолжает кровоточить."
+            }
+          ]
+        }
+      }
+    ],
+    "treatment": {
+      "diagnosisPaths": [],
+      "routes": [
+        {
+          "routeId": "clean_cut_v1",
+          "displayName": "Очистить и прижать порез",
+          "visibility": "known_to_player",
+          "mode": "procedure",
+          "requirements": [],
+          "resourcePolicy": {
+            "reserveBeforeResolution": true,
+            "consumeOn": [
+              "success",
+              "failed_attempt"
+            ],
+            "refundOn": [
+              "cancelled",
+              "validation_failed",
+              "rolled_back"
+            ],
+            "mutations": []
+          },
+          "resolution": {
+            "formulaKey": "mortal_wound_procedure_v1",
+            "difficulty": 10,
+            "rollSource": "accepted_d20",
+            "criticalPolicy": "natural_20_first_natural_1_last",
+            "modifierSource": {
+              "kind": "fixed_zero"
+            }
+          },
+          "outcomes": [
+            {
+              "bandId": "stabilized",
+              "minimumMargin": 0,
+              "maximumMargin": null,
+              "category": "success",
+              "result": [
+                {
+                  "kind": "stabilize"
+                }
+              ]
+            },
+            {
+              "bandId": "unimproved",
+              "minimumMargin": null,
+              "maximumMargin": -1,
+              "category": "failed_attempt",
+              "result": [
+                {
+                  "kind": "no_improvement"
+                }
+              ]
+            }
+          ],
+          "interruption": null
+        }
+      ],
+      "knownRouteIds": [
+        "clean_cut_v1"
+      ],
+      "completedRouteIds": []
+    },
+    "recovery": {
+      "mode": "requires_stabilization",
+      "clockKind": "mortal_world_time",
+      "cadence": 86400,
+      "currentStepProgress": 0,
+      "currentStepThreshold": 3,
+      "lastTickKey": null,
+      "blockers": [
+        "not_stabilized"
+      ],
+      "carryOverflow": true,
+      "deteriorationPolicy": {
+        "policyRef": "untreated_cut",
+        "unmetConditions": [
+          "not_stabilized"
+        ],
+        "graceMinutes": 30,
+        "cadenceMinutes": 10,
+        "result": {
+          "kind": "increase_severity"
+        }
+      }
+    }
+  },
+  "requiredResponseShape": {
+    "woundDecisions": [
+      {
+        "opportunityRef": "<current-client-opportunityRef>",
+        "decision": "materialize",
+        "woundRef": "joint_cut_local",
+        "proposal": {
+          "base": "preservedProposal",
+          "correctOnly": [
+            "proposal.severity"
+          ]
+        }
+      }
+    ],
+    "response": "complete final scene containing display.acquisitionNarration verbatim"
+  }
+}
+```
+
+### wound_mortal_joint_severity_repair_corrected_v1
+
+Complete response for the SAME original and opportunity; exactly one severity leaf changes:
+
+```json
+{
+  "response": "Лекарь продолжает уже подтверждённую помощь прежней ране; её клиентское обязательство не заменяется. Край камня оставляет поверхностный порез на боку. Герой осматривает новый порез, не меняя выбранный исход обвала.",
+  "woundDecisions": [
+    {
+      "opportunityRef": "<current-client-opportunityRef>",
+      "decision": "materialize",
+      "woundRef": "joint_cut_local",
+      "proposal": {
+        "classification": {
+          "woundType": "superficial_laceration",
+          "locationProfile": {
+            "kind": "other",
+            "readableLocus": "поверхностный порез на боку"
+          }
+        },
+        "display": {
+          "name": "Поверхностный порез",
+          "description": "Край камня оставил неглубокий порез.",
+          "visibleSymptoms": [
+            "полоска крови",
+            "жжение"
+          ],
+          "prognosis": "Порез требует очистки и стабилизации.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Край камня оставляет поверхностный порез на боку."
+        },
+        "severity": "II",
+        "complications": [],
+        "consequenceDefinitions": [
+          {
+            "definitionRef": "bleeding_root",
+            "definition": {
+              "schemaVersion": 1,
+              "definitionKey": "wound_bleeding_root",
+              "display": {
+                "name": "Кровотечение",
+                "description": "Рана продолжает отнимать силы.",
+                "category": "debuff",
+                "visibility": "visible"
+              },
+              "allowedRealms": [
+                "mortal_world"
+              ],
+              "allowedTargetKinds": [
+                "player"
+              ],
+              "components": [
+                {
+                  "componentId": "component_001",
+                  "profile": "periodic_damage",
+                  "priority": 100,
+                  "payload": {
+                    "resource": "health",
+                    "amount": 3,
+                    "damageType": "bleeding",
+                    "floorPolicy": "registered_resource_floor"
+                  }
+                }
+              ],
+              "parameterBounds": {},
+              "stacking": {
+                "stackKey": "stack_wound_bleeding_root",
+                "policy": "independent",
+                "maxStacks": 1,
+                "atMaximum": "no_change",
+                "refreshMode": null,
+                "mergeRule": null
+              },
+              "lifetime": {
+                "mode": "turns",
+                "initialTurns": 3,
+                "advancePhase": "owner_turn_end"
+              },
+              "triggers": [
+                {
+                  "triggerId": "on_owner_turn_end",
+                  "eventType": "owner_turn_end",
+                  "priority": 100,
+                  "componentIds": [
+                    "component_001"
+                  ],
+                  "consumeUses": false,
+                  "resolutionMode": "deterministic"
+                }
+              ],
+              "removal": {
+                "dispelCategories": [
+                  "physical_treatment"
+                ],
+                "cureKinds": [
+                  "stop_bleeding"
+                ],
+                "onSourceLoss": "expire",
+                "onConditionLoss": null,
+                "manualAuthorities": []
+              },
+              "links": []
+            },
+            "root": {
+              "ownership": {
+                "kind": "base_wound",
+                "complicationRef": null
+              },
+              "slots": [
+                {
+                  "profileKey": "periodic_damage",
+                  "readableSummary": "Свежий порез продолжает кровоточить."
+                }
+              ]
+            }
+          }
+        ],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [
+            {
+              "routeId": "clean_cut_v1",
+              "displayName": "Очистить и прижать порез",
+              "visibility": "known_to_player",
+              "mode": "procedure",
+              "requirements": [],
+              "resourcePolicy": {
+                "reserveBeforeResolution": true,
+                "consumeOn": [
+                  "success",
+                  "failed_attempt"
+                ],
+                "refundOn": [
+                  "cancelled",
+                  "validation_failed",
+                  "rolled_back"
+                ],
+                "mutations": []
+              },
+              "resolution": {
+                "formulaKey": "mortal_wound_procedure_v1",
+                "difficulty": 10,
+                "rollSource": "accepted_d20",
+                "criticalPolicy": "natural_20_first_natural_1_last",
+                "modifierSource": {
+                  "kind": "fixed_zero"
+                }
+              },
+              "outcomes": [
+                {
+                  "bandId": "stabilized",
+                  "minimumMargin": 0,
+                  "maximumMargin": null,
+                  "category": "success",
+                  "result": [
+                    {
+                      "kind": "stabilize"
+                    }
+                  ]
+                },
+                {
+                  "bandId": "unimproved",
+                  "minimumMargin": null,
+                  "maximumMargin": -1,
+                  "category": "failed_attempt",
+                  "result": [
+                    {
+                      "kind": "no_improvement"
+                    }
+                  ]
+                }
+              ],
+              "interruption": null
+            }
+          ],
+          "knownRouteIds": [
+            "clean_cut_v1"
+          ],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 3,
+          "lastTickKey": null,
+          "blockers": [
+            "not_stabilized"
+          ],
+          "carryOverflow": true,
+          "deteriorationPolicy": {
+            "policyRef": "untreated_cut",
+            "unmetConditions": [
+              "not_stabilized"
+            ],
+            "graceMinutes": 30,
+            "cadenceMinutes": 10,
+            "result": {
+              "kind": "increase_severity"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+```

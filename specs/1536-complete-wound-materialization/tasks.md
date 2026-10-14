@@ -1,5 +1,54 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J8 focused raw evidence / generation-byte correction SOURCE WIP STOP — 2026-10-14
+
+ROOT's pre-publication source observations identified an ID-only generation oracle and
+complete packet emission after document assertions. These are static findings, not
+executed compiler/fixture failures. Only the newly authored helper changes: it freezes
+physical G bytes as well as ID and compares both after the component reads; the COMPLETE
+actual packet is emitted immediately after ToJsonObject, before semantic/shape assertions.
+Rejected/corrected adapter result presence, Success, projected Issues and replay/opportunity
+presence are emitted before their result assertions without serializing private authority.
+All existing prerequisite and negative assertions remain strict. The image scope is the
+explicit fixed file inventory plus physical-G bytes/ID, NOT a whole namespace assertion.
+The four fences, manifest and two guard bodies remain exact to the initial J8 candidate.
+Initial raw report72717edb/readbackb43724c0 are preserved under unique external filenames;
+updated pins/readback supersede only current candidate status. No compiler/project test
+or fault/runtime is run. API/fixture/close validity remains UNCHECKED; categories/selection,
+whole independent gates and full FR-063 qualification remain OPEN. All prior metadata
+tails/checkboxes and qualified helpers stay unchanged; no acceptance checkbox is marked.
+
+## J8 genuine III→II worked example / real adapter guards SOURCE WIP STOP — 2026-10-14
+
+Owning base `59e1d90c2ebb94f4d304c6b717fed05508b4d6d1`; SOURCE GO followed
+verified selected recovery2372/1843. Four named fences now provide the complete public
+QTE source, complete rejected same-scene draft, complete semantic view of an actual
+client-issued repair packet, and complete corrected response. Only the public
+opportunityRef placeholder is rebound. The packet view explicitly excludes exactly
+sessionId/requestId/snapshotToken/candidateRef/semanticFingerprint; it is not a runnable
+full-packet replacement. A new helper partial runs genuine QTE42, verifies its existing
+source/story/occurrence owners, stages official43 and derives the full actual packet
+through ComposeQteAcceptedResponse and WoundRepairPacketBuilder.Build. It emits that
+packet as diagnostic evidence, validates its actual closed packet/receipt shape and
+compares ALL remaining semantic members; real correction II must compose successfully.
+Exact scene, narration, siblings and array order remain unchanged, while unrelated
+proposal edits, omitted narration, copied private authority and unchanged III refuse.
+Owned cleanup is strict. No Fact calls another Fact, no original/signature/claim is
+fabricated, and existing producer/helper bodies remain unchanged.
+
+The manifest records this guard's public source/adapter/builder/transport scope and its
+joint publication/cold limitations. Two focused Facts are newly authored: one integration
+example guard and one unit guidance guard covering all seven primary GM surfaces and
+both daemon definitions. They are SOURCE inventory only: no discovery/catalog/selector
+or category change/execution is made here. The prior J7 16 methods/34 cases remain a
+separate provisional inventory. Compilation/API/fixture/hook/close validity and every
+connected project check remain UNRUN or UNCHECKED pending whole SOURCE/FIXTURE/SELECTION.
+Categories/exact selection are NEXT; full FR-063/T070, lawful active-tail support,
+fresh-PID already-bad signed authority, erased-owner traces and partial cleanup retain
+their explicit open limits. This example does not qualify the joint pipeline or resources,
+progression, story, cold/new-root completion. Historical reports and all prior checkpoint
+tails/acceptance checkboxes remain unchanged. No new acceptance checkbox is marked.
+
 ## J8 normative / shared GM severity-repair SOURCE WIP STOP — 2026-10-14
 
 Owning base `ac9bc9cf9a70fabb9ee31cb3087a346395480fbc`; SOURCE GO followed

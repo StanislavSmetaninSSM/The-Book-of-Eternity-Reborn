@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-14T21:19:23.067964+00:00",
+  "observedCheckpoint": "59e1d90c2ebb94f4d304c6b717fed05508b4d6d1",
+  "owningBase": "ac9bc9cf9a70fabb9ee31cb3087a346395480fbc",
+  "actualRemoteSHA": "59e1d90c2ebb94f4d304c6b717fed05508b4d6d1",
+  "primaryClean": true,
+  "exact19paths": true,
+  "author11pinsExact": true,
+  "protected284BaseExact": true,
+  "allPublishedGitBlobsBytesExact": true,
+  "author43ObservationsStaticOnly": true,
+  "uniqueSuccessLog": "/workspace/boe-cloud-tools-20261014/fr063-j8-normative-guidance-publication-20261014210814-f9e7d34a.log",
+  "successLogSha256": "a3521c245e6bbfc3899c7a01234286e584ba4d726edf4dd4fa692fc12f49ffa9",
+  "launchProvenance": "concrete launcher toolID UNRESOLVED in current visible chain after starting→ready; successlog/ROOTreceipt/reflog/exactexpectedauthor-delta present, no commit/push replay",
+  "sourceAndGitMutationsThisAudit": false,
+  "readbackOps": [
+    "4050f6",
+    "219bb4",
+    "c1718a",
+    "015a50"
+  ],
+  "projectChecks": "UNRUN",
+  "currentLocatorDiagnostic": {
+    "chunkId": "7b592f",
+    "exitCode": 1,
+    "command": "cat fr063-j8-normative-guidance-source-report-20261014.md; cat assumed source-readback basename",
+    "exactDiagnostic": "cat: /workspace/boe-cloud-tools-20261014/fr063-j8-normative-guidance-source-readback-20261014.json: No such file or directory",
+    "resolution": "actualfocusedreadbackc1718a"
+  }
+}

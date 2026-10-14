@@ -2,6 +2,31 @@
   "version": 1,
   "effectMaterializationCoverage": [
     {
+      "contractId": "wound_mortal_joint_severity_repair_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "actual QTE42 source -> official original43 -> public decision repair only",
+      "responseSurface": "complete QTE source, same-scene woundDecisions response and semantic view of client-issued construct_wound packet",
+      "realms": [
+        "Mortal World"
+      ],
+      "description": "One real selected QTE source admits II; a complete III draft derives one actual packet and corrects only severity to II while preserving scene, siblings and ordered arrays.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.JointSeverityRepairWorkedExample_UsesRealQteOriginalAndCompletePacket -> GameEngineTurnLifecycleTests.VerifyJointSeverityRepairWorkedExampleAsync -> actual QTE42 lifecycle/Stage43 -> MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse -> WoundRepairPacketBuilder.Build/IsValidPersistedRepairWave -> WoundRepairPacket.MatchesCorrectedDecision -> real corrected adapter; PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership",
+      "coverageLimit": "Actual producer/original and read-only adapter, complete issued packet shape/receipt validation and all semantic fields; the displayed packet projection excludes exactly five client-issued correlation fields and is not runnable/fullpacket authority. No joint treatment/publication/resource/progression/story/cold completion is granted or qualified by this guard.",
+      "requiredText": [
+        "wound_mortal_joint_severity_repair_source_v1",
+        "wound_mortal_joint_severity_repair_rejected_v1",
+        "wound_mortal_joint_severity_repair_packet_view_v1",
+        "wound_mortal_joint_severity_repair_corrected_v1",
+        "<current-client-opportunityRef>",
+        "COMPLETE real client-issued",
+        "not a literal runnable",
+        "change only severity III to II",
+        "source/adapter/builder",
+        "candidateKind"
+      ]
+    },
+    {
       "contractId": "spiritual_wound_binding_result_closure_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "existing spiritual conflict last exchange and effective raw activeConflict.controlState carrier",

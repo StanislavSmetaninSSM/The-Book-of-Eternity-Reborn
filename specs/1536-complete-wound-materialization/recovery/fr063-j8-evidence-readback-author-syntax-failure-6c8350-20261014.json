@@ -1,0 +1,14 @@
+{
+  "tool": "exec_command",
+  "commandKind": "python3 heredoc; external focused source readback/report only",
+  "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "chunk_id": "6c8350",
+  "exit_code": 1,
+  "session_id": null,
+  "failedStatementExact": "    check('raw_G_copy_before_doc_assertions',s.index('generationBefore.Bytes')<s.index('JsonNode.DeepEquals(BuildPhysicalInjuryOffer')))",
+  "returnedErrorText": "  File \"<stdin>\", line 37\n    check('raw_G_copy_before_doc_assertions',s.index('generationBefore.Bytes')<s.index('JsonNode.DeepEquals(BuildPhysicalInjuryOffer')))\n                                                                                                                                       ^\nSyntaxError: unmatched ')'\n",
+  "fullOriginalCommand": "retained in tool history; not duplicated in this compact receipt",
+  "effect": "Python parse failed before executing any statement; this attempt produced no readback/report/source write",
+  "sourceChecks": "UNQUALIFIED for failed attempt",
+  "compilerProjectRuntime": "UNRUN"
+}

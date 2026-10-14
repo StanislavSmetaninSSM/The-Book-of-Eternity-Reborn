@@ -11,6 +11,32 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class PromptDocumentationCoverageTests
 {
     [Fact]
+    public void MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership()
+    {
+        foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "Rules/Block_12.txt",
+                     "TaskGuides/CLI_Step_Main.txt", "Examples/E_CLI_Step_Main.txt", "CLI_API_Specification.md",
+                     "CLI_Agent_Daemon_Specification.md", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var text = ReadRepoFile(file.Split('/'));
+            foreach (var required in new[] { "Same-scene Mortal joint severity repair:",
+                         "current client-issued construct_wound packet", "correct only the permitted severity leaf",
+                         "do not recreate it on a retry", "no replacement command, claim, receipt, seal or lifecycle acknowledgement",
+                         "active training, level-up or new-QTE task cannot be cleared or skipped",
+                         "requiredResponseShape.woundDecisions[0].proposal.correctOnly" })
+                Assert.Contains(required, text, StringComparison.Ordinal);
+        }
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        Assert.Equal(2, Regex.Matches(daemon, "Same-scene Mortal joint severity repair:").Count);
+        var example = ReadRepoFile("Examples", "E_CLI_Wound_Materialization.txt");
+        foreach (var required in new[] { "wound_mortal_joint_severity_repair_source_v1",
+                     "wound_mortal_joint_severity_repair_rejected_v1", "wound_mortal_joint_severity_repair_packet_view_v1",
+                     "wound_mortal_joint_severity_repair_corrected_v1", "not a literal runnable",
+                     "sessionId, requestId, snapshotToken", "candidateRef and semanticFingerprint",
+                     "The real sealed", "no public mixed command" })
+            Assert.Contains(required, example, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void WoundTreatmentAdditionPublicationDocumentation_PinsSelectedBatchAndRetainedHistory()
     {
         foreach (var path in new[] { "OtherGuides/Wound_Materialization_Contract.md", "Examples/E_CLI_Wound_Materialization.txt" })
