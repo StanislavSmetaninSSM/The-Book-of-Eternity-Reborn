@@ -1,5 +1,32 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Joint frozen progression basis/common-seal WIP STOP — 2026-10-14
+
+Owning base `58c2d72d57af7f5351077637060dcdb31b3c7eda`; verified recovery2224/1690
+preceded SOURCE GO. Eight code paths now add a closed, independently raw-input-recomputed
+calculation basis and connect the real engine-issued source before joint common input/cache
+creation. Conditional sanitization UTC and final preparation UTC are separate captures;
+recomposition uses the original schedule fallback and original-control fallback independently,
+actual realm/report/request priority, existing report validation, exact BOM encoding and shared
+unchanged mutation-fingerprint fields. Parsed data still grants no phase authority.
+
+The source/physical-G/original tuple seal and seven current calculation guards plus two original
+header guards enter the immutable joint common before-images and fingerprint before candidate
+creation/take. Source and calculation revalidation run outside cache monitors. The issued
+resource/common owner refuses replacing its basis. Old generic/singleton/default caches and
+old service async/UTC sites remain unchanged. Present schedules are covered by existing producer
+inventory source; missing signed coverage refuses. Genuine producer sufficiency remains UNRUN;
+no original rewrite, synthetic absence grant or additional producer registration was added.
+
+This is connected pre-cache SOURCE WIP, not progression publication/completion qualification.
+Closed unapplied/applied marker persistence, phase-aware physical source authentication/readback,
+fixed three-member publication/compensation, lifecycle/story/stat/level-up/cold integration,
+J7 controls/selectors and normative/primary-GM synchronization remain OPEN. Next source block
+connects the authenticated basis to the same private marker and owning phase, preserving the
+mechanical family and finalized claim. Compiler/build/discovery/catalog/PlanOnly/tests/runtime/
+faults and whole independent SOURCE/FIXTURE/SELECTION remain UNRUN. No category, selector,
+fixture, budget, acceptance-checkbox or historical receipt change.
+
 ## Joint progression calculation/source capture WIP STOP — 2026-10-14
 
 Owning base `7fbb8ca279f330e9ed9d7546fb60d066055de649`; written release71436d81,

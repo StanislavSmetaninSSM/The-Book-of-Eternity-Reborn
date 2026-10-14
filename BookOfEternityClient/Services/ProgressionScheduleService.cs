@@ -91,17 +91,8 @@ public partial class ProgressionScheduleService
             ReportAfter = reportAfter;
             ScheduleAfterJson = scheduleAfterJson;
             ReportAfterJson = reportAfterJson;
-            Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-                new string?[]
-                {
-                    "book_of_eternity.progression.accepted_turn_mutation",
-                    "1",
-                    controlJson,
-                    scheduleBefore.Fingerprint,
-                    reportBefore.Fingerprint,
-                    scheduleAfter.Fingerprint,
-                    reportAfter.Fingerprint
-                });
+            Fingerprint = ComputeAcceptedOutcomeMutationFingerprint(controlJson,
+                scheduleBefore, reportBefore, scheduleAfter, reportAfter);
         }
 
         internal CanonicalBeforeImage ScheduleBefore { get; }

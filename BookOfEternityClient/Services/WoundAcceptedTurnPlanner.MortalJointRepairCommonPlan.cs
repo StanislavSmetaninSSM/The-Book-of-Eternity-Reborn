@@ -11,16 +11,30 @@ internal static partial class WoundAcceptedTurnPlanner
     internal sealed class MortalJointRepairCommonAuthority
     {
         private readonly JointResourcePublicationAuthority _resources;
+        private readonly Dictionary<string, CanonicalBeforeImage> _before;
         private string? _planningInputFingerprint;
         private string? _bindingFingerprint;
-        internal MortalJointRepairCommonAuthority(object issuer, object resources)
+        internal MortalJointRepairCommonAuthority(object issuer, object resources, GameEngine.MortalJointProgressionSource progression)
         {
             if (!ReferenceEquals(issuer, JointCommonAuthorityIssuer) ||
-                resources is not JointResourcePublicationAuthority actual || !actual.HasValidSeal())
+                resources is not JointResourcePublicationAuthority actual || !actual.HasValidSeal() || !progression.HasValidSeal)
                 throw new InvalidOperationException("Joint common input requires its private complete resource owner.");
             _resources = actual;
+            Progression = progression;
+            var binding = Bundle.Input.Binding;
+            if (!progression.MatchesFrame(binding.SessionId, binding.RequestId, binding.SnapshotToken, binding.Turn))
+                throw new InvalidDataException("The authentic progression basis belongs to a different joint original.");
+            _before = Baseline.Mechanical.BeforeImages.ToDictionary(row => row.Key,
+                row => new CanonicalBeforeImage(row.Value.Existed, row.Value.Bytes?.ToArray()), StringComparer.Ordinal);
+            foreach (var row in progression.BeforeImages)
+            {
+                if (_before.TryGetValue(row.Key, out var existing) && existing.Fingerprint != row.Value.Fingerprint)
+                    throw new InvalidDataException("Joint progression/common before-image disagreement: " + row.Key);
+                _before[row.Key] = new(row.Value.Existed, row.Value.Bytes?.ToArray());
+            }
             Fingerprint = ComputeFingerprint();
         }
+        internal GameEngine.MortalJointProgressionSource Progression { get; }
         private JointCommonBaselineAuthority Baseline => _resources.Baseline;
         internal MortalItemAcceptedTurnNormalizationSnapshot ItemsForRegistry => Baseline.Items;
         internal object Continuation => Baseline.Continuation;
@@ -39,15 +53,17 @@ internal static partial class WoundAcceptedTurnPlanner
         internal IResourceRegisteredSystemOutcomeDraft RegisteredOutcome => _resources;
         internal ResourceOwnerKey[] TerminalOwners => _resources.TerminalOwners;
         internal AcceptedMechanicsIdentityFactory CreateIdentityFactory() => _resources.CreateIdentityFactory();
-        internal IReadOnlyDictionary<string, CanonicalBeforeImage> BeforeImages => Baseline.Mechanical.BeforeImages;
+        internal IReadOnlyDictionary<string, CanonicalBeforeImage> BeforeImages => _before.ToDictionary(row => row.Key,
+            row => new CanonicalBeforeImage(row.Value.Existed, row.Value.Bytes?.ToArray()), StringComparer.Ordinal);
         internal IReadOnlyDictionary<string, JsonNode?> ExactFinalItemRoots => _resources.ExactFinalItemRoots;
         internal string Fingerprint { get; }
         private JointRepairContinuationAuthority ReadJoint() => TryReadJointRepair(Continuation, out var joint)
             ? joint : throw new InvalidDataException("The joint common continuation changed.");
         private string ComputeFingerprint() => WoundAcceptedTurnFingerprintWriter.Compute(new string?[] {
             "book_of_eternity.mortal_joint_repair.common_authority.v1", _resources.Fingerprint,
-            Baseline.Fingerprint, GetJointRepairContinuationFingerprint(Continuation), Bundle.BundleFingerprint, Anchors.Fingerprint });
-        internal bool HasValidSeal => _resources.HasValidSeal() && Baseline.HasValidSeal && ComputeFingerprint() == Fingerprint;
+            Baseline.Fingerprint, GetJointRepairContinuationFingerprint(Continuation), Bundle.BundleFingerprint, Anchors.Fingerprint,
+            Progression.Fingerprint });
+        internal bool HasValidSeal => _resources.HasValidSeal() && Baseline.HasValidSeal && Progression.HasValidSeal && ComputeFingerprint() == Fingerprint;
         internal bool AgreesWith(AcceptedMechanicsWoundStageBundle? bundle, MortalWoundCanonicalAnchorPlan? anchors,
             ResourceOwnerAuthority owners) => HasValidSeal && bundle is not null && anchors is not null &&
             ReferenceEquals(bundle.PreparedPlan.JointRepairContinuationAuthority, Continuation) &&
@@ -86,6 +102,7 @@ internal static partial class WoundAcceptedTurnPlanner
         {
             if (!HasValidSeal) throw new InvalidDataException("The private joint common authority changed.");
             await ValidateJointRepairResourcePublicationAsync(files, lease, _resources);
+            await Progression.ValidateCurrentAsync(files, lease);
         }
         internal async Task<IReadOnlyList<ValidationIssue>> ValidateCandidateResourceBoundsAsync(
             FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsPlan candidate)
@@ -182,13 +199,15 @@ internal static partial class WoundAcceptedTurnPlanner
     // candidate. Fresh physical/source/capability checks precede sealing that SAME
     // candidate under its unchanged cache fence and current reservation.
     internal static async Task<AcceptedMechanicsPlanningResult> CreateJointRepairCommonPlanAsync(
-        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, object resourceAuthority)
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, object resourceAuthority,
+        GameEngine.MortalJointProgressionSource progression)
     {
         MortalJointRepairCommonAuthority? authority = null;
         try
         {
             await ValidateJointRepairResourcePublicationAsync(files, lease, resourceAuthority);
-            authority = ((JointResourcePublicationAuthority)resourceAuthority).GetOrCreateCommonAuthority(JointCommonAuthorityIssuer);
+            await progression.ValidateCurrentAsync(files, lease);
+            authority = ((JointResourcePublicationAuthority)resourceAuthority).GetOrCreateCommonAuthority(JointCommonAuthorityIssuer, progression);
             var composed = await AcceptedMechanicsWoundCommonInputComposer.ComposeJointRepairAsync(files, lease, authority);
             if (!composed.Success || composed.Input is null) return new(null, composed.Issues);
             authority.BindInput(JointCommonAuthorityIssuer, composed.Input);

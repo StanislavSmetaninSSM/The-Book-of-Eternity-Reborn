@@ -8,13 +8,13 @@ namespace BookOfEternityClient.Services;
 public partial class ProgressionScheduleService
 {
     private static readonly object FrozenMortalInputsIssuer = new();
-    internal static readonly string[] MortalJointCalculationSourcePaths =
-    [SchedulePath, ReportPath, "game_state/meta/soul_state.json", "game_state/world/world_time.json",
-        "input/turn_request.json", "ready/turn_complete.json", "game_state/control/validation_repair_request.json"];
+    internal static readonly IReadOnlyList<string> MortalJointCalculationSourcePaths = Array.AsReadOnly(new[]
+    { SchedulePath, ReportPath, "game_state/meta/soul_state.json", "game_state/world/world_time.json",
+        "input/turn_request.json", "ready/turn_complete.json", "game_state/control/validation_repair_request.json" });
 
     // Detached calculation evidence only; no accepted phase/mutation capability
-    // can be deserialized or issued by this value. Cold source recomposition and
-    // the owning marker/cache binding are connected in the following block.
+    // can be deserialized or issued by this value. Raw-input recomposition checks
+    // the calculation; the common owner separately authenticates engine sources.
     internal sealed class FrozenMortalOutcomeInputs
     {
         private readonly FileSystemManager _files;
@@ -22,21 +22,31 @@ public partial class ProgressionScheduleService
         private readonly string _generation;
         private readonly Dictionary<string, byte[]?> _sources;
         private readonly string _body;
-        internal FrozenMortalOutcomeInputs(object issuer, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        private readonly ProgressionScheduleService _owner;
+        internal FrozenMortalOutcomeInputs(object issuer, ProgressionScheduleService owner,
+            FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
             IReadOnlyDictionary<string, byte[]?> sources, JsonObject body)
         {
             if (!ReferenceEquals(issuer, FrozenMortalInputsIssuer)) throw new InvalidOperationException("Frozen progression inputs require the actual source reader.");
-            _files = files; _lease = lease; _generation = files.ReadLocalGenerationSnapshot(lease).Binding.Id;
+            _owner = owner; _files = files; _lease = lease; _generation = files.ReadLocalGenerationSnapshot(lease).Binding.Id;
             _sources = sources.ToDictionary(row => row.Key, row => row.Value?.ToArray(), StringComparer.Ordinal);
             _body = body.ToJsonString(JsonOpts);
+            _owner.RecomposeFrozenMortalCalculation(body);
+            Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[] {
+                "book_of_eternity.mortal_joint_progression.frozen_basis.v1", _generation,
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(body) });
         }
+        internal string Fingerprint { get; }
         internal JsonObject ToDiagnosticJson() => JsonNode.Parse(_body)!.AsObject();
         internal byte[]? ReadSourceBytes(string path) => _sources[path]?.ToArray();
+        internal IReadOnlyDictionary<string, CanonicalBeforeImage> BeforeImages => _sources.ToDictionary(
+            row => row.Key, row => new CanonicalBeforeImage(row.Value is not null, row.Value?.ToArray()), StringComparer.Ordinal);
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
             files.EnsureCanonicalWriteLeaseActive(lease);
             if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) || !files.IsCurrentSessionGeneration(lease, _generation))
                 throw new InvalidDataException("Frozen progression capture cannot cross physical owner, generation or lease.");
+            _owner.RecomposeFrozenMortalCalculation(ToDiagnosticJson());
             foreach (var (path, expected) in _sources)
             {
                 var actual = await files.ReadFileBytesAsync(lease, path);
@@ -62,7 +72,9 @@ public partial class ProgressionScheduleService
             throw new InvalidDataException("Joint progression requires an existing valid schedule; no initialization fallback.");
         // Freeze the actual asynchronous sanitization result and all its raw
         // sources. Its conditional UTC fallback remains at its old source site.
+        var needsSanitizationUtc = scheduleSnapshot.Schedule.LastUpdatedUtc is null;
         var schedule = await SanitizeScheduleAsync(scheduleSnapshot.Schedule, scheduleSnapshot.Schedule.CurrentRealm, lease);
+        var sanitizationUtc = needsSanitizationUtc ? schedule.LastUpdatedUtc : null;
         var sanitizedJson = JsonSerializer.Serialize(schedule, JsonOpts);
         var realm = await ResolveCurrentRealmAsync(string.Empty, lease);
         var reportSnapshot = await ReadProcessingReportSnapshotAsync(lease);
@@ -84,24 +96,25 @@ public partial class ProgressionScheduleService
         schedule.LastUpdatedUtc = preparedAtUtc;
         var scheduleAfterJson = JsonSerializer.Serialize(schedule, JsonOpts);
         var reportAfter = consumed && reportSnapshot.FilePresent ? null : sources[ReportPath];
-        var mutation = new AcceptedTurnOutcomeMutation(_fs, lease, _acceptedTurnMutationCapability,
+        var scheduleAfter = EncodeUtf8WithPreamble(scheduleAfterJson);
+        var mutationFingerprint = ComputeAcceptedOutcomeMutationFingerprint(controlJson,
             new(true, sources[SchedulePath]), new(sources[ReportPath] is not null, sources[ReportPath]),
-            new(true, EncodeUtf8WithPreamble(scheduleAfterJson)), new(reportAfter is not null, reportAfter),
-            scheduleAfterJson, reportAfter is null ? null : CanonicalJsonUtf8.DecodeOneOptionalBom(reportAfter), controlJson);
+            new(true, scheduleAfter), new(reportAfter is not null, reportAfter));
         var body = new JsonObject
         {
-            ["control"] = JsonNode.Parse(controlJson), ["sanitizedSchedule"] = JsonNode.Parse(sanitizedJson),
+            ["version"] = 1, ["control"] = JsonNode.Parse(controlJson), ["sanitizedSchedule"] = JsonNode.Parse(sanitizedJson),
             ["realmAfterTurn"] = realm, ["reportState"] = reportSnapshot.State.ToString(), ["reportPresent"] = reportSnapshot.FilePresent,
             ["parsedReport"] = reportSnapshot.Report is null ? null : JsonSerializer.SerializeToNode(reportSnapshot.Report, JsonOpts),
             ["requestContext"] = new JsonObject { ["sessionId"] = current.SessionId, ["requestId"] = current.RequestId, ["turn"] = current.TurnNumber },
             ["worldMinutes"] = world.Minutes, ["worldUnresolvedAbsolute"] = world.HasUnresolvedAbsoluteOverride,
-            ["preparedAtUtc"] = preparedAtUtc, ["scheduleAfterBase64"] = Convert.ToBase64String(mutation.ScheduleAfter.Bytes!),
-            ["reportAfterBase64"] = reportAfter is null ? null : Convert.ToBase64String(reportAfter), ["mutationFingerprint"] = mutation.Fingerprint
+            ["sanitizationUtc"] = sanitizationUtc,
+            ["preparedAtUtc"] = preparedAtUtc, ["scheduleAfterBase64"] = Convert.ToBase64String(scheduleAfter),
+            ["reportAfterBase64"] = reportAfter is null ? null : Convert.ToBase64String(reportAfter), ["mutationFingerprint"] = mutationFingerprint
         };
         var raw = new JsonObject();
         foreach (var (path, bytes) in sources) raw[path] = bytes is null ? null : Convert.ToBase64String(bytes);
         body["sourceBytes"] = raw;
-        var capture = new FrozenMortalOutcomeInputs(FrozenMortalInputsIssuer, _fs, lease, sources, body);
+        var capture = new FrozenMortalOutcomeInputs(FrozenMortalInputsIssuer, this, _fs, lease, sources, body);
         await capture.ValidateCurrentAsync(_fs, lease);
         return capture;
     }

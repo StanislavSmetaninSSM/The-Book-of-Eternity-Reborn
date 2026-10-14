@@ -11,7 +11,7 @@ public partial class GameEngine
 
     // Engine-local original authentication, separate from the detached service
     // calculation. Neither a serialized body nor its hash can construct this
-    // proof. The future common/basis issuer must revalidate it before sealing.
+    // proof. The actual common/basis issuer revalidates it before sealing.
     internal sealed class MortalJointProgressionSource
     {
         private readonly FileSystemManager _files;
@@ -28,12 +28,35 @@ public partial class GameEngine
             _files = files; _lease = lease; _generation = files.ReadLocalGenerationSnapshot(lease).Binding.Id;
             _sessionId = sessionId; _requestId = requestId; _snapshotToken = snapshotToken; _turn = turn;
             Inputs = inputs; _originalGuards = originalGuards.ToDictionary(row => row.Key, row => row.Value.ToArray(), StringComparer.Ordinal);
+            Fingerprint = ComputeFingerprint();
         }
         internal ProgressionScheduleService.FrozenMortalOutcomeInputs Inputs { get; }
+        internal string Fingerprint { get; }
+        internal bool HasValidSeal => Fingerprint == ComputeFingerprint();
+        internal bool MatchesFrame(string sessionId, string requestId, string snapshotToken, int turn) =>
+            _sessionId == sessionId && _requestId == requestId && _snapshotToken == snapshotToken && _turn == turn;
+        internal IReadOnlyDictionary<string, CanonicalBeforeImage> BeforeImages
+        {
+            get
+            {
+                var images = Inputs.BeforeImages.ToDictionary(row => row.Key,
+                    row => new CanonicalBeforeImage(row.Value.Existed, row.Value.Bytes?.ToArray()), StringComparer.Ordinal);
+                foreach (var row in _originalGuards) images.Add(row.Key, new(true, row.Value.ToArray()));
+                return images;
+            }
+        }
+        private string ComputeFingerprint()
+        {
+            var fields = new List<string?> { "book_of_eternity.mortal_joint_progression.original_source.v1",
+                _generation, _sessionId, _requestId, _snapshotToken, _turn.ToString(System.Globalization.CultureInfo.InvariantCulture), Inputs.Fingerprint };
+            foreach (var row in _originalGuards.OrderBy(row => row.Key, StringComparer.Ordinal))
+            { fields.Add(row.Key); fields.Add(new CanonicalBeforeImage(true, row.Value).Fingerprint); }
+            return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+        }
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
             files.EnsureCanonicalWriteLeaseActive(lease);
-            if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) || !files.IsCurrentSessionGeneration(lease, _generation))
+            if (!HasValidSeal || !ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) || !files.IsCurrentSessionGeneration(lease, _generation))
                 throw new InvalidDataException("Joint progression source cannot cross physical owner/generation/lease.");
             await Inputs.ValidateCurrentAsync(files, lease);
             foreach (var (path, expected) in _originalGuards)

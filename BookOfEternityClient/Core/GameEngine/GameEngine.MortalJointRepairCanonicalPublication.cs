@@ -68,7 +68,11 @@ public partial class GameEngine
                 if (!baseline.IsValid) return Refused(baseline.Issues);
                 var resources = await WoundAcceptedTurnPlanner.CreateJointRepairResourcePublicationAsync(_fs, lease, baseline.Authority!);
                 if (!resources.IsValid) return Refused(resources.Issues);
-                var common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanAsync(_fs, lease, resources.Authority!);
+                // Freeze and authenticate progression BEFORE the common input,
+                // cache fingerprint and take. No after-seal acknowledgement may
+                // attach to the already-issued mechanics candidate.
+                var progression = await CaptureMortalJointProgressionSourceAsync(lease, frame);
+                var common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanAsync(_fs, lease, resources.Authority!, progression);
                 if (!common.Success || common.Plan is not { } commonPlan) return Refused(common.Issues);
                 var bound = _normalizer.BindTo(lease);
                 var preflight = await bound.PrevalidateJointRepairPublicationTransactionAsync() ??

@@ -55,6 +55,7 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                 ["woundInputFingerprint"] = bundle.InputFingerprint, ["woundStageBundleFingerprint"] = bundle.BundleFingerprint,
                 ["jointCommonAuthorityFingerprint"] = authority.Fingerprint,
                 ["woundAnchorPlanFingerprint"] = authority.Anchors.Fingerprint };
+            internalInputs["jointProgressionBasisFingerprint"] = authority.Progression.Fingerprint;
             var effects = bundle.EffectBatchPlan.EffectPlan;
             var effectCommands = bundle.EffectBatchPlan.EffectInput.RawCommands;
             var effectIdentity = bundle.Input.PreTurnEffectIdentityIndex?.DeepClone().AsObject() ??
