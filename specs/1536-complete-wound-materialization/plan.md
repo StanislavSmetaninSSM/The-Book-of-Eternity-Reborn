@@ -1,5 +1,37 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 genuine nonzero/APPLIED new-root fresh-PID control SOURCE WIP STOP — 2026-10-14
+
+Owning base `3153a38a3574082cf912bef9ac788bd5e9ab7f30`; recovery2314/1785
+was verified before SOURCE GO. Exactly one new Fact reuses genuine nonzero report consumption
+and APPLIED-before-story pause. Parent holds the source canonical lease, proves no pending
+local decision before disposal, no intent/external/browser/worker/legacy/remote admission
+state, and absent worker inventory. No-follow file AND directory inventories capture all
+game_session plus the exact .boe_runtime/session-generation/current.json bytes. Only three
+inert runtime coordination locks and empty known debt roots are tolerated; locks are never
+read/copied, unknown or nonempty debt/main/worker entries refuse. No debt deletion/filtering.
+
+Copy uses a distinct owned target root; exact source/target directory/file inventory, all
+bytes/G, and unchanged source around copy are mandatory before lease closes. No target
+EnsureDirectoryStructure/Load/G mint/rotation/reseal/new hold/context attachment. Context
+and result/log files remain outside the transported cohort in source root. Existing child
+launches on the target with only assertion scalars/digests, independently reads the genuine
+same original/G under fresh PID/empty cache/new root identity and invokes the actual late
+owner. Existing strict finalized mechanics/frozen basis/report absence/one story-turn/owned
+cleanup and full byte-inert repeat remain the positive oracles. Source stays byte-identical
+after child; logs/managed output/target afterimages precede source/target cleanup, and child
+owns only its separate auxiliary factory root. This is complete durable fixture transport,
+not a production save/load qualification or a carried authority capsule.
+
+Seven source methods/eighteen cases (six Facts plus twelve-row refusal Theory) provisional;
+no discovery/catalog/selection/budget change. Compiler/API/actual runtime inventory-quiescence/
+fixture validity UNCHECKED; all project/compiler/build/discovery/catalog/PlanOnly/test/runtime/
+fault/whole SOURCE/FIXTURE/SELECTION UNRUN. Unexpected runtime namespaces remain prerequisite
+failures to freeze, not silently excluded. Wrong/foreign G, faults/compensation/uncertainty/
+inactive/story/live/compatibility controls, no-frame/all-traces-erased/partial cleanup and
+normative/primary-GM sync remain OPEN. Production, oldqualified bodies, historical raw packets,
+prior tails and all checkbox lines remain unchanged.
+
 ## J7 physical header-counterpart refusal controls SOURCE WIP STOP — 2026-10-14
 
 Owning base `4e44e2e641e47a24523d19a92ad38cc34eeca032`; recovery2311/1782

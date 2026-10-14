@@ -22,7 +22,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         RunJointCompletionControlAsync(nonzeroProgression: true);
 
     private async Task RunJointCompletionControlAsync(bool nonzeroProgression, bool pauseAppliedForCold = false, bool pauseUnappliedForCold = false,
-        string? refusalScenario = null)
+        string? refusalScenario = null, bool newPhysicalRootForCold = false)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -274,7 +274,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);
             }
             await RunJointAppliedBeforeStoryColdAsync(engine, original, request.RequestFingerprint, before, scene,
-                expectedPhase: pauseUnappliedForCold ? "unapplied" : "applied", refusalScenario: refusalScenario);
+                expectedPhase: pauseUnappliedForCold ? "unapplied" : "applied", refusalScenario: refusalScenario,
+                newPhysicalRoot: newPhysicalRootForCold);
             return;
         }
         await AssertJointCompletionPhysicalOutcomeAsync(engine, original, request, occurrence, before, scene, milestones);

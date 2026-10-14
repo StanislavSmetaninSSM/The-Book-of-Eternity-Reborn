@@ -26,12 +26,15 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private async Task RunJointAppliedBeforeStoryColdAsync(GameEngine parent, PendingTurnSnapshotReadAuthority original,
         string requestFingerprint, IReadOnlyDictionary<string, byte[]?> originalBefore, string scene, string expectedPhase = "applied",
-        string? refusalScenario = null)
+        string? refusalScenario = null, bool newPhysicalRoot = false)
     {
         var originalRequest = StrictJsonAuthority.Deserialize<TurnRequest>(CanonicalJsonUtf8.DecodeOneOptionalBom(originalBefore["input/turn_request.json"]!),
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "actual cold parent original control");
         Assert.NotNull(originalRequest); Assert.NotNull(originalRequest!.ProgressionControl);
         var expectedWorldCycles = originalRequest.ProgressionControl!.WorldCyclesAlreadyPendingBeforeTurn;
+        var childRoot = newPhysicalRoot ? Path.Combine(Path.GetTempPath(), "boe-fr063-joint-cold-" + Guid.NewGuid().ToString("N")) : _fs.BasePath;
+        using var targetOwned = newPhysicalRoot ? new CleanupOwnedFixture(childRoot, Console.WriteLine) : null;
+        JointNewRootTransportEvidence? transport = null;
         Dictionary<string, byte[]?> paused;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
@@ -58,6 +61,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(42, GetPrivateField<GameLoop>(parent, "_gameLoop").TurnNumber);
             Assert.False(GetPrivateFieldValue<bool>(parent, "_inGame"));
             lease.EnsureNoPendingLocalDecision();
+            if (newPhysicalRoot)
+            {
+                Assert.Equal("applied", expectedPhase); Assert.Null(refusalScenario); Assert.Equal(1, expectedWorldCycles);
+                transport = await CopyQuiescentJointNamespaceAsync(_fs, lease, childRoot, paused);
+            }
         } // No parent input/read/write lease or participating caller survives launch.
         var context = new JsonObject
         {
@@ -65,6 +73,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ["requestId"] = original.RequestId, ["snapshotToken"] = original.SnapshotToken,
             ["requestFingerprint"] = requestFingerprint, ["scene"] = scene, ["expectedPhase"] = expectedPhase, ["expectedWorldCycles"] = expectedWorldCycles,
             ["refusalScenario"] = refusalScenario,
+            ["newPhysicalRoot"] = newPhysicalRoot, ["sourceRoot"] = _fs.BasePath, ["expectedRoot"] = childRoot,
             ["generationSha256"] = MortalArchiveHash(paused["$sessionGeneration"]!),
             ["binaryPins"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
             ["pausedImages"] = JsonSerializer.SerializeToNode(paused.ToDictionary(pair => pair.Key,
@@ -79,7 +88,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
             failure = await Record.ExceptionAsync(() => RunMortalArchiveChildAsync(
-                "engine-mortal-joint-applied-cold", _fs.BasePath, output, refusalScenario is not null ? 2 : expectedPhase == "applied" ? 0 : 1, contextPath));
+                "engine-mortal-joint-applied-cold", childRoot, output, refusalScenario is not null ? 2 : expectedPhase == "applied" ? 0 : 1, contextPath));
         }
         finally
         {
@@ -88,10 +97,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             WritePhysicalInjuryDiagnostic("fr063_joint_applied_cold_parent_outcome", new
             {
                 ParentProcessId = Environment.ProcessId, Context = context, Failure = failure?.ToString(),
+                Transport = transport,
                 Child = File.Exists(output) ? await File.ReadAllTextAsync(output) : null,
                 FullChildLog = File.Exists(output + ".log") ? await File.ReadAllTextAsync(output + ".log") : null,
                 PhysicalAfter = MortalArchiveDigests(await CaptureMortalArchiveImagesAsync(_fs,
-                    paused.Keys.Where(path => path != "$sessionGeneration")))
+                    paused.Keys.Where(path => path != "$sessionGeneration"))),
+                NewRootAfter = newPhysicalRoot && Directory.Exists(childRoot)
+                    ? await CaptureJointNewRootDiagnosticAsync(childRoot) : null
             });
         }
         Assert.Null(failure);
@@ -101,6 +113,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(refusalScenario is null, child["completed"]!.GetValue<bool>());
         Assert.Equal(refusalScenario is not null, child["refusalVerified"]!.GetValue<bool>());
         Assert.Null(child["failure"]);
+        if (newPhysicalRoot)
+        {
+            Assert.Equal(Path.GetFullPath(childRoot), child["Root"]!.GetValue<string>());
+            Assert.NotEqual(Path.GetFullPath(_fs.BasePath), child["Root"]!.GetValue<string>());
+            await using var sourceLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            await AssertConfirmedClaimReadImagesAsync(_fs, sourceLease, paused);
+        }
     }
 
     public static async Task WriteMortalJointAppliedColdProbeAsync(string root, string output, int scenario, string contextPath)
@@ -143,6 +162,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         try
         {
             Assert.NotEqual(Environment.ProcessId, context["parentProcessId"]!.GetValue<int>());
+            if (context["newPhysicalRoot"]?.GetValue<bool>() == true)
+            {
+                Assert.Equal(context["expectedRoot"]!.GetValue<string>(), files.BasePath);
+                Assert.NotEqual(context["sourceRoot"]!.GetValue<string>(), files.BasePath);
+                Assert.NotEqual(Path.GetFullPath(factory._rootPath), files.BasePath);
+                Assert.NotSame(factory._fs.CanonicalRootAuthorityIdentity, files.CanonicalRootAuthorityIdentity);
+            }
             AssertMortalArchiveChildBinaries(context);
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
             {
