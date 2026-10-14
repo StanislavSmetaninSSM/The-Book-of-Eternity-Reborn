@@ -33,6 +33,8 @@ internal enum AcceptedTurnValidationDisposition
 
     /// <summary>Retains the exact joint wave/original and blocks destructive outer rollback.</summary>
     MortalJointRepairPublicationHeldBlocked,
+    /// <summary>Verified joint phase/projection prerequisites; only the named actual caller can finish its story/turn.</summary>
+    MortalJointRepairCompletionReady,
     /// <summary>The joint owner already performed terminal rollback/removal and released the claim.</summary>
     MortalJointRepairTerminalReleased
 }
@@ -479,7 +481,8 @@ public partial class GameEngine
             }
             var result = await ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(source, activeSnapshotContext, rollbackSnapshot,
                 expectedTurn, progressionControl, BeforeDestructiveRefusalAsync);
-            if (result != AcceptedTurnValidationDisposition.Accepted) await BeforeDestructiveRefusalAsync();
+            if (result is not (AcceptedTurnValidationDisposition.Accepted or AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady))
+                await BeforeDestructiveRefusalAsync();
             return result;
         }
         catch (MortalCompletedPublicationHoldException)

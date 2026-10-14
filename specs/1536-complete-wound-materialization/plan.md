@@ -1,5 +1,33 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Actual joint story/turn caller reconciliation WIP STOP — 2026-10-14
+
+Owning base `d7604230bd42cf71a18f45aa510f66d6edd545b4`; recovery2256/1726
+was verified before SOURCE GO. Four code paths now connect the dedicated joint owner to BOTH
+actual live and late callers before their generic cancellation/error/signal-turn discard or
+preturn rollback. Newly published ordinary joint results route to the same owner via a distinct
+CompletionReady prerequisite disposition; this is not generic Accepted. The old default paths
+invert exactly to previous source when removing the narrow additions.
+
+The applicability schema/tuple look grants no authority. Fresh full physical original/G/union/
+phase, exact correlated completion signal without contradictory error, actual runtime session
+and prior/current turn, real phase-aware canonical/narrative/projection pass, fresh applied proof
+and real semantic projection checks precede the named exact story append/readback/private proof.
+Only originalTurn−1 advances once to originalTurn; same-turn replay requires its existing exact
+row and never increments/appends again. The actual pre-story and post-story projection verification
+is read-only. Committed/uncertain bookkeeping protects lost evidence; retryable/uncommitted
+bookkeeping does not masquerade as completed publication.
+
+No dice rotation, generic stats/level-up/new-QTE/lifecycle action or destructive cleanup occurs.
+The physically frozen inactive-tail guards remain mandatory. Success and failure both stop
+gameplay and retain original/request/ready/outputs/backups/committed union: eligible owned terminal
+cleanup is OPEN. This bounded WIP therefore reconciles story/turn but does NOT claim a fully
+accepted/cleaned playable turn. Runtime-state/display refresh, complete terminal/session/cold
+cleanup/qualification, J7 controls/exact selectors and normative/primary-GM synchronization follow.
+No fixtures/categories/selectors/budgets/checkbox changes. Every compiler/build/discovery/catalog/
+PlanOnly/test/runtime/fault and whole SOURCE/FIXTURE/SELECTION check remains UNRUN. Unknown
+corruption/applicability and final lifetime controls require the future complete SOURCE/J7 gate.
+
 ## Typed joint history and phase-aware post-common owner WIP STOP — 2026-10-14
 
 Owning base `048f475371fda77934a4964da4e7cf7c0074d84b`; recovery2253/1719

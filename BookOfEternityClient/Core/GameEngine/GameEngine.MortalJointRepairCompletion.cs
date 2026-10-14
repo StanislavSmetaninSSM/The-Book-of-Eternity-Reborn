@@ -146,10 +146,9 @@ public partial class GameEngine
             }
             await applied.ValidateCurrentAsync(_fs, lease);
         }
-        // Phase and derived projection are verified, but the real live/late
-        // caller's once-story/turn and terminal cleanup are a separate owning
-        // integration. Never turn this intermediate prerequisite into Accepted.
-        _logger.LogWarning("Joint phase/projection are verified; actual once-story/turn completion remains held for its owning caller.");
-        return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+        // This is a dedicated prerequisite disposition, never generic Accepted.
+        // The named actual caller must freshly prove story/projection/turn before
+        // any advancement; terminal cleanup remains an independent owned step.
+        return AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady;
     }
 }

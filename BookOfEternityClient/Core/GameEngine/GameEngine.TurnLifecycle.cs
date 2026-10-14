@@ -51,6 +51,7 @@ public partial class GameEngine
                 AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked or
                 AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked or
                 AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked or
+                AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady or
                 AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased))
         {
             return false;
@@ -59,6 +60,7 @@ public partial class GameEngine
         if (disposition is AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked or
             AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked or
             AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked or
+            AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady or
             AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased)
             _inGame = false;
         else
@@ -69,6 +71,8 @@ public partial class GameEngine
                 "[yellow]⚠ Финальная публикация лечения не завершилась. Ход и удержанный ресурс сохранены для повторного terminal signal.[/]",
             AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased =>
                 "[yellow]↩ Совместное исправление отменено. Исходное состояние восстановлено, запрос лечения удалён и удержанный ресурс освобождён.[/]",
+            AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady =>
+                "[yellow]⚠ Совместный ход готов к завершению только своим владельцем. Исходные данные сохранены.[/]",
             AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked =>
                 "[yellow]⚠ Совместное исправление смертного хода заблокировано. Текущее состояние оставлено без дальнейшего отката; требуется безопасное восстановление.[/]",
             AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked =>
@@ -939,6 +943,12 @@ public partial class GameEngine
                     return true;
                 }
             }
+            // The physical joint owner is examined before legacy signal/turn
+            // mismatch handling can discard its original or restore mechanics.
+            if (lateBrowserStaged == null && await TryReconcileMortalJointStoryTurnAsync(
+                "late joint completion", snapshotContext) is not null)
+                return true; // terminal cleanup is still held by this bounded owner
+
             var concurrentResolution = await ResolveConcurrentActiveTerminalSignalsAsync(
                 terminalSignals,
                 completionSignal,
@@ -1021,6 +1031,13 @@ public partial class GameEngine
                         rollbackSnapshot,
                         signalTurn ?? expectedTurn,
                         snapshotContext?.ProgressionControl);
+                if (validationDisposition == AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady)
+                {
+                    if (lateBrowserStaged == null && await TryReconcileMortalJointStoryTurnAsync(
+                        "newly published late joint completion", snapshotContext) is not null) return true;
+                    PreserveAcceptedTurnForTreatmentPublicationRetry(AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked);
+                    return true;
+                }
                 if (PreserveAcceptedTurnForTreatmentPublicationRetry(
                         validationDisposition))
                 {
@@ -1728,6 +1745,12 @@ public partial class GameEngine
         var activeSnapshotContext = preparation.SnapshotContext;
         var browserStaged = preparation.BrowserStaged;
         PendingPlayerActionService.StoryProof? browserStory = null;
+        // A previously committed joint union cannot enter the ordinary cancel/
+        // terminal-error rollback branches. This owner always rereads physical
+        // evidence, including when detached engine metadata is absent.
+        if (browserStaged == null && await TryReconcileMortalJointStoryTurnAsync(
+            "active joint completion", activeSnapshotContext) is not null) return;
+
         if (waitOutcome == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
@@ -1798,6 +1821,13 @@ public partial class GameEngine
                 backedUpFiles,
                 request.TurnNumber,
                 request.ProgressionControl);
+        if (validationDisposition == AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady)
+        {
+            if (browserStaged == null && await TryReconcileMortalJointStoryTurnAsync(
+                "newly published active joint completion", activeSnapshotContext) is not null) return;
+            PreserveAcceptedTurnForTreatmentPublicationRetry(AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked);
+            return;
+        }
         if (validationDisposition !=
             AcceptedTurnValidationDisposition.Accepted)
         {
