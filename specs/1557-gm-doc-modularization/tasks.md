@@ -1,5 +1,45 @@
 # Tasks: GM Documentation Modularization
 
+## First real packaged writer1 actual closure RED frozen — 2026-10-14
+
+Runtime metadata carrier `44ae7b5c2fef7c5f66efd14bbdf1b7fa523399b5`, retained
+fresh compile `6f32a5221fa01123b2b74f824f51259532eefc35`. Before reuse2330nonmetadata
+source/233physical binaries-package files match independently; fresh BOTH build/catalog
+151.6334029s732/11585 from accepted pair packet reused, no passing/build repeat.
+Exact separate gm-doc-afterlife-package-delivery NoBuildPlanOnly:
+20261014-013222-022-110573-96747e0b728e4292a965351d754412c0-categories,
+2.4816630s1method1case1descriptor,0executions. FIRST actual:
+20261014-013246-842-110723-5c2f6666bbbc4a6d816c04a43dd5b090-categories,
+8.4191703s exit1,1executed0PASS1FAIL, COMPLETE1/1descriptor1/1case, no skip/dup/timeout.
+[Immutable30-chain packet](recovery/A-package-writer-first-actual-20261014/manifest.json)
+retains5 nativeartifactfiles/fullAST/source/pins/runner/ROOT evidence; EVIDENCE PENDING.
+
+Actual failure is fixture:23 Assert.Empty(Issues) AFTER work/package/AST/exit/root/
+runtime prerequisites passed. Failure=null, childexit0, ASTcompleted/runtimeExecuted
+true, dynamic398600-byte daemon source hashF1F9... and actual BOM3/198112byte sibling
+prefix hashFFBD.../UTF16end195262 prove this fresh cut/execution, not a historical-pin
+substitute. Source report identifies Write-GmContextPack predecessor and exact successor.
+One pwshPID110866 plus two actual exact packagedDLL --gm-main-operation --root helper
+PIDs110885/110897 observed with birth/argv. Manifest repoRootPath is copied package
+operational-resources, not checkout fallback;14 actual docs retain source/package/
+session equality and copied pins. Required inventory36 has22 missing manifest entries
+and22 copy_missing issues plus manifest_inventory (45issues total). CLI_Rules_Index.md
+exists in actual package but is omitted from session manifest/copy. Missing-entry rows
+short-circuit other file-specific assertions: do not invent their source/package-byte
+or link qualification. No provider/full daemon dispatch/final-source GREEN claim.
+
+Actual118LiveExact/24TerminalOwnedAbsent, no stickyconflict/unknown/remaining, both
+error-free EOFs, exitConfirmed/rootsRemoved true, cleanupFailures empty. Package/session
+roots physically absent; outside-root evidence directory retained,5native files frozen.
+Runner cleanup true.2332source233physicalpackage POST exact; physical pins retain
+initial10+223later provenance, not all-loaded proof. First actual reaches bounded
+delivery closure RED rather than fixture prerequisite failure, pending independent
+classification. Publish failed WIP/EVIDENCE before any further source/actual release.
+Historical14caseFAIL/setupUNKNOWN and acceptedpair2PASS unchanged. FullA/B/content/
+daemon/Block_5 remain unqualified/unreleased. SoleSol primaryJ2-J6/J7 stillauthoring;
+no new writer, passingrepeat or acceptance/taskcheckbox change.
+
+
 ## Corrected pair EVIDENCE accepted; separate first real-writer release — 2026-10-14
 
 Retained independent Astra XHigh [EVIDENCE review](recovery/A-connected-pair-first-corrected-actual-independent-evidence-review-20261014.md)
