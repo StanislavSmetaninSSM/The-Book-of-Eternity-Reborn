@@ -116,6 +116,9 @@ internal sealed record WoundPlayerNotification(
             .SelectMany(static value => value.Mutations)
             .ToArray();
 
+        if (prepared.JointRepairContinuationAuthority is not null)
+            return ComposeAcceptedJointRepair(bundle, finalSceneText, mutations);
+
         if (prepared.TreatmentContinuationAuthority is not null)
         {
             return ComposeAcceptedTreatmentContinuation(
@@ -266,6 +269,29 @@ internal sealed record WoundPlayerNotification(
         }
         return new WoundAcceptedTurnOutputBindingResult(
             issues.Count == 0 ? notifications : Array.Empty<WoundPlayerNotification>(), issues);
+    }
+
+    private static WoundAcceptedTurnOutputBindingResult ComposeAcceptedJointRepair(
+        AcceptedMechanicsWoundStageBundle bundle, string scene, IReadOnlyList<WoundCarrierMutation> mutations)
+    {
+        // Authenticate the WHOLE joint final contribution before selecting its
+        // one CREATE. A nullable treatment batch is not an acquisition batch.
+        if (!WoundAcceptedTurnPlanner.JointRepairFinalPlanAgrees(bundle) ||
+            !WoundAcceptedTurnPlanner.TryReadJointRepairFinal(bundle.PreparedPlan, out var joint))
+            return new(Array.Empty<WoundPlayerNotification>(), [AcceptedTurnBindingIssue("joint final owner", "refused")]);
+        var creates = bundle.PreparedPlan.Transitions.Where(row => row.Kind == "create").ToArray();
+        var batches = bundle.PreparedPlan.EffectOperationBatches.Where(row => row.PreparedWoundId != joint.Outcome.Before.WoundId).ToArray();
+        var additions = mutations.Where(row => row.Operation == "add" && row.BeforeWound is null).ToArray();
+        if (creates.Length != 1 || batches.Length != 1 || additions.Length != 1 || additions[0].AfterWound is not { } wound ||
+            creates[0].LocalWoundRef != batches[0].LocalWoundRef || batches[0].PreparedWoundId != wound.WoundId ||
+            batches[0].TransitionAuthority.TransitionKind != "create")
+            return new(Array.Empty<WoundPlayerNotification>(), [AcceptedTurnBindingIssue("joint acquisition selection", "refused")]);
+        var claim = new WoundAcquisitionNarrationClaim(creates[0].LocalWoundRef, batches[0].SourceExport.CausalEventRef,
+            wound.Classification.Domain, wound.Display.Name, wound.Severity.Rank, wound.Display.AcquisitionNarration);
+        var output = Compose(new WoundAcquisitionOutputRequest(creates[0].LocalWoundRef, wound, claim, scene));
+        return output.Success && output.Notification is { } notification
+            ? new([notification], output.Issues)
+            : new(Array.Empty<WoundPlayerNotification>(), output.Issues);
     }
 
     private static WoundAcceptedTurnOutputBindingResult

@@ -10,7 +10,8 @@ public partial class GameEngine
         MortalJointRepairPublicationDisposition Disposition,
         AcceptedMechanicsPlan? Plan,
         IReadOnlyList<ValidationIssue> Issues,
-        MortalQteDecisionPublication.JointCompletedWitness? Completed = null);
+        MortalQteDecisionPublication.JointCompletedWitness? Completed = null,
+        ValidatedPendingTurnSnapshotContext? Frame = null);
 
     private MortalJointRepairCanonicalRefresh? _mortalJointRepairCanonicalRefresh;
 
@@ -114,6 +115,6 @@ public partial class GameEngine
         return result;
 
         MortalJointRepairCanonicalRefresh Retain(MortalJointRepairCanonicalRefresh value) =>
-            _mortalJointRepairCanonicalRefresh = value;
+            _mortalJointRepairCanonicalRefresh = value with { Frame = frame };
     }
 }

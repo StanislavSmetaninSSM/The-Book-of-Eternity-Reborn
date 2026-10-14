@@ -1,0 +1,17 @@
+{
+  "reportSHA256": "e3588cd511fe62d8873d30dbf878d410a13ded20d76aabbcf534df6ff0b0b6fa",
+  "CurrentVerifiedPins": {
+    "BookOfEternityClient/Services/ProgressionScheduleService.cs": "cae67d35831c5cd67df85fc049657fb51ed400ba1749b984f0e4c6331afbeaf9",
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs": "5508ec06e2baecbcab25ae3e3fffc3f88a83d57ed3cfd18e70258c26990e2177",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs": "8c547fe1fd1077c7283da20038cf36a2b2570216ba14d82da7765265ba6fabc9",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "79017c9ca9dc93247956088510b5f167e470b00746c7084be79df81116a911e1",
+    "BookOfEternityClient/Services/StoryService.cs": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+    "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs": "e71ce882108e80b740f43c50d6962981ee75aa052faf227235d1cf2e0d9b83ab",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs": "2063f93a93bdfc3045db77ab86308c95699ce24d287539ffc8a27d71cb095cb9"
+  },
+  "Scope": "retainedAstraHigh narrow architectural consultation; not wholeSOURCE/notruntime",
+  "Finding": "genuineproduceralwaysnonnull; no existingdurablejoint progressiononceproof;oldliveflag/storynottransferable",
+  "Next": "preserve currentindependent WIP+consultation then bounded exactowningphase design amendment; no patchuntilindependentDESIGN",
+  "utc": "2026-10-14T09:07:55.674189+00:00"
+}

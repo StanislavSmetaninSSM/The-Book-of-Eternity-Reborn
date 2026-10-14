@@ -421,6 +421,9 @@ public partial class GameEngine
         int expectedTurn,
         ProgressionControl? progressionControl)
     {
+        if (_mortalJointRepairCanonicalRefresh?.Frame is { } detachedFrame &&
+            !SameMortalJointOriginalFrame(detachedFrame, activeSnapshotContext, expectedTurn))
+            _mortalJointRepairCanonicalRefresh = null; // bookkeeping only; no physical signal/source cleanup
         MortalQteDecisionPublication.CurrentPublicationInspection entry;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
@@ -438,7 +441,8 @@ public partial class GameEngine
         }
         async Task BeforeDestructiveRefusalAsync()
         {
-            if (_mortalJointRepairCanonicalRefresh is { } joint && MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn))
+            if (_mortalJointRepairCanonicalRefresh is { } joint &&
+                (MatchesMortalJointRepairOutcomeFrame(activeSnapshotContext, expectedTurn) || MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn)))
             {
                 // A current owning outcome blocks destructive fallback even when
                 // evidence is uncertain. A diagnostic witness grants no authority:
@@ -465,6 +469,14 @@ public partial class GameEngine
         }
         try
         {
+            if (MatchesMortalJointRepairOutcomeFrame(activeSnapshotContext, expectedTurn) &&
+                _mortalJointRepairCanonicalRefresh?.Disposition == MortalJointRepairPublicationDisposition.PublicationUncertain)
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+            if (entry.State == MortalQteDecisionPublication.CurrentPublicationState.VerifiedCompleted && entry.MayResubmit)
+            {
+                var jointContinuation = await TryReadMortalJointCompletedContinuationAsync(source, activeSnapshotContext, expectedTurn);
+                if (jointContinuation.HasValue) return jointContinuation.Value;
+            }
             var result = await ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(source, activeSnapshotContext, rollbackSnapshot,
                 expectedTurn, progressionControl, BeforeDestructiveRefusalAsync);
             if (result != AcceptedTurnValidationDisposition.Accepted) await BeforeDestructiveRefusalAsync();
@@ -478,7 +490,8 @@ public partial class GameEngine
         {
             return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
         }
-        catch (Exception error) when (MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn) &&
+        catch (Exception error) when ((MatchesMortalJointRepairOutcomeFrame(activeSnapshotContext, expectedTurn) ||
+            MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn)) &&
             error is CoordinatedStatePublicationUncertainException or InvalidDataException or IOException or
                 InvalidOperationException or ArgumentException or System.Text.Json.JsonException or AggregateException)
         {
@@ -832,12 +845,9 @@ public partial class GameEngine
                 canonicalRefresh.TreatmentResourcePublicationTransaction;
             if (canonicalRefresh.JointPublication is { } jointPublication)
             {
-                // The distinct owner has actually attempted its one batch and
-                // settled/read back under its issuing lease. It must never enter
-                // old-transaction compensation or resource-free acceptance.
-                _logger.LogWarning("Joint canonical owner reached {Disposition}; downstream completion remains held in this WIP.",
-                    jointPublication.Disposition);
-                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+                if (activeSnapshotContext is null)
+                    return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+                return await ValidateMortalJointPostPublicationAsync(source, activeSnapshotContext, jointPublication);
             }
             try
             {

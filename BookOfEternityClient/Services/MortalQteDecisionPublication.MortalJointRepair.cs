@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.Services;
 
@@ -60,6 +61,80 @@ internal static partial class MortalQteDecisionPublication
     internal static Task<JointCompletedWitness> ReadJointCompletedWitnessAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, string sessionId, string requestId, string snapshotToken, int turn) =>
         JointCompletedWitness.ReadAsync(files, lease, sessionId, requestId, snapshotToken, turn);
+
+    // These current physical reads, rather than the diagnostic witness or a
+    // parsed marker, gate post-publication validation and exact continuation.
+    internal static async Task<bool> IsCurrentJointCompletedFamilyAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, string sessionId, string requestId, string snapshotToken, int turn)
+    {
+        var proof = await ReadCompletedProofAsync(files, lease, ReadInspectionSnapshot(files, lease));
+        if (proof.Root["schemaVersion"]?.GetValue<int>() != 2) return false;
+        RequireJointCompletionTuple(proof, sessionId, requestId, snapshotToken, turn);
+        // Past commit and today's permission remain separate. This readonly
+        // classification grants no continuation when foreign commands appear.
+        return true;
+    }
+
+    internal static async Task ValidateCurrentJointCompletionAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, string sessionId, string requestId, string snapshotToken, int turn)
+    {
+        var proof = await ReadCompletedProofAsync(files, lease, ReadInspectionSnapshot(files, lease));
+        RequireJointCompletionTuple(proof, sessionId, requestId, snapshotToken, turn);
+        await RequireNoJointContinuationCommandsAsync(files, lease);
+    }
+
+    internal static async Task<WoundAcceptedTurnOutputBindingResult?> TryBindExactJointContinuationAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, string sessionId, string requestId, string snapshotToken, int turn)
+    {
+        var proof = await ReadCompletedProofAsync(files, lease, ReadInspectionSnapshot(files, lease));
+        if (proof.Root["schemaVersion"]?.GetValue<int>() != 2) return null; // old v1 caller unchanged
+        RequireJointCompletionTuple(proof, sessionId, requestId, snapshotToken, turn);
+        await RequireNoJointContinuationCommandsAsync(files, lease);
+        var draftBytes = await files.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath) ?? throw Invalid("joint_continuation_draft_missing");
+        if (Text(proof.Root, "decisionPayloadFingerprint") != ComputeDecisionPayloadFingerprint(draftBytes))
+            throw Invalid("joint_continuation_changed_decision");
+        var draft = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(draftBytes),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "exact joint public continuation") ?? throw Invalid("joint_continuation_draft_null");
+        var roots = new Dictionary<string, JsonObject?>(StringComparer.Ordinal);
+        foreach (var path in new[] { WoundCarrierCatalog.PlayerPath, WoundCarrierCatalog.NpcPath,
+            WoundCarrierCatalog.EnemiesPath, WoundCarrierCatalog.AlliesPath, WoundCarrierCatalog.AfterlifeProfilesPath })
+        {
+            var bytes = await files.ReadFileBytesAsync(lease, path);
+            roots.Add(path, bytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
+                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, path));
+        }
+        var carriers = WoundCarrierCatalog.Build(new(roots[WoundCarrierCatalog.PlayerPath], roots[WoundCarrierCatalog.NpcPath],
+            roots[WoundCarrierCatalog.EnemiesPath], roots[WoundCarrierCatalog.AlliesPath], roots[WoundCarrierCatalog.AfterlifeProfilesPath]));
+        if (carriers.Issues.Count != 0 || proof.Receipt.WoundId is not { } woundId || !carriers.TryResolveOne(woundId, out var occurrence))
+            throw Invalid("joint_continuation_acquisition_carrier");
+        var sceneBytes = await files.ReadFileBytesAsync(lease, "output/narrative_response.json") ?? throw Invalid("joint_continuation_scene_missing");
+        var scene = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(sceneBytes),
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "joint continuation scene") ?? throw Invalid("joint_continuation_scene_null");
+        var wound = occurrence.Wound;
+        var localRef = Text(draft, "woundRef");
+        var claim = new WoundAcquisitionNarrationClaim(localRef, wound.Origin.EventRef, wound.Classification.Domain,
+            wound.Display.Name, wound.Severity.Rank, wound.Display.AcquisitionNarration);
+        var output = WoundPlayerNotification.Compose(new(localRef, wound, claim, Text(scene, "response")));
+        // Bracket detached presentation with the complete physical proof; this
+        // reconstructs no plan, request, hold, accepted event vector or command.
+        await ValidateCurrentJointCompletionAsync(files, lease, sessionId, requestId, snapshotToken, turn);
+        return output.Success && output.Notification is { } notification
+            ? new([notification], output.Issues) : new(Array.Empty<WoundPlayerNotification>(), output.Issues);
+    }
+
+    private static void RequireJointCompletionTuple(CompletedProof proof,
+        string sessionId, string requestId, string snapshotToken, int turn)
+    {
+        if (proof.Root["schemaVersion"]?.GetValue<int>() != 2 || Text(proof.Root, "sessionId") != sessionId ||
+            Text(proof.Root, "requestId") != requestId || Text(proof.Root, "snapshotToken") != snapshotToken || JointInteger(proof.Root, "turn") != turn)
+            throw Invalid("joint_continuation_original_tuple");
+    }
+
+    private static async Task RequireNoJointContinuationCommandsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+    {
+        foreach (var path in MechanicalCommandPaths)
+            if (await files.ReadFileBytesAsync(lease, path) is not null) throw Invalid("joint_continuation_foreign_command: " + path);
+    }
 
     // A non-authorizing read capability for exactly the validated typed TREAT row.
     // No ordinary adapter caller or parsed marker string can issue it.

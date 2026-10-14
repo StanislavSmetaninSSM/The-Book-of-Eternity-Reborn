@@ -1,5 +1,51 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J6 physical v2 continuation/read-only post-validation WIP STOP — 2026-10-14
+
+Retained sole writer continued from verified `70ba075fb38400b93db14fb1eb81b564684c5eb4`
+(metadata carrier; prior fresh canonical source b208). Current source connects fresh physical
+v2 exact continuation at the real validation entry BEFORE old finalized-treatment quarantine,
+raw staging or another scheduler. It independently reads the complete original/G/typed-history/
+receipt/fixed-footprint proof, scopes failure preservation only after identifying the genuine
+private v2 family, checks the exact whole public payload and absent raw commands, and binds
+narration against the uniquely resolved actual receipt-owned canonical acquisition. No parsed
+marker, diagnostic witness, detached checkpoint or old singleton receipt authorizes replay.
+
+Actual Committed results and cold exact reads now reach ordinary canonical/narrative/interface/
+reasoning/special-outcome/combat/level-up/memory and progression-validation READ APIs, bracketed
+by fresh full physical proof. No repair-helper mutation, reduction, publication or claim action
+runs in that pass. A narrow authenticated joint notification branch validates the entire final
+contribution and its one CREATE; old homogeneous/disjoint counts and branches remain unchanged,
+including the nullable treatment-batch distinction. The wrapper catch remains scoped to the
+actual joint outcome/frame, with no broad VerifiedCompleted-v1 catch. Detached outcome clears
+on a different actual frame only; same-frame PublicationUncertain remains blocked.
+
+Named progression engineering dependency remains OPEN and deliberately holds completion.
+StagePlayerTurnAsync supplies non-null ProgressionControl even with zero cycles. Existing
+ApplyAcceptedTurnOutcomeAsync writes schedule/report with its own coordinator and has no
+durable once-only acknowledgement; neither an old live flag, absent report, zero cycles nor
+story presence proves it already applied. Actual source-only consultation
+`fr063-joint-progression-replay-readonly-disposition-20261014.md`, digest prefix e3588cd5 (full
+consultation supplied to ROOT), identifies the necessary exact two-file durable acknowledgement
+amendment. No progression mutation/schema/owner redesign, null-control fixture workaround or
+Accepted/story-completion path is implemented in this block. The physical/read-only routes still
+return held-blocked; there is no qualified completion or new runtime result.
+
+Progression/typed outer story completion, terminal artifact cleanup, full warm/session-replacement
+and same/new-root cold qualification, J7 genuine R2-R7/C1 controls/selection, normative FR063/FR012/
+private lifecycle amendment and J8 primary GM example/manifest/guards remain OPEN. Compilation,
+discovery, catalog, PlanOnly, tests/runtime/faults and whole independent SOURCE remain UNRUN.
+No fixture/category/selector/acceptance checkbox changes. Old reports/receipts/raw166 (one vacuous
+observation excluded), historical source findings and unchecked fields remain immutable.
+
+ROOT preservation: current author report and static readback are NOT SUPPLIED/UNCHECKED;
+prior30f56ff2/0a312383 are previous-phase observations. Sole author confirmed STOP with no
+pending tools/writes after completed MD2 insertion (exit0; no visible chunk/session ID).
+The scoped progression consultation e3588cd5 and its8-pin ROOT read-time confirmation are
+preserved separately in recovery; those pins describe consultation time/base70, not every
+subsequent source byte. ROOT current WIP receipt supplies fresh authored/protected pins.
+No runtime or full SOURCE qualification follows from remote preservation.
+
 ## J6 fresh canonical later source handoff — 2026-10-14
 
 Published source `b20895cbab0410e1108b7b16fb85070db6987162`, owning source base
