@@ -1,5 +1,31 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Connected J2/J7/J8 finite category/selection SOURCE WIP STOP — 2026-10-14
+
+Owning base `a4c9c851a4f6d35b1a10c5d07dbdc9679a7d4b43`; SOURCE GO followed
+verified selected recovery2387/1858. Metadata-only:16 new exact category owners and15
+new task selections; all730 previous nodes/default/historical selection files retained.
+J7 sixteenmethods/34 literal cases, J8 twoFacts/twocases and already-owned J2 oneTheory/
+fivecases total PROVISIONAL19methods/41cases, not official discovery. C1 is limited to
+actual shared sixarg/singleton/public-mixed/final lifecycle/common-cache, default-QTE
+scheduler/compensation and two original rollback-hash guards; intentional historical
+ownership overlaps are explicit. No broad ordinary13/API5/pending2/J1/QTE/archive/docs
+or globalCI/default selection repeat or modification is scheduled.
+
+Zero-exec preparation/PlanOnly covers BOTH selected projects. Separate actual stages own
+staged/Late vs actual ProcessPlayerTurn, same-root cold/report consumption, retained row,
+new physical root, generation/phase refusals, known/uncertain phase settlement, active-tail,
+story, component legacy exclusions, worked example and exact C1. Actual files are method-
+disjoint; preparation identities are not repeat actual execution. Budgets are protective
+unknown-duration bounds (expectedSeconds=null), category1..15/commandmax30 including
+preparation and cleanup; existing native child45s unchanged. No mutable shared fixture or
+warm-cache shortcut is introduced. Failed-case J8 cleanup/artifacts, compiler/API/fixture/
+callback/close, official catalog/discovery/PlanOnly/runtime/fault/project validity remain
+UNRUN/UNCHECKED until ONE entire independent SOURCE/FIXTURE/SELECTION gate. Lawful active
+combinations, fresh-PID initially bad signed authority, erased traces/arbitrary partial
+cleanup and fullFR063/T070 remain OPEN. All old checkpoints/checkboxes/raw receipts and
+protected production/test/normative bodies remain unchanged; no acceptance is marked.
+
 ## J8 focused raw evidence / generation-byte correction SOURCE WIP STOP — 2026-10-14
 
 ROOT's pre-publication source observations identified an ID-only generation oracle and

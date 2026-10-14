@@ -1,0 +1,9 @@
+{
+  "tool": "exec_command",
+  "chunkId": "ed87db",
+  "exitCode": 1,
+  "operation": "ROOT static prepublication catalog oldnodes check; assumed curcategories[:730]==oldcategories",
+  "exactToolOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 7, in <module>\nAssertionError\n",
+  "effect": "failed before publicationmanifest/log creation or source/Git mutation; no projectcall",
+  "classification": "ROOT insertion-position assumption, not officialloader/security/runtime failure"
+}

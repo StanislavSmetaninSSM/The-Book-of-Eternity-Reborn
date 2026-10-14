@@ -1,0 +1,13 @@
+{
+  "tool": "exec_command",
+  "chunk_id": "ff84ed",
+  "exit_code": 1,
+  "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "operation": "First Python category/selection metadata authoring heredoc, static selected-method lookup before any repository write",
+  "returnedOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 56, in <module>\n  File \"<stdin>\", line 51, in locate\nAssertionError: ('BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression', [])\n",
+  "cause": "Text locator searched class-name file prefix; actual declared class methods are in MortalWoundTreatmentResourcePublicationLifecycleTests.Joint*.cs",
+  "effect": "External baseline snapshot only; catalog/selections/MD2 not written, no receipt/report produced",
+  "fullCommand": "Retained in original tool history; not rerun as a project command",
+  "projectChecks": "UNRUN",
+  "sourceAttempt": "UNQUALIFIED"
+}

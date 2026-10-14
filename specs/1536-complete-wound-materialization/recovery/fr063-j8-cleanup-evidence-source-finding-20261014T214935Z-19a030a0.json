@@ -1,0 +1,10 @@
+{
+  "checkpoint": "a4c9c851a4f6d35b1a10c5d07dbdc9679a7d4b43",
+  "evidence": [
+    "0c4d07 CleanupOwnedFixture131-141 outputcallback only",
+    "523c85 actualnewhelper cleanup.Add callback; cleanup witnessprinted only after successfulbody"
+  ],
+  "finding": "When dochelper body assertion throws, Dispose enforcescleanup and appends receipt to localList, but post-using diagnostic parse/return is skipped. No unconditionalstdout callback forreceipt, so failure cleanupreceipt may notbe available inTRX. Strictfilesystemcleanup itself notprovedfailed; actualruntimeUNRUN.",
+  "reviewRequest": "Whole independentFIXTURE gate verify failed-body cleanup artifact retention/ownedroot visibility and choose necessaryboundedcorrection; currentcategorywriter scope notexpanded",
+  "status": "concrete source evidence-gap candidate; gateNOTRUN, no executedfailure/securityclaim"
+}

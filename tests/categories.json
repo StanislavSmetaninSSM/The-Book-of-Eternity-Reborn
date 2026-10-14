@@ -1,6 +1,512 @@
 {
     "schemaVersion": 1,
     "categories": [
+    {
+      "id": "fr063-joint-late-completion",
+      "responsibility": "SOURCE-only/provisional: Actual staged43/WaitForGMResponse-Late owner; zero/nonzero report, full request/confirmed hold, same III-to-II scene, CREATE then TREAT, single charge/effect/history/story/turn, eligible cleanup and inert repeat. Names say Live but these two use staged/Late entry.",
+      "excludes": "Actual ProcessPlayerTurn, cold/new-root, refusals and active-tail support are separate. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-live-completion",
+      "responsibility": "SOURCE-only/provisional: Actual ProcessPlayerTurn/TerminalWaitStarted owner with real43 and nonzero correction: full union/one charge/report/story/turn/cleanup/inert repeat.",
+      "excludes": "Staged WaitForGMResponse is not this caller; no cold/new-root or fault qualification. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualLivePlayerTurnCompletesNonzeroJointRepairExactlyOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-cold-progression",
+      "responsibility": "SOURCE-only/provisional: Same-root fresh PID/empty registries from genuine common-unapplied or phase-applied pre-story pause, including actual nonzero consumed report. Real original/G/full union reconstruct; report/mechanics/projection/story/turn apply once and repeat inertly. Native child45s unchanged.",
+      "excludes": "Distinct root and retained true writer row are separate; no Load/reseal/new reservation or parsed witness authority. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedBeforeStoryFreshProcessCompletesOnceAndRepeatsInertly",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_UnappliedCommonFreshProcessAppliesPhaseAndCompletesExactlyOnce",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NonzeroReportConsumedBeforeAppliedColdCompletesWithoutRecreation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-retained-story",
+      "responsibility": "SOURCE-only/provisional: Genuine committed writer/readback-failure seed retains exact row/Ready/original/union; fresh PID independently recognizes it, forbids append/projection stamp rewrite, completes turn/cleanup once and repeats inertly.",
+      "excludes": "No fabricated/copy-accepted row, test-to-test call, diagnostic authority or silent first failure; failed-case cleanup evidence UNCHECKED. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_RealAppendedRowAfterReadbackFailureFreshProcessCompletesWithoutAppend"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-new-root",
+      "responsibility": "SOURCE-only/provisional: One distinct owned physical root/fresh PID from nonzero/APPLIED producer: complete quiescent durable cohort/currentG transport, no-follow directory/file/byte comparisons, real original/G readers and late owner complete once/inert repeat.",
+      "excludes": "Not SaveGame/LoadGame qualification, signing-key transfer/newG/reseal, active workers/debt/unknown namespace or arbitrary partial cleanup recovery. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionNewRoot.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NonzeroAppliedNewRootFreshProcessAuthenticatesAndCompletesOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-generation-refusal",
+      "responsibility": "SOURCE-only/provisional: Actual first outer Late storage admission refuses missing physicalG or exact lawful independent donorG after intact prerequisites and leases close; raw after-damage images/Ready/original/output/backups/story/turn retained without newG or second admission. Outer attempt vs inner hook distinguished.",
+      "excludes": "No target rotation/cohort drop/admission bypass; fresh PID already-bad signed original and positive foreignG authority are not proved. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_MissingGenerationRefusesActualOuterAdmissionWithoutCreatingGeneration",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ForeignDonorGenerationRefusesActualOuterAdmissionAndRetainsEvidence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-phase-refusal",
+      "responsibility": "SOURCE-only/provisional: Twelve literal after-tamper controls: missing marker, phase fingerprint, mixed schedule/report, basis/current control/worldtime, admitted-child signed payload digest and four header counterparts. First actual owner holds and preserves exact captured after-tamper file inventory/G/Ready/original/output/backups/turn/story without authority preflight after tamper.",
+      "excludes": "One official method includes all12 rows. Admitted-child corruption is not freshPID initially bad authority; no-frame/all erased owner traces and runtime empty-directory coverage are not inferred. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 15,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-phase-settlement",
+      "responsibility": "SOURCE-only/provisional: Two genuine nonzero/common-unapplied first-owner hook cases: known committed exact3member progression compensation versus foreign/uncertain debt retention. Raw phase/cohort/claim/mechanics/Ready/original/output/backups/story/turn outcomes precede oracles; no second call settles debt.",
+      "excludes": "No finalized-mechanics restore/rearm/new hold, synthetic capability, exhaustive faults or callback/lease-close qualification without actual execution. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionPhaseFaults.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PhaseKnownReadbackFailureCompensatesOnlyThreeMembersAndRetainsMechanics",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PhaseForeignMemberUncertaintyRetainsDebtAndCompleteMechanicalUnion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-active-tail",
+      "responsibility": "SOURCE-only/provisional: Three actual before-original43 inputs after genuine prior42 inactive owner: pending stats, uncovered canonical level with actual processed acknowledgement untouched, newQTE offer. Named inactive refusal must precede common take; request/ConfirmedHeld/source/mechanics/Ready/original/story/turn retained.",
+      "excludes": "Refusal ONLY. Lawful active stats/level-up/newQTE joint support remains OPEN; no manual acknowledgement/clearing active work or post-original drift relabelling. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-story-owner",
+      "responsibility": "SOURCE-only/provisional: Five actual story controls: changed signed prefix, actual committed-row narrative/G edits, real append failure and real committed readback failure. Raw outcome/captured cohort/turn/debt before assertions; retain applied union/Ready/original/output/backups without second admission.",
+      "excludes": "No fabricated accepted row/proof. PhysicalG admission and fresh retained-row completion are separate; failed-body cleanup artifacts remain UNCHECKED. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionStory.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-legacy-exclusion",
+      "responsibility": "SOURCE-only/provisional: Two-row NONAUTHORIZING component exclusion: absent marker and genuine actual42/43/common-published v1. Requires false and all GameSession filenames/bytes plus physicalG/turn/inGame preservation.",
+      "excludes": "Not actual Late/native completion, RuntimeRoot namespace/emptydirs, joint replay grant or handbuilt v1 proof. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompatibility.cs"
+      ],
+      "related": [
+        {
+          "id": "fr063-guaranteed-joint-checkpoint-provenance",
+          "when": "Select existing exact5row component when private original/source/checkpoint/missing-wave prerequisite changes; not R1/ordinary13/API5/pending2 repetition."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointNullFrameHold_ComponentAbsentAndGenuineV1RemainUnclaimedAndByteExact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-worked-example",
+      "responsibility": "SOURCE-only/provisional: Two focused Facts: genuine QTE42/original43 -> real adapter/builder/closed actual packet shape -> exact III-to-II public correction and seven guidance surfaces/both daemon definitions. Five correlation fields omitted from document view, six remaining semantics compared; actual packet/outcomes precede relevant oracles.",
+      "excludes": "No joint treatment/charge/publication/progression/story/cold authority from public example. Existing documentation-examples literal-class wildcards intentionally also own these2methods; task selects only exact subset, never broad docs. Failed-case cleanup evidence UNCHECKED. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs",
+        "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs"
+      ],
+      "related": [
+        {
+          "id": "documentation-examples",
+          "when": "Intentional duplicate ownership from ExampleDocumentationValidationTests.* integration and PromptDocumentationCoverageTests.* unit. FR063 selects this exact subset; runner deduplicates identities if an independently justified task chooses both owners."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.JointSeverityRepairWorkedExample_UsesRealQteOriginalAndCompletePacket"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-c1-treatment-defaults",
+      "responsibility": "SOURCE-only/provisional: Shared typed contribution/root assembly, private-family cache/final fences and named joint entry preserve old exact sixarg surface, procedure/course singleton history, persisted public-mixed refusal and co-tampered carrier/lifecycle final rejection. Five existing Facts only.",
+      "excludes": "Exact dependency-selected subset only. No blind11candidate reuse, all-family/global/CI graph expansion, accepted ordinary13/API5/pending2/J1/native/archive repeat, redundant NONE resource replay or C5 allocation/performance/journal qualification. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.Replay.cs",
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs",
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.CoursePublication.cs",
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PersistenceHardening.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-wounds-treatment-replay",
+          "when": "Intentional exact existing-method subset ownership. Select this bounded C1 category for its stated changed consumer, not the broad historical owner based on a path hint; combined membership is deduplicated."
+        },
+        {
+          "id": "mortal-wounds-treatment-publication",
+          "when": "Intentional exact existing-method subset ownership. Select this bounded C1 category for its stated changed consumer, not the broad historical owner based on a path hint; combined membership is deduplicated."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces",
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce",
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer",
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies",
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureTreatmentAuthority_RejectsCoTamperedCarrierBaselineAndLifecycle"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-c1-common-mixed-guard",
+      "responsibility": "SOURCE-only/provisional: New private common/cache family must not authorize old generic mixed CREATE/WORSEN anchors; one existing unit Fact covers strict default-family refusal.",
+      "excludes": "Exact dependency-selected subset only. No blind11candidate reuse, all-family/global/CI graph expansion, accepted ordinary13/API5/pending2/J1/native/archive repeat, redundant NONE resource replay or C5 allocation/performance/journal qualification. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.WoundAnchorProjection.cs"
+      ],
+      "related": [
+        {
+          "id": "accepted-mechanics-planning",
+          "when": "Intentional exact existing-method subset ownership. Select this bounded C1 category for its stated changed consumer, not the broad historical owner based on a path hint; combined membership is deduplicated."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-c1-qte-default-publication",
+      "responsibility": "SOURCE-only/provisional: Five changed-dependency old consumers: no-offer/single-draft singleton, changed completed-v1 replay, real uncommitted rollback, CREATE-owned periodic effect plus independent ordinary resource work/replay, and isolated v1/default whole-batch compensation. Protect old adapter partition/shared single scheduler/catches. CREATE replay has two historical owners but executes once.",
+      "excludes": "Exact dependency-selected subset only. No blind11candidate reuse, all-family/global/CI graph expansion, accepted ordinary13/API5/pending2/J1/native/archive repeat, redundant NONE resource replay or C5 allocation/performance/journal qualification. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs"
+      ],
+      "related": [
+        {
+          "id": "qte-physical-injury-consumer-draft",
+          "when": "Intentional exact existing-method subset ownership. Select this bounded C1 category for its stated changed consumer, not the broad historical owner based on a path hint; combined membership is deduplicated."
+        },
+        {
+          "id": "qte-physical-injury-consumer-completed-proof",
+          "when": "Intentional exact existing-method subset ownership. Select this bounded C1 category for its stated changed consumer, not the broad historical owner based on a path hint; combined membership is deduplicated."
+        },
+        {
+          "id": "qte-physical-injury-consumer-publication",
+          "when": "Intentional exact existing-method subset ownership. Select this bounded C1 category for its stated changed consumer, not the broad historical owner based on a path hint; combined membership is deduplicated."
+        },
+        {
+          "id": "qte-physical-injury-consumer-created-resource-replay",
+          "when": "Intentional exact existing-method subset ownership. Select this bounded C1 category for its stated changed consumer, not the broad historical owner based on a path hint; combined membership is deduplicated."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 8,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr063-joint-c1-original-rollback",
+      "responsibility": "SOURCE-only/provisional: Two exact existing hash-refusal Facts protect shared strict original/backup hash validation consumed by joint coordinated restore/install; their ordinary-file fixtures do not justify the broad historical afterlife owner.",
+      "excludes": "Exact dependency-selected subset only. No blind11candidate reuse, all-family/global/CI graph expansion, accepted ordinary13/API5/pending2/J1/native/archive repeat, redundant NONE resource replay or C5 allocation/performance/journal qualification. Compilation/API/fixture/callback/close and all project/runtime validity remain UNRUN/UNCHECKED before entire independent SOURCE/FIXTURE/SELECTION; no full FR063/T070 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs"
+      ],
+      "related": [
+        {
+          "id": "turn-lifecycle-afterlife",
+          "when": "Intentional exact existing-method subset ownership. Select this bounded C1 category for its stated changed consumer, not the broad historical owner based on a path hint; combined membership is deduplicated."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence"
+          ]
+        }
+      ]
+    },
         {
             "id": "fr063-guaranteed-joint-checkpoint-provenance",
             "responsibility": "FR063 J2 foundation only: one genuine source-backed component theory/five rows captures detached private rejected-severity checkpoint from actual finalized QTE42/original43, confirmed homogeneous guaranteed request and real adapter packet; exact roundtrip plus unknown-field/blob-hash/frame-leaf-with-original-seal/fingerprint refusal. Full physical bytes, exact held request/claim and no common plan/private pending write are checked. Newly authored UNRUN; not live joint dispatch/publication proof. The same five rows also refuse private joint preparation without the actual installed full wave, preserving no issued authority/plan; this is a negative prerequisite, not positive prepared-cache/effect/publication qualification.",
