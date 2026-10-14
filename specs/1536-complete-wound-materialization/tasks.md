@@ -1,5 +1,20 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J6 batch/v2 later source handoff and pending compensation guard — 2026-10-14
+
+Published source `a92b3962740e12f5d68b50afd198795ffd454539`, owning diff base
+`64243cb533beb3639413f1184834ed00f822b1f4`. Later report SHA256
+`5049a34370034231cc3da2ff49a49b7b5d5a5add339bb9e35038956916302fa4`
+is preserved separately; historical ROOT AuthorReport NOT SUPPLIED stays unchanged.
+214 reported static checks/108 protected pins/121 actual current pins are source
+observations only; all project checks UNRUN, whole SOURCE pending. ROOT found the
+explicit uncertain-settlement compensation branch can publish rollback before
+proving the current receipt/fences/exact ConfirmedHeld claim. Source correction is
+required before any runtime; actual fault reachability remains UNRUN. The precise
+finding is preserved in recovery/fr063-j6-compensation-preproof-source-finding-20261014.json.
+Next same-author block: verify/fix that guard, then terminal release and actual engine
+admission/repair/restore/retry/outer settlement/late-idle, followed by J7/norm/GM gates.
+
 ## J6 same-lease batch/typed v2 readback/claim settlement WIP STOP — 2026-10-14
 
 Retained sole Sol continued from published64243cb533beb3639413f1184834ed00f822b1f4

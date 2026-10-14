@@ -1,0 +1,15 @@
+{
+  "checkpoint": "a92b3962740e12f5d68b50afd198795ffd454539",
+  "kind": "ROOT source control-flow finding; not independent SOURCE verdict or runtime reproduction",
+  "places": [
+    "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalJointRepair.cs:107",
+    "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs:113",
+    "BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs:81"
+  ],
+  "finding": "Any non-Committed settlement including PublicationUncertain routes to compensation; compensation reads known bytes and publishes restore before rearm proves current exact taken receipt/fences/ConfirmedHeld claim. Unproved claim/receipt branch is not blocked before byte rollback.",
+  "requirement": "DESIGNv2 publication/compensation: unknown publication/claim state preserves evidence blocked; retryable compensation retains exact confirmed request/claim.",
+  "runtimeScenario": "UNRUN; reachability/fault behaviour requires later genuine source-reviewed controls",
+  "requiredNext": "Verify actual ownership APIs; prove current exact taken receipt and original still-confirmed agreement before rollback writes, distinguish uncertain settlement from known retryable failure; no guard relaxation",
+  "writerStatus": "external report only; no source correction yet; immutable current WIP/report/static/ROOTreceipt unchanged",
+  "utc": "2026-10-14T06:50:14.129227+00:00"
+}
