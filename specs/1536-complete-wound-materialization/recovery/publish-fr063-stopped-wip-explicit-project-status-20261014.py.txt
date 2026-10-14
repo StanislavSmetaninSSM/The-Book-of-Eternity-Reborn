@@ -1,0 +1,28 @@
+import argparse,datetime,hashlib,json,pathlib,re,subprocess
+q=argparse.ArgumentParser();q.add_argument('base');q.add_argument('slug');q.add_argument('message');a=q.parse_args()
+r=pathlib.Path('/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f');out=pathlib.Path('/workspace/boe-cloud-tools-20261014');rec='specs/1536-complete-wound-materialization/recovery/'
+def git(*args,raw=False):return subprocess.check_output(['git','-C',str(r),*args],text=not raw)
+def sha(b):return hashlib.sha256(b).hexdigest()
+assert git('rev-parse','HEAD').strip()==a.base
+manifest=json.loads((out/(a.slug+'-publication-input.json')).read_text());assert manifest['authorSTOP']=='FINAL STOPPED; no pending tools/writes' and manifest['base']==a.base
+paths=manifest['authoredPaths']; initial=set(git('diff','--name-only').splitlines())|set(git('ls-files','--others','--exclude-standard').splitlines());assert initial==set(paths),(initial,paths)
+for p,h in manifest['authoredSHA256'].items():assert sha((r/p).read_bytes())==h,p
+protected={}
+for p in manifest['protectedPaths']:
+ b=(r/p).read_bytes();assert b==git('show',a.base+':'+p,raw=True),p;protected[p]=sha(b)
+for p in ('specs/1536-complete-wound-materialization/plan.md','specs/1536-complete-wound-materialization/tasks.md'):
+ old=git('show',a.base+':'+p,raw=True);cur=(r/p).read_bytes();lead,tail=old.split(b'\n\n',1);assert cur.startswith(lead+b'\n\n') and cur.endswith(tail),p
+ assert re.findall(rb'^.*\[[ xX]\].*$',cur,re.M)==re.findall(rb'^.*\[[ xX]\].*$',old,re.M)
+extras=[]
+for row in manifest['rawFiles']:
+ b=pathlib.Path(row['source']).read_bytes();assert sha(b)==row['sha256'];dest=rec+row['destination'];assert not (r/dest).exists();(r/dest).parent.mkdir(parents=True,exist_ok=True);(r/dest).write_bytes(b);extras.append(dest)
+receipt={'OwningBase':a.base,'AuthorSTOP':manifest['authorSTOP'],'SoleWriter':'same retained /root/t070_sol_implementation','AuthoredPaths':paths,'CurrentSHA256':{p:sha((r/p).read_bytes()) for p in paths},'ProtectedSHA256':protected,'RootReadback':'fresh actual authored hashes/protected base bytes/exact scope/old MD2 tails-checkboxes; project UNRUN','RawHandoffFiles':extras,'AuthorStaticChecks':manifest.get('authorStaticChecks','UNCHECKED'),'Status':manifest['status'],'Open':manifest['open'],'IndependentSOURCE':manifest.get('independentSource','UNRUN'),'IndependentFIXTURE':manifest.get('independentFixture','UNRUN'),'IndependentSELECTION':manifest.get('independentSelection','UNRUN'),'ExecutionRelease':manifest.get('executionRelease','HELD'),'AllProjectChecks':manifest.get('projectChecks','UNRUN'),'Qualification':'UNQUALIFIED','UTC':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+dest=rec+a.slug+'-root-wip-20261014.json';(r/dest).write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\n');paths=paths+extras+[dest]
+assert set(git('diff','--name-only').splitlines())|set(git('ls-files','--others','--exclude-standard').splitlines())==set(paths)
+subprocess.run(['git','-C',str(r),'diff','--check'],check=True);subprocess.run(['git','-C',str(r),'add','--',*paths],check=True)
+assert set(git('diff','--cached','--name-only').splitlines())==set(paths)
+subprocess.run(['git','-C',str(r),'commit','-m',a.message],check=True);head=git('rev-parse','HEAD').strip()
+subprocess.run(['git','-C',str(r),'-c','credential.helper=!gh auth git-credential','push','origin','HEAD:refs/heads/1536-wound-b2-cloud-20261012'],check=True)
+remote=git('-c','credential.helper=!gh auth git-credential','ls-remote','--heads','origin','refs/heads/1536-wound-b2-cloud-20261012').split()[0];assert remote==head and not git('status','--porcelain').strip()
+for p in paths:assert (r/p).read_bytes()==git('show',head+':'+p,raw=True)
+x={'base':a.base,'checkpoint':head,'actualRemoteSHA':remote,'primaryClean':True,'publishedPaths':paths,'publishedBytesMatch':True,'protectedPathsExact':len(protected),'source':manifest['status'],'allProjectChecks':manifest.get('projectChecks','UNRUN'),'utc':datetime.datetime.now(datetime.timezone.utc).isoformat()};(out/(a.slug+'-publication-readback.json')).write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n');print(json.dumps(x,ensure_ascii=False))

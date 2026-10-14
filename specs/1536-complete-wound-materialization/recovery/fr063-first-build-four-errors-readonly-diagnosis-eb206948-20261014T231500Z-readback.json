@@ -1,0 +1,132 @@
+{
+  "status": "FINAL STOPPED; read-only diagnosis; proposals not implemented",
+  "sourceCheckpointSuppliedByRoot": "eb2069484c2d8dc69a1237b61e494585df320788",
+  "report": {
+    "path": "/workspace/boe-cloud-tools-20261014/fr063-first-build-four-errors-readonly-diagnosis-eb206948-20261014T231500Z.md",
+    "sha256": "0f2abe0eb879a85ac5ce4a75de1616fa35929f049a7a2a56a6a9fef9fc1b4799"
+  },
+  "currentSourcePins": {
+    "BookOfEternityClient/UI/WoundPlayerNotification.cs": {
+      "sha256": "5bcb8df9fb61028d47ba3e3dccea7ce1bad42a1da8a03ca03d0dc72ef8105e69",
+      "bytes": 21578
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs": {
+      "sha256": "f3f048f61988f644f4816fb06cddccb71022be48985dbf347cc7ae64bacee175",
+      "bytes": 10082
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs": {
+      "sha256": "d1c6bd3dab186a097129a792fdee4a8b795aed322cfc8311dc0fbaadbcbdbc21",
+      "bytes": 503846
+    },
+    "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs": {
+      "sha256": "4aa7ee1eedef023ceb6760bd72f5fbcb44dc0c5a321c673352d3340ac238768d",
+      "bytes": 116841
+    },
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs": {
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
+      "bytes": 133406
+    },
+    "BookOfEternityClient/Services/WoundCarrierCatalog.cs": {
+      "sha256": "af9fd37ffd70d54178ca0b3452ce13b47213f2658ac4501d3844172dfe48f50d",
+      "bytes": 44369
+    },
+    "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs": {
+      "sha256": "288e2429bbdb3c79c540f5dc8539cc2cc9b3bfdb4551a02b94c2b443422af3a1",
+      "bytes": 9227
+    },
+    "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs": {
+      "sha256": "27fa10c64ebe04cb78926274079b1e5b7412a7b248eb2571d6faa22bae493d6b",
+      "bytes": 27780
+    },
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs": {
+      "sha256": "47166768b731554a06fedbd540d56dbe2ef7af508c661ebb8f3011e2e949720a",
+      "bytes": 28421
+    },
+    "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs": {
+      "sha256": "9c50a4cf17781f6cf2bc64134bf756d5322c1009f203a875301e8e34c09acd06",
+      "bytes": 53265
+    }
+  },
+  "actualLog": {
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261014-230323-160-464888-982feb44bb74454386ff75960c4ab31f-categories/dotnet-test.log",
+    "sha256": "a45d4d14b7b210752b4cc27d717eba8c2bd249fd228222310e6088d096e0df2b",
+    "distinctCompilerErrors": [
+      "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/UI/WoundPlayerNotification.cs(282,43): error CS1061: 'WoundPreparedAcceptedTurnPlan' does not contain a definition for 'Transitions' and no accessible extension method 'Transitions' accepting a first argument of type 'WoundPreparedAcceptedTurnPlan' could be found (are you missing a using directive or an assembly reference?) [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs(89,50): error CS1061: 'WoundCarrierCatalogInput' does not contain a definition for 'Keys' and no accessible extension method 'Keys' accepting a first argument of type 'WoundCarrierCatalogInput' could be found (are you missing a using directive or an assembly reference?) [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs(454,37): error CS0136: A local or parameter named 'lease' cannot be declared in this scope because that name is used in an enclosing local scope to define a local or parameter [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs(282,16): error CS0411: The type arguments for method 'CollectionExtensions.AddRange<T>(List<T>, ReadOnlySpan<T>)' cannot be inferred from the usage. Try specifying the type arguments explicitly. [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/BookOfEternityClient.csproj]"
+    ]
+  },
+  "frozenRootReadback": {
+    "path": "/workspace/boe-cloud-tools-20261014/fr063-connected-fresh-evidence-eb206948-20261014T230309Z-45ecfd5c/preparation-root-readback.json",
+    "sha256": "05be820184f3af342dc99b33d5fdc8a2a23d64294a8f5fe0b684192226db2b35",
+    "matchesSuppliedHash": true
+  },
+  "boundedSourceObservations": [
+    {
+      "id": "E1-input-owner",
+      "source": "BookOfEternityClient/UI/WoundPlayerNotification.cs",
+      "fact": "ComposeAcceptedTurn reads bundle.Input.Transitions; ComposeAcceptedJointRepair instead references missing bundle.PreparedPlan.Transitions."
+    },
+    {
+      "id": "E1-prepared-contract",
+      "source": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "fact": "WoundPreparedAcceptedTurnPlan has effect batches and continuation authority, but no Transitions member."
+    },
+    {
+      "id": "E1-private-input-binding",
+      "source": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "fact": "PrepareJointRepairCandidate compares the supplied input fingerprint to the privately retained acquisition input before PrepareCore."
+    },
+    {
+      "id": "E2-record-shape",
+      "source": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "fact": "WoundCarrierCatalogInput is a fixed record of PlayerWounds, NpcWounds, EnemyCombatants, AllyCombatants, AfterlifeProfiles; it is not a dictionary."
+    },
+    {
+      "id": "E2-complete-paths",
+      "source": "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs",
+      "fact": "CarrierPaths exposes the existing complete five-path read-only inventory, including optional absent slots."
+    },
+    {
+      "id": "E2-working-mapping",
+      "source": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+      "fact": "The common composer explicitly maps all five carrier paths to the corresponding record members."
+    },
+    {
+      "id": "E3-lexical-scope",
+      "source": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "fact": "BeforeDestructiveRefusalAsync declares joint nested lease before another lease declaration in the enclosing local-function block."
+    },
+    {
+      "id": "E4-interface-receiver",
+      "source": "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "fact": "ParsePending accepts ICollection<ValidationIssue>; its AddRange call is not a method on that interface."
+    },
+    {
+      "id": "E4-result-contract",
+      "source": "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "fact": "ValidatePendingEnvelope returns IReadOnlyList<ValidationIssue>; no issue-type conversion is required."
+    },
+    {
+      "id": "E4-working-insertion",
+      "source": "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "fact": "Existing ParsePending-related code inserts parse issues through foreach and ICollection.Add."
+    }
+  ],
+  "checkLimit": "No compiler/project/script/test/loader/PlanOnly/catalog/discovery/runtime/fault execution. Ten text/API observations are not build or test passes.",
+  "locatorFailure": {
+    "operation": "sed -n '105,180p' BookOfEternityClient/UI/WoundPlayerNotification.cs\\nrg -n 'record AcceptedMechanicsWoundStageBundle|class AcceptedMechanicsWoundStageBundle|WoundAcceptedTurnInput Input|TryReadJointRepairFinal|JointRepairFinalPlanAgrees' BookOfEternityClient/Services/AcceptedMechanicsWoundStageBundle.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+    "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+    "chunkId": "be6cf4",
+    "exitCode": 2,
+    "sessionId": null,
+    "errorText": "rg: BookOfEternityClient/Services/AcceptedMechanicsWoundStageBundle.cs: No such file or directory (os error 2)",
+    "classification": "Pure-text filename locator error; sed output and actual matching planner lines were returned. No project or security error."
+  },
+  "remainingGate": "Independent EVIDENCE classification, explicit correction release, focused SOURCE closure and ROOT-owned fresh preparation; no result predicted.",
+  "pendingTools": false,
+  "repositoryWrites": false,
+  "projectExecution": false,
+  "telemetry": "Actual model/effort unavailable; no override/new agent."
+}

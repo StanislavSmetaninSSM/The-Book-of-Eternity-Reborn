@@ -1,0 +1,145 @@
+{
+  "source": "eb2069484c2d8dc69a1237b61e494585df320788",
+  "classification": "FIRST_FRESH_PREPARATION_BUILD_PREREQUISITE_FAILURE_0_EXECUTED_NOT_CAUSAL_RED",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 29913,
+      "uncompressedSha256": "50da116401c717f9ae2262e45b55869967393d439fcdfc7a6953ebde659aa86b",
+      "compressedBytes": 8578,
+      "compressedSha256": "bda1ae84639ca06e41c8c74aff7495e9f070ba9835ec661c1e618fb8dd42c070"
+    },
+    {
+      "name": "execution-gate-proof-raw.json.gz",
+      "uncompressedBytes": 32232,
+      "uncompressedSha256": "f784253d043803f1c809cf27510376d5d71f0ae0b0aa69b3fc7c13e368b80196",
+      "compressedBytes": 9350,
+      "compressedSha256": "94dcf71b08bcbf4a58ed5e09ad75abde79813aff3eeff85531800636472ffd72"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 1276,
+      "uncompressedSha256": "3841115c8bf3b3f1633f040eabc60ae78ff89d698fce470ddf8472a6a307e190",
+      "compressedBytes": 583,
+      "compressedSha256": "640ba24cd5282110026d9992b2dc7db08946d7624c1c85d8974d3646d524e355"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 523,
+      "uncompressedSha256": "e1799b2290c06ce425a9845e62d687452b226ce3f8568e2534b87108cff0c795",
+      "compressedBytes": 318,
+      "compressedSha256": "723e99189d8dba90402064caa4a0aeba7f003fb14cf1e577d16ab24609bdbc4e"
+    },
+    {
+      "name": "preparation-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "4b2daaf371e26215491da6fed9e78b4ec375bc6b2a39956658853df682f1914a",
+      "compressedBytes": 281,
+      "compressedSha256": "6b354f2b5f0961dffdc598207c8bfc0a8a4e1e2fa8228fcdece70e9147d96ed2"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 4100,
+      "uncompressedSha256": "05be820184f3af342dc99b33d5fdc8a2a23d64294a8f5fe0b684192226db2b35",
+      "compressedBytes": 1563,
+      "compressedSha256": "290bdb0e127054f36e6b1a8fa852583930ee705a975e227c65037b23418c69dc"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "2010fe8e34d02d54036b2c62ad8fffa74a7eb6c2a793e1200c937fa9aaca1f6b",
+      "compressedBytes": 270,
+      "compressedSha256": "5949cb381d6442618bd750309ff8ec0f8b59ff3e698e94130876f566f276a253"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 15103,
+      "uncompressedSha256": "a45d4d14b7b210752b4cc27d717eba8c2bd249fd228222310e6088d096e0df2b",
+      "compressedBytes": 2373,
+      "compressedSha256": "d8466491c36cec42f896b3da1cea8e569a8190f129581e3986ddde543774bb3b"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 16398,
+      "uncompressedSha256": "9ae1ba65af7dc28a64f099a2b922e981971e5a469ace69174ff84b31b61c2e1e",
+      "compressedBytes": 3493,
+      "compressedSha256": "5a84a3a7df46335fef64a0806e0aacb395d9b2495d88fba7494c23bcc8678f5c"
+    }
+  ],
+  "frozenUtc": "2026-10-14T23:05:28.132659+00:00",
+  "preparation": {
+    "source": "eb2069484c2d8dc69a1237b61e494585df320788",
+    "compileSource": "eb2069484c2d8dc69a1237b61e494585df320788",
+    "run": "20261014-230323-160-464888-982feb44bb74454386ff75960c4ab31f-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261014-230323-160-464888-982feb44bb74454386ff75960c4ab31f-categories",
+    "processExitCode": 1,
+    "exitCode": 1,
+    "timedOut": false,
+    "classification": "BUILD_PREREQUISITE_FAILURE; NOT_CAUSAL_RED; NO_TEST_EXECUTION",
+    "wallTime": "00:00:51.9005145",
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "officialInventory": "NOT_REACHED; static32/58/18 remains provisional",
+    "phaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0409397,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0403338,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0936827,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 51.6555466,
+        "Completed": false
+      }
+    ],
+    "uniqueCompilerErrors": [
+      "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/UI/WoundPlayerNotification.cs(282,43): error CS1061: 'WoundPreparedAcceptedTurnPlan' does not contain a definition for 'Transitions' and no accessible extension method 'Transitions' accepting a first argument of type 'WoundPreparedAcceptedTurnPlan' could be found (are you missing a using directive or an assembly reference?) [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs(89,50): error CS1061: 'WoundCarrierCatalogInput' does not contain a definition for 'Keys' and no accessible extension method 'Keys' accepting a first argument of type 'WoundCarrierCatalogInput' could be found (are you missing a using directive or an assembly reference?) [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs(454,37): error CS0136: A local or parameter named 'lease' cannot be declared in this scope because that name is used in an enclosing local scope to define a local or parameter [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs(282,16): error CS0411: The type arguments for method 'CollectionExtensions.AddRange<T>(List<T>, ReadOnlySpan<T>)' cannot be inferred from the usage. Try specifying the type arguments explicitly. [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/BookOfEternityClient.csproj]"
+    ],
+    "compilerWarningsReported": 10,
+    "compilerErrorsReported": 4,
+    "sourcePinsPrePostMatched": 135,
+    "freshBinaryPinsCreated": false,
+    "ownedProcessCleanupSucceededReported": true,
+    "runnerRuntimeCleanupSucceededReported": true,
+    "strictFixtureCleanup": "NOT_APPLICABLE_NOT_EXECUTED; no receipt/absence claim",
+    "actualStages": "ALL_UNRUN",
+    "sourceMetadataEditedBeforeRootPostReadback": false,
+    "evidenceReview": "PENDING; correction/rerun/dependentstages HELD",
+    "nativeTrace": [
+      "6742fclaunchsession51137",
+      "55525dnativeexit1",
+      "c328daactualsummary/source135postreadback",
+      "6b15b3actualdotnetbuildlog4errors10warnings"
+    ],
+    "securityRefusal": "NONE observed; compilerdiagnostics notpolicyrefusal",
+    "verifiedUTC": "2026-10-14T23:05:28.107048+00:00"
+  }
+}
