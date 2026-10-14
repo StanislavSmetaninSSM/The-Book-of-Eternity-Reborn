@@ -13,7 +13,7 @@ namespace BookOfEternityClient.Services;
 /// ordinary wound-response input. All mechanical authority is reconstructed from the
 /// active detached pending-turn snapshot; this adapter never writes canonical state.
 /// </summary>
-internal static class MortalWoundOpportunityAdapter
+internal static partial class MortalWoundOpportunityAdapter
 {
     private const string SourcePath = "woundSourceEvent";
     private const int MaximumAcceptedEventOrdinal = 159;
@@ -781,7 +781,8 @@ internal static class MortalWoundOpportunityAdapter
         WoundHistoryState signedHistory,
         List<ValidationIssue> issues,
         out MortalWoundOpportunityReceiptState? currentReceipts,
-        out WoundHistoryState? currentHistory)
+        out WoundHistoryState? currentHistory,
+        MortalQteDecisionPublication.JointHistorySuffixProof? jointHistorySuffix = null)
     {
         currentReceipts = null;
         currentHistory = null;
@@ -861,6 +862,17 @@ internal static class MortalWoundOpportunityAdapter
         var appendedHistory = currentHistory.Transitions
             .Skip(signedHistory.Transitions.Count)
             .ToArray();
+        if (jointHistorySuffix is not null)
+        {
+            if (appendedHistory.Length != 2 || appendedHistory.Count(jointHistorySuffix.Matches) != 1 ||
+                !jointHistorySuffix.Matches(appendedHistory[1]) || appendedHistory[0].Ordinal != signedHistory.NextOrdinal ||
+                appendedHistory[1].Ordinal != signedHistory.NextOrdinal + 1)
+            {
+                CurrentStateConflict(issues, "joint history is not one exact CREATE followed by its privately proved TREAT");
+                return false;
+            }
+            appendedHistory = appendedHistory.Where(row => !jointHistorySuffix.Matches(row)).ToArray();
+        }
         var appendedMaterializations = appended
             .Where(static receipt => receipt.Decision == "materialize")
             .ToArray();

@@ -11,7 +11,7 @@ namespace BookOfEternityClient.Services;
 /// taken common-plan publisher creates it, in the same batch as its mechanics.
 /// It grants no new command, reduction, allocation or archive-resume authority.
 /// </summary>
-internal static class MortalQteDecisionPublication
+internal static partial class MortalQteDecisionPublication
 {
     internal const string StatePath = "game_state/wounds/mortal_qte_decision_publication.json";
     private const string HashDomain = "T070-MORTAL-QTE-COMMON-PUBLICATION-V1\n";
@@ -210,6 +210,8 @@ internal static class MortalQteDecisionPublication
         var bytes = await fs.ReadFileBytesAsync(lease, StatePath) ?? throw Invalid("missing");
         var root = StrictJsonAuthority.Deserialize<JsonObject>(new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "T070 common publication evidence") ?? throw Invalid("null");
+        if (root["schemaVersion"] is JsonValue version && version.TryGetValue<int>(out var schema) && schema == 2)
+            return await ReadJointCompletedProofAsync(fs, lease, inspection, root);
         if (root.Count != Fields.Length || root.Any(pair => !Fields.Contains(pair.Key, StringComparer.Ordinal)) ||
             root["schemaVersion"]?.GetValue<int>() != 1) throw Invalid("shape");
         var payload = root.DeepClone().AsObject(); payload.Remove("fingerprint");

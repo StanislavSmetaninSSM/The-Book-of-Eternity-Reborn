@@ -96,7 +96,8 @@ public partial class CanonicalStateNormalizer
         AcceptedMechanicsNormalizationPreflight preflight,
         bool normalizedAcceptedCarrierBaselines,
         MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null,
-        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null,
+        MortalJointRepairPublicationTransaction? jointTransaction = null)
     {
         ArgumentNullException.ThrowIfNull(preflight);
         if (preflight is AcceptedMechanicsNormalizationPreflight.NoPlan)
@@ -115,6 +116,15 @@ public partial class CanonicalStateNormalizer
 
         var plan = validated.Plan;
         _mortalQteCommittedChanges = null;
+        if (plan.JointRepairCommonAuthority is not null && jointTransaction is null)
+            throw new InvalidOperationException("Joint repair common publication requires its distinct owning transaction.");
+        if (jointTransaction is not null)
+        {
+            if (treatmentPublicationReceipt is not null || spiritualPublicationReceipt is not null ||
+                !ReferenceEquals(jointTransaction.Receipt.Plan, plan))
+                throw new InvalidDataException("Joint publication cannot share or impersonate another receipt family.");
+            await ValidateTakenJointPublicationInputsAsync(jointTransaction.Receipt);
+        }
         if (spiritualPublicationReceipt is not null)
         {
             RequireCurrentSpiritualPublication(spiritualPublicationReceipt, plan);
@@ -147,7 +157,7 @@ public partial class CanonicalStateNormalizer
         }
         try
         {
-            if (plan.EffectPlan != null)
+            if (plan.EffectPlan != null && jointTransaction is null)
             {
                 await ValidateEffectPlanPublicationBindingAsync(
                     plan.EffectPlan,
@@ -168,7 +178,7 @@ public partial class CanonicalStateNormalizer
         }
         catch
         {
-            if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null)
+            if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null && jointTransaction is null)
                 InvalidateAcceptedMechanicsHandoffs();
             throw;
         }
@@ -181,11 +191,11 @@ public partial class CanonicalStateNormalizer
             // A held publication was already taken by the top-level transaction.
             // Keep its exact handoffs intact so byte-exact compensation can rearm
             // this same plan. A non-held plan still owns its invalidation here.
-            if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null)
+            if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null && jointTransaction is null)
                 InvalidateAcceptedMechanicsHandoffs();
             throw;
         }
-        if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null &&
+        if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null && jointTransaction is null &&
             (!AcceptedMechanicsPlanAuthority.TryTakeValidated(
                  _fs,
                  _writeLease,
@@ -275,6 +285,8 @@ public partial class CanonicalStateNormalizer
 
         var mortalQtePublication = !plan.AwaitsPendingResolution &&
             plan.OwnerCompanionAfterImages.ContainsKey(MortalWoundOpportunityReceiptState.StatePath);
+        if (jointTransaction is not null && !mortalQtePublication)
+            throw new InvalidDataException("Joint publication cannot fall back to individual ordinary writes without its actual QTE receipt.");
         try
         {
         if (mortalQtePublication)
@@ -291,13 +303,17 @@ public partial class CanonicalStateNormalizer
                 if (writes.ContainsKey(path)) throw new InvalidDataException("A Mortal common member cannot be written and consumed together.");
                 prepared.Add(new(path, await _fs.ReadFileBytesAsync(_writeLease, path), null));
             }
-            var completion = await MortalQteDecisionPublication.CreateAsync(_fs, _writeLease, plan, validated.Binding, prepared);
+            var completion = jointTransaction is null
+                ? await MortalQteDecisionPublication.CreateAsync(_fs, _writeLease, plan, validated.Binding, prepared)
+                : await MortalQteDecisionPublication.CreateJointAsync(_fs, _writeLease, jointTransaction.Receipt, prepared);
             if (completion is not null)
                 prepared.Add(new(MortalQteDecisionPublication.StatePath,
                     await _fs.ReadFileBytesAsync(_writeLease, MortalQteDecisionPublication.StatePath), completion));
             retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan,
                 completion is null ? writes.Keys : writes.Keys.Append(MortalQteDecisionPublication.StatePath), deletePaths);
+            jointTransaction?.BindIntendedMembers(JointBatchPublicationIssuer, prepared);
             _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, prepared));
+            jointTransaction?.ObserveCommittedBatch(JointBatchPublicationIssuer);
             _mortalQteCommittedChanges = prepared;
             foreach (var change in prepared)
             {
@@ -382,6 +398,16 @@ public partial class CanonicalStateNormalizer
     {
         var itemAuthority = plan.TreatmentResourcePublicationAuthority?
             .ItemPublicationAuthority;
+        if (plan.JointRepairCommonAuthority is { } joint)
+        {
+            var exact = new Dictionary<string, JsonNode>(StringComparer.Ordinal);
+            foreach (var pair in joint.ExactFinalItemRoots)
+                if (writes.TryGetValue(pair.Key, out var projected))
+                    exact.Add(pair.Key, pair.Value is not null
+                        ? MortalItemProjectionRootParser.RestorePublicationRoot(pair.Value, projected, pair.Key)
+                        : throw new InvalidDataException("Joint item publication lacks its exact complete root: " + pair.Key));
+            return exact;
+        }
         if (itemAuthority is null)
             return new Dictionary<string, JsonNode>(StringComparer.Ordinal);
 

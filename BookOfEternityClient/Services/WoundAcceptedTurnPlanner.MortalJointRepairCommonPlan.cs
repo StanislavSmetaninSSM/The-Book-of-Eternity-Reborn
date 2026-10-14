@@ -31,6 +31,7 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentAttemptRequest Request => ReadJoint().Request;
         internal MortalWoundTreatmentResolution Resolution => ReadJoint().Resolution;
         internal MortalWoundTreatmentResourceFinalization Finalization => ReadJoint().Finalization;
+        internal string RepairCheckpointFingerprint => ReadJoint().Checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>();
         internal ResourceDefinitionCatalog Definitions => _resources.Definitions;
         internal ResourceStateLedger State => _resources.State;
         internal ResourceHistoryState History => _resources.History;

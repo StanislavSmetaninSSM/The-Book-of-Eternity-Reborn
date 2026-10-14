@@ -137,7 +137,7 @@ internal sealed class MortalWoundTreatmentResourceFinalizationResult
     }
 }
 
-internal sealed class MortalWoundTreatmentResourceFinalization
+internal sealed partial class MortalWoundTreatmentResourceFinalization
 {
     private readonly ReadOnlyCollection<MortalWoundTreatmentResourceConsumptionIntent>
         _consumptions;
@@ -188,32 +188,36 @@ internal sealed class MortalWoundTreatmentResourceFinalization
         ArgumentNullException.ThrowIfNull(consumptions);
         ArgumentNullException.ThrowIfNull(releasedClaimFingerprints);
         var resource = resolution.ResourceAuthority;
+        return new MortalWoundTreatmentResourceFinalization(
+            disposition, resource.ReservationId, resolution.RequestFingerprint, resolution.ResultFingerprint,
+            resource.AuthorityFingerprint, resolution.ConsumptionTrigger, consumptions, releasedClaimFingerprints,
+            ComputeFinalizationFingerprint(disposition, resource, resolution.RequestFingerprint,
+                resolution.ResultFingerprint, resolution.ConsumptionTrigger, consumptions, releasedClaimFingerprints));
+    }
+
+    private static string ComputeFinalizationFingerprint(string disposition,
+        MortalWoundTreatmentResourceReservationAuthority resource, string requestFingerprint,
+        string resultFingerprint, string consumptionTrigger,
+        IReadOnlyList<MortalWoundTreatmentResourceConsumptionIntent> consumptions,
+        IReadOnlyList<string> releasedClaimFingerprints)
+    {
         var fields = new List<string?>
         {
             "book_of_eternity.mortal_wound_treatment.resource_finalization",
             "1",
             disposition,
             resource.ReservationId,
-            resolution.RequestFingerprint,
-            resolution.ResultFingerprint,
+            requestFingerprint,
+            resultFingerprint,
             resource.AuthorityFingerprint,
             MortalWoundTreatmentResourceComposer.ComputePolicyFingerprint(resource.Policy),
-            resolution.ConsumptionTrigger,
+            consumptionTrigger,
             consumptions.Count.ToString(CultureInfo.InvariantCulture)
         };
         fields.AddRange(consumptions.Select(static intent => intent.IntentFingerprint));
         fields.Add(releasedClaimFingerprints.Count.ToString(CultureInfo.InvariantCulture));
         fields.AddRange(releasedClaimFingerprints);
-        return new MortalWoundTreatmentResourceFinalization(
-            disposition,
-            resource.ReservationId,
-            resolution.RequestFingerprint,
-            resolution.ResultFingerprint,
-            resource.AuthorityFingerprint,
-            resolution.ConsumptionTrigger,
-            consumptions,
-            releasedClaimFingerprints,
-            WoundAcceptedTurnFingerprintWriter.Compute(fields));
+        return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
 }
 
@@ -595,7 +599,7 @@ internal sealed partial class MortalWoundTreatmentResourceReservationAuthority
         policy.Mutations.Select(static mutation => mutation with { }).ToImmutableArray());
 }
 
-internal static class MortalWoundTreatmentResourceComposer
+internal static partial class MortalWoundTreatmentResourceComposer
 {
     private const string IssuePath = "treatmentAttempt.resources";
     private static readonly object ClaimMintCapability = new();
@@ -1106,6 +1110,12 @@ internal static class MortalWoundTreatmentResourceComposer
         string trigger,
         out IReadOnlyList<string>? selectedClaimFingerprints,
         out ValidationIssue? issue)
+        => TrySelectCurrentClaims(resolution.Mode, resolution.CourseMilestoneOrdinal,
+            resolution.ResourceAuthority, trigger, out selectedClaimFingerprints, out issue);
+
+    private static bool TrySelectCurrentClaims(string mode, int? courseMilestoneOrdinal,
+        MortalWoundTreatmentResourceReservationAuthority resource, string trigger,
+        out IReadOnlyList<string>? selectedClaimFingerprints, out ValidationIssue? issue)
     {
         var selected = new List<string>();
         var selectedSet = new HashSet<string>(StringComparer.Ordinal);
@@ -1114,14 +1124,14 @@ internal static class MortalWoundTreatmentResourceComposer
         if (trigger == "none")
             return true;
 
-        var claims = resolution.ResourceAuthority.Claims;
-        foreach (var selector in resolution.ResourceAuthority.Policy.Mutations)
+        var claims = resource.Claims;
+        foreach (var selector in resource.Policy.Mutations)
         {
             var isCurrent = selector.Scope switch
             {
                 "common" when selector.MilestoneOrdinal is null => true,
-                "course_milestone" when resolution.Mode == "course" &&
-                    selector.MilestoneOrdinal == resolution.CourseMilestoneOrdinal => true,
+                "course_milestone" when mode == "course" &&
+                    selector.MilestoneOrdinal == courseMilestoneOrdinal => true,
                 "course_milestone" when selector.MilestoneOrdinal is > 0 => false,
                 _ => false
             };

@@ -34,6 +34,11 @@ internal static partial class AcceptedTurnAuthorityRegistry
         MortalJointRepairPublicationTakeReceipt receipt) =>
         GetState(files, lease).ProbeTakenJointRepairPublication(files, lease, receipt);
 
+    internal static MortalJointRepairPublicationSettlement CompleteTakenJointRepairPublication(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, MortalJointRepairPublicationTakeReceipt receipt,
+        MortalJointRepairPublicationTransaction.ReadbackProof proof) =>
+        GetState(files, lease).CompleteTakenJointRepairPublication(files, lease, receipt, proof);
+
     internal static async Task<MortalJointRepairPublicationSettlement> RearmTakenJointRepairPublicationAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         MortalJointRepairPublicationTakeReceipt receipt)
@@ -96,6 +101,29 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 var hold = _treatmentResources.ProbeConfirmed(TreatmentResourceRegistryCapability,
                     receipt.Authority.Request, receipt.Authority.Finalization);
                 return new(hold.IsValid, hold.IsValid ? Array.Empty<ValidationIssue>() : JointHoldIssues(hold), hold.State);
+            }
+        }
+
+        internal MortalJointRepairPublicationSettlement CompleteTakenJointRepairPublication(FileSystemManager files,
+            FileSystemManager.CanonicalWriteLease lease, MortalJointRepairPublicationTakeReceipt receipt,
+            MortalJointRepairPublicationTransaction.ReadbackProof proof)
+        {
+            lock (_gate)
+            {
+                if (!JointReceiptCurrent(files, lease, receipt) || !proof.AgreesWith(receipt))
+                    return new(MortalJointRepairPublicationDisposition.PublicationUncertain, JointTakeIssue("exact complete readback/receipt changed"));
+                var hold = _treatmentResources.ProbeConfirmed(TreatmentResourceRegistryCapability, receipt.Authority.Request, receipt.Authority.Finalization);
+                if (!hold.IsValid) return new(MortalJointRepairPublicationDisposition.PublicationUncertain, JointHoldIssues(hold));
+                var committed = _treatmentResources.Commit(TreatmentResourceRegistryCapability, receipt.Authority.Finalization);
+                if (!committed.IsValid || committed.ChangedCount != 1)
+                    return new(MortalJointRepairPublicationDisposition.PublicationUncertain,
+                        committed.Issues.Count != 0 ? committed.Issues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue).ToArray() :
+                            JointTakeIssue("original resource claim did not finalize exactly once"));
+                if (!receipt.TryConsume(JointRepairPublicationReceiptCapability))
+                    throw new InvalidOperationException("The exact current joint receipt was consumed twice at settlement.");
+                _commonPlan.InvalidateAll(); _mortalItems.InvalidateValidated();
+                ClearMortalWoundTreatmentPublicationReservationCore();
+                return new(MortalJointRepairPublicationDisposition.Committed, Array.Empty<ValidationIssue>());
             }
         }
 

@@ -1,5 +1,77 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J6 same-lease batch/typed v2 readback/claim settlement WIP STOP — 2026-10-14
+
+Retained sole Sol continued from published64243cb533beb3639413f1184834ed00f822b1f4
+under the same accepted DESIGNv2/J2-J7 release. Prior source362d2ae6 and e69f2a49 report/
+2b5be597 static are immutable. The read-only transport failure occurred before source
+writes; ROOT preserved its exact operation/error and absent identifiers. Same-channel
+probe4d6bb0 and ROOT's same-host/boot readback succeeded before this continuation.
+Availability witness: /workspace/boe-cloud-tools-20261014/fr063-j6-readonly-transport-author-availability-readback.json.
+No protective/security cause, changed tool route or environment replacement is inferred.
+
+This substantial connected publication/transaction checkpoint is stopped for preservation
+before terminal-release and real engine wiring. It is NOT complete J6, connected SOURCE
+READY or runtime qualification. All project checks UNRUN; immutable actuals, raw reports,
+ROOT receipts, qualified fixture bodies and acceptance checkbox/history bytes stay exact.
+
+The named joint coordinator retains the actual issuing participating lease and consumes
+its privately validated preflight/take. It invokes the EXISTING common publisher, which
+refuses a joint plan without this exclusive transaction. Exact final item roots, including
+arrays, pass through the existing restoration codec. The v2 joint marker is assembled
+from intended afterimages BEFORE the same ONE PublishLocalFilesAsync batch as all canonical
+members and whole command/private wave/public draft consumption. No individual-write
+fallback, second reduction/scheduler, accumulated-state pass or new claim is admitted.
+Old null-family/singleton publication and v1 marker domains/fields remain unchanged.
+
+The distinct transaction freezes complete intended members only through the private
+normalizer issuer, observes a known committed batch, verifies every changed/deleted member
+and every retained guard byte, then validates actual original/G/QTE receipt partition,
+full typed treatment history/result and recomposed resource finalization. Its private
+readback proof binds the exact receipt/intended cohort and cannot survive compensation.
+Only that proof plus the same current vacant cache fences/reservation/ConfirmedHeld claim
+allows registry Commit with ChangedCount1. Committed is returned only afterward. The
+same lease is retained; no IO/await is added inside registry/cache monitors.
+
+Known failure compensates the WHOLE intended union through the existing trusted local
+publisher, accepting only exact before/after bytes and refusing any changed retained
+source. Complete inventory readback precedes exact cache rearm. RetryableHeld requires
+the preserved full graph and original confirmed claim; unknown publication/byte/claim
+settlement returns PublicationUncertain with private diagnostics. No release is inferred.
+Successful whole-wave cleanup is the exact pending-root deletion in that same batch,
+not removal of submittedTreatmentRequests alone. TerminalReleased remains unimplemented.
+
+V2 is a closed20-field variant at the SAME marker path with its own domain, closed
+jointTreatment and single consumedPrivatePaths member. Complete fixed item/resource/
+owner/wound/effect footprint includes private wave absence. Actual strict history codecs
+supply request/result seals; detached pure recomputation reuses old claim selection and
+finalization fingerprint field order, restoring NO live authority. The v2 reader admits
+one privately proved TREAT suffix after the actual QTE CREATE; ordinary/v1 partition
+checks stay unchanged when that private capability is absent. It also checks original
+resource-history prefix, complete typed state/history/owner agreement and exact selected
+registered full-quantity spend evidence. Existing whole public-decision fingerprint and
+foreign-command refusal remain strict. No marker-presence acceptance is added.
+
+Still UNIMPLEMENTED: pre-plan PrepareActiveRelease token, coordinated terminal rollback/
+whole-graph removal/readback/release; real normal admission/checkpoint capture/restore/
+repair dispatch/bounded I-II retry and owner reconstruction; typed outer-loop settlement
+preventing a second rollback; joint-specific exact/changed late-idle routing and cold
+same/new-root entry. In particular, the ordinary adapter's default partition reader
+continues to reject a joint TREAT suffix: future joint replay must use the fully proved
+private path, not relax that default. New helper/coordinator source is not live-owner
+completion. Compilation/API/fault/lifetime and every positive outcome remain UNCHECKED/
+UNRUN. J7 genuine R2-R7/C1 selectors, FR063/FR012/private lifecycle amendment and J8 primary
+GM severity-repair example/manifest/guards remain required before complete SOURCE.
+
+Catalog730, all existing fixtures/selectors/method membership/case counts/budgets and
+component1method5cases1descriptor/budget5/default10 remain unchanged. No new discovered
+case or runtime result is claimed. New C1 dependencies include the shared publisher/
+source guards, homogeneous resource fingerprint/selection calculations and existing
+receipt-partition default; exact scoped tests follow with J7, not broad qualified reruns.
+GM1557 is frozen/untouched. Full FR063/T070/UI/parents remain OPEN. ROOT preserves this
+WIP before the remaining connected J6 block and owns Git, full independent SOURCE and
+all project execution. No author project/provider/model/agent/environment operation.
+
 ## J6 continuation read-only transport stop — 2026-10-14
 
 At preserved `362d2ae6ffaf74e7211ea846c61339039925e030`, retained Sol stopped

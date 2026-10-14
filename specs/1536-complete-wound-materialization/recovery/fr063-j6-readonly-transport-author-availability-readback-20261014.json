@@ -1,0 +1,18 @@
+{
+  "incidentCarrier": "64243cb533beb3639413f1184834ed00f822b1f4",
+  "agent": "/root/t070_sol_implementation",
+  "operation": "same-channel harmless availability probe only:pwd",
+  "chunkId": "4d6bb0",
+  "exitCode": 0,
+  "wallTimeSeconds": 4.2645e-05,
+  "output": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f\n",
+  "sessionId": null,
+  "sourceWrites": "none",
+  "failedSourceCommandRetried": false,
+  "projectExecution": "UNRUN",
+  "sourceStatus": "STOPPED until verified incident carrier recovery; then same existing authorized writer/release",
+  "environmentReplacement": false,
+  "originalDiagnostic": "immutable; historical author availability UNCHECKED field unchanged",
+  "securityCause": "UNESTABLISHED",
+  "utc": "2026-10-14T05:55:03.919272+00:00"
+}
