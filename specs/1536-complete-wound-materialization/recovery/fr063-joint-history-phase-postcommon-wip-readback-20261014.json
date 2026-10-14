@@ -1,0 +1,49 @@
+{
+  "owningBase": "048f475371fda77934a4964da4e7cf7c0074d84b",
+  "checkpoint": "Unpublished connected history/phase postcommon WIP",
+  "authorTextChecks": {
+    "old_public_api_exact_addition_inverse": true,
+    "old_world_validation_forwarder_exact_inverse": true,
+    "old_validation_phases_exact_inverse": true,
+    "old_bootstrap_exact_typed_branch_inverse": true,
+    "old_story_writer_exact_fresh_reader_addition_inverse": true,
+    "typed_only_named_entry": true,
+    "no_generic_error_code_suppression": true,
+    "proof_original_tuple_and_histories_required": true,
+    "fresh_full_phase_reconstructed_in_validator": true,
+    "fresh_lease_metadata_only_not_old_cap_validation": true,
+    "typed_proof_brackets_history_checks": true,
+    "phase_read_before_live_report": true,
+    "live_report_only_unapplied": true,
+    "canonical_narrative_checks_retained": true,
+    "publisher_after_validation_errors_checked": true,
+    "fresh_phase_fence_before_publish": true,
+    "one_phase_publisher_call": true,
+    "projection_write_or_readonly_by_story_state": true,
+    "intermediate_completion_still_held": true,
+    "old_docs_tail_checkboxes_exact": true
+  },
+  "authoredPins": {
+    "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53",
+    "BookOfEternityClient/Services/ValidationService.cs": "c43ad46968b3219ce98578835891e9bd315db6edba7fd6d5b794592fd360ee02",
+    "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs": "e381bfdeb1d06e8a38ddc7683f7a69477401e97a8190cba2d3eb25a08bd0f59d",
+    "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs": "c549a01d57d2be361f68c6257d1052fee99dd8c9d59cdfbe3aa7b89d97c3a3c6",
+    "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs": "374308be10b8cf0fa276853d616f1c82d9d96f060fead7495e5e552245bc8b83",
+    "specs/1536-complete-wound-materialization/plan.md": "e1c0c4c68b18852bb46aa11670dc4786e56f9c8d1596b05e49da0a82652b0fb2",
+    "specs/1536-complete-wound-materialization/tasks.md": "c5549037581f93f8a8d32a1388b57b54bcf033d7f09a413bf94c57d3fd42bebe"
+  },
+  "protectedBaseByteEqualPins": {
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "79017c9ca9dc93247956088510b5f167e470b00746c7084be79df81116a911e1",
+    "BookOfEternityClient/Services/StoryService.cs": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+    "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgressionPublication.cs": "35e12b34e07f6486083b9d642e8c05b2f2f61c7fda3c4f8bf6101631bfff1c09",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92",
+    "BookOfEternityClient/Services/CharacteristicsService.cs": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4",
+    "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000",
+    "BookOfEternityClient/Core/FileSystemManager.cs": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+    "tests/categories.json": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da"
+  },
+  "projectChecks": "UNRUN",
+  "open": "Actual live/late completion remains held; story/turn/cleanup/cold/J7/normative/GM/compilation/whole SOURCE UNRUN."
+}

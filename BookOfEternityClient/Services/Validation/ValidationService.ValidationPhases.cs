@@ -8,7 +8,8 @@ public partial class ValidationService
     private readonly AsyncLocal<GameStateValidationSelection?> _activeGameStateValidationSelection = new();
 
     private async Task<List<ValidationIssue>> ValidateGameStateCoreAsync(
-        GameStateValidationSelection selection, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend)
+        GameStateValidationSelection selection, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend,
+        StoryService.MortalJointStoryProof? jointStoryProof)
     {
         ArgumentNullException.ThrowIfNull(selection);
         var previousSelection = _activeGameStateValidationSelection.Value;
@@ -37,7 +38,7 @@ public partial class ValidationService
             {
                 await RunCoreValidationPhasesAsync(phases, issues);
                 await RunActorAndStateValidationPhasesAsync(phases, issues);
-                await RunLifecycleValidationPhasesAsync(phases, issues, acceptedStoryAppend);
+                await RunLifecycleValidationPhasesAsync(phases, issues, acceptedStoryAppend, jointStoryProof);
             }
 
             LogValidationErrors(issues);
@@ -257,7 +258,7 @@ public partial class ValidationService
     private async Task RunLifecycleValidationPhasesAsync(
         GameStateValidationPhase phases,
         List<ValidationIssue> issues,
-        StoryService.AcceptedStoryAppend? acceptedStoryAppend)
+        StoryService.AcceptedStoryAppend? acceptedStoryAppend, StoryService.MortalJointStoryProof? jointStoryProof)
     {
         if (phases.Includes(GameStateValidationPhase.LifeEvaluationRewardCycle))
         {
@@ -306,7 +307,7 @@ public partial class ValidationService
 #if DEBUG
             using var diagnosticPhase = _fs.BrowserDiagnosticLogical("ClientOwnedControlFiles", null);
 #endif
-            await ValidateClientOwnedControlFilesAsync(issues, acceptedStoryAppend);
+            await ValidateClientOwnedControlFilesAsync(issues, acceptedStoryAppend, jointStoryProof);
         }
         if (phases.Includes(GameStateValidationPhase.RealmSegregation))
         {

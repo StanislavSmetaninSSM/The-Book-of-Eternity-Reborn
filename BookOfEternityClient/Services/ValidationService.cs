@@ -28,6 +28,10 @@ public partial class ValidationService
     internal Task<List<ValidationIssue>> ValidateQteTerminalGameStateAsync(StoryService.AcceptedStoryAppend? acceptedStoryAppend)
         => StartAdmittedGameStateAsync(GameStateValidationSelection.All, metaControlShapesOnly: false, acceptedStoryAppend);
 
+    internal Task<List<ValidationIssue>> ValidateMortalJointStoryGameStateAsync(StoryService.MortalJointStoryProof proof)
+        => StartAdmittedGameStateAsync(GameStateValidationSelection.All, metaControlShapesOnly: false,
+            acceptedStoryAppend: null, jointStoryProof: proof);
+
     /// <summary>
     /// Validate a single GM response before distributing to files.
     /// </summary>

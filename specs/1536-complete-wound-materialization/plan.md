@@ -1,5 +1,36 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Typed joint history and phase-aware post-common owner WIP STOP — 2026-10-14
+
+Owning base `048f475371fda77934a4964da4e7cf7c0074d84b`; recovery2253/1719
+was verified before SOURCE GO. Six code paths now connect the named private joint story proof
+through a distinct game-state validation entry to actual BootstrapAndProtocol history handling.
+Before permitting its exact story suffix, the validator reconstructs the complete applied
+physical owner under a fresh participating lease and compares actual original tuple, complete
+signed history inventory, exact deterministic row/current bytes and marker constraint. It
+revalidates after history checks. No generic issue-code suppression, QTE/browser witness
+impersonation or old lease-local capability grants this allowance. Ordinary null-proof branches
+invert to their previous exact source; the private forwarders now carry one typed proof parameter.
+
+Actual post-common reads/validates the physical phase BEFORE report validation. Unapplied keeps
+the live original-control report validator; applied independently validates the frozen original
+control/report/recomposed pair/current afterimages and never requires its consumed live report.
+All existing canonical/narrative validation remains, bracketed by full physical proof. Only after
+successful validation does a newly reconstructed same-phase owner invoke the sole three-member
+phase publisher. The real derived projection is then written/verified; already-appended story
+uses read-only semantic verification without _lastComputed rewrite. Cached pre-phase plan is not
+used as applied-phase admission authority. Known/uncertain phase or projection failure retains
+committed union/original/output/ready/backups and returns the dedicated held disposition.
+
+This intermediate path deliberately remains HELD even after verified phase/projection: actual
+live/late once-story/turn and terminal cleanup callers are not yet wired. No Accepted/story/turn
+claim. Cold/session caller reconciliation, J7 genuine controls/exact selectors and normative/
+primary-GM synchronization remain OPEN. Old story writers, phase publisher, projection owner,
+TurnLifecycle, fixtures/categories/selectors/budgets and acceptance checkboxes are unchanged.
+All compiler/build/discovery/catalog/PlanOnly/tests/runtime/fault and whole SOURCE/FIXTURE/
+SELECTION remain UNRUN. Exact runtime/reflection private-forwarder arity dependencies are not
+qualified by these source-text observations.
+
 ## Named private joint story owner WIP STOP — 2026-10-14
 
 Owning base `95356dc9a1e301d9573783e6df200032be8c9212`; recovery2249/1715

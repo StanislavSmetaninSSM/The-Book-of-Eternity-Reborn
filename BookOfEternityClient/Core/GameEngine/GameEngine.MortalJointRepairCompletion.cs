@@ -55,16 +55,36 @@ public partial class GameEngine
             !SameMortalJointOriginalFrame(publication.Frame, frame, frame.TurnNumber))
             return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
 
-        await ValidateCurrentMortalJointCompletedProofAsync(frame);
+        MortalQteDecisionPublication.JointProgressionPhaseCapability observedPhase;
+        StoryService.MortalJointStoryProof? existingStory = null;
+        WoundAcceptedTurnOutputBindingResult? appliedOutput = null;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            // Select and independently validate the physical phase BEFORE any
+            // live-report validator. Applied phase validates its frozen original
+            // control/report/recomputed pair and exact afterimages instead.
+            observedPhase = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(_fs, lease,
+                frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber);
+            if (observedPhase.Phase == "applied")
+            {
+                var story = await _storyService.ReadMortalJointStoryAsync(lease, observedPhase);
+                if (story.Disposition is not (StoryService.MortalJointStoryDisposition.OriginalUnappended or
+                    StoryService.MortalJointStoryDisposition.AlreadyAppended))
+                    throw new InvalidDataException("joint_postcommon_story_source_refused: " + story.Failure);
+                existingStory = story.Proof;
+                appliedOutput = await MortalQteDecisionPublication.TryBindExactJointContinuationAsync(_fs, lease,
+                    frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber);
+            }
+        }
         var issues = publication.Issues.ToList();
         WoundAcceptedTurnOutputBindingResult output;
-        if (publication.Plan is { } plan)
+        if (observedPhase.Phase == "unapplied" && publication.Plan is { } plan)
         {
             issues.AddRange(await ValidateAcceptedWoundPostPublicationAuthorityAsync(plan, frame));
             output = await BindPublishedAcceptedWoundOutputAsync(plan);
         }
         else
-            output = continuationOutput ?? throw new InvalidDataException("Cold joint continuation requires its actual physically bound output.");
+            output = appliedOutput ?? continuationOutput ?? throw new InvalidDataException("Cold joint continuation requires its actual physically bound output.");
         issues.AddRange(output.Issues);
 
         // Use the real ordinary READ APIs, not the repair helper: that helper
@@ -72,7 +92,8 @@ public partial class GameEngine
         // repair, reduction, scheduler, writer or old transaction runs here.
         using (var snapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(frame.Manifest))
         {
-            issues.AddRange(await _validator.ValidateGameStateAsync());
+            issues.AddRange(existingStory is null ? await _validator.ValidateGameStateAsync() :
+                await _validator.ValidateMortalJointStoryGameStateAsync(existingStory));
             issues.AddRange(await _validator.ValidateAcceptedTurnNarrativePayloadAsync());
             issues.AddRange(await _validator.ValidateAcceptedTurnInterfacePayloadAsync());
             issues.AddRange(await _validator.ValidateAcceptedTurnReasoningAsync());
@@ -81,8 +102,11 @@ public partial class GameEngine
             issues.AddRange(await _validator.ValidateAcceptedTurnMortalCombatMaterializationAsync());
             issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());
             issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());
-            if (frame.ProgressionControl is not null)
+            if (observedPhase.Phase == "unapplied")
+            {
+                if (frame.ProgressionControl is null) throw new InvalidDataException("joint_postcommon_original_control_missing");
                 issues.AddRange(await _progressionSchedule.ValidateAcceptedTurnOutcomeAsync(frame.ProgressionControl));
+            }
         }
         // The fresh physical full proof, never the diagnostic witness, brackets
         // canonical/narrative reads and rejects foreign work or footprint drift.
@@ -94,11 +118,38 @@ public partial class GameEngine
                 source, issues.Count(row => row.Severity == IssueSeverity.Error));
             return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
         }
-        // Actual StagePlayerTurnAsync always supplies progression. Its existing
-        // two-file writer has no durable once-only acknowledgement, so neither
-        // fresh completion nor replay may silently omit or reapply it. The named
-        // owning amendment is OPEN; no null-control fixture substitute accepts.
-        _logger.LogWarning("Joint canonical/narrative validation passed, but durable once-owned progression completion remains blocked.");
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            // Old lease-local values do not authorize this lease. The actual
+            // complete physical owner is reconstructed, then constrained to the
+            // exact phase observed before the read-only canonical/narrative pass.
+            var current = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(_fs, lease,
+                frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber);
+            if (current.Phase != observedPhase.Phase || !current.MarkerBefore.AsSpan().SequenceEqual(observedPhase.MarkerBefore))
+                throw new InvalidDataException("joint_postcommon_phase_changed_during_validation");
+            var phaseResult = await MortalQteDecisionPublication.CommitJointProgressionPhaseAsync(_fs, lease, current);
+            if (phaseResult.Disposition is not (MortalQteDecisionPublication.JointProgressionPublicationDisposition.Applied or
+                MortalQteDecisionPublication.JointProgressionPublicationDisposition.AlreadyApplied) || phaseResult.AppliedCapability is not { } applied)
+            {
+                _mortalJointRepairCanonicalRefresh = publication with { Issues = issues.Concat(phaseResult.Issues).ToArray() };
+                _logger.LogWarning("Joint progression phase remained blocked after {Source}: {Disposition}; committed union retained.", source, phaseResult.Disposition);
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+            }
+            var projection = existingStory is null ? await _charService.WriteMortalJointProjectionAsync(lease, applied) :
+                await _charService.VerifyMortalJointProjectionAsync(lease, applied);
+            if (projection.Disposition is not (CharacteristicsService.JointDerivedProjectionDisposition.WrittenAndVerified or
+                CharacteristicsService.JointDerivedProjectionDisposition.ExistingVerified))
+            {
+                _logger.LogWarning("Joint derived projection refused after {Source}: {Disposition}: {Failure}; evidence retained.",
+                    source, projection.Disposition, projection.Failure);
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+            }
+            await applied.ValidateCurrentAsync(_fs, lease);
+        }
+        // Phase and derived projection are verified, but the real live/late
+        // caller's once-story/turn and terminal cleanup are a separate owning
+        // integration. Never turn this intermediate prerequisite into Accepted.
+        _logger.LogWarning("Joint phase/projection are verified; actual once-story/turn completion remains held for its owning caller.");
         return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
     }
 }

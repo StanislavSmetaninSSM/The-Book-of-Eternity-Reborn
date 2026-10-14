@@ -35,15 +35,35 @@ public partial class StoryService
         internal byte[] AfterBytes => _after.ToArray();
         internal IReadOnlyDictionary<string, string> OriginalHistoryBindings =>
             new Dictionary<string, string>(_histories, StringComparer.OrdinalIgnoreCase);
+        internal bool MatchesOriginal(string sessionId, string requestId, string snapshotToken, int turn) =>
+            _applied.SessionIdForOwner == sessionId && _applied.RequestIdForOwner == requestId &&
+            _applied.SnapshotTokenForOwner == snapshotToken && _applied.TurnForOwner == turn;
+        internal async Task ValidateForHistoryValidationAsync(FileSystemManager files)
+        {
+            if (!ReferenceEquals(files, _owner._fs)) throw new InvalidDataException("joint_story_history_foreign_root");
+            await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+            // The old lease-local capability is only a comparison constraint.
+            // Reconstruct actual original/G/union/phase authority on this lease.
+            var fresh = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(files, lease,
+                _applied.SessionIdForOwner, _applied.RequestIdForOwner, _applied.SnapshotTokenForOwner, _applied.TurnForOwner);
+            if (fresh.Phase != "applied" || !SameJointStoryBytes(fresh.MarkerBefore, _applied.MarkerBefore))
+                throw new InvalidDataException("joint_story_history_completed_owner_changed");
+            var current = await _owner.ReadMortalJointStorySourceAsync(lease, fresh);
+            RequireSameCurrent(current);
+        }
+        private void RequireSameCurrent(JointStorySource current)
+        {
+            if (!current.AlreadyAppended || current.Path != StoryPath || current.Row != RowJson ||
+                !SameJointStoryBytes(current.Current, _after) || current.Histories.Count != _histories.Count ||
+                current.Histories.Any(pair => !_histories.TryGetValue(pair.Key, out var hash) || hash != pair.Value))
+                throw new InvalidDataException("joint_story_proof_current_changed");
+        }
         internal async Task ValidateCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
             if (!ReferenceEquals(files, _owner._fs) || !ReferenceEquals(lease, _lease))
                 throw new InvalidDataException("joint_story_proof_owner_changed");
             var current = await _owner.ReadMortalJointStorySourceAsync(lease, _applied);
-            if (!current.AlreadyAppended || current.Path != StoryPath || current.Row != RowJson ||
-                !SameJointStoryBytes(current.Current, _after) || current.Histories.Count != _histories.Count ||
-                current.Histories.Any(pair => !_histories.TryGetValue(pair.Key, out var hash) || hash != pair.Value))
-                throw new InvalidDataException("joint_story_proof_current_changed");
+            RequireSameCurrent(current);
         }
     }
 

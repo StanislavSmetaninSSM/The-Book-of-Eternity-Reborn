@@ -44,21 +44,23 @@ public partial class ValidationService
         StartAdmittedGameStateAsync(selection, metaControlShapesOnly: false);
 
     private Task<List<ValidationIssue>> StartAdmittedGameStateAsync(
-        GameStateValidationSelection selection, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend = null)
+        GameStateValidationSelection selection, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend = null,
+        StoryService.MortalJointStoryProof? jointStoryProof = null)
     {
         ArgumentNullException.ThrowIfNull(selection);
         var invocation = AdmitWorldValidation(true, selection);
         var previous = _worldValidationInvocation.Value;
         _worldValidationInvocation.Value = invocation;
-        try { return RunAdmittedGameStateAsync(selection, invocation, metaControlShapesOnly, acceptedStoryAppend); }
+        try { return RunAdmittedGameStateAsync(selection, invocation, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof); }
         catch { ReleaseWorldValidation(invocation); throw; }
         finally { _worldValidationInvocation.Value = previous; }
     }
 
     private async Task<List<ValidationIssue>> RunAdmittedGameStateAsync(
-        GameStateValidationSelection selection, WorldValidationInvocation invocation, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend)
+        GameStateValidationSelection selection, WorldValidationInvocation invocation, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend,
+        StoryService.MortalJointStoryProof? jointStoryProof)
     {
-        try { return await ValidateGameStateCoreAsync(selection, metaControlShapesOnly, acceptedStoryAppend); }
+        try { return await ValidateGameStateCoreAsync(selection, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof); }
         finally { ReleaseWorldValidation(invocation); }
     }
 
