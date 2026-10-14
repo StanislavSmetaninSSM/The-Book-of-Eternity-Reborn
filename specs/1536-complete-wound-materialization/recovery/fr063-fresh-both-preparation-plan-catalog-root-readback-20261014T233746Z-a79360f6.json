@@ -1,0 +1,198 @@
+{
+  "source": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+  "compileSource": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+  "firstAttempt": "immutableeb206948FAILED4compilererrors10warnings/0executed, EVIDENCEaccepted; no retroactivepromotion",
+  "preparation": {
+    "source": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "compileSource": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "run": "20261014-233249-830-483847-b86cbcf27cc24051960e2dd266865951-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261014-233249-830-483847-b86cbcf27cc24051960e2dd266865951-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-14T23:35:19.216053+00:00",
+    "classification": "FRESH_BOTH_PREPARATION_SUCCESS_ZERO_TEST_EXECUTION_OFFICIAL_SELECTED_INVENTORY",
+    "wallTime": "00:02:29.3365124",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 18,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 58,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+        "fr063-joint-active-tail-integration-002",
+        "fr063-joint-c1-common-mixed-guard-unit-003",
+        "fr063-joint-c1-original-rollback-integration-004",
+        "fr063-joint-c1-qte-default-publication-integration-005",
+        "fr063-joint-c1-treatment-defaults-integration-006",
+        "fr063-joint-cold-progression-integration-007",
+        "fr063-joint-generation-refusal-integration-008",
+        "fr063-joint-late-completion-integration-009",
+        "fr063-joint-legacy-exclusion-integration-010",
+        "fr063-joint-live-completion-integration-011",
+        "fr063-joint-new-root-integration-012",
+        "fr063-joint-phase-refusal-integration-013",
+        "fr063-joint-phase-settlement-integration-014",
+        "fr063-joint-retained-story-integration-015",
+        "fr063-joint-story-owner-integration-016",
+        "fr063-joint-worked-example-integration-017",
+        "fr063-joint-worked-example-unit-018"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 154,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-14T23:35:33.005678+00:00",
+    "methods": 32,
+    "cases": 58,
+    "descriptors": 18,
+    "warnings": {
+      "Build-integration.log": 130,
+      "Build-unit.log": 35
+    },
+    "errors": {
+      "Build-integration.log": 0,
+      "Build-unit.log": 0
+    }
+  },
+  "exactPlan": {
+    "source": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "compileSource": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "run": "20261014-233551-984-484171-453f25d388c2408797f3e1970ae49bab-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261014-233551-984-484171-453f25d388c2408797f3e1970ae49bab-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-14T23:35:56.683426+00:00",
+    "classification": "EXACT_PLAN_NO_BUILD_MATCHES_FRESH_BOTH_PINS_ZERO_TEST_EXECUTION",
+    "wallTime": "00:00:04.6555862",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 18,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 58,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+        "fr063-joint-active-tail-integration-002",
+        "fr063-joint-c1-common-mixed-guard-unit-003",
+        "fr063-joint-c1-original-rollback-integration-004",
+        "fr063-joint-c1-qte-default-publication-integration-005",
+        "fr063-joint-c1-treatment-defaults-integration-006",
+        "fr063-joint-cold-progression-integration-007",
+        "fr063-joint-generation-refusal-integration-008",
+        "fr063-joint-late-completion-integration-009",
+        "fr063-joint-legacy-exclusion-integration-010",
+        "fr063-joint-live-completion-integration-011",
+        "fr063-joint-new-root-integration-012",
+        "fr063-joint-phase-refusal-integration-013",
+        "fr063-joint-phase-settlement-integration-014",
+        "fr063-joint-retained-story-integration-015",
+        "fr063-joint-story-owner-integration-016",
+        "fr063-joint-worked-example-integration-017",
+        "fr063-joint-worked-example-unit-018"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 154,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-14T23:36:22.394298+00:00",
+    "methods": 32,
+    "cases": 58,
+    "descriptors": 18,
+    "warnings": {},
+    "errors": {}
+  },
+  "catalog": {
+    "source": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "compileSource": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "run": "20261014-233629-007-484379-b02ec753944747ecb75bc97cc52bf9c2-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261014-233629-007-484379-b02ec753944747ecb75bc97cc52bf9c2-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-14T23:36:34.435378+00:00",
+    "classification": "OFFICIAL_CATALOG_DISCOVERY_ONLY_NO_TEST_EXECUTION_MATCHED_FRESH_PINS",
+    "wallTime": "00:00:05.3699426",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 154,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-14T23:36:53.499068+00:00",
+    "catalogAudit": {
+      "Valid": true,
+      "Methods": 11588,
+      "Categories": 746,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "warnings": {},
+    "errors": {}
+  },
+  "actualBothBuildPhases": {
+    "Build-unit": {
+      "Name": "Build-unit",
+      "Seconds": 27.832914,
+      "Completed": true
+    },
+    "Build-integration": {
+      "Name": "Build-integration",
+      "Seconds": 116.2783563,
+      "Completed": true
+    }
+  },
+  "sourcePins": 154,
+  "freshSelectedArtifactPins": 11,
+  "freshBinaryScope": "selectedBOTHartifacts+actualintegrationImmutable; actualchildloadedbindings notyetobserved",
+  "fixtureCleanup": "NOT_APPLICABLE_NOT_EXECUTED; no fixtureabsenceclaim",
+  "allActualStages": "UNRUN;14finiteactualstagesonly, no aggregateactual",
+  "packet": "/workspace/boe-cloud-tools-20261014/fr063-fresh-both-preparation-plan-catalog-zero-execution-frozen-c4a7bc1a-20261014T233746Z-02603674",
+  "manifestSHA256": "ae2bbc8f4e123a879bfb0bc087d14d2f99e287399c2b9968b23a5f2a42b72f28",
+  "artifactCount": 32,
+  "rootTrace": [
+    "8ea1f3launchsession22361",
+    "151218nativeprep0",
+    "aaa576prepactual154/11pins/32-58-18",
+    "347622exactPlanlaunch48159",
+    "88210bnativeexactPlan0",
+    "02c8b6exactPlanpostreadback",
+    "c267d1cataloglaunch41632",
+    "71025ccatalognative0",
+    "7198e4catalogpostreadback"
+  ],
+  "status": "ROOTverifiedpreparation/officialinventorysuccessful;0testsExecuted; preservebeforefiniteactual; independentoverallEVIDENCE pending, no runtimequalification",
+  "configurationActual": "backendtelemetryunavailable",
+  "remaining": "save/recoverpreparationcarrier, bindunchangedsource+compileC4binarypins truthfully, firstactualcheckpoint5cases thenfiniteorder/firstfailurefreeze"
+}

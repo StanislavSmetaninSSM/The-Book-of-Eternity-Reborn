@@ -1,0 +1,24 @@
+{
+  "base": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+  "author": "ROOT metadata/status only; same retained Sol remains sole project-source writer, FINALSTOP",
+  "scope": "two factual MD2 front records; production/test/fixture/catalog/selection/GM unchanged",
+  "authored": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "beforeSHA256": "b0b08f1b7df1e4005356f01ff474dc50833aeccc8792668361f495308468f9b0",
+      "currentSHA256": "184b4a6c03cb6a5043777de6b1787a3a123d05268a32d41aa88f6b41fdf5e22d",
+      "oldTailCheckboxesExact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "beforeSHA256": "cf682618d7fc68cb0c3c42d20110e32602c508bd207ab7a2c6c997dd57478d7a",
+      "currentSHA256": "757600685bd8291cedf0369f053dd6852671c8ce2d9ca9537d6de5a4213eb72c",
+      "oldTailCheckboxesExact": true
+    }
+  ],
+  "preparationReceiptSHA256": "90c59f4c3fbda6c7575dd8f962aa830fafc60f75405ea63d5b8d4c9eae917cb0",
+  "allProjectTestsExecuted": 0,
+  "allActualStages": "UNRUN",
+  "historicalFailureAndReports": "immutable; sourceacceptance isstatic, no runtimequalification",
+  "independentReviewScope": "intermediate factual checkpoint metadata, folded into ongoing finished-block evidence; no newbehavior/design/selection"
+}

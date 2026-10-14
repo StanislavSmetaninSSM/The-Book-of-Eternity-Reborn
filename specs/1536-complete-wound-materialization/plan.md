@@ -1,5 +1,39 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Fresh BOTH preparation and official inventory — ROOT checkpoint 2026-10-14
+
+Source/compile checkpoint `c4a7bc1a859bc71a1edc7c6c36b6875b04586390`.
+Corrected SOURCE review45d85929 accepted the four minimal compiler fixes;
+unchanged FIXTURE/SELECTION/A1 approvals carry forward. The original attempt at
+eb206948 remains an immutable BUILD_PREREQUISITE_FAILURE: four errors, ten
+warnings, zero tests; its accepted EVIDENCE and raw artifacts are retained.
+
+Fresh BOTH PlanOnly preparation completed native exit0 in149.3365124s with
+actual successful Build-integration and Build-unit phases and zero build errors.
+Official selected inventory is32methods/58cases/18descriptors. Build logs report
+130 and35 warnings respectively; no warning cleanup or performance claim.
+A separate NoBuild PlanOnly repeated the exact32/58/18 plan in4.6555862s.
+Catalog discovery-only completed exit0 in5.3699426s:746categories,
+11588methods, Valid=true, no unmapped methods or stale selectors.
+All three operations executed ZERO tests. PlanOnly completed0of18 execution
+descriptors by design; those fields are not an actual test-selection PASS.
+
+ROOT verified154source/dependency pins and11fresh selected binary artifacts
+before/after; the latter include integration System.Collections.Immutable.dll.
+This is a selected artifact provenance set, not observed child loaded bindings.
+Runner-owned process cleanup reports are preserved; fixture cleanup is unobserved
+because no fixture executed. The32-artifact frozen preparation packet and manifest
+are retained alongside the native summaries, logs, plans and before/after pins.
+
+All14finite actual stages remain UNRUN. Next: publish/recover this evidence and
+metadata-only status, bind unchanged project source and compile-c4a7bc1a binaries,
+then run the exact checkpoint component1method/5cases before the staged/live/cold
+and other reviewed stages. Keep the first-failure freeze/EVIDENCE gates; never run
+the preparation aggregate as actual-all. FullFR063/T070, lawful active combinations,
+fresh-PID initially bad authority, partial cleanup and erased-owner limits remain
+OPEN. C5 qualification, journal runtime, B2–B5 repeats, GM1557/1558 and Windows
+are not started by this preparation. Historical tails and checkboxes stay exact.
+
 ## First preparation four-site prerequisite correction SOURCE WIP STOP — 2026-10-14
 
 Owning base `5f492e5aee86280c21e475aa04801ff8ce00663f`. The first fresh BOTH
