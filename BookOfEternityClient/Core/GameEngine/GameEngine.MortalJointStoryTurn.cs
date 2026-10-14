@@ -24,6 +24,13 @@ public partial class GameEngine
         {
             await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
+                // Nonauthorizing protection precedes marker applicability. Erasing
+                // the marker cannot hide a changed signed occurrence/receipt/history
+                // partition and send already-published mechanics to ordinary rollback.
+                var inspection = await MortalQteDecisionPublication.InspectCurrentAsync(_fs, lease,
+                    frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber);
+                if (inspection.State == MortalQteDecisionPublication.CurrentPublicationState.IntegrityConflict)
+                    return HoldMortalJointStoryTurn("The original-bound publication evidence is inconsistent: " + inspection.Reason);
                 var bytes = await _fs.ReadFileBytesAsync(lease, MortalQteDecisionPublication.StatePath);
                 if (bytes is null) return claimed ? HoldMortalJointStoryTurn("The joint completion marker is missing.") : null;
                 var marker = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),

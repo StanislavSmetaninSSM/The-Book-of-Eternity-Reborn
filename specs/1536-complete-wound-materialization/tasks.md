@@ -1,5 +1,25 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Original-bound completion integrity early guard WIP STOP — 2026-10-14
+
+Owning base `6a0b9c23660a06e1b337bf5209084c79437bfeeb`; recovery2269/1739
+was verified before SOURCE GO. One existing StoryTurn owner now calls the actual current
+publication inspector on its participating lease BEFORE missing marker/schema/tuple returns.
+IntegrityConflict holds without granting replay, take, cleanup or rollback authority. The
+inspector validates the official original/caller tuple and compares signed marker/occurrence/
+receipt/history baseline with current physical bytes; a removed marker cannot conceal retained
+published partition differences. Its existing full proof, phase and completion gates are intact.
+
+Verified v1, original_baseline and NotApplicable classifications retain their previous paths;
+no old inspector/reader/guard body is changed. The guard requires an official frame. Without
+that frame, or after every owner/history trace is erased back to baseline, past ownership cannot
+be inferred by this API. Those precise contours remain OPEN; no substitute serialized/hash
+claim, new authority or broad quarantine was added. J7 controls/selection, session/cold/new-root
+proofs and normative/primary-GM synchronization remain OPEN. This is source-only WIP, not
+qualification. All compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/project checks
+and entire SOURCE/FIXTURE/SELECTION are UNRUN; old fixtures/categories/selectors/budgets,
+historical bodies and acceptance checkboxes are unchanged.
+
 ## Joint eligible cleanup actual caller wiring WIP STOP — 2026-10-14
 
 Owning base `06ce5dea283e91ce6c2a8cadfc3b9f48c21a29fc`; recovery2264/1734
