@@ -311,7 +311,8 @@ internal static partial class WoundAcceptedTurnPlanner
     /// </returns>
     private static WoundAcceptedTurnPreparationResult PrepareCore(WoundAcceptedTurnInput input,
         IWoundAcceptedTurnIdentityAllocator identityAllocator, WoundOperationBeforeData operationBefore,
-        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore)
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore,
+        object? jointRepairContinuationAuthority = null)
     {
         var validation = WoundAcceptedTurnPlannerCore.ValidateInput(input, operationBefore);
         if (validation.Issues.Count != 0)
@@ -379,6 +380,13 @@ internal static partial class WoundAcceptedTurnPlanner
             batches.Add(materialized.Batch!);
         }
 
+        if (jointRepairContinuationAuthority is not null)
+        {
+            var jointIssues = AppendJointRepairPreparation(jointRepairContinuationAuthority,
+                allocatedWoundIds, allocatedTransitionIds, allocatedApplicationRefs, preparedWounds, batches);
+            if (jointIssues.Count != 0) return new WoundAcceptedTurnPreparationResult(null, jointIssues);
+        }
+
         var baselineAuthority = WoundAcceptedTurnPlannerCore.CreateBaselineAuthority(
             inputFingerprint,
             input);
@@ -391,7 +399,7 @@ internal static partial class WoundAcceptedTurnPlanner
             allocatedTransitionIds,
             preparedWounds,
             batches,
-            baselineAuthority, draftBefore: draftBefore);
+            baselineAuthority, draftBefore: draftBefore, jointRepairContinuationAuthority: jointRepairContinuationAuthority);
         var preparationFingerprint =
             WoundAcceptedTurnFingerprints.ComputePreparation(provisional);
         var prepared = new WoundPreparedAcceptedTurnPlan(
@@ -403,7 +411,7 @@ internal static partial class WoundAcceptedTurnPlanner
             allocatedTransitionIds,
             preparedWounds,
             batches,
-            baselineAuthority, draftBefore: draftBefore);
+            baselineAuthority, draftBefore: draftBefore, jointRepairContinuationAuthority: jointRepairContinuationAuthority);
         return new WoundAcceptedTurnPreparationResult(
             prepared,
             Array.Empty<ValidationIssue>());
@@ -521,6 +529,10 @@ internal static partial class WoundAcceptedTurnPlannerCore
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchPlanningResult effectResult)
     {
+        if (prepared.JointRepairContinuationAuthority is not null)
+            return FailedFinal("wound_plan_joint_final_owner_unavailable",
+                "Joint preparation cannot fall through the ordinary or singleton final owner.",
+                "the exclusive joint effect/final/common owner", "joint final owner not implemented");
         if (prepared.DraftBefore != null)
             return FailedFinal("spiritual_wound_owned_application_required",
                 "Live wounds are reduced from actual owned insertion facts before common final publication.",
@@ -2916,6 +2928,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 prepared.TreatmentContinuationAuthority is not null;
             var isRecoveryContinuation =
                 prepared.RecoveryContinuationAuthority is not null;
+            var isJointRepair = prepared.JointRepairContinuationAuthority is not null;
             if (prepared.Binding is null ||
                 prepared.AllocatedWoundIds is null ||
                 prepared.AllocatedTransitionIds is null ||
@@ -2923,7 +2936,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 prepared.EffectOperationBatches is null ||
                 prepared.BaselineAuthority is null ||
                 (isTreatmentContinuation && isRecoveryContinuation) ||
-                (!isTreatmentContinuation && !isRecoveryContinuation &&
+                (isJointRepair && (isTreatmentContinuation || isRecoveryContinuation || prepared.DraftBefore is not null)) ||
+                (!isTreatmentContinuation && !isRecoveryContinuation && !isJointRepair &&
                  (prepared.AllocatedWoundIds.Count != prepared.PreparedWounds.Count ||
                   prepared.AllocatedTransitionIds.Count != prepared.PreparedWounds.Count ||
                   prepared.EffectOperationBatches.Count != prepared.PreparedWounds.Count)) ||
@@ -2931,6 +2945,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                  !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared)) ||
                 (isRecoveryContinuation &&
                  !WoundAcceptedTurnPlanner.RecoveryContinuationPreparedAgrees(prepared)) ||
+                (isJointRepair && !WoundAcceptedTurnPlanner.JointRepairPreparedAgrees(prepared)) ||
                 !string.Equals(
                     WoundAcceptedTurnFingerprints.ComputeBinding(prepared.Binding),
                     prepared.BindingFingerprint,
@@ -2960,7 +2975,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 return PreparedSealFailure("changed prepared baseline authority");
             }
 
-            if (isTreatmentContinuation || isRecoveryContinuation)
+            if (isTreatmentContinuation || isRecoveryContinuation || isJointRepair)
                 return Array.Empty<ValidationIssue>();
 
             for (var index = 0; index < prepared.EffectOperationBatches.Count; index++)

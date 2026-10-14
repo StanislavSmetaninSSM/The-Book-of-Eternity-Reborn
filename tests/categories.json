@@ -3,10 +3,12 @@
     "categories": [
         {
             "id": "fr063-guaranteed-joint-checkpoint-provenance",
-            "responsibility": "FR063 J2 foundation only: one genuine source-backed component theory/five rows captures detached private rejected-severity checkpoint from actual finalized QTE42/original43, confirmed homogeneous guaranteed request and real adapter packet; exact roundtrip plus unknown-field/blob-hash/frame-leaf-with-original-seal/fingerprint refusal. Full physical bytes, exact held request/claim and no common plan/private pending write are checked. Newly authored UNRUN; not live joint dispatch/publication proof.",
+            "responsibility": "FR063 J2 foundation only: one genuine source-backed component theory/five rows captures detached private rejected-severity checkpoint from actual finalized QTE42/original43, confirmed homogeneous guaranteed request and real adapter packet; exact roundtrip plus unknown-field/blob-hash/frame-leaf-with-original-seal/fingerprint refusal. Full physical bytes, exact held request/claim and no common plan/private pending write are checked. Newly authored UNRUN; not live joint dispatch/publication proof. The same five rows also refuse private joint preparation without the actual installed full wave, preserving no issued authority/plan; this is a negative prerequisite, not positive prepared-cache/effect/publication qualification.",
             "excludes": "No R1 repeat, engine admission/restore dispatch, corrected union publication, terminal release, completed marker, cold/new-root, GM/UI or full-FR closure. Qualified ordinary13/API5/pending2/QTE/ce955 fixtures remain unchanged/unselected. No synthetic authority, caller reservation/confirmation, original copy/re-sign or test-to-test call.",
             "changeHints": [
                 "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+                "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+                "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepair.cs",
                 "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCheckpoint.cs"
             ],
             "related": [

@@ -425,13 +425,14 @@ internal static class MortalWoundOpportunityAdapter
                 replay.OccurrenceState is null || replay.ReceiptState is null) return Failure(replay.Issues);
             exactReplay = replay;
         }
-        return WoundResponseInputComposer.Compose(
+        var composition = WoundResponseInputComposer.Compose(
             binding,
             new[] { opportunityResult.Opportunity },
             gameResponse.WoundDecisions,
             PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(
                 gameResponse.Response),
             priorReceipts);
+        return composition.Success ? composition.WithSourceBinding(binding) : composition;
     }
 
     private static bool TryParseSourceCorrelation(

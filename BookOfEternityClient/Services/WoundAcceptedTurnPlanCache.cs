@@ -20,6 +20,8 @@ internal sealed class WoundAcceptedTurnPlanCache
     private object? _preparedTreatmentContinuationAuthority;
     private string? _preparedRecoveryContinuationFingerprint;
     private object? _preparedRecoveryContinuationAuthority;
+    private string? _preparedJointRepairFingerprint;
+    private object? _preparedJointRepairAuthority;
     private string? _preparedFingerprint;
     private object? _preparedStageToken;
     private WoundAcceptedTurnPreparationResult? _preparedResult;
@@ -99,11 +101,16 @@ internal sealed class WoundAcceptedTurnPlanCache
         out bool reused) => GetOrBuildPrepared(input,
             treatmentContinuationAuthority: null, out reused, recoveryContinuationAuthority);
 
+    internal WoundAcceptedTurnPreparationResult GetOrBuildJointRepairPrepared(
+        WoundAcceptedTurnInput input, object jointRepairContinuationAuthority, out bool reused) =>
+        GetOrBuildPrepared(input, null, out reused, jointRepairContinuationAuthority: jointRepairContinuationAuthority);
+
     private WoundAcceptedTurnPreparationResult GetOrBuildPrepared(
         WoundAcceptedTurnInput input,
         object? treatmentContinuationAuthority,
         out bool reused,
-        object? recoveryContinuationAuthority = null)
+        object? recoveryContinuationAuthority = null,
+        object? jointRepairContinuationAuthority = null)
     {
         ArgumentNullException.ThrowIfNull(input);
         reused = false;
@@ -113,6 +120,7 @@ internal sealed class WoundAcceptedTurnPlanCache
             string inputFingerprint;
             string? treatmentContinuationFingerprint;
             string? recoveryContinuationFingerprint;
+            string? jointRepairFingerprint;
             try
             {
                 validation = WoundAcceptedTurnPlannerCore.ValidateInput(input);
@@ -126,12 +134,17 @@ internal sealed class WoundAcceptedTurnPlanCache
                 inputFingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
                 if (treatmentContinuationAuthority is not null && recoveryContinuationAuthority is not null)
                     throw new ArgumentException("A prepared stage cannot combine treatment and recovery authority.");
+                if (jointRepairContinuationAuthority is not null &&
+                    (treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null))
+                    throw new ArgumentException("Joint repair is an exclusive cache authority family.");
                 treatmentContinuationFingerprint = treatmentContinuationAuthority is null
                     ? null
                     : WoundAcceptedTurnPlanner.GetTreatmentContinuationFingerprint(
                         treatmentContinuationAuthority);
                 recoveryContinuationFingerprint = recoveryContinuationAuthority is null ? null :
                     WoundAcceptedTurnPlanner.GetRecoveryContinuationFingerprint(recoveryContinuationAuthority);
+                jointRepairFingerprint = jointRepairContinuationAuthority is null ? null :
+                    WoundAcceptedTurnPlanner.GetJointRepairContinuationFingerprint(jointRepairContinuationAuthority);
             }
             catch (Exception exception) when (IsMalformedBoundary(exception))
             {
@@ -155,7 +168,9 @@ internal sealed class WoundAcceptedTurnPlanCache
                     _preparedTreatmentContinuationAuthority,
                     treatmentContinuationAuthority) &&
                 string.Equals(_preparedRecoveryContinuationFingerprint, recoveryContinuationFingerprint, StringComparison.Ordinal) &&
-                ReferenceEquals(_preparedRecoveryContinuationAuthority, recoveryContinuationAuthority))
+                ReferenceEquals(_preparedRecoveryContinuationAuthority, recoveryContinuationAuthority) &&
+                _preparedJointRepairFingerprint == jointRepairFingerprint &&
+                ReferenceEquals(_preparedJointRepairAuthority, jointRepairContinuationAuthority))
             {
                 var validatedReplay = ValidatePreparedResult(
                     input,
@@ -175,7 +190,10 @@ internal sealed class WoundAcceptedTurnPlanCache
             WoundAcceptedTurnPreparationResult result;
             try
             {
-                result = (recoveryContinuationAuthority is not null
+                result = (jointRepairContinuationAuthority is not null
+                    ? WoundAcceptedTurnPlanner.PrepareJointRepairCandidate(
+                        WoundAcceptedTurnData.CloneInput(input)!, jointRepairContinuationAuthority)
+                    : recoveryContinuationAuthority is not null
                     ? WoundAcceptedTurnPlanner.PrepareRecoveryContinuationCandidate(
                         WoundAcceptedTurnData.CloneInput(input)!, recoveryContinuationAuthority)
                     : treatmentContinuationAuthority is null
@@ -213,6 +231,8 @@ internal sealed class WoundAcceptedTurnPlanCache
                 treatmentContinuationAuthority;
             _preparedRecoveryContinuationFingerprint = recoveryContinuationFingerprint;
             _preparedRecoveryContinuationAuthority = recoveryContinuationAuthority;
+            _preparedJointRepairFingerprint = jointRepairFingerprint;
+            _preparedJointRepairAuthority = jointRepairContinuationAuthority;
             _preparedFingerprint = plan.WoundPreparationFingerprint;
             _preparedStageToken = stageToken;
             _preparedResult = Detach(validated);
@@ -613,6 +633,16 @@ internal sealed class WoundAcceptedTurnPlanCache
 
         var transitions = input.Transitions;
         var batches = plan.EffectOperationBatches;
+        if (plan.JointRepairContinuationAuthority is not null)
+        {
+            if (transitions.Count != 1 || input.Opportunities.Count != 1 ||
+                !WoundAcceptedTurnPlanner.JointRepairPreparedAgrees(plan))
+            {
+                mismatch = "joint repair authority";
+                return false;
+            }
+            return true;
+        }
         if (plan.RecoveryContinuationAuthority is not null)
         {
             if (transitions.Count != 0 || input.Opportunities.Count != 0 ||
@@ -740,7 +770,10 @@ internal sealed class WoundAcceptedTurnPlanCache
         WoundAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan plan)
     {
-        var replay = plan.RecoveryContinuationAuthority is not null
+        var replay = plan.JointRepairContinuationAuthority is not null
+            ? WoundAcceptedTurnPlanner.PrepareJointRepairCandidate(
+                WoundAcceptedTurnData.CloneInput(input)!, plan.JointRepairContinuationAuthority)
+            : plan.RecoveryContinuationAuthority is not null
             ? WoundAcceptedTurnPlanner.PrepareRecoveryContinuationCandidate(
                 WoundAcceptedTurnData.CloneInput(input)!, plan.RecoveryContinuationAuthority)
             : plan.TreatmentContinuationAuthority is null
@@ -910,6 +943,8 @@ internal sealed class WoundAcceptedTurnPlanCache
         _preparedTreatmentContinuationAuthority = null;
         _preparedRecoveryContinuationFingerprint = null;
         _preparedRecoveryContinuationAuthority = null;
+        _preparedJointRepairFingerprint = null;
+        _preparedJointRepairAuthority = null;
         _preparedFingerprint = null;
         _preparedStageToken = null;
         _preparedResult = null;

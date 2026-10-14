@@ -811,6 +811,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     private readonly WoundPreparedBaselineAuthority? _baselineAuthority;
     private readonly object? _treatmentContinuationAuthority;
     private readonly object? _recoveryContinuationAuthority;
+    private readonly object? _jointRepairContinuationAuthority;
     private readonly object? _cacheAuthorityStateToken;
     private readonly object? _cachePreparedStageToken;
 
@@ -874,8 +875,12 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         object? cacheAuthorityStateToken = null,
         object? cachePreparedStageToken = null,
         EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore = null,
-        object? recoveryContinuationAuthority = null)
+        object? recoveryContinuationAuthority = null,
+        object? jointRepairContinuationAuthority = null)
     {
+        if (jointRepairContinuationAuthority is not null &&
+            (treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null || draftBefore is not null))
+            throw new ArgumentException("Joint repair is an exclusive prepared authority family.");
         _binding = WoundAcceptedTurnData.CloneBinding(binding);
         BindingFingerprint = bindingFingerprint;
         InputFingerprint = inputFingerprint;
@@ -893,6 +898,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             WoundAcceptedTurnData.CloneBaselineAuthority(baselineAuthority);
         _treatmentContinuationAuthority = treatmentContinuationAuthority;
         _recoveryContinuationAuthority = recoveryContinuationAuthority;
+        _jointRepairContinuationAuthority = jointRepairContinuationAuthority;
         _cacheAuthorityStateToken = cacheAuthorityStateToken;
         _cachePreparedStageToken = cachePreparedStageToken;
         DraftBefore = draftBefore;
@@ -926,6 +932,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         _treatmentContinuationAuthority;
     internal object? RecoveryContinuationAuthority =>
         _recoveryContinuationAuthority;
+    internal object? JointRepairContinuationAuthority => _jointRepairContinuationAuthority;
 
     internal WoundPreparedAcceptedTurnPlan BindToCacheAuthority(
         object authorityStateToken,
@@ -947,7 +954,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             authorityStateToken,
             preparedStageToken,
             DraftBefore,
-            _recoveryContinuationAuthority);
+            _recoveryContinuationAuthority,
+            _jointRepairContinuationAuthority);
     }
 
     internal WoundPreparedAcceptedTurnPlan ClonePreservingCacheAuthority() =>
@@ -965,7 +973,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             _cacheAuthorityStateToken,
             _cachePreparedStageToken,
             DraftBefore,
-            _recoveryContinuationAuthority);
+            _recoveryContinuationAuthority,
+            _jointRepairContinuationAuthority);
 
     internal bool HasCacheAuthorityState => _cacheAuthorityStateToken is not null;
 
@@ -2338,6 +2347,11 @@ internal static class WoundAcceptedTurnFingerprints
             fields.Add("mortal_recovery_continuation");
             fields.Add(WoundAcceptedTurnPlanner.GetRecoveryContinuationFingerprint(
                 plan.RecoveryContinuationAuthority));
+        }
+        if (plan.JointRepairContinuationAuthority is not null)
+        {
+            fields.Add("mortal_joint_repair_continuation.v1");
+            fields.Add(WoundAcceptedTurnPlanner.GetJointRepairContinuationFingerprint(plan.JointRepairContinuationAuthority));
         }
         if (plan.DraftBefore is { } draftBefore)
         {

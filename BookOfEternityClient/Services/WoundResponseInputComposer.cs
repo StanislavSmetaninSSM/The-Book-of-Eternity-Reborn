@@ -12,6 +12,7 @@ internal sealed class WoundResponseInputCompositionResult
     private readonly WoundPlayerNotification[] _notifications;
     private readonly WoundOpportunityDecisionReceipt[] _decisionReceipts;
     private readonly ValidationIssue[] _issues;
+    private readonly WoundAcceptedTurnBinding? _sourceBinding;
 
     internal WoundResponseInputCompositionResult(
         JsonObject? commandRoot,
@@ -36,6 +37,17 @@ internal sealed class WoundResponseInputCompositionResult
             .ToArray();
         _issues = issues.Select(CloneIssue).ToArray();
     }
+
+    private WoundResponseInputCompositionResult(WoundResponseInputCompositionResult source,
+        WoundAcceptedTurnBinding binding)
+        : this(source.CommandRoot, source.MaterializedOpportunities, source.Transitions,
+            source.Notifications, source.DecisionReceipts, source.Issues) =>
+        _sourceBinding = WoundAcceptedTurnData.CloneBinding(binding);
+
+    // Detached diagnostic/input view only: no serialized command member or owner capability.
+    internal WoundAcceptedTurnBinding? SourceBinding => WoundAcceptedTurnData.CloneBinding(_sourceBinding);
+    internal WoundResponseInputCompositionResult WithSourceBinding(WoundAcceptedTurnBinding binding) =>
+        new(this, binding);
 
     internal JsonObject? CommandRoot => _commandRoot?.DeepClone().AsObject();
 

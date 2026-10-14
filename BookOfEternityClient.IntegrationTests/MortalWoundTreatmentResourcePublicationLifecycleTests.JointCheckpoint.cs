@@ -160,6 +160,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(captured.IsValid, DescribeValidationIssues(captured.Issues));
         var rejectedCapture = Assert.IsType<MortalJointRepairCheckpoint.RejectedCapture>(captured.Capture);
         rejectedCapture.EnsureCurrent(_fs, captureLease);
+        var uninstalledJoint = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(_fs, captureLease, rejectedCapture);
+        Assert.False(uninstalledJoint.IsValid);
+        Assert.Null(uninstalledJoint.Input);
+        Assert.Null(uninstalledJoint.Authority);
+        Assert.Contains(uninstalledJoint.Issues, issue => issue.Code == "wound_plan_joint_input_changed");
         var checkpoint = Assert.IsType<MortalJointRepairCheckpoint>(captured.Checkpoint);
         var root = checkpoint.ToJsonObject();
         Assert.Equal(generation, root["sessionGeneration"]!.GetValue<string>());

@@ -1,5 +1,67 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J4 exclusive joint preparation/cache/registry WIP STOP — 2026-10-14
+
+Retained sole Sol continued from published246d4417029582eb9402053f78bdcf4736f8a79b
+under the same accepted DESIGNv2/J2-J7 release. This is a substantial resumable source
+WIP for ROOT preservation, not connected SOURCE READY, J4 completion or runtime proof.
+The prior pure contribution extraction and earlier source reports remain historical.
+All new project checks UNRUN; no accepted evidence or checkbox status changed.
+
+Successful real Mortal adapter composition now carries its independently rebound QTE
+binding in a detached internal view. Existing signatures, physical command JSON and
+semantic fingerprints remain unchanged; this view grants no authority. The private
+joint factory invokes real correction itself, retains the separate treatment binding,
+prepares its real outcome/rematerialization/resource finalization and freezes current
+original/command/pending/draft/scene/canonical/source guards. A private issuer, current
+physical G/frame, exact bytes and the same confirmed claim gate registry access. It
+cannot mint preparation from a parsed checkpoint/public packet/caller-supplied binding.
+
+The prepared representation and existing wound cache have an exclusive third joint
+case, with a joint-only domain component in preparation fingerprints. One existing
+acquisition allocator runs; its inventory is checked against the separately derived
+treatment identity/application refs before the joint envelope is built. Full detached
+prepared replay checks the complete private graph. The new registry identity occupies
+the same exclusive publication slot and same wound/effect/common cache lineage; old
+homogeneous publication ownership cannot recognize that private joint token. All raw
+IO/current-claim validation occurs before entering the registry monitor. No new hold,
+reservation agreement, scheduler or common take/publication exists in this checkpoint.
+
+The same existing five source-component rows now also refuse joint preparation when
+the actual installed private wave is absent, preserving no issued authority/plan and
+all old byte/ConfirmedHeld/refusal oracles. This is negative prerequisite coverage,
+not a positive prepared-cache or live persistence proof. Owner/selector wording and
+source hints reflect that bounded addition; methods/cases/membership/budgets unchanged.
+Catalog730/provisional1method5cases1descriptor/budget5/default10, no discovery claim.
+
+Known static freshness gap for the next connected block: this factory currently uses
+its previously issued rejected capture's treatment accepted-state object, then freezes
+current guard bytes. A same-lease capability change between capture and preparation is
+not freshly re-exported there. Before positive joint qualification, reconstruct the
+actual installed wave/current treatment proof and compare the exact accepted-state
+fingerprint before sealing. This is an unwired source gap, not an observed runtime
+failure or a claim that current guards grant fresh treatment authority.
+
+Still UNIMPLEMENTED: per-owned-batch event-vector dispatch and one effect stage;
+exclusive joint final authority/shared root assembly/anchors; whole-union common/cache/
+final capability-resource-source gate; full publication/compensation/whole-wave cleanup/
+terminal dispositions/v2 completed proof; actual entrant/retry/restore lifecycle;
+R2-R7/C1/cold controls and GM severity-repair example/manifest/guards. Joint finalization
+explicitly refuses rather than falling through an old singleton/generic finalizer until
+its owner is implemented. Do not connect or qualify this prepared-only family as a
+working path. Separate current vectors have not been concatenated or re-signed.
+
+Old sixarg/singleton/disjoint/public-mixed guards and qualified fixtures remain exact;
+ce955 stays untouched/unselected. Generic cache branches retain their old defaults;
+all old729 catalog nodes/other selectors/globalCI/history tails/acceptance checkboxes
+remain exact. Named directly affected planner/cache and binding projection controls
+are C1 candidates for the complete connected selection, not broad passing repeats.
+Public GM grammar and afterlife behavior unchanged by this private, unwired prepared
+foundation; required GM synchronization still accompanies the connected capability.
+No compiler/build/test/PlanOnly/catalog/runtime/fault/Git/provider/agent execution by
+the author. Full FR063/T070/UI/parents remain OPEN. ROOT preserves/recover WIP now,
+then the same writer continues effect/final/common/publication before wiring entry.
+
 ## J4 pure reducer contribution extraction WIP STOP — 2026-10-14
 
 Retained sole Sol continued from published9567ec56872714db3de4b35e46bfd833766dd4ff
