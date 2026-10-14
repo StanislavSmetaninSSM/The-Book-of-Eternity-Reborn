@@ -1,5 +1,24 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J6 later handoff and proposed progression-owner amendment — 2026-10-14
+
+Source `017c3a2df1a3d29eb38863151aba52f0ae4dce90`, owning base70ba075f. Later source
+report `recovery/fr063-j6-physical-v2-postcommon-source-report-20261014.md`, SHA256
+`2ac84ce07a5e85e1e13692f69ab822b96caad4c45f7aa9665617ce7029265bb1`, is preserved separately;
+historical ROOT NOT SUPPLIED/UNCHECKED stays unchanged. No new author static tally exists.
+ROOT checked all5 published code pins. Progression/story/outer/cold/J7/norm/GM remain OPEN.
+
+Proposed, UNACCEPTED and UNIMPLEMENTED bounded architecture amendment:
+`recovery/fr063-joint-progression-owner-design-amendment-20261014.md`, SHA256
+`cbd92b5d14b1bdf5b33e08065842c9689d0c9dcdaa03d4f1c79fe8e60be462ea`; ROOT matched8 read-time
+source pins. It retains one common mechanics publish, freezes an authenticated progression
+basis before take, and proposes an atomic schedule/report/private-marker phase transition.
+Captured-UTC calculation extraction and actual authenticated source coverage are explicit
+unimplemented prerequisites. No basis-after-image/hash/oldflag/story inference grants authority.
+Accepted DESIGNv2 and its receipts remain immutable. Independent DESIGN plus explicit written
+implementation release precede this owning-phase patch; no progression/schema/code change is
+included here. Whole SOURCE and compilation/discovery/catalog/PlanOnly/tests/runtime stay UNRUN.
+
 ## J6 physical v2 continuation/read-only post-validation WIP STOP — 2026-10-14
 
 Retained sole writer continued from verified `70ba075fb38400b93db14fb1eb81b564684c5eb4`
