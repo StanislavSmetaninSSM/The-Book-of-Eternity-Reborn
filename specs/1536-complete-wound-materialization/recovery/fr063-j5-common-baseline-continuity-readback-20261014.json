@@ -1,0 +1,28 @@
+{
+  "source": "30e58100b3cb772f6df884acb45e853b243bdadc",
+  "rootContentPins": 39,
+  "sourceAndSelectedGitBlobPinsFreshMatched": true,
+  "selectedMaterializedPinFiles": 32,
+  "selectedBlobOnlyPaths": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs",
+    "tests/selection.json",
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublication.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentResourceReservationRegistry.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.cs"
+  ],
+  "sourceClean": true,
+  "selectedClean": true,
+  "runtime": "UNRUN",
+  "authorReport": "in progress external only",
+  "readbackDiagnostic": {
+    "failedOperation": "attempted read_bytes for all39 protected/candidate paths in selected sparse directory",
+    "toolChunk": "dd7220",
+    "exitCode": 1,
+    "exactError": "FileNotFoundError: [Errno 2] No such file or directory: '/workspace/1536-t070-design-recovery-7e6d4fa0/BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs'",
+    "confirmedCause": "git ls-files -t reports S; exact target Git object exists; no source missing claim/no project execution",
+    "correction": "all39 Git objects checked; physical materialization checked only for existing selected files; source/sparse trees untouched"
+  },
+  "utc": "2026-10-14T04:14:35.419800+00:00"
+}

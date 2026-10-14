@@ -1,5 +1,20 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J5 foundation later author static handoff — 2026-10-14
+
+Source checkpoint 30e58100b3cb772f6df884acb45e853b243bdadc remains an unwired WIP,
+with owning diff base 060339035ae39dac47ca4df2bfaecab210db313e. Later author report
+recovery/fr063-j5-common-baseline-source-report-20261014.md and static readback
+recovery/fr063-j5-common-baseline-static-readback-20261014.json record 129 static
+checks and 95 protected pins. ROOT matched these current pins before this metadata
+carrier. The immutable earlier six-check ROOT receipt retains author UNCHECKED;
+these later static facts do not replace it or establish compilation/SOURCE/runtime.
+Fresh continuity readback distinguishes 32 materialized pin files from 7 sparse
+blob-only pins; all 39 source/Git-object pins matched. Project checks remain UNRUN.
+Joint resource/common/context/cache/final candidate, J6, entry/lifecycle, J7 and
+normative/GM synchronization remain OPEN. Same retained sole Sol continues only
+from the next verified remote/recovery checkpoint; whole SOURCE gate still held.
+
 ROOT preservation receipt: the author wrote the source and this active handoff,
 but no finished external author report/static readback was supplied before ROOT
 interrupted the pass for WIP preservation at 03:52 UTC. This was a coordination
