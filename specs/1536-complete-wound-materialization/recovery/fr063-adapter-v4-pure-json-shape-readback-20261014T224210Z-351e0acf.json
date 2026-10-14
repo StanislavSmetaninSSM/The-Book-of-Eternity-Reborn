@@ -1,0 +1,90 @@
+{
+  "adapter": "/workspace/boe-cloud-tools-20261014/fr063-bounded-root-runner-v4-20261014T224131Z-d5b9895d.py",
+  "adapterSHA256": "d94fa4c79ecb523b3cca5e52921fd1a0801cacab70825eaeebc7a7191e4888e8",
+  "operation": "Extracted AST of external metadata-only collect_receipts function; isolated controlled JSON transformation, no helper action/module/project code run",
+  "actualProjectExecution": "UNRUN",
+  "physicalCleanup": "UNOBSERVED; placeholder strings only, no filesystem operation or actual cleanup claim",
+  "observations": {
+    "twoNestedKnownContainerReceiptsDeduplicated": true,
+    "fourActualShapeOriginsRetained": true,
+    "nullChildExplicitUNOBSERVED": true,
+    "malformedReceiptLineExplicitPARTIAL": true
+  },
+  "fullStructuredResult": {
+    "receipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/FR063-PARSER-SHAPE-ONLY-A",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/FR063-PARSER-SHAPE-ONLY-B",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "receiptOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "controlled-shape/Child#decoded/nested"
+      },
+      {
+        "receiptIndex": 0,
+        "origin": "controlled-shape/FullChildLog#line=2"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "controlled-shape/FullChildLog#line=3"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "controlled-shape/FullChildLog#line=4"
+      }
+    ],
+    "childContainers": [
+      {
+        "origin": "controlled-shape/Child",
+        "container": "Child",
+        "originalText": "{\"nested\": {\"CleanupOwnedRoot\": \"/tmp/FR063-PARSER-SHAPE-ONLY-A\", \"OwnedFixtureRemoved\": true, \"CleanupFailure\": null}}",
+        "status": "PARSED_STRUCTURED_JSON",
+        "parsedJsonLines": [],
+        "unparseableReceiptLines": []
+      },
+      {
+        "origin": "controlled-shape/FullChildLog",
+        "container": "FullChildLog",
+        "originalText": "plain diagnostic\n{\"CleanupOwnedRoot\": \"/tmp/FR063-PARSER-SHAPE-ONLY-A\", \"OwnedFixtureRemoved\": true, \"CleanupFailure\": null}\n{\"CleanupOwnedRoot\": \"/tmp/FR063-PARSER-SHAPE-ONLY-B\", \"OwnedFixtureRemoved\": true, \"CleanupFailure\": null}\nJointWorkedExampleActualCleanup={\"CleanupOwnedRoot\": \"/tmp/FR063-PARSER-SHAPE-ONLY-B\", \"OwnedFixtureRemoved\": true, \"CleanupFailure\": null}",
+        "status": "PARSED_JSON_LINES",
+        "parsedJsonLines": [
+          2,
+          3,
+          4
+        ],
+        "unparseableReceiptLines": []
+      },
+      {
+        "origin": "controlled-unknown/Child",
+        "container": "Child",
+        "originalText": null,
+        "status": "UNOBSERVED",
+        "parsedJsonLines": [],
+        "unparseableReceiptLines": []
+      },
+      {
+        "origin": "controlled-unknown/FullChildLog",
+        "container": "FullChildLog",
+        "originalText": "{\"CleanupOwnedRoot\": BROKEN}",
+        "status": "PARTIAL_UNPARSEABLE_RECEIPT_LINE",
+        "parsedJsonLines": [],
+        "unparseableReceiptLines": [
+          {
+            "line": 1,
+            "text": "{\"CleanupOwnedRoot\": BROKEN}",
+            "parseFailure": "Expecting value: line 1 column 22 (char 21)"
+          }
+        ]
+      }
+    ]
+  },
+  "independentA1Closure": "PENDING"
+}

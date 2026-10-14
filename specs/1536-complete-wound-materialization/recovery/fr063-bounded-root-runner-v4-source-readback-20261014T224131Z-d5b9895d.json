@@ -1,0 +1,23 @@
+{
+  "reviewedRepositorySource": "ff749ba1e55adbc2ee2b625d2f45ba7153457913",
+  "repositoryGates": "SOURCE/FIXTURE/SELECTION staticallyACCEPTED atff749ba1; no repositorychanges",
+  "priorAdapter": "/workspace/boe-cloud-tools-20261014/fr063-bounded-root-runner-v3-20261014T223239Z-4c8f3782.py",
+  "priorSHA256": "f13355220b508e8804e02e916ad4699f1aa26bbdbff462035b390f491bc4b31e",
+  "priorUnchanged": true,
+  "newPath": "/workspace/boe-cloud-tools-20261014/fr063-bounded-root-runner-v4-20261014T224131Z-d5b9895d.py",
+  "newSHA256": "d94fa4c79ecb523b3cca5e52921fd1a0801cacab70825eaeebc7a7191e4888e8",
+  "changes": [
+    "pin actual declared child Immutable dependency; selected subset remains explicit",
+    "require exact BOTH preparation and actual successful BOTH build phases before fresh pins",
+    "decode ONLY actual named Child/FullChildLog strings; retain original text and exact container/line provenance",
+    "retain top-level native line provenance",
+    "bind receipts to actual native TRX/test/line",
+    "preserve actual decoded-child metadata before validation",
+    "derive absence only over parsed real receipts; missing/unparseable containers explicit partial or unknown",
+    "strict actual receipt schema/physical checks; raw receipts already retained"
+  ],
+  "reviewFinding": "A1 from5a4d24b269050e0288705c7683b5b7bf9f6ca3113916d9720ea096ae0b14f698; sourceactualcc62d2/a01d98/c4f652/39f9b8",
+  "staticASTParse": "PASS pure syntax only; adapter actions/parser not invoked",
+  "allProjectExecution": "UNRUN; executionHELD until independentA1closure",
+  "independentReview": "PENDING same retained reviewer externaladapteronly"
+}
