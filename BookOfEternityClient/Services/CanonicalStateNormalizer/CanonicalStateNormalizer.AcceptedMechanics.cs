@@ -601,6 +601,9 @@ public partial class CanonicalStateNormalizer
             throw new InvalidOperationException(
                 "A held Mortal wound-treatment resource publication requires the top-level accepted-turn transaction coordinator.");
         }
+        if (AcceptedMechanicsPlanAuthority.TryPeekValidated(_fs, writeLease, out _, out var joint) &&
+            joint.Plan?.JointRepairCommonAuthority is not null)
+            throw new InvalidOperationException("Joint repair publication requires its distinct participating-lease transaction coordinator.");
         if (AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(_fs, _writeLease, out _))
             throw new InvalidOperationException(
                 "Spiritual publication requires the top-level accepted-turn transaction coordinator.");

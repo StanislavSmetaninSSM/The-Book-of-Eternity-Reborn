@@ -490,6 +490,8 @@ internal sealed partial class AcceptedMechanicsPlanCache
         ArgumentNullException.ThrowIfNull(snapshot);
         lock (_gate)
         {
+            if (snapshot.Plan.JointRepairCommonAuthority is not null)
+                return false;
             if (!PublicationTakeSnapshotAgrees(snapshot) ||
                 !ReferenceEquals(_validatedFence, snapshot.Fence) ||
                 _validatedBindingFingerprint is not null ||

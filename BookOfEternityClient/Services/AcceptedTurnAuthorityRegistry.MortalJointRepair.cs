@@ -237,6 +237,9 @@ internal static partial class AcceptedTurnAuthorityRegistry
         }
 
         private bool OwnsJointRepairPublicationReservation(object continuation, object reservation) =>
+            _openJointRepairPublicationReceipt is null && JointRepairPublicationReservationAgrees(continuation, reservation);
+
+        private bool JointRepairPublicationReservationAgrees(object continuation, object reservation) =>
             _mortalWoundTreatmentPublicationFingerprint is null &&
             _mortalWoundTreatmentPublicationReservation is JointRepairPublicationReservationAuthority joint &&
             ReferenceEquals(joint, reservation) && ReferenceEquals(joint.Continuation, continuation) &&
@@ -277,7 +280,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
-                if (_openTreatmentPublicationReceipt is not null ||
+                if (_openTreatmentPublicationReceipt is not null || _openJointRepairPublicationReceipt is not null ||
                     _mortalWoundTreatmentPublicationReservation is not JointRepairPublicationReservationAuthority joint ||
                     !ReferenceEquals(joint.Continuation, continuation) ||
                     reservation is not null && !ReferenceEquals(joint, reservation)) return;

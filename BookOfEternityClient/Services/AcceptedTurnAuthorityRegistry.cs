@@ -5766,6 +5766,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
 
         private void ClearMortalWoundTreatmentPublicationReservationCore()
         {
+            _openJointRepairPublicationReceipt = null;
             _validatedJointRepairCommonAuthority = null;
             _validatedJointRepairCommonPlan = null;
             _mortalWoundTreatmentPublicationReservation = null;

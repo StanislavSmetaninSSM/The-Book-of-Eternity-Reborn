@@ -1,5 +1,58 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J6 private take/complete member inventory WIP STOP — 2026-10-14
+
+Retained sole Sol continued from published0c8d980a65d9bbdc0440b47eb30cc0d931c7dfee
+under the same accepted DESIGNv2/J2-J7 coordinator release. This bounded private owning
+preparation/take checkpoint is stopped for preservation before the longer publication/
+settlement/lifecycle block. It is NOT complete J6, connected SOURCE READY or runtime
+qualification. All project checks UNRUN; earlier raw reports, ROOT receipts, qualified
+fixtures/evidence and acceptance checkboxes/history remain immutable.
+
+The named joint normalizer preflight validates the actual sealed whole candidate and
+complete final capability/resource bounds, then freezes every possible quartet/wound/
+effect/item/anchor/receipt/pending/command/marker member against the plan's exact guarded
+beforeimages. Every member must already be touched and covered; exact command, whole
+private pending wave and public draft must be consumed. Complete inventory and current
+original/G/byte validation precede BOTH cache takes, outside registry/cache monitors.
+The inventory grants no publication, completion or terminal release authority.
+
+A distinct registry-only joint receipt now takes the exact sealed private common plan
+and the actual previously sealed item slot, binding their fences, complete inventory,
+same original/G/reservation/accepted request/result/finalization and ConfirmedHeld claim.
+Open joint receipts exclude competing joint preparation. A readonly taken probe checks
+the exact receipt/caches/current reservation/confirmed agreement. Rearm requires exact
+whole inventory readback, final candidate proof, both original vacant cache fences and
+that same confirmed claim. Known cache refusal retains the full graph/claim for genuine
+owner reconstruction; an unproved/stale claim is not labelled held success. Old generic
+normalization/take/rearm cannot validate or consume this private family; old null-family
+branches and existing homogeneous transaction/receipt bodies remain unchanged.
+
+Concrete integration constraint retained: mechanical admission and accepted-state proof
+require the exact issuing participating lease. The new preflight/take preserves it. The
+future named joint coordinator must retain that lease across owner build/take/batch/
+readback/settlement, or fully reconstruct the owner under a newly acquired lease. The
+ordinary coordinator's independent lease cannot inherit this proof; no lease guard was
+relaxed. No IO/await is introduced inside the registry/cache monitors.
+
+Still UNIMPLEMENTED: actual complete common batch and exact item-array publication,
+whole-union readback/compensation, successful commit/hold finalization, owned whole-wave
+cleanup, PrepareActiveRelease terminal token/coordinated removal, v2 completed marker/
+proof and typed loop settlement; real admitted entry/repair persistence/restore/dispatch/
+retry/late-idle/cold owner. The new disposition vocabulary does not establish any of
+those outcomes. No canonical write, hold commit/release, reservation, reduction or
+scheduler is added by this checkpoint. Compilation/API/lifetime/positive execution is
+UNCHECKED/UNRUN. J7 genuine R2-R7/C1 controls, owning FR063/FR012/private lifecycle amendment
+and J8 GM severity-repair worked example/manifest/guards remain required before complete
+SOURCE. Current public grammar/afterlife behavior is unchanged by this unwired private
+publication family; no isolated #1557 or recommendation work is included.
+
+Catalog730, existing component1method5cases1descriptor/budget5/default10 and every fixture/
+selector/membership/budget remain unchanged. No new test or discovered/runtime case is
+claimed. Qualified ce955/QTE/ordinary13/API5/pending2/native/J1 evidence is retained, not
+repeated. Full FR063/T070/UI/parents remain OPEN. ROOT preserves this WIP before continuation
+and owns all project execution, Git publication and independent complete SOURCE gates.
+
 ## J5 later author static handoff preserved — 2026-10-14
 
 Source checkpoint `71bfb38c88a74392bb4174b88c308bcfce668e78`, owning diff base

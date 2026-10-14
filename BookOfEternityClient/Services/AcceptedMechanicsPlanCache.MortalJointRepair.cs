@@ -2,6 +2,44 @@ namespace BookOfEternityClient.Services;
 
 internal sealed partial class AcceptedMechanicsPlanCache
 {
+    internal bool TryTakeValidatedJointPublication(MortalJointRepairPublicationPreparation preparation,
+        out AcceptedMechanicsPlanningResult result, out ValidatedPublicationTakeSnapshot snapshot)
+    {
+        lock (_gate)
+        {
+            var fingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(preparation.Binding);
+            if (_spiritualPublication is null && _spiritualTaken is null && _validatedBinding is not null &&
+                _validatedResult is { Plan: { } plan } current && ReferenceEquals(plan, preparation.Plan) &&
+                ReferenceEquals(plan.JointRepairCommonAuthority, preparation.Authority) &&
+                _validatedBindingFingerprint == fingerprint && PreparedFingerprintAgrees(current))
+            {
+                result = current;
+                snapshot = new(_cacheAuthority, _validatedFence, fingerprint, CloneBinding(_validatedBinding),
+                    current, plan, plan.PreparedPlanFingerprint);
+                ClearValidatedSlotCore();
+                return true;
+            }
+            result = null!; snapshot = null!; return false;
+        }
+    }
+
+    internal bool TryRearmValidatedJointPublication(MortalJointRepairPublicationPreparation preparation,
+        ValidatedPublicationTakeSnapshot snapshot)
+    {
+        lock (_gate)
+        {
+            if (!ReferenceEquals(snapshot.Plan, preparation.Plan) ||
+                !ReferenceEquals(snapshot.Plan.JointRepairCommonAuthority, preparation.Authority) ||
+                !PublicationTakeSnapshotAgrees(snapshot) || !ReferenceEquals(_validatedFence, snapshot.Fence) ||
+                _validatedBindingFingerprint is not null || _validatedBinding is not null || _validatedResult is not null)
+                return false;
+            _validatedBindingFingerprint = snapshot.BindingFingerprint;
+            _validatedBinding = CloneBinding(snapshot.Binding);
+            _validatedResult = snapshot.Result;
+            return true;
+        }
+    }
+
     internal sealed record JointCandidateFence(object Cache, object Fence,
         WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority Authority, AcceptedMechanicsInput Input,
         string InputFingerprint, AcceptedMechanicsPlanningResult Result);
