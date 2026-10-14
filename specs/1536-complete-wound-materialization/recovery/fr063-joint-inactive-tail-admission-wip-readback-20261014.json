@@ -1,0 +1,101 @@
+{
+  "owningBase": "86b98f281d03ed2a3bb6ad4fcad122f9ec5f5df8",
+  "status": "Inactive tail guard pre-common source WIP; no projection/story/lifecycle completion",
+  "checks": {
+    "specs/1536-complete-wound-materialization/plan.md:exact_old_body": true,
+    "specs/1536-complete-wound-materialization/plan.md:checkboxes_preserved": true,
+    "specs/1536-complete-wound-materialization/tasks.md:exact_old_body": true,
+    "specs/1536-complete-wound-materialization/tasks.md:checkboxes_preserved": true,
+    "fixed_tail_inventory_sealed": true,
+    "predicate_before_admission_issue": true,
+    "durable_marker_no_initialization": true,
+    "rejects_pending_stats_and_qte": true,
+    "different_prior_terminal_source": true,
+    "full_v2_footprint_and_current_predicate": true,
+    "guard_has_no_writer_or_hold_calls": true,
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.cs:base_byte_exact": true,
+    "BookOfEternityClient/Services/CharacteristicsService.cs:base_byte_exact": true,
+    "BookOfEternityClient/Services/StoryService.cs:base_byte_exact": true,
+    "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs:base_byte_exact": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs:base_byte_exact": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs:base_byte_exact": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:base_byte_exact": true,
+    "tests/categories.json:base_byte_exact": true,
+    "tests/selection.json:base_byte_exact": true,
+    "tracked_whitespace": true,
+    "new_guard_trailing_whitespace_absent": true
+  },
+  "checkCount": 22,
+  "authoredPins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8",
+      "bytes": 5207
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "sha256": "f3f048f61988f644f4816fb06cddccb71022be48985dbf347cc7ae64bacee175",
+      "bytes": 10082
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "sha256": "bc2b5de5ff1691e2565be4558656d118b38a2c2dfbcd412d8f78801d2e86f923",
+      "bytes": 31056
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "sha256": "d5063d175035c6cd0d9677313b151ea9bcbaf010305eb966aa66970d8670216d",
+      "bytes": 1506649
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "sha256": "7539e77412a9e7e5ddb52a39035e534c6de9c5eeafb73c04d5d11d6cbd60c91f",
+      "bytes": 1007265
+    }
+  ],
+  "protectedPins": [
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "sha256": "3ac7e761c514262ddff97158e02fb8646d911cebedc9300e2477e4c7558f9895"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "sha256": "f870eefb237bbe4564f76bc4963544d36d37760f9a0ccae3c6480110e631a8e2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "sha256": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs",
+      "sha256": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "sha256": "f7de271ee654d2facfd5e80e7cabc33bba94beb14de2183dc6ac18de3524c7f1"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "4ff9db8b22aa9a7a40340a85384725036c3ad833ad4904f3bf40bfeae1295cfe"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "79017c9ca9dc93247956088510b5f167e470b00746c7084be79df81116a911e1"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "27006455535cc002e981dcffc40a9da07570279270dec10d587c138d906dc239"
+    }
+  ],
+  "unchecked": [
+    "Compiler/API correctness",
+    "Genuine source fixture existing processed-level and prior terminal predicates",
+    "Actual no-work refusals and late guard revalidation",
+    "Derived projection/story/typed suffix/lifecycle",
+    "Entire connected SOURCE/FIXTURE/SELECTION and all project execution"
+  ]
+}

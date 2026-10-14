@@ -1,5 +1,32 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Joint inactive-tail admission/physical guard WIP STOP — 2026-10-14
+
+Owning base `86b98f281d03ed2a3bb6ad4fcad122f9ec5f5df8`; verified recovery2240/1706
+preceded SOURCE GO. Compatible retained architectural disposition a226b2c2 remains an engineering
+consult within the approved contour, not another release/SOURCE gate. Three code paths now
+explicitly prove the inactive completion tail before common input/cache/take. No actionable
+statsIncreased is accepted; the existing durable processed-level marker must cover the canonical
+level using actual CheckLevelUp source priority. No initialization/award fallback is performed.
+New offers and pending/active QTE runtime refuse; a retained deferred source must be terminal
+with its actual client story source turn strictly earlier than the joint decision turn.
+
+Seven fixed refusal-only images enter the mechanical admission seal/before-images and private
+v2 published footprint. Exact current revalidation therefore retains the no-work proof through
+lease/stage/take; full physical v2 reads repeat the predicates after published-image agreement.
+Absent refusal-only inputs grant no canonical/request/claim authority. This does not skip or
+complete active unrelated tail work: such work is explicitly outside this first contour.
+
+Derived projection, named story owner/exact suffix allowance, phase-aware post-common acceptance,
+actual live/late-idle once-turn/inert-repeat completion and eligible terminal cleanup remain
+OPEN. The old story/stat/level-up methods and old v1/singleton paths are unchanged. Actual genuine
+fixture no-work prerequisites remain UNRUN; any necessary durable processed-level setup must
+use the real owner before the genuine original, without editing/re-signing that original.
+Next bounded source block implements verified actual derived projection before the named story
+owner. J7/source selections and normative/primary-GM synchronization still follow. Compiler,
+build/discovery/catalog/PlanOnly/tests/runtime/faults and whole SOURCE/FIXTURE/SELECTION remain
+UNRUN. No fixtures/categories/selectors/budgets/acceptance-checkboxes/history changes.
+
 ## Bounded story lifecycle disposition incorporated — 2026-10-14
 
 Published source base d0e50a3074b95dc00f61d68d5949fd5ad4154609 is clean and

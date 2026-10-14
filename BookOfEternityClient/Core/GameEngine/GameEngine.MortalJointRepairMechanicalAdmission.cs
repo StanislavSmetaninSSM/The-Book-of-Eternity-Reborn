@@ -85,6 +85,7 @@ public partial class GameEngine
         var binding = bundle.Input.Binding;
         var paths = AcceptedMechanicsWoundCommonInputComposer.TreatmentOrdinaryGuardPaths.Concat(new[]
             { NpcTradeRequestState.PendingRequestPath, TrainingRequestState.PendingRequestPath, MortalQteDecisionPublication.StatePath })
+            .Concat(MortalJointInactiveTailPaths)
             .Concat(bundle.Input.PreTurnCarriers.Keys)
             .Concat(bundle.EffectBatchPlan.EffectPlan.CarrierBeforeImages.Keys)
             .Concat(bundle.EffectBatchPlan.EffectPlan.TouchedPaths)
@@ -128,6 +129,9 @@ public partial class GameEngine
             "output/narrative_response.json", LiveTurnPreparationService.TurnRequestPath,
             LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
             before.TryAdd(path, await _fs.ReadFileBytesAsync(lease, path));
+        // Unchanged bytes alone are not no-work evidence. Prove the approved
+        // inactive completion tail BEFORE common fingerprints/cache/take.
+        RequireInactiveMortalJointTail(before, binding.Turn);
         // Revalidate exact owned command/pending/draft/scene after the complete read.
         await WoundAcceptedTurnPlanner.ValidateJointRepairCurrentAsync(_fs, lease, continuation);
         var proof = new MortalJointRepairMechanicalAdmission(JointMechanicalAdmissionIssuer, _fs, lease,

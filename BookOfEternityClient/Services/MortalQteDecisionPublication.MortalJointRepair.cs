@@ -17,6 +17,7 @@ internal static partial class MortalQteDecisionPublication
     private static readonly string[] JointFootprintPaths = FootprintPaths
         .Concat(MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
         .Concat(CanonicalResourceOwnerAuthorityComposer.SourceAuthorityPaths)
+        .Concat(GameEngine.MortalJointInactiveTailPaths)
         .Append(WoundAcceptedTurnSnapshotContract.PendingResolutionPath)
         .Distinct(StringComparer.Ordinal).OrderBy(path => path, StringComparer.Ordinal).ToArray();
     private static readonly object JointHistorySuffixIssuer = new();
@@ -273,6 +274,7 @@ internal static partial class MortalQteDecisionPublication
             source.Owner.CarrierPath != WoundCarrierCatalog.PlayerPath || receipt.Decision != "materialize" ||
             Text(root, "receiptFingerprint") != receipt.ReceiptFingerprint || Text(root, "decisionFingerprint") != receipt.DecisionFingerprint ||
             Text(root, "operationKey") != receipt.OperationKey) throw Invalid("joint_qte_source");
+        await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(fs, lease, snapshot.TurnNumber);
         await ValidateJointProgressionDataAsync(fs, lease, root);
         if (!Same(stableMarker, await fs.ReadFileBytesAsync(lease, StatePath))) throw Invalid("joint_marker_changed_during_proof");
         return new(root, receipt);
