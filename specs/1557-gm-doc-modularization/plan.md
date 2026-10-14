@@ -1,5 +1,51 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Connected first source14 actual frozen; realwriter1 UNRUN — 2026-10-14
+
+Fresh compile/catalog/runtime source4f867b2ae9e9399941b01a455b8c89cc576ffae1,
+accepted corrected source2f4e6d0f685d2f98a64b6474f68f41a8f25aacc5/021cc7f3.
+[Immutable native packet](recovery/A-connected-source-first-actual-20261014/manifest.json)
+contains87compressed/rawchains+manifest including59 retained nativeartifactfiles;
+EVIDENCE PENDING. Official -ValidateCatalog run
+20261014-002444-877-88763-465d4920a69f4b5084a7332dcaa69902-categories,
+133.8056559s exit0, BOTHfreshbuild errors0/warnings96integration35unit,
+valid731categories11584methods, zero stale/unmapped, zero tests. Exact -SelectionFile
+tests/selections/1557-gm-doc-connected-delivery.json -NoBuild -PlanOnly:
+20261014-002745-992-89090-92f0e24853ae4c74974c1763c069f675-categories,
+2.5093283s6methods15cases2descriptors, zero executions. InitialprepPOST2331source/
+10binary;223physical app-output/package files pinned AFTER initialPOST for233future
+physicalbinary/package pins, not a loaded-binding/initial233 claim.
+
+FIRST same finiteactual -NoBuild:
+20261014-002814-027-89240-17f30b358c6a4d77b39956cd1e2eda27-categories,
+36.5844494s exit1,14executed11PASS3FAIL, INCOMPLETE1/2descriptors14/15cases.
+Official order ran sourceguards5methods14cases first; realpackagewriter1case UNRUN.
+FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch:52 fails intended actual source
+predicates source.router_dependency_missing and source.bootstrap_source_exception.
+Two SourceGuardMutations rows wrong_boundary/read_all failfixture:68 null AST/seed
+access; their emitted underlyingFailure is delivery.retained_identity_changed in
+Scenario.SameAlive/Census duringprocessobservation. These two are NOT qualified
+intended mutation RED and must be independently diagnosed before rerun. Concrete
+transient OS-process cause is not separately emitted; do not invent zombie/state proof.
+
+Other11 PASS: packaged AST cut1, five source-negativecontrols, four memoryclosure/
+anchorcontrols includingfenced-only, physicalsymlink1. Passing controls establish only
+these bounded checks, not writerdelivery/fullsourceflow or fullA. Nineactualinspect
+pwsh observations retain source/package/AST/identity/EOF/cleanup data; no publication
+prefix/main-operation producer executes in these source-only cases. All9 exitConfirmed/
+rootsRemoved true, cleanupFailures empty, stdout/stderr EOF true;18package/session
+roots physicallyabsent. One actual symlinkreceipt CleanupOwnedRoot/Removed=true,
+physicalrootabsent; no inventedalternative receipt fields. No skip/duplicate/timeout.
+2331source233physicalbinary/package POST exact. 59native artifactfiles retained with
+safeunique paths, bytes/hashes, full logs/AST/source seeds inimmutable87-chainpacket.
+
+Next publishpartialfailedWIP and independent EVIDENCE/fixture-cause classification;
+no retry/provisionalqualification from authoring or a generic sourcefailure label.
+Realwriter1 remainsUNRUN; no movingcontent/daemon/production/Block_5 or fullA release.
+Prior pure44 and primaryJ1 qualifications/failurepackets preserved, no passing repeat.
+Primary331a0a57 unchanged/J2-J6unopened; solewriter STOPPED; no taskcheckbox change.
+
+
 ## Connected delivery focused SOURCE accepted; first execution UNRUN — 2026-10-14
 
 Retained independent actual Astra XHigh [focused closure](recovery/A-connected-delivery-focused-independent-source-review-20261014.md)
