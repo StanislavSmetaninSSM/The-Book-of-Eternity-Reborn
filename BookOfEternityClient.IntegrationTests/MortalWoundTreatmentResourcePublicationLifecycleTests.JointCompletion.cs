@@ -21,7 +21,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce() =>
         RunJointCompletionControlAsync(nonzeroProgression: true);
 
-    private async Task RunJointCompletionControlAsync(bool nonzeroProgression)
+    private async Task RunJointCompletionControlAsync(bool nonzeroProgression, bool pauseAppliedForCold = false)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         IDisposable? sourceInput = null;
@@ -58,12 +58,18 @@ public sealed partial class GameEngineTurnLifecycleTests
         var input = new QueuedConsoleInputSource([]);
         var logger = new SpiritualLifecycleTestLogger();
         var entered = false;
+        var appliedPauseReached = false;
         var engine = CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = checkpoint =>
                 {
                     if (checkpoint == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound) entered = true;
+                    if (pauseAppliedForCold && checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
+                    {
+                        appliedPauseReached = true;
+                        throw new OperationCanceledException("joint applied-before-story test pause");
+                    }
                     return Task.CompletedTask;
                 }
             }, logger: logger);
@@ -249,6 +255,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                      MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath })
             Assert.Equal(before[path], dispatch.Images[path]);
         Assert.Equal(1, repairReplies);
+        if (pauseAppliedForCold)
+        {
+            Assert.True(appliedPauseReached);
+            Assert.True(handled); // Real owning cancellation retains completion evidence.
+            await RunJointAppliedBeforeStoryColdAsync(engine, original, request.RequestFingerprint, before, scene);
+            return;
+        }
         await AssertJointCompletionPhysicalOutcomeAsync(engine, original, request, occurrence, before, scene, milestones);
         await AssertJointProgressionReportOutcomeAsync(nonzeroProgression, original, before, milestones);
         Assert.Equal(nonzeroProgression ? 1 : 0, reportDeletions);

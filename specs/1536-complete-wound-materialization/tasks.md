@@ -1,5 +1,33 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J7 applied-before-story fresh-process control SOURCE WIP STOP — 2026-10-14
+
+Owning base `101fc9fb584e5639c150731769b708f349d57a97`; recovery2280/1750
+was verified before SOURCE GO. One new native integration Fact uses the real corrected joint
+producer and existing AcceptedOutcomeValidatedBeforeMaterialization checkpoint. Its optional
+pause is test-only on the new unqualified shared fixture, after applied phase/verified projection
+and before story. The real owner holds while preserving original/G/Ready/backups/output/union.
+Parent checks that physical state and closes its lease/no pending local decision before launch.
+
+One literal native dispatcher route invokes a fresh factory/PID on the SAME retained physical
+root via the unchanged integration-deps/45-second bounded child runner. Context is assertion
+scalars/digests/binary pins only. Child reads the official original/G, proves empty common cache,
+uses read-only state aggregation, then calls the actual late owner without prelude Restore,
+Export, reducer or Compose. Oracles require unchanged finalized mechanics/phase/projection,
+CREATE/TREAT and exact request/resource history, one story/turn, owned terminal cleanup and
+actual second idle with entire tree/G byte identity. Available managed output/full child log
+are retained before parent cleanup, including failures; factory cleanup uses the existing owner.
+
+This is one AUTHORED/UNRUN Fact/case, not fresh-process qualification. Existing two completion
+Facts remain, giving three source methods/cases; no official discovery/category/selector claim.
+Compilation/API/fixture validity and timeout factory-cleanup qualification are UNCHECKED.
+Unapplied phase requires a separate genuine owning pause seam and remains OPEN, as do all
+negative/mixed/original/G/source/basis/missing-marker/fault/new-root controls, no-frame/all-traces-
+erased and partial-cleanup limits, exact J7 selectors and normative/primary-GM sync. Every
+compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/project and entire SOURCE/FIXTURE/
+SELECTION is UNRUN. Production/oldqualified fixtures/helpers/categories/budgets/history/
+acceptance checkboxes are unchanged.
+
 ## J7 genuine nonzero matching-report control SOURCE WIP STOP — 2026-10-14
 
 Owning base `b2f44069d983b9d88e8e89147ffdcec290ead8f4`; recovery2277/1747

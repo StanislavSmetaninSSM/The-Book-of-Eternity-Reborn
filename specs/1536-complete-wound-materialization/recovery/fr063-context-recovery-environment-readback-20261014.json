@@ -1,0 +1,38 @@
+{
+  "utc": "2026-10-14T14:19:17.789788+00:00",
+  "checkpoint": "101fc9fb584e5639c150731769b708f349d57a97",
+  "readOnlyRecoveryInstructionsSHA256": {
+    "AGENTS.md": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+    "docs/development-workflow.md": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+    ".specify/memory/constitution.md": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+    ".agents/skills/speckit-analyze/SKILL.md": "2740b8aeab8d0104527384ca74106e252e0a20df89355c8f36be25a62130d6d6",
+    "specs/1553-portable-local-storage/plan.md": "865e6e30fc365225a0e26aa42f4bf48d645d7ac216fd8da037af9e6a9b40511c",
+    "specs/1536-complete-wound-materialization/plan.md": "e561768894d0526d5ac8715d4b7dc6f0d94e1dc1b25143a9b1f6f8287b6d4aa3",
+    "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-implementation-release-20261014.json": "71436d812eded1a1ea60b011fbd2a68a1452db0aa3b389ff6d0673fa7f9d8f51"
+  },
+  "environment": {
+    "debian": "13.6",
+    "kernel": "6.18.44",
+    "arch": "x86_64",
+    "SDK": "10.0.401",
+    "NET_ASPNET": [
+      "8.0.31",
+      "10.0.12"
+    ],
+    "PowerShell": "7.6.6",
+    "Node": "24.19.0",
+    "Python": "3.12.14",
+    "host": "28b8447448e8",
+    "boot": "4e506247-7893-479b-aaef-3d4c72eb71ef",
+    "timezone": "UTC",
+    "preparation": "existing /workspace/boe-cloud-tools-20261011/env.sh"
+  },
+  "diagnosticIncidents": [
+    "recovery-environment-path-diagnostic-20261014.json",
+    "recovery-powershell-version-raw-path-failure-20261014.json"
+  ],
+  "actualSecurityOrApprovalReviewRejection": false,
+  "projectChecks": "UNRUN",
+  "currentAuthorization": "tracked 71436d81 progression implementation release; same sole retained writer; connected independent gates before project execution",
+  "next": "source-only finite J7 controls; entire SOURCE/FIXTURE/SELECTION before fresh official preparation and finite actuals"
+}

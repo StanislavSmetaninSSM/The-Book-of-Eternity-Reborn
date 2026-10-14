@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-14T14:15:35.251163+00:00",
+  "toolChunk": "850b9d",
+  "operation": "read-only environment version diagnosis via subprocess dotnet --list-sdks",
+  "nativeExit": 1,
+  "exactError": "FileNotFoundError: [Errno 2] No such file or directory: 'dotnet'",
+  "projectExecution": "UNRUN",
+  "classification": "ordinary executable PATH absence; no security/approval rejection",
+  "next": "read existing env.sh and query absolute installed tool paths; no install/environment change"
+}

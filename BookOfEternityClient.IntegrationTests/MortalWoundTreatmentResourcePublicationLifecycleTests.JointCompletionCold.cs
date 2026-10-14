@@ -1,0 +1,212 @@
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class GameEngineTurnLifecycleTests
+{
+    [Fact]
+    public Task GuaranteedTreatment_AppliedBeforeStoryFreshProcessCompletesOnceAndRepeatsInertly() =>
+        RunJointCompletionControlAsync(nonzeroProgression: false, pauseAppliedForCold: true);
+
+    private async Task RunJointAppliedBeforeStoryColdAsync(GameEngine parent, PendingTurnSnapshotReadAuthority original,
+        string requestFingerprint, IReadOnlyDictionary<string, byte[]?> originalBefore, string scene)
+    {
+        Dictionary<string, byte[]?> paused;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            paused = await CaptureConfirmedClaimReadImagesAsync(_fs, lease);
+            Assert.Equal(originalBefore["$sessionGeneration"], paused["$sessionGeneration"]);
+            var marker = ParseJsonObjectBytes(Assert.IsType<byte[]>(paused[MortalQteDecisionPublication.StatePath]));
+            Assert.Equal(2, marker["schemaVersion"]!.GetValue<int>());
+            Assert.Equal("applied", marker["progression"]!["phase"]!.GetValue<string>());
+            Assert.Equal(original.RequestId, marker["requestId"]!.GetValue<string>());
+            Assert.Equal(originalBefore[QteStoryPath], paused[QteStoryPath]);
+            foreach (var path in new[] { "input/turn_request.json", LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                         PendingTurnSnapshotAuthority.AuthorityPath, "ready/turn_complete.json" })
+                Assert.Equal(originalBefore[path], paused[path]);
+            Assert.Equal(42, GetPrivateField<GameLoop>(parent, "_gameLoop").TurnNumber);
+            Assert.False(GetPrivateFieldValue<bool>(parent, "_inGame"));
+            lease.EnsureNoPendingLocalDecision();
+        } // No parent input/read/write lease or participating caller survives launch.
+        var context = new JsonObject
+        {
+            ["parentProcessId"] = Environment.ProcessId, ["sessionId"] = original.SessionId,
+            ["requestId"] = original.RequestId, ["snapshotToken"] = original.SnapshotToken,
+            ["requestFingerprint"] = requestFingerprint, ["scene"] = scene,
+            ["generationSha256"] = MortalArchiveHash(paused["$sessionGeneration"]!),
+            ["binaryPins"] = JsonSerializer.SerializeToNode(MortalArchiveBinaryPins()),
+            ["pausedImages"] = JsonSerializer.SerializeToNode(paused.ToDictionary(pair => pair.Key,
+                pair => pair.Value is null ? null : MortalArchiveHash(pair.Value), StringComparer.Ordinal))
+        };
+        // Context contains only assertion scalars/digests, never private authority,
+        // complete request graphs, original bytes, cached plans or phase capability.
+        var contextPath = Path.Combine(_rootPath, "joint-applied-cold-context.json");
+        var output = Path.Combine(_rootPath, "joint-applied-cold-result.json");
+        await File.WriteAllTextAsync(contextPath, context.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        Exception? failure = null;
+        try
+        {
+            failure = await Record.ExceptionAsync(() => RunMortalArchiveChildAsync(
+                "engine-mortal-joint-applied-cold", _fs.BasePath, output, 0, contextPath));
+        }
+        finally
+        {
+            // Retain all available managed output/full drained log before the
+            // parent SOURCE root's ordinary owned cleanup, including timeout.
+            WritePhysicalInjuryDiagnostic("fr063_joint_applied_cold_parent_outcome", new
+            {
+                ParentProcessId = Environment.ProcessId, Context = context, Failure = failure?.ToString(),
+                Child = File.Exists(output) ? await File.ReadAllTextAsync(output) : null,
+                FullChildLog = File.Exists(output + ".log") ? await File.ReadAllTextAsync(output + ".log") : null,
+                PhysicalAfter = MortalArchiveDigests(await CaptureMortalArchiveImagesAsync(_fs,
+                    paused.Keys.Where(path => path != "$sessionGeneration")))
+            });
+        }
+        Assert.Null(failure);
+        var child = ParseJsonObjectBytes(await File.ReadAllBytesAsync(output));
+        Assert.NotEqual(Environment.ProcessId, child["processId"]!.GetValue<int>());
+        Assert.True(child["actualCallerEntered"]!.GetValue<bool>());
+        Assert.True(child["completed"]!.GetValue<bool>());
+        Assert.Null(child["failure"]);
+    }
+
+    public static async Task WriteMortalJointAppliedColdProbeAsync(string root, string output, int scenario, string contextPath)
+    {
+        Assert.Equal(0, scenario);
+        var context = JsonNode.Parse(await File.ReadAllTextAsync(contextPath))!.AsObject();
+        using var factory = new GameEngineTurnLifecycleTests();
+        using var factoryOwned = new CleanupOwnedFixture(factory._rootPath, Console.WriteLine);
+        var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        var input = new QueuedConsoleInputSource([]);
+        var actualCallerEntered = false;
+        var engine = factory.CreateGameEngine(input, settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
+            fileSystem: files, finalizationHooks: new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = checkpoint =>
+                {
+                    if (checkpoint == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound) actualCallerEntered = true;
+                    return Task.CompletedTask;
+                }
+            });
+        Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_applied_child_entry", Observation = new
+        { ProcessId = Environment.ProcessId, ParentProcessId = context["parentProcessId"]!.GetValue<int>(),
+            BorrowedRoot = root, AuxiliaryFactoryRoot = factory._rootPath, Arguments = Environment.GetCommandLineArgs(),
+            DependencyContext = MortalArchiveDependencyContext(), LoadedDependencies = MortalArchiveLoadedDependencyBindings() } }));
+        Exception? failure = null;
+        bool? handled = null, secondIdle = null;
+        var completed = false;
+        Dictionary<string, byte[]?>? before = null, after = null, repeated = null;
+        PendingTurnSnapshotReadAuthority? original = null;
+        byte[]? storyBefore = null;
+        try
+        {
+            Assert.NotEqual(Environment.ProcessId, context["parentProcessId"]!.GetValue<int>());
+            AssertMortalArchiveChildBinaries(context);
+            await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            {
+                before = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+                foreach (var pair in context["pausedImages"]!.AsObject())
+                    Assert.Equal(pair.Value?.GetValue<string>(), before.TryGetValue(pair.Key, out var image) && image is not null ? MortalArchiveHash(image) : null);
+                Assert.Equal(context["generationSha256"]!.GetValue<string>(), MortalArchiveHash(files.ReadLocalGenerationSnapshot(lease).Bytes));
+                var read = PendingTurnSnapshotReader.ReadCurrent(files, lease,
+                    ["game_state/meta/soul_state.json", WoundHistoryState.HistoryPath, QteStoryPath]);
+                Assert.True(read.Success, DescribeValidationIssues(read.Issues));
+                original = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
+                Assert.Equal(context["sessionId"]!.GetValue<string>(), original.SessionId);
+                Assert.Equal(context["requestId"]!.GetValue<string>(), original.RequestId);
+                Assert.Equal(context["snapshotToken"]!.GetValue<string>(), original.SnapshotToken);
+                Assert.Equal(43, original.TurnNumber);
+                Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(files, lease));
+                storyBefore = await files.ReadFileBytesAsync(lease, QteStoryPath);
+                Assert.Equal(original.ReadRequiredBytes(QteStoryPath), storyBefore);
+                await GetPrivateField<StateManager>(engine, "_stateManager").RefreshGameStateReadOnlyAsync(lease);
+                Assert.Equal(42, GetPrivateField<StateManager>(engine, "_stateManager").CurrentState.TurnNumber);
+                GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(original.SessionId, 42);
+                await AssertConfirmedClaimReadImagesAsync(files, lease, before);
+                lease.EnsureNoPendingLocalDecision();
+            }
+            Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_applied_child_before_actual_owner", Observation = new
+            { Environment.ProcessId, original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber,
+                FreshCommonCacheEmpty = true, OriginalFromOfficialReader = true, Before = MortalArchiveDigests(before) } }));
+            // The first owning call is the real late lifecycle. No Restore,
+            // Export, correction, reducer or Compose has run in this process.
+            handled = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            {
+                after = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+                var history = WoundHistoryState.Parse(await files.ReadFileAsync(lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+                Assert.True(history.IsValid, DescribeValidationIssues(history.Issues));
+                var prior = WoundHistoryState.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(original.ReadRequiredBytes(WoundHistoryState.HistoryPath)), WoundHistoryState.HistoryPath);
+                Assert.True(prior.IsValid, DescribeValidationIssues(prior.Issues));
+                var rows = history.State!.Transitions.Skip(prior.State!.Transitions.Count).ToArray();
+                Assert.Equal(2, rows.Length); Assert.Equal("create", rows[0].Kind); Assert.Equal("treat", rows[1].Kind);
+                Assert.Equal(prior.State.NextOrdinal, rows[0].Ordinal); Assert.Equal(prior.State.NextOrdinal + 1, rows[1].Ordinal);
+                Assert.Equal(context["requestFingerprint"]!.GetValue<string>(), rows[1].TreatmentResult!.Request.RequestFingerprint);
+                var definitions = ResourceDefinitionCatalog.ParseCanonical(await files.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath), false);
+                Assert.True(definitions.IsValid, DescribeValidationIssues(definitions.Issues));
+                var state = ResourceStateContract.ParseCanonical(await files.ReadFileAsync(lease, ResourceMaterializationContract.StatePath), definitions.Catalog!, false);
+                var resources = ResourceHistoryState.ParseCanonical(await files.ReadFileAsync(lease, ResourceMaterializationContract.HistoryPath), definitions.Catalog!, false);
+                Assert.True(state.IsValid, DescribeValidationIssues(state.Issues)); Assert.True(resources.IsValid, DescribeValidationIssues(resources.Issues));
+                Assert.Empty(resources.History!.ValidateStateAgreement(state.Ledger!));
+                var spend = Assert.Single(resources.History.Transitions, row => row.Turn == 43 && row.Coordinate.ResourceKey == "energy" && row.Operation == ResourceTransitionOperation.Spend);
+                Assert.Equal(2m, spend.AppliedAmount); Assert.Equal(2m, spend.BeforeState!.Current); Assert.Equal(0m, spend.AfterState!.Current);
+                var damage = Assert.Single(resources.History.Transitions, row => row.Turn == 43 && row.Coordinate.ResourceKey == "health");
+                Assert.Equal(3m, damage.AppliedAmount); Assert.Equal(5m, damage.BeforeState!.Current); Assert.Equal(2m, damage.AfterState!.Current);
+                Assert.Equal(0m, Assert.Single(state.Ledger!.Entries, entry => entry.Coordinate.ResourceKey == "energy").Current);
+                Assert.Equal(2m, Assert.Single(state.Ledger.Entries, entry => entry.Coordinate.ResourceKey == "health").Current);
+                var marker = ParseJsonObjectBytes(Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, MortalQteDecisionPublication.StatePath)));
+                Assert.Equal("applied", marker["progression"]!["phase"]!.GetValue<string>());
+                foreach (var path in new[] { MortalQteDecisionPublication.StatePath, ResourceMaterializationContract.StatePath,
+                             ResourceMaterializationContract.HistoryPath, WoundHistoryState.HistoryPath, WoundIdentityState.StatePath,
+                             WoundCarrierCatalog.PlayerPath, EffectIdentityState.StatePath, EffectCarrierCatalog.PlayerPath,
+                             MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath, ProgressionScheduleService.SchedulePath,
+                             CharacteristicsService.JointDerivedProjectionPath })
+                    Assert.Equal(before[path], after[path]); // Cold completion does not redo finalized mechanics/phase/projection.
+                var story = Assert.IsType<byte[]>(await files.ReadFileBytesAsync(lease, QteStoryPath));
+                Assert.True(story.AsSpan().StartsWith(storyBefore!));
+                var suffix = Encoding.UTF8.GetString(story.AsSpan(storyBefore!.Length)).Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                var row = StrictJsonAuthority.Deserialize<StoryEntry>(Assert.Single(suffix), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "cold exact joint story");
+                Assert.NotNull(row); Assert.Equal(43, row!.Turn); Assert.Equal("Осмотреть ушиб.", row.Player);
+                Assert.Equal(context["scene"]!.GetValue<string>(), row.Narrative);
+                Assert.Equal(43, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                Assert.True(GetPrivateFieldValue<bool>(engine, "_inGame"));
+                Assert.Equal(row.Narrative, GetPrivateField<GameResponse>(engine, "_lastResponse").Response);
+                Assert.Equal(before["$sessionGeneration"], after["$sessionGeneration"]);
+                foreach (var path in new[] { "input/turn_request.json", "ready/turn_complete.json", LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                             PendingTurnSnapshotAuthority.AuthorityPath, AcceptedMechanicsPlan.WoundCommandPath, WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+                             MortalWoundOpportunityAdapter.DecisionPath, "game_state/control/validation_repair_request.json", "game_state/control/validation_repair_ready.json" })
+                    Assert.Null(await files.ReadFileBytesAsync(lease, path));
+            }
+            Assert.True(actualCallerEntered); Assert.False(handled);
+            secondIdle = await InvokePrivateAsync<bool>(engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync");
+            await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
+            {
+                repeated = await CaptureConfirmedClaimReadImagesAsync(files, lease);
+                await AssertConfirmedClaimReadImagesAsync(files, lease, after);
+            }
+            Assert.False(secondIdle); Assert.Equal(43, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+            completed = true;
+        }
+        catch (Exception error) { failure = error; throw; }
+        finally
+        {
+            await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
+            {
+                processId = Environment.ProcessId, actualCallerEntered, handled, secondIdle, completed,
+                AuxiliaryFactoryRoot = factory._rootPath, Root = root, BinaryPins = MortalArchiveBinaryPins(),
+                DependencyContext = MortalArchiveDependencyContext(), LoadedDependencies = MortalArchiveLoadedDependencyBindings(),
+                Original = original is null ? null : new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber },
+                actualTurn = GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber, failure = failure?.ToString(),
+                Before = before is null ? null : MortalArchiveDigests(before), After = after is null ? null : MortalArchiveDigests(after),
+                Repeated = repeated is null ? null : MortalArchiveDigests(repeated)
+            }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        }
+    }
+}
