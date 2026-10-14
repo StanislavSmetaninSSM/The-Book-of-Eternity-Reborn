@@ -1,5 +1,44 @@
 # Tasks: GM Documentation Modularization
 
+## Connected first actual EVIDENCE accepted; focused TEST fixture correction boundary — 2026-10-14
+
+Retained independent Astra XHigh [EVIDENCE/fixture report](recovery/A-connected-source-first-actual-evidence-and-fixture-review-20261014.md)
+SHA256 `3fb678dd7ac627b3ed7bbff4345378fde24ae632238de2b56fe387968fc25792`
+accepts reporting/evidence at carrier `7c2f961ed2834230771231edf3fa4b90ea109fde`:
+87 stored/raw chains and 59 native files exact, 233 physical pins exact; 2329 source
+pins directly exact and only the 48-line plan/tasks outcome insertion restores two.
+Actual remains 14 executions / 11 PASS / one intended source RED / two fixture FAIL,
+incomplete 1/2 descriptors and 14/15 cases; real writer1 remains UNRUN. This accepts
+evidence/status, not connected GREEN, delivery qualification or full A acceptance.
+
+Observed: retained_identity_changed before AST loading, then fixture line68 masks it
+with null seed access. Retained wrong_boundary AST has ast.startup_boundary plus valid
+seed; read_all AST and seed completed. Neither failed case reached its assertions.
+The OS cause is unproved: current argv/state were not emitted. Stable process
+observation is missing across stat/argv reads and the outer HasExited/Census window.
+Historical failures stay unchanged; retained files cannot retroactively make PASS.
+
+ROOT releases sole retained Sol focused TEST-source correction only: distinguish exact
+live owned birth/argv from conclusively terminal owned identity and unknown/mismatch;
+record owned expected/observed PID/birth/state/argv/read order/managed exit evidence,
+retain AST/logs even on prerequisite failure, and assert fixture prerequisites before
+seed dereference while preserving wrong_boundary's intended AST failure contract.
+Only exact live birth/argv authorizes an individual signal. Empty argv alone is never
+exit proof; no argv waiver, blanket catch, unknown signal, recursive kill, general
+supervisor or production change. Unresolved live mismatch stays failed with roots
+retained. Preserve existing deadline, EOF checks and independently owned fixtures.
+
+Publish WIP before focused independent SOURCE/FIXTURE/SELECTION gate; no project,
+parser/build/runtime release from this EVIDENCE report. The candidate must define a
+finite selection for the two affected failed cases and separately the unrun writer,
+preserving other theory rows/oracles and truthful catalog history. Review any extraction
+needed because official runner selects methods rather than rows. Do not automatically
+repeat passed owners/pure44/primaryJ1. Fresh preparation and any justified repeats are
+released only after review of the actual changed dependencies and finite order.
+Content moves/daemon/production/Block_5/full A/B remain unreleased; primary331a0a57
+unchanged and J2-J6 unopened. No acceptance/task checkbox changes.
+
+
 ## Connected first source14 actual frozen; realwriter1 UNRUN — 2026-10-14
 
 Fresh compile/catalog/runtime source4f867b2ae9e9399941b01a455b8c89cc576ffae1,
