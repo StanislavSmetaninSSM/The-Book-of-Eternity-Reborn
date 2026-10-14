@@ -130,6 +130,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         var completed = false;
         var refusalVerified = false;
         var refusalScenario = context["refusalScenario"]?.GetValue<string>();
+        var sourceExpectedFrameClassification = refusalScenario switch
+        {
+            "manifest_missing" or "manifest_malformed" => "null: source loader cannot read the manifest; actual classification not measured",
+            "input_missing" or "input_malformed" => "signed manifest remains independently frame-eligible; actual classification not measured",
+            _ => "not asserted by fixture"
+        };
         Dictionary<string, byte[]?>? intactBeforeTamper = null;
         Dictionary<string, byte[]?>? before = null, after = null, repeated = null;
         PendingTurnSnapshotReadAuthority? original = null;
@@ -199,6 +205,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Console.WriteLine(JsonSerializer.Serialize(new { Boundary = "fr063_joint_applied_child_before_actual_owner", Observation = new
             { Environment.ProcessId, original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber,
                 FreshCommonCacheEmpty = true, OriginalFromOfficialReader = true, RefusalScenario = refusalScenario,
+                SourceExpectedFrameClassification = sourceExpectedFrameClassification,
                 IntactBeforeTamper = intactBeforeTamper is null ? null : MortalArchiveDigests(intactBeforeTamper),
                 Before = MortalArchiveDigests(before) } }));
             // The first owning call is the real late lifecycle. No Restore,
@@ -212,13 +219,19 @@ public sealed partial class GameEngineTurnLifecycleTests
                     await AssertConfirmedClaimReadImagesAsync(files, lease, before!);
                     Assert.Equal(storyBefore, after[QteStoryPath]);
                     Assert.Equal(42, GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber);
+                    var damagedHeader = refusalScenario switch
+                    {
+                        "input_control" or "input_missing" or "input_malformed" => "input/turn_request.json",
+                        "authority_payload_digest" => PendingTurnSnapshotAuthority.AuthorityPath,
+                        "manifest_missing" or "manifest_malformed" => LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                        _ => null
+                    };
                     foreach (var path in new[] { "input/turn_request.json", "ready/turn_complete.json",
                                  LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
                     {
-                        var expectedRetained = (refusalScenario == "input_control" && path == "input/turn_request.json") ||
-                            (refusalScenario == "authority_payload_digest" && path == PendingTurnSnapshotAuthority.AuthorityPath)
-                            ? before![path] : intactBeforeTamper![path];
-                        Assert.Equal(expectedRetained, after[path]);
+                        var expectedRetained = path == damagedHeader
+                            ? (before!.TryGetValue(path, out var damagedImage) ? damagedImage : null) : intactBeforeTamper![path];
+                        Assert.Equal(expectedRetained, after.TryGetValue(path, out var currentImage) ? currentImage : null);
                     }
                 }
                 // The boolean means a blocked attempt, after complete preservation.
@@ -322,6 +335,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await File.WriteAllTextAsync(output, JsonSerializer.Serialize(new
             {
                 processId = Environment.ProcessId, actualCallerEntered, handled, secondIdle, completed, refusalVerified, refusalScenario,
+                SourceExpectedFrameClassification = sourceExpectedFrameClassification,
                 AuxiliaryFactoryRoot = factory._rootPath, Root = root, BinaryPins = MortalArchiveBinaryPins(),
                 DependencyContext = MortalArchiveDependencyContext(), LoadedDependencies = MortalArchiveLoadedDependencyBindings(),
                 Original = original is null ? null : new { original.SessionId, original.RequestId, original.SnapshotToken, original.TurnNumber },

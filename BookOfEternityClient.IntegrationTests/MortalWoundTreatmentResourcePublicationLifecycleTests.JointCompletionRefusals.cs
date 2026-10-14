@@ -17,6 +17,10 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("input_control")]
     [InlineData("world_time")]
     [InlineData("authority_payload_digest")]
+    [InlineData("manifest_missing")]
+    [InlineData("manifest_malformed")]
+    [InlineData("input_missing")]
+    [InlineData("input_malformed")]
     public Task GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(string corruption) =>
         RunJointCompletionControlAsync(nonzeroProgression: true, pauseAppliedForCold: true, refusalScenario: corruption);
 
@@ -83,6 +87,22 @@ public sealed partial class GameEngineTurnLifecycleTests
                 authority["payloadSha256"] = digest[..^1] + (digest[^1] == '0' ? '1' : '0');
                 Assert.Equal(payload, authority["payloadJsonBase64"]!.GetValue<string>());
                 replacement = System.Text.Encoding.UTF8.GetBytes(authority.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                break;
+            case "manifest_missing":
+                target = LiveTurnPreparationService.PendingTurnSnapshotManifestPath;
+                replacement = null;
+                break;
+            case "manifest_malformed":
+                target = LiveTurnPreparationService.PendingTurnSnapshotManifestPath;
+                replacement = System.Text.Encoding.UTF8.GetBytes("{");
+                break;
+            case "input_missing":
+                target = "input/turn_request.json";
+                replacement = null;
+                break;
+            case "input_malformed":
+                target = "input/turn_request.json";
+                replacement = System.Text.Encoding.UTF8.GetBytes("{");
                 break;
             default:
                 throw new InvalidDataException("Unsupported joint refusal fixture corruption: " + corruption);

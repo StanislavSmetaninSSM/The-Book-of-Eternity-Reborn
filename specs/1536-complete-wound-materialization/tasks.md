@@ -1,5 +1,35 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J7 physical header-counterpart refusal controls SOURCE WIP STOP — 2026-10-14
+
+Owning base `4e44e2e641e47a24523d19a92ad38cc34eeca032`; recovery2311/1782
+was verified before SOURCE GO. Four literal source rows extend the genuine nonzero/APPLIED
+fresh-child Theory: missing/malformed manifest with genuine input counterpart, and missing/
+malformed current input with genuine manifest counterpart. Malformed here is deliberate
+unparseable JSON, not an invented OS permission failure. Intact official original/control/
+phase/cache/cohort prerequisites precede the one physical corruption; no classifier/proof/
+authority helper runs afterward. The real late owner must preserve the full after-tamper
+path inventory/bytes/G, turn42/story, original/Ready/output/backups/whole mechanical union.
+Removed or malformed target headers are compared to their AFTER-tamper images; genuine
+counterpart and detached authority remain intact. Actual raw handled/failure/afterimages
+are retained before cleanup; source frame expectation is explicitly not measured.
+
+Source trace predicts null frame for missing/malformed manifest (loader871–885), and intact
+manifest/destructive authority remains independently frame-eligible when current input is
+missing/malformed under requireCurrentContext:false. Real owning path must still refuse its
+current-input/source proof. The fixture does not turn this source expectation into observed
+classification or invoke a direct classifier instead of the actual caller.
+
+Six source methods/seventeen cases (five Facts plus twelve-row Theory) are provisional;
+no category/selector/budget changes. Compiler/API/fixture validity UNCHECKED and all project/
+compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/whole SOURCE/FIXTURE/SELECTION
+UNRUN. Further compatibility/disjoint/v1/default/marker-Ready boundaries, G/new-root, phase
+compensation/uncertainty/inactive/story/live controls, no-frame/all-traces-erased/partial-
+cleanup and normative/primary-GM sync remain OPEN. Existing positive exact cleanup followed
+by stale-marker/header-absence idle still has its original strict whole-tree inert oracle;
+that is authored source, not qualified runtime evidence. Production/oldqualified bodies,
+raw packets, prior history tails and acceptance checkboxes remain unchanged.
+
 ## J7 null-frame private joint preservation and authority control SOURCE WIP STOP — 2026-10-14
 
 Owning base `fa2be03217dd99addaf6aa0a6ab1ed3362ddfa81`; recovery2305/1776
