@@ -12,7 +12,7 @@
     },
     {
       "category": "gm-doc-afterlife-delivery-source-guards",
-      "reason": "#1557 exact5methods14cases1descriptor/category2 source/closure guards; combined with delivery6methods15cases2descriptors/default9. AST/driver/source-binding and negative semantics are newly authored UNRUN, not previously qualified full-entry evidence.",
+      "reason": "#1557 exact6methods14cases1descriptor/category2 source/closure guards; combined with delivery7methods15cases2descriptors/default9. Complete owner preserves all seven mutation semantics across two wrappers; focused retry uses its separate pair-only owner. Existing11 scoped PASS/one intended source RED are retained; corrected shared-process dependency remains UNRUN, not full-entry evidence.",
       "contracts": [
         "RootAST complete predecessor/unique direct two no-argument commands/successor; UTF16extent->originalUTF8/BOM slice and complete reparsed prefix",
         "Separate full actual source directive writes and message-to-Dispatch-WithRetry flows for ordinary/bootstrap/repair/terminal, restricted safePacket receipt builder/eligibility; known early empty initializer and closed named bootstrap/receipt builder-to-dispatch/intervening-write shapes; targeted remove-ban/override/late-empty/read-all/receipt-builder/post-builder injection/extra-command negatives",

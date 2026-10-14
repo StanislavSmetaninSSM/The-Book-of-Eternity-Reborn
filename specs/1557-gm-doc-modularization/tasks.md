@@ -1,5 +1,49 @@
 # Tasks: GM Documentation Modularization
 
+## Connected source failed-pair fixture correction SOURCE READY; new checks UNRUN — 2026-10-14
+
+Retained sole Sol authored a bounded TEST-only correction from published
+f0f3f99af5da3579c08969b07c9678c210b00fd1 after independent Astra XHigh
+[EVIDENCE/status acceptance](recovery/A-connected-source-first-actual-evidence-and-fixture-review-20261014.md)
+SHA2563fb678dd7ac627b3ed7bbff4345378fde24ae632238de2b56fe387968fc25792.
+Historical actual14exec11PASS/one intended source RED/two fixture FAIL and unrun
+writer1 remain unchanged. Neither failed row reached its oracle; the particular
+OS transition/argv/state cause remains UNPROVED by the frozen packet.
+
+Fixture observation now brackets argv with actual stat birth/state and records
+read order, expected/observed owned identity and managed exit where available.
+Only an exact live match grants individual signalling authority. Stable terminal
+state or confirmed owned disappearance/managed exit is non-signalling proof for
+an already-authorized identity; empty argv alone is insufficient. Birth reuse,
+nonempty argv mismatch, unproved live argv/state/read or unknown ownership remains
+a sticky conflict, even after later EOF/terminal evidence. No new process owner,
+supervisor, recursive kill, unknown signal or blanket ownership-error waiver.
+The existing45work+15cleanup/60total bound applies throughout. Actual AST/report
+and both partial logs are retained independently in finally without clearing
+work failure; unresolved ownership still forbids root deletion/qualification.
+
+The two failed read_all/wrong_boundary rows are extracted into one dedicated
+method-level retry wrapper; the other five rows retain their shared body/oracles.
+Explicit adapter/exit/cleanup/AST/seed prerequisites precede seed access. Intentional
+wrong_boundary still requires the actual ast.startup_boundary adapter failure.
+No rules/driver/daemon/content/production/pure fixture modification is needed.
+
+Full original delivery selection now7methods15unchangedcases2descriptors/default9:
+writer1/1 and complete source6/14. Narrow failed-pair owner1method2cases1descriptor,
+budget2/default7, intentionally overlaps complete source owner but is excluded
+from full selection to avoid duplication. Catalog732/11585 provisional NOTdiscovery.
+First review/fresh preparation then actual narrowpair/EVIDENCE; separately eligible
+unrun writer1/1/1/budget2/default7 follows pair gate. Combined pair+writer2/3/2/default9
+is inventory only, not a passing-repeat/aggregate release. Shared process code affects
+all inspection process cases and writer, so reviewer assesses representative scope;
+no automatic repeat of prior11, pure44, intended sourceRED or primaryJ1.
+
+Old729 catalog nodes/globalCI/pure/current-source bytes, immutable packets, historical
+tails and every checkbox stay exact. Primary331a0a57 remains untouched; J2-J6 authoring
+is a separate later block after this STOP. Mandatory ROOT WIP preservation/recovery
+and focused independent SOURCE/FIXTURE/SELECTION precede all new compiler/AST/project/
+process/runtime execution. All corrected checks UNRUN; no delivery/fullA/B acceptance.
+
 ## Connected first actual EVIDENCE accepted; focused TEST fixture correction boundary — 2026-10-14
 
 Retained independent Astra XHigh [EVIDENCE/fixture report](recovery/A-connected-source-first-actual-evidence-and-fixture-review-20261014.md)

@@ -2,6 +2,33 @@
     "schemaVersion": 1,
     "categories": [
         {
+            "id": "gm-doc-afterlife-connected-failed-source-pair",
+            "responsibility": "#1557 Exactly two previously failed source-mutation semantic rows (read_all and wrong_boundary), extracted into one method for official method-level retry. Shared bounded package/owned-process observations require exact live birth/argv or conclusively terminal already-owned proof; sticky mismatch/unknown retains failure/roots. Explicit adapter/cleanup/AST/seed prerequisites precede the intended source/boundary oracle. Corrected SOURCE/runtime UNRUN.",
+            "excludes": "Other five already-passing source mutations, memory/link/AST positives, intended current final-source RED, pure44 and primaryJ1 are excluded from this retry. Real writer is separately selected only after this pair evidence gate. Intentional overlap with complete source-guards owner; do not select both owners together. No production/content/daemon/driver change or new supervisor/fault framework.",
+            "changeHints": [
+                "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs",
+                "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs"
+            ],
+            "related": [
+                "gm-doc-afterlife-delivery-source-guards"
+            ],
+            "requirements": {
+                "frontendBuild": false,
+                "exclusive": false,
+                "ciRunner": "ubuntu-24.04"
+            },
+            "timeoutMinutes": 2,
+            "expectedSeconds": null,
+            "selectors": [
+                {
+                    "project": "integration",
+                    "tests": [
+                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardPreviouslyFailedRowsReachTheirSpecificOracles"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "gm-doc-afterlife-package-delivery",
             "responsibility": "#1557 One real Linux packaged production writer startup: fresh actual app output/deps/runtimeconfig/Launcher prerequisites, strict AST/BOM sibling prefix, real --gm-main-operation unique session root and two production scopes. Independent36-document source/package/session byte-role-link closure is the intended missing-new-module RED. One owned pwsh, exact PID/birth/argv/helper census, concurrent retained pipes and absolute45work+15cleanup<=60s; individual exact identities only; unknown descendants are never signalled and retain roots even after known exit. Root removal requires established initial identity/pipe/census and verified exit/EOF. Focused corrections UNRUN.",
             "excludes": "No full daemon/provider dispatch, source override, fake copies as writer proof, orphan fault row or new process framework. Qualified pure44/FR/QTE cohorts, Block_5/content/production moves, Windows/globalCI/runner changes excluded. Actual cleanup must be proved; attempted kill or manifest alone never qualifies.",
@@ -30,7 +57,7 @@
         },
         {
             "id": "gm-doc-afterlife-delivery-source-guards",
-            "responsibility": "#1557 Five exact integration methods/fourteen finite cases: actual packaged root AST two-command boundary; separate full-source ordinary/bootstrap/repair/terminal/receipt directive/write-to-dispatch checks, known early initializer and closed named builder/caller/intervening-write shapes; seven source/boundary mutations with AST-only owned seed and mutation in same60s process contour, including late empty ban reset and post-builder receipt injection; four missing-copy/anchor/traversal/fenced-heading-alias memory controls; one physical symlink negative. Newly authored UNRUN.",
+            "responsibility": "#1557 Six exact integration methods/fourteen unchanged semantic cases: actual packaged root AST two-command boundary; separate full-source ordinary/bootstrap/repair/terminal/receipt directive/write-to-dispatch checks, known early initializer and closed named builder/caller/intervening-write shapes; seven source/boundary mutations split across five-row and two-row wrappers over the same body, with AST-only owned seed and mutation in same60s process contour, including late empty ban reset and post-builder receipt injection; four missing-copy/anchor/traversal/fenced-heading-alias memory controls; one physical symlink negative. Newly authored UNRUN.",
             "excludes": "These source/memory controls do not establish actual full dispatch, publication or provider execution. Pure44 remains frozen; no broad daemon/platform test, source body/nav/map edit, controlled orphan-survival fault, generic process/dataflow/runtime-selector framework, content/Block_5 move or globalCI change.",
             "changeHints": [
                 "BookOfEternityClient.IntegrationTests/GmDocumentationDeliveryTests.cs",
@@ -53,6 +80,7 @@
                         "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PackagedDaemonAstCutsOnlyCompleteTwoCommandStartup",
                         "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.FinalDaemonSourceKeepsScopedDirectionsAtRealDispatch",
                         "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardMutationsFailSpecificFinalOrBoundaryGuards",
+                        "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.SourceGuardPreviouslyFailedRowsReachTheirSpecificOracles",
                         "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.MissingCopyAndBrokenLinkFixturesFailSpecificClosureGuards",
                         "BookOfEternityClient.Tests.GmDocumentationDeliveryTests.PhysicalLinkVerifierRefusesSymlinkEscape"
                     ]

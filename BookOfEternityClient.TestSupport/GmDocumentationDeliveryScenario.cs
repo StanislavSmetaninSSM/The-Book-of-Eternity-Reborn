@@ -50,16 +50,24 @@ internal static class GmDocumentationDeliveryScenario
         new("Examples/E_CLI_Afterlife_Story_Memory.txt", "afterlife_examples_story_memory"),
         new("Examples/E_CLI_Afterlife_Wound_Continuation.txt", "afterlife_examples_wound_continuation")
     ];
-    internal sealed record Identity(int Pid, long BirthTicks, int ParentPid, string[] Args, string Role);
+    internal sealed record Identity(int Pid, long BirthTicks, int ParentPid, string[] Args, string Role, string State);
+    private sealed record ProcessStat(int Pid, long BirthTicks, int ParentPid, string State);
+    private sealed class OwnershipEvidence
+    {
+        internal readonly JsonArray Observations = new();
+        internal bool Unresolved; // Sticky: later terminal/EOF evidence cannot clear a prior conflict.
+    }
     internal sealed record Result(JsonObject Evidence, JsonObject? Ast, string? Failure, IReadOnlyList<string> Issues);
     private sealed class Clock
     {
         internal readonly Stopwatch Watch = Stopwatch.StartNew();
         private double _cleanupEnd = 60;
+        private bool _cleanupStarted;
         internal TimeSpan Work => Remaining(45);
         internal TimeSpan Cleanup => Remaining(_cleanupEnd);
         internal TimeSpan Total => Remaining(60);
-        internal void BeginCleanup() => _cleanupEnd = Math.Min(60, Watch.Elapsed.TotalSeconds + 15);
+        internal TimeSpan Operation => _cleanupStarted ? Cleanup : Work;
+        internal void BeginCleanup() { _cleanupStarted = true; _cleanupEnd = Math.Min(60, Watch.Elapsed.TotalSeconds + 15); }
         private TimeSpan Remaining(double end)
         {
             var value = end - Watch.Elapsed.TotalSeconds;
@@ -106,6 +114,8 @@ internal static class GmDocumentationDeliveryScenario
         var issues = new List<string>(); var cleanupErrors = new List<string>();
         var authorized = new Dictionary<(int, long), Identity>();
         var unknown = new Dictionary<(int, long), Identity>();
+        var ownership = new OwnershipEvidence();
+        var reportPath = Path.Combine(artifacts, "ast-and-publication.json");
         var initialIdentityProved = false; var pipesStarted = false; var initialCensusProved = false;
         Process? child = null; Identity? original = null; JsonObject? ast = null;
         var output = new PipeLog(); var errorOutput = new PipeLog(); Task? outputPump = null, errorPump = null;
@@ -153,7 +163,6 @@ internal static class GmDocumentationDeliveryScenario
             var driver = Path.Combine(artifacts, "inspect-and-publish.ps1");
             File.Copy(Path.Combine(repo, "tests/fixtures/GmDocumentationDelivery/inspect-and-publish.ps1"), driver);
             evidence["driverHash"] = Hash(File.ReadAllBytes(driver));
-            var reportPath = Path.Combine(artifacts, "ast-and-publication.json");
             string? seedPath = null;
             if (sourceSeedMutation is not null)
             {
@@ -171,17 +180,17 @@ internal static class GmDocumentationDeliveryScenario
             outputPump = output.PumpAsync(child.StandardOutput, clock, pipeCancellation.Token);
             errorPump = errorOutput.PumpAsync(child.StandardError, clock, pipeCancellation.Token);
             pipesStarted = true;
-            var candidate = ReadIdentity(child.Id, "pwsh");
+            var candidate = ReadIdentity(child.Id, "pwsh", ownership.Observations, start.ArgumentList.ToArray());
             if (candidate.Args.Length == 0 || Path.GetFileName(candidate.Args[0]) != "pwsh" ||
                 !candidate.Args.Skip(1).SequenceEqual(start.ArgumentList)) throw new InvalidDataException("delivery.pwsh_identity_mismatch");
             original = candidate;
             authorized.Add((original.Pid, original.BirthTicks), original);
             initialIdentityProved = true;
-            Census(original, package, root, authorized, unknown, issues);
+            Census(package, root, authorized, unknown, issues, ownership, child, clock);
             initialCensusProved = true;
             while (!child.HasExited)
             {
-                Census(original, package, root, authorized, unknown, issues);
+                Census(package, root, authorized, unknown, issues, ownership, child, clock);
                 if (output.Error is not null || errorOutput.Error is not null) throw new InvalidDataException("delivery.pipe_failure");
                 await Task.Delay(TimeSpan.FromMilliseconds(20)).WaitAsync(clock.Work);
             }
@@ -216,26 +225,24 @@ internal static class GmDocumentationDeliveryScenario
             clock.BeginCleanup();
             try
             {
-                if (original is not null) Census(original, package, root, authorized, unknown, issues);
+                if (original is not null) Census(package, root, authorized, unknown, issues, ownership, child, clock);
                 foreach (var identity in authorized.Values.OrderBy(identity => identity.Role == "helper" ? 0 : 1).ToArray())
                 {
                     _ = clock.Cleanup;
-                    if (!Directory.Exists($"/proc/{identity.Pid}")) continue;
-                    var current = ReadIdentity(identity.Pid, identity.Role);
-                    if (current.BirthTicks != identity.BirthTicks) continue; // Original exited; never signal a reused PID.
-                    if (!current.Args.SequenceEqual(identity.Args)) throw new InvalidDataException("delivery.cleanup_identity_changed");
+                    if (!ObserveOwned(identity, identity.Role == "pwsh" ? child : null, ownership, clock, "cleanup_before_handle")) continue;
                     using var process = Process.GetProcessById(identity.Pid);
-                    // Recheck immediately before signaling the retained physical identity.
-                    if (!SameAlive(identity)) continue;
+                    // Only a fresh exact live match may authorize this individual signal.
+                    if (!ObserveOwned(identity, identity.Role == "pwsh" ? child : null, ownership, clock, "cleanup_before_signal")) continue;
                     process.Kill(); // Exact retained identity only; never delegate descendant selection.
                     await process.WaitForExitAsync().WaitAsync(clock.Cleanup);
                 }
                 if (child is not null) await child.WaitForExitAsync().WaitAsync(clock.Cleanup);
                 if (outputPump is not null && errorPump is not null) await Task.WhenAll(outputPump, errorPump).WaitAsync(clock.Cleanup);
-                if (original is not null) Census(original, package, root, authorized, unknown, issues);
-                var remaining = authorized.Values.Where(identity => SameAlive(identity)).ToArray();
+                if (original is not null) Census(package, root, authorized, unknown, issues, ownership, child, clock);
+                var remaining = authorized.Values.Where(identity => ObserveOwned(identity, identity.Role == "pwsh" ? child : null,
+                    ownership, clock, "final_exit_check")).ToArray();
                 evidence["remaining"] = System.Text.Json.JsonSerializer.SerializeToNode(remaining);
-                exitConfirmed = initialIdentityProved && pipesStarted && initialCensusProved && unknown.Count == 0 &&
+                exitConfirmed = initialIdentityProved && pipesStarted && initialCensusProved && unknown.Count == 0 && !ownership.Unresolved &&
                     remaining.Length == 0 && child is not null && child.HasExited &&
                     outputPump is not null && errorPump is not null && output.Eof && errorOutput.Eof &&
                     output.Error is null && errorOutput.Error is null;
@@ -252,12 +259,22 @@ internal static class GmDocumentationDeliveryScenario
             finally
             {
                 pipeCancellation.Cancel();
+                // Diagnostic artifacts are independent of ownership qualification; never erase the original failure.
+                try
+                {
+                    if (child is not null && child.HasExited) evidence["exitCode"] = child.ExitCode;
+                    if (File.Exists(reportPath)) ast = JsonNode.Parse(File.ReadAllBytes(reportPath))!.AsObject();
+                    evidence["ast"] = ast?.DeepClone();
+                }
+                catch (Exception error) { evidence["artifactRetentionFailure"] = error.ToString(); }
                 if (child is not null) { child.StandardOutput.Dispose(); child.StandardError.Dispose(); child.Dispose(); }
                 evidence["stdout"] = output.Text; evidence["stderr"] = errorOutput.Text;
                 evidence["stdoutEof"] = output.Eof; evidence["stderrEof"] = errorOutput.Eof;
                 evidence["stdoutFailure"] = output.Error; evidence["stderrFailure"] = errorOutput.Error;
                 evidence["identities"] = System.Text.Json.JsonSerializer.SerializeToNode(authorized.Values.ToArray());
                 evidence["unknownDescendants"] = System.Text.Json.JsonSerializer.SerializeToNode(unknown.Values.ToArray());
+                evidence["ownershipObservations"] = ownership.Observations;
+                evidence["ownershipUnresolved"] = ownership.Unresolved;
                 evidence["initialIdentityProved"] = initialIdentityProved;
                 evidence["pipesStarted"] = pipesStarted; evidence["initialCensusProved"] = initialCensusProved;
                 evidence["exitConfirmed"] = exitConfirmed; evidence["rootsRemoved"] = rootsRemoved;
@@ -314,39 +331,131 @@ internal static class GmDocumentationDeliveryScenario
         }
         return result;
     }
-    private static Identity ReadIdentity(int pid, string role)
+    private static ProcessStat ReadStat(int pid)
     {
         var stat = File.ReadAllText($"/proc/{pid}/stat");
         var fields = stat[(stat.LastIndexOf(')') + 2)..].Split(' ', StringSplitOptions.RemoveEmptyEntries);
         return new(pid, long.Parse(fields[19], System.Globalization.CultureInfo.InvariantCulture),
-            int.Parse(fields[1], System.Globalization.CultureInfo.InvariantCulture),
-            Encoding.UTF8.GetString(File.ReadAllBytes($"/proc/{pid}/cmdline")).Split('\0', StringSplitOptions.RemoveEmptyEntries), role);
+            int.Parse(fields[1], System.Globalization.CultureInfo.InvariantCulture), fields[0]);
     }
-    private static bool SameAlive(Identity identity)
+    private static string[] ReadArgs(int pid) => Encoding.UTF8.GetString(File.ReadAllBytes($"/proc/{pid}/cmdline"))
+        .Split('\0', StringSplitOptions.RemoveEmptyEntries);
+    private static bool Terminal(ProcessStat stat) => stat.State is "Z" or "X" or "x";
+    private static ProcessStat? ReadOwnedStat(int pid)
     {
-        if (!Directory.Exists($"/proc/{identity.Pid}")) return false;
-        var current = ReadIdentity(identity.Pid, identity.Role);
-        if (current.BirthTicks != identity.BirthTicks) return false;
-        if (!current.Args.SequenceEqual(identity.Args)) throw new InvalidDataException("delivery.retained_identity_changed");
-        return true;
+        try { return ReadStat(pid); }
+        catch (FileNotFoundException) when (!Directory.Exists($"/proc/{pid}")) { return null; }
+        catch (DirectoryNotFoundException) when (!Directory.Exists($"/proc/{pid}")) { return null; }
     }
-    private static void Census(Identity original, string package, string root,
-        Dictionary<(int, long), Identity> authorized, Dictionary<(int, long), Identity> unknown, List<string> issues)
+    private static Identity ReadIdentity(int pid, string role, JsonArray? observations = null, string[]? expectedArgs = null)
+    {
+        var row = new JsonObject { ["phase"] = "initial_live_identity", ["pid"] = pid,
+            ["expectedArgs"] = System.Text.Json.JsonSerializer.SerializeToNode(expectedArgs) };
+        var order = new JsonArray(); row["readOrder"] = order;
+        try
+        {
+            order.Add("statBefore");
+            var before = ReadStat(pid); row["statBefore"] = System.Text.Json.JsonSerializer.SerializeToNode(before);
+            order.Add("cmdline");
+            var args = ReadArgs(pid);
+            order.Add("statAfter");
+            var after = ReadStat(pid); row["statAfter"] = System.Text.Json.JsonSerializer.SerializeToNode(after);
+            var expectedInvocation = expectedArgs is null || (args.Length > 0 && Path.GetFileName(args[0]) == "pwsh" &&
+                args.Skip(1).SequenceEqual(expectedArgs));
+            row["observedArgs"] = before.BirthTicks == after.BirthTicks && expectedInvocation
+                ? System.Text.Json.JsonSerializer.SerializeToNode(args) : null;
+            row["argvRedacted"] = before.BirthTicks != after.BirthTicks || !expectedInvocation;
+            if (!expectedInvocation || before.BirthTicks != after.BirthTicks || Terminal(before) || Terminal(after) || args.Length == 0)
+                throw new IOException("delivery.initial_identity_not_stable_live");
+            row["classification"] = "LiveCandidate";
+            return new(pid, after.BirthTicks, after.ParentPid, args, role, after.State);
+        }
+        catch (Exception error) { row["failure"] = error.ToString(); throw; }
+        finally { if (observations is not null) observations.Add(row); }
+    }
+    private static bool ObserveOwned(Identity expected, Process? managed, OwnershipEvidence evidence, Clock clock, string phase)
+    {
+        var row = new JsonObject { ["phase"] = phase, ["expected"] = System.Text.Json.JsonSerializer.SerializeToNode(expected) };
+        var order = new JsonArray(); row["readOrder"] = order;
+        bool Stop(string classification) { row["classification"] = classification; return false; }
+        ProcessStat? Stat(string name)
+        {
+            _ = clock.Operation; order.Add(name);
+            var value = ReadOwnedStat(expected.Pid); row[name] = System.Text.Json.JsonSerializer.SerializeToNode(value);
+            if (value is not null && value.BirthTicks != expected.BirthTicks)
+                throw new InvalidDataException("delivery.owned_birth_mismatch");
+            return value;
+        }
+        bool? ManagedExit(string name)
+        {
+            _ = clock.Operation; order.Add(name);
+            bool? value = managed?.HasExited; row[name] = value is null ? null : JsonValue.Create(value.Value); return value;
+        }
+        try
+        {
+            var before = Stat("statBefore");
+            if (before is null)
+            {
+                var absentAgain = Stat("statAbsentConfirmation");
+                var exit = ManagedExit("managedExitedAfterAbsence");
+                if (absentAgain is null && (managed is null || exit == true)) return Stop("TerminalOwnedAbsent");
+                throw new InvalidDataException("delivery.owned_absence_unproved");
+            }
+            _ = clock.Operation; order.Add("cmdline");
+            string[]? args;
+            try { args = ReadArgs(expected.Pid); }
+            catch (FileNotFoundException) when (!Directory.Exists($"/proc/{expected.Pid}")) { args = null; }
+            catch (DirectoryNotFoundException) when (!Directory.Exists($"/proc/{expected.Pid}")) { args = null; }
+            // Do not emit argv from a reused/unproved birth; preserve both sides of the owned observation window.
+            var after = Stat("statAfter");
+            row["observedArgs"] = System.Text.Json.JsonSerializer.SerializeToNode(args);
+            var managedExited = ManagedExit("managedExitedAfterStat");
+            // A nonempty mismatch is sticky even if this same observation also proves later termination.
+            if (args is { Length: > 0 } && !args.SequenceEqual(expected.Args))
+                throw new InvalidDataException("delivery.retained_identity_changed");
+            if (after is null)
+            {
+                if (Stat("statAbsentConfirmation") is null && (managed is null || managedExited == true))
+                    return Stop("TerminalOwnedAbsent");
+                throw new InvalidDataException("delivery.owned_absence_unproved");
+            }
+            if (Terminal(after))
+            {
+                var confirmed = Terminal(before) ? before : Stat("statTerminalConfirmation");
+                if (confirmed is null || Terminal(confirmed)) return Stop("TerminalOwnedState");
+                throw new InvalidDataException("delivery.owned_terminal_unproved");
+            }
+            if (Terminal(before)) throw new InvalidDataException("delivery.owned_terminal_transition_conflict");
+            if (managedExited == true) return Stop("TerminalOwnedManagedExit");
+            if (args is null || args.Length == 0)
+                throw new InvalidDataException("delivery.owned_live_argv_unproved");
+            row["classification"] = "LiveExact"; return true;
+        }
+        catch (Exception error)
+        {
+            evidence.Unresolved = true; row["classification"] = "Conflict"; row["failure"] = error.ToString(); throw;
+        }
+        finally { evidence.Observations.Add(row); }
+    }
+    private static void Census(string package, string root,
+        Dictionary<(int, long), Identity> authorized, Dictionary<(int, long), Identity> unknown, List<string> issues,
+        OwnershipEvidence evidence, Process? child, Clock clock)
     {
         var live = new List<Identity>();
         foreach (var directory in Directory.EnumerateDirectories("/proc").Where(path => int.TryParse(Path.GetFileName(path), out _)))
         {
+            _ = clock.Operation;
             Identity identity;
             try { identity = ReadIdentity(int.Parse(Path.GetFileName(directory)), "helper"); }
-            catch (IOException) { continue; } // A racing exited foreign PID is not an ownership witness.
+            catch (IOException) { continue; } // Unstable/terminal foreign candidates grant no ownership; retained identities checked below.
             catch (UnauthorizedAccessException) { continue; }
             live.Add(identity);
             var exactHelper = identity.Args.Length == 5 && Path.GetFileName(identity.Args[0]) == "dotnet" &&
                 identity.Args.Skip(1).SequenceEqual(new[] { Path.Combine(package, "BookOfEternityClient.dll"), "--gm-main-operation", "--root", root });
-            if (exactHelper) authorized[(identity.Pid, identity.BirthTicks)] = identity;
+            if (exactHelper) authorized.TryAdd((identity.Pid, identity.BirthTicks), identity);
         }
-        // Unknown descendants are observations, never signalling authority. Retain the failure even if they later exit.
-        var descendants = authorized.Values.Where(SameAlive).Select(identity => identity.Pid).ToHashSet();
+        var descendants = authorized.Values.Where(identity => ObserveOwned(identity, identity.Role == "pwsh" ? child : null,
+            evidence, clock, "census_owned_check")).Select(identity => identity.Pid).ToHashSet();
         bool added;
         do
         {
@@ -359,11 +468,5 @@ internal static class GmDocumentationDeliveryScenario
                     issues.Add("delivery.unexpected_descendant:" + identity.Pid);
             }
         } while (added);
-        // Revalidate every authorized identity; inaccessible/changed retained state fails closed.
-        foreach (var identity in authorized.Values.Where(identity => Directory.Exists($"/proc/{identity.Pid}")))
-        {
-            try { _ = SameAlive(identity); }
-            catch (IOException) when (!Directory.Exists($"/proc/{identity.Pid}")) { }
-        }
     }
 }

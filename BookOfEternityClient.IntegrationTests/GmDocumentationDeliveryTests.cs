@@ -57,15 +57,35 @@ public sealed class GmDocumentationDeliveryTests
     [InlineData("late_override")]
     [InlineData("late_empty_reset")]
     [InlineData("receipt_post_builder")]
-    [InlineData("read_all")]
     [InlineData("receipt_ordinary")]
+    public Task SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(string mutation) =>
+        VerifySourceMutationAsync(mutation);
+
+    // Same two semantic rows extracted for an official method-level retry; no new case or test-to-test call.
+    [Theory]
+    [InlineData("read_all")]
     [InlineData("wrong_boundary")]
-    public async Task SourceGuardMutationsFailSpecificFinalOrBoundaryGuards(string mutation)
+    public Task SourceGuardPreviouslyFailedRowsReachTheirSpecificOracles(string mutation) =>
+        VerifySourceMutationAsync(mutation);
+
+    private async Task VerifySourceMutationAsync(string mutation)
     {
         var changed = await GmDocumentationDeliveryScenario.RunAsync(TestRepoPaths.RepoRoot, publish: false,
             sourceMutation: bytes => MutateSource(bytes, mutation), sourceSeedMutation: bytes => MutateSource(bytes, null));
         _output.WriteLine("GM1557_SOURCE_NEGATIVE " + changed.Evidence.ToJsonString());
-        var seed = changed.Ast!["seed"]!.AsObject();
+        // Surface the ownership/adapter prerequisite before dereferencing independently retained diagnostic AST.
+        if (mutation == "wrong_boundary")
+        {
+            Assert.Contains("delivery.adapter_failure:", changed.Failure, StringComparison.Ordinal);
+            Assert.Contains("ast.startup_boundary", changed.Failure, StringComparison.Ordinal);
+        }
+        else Assert.Null(changed.Failure);
+        Assert.Empty(changed.Issues);
+        Assert.True(changed.Evidence["exitConfirmed"]!.GetValue<bool>(), changed.Failure);
+        Assert.True(changed.Evidence["rootsRemoved"]!.GetValue<bool>(), changed.Failure);
+        Assert.NotNull(changed.Ast);
+        Assert.NotNull(changed.Ast!["seed"]);
+        var seed = changed.Ast["seed"]!.AsObject();
         Assert.True(seed["completed"]!.GetValue<bool>());
         Assert.Empty(GmDocumentationDeliveryRules.VerifyFullSource(seed));
         Assert.True(changed.Evidence["rootsRemoved"]!.GetValue<bool>());
