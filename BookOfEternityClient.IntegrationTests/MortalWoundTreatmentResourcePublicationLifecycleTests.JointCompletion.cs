@@ -39,6 +39,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.NotNull(source.Source);
         await AssertGenuinePendingQteSourceAsync(source); // Actual effect-free source10->5, not the old160->155 world.
         var occurrence = await AssertActualPhysicalOccurrenceAsync(source, 2);
+        var priorLifecycleTail = await AssertJointPriorLifecycleInactiveBaselineAsync(source);
 
         if (nonzeroProgression)
         {
@@ -107,6 +108,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             generation = Assert.IsType<string>(_fs.ReadLocalGenerationSnapshot(lease).Binding.Id);
             original = MortalQteWoundOpportunityProjection.ReadSnapshot(_fs, lease);
+            foreach (var image in priorLifecycleTail)
+                Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(lease, image.Key));
             Assert.Equal(43, original.TurnNumber);
             Assert.Equal(source.Source.SessionId, original.SessionId);
             Assert.NotEqual(source.Source.RequestId, original.RequestId);
@@ -380,19 +383,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         await ConfigureGenuinePendingTreatmentWorldAsync(files);
         // These are labelled canonical bootstrap prerequisites BEFORE the genuine
         // producer mints original42. No original, request, claim or seal exists yet.
-        var experience = ParseJsonObjectBytes(Assert.IsType<byte[]>(await files.ReadFileBytesAsync("game_state/player/experience.json")));
-        var level = experience["level"]?.GetValue<int>() ?? experience["playerLevel"]?.GetValue<int>() ?? 1;
-        if (level <= 1)
-        {
-            var statusBytes = await files.ReadFileBytesAsync("game_state/core/player_status.json");
-            level = statusBytes is null ? 1 : ParseJsonObjectBytes(statusBytes)["level"]?.GetValue<int>() ?? 1;
-        }
-        Assert.True(level > 0);
-        var pointsBytes = await files.ReadFileBytesAsync("game_state/player/stat_points.json");
-        var points = pointsBytes is null ? new JsonObject() : ParseJsonObjectBytes(pointsBytes);
-        points["levelUpStatPointsAwardedThroughLevel"] = level;
-        if (!points.ContainsKey("unspentStatPoints")) points["unspentStatPoints"] = 0;
-        await files.WriteFileAtomicAsync("game_state/player/stat_points.json", points.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        // The real accepted turn42 progression owner must produce this file.
+        // A fixture-authored processed-level acknowledgment is not its evidence.
+        Assert.Null(await files.ReadFileBytesAsync("game_state/player/stat_points.json"));
         var worldTime = ParseJsonObjectBytes(Assert.IsType<byte[]>(await files.ReadFileBytesAsync("game_state/world/world_time.json")));
         var current = worldTime["currentTimeInMinutes"]!.GetValue<int>();
         await files.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath,
@@ -400,6 +393,49 @@ public sealed partial class GameEngineTurnLifecycleTests
                 CurrentWorldTimeInMinutes = current, LastWorldSimulationTimeInMinutes = current,
                 LastFactionSimulationTimeInMinutes = current, HasAuthoritativeWorldTimeBaseline = true },
                 SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private async Task<Dictionary<string, byte[]?>> AssertJointPriorLifecycleInactiveBaselineAsync(QteStoryRun source)
+    {
+        Assert.NotNull(source.Engine);
+        Assert.Equal(42, GetPrivateField<GameLoop>(source.Engine!, "_gameLoop").TurnNumber);
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Assert.Null(await _fs.ReadFileBytesAsync(lease, "input/turn_request.json"));
+        Assert.Null(await _fs.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+        var images = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        foreach (var path in GameEngine.MortalJointInactiveTailPaths)
+            images.Add(path, await _fs.ReadFileBytesAsync(lease, path));
+        // Read-only production predicate checks all actual level/stat/QTE paths.
+        // This is before Stage43; it creates no acknowledgment or authority.
+        await GameEngine.ValidateCurrentMortalJointInactiveTailAsync(_fs, lease, 43);
+        var experience = ParseJsonObjectBytes(Assert.IsType<byte[]>(images["game_state/player/experience.json"]));
+        Assert.Equal(1, experience["level"]!.GetValue<int>());
+        var points = ParseJsonObjectBytes(Assert.IsType<byte[]>(images["game_state/player/stat_points.json"]));
+        Assert.Equal(1, points["levelUpStatPointsAwardedThroughLevel"]!.GetValue<int>());
+        Assert.Equal(0, points["unspentStatPoints"]?.GetValue<int>() ?? 0);
+        var computedBytes = Assert.IsType<byte[]>(await _fs.ReadFileBytesAsync(lease, "game_state/player/computed_characteristics.json"));
+        Assert.Equal(1, ParseJsonObjectBytes(computedBytes)["playerLevel"]!.GetValue<int>());
+        Assert.Null(images[QteSceneService.QteOfferPath]);
+        var runtime = ParseJsonObjectBytes(Assert.IsType<byte[]>(images[QteSceneService.QteRuntimePath]));
+        Assert.Null(runtime["pendingOffer"]);
+        Assert.Null(runtime["activeScene"]);
+        var priorQte = ParseJsonObjectBytes(Assert.IsType<byte[]>(images[QteDeferredEffectContinuation.StatePath]));
+        Assert.Equal("terminal", priorQte["state"]!.GetValue<string>());
+        Assert.Equal(source.Source!.SessionId, priorQte["clientStoryAppend"]!["source"]!["sessionId"]!.GetValue<string>());
+        Assert.Equal(source.Source.RequestId, priorQte["clientStoryAppend"]!["source"]!["requestId"]!.GetValue<string>());
+        Assert.Equal(42, priorQte["clientStoryAppend"]!["source"]!["turnNumber"]!.GetValue<int>());
+        if (images["game_state/player/status_changes.json"] is { } changesBytes &&
+            ParseJsonObjectBytes(changesBytes)["statsIncreased"] is { } stats)
+            Assert.Empty(Assert.IsType<JsonArray>(stats));
+        foreach (var image in images)
+            Assert.Equal(image.Value, await _fs.ReadFileBytesAsync(lease, image.Key));
+        WritePhysicalInjuryDiagnostic("fr063_joint_actual_prior42_inactive_tail", new
+        {
+            source.Source.SessionId, source.Source.RequestId, PriorTurn = 42, BeforeJointOriginalTurn = 43,
+            ProcessedLevel = 1, UnspentStatPoints = 0, ActualLifecycleImages = images,
+            ComputedCharacteristics = computedBytes, FixtureAuthoredAcknowledgment = false
+        });
+        return images;
     }
 
     private async Task AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original,

@@ -1,5 +1,37 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 genuine prior42 inactive baseline SOURCE WIP STOP — 2026-10-14
+
+Owning base `499ff5cb20ea28ae35aa2dd707f6cef53bdf05d4`; ownership pause cleared
+by coordinator/owner Sentinel_9121c40a453c81919dde4f9c871c4eb6 at 19:25 UTC,
+verified same-cloud recovery2334/1805. Historical publication launcher provenance
+remains UNRESOLVED; no repeat commit/push or actor inference. This bounded fixture
+correction removes the manually seeded pre42 processed-level acknowledgment.
+Before genuine original42, stat_points.json must be absent. The unchanged real
+ProcessPlayerTurn/QTE42 lifecycle then produces the baseline through its existing
+ProcessMortalProgressionAfterAcceptedTurnAsync/CheckLevelUpAsync owner. No direct
+level/stats handler, acknowledgment write, fabricated award, clearing active work,
+original rewrite, reseal, new reservation or production change is added.
+
+After genuine source42 completes and BEFORE Stage43, the fixture reads all seven
+actual inactive-tail paths under a lease, applies the read-only production predicate,
+and independently checks processed/computed level1, no stat-point award, no new QTE
+offer/active runtime, and exact prior42 terminal tuple. Actual bytes are retained
+in a diagnostic, reread unchanged, then compared again after actual original43 mint.
+All existing joint completion/charge/history/story/turn/cleanup/inert-repeat oracles
+remain in place. Qualified prior-QTE/J1/pending/ordinary fixture bodies are unchanged.
+
+Actual owner-produced prerequisites, compiler/API and fixture validity are UNCHECKED.
+All build/discovery/catalog/PlanOnly/test/runtime/fault/whole SOURCE/FIXTURE/SELECTION
+checks remain UNRUN. Eleven source methods/twenty-two cases remains provisional;
+no category/selector/budget change or positive qualification. Lawful active stats,
+level-up and new-QTE joint combinations remain UNCHECKED/OPEN. Already-admitted-child
+authority corruption is distinct from freshPID already-bad authority, which remains
+OPEN. Remaining finite controls, normative/primary-GM synchronization and final
+category/selection ownership still precede the entire independent connected gate.
+Historical tails, prior raw outcomes and acceptance checkboxes are preserved.
+
+
 ## J7 connected phase compensation/debt pair SOURCE WIP STOP — 2026-10-14
 
 Owning wiring base `6f0905a52db295fe52876f9f2e7402185433af66`; recovery2330/1801
