@@ -1,5 +1,32 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Preparation failure EVIDENCE accepted; catalog-only correction queued — 2026-10-14
+
+Retained independent Astra XHigh [EVIDENCE/source diagnosis](recovery/A-connected-pair-preparation-schema-failure-independent-review-20261014.md)
+SHA256 `89eb7c3016e34b8d7e276ac306870c38f24b3e2f11b7b022f7548ea6ea1ab218`
+accepts carrier `0ad14e2fad02408d3337d3c7ea741e81b2b19685`: five chains/raw
+exact;2330 direct source pins plus only status-insert reversal restores two; no build,
+catalog discovery/validation or test. Pair2/writer1 UNRUN; native PowerShell exit
+UNKNOWN remains distinct from wrapper exit1. No runtime/cleanup/security refusal claim.
+
+Confirmed Important catalog defect: exactly one of257 related entries is a string;
+loader requires object.id and nonempty object.when. This was missed by prior static
+SOURCE; process-fixture source closure remains applicable but execution is blocked.
+ROOT releases soleSol catalog-only replacement with the same existing id and a
+nonempty when explaining overlap/narrow retry. Keep IDs/selectors/cases/budgets,
+fixtures/driver/loader/runner unchanged. Preserve failure packet and historical reviews.
+The same sole writer first reaches a safe primaryWIP/STOP checkpoint, then performs
+this small isolated GM correction; no simultaneous writer or unpreserved switch.
+
+Publish corrected WIP, mandatory focused SOURCE/SELECTION closure of actual catalog
+shape/target/scope, then fresh BOTH build/catalog preparation (no old NoBuild premise),
+exact pair PlanOnly and first pair actual only. Freeze/EVIDENCE before unrun writer;
+no extra passing repeat. External ROOT wrapper now records future native exit before
+run-directory assertion; old UNKNOWN/packet unchanged. FullA/B/content/daemon/Block_5
+remain OPEN. Primary J2-J6/J7 authoring continues under separate coordinator release;
+no checkbox change or new source/runtime approval inferred from this diagnosis.
+
+
 ## Pair-only fresh preparation setup FAIL; build/catalog/tests UNRUN — 2026-10-14
 
 Released preparation at source `5091bdff75ee3277f35c83d7f5b53453ce5e1014`
