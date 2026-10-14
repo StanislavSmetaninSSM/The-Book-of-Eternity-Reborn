@@ -1,5 +1,30 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J8 normative / shared GM severity-repair SOURCE WIP STOP — 2026-10-14
+
+Owning base `ac9bc9cf9a70fabb9ee31cb3087a346395480fbc`; SOURCE GO followed
+verified selected recovery2360/1831. FR-012/FR-063 and the private treatment lifecycle
+now distinguish current authored connected SOURCE WIP from qualification. The contract
+records immutable progression basis versus applied phase, report consumption once,
+full physical union/fresh authority, actual prior42 inactive prerequisites, projection,
+exact retained story row/once-turn and owned terminal cleanup, with the existing limits.
+Seven primary GM surfaces carry one synchronized public same-scene severity-repair
+paragraph, including BOTH actual daemon definitions. Existing public transport grammar
+and unrelated guidance remain intact; no private retry graph or authority payload is
+exposed to the GM. This is primary FR-063 synchronization, not #1557 modularization.
+
+This bounded checkpoint changes documentation and shared guidance only: no production
+owner body, fixture method, catalog, selector or budget is added or executed. Existing
+16 methods/34 authored cases are a provisional source inventory, not discovery evidence.
+J8 complete III→II example, manifest and genuine parser/builder/adapter guards remain
+OPEN for the next saved block; category/selection authoring remains a later block.
+Compilation/API/fixture/close validity and ALL connected project checks remain UNRUN or
+UNCHECKED pending the whole independent SOURCE/FIXTURE/SELECTION gate. Lawful active-tail
+support, fresh-PID already-bad signed authority, erased traces and partial cleanup retain
+their explicit limitations; full FR-063/T070 and parent acceptance remain OPEN.
+Historical source reports, evidence, prior checkpoint tails and acceptance checkboxes
+are preserved. No new acceptance checkbox is marked by this source checkpoint.
+
 ## J7 legacy boundary reuse / null-frame nonapplicability SOURCE WIP STOP — 2026-10-14
 
 Owning base `cc15a7e1ec2df9c6a4e596c1204ad8f485e40863`; recovery2352/1823 verified

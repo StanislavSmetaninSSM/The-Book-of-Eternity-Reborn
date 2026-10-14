@@ -1,0 +1,11 @@
+{
+  "sourcePath": "/workspace/boe-cloud-tools-20261012/t070-root-run.py",
+  "sourceSha256": "8bfcdb01d991b1b4473f46b020d783564395a163d4b81d4f43452a75850d5e8d",
+  "readOperation": "08379bexit0",
+  "findings": [
+    "pin branch hardcodes ACCEPTED independent retained actualAstraXHigh; actualbackendtelemetry unavailable and newwholegatesUNRUN",
+    "runtime readback uses all(...) over strictcleanupreceipts; emptyreceiptlist wouldreportallAbsenttrue withoutobservation"
+  ],
+  "disposition": "Do not use oldpin or vacuouscleanup proof forfuturechecks. Build freshtruthfulsourcepins onlyafter actualwholegates; futurewrapper must explicitly preserve missingobservations/realconfiguration. No projectcalls orwrappermutation now.",
+  "currentCompilerBuildDiscoveryCatalogPlanOnlyRuntime": "UNRUN"
+}

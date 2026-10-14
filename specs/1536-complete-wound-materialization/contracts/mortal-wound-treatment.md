@@ -29,9 +29,12 @@ creates canonical pristine/source authority. Existing warm/finalized owners reta
 own strict fences. No new GM-authored command, display-response interpretation, treatment
 cost or afterlife policy is introduced.
 
-This implementation checkpoint is SOURCE pending and all new runtime checks are UNRUN.
-Same-root native/finite controls precede separate new-root proof; other treatment modes,
-full FR-063/T070 and parent acceptance remain open.
+Current joint-owner status is connected SOURCE WIP, with live/late, progression, story,
+cleanup and finite same-root/fresh-process/new-root control sources authored. Compilation,
+fixture/API validity and connected project/runtime qualification remain UNRUN pending the
+entire independent SOURCE/FIXTURE/SELECTION gate. Earlier scoped ordinary qualifications
+remain historical evidence; other treatment modes, lawful active-tail combinations,
+fresh-process already-damaged original authority and full FR-063/T070 remain open.
 
 ## Complete Mortal wound requirement
 
@@ -1048,11 +1051,58 @@ restores removed bytes and retains it if settlement fails. One shared prepared/e
 common publication and whole-wave cleanup are mandatory for eventual completion; sequential
 acquisition/treatment publication and two independently finalized root merges do not qualify.
 
-This section records accepted DESIGNv2 J0 obligations. Current old six-argument publisher,
-strict codec/public mixed guards and production branches remain unchanged. J2–J6 APIs,
-checkpoint codec/restore/union publication are implementation targets, not current runtime
-support. J1 source tests the actual outer ordinary repair entry; component codec/catalog
-qualification alone does not establish this live producer or cold/new-root completion.
+These are the accepted DESIGNv2 obligations and approved bounded progression/story
+amendments. The connected private owner has now been authored as SOURCE WIP; its APIs,
+codec, restore, union publication and lifecycle are not runtime-qualified by this status.
+The old six-argument, singleton, disjoint and public mixed-family restrictions remain
+mandatory. J1 causal evidence and component codec/catalog qualification alone do not
+establish connected completion, cold/new-root reconstruction or full FR-063 acceptance.
+
+The immutable joint common input must freeze the complete actual progression calculation
+basis before common take: authenticated original schedule/control, separately validated
+current submitted report and world-time, every present/absent source guard, request/realm
+context, captured UTC and exact encoder/byte fingerprints. Original-bound inputs must not
+be conflated with current GM output. A cold owner must independently recompose that basis;
+a parsed afterimage, hash wrapper or diagnostic witness is never authority.
+
+The closed private v2 completion marker distinguishes progression unapplied/applied while
+its common basis remains immutable. Only the existing fixed schedule/report/same-marker
+publication batch and complete readback may acknowledge application. A genuine matching
+nonzero report is consumed once; an applied continuation validates the frozen report,
+control, recomposed pair and current afterimages without requiring or recreating the
+consumed live report. Fresh phase authority also requires the complete original/generation
+and mechanical union proof. Known phase compensation proves current ownership and restores
+only that three-member cohort; it never restores, rearms or releases finalized mechanics.
+Unresolved publisher debt, foreign or intermediate bytes retain the complete union,
+original, Ready, output and backups and block destructive ordinary fallback.
+
+The first supported contour requires actual prior-turn lifecycle-produced inactive
+stats/processed-level/QTE evidence before the next original is minted. Actionable stat
+increases, uncovered canonical level or a new offer/runtime handoff must refuse before
+joint common take; clearing work or fabricating a processed-level acknowledgement is
+invalid. Supporting lawful active combinations remains an explicit open extension.
+
+After fresh canonical/narrative and applied-phase validation, the actual derived projection
+must be calculated and read back before story. The named story owner accepts only the
+signed original text prefix or that prefix plus one exact deterministic row bound to the
+original RequestId/generation and frozen prepared UTC, action, location and entity refs.
+Already-appended replay validates projection semantics without rewriting its timestamp
+and never appends another row. Applied progression alone attests neither story nor active
+stats, level-up or new-QTE work. Both live and late owners reconcile only the original
+prior turn or the same completed turn; eligible fixed owned cleanup requires fresh full
+phase/story/projection/turn, correlated Ready and original/backup authority with exact
+beforeimages and readback. Unknown or partial cleanup is not completion authority.
+
+Same-root fresh-process and distinct-root sources must reconstruct authority through real
+readers from a complete quiescent durable namespace and the same existing generation;
+no copied signing key, new reservation, resealed original, Load-created generation or
+parsed checkpoint substitutes for that proof. A null-frame console hold may identify a
+private v2 candidate only with a matching physical active original header; it grants no
+phase, take, replay or completion authority and does not bypass missing/foreign-generation
+storage admission. A stale marker with both headers absent is inert. No frame with every
+owner trace erased cannot prove past ownership, partial cleanup remains unqualified,
+and fresh-process already-bad signed authority remains open. Source controls for these
+boundaries do not establish compiler, fixture, cold or runtime acceptance.
 
 After a true cold restart that copies only durable game-state bytes to a different
 filesystem root and constructs fresh process-local registries, that typed command/pending
