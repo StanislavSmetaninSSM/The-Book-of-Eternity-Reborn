@@ -1,0 +1,51 @@
+{
+  "publication": {
+    "base": "ff749ba1e55adbc2ee2b625d2f45ba7153457913",
+    "checkpoint": "aa60511b2bb9942432a4b3913f81524684f6af22",
+    "actualRemoteSHA": "aa60511b2bb9942432a4b3913f81524684f6af22",
+    "primaryClean": true,
+    "publishedPaths": [
+      "specs/1536-complete-wound-materialization/recovery/fr063-fixture-f1-f3-and-adapter-focused-independent-review-ff749ba1-20261014T224008Z-08883a16.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-fixture-f1-f3-and-adapter-focused-independent-readback-ff749ba1-20261014T224008Z-08883a16.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-fixture-f1-f3-focused-closure-bundle-ff749ba1-20261014T223430Z-21af671d.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-fixture-f1-f3-publication-recovery-verified-20261014T223652Z-404caa20.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-bounded-root-runner-v4-20261014T224131Z-d5b9895d.py.txt",
+      "specs/1536-complete-wound-materialization/recovery/fr063-bounded-root-runner-v4-source-readback-20261014T224131Z-d5b9895d.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-adapter-v4-pure-json-shape-readback-20261014T224210Z-351e0acf.json",
+      "specs/1536-complete-wound-materialization/recovery/publish-fr063-stopped-wip-explicit-gates-20261014.py.txt",
+      "specs/1536-complete-wound-materialization/recovery/fr063-repository-gates-and-adapter-a1-correction-root-wip-20261014.json"
+    ],
+    "publishedBytesMatch": true,
+    "protectedPathsExact": 522,
+    "source": "Metadata/evidence-only WIP; repository3gatesaccepted atff749ba1; oldv3A1blocked rawreportpreserved; externalv4correctionPENDINGreview; allprojectUNRUN",
+    "allProjectChecks": "UNRUN",
+    "utc": "2026-10-14T22:42:41.209953+00:00"
+  },
+  "recovery": {
+    "checkpoint": "aa60511b2bb9942432a4b3913f81524684f6af22",
+    "remoteSha": "aa60511b2bb9942432a4b3913f81524684f6af22",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2430,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 1901,
+    "consumerProduction": "Metadata/evidence-only checkpoint; repository3gatesaccepted atff749ba1/131sourcepins unchanged; externaladapterv4A1closurePENDING; allprojectUNRUN",
+    "verifiedUtc": "2026-10-14T22:45:46.148663+00:00"
+  },
+  "publicationTrace": [
+    "8c579fmanifestexit0",
+    "4e907alaunchsession1225",
+    "a210abnativeexit0",
+    "88fb11actualremote/cleanreadback"
+  ],
+  "publicationLog": "/workspace/boe-cloud-tools-20261014/fr063-repository-gates-adapter-a1-publication-20261014T224234Z-356a18f5.log",
+  "recoveryTrace": [
+    "667527launchsession29321",
+    "d2de60nativeexit0"
+  ],
+  "recoveryLog": "/workspace/boe-cloud-tools-20261014/fr063-repository-gates-adapter-a1-selected-recovery-20261014T224251Z-5045ff0a.log",
+  "reviewerSTOP": "FINALSTOPPED/no pendingtools atffreview; pendingexternalA1closurefollowup",
+  "repoSource": "131acceptedpins unchanged vsff749ba1; metadata/evidence-onlydelta",
+  "projectExecution": "UNRUN",
+  "next": "same retained independent A1 externalv4closureonly"
+}
