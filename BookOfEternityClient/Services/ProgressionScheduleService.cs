@@ -11,7 +11,7 @@ namespace BookOfEternityClient.Services;
 /// Client-authoritative scheduler for world, faction, and Chaos Sea progression.
 /// The GM decides outcomes, but the client decides when progression must be processed.
 /// </summary>
-public class ProgressionScheduleService
+public partial class ProgressionScheduleService
 {
     public const string SchedulePath = "game_state/control/progression_schedule.json";
     public const string ReportPath = "game_state/control/progression_report.json";
@@ -721,50 +721,9 @@ public class ProgressionScheduleService
             var worldTimeResolution = await ResolveWorldTimeFromFileAsync(
                 control.CurrentWorldTimeInMinutes,
                 writeLease: writeLease);
-            var resultingWorldTime = worldTimeResolution.Minutes;
-            if (worldTimeResolution.HasUnresolvedAbsoluteOverride)
-            {
-                resultingWorldTime = Math.Max(
-                    resultingWorldTime,
-                    Math.Max(
-                        report?.NewLastWorldSimulationTimeInMinutes ?? control.LastWorldSimulationTimeInMinutes,
-                        report?.NewLastFactionSimulationTimeInMinutes ?? control.LastFactionSimulationTimeInMinutes));
-            }
-
-            schedule.CurrentWorldTimeInMinutes = resultingWorldTime;
-
-            if (reportSnapshot.State == ProgressionFileReadState.Valid &&
-                ProgressionReportMatchesCurrentTurn(report, currentTurnContext))
-            {
-                if ((report?.WorldCyclesProcessed ?? 0) > 0)
-                {
-                    schedule.LastWorldSimulationTimeInMinutes =
-                        report?.NewLastWorldSimulationTimeInMinutes
-                        ?? (control.LastWorldSimulationTimeInMinutes + (report?.WorldCyclesProcessed ?? 0) * control.WorldCycleMinutes);
-                }
-
-                if ((report?.FactionCyclesProcessed ?? 0) > 0)
-                {
-                    schedule.LastFactionSimulationTimeInMinutes =
-                        report?.NewLastFactionSimulationTimeInMinutes
-                        ?? (control.LastFactionSimulationTimeInMinutes + (report?.FactionCyclesProcessed ?? 0) * control.FactionCycleMinutes);
-                }
-
-                schedule.PendingWorldCycles = 0;
-                schedule.PendingFactionCycles = 0;
-                ClearAfterlifePendingCycles(schedule);
-                reportConsumed = true;
-            }
-            else
-            {
-                schedule.PendingWorldCycles = Math.Max(
-                    schedule.PendingWorldCycles,
-                    Math.Max(0, control.WorldCyclesAlreadyPendingBeforeTurn));
-                schedule.PendingFactionCycles = Math.Max(
-                    schedule.PendingFactionCycles,
-                    Math.Max(0, control.FactionCyclesAlreadyPendingBeforeTurn));
-                ClearAfterlifePendingCycles(schedule);
-            }
+            reportConsumed = ApplyMortalOutcomeFromInputs(schedule, control, report,
+                reportSnapshot.State == ProgressionFileReadState.Valid &&
+                    ProgressionReportMatchesCurrentTurn(report, currentTurnContext), worldTimeResolution);
         }
 
         if (HasResolvedRealm(realmAfterTurn))

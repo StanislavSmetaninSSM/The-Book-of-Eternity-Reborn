@@ -1,5 +1,33 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Joint progression calculation/source capture WIP STOP — 2026-10-14
+
+Owning base `7fbb8ca279f330e9ed9d7546fb60d066055de649`; written release71436d81,
+approved amendment cbd92b5d and independent DESIGN9950c701 govern this source block.
+Same canonical recovery retry succeeded before SOURCE GO; the initial HTTP503 incident
+is ROOT-owned immutable evidence, outside the authored source whitelist.
+
+Three code paths now contain the extracted existing Mortal arithmetic, detached actual
+async calculation inputs and an engine-local original-authentication gate. The old caller
+keeps its async read order, conditional sanitization UTC, final UTC placement, encoding/BOM
+and mutation fingerprint construction. The new capture freezes the actual schedule/report,
+realm, request-context selection, world-time resolution, sanitized schedule and UTC under
+one exact physical generation/lease, then checks all seven current source images. The engine
+gate freshly authenticates the official original/manifest/authority/control and signed
+schedule coverage. Valid CURRENT GM report/world-time are independently validated and
+are not required to equal original baseline images. Missing signed coverage fails closed;
+no snapshot is rewritten and no parsed capture grants phase authority.
+
+This is an UNWIRED source foundation, not a supported completion or a new qualification.
+Independent cold recomposition (including both world-time fallbacks and conditional UTC),
+producer signed-schedule coverage sufficiency, common basis sealing/cache, closed marker
+phase, fixed schedule/report/marker publication/readback/compensation, applied-phase validation,
+actual lifecycle/story/stat/level-up/cold integration, J7 controls/selection and normative/GM
+synchronization remain OPEN. Next source block connects the independently revalidated basis
+before common take. Compiler/build/discovery/catalog/PlanOnly/tests/runtime/faults and whole
+SOURCE/FIXTURE/SELECTION remain UNRUN. No fixture/category/selector/acceptance-checkbox changes.
+Historical sections, raw receipts and earlier UNCHECKED observations remain unchanged.
+
 ## Written progression implementation release received — 2026-10-14
 
 Coordinator supplied explicit user approval (2026-10-14 10:23UTC,

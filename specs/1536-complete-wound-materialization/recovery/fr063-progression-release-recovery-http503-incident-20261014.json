@@ -1,0 +1,30 @@
+{
+  "operation": "git merge --ff-only --quiet FETCH_HEAD after canonical origin fetch, before byte/blob verifier",
+  "workdir": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+  "target": "7fbb8ca279f330e9ed9d7546fb60d066055de649",
+  "nativeExit": 128,
+  "execSession": 86244,
+  "completionChunk": "966a92",
+  "wrapperText": "subprocess.CalledProcessError: Command '['git', 'merge', '--ff-only', '--quiet', 'FETCH_HEAD']' returned non-zero exit status 128.",
+  "exactNativeErrorLines": [
+    "error: RPC failed; HTTP 503 curl 22 The requested URL returned error: 503",
+    "fatal: expected 'packfile'",
+    "fatal: could not fetch f3ed952bdba81023a8d4fdb53d5a577733f30ef0 from promisor remote"
+  ],
+  "rawLog": "/workspace/boe-cloud-tools-20261014/fr063-progression-release-selected-recovery.log",
+  "rawSHA256": "9b447dd6c277df9cc7497328be7b44e0edd9101867b6ceee28001528975014b9",
+  "postFailureReadback": {
+    "selectedHead": "3421980871ceee5733117d1ed48c625e4aa50e80",
+    "selectedClean": true,
+    "primaryHeadAndRemote": "7fbb8ca279f330e9ed9d7546fb60d066055de649",
+    "primaryClean": true,
+    "readbackChunks": [
+      "d92336",
+      "d6942a"
+    ]
+  },
+  "classification": "nativeGit upstreamHTTP503 error; no security-specific/toolapproval refusal text; rootcausebeyond exposedHTTP503UNKNOWN",
+  "action": "preserve exactfailure; one bounded retry SAME canonicalGit ff-only path; Sourcewritesheld until recoveryverified",
+  "ProjectChecks": "UNRUN",
+  "utc": "2026-10-14T10:32:00.089533+00:00"
+}
