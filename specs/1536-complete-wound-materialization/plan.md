@@ -1,5 +1,34 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Named private joint story owner WIP STOP — 2026-10-14
+
+Owning base `95356dc9a1e301d9573783e6df200032be8c9212`; recovery2249/1715
+was verified before SOURCE GO. One new StoryService partial now provides a named joint reader,
+exact append owner and privately issued suffix proof. Fresh applied full physical proof and the
+official original bind session/request/token/turn, original soul realm/incarnation/action and
+signed history inventory. The row derives narrative/location/entity references from current
+physical outputs/sources and uses actual RequestId/G plus authenticated preparedAtUtc. No
+caller-supplied row or old console/browser/QTE witness grants authority.
+
+Classification admits only the authenticated original text prefix or that prefix plus ONE
+exact deterministic row. Raw prefix bytes are preserved, including BOM/line endings; changed,
+duplicate, unlisted/ambiguous histories and foreign suffixes refuse. Original chat and every
+unrelated signed story remain exact by their authenticated text hashes. The existing explicit-
+lease trusted append is followed by exact prefix+row readback and full physical revalidation.
+A pre-existing exact row returns AlreadyAppended without writing. Only the named owner can
+issue its joint suffix proof; fresh reconstruction rereads the actual original/phase/history.
+Refusal or possible publication uncertainty retains all mechanics/original/output/ready/backups;
+no rollback, claim settlement, new lease or turn advancement occurs.
+
+Old StoryService/console/browser/QTE writers are byte exact. This API is not yet called by the
+actual post-common/live/late lifecycle or BootstrapAndProtocol suffix validator. Verified actual
+projection and canonical/narrative validation remain prerequisites of that future caller; the
+suffix proof alone does not attest projection, active stats/level work, turn or eligible cleanup.
+Phase-aware lifecycle/story once-turn reconciliation, cold/session cleanup, J7 controls/selectors
+and normative/primary-GM synchronization remain OPEN. All compiler/build/discovery/catalog/
+PlanOnly/tests/runtime/fault and whole SOURCE/FIXTURE/SELECTION remain UNRUN. No fixture,
+category, selector, budget or acceptance-checkbox changes.
+
 ## Joint derived-characteristics projection owner WIP STOP — 2026-10-14
 
 Owning base `d36d9e1e91d6f097793c34788aa5c8352714cb80`; recovery2244/1710
