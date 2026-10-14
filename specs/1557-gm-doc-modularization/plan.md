@@ -1,5 +1,29 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Pair-only fresh preparation setup FAIL; build/catalog/tests UNRUN — 2026-10-14
+
+Released preparation at source `5091bdff75ee3277f35c83d7f5b53453ce5e1014`
+failed inside Read-TestCategoryCatalog (scripts/test-csharp.ps1:57), before a new
+run directory, compilation, discovery or any test. Native console: "The property
+'id' cannot be found on this object. Verify that the property exists." ROOT wrapper
+then asserts Expected one run directory/set(); wrapper exit1. Native PowerShell
+exit was not retained by that assertion path and remains UNKNOWN, not invented.
+[Immutable five-chain packet](recovery/A-connected-pair-preparation-schema-failure-20261014/manifest.json)
+preserves invocation, native console, 2332 exact source pins/POST, failure readback
+and source diagnosis. No summary/TRX/fresh binaries exist. Pair2 and writer1 UNRUN.
+
+Source-only read identifies one malformed new related entry: catalog uses the string
+gm-doc-afterlife-delivery-source-guards, while TestCategoryCatalog.psm1:76–80 expects
+a related object with id and when. JSON parsing and prior SOURCE acceptance did not
+prove catalog loading. This is a preparation/setup FAIL, not intended mutation/source
+RED, runtime failure or security refusal. Independent EVIDENCE/source classification
+precedes the sole-writer catalog-only correction, fresh SOURCE closure and preparation
+retry. Do not rerun unchanged passing cases or relax/change the official runner/schema.
+Historical native14 outcome/packets and SOURCE reports remain immutable. Full A/B and
+content/daemon/Block_5 remain OPEN. SoleSol authors primaryJ2–J6/J7; GM correction
+waits its safe WIP/STOP boundary, preserving one source writer. No checkbox changes.
+
+
 ## Owned-observation correction SOURCE accepted; pair-only first retry release — 2026-10-14
 
 Retained independent Astra XHigh [SOURCE/FIXTURE/SELECTION review](recovery/A-connected-owned-observation-fix-independent-source-review-20261014.md)
