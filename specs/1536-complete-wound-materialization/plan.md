@@ -1,5 +1,56 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J2/J3 reconstructed-provenance and coordinated-restore WIP STOP — 2026-10-14
+
+Retained sole Sol resumed from published d1e99ff293d17ac1312495ce56935662e483d456
+under the existing accepted DESIGNv2/J2-J7 release. This is a resumable source WIP,
+not connected SOURCE READY, J2/J3 completion or runtime qualification. ROOT preserves
+it before further entry/common-family authoring. All new project checks remain UNRUN.
+The earlier foundation report and ROOT hash-format finding below remain historical.
+
+Content hashes now use the actual raw uppercase64 SHA256 format; semantic seals retain
+the existing sha256:+64 format. The seal-negative uses a syntactically valid semantic
+fingerprint, so it targets the intended payload mismatch. The same five component rows
+and all original refusal/physical-byte/ConfirmedHeld/no-plan/no-pending oracles remain.
+Additional assertions separate privately issued lease-local rejected-source capture
+from a parsed checkpoint, which never grants that proof or publication authority.
+
+The service now reconstructs an actual installed full pending wave under a fresh lease:
+official original/G, homogeneous command, complete catalog request, current accepted
+state/claim and real adapter refusal/packet are independently rebuilt and compared.
+Correction requires exact command/pending graph, packet-authorized severity and the
+whole scene unchanged except timestamp, followed by real adapter admission. The optional
+private pending codec checks the checkpoint's frame/request/packet/receipt identities;
+ordinary roots without this property retain their prior parser path. No public command,
+reservation or accepted/common authority is minted from stored checkpoint strings.
+
+An unwired GameEngine restore helper collects the complete validated rollback baseline,
+new tracked-file deletions and only the exact owned command/full private wave overrides.
+One existing local batch commits them; same-G original hashes, complete member/inventory
+readback and fresh source/request reconstruction precede runtime projection refresh.
+Known postcommit/readback/refresh failures compensate the entire known cohort with the
+same batch API; unknown bytes/members or unresolved compensation remain publication
+uncertainty. Existing rollback backup validation was extracted verbatim for reuse; its
+ordinary delete/write behavior and diagnostics are unchanged. Browser/legacy recorder
+contours are explicitly outside this ordinary restore helper. No caller dispatches it yet.
+
+Still OPEN: admitted normal entry/shared mechanical exclusions; joint retry/terminal
+settlement and private resubmission targets; exclusive prepared/effect/final/history/
+anchor/common family and final guarantee; full-union publication/cleanup/v2 completed
+proof; actual R2-R7/C1 and cold fixtures; source-synchronized GM worked example/manifest/
+guards. The old sixarg publisher, ordinary singleton/mixed/disjoint guards and actual
+entry callers stay exact. No capture/codec/restore-only completion claim. This private
+unwired foundation changes no GM-authored grammar or afterlife gameplay; required GM
+synchronization accompanies the future connected capability before its complete gate.
+
+No catalog or selector changes in this checkpoint: provisional component1method5cases/
+1descriptor/budget5/default10 and catalog730 from the previous WIP are unchanged, with
+no new discovery claim. The shared validation extraction makes the exact existing
+rollback-hash refusal controls concrete C1 dependencies for the eventual selection;
+no broad passing cohort rerun is authorized here. Historical tails and every acceptance
+checkbox remain exact; full FR063/T070/UI/parents remain OPEN. No compiler/build/test/
+fault/PlanOnly/catalog/runtime/Git mutation/provider/agent execution by this author.
+
 ## First J2 foundation WIP; ROOT static hash-format blocker — 2026-10-14
 
 SoleSol stopped the first resumable six-path source foundation before long authoring:

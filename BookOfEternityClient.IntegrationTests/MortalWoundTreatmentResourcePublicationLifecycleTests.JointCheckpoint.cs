@@ -158,6 +158,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             ComponentOnly = true, LiveRestoreDispatchQualified = false, JointPublicationQualified = false
         });
         Assert.True(captured.IsValid, DescribeValidationIssues(captured.Issues));
+        var rejectedCapture = Assert.IsType<MortalJointRepairCheckpoint.RejectedCapture>(captured.Capture);
+        rejectedCapture.EnsureCurrent(_fs, captureLease);
         var checkpoint = Assert.IsType<MortalJointRepairCheckpoint>(captured.Checkpoint);
         var root = checkpoint.ToJsonObject();
         Assert.Equal(generation, root["sessionGeneration"]!.GetValue<string>());
@@ -171,8 +173,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (mutation == "unknown_field") root["allowMixed"] = true;
         if (mutation == "draft_hash") root["rejectedDraftHash"] = new string('0', 64);
         if (mutation == "binding") root["requestId"] = "foreign_original";
-        if (mutation == "fingerprint") root["fingerprint"] = new string('0', 64);
+        if (mutation == "fingerprint") root["fingerprint"] = "sha256:" + new string('0', 64);
         var parsedCheckpoint = MortalJointRepairCheckpoint.Parse(JsonSerializer.SerializeToElement(root));
+        Assert.Null(parsedCheckpoint.Capture); // A parsed seal never issues a lease-local rejected-source proof.
         if (mutation == "exact")
         {
             Assert.True(parsedCheckpoint.IsValid, DescribeValidationIssues(parsedCheckpoint.Issues));

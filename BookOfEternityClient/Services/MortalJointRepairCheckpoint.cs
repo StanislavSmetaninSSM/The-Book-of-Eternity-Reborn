@@ -29,13 +29,72 @@ internal sealed class MortalJointRepairCheckpoint
     private readonly JsonObject _root;
     private MortalJointRepairCheckpoint(JsonObject root) => _root = root.DeepClone().AsObject();
     internal JsonObject ToJsonObject() => _root.DeepClone().AsObject();
-    internal sealed record ReadResult(MortalJointRepairCheckpoint? Checkpoint, IReadOnlyList<ValidationIssue> Issues)
+    private static readonly object CaptureIssuer = new();
+    // Lease-local reconstruction proof for REJECTED provenance only, never accepted common authority.
+    internal sealed class RejectedCapture
+    {
+        private readonly FileSystemManager _files;
+        private readonly FileSystemManager.CanonicalWriteLease _lease;
+        private readonly byte[] _commandBytes;
+        private readonly JsonObject _pending;
+        private readonly ValidationIssue[] _issues;
+        internal RejectedCapture(object issuer, FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+            MortalJointRepairCheckpoint checkpoint, PendingTurnSnapshotReadAuthority original,
+            MortalWoundTreatmentAcceptedStateAuthority accepted, MortalWoundTreatmentAttemptRequest request,
+            MortalWoundTreatmentResolution resolution, WoundOpportunityAuthority opportunity, WoundRepairPacket packet,
+            byte[] commandBytes, JsonObject pending, IReadOnlyList<ValidationIssue> issues)
+        {
+            if (!ReferenceEquals(issuer, CaptureIssuer)) throw new InvalidOperationException("Joint rejected proof requires its private issuer.");
+            _files = files; _lease = lease; Checkpoint = checkpoint; Original = original; Accepted = accepted;
+            Request = request; Resolution = resolution; Opportunity = WoundAcceptedTurnData.CloneOpportunity(opportunity); Packet = packet;
+            _commandBytes = commandBytes.ToArray(); _pending = pending.DeepClone().AsObject();
+            _issues = issues.Select(WoundAcceptedTurnData.CloneIssue).ToArray();
+        }
+        internal MortalJointRepairCheckpoint Checkpoint { get; }
+        internal PendingTurnSnapshotReadAuthority Original { get; }
+        internal MortalWoundTreatmentAcceptedStateAuthority Accepted { get; }
+        internal MortalWoundTreatmentAttemptRequest Request { get; }
+        internal MortalWoundTreatmentResolution Resolution { get; }
+        internal WoundOpportunityAuthority Opportunity { get; }
+        internal WoundRepairPacket Packet { get; }
+        internal byte[] CommandBytes => _commandBytes.ToArray();
+        internal JsonObject Pending => _pending.DeepClone().AsObject();
+        internal IReadOnlyList<ValidationIssue> RejectedIssues => _issues.Select(WoundAcceptedTurnData.CloneIssue).ToArray();
+        internal void EnsureCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+        {
+            files.EnsureCanonicalWriteLeaseActive(lease);
+            if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease) ||
+                !files.IsCurrentSessionGeneration(lease, _rootGeneration()))
+                throw new InvalidDataException("Joint rejected proof cannot survive lease/root/generation turnover.");
+        }
+        private string _rootGeneration() => Checkpoint._root["sessionGeneration"]!.GetValue<string>();
+    }
+    internal sealed record ReadResult(MortalJointRepairCheckpoint? Checkpoint, IReadOnlyList<ValidationIssue> Issues,
+        RejectedCapture? Capture = null)
     {
         internal bool IsValid => Checkpoint is not null && Issues.Count == 0;
     }
 
-    internal static async Task<ReadResult> CaptureAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+    internal static Task<ReadResult> CaptureAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        string sessionId, string requestId, string snapshotToken, int expectedTurn) =>
+        CaptureCoreAsync(files, lease, sessionId, requestId, snapshotToken, expectedTurn, null);
+
+    internal static async Task<ReadResult> ReconstructAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         string sessionId, string requestId, string snapshotToken, int expectedTurn)
+    {
+        files.EnsureCanonicalWriteLeaseActive(lease);
+        try
+        {
+            var bytes = await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+            if (bytes is null) return Refuse("pending_missing", "The actual installed private wave is required.");
+            return await CaptureCoreAsync(files, lease, sessionId, requestId, snapshotToken, expectedTurn, Root(bytes, "actual joint private pending"));
+        }
+        catch (Exception error) when (error is JsonException or InvalidDataException or DecoderFallbackException)
+        { return Refuse("pending_invalid", error.Message); }
+    }
+
+    private static async Task<ReadResult> CaptureCoreAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        string sessionId, string requestId, string snapshotToken, int expectedTurn, JsonObject? retainedPending)
     {
         files.EnsureCanonicalWriteLeaseActive(lease);
         try
@@ -46,13 +105,27 @@ internal sealed class MortalJointRepairCheckpoint
                 original.RequestId != requestId || original.SnapshotToken != snapshotToken || string.IsNullOrWhiteSpace(generation))
                 return Refuse("binding", "The fresh official original and physical generation must match the current frame.");
             var commandBytes = await files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
-            var draftBytes = await files.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath);
-            var sceneBytes = await files.ReadFileBytesAsync(lease, "output/narrative_response.json");
+            MortalJointRepairCheckpoint? retainedCheckpoint = null;
+            byte[]? draftBytes; byte[]? sceneBytes;
+            if (retainedPending is not null)
+            {
+                if (retainedPending["jointRepairCheckpoint"] is not JsonObject stored)
+                    return Refuse("pending_checkpoint_missing", "An actual private wave must carry its closed rejected-source checkpoint.");
+                var parsedCheckpoint = Parse(JsonSerializer.SerializeToElement(stored));
+                if (!parsedCheckpoint.IsValid) return parsedCheckpoint;
+                retainedCheckpoint = parsedCheckpoint.Checkpoint!;
+                draftBytes = Convert.FromBase64String(stored["rejectedDraftBase64"]!.GetValue<string>());
+                sceneBytes = Convert.FromBase64String(stored["narrativeBase64"]!.GetValue<string>());
+            }
+            else
+            {
+                draftBytes = await files.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath);
+                sceneBytes = await files.ReadFileBytesAsync(lease, "output/narrative_response.json");
+                if (await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath) is not null)
+                    return Refuse("occupied_pending", "Initial joint capture cannot replace an existing private pending wave.");
+            }
             if (commandBytes is null || draftBytes is null || sceneBytes is null)
-                return Refuse("input_missing", "Actual homogeneous command, rejected public draft and ordinary scene are required.");
-            // Initial capture alone: a previous/foreign wave is not silently overwritten.
-            if (await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath) is not null)
-                return Refuse("occupied_pending", "Initial joint capture cannot replace an existing private pending wave.");
+                return Refuse("input_missing", "Actual homogeneous command and retained rejected draft/scene are required.");
             var command = Root(commandBytes, "joint treatment command");
             var parsed = WoundResponseInputComposer.ParseCommandRoot(JsonSerializer.SerializeToElement(command));
             if (!parsed.Success) return new(null, parsed.Issues);
@@ -60,7 +133,8 @@ internal sealed class MortalJointRepairCheckpoint
                 return Refuse("command_family", "One complete homogeneous treatment command is required.");
             var history = WoundHistoryState.Parse(await files.ReadFileAsync(lease, WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
             if (!history.IsValid) return new(null, history.Issues);
-            var catalog = MortalWoundTreatmentPersistedRequestCatalog.Parse(JsonSerializer.SerializeToElement(command), null, history);
+            var catalog = MortalWoundTreatmentPersistedRequestCatalog.Parse(JsonSerializer.SerializeToElement(command),
+                retainedPending is null ? null : JsonSerializer.SerializeToElement(retainedPending), history);
             if (!catalog.IsValid) return new(null, catalog.Issues);
             if (catalog.Requests.Count != 1 || catalog.HeldRequests.Count != 1 || catalog.FinalizedRequests.Count != 0)
                 return Refuse("request_set", "One exact already-issued held request is required.");
@@ -140,12 +214,65 @@ internal sealed class MortalJointRepairCheckpoint
                 ["receiptFingerprints"] = new JsonArray(receiptFingerprints)
             };
             root["fingerprint"] = Fingerprint(JsonSerializer.SerializeToElement(root));
-            return Parse(JsonSerializer.SerializeToElement(root));
+            var checkedValue = Parse(JsonSerializer.SerializeToElement(root));
+            if (!checkedValue.IsValid) return checkedValue;
+            if (retainedCheckpoint is not null && !JsonNode.DeepEquals(root, retainedCheckpoint.ToJsonObject()))
+                return Refuse("provenance_changed", "Fresh original/request/source/packet reconstruction disagrees with the retained checkpoint.");
+            pending["jointRepairCheckpoint"] = root.DeepClone();
+            if (retainedPending is not null && !JsonNode.DeepEquals(pending, retainedPending))
+                return Refuse("wave_changed", "Only the entire exact source-issued wave and complete request graph may reconstruct.");
+            return new(checkedValue.Checkpoint, Array.Empty<ValidationIssue>(), new RejectedCapture(CaptureIssuer, files, lease,
+                checkedValue.Checkpoint!, original, accepted, request, resolution, opportunity, packets[0], commandBytes, pending, actionable));
         }
         catch (Exception error) when (error is JsonException or InvalidDataException or DecoderFallbackException or FormatException or InvalidOperationException)
         {
             return Refuse("input_invalid", error.Message);
         }
+    }
+
+    internal static async Task<WoundResponseInputCompositionResult> RevalidateCorrectionAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, RejectedCapture capture)
+    {
+        capture.EnsureCurrent(files, lease);
+        var currentCommand = await files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath);
+        var currentPending = await files.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        var draftBytes = await files.ReadFileBytesAsync(lease, MortalWoundOpportunityAdapter.DecisionPath);
+        var sceneBytes = await files.ReadFileBytesAsync(lease, "output/narrative_response.json");
+        if (currentCommand is null || !currentCommand.AsSpan().SequenceEqual(capture.CommandBytes) || currentPending is null ||
+            !JsonNode.DeepEquals(Root(currentPending, "joint current pending"), capture.Pending) || draftBytes is null || sceneBytes is null)
+            throw new InvalidDataException("The actual joint command/pending/public resubmission must retain the complete owned graph.");
+        var draft = Root(draftBytes, "joint corrected public draft"); var scene = Root(sceneBytes, "joint corrected scene");
+        var expectedScene = Root(Convert.FromBase64String(capture.Checkpoint._root["narrativeBase64"]!.GetValue<string>()), "retained rejected scene");
+        var actualScene = scene.DeepClone().AsObject(); actualScene.Remove("timestamp"); expectedScene.Remove("timestamp");
+        if (!JsonNode.DeepEquals(actualScene, expectedScene) || capture.Packet.RequiresResponseCorrection ||
+            !capture.Packet.MatchesCorrectedDecision(draft, scene["response"]?.GetValue<string>()))
+            throw new InvalidDataException("Only the packet-authorized severity leaf may change; the scene remains exact except timestamp.");
+        var composed = MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse(files, lease, Text(draftBytes), scene["response"]!.GetValue<string>(),
+            out var replay, out var opportunity);
+        if (composed is null || !composed.Success || replay is not null || opportunity is null || !capture.Packet.MatchesOpportunity(opportunity))
+            throw new InvalidDataException("The real adapter must independently admit the corrected acquisition within its complete sealed range.");
+        return composed;
+    }
+
+    internal static IReadOnlyList<ValidationIssue> ValidatePendingEnvelope(JsonElement root)
+    {
+        if (!root.TryGetProperty("jointRepairCheckpoint", out var value)) return Array.Empty<ValidationIssue>();
+        var parsed = Parse(value); if (!parsed.IsValid) return parsed.Issues;
+        try
+        {
+            if (!new[] { "sessionId", "requestId", "snapshotToken" }.All(name => root.GetProperty(name).GetString() == value.GetProperty(name).GetString()) ||
+                root.GetProperty("repairPackets").GetArrayLength() != 1 || root.GetProperty("repairReceipts").GetArrayLength() != 1 ||
+                root.GetProperty("submittedTreatmentRequests").GetArrayLength() != 1)
+                return Refuse("pending_binding", "The checkpoint requires one complete exact-frame packet/receipt/request wave.").Issues;
+            var request = root.GetProperty("submittedTreatmentRequests")[0];
+            if (!new[] { "operationKey", "attemptId", "requestFingerprint" }.All(name => request.GetProperty(name).GetString() == value.GetProperty(name).GetString()) ||
+                root.GetProperty("repairPackets")[0].GetProperty("semanticFingerprint").GetString() != value.GetProperty("packetFingerprints")[0].GetString() ||
+                root.GetProperty("repairReceipts")[0].GetProperty("semanticFingerprint").GetString() != value.GetProperty("receiptFingerprints")[0].GetString())
+                return Refuse("pending_graph", "Packet/receipt/full request identities disagree with the checkpoint.").Issues;
+            return Array.Empty<ValidationIssue>();
+        }
+        catch (Exception error) when (error is KeyNotFoundException or InvalidOperationException or FormatException)
+        { return Refuse("pending_shape", error.Message).Issues; }
     }
 
     internal static ReadResult Parse(JsonElement root)
@@ -160,7 +287,9 @@ internal sealed class MortalJointRepairCheckpoint
             foreach (var name in Fields.Except(["schemaVersion", "turnNumber", "packetFingerprints", "receiptFingerprints"]))
             {
                 var value = root.GetProperty(name).GetString();
-                if (string.IsNullOrWhiteSpace(value) || (name.EndsWith("Hash", StringComparison.Ordinal) || name.EndsWith("Fingerprint", StringComparison.Ordinal) || name == "fingerprint") &&
+                if (string.IsNullOrWhiteSpace(value) ||
+                    name.EndsWith("Hash", StringComparison.Ordinal) && !IsContentHash(value) ||
+                    (name.EndsWith("Fingerprint", StringComparison.Ordinal) || name == "fingerprint") &&
                     !ResourceMaterializationContract.IsAuthorityFingerprint(value)) return Refuse("field", "Invalid checkpoint field: " + name);
             }
             foreach (var name in new[] { "packetFingerprints", "receiptFingerprints" })
@@ -196,6 +325,9 @@ internal sealed class MortalJointRepairCheckpoint
         }
         return WoundAcceptedTurnFingerprintWriter.Compute(values);
     }
+    // Exact file-content digests are raw uppercase SHA256; semantic seals keep the existing sha256: format.
+    private static bool IsContentHash(string value) => value.Length == 64 && value.All(character =>
+        character is >= '0' and <= '9' or >= 'A' and <= 'F');
     private static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes));
     private static string Text(byte[] bytes) => new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF');
     private static JsonObject Root(byte[] bytes, string label) => StrictJsonAuthority.Deserialize<JsonObject>(Text(bytes),

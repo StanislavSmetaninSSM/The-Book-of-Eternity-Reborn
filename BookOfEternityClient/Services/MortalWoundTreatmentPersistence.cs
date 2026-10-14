@@ -248,10 +248,10 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         var allowed = new HashSet<string>(new[]
         {
             "schemaVersion", "sessionId", "requestId", "snapshotToken",
-            "repairPackets", "repairReceipts", "submittedTreatmentRequests"
+            "repairPackets", "repairReceipts", "submittedTreatmentRequests", "jointRepairCheckpoint"
         }, StringComparer.Ordinal);
         var required = allowed.Where(static name =>
-            name != "submittedTreatmentRequests").ToHashSet(StringComparer.Ordinal);
+            name != "submittedTreatmentRequests" && name != "jointRepairCheckpoint").ToHashSet(StringComparer.Ordinal);
         var seen = new HashSet<string>(StringComparer.Ordinal);
         foreach (var property in root.EnumerateObject())
         {
@@ -279,6 +279,7 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
             return null;
         }
 
+        issues.AddRange(MortalJointRepairCheckpoint.ValidatePendingEnvelope(root));
         var binding = ReadBinding(root, "pending", issues);
         var hasSubmitted = root.TryGetProperty(
             "submittedTreatmentRequests",

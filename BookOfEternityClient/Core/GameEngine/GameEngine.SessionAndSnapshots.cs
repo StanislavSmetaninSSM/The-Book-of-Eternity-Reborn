@@ -2311,7 +2311,7 @@ public partial class GameEngine
         }
     }
 
-    private async Task RestorePreTurnBackupAsync(
+    private async Task<Dictionary<string, byte[]>> ReadValidatedRollbackBeforeImagesAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         RollbackSnapshot snapshot)
     {
@@ -2352,6 +2352,15 @@ public partial class GameEngine
                 new AggregateException(failures));
         }
 
+        return validatedBackups;
+    }
+
+    private async Task RestorePreTurnBackupAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        RollbackSnapshot snapshot)
+    {
+        var validatedBackups = await ReadValidatedRollbackBeforeImagesAsync(writeLease, snapshot);
+        var failures = new List<Exception>();
         foreach (var trackedFile in EnumerateRollbackTrackedFiles(writeLease))
         {
             if (snapshot.BaselineFiles.Contains(trackedFile))
