@@ -279,7 +279,7 @@ internal sealed record WoundPlayerNotification(
         if (!WoundAcceptedTurnPlanner.JointRepairFinalPlanAgrees(bundle) ||
             !WoundAcceptedTurnPlanner.TryReadJointRepairFinal(bundle.PreparedPlan, out var joint))
             return new(Array.Empty<WoundPlayerNotification>(), [AcceptedTurnBindingIssue("joint final owner", "refused")]);
-        var creates = bundle.PreparedPlan.Transitions.Where(row => row.Kind == "create").ToArray();
+        var creates = bundle.Input.Transitions.Where(row => row.Kind == "create").ToArray();
         var batches = bundle.PreparedPlan.EffectOperationBatches.Where(row => row.PreparedWoundId != joint.Outcome.Before.WoundId).ToArray();
         var additions = mutations.Where(row => row.Operation == "add" && row.BeforeWound is null).ToArray();
         if (creates.Length != 1 || batches.Length != 1 || additions.Length != 1 || additions[0].AfterWound is not { } wound ||

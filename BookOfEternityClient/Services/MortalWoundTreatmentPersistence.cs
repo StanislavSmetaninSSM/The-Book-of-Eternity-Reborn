@@ -279,7 +279,8 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
             return null;
         }
 
-        issues.AddRange(MortalJointRepairCheckpoint.ValidatePendingEnvelope(root));
+        foreach (var issue in MortalJointRepairCheckpoint.ValidatePendingEnvelope(root))
+            issues.Add(issue);
         var binding = ReadBinding(root, "pending", issues);
         var hasSubmitted = root.TryGetProperty(
             "submittedTreatmentRequests",

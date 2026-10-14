@@ -1,5 +1,30 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## First preparation four-site prerequisite correction SOURCE WIP STOP — 2026-10-14
+
+Owning base `5f492e5aee86280c21e475aa04801ff8ce00663f`. The first fresh BOTH
+PlanOnly attempt at source `eb2069484c2d8dc69a1237b61e494585df320788` FAILED
+Build-integration with four compiler errors and ten warnings; zero tests executed,
+official inventory/unit build/discovery unreached. Independent EVIDENCE review6e51c407
+ACCEPTED this BUILD_PREREQUISITE_FAILURE classification, not a causal test RED.
+
+The bounded correction changes only four source sites: read the existing bound input
+transitions, include all five existing carrier paths including absent slots, rename the
+nested joint lease without changing its lifetime, and append every pending-envelope
+issue in order through ICollection.Add. No new API, guard relaxation, fixture/oracle,
+GM/public contract, example/manifest, category/selection/default/CI or warning cleanup.
+All prior reports/raw evidence/provenance and the historical status/checkbox tails remain
+unchanged. No GM update is required because this repairs member/scope/collection usage
+within the existing contract and adds no authored field, capability or gameplay behavior.
+
+Corrected SOURCE is WIP pending focused independent four-fix/dependency closure; current
+compiler/API/fixture validity is UNVERIFIED. No new compiler/build/discovery/catalog/
+PlanOnly/test/runtime/fault/provider checks ran. Static32methods/58cases/18descriptors
+remain provisional; all14 actual stages remain UNRUN. FullFR063/T070, lawful active
+combinations, fresh-PID initially bad signed authority, arbitrary partial cleanup and
+no-frame/all-owner-traces-erased contours remain OPEN. No GREEN/qualification or
+acceptance checkbox is claimed; ROOT owns publication/recovery and any later fresh prep.
+
 ## Whole-review F1–F3 fixture correction SOURCE WIP STOP — 2026-10-14
 
 Owning base `9f4bbff5c4746eabf8329ac2ee2b1989556b9828`. Complete independent

@@ -451,8 +451,8 @@ public partial class GameEngine
                 // re-read the complete v2 physical proof before reporting continuity.
                 if (joint.Completed is not null)
                 {
-                    await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                    try { await joint.Completed.ValidateCurrentAsync(_fs, lease); }
+                    await using var jointCompletionLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                    try { await joint.Completed.ValidateCurrentAsync(_fs, jointCompletionLease); }
                     catch (Exception error) when (error is InvalidDataException or IOException or InvalidOperationException or
                         System.Text.Json.JsonException or ArgumentException)
                     { _logger.LogError(error, "Joint post-publication evidence changed; destructive fallback remains blocked."); }

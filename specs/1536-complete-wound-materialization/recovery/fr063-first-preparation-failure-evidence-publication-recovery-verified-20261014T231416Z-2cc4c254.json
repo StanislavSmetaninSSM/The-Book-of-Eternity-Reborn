@@ -1,0 +1,70 @@
+{
+  "publication": {
+    "base": "eb2069484c2d8dc69a1237b61e494585df320788",
+    "checkpoint": "5f492e5aee86280c21e475aa04801ff8ce00663f",
+    "actualRemoteSHA": "5f492e5aee86280c21e475aa04801ff8ce00663f",
+    "primaryClean": true,
+    "publishedPaths": [
+      "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/candidate-source-pins.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/execution-gate-proof-raw.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/manifest.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-console.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-invocation-prewritten.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-native-process-result.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-root-readback.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-run-location.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-summary.json.gz",
+      "specs/1536-complete-wound-materialization/recovery/fr063-gates-observed-completed-publication-audit-20261014T230106Z-b63bbe09.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-corrected-source-execution-gate-proof-eb206948-20261014T230143Z-aee3f391.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-all-gates-current-native-recovery-and-preparation-input-20261014T230309Z-45ecfd5c.json",
+      "specs/1536-complete-wound-materialization/recovery/publish-fr063-stopped-wip-explicit-project-status-20261014.py.txt",
+      "specs/1536-complete-wound-materialization/recovery/fr063-first-build-four-errors-readonly-diagnosis-eb206948-20261014T231500Z.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-first-build-four-errors-readonly-diagnosis-eb206948-20261014T231500Z-readback.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-timing-precision-20261014T231019Z-ebb00b53.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-build-failure-evidence-with-diagnosis-root-wip-20261014.json"
+    ],
+    "publishedBytesMatch": true,
+    "protectedPathsExact": 539,
+    "source": "Frozen actualfirstpreparationBUILD_PREREQUISITE_FAILURE; NOTcausalRED/notperformedtests; evidence-onlyWIP; no sourcecorrection; independentEVIDENCE pending",
+    "allProjectChecks": "FIRST_FRESH_PREPARATION_FAILED native1 Build-integration4compilererrors10warnings51.9005145s;0executed/0officialplanned; nofreshBOTHbinaries; ALLACTUALUNRUN",
+    "utc": "2026-10-14T23:10:34.473246+00:00"
+  },
+  "recovery": {
+    "checkpoint": "5f492e5aee86280c21e475aa04801ff8ce00663f",
+    "remoteSha": "5f492e5aee86280c21e475aa04801ff8ce00663f",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2452,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 1923,
+    "consumerProduction": "FirstactualfreshpreparationFAILED Build-integration4errors10warnings0executed; immutablefrozenevidence+readonlydiagnosispublished; EVIDENCEpending; sourcefix/rerun/ALLactualstagesHELD",
+    "verifiedUtc": "2026-10-14T23:13:54.492622+00:00"
+  },
+  "publicationTrace": [
+    "92f165initialmanifest",
+    "ef9470diagnosiscompleteSTOPmanifest",
+    "2e6d88launchsession99191",
+    "c36db5nativeexit0",
+    "adae6eactualremote/cleanreadback"
+  ],
+  "publicationLog": "/workspace/boe-cloud-tools-20261014/fr063-first-preparation-failure-evidence-publication-20261014T231028Z-a7c18ba5.log",
+  "recoveryTrace": [
+    "d8e486launchsession38003",
+    "0cb68bnativeexit0"
+  ],
+  "recoveryLog": "/workspace/boe-cloud-tools-20261014/fr063-first-preparation-failure-evidence-selected-recovery-20261014T231051Z-1fb7ecdb.log",
+  "frozenArtifactsNineRawCompressedAndTrackedHashesExact": true,
+  "frozenManifestSHA256": "99fc7529644b33547c486c094aaf3b47fabfd5818e14e76382ff9058b7b40987",
+  "sourceChanges": "NONE; only18recoveryartifacts,539protectedexact",
+  "writerSTOP": "FINALSTOP/no pendingtools; read-onlydiagnosiscompleted/no fixes",
+  "reviewerSTOP": "FINALSTOP/no pendingtools priorA1closure; EVIDENCEfollowupnext",
+  "projectState": "firstfreshpreparationFAILEDnative1/4errors/0executed; officialinventorynotreached/ALLactualUNRUN; correction/rerunHELD",
+  "sourceReadback": [
+    "c328da135postpins/rawsummarybeforemetadata",
+    "6b15b3rawnative4errors10warnings",
+    "b54020fourerroractualsource+fivecarrierinventory",
+    "bb4482diagnosisreport/current10pins",
+    "ef9470timingprecision/sourcepins10"
+  ]
+}

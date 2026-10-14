@@ -86,7 +86,7 @@ public partial class GameEngine
         var paths = AcceptedMechanicsWoundCommonInputComposer.TreatmentOrdinaryGuardPaths.Concat(new[]
             { NpcTradeRequestState.PendingRequestPath, TrainingRequestState.PendingRequestPath, MortalQteDecisionPublication.StatePath })
             .Concat(MortalJointInactiveTailPaths)
-            .Concat(bundle.Input.PreTurnCarriers.Keys)
+            .Concat(WoundAcceptedTurnSnapshotContract.CarrierPaths)
             .Concat(bundle.EffectBatchPlan.EffectPlan.CarrierBeforeImages.Keys)
             .Concat(bundle.EffectBatchPlan.EffectPlan.TouchedPaths)
             .Concat(bundle.EffectBatchPlan.EffectPlan.DeletedPaths)
