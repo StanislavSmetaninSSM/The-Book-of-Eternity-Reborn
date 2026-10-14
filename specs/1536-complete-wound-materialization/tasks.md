@@ -1,5 +1,30 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Bounded story lifecycle disposition incorporated — 2026-10-14
+
+Published source base d0e50a3074b95dc00f61d68d5949fd5ad4154609 is clean and
+selected recovery verified. Retained Astra High architectural consultation a226b2c2
+is compatible engineering within the approved first acquisition+treatment contour,
+not a new SOURCE gate or qualification. Its twelve actual source pins match.
+
+The concrete ordinary story append lacks request/G duplicate protection and swallows
+ordinary append errors. Remaining sole-author work therefore uses a named joint owner
+writer with authenticated original prefix plus one deterministic exact row, typed cold
+history-suffix validation and actual live/late once-turn reconciliation. Applied progression
+alone does not attest story or the separate stats/level-up tail. Before joint common take,
+prove no actionable statsIncreased, no unprocessed level-up/stat initialization or award,
+and no new QTE offer/runtime handoff, with exact frozen refusal-only guards. Complete and
+verify the real derived projection before story; already-appended replay validates it
+without rewriting _lastComputed. Preserve committed union/original/ready/backups/output
+on refusal. Active unrelated tail support needs a bounded coordinator scope decision and
+is not silently skipped. These no-work predicates are explicit first-contour admission
+conditions, not new gameplay rules. Old ordinary/browser/QTE writers remain unchanged.
+
+All lifecycle source, J7 controls/selectors and normative/primary-GM synchronization
+remain OPEN. Whole SOURCE/FIXTURE/SELECTION and all compiler/build/discovery/catalog/
+PlanOnly/tests/runtime/faults remain UNRUN. No acceptance checkbox or historical evidence
+is changed. Same sole Sol writer resumes after this metadata carrier recovery.
+
 ## Joint fixed progression phase-publication/compensation WIP STOP — 2026-10-14
 
 Owning base `c952afea789c912b43c601e5acbea24aa7ae2072`; verified recovery2232/1698

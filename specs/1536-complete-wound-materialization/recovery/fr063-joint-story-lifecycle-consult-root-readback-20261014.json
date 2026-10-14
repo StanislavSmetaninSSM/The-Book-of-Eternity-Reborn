@@ -1,0 +1,25 @@
+{
+  "base": "d0e50a3074b95dc00f61d68d5949fd5ad4154609",
+  "reportSHA256": "a226b2c2848c93e4cc16d5f8a92e6bd33728b4362e819cb6e095a3b0461f7a38",
+  "freshReadTimePins": {
+    "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-amendment-20261014.md": "cbd92b5d14b1bdf5b33e08065842c9689d0c9dcdaa03d4f1c79fe8e60be462ea",
+    "BookOfEternityClient/Services/StoryService.cs": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+    "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs": "f7de271ee654d2facfd5e80e7cabc33bba94beb14de2183dc6ac18de3524c7f1",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "79017c9ca9dc93247956088510b5f167e470b00746c7084be79df81116a911e1",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+    "BookOfEternityClient/Services/LiveTurnPreparationService.cs": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+    "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs": "fcb34f05e60d353458ac5485e75d4f62f6d2cd3b5eb5929ed65e81dfd083fb35",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs": "65b0b06148abc5e94a78cfd7f3ba48480a7449b1cc823a8a4b7eb9b82e18ed11",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgressionPublication.cs": "35e12b34e07f6486083b9d642e8c05b2f2f61c7fda3c4f8bf6101631bfff1c09",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs": "35d9e25ca9f3aff3960df642fdc8b55d0b796d03ad287386d17dd2bb8a957260",
+    "BookOfEternityClient/Services/CharacteristicsService.cs": "f870eefb237bbe4564f76bc4963544d36d37760f9a0ccae3c6480110e631a8e2"
+  },
+  "pinsMatch": true,
+  "disposition": "compatible engineering within approved first inactive-tail contour; not Source gate/release/qualification",
+  "scope": "named joint story writer/exact authenticated suffix/history validation; no-work stat/level/newQTE pre-take guard; verified real derived projection before story; inert already-appended recognition; real live/late integration",
+  "activeTail": "requires explicit bounded coordinator scope decision if later requested; not supported or skipped silently",
+  "writerSTOP": "FINALSTOPPED/no pending tools/no delta after d0e50a",
+  "allProjectChecks": "UNRUN",
+  "utc": "2026-10-14T11:46:22.562099+00:00"
+}
