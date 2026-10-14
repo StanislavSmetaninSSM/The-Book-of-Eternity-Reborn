@@ -1,5 +1,30 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Written progression implementation release received — 2026-10-14
+
+Coordinator supplied explicit user approval (2026-10-14 10:23UTC,
+Sentinel_a390967bb9448191861264ee2f352211, "да") for exact amendment cbd92b5d and its
+implementation under accepted independent DESIGN9950c701. Durable release:
+`recovery/fr063-joint-progression-implementation-release-20261014.json`.
+Base/current remote3421980871ceee5733117d1ed48c625e4aa50e80 verified clean. IsolatedGM1557
+clean at2601fd6f; no GM delta or active source writer observed. FR063 priority supersedes
+unknown10:20 GM-switch message; #1558 stays backlog. Earlier unreleased statuses are history.
+
+The same retained soleSol resumes bounded SOURCE. Sequence in this existing plan: extract
+faithful captured-UTC Mortal calculation and authenticated source/control basis; bind the
+immutable basis before common take and closed same-marker unapplied phase; implement exact
+schedule/report/marker atomic applied phase and fresh phase capability/readback; phase-aware
+consumed-report validation and real live/late/cold/lifetime/story preservation; connected
+J7 controls/exactselectors plus FR063/FR012/private lifecycle and primaryGM synchronization.
+No new framework, resource hold, second mechanics reducer/publication or changed game rules.
+
+All source/controls/normative material must pass independent SOURCE/FIXTURE/SELECTION before
+fresh official preparation/exactPlan and finite live/cold/new-root actuals. Compilation,
+discovery/catalog/PlanOnly/tests/runtime remain UNRUN for this continuation; no qualification
+from release/environment/resume. Old raw artifacts/checkpoints/receipts remain immutable.
+ROOT owns metadata/Git/readback; solewriter owns source/MD2. Preserve every coherent WIP
+remotely with actualSHA/recovery before long review/handoff/stop; no newwriter/model/environment.
+
 ## Joint progression architecture DESIGN accepted; implementation unreleased — 2026-10-14
 
 Independent retained Astra XHigh DESIGN verdict on proposal cbd92b5d: ACCEPTED, no confirmed
