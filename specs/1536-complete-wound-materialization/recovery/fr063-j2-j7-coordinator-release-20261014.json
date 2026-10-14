@@ -1,0 +1,9 @@
+{
+  "sourceThreadId": "01a118b2-51cc-732e-9138-6474686600eb",
+  "checkpoint": "331a0a57818e163d3c0cadd77e74aa5d03238530",
+  "design": "specs/1536-complete-wound-materialization/recovery/fr063-joint-repair-owner-implementation-design-v2-20261013.md",
+  "designSHA256": "9c1a7226f0207d097b0328732d2146166363d18eb9d25dfab818fd897433dce3",
+  "receivedUtc": "2026-10-14T00:43:57.904814+00:00",
+  "instruction": "Координатор разрешает bounded J2–J6 production authoring и J7 controls по принятому fr063-joint-repair-owner-implementation-design-v2-20261013.md на checkpoint331a0a57818e163d3c0cadd77e74aa5d03238530. J1 causal RED и DESIGNv2 проверены. Предыдущие передачи возвращали backend UNKNOWN и не видны; это тот же release, не новый writer. Сохранить единую typed joint authority, single reduction/publication, полный restore/compensation, старые guards, допустимую severity I–II. Никакого общего mixed-command или storage redesign. Runtime после независимого SOURCE/fixture/selection review, fresh preparation и exact PlanOnly, затем конечные R1–R7/C1 и отдельно cold/new-root qualification. Продолжать автономно после gates. Подтверди получение release; пользователь вернулся и получил честный статус о задержке канала.",
+  "executionStatus": "received; sole writer finishes current GM TEST correction before primary authoring; no concurrent source writer; no runtime released yet"
+}

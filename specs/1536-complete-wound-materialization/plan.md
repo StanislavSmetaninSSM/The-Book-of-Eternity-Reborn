@@ -1,5 +1,49 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Coordinator J2–J6/J7 authoring release received — 2026-10-14
+
+Coordinator Lorian explicitly released bounded J2–J6 production authoring and J7
+controls from `331a0a57818e163d3c0cadd77e74aa5d03238530`, after accepted DESIGNv2
+SHA256 `9c1a7226f0207d097b0328732d2146166363d18eb9d25dfab818fd897433dce3`
+and accepted genuine J1 causal RED. [Exact received instruction](recovery/fr063-j2-j7-coordinator-release-20261014.json)
+preserves source-thread provenance; earlier backend UNKNOWN deliveries are not
+assumed visible or treated as an additional writer. [Accepted design](recovery/fr063-joint-repair-owner-implementation-design-v2-20261013.md)
+and [independent design closure](recovery/fr063-joint-repair-owner-v2-independent-design-review-20261013.md)
+remain unchanged. The prior production-unreleased statements below are historical.
+
+Exactly one source writer: retained Sol, beginning only after STOP and durable GM
+TEST-correction checkpoint `b3207095424dd80cf7d69f27eb77ddd2bc219b78` (independent
+GM SOURCE review can overlap primary authoring). No second writer, new environment,
+HOME-PC, mixed-command fallback, storage redesign or new optimization. Preserve the
+homogeneous physical command, one typed joint authority, one prepared/effect/final/
+common reduction and publication, full restore/compensation and all old guards.
+Accept genuine adapter-valid severity I–II; III→II is the first example only. Preserve
+exact existing confirmed request/agreement, independent owner-valid source vectors,
+whole-wave cleanup, terminal settlement, v2 completed proof and cold reconstruction.
+
+Bounded authoring responsibilities, all still unchecked/unimplemented at this carrier:
+
+- [ ] T070-FR063-J2: closed private provenance/admission/checkpoint/retry at the actual normal entrance.
+- [ ] T070-FR063-J3: coordinated baseline+owned command/pending restore, readback and exact held/terminal compensation.
+- [ ] T070-FR063-J4: exclusive joint prepared/effect/final lineage, shared allocator/history roots and anchors.
+- [ ] T070-FR063-J5: whole-union common proof and actual final capability/source/resource guarantee.
+- [ ] T070-FR063-J6: one full-member publication/receipt settlement, complete wave cleanup and joint v2 replay/preservation.
+- [ ] T070-FR063-J7: genuine finite R1–R7/C1 controls, exact catalog ownership/selection and changed-dependency rationale.
+
+Necessary source-synchronized GM contract/worked-example/manifest guards accompany the
+same bounded gameplay change under AGENTS.md; no #1557 content move or unrelated UI.
+Publish coherent WIP before long review, including unfinished facts and known blockers.
+No project execution from this authoring release: mandatory independent SOURCE/fixture/
+selection review of the actual complete diff precedes fresh official preparation and
+exact PlanOnly, then selected finite actual R1–R7/C1 with source/binary/cleanup evidence.
+Cold/fresh-PID and clean-new-root qualification remain separate selected gates; do not
+invent discovered counts or claim them from component pending2. Continue autonomously
+through authorized gates; first new failures are frozen and classified before retry.
+No accepted ordinary13/API5/J1 passing repetition without affected-dependency grounds.
+Full FR063/T070/#1536/immediate UI and Windows remain OPEN; no main/merge/PR/CI/issue
+closure, secret creation, force push, branch deletion or paid model calls.
+
+
 ## J1 bounded causal RED EVIDENCE accepted; production boundary unopened — 2026-10-13
 
 Retained independent actual Astra XHigh [EVIDENCE/causal report](recovery/fr063-live-j1-first-actual-independent-evidence-review-20261013.md)
