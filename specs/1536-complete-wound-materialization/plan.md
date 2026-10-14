@@ -1,5 +1,35 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## Joint progression architecture DESIGN accepted; implementation unreleased — 2026-10-14
+
+Independent retained Astra XHigh DESIGN verdict on proposal cbd92b5d: ACCEPTED, no confirmed
+Critical/Important finding. Review `recovery/fr063-joint-progression-owner-design-independent-review-20261014.md`,
+SHA256 `9950c7012c0cb5b770c8f19a740c67eadc2f90578fadee5bcafbc34b2e4069cf`; ROOT independently
+matched12 read-time source pins and the exact proposed artifact. Reviewer used the same
+retained configuration, with no override/substitute; no fresh model/effort telemetry is exposed.
+Proposal's historical UNACCEPTED label and all previous receipts stay unchanged.
+
+Accepted implementation obligations: freeze actual complete calculation/async inputs and UTC;
+phase-aware strict validation of the consumed report from authenticated frozen basis; immutable
+basis/common-input seal before take plus fresh applied-phase/full-union proof after three-member
+publication; fixed owned compensation/uncertainty boundaries and actual lifecycle cleanup.
+The applied phase does not attest story or separate stats/level-up work. No original coverage
+may be invented or rewritten, no parsed after-image or diagnostic witness grants authority.
+
+This is DESIGN only. Source remains physical-v2/postcommon WIP held on progression. The new
+owning-phase implementation is UNRELEASED pending written proposal approval/coordinator release;
+whole SOURCE/fixture/selection, compilation/discovery/catalog/PlanOnly/tests/runtime stay UNRUN.
+Next: approve the exact written amendment, bounded plan/sole-writer source implementation,
+then connected J7/norm/GM and whole gates. Full FR063/T070/UI/parent remain OPEN.
+
+Safe version/Gitobject diagnostics: cloud Debian13.6/Linux6.18.44/x86_64, same host28b8447448e8
+and boot4e506247-7893-479b-aaef-3d4c72eb71ef; SDK10.0.401/pwsh7.6.6/Node24.19.0/Python3.12.14.
+Original61d3a7f861b192f2b7f23bbf169a5275c9512dec exists ascommit and isancestor of currentHEAD;
+original1553-cloud remote ref was read as8c2ecdfaa1003e49bf15ba83693788e9b19dd10f, current task
+ref as4185891591d93f4e79bdcadba6e15ef59a97074a before this metadata carrier. Version/read-only
+diagnostics are not project execution. IsolatedGM1557 remains frozen/clean2601fd6f. No new
+security-specific tool refusal was observed; historical warning/helper provenance remainsUNKNOWN.
+
 ## J6 later handoff and proposed progression-owner amendment — 2026-10-14
 
 Source `017c3a2df1a3d29eb38863151aba52f0ae4dce90`, owning base70ba075f. Later source
