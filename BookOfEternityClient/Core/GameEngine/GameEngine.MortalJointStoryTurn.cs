@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-    private enum MortalJointStoryTurnDisposition { StoryAndTurnReconciled, HeldBlocked }
+    private enum MortalJointStoryTurnDisposition { Completed, HeldBlocked }
 
     // This is an actual-caller owner, not a parsed-marker admission route. The
     // schema/tuple look is applicability only; every operation requires fresh
@@ -64,6 +64,7 @@ public partial class GameEngine
                 return HoldMortalJointStoryTurn("The complete joint canonical/narrative/phase/projection pass did not authorize its completion owner.");
             await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization);
 
+            MortalJointCleanupResult cleanup;
             await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
                 var applied = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(_fs, lease,
@@ -87,15 +88,24 @@ public partial class GameEngine
                 if (_gameLoop.SessionId != frame.SessionId) throw new InvalidDataException("joint_story_turn_runtime_session_drift");
                 if (_gameLoop.TurnNumber == frame.TurnNumber - 1) _gameLoop.IncrementTurn();
                 else if (_gameLoop.TurnNumber != frame.TurnNumber) throw new InvalidDataException("joint_story_turn_runtime_drift");
+                cleanup = await CleanupEligibleMortalJointTerminalAsync(lease, frame);
+                if (cleanup.Disposition != MortalJointCleanupDisposition.CommittedAndVerified || cleanup.Response is null)
+                    return HoldMortalJointStoryTurn("The owned terminal cleanup is not verified: " + cleanup.Failure);
             }
-            // No dice rotation, generic stats/level-up/QTE/lifecycle action or
-            // original/ready/backup cleanup is inferred from an applied phase or
-            // row. The first contour's physical no-work guards were revalidated.
-            // Eligible terminal cleanup is the next dedicated owning block.
-            _inGame = false;
-            _logger.LogInformation("Joint story and runtime turn {Turn} reconciled once after {Source}; terminal evidence retained for owned cleanup.",
+            // Only the known owned deletion batch and complete readback settle
+            // completion. Do not reissue authority from the now-deleted original.
+            _inGame = true;
+            _lastResponse = cleanup.Response!;
+            _pendingImagePrompt = _lastResponse.ImagePrompt;
+            TakeAcceptedTurnWoundNotifications();
+            _mortalJointRepairCanonicalRefresh = null;
+            _mortalJointRepairCheckpoint = null;
+            _mortalJointRepairCorrectionReady = false;
+            _mortalJointRepairTerminalReason = "validation_failed";
+            ClearMortalQteRepairState();
+            _logger.LogInformation("Joint story and runtime turn {Turn} completed once after {Source}; owned terminal cleanup verified.",
                 frame.TurnNumber, source);
-            return MortalJointStoryTurnDisposition.StoryAndTurnReconciled;
+            return MortalJointStoryTurnDisposition.Completed;
         }
         catch (SessionReplacedException) { throw; }
         catch (Exception error) when (claimed && error is (CoordinatedStatePublicationUncertainException or InvalidDataException or IOException or

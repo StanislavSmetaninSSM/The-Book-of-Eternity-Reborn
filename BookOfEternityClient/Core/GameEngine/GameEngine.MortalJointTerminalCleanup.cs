@@ -2,13 +2,15 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
     private enum MortalJointCleanupDisposition { CommittedAndVerified, HeldBlocked }
-    private sealed record MortalJointCleanupResult(MortalJointCleanupDisposition Disposition, string? Failure);
+    private sealed record MortalJointCleanupResult(MortalJointCleanupDisposition Disposition, string? Failure, GameResponse? Response = null);
 
     // Eligible cleanup only. A serialized marker, original path list, ready or
     // story row alone grants no deletion authority. All owning proofs are freshly
@@ -84,7 +86,7 @@ public partial class GameEngine
             var retainedPaths = footprint.Select(pair => pair.Key).Concat(payload.Files.Keys)
                 .Concat(new[] { MortalQteDecisionPublication.StatePath, suffix.StoryPath,
                     CharacteristicsService.JointDerivedProjectionPath, "output/narrative_response.json", "output/interface_updates.json",
-                    "output/debug_logs.json", "game_state/history/chat_log.json" })
+                    "output/debug_logs.json", "game_state/history/chat_log.json", "game_state/combat/combat_log.json" })
                 .Distinct(StringComparer.Ordinal).Except(paths, StringComparer.Ordinal).ToArray();
             var retained = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
             foreach (var path in retainedPaths) retained[path] = await _fs.ReadFileBytesAsync(lease, path);
@@ -95,6 +97,7 @@ public partial class GameEngine
             await _stateManager.RefreshGameStateReadOnlyAsync(lease);
             if (_stateManager.CurrentState.TurnNumber != frame.TurnNumber)
                 throw new InvalidDataException("joint_cleanup_runtime_story_projection");
+            var response = await ReadMortalJointCompletionResponseAsync(lease);
             await RequireMortalJointCleanupImagesAsync(lease, members, retained, after: false);
             await applied.ValidateCurrentAsync(_fs, lease);
             await suffix.ValidateCurrentAsync(_fs, lease);
@@ -117,7 +120,7 @@ public partial class GameEngine
             if (_fs.ReadLocalGenerationSnapshot(lease).Binding != generation)
                 throw new InvalidDataException("joint_cleanup_generation_changed_after_commit");
             await RequireMortalJointCleanupImagesAsync(lease, members, retained, after: true);
-            return new(MortalJointCleanupDisposition.CommittedAndVerified, null);
+            return new(MortalJointCleanupDisposition.CommittedAndVerified, null, response);
         }
         catch (SessionReplacedException) { throw; }
         catch (Exception error) when (error is CoordinatedStatePublicationUncertainException or InvalidDataException or IOException or
@@ -128,6 +131,110 @@ public partial class GameEngine
             // recoverable here; retain all remaining evidence and block gameplay.
             return new(MortalJointCleanupDisposition.HeldBlocked, error.Message);
         }
+    }
+
+    private async Task<GameResponse> ReadMortalJointCompletionResponseAsync(FileSystemManager.CanonicalWriteLease lease)
+    {
+        var response = new GameResponse();
+        // 1. Read narrative from output/narrative_response.json (primary source per API spec)
+        var narrativeJson = await _fs.ReadFileAsync(lease, "output/narrative_response.json");
+        if (narrativeJson != null)
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(narrativeJson);
+                if (doc.RootElement.TryGetProperty("response", out var r))
+                    response.Response = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(r.GetString());
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException("joint_cleanup_display_invalid: output/narrative_response.json", ex);
+            }
+        }
+
+        // Fallback: use narrative from state if not in output file
+        if (string.IsNullOrEmpty(response.Response))
+            response.Response = _stateManager.CurrentState.Narrative;
+
+        // 2. Read dialogue options and image prompt from output/interface_updates.json
+        var uiJson = await _fs.ReadFileAsync(lease, "output/interface_updates.json");
+        if (uiJson != null)
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(uiJson);
+                if (doc.RootElement.TryGetProperty("dialogueOptions", out var opts) &&
+                    opts.ValueKind == JsonValueKind.Array)
+                {
+                    response.DialogueOptions = JsonSerializer.Deserialize<DialogueOption[]>(opts.GetRawText());
+                    if (response.DialogueOptions != null)
+                    {
+                        foreach (var option in response.DialogueOptions)
+                        {
+                            var normalizedText = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.Text);
+                            var normalizedInputValue = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(option.InputValue);
+                            option.InputValue = DialogueOptionControlTagNormalizer.ResolveInputValue(normalizedText, normalizedInputValue);
+                            option.Text = DialogueOptionControlTagNormalizer.NormalizeVisibleText(normalizedText);
+                        }
+                    }
+                }
+                if (doc.RootElement.TryGetProperty("image_prompt", out var img))
+                    response.ImagePrompt = img.GetString();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException("joint_cleanup_display_invalid: output/interface_updates.json", ex);
+            }
+        }
+
+        // 3. Read GM thoughts from output/debug_logs.json
+        var debugJson = await _fs.ReadFileAsync(lease, "output/debug_logs.json");
+        if (debugJson != null)
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(debugJson);
+                if (doc.RootElement.TryGetProperty("gm_thoughts_markdown", out var gm))
+                    response.GmThoughtsMarkdown = gm.GetString();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException("joint_cleanup_display_invalid: output/debug_logs.json", ex);
+            }
+        }
+
+        // 4. Read combat log from distributed combat state if exists
+        var combatJson = await _fs.ReadFileAsync(lease, "game_state/combat/combat_log.json");
+        if (combatJson != null)
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(combatJson);
+                if (doc.RootElement.TryGetProperty("combat_log_markdown", out var cl))
+                    response.CombatLogMarkdown = cl.GetString();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException("joint_cleanup_display_invalid: game_state/combat/combat_log.json", ex);
+            }
+        }
+
+        // 5. Populate status from state
+        var st = _stateManager.CurrentState.PlayerStatus;
+        response.PlayerStatus = new PlayerStatus
+        {
+            CurrentCondition = st.CurrentCondition
+        };
+
+        var woundNotifications = _acceptedTurnWoundNotifications;
+        if (woundNotifications.Length != 0)
+        {
+            response.WoundNotifications = woundNotifications
+                .Select(static value => value.Text.PlainText)
+                .ToArray();
+        }
+
+        return response;
     }
 
     private static void RequireMortalJointCleanupControl(byte[] bytes, ValidatedPendingTurnSnapshotContext frame, string path)

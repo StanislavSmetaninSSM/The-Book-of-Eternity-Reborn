@@ -1,5 +1,29 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## Joint eligible cleanup actual caller wiring WIP STOP — 2026-10-14
+
+Owning base `06ce5dea283e91ce6c2a8cadfc3b9f48c21a29fc`; recovery2264/1734
+was verified before SOURCE GO. Three code paths now call the saved cleanup owner after fresh
+applied/owned-story/projection/once-turn proof. Only CommittedAndVerified with the actual lease-
+captured response returns the dedicated Completed result. Both late callers return ordinary
+completion false for that result; HeldBlocked keeps the stopped path. Live callers return from
+the dedicated owner. The known success resumes gameplay and installs actual current output/status
+response after the issuing lease closes successfully; detached joint/repair diagnostics clear
+only after owned batch/readback. No parsed missing-original proof is reminted after deletion.
+
+Current physical narrative/interface/debug/combat output and canonical status are read on the
+same participating lease before cleanup. Retained byte guards include combat output and bracket
+that capture plus deletion/readback. Malformed captured display data holds before cleanup.
+The old response builder, cleaners, singleton/v1/default tail bodies and publisher remain exact;
+no stats/level/QTE tail, second mechanics, story or increment is introduced by this wiring.
+
+This is SOURCE WIP, not playable/runtime qualification. Fully erased or malformed cold-family
+applicability safety, partial-cleanup recovery, repeat-byte-inert actual proof, future display
+refinements, session/cold/new-root controls, J7 exact selectors and normative/primary-GM sync
+remain OPEN. Every compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/project check and
+whole SOURCE/FIXTURE/SELECTION remains UNRUN. Existing fixtures/categories/selectors/budgets and
+all acceptance checkboxes/history are unchanged.
+
 ## Eligible joint terminal cleanup owner API WIP STOP — 2026-10-14
 
 Owning base `8656d87cfb986a45ed31d284f88ea4cf3dcf6880`; recovery2260/1730

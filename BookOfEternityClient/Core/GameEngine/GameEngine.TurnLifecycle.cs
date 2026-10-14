@@ -946,8 +946,8 @@ public partial class GameEngine
             // The physical joint owner is examined before legacy signal/turn
             // mismatch handling can discard its original or restore mechanics.
             if (lateBrowserStaged == null && await TryReconcileMortalJointStoryTurnAsync(
-                "late joint completion", snapshotContext) is not null)
-                return true; // terminal cleanup is still held by this bounded owner
+                "late joint completion", snapshotContext) is { } jointCompletion)
+                return jointCompletion == MortalJointStoryTurnDisposition.HeldBlocked;
 
             var concurrentResolution = await ResolveConcurrentActiveTerminalSignalsAsync(
                 terminalSignals,
@@ -1034,7 +1034,8 @@ public partial class GameEngine
                 if (validationDisposition == AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady)
                 {
                     if (lateBrowserStaged == null && await TryReconcileMortalJointStoryTurnAsync(
-                        "newly published late joint completion", snapshotContext) is not null) return true;
+                        "newly published late joint completion", snapshotContext) is { } newlyPublishedJointCompletion)
+                        return newlyPublishedJointCompletion == MortalJointStoryTurnDisposition.HeldBlocked;
                     PreserveAcceptedTurnForTreatmentPublicationRetry(AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked);
                     return true;
                 }

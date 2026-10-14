@@ -1,0 +1,15 @@
+{
+  "classification": "external static readback locator failure; not a project/test/runtime result",
+  "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "chunkId": "e47097",
+  "exitCode": 1,
+  "sessionId": null,
+  "operation": "Second python3 stdin script in exec_command: protected-file read via Path.read_bytes() at line 42; full original command remains in immutable tool history. First script completed three source corrections/MD2 before this external check attempt.",
+  "failedPath": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/StoryService.MortalJoint.cs",
+  "completeReturnedOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 42, in <module>\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py\", line 1019, in read_bytes\n    with self.open(mode='rb') as f:\n         ^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py\", line 1013, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/StoryService.MortalJoint.cs'\n",
+  "originalAttemptReport": "NOT PRODUCED",
+  "originalAttemptReadback": "NOT PRODUCED",
+  "laterSeparateCompletedReadback": "fr063-joint-final-caller-cleanup-wiring-wip-readback.json",
+  "laterSeparateChunkId": "be1529",
+  "laterSeparateExitCode": 0
+}
