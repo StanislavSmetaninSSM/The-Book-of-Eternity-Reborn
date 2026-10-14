@@ -1,5 +1,33 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J7 lawful foreign-donor G admission refusal SOURCE WIP STOP — 2026-10-14
+
+Owning base `9872f937d7f0f36b537237de814f4c49cd35f1f9`; recovery2323/1794
+was verified before SOURCE GO. One separately named Fact reuses genuine nonzero/APPLIED
+producer and fresh child. After intact target original/control/phase/cache/cohort prerequisites
+and lease closure, a separately owned otherwise independent donor root is initialized through
+actual EnsureDirectoryStructure/GetOrCreateSessionGeneration/ReadLocalGenerationSnapshot.
+The donor lease closes before exact donor current.json bytes replace the retained target G.
+No forged generation document, target rotation/Load/reseal/new claim/cohort removal.
+
+Complete RAW after-tamper namespace/G precedes the FIRST actual outer late attempt. Source
+expects exact InvalidDataException("Console preparation generation or identity differs; evidence
+retained.") at retained console marker admission before GetOrCreate/inner checkpoint. Actual
+exception and outer-attempt/hook/handled remain separate observations. Full target raw path/
+byte inventory, donor G unchanged, original/Ready/output/backups/mechanics/story/turn/gameplay
+state stay strict; no restoration to old G. Donor raw before/after equality verifies unchanged
+origin; its existing owned cleanup receipt follows managed output, alongside factory cleanup.
+Donor bytes and origin are negative data/diagnostics, never target authority. Parent diagnostic
+retains the raw route and does not attempt another canonical admission on the damaged root.
+
+Nine source methods/twenty cases (eight Facts plus unchanged twelve-row Theory) provisional;
+no catalog/selector/budget changes. Compiler/API/fixture validity and actual first gate remain
+UNCHECKED; all project/compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/whole
+SOURCE/FIXTURE/SELECTION UNRUN. Other invalid-G shapes, phase/fault compensation/uncertainty,
+inactive/story/live/compatibility controls, no-frame/all-traces-erased/partial cleanup and
+normative/primary-GM synchronization remain OPEN. Production, old qualified bodies/results,
+prior history tails and acceptance checkboxes unchanged. No executed refusal/qualification claim.
+
 ## J7 actual missing-generation admission refusal SOURCE WIP STOP — 2026-10-14
 
 Owning base `0330792266aa4ff52b97e77f728471a631670019`; recovery2319/1790
