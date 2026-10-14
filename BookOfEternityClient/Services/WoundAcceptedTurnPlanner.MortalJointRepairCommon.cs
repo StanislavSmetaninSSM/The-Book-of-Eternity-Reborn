@@ -68,12 +68,7 @@ internal static partial class WoundAcceptedTurnPlanner
             if (frozenSkills.Envelope is not { IsEmpty: true } skills || frozenItems.Envelope is not { IsEmpty: true } items ||
                 frozenSkills.Issues.Count != 0 || frozenItems.Issues.Count != 0)
                 throw new InvalidDataException("The actual mechanical proof must issue only its genuinely empty supported command envelope.");
-            var semantic = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
-            {
-                "book_of_eternity.mortal_joint_repair.common_envelope.v1",
-                GetJointRepairContinuationFingerprint(continuation), bundle.BundleFingerprint,
-                anchors.Fingerprint, mechanical.Fingerprint, skills.Fingerprint, items.Fingerprint
-            });
+            var semantic = ComputeTreatmentSkillSemanticFingerprint(skills);
             var projected = CreateTreatmentSkillProjection(files, lease, skills, semantic, reservation, suppliedNpcSemanticBaseline: null);
             if (projected.Authority is not TreatmentSkillProjectionAuthority projection || projected.Issues.Count != 0)
                 return new(null, projected.Issues);

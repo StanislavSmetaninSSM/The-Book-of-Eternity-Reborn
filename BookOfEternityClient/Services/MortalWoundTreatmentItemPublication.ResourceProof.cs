@@ -5,6 +5,15 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
     internal IReadOnlyList<ValidationIssue> ValidateResourceProjection(
         AcceptedMechanicsResourcePlanningResult resourceResult)
     {
+        return ValidateConsumptionResourceProjection(resourceResult, _capacityTransitions,
+            _consumptionInput, _identitySeed, _terminalOwners);
+    }
+
+    internal static IReadOnlyList<ValidationIssue> ValidateConsumptionResourceProjection(
+        AcceptedMechanicsResourcePlanningResult resourceResult,
+        ResourceCapacityIntent[] capacityTransitions, MortalItemConsumptionPlanningInput consumptionInput,
+        string identitySeed, ResourceOwnerKey[] terminalOwners)
+    {
         ArgumentNullException.ThrowIfNull(resourceResult);
         var stateAfterImage = resourceResult.StateAfterImage;
         if (stateAfterImage is null)
@@ -12,7 +21,7 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
         var transitions = resourceResult.AppliedTransitions
             .Concat(resourceResult.ReplayTransitions)
             .ToArray();
-        var itemSources = _capacityTransitions
+        var itemSources = capacityTransitions
             .Select(static capacity => capacity.SourceEvidence)
             .Distinct()
             .ToHashSet();
@@ -20,9 +29,9 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
             .Where(transition => itemSources.Contains(transition.SourceEvidence))
             .OrderBy(static transition => transition.ExecutionSequence)
             .ToArray();
-        if (owned.Length != _capacityTransitions.Length)
+        if (owned.Length != capacityTransitions.Length)
         {
-            return new[] { Issue("capacity", $"count={_capacityTransitions.Length}",
+            return new[] { Issue("capacity", $"count={capacityTransitions.Length}",
                 $"count={owned.Length}") };
         }
 
@@ -30,16 +39,16 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
             ResourceCoordinate,
             ResourceStateSnapshot>(ResourceCoordinateComparer.Instance);
         var previousSequence = -1;
-        for (var index = 0; index < _capacityTransitions.Length; index++)
+        for (var index = 0; index < capacityTransitions.Length; index++)
         {
-            var expected = _capacityTransitions[index];
+            var expected = capacityTransitions[index];
             var actual = owned[index];
             ResourceStateSnapshot? expectedBefore;
             if (!lastAfterByCoordinate.TryGetValue(
                     expected.Coordinate,
                     out expectedBefore))
             {
-                if (!_consumptionInput.ResourceState.TryResolveExact(
+                if (!consumptionInput.ResourceState.TryResolveExact(
                         expected.Coordinate,
                         out var initial) ||
                     initial is null)
@@ -54,8 +63,8 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
                     expected,
                     actual,
                     expectedBefore,
-                    _consumptionInput.Turn,
-                    _identitySeed))
+                    consumptionInput.Turn,
+                    identitySeed))
             {
                 return new[] { Issue("capacity", expected.EventRef,
                     actual.EventRef) };
@@ -77,7 +86,7 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
                     $"liveMatches={live.Length}") };
             }
         }
-        foreach (var owner in _terminalOwners)
+        foreach (var owner in terminalOwners)
         {
             if (stateAfterImage.Entries.Any(entry =>
                     string.Equals(entry.Coordinate.Realm, owner.Realm,

@@ -1,5 +1,68 @@
 # Tasks: Complete Wound Materialization and Healing
 
+## J5 joint resource/item contribution owner WIP STOP — 2026-10-14
+
+Retained sole Sol continued from published050e846e9f5b3d2be204c1a9f890131932198d93
+under the same accepted DESIGNv2/J2-J7 release. This substantial owning source WIP is
+stopped before the longer common/context/cache/final-guarantee plumbing. It is not J5
+completion, connected SOURCE READY or runtime qualification. All new project checks
+UNRUN; qualified evidence and historical ROOT/author receipts remain unchanged.
+
+The existing homogeneous resource builder and item-capacity proof now delegate to
+extracted detached pure registered-spend/item-consumption/capacity calculations. The
+old caller authenticates the same singleton continuation, keeps the same inputs,
+identity/event domains, ordered claims, fingerprints, refusal predicates and old mint.
+Pure contributions grant no request/hold/continuation or publication authority. The
+joint family does not construct or impersonate an old singleton continuation view.
+
+A distinct private joint resource issuer validates the actual mechanical/item/skill
+baseline under the same participating lease and joint reservation. It reads the guarded
+actual resource quartet, strictly parses state/history, composes owner authority from
+the actual sealed item baseline, requires genuine empty concurrent skill/item envelopes,
+and applies the same pure calculations to the existing confirmed request/finalization.
+Registered resource sources spend exact original held quantities; owned item quantities
+use the same consumption/identity/capacity calculation and exact owner successor. All
+normalization/item companions and exact object/array roots are retained for the future
+single common publication. Separate acquisition/treatment vectors remain bound through
+the private full-stage baseline; they are never merged as authorizing event authority.
+
+The joint draft reuses existing exact registered transition/event proof and shared item
+capacity projection proof. Its private seal binds the actual baseline/stages/anchors,
+resource catalogs/ledger/history/owners, deterministic identities, consumption result,
+complete item successors and before/normalized effect-source fingerprints. Pure item
+planning and effect-source composition are replayed for seal checks; current baseline
+checks run again after construction. Partial candidate checks require the same complete
+stage bundle, owner/beforeimages, exact item companions/touched paths and registered
+resource events. They are NOT the final capability/resource/source guarantee or common
+acceptance. No common plan/cache/publication/engine entry is wired.
+
+A source-level baseline bug was corrected within this block: the existing skill semantic
+reader requires ComputeTreatmentSkillSemanticFingerprint(envelope), not the separate
+joint common-envelope domain previously passed to its pure constructor. Full joint
+ownership remains bound by the enclosing baseline seal. No old skill API/body changed.
+No runtime failure or successful baseline admission is claimed for that correction.
+
+Still UNIMPLEMENTED: distinct whole-union common input/context/plan/cache and complete
+candidate capability/source/skill export, independently recomputed Finalize/aggregate
+resource bounds. The common composer still refuses the private joint family. J6 member
+inventory, one atomic common batch, full-union compensation/wave cleanup, terminal
+settlement/dispositions/v2 completed proof remain OPEN, followed by actual admitted
+entry/retry/restore/cold reconstruction, genuine R2-R7/C1 controls and normative FR063/
+FR012/private lifecycle plus GM example/manifest/guard synchronization. Partial resource
+projection checks cannot substitute for those gates. No canonical write, new slot,
+reservation, claim, scheduler, resource reduction or hold release occurs here.
+
+Catalog730 and all tests/selectors/membership/budgets stay unchanged: existing component
+1method5cases1descriptor/budget5/default10 remains missing-wave provenance coverage,
+not positive resource-owner proof. Shared old resource/item-capacity calculation changes
+are narrow C1 dependencies for later exact fixture selection; qualified ordinary13/API5/
+pending2/QTE/native bodies remain untouched and are not repeated to authorize source.
+All acceptance checkbox/history bytes/globalCI/ce955 stay protected. Public GM grammar
+and afterlife behavior are unchanged; required synchronization accompanies connected
+capability. Full FR063/T070/UI/parents remain OPEN. Compiler/API integration, positive
+owner issuance, lifetime/fault behavior and exact complete selection remain UNCHECKED.
+ROOT preserves this WIP/report/static pins before continued common/final owner work.
+
 ## J5 foundation later author static handoff — 2026-10-14
 
 Source checkpoint 30e58100b3cb772f6df884acb45e853b243bdadc remains an unwired WIP,
