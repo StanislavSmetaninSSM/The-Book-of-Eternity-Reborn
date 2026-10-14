@@ -10,7 +10,10 @@
                 "BookOfEternityClient.TestSupport/GmDocumentationDeliveryScenario.cs"
             ],
             "related": [
-                "gm-doc-afterlife-delivery-source-guards"
+                {
+                    "id": "gm-doc-afterlife-delivery-source-guards",
+                    "when": "Intentional membership overlap: the complete source owner includes this failed pair. Select this pair owner separately for narrow retry; do not combine both owners or repeat the other passing rows."
+                }
             ],
             "requirements": {
                 "frontendBuild": false,

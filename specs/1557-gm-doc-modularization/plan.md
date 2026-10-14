@@ -1,5 +1,25 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Pair related-schema correction SOURCE READY; fresh checks UNRUN — 2026-10-14
+
+From clean published2e01435a8bee67358d949cb0ee2528f3aed5c753, soleSol replaced
+only the new pair related string with object{id same,when nonempty}, matching the
+unchanged official loader contract. The explanation records intentional complete-
+owner overlap and separate narrow retry without repeating other passing rows.
+Static scan: all257 related entries are objects with valid existing id/nonempty when;
+732nodes, all method membership/IDs/budgets/fixtures/loader/runner/selectors exact.
+Independent focused SOURCE/SELECTION closure and all fresh project checks UNRUN.
+
+Accepted diagnosis89eb7c30 and immutable five-chain setup packet remain historical:
+no run directory/build/discovery/catalog validation/tests, native exit UNKNOWN,
+wrapper exit1; pair2/writer1 still UNRUN. No runtime/cleanup/security claim follows.
+ROOT publishes/recovery, then focused SOURCE before fresh BOTH preparation/catalog,
+exact pair1/2/1/budget2/default7 and pair actual/EVIDENCE; writer1 separately follows.
+Old source/evidence/history tails and every checkbox exact. No content/daemon/pure44/
+primary edit; primaryfoundationd1e99ff2 WIP and its known static hash-format blocker
+remain preserved for the next connected primary authoring block. No loader/schema
+waiver, category/count/budget change, project execution or Git mutation here.
+
 ## Preparation failure EVIDENCE accepted; catalog-only correction queued — 2026-10-14
 
 Retained independent Astra XHigh [EVIDENCE/source diagnosis](recovery/A-connected-pair-preparation-schema-failure-independent-review-20261014.md)
