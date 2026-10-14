@@ -240,22 +240,7 @@ internal sealed class MortalWoundCanonicalAnchorPlan
                         after.WoundId);
                 }
 
-                var recoveryAnchor = new WoundRecoveryAnchor(
-                    "creation",
-                    currentTime.Value,
-                    after.LastTransition.TransitionId);
-                var conditionKey = ReadActiveDeteriorationCondition(after.Recovery);
-                var deteriorationAnchor = conditionKey is null
-                    ? null
-                    : new WoundDeteriorationAnchor(
-                        conditionKey,
-                        currentTime.Value,
-                        after.LastTransition.TransitionId);
-                allocations.Add(new MortalWoundCanonicalAnchorAllocation(
-                    after.WoundId,
-                    after.LastTransition.TransitionId,
-                    recoveryAnchor,
-                    deteriorationAnchor));
+                allocations.Add(CreateInitialAllocation(after, currentTime.Value));
             }
 
             if (allocations.Count == 0)
@@ -284,6 +269,65 @@ internal sealed class MortalWoundCanonicalAnchorPlan
                 "one complete sealed physical-create anchor plan",
                 exception.GetType().Name);
         }
+    }
+
+    // Explicit owner-only family: old Create continues to reject mixed phases.
+    // The selection descends from the full joint reducer bundle, never a separate
+    // independently finalized acquisition bundle attached afterwards.
+    internal static MortalWoundCanonicalAnchorPlanResult CreateJointRepair(
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease,
+        AcceptedMechanicsWoundStageBundle bundle)
+    {
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        try
+        {
+            var prepared = bundle.PreparedPlan;
+            if (prepared.JointRepairContinuationAuthority is null ||
+                !WoundAcceptedTurnPlanner.JointRepairFinalPlanAgrees(bundle) ||
+                !WoundAcceptedTurnPlanner.TryReadJointRepairFinal(prepared, out var joint))
+                return Failed(WoundIdentityState.StatePath, "accepted_mechanics_joint_anchor_authority_invalid",
+                    "one entire private joint wound/effect/final bundle", "foreign or changed bundle");
+            WoundAcceptedTurnPlanner.ValidateJointRepairCurrentAsync(fileSystem, writeLease,
+                prepared.JointRepairContinuationAuthority).GetAwaiter().GetResult();
+            var currentTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(fileSystem.ReadFileAsync(
+                writeLease, EffectAcceptedTurnInputComposer.WorldTimePath).GetAwaiter().GetResult());
+            if (currentTime is null || currentTime.Value !=
+                WoundAcceptedTurnPlanner.ReadJointRepairAcceptedState(prepared.JointRepairContinuationAuthority).CurrentGameMinute)
+                return Failed(EffectAcceptedTurnInputComposer.WorldTimePath, "mortal_wound_recovery_anchor_clock_invalid",
+                    "the current joint owner's exact canonical minute", "missing, malformed or changed clock");
+            var mutations = bundle.FinalPlan.CarrierContributions.SelectMany(row => row.Mutations).ToArray();
+            var acquisitions = mutations.Where(row => row.Operation == "add" && row.BeforeWound is null).ToArray();
+            var treatments = mutations.Where(row => row.Operation == "update" && row.BeforeWound is not null &&
+                row.WoundId == joint.Outcome.Before.WoundId).ToArray();
+            if (mutations.Length != 2 || acquisitions.Length != 1 || treatments.Length != 1 ||
+                acquisitions[0].AfterWound is not { } after || after.Classification.Domain != "physical" ||
+                after.LastTransition.Kind != "create" || after.WoundId != prepared.AllocatedWoundIds[0] ||
+                after.LastTransition.TransitionId != prepared.AllocatedTransitionIds[0] ||
+                after.Recovery.RecoveryAnchor is not null || after.Recovery.DeteriorationAnchor is not null ||
+                treatments[0].AfterWound?.LastTransition.TransitionId != joint.Outcome.TransitionId)
+                return Failed(WoundIdentityState.StatePath, "accepted_mechanics_joint_anchor_contribution_invalid",
+                    "the owner's new physical CREATE plus its exact independently reduced old-wound treatment", "changed union");
+            // Typed final replay above validates treatment's reducer-derived anchors;
+            // only the new acquisition receives initial creation/condition anchors.
+            return new(new MortalWoundCanonicalAnchorPlan(bundle.BundleFingerprint, currentTime.Value,
+                [CreateInitialAllocation(after, currentTime.Value)]), Array.Empty<ValidationIssue>());
+        }
+        catch (Exception error) when (error is ArgumentException or InvalidOperationException or JsonException or
+            NullReferenceException or InvalidDataException or IOException)
+        {
+            return Failed(WoundIdentityState.StatePath, "accepted_mechanics_joint_anchor_authority_invalid",
+                "one current complete joint anchor phase", error.GetType().Name + ":" + error.Message);
+        }
+    }
+
+    private static MortalWoundCanonicalAnchorAllocation CreateInitialAllocation(
+        WoundMaterializationEnvelope after, long currentTime)
+    {
+        var recoveryAnchor = new WoundRecoveryAnchor("creation", currentTime, after.LastTransition.TransitionId);
+        var conditionKey = ReadActiveDeteriorationCondition(after.Recovery);
+        var deteriorationAnchor = conditionKey is null ? null :
+            new WoundDeteriorationAnchor(conditionKey, currentTime, after.LastTransition.TransitionId);
+        return new(after.WoundId, after.LastTransition.TransitionId, recoveryAnchor, deteriorationAnchor);
     }
 
     /// <summary>

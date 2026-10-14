@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -50,6 +51,11 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentOutcomePreparation Outcome => _outcome.DetachedCopy();
         internal WoundEffectOperationBatch? TreatmentBatch => _treatmentBatch is null ? null : WoundAcceptedTurnData.CloneOperationBatch(_treatmentBatch);
         internal string Fingerprint { get; }
+        internal IReadOnlyDictionary<string, JsonNode?> ReadEffectSourceRoots() =>
+            EffectAcceptedTurnInputComposer.SourceAuthorityPaths.ToDictionary(path => path, path =>
+                _before[path] is not { } bytes ? null : (JsonNode?)StrictJsonAuthority.Deserialize<JsonObject>(
+                    new UTF8Encoding(false, true).GetString(bytes).TrimStart('\uFEFF'),
+                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, path), StringComparer.Ordinal);
         internal bool HasValidSeal => ReferenceEquals(Resolution.RequestAuthority, Request) &&
             _outcome.AgreesWith(Resolution) && Finalization.RequestFingerprint == Request.RequestFingerprint &&
             Finalization.ResultFingerprint == Resolution.ResultFingerprint &&
@@ -86,6 +92,12 @@ internal static partial class WoundAcceptedTurnPlanner
                 if (expected is null ? actual is not null : actual is null || !expected.AsSpan().SequenceEqual(actual))
                     throw new InvalidDataException("Joint preparation before-image changed: " + path);
             }
+            var baselines = ReadPublicationBaselines(files, lease);
+            if (baselines.Issues.Count != 0 || WoundAcceptedTurnFingerprints.ComputeInput(new WoundAcceptedTurnInput(
+                    _acquisitionInput.Binding, _acquisitionInput.Opportunities, _acquisitionInput.Transitions,
+                    baselines.WoundCarriers!, baselines.WoundIdentity!, baselines.WoundHistory!,
+                    baselines.EffectCarriers, baselines.EffectIdentity)) != WoundAcceptedTurnFingerprints.ComputeInput(_acquisitionInput))
+                throw new InvalidDataException("The joint wound/effect baseline changed while its guards were captured.");
             var confirmed = AcceptedTurnAuthorityRegistry.InspectConfirmedMortalWoundTreatmentResourceClaim(files, lease, Request, Finalization);
             if (!confirmed.IsValid || confirmed.State != MortalWoundTreatmentResourceReservationState.ConfirmedHeld)
                 throw new InvalidDataException("The same joint request must still own its confirmed resource agreement.");
@@ -110,6 +122,19 @@ internal static partial class WoundAcceptedTurnPlanner
             if (await files.ReadFileBytesAsync(lease, ResourceMaterializationContract.CommandPath) is not null ||
                 await files.ReadFileBytesAsync(lease, EffectAcceptedTurnPlan.CommandPath) is not null)
                 return JointPreparationFailure("concurrent_commands", "The first joint contour cannot admit foreign resource/effect commands.");
+            var previous = capture;
+            var frame = previous.Accepted.Binding;
+            var reconstructed = await MortalJointRepairCheckpoint.ReconstructAsync(files, lease,
+                frame.SessionId, frame.RequestId, frame.SnapshotToken, frame.Turn);
+            if (!reconstructed.IsValid || reconstructed.Capture is not { } current ||
+                current.Accepted.AcceptedStateFingerprint != previous.Accepted.AcceptedStateFingerprint ||
+                current.Request.RequestFingerprint != previous.Request.RequestFingerprint ||
+                current.Resolution.ResolutionAuthorityFingerprint != previous.Resolution.ResolutionAuthorityFingerprint ||
+                !JsonNode.DeepEquals(current.Checkpoint.ToJsonObject(), previous.Checkpoint.ToJsonObject()))
+                throw new InvalidDataException("Fresh installed-wave treatment reconstruction no longer agrees with the rejected capture.");
+            // Use the freshly exported owner/request/claim, never bless new current
+            // bytes with a previously captured capability or parsed checkpoint seal.
+            capture = current;
             var correction = await MortalJointRepairCheckpoint.RevalidateCorrectionAsync(files, lease, capture);
             if (correction.SourceBinding is not { } acquisitionBinding || correction.MaterializedOpportunities.Count != 1 ||
                 correction.Transitions.Count != 1 || correction.Transitions[0].Kind != "create" ||
@@ -185,6 +210,95 @@ internal static partial class WoundAcceptedTurnPlanner
         TryReadJointRepair(value, out var authority) && ReferenceEquals(authority.Accepted, accepted);
     internal static MortalWoundTreatmentAcceptedStateAuthority ReadJointRepairAcceptedState(object value) =>
         TryReadJointRepair(value, out var authority) ? authority.Accepted : throw new InvalidDataException("Invalid joint state.");
+
+    // Detached views are non-authorizing. All readers first authenticate the whole
+    // private prepared graph; neither a common frame nor a caller batch issues one.
+    internal sealed record JointRepairFinalView(
+        MortalWoundTreatmentOutcomePreparation Outcome, MortalWoundTreatmentResolution Resolution,
+        MortalWoundTreatmentPersistedResult PersistedResult, WoundEffectOperationBatch? TreatmentBatch);
+
+    internal static bool TryReadJointRepairFinal(WoundPreparedAcceptedTurnPlan prepared,
+        out JointRepairFinalView view)
+    {
+        view = null!;
+        if (!JointRepairPreparedAgrees(prepared) ||
+            !TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint)) return false;
+        view = new(joint.Outcome, joint.Resolution,
+            MortalWoundTreatmentPersistedResult.Create(joint.Resolution), joint.TreatmentBatch);
+        return true;
+    }
+
+    private static JointRepairContinuationAuthority ReadJointRepairBatchOwner(
+        WoundPreparedAcceptedTurnPlan prepared, WoundEffectOperationBatch batch)
+    {
+        if (!JointRepairPreparedAgrees(prepared) ||
+            !TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint) ||
+            batch.SourceExportFingerprint != WoundAcceptedTurnFingerprints.ComputeSourceExport(batch) ||
+            prepared.EffectOperationBatches.Count(candidate => candidate.PreparedWoundId == batch.PreparedWoundId &&
+                candidate.SourceExportFingerprint == batch.SourceExportFingerprint &&
+                candidate.TransitionAuthority.AuthoritySeal == batch.TransitionAuthority.AuthoritySeal) != 1)
+            throw new InvalidDataException("The batch does not belong to the complete private joint preparation.");
+        return joint;
+    }
+
+    internal static WoundAcceptedTurnBinding ReadJointRepairBatchBinding(
+        WoundPreparedAcceptedTurnPlan prepared, WoundEffectOperationBatch batch)
+    {
+        var joint = ReadJointRepairBatchOwner(prepared, batch);
+        return batch.PreparedWoundId == joint.Outcome.Before.WoundId
+            ? joint.TreatmentInput.Binding : joint.AcquisitionInput.Binding;
+    }
+
+    internal static IReadOnlyList<WoundAcceptedTurnBinding> ReadJointRepairOwnerBindings(WoundPreparedAcceptedTurnPlan prepared)
+    {
+        if (!JointRepairPreparedAgrees(prepared) || !TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint))
+            throw new InvalidDataException("Joint collision inventory requires both privately authenticated owners.");
+        return [joint.AcquisitionInput.Binding, joint.TreatmentInput.Binding];
+    }
+
+    internal static string ReadJointRepairBatchInputFingerprint(
+        WoundPreparedAcceptedTurnPlan prepared, WoundEffectOperationBatch batch)
+    {
+        var joint = ReadJointRepairBatchOwner(prepared, batch);
+        return WoundAcceptedTurnFingerprints.ComputeInput(batch.PreparedWoundId == joint.Outcome.Before.WoundId
+            ? joint.TreatmentInput : joint.AcquisitionInput);
+    }
+
+    internal static bool TryReadJointRepairTreatmentBatch(WoundPreparedAcceptedTurnPlan prepared,
+        WoundEffectOperationBatch batch, out JointRepairFinalView view)
+    {
+        view = null!;
+        if (prepared.JointRepairContinuationAuthority is null) return false;
+        var joint = ReadJointRepairBatchOwner(prepared, batch);
+        return batch.PreparedWoundId == joint.Outcome.Before.WoundId && TryReadJointRepairFinal(prepared, out view);
+    }
+
+    internal static EffectAcceptedTurnInput ComposeJointRepairEffectInput(WoundPreparedAcceptedTurnPlan prepared)
+    {
+        if (!JointRepairPreparedAgrees(prepared) || !TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint))
+            throw new InvalidDataException("Joint effect input requires the complete private preparation.");
+        var binding = joint.AcquisitionInput.Binding;
+        var original = joint.AcquisitionInput;
+        var sources = joint.ReadEffectSourceRoots();
+        return EffectAcceptedTurnInputComposer.Compose(binding.SessionId, binding.SnapshotToken, binding.Turn,
+            EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot(), original.PreTurnEffectCarriers!,
+            original.PreTurnEffectCarriers!, original.PreTurnEffectIdentityIndex, sources,
+            currentWorldTime: joint.Accepted.CurrentGameMinute, publicationCarrierBaselines: original.PreTurnEffectCarriers,
+            realm: binding.Realm, preparedWoundPlan: prepared);
+    }
+
+    internal static bool JointRepairEffectInputAgrees(WoundPreparedAcceptedTurnPlan prepared, EffectAcceptedTurnInput input) =>
+        WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, ComposeJointRepairEffectInput(prepared)) ==
+        WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input);
+
+    internal static bool JointRepairFinalPlanAgrees(AcceptedMechanicsWoundStageBundle bundle)
+    {
+        if (!JointRepairPreparedAgrees(bundle.PreparedPlan) ||
+            !JointRepairEffectInputAgrees(bundle.PreparedPlan, bundle.EffectBatchPlan.EffectInput)) return false;
+        var replay = WoundAcceptedTurnPlannerCore.Finalize(bundle.PreparedPlan,
+            new WoundEffectBatchPlanningResult(bundle.EffectBatchPlan, Array.Empty<ValidationIssue>()));
+        return replay.Success && replay.Plan!.WoundFinalPlanFingerprint == bundle.WoundFinalPlanFingerprint;
+    }
 
     internal static WoundAcceptedTurnPreparationResult PrepareJointRepairCandidate(WoundAcceptedTurnInput input, object authority)
     {

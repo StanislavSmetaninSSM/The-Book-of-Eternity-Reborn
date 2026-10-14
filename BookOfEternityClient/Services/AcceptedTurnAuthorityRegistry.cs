@@ -3521,7 +3521,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
             EffectAcceptedTurnInput input,
             object? treatmentContinuationAuthority = null,
             object? reservationAuthority = null,
-            EffectIdentityFactory? identityFactory = null)
+            EffectIdentityFactory? identityFactory = null,
+            object? jointRepairContinuationAuthority = null)
         {
             lock (_gate)
             {
@@ -3535,7 +3536,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 if (!WoundStageReservationAgrees(
                         prepared,
                         treatmentContinuationAuthority,
-                        reservationAuthority))
+                        reservationAuthority,
+                        jointRepairContinuationAuthority))
                 {
                     return FailedWoundEffect(
                         "mortal_wound_treatment_publication_reservation_invalid",
@@ -3623,14 +3625,16 @@ internal static partial class AcceptedTurnAuthorityRegistry
             WoundPreparedAcceptedTurnPlan prepared,
             WoundEffectBatchPlanningResult effectResult,
             object? treatmentContinuationAuthority = null,
-            object? reservationAuthority = null)
+            object? reservationAuthority = null,
+            object? jointRepairContinuationAuthority = null)
         {
             lock (_gate)
             {
                 if (!WoundStageReservationAgrees(
                         prepared,
                         treatmentContinuationAuthority,
-                        reservationAuthority))
+                        reservationAuthority,
+                        jointRepairContinuationAuthority))
                 {
                     return FailedWoundFinal(
                         "mortal_wound_treatment_publication_reservation_invalid",
@@ -5771,8 +5775,14 @@ internal static partial class AcceptedTurnAuthorityRegistry
         private bool WoundStageReservationAgrees(
             WoundPreparedAcceptedTurnPlan prepared,
             object? treatmentContinuationAuthority,
-            object? reservationAuthority)
+            object? reservationAuthority,
+            object? jointRepairContinuationAuthority = null)
         {
+            if (prepared.JointRepairContinuationAuthority is not null || jointRepairContinuationAuthority is not null)
+                return prepared.JointRepairContinuationAuthority is not null && treatmentContinuationAuthority is null &&
+                    prepared.RecoveryContinuationAuthority is null && reservationAuthority is not null &&
+                    ReferenceEquals(prepared.JointRepairContinuationAuthority, jointRepairContinuationAuthority) &&
+                    OwnsJointRepairPublicationReservation(jointRepairContinuationAuthority!, reservationAuthority);
             var preparedAuthority = prepared.TreatmentContinuationAuthority;
             if (prepared.RecoveryContinuationAuthority is not null)
             {

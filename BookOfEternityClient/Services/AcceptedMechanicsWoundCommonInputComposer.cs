@@ -161,6 +161,9 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(bundle);
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        if (bundle.PreparedPlan.JointRepairContinuationAuthority is not null)
+            return Failed(WoundIdentityState.StatePath, "accepted_mechanics_joint_common_owner_unavailable",
+                "the exclusive whole-union common owner", "joint common publication not implemented");
         if ((anchorPlan is null ? 0 : 1) +
             (treatmentCurrentTimeInMinutes is null ? 0 : 1) +
             (recoveryCurrentTimeInMinutes is null ? 0 : 1) != 1)

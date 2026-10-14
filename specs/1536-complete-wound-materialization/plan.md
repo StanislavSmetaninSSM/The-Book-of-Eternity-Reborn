@@ -1,5 +1,61 @@
 # Implementation Plan: Complete Wound Materialization and Healing
 
+## J4 joint effect/final/anchor WIP STOP — 2026-10-14
+
+Retained sole Sol continued from published286fe45e67fc4023fcfb5ae98dca469f3f049907
+under the same accepted DESIGNv2/J2-J7 release. ROOT preserves this connected owning
+source checkpoint before further common/publication/entry work. It is not complete
+J4, connected SOURCE READY or runtime qualification; all new project checks UNRUN.
+The prior prepared-family checkpoint and its known freshness finding remain historical.
+
+The factory now reconstructs the actual installed wave under the participating lease,
+freshly exports current treatment authority/restores the same request/claim, compares
+exact accepted-state/request/result/checkpoint agreement, and uses that fresh owner.
+Its current wound/effect baseline is checked against the frozen preparation. This closes
+the reported same-lease freshness gap in source; no positive runtime proof is claimed.
+
+Both privately authenticated owner vectors seed the complete collision-only event-ref/
+alias inventory BEFORE any batch application, including a null treatment batch. Each
+batch still authorizes against its own separate vector and prepared-input seal. The
+existing effect source/target, predecessor, application/terminal, replay and schedule
+pipeline remains one stage, with the joint effect input independently composed from
+sealed actual source roots/carriers/clock and genuine empty concurrent commands.
+The existing stage-bundle transition check selects the same private per-batch seal.
+
+Private joint effect/final registry access validates current bytes/G/confirmed claim
+outside the monitor and requires the exact existing exclusive reservation identity.
+Old generic/homogeneous/recovery callers cannot enter that joint family. One shared
+effect cache/allocator is retained. Joint finalization authenticates the full handoff,
+reduces one CREATE then one treatment with separate application subsets, combines typed
+contributions in consecutive original history order, and assembles carrier/identity/
+history roots once. It never merges independently finalized JSON or accepted vectors.
+The existing final cache and full detached replay carry the complete joint fingerprint.
+
+Explicit CreateJointRepair derives new-wound creation/condition anchors from the full
+joint bundle/current clock, validates the old-wound treatment through typed final replay,
+and reuses the old pure initial-allocation calculation. Old Create still rejects mixed
+mutation phases. The ordinary common composer now explicitly refuses the joint family
+until its separate whole-union common owner is implemented; no current entry is wired.
+
+Still UNIMPLEMENTED: whole-union common/context/cache and final capability-resource-
+source guarantee; complete transaction/member inventory, one publication/compensation/
+whole-wave cleanup/terminal dispositions/v2 completed proof; actual admitted entry,
+repair dispatch/restore/retry and cold reconstruction; R2-R7/C1 controls and GM severity-
+repair example/manifest/guards. The existing five provenance component rows only cover
+rejection with no installed wave, not this positive effect/final path. No J4/J5/J6 or
+live-owner completion claim. Full FR063/T070/UI/parents remain OPEN.
+
+Catalog730 and all selections/counts/membership/budgets remain unchanged: provisional
+component1method5cases1descriptor/budget5/default10, no discovery claim. Directly changed
+registry/effect/planner/stage-bundle/anchor guards are narrow C1 dependencies for the
+future complete candidate; passing ordinary13/API5/pending2/QTE cohorts are not repeated.
+Qualified fixture bodies, ce955, sixarg publisher, singleton/disjoint/public mixed guards,
+source producer/parser/marker, globalCI and old history/acceptance checkbox lines remain
+protected. Public GM grammar/afterlife behavior unchanged by this unwired private family;
+required GM synchronization accompanies the connected capability. No author project
+execution, Git mutation, provider/model calls, environment operations or new agents.
+ROOT publishes/recover this WIP before continuation from the verified checkpoint.
+
 ## J4 exclusive joint preparation/cache/registry WIP STOP — 2026-10-14
 
 Retained sole Sol continued from published246d4417029582eb9402053f78bdcf4736f8a79b

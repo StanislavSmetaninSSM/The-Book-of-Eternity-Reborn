@@ -529,10 +529,6 @@ internal static partial class WoundAcceptedTurnPlannerCore
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchPlanningResult effectResult)
     {
-        if (prepared.JointRepairContinuationAuthority is not null)
-            return FailedFinal("wound_plan_joint_final_owner_unavailable",
-                "Joint preparation cannot fall through the ordinary or singleton final owner.",
-                "the exclusive joint effect/final/common owner", "joint final owner not implemented");
         if (prepared.DraftBefore != null)
             return FailedFinal("spiritual_wound_owned_application_required",
                 "Live wounds are reduced from actual owned insertion facts before common final publication.",
@@ -945,6 +941,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
         WoundEffectBatchAcceptedPlan accepted,
         IReadOnlyList<EffectAcceptedApplicationResult> applications)
     {
+        if (prepared.JointRepairContinuationAuthority is not null)
+            return ComposeJointRepairFinalPlan(prepared, accepted, applications);
         if (prepared.TreatmentContinuationAuthority is not null)
             return ComposeTreatmentContinuationFinalPlan(
                 prepared,

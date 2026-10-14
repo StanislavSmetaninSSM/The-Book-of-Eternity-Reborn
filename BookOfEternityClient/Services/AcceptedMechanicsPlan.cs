@@ -679,7 +679,8 @@ internal sealed class AcceptedMechanicsWoundStageBundle
                 "prepared source export");
             var transition = batch.TransitionAuthority;
             RequireEqual(
-                preparedPlan.InputFingerprint,
+                preparedPlan.JointRepairContinuationAuthority is null ? preparedPlan.InputFingerprint
+                    : WoundAcceptedTurnPlanner.ReadJointRepairBatchInputFingerprint(preparedPlan, batch),
                 transition.PreparedInputFingerprint,
                 nameof(preparedPlan),
                 "prepared transition input");

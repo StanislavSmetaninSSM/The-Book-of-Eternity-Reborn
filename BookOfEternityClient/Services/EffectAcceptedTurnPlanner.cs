@@ -2393,6 +2393,17 @@ internal static partial class EffectAcceptedTurnPlanner
             .Select(MortalLocationIdentityState.BuildConfusableKey)
             .ToHashSet(StringComparer.Ordinal);
         var terminalEffectIds = new HashSet<string>(StringComparer.Ordinal);
+        if (prepared.JointRepairContinuationAuthority is not null)
+        {
+            // Complete collision inventory before any operation is allocated. It
+            // grants no authorization and never replaces either owner vector.
+            foreach (var ownerBinding in WoundAcceptedTurnPlanner.ReadJointRepairOwnerBindings(prepared))
+                foreach (var acceptedEvent in ownerBinding.AcceptedEvents)
+                {
+                    createdEvents.Add(acceptedEvent.EventRef);
+                    createdEventAliases.Add(MortalLocationIdentityState.BuildConfusableKey(acceptedEvent.EventRef));
+                }
+        }
         for (var batchIndex = 0; batchIndex < batches.Count; batchIndex++)
         {
             var batch = batches[batchIndex];
@@ -2424,6 +2435,17 @@ internal static partial class EffectAcceptedTurnPlanner
                 continue;
             }
 
+            var batchEvents = acceptedEvents;
+            if (prepared.JointRepairContinuationAuthority is not null)
+            {
+                var batchBinding = WoundAcceptedTurnPlanner.ReadJointRepairBatchBinding(prepared, batch);
+                if (batchBinding.AcceptedEventsFingerprint != binding.AcceptedEventsFingerprint)
+                    batchEvents = PrepareWoundAcceptedEvents(batchBinding, new JsonArray(
+                        batchBinding.AcceptedEvents.Select(static value => (JsonNode)new JsonObject
+                        {
+                            ["eventRef"] = value.EventRef, ["kind"] = value.Kind, ["authorityId"] = value.AuthorityId
+                        }).ToArray()), issues);
+            }
             PrepareWoundBatchApplications(
                 input,
                 prepared,
@@ -2431,7 +2453,7 @@ internal static partial class EffectAcceptedTurnPlanner
                 path,
                 allocatedIds,
                 woundsById,
-                acceptedEvents,
+                batchEvents,
                 applicationRefs,
                 applicationAliases,
                 createdEvents,
@@ -2546,8 +2568,12 @@ internal static partial class EffectAcceptedTurnPlanner
         }
         var terminalWound = wound;
         var hasSelectedGraph = WoundAcceptedTurnPlanner.TryGetTreatmentSelectedGraph(prepared, out var selectedGraph);
+        var isJointTreatment = WoundAcceptedTurnPlanner.TryReadJointRepairTreatmentBatch(prepared, batch, out var jointTreatment);
+        if (isJointTreatment)
+            hasSelectedGraph = jointTreatment.Outcome.TryRecomposeSelectedGraph(out selectedGraph);
         if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority!, out var selectedContinuation) &&
-            selectedContinuation.Resolution.OutcomeIntents.Any(static intent => intent is MortalWoundAddComplicationOutcomeIntent) && !hasSelectedGraph)
+            selectedContinuation.Resolution.OutcomeIntents.Any(static intent => intent is MortalWoundAddComplicationOutcomeIntent) && !hasSelectedGraph ||
+            isJointTreatment && jointTreatment.Resolution.OutcomeIntents.Any(static intent => intent is MortalWoundAddComplicationOutcomeIntent) && !hasSelectedGraph)
         {
             AddWoundBatchIssue(issues, path, "wound_plan_effect_handoff_invalid",
                 "one authenticated private selected complication graph", "missing or changed");
@@ -2557,7 +2583,9 @@ internal static partial class EffectAcceptedTurnPlanner
                 prepared.TreatmentContinuationAuthority!, out var treatmentContinuation) &&
             WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) &&
             treatmentContinuation.OutcomePreparation.GetOrderedRemovalIds().Length != 0;
-        var removalOnly = !hasSelectedGraph && authenticatedRemoval && treatmentContinuation.OutcomePreparation.SeverityReduction is null;
+        var removalPreparation = isJointTreatment ? jointTreatment.Outcome : treatmentContinuation?.OutcomePreparation;
+        authenticatedRemoval |= isJointTreatment && jointTreatment.Outcome.GetOrderedRemovalIds().Length != 0;
+        var removalOnly = !hasSelectedGraph && authenticatedRemoval && removalPreparation!.SeverityReduction is null;
         if (transitionAuthority.TransitionKind is "worsen" or "treat")
         {
             var baselineCatalog = WoundCarrierCatalog.Build(
@@ -2598,7 +2626,7 @@ internal static partial class EffectAcceptedTurnPlanner
             var selected = new List<string>();
             var ids = new HashSet<string>(StringComparer.Ordinal);
             var rootsSeen = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var id in treatmentContinuation.OutcomePreparation.GetOrderedRemovalIds())
+            foreach (var id in removalPreparation!.GetOrderedRemovalIds())
             {
                 var matches = terminalWound.Complications.Where(complication =>
                     string.Equals(complication.ComplicationId, id, StringComparison.Ordinal)).ToArray();
@@ -2715,7 +2743,7 @@ internal static partial class EffectAcceptedTurnPlanner
                 roots,
                 path,
                 issues,
-                authenticatedRemoval ? treatmentContinuation.OutcomePreparation.SeverityReduction?.Before : null,
+                authenticatedRemoval ? removalPreparation!.SeverityReduction?.Before : null,
                 selectedGraph, prepared.DraftBefore?.Data, prepared.DraftBefore?.RetirementHistory, prepared.DraftBefore))
         {
             return;
@@ -3019,6 +3047,14 @@ internal static partial class EffectAcceptedTurnPlanner
             WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) &&
             ResourceMaterializationContract.IsAuthorityFingerprint(
                 transition.ExpectedBeforeFingerprint);
+        var isJointTreatment = WoundAcceptedTurnPlanner.TryReadJointRepairTreatmentBatch(prepared, batch, out var jointTreatment);
+        treatmentAuthority |= isJointTreatment && transition.TransitionKind == "treat" &&
+            source.CausalEventRef == jointTreatment.Resolution.Coordinates.EventRef &&
+            ResourceMaterializationContract.IsAuthorityFingerprint(transition.ExpectedBeforeFingerprint);
+        var hasSelectedGraph = WoundAcceptedTurnPlanner.TryGetTreatmentSelectedGraph(prepared, out var selectedGraph);
+        if (isJointTreatment) hasSelectedGraph = jointTreatment.Outcome.TryRecomposeSelectedGraph(out selectedGraph);
+        var expectedInputFingerprint = prepared.JointRepairContinuationAuthority is null ? prepared.InputFingerprint
+            : WoundAcceptedTurnPlanner.ReadJointRepairBatchInputFingerprint(prepared, batch);
         var valid =
             source.SchemaVersion == 1 &&
             string.Equals(source.Kind, "wound", StringComparison.Ordinal) &&
@@ -3042,13 +3078,12 @@ internal static partial class EffectAcceptedTurnPlanner
             origin is not null &&
             string.Equals(
                 transition.TransitionKind,
-                WoundAcceptedTurnPlanner.TryGetTreatmentSelectedGraph(prepared, out var selectedGraph)
-                    ? selectedGraph!.FinalScalars.LastTransition.Kind : wound.LastTransition.Kind,
+                hasSelectedGraph ? selectedGraph!.FinalScalars.LastTransition.Kind : wound.LastTransition.Kind,
                 StringComparison.Ordinal) &&
             (createAuthority || worseningAuthority || treatmentAuthority) &&
             string.Equals(
                 transition.PreparedInputFingerprint,
-                prepared.InputFingerprint,
+                expectedInputFingerprint,
                 StringComparison.Ordinal) &&
             string.Equals(
                 transition.OpportunityId,

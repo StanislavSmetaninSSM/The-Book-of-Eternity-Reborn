@@ -29,6 +29,39 @@ internal static partial class AcceptedTurnAuthorityRegistry
         FileSystemManager.CanonicalWriteLease lease, object continuation, object reservation) =>
         GetState(files, lease).AbortMortalJointRepairPublication(continuation, reservation);
 
+    internal static async Task<WoundEffectBatchPlanningResult> GetOrBuildWoundJointRepairEffectValidatedAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        WoundPreparedAcceptedTurnPlan prepared, EffectAcceptedTurnInput input, object continuation, object reservation)
+    {
+        try
+        {
+            await WoundAcceptedTurnPlanner.ValidateJointRepairCurrentAsync(files, lease, continuation);
+            if (!ReferenceEquals(prepared.JointRepairContinuationAuthority, continuation) ||
+                !WoundAcceptedTurnPlanner.JointRepairEffectInputAgrees(prepared, input))
+                throw new InvalidDataException("Joint effect input is not the complete independently composed current source/lifecycle input.");
+        }
+        catch (Exception failure) when (failure is InvalidDataException or IOException)
+        { GetState(files, lease).InvalidateOwnedJointRepairPreparation(continuation, reservation); throw; }
+        return GetState(files, lease).GetOrBuildWoundEffectValidated(prepared, input,
+            reservationAuthority: reservation, jointRepairContinuationAuthority: continuation);
+    }
+
+    internal static async Task<WoundAcceptedTurnPlanningResult> GetOrBuildWoundJointRepairFinalValidatedAsync(
+        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        WoundPreparedAcceptedTurnPlan prepared, WoundEffectBatchPlanningResult effect, object continuation, object reservation)
+    {
+        try
+        {
+            await WoundAcceptedTurnPlanner.ValidateJointRepairCurrentAsync(files, lease, continuation);
+            if (!ReferenceEquals(prepared.JointRepairContinuationAuthority, continuation))
+                throw new InvalidDataException("Joint finalization belongs to a foreign private preparation.");
+        }
+        catch (Exception failure) when (failure is InvalidDataException or IOException)
+        { GetState(files, lease).InvalidateOwnedJointRepairPreparation(continuation, reservation); throw; }
+        return GetState(files, lease).GetOrBuildWoundFinal(prepared, effect,
+            reservationAuthority: reservation, jointRepairContinuationAuthority: continuation);
+    }
+
     private sealed partial class AcceptedTurnAuthorityState
     {
         // Occupies the same exclusive publication slot as old treatment, with a
