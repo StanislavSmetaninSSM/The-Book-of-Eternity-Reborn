@@ -1,5 +1,41 @@
 # Implementation Plan: GM Documentation Modularization
 
+## Corrected source pair first actual2PASS frozen; writer1 UNRUN — 2026-10-14
+
+Fresh compile/catalog/runtime source `6f32a5221fa01123b2b74f824f51259532eefc35`,
+accepted fixture b320/53ed plus catalog4645011f/0eb6972a. [Immutable47-chain packet](recovery/A-connected-pair-first-corrected-actual-20261014/manifest.json)
+retains14 nativeartifactfiles plus complete raw runner/ROOT records; EVIDENCE PENDING.
+Fresh BOTH preparation -ValidateCatalog:
+20261014-011924-846-107592-3f692ddd173a475a978999a1cc213387-categories,
+151.6334029s exit0, errors0/warnings96integration35unit, valid732/11585,
+unmapped/stale empty and0tests. Exact pair selection NoBuildPlanOnly:
+20261014-012257-240-108339-52f9db09e9d54f889cf5d15d3d6a3a09-categories,2.3875436s1method2cases1descriptor,0executions.
+
+FIRST corrected pair actual -NoBuild:
+20261014-012325-042-108496-9b862120df44464b9c1865bc34673780-categories,
+11.4329356s exit0,2executed2PASS0FAIL, COMPLETE1/1descriptor2/2cases; no skip,
+duplicate or timeout. wrong_boundary reaches intentional delivery.adapter_failure/
+ast.startup_boundary with childexit1, completed=false AST and completed valid seed.
+read_all reaches its source.universal_read oracle with childexit0/completed AST and
+completed valid seed. Neither is a fixture identity/null-result failure now.
+
+Two inspect-only pwsh children actualPIDs108643/108670, no runtime prefix/main-helper
+producer. Both initial ownership/pipes/census/exit/root proof, no sticky unresolved,
+no unknown/remaining, both error-free EOFs and no cleanup failure. Four package/session
+roots physically absent. Actual owned observations include LiveExact, conclusive
+TerminalOwnedAbsent and one TerminalOwnedState; this new evidence does not identify
+the OS cause of historical first14 failures. Two outside-root evidence directories
+retained;14 native files frozen. Runner-owned/runtime cleanup true.
+
+2332source233physicalbinary/package POST exact. Initial fresh preparationPOST had10
+binary pins;223 app-output/package files were added afterwards for233futurePRE/POST,
+not an initial233 or loaded-binding claim. Historical setupFAIL/nativeexitUNKNOWN and
+first14/11PASS/one intended sourceRED/two fixtureFAIL remain immutable. No automatic
+aggregate GREEN or passing-control repeat. Publish nativeWIP then independent EVIDENCE;
+realwriter1 stays UNRUN/separately gated. FullA/B/content/daemon/Block_5 unreleased.
+SoleSol primaryconnectedJ2-J6/J7 authoring continues separately; no checkbox change.
+
+
 ## Pair catalog schema SOURCE closed; fresh preparation retry released — 2026-10-14
 
 Retained independent Astra XHigh [focused SOURCE/SELECTION closure](recovery/A-connected-pair-related-schema-correction-independent-source-review-20261014.md)
